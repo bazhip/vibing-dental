@@ -29,22 +29,26 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   return (
     <div className="patient-form">
+      <h2 className="patient-form__section-title">Patient Information</h2>
+
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Patient Name:
+          Patient Name
           <input
             type="text"
             className="patient-form__input"
+            placeholder="Enter patient name"
             value={patientInfo.patientName}
             onChange={handleInputChange('patientName')}
           />
         </label>
 
         <label className="patient-form__label">
-          Patient Number:
+          Patient Number
           <input
             type="text"
             className="patient-form__input"
+            placeholder="Enter patient ID"
             value={patientInfo.patientNumber}
             onChange={handleInputChange('patientNumber')}
           />
@@ -53,9 +57,9 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Date:
+          Date
           <input
-            type="text"
+            type="date"
             className="patient-form__input"
             value={patientInfo.date}
             onChange={handleInputChange('date')}
@@ -63,10 +67,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
 
         <label className="patient-form__label">
-          Tech:
+          Technician
           <input
             type="text"
             className="patient-form__input"
+            placeholder="Enter technician name"
             value={patientInfo.tech}
             onChange={handleInputChange('tech')}
           />
@@ -75,9 +80,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Complaint:
+          Chief Complaint
           <textarea
             className="patient-form__textarea"
+            placeholder="Enter chief complaint or reason for visit"
             value={patientInfo.complaint}
             onChange={handleInputChange('complaint')}
           />
@@ -92,7 +98,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             checked={species === 'feline'}
             onChange={handleSpeciesChange}
           />
-          Feline
+          🐱 Feline
         </label>
 
         <label className="patient-form__radio-label">
@@ -102,7 +108,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             checked={species === 'canine'}
             onChange={handleSpeciesChange}
           />
-          Canine
+          🐶 Canine
         </label>
       </div>
     </div>

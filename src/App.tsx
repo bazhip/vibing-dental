@@ -8,6 +8,10 @@ import EntryGrid from './EntryGrid';
 const App: React.FC = () => {
   return (
     <div className="App">
+      <header className="app-header">
+        <h1>🦷 Veterinary Dental Charting</h1>
+        <p>Professional dental examination and charting system</p>
+      </header>
       <EntryGrid />
     </div>
   );

@@ -3,6 +3,7 @@ import { PatientInfo, Species } from './types';
 import { PatientForm, DentalGrid } from './components';
 import { useDentalData } from './hooks/useDentalData';
 import { generateDentalChartPDF } from './utils/pdfGenerator';
+import './components/EntryGrid.css';
 
 /**
  * Main container component for dental chart entry
@@ -62,7 +63,7 @@ const EntryGrid: React.FC = () => {
 
   return (
     <div className="entry-grid-container">
-      <form onSubmit={handleGenerateChart}>
+      <form className="entry-grid-form" onSubmit={handleGenerateChart}>
         <PatientForm
           patientInfo={patientInfo}
           species={species}
@@ -77,7 +78,7 @@ const EntryGrid: React.FC = () => {
 
         <div className="entry-grid__submit">
           <button type="submit" className="entry-grid__button">
-            Generate Chart
+            📄 Generate Chart
           </button>
         </div>
       </form>
