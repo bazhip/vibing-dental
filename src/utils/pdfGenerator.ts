@@ -7,7 +7,8 @@ import {
   PDF_SECONDARY_TEXT_SIZE,
   PATIENT_INFO_COORDINATES,
   FIELD_Y_OFFSETS,
-  TOOTH_REGIONS,
+  FELINE_TOOTH_REGIONS,
+  CANINE_TOOTH_REGIONS,
 } from '../constants';
 
 /**
@@ -166,13 +167,13 @@ function renderFieldValue(
 
 /**
  * Renders dental data for a specific tooth region
- * This replaces the 4 duplicated for-loops in the original code
+ * Handles reverse flag to render teeth in correct order for PDF layout
  */
 function renderToothRegion(
   page: PDFPage,
   font: PDFFont,
   toothData: ToothData[],
-  regionConfig: typeof TOOTH_REGIONS[0]
+  regionConfig: typeof FELINE_TOOTH_REGIONS[0]
 ): void {
   const {
     startIndex,
@@ -185,15 +186,17 @@ function renderToothRegion(
   } = regionConfig;
 
   for (let i = 0; i < count; i++) {
-    const toothIndex = startIndex + i;
+    // When reverse=true, iterate through teeth array backwards
+    // to match PDF layout (right quadrants go M→I)
+    const arrayIndex = reverse ? (count - 1 - i) : i;
+    const toothIndex = startIndex + arrayIndex;
     const tooth = toothData[toothIndex];
 
     if (!tooth) continue;
 
-    // Calculate X position (reverse direction for left side quadrants)
-    const xPosition = reverse
-      ? startX - xSpacing * i
-      : startX + xSpacing * i;
+    // Calculate X position - apply reverse logic to X as well
+    const xOffset = reverse ? (count - 1 - i) : i;
+    const xPosition = startX + xSpacing * xOffset;
 
     // Render each dental field for this tooth
     DENTAL_FIELDS.forEach((field) => {
@@ -214,9 +217,11 @@ function renderToothRegion(
 function renderDentalData(
   page: PDFPage,
   font: PDFFont,
-  toothData: ToothData[]
+  toothData: ToothData[],
+  species: Species
 ): void {
-  TOOTH_REGIONS.forEach((region) => {
+  const regions = species === 'feline' ? FELINE_TOOTH_REGIONS : CANINE_TOOTH_REGIONS;
+  regions.forEach((region) => {
     renderToothRegion(page, font, toothData, region);
   });
 }
@@ -248,7 +253,7 @@ export async function generateDentalChartPDF(
     renderPatientInfo(firstPage, helveticaFont, patientInfo);
 
     // Render dental data
-    renderDentalData(firstPage, helveticaFont, toothData);
+    renderDentalData(firstPage, helveticaFont, toothData, species);
 
     // Save and download the PDF
     const pdfBytes = await pdfDoc.save();
