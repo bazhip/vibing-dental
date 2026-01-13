@@ -104,23 +104,73 @@
 .dental-grid .rdg {
   border: none;
   border-radius: 12px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  --rdg-background-color: #ffffff;
+  --rdg-header-background-color: #4a5568;
+  --rdg-row-hover-background-color: #f0f4f8;
+  --rdg-row-selected-background-color: #e6f2ff;
+  --rdg-selection-color: #4facfe;
+  --rdg-border-color: #cbd5e0;
+  --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .dental-grid .rdg-header-row {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #4a5568 !important;
+  color: white !important;
   font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dental-grid .rdg-header-row .rdg-cell {
+  border-right: 1px solid #2d3748;
+  padding: 1rem 0.75rem;
 }
 
 .dental-grid .rdg-cell {
   border-right: 1px solid #e2e8f0;
   border-bottom: 1px solid #e2e8f0;
-  padding: 0.5rem;
+  padding: 0.75rem;
+  line-height: 1.5;
+  color: #2d3748;
+}
+
+.dental-grid .rdg-cell[aria-selected="true"] {
+  outline: 2px solid #4facfe;
+  outline-offset: -2px;
+  background-color: #fff !important;
 }
 
 .dental-grid .rdg-row:hover {
   background-color: #f7fafc;
+}
+
+.dental-grid .rdg-row:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.dental-grid .rdg-row:nth-child(even):hover {
+  background-color: #f0f4f8;
+}
+
+/* Frozen column styling */
+.dental-grid .rdg-cell[aria-colindex="1"],
+.dental-grid .rdg-cell[aria-colindex="2"] {
+  background-color: #edf2f7;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* Text editor styling */
+.dental-grid .rdg-text-editor {
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  border: 2px solid #4facfe;
+  border-radius: 4px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Submit Button */
