@@ -25,6 +25,81 @@ const DENTAL_FIELDS: DentalField[] = [
 ];
 
 /**
+ * Wraps and renders multi-line text to fit within a specified width
+ * Automatically scales font size if text is too long
+ */
+function renderWrappedText(
+  page: PDFPage,
+  font: PDFFont,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  initialFontSize: number,
+  maxLines: number = 3
+): void {
+  if (!text || text.trim() === '') return;
+
+  let fontSize = initialFontSize;
+  let lines: string[] = [];
+
+  // Try progressively smaller font sizes until text fits
+  while (fontSize >= 8) {
+    lines = [];
+    const words = text.split(' ');
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const textWidth = font.widthOfTextAtSize(testLine, fontSize);
+
+      if (textWidth > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = testLine;
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    // If text fits within maxLines, we're done
+    if (lines.length <= maxLines) break;
+
+    // Otherwise, try smaller font
+    fontSize -= 1;
+  }
+
+  // Truncate to maxLines if still too long
+  if (lines.length > maxLines) {
+    lines = lines.slice(0, maxLines);
+    // Add ellipsis to last line if truncated
+    const lastLine = lines[maxLines - 1];
+    const ellipsis = '...';
+    const availableWidth = maxWidth - font.widthOfTextAtSize(ellipsis, fontSize);
+
+    let truncated = lastLine;
+    while (font.widthOfTextAtSize(truncated, fontSize) > availableWidth && truncated.length > 0) {
+      truncated = truncated.slice(0, -1);
+    }
+    lines[maxLines - 1] = truncated + ellipsis;
+  }
+
+  // Render each line
+  const lineHeight = fontSize * 1.2;
+  lines.forEach((line, index) => {
+    page.drawText(line, {
+      x,
+      y: y - (index * lineHeight),
+      size: fontSize,
+      font,
+    });
+  });
+}
+
+/**
  * Renders patient information on the PDF page
  */
 function renderPatientInfo(
@@ -64,12 +139,17 @@ function renderPatientInfo(
     font,
   });
 
-  page.drawText(complaint, {
-    x: PATIENT_INFO_COORDINATES.complaint.x,
-    y: PATIENT_INFO_COORDINATES.complaint.y,
-    size: PDF_SECONDARY_TEXT_SIZE,
+  // Render complaint with text wrapping and auto-scaling
+  renderWrappedText(
+    page,
     font,
-  });
+    complaint,
+    PATIENT_INFO_COORDINATES.complaint.x,
+    PATIENT_INFO_COORDINATES.complaint.y,
+    250, // Maximum width for complaint box
+    PDF_SECONDARY_TEXT_SIZE,
+    3 // Maximum 3 lines
+  );
 }
 
 /**
