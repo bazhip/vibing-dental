@@ -25,7 +25,6 @@ export interface PatientInfo {
   patientName: string;
   patientNumber: string;
   date: string;
-  tech: string;
   complaint: string;
 }
 

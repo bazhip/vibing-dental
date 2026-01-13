@@ -19,11 +19,10 @@ export const PDF_SECONDARY_TEXT_SIZE = 12;
  * Coordinates for patient information fields
  */
 export const PATIENT_INFO_COORDINATES = {
-  name: { x: 50, y: 560 },
-  number: { x: 50, y: 500 },
-  date: { x: 330, y: 585 },
-  tech: { x: 330, y: 560 },
-  complaint: { x: 330, y: 545 },
+  date: { x: 550, y: 780 },
+  name: { x: 550, y: 758 },
+  number: { x: 550, y: 736 },
+  complaint: { x: 550, y: 705 },
 };
 
 /**

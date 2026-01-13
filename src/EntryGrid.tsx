@@ -15,7 +15,6 @@ const EntryGrid: React.FC = () => {
     patientName: '',
     patientNumber: '',
     date: '',
-    tech: '',
     complaint: '',
   });
 

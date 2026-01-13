@@ -65,17 +65,6 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             onChange={handleInputChange('date')}
           />
         </label>
-
-        <label className="patient-form__label">
-          Technician
-          <input
-            type="text"
-            className="patient-form__input"
-            placeholder="Enter technician name"
-            value={patientInfo.tech}
-            onChange={handleInputChange('tech')}
-          />
-        </label>
       </div>
 
       <div className="patient-form__row">

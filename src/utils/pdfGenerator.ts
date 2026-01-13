@@ -107,24 +107,9 @@ function renderPatientInfo(
   font: PDFFont,
   patientInfo: PatientInfo
 ): void {
-  const { patientName, patientNumber, date, tech, complaint } = patientInfo;
+  const { patientName, patientNumber, date, complaint } = patientInfo;
 
-  // Main patient information (larger text)
-  page.drawText(patientName, {
-    x: PATIENT_INFO_COORDINATES.name.x,
-    y: PATIENT_INFO_COORDINATES.name.y,
-    size: PDF_HEADER_TEXT_SIZE,
-    font,
-  });
-
-  page.drawText(patientNumber, {
-    x: PATIENT_INFO_COORDINATES.number.x,
-    y: PATIENT_INFO_COORDINATES.number.y,
-    size: PDF_HEADER_TEXT_SIZE,
-    font,
-  });
-
-  // Secondary information (smaller text)
+  // Date field
   page.drawText(date, {
     x: PATIENT_INFO_COORDINATES.date.x,
     y: PATIENT_INFO_COORDINATES.date.y,
@@ -132,14 +117,23 @@ function renderPatientInfo(
     font,
   });
 
-  page.drawText(tech, {
-    x: PATIENT_INFO_COORDINATES.tech.x,
-    y: PATIENT_INFO_COORDINATES.tech.y,
+  // Patient name field
+  page.drawText(patientName, {
+    x: PATIENT_INFO_COORDINATES.name.x,
+    y: PATIENT_INFO_COORDINATES.name.y,
     size: PDF_SECONDARY_TEXT_SIZE,
     font,
   });
 
-  // Render complaint with text wrapping and auto-scaling
+  // Patient number/PID field
+  page.drawText(patientNumber, {
+    x: PATIENT_INFO_COORDINATES.number.x,
+    y: PATIENT_INFO_COORDINATES.number.y,
+    size: PDF_SECONDARY_TEXT_SIZE,
+    font,
+  });
+
+  // Chief complaint with text wrapping and auto-scaling
   renderWrappedText(
     page,
     font,
