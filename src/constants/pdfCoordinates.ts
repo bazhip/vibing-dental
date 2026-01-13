@@ -18,13 +18,13 @@ export const PDF_SECONDARY_TEXT_SIZE = 12;
 /**
  * Coordinates for patient information fields
  * PDF is landscape: 792 x 612 points
- * Form boxes are on the right side of the page
+ * Based on test output: x=680 centers text in form fields
  */
 export const PATIENT_INFO_COORDINATES = {
-  date: { x: 835, y: 591 },
-  name: { x: 835, y: 571 },
-  number: { x: 835, y: 551 },
-  complaint: { x: 835, y: 520 },
+  date: { x: 680, y: 591 },
+  name: { x: 680, y: 571 },
+  number: { x: 680, y: 551 },
+  complaint: { x: 680, y: 520 },
 };
 
 /**
