@@ -20,10 +20,10 @@ export const PDF_SECONDARY_TEXT_SIZE = 12;
  * PDF is landscape: 792 x 612 points
  */
 export const PATIENT_INFO_COORDINATES = {
-  date: { x: 555, y: 591 },
-  name: { x: 555, y: 571 },
-  number: { x: 555, y: 551 },
-  complaint: { x: 555, y: 518 },
+  date: { x: 665, y: 591 },
+  name: { x: 665, y: 571 },
+  number: { x: 665, y: 551 },
+  complaint: { x: 665, y: 518 },
 };
 
 /**
