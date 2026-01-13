@@ -94,28 +94,53 @@
 }
 
 /* Dental Grid Styles */
-.dental-grid {
+.dental-grid-section {
   margin: 2rem 0;
+}
+
+.dental-grid__title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.dental-grid {
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: visible;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: white;
+  border: 1px solid #e2e8f0;
 }
 
 .dental-grid .rdg {
   border: none;
   border-radius: 12px;
   font-size: 0.95rem;
+  height: auto !important;
+  min-height: auto !important;
+  contain: none !important;
+  width: 100% !important;
   --rdg-background-color: #ffffff;
-  --rdg-header-background-color: #4a5568;
+  --rdg-header-background-color: #667eea;
   --rdg-row-hover-background-color: #f0f4f8;
   --rdg-row-selected-background-color: #e6f2ff;
   --rdg-selection-color: #4facfe;
-  --rdg-border-color: #cbd5e0;
+  --rdg-border-color: #e2e8f0;
   --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
+.dental-grid .rdg-viewport {
+  height: auto !important;
+  min-height: auto !important;
+  overflow: visible !important;
+  width: 100% !important;
+}
+
 .dental-grid .rdg-header-row {
-  background: #4a5568 !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
   color: white !important;
   font-weight: 600;
   font-size: 0.9rem;
@@ -124,7 +149,7 @@
 }
 
 .dental-grid .rdg-header-row .rdg-cell {
-  border-right: 1px solid #2d3748;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
   padding: 1rem 0.75rem;
 }
 

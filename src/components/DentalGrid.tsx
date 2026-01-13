@@ -22,21 +22,24 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'tooth',
       name: 'Tooth',
-      width: 80,
+      width: '8%',
+      minWidth: 80,
       frozen: true,
       editable: false
     },
     {
       key: 'triadan',
       name: 'Triadan',
-      width: 90,
+      width: '10%',
+      minWidth: 90,
       frozen: true,
       editable: false
     },
     {
       key: 'mobility',
       name: 'Mobility',
-      width: 100,
+      width: '10%',
+      minWidth: 100,
       editable: true,
       editor: (p: any) => (
         <input
@@ -51,7 +54,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'recession',
       name: 'Recession',
-      width: 100,
+      width: '10%',
+      minWidth: 100,
       editable: true,
       editor: (p: any) => (
         <input
@@ -66,7 +70,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'pocket',
       name: 'Pocket',
-      width: 90,
+      width: '10%',
+      minWidth: 90,
       editable: true,
       editor: (p: any) => (
         <input
@@ -81,7 +86,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'furcation',
       name: 'Furcation',
-      width: 110,
+      width: '11%',
+      minWidth: 110,
       editable: true,
       editor: (p: any) => (
         <input
@@ -96,7 +102,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'hyperplasia',
       name: 'Hyperplasia',
-      width: 120,
+      width: '13%',
+      minWidth: 120,
       editable: true,
       editor: (p: any) => (
         <input
@@ -111,7 +118,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'calculus',
       name: 'Calculus',
-      width: 100,
+      width: '10%',
+      minWidth: 100,
       editable: true,
       editor: (p: any) => (
         <input
@@ -126,7 +134,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'gingivitis',
       name: 'Gingivitis',
-      width: 110,
+      width: '11%',
+      minWidth: 110,
       editable: true,
       editor: (p: any) => (
         <input
@@ -141,7 +150,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'pdstate',
       name: 'PD State',
-      width: 100,
+      width: '10%',
+      minWidth: 100,
       editable: true,
       editor: (p: any) => (
         <input
@@ -156,17 +166,16 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   ];
 
   return (
-    <div className="dental-grid">
-      <p style={{ marginBottom: '1rem', color: '#4a5568', fontSize: '0.95rem' }}>
-        💡 <strong>Tip:</strong> Click any cell in the Mobility, Recession, Pocket, etc. columns to enter data
-      </p>
-      <DataGrid
-        columns={columns}
-        rows={toothData}
-        onRowsChange={onToothDataChange}
-        rowKeyGetter={(row: ToothData) => row.triadan}
-        style={{ height: GRID_MIN_HEIGHT }}
-      />
+    <div className="dental-grid-section">
+      <h2 className="dental-grid__title">Dental Chart</h2>
+      <div className="dental-grid">
+        <DataGrid
+          columns={columns}
+          rows={toothData}
+          onRowsChange={onToothDataChange}
+          rowKeyGetter={(row: ToothData) => row.triadan}
+        />
+      </div>
     </div>
   );
 };

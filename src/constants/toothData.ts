@@ -58,7 +58,4 @@ export const INITIAL_TOOTH_DATA: ToothData[] = [
   { tooth: 'M1', triadan: 309 },
   { tooth: 'M2', triadan: 310 },
   { tooth: 'M3', triadan: 311 },
-
-  // Empty row for spacing
-  { tooth: ' ', triadan: 0 },
 ];
