@@ -17,12 +17,13 @@ export const PDF_SECONDARY_TEXT_SIZE = 12;
 
 /**
  * Coordinates for patient information fields
+ * PDF is landscape: 792 x 612 points
  */
 export const PATIENT_INFO_COORDINATES = {
-  date: { x: 550, y: 780 },
-  name: { x: 550, y: 758 },
-  number: { x: 550, y: 736 },
-  complaint: { x: 550, y: 705 },
+  date: { x: 555, y: 591 },
+  name: { x: 555, y: 571 },
+  number: { x: 555, y: 551 },
+  complaint: { x: 555, y: 518 },
 };
 
 /**
