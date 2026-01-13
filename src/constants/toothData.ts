@@ -1,14 +1,14 @@
-import { ToothData } from '../types';
+import { ToothData, Species } from '../types';
 
 /**
- * Default tooth data with triadan numbering system
+ * Full canine tooth data with triadan numbering system (42 teeth)
  * Organized by quadrants:
  * - 100s: Upper right (maxillary right)
  * - 200s: Upper left (maxillary left)
  * - 300s: Lower left (mandibular left)
  * - 400s: Lower right (mandibular right)
  */
-export const INITIAL_TOOTH_DATA: ToothData[] = [
+export const CANINE_TOOTH_DATA: ToothData[] = [
   // Upper right quadrant (101-110)
   { tooth: 'I1', triadan: 101 },
   { tooth: 'I2', triadan: 102 },
@@ -59,3 +59,62 @@ export const INITIAL_TOOTH_DATA: ToothData[] = [
   { tooth: 'M2', triadan: 310 },
   { tooth: 'M3', triadan: 311 },
 ];
+
+/**
+ * Feline tooth data with triadan numbering system (30 teeth)
+ * Dental formula: I3/3, C1/1, P3/2, M1/1
+ * Upper: no P1, no M2
+ * Lower: no P1, no P2, no M2, no M3
+ */
+export const FELINE_TOOTH_DATA: ToothData[] = [
+  // Upper right quadrant (101-109) - Missing P1(105), M2(110)
+  { tooth: 'I1', triadan: 101 },
+  { tooth: 'I2', triadan: 102 },
+  { tooth: 'I3', triadan: 103 },
+  { tooth: 'C', triadan: 104 },
+  { tooth: 'P2', triadan: 106 },
+  { tooth: 'P3', triadan: 107 },
+  { tooth: 'P4', triadan: 108 },
+  { tooth: 'M1', triadan: 109 },
+
+  // Lower right quadrant (401-409) - Missing P1(405), P2(406), M2(410), M3(411)
+  { tooth: 'I1', triadan: 401 },
+  { tooth: 'I2', triadan: 402 },
+  { tooth: 'I3', triadan: 403 },
+  { tooth: 'C', triadan: 404 },
+  { tooth: 'P3', triadan: 407 },
+  { tooth: 'P4', triadan: 408 },
+  { tooth: 'M1', triadan: 409 },
+
+  // Upper left quadrant (201-209) - Missing P1(205), M2(210)
+  { tooth: 'I1', triadan: 201 },
+  { tooth: 'I2', triadan: 202 },
+  { tooth: 'I3', triadan: 203 },
+  { tooth: 'C', triadan: 204 },
+  { tooth: 'P2', triadan: 206 },
+  { tooth: 'P3', triadan: 207 },
+  { tooth: 'P4', triadan: 208 },
+  { tooth: 'M1', triadan: 209 },
+
+  // Lower left quadrant (301-309) - Missing P1(305), P2(306), M2(310), M3(311)
+  { tooth: 'I1', triadan: 301 },
+  { tooth: 'I2', triadan: 302 },
+  { tooth: 'I3', triadan: 303 },
+  { tooth: 'C', triadan: 304 },
+  { tooth: 'P3', triadan: 307 },
+  { tooth: 'P4', triadan: 308 },
+  { tooth: 'M1', triadan: 309 },
+];
+
+/**
+ * Get initial tooth data based on species
+ */
+export function getInitialToothData(species: Species): ToothData[] {
+  return species === 'canine' ? CANINE_TOOTH_DATA : FELINE_TOOTH_DATA;
+}
+
+/**
+ * Legacy export for backward compatibility
+ * Defaults to canine
+ */
+export const INITIAL_TOOTH_DATA = CANINE_TOOTH_DATA;

@@ -1,13 +1,15 @@
 import { useState, useCallback } from 'react';
-import { ToothData } from '../types';
-import { INITIAL_TOOTH_DATA } from '../constants';
+import { ToothData, Species } from '../types';
+import { getInitialToothData } from '../constants';
 
 /**
  * Custom hook for managing dental chart data
  * Provides state and update handlers for tooth data
  */
-export function useDentalData() {
-  const [toothData, setToothData] = useState<ToothData[]>(INITIAL_TOOTH_DATA);
+export function useDentalData(initialSpecies: Species = 'feline') {
+  const [toothData, setToothData] = useState<ToothData[]>(
+    getInitialToothData(initialSpecies)
+  );
 
   /**
    * Updates tooth data when cells are edited in the grid
@@ -31,10 +33,10 @@ export function useDentalData() {
   );
 
   /**
-   * Resets all tooth data to initial state
+   * Resets tooth data to initial state for a specific species
    */
-  const resetToothData = useCallback(() => {
-    setToothData(INITIAL_TOOTH_DATA);
+  const resetToothData = useCallback((species: Species) => {
+    setToothData(getInitialToothData(species));
   }, []);
 
   /**
@@ -44,10 +46,18 @@ export function useDentalData() {
     setToothData(rows);
   }, []);
 
+  /**
+   * Switch species and reset tooth data
+   */
+  const switchSpecies = useCallback((species: Species) => {
+    setToothData(getInitialToothData(species));
+  }, []);
+
   return {
     toothData,
     updateToothData,
     setToothDataDirectly,
     resetToothData,
+    switchSpecies,
   };
 }

@@ -23,7 +23,7 @@ const EntryGrid: React.FC = () => {
   const [species, setSpecies] = useState<Species>('feline');
 
   // Dental data management via custom hook
-  const { toothData, setToothDataDirectly } = useDentalData();
+  const { toothData, setToothDataDirectly, switchSpecies } = useDentalData(species);
 
   /**
    * Updates a specific field in patient information
@@ -40,9 +40,11 @@ const EntryGrid: React.FC = () => {
 
   /**
    * Handles species selection change
+   * Switches the grid to show only relevant teeth
    */
   const handleSpeciesChange = (newSpecies: Species) => {
     setSpecies(newSpecies);
+    switchSpecies(newSpecies);
   };
 
   /**
