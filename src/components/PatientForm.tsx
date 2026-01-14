@@ -23,8 +23,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     onPatientInfoChange(field, event.target.value);
   };
 
-  const handleSpeciesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSpeciesChange(event.target.value as Species);
+  const handleSpeciesClick = (selectedSpecies: Species) => {
+    onSpeciesChange(selectedSpecies);
   };
 
   return (
@@ -53,9 +53,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             onChange={handleInputChange('patientNumber')}
           />
         </label>
-      </div>
 
-      <div className="patient-form__row">
         <label className="patient-form__label">
           Date
           <input
@@ -80,25 +78,21 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       </div>
 
       <div className="patient-form__species">
-        <label className="patient-form__radio-label">
-          <input
-            type="radio"
-            value="feline"
-            checked={species === 'feline'}
-            onChange={handleSpeciesChange}
-          />
+        <button
+          type="button"
+          className={`species-tab ${species === 'feline' ? 'species-tab--active' : ''}`}
+          onClick={() => handleSpeciesClick('feline')}
+        >
           🐱 Feline
-        </label>
+        </button>
 
-        <label className="patient-form__radio-label">
-          <input
-            type="radio"
-            value="canine"
-            checked={species === 'canine'}
-            onChange={handleSpeciesChange}
-          />
+        <button
+          type="button"
+          className={`species-tab ${species === 'canine' ? 'species-tab--active' : ''}`}
+          onClick={() => handleSpeciesClick('canine')}
+        >
           🐶 Canine
-        </label>
+        </button>
       </div>
     </div>
   );

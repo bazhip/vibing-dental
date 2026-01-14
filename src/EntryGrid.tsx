@@ -14,7 +14,7 @@ const EntryGrid: React.FC = () => {
   const [patientInfo, setPatientInfo] = useState<PatientInfo>({
     patientName: '',
     patientNumber: '',
-    date: '',
+    date: new Date().toISOString().split('T')[0], // Default to today's date
     complaint: '',
   });
 
