@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DataGrid from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { ToothData } from '../types';
@@ -17,29 +17,44 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   toothData,
   onToothDataChange,
 }) => {
+  const [containerWidth, setContainerWidth] = useState(0);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Update container width on mount and resize
+  useEffect(() => {
+    const updateWidth = () => {
+      if (gridRef.current) {
+        setContainerWidth(gridRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
   // Configure columns for react-data-grid v7
+  // Calculate pixel widths based on container to enable dynamic resizing
+  const getColumnWidth = (percentage: number) => {
+    return containerWidth > 0 ? Math.floor(containerWidth * percentage) : 100;
+  };
+
   const columns: any[] = [
     {
       key: 'tooth',
       name: 'Tooth',
-      width: '8%',
-      minWidth: 80,
-      frozen: true,
+      width: getColumnWidth(0.07),
       editable: false
     },
     {
       key: 'triadan',
       name: 'Triadan',
-      width: '10%',
-      minWidth: 90,
-      frozen: true,
+      width: getColumnWidth(0.08),
       editable: false
     },
     {
       key: 'mobility',
       name: 'Mobility',
-      width: '10%',
-      minWidth: 100,
+      width: getColumnWidth(0.09),
       editable: true,
       editor: (p: any) => (
         <input
@@ -54,8 +69,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'recession',
       name: 'Recession',
-      width: '10%',
-      minWidth: 100,
+      width: getColumnWidth(0.10),
       editable: true,
       editor: (p: any) => (
         <input
@@ -70,8 +84,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'pocket',
       name: 'Pocket',
-      width: '10%',
-      minWidth: 90,
+      width: getColumnWidth(0.09),
       editable: true,
       editor: (p: any) => (
         <input
@@ -86,8 +99,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'furcation',
       name: 'Furcation',
-      width: '11%',
-      minWidth: 110,
+      width: getColumnWidth(0.10),
       editable: true,
       editor: (p: any) => (
         <input
@@ -102,8 +114,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'hyperplasia',
       name: 'Hyperplasia',
-      width: '13%',
-      minWidth: 120,
+      width: getColumnWidth(0.13),
       editable: true,
       editor: (p: any) => (
         <input
@@ -118,8 +129,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'calculus',
       name: 'Calculus',
-      width: '10%',
-      minWidth: 100,
+      width: getColumnWidth(0.10),
       editable: true,
       editor: (p: any) => (
         <input
@@ -134,8 +144,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'gingivitis',
       name: 'Gingivitis',
-      width: '11%',
-      minWidth: 110,
+      width: getColumnWidth(0.11),
       editable: true,
       editor: (p: any) => (
         <input
@@ -150,8 +159,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'pdstate',
       name: 'PD State',
-      width: '10%',
-      minWidth: 100,
+      width: getColumnWidth(0.10),
       editable: true,
       editor: (p: any) => (
         <input
@@ -168,13 +176,16 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   return (
     <div className="dental-grid-section">
       <h2 className="dental-grid__title">Dental Chart</h2>
-      <div className="dental-grid">
-        <DataGrid
-          columns={columns}
-          rows={toothData}
-          onRowsChange={onToothDataChange}
-          rowKeyGetter={(row: ToothData) => row.triadan}
-        />
+      <div className="dental-grid" ref={gridRef}>
+        {containerWidth > 0 && (
+          <DataGrid
+            key={containerWidth}
+            columns={columns}
+            rows={toothData}
+            onRowsChange={onToothDataChange}
+            rowKeyGetter={(row: ToothData) => row.triadan}
+          />
+        )}
       </div>
     </div>
   );

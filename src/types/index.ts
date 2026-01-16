@@ -34,6 +34,11 @@ export interface PatientInfo {
 export type Species = 'feline' | 'canine';
 
 /**
+ * Logo/Organization type for PDF templates
+ */
+export type Logo = 'vca' | 'socal';
+
+/**
  * Column definition for the data grid
  */
 export interface ColumnDefinition {

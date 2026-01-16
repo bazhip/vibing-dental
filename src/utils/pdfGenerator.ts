@@ -1,6 +1,6 @@
 import { PDFDocument, PDFFont, PDFPage, StandardFonts } from 'pdf-lib';
 import download from 'downloadjs';
-import { ToothData, PatientInfo, Species, DentalField } from '../types';
+import { ToothData, PatientInfo, Species, DentalField, Logo } from '../types';
 import {
   PDF_TEXT_SIZE,
   PDF_HEADER_TEXT_SIZE,
@@ -232,11 +232,12 @@ function renderDentalData(
 export async function generateDentalChartPDF(
   patientInfo: PatientInfo,
   toothData: ToothData[],
-  species: Species
+  species: Species,
+  logo: Logo
 ): Promise<void> {
   try {
-    // Fetch the appropriate template PDF based on species
-    const templateUrl = `${species}_chart.pdf`;
+    // Fetch the appropriate template PDF based on species and logo
+    const templateUrl = `${species}_chart_${logo}.pdf`;
     const existingPdfBytes = await fetch(templateUrl).then((res) =>
       res.arrayBuffer()
     );
@@ -255,9 +256,13 @@ export async function generateDentalChartPDF(
     // Render dental data
     renderDentalData(firstPage, helveticaFont, toothData, species);
 
+    // Generate filename from patient info: petname_petid_date.pdf
+    const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const filename = `${sanitize(patientInfo.patientName)}_${sanitize(patientInfo.patientNumber)}_${patientInfo.date}.pdf`;
+
     // Save and download the PDF
     const pdfBytes = await pdfDoc.save();
-    download(pdfBytes, 'chart.pdf', 'application/pdf');
+    download(pdfBytes, filename, 'application/pdf');
   } catch (error) {
     console.error('Error generating PDF:', error);
     throw new Error('Failed to generate dental chart PDF');

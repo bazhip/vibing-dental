@@ -21,10 +21,10 @@ export const PDF_SECONDARY_TEXT_SIZE = 12;
  * Input boxes are in center, after the label column
  */
 export const PATIENT_INFO_COORDINATES = {
-  date: { x: 330, y: 583 },
-  name: { x: 330, y: 571 },
-  number: { x: 330, y: 559 },
-  complaint: { x: 330, y: 547 },
+  date: { x: 330, y: 597 },
+  name: { x: 330, y: 585 },
+  number: { x: 330, y: 573 },
+  complaint: { x: 330, y: 562 },
 };
 
 /**

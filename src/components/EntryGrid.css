@@ -1,5 +1,7 @@
 .entry-grid-container {
-  padding: 3rem;
+  padding: 2rem 1.5rem;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .entry-grid-form {
@@ -63,6 +65,13 @@
   resize: vertical;
 }
 
+.patient-form__selectors {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
 .patient-form__species {
   display: flex;
   gap: 0.5rem;
@@ -70,6 +79,43 @@
   background: #f0f4f8;
   border-radius: 12px;
   border: 2px solid #e2e8f0;
+  flex: 1;
+  min-width: 300px;
+}
+
+.patient-form__logo {
+  flex: 0 0 auto;
+  min-width: 200px;
+}
+
+.patient-form__logo-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.patient-form__logo-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.patient-form__logo-select:focus {
+  outline: none;
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.patient-form__logo-select:hover {
+  border-color: #cbd5e0;
 }
 
 .species-tab {
@@ -122,16 +168,21 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   background: white;
   border: 1px solid #e2e8f0;
+  max-width: 100%;
+  width: 100%;
 }
 
 .dental-grid .rdg {
   border: none;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   height: auto !important;
   min-height: auto !important;
   contain: none !important;
   width: 100% !important;
+  max-width: 100%;
+  overflow-x: hidden;
+  table-layout: fixed;
   --rdg-background-color: #ffffff;
   --rdg-header-background-color: #667eea;
   --rdg-row-hover-background-color: #f0f4f8;
@@ -146,6 +197,11 @@
   min-height: auto !important;
   overflow: visible !important;
   width: 100% !important;
+  max-width: 100%;
+}
+
+.dental-grid .rdg-row {
+  width: 100% !important;
 }
 
 .dental-grid .rdg-header-row {
@@ -159,15 +215,18 @@
 
 .dental-grid .rdg-header-row .rdg-cell {
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1rem 0.75rem;
+  padding: 0.75rem 0.5rem;
 }
 
 .dental-grid .rdg-cell {
   border-right: 1px solid #e2e8f0;
   border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem;
+  padding: 0.5rem 0.4rem;
   line-height: 1.5;
   color: #2d3748;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dental-grid .rdg-cell[aria-selected="true"] {
@@ -198,8 +257,8 @@
 
 /* Text editor styling */
 .dental-grid .rdg-text-editor {
-  padding: 0.5rem;
-  font-size: 0.95rem;
+  padding: 0.4rem;
+  font-size: 0.875rem;
   border: 2px solid #4facfe;
   border-radius: 4px;
   outline: none;
@@ -246,7 +305,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .entry-grid-container {
-    padding: 1.5rem;
+    padding: 1rem 0.75rem;
   }
 
   .patient-form {
@@ -258,9 +317,19 @@
     gap: 1rem;
   }
 
+  .patient-form__selectors {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .patient-form__species {
     flex-direction: column;
     gap: 0.5rem;
+    min-width: auto;
+  }
+
+  .patient-form__logo {
+    min-width: auto;
   }
 
   .species-tab {

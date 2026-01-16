@@ -1,11 +1,13 @@
 import React from 'react';
-import { PatientInfo, Species } from '../types';
+import { PatientInfo, Species, Logo } from '../types';
 
 interface PatientFormProps {
   patientInfo: PatientInfo;
   species: Species;
+  logo: Logo;
   onPatientInfoChange: (field: keyof PatientInfo, value: string) => void;
   onSpeciesChange: (species: Species) => void;
+  onLogoChange: (logo: Logo) => void;
 }
 
 /**
@@ -14,8 +16,10 @@ interface PatientFormProps {
 export const PatientForm: React.FC<PatientFormProps> = ({
   patientInfo,
   species,
+  logo,
   onPatientInfoChange,
   onSpeciesChange,
+  onLogoChange,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -25,6 +29,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   const handleSpeciesClick = (selectedSpecies: Species) => {
     onSpeciesChange(selectedSpecies);
+  };
+
+  const handleLogoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onLogoChange(event.target.value as Logo);
   };
 
   return (
@@ -77,22 +85,38 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
       </div>
 
-      <div className="patient-form__species">
-        <button
-          type="button"
-          className={`species-tab ${species === 'feline' ? 'species-tab--active' : ''}`}
-          onClick={() => handleSpeciesClick('feline')}
-        >
-          🐱 Feline
-        </button>
+      <div className="patient-form__selectors">
+        <div className="patient-form__species">
+          <button
+            type="button"
+            className={`species-tab ${species === 'feline' ? 'species-tab--active' : ''}`}
+            onClick={() => handleSpeciesClick('feline')}
+          >
+            🐱 Feline
+          </button>
 
-        <button
-          type="button"
-          className={`species-tab ${species === 'canine' ? 'species-tab--active' : ''}`}
-          onClick={() => handleSpeciesClick('canine')}
-        >
-          🐶 Canine
-        </button>
+          <button
+            type="button"
+            className={`species-tab ${species === 'canine' ? 'species-tab--active' : ''}`}
+            onClick={() => handleSpeciesClick('canine')}
+          >
+            🐶 Canine
+          </button>
+        </div>
+
+        <div className="patient-form__logo">
+          <label className="patient-form__logo-label">
+            Logo
+            <select
+              className="patient-form__logo-select"
+              value={logo}
+              onChange={handleLogoChange}
+            >
+              <option value="vca">VCA</option>
+              <option value="socal">Socal Tooth Ops</option>
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   );

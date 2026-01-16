@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import EntryGrid from './EntryGrid';
+import { Login } from './components';
 
 /**
- * Root application component
+ * Root application component with authentication
  */
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  if (!isAuthenticated) {
+    return <Login onAuthenticate={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="App">
       <header className="app-header">
