@@ -3,7 +3,6 @@ import download from 'downloadjs';
 import { ToothData, PatientInfo, Species, DentalField, Logo } from '../types';
 import {
   PDF_TEXT_SIZE,
-  PDF_HEADER_TEXT_SIZE,
   PDF_SECONDARY_TEXT_SIZE,
   PATIENT_INFO_COORDINATES,
   FIELD_Y_OFFSETS,
