@@ -1,6 +1,6 @@
 import { PDFDocument, PDFForm } from 'pdf-lib';
 import download from 'downloadjs';
-import { ToothData, PatientInfo, Species, DentalField } from '../types';
+import { ToothData, PatientInfo, Species, DentalField, Logo } from '../types';
 
 const DENTAL_FIELDS: DentalField[] = [
   'mobility',
@@ -36,11 +36,19 @@ function setTextField(form: PDFForm, name: string, value: string | undefined): v
   }
 }
 
-function fillPatientInfo(form: PDFForm, patientInfo: PatientInfo): void {
+// SoCal templates use `patient`/`pid`; VCA templates use `doctor`/`tech`.
+// patientName/patientNumber from the form are mapped to whichever pair the
+// selected template defines.
+function fillPatientInfo(form: PDFForm, patientInfo: PatientInfo, logo: Logo): void {
   setTextField(form, 'date', patientInfo.date);
-  setTextField(form, 'patient', patientInfo.patientName);
-  setTextField(form, 'pid', patientInfo.patientNumber);
   setTextField(form, 'chief', patientInfo.complaint);
+  if (logo === 'vca') {
+    setTextField(form, 'doctor', patientInfo.patientName);
+    setTextField(form, 'tech', patientInfo.patientNumber);
+  } else {
+    setTextField(form, 'patient', patientInfo.patientName);
+    setTextField(form, 'pid', patientInfo.patientNumber);
+  }
 }
 
 function fillToothGrid(form: PDFForm, toothData: ToothData[]): void {
@@ -57,15 +65,16 @@ function fillToothGrid(form: PDFForm, toothData: ToothData[]): void {
 export async function generateDentalChartPDF(
   patientInfo: PatientInfo,
   toothData: ToothData[],
-  species: Species
+  species: Species,
+  logo: Logo
 ): Promise<void> {
-  const templateUrl = `${species}_chart.pdf`;
+  const templateUrl = logo === 'vca' ? `${species}_chart_vca.pdf` : `${species}_chart.pdf`;
   const templateBytes = await fetch(templateUrl).then((res) => res.arrayBuffer());
 
   const pdfDoc = await PDFDocument.load(templateBytes);
   const form = pdfDoc.getForm();
 
-  fillPatientInfo(form, patientInfo);
+  fillPatientInfo(form, patientInfo, logo);
   fillToothGrid(form, toothData);
 
   const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
