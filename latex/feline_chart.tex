@@ -26,13 +26,13 @@
 \newcommand{\headerfont}{\fontsize{9.5}{11.4}\selectfont}
 
 % Field-helper macros (all use black borders, no decoration overlay)
-\newcommand{\inputf}[3]{\TextField[name=#1,width=#2,height=#3,bordercolor={0 0 0},borderwidth=0]{}}
-\newcommand{\inputfm}[3]{\TextField[name=#1,multiline=true,width=#2,height=#3,bordercolor={0 0 0},borderwidth=0]{}}
+\newcommand{\inputf}[3]{\TextField[name=#1,width=#2,height=#3,borderwidth=0]{}}
+\newcommand{\inputfm}[3]{\TextField[name=#1,multiline=true,width=#2,height=#3,borderwidth=0]{}}
 \newcommand{\bcheck}[1]{\CheckBox[name=#1,width=0.10in,height=0.10in,bordercolor={0 0 0},borderwidth=0.5]{}}
 % Grid cell: small TextField that fills a tooth-grid cell.
-\newcommand{\gc}[1]{\TextField[name=#1,width=0.290in,height=0.14in,bordercolor={0 0 0},borderwidth=0]{}}
+\newcommand{\gc}[1]{\TextField[name=#1,width=0.290in,height=0.14in,borderwidth=0]{}}
 % Grid cell with gray background (used for canine C columns)
-\newcommand{\gcc}[1]{\TextField[name=#1,width=0.290in,height=0.14in,bordercolor={0 0 0},borderwidth=0,backgroundcolor={0.85 0.85 0.85}]{}}
+\newcommand{\gcc}[1]{\TextField[name=#1,width=0.290in,height=0.14in,borderwidth=0,backgroundcolor={0.85 0.85 0.85}]{}}
 
 \begin{document}
 \begin{Form}
@@ -59,10 +59,10 @@
     \setlength{\tabcolsep}{4pt}%
     \begin{tabular}{|L{1.05in}|L{2.40in}|}
       \hline
-      Date:            & \TextField[name=date,    width=2.40in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{} \\ \hline
-      Patient:         & \TextField[name=patient, width=2.40in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{} \\ \hline
-      PID:             & \TextField[name=pid,     width=2.40in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{} \\ \hline
-      Chief Complaint: & \TextField[name=chief,   multiline=true, width=2.40in, height=0.42in, bordercolor={0 0 0},borderwidth=0]{} \\ \hline
+      Date:            & \TextField[name=date,    width=2.40in, height=0.16in, borderwidth=0]{} \\ \hline
+      Patient:         & \TextField[name=patient, width=2.40in, height=0.16in, borderwidth=0]{} \\ \hline
+      PID:             & \TextField[name=pid,     width=2.40in, height=0.16in, borderwidth=0]{} \\ \hline
+      Chief Complaint: & \TextField[name=chief,   multiline=true, width=2.40in, height=0.42in, borderwidth=0]{} \\ \hline
       \multicolumn{2}{|c|}{%
         \makebox[3.45in][c]{%
           Awake~\bcheck{awake}\hspace{0.35in}%
@@ -169,10 +169,10 @@
     \begin{tabular}{|L{1.55in}|C{0.55in}|C{0.55in}|}
       \hline
       \textbf{Nerve Block 0.5\% Bupivacaine} & \textbf{RIGHT} & \textbf{LEFT} \\ \hline
-      Infraorbital      & \TextField[name=nb_io_r,  width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL & \TextField[name=nb_io_l,  width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL \\ \hline
-      Inferior Alveolar & \TextField[name=nb_ia_r,  width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL & \TextField[name=nb_ia_l,  width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL \\ \hline
-      Mental            & \TextField[name=nb_men_r, width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL & \TextField[name=nb_men_l, width=0.30in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}~mL \\ \hline
-      Other             & \TextField[name=nb_oth_r, width=0.50in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}    & \TextField[name=nb_oth_l, width=0.50in, height=0.16in, bordercolor={0 0 0},borderwidth=0]{}    \\ \hline
+      Infraorbital      & \TextField[name=nb_io_r,  width=0.30in, height=0.16in, borderwidth=0]{}~mL & \TextField[name=nb_io_l,  width=0.30in, height=0.16in, borderwidth=0]{}~mL \\ \hline
+      Inferior Alveolar & \TextField[name=nb_ia_r,  width=0.30in, height=0.16in, borderwidth=0]{}~mL & \TextField[name=nb_ia_l,  width=0.30in, height=0.16in, borderwidth=0]{}~mL \\ \hline
+      Mental            & \TextField[name=nb_men_r, width=0.30in, height=0.16in, borderwidth=0]{}~mL & \TextField[name=nb_men_l, width=0.30in, height=0.16in, borderwidth=0]{}~mL \\ \hline
+      Other             & \TextField[name=nb_oth_r, width=0.50in, height=0.16in, borderwidth=0]{}    & \TextField[name=nb_oth_l, width=0.50in, height=0.16in, borderwidth=0]{}    \\ \hline
     \end{tabular}};
 
   % --- TOOTH DIAGRAMS (left middle) -----------------------------------------
@@ -256,7 +256,7 @@
   \node[anchor=north west] at ([xshift=6.70in, yshift=-0.50in]current page.north west) {%
     \TextField[name=treatment_report, multiline=true,
                width=4.00in, height=2.30in,
-               borderwidth=0.5, bordercolor={0 0 0},
+               borderwidth=0,
                value=]{}};
 
   % --- INSTRUCTIONS & MEDICATIONS (middle right input box) ------------------
@@ -265,7 +265,7 @@
   \node[anchor=north west] at ([xshift=6.70in, yshift=-3.15in]current page.north west) {%
     \TextField[name=instructions_meds, multiline=true,
                width=4.00in, height=2.20in,
-               borderwidth=0.5, bordercolor={0 0 0},
+               borderwidth=0,
                value=]{}};
 
   % --- FOLLOW-UP (bottom right input box) -----------------------------------
@@ -274,7 +274,7 @@
   \node[anchor=north west] at ([xshift=6.70in, yshift=-5.70in]current page.north west) {%
     \TextField[name=followup, multiline=true,
                width=4.00in, height=2.25in,
-               borderwidth=0.5, bordercolor={0 0 0},
+               borderwidth=0,
                value=]{}};
 
   % --- FOOTER -------------------------------------------------------
