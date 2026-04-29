@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PatientInfo, Species, Logo } from './types';
+import { PatientInfo, Species } from './types';
 import { PatientForm, DentalGrid } from './components';
 import { useDentalData } from './hooks/useDentalData';
 import { generateDentalChartPDF } from './utils/pdfGenerator';
@@ -20,9 +20,6 @@ const EntryGrid: React.FC = () => {
 
   // Species selection state
   const [species, setSpecies] = useState<Species>('feline');
-
-  // Logo selection state
-  const [logo, setLogo] = useState<Logo>('vca');
 
   // Dental data management via custom hook
   const { toothData, setToothDataDirectly, switchSpecies } = useDentalData(species);
@@ -58,7 +55,7 @@ const EntryGrid: React.FC = () => {
     event.preventDefault();
 
     try {
-      await generateDentalChartPDF(patientInfo, toothData, species, logo);
+      await generateDentalChartPDF(patientInfo, toothData, species);
     } catch (error) {
       alert('Failed to generate dental chart. Please try again.');
       console.error(error);
@@ -71,10 +68,8 @@ const EntryGrid: React.FC = () => {
         <PatientForm
           patientInfo={patientInfo}
           species={species}
-          logo={logo}
           onPatientInfoChange={handlePatientInfoChange}
           onSpeciesChange={handleSpeciesChange}
-          onLogoChange={setLogo}
         />
 
         <DentalGrid
