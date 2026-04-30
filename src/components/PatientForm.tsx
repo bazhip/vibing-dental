@@ -8,6 +8,7 @@ interface PatientFormProps {
   onPatientInfoChange: (field: keyof PatientInfo, value: string) => void;
   onSpeciesChange: (species: Species) => void;
   onLogoChange: (logo: Logo) => void;
+  onUploadPDF: (file: File) => void;
 }
 
 /**
@@ -20,6 +21,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   onPatientInfoChange,
   onSpeciesChange,
   onLogoChange,
+  onUploadPDF,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,9 +37,26 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     onLogoChange(event.target.value as Logo);
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) onUploadPDF(file);
+    event.target.value = '';
+  };
+
   return (
     <div className="patient-form">
-      <h2 className="patient-form__section-title">Patient Information</h2>
+      <div className="patient-form__header">
+        <h2 className="patient-form__section-title">Patient Information</h2>
+        <label className="patient-form__upload">
+          📂 Upload Chart PDF
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileSelect}
+            className="patient-form__upload-input"
+          />
+        </label>
+      </div>
 
       <div className="patient-form__row">
         <label className="patient-form__label">

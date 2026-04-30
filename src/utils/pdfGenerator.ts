@@ -1,6 +1,7 @@
 import { PDFDocument, PDFForm } from 'pdf-lib';
 import download from 'downloadjs';
 import { ToothData, PatientInfo, Species, DentalField, Logo } from '../types';
+import { getInitialToothData } from '../constants';
 
 const DENTAL_FIELDS: DentalField[] = [
   'mobility',
@@ -60,6 +61,67 @@ function fillToothGrid(form: PDFForm, toothData: ToothData[]): void {
       setTextField(form, fieldName, value);
     }
   }
+}
+
+export interface ParsedChart {
+  patientInfo: PatientInfo;
+  toothData: ToothData[];
+  species: Species;
+  logo: Logo;
+}
+
+function readTextField(form: PDFForm, name: string): string {
+  try {
+    return form.getTextField(name).getText() ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function hasTextField(form: PDFForm, name: string): boolean {
+  try {
+    form.getTextField(name);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
+  const bytes = await file.arrayBuffer();
+  const pdfDoc = await PDFDocument.load(bytes);
+  const form = pdfDoc.getForm();
+
+  // VCA templates have `doctor`/`tech`; SoCal has `patient`/`pid`.
+  const logo: Logo = hasTextField(form, 'doctor') ? 'vca' : 'socal';
+
+  // Triadan 110/210/311/411 only exist on canine charts (cat lacks 2nd molar
+  // in maxilla and 2nd/3rd molar in mandible).
+  const species: Species =
+    hasTextField(form, 'g110mob') || hasTextField(form, 'g311mob') ? 'canine' : 'feline';
+
+  const patientName =
+    logo === 'vca' ? readTextField(form, 'doctor') : readTextField(form, 'patient');
+  const patientNumber =
+    logo === 'vca' ? readTextField(form, 'tech') : readTextField(form, 'pid');
+
+  const patientInfo: PatientInfo = {
+    date: readTextField(form, 'date'),
+    patientName,
+    patientNumber,
+    complaint: readTextField(form, 'chief'),
+  };
+
+  const toothData = getInitialToothData(species).map((tooth) => {
+    const updates: Partial<ToothData> = {};
+    for (const field of DENTAL_FIELDS) {
+      const value = readTextField(form, `g${tooth.triadan}${FIELD_SUFFIX[field]}`);
+      if (value) updates[field] = value;
+    }
+    return { ...tooth, ...updates };
+  });
+
+  return { patientInfo, toothData, species, logo };
 }
 
 export async function generateDentalChartPDF(

@@ -18,13 +18,46 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.patient-form__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
 .patient-form__section-title {
   font-size: 1.3rem;
   font-weight: 600;
   color: #2d3748;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e2e8f0;
+  margin: 0;
+}
+
+.patient-form__upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.patient-form__upload:hover {
+  border-color: #4facfe;
+  color: #2d3748;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.patient-form__upload-input {
+  display: none;
 }
 
 .patient-form__row {
