@@ -51,7 +51,7 @@
 }
 
 .patient-form__upload:hover {
-  border-color: #4facfe;
+  border-color: var(--accent);
   color: #2d3748;
   box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
 }
@@ -89,7 +89,7 @@
 .patient-form__input:focus,
 .patient-form__textarea:focus {
   outline: none;
-  border-color: #4facfe;
+  border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
 }
 
@@ -143,7 +143,7 @@
 
 .patient-form__logo-select:focus {
   outline: none;
-  border-color: #4facfe;
+  border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
 }
 
@@ -171,13 +171,13 @@
 }
 
 .species-tab--active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .species-tab--active:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
   color: white;
 }
 
@@ -186,13 +186,87 @@
   margin: 2rem 0;
 }
 
+.dental-grid__section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0 0 0.75rem 0;
+  margin-bottom: 1.5rem;
+}
+
 .dental-grid__title {
   font-size: 1.3rem;
   font-weight: 600;
   color: #2d3748;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.tabs__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: #f0f4f8;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabs__tab {
+  padding: 0.6rem 1.1rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4a5568;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.tabs__tab:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: #2d3748;
+}
+
+.tabs__tab--active,
+.tabs__tab--active:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.tabs__panels {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.tabs__panel > .dental-grid-section,
+.tabs__panel > .diagram-section {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .tabs__bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .tabs__tab {
+    flex: 0 0 auto;
+  }
+  .tabs__panels {
+    padding: 1rem;
+  }
 }
 
 .dental-grid {
@@ -220,7 +294,7 @@
   --rdg-header-background-color: #667eea;
   --rdg-row-hover-background-color: #f0f4f8;
   --rdg-row-selected-background-color: #e6f2ff;
-  --rdg-selection-color: #4facfe;
+  --rdg-selection-color: var(--accent);
   --rdg-border-color: #e2e8f0;
   --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -238,7 +312,7 @@
 }
 
 .dental-grid .rdg-header-row {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%) !important;
   color: white !important;
   font-weight: 600;
   font-size: 0.9rem;
@@ -263,7 +337,7 @@
 }
 
 .dental-grid .rdg-cell[aria-selected="true"] {
-  outline: 2px solid #4facfe;
+  outline: 2px solid var(--accent);
   outline-offset: -2px;
   background-color: #fff !important;
 }
@@ -292,11 +366,397 @@
 .dental-grid .rdg-text-editor {
   padding: 0.4rem;
   font-size: 0.875rem;
-  border: 2px solid #4facfe;
+  border: 2px solid var(--accent);
   border-radius: 4px;
   outline: none;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Anesthesia Table */
+.anesthesia-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.anesthesia-table thead th {
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  padding: 0.4rem 0.6rem;
+}
+
+.anesthesia-table thead th:nth-child(2),
+.anesthesia-table thead th:nth-child(3) {
+  text-align: center;
+}
+
+.anesthesia-table tbody td {
+  padding: 0.35rem 0.6rem;
+}
+
+.anesthesia-table__label {
+  width: 30%;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.anesthesia-table tbody td:nth-child(2),
+.anesthesia-table tbody td:nth-child(3) {
+  width: 35%;
+}
+
+/* Exam table — same chrome as anesthesia, but adds a comment column. */
+.exam-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.exam-table thead th {
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  padding: 0.4rem 0.6rem;
+}
+
+.exam-table thead th:nth-child(2),
+.exam-table thead th:nth-child(3) {
+  text-align: center;
+  width: 5rem;
+}
+
+.exam-table tbody td {
+  padding: 0.4rem 0.6rem;
+  vertical-align: middle;
+}
+
+.exam-table__radio {
+  text-align: center;
+  width: 5rem;
+}
+
+.exam-table__radio input[type="radio"] {
+  cursor: pointer;
+}
+
+.exam-table__comment-col {
+  width: 55%;
+}
+
+.exam-table__comment {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+}
+
+.exam-table__comment-placeholder {
+  color: #cbd5e0;
+}
+
+/* Surgery Report */
+.surgery-report__textarea {
+  min-height: 180px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Diagram + side-by-side code reference */
+.diagram-with-codes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.diagram-with-codes__diagram {
+  min-width: 0;
+}
+
+.diagram-with-codes__codes {
+  position: sticky;
+  top: 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+}
+
+/* Compact column layout when codes panel is in a narrower side rail. */
+.diagram-with-codes__codes .code-ref__columns {
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 1100px) {
+  .diagram-with-codes {
+    grid-template-columns: 1fr;
+  }
+  .diagram-with-codes__codes {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* Diagram view */
+.diagram-section {
+  margin: 2rem 0;
+}
+
+.diagram-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.diagram-view__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.diagram-view__tool-group {
+  display: flex;
+  gap: 0.25rem;
+  background: white;
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.diagram-view__tool {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.diagram-view__tool:hover {
+  background: #edf2f7;
+}
+
+.diagram-view__tool--active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  color: white;
+}
+
+.diagram-view__tool--active:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+}
+
+.diagram-view__action {
+  background: white;
+  border: 1px solid #cbd5e0;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.diagram-view__action:hover {
+  border-color: var(--accent);
+}
+
+.diagram-view__action--danger {
+  color: #c53030;
+  border-color: #fc8181;
+}
+
+.diagram-view__action--danger:hover {
+  background: #fff5f5;
+}
+
+.diagram-view__draw-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diagram-view__color {
+  width: 22px;
+  height: 22px;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: 1px solid #cbd5e0;
+  padding: 0;
+}
+
+.diagram-view__color--active {
+  outline-color: var(--accent);
+  outline-width: 2px;
+  transform: scale(1.1);
+}
+
+.diagram-view__width {
+  width: 90px;
+}
+
+.diagram-view__hint {
+  flex: 1 1 100%;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+/* The wrapper carries the visual chrome and the max-width cap, so the
+ * absolute-positioned comment overlay (a sibling of the SVG) is positioned
+ * relative to the same painted box the user sees. */
+.tooth-diagram-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.tooth-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram-comments-overlay {
+  position: absolute;
+  /* Match the SVG's content area inside the wrapper's padding. */
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  pointer-events: none;
+}
+
+.diagram-comments-overlay .diagram-comment {
+  position: absolute;
+  pointer-events: auto;
+}
+
+/* Tooth diagram layers:
+ *   .tooth-diagram__outline   – the outline ring of every tooth (combined-subpath path with evenodd fill).
+ *   .tooth-group              – per-tooth interaction group: hit area + mark overlays + hover tint.
+ *   .tooth-group__missing-fill – solid tooth-shaped fill for the "missing" mark.
+ *   .tooth-group__hover       – transparent overlay that picks up a tint on hover.
+ */
+.tooth-diagram__outline {
+  fill: #1a202c;
+  stroke: none;
+  pointer-events: none;
+}
+
+.tooth-group__missing-fill {
+  fill: #1a202c;
+}
+
+.tooth-group__hover {
+  fill: transparent;
+  transition: fill 0.1s ease;
+}
+
+.tooth-group[data-hovered="true"] .tooth-group__hover {
+  fill: rgba(66, 153, 225, 0.4);
+}
+
+.tooth-group[data-mark="missing"][data-hovered="true"] .tooth-group__hover {
+  fill: rgba(229, 62, 62, 0.3);
+}
+
+/* Comments rendered inside foreignObject */
+.diagram-comment {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fffaf0;
+  border: 1px solid #f6e05e;
+  border-radius: 6px;
+  padding: 0.3rem 0.45rem;
+  box-sizing: border-box;
+  font-size: 0.78rem;
+  font-family: inherit;
+  /* `overflow: visible` so the autocomplete popup can extend below the box.
+   * The textarea inside has its own `overflow-y: auto`, so long text still
+   * scrolls within the textarea instead of escaping. */
+  overflow: visible;
+}
+
+.diagram-comment__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.15rem;
+  cursor: move;
+  touch-action: none;
+}
+
+.diagram-comment__label {
+  font-weight: 600;
+  color: #744210;
+  font-size: 0.75rem;
+}
+
+.diagram-comment__delete {
+  background: none;
+  border: none;
+  color: #a0522d;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.diagram-comment__delete:hover {
+  color: #c53030;
+}
+
+.diagram-comment__text {
+  flex: 1;
+  /* `height: 0` + `flex: 1` makes the textarea fill remaining space without
+   * letting its scroll content push the box larger. */
+  height: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: #2d3748;
+  outline: none;
+  padding: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Bottom-right resize handle on the comment box. */
+.diagram-comment__resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 0 50%, #d69e2e 50% 100%);
+  touch-action: none;
 }
 
 /* Submit Button */
@@ -307,7 +767,7 @@
 }
 
 .entry-grid__button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
   color: white;
   border: none;
   padding: 1rem 3rem;
@@ -372,5 +832,159 @@
   .entry-grid__button {
     width: 100%;
     padding: 1rem;
+  }
+}
+
+/* Inline code-autocomplete popup attached to a CodeField wrapper. */
+.code-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.code-field > input,
+.code-field > textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* When CodeField wraps the comment-box textarea, propagate the parent
+ * flex column so the textarea still fills the remaining height. */
+.diagram-comment > .code-field {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inside a react-data-grid cell editor, fill the entire cell. */
+.rdg-cell .code-field {
+  height: 100%;
+}
+
+.code-field__popup {
+  position: absolute;
+  z-index: 30;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  width: max-content;
+  min-width: 220px;
+  max-width: 360px;
+  background: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.code-field__item {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: white;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  color: #2d3748;
+  cursor: pointer;
+}
+
+.code-field__item:hover,
+.code-field__item--active {
+  background: #ebf8ff;
+}
+
+.code-field__code {
+  font-weight: 600;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: #2b6cb0;
+  white-space: nowrap;
+}
+
+.code-field__def {
+  font-size: 0.85em;
+  color: #4a5568;
+}
+
+/* Searchable code reference panel. */
+.code-ref {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0 0;
+}
+
+.code-ref__search {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.code-ref__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.code-ref__heading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.4rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.code-ref__count {
+  font-weight: 400;
+  font-size: 0.8em;
+  color: #718096;
+}
+
+.code-ref__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.code-ref__row {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  font-size: 0.85rem;
+}
+
+.code-ref__code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 600;
+  color: #2b6cb0;
+}
+
+.code-ref__def {
+  color: #4a5568;
+}
+
+.code-ref__empty {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .code-ref__columns {
+    grid-template-columns: 1fr;
   }
 }

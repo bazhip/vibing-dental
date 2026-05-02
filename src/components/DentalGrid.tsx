@@ -2,6 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import DataGrid from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { ToothData } from '../types';
+import { CodeField } from './CodeField';
+
+const codeCellEditor = (p: any) => (
+  <CodeField
+    autoFocus
+    value={p.row[p.column.key] || ''}
+    onChange={(value) => p.onRowChange({ ...p.row, [p.column.key]: value })}
+    onBlur={() => p.onClose(true, false)}
+    style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
+  />
+);
 
 interface DentalGridProps {
   toothData: ToothData[];
@@ -19,17 +30,22 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Update container width on mount and resize
+  // Watch the wrapper with ResizeObserver — that way we measure correctly
+  // both at mount and when the grid becomes visible after a `display: none`
+  // toggle (e.g. when its containing tab is activated). A plain mount-time
+  // offsetWidth read returns 0 while the panel is hidden, which is why the
+  // grid was rendering blank inside the Charting tab.
   useEffect(() => {
-    const updateWidth = () => {
-      if (gridRef.current) {
-        setContainerWidth(gridRef.current.offsetWidth);
-      }
+    const el = gridRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.offsetWidth;
+      if (w > 0) setContainerWidth(w);
     };
-
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
   // Configure columns for react-data-grid v7
   // Calculate pixel widths based on container to enable dynamic resizing
@@ -55,126 +71,64 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       name: 'Mobility',
       width: getColumnWidth(0.09),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'recession',
       name: 'Recession',
       width: getColumnWidth(0.10),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'pocket',
       name: 'Pocket',
       width: getColumnWidth(0.09),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'furcation',
       name: 'Furcation',
       width: getColumnWidth(0.10),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'hyperplasia',
       name: 'Hyperplasia',
       width: getColumnWidth(0.13),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'calculus',
       name: 'Calculus',
       width: getColumnWidth(0.10),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'gingivitis',
       name: 'Gingivitis',
       width: getColumnWidth(0.11),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
     {
       key: 'pdstate',
       name: 'PD State',
       width: getColumnWidth(0.10),
       editable: true,
-      editor: (p: any) => (
-        <input
-          autoFocus
-          value={p.row[p.column.key] || ''}
-          onChange={(e) => p.onRowChange({ ...p.row, [p.column.key]: e.target.value })}
-          onBlur={() => p.onClose(true, false)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-        />
-      )
+      editor: codeCellEditor
     },
   ];
 
   return (
     <div className="dental-grid-section">
-      <h2 className="dental-grid__title">Dental Chart</h2>
+      <div className="dental-grid__section-header">
+        <span className="dental-grid__title">Dental Chart</span>
+      </div>
       <div className="dental-grid" ref={gridRef}>
         {containerWidth > 0 && (
           <DataGrid

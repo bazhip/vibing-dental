@@ -1,0 +1,869 @@
+import React from 'react';
+import {
+  Species,
+  ToothMark,
+  ToothMarks,
+  DiagramComment,
+  DiagramStroke,
+  StrokePoint,
+} from '../types';
+import { TOOTH_DIAGRAMS, SpeciesDiagram } from '../constants/toothShapes';
+import { CodeField } from './CodeField';
+
+export type DiagramTool = 'mark' | 'comment' | 'draw';
+
+/** Which marks the user can cycle through on this diagram.
+ *   - "missing-only": pre-surgery — toggles between clear and "missing".
+ *   - "extracted-only": post-surgery — toggles between clear and "extracted".
+ *   - "all": cycles clear → missing → extracted → clear (legacy / general).
+ */
+export type MarkMode = 'missing-only' | 'extracted-only' | 'all';
+
+export function cycleMark(
+  current: ToothMark | undefined,
+  mode: MarkMode = 'all'
+): ToothMark | undefined {
+  if (mode === 'missing-only') return current === 'missing' ? undefined : 'missing';
+  if (mode === 'extracted-only') return current === 'extracted' ? undefined : 'extracted';
+  if (current === undefined) return 'missing';
+  if (current === 'missing') return 'extracted';
+  return undefined;
+}
+
+// SVG viewBox is padded out past the diagram's natural bbox in every
+// direction so anchored comments and dragged free comments have somewhere
+// to live (and the pad scales with diagram size, so feline / canine both
+// get reasonable space).
+const SIDE_PAD_RATIO = 0.30;
+const TOP_PAD_RATIO = 0.10;
+const BOTTOM_PAD_RATIO = 0.10;
+// Initial size for new comment boxes — chosen large enough that the
+// caret and a couple of words are immediately visible on a typical
+// diagram zoom level. Users can drag the corner handle to resize.
+const COMMENT_W = 300;
+const COMMENT_H = 160;
+const COMMENT_MIN_W = 90;
+const COMMENT_MIN_H = 50;
+const COMMENT_GAP = 6;
+const COMMENT_MARGIN_X = 6;
+
+interface ToothDiagramProps {
+  species: Species;
+  toothMarks: ToothMarks;
+  onToothMarksChange: (marks: ToothMarks) => void;
+  comments: DiagramComment[];
+  onCommentsChange: (comments: DiagramComment[]) => void;
+  strokes: DiagramStroke[];
+  onStrokesChange: (strokes: DiagramStroke[]) => void;
+  tool: DiagramTool;
+  strokeColor: string;
+  strokeWidth: number;
+  /** Triadans that are locked from user edits — used by the post-surgery
+   *  diagram to enforce that teeth missing pre-surgery stay missing. */
+  lockedTriadans?: Set<number>;
+  /** Constrains which marks this diagram can toggle through. */
+  markMode?: MarkMode;
+}
+
+interface SvgSubpath {
+  d: string;
+  cx: number;
+  cy: number;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
+interface ParsedDiagram {
+  subpaths: SvgSubpath[];
+}
+
+interface ToothBBox {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+  cx: number;
+  cy: number;
+}
+
+interface PositionedComment {
+  comment: DiagramComment;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  anchor: { x: number; y: number; label: string } | null;
+}
+
+function layoutComments(
+  comments: DiagramComment[],
+  diagram: SpeciesDiagram,
+  bboxByTriadan: Map<number, ToothBBox>
+): PositionedComment[] {
+  const placed: PositionedComment[] = [];
+  // Anchored comments without an explicit user position auto-stack in the
+  // outer whitespace next to their tooth.
+  const leftStack: PositionedComment[] = [];
+  const rightStack: PositionedComment[] = [];
+
+  const sidePad = diagram.width * SIDE_PAD_RATIO;
+  const midline = diagram.width / 2;
+
+  for (const c of comments) {
+    const w = c.width ?? COMMENT_W;
+    const h = c.height ?? COMMENT_H;
+
+    let anchor: PositionedComment['anchor'] = null;
+    let anchorX = -1, anchorY = -1;
+    if (c.anchorTriadan != null) {
+      const tooth = diagram.teeth.find((t) => t.triadan === c.anchorTriadan);
+      if (tooth) {
+        const bb = bboxByTriadan.get(tooth.triadan);
+        anchorX = bb ? bb.cx : tooth.cx;
+        anchorY = bb ? bb.cy : tooth.cy;
+        anchor = { x: anchorX, y: anchorY, label: `${tooth.label} (${tooth.triadan})` };
+      }
+    }
+
+    if (typeof c.x === 'number' && typeof c.y === 'number') {
+      // User-positioned (free comments always have x/y; anchored comments
+      // get them once dragged).
+      placed.push({ comment: c, x: c.x, y: c.y, w, h, anchor });
+      continue;
+    }
+
+    if (anchor) {
+      const onRight = anchorX < midline;
+      // Right-side teeth → left whitespace (negative x in viewBox);
+      // left-side teeth → right whitespace (past diagram.width).
+      const x = onRight
+        ? -sidePad + COMMENT_MARGIN_X
+        : diagram.width + COMMENT_MARGIN_X;
+      const target: PositionedComment = {
+        comment: c,
+        x,
+        y: anchorY - h / 2,
+        w,
+        h,
+        anchor,
+      };
+      (onRight ? leftStack : rightStack).push(target);
+    } else {
+      // Free comment without a stored position — drop it near the bottom
+      // center as a sensible default (shouldn't happen if creators always
+      // assign an initial x/y, but be safe).
+      placed.push({
+        comment: c,
+        x: diagram.width / 2 - w / 2,
+        y: diagram.height - h - 8,
+        w,
+        h,
+        anchor: null,
+      });
+    }
+  }
+
+  for (const stack of [leftStack, rightStack]) {
+    stack.sort((a, b) => a.y - b.y);
+    let nextMinY = 0;
+    for (const item of stack) {
+      item.y = Math.max(item.y, nextMinY);
+      nextMinY = item.y + item.h + COMMENT_GAP;
+      placed.push(item);
+    }
+  }
+
+  return placed;
+}
+
+const parsedCache = new Map<string, ParsedDiagram>();
+
+async function loadParsedDiagram(url: string): Promise<ParsedDiagram> {
+  const cached = parsedCache.get(url);
+  if (cached) return cached;
+
+  const text = await fetch(url).then((r) => r.text());
+  const dMatch = text.match(/<path[^>]*\sd="([^"]+)"/);
+  if (!dMatch) throw new Error(`No path found in ${url}`);
+  const fullD = dMatch[1];
+
+  const subpathStrs = fullD
+    .split(/(?=M\s)/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0 && /^M\s/.test(s));
+
+  const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  tempSvg.style.position = 'absolute';
+  tempSvg.style.visibility = 'hidden';
+  tempSvg.style.width = '0';
+  tempSvg.style.height = '0';
+  document.body.appendChild(tempSvg);
+
+  const subpaths: SvgSubpath[] = [];
+  try {
+    for (const d of subpathStrs) {
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', d);
+      tempSvg.appendChild(p);
+      const bb = p.getBBox();
+      subpaths.push({
+        d,
+        minX: bb.x,
+        minY: bb.y,
+        maxX: bb.x + bb.width,
+        maxY: bb.y + bb.height,
+        cx: bb.x + bb.width / 2,
+        cy: bb.y + bb.height / 2,
+      });
+    }
+  } finally {
+    document.body.removeChild(tempSvg);
+  }
+
+  const result = { subpaths };
+  parsedCache.set(url, result);
+  return result;
+}
+
+export interface CommentExport {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  label: string;
+  text: string;
+}
+
+export interface ToothDiagramHandle {
+  getSvgElement: () => SVGSVGElement | null;
+  /** Snapshot of laid-out comment boxes, used by the PDF exporter to render
+   *  the comments as native SVG text in the cloned export SVG. */
+  getCommentExports: () => CommentExport[];
+  /** ViewBox parameters so the exporter can use the same crop. */
+  getViewBox: () => { x: number; y: number; w: number; h: number };
+}
+
+export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramProps>(({
+  species,
+  toothMarks,
+  onToothMarksChange,
+  comments,
+  onCommentsChange,
+  strokes,
+  onStrokesChange,
+  tool,
+  strokeColor,
+  strokeWidth,
+  lockedTriadans,
+  markMode = 'all',
+}, ref) => {
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  // Wraps both the SVG and the HTML comment overlay; used by the
+  // auto-focus effect to locate a freshly-added comment's textarea.
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const [activeStrokeId, setActiveStrokeId] = React.useState<string | null>(null);
+  const [parsed, setParsed] = React.useState<ParsedDiagram | null>(null);
+  const [hoveredTriadan, setHoveredTriadan] = React.useState<number | null>(null);
+
+  // Imperative handle deferred to after layout/viewBox computations below
+  // (so the values are in scope) — see useImperativeHandle further down.
+
+  const diagram = TOOTH_DIAGRAMS[species];
+  const svgUrl = diagram.imageSrc.replace(/\.png$/i, '.svg');
+
+  React.useEffect(() => {
+    let cancelled = false;
+    setParsed(null);
+    loadParsedDiagram(svgUrl)
+      .then((p) => {
+        if (!cancelled) setParsed(p);
+      })
+      .catch((err) => {
+        console.error('Failed to load diagram SVG', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [svgUrl]);
+
+  // Assign each subpath to closest tooth anchor, but only if it's actually
+  // within that tooth's neighborhood. Subpaths that aren't close to any tooth
+  // (e.g. "Maxilla" text, R/L midline dashes) stay unassigned and only render
+  // in the static base layer.
+  const subpathsByTriadan = React.useMemo(() => {
+    const map = new Map<number, number[]>();
+    if (!parsed) return map;
+    parsed.subpaths.forEach((sp, i) => {
+      let closestTriadan = -1;
+      let minDist = Infinity;
+      for (const t of diagram.teeth) {
+        const dx = sp.cx - t.cx;
+        const dy = sp.cy - t.cy;
+        const d = dx * dx + dy * dy;
+        const threshold = Math.max(40, Math.max(t.rx, t.ry) * 2);
+        if (d < threshold * threshold && d < minDist) {
+          minDist = d;
+          closestTriadan = t.triadan;
+        }
+      }
+      if (closestTriadan < 0) return;
+      const list = map.get(closestTriadan);
+      if (list) list.push(i);
+      else map.set(closestTriadan, [i]);
+    });
+    return map;
+  }, [parsed, diagram]);
+
+  // For each tooth, the largest subpath by bbox area = the outer outline.
+  // Used as the tooth-shaped fill for "missing" and as the bbox for the X
+  // overlay and hit area.
+  //
+  // Some traced SVGs (e.g. the cat's central incisors) include a single
+  // "compound" subpath whose bbox covers multiple teeth — that subpath
+  // would otherwise win the largest-area pick and make hover/clicks bleed
+  // across teeth. Skip any subpath whose bbox clearly contains a different
+  // tooth's anchor.
+  const outerSubpathByTriadan = React.useMemo(() => {
+    const map = new Map<number, number>();
+    if (!parsed) return map;
+    const COMPOUND_MARGIN = 5;
+    subpathsByTriadan.forEach((indices, triadan) => {
+      let maxArea = -1;
+      let outerIdx = -1;
+      for (const i of indices) {
+        const sp = parsed.subpaths[i];
+        const isCompound = diagram.teeth.some(
+          (other) =>
+            other.triadan !== triadan &&
+            sp.minX + COMPOUND_MARGIN <= other.cx &&
+            other.cx <= sp.maxX - COMPOUND_MARGIN &&
+            sp.minY + COMPOUND_MARGIN <= other.cy &&
+            other.cy <= sp.maxY - COMPOUND_MARGIN
+        );
+        if (isCompound) continue;
+        const area = (sp.maxX - sp.minX) * (sp.maxY - sp.minY);
+        if (area > maxArea) {
+          maxArea = area;
+          outerIdx = i;
+        }
+      }
+      if (outerIdx >= 0) map.set(triadan, outerIdx);
+    });
+    return map;
+  }, [parsed, subpathsByTriadan, diagram]);
+
+  // Per-tooth render shape — picks the cleanest available representation:
+  //   (a) the SVG outer subpath, if one is large enough on its own;
+  //   (b) the compound-minus-cutouts shape (compound subpath + neighbouring
+  //       teeth's outers, rendered with evenodd), for teeth that exist as
+  //       negative space inside a multi-tooth compound (e.g. canine M2 right);
+  //   (c) an ellipse derived from the anchor's cx/cy/rx/ry, as a last resort.
+  // The bbox returned is for the *visible* tooth area only — for (b) it's the
+  // strip of the compound on the anchor's side of the cutout(s), so the X
+  // overlay lands on M2 instead of spanning M2+M1.
+  type RenderShape =
+    | { kind: 'path'; d: string; fillRule?: 'evenodd' | 'nonzero' }
+    | { kind: 'ellipse'; cx: number; cy: number; rx: number; ry: number };
+
+  interface RenderInfo {
+    shape: RenderShape;
+    bbox: ToothBBox;
+  }
+
+  const renderInfoByTriadan = React.useMemo(() => {
+    const map = new Map<number, RenderInfo>();
+    if (!parsed) return map;
+
+    const bboxOf = (sp: SvgSubpath): ToothBBox => ({
+      minX: sp.minX, minY: sp.minY, maxX: sp.maxX, maxY: sp.maxY,
+      cx: sp.cx, cy: sp.cy,
+    });
+
+    for (const t of diagram.teeth) {
+      // (a) Direct outer subpath, if it's a reasonable size for this tooth.
+      const outerIdx = outerSubpathByTriadan.get(t.triadan);
+      if (outerIdx !== undefined) {
+        const sp = parsed.subpaths[outerIdx];
+        const area = (sp.maxX - sp.minX) * (sp.maxY - sp.minY);
+        const expected = t.rx * t.ry * 4;
+        if (area >= 200 && area >= expected * 0.3) {
+          map.set(t.triadan, {
+            shape: { kind: 'path', d: sp.d },
+            bbox: bboxOf(sp),
+          });
+          continue;
+        }
+      }
+
+      // (b) Compound-minus-cutouts. Find the largest subpath whose bbox
+      // contains this tooth's anchor — that's the compound. Then collect any
+      // neighbouring teeth's outer subpaths whose bboxes are inside the
+      // compound — those are the cutouts.
+      let compoundIdx = -1;
+      let compoundArea = -1;
+      for (let i = 0; i < parsed.subpaths.length; i++) {
+        const sp = parsed.subpaths[i];
+        if (sp.minX <= t.cx && t.cx <= sp.maxX &&
+            sp.minY <= t.cy && t.cy <= sp.maxY) {
+          const area = (sp.maxX - sp.minX) * (sp.maxY - sp.minY);
+          if (area > compoundArea) {
+            compoundArea = area;
+            compoundIdx = i;
+          }
+        }
+      }
+
+      if (compoundIdx >= 0) {
+        const compound = parsed.subpaths[compoundIdx];
+        const cutouts: SvgSubpath[] = [];
+        for (const other of diagram.teeth) {
+          if (other.triadan === t.triadan) continue;
+          const otherIdx = outerSubpathByTriadan.get(other.triadan);
+          if (otherIdx === undefined) continue;
+          const otherSp = parsed.subpaths[otherIdx];
+          if (otherSp.minX >= compound.minX && otherSp.maxX <= compound.maxX &&
+              otherSp.minY >= compound.minY && otherSp.maxY <= compound.maxY) {
+            cutouts.push(otherSp);
+          }
+        }
+
+        if (cutouts.length > 0) {
+          // Trim the compound's bbox by each cutout. For each cutout, decide
+          // whether it sits on the anchor's x-axis (horizontally adjacent —
+          // e.g. cat I1 left + I1 right inside a single compound) or y-axis
+          // (vertically stacked — e.g. M2 above M1 in the dog mandible) by
+          // whichever offset is larger.
+          let minX = compound.minX, maxX = compound.maxX;
+          let minY = compound.minY, maxY = compound.maxY;
+          for (const cutout of cutouts) {
+            const dx = t.cx - cutout.cx;
+            const dy = t.cy - cutout.cy;
+            if (Math.abs(dx) > Math.abs(dy)) {
+              if (dx < 0) maxX = Math.min(maxX, cutout.minX);
+              else        minX = Math.max(minX, cutout.maxX);
+            } else {
+              if (dy < 0) maxY = Math.min(maxY, cutout.minY);
+              else        minY = Math.max(minY, cutout.maxY);
+            }
+          }
+          // The compound subpath in this SVG is typically a *stroke trace*
+          // (one path that loops around both edges of the outline), so
+          // filling it produces only a thin ring — the interior is a hole.
+          // Use a solid ellipse inscribed in the trimmed bbox instead, so
+          // the entire tooth area is clickable and tints uniformly on hover.
+          const cx = (minX + maxX) / 2;
+          const cy = (minY + maxY) / 2;
+          map.set(t.triadan, {
+            shape: {
+              kind: 'ellipse',
+              cx,
+              cy,
+              rx: (maxX - minX) / 2,
+              ry: (maxY - minY) / 2,
+            },
+            bbox: { minX, minY, maxX, maxY, cx, cy },
+          });
+          continue;
+        }
+      }
+
+      // (c) Last resort: anchor ellipse.
+      map.set(t.triadan, {
+        shape: { kind: 'ellipse', cx: t.cx, cy: t.cy, rx: t.rx, ry: t.ry },
+        bbox: {
+          minX: t.cx - t.rx, minY: t.cy - t.ry,
+          maxX: t.cx + t.rx, maxY: t.cy + t.ry,
+          cx: t.cx, cy: t.cy,
+        },
+      });
+    }
+
+    return map;
+  }, [parsed, outerSubpathByTriadan, diagram]);
+
+  // Comment connectors anchor to the same display bbox.
+  const bboxByTriadan = React.useMemo(() => {
+    const map = new Map<number, ToothBBox>();
+    renderInfoByTriadan.forEach((info, triadan) => map.set(triadan, info.bbox));
+    return map;
+  }, [renderInfoByTriadan]);
+
+  const positionedComments = React.useMemo(
+    () => layoutComments(comments, diagram, bboxByTriadan),
+    [comments, diagram, bboxByTriadan]
+  );
+
+  const sidePad = diagram.width * SIDE_PAD_RATIO;
+  const topPad = diagram.height * TOP_PAD_RATIO;
+  const bottomPad = diagram.height * BOTTOM_PAD_RATIO;
+  const viewBoxX = -sidePad;
+  const viewBoxY = -topPad;
+  const viewBoxWidth = diagram.width + 2 * sidePad;
+  const viewBoxHeight = diagram.height + topPad + bottomPad;
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getSvgElement: () => svgRef.current,
+      getCommentExports: () =>
+        positionedComments.map((p) => ({
+          id: p.comment.id,
+          x: p.x,
+          y: p.y,
+          w: p.w,
+          h: p.h,
+          label: p.anchor ? p.anchor.label : 'Free',
+          text: p.comment.text,
+        })),
+      getViewBox: () => ({
+        x: viewBoxX,
+        y: viewBoxY,
+        w: viewBoxWidth,
+        h: viewBoxHeight,
+      }),
+    }),
+    [positionedComments, viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight]
+  );
+
+  const handleToothClick = (triadan: number, e: React.MouseEvent) => {
+    if (tool === 'draw') return;
+    e.stopPropagation();
+    if (lockedTriadans?.has(triadan)) return;
+    if (tool === 'mark') {
+      const next = cycleMark(toothMarks[triadan], markMode);
+      const updated = { ...toothMarks };
+      if (next) updated[triadan] = next;
+      else delete updated[triadan];
+      onToothMarksChange(updated);
+    } else if (tool === 'comment') {
+      const id = `c${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      onCommentsChange([...comments, { id, text: '', anchorTriadan: triadan }]);
+    }
+  };
+
+  const handleCommentEdit = (id: string, text: string) => {
+    onCommentsChange(comments.map((c) => (c.id === id ? { ...c, text } : c)));
+  };
+
+  const handleCommentDelete = (id: string) => {
+    onCommentsChange(comments.filter((c) => c.id !== id));
+  };
+
+  // Auto-focus the textarea of a freshly-added comment so the user can
+  // just start typing. The textareas live in the HTML overlay (sibling of
+  // the SVG, not inside it), so we search the wrapper element.
+  const knownCommentIdsRef = React.useRef<Set<string>>(new Set());
+  React.useEffect(() => {
+    const previous = knownCommentIdsRef.current;
+    const current = new Set<string>();
+    comments.forEach((c) => {
+      current.add(c.id);
+      if (!previous.has(c.id)) {
+        // Defer one frame so the new textarea is in the DOM before we
+        // try to focus it.
+        requestAnimationFrame(() => {
+          const ta = wrapperRef.current?.querySelector(
+            `textarea[data-comment-id="${c.id}"]`
+          ) as HTMLTextAreaElement | null;
+          ta?.focus();
+        });
+      }
+    });
+    knownCommentIdsRef.current = current;
+  }, [comments]);
+
+  // Drawing handlers
+  const getSvgPointFromXY = (clientX: number, clientY: number): StrokePoint | null => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const pt = svg.createSVGPoint();
+    pt.x = clientX;
+    pt.y = clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    const inv = ctm.inverse();
+    const p = pt.matrixTransform(inv);
+    return { x: p.x, y: p.y };
+  };
+  const getSvgPoint = (e: React.PointerEvent): StrokePoint | null =>
+    getSvgPointFromXY(e.clientX, e.clientY);
+
+  // Comment dragging — used by all comments. The drag handle is the
+  // header bar of each comment box. While dragging we install global
+  // pointermove / pointerup listeners on the document so the drag survives
+  // the cursor leaving the small drag handle.
+  const handleCommentDragStart = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startSvg = getSvgPointFromXY(e.clientX, e.clientY);
+    const target = comments.find((c) => c.id === id);
+    if (!startSvg || !target) return;
+    const positioned = positionedComments.find((p) => p.comment.id === id);
+    const initialX = target.x ?? positioned?.x ?? 0;
+    const initialY = target.y ?? positioned?.y ?? 0;
+    const w = target.width ?? positioned?.w ?? COMMENT_W;
+    const h = target.height ?? positioned?.h ?? COMMENT_H;
+
+    const minX = -sidePad;
+    const maxX = diagram.width + sidePad - w;
+    const minY = -topPad;
+    const maxY = diagram.height + bottomPad - h;
+    const onMove = (ev: PointerEvent) => {
+      const cur = getSvgPointFromXY(ev.clientX, ev.clientY);
+      if (!cur) return;
+      const nx = initialX + (cur.x - startSvg.x);
+      const ny = initialY + (cur.y - startSvg.y);
+      const cx = Math.min(Math.max(minX, nx), maxX);
+      const cy = Math.min(Math.max(minY, ny), maxY);
+      onCommentsChange(
+        comments.map((c) => (c.id === id ? { ...c, x: cx, y: cy } : c))
+      );
+    };
+    const onUp = () => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+  };
+
+  // Comment resizing via the bottom-right corner handle.
+  const handleCommentResizeStart = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startSvg = getSvgPointFromXY(e.clientX, e.clientY);
+    const target = comments.find((c) => c.id === id);
+    const positioned = positionedComments.find((p) => p.comment.id === id);
+    if (!startSvg || !target || !positioned) return;
+    const initialW = target.width ?? positioned.w;
+    const initialH = target.height ?? positioned.h;
+
+    const onMove = (ev: PointerEvent) => {
+      const cur = getSvgPointFromXY(ev.clientX, ev.clientY);
+      if (!cur) return;
+      const w = Math.max(COMMENT_MIN_W, initialW + (cur.x - startSvg.x));
+      const h = Math.max(COMMENT_MIN_H, initialH + (cur.y - startSvg.y));
+      onCommentsChange(
+        comments.map((c) => (c.id === id ? { ...c, width: w, height: h } : c))
+      );
+    };
+    const onUp = () => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (tool !== 'draw') return;
+    const p = getSvgPoint(e);
+    if (!p) return;
+    e.preventDefault();
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    const id = `s${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const arch: 'maxilla' | 'mandible' = p.y < diagram.midlineY ? 'maxilla' : 'mandible';
+    onStrokesChange([
+      ...strokes,
+      { id, arch, color: strokeColor, width: strokeWidth, points: [p] },
+    ]);
+    setActiveStrokeId(id);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (tool !== 'draw' || !activeStrokeId) return;
+    const p = getSvgPoint(e);
+    if (!p) return;
+    onStrokesChange(
+      strokes.map((s) => (s.id === activeStrokeId ? { ...s, points: [...s.points, p] } : s))
+    );
+  };
+
+  const handlePointerUp = () => setActiveStrokeId(null);
+
+  // Convert SVG-coord (x, y, w, h) into wrapper-relative percentages
+  // for the HTML comment overlay.
+  const toOverlayPct = (x: number, y: number, w: number, h: number) => ({
+    left: `${((x - viewBoxX) / viewBoxWidth) * 100}%`,
+    top: `${((y - viewBoxY) / viewBoxHeight) * 100}%`,
+    width: `${(w / viewBoxWidth) * 100}%`,
+    height: `${(h / viewBoxHeight) * 100}%`,
+  });
+
+  return (
+    <div className="tooth-diagram-wrapper" ref={wrapperRef}>
+    <svg
+      ref={svgRef}
+      viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
+      className="tooth-diagram"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{ touchAction: tool === 'draw' ? 'none' : 'auto' }}
+    >
+      {/* Static base: every subpath in one path with evenodd, so paired
+          outer/inner outlines render as the original SVG intends (outline ring),
+          including non-tooth elements like text labels and the R/L midline. */}
+      {parsed && (
+        <path
+          d={parsed.subpaths.map((s) => s.d).join(' ')}
+          fillRule="evenodd"
+          className="tooth-diagram__outline"
+        />
+      )}
+
+      {/* Per-tooth click groups + mark overlays (rendered above outlines). */}
+      {parsed &&
+        diagram.teeth.map((tooth) => {
+          const info = renderInfoByTriadan.get(tooth.triadan);
+          if (!info) return null;
+          const mark = toothMarks[tooth.triadan];
+          const { shape, bbox } = info;
+
+          const renderShape = (className: string) =>
+            shape.kind === 'ellipse' ? (
+              <ellipse
+                cx={shape.cx}
+                cy={shape.cy}
+                rx={shape.rx}
+                ry={shape.ry}
+                className={className}
+              />
+            ) : (
+              <path
+                d={shape.d}
+                fillRule={shape.fillRule}
+                className={className}
+              />
+            );
+
+          return (
+            <g
+              key={tooth.triadan}
+              className="tooth-group"
+              data-mark={mark || 'none'}
+              data-hovered={hoveredTriadan === tooth.triadan ? 'true' : 'false'}
+              onPointerEnter={() => setHoveredTriadan(tooth.triadan)}
+              onPointerLeave={() =>
+                setHoveredTriadan((cur) => (cur === tooth.triadan ? null : cur))
+              }
+              onClick={(e) => handleToothClick(tooth.triadan, e)}
+              style={{ cursor: tool === 'draw' ? 'crosshair' : 'pointer' }}
+            >
+              {/* Solid fill for "missing" — bottom layer. */}
+              {mark === 'missing' && renderShape('tooth-group__missing-fill')}
+
+              {/* X overlay for "extracted". */}
+              {mark === 'extracted' && (
+                <g pointerEvents="none">
+                  <line
+                    x1={bbox.minX} y1={bbox.minY} x2={bbox.maxX} y2={bbox.maxY}
+                    stroke="#c53030" strokeWidth={5} strokeLinecap="round"
+                  />
+                  <line
+                    x1={bbox.minX} y1={bbox.maxY} x2={bbox.maxX} y2={bbox.minY}
+                    stroke="#c53030" strokeWidth={5} strokeLinecap="round"
+                  />
+                </g>
+              )}
+
+              {/* Hit area + hover tint. */}
+              {renderShape('tooth-group__hover')}
+            </g>
+          );
+        })}
+
+      {/* User-drawn strokes */}
+      {strokes.map((s) => {
+        if (s.points.length === 0) return null;
+        const d = s.points
+          .map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`))
+          .join(' ');
+        return (
+          <path
+            key={s.id}
+            d={d}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={s.width * 2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pointerEvents="none"
+          />
+        );
+      })}
+
+      {/* Dashed connector lines from each anchored comment to its tooth. */}
+      <g className="diagram-comments">
+        {positionedComments.map(({ comment, x, y, w, h, anchor }) => {
+          if (!anchor) return null;
+          const boxCenterX = x + w / 2;
+          const targetX = anchor.x < boxCenterX ? x : x + w;
+          return (
+            <line
+              key={`line_${comment.id}`}
+              x1={anchor.x}
+              y1={anchor.y}
+              x2={targetX}
+              y2={y + h / 2}
+              stroke="#a0aec0"
+              strokeWidth={1.5}
+              strokeDasharray="6,5"
+              pointerEvents="none"
+            />
+          );
+        })}
+      </g>
+    </svg>
+
+    {/* Comment boxes are rendered as plain HTML on top of the SVG, positioned
+        with viewBox-derived percentages. (Browsers don't reliably scale
+        <foreignObject> HTML to match the SVG's viewBox, so a comment can
+        end up far from where its dashed line lands. Plain HTML over the
+        wrapper sidesteps that.) */}
+    <div className="diagram-comments-overlay">
+      {positionedComments.map(({ comment, x, y, w, h, anchor }) => (
+        <div
+          key={comment.id}
+          className="diagram-comment"
+          style={toOverlayPct(x, y, w, h)}
+        >
+          <div
+            className="diagram-comment__header"
+            onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
+          >
+            <span className="diagram-comment__label">{anchor ? anchor.label : ''}</span>
+            <button
+              type="button"
+              className="diagram-comment__delete"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={() => handleCommentDelete(comment.id)}
+              aria-label="Delete comment"
+            >
+              ✕
+            </button>
+          </div>
+          <CodeField
+            multiline
+            className="diagram-comment__text"
+            placeholder="Notes..."
+            value={comment.text}
+            onChange={(text) => handleCommentEdit(comment.id, text)}
+            data-comment-id={comment.id}
+          />
+          <div
+            className="diagram-comment__resize"
+            onPointerDown={(e) => handleCommentResizeStart(comment.id, e)}
+            aria-label="Resize comment"
+          />
+        </div>
+      ))}
+    </div>
+    </div>
+  );
+});
+
+ToothDiagram.displayName = 'ToothDiagram';

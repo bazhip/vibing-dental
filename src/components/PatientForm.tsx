@@ -1,5 +1,6 @@
 import React from 'react';
 import { PatientInfo, Species, Logo } from '../types';
+import { CodeField } from './CodeField';
 
 interface PatientFormProps {
   patientInfo: PatientInfo;
@@ -58,6 +59,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
       </div>
 
+      {/* SoCal carries Patient Name + Number; VCA carries Doctor + Tech.
+          Both pairs are kept on PatientInfo so values survive a logo flip. */}
       <div className="patient-form__row">
         <label className="patient-form__label">
           Patient Name
@@ -92,14 +95,41 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
       </div>
 
+      {logo === 'vca' && (
+        <div className="patient-form__row">
+          <label className="patient-form__label">
+            Doctor
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Doctor name"
+              value={patientInfo.doctor}
+              onChange={handleInputChange('doctor')}
+            />
+          </label>
+
+          <label className="patient-form__label">
+            Tech
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Tech name"
+              value={patientInfo.tech}
+              onChange={handleInputChange('tech')}
+            />
+          </label>
+        </div>
+      )}
+
       <div className="patient-form__row">
         <label className="patient-form__label">
           Chief Complaint
-          <textarea
+          <CodeField
+            multiline
             className="patient-form__textarea"
             placeholder="Enter chief complaint or reason for visit"
             value={patientInfo.complaint}
-            onChange={handleInputChange('complaint')}
+            onChange={(value) => onPatientInfoChange('complaint', value)}
           />
         </label>
       </div>
