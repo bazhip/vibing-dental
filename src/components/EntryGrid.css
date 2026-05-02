@@ -4,6 +4,27 @@
   overflow-x: hidden;
 }
 
+/* App-level topbar above the form: title + ChartMenu (new / load / theme). */
+.entry-grid__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.entry-grid__title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+@media (max-width: 600px) {
+  .entry-grid__title { font-size: 1.1rem; }
+}
+
 .entry-grid-form {
   display: flex;
   flex-direction: column;
@@ -25,13 +46,13 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border);
 }
 
 .patient-form__section-title {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text);
   margin: 0;
 }
 
@@ -41,18 +62,18 @@
   gap: 0.5rem;
   padding: 0.6rem 1.1rem;
   background: white;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .patient-form__upload:hover {
   border-color: var(--accent);
-  color: #2d3748;
+  color: var(--text);
   box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
 }
 
@@ -72,14 +93,14 @@
   flex-direction: column;
   gap: 0.5rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .patient-form__input,
 .patient-form__textarea {
   padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
@@ -111,7 +132,7 @@
   padding: 0.5rem;
   background: #f0f4f8;
   border-radius: 12px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   flex: 1;
   min-width: 300px;
 }
@@ -126,13 +147,13 @@
   flex-direction: column;
   gap: 0.5rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   font-size: 0.95rem;
 }
 
 .patient-form__logo-select {
   padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
@@ -148,7 +169,7 @@
 }
 
 .patient-form__logo-select:hover {
-  border-color: #cbd5e0;
+  border-color: var(--border);
 }
 
 .species-tab {
@@ -159,14 +180,14 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: inherit;
 }
 
 .species-tab:hover {
-  color: #2d3748;
+  color: var(--text);
   background: rgba(255, 255, 255, 0.5);
 }
 
@@ -190,7 +211,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border);
   padding: 0 0 0.75rem 0;
   margin-bottom: 1.5rem;
 }
@@ -198,7 +219,7 @@
 .dental-grid__title {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text);
 }
 
 /* Tabs */
@@ -207,7 +228,7 @@
   flex-direction: column;
   gap: 1rem;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   overflow: hidden;
@@ -219,7 +240,7 @@
   gap: 0.25rem;
   padding: 0.5rem;
   background: #f0f4f8;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .tabs__tab {
@@ -229,7 +250,7 @@
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
@@ -237,7 +258,7 @@
 
 .tabs__tab:hover {
   background: rgba(255, 255, 255, 0.6);
-  color: #2d3748;
+  color: var(--text);
 }
 
 .tabs__tab--active,
@@ -274,7 +295,7 @@
   overflow: visible;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   max-width: 100%;
   width: 100%;
 }
@@ -295,7 +316,7 @@
   --rdg-row-hover-background-color: #f0f4f8;
   --rdg-row-selected-background-color: #e6f2ff;
   --rdg-selection-color: var(--accent);
-  --rdg-border-color: #e2e8f0;
+  --rdg-border-color: var(--border);
   --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -326,11 +347,11 @@
 }
 
 .dental-grid .rdg-cell {
-  border-right: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   padding: 0.5rem 0.4rem;
   line-height: 1.5;
-  color: #2d3748;
+  color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -359,7 +380,7 @@
 .dental-grid .rdg-cell[aria-colindex="2"] {
   background-color: #edf2f7;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text);
 }
 
 /* Text editor styling */
@@ -383,7 +404,7 @@
   text-align: left;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }
 
@@ -399,7 +420,7 @@
 .anesthesia-table__label {
   width: 30%;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 .anesthesia-table tbody td:nth-child(2),
@@ -417,7 +438,7 @@
   text-align: left;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }
 
@@ -451,7 +472,7 @@
 }
 
 .exam-table__comment-placeholder {
-  color: #cbd5e0;
+  color: var(--border);
 }
 
 /* Surgery Report */
@@ -477,7 +498,7 @@
   position: sticky;
   top: 1rem;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem 1.1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -520,7 +541,7 @@
   padding: 0.75rem 1rem;
   background: #f8f9fa;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .diagram-view__tool-group {
@@ -529,7 +550,7 @@
   background: white;
   padding: 0.25rem;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
 }
 
 .diagram-view__tool {
@@ -539,7 +560,7 @@
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
@@ -560,12 +581,12 @@
 
 .diagram-view__action {
   background: white;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border);
   padding: 0.45rem 0.9rem;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
 }
@@ -595,7 +616,7 @@
   border: 2px solid white;
   border-radius: 50%;
   cursor: pointer;
-  outline: 1px solid #cbd5e0;
+  outline: 1px solid var(--border);
   padding: 0;
 }
 
@@ -623,7 +644,7 @@
   width: 100%;
   max-width: 1200px;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 0.75rem;
   box-sizing: border-box;
@@ -681,19 +702,24 @@
 }
 
 /* Comments rendered inside foreignObject */
+/* Comment box card. Picks up the active board's surface + accent so the
+ * card belongs to whichever theme is selected (yellow sticky for clinical,
+ * dark slate for Linear, glass for the aurora board, …). */
 .diagram-comment {
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #fffaf0;
-  border: 1px solid #f6e05e;
+  background: var(--surface-alt, #fffaf0);
+  color: var(--text);
+  border: 1px solid var(--accent, #f6e05e);
   border-radius: 6px;
   padding: 0.3rem 0.45rem;
   box-sizing: border-box;
   font-size: 0.78rem;
   font-family: inherit;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   /* `overflow: visible` so the autocomplete popup can extend below the box.
    * The textarea inside has its own `overflow-y: auto`, so long text still
    * scrolls within the textarea instead of escaping. */
@@ -711,14 +737,14 @@
 
 .diagram-comment__label {
   font-weight: 600;
-  color: #744210;
+  color: var(--text);
   font-size: 0.75rem;
 }
 
 .diagram-comment__delete {
   background: none;
   border: none;
-  color: #a0522d;
+  color: var(--text-muted);
   cursor: pointer;
   font-size: 0.85rem;
   padding: 0;
@@ -726,7 +752,7 @@
 }
 
 .diagram-comment__delete:hover {
-  color: #c53030;
+  color: var(--primary);
 }
 
 .diagram-comment__text {
@@ -740,14 +766,15 @@
   resize: none;
   font-family: inherit;
   font-size: 0.78rem;
-  color: #2d3748;
+  color: var(--text);
   outline: none;
   padding: 0;
   overflow-y: auto;
   box-sizing: border-box;
 }
 
-/* Bottom-right resize handle on the comment box. */
+/* Bottom-right resize handle — uses the active accent so it pops on
+ * whatever board background is in play. */
 .diagram-comment__resize {
   position: absolute;
   right: 0;
@@ -755,7 +782,7 @@
   width: 14px;
   height: 14px;
   cursor: nwse-resize;
-  background: linear-gradient(135deg, transparent 0 50%, #d69e2e 50% 100%);
+  background: linear-gradient(135deg, transparent 0 50%, var(--accent, #d69e2e) 50% 100%);
   touch-action: none;
 }
 
@@ -872,7 +899,7 @@
   min-width: 220px;
   max-width: 360px;
   background: white;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   overflow: hidden;
@@ -888,7 +915,7 @@
   border: 0;
   text-align: left;
   font: inherit;
-  color: #2d3748;
+  color: var(--text);
   cursor: pointer;
 }
 
@@ -906,7 +933,7 @@
 
 .code-field__def {
   font-size: 0.85em;
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 /* Searchable code reference panel. */
@@ -920,7 +947,7 @@
 .code-ref__search {
   width: 100%;
   padding: 0.55rem 0.7rem;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font: inherit;
   box-sizing: border-box;
@@ -935,7 +962,7 @@
 .code-ref__heading {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text);
   margin: 0 0 0.4rem;
   display: flex;
   align-items: baseline;
@@ -974,7 +1001,7 @@
 }
 
 .code-ref__def {
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 .code-ref__empty {

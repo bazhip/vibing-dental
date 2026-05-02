@@ -1,40 +1,34 @@
 import { useState, useEffect, useRef } from 'react';
+import { readJson, writeJson } from '../utils/storage';
 
 /**
- * useState that mirrors its value into localStorage, so a page refresh
- * doesn't lose the user's in-progress chart. Falls back gracefully when
- * localStorage is unavailable (private browsing) or the saved value
- * fails to parse.
+ * useState that mirrors its value into localStorage via the unified storage
+ * util — survives a page refresh without having to re-enter chart data.
  *
- * Storage is debounced lightly via the natural React batch — every
- * setState triggers an effect that writes once.
+ * Storage failures (private mode, quota exhausted, parse errors on stale
+ * data) are swallowed inside `storage.ts` and the hook falls back to the
+ * provided initial value.
  */
 export function usePersistedState<T>(
   key: string,
+  version: number,
   initial: T | (() => T)
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = useState<T>(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw !== null) return JSON.parse(raw) as T;
-    } catch {
-      // ignore parse / quota errors, fall through to default
-    }
-    return typeof initial === 'function' ? (initial as () => T)() : initial;
+    const fallback = typeof initial === 'function' ? (initial as () => T)() : initial;
+    return readJson<T>(key, version, fallback);
   });
 
-  // Avoid writing on the initial mount when nothing has changed — saves
-  // an unnecessary localStorage round-trip per key per session.
+  // Skip the first effect tick so we don't re-write the just-loaded value
+  // back to localStorage on every mount.
   const firstWriteSkipped = useRef(false);
   useEffect(() => {
     if (!firstWriteSkipped.current) {
       firstWriteSkipped.current = true;
       return;
     }
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
-  }, [key, value]);
+    writeJson(key, version, value);
+  }, [key, version, value]);
 
   return [value, setValue];
 }

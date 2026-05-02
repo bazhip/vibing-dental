@@ -4,7 +4,7 @@ import {
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
 } from '../utils/pdfGenerator';
-import { diagramSvgToPng, CommentForExport, DiagramCropBounds } from '../utils/svgToPng';
+import { diagramSvgToPng, CommentForExport } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import {
   PatientInfo,
@@ -15,19 +15,6 @@ import {
   DiagramComment,
   DiagramStroke,
 } from '../types';
-
-/**
- * Content bounds (top/bottom of where teeth actually live) per species.
- * Used to crop the rasterized PNG so the PDF doesn't waste vertical space
- * on the decorative gutter above the maxilla / below the mandible.
- *
- * The bounds were measured against the SVG paths used by ToothDiagram —
- * a small +/− buffer is included so anti-aliased edges don't get clipped.
- */
-const DIAGRAM_CROP: Record<'canine' | 'feline', DiagramCropBounds> = {
-  canine: { minY: 30, maxY: 1145 },
-  feline: { minY: 12, maxY: 1090 },
-};
 
 /**
  * One snapshot of the chart that's enough to (re-)build a PDF in any
@@ -61,6 +48,15 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    if (!open) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [open, onClose]);
+
+  React.useEffect(() => {
     if (!open || !snapshot) return;
     let cancelled = false;
     let createdUrl: string | null = null;
@@ -71,7 +67,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       try {
         const style = PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
         const { width, height } = TOOTH_DIAGRAMS[snapshot.species];
-        const crop = DIAGRAM_CROP[snapshot.species];
+        const crop = TOOTH_DIAGRAMS[snapshot.species].cropBounds;
         const [prePng, postPng] = await Promise.all([
           diagramSvgToPng(snapshot.preSvg, width, height, snapshot.preComments, 2, style.comment, crop),
           diagramSvgToPng(snapshot.postSvg, width, height, snapshot.postComments, 2, style.comment, crop),
@@ -122,24 +118,32 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   if (!open) return null;
 
   return (
-    <div className="pdf-preview-overlay" onClick={onClose}>
+    <div
+      className="pdf-preview-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pdf-preview-title"
+    >
       <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header">
           <div>
-            <h2>Preview &amp; Download</h2>
+            <h2 id="pdf-preview-title">Preview &amp; Download</h2>
             <p>Pick a style — the preview re-renders live.</p>
           </div>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
             ×
           </button>
         </header>
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
-            <ul>
+            <ul role="radiogroup" aria-label="PDF style">
               {PDF_STYLES.map((s) => (
                 <li key={s.id}>
                   <button
                     type="button"
+                    role="radio"
+                    aria-checked={s.id === styleId}
                     className={`pdf-preview-style${s.id === styleId ? ' pdf-preview-style--active' : ''}`}
                     onClick={() => setStyleId(s.id)}
                   >

@@ -24,7 +24,13 @@ export interface DiagramViewHandle {
   getCommentExports: () => CommentExport[];
 }
 
-const STROKE_COLORS = ['#e53e3e', '#3182ce', '#38a169', '#d69e2e', '#2d3748'];
+const STROKE_COLORS: Array<{ value: string; label: string }> = [
+  { value: '#e53e3e', label: 'red' },
+  { value: '#3182ce', label: 'blue' },
+  { value: '#38a169', label: 'green' },
+  { value: '#d69e2e', label: 'amber' },
+  { value: '#2d3748', label: 'charcoal' },
+];
 
 export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>(({
   title,
@@ -39,7 +45,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   markMode,
 }, ref) => {
   const [tool, setTool] = React.useState<DiagramTool>('mark');
-  const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0]);
+  const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
   const innerRef = React.useRef<ToothDiagramHandle>(null);
 
@@ -71,11 +77,16 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 
       <div className="diagram-view">
         <div className="diagram-view__toolbar">
-          <div className="diagram-view__tool-group">
+          <div
+            className="diagram-view__tool-group"
+            role="group"
+            aria-label="Diagram tool"
+          >
             <button
               type="button"
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('mark')}
+              aria-pressed={tool === 'mark'}
             >
               🦷 Mark
             </button>
@@ -83,6 +94,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className={`diagram-view__tool ${tool === 'comment' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('comment')}
+              aria-pressed={tool === 'comment'}
             >
               💬 Comment
             </button>
@@ -90,6 +102,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               type="button"
               className={`diagram-view__tool ${tool === 'draw' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('draw')}
+              aria-pressed={tool === 'draw'}
             >
               ✏️ Draw
             </button>
@@ -102,26 +115,38 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           )}
 
           {tool === 'draw' && (
-            <div className="diagram-view__draw-controls">
-              {STROKE_COLORS.map((c) => (
-                <button
-                  type="button"
-                  key={c}
-                  className={`diagram-view__color ${strokeColor === c ? 'diagram-view__color--active' : ''}`}
-                  style={{ backgroundColor: c }}
-                  onClick={() => setStrokeColor(c)}
-                  aria-label={`stroke color ${c}`}
+            <div
+              className="diagram-view__draw-controls"
+              role="group"
+              aria-label="Draw settings"
+            >
+              <div role="group" aria-label="Stroke color">
+                {STROKE_COLORS.map((c) => (
+                  <button
+                    type="button"
+                    key={c.value}
+                    className={`diagram-view__color ${strokeColor === c.value ? 'diagram-view__color--active' : ''}`}
+                    style={{ backgroundColor: c.value }}
+                    onClick={() => setStrokeColor(c.value)}
+                    aria-label={`Stroke color ${c.label}`}
+                    aria-pressed={strokeColor === c.value}
+                  />
+                ))}
+              </div>
+              <label className="diagram-view__width-label">
+                <span className="visually-hidden">Stroke width</span>
+                <input
+                  type="range"
+                  min={1}
+                  max={6}
+                  step={0.5}
+                  value={strokeWidth}
+                  onChange={(e) => setStrokeWidth(parseFloat(e.target.value))}
+                  className="diagram-view__width"
+                  aria-label="Stroke width"
+                  aria-valuetext={`${strokeWidth} pixels`}
                 />
-              ))}
-              <input
-                type="range"
-                min={1}
-                max={6}
-                step={0.5}
-                value={strokeWidth}
-                onChange={(e) => setStrokeWidth(parseFloat(e.target.value))}
-                className="diagram-view__width"
-              />
+              </label>
               <button
                 type="button"
                 className="diagram-view__action diagram-view__action--danger"
@@ -132,7 +157,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </div>
           )}
 
-          <div className="diagram-view__hint">
+          <div className="diagram-view__hint" role="status" aria-live="polite">
             {tool === 'mark' && 'Click a tooth to cycle: normal → missing → extracted → normal.'}
             {tool === 'comment' && 'Click a tooth to anchor a comment, or use “Free comment” for a floating note.'}
             {tool === 'draw' && 'Click and drag to draw on the diagram.'}

@@ -30,6 +30,11 @@ export interface SpeciesDiagram {
   /** Y of the R/L midline divider in PNG pixel coords. */
   midlineY: number;
   teeth: ToothShape[];
+  /** Crop bounds in diagram coords — the y-range outside [minY, maxY] is
+   *  decorative whitespace above the maxilla / below the mandible that
+   *  gets cropped out of the rasterized PDF. The PNG natively has more
+   *  vertical bleed than the actual tooth content. */
+  cropBounds: { minY: number; maxY: number };
 }
 
 /**
@@ -149,6 +154,7 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     height: 1140,
     midlineY: CANINE_MIDLINE,
     teeth: canineTeeth,
+    cropBounds: { minY: 30, maxY: 1145 },
   },
   feline: {
     imageSrc: '/diagrams/feline.png',
@@ -156,5 +162,6 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     height: 1085,
     midlineY: FELINE_MIDLINE,
     teeth: felineTeeth,
+    cropBounds: { minY: 12, maxY: 1090 },
   },
 };

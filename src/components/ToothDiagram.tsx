@@ -7,8 +7,20 @@ import {
   DiagramStroke,
   StrokePoint,
 } from '../types';
-import { TOOTH_DIAGRAMS, SpeciesDiagram } from '../constants/toothShapes';
+import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { CodeField } from './CodeField';
+// Pure helpers extracted from this component for testability.
+import {
+  layoutComments,
+  COMMENT_W,
+  COMMENT_H,
+  type ToothBBox,
+} from './toothDiagram/layoutComments';
+import {
+  loadParsedDiagram,
+  type ParsedDiagram,
+  type SvgSubpath,
+} from './toothDiagram/parseSvg';
 
 export type DiagramTool = 'mark' | 'comment' | 'draw';
 
@@ -37,15 +49,8 @@ export function cycleMark(
 const SIDE_PAD_RATIO = 0.30;
 const TOP_PAD_RATIO = 0.10;
 const BOTTOM_PAD_RATIO = 0.10;
-// Initial size for new comment boxes — chosen large enough that the
-// caret and a couple of words are immediately visible on a typical
-// diagram zoom level. Users can drag the corner handle to resize.
-const COMMENT_W = 300;
-const COMMENT_H = 160;
 const COMMENT_MIN_W = 90;
 const COMMENT_MIN_H = 50;
-const COMMENT_GAP = 6;
-const COMMENT_MARGIN_X = 6;
 
 interface ToothDiagramProps {
   species: Species;
@@ -65,167 +70,8 @@ interface ToothDiagramProps {
   markMode?: MarkMode;
 }
 
-interface SvgSubpath {
-  d: string;
-  cx: number;
-  cy: number;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-interface ParsedDiagram {
-  subpaths: SvgSubpath[];
-}
-
-interface ToothBBox {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-  cx: number;
-  cy: number;
-}
-
-interface PositionedComment {
-  comment: DiagramComment;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  anchor: { x: number; y: number; label: string } | null;
-}
-
-function layoutComments(
-  comments: DiagramComment[],
-  diagram: SpeciesDiagram,
-  bboxByTriadan: Map<number, ToothBBox>
-): PositionedComment[] {
-  const placed: PositionedComment[] = [];
-  // Anchored comments without an explicit user position auto-stack in the
-  // outer whitespace next to their tooth.
-  const leftStack: PositionedComment[] = [];
-  const rightStack: PositionedComment[] = [];
-
-  const sidePad = diagram.width * SIDE_PAD_RATIO;
-  const midline = diagram.width / 2;
-
-  for (const c of comments) {
-    const w = c.width ?? COMMENT_W;
-    const h = c.height ?? COMMENT_H;
-
-    let anchor: PositionedComment['anchor'] = null;
-    let anchorX = -1, anchorY = -1;
-    if (c.anchorTriadan != null) {
-      const tooth = diagram.teeth.find((t) => t.triadan === c.anchorTriadan);
-      if (tooth) {
-        const bb = bboxByTriadan.get(tooth.triadan);
-        anchorX = bb ? bb.cx : tooth.cx;
-        anchorY = bb ? bb.cy : tooth.cy;
-        anchor = { x: anchorX, y: anchorY, label: `${tooth.label} (${tooth.triadan})` };
-      }
-    }
-
-    if (typeof c.x === 'number' && typeof c.y === 'number') {
-      // User-positioned (free comments always have x/y; anchored comments
-      // get them once dragged).
-      placed.push({ comment: c, x: c.x, y: c.y, w, h, anchor });
-      continue;
-    }
-
-    if (anchor) {
-      const onRight = anchorX < midline;
-      // Right-side teeth → left whitespace (negative x in viewBox);
-      // left-side teeth → right whitespace (past diagram.width).
-      const x = onRight
-        ? -sidePad + COMMENT_MARGIN_X
-        : diagram.width + COMMENT_MARGIN_X;
-      const target: PositionedComment = {
-        comment: c,
-        x,
-        y: anchorY - h / 2,
-        w,
-        h,
-        anchor,
-      };
-      (onRight ? leftStack : rightStack).push(target);
-    } else {
-      // Free comment without a stored position — drop it near the bottom
-      // center as a sensible default (shouldn't happen if creators always
-      // assign an initial x/y, but be safe).
-      placed.push({
-        comment: c,
-        x: diagram.width / 2 - w / 2,
-        y: diagram.height - h - 8,
-        w,
-        h,
-        anchor: null,
-      });
-    }
-  }
-
-  for (const stack of [leftStack, rightStack]) {
-    stack.sort((a, b) => a.y - b.y);
-    let nextMinY = 0;
-    for (const item of stack) {
-      item.y = Math.max(item.y, nextMinY);
-      nextMinY = item.y + item.h + COMMENT_GAP;
-      placed.push(item);
-    }
-  }
-
-  return placed;
-}
-
-const parsedCache = new Map<string, ParsedDiagram>();
-
-async function loadParsedDiagram(url: string): Promise<ParsedDiagram> {
-  const cached = parsedCache.get(url);
-  if (cached) return cached;
-
-  const text = await fetch(url).then((r) => r.text());
-  const dMatch = text.match(/<path[^>]*\sd="([^"]+)"/);
-  if (!dMatch) throw new Error(`No path found in ${url}`);
-  const fullD = dMatch[1];
-
-  const subpathStrs = fullD
-    .split(/(?=M\s)/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0 && /^M\s/.test(s));
-
-  const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  tempSvg.style.position = 'absolute';
-  tempSvg.style.visibility = 'hidden';
-  tempSvg.style.width = '0';
-  tempSvg.style.height = '0';
-  document.body.appendChild(tempSvg);
-
-  const subpaths: SvgSubpath[] = [];
-  try {
-    for (const d of subpathStrs) {
-      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      p.setAttribute('d', d);
-      tempSvg.appendChild(p);
-      const bb = p.getBBox();
-      subpaths.push({
-        d,
-        minX: bb.x,
-        minY: bb.y,
-        maxX: bb.x + bb.width,
-        maxY: bb.y + bb.height,
-        cx: bb.x + bb.width / 2,
-        cy: bb.y + bb.height / 2,
-      });
-    }
-  } finally {
-    document.body.removeChild(tempSvg);
-  }
-
-  const result = { subpaths };
-  parsedCache.set(url, result);
-  return result;
-}
+// Pure SVG-parser + comment-layout helpers live in `./toothDiagram/*` —
+// extraction makes them testable in isolation.
 
 export interface CommentExport {
   id: string;

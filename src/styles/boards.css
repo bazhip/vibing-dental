@@ -1019,6 +1019,144 @@
 .board-switcher__option-vibe { font-size: 0.78rem; color: #64748b; }
 
 
+/* ============== Chart menu (top-of-app) ===================================
+ * Single bundled menu for chart-level actions: New, Load PDF, Theme.
+ * Trigger lives in the EntryGrid topbar; panel anchors below-right.
+ * =========================================================================
+ */
+.chart-menu {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+}
+
+.chart-menu__trigger {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  color: var(--text, #1f2937);
+  font: inherit; font-weight: 600; font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.chart-menu__trigger:hover {
+  border-color: var(--text-muted, #94a3b8);
+}
+.chart-menu--open .chart-menu__trigger {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.10);
+}
+.chart-menu__trigger-icon { font-size: 1.05rem; line-height: 1; }
+
+.chart-menu__file-input { display: none; }
+
+.chart-menu__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 340px;
+  background: var(--surface, white);
+  color: var(--text, #1f2937);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.18);
+  z-index: 50;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: min(620px, calc(100vh - 6rem));
+}
+
+.chart-menu__section {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.chart-menu__section:last-child {
+  border-bottom: none;
+  flex: 1; min-height: 0;
+}
+.chart-menu__section-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.7rem 1rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+}
+.chart-menu__current {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.78rem;
+}
+
+.chart-menu__item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  color: inherit;
+}
+.chart-menu__item:hover {
+  background: var(--surface-alt, #f8fafc);
+}
+.chart-menu__item-icon { font-size: 1.15rem; line-height: 1.2; }
+.chart-menu__item-body {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.chart-menu__item-body strong {
+  font-weight: 600; font-size: 0.95rem; color: var(--text);
+}
+.chart-menu__item-body span {
+  font-size: 0.8rem; color: var(--text-muted, #64748b); line-height: 1.4;
+}
+
+.chart-menu__board-list {
+  list-style: none; padding: 0.25rem 0.5rem 0.5rem; margin: 0;
+  overflow-y: auto;
+  flex: 1; min-height: 0;
+}
+.chart-menu__board {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit; text-align: left; cursor: pointer;
+  color: inherit;
+}
+.chart-menu__board:hover {
+  background: var(--surface-alt, #f8fafc);
+}
+.chart-menu__board--active,
+.chart-menu__board--active:hover {
+  background: rgba(79, 70, 229, 0.08);
+  border-color: var(--primary);
+}
+.chart-menu__board strong {
+  font-weight: 600; font-size: 0.9rem; color: var(--text);
+}
+.chart-menu__board span {
+  font-size: 0.76rem; color: var(--text-muted, #64748b);
+}
+
+@media (max-width: 480px) {
+  .chart-menu__panel {
+    width: calc(100vw - 2rem);
+    right: -0.5rem;
+  }
+}
+
+
 /* ============== PDF preview modal ========================================
  * Floating modal with a left-rail style picker and a live PDF iframe on
  * the right. The chrome here is intentionally neutral so the preview

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutKind } from './Layouts';
+import { readString, writeString } from '../utils/storage';
 
 /**
  * A "board" is a complete UI design preset: layout structure + visual style
@@ -82,7 +83,8 @@ export const BOARDS: Board[] = [
   { id: 'discord',   name: 'Discord',          vibe: 'channel rail · dark gray · indigo',       layout: 'threecol', style: 'discord',    theme: 'midnight' },
 ];
 
-const STORAGE = 'vibing-dental-board';
+const STORAGE_KEY = 'board';
+const STORAGE_VERSION = 1;
 const DEFAULT_BOARD_ID = 'clinical';
 
 interface BoardContextValue {
@@ -93,11 +95,8 @@ const BoardCtx = React.createContext<BoardContextValue | null>(null);
 
 export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [boardId, setBoardId] = React.useState<string>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE);
-      if (saved && BOARDS.some((b) => b.id === saved)) return saved;
-    } catch {}
-    return DEFAULT_BOARD_ID;
+    const saved = readString(STORAGE_KEY, STORAGE_VERSION, DEFAULT_BOARD_ID);
+    return BOARDS.some((b) => b.id === saved) ? saved : DEFAULT_BOARD_ID;
   });
 
   const board = React.useMemo(
@@ -110,7 +109,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     document.documentElement.dataset.style = board.style;
     document.documentElement.dataset.theme = board.theme;
     document.documentElement.dataset.layout = board.layout;
-    try { localStorage.setItem(STORAGE, board.id); } catch {}
+    writeString(STORAGE_KEY, STORAGE_VERSION, board.id);
   }, [board]);
 
   const value = React.useMemo<BoardContextValue>(

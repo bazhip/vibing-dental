@@ -1,18 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
-import DataGrid from 'react-data-grid';
+import DataGrid, { Column, EditorProps } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { ToothData } from '../types';
 import { CodeField } from './CodeField';
 
-const codeCellEditor = (p: any) => (
-  <CodeField
-    autoFocus
-    value={p.row[p.column.key] || ''}
-    onChange={(value) => p.onRowChange({ ...p.row, [p.column.key]: value })}
-    onBlur={() => p.onClose(true, false)}
-    style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
-  />
-);
+/** Cell editor that pops the dental-code autocomplete on every cell. The
+ *  prop type is fully typed against `ToothData` so future renames to the
+ *  row shape surface as compile errors instead of runtime bugs. */
+const codeCellEditor = (p: EditorProps<ToothData>) => {
+  const key = p.column.key as keyof ToothData;
+  const current = p.row[key];
+  const value = typeof current === 'string' ? current : '';
+  return (
+    <CodeField
+      autoFocus
+      value={value}
+      onChange={(next) => p.onRowChange({ ...p.row, [key]: next })}
+      onBlur={() => p.onClose(true)}
+      style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
+    />
+  );
+};
 
 interface DentalGridProps {
   toothData: ToothData[];
@@ -53,75 +61,29 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     return containerWidth > 0 ? Math.floor(containerWidth * percentage) : 100;
   };
 
-  const columns: any[] = [
-    {
-      key: 'tooth',
-      name: 'Tooth',
-      width: getColumnWidth(0.07),
-      editable: false
-    },
-    {
-      key: 'triadan',
-      name: 'Triadan',
-      width: getColumnWidth(0.08),
-      editable: false
-    },
-    {
-      key: 'mobility',
-      name: 'Mobility',
-      width: getColumnWidth(0.09),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'recession',
-      name: 'Recession',
-      width: getColumnWidth(0.10),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'pocket',
-      name: 'Pocket',
-      width: getColumnWidth(0.09),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'furcation',
-      name: 'Furcation',
-      width: getColumnWidth(0.10),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'hyperplasia',
-      name: 'Hyperplasia',
-      width: getColumnWidth(0.13),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'calculus',
-      name: 'Calculus',
-      width: getColumnWidth(0.10),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'gingivitis',
-      name: 'Gingivitis',
-      width: getColumnWidth(0.11),
-      editable: true,
-      editor: codeCellEditor
-    },
-    {
-      key: 'pdstate',
-      name: 'PD State',
-      width: getColumnWidth(0.10),
-      editable: true,
-      editor: codeCellEditor
-    },
+  const codeCol = (
+    key: keyof ToothData,
+    name: string,
+    widthPct: number
+  ): Column<ToothData> => ({
+    key: key as string,
+    name,
+    width: getColumnWidth(widthPct),
+    editable: true,
+    editor: codeCellEditor,
+  });
+
+  const columns: Column<ToothData>[] = [
+    { key: 'tooth',   name: 'Tooth',   width: getColumnWidth(0.07), editable: false },
+    { key: 'triadan', name: 'Triadan', width: getColumnWidth(0.08), editable: false },
+    codeCol('mobility',    'Mobility',    0.09),
+    codeCol('recession',   'Recession',   0.10),
+    codeCol('pocket',      'Pocket',      0.09),
+    codeCol('furcation',   'Furcation',   0.10),
+    codeCol('hyperplasia', 'Hyperplasia', 0.13),
+    codeCol('calculus',    'Calculus',    0.10),
+    codeCol('gingivitis',  'Gingivitis',  0.11),
+    codeCol('pdstate',     'PD State',    0.10),
   ];
 
   return (
