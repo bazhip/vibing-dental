@@ -31,6 +31,9 @@ export interface NerveBlocks {
   mentalLeft: string;
   /** Free-text "other" block — single field that spans the row, no L/R or mL. */
   other: string;
+  /** Anesthetic name used for all blocks. Empty string means "use the
+   *  template default" (Ropivacaine for VCA, Bupivacaine for SoCal). */
+  drug: string;
 }
 
 export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
@@ -41,6 +44,13 @@ export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
   mentalRight: '',
   mentalLeft: '',
   other: '',
+  drug: '',
+};
+
+/** Default anesthetic per logo. Used when nerveBlocks.drug is empty. */
+export const DEFAULT_NERVE_BLOCK_DRUG: Record<'socal' | 'vca', string> = {
+  vca: 'Ropivacaine',
+  socal: 'Bupivacaine',
 };
 
 /**

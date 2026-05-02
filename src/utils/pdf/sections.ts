@@ -557,7 +557,8 @@ export function drawNerveBlockTable(
 
   drawSectionTitle(page, 'Anesthesia · Nerve Blocks', x, yTop + 0.20 * PT_PER_IN, totalW, bold);
 
-  const headerLabel = `Nerve Block 0.5% ${isVca ? 'Ropivacaine' : 'Bupivacaine'}`;
+  const drug = nerveBlocks.drug?.trim() || (isVca ? 'Ropivacaine' : 'Bupivacaine');
+  const headerLabel = `Nerve Block 0.5% ${drug}`;
   let headerLabelSize = headerSize;
   const headerMaxWidth = labelW - padX * 2;
   while (headerLabelSize > 6 && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {

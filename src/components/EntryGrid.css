@@ -395,6 +395,23 @@
 }
 
 /* Anesthesia Table */
+.anesthesia-drug {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.6rem;
+}
+
+.anesthesia-drug__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.anesthesia-drug__input {
+  max-width: 14rem;
+}
+
 .anesthesia-table {
   width: 100%;
   border-collapse: collapse;

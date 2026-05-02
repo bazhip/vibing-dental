@@ -1,10 +1,14 @@
 import React from 'react';
-import { NerveBlocks } from '../types';
+import { NerveBlocks, Logo, DEFAULT_NERVE_BLOCK_DRUG } from '../types';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
   onNerveBlockChange: (key: keyof NerveBlocks, value: string) => void;
+  /** Used to populate the drug-name placeholder with the template default. */
+  logo: Logo;
 }
+
+const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 interface BlockRow {
   label: string;
@@ -24,6 +28,7 @@ const BLOCK_ROWS: BlockRow[] = [
 export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   nerveBlocks,
   onNerveBlockChange,
+  logo,
 }) => {
   const handleChange = (key: keyof NerveBlocks) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -31,10 +36,35 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     onNerveBlockChange(key, event.target.value);
   };
 
+  const defaultDrug = DEFAULT_NERVE_BLOCK_DRUG[logo];
+  const drugList = COMMON_DRUGS.includes(defaultDrug)
+    ? COMMON_DRUGS
+    : [defaultDrug, ...COMMON_DRUGS];
+
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <span className="dental-grid__title">Anesthesia &mdash; Nerve Blocks (mL)</span>
+      </div>
+
+      <div className="anesthesia-drug">
+        <label className="anesthesia-drug__label" htmlFor="anesthesia-drug-input">
+          Anesthetic
+        </label>
+        <input
+          id="anesthesia-drug-input"
+          type="text"
+          list="anesthesia-drug-options"
+          className="patient-form__input anesthesia-drug__input"
+          value={nerveBlocks.drug}
+          placeholder={defaultDrug}
+          onChange={handleChange('drug')}
+        />
+        <datalist id="anesthesia-drug-options">
+          {drugList.map((d) => (
+            <option key={d} value={d} />
+          ))}
+        </datalist>
       </div>
 
       <table className="anesthesia-table">

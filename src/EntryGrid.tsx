@@ -107,6 +107,7 @@ const EntryGrid: React.FC = () => {
         <AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
           onNerveBlockChange={chart.handleNerveBlockChange}
+          logo={chart.logo}
         />
       ),
     },
