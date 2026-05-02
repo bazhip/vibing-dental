@@ -140,7 +140,7 @@ const EntryGrid: React.FC = () => {
             />
           </div>
           <aside className="diagram-with-codes__codes">
-            <CodeReferencePanel />
+            <CodeReferencePanel kind="diagnosis" />
           </aside>
         </div>
       ),
@@ -166,7 +166,7 @@ const EntryGrid: React.FC = () => {
             />
           </div>
           <aside className="diagram-with-codes__codes">
-            <CodeReferencePanel />
+            <CodeReferencePanel kind="procedure" />
           </aside>
         </div>
       ),

@@ -17,20 +17,30 @@ function matches(code: DentalCode, query: string): boolean {
   );
 }
 
-export const CodeReferencePanel: React.FC = () => {
+interface CodeReferencePanelProps {
+  /** Restrict the panel to one kind of code. Omit to show both columns. */
+  kind?: 'diagnosis' | 'procedure';
+}
+
+const TITLES = { diagnosis: 'Diagnoses', procedure: 'Procedures' } as const;
+
+export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
 
   const filtered = React.useMemo(
-    () => DENTAL_CODES.filter((c) => matches(c, query)),
-    [query]
+    () =>
+      DENTAL_CODES.filter(
+        (c) => (kind ? c.kind === kind : true) && matches(c, query)
+      ),
+    [query, kind]
   );
-  const diagnoses = filtered.filter((c) => c.kind === 'diagnosis');
-  const procedures = filtered.filter((c) => c.kind === 'procedure');
 
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">Code Reference</span>
+        <span className="dental-grid__title">
+          {kind ? `${TITLES[kind]} Reference` : 'Code Reference'}
+        </span>
       </div>
 
       <div className="code-ref">
@@ -42,8 +52,20 @@ export const CodeReferencePanel: React.FC = () => {
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="code-ref__columns">
-          <CodeRefColumn title="Diagnoses" codes={diagnoses} />
-          <CodeRefColumn title="Procedures" codes={procedures} />
+          {kind ? (
+            <CodeRefColumn title={TITLES[kind]} codes={filtered} />
+          ) : (
+            <>
+              <CodeRefColumn
+                title="Diagnoses"
+                codes={filtered.filter((c) => c.kind === 'diagnosis')}
+              />
+              <CodeRefColumn
+                title="Procedures"
+                codes={filtered.filter((c) => c.kind === 'procedure')}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
