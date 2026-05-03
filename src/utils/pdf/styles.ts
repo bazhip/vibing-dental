@@ -183,7 +183,7 @@ export const PDF_STYLES: PdfStyle[] = [
     description: 'Slate, hairlines, mixed-case headings — current default.',
     palette: SLATE, fontFamily: 'sans',
     sectionTitle: 'hairline', tableHeader: 'light',
-    comment: { bg: '#fffaf0', border: '#f6e05e', labelColor: '#744210', textColor: '#2d3748' },
+    comment: { bg: '#f1f5f9', border: '#475569', labelColor: '#0f172a', textColor: '#0f172a' },
   },
   {
     id: 'corporate',
