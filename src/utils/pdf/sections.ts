@@ -12,7 +12,6 @@ import {
 } from '../../types';
 import { ToothGridLayout, TOOTH_DATA_ROWS } from '../../constants/chartLayout';
 import { PALETTE } from './styles';
-import { tintLogoPng } from './tintLogo';
 import {
   PT_PER_IN,
   PATIENT_INFO_BOX,
@@ -174,13 +173,12 @@ export async function drawLogoAndHeader(
   const logoLeftPt = 0.30 * PT_PER_IN;
   const logoTopPt = pageHeight - 0.35 * PT_PER_IN;
 
-  // SoCal mark is recolored: rowAlt bg + theme primary as ink. VCA is
-  // left as-is so its brand colors stay intact.
+  // Both logos use their original brand colors — SoCal stays dark grey +
+  // pink, VCA stays its house palette. The active style only drives the
+  // surrounding chrome (titles, table headers, comment cards), not the
+  // mark itself.
   const logoBytes = await fetch(logoUrl).then((r) => r.arrayBuffer());
-  const finalLogoBytes = logo === 'vca'
-    ? new Uint8Array(logoBytes)
-    : await tintLogoPng(logoBytes, PALETTE.rowAlt, PALETTE.primary);
-  const png = await pdfDoc.embedPng(finalLogoBytes);
+  const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
   const logoHeight = logoWidth * (png.height / png.width);
   const logoBottomPt = logoTopPt - logoHeight;
   page.drawImage(png, {

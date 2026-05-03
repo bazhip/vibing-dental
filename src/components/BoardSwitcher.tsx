@@ -21,71 +21,31 @@ export interface Board {
   theme: string;
 }
 
+/**
+ * Each board id is shared by:
+ *   - the UI theme tokens in styles/themes.css (`[data-theme="{id}"]`),
+ *   - the UI chrome in styles/boards.css (`[data-style="{id}"]`),
+ *   - the matching PDF preset in utils/pdf/styles.ts (same id).
+ *
+ * That keeps UI ↔ PDF in lockstep: pick a theme, the PDF preview opens
+ * to the matching preset by default.
+ */
 export const BOARDS: Board[] = [
-  // Original clean tabs design.
-  { id: 'clinical',  name: 'Clinical',         vibe: 'tabs · soft cards · indigo gradient',     layout: 'tabs',     style: 'clean',      theme: 'indigo' },
-
-  // Stripe — top product nav, gradient hero, generous whitespace, blue+purple.
-  { id: 'stripe',    name: 'Stripe Console',   vibe: 'top product nav · hero gradient',         layout: 'topnav',   style: 'stripe',     theme: 'cobalt' },
-
-  // Twitter / X — three-column with icon rail, hairline dividers, white.
-  { id: 'twitter',   name: 'Twitter / X',      vibe: 'icon rail · feed · trends column',        layout: 'threecol', style: 'twitter',    theme: 'paper' },
-
-  // Linear — dark, dense sidebar, mono captions, fast keyboard feel.
-  { id: 'linear',    name: 'Linear',           vibe: 'dark sidebar · mono captions · compact',  layout: 'sidebar',  style: 'linear',     theme: 'midnight' },
-
-  // Notion — white, hierarchical sidebar with emojis, inline blocks.
-  { id: 'notion',    name: 'Notion',           vibe: 'sidebar · emoji nav · inline blocks',     layout: 'sidebar',  style: 'notion',     theme: 'paper' },
-
-  // GitHub — top breadcrumb header, octicon-style hairline borders.
-  { id: 'github',    name: 'GitHub',           vibe: 'top breadcrumbs · hairline borders',      layout: 'topnav',   style: 'github',     theme: 'paper' },
-
-  // Slack — purple+gray, condensed channel sidebar, dense info.
-  { id: 'slack',     name: 'Slack',            vibe: 'purple sidebar · channel list',           layout: 'threecol', style: 'slack',      theme: 'plum' },
-
-  // Airbnb — pill nav, rosy-red, big rounded cards, marketing feel.
-  { id: 'airbnb',    name: 'Airbnb',           vibe: 'pill tabs · rosy-red · rounded cards',    layout: 'topnav',   style: 'airbnb',     theme: 'rose' },
-
-  // Square — monochrome, mono numbers, tall blocks.
-  { id: 'square',    name: 'Square',           vibe: 'mono · stacked black blocks',             layout: 'stacked',  style: 'square',     theme: 'charcoal' },
-
-  // PayPal — blue-on-white wizard, step-by-step.
-  { id: 'paypal',    name: 'PayPal Onboarding', vibe: 'step wizard · blue on white',            layout: 'wizard',   style: 'paypal',     theme: 'cobalt' },
-
-  // Apple Health style — soft cards with elevation, neutral.
-  { id: 'apple',     name: 'Apple Cards',      vibe: 'stacked · elevated cards · system fonts', layout: 'stacked',  style: 'apple',      theme: 'paper' },
-
-  // Intercom — pink-accented, friendly chat-style chrome.
-  { id: 'intercom',  name: 'Intercom',         vibe: 'pink accents · rounded · chatty',         layout: 'tabs',     style: 'intercom',   theme: 'rose' },
-
-  // HubSpot — orange CTAs, top breadcrumb-y nav, pro SaaS.
-  { id: 'hubspot',   name: 'HubSpot',          vibe: 'top nav · orange CTA · enterprise',       layout: 'topnav',   style: 'hubspot',    theme: 'sunset' },
-
-  // Editorial / dossier — serif, columnar, paper bg.
-  { id: 'editorial', name: 'Editorial',        vibe: 'serif · sidebar · paper',                 layout: 'sidebar',  style: 'editorial',  theme: 'paper' },
-
-  // Brutalist — mono, hard shadows, no rounding.
-  { id: 'brutalist', name: 'Brutalist',        vibe: 'mono · hard borders · offset shadow',     layout: 'tabs',     style: 'brutalist',  theme: 'paper' },
-
-  // Glassmorphism — frosted panels, aurora bg.
-  { id: 'glass',     name: 'Glass',            vibe: 'frosted panels · aurora bg',              layout: 'tabs',     style: 'glass',      theme: 'aurora' },
-
-  // Cyberpunk neon.
-  { id: 'neon',      name: 'Neon',             vibe: 'cyberpunk dark · neon glow',              layout: 'tabs',     style: 'neon',       theme: 'midnight' },
-
-  // Cash App — bold green, mono numbers, simple stacked.
-  { id: 'cash',      name: 'Cash App',         vibe: 'bold green · mono · simple stacked',      layout: 'stacked',  style: 'cash',       theme: 'emerald' },
-
-  // Shopify — green top nav, clean white surfaces.
-  { id: 'shopify',   name: 'Shopify',          vibe: 'top nav · green chrome · merchant-y',     layout: 'topnav',   style: 'shopify',    theme: 'forest' },
-
-  // Discord — sidebar with channel icons, dark gray, indigo accent.
-  { id: 'discord',   name: 'Discord',          vibe: 'channel rail · dark gray · indigo',       layout: 'threecol', style: 'discord',    theme: 'midnight' },
+  { id: 'aperture', name: 'Aperture', vibe: 'glass · floating cards · system blue',          layout: 'sidebar', style: 'aperture', theme: 'aperture' },
+  { id: 'ledger',   name: 'Ledger',   vibe: 'Stripe-grade SaaS · sidebar · violet accent',   layout: 'sidebar', style: 'ledger',   theme: 'ledger'   },
+  { id: 'oracle',   name: 'Oracle',   vibe: 'Linear · dark · electric indigo · dense',       layout: 'topnav',  style: 'oracle',   theme: 'oracle'   },
+  { id: 'folio',    name: 'Folio',    vibe: 'editorial · serif · cream + sepia',             layout: 'sidebar', style: 'folio',    theme: 'folio'    },
+  { id: 'concrete', name: 'Concrete', vibe: 'brutalist mono · hard borders · square',        layout: 'tabs',    style: 'concrete', theme: 'concrete' },
+  { id: 'atrium',   name: 'Atrium',   vibe: 'japandi · negative space · ochre',              layout: 'stacked', style: 'atrium',   theme: 'atrium'   },
+  { id: 'pulse',    name: 'Pulse',    vibe: 'hospital EHR · cool blue · status chips',       layout: 'sidebar', style: 'pulse',    theme: 'pulse'    },
+  { id: 'bauhaus',  name: 'Bauhaus',  vibe: 'modernist · RGB triad · 8pt grid',              layout: 'stacked', style: 'bauhaus',  theme: 'bauhaus'  },
+  { id: 'vapor',    name: 'Vapor',    vibe: 'cyberpunk · neon glow · scanlines',             layout: 'topnav',  style: 'vapor',    theme: 'vapor'    },
+  { id: 'almanac',  name: 'Almanac',  vibe: 'apothecary · maroon · drop caps',               layout: 'stacked', style: 'almanac',  theme: 'almanac'  },
 ];
 
 const STORAGE_KEY = 'board';
 const STORAGE_VERSION = 1;
-const DEFAULT_BOARD_ID = 'clinical';
+const DEFAULT_BOARD_ID = 'aperture';
 
 interface BoardContextValue {
   board: Board;

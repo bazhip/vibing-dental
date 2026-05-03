@@ -377,8 +377,11 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const handleToothClick = (triadan: number, e: React.MouseEvent) => {
     if (tool === 'draw') return;
     e.stopPropagation();
-    if (lockedTriadans?.has(triadan)) return;
     if (tool === 'mark') {
+      // Marks are locked for pre-missing teeth in the post diagram —
+      // they're already gone, can't be re-extracted today. Comments
+      // (annotations on the empty socket etc.) are still allowed below.
+      if (lockedTriadans?.has(triadan)) return;
       const next = cycleMark(toothMarks[triadan], markMode);
       const updated = { ...toothMarks };
       if (next) updated[triadan] = next;

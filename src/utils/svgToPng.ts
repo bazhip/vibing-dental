@@ -210,12 +210,73 @@ export async function diagramSvgToPng(
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+    // Dynamic content-bbox crop. Scan for non-white pixels and tighten
+    // the output PNG to that bounding box. This removes the blank
+    // margins that come from the source SVG's declared width being
+    // wider than the actual tooth content, AND auto-handles asymmetric
+    // comment placement (left-only / right-only / both gutters).
+    const cropped = cropToContentBBox(canvas, ctx, outputScale);
+
     const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, 'image/png')
+      cropped.toBlob(resolve, 'image/png')
     );
     if (!blob) throw new Error('canvas.toBlob returned null');
     return new Uint8Array(await blob.arrayBuffer());
   } finally {
     URL.revokeObjectURL(svgUrl);
   }
+}
+
+/**
+ * Crop a canvas to its non-white content bounding box (with small
+ * padding). Returns a new canvas — leaves the input untouched.
+ *
+ * Threshold is intentionally generous (≥250 on every channel counts as
+ * "blank") so faint anti-aliasing artifacts at the edges don't extend
+ * the bbox by a pixel or two.
+ */
+function cropToContentBBox(
+  src: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  outputScale: number
+): HTMLCanvasElement {
+  const { width: w, height: h } = src;
+  const data = ctx.getImageData(0, 0, w, h);
+  const px = data.data;
+  let minX = w, minY = h, maxX = -1, maxY = -1;
+  const BLANK = 250;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3];
+      // Treat near-white opaque pixels as blank too — the canvas was
+      // pre-filled white, so transparent corners read as white as well.
+      if (a > 0 && (r < BLANK || g < BLANK || b < BLANK)) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < 0) {
+    // No content found — return the original.
+    return src;
+  }
+  const pad = 8 * outputScale;
+  minX = Math.max(0, minX - pad);
+  minY = Math.max(0, minY - pad);
+  maxX = Math.min(w - 1, maxX + pad);
+  maxY = Math.min(h - 1, maxY + pad);
+  const cw = maxX - minX + 1;
+  const ch = maxY - minY + 1;
+  const out = document.createElement('canvas');
+  out.width = cw;
+  out.height = ch;
+  const octx = out.getContext('2d');
+  if (!octx) return src;
+  octx.fillStyle = 'white';
+  octx.fillRect(0, 0, cw, ch);
+  octx.drawImage(src, -minX, -minY);
+  return out;
 }

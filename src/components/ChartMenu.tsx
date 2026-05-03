@@ -7,6 +7,8 @@ interface ChartMenuProps {
   onNewChart: () => void;
   /** Triggered when the user picks a PDF to load back into the app. */
   onLoadPdf: (file: File) => void;
+  /** Open the AI settings dialog (BYOK API key, model preferences). */
+  onOpenAiSettings: () => void;
 }
 
 /**
@@ -15,7 +17,7 @@ interface ChartMenuProps {
  * the visual board. Replaces the floating BoardSwitcher widget — there's
  * one menu and it lives where the user looks for app-level actions.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings }) => {
   const { board, setBoardId } = useBoard();
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -97,6 +99,18 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf }) =
               <span className="chart-menu__item-body">
                 <strong>Load chart PDF</strong>
                 <span>Pick a previously generated PDF to rehydrate the form.</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              className="chart-menu__item"
+              role="menuitem"
+              onClick={() => { setOpen(false); onOpenAiSettings(); }}
+            >
+              <span className="chart-menu__item-icon" aria-hidden="true">🤖</span>
+              <span className="chart-menu__item-body">
+                <strong>AI settings</strong>
+                <span>Set the Anthropic API key for voice autofill.</span>
               </span>
             </button>
           </section>

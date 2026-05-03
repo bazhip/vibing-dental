@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vet Dental Chart">
+  <!-- Tooth silhouette: wide rounded crown, slight cervical pinch, two roots. -->
+  <defs>
+    <linearGradient id="tooth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 6
+           C45 6 55 14 55 25
+           C55 30 53 33 51 37
+           L48 55
+           C47 59 43 60 41 57
+           L35 44
+           C33 42 31 42 29 44
+           L23 57
+           C21 60 17 59 16 55
+           L13 37
+           C11 33 9 30 9 25
+           C9 14 19 6 32 6 Z"
+        fill="url(#tooth)"
+        stroke="#0c4a6e"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+  <!-- Specular highlight on the crown — gives it a tooth-like sheen. -->
+  <ellipse cx="22" cy="19" rx="5" ry="3" fill="#ffffff" opacity="0.45"/>
+  <!-- Small heartbeat tick across the cervix line — vet/health cue without being a literal cross. -->
+  <path d="M14 30 L20 30 L23 25 L27 35 L30 30 L34 30"
+        fill="none"
+        stroke="#ffffff"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0.7"/>
+</svg>

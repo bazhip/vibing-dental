@@ -6,6 +6,7 @@ import {
 } from '../utils/pdfGenerator';
 import { diagramSvgToPng, CommentForExport } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
+import { useBoard } from './BoardSwitcher';
 import {
   PatientInfo,
   ToothData,
@@ -42,7 +43,20 @@ interface PdfPreviewModalProps {
 }
 
 export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot }) => {
-  const [styleId, setStyleId] = React.useState<string>(DEFAULT_PDF_STYLE_ID);
+  const { board } = useBoard();
+  // Default the PDF style to the active UI theme so the preview opens
+  // in matching chrome. The user can still pick a different style in
+  // the modal's sidebar — that override stays for this session.
+  const initialStyleId = PDF_STYLES.some((s) => s.id === board.id)
+    ? board.id
+    : DEFAULT_PDF_STYLE_ID;
+  const [styleId, setStyleId] = React.useState<string>(initialStyleId);
+  // When the modal opens (or the active theme changes), realign the
+  // selected style to whatever the UI is currently showing.
+  React.useEffect(() => {
+    if (open) setStyleId(initialStyleId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, board.id]);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);

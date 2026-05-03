@@ -33,8 +33,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     onSpeciesChange(selectedSpecies);
   };
 
-  const handleLogoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onLogoChange(event.target.value as Logo);
+  const handleLogoClick = (selectedLogo: Logo) => {
+    onLogoChange(selectedLogo);
   };
 
   return (
@@ -119,9 +119,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       </div>
 
       <div className="patient-form__selectors">
-        <div className="patient-form__species">
+        <div
+          className="patient-form__species"
+          role="radiogroup"
+          aria-label="Species"
+        >
           <button
             type="button"
+            role="radio"
+            aria-checked={species === 'feline'}
             className={`species-tab ${species === 'feline' ? 'species-tab--active' : ''}`}
             onClick={() => handleSpeciesClick('feline')}
           >
@@ -130,6 +136,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
           <button
             type="button"
+            role="radio"
+            aria-checked={species === 'canine'}
             className={`species-tab ${species === 'canine' ? 'species-tab--active' : ''}`}
             onClick={() => handleSpeciesClick('canine')}
           >
@@ -137,18 +145,30 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           </button>
         </div>
 
-        <div className="patient-form__logo">
-          <label className="patient-form__logo-label">
-            Logo
-            <select
-              className="patient-form__logo-select"
-              value={logo}
-              onChange={handleLogoChange}
-            >
-              <option value="socal">Socal Tooth Ops</option>
-              <option value="vca">VCA</option>
-            </select>
-          </label>
+        <div
+          className="patient-form__species"
+          role="radiogroup"
+          aria-label="Logo"
+        >
+          <button
+            type="button"
+            role="radio"
+            aria-checked={logo === 'socal'}
+            className={`species-tab ${logo === 'socal' ? 'species-tab--active' : ''}`}
+            onClick={() => handleLogoClick('socal')}
+          >
+            SoCal Tooth Ops
+          </button>
+
+          <button
+            type="button"
+            role="radio"
+            aria-checked={logo === 'vca'}
+            className={`species-tab ${logo === 'vca' ? 'species-tab--active' : ''}`}
+            onClick={() => handleLogoClick('vca')}
+          >
+            VCA
+          </button>
         </div>
       </div>
     </div>

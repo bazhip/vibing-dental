@@ -13,7 +13,11 @@ import { SectionLayout, ChartSection } from './components/Layouts';
 import { useBoard } from './components/BoardSwitcher';
 import { ChartMenu } from './components/ChartMenu';
 import { PdfPreviewModal, ChartSnapshot } from './components/PdfPreviewModal';
+import { AiSettingsModal } from './components/AiSettingsModal';
+import { VoiceInputButton } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
+import { ChartContext, ChartHandlers } from './utils/aiAutofill';
+import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
 
 /**
@@ -35,6 +39,73 @@ const EntryGrid: React.FC = () => {
   // PDF preview modal state.
   const [previewSnapshot, setPreviewSnapshot] = React.useState<ChartSnapshot | null>(null);
   const [previewOpen, setPreviewOpen] = React.useState(false);
+  const [aiSettingsOpen, setAiSettingsOpen] = React.useState(false);
+
+  // ----- AI autofill plumbing -------------------------------------------
+  // Snapshot of state Claude sees alongside the transcript.
+  const aiContext: ChartContext = {
+    patientInfo: chart.patientInfo,
+    species:     chart.species,
+    logo:        chart.logo,
+    toothData:   chart.toothData,
+    preMarks:    chart.preToothMarks,
+    preComments: chart.preDiagramComments,
+    postMarks:   chart.postToothMarks,
+    postComments: chart.postDiagramComments,
+  };
+
+  // Handlers the autofill module calls to apply tool_use results. Each
+  // routes through the same setters the manual UI uses, so the existing
+  // diagram-history hook automatically captures AI edits for undo.
+  // Not memoized — useChartState returns a fresh object each render
+  // anyway, and VoiceInputButton holds these via a ref so a re-creation
+  // doesn't cause spurious work.
+  const aiHandlers: ChartHandlers = {
+    setPreMark: (triadan, mark) => chart.setPreToothMarks((m: ToothMarks) => {
+      const next = { ...m };
+      if (mark === null) delete next[triadan];
+      else next[triadan] = mark;
+      return next;
+    }),
+    setPostMark: (triadan, mark) => {
+      // Route through handlePostMarksChange so the pre-missing-strip
+      // invariant the manual UI enforces is preserved for AI edits too.
+      const next = { ...chart.postToothMarks };
+      if (mark === null) delete next[triadan];
+      else next[triadan] = mark;
+      chart.handlePostMarksChange(next);
+    },
+    setToothField: (triadan: number, field: DentalField, value: string) => {
+      const next = chart.toothData.map((t: ToothData) =>
+        t.triadan === triadan ? { ...t, [field]: value } : t
+      );
+      chart.setToothDataDirectly(next);
+    },
+    addComment: (diagram, triadan, text) => {
+      const id = `ai${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      const newComment: DiagramComment = { id, text, anchorTriadan: triadan };
+      const setter = diagram === 'pre' ? chart.setPreDiagramComments : chart.setPostDiagramComments;
+      setter((prev: DiagramComment[]) => [...prev, newComment]);
+    },
+    setExamFinding: (area, status, comment) => {
+      chart.handleExamStatusChange(area, status as ExamFinding);
+      if (comment !== undefined) chart.handleExamCommentChange(area, comment);
+    },
+    setNerveBlock: (site, mL) => {
+      chart.handleNerveBlockChange(site as keyof NerveBlocks, mL);
+    },
+    setAnestheticDrug: (drug) => {
+      chart.handleNerveBlockChange('drug', drug);
+    },
+    setPatientField: (field, value) => {
+      chart.handlePatientInfoChange(field as keyof PatientInfo, value);
+    },
+    appendTreatmentReport: (text) => {
+      const existing = chart.patientInfo.treatmentReport ?? '';
+      const joined = existing ? `${existing}\n${text}` : text;
+      chart.handlePatientInfoChange('treatmentReport', joined);
+    },
+  };
 
   const handleOpenPreview = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -188,7 +259,18 @@ const EntryGrid: React.FC = () => {
     <div className="entry-grid-container">
       <header className="entry-grid__topbar">
         <h1 className="entry-grid__title">🦷 Veterinary Dental Charting</h1>
-        <ChartMenu onNewChart={chart.resetChart} onLoadPdf={chart.loadFromPdf} />
+        <div className="entry-grid__topbar-actions">
+          <VoiceInputButton
+            context={aiContext}
+            handlers={aiHandlers}
+            onNeedsApiKey={() => setAiSettingsOpen(true)}
+          />
+          <ChartMenu
+            onNewChart={chart.resetChart}
+            onLoadPdf={chart.loadFromPdf}
+            onOpenAiSettings={() => setAiSettingsOpen(true)}
+          />
+        </div>
       </header>
       <form className="entry-grid-form" onSubmit={handleOpenPreview}>
         <SectionLayout layout={board.layout} sections={sections} />
@@ -204,6 +286,11 @@ const EntryGrid: React.FC = () => {
         open={previewOpen}
         onClose={() => setPreviewOpen(false)}
         snapshot={previewSnapshot}
+      />
+
+      <AiSettingsModal
+        open={aiSettingsOpen}
+        onClose={() => setAiSettingsOpen(false)}
       />
     </div>
   );

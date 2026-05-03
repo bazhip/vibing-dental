@@ -2,6 +2,7 @@ import React from 'react';
 import { Species, ToothMarks, DiagramComment, DiagramStroke } from '../types';
 import { ToothDiagram, ToothDiagramHandle, DiagramTool, MarkMode, CommentExport } from './ToothDiagram';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
+import { useDiagramHistory } from '../hooks/useDiagramHistory';
 
 interface DiagramViewProps {
   title: string;
@@ -49,6 +50,21 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
   const innerRef = React.useRef<ToothDiagramHandle>(null);
 
+  // Each diagram has its own undo stack. The id (stable per instance via
+  // React.useId) routes Cmd+Z to whichever diagram the user touched last.
+  const diagramId = React.useId();
+  const history = useDiagramHistory(
+    diagramId,
+    toothMarks,
+    comments,
+    strokes,
+    {
+      onMarks: onToothMarksChange,
+      onComments: onCommentsChange,
+      onStrokes: onStrokesChange,
+    }
+  );
+
   React.useImperativeHandle(ref, () => ({
     getSvgElement: () => innerRef.current?.getSvgElement() ?? null,
     getCommentExports: () => innerRef.current?.getCommentExports() ?? [],
@@ -75,7 +91,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         <span className="dental-grid__title">{title}</span>
       </div>
 
-      <div className="diagram-view">
+      <div className="diagram-view" onMouseDown={history.claim}>
         <div className="diagram-view__toolbar">
           <div
             className="diagram-view__tool-group"
@@ -105,6 +121,33 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-pressed={tool === 'draw'}
             >
               ✏️ Draw
+            </button>
+          </div>
+
+          <div
+            className="diagram-view__history"
+            role="group"
+            aria-label="Undo / Redo"
+          >
+            <button
+              type="button"
+              className="diagram-view__action"
+              onClick={history.undo}
+              disabled={!history.canUndo}
+              aria-label="Undo"
+              title="Undo (⌘Z)"
+            >
+              ↶
+            </button>
+            <button
+              type="button"
+              className="diagram-view__action"
+              onClick={history.redo}
+              disabled={!history.canRedo}
+              aria-label="Redo"
+              title="Redo (⌘⇧Z)"
+            >
+              ↷
             </button>
           </div>
 

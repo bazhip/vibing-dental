@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFHexString } from 'pdf-lib';
 import download from 'downloadjs';
 import {
   ToothData,
@@ -151,11 +151,16 @@ export async function buildDentalChartPDFBytes(
     species,
     logo,
   } satisfies StashedState);
+  // Bypass PDFTextField.setText / addToPage. Both eagerly call pdf-lib's
+  // defaultTextFieldAppearanceProvider → utf16Decode, which stack-overflows
+  // on long strings or surrogate-pair unicode (emojis in comment text).
+  // We write the value directly onto the AcroForm field; parseDentalChartPDF
+  // still reads it back via form.getTextField(...).getText(). No widget
+  // annotation is needed because the field is invisible by design.
   const stateField = form.createTextField(DIAGRAM_STATE_FIELD);
-  stateField.setText(stateJson);
-  stateField.addToPage(page1, { x: 0, y: 0, width: 0, height: 0, borderWidth: 0 });
+  stateField.acroField.setValue(PDFHexString.fromText(stateJson));
 
-  return await pdfDoc.save();
+  return await pdfDoc.save({ updateFieldAppearances: false });
 }
 
 /** Build the PDF + trigger a browser download. Filename derived from

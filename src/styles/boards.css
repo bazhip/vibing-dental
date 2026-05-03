@@ -284,701 +284,390 @@
 }
 
 
-/* ============== STYLES (per-board chrome) =================================
- * Each [data-style="…"] is a complete visual treatment that turns this
- * shell into the look-and-feel of a recognizable product.
+/* ============== STYLES (per-theme chrome) =================================
+ * Each [data-style="…"] block layers the theme's character on top of the
+ * tokens defined in themes.css — fonts, surface treatments, button
+ * shapes, header rhythm, etc. Tokens (var(--…)) are still the source of
+ * truth for color; these blocks add what tokens alone can't express.
  * =========================================================================
  */
 
-/* ---------- clean (default) ---------------------------------------------- */
-/* No overrides — uses CSS-variable defaults from index.css/EntryGrid.css. */
-
-
-/* ---------- Stripe ------------------------------------------------------- */
-[data-style="stripe"] body {
-  background: linear-gradient(180deg, #f6f9fc 0%, #ffffff 320px);
-  font-family: 'Sohne', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+/* Apply theme typography tokens once, on the document. Each theme sets
+   --font-body etc. in themes.css; here we propagate them to body + the
+   display/heading slot used across components. */
+body {
+  font-family: var(--font-body);
 }
-[data-style="stripe"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1280px;
-}
-[data-style="stripe"] .app-header {
-  background: linear-gradient(135deg, #635bff 0%, #00d4ff 100%);
-  color: white; padding: 3rem 2rem 4rem; text-align: left;
-  position: relative; overflow: hidden;
-}
-[data-style="stripe"] .app-header::after {
-  content: ''; position: absolute; inset: -50%;
-  background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.18), transparent 60%);
-  pointer-events: none;
-}
-[data-style="stripe"] .app-header h1 {
-  font-weight: 800; font-size: 2.4rem; letter-spacing: -0.025em; text-shadow: none;
-}
-[data-style="stripe"] .app-header p { opacity: 0.85; font-size: 1.05rem; }
-[data-style="stripe"] .topnav-layout {
-  margin-top: -2rem; position: relative; z-index: 2;
-  border-color: transparent; box-shadow: 0 8px 36px rgba(0, 0, 0, 0.10), 0 1px 0 rgba(0,0,0,0.05);
-}
-[data-style="stripe"] .topnav-layout__bar { background: white; padding: 0 1.5rem; }
-[data-style="stripe"] .topnav-layout__tab--active,
-[data-style="stripe"] .topnav-layout__tab--active:hover {
-  color: #635bff; border-bottom-color: #635bff;
-}
-[data-style="stripe"] .entry-grid__button {
-  background: #635bff; box-shadow: 0 1px 0 rgba(0,0,0,0.1), 0 4px 12px rgba(99,91,255,0.35);
-  text-transform: none; letter-spacing: 0; font-weight: 600;
-  padding: 0.75rem 1.4rem; border-radius: 6px;
+[data-theme] .entry-grid__title,
+[data-theme] .stacked-layout__title,
+[data-theme] .sidebar-layout__panel-header h2,
+[data-theme] .threecol-layout__header h2,
+[data-theme] .wizard-layout__panel-title,
+[data-theme] .dental-grid__title,
+[data-theme] .patient-form__section-title,
+[data-theme] .pdf-preview-header h2 {
+  font-family: var(--font-display);
+  letter-spacing: var(--letter-display);
+  font-weight: var(--weight-display);
+  text-transform: var(--case-display);
 }
 
 
-/* ---------- Twitter / X -------------------------------------------------- */
-[data-style="twitter"] body {
-  background: #ffffff;
-  font-family: 'TwitterChirp', -apple-system, system-ui, 'Segoe UI', sans-serif;
-}
-[data-style="twitter"] .App {
-  background: white; border-radius: 0; box-shadow: none;
-  max-width: 1280px;
-  border-left: 1px solid #eff3f4; border-right: 1px solid #eff3f4;
-}
-[data-style="twitter"] .app-header {
-  background: white; color: #0f1419; text-align: left;
-  border-bottom: 1px solid #eff3f4; padding: 1rem 1.5rem; box-shadow: none;
-}
-[data-style="twitter"] .app-header h1 {
-  font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; text-shadow: none;
-}
-[data-style="twitter"] .app-header p { font-size: 0.85rem; color: #536471; opacity: 1; }
-[data-style="twitter"] .threecol-layout__rail {
-  background: white; border: none; padding: 0.5rem;
-}
-[data-style="twitter"] .threecol-layout__rail-item {
-  font-size: 1rem; padding: 0.85rem 1rem;
-}
-[data-style="twitter"] .threecol-layout__rail-item--active {
-  background: rgba(15, 20, 25, 0.1); font-weight: 700;
-}
-[data-style="twitter"] .threecol-layout__main {
-  border-left: 1px solid #eff3f4; border-right: 1px solid #eff3f4;
-  border-radius: 0; border-top: none; border-bottom: none;
-}
-[data-style="twitter"] .threecol-layout__header {
-  background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-  padding: 0.85rem 1.5rem; border-color: #eff3f4;
-}
-[data-style="twitter"] .threecol-layout__header h2 { font-weight: 800; font-size: 1.2rem; }
-[data-style="twitter"] .threecol-layout__aux-card {
-  background: #f7f9fa; border: none; border-radius: 16px;
-}
-[data-style="twitter"] .entry-grid__button {
-  background: #1d9bf0; box-shadow: none; border-radius: 9999px;
-  padding: 0.75rem 1.5rem; font-weight: 700; text-transform: none; letter-spacing: 0;
-}
-[data-style="twitter"] .entry-grid__button:hover { background: #1a8cd8; }
-
-
-/* ---------- Linear ------------------------------------------------------- */
-[data-style="linear"] body {
-  background: #08090a; color: #d4d4d8;
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
-}
-[data-style="linear"] .App {
-  background: #08090a; border: 1px solid #1f1f23; border-radius: 12px;
-  box-shadow: none; max-width: 1280px;
-}
-[data-style="linear"] .app-header {
-  background: #0c0c0e; color: #fafafa; text-align: left;
-  border-bottom: 1px solid #1f1f23; padding: 1.25rem 1.75rem; box-shadow: none;
-}
-[data-style="linear"] .app-header h1 {
-  font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; text-shadow: none;
-}
-[data-style="linear"] .app-header p {
-  font-family: ui-monospace, SF Mono, monospace; font-size: 0.78rem;
-  color: #71717a; opacity: 1;
-}
-[data-style="linear"] .sidebar-layout__nav {
-  background: #0c0c0e; border-color: #1f1f23; padding: 0.6rem;
-}
-[data-style="linear"] .sidebar-layout__nav-item {
-  color: #a1a1aa; font-size: 0.88rem; padding: 0.5rem 0.7rem;
-  border-radius: 6px;
-}
-[data-style="linear"] .sidebar-layout__nav-item:hover {
-  background: #18181b; color: #fafafa;
-}
-[data-style="linear"] .sidebar-layout__nav-item--active,
-[data-style="linear"] .sidebar-layout__nav-item--active:hover {
-  background: #18181b; color: #fafafa; box-shadow: none;
-}
-[data-style="linear"] .sidebar-layout__nav-num {
-  font-family: ui-monospace, SF Mono, monospace; color: #52525b;
-}
-[data-style="linear"] .sidebar-layout__nav-item--active .sidebar-layout__nav-num { color: #818cf8; }
-[data-style="linear"] .sidebar-layout__main {
-  background: #08090a; border-color: #1f1f23;
-}
-[data-style="linear"] .sidebar-layout__panel-header h2 { color: #fafafa; }
-[data-style="linear"] .entry-grid__button {
-  background: #5e6ad2; color: white; box-shadow: none; border-radius: 6px;
-  text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 0.9rem;
-  padding: 0.5rem 1rem;
-}
-
-
-/* ---------- Notion ------------------------------------------------------- */
-[data-style="notion"] body {
-  background: #ffffff; color: #37352f;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-}
-[data-style="notion"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1100px;
-}
-[data-style="notion"] .app-header {
-  background: white; color: #37352f; text-align: left;
-  padding: 2rem 6rem 1rem; box-shadow: none; border-bottom: none;
-}
-[data-style="notion"] .app-header h1 {
-  font-size: 2.5rem; font-weight: 700; letter-spacing: -0.01em; text-shadow: none;
-}
-[data-style="notion"] .app-header p { color: #9b9a97; opacity: 1; }
-[data-style="notion"] .sidebar-layout {
-  padding: 0 6rem;
-}
-[data-style="notion"] .sidebar-layout__nav {
-  background: #fbfbfa; border: none; padding: 0.4rem;
-}
-[data-style="notion"] .sidebar-layout__nav-item {
-  color: #37352f; font-size: 0.9rem; padding: 0.4rem 0.6rem;
-  border-radius: 4px; gap: 0.6rem;
-}
-[data-style="notion"] .sidebar-layout__nav-item:hover { background: #efefef; }
-[data-style="notion"] .sidebar-layout__nav-item--active,
-[data-style="notion"] .sidebar-layout__nav-item--active:hover {
-  background: rgba(55,53,47,0.08); box-shadow: none;
-}
-[data-style="notion"] .sidebar-layout__nav-num { display: none; }
-[data-style="notion"] .sidebar-layout__main { background: white; border: none; padding: 0; }
-[data-style="notion"] .sidebar-layout__panel-header { border-color: rgba(55,53,47,0.16); }
-[data-style="notion"] .sidebar-layout__panel-header h2 { font-size: 1.6rem; font-weight: 700; }
-[data-style="notion"] .entry-grid__button {
-  background: #2f80ed; color: white; border-radius: 4px;
-  box-shadow: none; text-transform: none; letter-spacing: 0; font-weight: 500;
-}
-
-
-/* ---------- GitHub ------------------------------------------------------- */
-[data-style="github"] body {
-  background: #f6f8fa; color: #1f2328;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-[data-style="github"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1280px;
-  border-bottom: 1px solid #d1d9e0;
-}
-[data-style="github"] .app-header {
-  background: #24292f; color: #f0f6fc; padding: 1rem 1.5rem;
-  text-align: left; box-shadow: none;
-}
-[data-style="github"] .app-header h1 { font-size: 1.1rem; font-weight: 600; text-shadow: none; }
-[data-style="github"] .app-header p { font-size: 0.82rem; color: #8d96a0; opacity: 1; }
-[data-style="github"] .topnav-layout {
-  border: none; border-bottom: 1px solid #d1d9e0; border-radius: 0;
-  background: #f6f8fa;
-}
-[data-style="github"] .topnav-layout__bar {
-  background: #f6f8fa; border-bottom: 1px solid #d1d9e0; padding: 0 1rem;
-}
-[data-style="github"] .topnav-layout__tab {
-  font-size: 0.85rem; padding: 0.6rem 0.9rem; font-weight: 500; color: #1f2328;
-  border-bottom-width: 2px; border-radius: 6px 6px 0 0; margin-bottom: -1px;
-}
-[data-style="github"] .topnav-layout__tab--active,
-[data-style="github"] .topnav-layout__tab--active:hover {
-  background: white; border-bottom-color: #fd8c73; color: #1f2328;
-  border-left: 1px solid #d1d9e0; border-right: 1px solid #d1d9e0;
-  border-top: 1px solid #d1d9e0;
-}
-[data-style="github"] .topnav-layout__content { background: white; padding: 1.5rem; }
-[data-style="github"] .entry-grid__button {
-  background: #1f883d; color: white; border-radius: 6px;
-  text-transform: none; letter-spacing: 0; box-shadow: none;
-  font-weight: 600; font-size: 0.85rem; padding: 0.5rem 1rem;
-}
-
-
-/* ---------- Slack -------------------------------------------------------- */
-[data-style="slack"] body {
-  background: #1a1d29; color: #d1d2d3;
-  font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-[data-style="slack"] .App {
-  background: #1a1d29; border-radius: 12px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-  border: none;
-}
-[data-style="slack"] .app-header {
-  background: #350d36; color: white; padding: 0.85rem 1.5rem; text-align: left;
-}
-[data-style="slack"] .app-header h1 { font-size: 1.05rem; font-weight: 700; text-shadow: none; }
-[data-style="slack"] .app-header p { color: rgba(255,255,255,0.65); font-size: 0.82rem; opacity: 1; }
-[data-style="slack"] .threecol-layout__rail {
-  background: #350d36; border: none; padding: 0.5rem; color: #d1d2d3;
-}
-[data-style="slack"] .threecol-layout__rail-item {
-  color: rgba(255,255,255,0.85); border-radius: 4px;
-  padding: 0.45rem 0.7rem; font-size: 0.92rem; font-weight: 500;
-}
-[data-style="slack"] .threecol-layout__rail-item:hover { background: rgba(255,255,255,0.1); }
-[data-style="slack"] .threecol-layout__rail-item--active,
-[data-style="slack"] .threecol-layout__rail-item--active:hover {
-  background: #1164a3; color: white;
-}
-[data-style="slack"] .threecol-layout__main {
-  background: white; border: none; color: #1d1c1d;
-}
-[data-style="slack"] .threecol-layout__header h2 { color: #1d1c1d; }
-[data-style="slack"] .threecol-layout__aux-card {
-  background: #1a1d29; color: #d1d2d3; border-color: #4a154b;
-}
-[data-style="slack"] .threecol-layout__aux-card strong { color: white; }
-[data-style="slack"] .threecol-layout__aux-card p,
-[data-style="slack"] .threecol-layout__aux-card ul { color: rgba(255,255,255,0.7); }
-[data-style="slack"] .entry-grid__button {
-  background: #007a5a; box-shadow: none; border-radius: 4px;
-  text-transform: none; letter-spacing: 0;
-}
-
-
-/* ---------- Airbnb ------------------------------------------------------- */
-[data-style="airbnb"] body {
-  background: #ffffff; color: #222222;
-  font-family: 'Cereal', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-}
-[data-style="airbnb"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1280px;
-}
-[data-style="airbnb"] .app-header {
-  background: white; color: #222222; padding: 1.2rem 2rem 1rem;
-  text-align: left; border-bottom: 1px solid #ebebeb; box-shadow: none;
-}
-[data-style="airbnb"] .app-header h1 {
-  font-weight: 700; font-size: 1.6rem; text-shadow: none; letter-spacing: -0.01em;
-}
-[data-style="airbnb"] .app-header p { color: #717171; opacity: 1; font-size: 0.95rem; }
-[data-style="airbnb"] .topnav-layout {
-  border-radius: 0; border: none; box-shadow: none;
-  border-bottom: 1px solid #ebebeb;
-}
-[data-style="airbnb"] .topnav-layout__bar {
-  justify-content: center; gap: 0.25rem; padding: 1rem; border: none;
-}
-[data-style="airbnb"] .topnav-layout__tab {
-  border-radius: 999px; padding: 0.65rem 1.2rem; border-bottom: none;
-  font-weight: 600; color: #222222;
-}
-[data-style="airbnb"] .topnav-layout__tab:hover { background: #f7f7f7; }
-[data-style="airbnb"] .topnav-layout__tab--active,
-[data-style="airbnb"] .topnav-layout__tab--active:hover {
-  background: #222222; color: white; border-bottom: none;
-}
-[data-style="airbnb"] .topnav-layout__content { padding: 2rem; }
-[data-style="airbnb"] .entry-grid__button {
-  background: linear-gradient(135deg, #ff385c 0%, #d70466 100%);
-  color: white; border-radius: 8px; box-shadow: none;
-  text-transform: none; letter-spacing: 0; font-weight: 600;
-  padding: 0.85rem 1.5rem;
-}
-
-
-/* ---------- Square ------------------------------------------------------- */
-[data-style="square"] body {
-  background: #ffffff; color: #000000;
-  font-family: 'Square Sans Display', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-[data-style="square"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1100px;
-  border: 2px solid black;
-}
-[data-style="square"] .app-header {
-  background: black; color: white; padding: 2.5rem 2rem;
-  text-align: left; box-shadow: none;
-}
-[data-style="square"] .app-header h1 {
-  font-size: 2.8rem; font-weight: 800; letter-spacing: -0.02em; text-shadow: none;
-}
-[data-style="square"] .app-header p { color: rgba(255,255,255,0.6); opacity: 1; }
-[data-style="square"] .stacked-layout__section {
-  background: white; border: none;
-  border-bottom: 2px solid black; border-radius: 0; padding: 2rem;
-}
-[data-style="square"] .stacked-layout__section:last-child { border-bottom: none; }
-[data-style="square"] .stacked-layout__num,
-[data-style="square"] .stacked-layout__title {
-  font-family: ui-monospace, SF Mono, monospace; color: black;
-}
-[data-style="square"] .stacked-layout__title { font-weight: 700; font-size: 1.5rem; }
-[data-style="square"] .entry-grid__button {
-  background: black; color: white; border-radius: 0;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  font-family: ui-monospace, SF Mono, monospace; box-shadow: none;
-}
-
-
-/* ---------- PayPal ------------------------------------------------------- */
-[data-style="paypal"] body {
-  background: #f5f7fa; color: #0070ba;
-  font-family: 'PayPalSansBig', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-[data-style="paypal"] .App {
-  background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  max-width: 720px;
-}
-[data-style="paypal"] .app-header {
-  background: linear-gradient(135deg, #003087 0%, #009cde 100%);
-  color: white; padding: 2rem; text-align: left; border-radius: 16px 16px 0 0;
-}
-[data-style="paypal"] .app-header h1 { font-weight: 700; font-size: 1.8rem; text-shadow: none; }
-[data-style="paypal"] .app-header p { opacity: 0.9; }
-[data-style="paypal"] .wizard-layout {
-  background: white; border: none; padding: 2.5rem;
-}
-[data-style="paypal"] .wizard-layout__step--active .wizard-layout__step-dot,
-[data-style="paypal"] .wizard-layout__step--done .wizard-layout__step-dot {
-  background: #0070ba; border-color: #0070ba;
-}
-[data-style="paypal"] .wizard-layout__step--active .wizard-layout__step-button { color: #0070ba; }
-[data-style="paypal"] .wizard-layout__nav-button--primary {
-  background: #0070ba; border-color: #0070ba; border-radius: 999px;
-  padding: 0.85rem 1.7rem;
-}
-[data-style="paypal"] .wizard-layout__nav-button:not(.wizard-layout__nav-button--primary) {
-  border-radius: 999px; border: 1px solid #0070ba; color: #0070ba;
-}
-[data-style="paypal"] .entry-grid__button {
-  background: #ffc439; color: #003087; border-radius: 999px;
-  text-transform: none; letter-spacing: 0; font-weight: 700;
-  padding: 0.85rem 2rem;
-}
-
-
-/* ---------- Apple Cards -------------------------------------------------- */
-[data-style="apple"] body {
-  background: #f5f5f7; color: #1d1d1f;
-  font-family: -apple-system, 'SF Pro Display', BlinkMacSystemFont, system-ui, sans-serif;
-}
-[data-style="apple"] .App {
-  background: transparent; border-radius: 0; box-shadow: none; max-width: 1100px;
-}
-[data-style="apple"] .app-header {
-  background: transparent; color: #1d1d1f; padding: 3rem 2rem 1rem;
-  text-align: center; box-shadow: none;
-}
-[data-style="apple"] .app-header h1 {
-  font-size: 3rem; font-weight: 700; letter-spacing: -0.025em; text-shadow: none;
-}
-[data-style="apple"] .app-header p {
-  color: #86868b; opacity: 1; font-size: 1.1rem; font-weight: 500;
-}
-[data-style="apple"] .stacked-layout {
-  padding: 0 2rem 2rem;
-}
-[data-style="apple"] .stacked-layout__section {
-  background: white; border-radius: 18px; border: none;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.06);
-  padding: 2rem;
-}
-[data-style="apple"] .stacked-layout__title { font-weight: 700; letter-spacing: -0.01em; }
-[data-style="apple"] .entry-grid__button {
-  background: #0071e3; border-radius: 999px;
-  text-transform: none; letter-spacing: 0; font-weight: 500;
-  font-size: 1rem; padding: 0.75rem 1.5rem; box-shadow: none;
-}
-
-
-/* ---------- Intercom ----------------------------------------------------- */
-[data-style="intercom"] body {
-  background: #f7f9fc; color: #1f2937;
-  font-family: -apple-system, 'Inter', BlinkMacSystemFont, sans-serif;
-}
-[data-style="intercom"] .App {
-  background: white; border-radius: 16px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
-  max-width: 1180px;
-}
-[data-style="intercom"] .app-header {
-  background: white; color: #1f2937; text-align: left;
-  border-bottom: 1px solid #e5e7eb; padding: 1.5rem 2rem; box-shadow: none;
-}
-[data-style="intercom"] .app-header h1 { font-size: 1.5rem; font-weight: 700; text-shadow: none; }
-[data-style="intercom"] .tabs {
-  border-radius: 16px; border-color: #e5e7eb;
-}
-[data-style="intercom"] .tabs__bar {
-  background: white; border-color: #e5e7eb; padding: 0.75rem 1rem;
-}
-[data-style="intercom"] .tabs__tab {
-  font-weight: 600; padding: 0.55rem 1rem; border-radius: 999px;
-}
-[data-style="intercom"] .tabs__tab--active,
-[data-style="intercom"] .tabs__tab--active:hover {
-  background: #ec4899; color: white; box-shadow: none;
-}
-[data-style="intercom"] .entry-grid__button {
-  background: #ec4899; border-radius: 999px; box-shadow: none;
-  text-transform: none; letter-spacing: 0; font-weight: 600;
-}
-
-
-/* ---------- HubSpot ------------------------------------------------------ */
-[data-style="hubspot"] body {
-  background: #f5f8fa; color: #33475b;
-  font-family: 'Lexend Deca', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-[data-style="hubspot"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1280px;
-}
-[data-style="hubspot"] .app-header {
-  background: #2e3a47; color: white; padding: 1rem 1.5rem;
-  text-align: left; box-shadow: none;
-}
-[data-style="hubspot"] .app-header h1 { font-size: 1.1rem; font-weight: 600; text-shadow: none; }
-[data-style="hubspot"] .app-header p { color: rgba(255,255,255,0.7); opacity: 1; font-size: 0.82rem; }
-[data-style="hubspot"] .topnav-layout {
-  border: none; border-radius: 0; border-bottom: 1px solid #cbd6e2;
-}
-[data-style="hubspot"] .topnav-layout__bar { background: white; border-bottom-color: #cbd6e2; }
-[data-style="hubspot"] .topnav-layout__tab--active,
-[data-style="hubspot"] .topnav-layout__tab--active:hover {
-  color: #ff7a59; border-bottom-color: #ff7a59;
-}
-[data-style="hubspot"] .entry-grid__button {
-  background: #ff7a59; color: white; border-radius: 3px;
-  text-transform: none; letter-spacing: 0; font-weight: 600; box-shadow: none;
-}
-
-
-/* ---------- Editorial / Brutalist / Glass / Neon (kept from prior pass) -- */
-[data-style="editorial"] body {
-  background: #f5f3eb; font-family: 'Charter', 'Georgia', 'Cambria', serif;
-  color: #1c1917; line-height: 1.55;
-}
-[data-style="editorial"] .App { background: #faf8f3; box-shadow: 0 4px 28px rgba(28,25,23,0.10); border-radius: 4px; }
-[data-style="editorial"] .app-header {
-  background: #faf8f3; color: #1c1917; border-bottom: 1px solid #d6d3d1;
-  text-align: left; padding: 2rem 2.5rem 1.5rem; font-family: inherit;
-}
-[data-style="editorial"] .app-header h1 { font-family: inherit; font-weight: 700; text-shadow: none; letter-spacing: -0.02em; font-size: 2.2rem; }
-[data-style="editorial"] .app-header p { font-style: italic; color: #57534e; opacity: 1; }
-[data-style="editorial"] .sidebar-layout__nav,
-[data-style="editorial"] .sidebar-layout__main,
-[data-style="editorial"] .stacked-layout__section {
-  background: #faf8f3; border: 1px solid #e7e2d4;
-}
-[data-style="editorial"] .sidebar-layout__panel-header h2,
-[data-style="editorial"] .stacked-layout__title { font-family: inherit; font-weight: 700; }
-[data-style="editorial"] .sidebar-layout__nav-num,
-[data-style="editorial"] .stacked-layout__num {
-  font-family: ui-monospace, SF Mono, monospace; color: #b45309;
-}
-[data-style="editorial"] .entry-grid__button {
-  background: #1c1917; color: #faf8f3; border-radius: 4px;
-  text-transform: none; font-family: inherit; letter-spacing: 0;
-}
-
-[data-style="brutalist"] body {
-  background: #ffffff; font-family: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace;
-  color: #0a0a0a;
-}
-[data-style="brutalist"] .App {
-  background: white; border: 3px solid #0a0a0a; border-radius: 0;
-  box-shadow: 8px 8px 0 #0a0a0a;
-}
-[data-style="brutalist"] .app-header {
-  background: #0a0a0a; color: white; border-radius: 0;
-  border-bottom: 3px solid #0a0a0a; text-align: left; font-family: inherit;
-}
-[data-style="brutalist"] .app-header h1,
-[data-style="brutalist"] .app-header p,
-[data-style="brutalist"] .stacked-layout__title,
-[data-style="brutalist"] .sidebar-layout__panel-header h2 {
-  font-family: inherit; text-shadow: none; letter-spacing: 0; font-weight: 700;
-}
-[data-style="brutalist"] .tabs {
-  background: white; border: 2px solid #0a0a0a; border-radius: 0; box-shadow: 4px 4px 0 #0a0a0a;
-}
-[data-style="brutalist"] .tabs__bar { background: #f5f5f4; border-bottom: 2px solid #0a0a0a; }
-[data-style="brutalist"] .tabs__tab { border-radius: 0; font-weight: 700; color: #0a0a0a; }
-[data-style="brutalist"] .tabs__tab--active,
-[data-style="brutalist"] .tabs__tab--active:hover {
-  background: #0a0a0a; color: white; box-shadow: none; border-radius: 0;
-}
-[data-style="brutalist"] .entry-grid__button {
-  background: #0a0a0a; color: white; border: 2px solid #0a0a0a; border-radius: 0;
-  text-transform: uppercase; font-family: inherit; letter-spacing: 0.05em;
-  box-shadow: 6px 6px 0 #0a0a0a;
-}
-[data-style="brutalist"] .entry-grid__button:hover { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 #0a0a0a; }
-
-[data-style="glass"] .App { background: transparent; box-shadow: none; }
-[data-style="glass"] .app-header {
-  background: rgba(255,255,255,0.10); backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.18); color: white;
-}
-[data-style="glass"] .tabs,
-[data-style="glass"] .sidebar-layout__main,
-[data-style="glass"] .sidebar-layout__nav,
-[data-style="glass"] .stacked-layout__section,
-[data-style="glass"] .topnav-layout,
-[data-style="glass"] .threecol-layout__main,
-[data-style="glass"] .threecol-layout__rail,
-[data-style="glass"] .threecol-layout__aux-card,
-[data-style="glass"] .wizard-layout {
-  background: rgba(255,255,255,0.16); backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.22); color: white;
-}
-[data-style="glass"] .tabs__tab--active { background: rgba(255,255,255,0.22); color: white; }
-[data-style="glass"] .stacked-layout__title,
-[data-style="glass"] .sidebar-layout__panel-header h2,
-[data-style="glass"] .threecol-layout__header h2 { color: white; }
-
-[data-style="neon"] body { background: #050510; color: #d8d8e8; }
-[data-style="neon"] .App {
-  background: #0a0a18; border: 1px solid #1f1f3a;
-  box-shadow: 0 0 60px rgba(56,189,248,0.18), inset 0 0 0 1px rgba(56,189,248,0.08);
-}
-[data-style="neon"] .app-header {
-  background: linear-gradient(135deg, #050510 0%, #1f1f3a 100%);
-  color: #38bdf8; border-bottom: 1px solid rgba(56,189,248,0.45);
-}
-[data-style="neon"] .app-header h1 {
-  text-shadow: 0 0 8px rgba(56,189,248,0.55), 0 0 20px rgba(56,189,248,0.35);
-}
-[data-style="neon"] .tabs,
-[data-style="neon"] .sidebar-layout__main,
-[data-style="neon"] .sidebar-layout__nav,
-[data-style="neon"] .stacked-layout__section,
-[data-style="neon"] .topnav-layout,
-[data-style="neon"] .threecol-layout__main,
-[data-style="neon"] .threecol-layout__rail {
-  background: rgba(10,10,24,0.9); border: 1px solid rgba(56,189,248,0.30); color: #d8d8e8;
-}
-[data-style="neon"] .tabs__tab--active {
-  background: linear-gradient(135deg, #38bdf8 0%, #d946ef 100%); color: #050510;
-  box-shadow: 0 0 16px rgba(217,70,239,0.45);
-}
-[data-style="neon"] .entry-grid__button {
-  background: linear-gradient(135deg, #38bdf8 0%, #d946ef 100%); color: #050510;
-  text-transform: uppercase; letter-spacing: 0.1em;
-  box-shadow: 0 0 20px rgba(56,189,248,0.55);
-}
-
-
-/* ---------- Cash App ----------------------------------------------------- */
-[data-style="cash"] body {
-  background: #00d54b; color: #ffffff;
-  font-family: -apple-system, 'Inter', BlinkMacSystemFont, sans-serif;
-}
-[data-style="cash"] .App {
-  background: #00d54b; border-radius: 0; box-shadow: none;
-}
-[data-style="cash"] .app-header {
-  background: #00d54b; color: white; padding: 3rem 2rem; text-align: center;
+/* ---------- 1. Aperture (Apple-luxe glassmorphism) ----------------------- */
+[data-style="aperture"] body { background: var(--bg-page); }
+[data-style="aperture"] .App {
+  background: transparent; box-shadow: none; border-radius: 0;
+}
+[data-style="aperture"] .entry-grid__topbar { border-bottom: 1px solid var(--border); }
+[data-style="aperture"] .patient-form,
+[data-style="aperture"] .stacked-layout__section,
+[data-style="aperture"] .sidebar-layout__main,
+[data-style="aperture"] .sidebar-layout__nav,
+[data-style="aperture"] .topnav-layout,
+[data-style="aperture"] .tabs,
+[data-style="aperture"] .threecol-layout__main,
+[data-style="aperture"] .threecol-layout__rail,
+[data-style="aperture"] .threecol-layout__aux-card {
+  background: var(--surface);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter:         saturate(180%) blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+[data-style="aperture"] .sidebar-layout__nav-item--active {
+  background: rgba(0, 122, 255, 0.10);
+  color: var(--primary);
   box-shadow: none;
 }
-[data-style="cash"] .app-header h1 {
-  font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; text-shadow: none;
+[data-style="aperture"] .entry-grid__button {
+  background: var(--primary); color: white; border-radius: 980px;
+  padding: 0.85rem 1.75rem; box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(0,122,255,0.30);
+  text-transform: none; letter-spacing: -0.01em; font-weight: 600;
 }
-[data-style="cash"] .app-header p { color: rgba(255,255,255,0.85); opacity: 1; font-size: 1.1rem; }
-[data-style="cash"] .stacked-layout {
-  padding: 0 2rem 2rem;
+[data-style="aperture"] .entry-grid__button:hover { background: var(--primary-end); }
+
+
+/* ---------- 2. Ledger (Stripe SaaS) -------------------------------------- */
+[data-style="ledger"] body { background: var(--bg-page); }
+[data-style="ledger"] .App { background: transparent; box-shadow: none; border-radius: 0; }
+[data-style="ledger"] .patient-form,
+[data-style="ledger"] .stacked-layout__section,
+[data-style="ledger"] .sidebar-layout__main,
+[data-style="ledger"] .topnav-layout,
+[data-style="ledger"] .tabs {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
-[data-style="cash"] .stacked-layout__section {
-  background: white; color: #000; border-radius: 28px;
-  border: none; padding: 2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+[data-style="ledger"] .sidebar-layout__nav {
+  background: transparent; border: none; padding: 0; box-shadow: none;
 }
-[data-style="cash"] .stacked-layout__num {
-  font-family: ui-monospace, SF Mono, monospace; color: #00d54b;
+[data-style="ledger"] .sidebar-layout__nav-item {
+  border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; font-size: 0.875rem;
 }
-[data-style="cash"] .entry-grid__button {
-  background: black; color: white; border-radius: 999px;
-  text-transform: none; padding: 1rem 2rem; font-weight: 700;
+[data-style="ledger"] .sidebar-layout__nav-item--active {
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
+  color: var(--text);
+}
+[data-style="ledger"] .sidebar-layout__nav-num { color: var(--primary); }
+[data-style="ledger"] .entry-grid__button {
+  background: var(--primary); color: white; border-radius: var(--radius-sm);
+  padding: 0.6rem 1.25rem; box-shadow: 0 1px 2px rgba(99,91,255,0.25);
+  text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 0.92rem;
+}
+[data-style="ledger"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
+
+
+/* ---------- 3. Oracle (Linear-style dense) ------------------------------- */
+[data-style="oracle"] body { background: var(--bg-page); }
+[data-style="oracle"] .App { background: var(--surface); box-shadow: none; border-radius: 0; max-width: 1280px; }
+[data-style="oracle"] .patient-form,
+[data-style="oracle"] .stacked-layout__section,
+[data-style="oracle"] .sidebar-layout__main,
+[data-style="oracle"] .sidebar-layout__nav,
+[data-style="oracle"] .topnav-layout,
+[data-style="oracle"] .tabs {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: none;
+}
+[data-style="oracle"] .topnav-layout__bar { background: var(--surface-alt); padding: 0 0.75rem; }
+[data-style="oracle"] .topnav-layout__tab {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.7rem 0.85rem;
+}
+[data-style="oracle"] .topnav-layout__tab--active,
+[data-style="oracle"] .topnav-layout__tab--active:hover {
+  color: var(--primary); border-bottom-color: var(--primary);
+}
+[data-style="oracle"] .entry-grid__button {
+  background: var(--primary); color: white; border-radius: var(--radius-sm);
+  padding: 0.55rem 1.1rem; box-shadow: none;
+  text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; font-size: 0.78rem;
+}
+[data-style="oracle"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
+
+
+/* ---------- 4. Folio (Editorial serif) ----------------------------------- */
+[data-style="folio"] body { background: var(--bg-page); }
+[data-style="folio"] .App { background: var(--surface); box-shadow: 0 4px 28px rgba(28,25,23,0.10); border-radius: 0; }
+[data-style="folio"] .entry-grid__title {
+  border-bottom: 3px double var(--primary); padding-bottom: 0.4rem;
+  font-style: normal; font-size: 1.75rem;
+}
+[data-style="folio"] .patient-form,
+[data-style="folio"] .stacked-layout__section,
+[data-style="folio"] .sidebar-layout__main,
+[data-style="folio"] .sidebar-layout__nav,
+[data-style="folio"] .topnav-layout,
+[data-style="folio"] .tabs {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: none;
+}
+[data-style="folio"] .sidebar-layout__panel-header {
+  border-bottom: 2px solid var(--primary);
+}
+[data-style="folio"] .sidebar-layout__panel-header h2,
+[data-style="folio"] .stacked-layout__title,
+[data-style="folio"] .dental-grid__title,
+[data-style="folio"] .patient-form__section-title {
+  font-style: italic;
+}
+[data-style="folio"] .sidebar-layout__nav-num,
+[data-style="folio"] .stacked-layout__num {
+  font-family: var(--font-display); font-style: italic;
+}
+[data-style="folio"] .entry-grid__button {
+  background: var(--primary); color: var(--surface); border-radius: 0;
+  padding: 0.7rem 1.5rem; box-shadow: none;
+  font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.85rem;
+  font-family: var(--font-display);
+}
+[data-style="folio"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
+
+
+/* ---------- 5. Concrete (Brutalist mono) --------------------------------- */
+[data-style="concrete"] body { background: var(--bg-page); }
+[data-style="concrete"] .App {
+  background: var(--surface); border: 2px solid #000; border-radius: 0;
+  box-shadow: 8px 8px 0 #000;
+}
+[data-style="concrete"] .entry-grid__title {
+  text-transform: uppercase; letter-spacing: 0.02em;
+}
+[data-style="concrete"] .patient-form,
+[data-style="concrete"] .stacked-layout__section,
+[data-style="concrete"] .sidebar-layout__main,
+[data-style="concrete"] .sidebar-layout__nav,
+[data-style="concrete"] .topnav-layout,
+[data-style="concrete"] .tabs {
+  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
+}
+[data-style="concrete"] .tabs__bar { border-bottom: 2px solid #000; background: var(--surface-alt); padding: 0; }
+[data-style="concrete"] .tabs__tab {
+  border-radius: 0; border-right: 2px solid #000; padding: 0.7rem 1rem;
+  font-weight: 700; color: #000;
+}
+[data-style="concrete"] .tabs__tab--active,
+[data-style="concrete"] .tabs__tab--active:hover {
+  background: #000; color: var(--surface); box-shadow: none;
+}
+[data-style="concrete"] .entry-grid__button {
+  background: var(--primary); color: var(--surface); border: 2px solid #000;
+  border-radius: 0; padding: 0.85rem 1.75rem;
+  box-shadow: 6px 6px 0 #000;
+  text-transform: uppercase; letter-spacing: 0.02em; font-weight: 700;
+}
+[data-style="concrete"] .entry-grid__button:hover {
+  transform: translate(-2px, -2px); box-shadow: 8px 8px 0 #000;
+}
+[data-style="concrete"] .entry-grid__button:active {
+  transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000;
 }
 
 
-/* ---------- Shopify ------------------------------------------------------ */
-[data-style="shopify"] body {
-  background: #f6f6f7; color: #202223;
-  font-family: 'ShopifySans', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+/* ---------- 6. Atrium (Japandi minimal) ---------------------------------- */
+[data-style="atrium"] body { background: var(--bg-page); }
+[data-style="atrium"] .App {
+  background: transparent; box-shadow: none; border-radius: 0; max-width: 1080px;
 }
-[data-style="shopify"] .App {
-  background: white; border-radius: 0; box-shadow: none; max-width: 1280px;
+[data-style="atrium"] .entry-grid-form { gap: 3rem; }
+[data-style="atrium"] .stacked-layout { gap: 3rem; }
+[data-style="atrium"] .stacked-layout__section,
+[data-style="atrium"] .patient-form {
+  background: transparent; border: none; border-top: 1px solid var(--border-strong);
+  border-radius: 0; padding: 1.75rem 0 0; box-shadow: none;
 }
-[data-style="shopify"] .app-header {
-  background: #1a1f2c; color: white; padding: 0.85rem 1.25rem;
-  text-align: left; box-shadow: none;
+[data-style="atrium"] .stacked-layout__header {
+  border-bottom: none; padding: 0; margin-bottom: 1.25rem;
 }
-[data-style="shopify"] .app-header h1 { font-size: 1.05rem; font-weight: 700; text-shadow: none; }
-[data-style="shopify"] .app-header p { color: rgba(255,255,255,0.65); opacity: 1; font-size: 0.82rem; }
-[data-style="shopify"] .topnav-layout {
-  border: none; border-radius: 0; border-bottom: 1px solid #e1e3e5;
+[data-style="atrium"] .stacked-layout__num {
+  color: var(--primary); font-family: var(--font-display); font-size: 0.85rem;
+  font-style: italic; font-weight: 400; letter-spacing: 0.06em;
 }
-[data-style="shopify"] .topnav-layout__bar { background: white; border-bottom-color: #e1e3e5; }
-[data-style="shopify"] .topnav-layout__tab { font-weight: 500; }
-[data-style="shopify"] .topnav-layout__tab--active,
-[data-style="shopify"] .topnav-layout__tab--active:hover {
-  color: #008060; border-bottom-color: #008060; font-weight: 600;
+[data-style="atrium"] .stacked-layout__title { font-weight: 500; font-size: 1.4rem; }
+[data-style="atrium"] .entry-grid__button {
+  background: transparent; color: var(--primary);
+  border: 1px solid var(--primary); border-radius: 0;
+  padding: 0.6rem 1.5rem; box-shadow: none;
+  text-transform: none; letter-spacing: 0.05em; font-weight: 500;
 }
-[data-style="shopify"] .entry-grid__button {
-  background: #008060; color: white; border-radius: 8px;
-  text-transform: none; letter-spacing: 0; font-weight: 600;
-  padding: 0.65rem 1.25rem; box-shadow: none;
+[data-style="atrium"] .entry-grid__button:hover {
+  background: var(--primary); color: var(--surface); transform: none;
 }
 
 
-/* ---------- Discord ------------------------------------------------------ */
-[data-style="discord"] body {
-  background: #1e1f22; color: #dbdee1;
-  font-family: 'gg sans', 'Whitney', -apple-system, BlinkMacSystemFont, sans-serif;
+/* ---------- 7. Pulse (Hospital EHR) -------------------------------------- */
+[data-style="pulse"] body { background: var(--bg-page); }
+[data-style="pulse"] .App { background: transparent; box-shadow: none; border-radius: 0; }
+[data-style="pulse"] .patient-form,
+[data-style="pulse"] .stacked-layout__section,
+[data-style="pulse"] .sidebar-layout__main,
+[data-style="pulse"] .sidebar-layout__nav,
+[data-style="pulse"] .topnav-layout,
+[data-style="pulse"] .tabs {
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
-[data-style="discord"] .App {
-  background: #313338; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  border: none;
+[data-style="pulse"] .sidebar-layout__nav { padding: 0; background: transparent; border: none; box-shadow: none; }
+[data-style="pulse"] .sidebar-layout__nav-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 4px;
 }
-[data-style="discord"] .app-header {
-  background: #2b2d31; color: white; padding: 0.85rem 1rem;
-  text-align: left; box-shadow: none; border-bottom: 1px solid #1e1f22;
+[data-style="pulse"] .sidebar-layout__nav-item--active {
+  background: var(--primary); color: var(--surface); border-color: var(--primary);
 }
-[data-style="discord"] .app-header h1 { font-size: 1.05rem; font-weight: 700; text-shadow: none; }
-[data-style="discord"] .app-header p { color: #b5bac1; opacity: 1; font-size: 0.82rem; }
-[data-style="discord"] .threecol-layout__rail {
-  background: #2b2d31; border: none; padding: 0.5rem;
+[data-style="pulse"] .sidebar-layout__nav-item--active .sidebar-layout__nav-num { color: rgba(255,255,255,0.85); }
+[data-style="pulse"] .sidebar-layout__panel-header {
+  background: var(--surface-alt);
+  margin: -1.5rem -1.5rem 1.25rem;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 2px solid var(--primary);
 }
-[data-style="discord"] .threecol-layout__rail-item {
-  color: #b5bac1; font-size: 0.95rem; padding: 0.5rem 0.75rem;
-  border-radius: 4px; font-weight: 500;
+[data-style="pulse"] .entry-grid__button {
+  background: var(--primary); color: var(--surface); border-radius: var(--radius);
+  padding: 0.7rem 1.5rem; box-shadow: var(--shadow);
+  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; font-size: 0.85rem;
 }
-[data-style="discord"] .threecol-layout__rail-item:hover {
-  background: rgba(78,80,88,0.4); color: #dcddde;
+[data-style="pulse"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
+
+
+/* ---------- 8. Bauhaus (Modernist) --------------------------------------- */
+[data-style="bauhaus"] body { background: var(--bg-page); }
+[data-style="bauhaus"] .App {
+  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
+  max-width: 1280px;
 }
-[data-style="discord"] .threecol-layout__rail-item--active,
-[data-style="discord"] .threecol-layout__rail-item--active:hover {
-  background: #404249; color: white;
+[data-style="bauhaus"] .entry-grid__topbar {
+  border-bottom: 2px solid #000;
+  background: var(--primary); color: var(--surface);
+  padding: 1rem 1.5rem; margin: -2rem -1.5rem 2rem;
 }
-[data-style="discord"] .threecol-layout__main {
-  background: #313338; border: none; color: #dbdee1;
+[data-style="bauhaus"] .entry-grid__title { color: var(--surface); }
+[data-style="bauhaus"] .stacked-layout__section,
+[data-style="bauhaus"] .patient-form {
+  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
 }
-[data-style="discord"] .threecol-layout__header { background: #313338; border-bottom: 1px solid #1e1f22; }
-[data-style="discord"] .threecol-layout__header h2 { color: white; }
-[data-style="discord"] .threecol-layout__aux-card {
-  background: #2b2d31; color: #dbdee1; border-color: #1e1f22;
+[data-style="bauhaus"] .stacked-layout__header {
+  background: var(--accent); color: var(--surface);
+  margin: -1.5rem -1.5rem 1.5rem; padding: 0.75rem 1.5rem;
+  border-bottom: 2px solid #000;
 }
-[data-style="discord"] .threecol-layout__aux-card strong { color: white; }
-[data-style="discord"] .entry-grid__button {
-  background: #5865f2; color: white; border-radius: 4px;
-  text-transform: none; letter-spacing: 0; font-weight: 500; box-shadow: none;
+[data-style="bauhaus"] .stacked-layout__num { color: var(--surface); font-size: 1.4rem; font-weight: 800; }
+[data-style="bauhaus"] .stacked-layout__title { color: var(--surface); }
+[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+2) .stacked-layout__header { background: var(--primary); }
+[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__header { background: #f4c542; color: #000; }
+[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__num,
+[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__title { color: #000; }
+[data-style="bauhaus"] .entry-grid__button {
+  background: var(--primary); color: var(--surface); border: 2px solid #000;
+  border-radius: 0; padding: 0.85rem 1.75rem; box-shadow: none;
+  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 800;
 }
+[data-style="bauhaus"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
+
+
+/* ---------- 9. Vapor (Cyberpunk) ----------------------------------------- */
+[data-style="vapor"] body { background: var(--bg-page); color: var(--text); min-height: 100vh; }
+[data-style="vapor"] .App {
+  background: transparent; box-shadow: none; border-radius: 0;
+}
+[data-style="vapor"] .entry-grid__title {
+  color: var(--text); text-shadow: 0 0 12px rgba(238,68,189,0.6);
+}
+[data-style="vapor"] .patient-form,
+[data-style="vapor"] .stacked-layout__section,
+[data-style="vapor"] .sidebar-layout__main,
+[data-style="vapor"] .sidebar-layout__nav,
+[data-style="vapor"] .topnav-layout,
+[data-style="vapor"] .tabs {
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+[data-style="vapor"] .topnav-layout__bar {
+  background: rgba(28,19,56,0.6); border-bottom: 1px solid var(--border-strong);
+}
+[data-style="vapor"] .topnav-layout__tab {
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem;
+}
+[data-style="vapor"] .topnav-layout__tab--active,
+[data-style="vapor"] .topnav-layout__tab--active:hover {
+  color: var(--accent); border-bottom-color: var(--accent);
+  text-shadow: 0 0 8px rgba(34,211,238,0.6);
+}
+[data-style="vapor"] .entry-grid__button {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; border: none; border-radius: var(--radius);
+  padding: 0.75rem 1.75rem;
+  box-shadow: 0 0 20px rgba(238,68,189,0.5), 0 0 30px rgba(34,211,238,0.3);
+  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
+}
+[data-style="vapor"] .entry-grid__button:hover {
+  box-shadow: 0 0 30px rgba(238,68,189,0.7), 0 0 50px rgba(34,211,238,0.5);
+  transform: none;
+}
+
+
+/* ---------- 10. Almanac (Vintage apothecary) ----------------------------- */
+[data-style="almanac"] body { background: var(--bg-page); }
+[data-style="almanac"] .App {
+  background: var(--surface); box-shadow: 0 4px 28px rgba(31,19,10,0.18); border-radius: 0;
+  border: 1px solid var(--border-strong);
+  max-width: 1200px;
+}
+[data-style="almanac"] .entry-grid__topbar {
+  border-bottom: 4px double var(--primary);
+  padding-bottom: 1.25rem;
+}
+[data-style="almanac"] .entry-grid__title {
+  font-family: var(--font-display); font-size: 1.85rem;
+}
+[data-style="almanac"] .stacked-layout__section,
+[data-style="almanac"] .patient-form {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 0;
+  box-shadow: none;
+}
+[data-style="almanac"] .stacked-layout__header {
+  border-bottom: 2px solid var(--primary); position: relative;
+}
+[data-style="almanac"] .stacked-layout__num {
+  font-family: var(--font-display); color: var(--primary); font-size: 2rem;
+  font-weight: 700; line-height: 1;
+}
+[data-style="almanac"] .stacked-layout__title {
+  font-family: var(--font-display); font-style: italic; font-size: 1.5rem;
+}
+[data-style="almanac"] .dental-grid__title,
+[data-style="almanac"] .patient-form__section-title {
+  font-family: var(--font-display); font-style: italic;
+}
+[data-style="almanac"] .entry-grid__button {
+  background: var(--primary); color: var(--surface); border: 1px solid var(--primary-end);
+  border-radius: 0; padding: 0.8rem 1.75rem; box-shadow: none;
+  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; font-size: 0.85rem;
+  font-family: var(--font-display);
+}
+[data-style="almanac"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
 
 
 /* ============== BOARD SWITCHER WIDGET ===================================== */
