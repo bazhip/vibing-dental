@@ -1,18 +1,23 @@
 import React from 'react';
+import { useDeepgramKey } from './useApiKey';
+import { startDeepgramSession, DeepgramSession } from '../utils/deepgramVoice';
 
 /**
- * Web Speech API wrapper. Browser-native (Chrome/Safari/Edge), online-
- * only, no external dependency or API cost.
+ * Voice capture with two transports:
+ *   - Deepgram Nova-3 streaming (used when a Deepgram API key is set in
+ *     Settings) — high accuracy, speaker diarization, paid.
+ *   - Web Speech API (browser native, free, mediocre on noisy clinical
+ *     environments, no diarization) — fallback when no Deepgram key.
+ *
+ * Both transports feed the same internal segment list, so consumers see
+ * a single VoiceCapture interface. Deepgram emits already-speaker-
+ * labeled segments ("Speaker 0: …") so the downstream Claude prompt can
+ * separate the vet's findings from the tech's chatter automatically.
  *
  * Beyond the live transcript, the hook keeps a timestamped list of
  * "final" segments so callers can do chunked extraction — pull the new
  * segments since the last extraction tick, flush context for the model,
- * etc. Web Speech marks a segment final when the user pauses, which
- * makes a natural chunk boundary.
- *
- * Firefox doesn't ship the Web Speech API yet, so callers should check
- * `supported` and surface a "use Chrome" message rather than silently
- * failing.
+ * etc.
  */
 
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
@@ -48,6 +53,8 @@ function getRecognitionCtor(): SpeechRecognitionConstructor | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
+export type VoiceProvider = 'deepgram' | 'browser';
+
 export interface FinalSegment {
   text: string;
   /** ms timestamp from performance.now() at receipt. */
@@ -71,6 +78,14 @@ export interface VoiceCapture {
    *  doesn't clear the buffer. Used as context for "this one"
    *  back-references. Stable across renders. */
   recentSegments: (maxAgeMs: number) => FinalSegment[];
+  /** Every final segment captured since the most recent `start()` call.
+   *  Stable across renders. */
+  allSegments: () => FinalSegment[];
+  /** Wall-clock start time of the active (or most recent) recording,
+   *  used to compute relative timestamps for downloaded transcripts. */
+  startedAt: Date | null;
+  /** Which transport will be used at the next `start()` call. */
+  provider: VoiceProvider;
 }
 
 interface UseVoiceCaptureOptions {
@@ -78,39 +93,81 @@ interface UseVoiceCaptureOptions {
 }
 
 export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceCapture {
-  const ctor = React.useMemo(getRecognitionCtor, []);
-  const supported = ctor !== null;
+  const browserCtor = React.useMemo(getRecognitionCtor, []);
+  const { deepgramKey, hasDeepgramKey } = useDeepgramKey();
+  const provider: VoiceProvider = hasDeepgramKey ? 'deepgram' : 'browser';
+  // Deepgram needs MediaRecorder + getUserMedia; Web Speech needs the
+  // SpeechRecognition constructor. We're "supported" if at least one of
+  // the transports works in this browser.
+  const supported = provider === 'deepgram'
+    ? typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices
+    : browserCtor !== null;
 
   const [recording, setRecording] = React.useState(false);
   const [transcript, setTranscript] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
+  const [startedAt, setStartedAt] = React.useState<Date | null>(null);
 
-  const recognitionRef = React.useRef<SpeechRecognition | null>(null);
+  // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
-  // Unconsumed final segments for chunked extraction.
   const pendingSegmentsRef = React.useRef<FinalSegment[]>([]);
-  // Recent (sliding-window) final segments — context for the model.
   const recentSegmentsRef = React.useRef<FinalSegment[]>([]);
+  const allSegmentsRef = React.useRef<FinalSegment[]>([]);
+  const browserRef = React.useRef<SpeechRecognition | null>(null);
+  const deepgramRef = React.useRef<DeepgramSession | null>(null);
+  const interimRef = React.useRef('');
+
   const onStopRef = React.useRef(onStop);
   React.useEffect(() => { onStopRef.current = onStop; }, [onStop]);
 
-  const start = React.useCallback(() => {
-    if (!ctor) {
+  const recordSegment = React.useCallback((seg: FinalSegment) => {
+    pendingSegmentsRef.current.push(seg);
+    recentSegmentsRef.current.push(seg);
+    allSegmentsRef.current.push(seg);
+    // Cap the recent window at 5 minutes of context.
+    const cutoff = performance.now() - 5 * 60_000;
+    while (
+      recentSegmentsRef.current.length > 0 &&
+      recentSegmentsRef.current[0].receivedAt < cutoff
+    ) {
+      recentSegmentsRef.current.shift();
+    }
+    finalRef.current += seg.text + ' ';
+    interimRef.current = '';
+    setTranscript(finalRef.current);
+  }, []);
+
+  const setInterim = React.useCallback((interim: string) => {
+    interimRef.current = interim;
+    setTranscript(finalRef.current + interim);
+  }, []);
+
+  const resetSession = React.useCallback(() => {
+    finalRef.current = '';
+    interimRef.current = '';
+    pendingSegmentsRef.current = [];
+    recentSegmentsRef.current = [];
+    allSegmentsRef.current = [];
+    setTranscript('');
+    setError(null);
+    setStartedAt(new Date());
+  }, []);
+
+  const handleSessionEnd = React.useCallback(() => {
+    const finalText = finalRef.current.trim();
+    setRecording(false);
+    onStopRef.current?.(finalText);
+  }, []);
+
+  const startBrowser = React.useCallback(() => {
+    if (!browserCtor) {
       setError('Speech recognition is not supported in this browser. Try Chrome or Edge.');
       return;
     }
-    if (recognitionRef.current) return;
-
-    const rec = new ctor();
+    const rec = new browserCtor();
     rec.continuous = true;
     rec.interimResults = true;
     rec.lang = navigator.language || 'en-US';
-
-    finalRef.current = '';
-    pendingSegmentsRef.current = [];
-    recentSegmentsRef.current = [];
-    setTranscript('');
-    setError(null);
 
     rec.onresult = (event) => {
       let interim = '';
@@ -119,52 +176,63 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
         const text = result[0].transcript;
         if (result.isFinal) {
           const cleaned = text.trim();
-          if (cleaned) {
-            const seg: FinalSegment = { text: cleaned, receivedAt: performance.now() };
-            pendingSegmentsRef.current.push(seg);
-            recentSegmentsRef.current.push(seg);
-            // Cap recent buffer at 5 minutes — anything older isn't useful
-            // context anymore.
-            const cutoff = performance.now() - 5 * 60_000;
-            while (
-              recentSegmentsRef.current.length > 0 &&
-              recentSegmentsRef.current[0].receivedAt < cutoff
-            ) {
-              recentSegmentsRef.current.shift();
-            }
-            finalRef.current += cleaned + ' ';
-          }
+          if (cleaned) recordSegment({ text: cleaned, receivedAt: performance.now() });
         } else {
           interim += text;
         }
       }
-      setTranscript(finalRef.current + interim);
+      if (interim) setInterim(interim);
     };
-
-    rec.onerror = (e) => {
-      setError(`Recognition error: ${e.error ?? 'unknown'}`);
-    };
-
+    rec.onerror = (e) => setError(`Recognition error: ${e.error ?? 'unknown'}`);
     rec.onend = () => {
-      const finalText = finalRef.current.trim();
-      recognitionRef.current = null;
-      setRecording(false);
-      onStopRef.current?.(finalText);
+      browserRef.current = null;
+      handleSessionEnd();
     };
 
-    recognitionRef.current = rec;
+    browserRef.current = rec;
     setRecording(true);
     try {
       rec.start();
     } catch (err) {
       setError(`Couldn't start microphone: ${(err as Error).message}`);
-      recognitionRef.current = null;
+      browserRef.current = null;
       setRecording(false);
     }
-  }, [ctor]);
+  }, [browserCtor, recordSegment, setInterim, handleSessionEnd]);
+
+  const startDeepgram = React.useCallback(async () => {
+    setRecording(true);
+    try {
+      const session = await startDeepgramSession(deepgramKey, {
+        onInterim: setInterim,
+        onFinal: (seg) => recordSegment(seg),
+        onError: (msg) => setError(msg),
+        onClose: () => {
+          deepgramRef.current = null;
+          handleSessionEnd();
+        },
+      });
+      deepgramRef.current = session;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
+      setRecording(false);
+    }
+  }, [deepgramKey, recordSegment, setInterim, handleSessionEnd]);
+
+  const start = React.useCallback(() => {
+    if (browserRef.current || deepgramRef.current) return;
+    resetSession();
+    if (provider === 'deepgram') startDeepgram();
+    else startBrowser();
+  }, [provider, resetSession, startBrowser, startDeepgram]);
 
   const stop = React.useCallback(() => {
-    recognitionRef.current?.stop();
+    if (browserRef.current) {
+      try { browserRef.current.stop(); } catch { /* ignore */ }
+    }
+    if (deepgramRef.current) {
+      deepgramRef.current.stop();
+    }
   }, []);
 
   const consumeFinalSegments = React.useCallback((): FinalSegment[] => {
@@ -178,16 +246,25 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
     return recentSegmentsRef.current.filter((s) => s.receivedAt >= cutoff);
   }, []);
 
+  const allSegments = React.useCallback(() => allSegmentsRef.current.slice(), []);
+
   // Stop on unmount.
   React.useEffect(() => {
     return () => {
-      recognitionRef.current?.abort();
-      recognitionRef.current = null;
+      if (browserRef.current) {
+        try { browserRef.current.abort(); } catch { /* ignore */ }
+        browserRef.current = null;
+      }
+      if (deepgramRef.current) {
+        deepgramRef.current.stop();
+        deepgramRef.current = null;
+      }
     };
   }, []);
 
   return {
     supported, recording, transcript, start, stop, error,
-    consumeFinalSegments, recentSegments,
+    consumeFinalSegments, recentSegments, allSegments, startedAt,
+    provider,
   };
 }

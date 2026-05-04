@@ -241,6 +241,7 @@ function buildStaticSystemPrompt(): string {
     '4. Side conversation, instructions to staff ("hand me the scaler", "more suction"), and pleasantries get NO tool calls. Silence is fine.',
     '5. Numbers in the transcript may be lightly garbled by speech-to-text. "One oh four" / "1 oh 4" / "1-0-4" all mean 104. Common shorthand spacings ("P D 2", "M 2", "C 1") collapse to PD2, M2, C1.',
     '6. When the vet says they "redid" or "corrected" a previous statement, use unset_tooth_mark or update via setter accordingly.',
+    '7. SPEAKER LABELS: Some chunks include speaker labels like "Speaker 0:" or "Speaker 1:" — these come from a diarizing transcription model. Treat the speaker who states medical findings as the vet. Treat other speakers as the tech/assistant; their statements are CONTEXT, not findings, unless they\'re reading back numbers the vet asked for. Don\'t emit tool calls for the tech\'s acknowledgements ("got it", "suctioning now") or tooth callouts directed at the vet. If only one speaker label appears, treat them as the vet.',
     '',
     'FIELD SEMANTICS:',
     '- "pre" diagram = Diagnosis (findings observed at exam, before procedure). Teeth already missing, periodontal disease grades, fractures.',
@@ -392,6 +393,54 @@ function commentList(comments: DiagramComment[]): string {
   return comments
     .map((c) => (c.anchorTriadan ? `@${c.anchorTriadan}: ` : '') + (c.text || '∅'))
     .join(' | ');
+}
+
+// ----- Key verification ---------------------------------------------------
+
+export interface VerifyResult {
+  ok: boolean;
+  /** Human-readable reason on failure (auth, network, format, etc.). */
+  message?: string;
+}
+
+/**
+ * Lightweight credential check. Format-validate, then make a 1-token
+ * messages.create() call against the cheapest model — costs a fraction
+ * of a cent and surfaces auth / network errors before the user is mid-
+ * procedure with the mic on.
+ */
+export async function verifyApiKey(key: string): Promise<VerifyResult> {
+  const trimmed = key.trim();
+  if (!trimmed) {
+    return { ok: false, message: 'No key provided.' };
+  }
+  if (!/^sk-ant-[A-Za-z0-9_-]{10,}$/.test(trimmed)) {
+    return {
+      ok: false,
+      message: 'Doesn\'t look like an Anthropic key — should start with "sk-ant-".',
+    };
+  }
+  try {
+    const client = new Anthropic({ apiKey: trimmed, dangerouslyAllowBrowser: true });
+    await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1,
+      messages: [{ role: 'user', content: 'ok' }],
+    });
+    return { ok: true };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (/401|invalid.*api.?key|authentication/i.test(msg)) {
+      return { ok: false, message: 'Anthropic rejected the key (401). Check it on console.anthropic.com.' };
+    }
+    if (/403|permission/i.test(msg)) {
+      return { ok: false, message: 'Key authenticates but lacks permission for the messages API.' };
+    }
+    if (/network|fetch|cors/i.test(msg)) {
+      return { ok: false, message: 'Network error — check your connection and try again.' };
+    }
+    return { ok: false, message: `Verification failed: ${msg}` };
+  }
 }
 
 // ----- Caller --------------------------------------------------------------

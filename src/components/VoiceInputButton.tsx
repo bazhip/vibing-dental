@@ -177,11 +177,49 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setActivity([]);
   };
 
+  const handleDownloadTranscript = () => {
+    const segments = voice.allSegments();
+    if (segments.length === 0) return;
+    const start = voice.startedAt ?? new Date();
+    const startedPerf = segments[0]?.receivedAt ?? performance.now();
+    const startedTs = start.getTime() - (performance.now() - startedPerf);
+    const lines = [
+      `Transcript — recording started ${start.toLocaleString()}`,
+      ''.padEnd(60, '─'),
+      '',
+    ];
+    for (const seg of segments) {
+      const wallTime = new Date(startedTs + (seg.receivedAt - startedPerf));
+      const stamp = wallTime.toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+      });
+      lines.push(`[${stamp}] ${seg.text}`);
+    }
+    const text = lines.join('\n') + '\n';
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const filename =
+      `transcript_${start.toISOString().replace(/[:T]/g, '-').slice(0, 16)}.txt`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const hasTranscriptToDownload = voice.allSegments().length > 0;
+
   const label = (() => {
-    if (voice.recording && activeChunkCount > 0) return 'Listening · sending…';
-    if (voice.recording) return 'Listening';
+    if (voice.recording) return 'Stop';
     if (activeChunkCount > 0) return 'Finishing…';
     return 'Voice';
+  })();
+  const subLabel = (() => {
+    if (voice.recording && activeChunkCount > 0) return 'listening · sending…';
+    if (voice.recording) return 'listening';
+    return null;
   })();
 
   const className = [
@@ -202,16 +240,30 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         title={hasApiKey ? 'Voice autofill — start/stop recording' : 'Set Claude API key to enable'}
       >
         <span className="voice-input__icon" aria-hidden="true">
-          {voice.recording ? '⏺' : '🎙'}
+          {voice.recording ? '⏹' : '🎙'}
         </span>
         <span className="voice-input__label">{label}</span>
+        {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
       </button>
 
       {hasActivityToShow && (
         <div className="voice-input__panel" aria-live="polite">
           <header className="voice-input__panel-head">
             <strong>{voice.recording ? 'Listening' : 'Last session'}</strong>
+            <span className="voice-input__provider-badge" title={voice.provider === 'deepgram' ? 'Deepgram Nova-3 (high accuracy + speaker labels)' : 'Browser Web Speech API (free, basic)'}>
+              {voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}
+            </span>
             <div className="voice-input__panel-actions">
+              {hasTranscriptToDownload && (
+                <button
+                  type="button"
+                  className="voice-input__panel-clear"
+                  onClick={handleDownloadTranscript}
+                  title="Download transcript as .txt"
+                >
+                  ⬇ Transcript
+                </button>
+              )}
               {activity.length > 0 && (
                 <button
                   type="button"

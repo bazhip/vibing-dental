@@ -1,11 +1,19 @@
 import React from 'react';
-import { useApiKey } from '../hooks/useApiKey';
+import { useApiKey, useDeepgramKey } from '../hooks/useApiKey';
+import { verifyApiKey } from '../utils/aiAutofill';
 
 /**
- * BYOK settings dialog. The user pastes their own Anthropic API key
- * (from console.anthropic.com); we persist it in localStorage and use
- * it directly in the browser via the Anthropic SDK. No backend, no
- * proxy — animal records aren't HIPAA so the trade-off is acceptable.
+ * BYOK settings dialog. Two keys:
+ *   - Anthropic — required for AI autofill (Claude tool-use extraction).
+ *   - Deepgram — optional, swaps the STT transport from browser-native
+ *     Web Speech to Deepgram Nova-3 streaming with diarization for
+ *     materially better accuracy (and "Speaker N:" labels so the vet's
+ *     findings aren't muddled with the tech's chatter).
+ *
+ * Anthropic save runs a 1-token messages.create() against Haiku to
+ * verify the key actually authenticates before we persist it. Deepgram
+ * we just persist — the key gets used at the next mic-start, where the
+ * WebSocket close code (1008) surfaces a bad-key error in the panel.
  */
 
 interface AiSettingsModalProps {
@@ -15,10 +23,23 @@ interface AiSettingsModalProps {
 
 export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose }) => {
   const { apiKey, setApiKey } = useApiKey();
-  const [draft, setDraft] = React.useState(apiKey);
-  const [revealed, setRevealed] = React.useState(false);
+  const { deepgramKey, setDeepgramKey } = useDeepgramKey();
 
-  React.useEffect(() => { if (open) setDraft(apiKey); }, [open, apiKey]);
+  const [anthropicDraft, setAnthropicDraft] = React.useState(apiKey);
+  const [deepgramDraft, setDeepgramDraft] = React.useState(deepgramKey);
+  const [revealed, setRevealed] = React.useState(false);
+  const [verifying, setVerifying] = React.useState(false);
+  const [verifyError, setVerifyError] = React.useState<string | null>(null);
+  const [verifyOk, setVerifyOk] = React.useState(false);
+
+  React.useEffect(() => {
+    if (open) {
+      setAnthropicDraft(apiKey);
+      setDeepgramDraft(deepgramKey);
+      setVerifyError(null);
+      setVerifyOk(false);
+    }
+  }, [open, apiKey, deepgramKey]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -27,17 +48,61 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  const handleSave = () => {
-    setApiKey(draft);
-    onClose();
+  const handleAnthropicChange = (value: string) => {
+    setAnthropicDraft(value);
+    if (verifyError) setVerifyError(null);
+    if (verifyOk) setVerifyOk(false);
   };
 
-  const handleClear = () => {
+  const handleSave = async () => {
+    const anthropicChanged = anthropicDraft.trim() !== apiKey.trim();
+    const deepgramChanged  = deepgramDraft.trim()  !== deepgramKey.trim();
+    if (!anthropicChanged && !deepgramChanged) {
+      onClose();
+      return;
+    }
+
+    // Only verify the Anthropic key (Deepgram has no cheap auth-check
+    // endpoint; bad keys get caught at the WebSocket layer).
+    if (anthropicChanged && anthropicDraft.trim()) {
+      setVerifying(true);
+      setVerifyError(null);
+      setVerifyOk(false);
+      try {
+        const result = await verifyApiKey(anthropicDraft);
+        if (!result.ok) {
+          setVerifyError(result.message ?? 'Verification failed.');
+          return;
+        }
+      } finally {
+        setVerifying(false);
+      }
+    }
+
+    setApiKey(anthropicDraft);
+    setDeepgramKey(deepgramDraft);
+    setVerifyOk(true);
+    setTimeout(() => onClose(), 500);
+  };
+
+  const handleClearAnthropic = () => {
     setApiKey('');
-    setDraft('');
+    setAnthropicDraft('');
+    setVerifyError(null);
+    setVerifyOk(false);
+  };
+
+  const handleClearDeepgram = () => {
+    setDeepgramKey('');
+    setDeepgramDraft('');
   };
 
   if (!open) return null;
+
+  const dirty =
+    anthropicDraft.trim() !== apiKey.trim() ||
+    deepgramDraft.trim()  !== deepgramKey.trim();
+  const canSave = !verifying && (dirty || (!apiKey && anthropicDraft.trim()));
 
   return (
     <div
@@ -60,57 +125,114 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
 
         <div className="ai-settings-body">
           <p className="ai-settings-blurb">
-            Paste an Anthropic API key to enable voice-driven autofill.
-            The key is stored in your browser only — it isn't sent anywhere
-            except directly to <code>api.anthropic.com</code>.
-            Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a>.
+            All keys are stored in your browser only. Each is sent directly
+            to its respective service ({' '}
+            <code>api.anthropic.com</code>, <code>api.deepgram.com</code>).
           </p>
 
-          <label className="ai-settings-label">
-            Anthropic API key
+          {/* Anthropic — required for AI autofill */}
+          <section className="ai-settings-section">
+            <header className="ai-settings-section-head">
+              <strong>Anthropic API key</strong>
+              <span className="ai-settings-section-tag">Required</span>
+            </header>
+            <p className="ai-settings-section-blurb">
+              Powers the chart-fill extraction (Claude Sonnet with tool use).
+              Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a>.
+            </p>
             <div className="ai-settings-input-row">
               <input
                 type={revealed ? 'text' : 'password'}
                 className="ai-settings-input"
                 placeholder="sk-ant-…"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
+                value={anthropicDraft}
+                onChange={(e) => handleAnthropicChange(e.target.value)}
                 autoComplete="off"
                 spellCheck={false}
+                disabled={verifying}
               />
               <button
                 type="button"
                 className="ai-settings-reveal"
                 onClick={() => setRevealed((r) => !r)}
-                aria-label={revealed ? 'Hide API key' : 'Show API key'}
+                aria-label={revealed ? 'Hide keys' : 'Show keys'}
               >
                 {revealed ? '🙈' : '👁'}
               </button>
             </div>
-          </label>
+            {apiKey && (
+              <div className="ai-settings-section-meta">
+                <span className="ai-settings-status--ok">✓ Configured ({mask(apiKey)})</span>
+                <button
+                  type="button"
+                  className="ai-settings-button ai-settings-button--ghost ai-settings-button--small"
+                  onClick={handleClearAnthropic}
+                  disabled={verifying}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </section>
 
-          <div className="ai-settings-status">
-            {apiKey
-              ? <span className="ai-settings-status--ok">✓ Key configured ({mask(apiKey)})</span>
-              : <span className="ai-settings-status--off">No key set — voice autofill is disabled.</span>}
-          </div>
+          {/* Deepgram — optional STT upgrade */}
+          <section className="ai-settings-section">
+            <header className="ai-settings-section-head">
+              <strong>Deepgram API key</strong>
+              <span className="ai-settings-section-tag ai-settings-section-tag--optional">Optional</span>
+            </header>
+            <p className="ai-settings-section-blurb">
+              Switches transcription from the free browser API to Deepgram
+              Nova-3 — much better accuracy on dental shorthand and speaker
+              labels (vet vs. tech). ~$0.40/hr. Get a key at{' '}
+              <a href="https://console.deepgram.com/" target="_blank" rel="noreferrer">console.deepgram.com</a>.
+            </p>
+            <div className="ai-settings-input-row">
+              <input
+                type={revealed ? 'text' : 'password'}
+                className="ai-settings-input"
+                placeholder="Leave blank to use the free browser API"
+                value={deepgramDraft}
+                onChange={(e) => setDeepgramDraft(e.target.value)}
+                autoComplete="off"
+                spellCheck={false}
+                disabled={verifying}
+              />
+            </div>
+            {deepgramKey && (
+              <div className="ai-settings-section-meta">
+                <span className="ai-settings-status--ok">✓ Configured ({mask(deepgramKey)})</span>
+                <button
+                  type="button"
+                  className="ai-settings-button ai-settings-button--ghost ai-settings-button--small"
+                  onClick={handleClearDeepgram}
+                  disabled={verifying}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+          </section>
+
+          {verifyError && (
+            <div className="ai-settings-status ai-settings-status--err" role="alert">
+              {verifyError}
+            </div>
+          )}
+          {verifyOk && (
+            <div className="ai-settings-status ai-settings-status--ok">
+              ✓ Saved.
+            </div>
+          )}
         </div>
 
         <footer className="ai-settings-footer">
-          {apiKey && (
-            <button
-              type="button"
-              className="ai-settings-button ai-settings-button--ghost"
-              onClick={handleClear}
-            >
-              Remove key
-            </button>
-          )}
           <span className="ai-settings-spacer" />
           <button
             type="button"
             className="ai-settings-button ai-settings-button--ghost"
             onClick={onClose}
+            disabled={verifying}
           >
             Cancel
           </button>
@@ -118,9 +240,9 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
             type="button"
             className="ai-settings-button ai-settings-button--primary"
             onClick={handleSave}
-            disabled={draft === apiKey}
+            disabled={!canSave}
           >
-            Save
+            {verifying ? 'Verifying…' : 'Save'}
           </button>
         </footer>
       </div>
