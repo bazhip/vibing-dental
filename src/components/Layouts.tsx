@@ -1,4 +1,5 @@
 import React from 'react';
+import { MobileSectionMenu } from './MobileSectionMenu';
 
 /**
  * Pluggable layout renderers. They all consume the same `sections` array
@@ -8,6 +9,10 @@ import React from 'react';
  * Sections are kept mounted (not unmounted) for the active-tab pattern so
  * imperative refs inside (e.g. the diagram SVGs that get captured for PDF
  * export) survive layout switches.
+ *
+ * On phones every navigated layout (tabs, sidebar, topnav, threecol,
+ * wizard) renders a `<MobileSectionMenu>` at the top — the layout's
+ * native nav is hidden via CSS at ≤600px.
  */
 
 export interface ChartSection {
@@ -27,6 +32,7 @@ export const TabsLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId })
   const [active, setActive] = React.useState(initial);
   return (
     <div className="tabs">
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
       <div className="tabs__bar" role="tablist">
         {sections.map((s) => (
           <button
@@ -63,6 +69,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId
   const [active, setActive] = React.useState(initial);
   return (
     <div className="sidebar-layout">
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
       <nav className="sidebar-layout__nav" role="tablist">
         {sections.map((s, i) => (
           <button
@@ -122,6 +129,7 @@ export const TopNavLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId 
   const [active, setActive] = React.useState(initial);
   return (
     <div className="topnav-layout">
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
       <nav className="topnav-layout__bar" role="tablist">
         {sections.map((s) => (
           <button
@@ -159,6 +167,7 @@ export const ThreeColumnLayout: React.FC<LayoutProps> = ({ sections, defaultActi
   const activeSection = sections.find((s) => s.id === active) ?? sections[0];
   return (
     <div className="threecol-layout">
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
       <nav className="threecol-layout__rail" role="tablist">
         {sections.map((s, i) => (
           <button
@@ -216,8 +225,17 @@ export const WizardLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId 
   );
   const [idx, setIdx] = React.useState(initialIdx);
   const active = sections[idx];
+  const handleMobileSelect = (id: string) => {
+    const next = sections.findIndex((s) => s.id === id);
+    if (next >= 0) setIdx(next);
+  };
   return (
     <div className="wizard-layout">
+      <MobileSectionMenu
+        sections={sections}
+        activeId={active?.id}
+        onSelect={handleMobileSelect}
+      />
       <ol className="wizard-layout__steps">
         {sections.map((s, i) => (
           <li

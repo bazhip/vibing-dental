@@ -284,6 +284,136 @@
 }
 
 
+/* ---------- Mobile section menu ------------------------------------------
+ * Hidden by default; shown only on phones, where it replaces every
+ * layout's native horizontal nav. The matching @media block at ≤600px
+ * (further down in this file) hides .tabs__bar / .sidebar-layout__nav /
+ * .topnav-layout__bar / .threecol-layout__rail / .wizard-layout__steps.
+ * ------------------------------------------------------------------------ */
+.mobile-section-menu {
+  display: none;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+.mobile-section-menu__trigger {
+  display: flex; align-items: center; gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  font: inherit; font-weight: 600; font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+.mobile-section-menu__icon {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+.mobile-section-menu__label {
+  flex: 1; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mobile-section-menu__chev {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+}
+.mobile-section-menu--open .mobile-section-menu__chev {
+  transform: rotate(180deg);
+}
+.mobile-section-menu__list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  z-index: 30;
+  list-style: none; margin: 0; padding: 0.4rem;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.mobile-section-menu__item {
+  display: flex; align-items: center; gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font: inherit; font-size: 0.95rem;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.mobile-section-menu__item:hover {
+  background: var(--surface-alt, #f1f5f9);
+}
+.mobile-section-menu__item--active,
+.mobile-section-menu__item--active:hover {
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  color: var(--primary);
+  font-weight: 600;
+}
+.mobile-section-menu__num {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 1.6em;
+}
+.mobile-section-menu__item-label {
+  flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Activate at the same phone breakpoint as the rest of the mobile pass.
+   Each layout's native nav goes hidden so the menu's the single nav. */
+@media (max-width: 600px) {
+  .mobile-section-menu { display: block; }
+  .tabs__bar,
+  .sidebar-layout__nav,
+  .topnav-layout__bar,
+  .threecol-layout__rail,
+  .threecol-layout__aux,
+  .wizard-layout__steps {
+    display: none !important;
+  }
+  /* Layouts that wrap content in a card with their own padding need to
+     pull the menu inside the padding — easier than restructuring DOM. */
+  .tabs,
+  .topnav-layout,
+  .wizard-layout {
+    padding: 0.75rem;
+  }
+  .tabs__panels,
+  .topnav-layout__content {
+    padding: 0;
+  }
+  .sidebar-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .sidebar-layout__main {
+    border-radius: 12px;
+  }
+  .threecol-layout {
+    grid-template-columns: 1fr;
+  }
+  .threecol-layout__main {
+    min-height: auto;
+  }
+  .wizard-layout__nav {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
+
+
 /* ============== STYLES (per-theme chrome) =================================
  * Each [data-style="…"] block layers the theme's character on top of the
  * tokens defined in themes.css — fonts, surface treatments, button
