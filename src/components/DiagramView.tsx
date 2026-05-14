@@ -3,6 +3,7 @@ import { Species, ToothMarks, DiagramComment, DiagramStroke } from '../types';
 import { ToothDiagram, ToothDiagramHandle, DiagramTool, MarkMode, CommentExport } from './ToothDiagram';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useDiagramHistory } from '../hooks/useDiagramHistory';
+import { usePersistedState } from '../hooks/usePersistedState';
 
 interface DiagramViewProps {
   title: string;
@@ -33,6 +34,15 @@ const STROKE_COLORS: Array<{ value: string; label: string }> = [
   { value: '#2d3748', label: 'charcoal' },
 ];
 
+/** Comment text-size preset — multiplier applied to the 0.95rem base
+ *  CSS font size via a CSS custom property on the .diagram-view root. */
+const TEXT_SIZES: Array<{ value: number; label: string }> = [
+  { value: 0.8, label: 'S' },
+  { value: 1.0, label: 'M' },
+  { value: 1.2, label: 'L' },
+  { value: 1.5, label: 'XL' },
+];
+
 export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>(({
   title,
   species,
@@ -48,6 +58,14 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const [tool, setTool] = React.useState<DiagramTool>('mark');
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
+  // Comment-text size preference. Persisted so the user's pick survives
+  // a refresh. Same key for both Diagnosis + Procedure — most vets want
+  // the same text size on both diagrams. Default is Medium (1.0); the
+  // version bump on this key clears any stale value from earlier
+  // experiments so everyone lands on M.
+  const [commentTextScale, setCommentTextScale] = usePersistedState<number>(
+    'diagram.commentTextScale', 2, 1.0
+  );
   const innerRef = React.useRef<ToothDiagramHandle>(null);
 
   // Each diagram has its own undo stack. The id (stable per instance via
@@ -91,7 +109,13 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         <span className="dental-grid__title">{title}</span>
       </div>
 
-      <div className="diagram-view" onMouseDown={history.claim}>
+      <div
+        className="diagram-view"
+        onMouseDown={history.claim}
+        // Drives `.diagram-comment { font-size: var(...) }` so the text
+        // size box affects every comment in this diagram.
+        style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale}rem` }}
+      >
         <div className="diagram-view__toolbar">
           <div
             className="diagram-view__tool-group"
@@ -155,6 +179,32 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <button type="button" className="diagram-view__action" onClick={addFreeComment}>
               + Free comment
             </button>
+          )}
+
+          {/* Text-size picker. Visible whenever the tool isn't Draw — i.e.
+              Mark and Comment, since both modes work alongside comment
+              boxes whose text size this controls. */}
+          {tool !== 'draw' && (
+            <div
+              className="diagram-view__textsize"
+              role="group"
+              aria-label="Comment text size"
+            >
+              <span className="diagram-view__textsize-label" aria-hidden="true">A</span>
+              {TEXT_SIZES.map((s) => (
+                <button
+                  type="button"
+                  key={s.label}
+                  className={`diagram-view__textsize-btn ${commentTextScale === s.value ? 'diagram-view__textsize-btn--active' : ''}`}
+                  onClick={() => setCommentTextScale(s.value)}
+                  aria-pressed={commentTextScale === s.value}
+                  aria-label={`Comment text size ${s.label}`}
+                  title={`Comment text size: ${s.label}`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           )}
 
           {tool === 'draw' && (

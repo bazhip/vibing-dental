@@ -67,11 +67,48 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       const current = p.row[key];
       const value = typeof current === 'string' ? current : '';
 
+      const rowIdx = toothData.findIndex((r) => r.triadan === p.row.triadan);
+      const lastRowIdx = toothData.length - 1;
+
+      // Editable columns span idx 2 (mobility) … 9 (pdstate). Tab wraps
+      // forward to the next row's first editable column; Shift+Tab wraps
+      // back to the previous row's last editable column. Off-page edges
+      // are no-ops so focus stays in the grid.
+      const FIRST_EDITABLE = 2;
+      const LAST_EDITABLE = 9;
+
+      const advance = (
+        nextRow: number,
+        nextIdx: number,
+        enableEditor: boolean
+      ) => {
+        if (nextRow < 0 || nextRow > lastRowIdx) return;
+        queueMicrotask(() => {
+          gridRef.current?.selectCell({ rowIdx: nextRow, idx: nextIdx }, enableEditor);
+        });
+      };
+
       const handleKeyDown: React.KeyboardEventHandler = (e) => {
         if (e.key === 'Tab') {
-          // Let the grid's own Tab handler advance the cell after we commit.
-          // Don't preventDefault — we want the native focus traversal too.
+          // Drive Tab navigation explicitly — the beta build of RDG
+          // doesn't catch Tab from inside our editor reliably, so the
+          // browser was letting Tab leave the grid entirely.
+          e.preventDefault();
+          e.stopPropagation();
           p.onClose(true);
+          if (e.shiftKey) {
+            if (column.idx > FIRST_EDITABLE) {
+              advance(rowIdx, column.idx - 1, false);
+            } else if (rowIdx > 0) {
+              advance(rowIdx - 1, LAST_EDITABLE, false);
+            }
+          } else {
+            if (column.idx < LAST_EDITABLE) {
+              advance(rowIdx, column.idx + 1, false);
+            } else if (rowIdx < lastRowIdx) {
+              advance(rowIdx + 1, FIRST_EDITABLE, false);
+            }
+          }
           return;
         }
         if (e.key === 'Enter') {
@@ -80,16 +117,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           e.preventDefault();
           e.stopPropagation();
           p.onClose(true);
-          const rowIdx = toothData.findIndex((r) => r.triadan === p.row.triadan);
-          if (rowIdx >= 0 && rowIdx < toothData.length - 1) {
-            // selectCell runs after the close commits.
-            queueMicrotask(() => {
-              gridRef.current?.selectCell(
-                { rowIdx: rowIdx + 1, idx: column.idx },
-                false
-              );
-            });
-          }
+          advance(rowIdx + 1, column.idx, false);
           return;
         }
         if (e.key === 'Escape') {

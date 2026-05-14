@@ -822,6 +822,50 @@
   background: #edf2f7;
 }
 
+/* Comment text-size picker (S / M / L / XL). Lives in the toolbar
+   whenever the active tool isn't Draw; the leading `A` glyph cues that
+   it controls type size. */
+.diagram-view__textsize {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  background: white;
+  padding: 0.2rem 0.35rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.diagram-view__textsize-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0 0.25rem;
+  border-right: 1px solid var(--border);
+  margin-right: 0.15rem;
+  line-height: 1;
+}
+.diagram-view__textsize-btn {
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 5px;
+  min-width: 1.8em;
+  line-height: 1;
+}
+.diagram-view__textsize-btn:hover {
+  background: #edf2f7;
+  color: var(--text);
+}
+.diagram-view__textsize-btn--active,
+.diagram-view__textsize-btn--active:hover {
+  background: var(--primary);
+  color: white;
+}
+
 .diagram-view__draw-controls {
   display: flex;
   align-items: center;
@@ -933,9 +977,13 @@
   color: var(--text);
   border: 1px solid var(--accent, #f6e05e);
   border-radius: 6px;
-  padding: 0.3rem 0.45rem;
+  /* Tight padding so auto-shrink leaves matching margins on all sides. */
+  padding: 4px 6px;
   box-sizing: border-box;
-  font-size: 0.78rem;
+  /* `--diagram-comment-font-size` is set on the enclosing .diagram-view by
+     the text-size picker in the toolbar. Fallback to 0.95rem. */
+  font-size: var(--diagram-comment-font-size, 0.95rem);
+  line-height: 1.25;
   font-family: inherit;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   /* `overflow: visible` so the autocomplete popup can extend below the box.
@@ -956,7 +1004,12 @@
 .diagram-comment__label {
   font-weight: 600;
   color: var(--text);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.1;
+}
+
+.diagram-comment__header {
+  margin-bottom: 2px;
 }
 
 .diagram-comment__delete {
@@ -983,7 +1036,10 @@
   background: transparent;
   resize: none;
   font-family: inherit;
-  font-size: 0.78rem;
+  /* Inherit the diagram-level CSS variable so the toolbar text-size
+     picker affects body text alongside the rest of the box. */
+  font-size: var(--diagram-comment-font-size, 0.95rem);
+  line-height: 1.25;
   color: var(--text);
   outline: none;
   padding: 0;

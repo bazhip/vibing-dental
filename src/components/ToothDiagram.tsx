@@ -397,6 +397,133 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     onCommentsChange(comments.map((c) => (c.id === id ? { ...c, text } : c)));
   };
 
+  // True while the user is mid-drag or mid-resize on a comment. We use it
+  // to suppress auto-shrink in that window — the textarea loses focus
+  // when the user touches the resize handle, and we don't want to fight
+  // the resize they just performed.
+  const commentInteractingRef = React.useRef(false);
+
+  /**
+   * Auto-shrink a comment box to its content footprint:
+   *   - longest unwrapped line of body text or the header's natural
+   *     width, whichever is wider, sets the new box width;
+   *   - the wrapped body height at that width sets the new box height.
+   * Result: top/left and bottom/right margins all match the small
+   * configured padding (no dead background space).
+   *
+   * Triggered on blur out of the comment when the focus has actually
+   * left the comment entirely (not just moved between its own
+   * controls). Caller must pre-empt during a manual drag/resize.
+   */
+  const autosizeComment = (id: string, boxEl: HTMLElement) => {
+    if (commentInteractingRef.current) return;
+    if (!boxEl.isConnected) return;
+    const textarea = boxEl.querySelector('textarea') as HTMLTextAreaElement | null;
+    if (!textarea) return;
+
+    // Find the overlay's pixel dimensions so we can convert px → viewBox.
+    const overlayEl = boxEl.parentElement;
+    if (!overlayEl) return;
+    const overlayRect = overlayEl.getBoundingClientRect();
+    if (overlayRect.width <= 0 || overlayRect.height <= 0) return;
+    const pxToVbX = viewBoxWidth / overlayRect.width;
+    const pxToVbY = viewBoxHeight / overlayRect.height;
+
+    const taCs = getComputedStyle(textarea);
+    const boxCs = getComputedStyle(boxEl);
+    const padX = parseFloat(boxCs.paddingLeft) + parseFloat(boxCs.paddingRight);
+    const padY = parseFloat(boxCs.paddingTop) + parseFloat(boxCs.paddingBottom);
+    const borderX = parseFloat(boxCs.borderLeftWidth) + parseFloat(boxCs.borderRightWidth);
+    const borderY = parseFloat(boxCs.borderTopWidth) + parseFloat(boxCs.borderBottomWidth);
+
+    // Measure the longest unwrapped line.
+    const measurer = document.createElement('div');
+    measurer.style.cssText = [
+      'position: absolute',
+      'visibility: hidden',
+      'top: -9999px',
+      'left: -9999px',
+      `font-family: ${taCs.fontFamily}`,
+      `font-size: ${taCs.fontSize}`,
+      `font-weight: ${taCs.fontWeight}`,
+      `line-height: ${taCs.lineHeight}`,
+      `letter-spacing: ${taCs.letterSpacing}`,
+      'white-space: pre',
+      'padding: 0; border: 0; margin: 0',
+    ].join(';');
+    document.body.appendChild(measurer);
+
+    const text = textarea.value;
+    let maxLinePx = 0;
+    for (const line of text.split('\n')) {
+      measurer.textContent = line || ' ';
+      if (measurer.scrollWidth > maxLinePx) maxLinePx = measurer.scrollWidth;
+    }
+    document.body.removeChild(measurer);
+
+    const header = boxEl.querySelector('.diagram-comment__header') as HTMLElement | null;
+    const headerH = header ? header.offsetHeight : 0;
+
+    // The header is a flex row with `justify-content: space-between`, so
+    // its own scrollWidth always reports the full parent width — useless
+    // for natural-content measurement. Measure the label and delete
+    // button separately and add a small inter-element gap.
+    const labelEl  = header?.querySelector('.diagram-comment__label')  as HTMLElement | null;
+    const deleteEl = header?.querySelector('.diagram-comment__delete') as HTMLElement | null;
+    const labelW  = labelEl  ? labelEl.scrollWidth  : 0;
+    const deleteW = deleteEl ? deleteEl.offsetWidth : 0;
+    const headerGap = 12; // px between label and delete X
+    const headerNaturalPx = labelW + deleteW + (labelW > 0 ? headerGap : 0);
+
+    const contentNaturalPx = Math.max(maxLinePx, headerNaturalPx);
+
+    // New inner width, with 4px breathing room for caret/cursor.
+    const newInnerPx = contentNaturalPx + 4;
+    const newBoxWidthPx = newInnerPx + padX + borderX;
+
+    // Re-measure wrapped body height at the new inner width.
+    let textHeightPx = 0;
+    if (text.trim().length > 0) {
+      const wrapMeasurer = document.createElement('div');
+      wrapMeasurer.style.cssText = [
+        'position: absolute',
+        'visibility: hidden',
+        'top: -9999px',
+        'left: -9999px',
+        `width: ${newInnerPx}px`,
+        `font-family: ${taCs.fontFamily}`,
+        `font-size: ${taCs.fontSize}`,
+        `font-weight: ${taCs.fontWeight}`,
+        `line-height: ${taCs.lineHeight}`,
+        `letter-spacing: ${taCs.letterSpacing}`,
+        'white-space: pre-wrap',
+        'word-wrap: break-word',
+        'padding: 0; border: 0; margin: 0',
+      ].join(';');
+      wrapMeasurer.textContent = text;
+      document.body.appendChild(wrapMeasurer);
+      textHeightPx = wrapMeasurer.scrollHeight;
+      document.body.removeChild(wrapMeasurer);
+    } else {
+      // Empty box — leave room for one line.
+      textHeightPx = parseFloat(taCs.lineHeight) || 18;
+    }
+
+    const newBoxHeightPx = headerH + textHeightPx + padY + borderY + 2;
+
+    // Convert to viewBox units; floor below at the layout minimums.
+    const minWVb = 70 * pxToVbX;
+    const minHVb = 30 * pxToVbY;
+    const newW = Math.max(minWVb, newBoxWidthPx * pxToVbX);
+    const newH = Math.max(minHVb, newBoxHeightPx * pxToVbY);
+
+    onCommentsChange(
+      comments.map((c) =>
+        c.id === id ? { ...c, width: newW, height: newH } : c
+      )
+    );
+  };
+
   const handleCommentDelete = (id: string) => {
     onCommentsChange(comments.filter((c) => c.id !== id));
   };
@@ -447,6 +574,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const handleCommentDragStart = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    commentInteractingRef.current = true;
     const startSvg = getSvgPointFromXY(e.clientX, e.clientY);
     const target = comments.find((c) => c.id === id);
     if (!startSvg || !target) return;
@@ -474,6 +602,12 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
+      // Clear after a frame so a focusout fired during the drag (e.g.
+      // because the textarea released focus) doesn't sneak in an
+      // autosize before we've reset the flag.
+      requestAnimationFrame(() => {
+        commentInteractingRef.current = false;
+      });
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
@@ -483,6 +617,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const handleCommentResizeStart = (id: string, e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    commentInteractingRef.current = true;
     const startSvg = getSvgPointFromXY(e.clientX, e.clientY);
     const target = comments.find((c) => c.id === id);
     const positioned = positionedComments.find((p) => p.comment.id === id);
@@ -502,6 +637,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
+      requestAnimationFrame(() => {
+        commentInteractingRef.current = false;
+      });
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
@@ -553,12 +691,15 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       onPointerUp={handlePointerUp}
       style={{ touchAction: tool === 'draw' ? 'none' : 'auto' }}
     >
-      {/* Static base: every subpath in one path with evenodd, so paired
-          outer/inner outlines render as the original SVG intends (outline ring),
-          including non-tooth elements like text labels and the R/L midline. */}
+      {/* Static base: the first `<path>` element's d attribute, drawn
+          with evenodd so paired outer/inner outlines render as the
+          original SVG intends (outline ring), including non-tooth
+          elements like text labels and the R/L midline. Subsequent
+          paths in the source SVG (if any) are treated as hit-shape
+          overrides and intentionally NOT drawn here. */}
       {parsed && (
         <path
-          d={parsed.subpaths.map((s) => s.d).join(' ')}
+          d={parsed.outlineD}
           fillRule="evenodd"
           className="tooth-diagram__outline"
         />
@@ -678,7 +819,19 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
         <div
           key={comment.id}
           className="diagram-comment"
+          data-comment-id={comment.id}
           style={toOverlayPct(x, y, w, h)}
+          // React onBlur on a container is a delegated `focusout` and
+          // gives us `relatedTarget` — when focus actually leaves the
+          // whole comment (and we're not mid drag/resize), auto-shrink
+          // to fit content.
+          onBlur={(e) => {
+            const next = e.relatedTarget as Node | null;
+            if (next && e.currentTarget.contains(next)) return;
+            const boxEl = e.currentTarget;
+            // Defer a tick so React commits any pending text edit first.
+            requestAnimationFrame(() => autosizeComment(comment.id, boxEl));
+          }}
         >
           <div
             className="diagram-comment__header"
