@@ -272,7 +272,26 @@ const EntryGrid: React.FC = () => {
           />
         </div>
       </header>
-      <form className="entry-grid-form" onSubmit={handleOpenPreview}>
+      <form
+        className="entry-grid-form"
+        onSubmit={handleOpenPreview}
+        // Stop browser-default form submit on Enter from any single-line
+        // input. Textareas, the actual submit button, and inputs that
+        // explicitly opt-in (data-allow-form-submit) still submit. This
+        // makes the chart behave like a spreadsheet — Enter advances the
+        // active grid cell rather than opening the preview modal.
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter') return;
+          const target = e.target as HTMLElement | null;
+          if (!target) return;
+          const tag = target.tagName;
+          const allow =
+            tag === 'TEXTAREA' ||
+            (target instanceof HTMLButtonElement && target.type === 'submit') ||
+            target.dataset.allowFormSubmit === 'true';
+          if (!allow) e.preventDefault();
+        }}
+      >
         <SectionLayout layout={board.layout} sections={sections} />
 
         <div className="entry-grid__submit">

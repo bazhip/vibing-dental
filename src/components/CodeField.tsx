@@ -35,6 +35,14 @@ export const CodeField: React.FC<CodeFieldProps> = ({
   const [suggestions, setSuggestions] = React.useState<DentalCode[]>([]);
   const [highlight, setHighlight] = React.useState(0);
 
+  // User-supplied onKeyDown / onBlur from the caller — we chain to them
+  // after our autocomplete handling so cell editors etc. still see the
+  // events they need (e.g. to commit on Tab).
+  const userOnKeyDown = (rest as { onKeyDown?: (e: React.KeyboardEvent) => void }).onKeyDown;
+  const userOnBlur    = (rest as { onBlur?: (e: React.FocusEvent) => void }).onBlur;
+  delete (rest as { onKeyDown?: unknown }).onKeyDown;
+  delete (rest as { onBlur?: unknown }).onBlur;
+
   const refresh = (text: string, caret: number) => {
     const before = text.slice(0, caret);
     const m = before.match(TRIGGER_RE);
@@ -108,6 +116,9 @@ export const CodeField: React.FC<CodeFieldProps> = ({
         return;
       }
     }
+    // Popup is closed — chain to the caller's handler so cell editors
+    // can commit on Tab/Enter, etc.
+    userOnKeyDown?.(e);
   };
 
   const sharedProps = {
@@ -115,9 +126,10 @@ export const CodeField: React.FC<CodeFieldProps> = ({
     value,
     onChange: handleChange,
     onKeyDown: handleKeyDown,
-    onBlur: () => {
+    onBlur: (e: React.FocusEvent) => {
       // Delay so a click on the popup gets processed first.
       window.setTimeout(() => setOpen(false), 120);
+      userOnBlur?.(e);
     },
   };
 
