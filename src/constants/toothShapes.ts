@@ -21,6 +21,17 @@ export interface ToothShape {
   rx: number;
   ry: number;
   rotation: number; // degrees, around (cx, cy)
+  /** Optional hand-crafted hit/highlight shape that overrides the
+   *  auto-detected subpath. Useful when the SVG outline traces a tooth
+   *  as part of a compound (with no clean per-tooth boundary) — the
+   *  auto-matcher then falls back to an ellipse that doesn't match
+   *  the visible tooth. Both fields are required when set. */
+  hitShape?: {
+    /** SVG path `d` data, in the same coordinate system as the SVG. */
+    d: string;
+    /** Bbox of `d`, pre-computed because we can't run getBBox in here. */
+    bbox: { minX: number; minY: number; maxX: number; maxY: number };
+  };
 }
 
 export interface SpeciesDiagram {
@@ -146,6 +157,58 @@ const felineTeeth: ToothShape[] = [
   ...pair(FELINE_CX, 402, 302, 'I2', 'incisor', 30, 1034, 8, 14),
   ...pair(FELINE_CX, 401, 301, 'I1', 'incisor', 11, 1038, 7, 12),
 ];
+
+/**
+ * Hand-crafted hit shape for canine M2 (410). The SVG's outline path
+ * traces 410 + 409 as a single compound subpath, so the auto-matcher
+ * has no clean per-tooth boundary to use — it falls back to an
+ * inscribed ellipse covering the whole compound, which bleeds into
+ * 409 territory. Tracing 410's outer perimeter by hand below restores
+ * a tooth-shaped hover/click area. 310 (mirror left) gets the same
+ * shape with X reflected around the mandibular midline.
+ */
+{
+  const CANINE_MIDLINE_X = CANINE_MAND_CX; // 397
+  const t410d =
+    'M 182.8 629.5 ' +
+    'L 175.9 641.1 ' +
+    'L 186.5 682 ' +
+    'L 210.3 689.3 ' +
+    'L 213.9 665.2 ' +
+    'L 212.0 654.8 ' +
+    'L 195.4 629.0 Z';
+  const t410bbox = { minX: 175.9, minY: 629.0, maxX: 213.9, maxY: 689.3 };
+  // Walk t410d and rebuild with x flipped (mirror around the
+  // mandibular midline) to produce the matching shape for 310.
+  const tokens = t410d.match(/[MLZ]|-?\d+(?:\.\d+)?/g) ?? [];
+  const flipped: string[] = [];
+  let isX = false;
+  for (const tok of tokens) {
+    if (/^[MLZ]$/.test(tok)) {
+      flipped.push(tok);
+      isX = tok !== 'Z';
+    } else {
+      flipped.push(
+        isX
+          ? (2 * CANINE_MIDLINE_X - parseFloat(tok)).toFixed(1)
+          : tok
+      );
+      isX = !isX;
+    }
+  }
+  const t310d = flipped.join(' ');
+  const t310bbox = {
+    minX: 2 * CANINE_MIDLINE_X - t410bbox.maxX,
+    maxX: 2 * CANINE_MIDLINE_X - t410bbox.minX,
+    minY: t410bbox.minY,
+    maxY: t410bbox.maxY,
+  };
+
+  for (const t of canineTeeth) {
+    if (t.triadan === 410) t.hitShape = { d: t410d, bbox: t410bbox };
+    if (t.triadan === 310) t.hitShape = { d: t310d, bbox: t310bbox };
+  }
+}
 
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {

@@ -229,6 +229,22 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     });
 
     for (const t of diagram.teeth) {
+      // (0) Hand-crafted hit shape from toothShapes.ts wins over the
+      // auto-matcher. Used for teeth where the SVG outline traces a
+      // compound boundary with neighbours and the auto-fallback would
+      // pick an ellipse covering the whole compound.
+      if (t.hitShape) {
+        const { d, bbox: b } = t.hitShape;
+        map.set(t.triadan, {
+          shape: { kind: 'path', d },
+          bbox: {
+            minX: b.minX, minY: b.minY, maxX: b.maxX, maxY: b.maxY,
+            cx: (b.minX + b.maxX) / 2, cy: (b.minY + b.maxY) / 2,
+          },
+        });
+        continue;
+      }
+
       // (a) Direct outer subpath, if it's a reasonable size for this tooth.
       const outerIdx = outerSubpathByTriadan.get(t.triadan);
       if (outerIdx !== undefined) {
@@ -388,6 +404,17 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       else delete updated[triadan];
       onToothMarksChange(updated);
     } else if (tool === 'comment') {
+      // One comment per tooth. If a comment for this tooth already
+      // exists, an empty one gets removed (toggle off) and a non-empty
+      // one is left alone (so a stray click doesn't blow away typed
+      // notes or stack a duplicate).
+      const existing = comments.find((c) => c.anchorTriadan === triadan);
+      if (existing) {
+        if (existing.text.trim() === '') {
+          onCommentsChange(comments.filter((c) => c.id !== existing.id));
+        }
+        return;
+      }
       const id = `c${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
       onCommentsChange([...comments, { id, text: '', anchorTriadan: triadan }]);
     }
