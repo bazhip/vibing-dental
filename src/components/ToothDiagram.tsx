@@ -377,7 +377,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           y: p.y,
           w: p.w,
           h: p.h,
-          label: p.anchor ? p.anchor.label : 'Free',
+          label: p.anchor ? p.anchor.label : '',
           text: p.comment.text,
         })),
       getViewBox: () => ({
