@@ -96,10 +96,11 @@ function appendCommentSvg(svg: SVGSVGElement, c: CommentForExport, colors: Comme
 
   if (c.text) {
     const body = document.createElementNS(ns, 'text');
+    const labelOffset = c.label ? COMMENT_LABEL_HEIGHT : 0;
     body.setAttribute('x', String(c.x + COMMENT_PADDING));
     body.setAttribute(
       'y',
-      String(c.y + COMMENT_PADDING + COMMENT_LABEL_HEIGHT + COMMENT_FONT_SIZE - 4)
+      String(c.y + COMMENT_PADDING + labelOffset + COMMENT_FONT_SIZE - 4)
     );
     body.setAttribute('font-family', 'sans-serif');
     body.setAttribute('font-size', String(COMMENT_FONT_SIZE));
@@ -108,7 +109,7 @@ function appendCommentSvg(svg: SVGSVGElement, c: CommentForExport, colors: Comme
     const wrapped = wrapText(c.text, c.w - COMMENT_PADDING * 2, COMMENT_FONT_SIZE);
     const maxLines = Math.max(
       0,
-      Math.floor((c.h - COMMENT_PADDING * 2 - COMMENT_LABEL_HEIGHT) / COMMENT_LINE_HEIGHT)
+      Math.floor((c.h - COMMENT_PADDING * 2 - labelOffset) / COMMENT_LINE_HEIGHT)
     );
     wrapped.slice(0, maxLines).forEach((line, idx) => {
       const tspan = document.createElementNS(ns, 'tspan');

@@ -845,9 +845,21 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       {positionedComments.map(({ comment, x, y, w, h, anchor }) => (
         <div
           key={comment.id}
-          className="diagram-comment"
+          className={`diagram-comment${anchor ? '' : ' diagram-comment--unanchored'}`}
           data-comment-id={comment.id}
           style={toOverlayPct(x, y, w, h)}
+          // For free comments (no header), the whole shell acts as the
+          // drag handle — but only when the pointer lands on the shell
+          // itself, not the textarea / delete / resize children. That way
+          // typing and child controls keep working normally.
+          onPointerDown={
+            anchor
+              ? undefined
+              : (e) => {
+                  if (e.target !== e.currentTarget) return;
+                  handleCommentDragStart(comment.id, e);
+                }
+          }
           // React onBlur on a container is a delegated `focusout` and
           // gives us `relatedTarget` — when focus actually leaves the
           // whole comment (and we're not mid drag/resize), auto-shrink
@@ -860,21 +872,34 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
             requestAnimationFrame(() => autosizeComment(comment.id, boxEl));
           }}
         >
-          <div
-            className="diagram-comment__header"
-            onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
-          >
-            <span className="diagram-comment__label">{anchor ? anchor.label : ''}</span>
+          {anchor && (
+            <div
+              className="diagram-comment__header"
+              onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
+            >
+              <span className="diagram-comment__label">{anchor.label}</span>
+              <button
+                type="button"
+                className="diagram-comment__delete"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={() => handleCommentDelete(comment.id)}
+                aria-label="Delete comment"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+          {!anchor && (
             <button
               type="button"
-              className="diagram-comment__delete"
+              className="diagram-comment__delete diagram-comment__delete--floating"
               onPointerDown={(e) => e.stopPropagation()}
               onClick={() => handleCommentDelete(comment.id)}
               aria-label="Delete comment"
             >
               ✕
             </button>
-          </div>
+          )}
           <CodeField
             multiline
             className="diagram-comment__text"

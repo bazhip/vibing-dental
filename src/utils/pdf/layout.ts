@@ -34,15 +34,15 @@ export interface DiagramSlot {
 //   yTopIn + heightIn + 0.10 (gap) + codes_height ≤ 8.10 (footer rule).
 //
 // Page-1 slot reclaims the dead space below the logo / left of the
-// patient-info box: upper-left at (0.15, 1.65), bottom-right held at
+// patient-info box: upper-left at (0.15, 1.85), bottom-right held at
 // (5.10, 6.50). Codes legend below stays at yTopIn 6.55 → 8.10.
 export const DIAGRAM_SLOTS: Record<Species, [DiagramSlot, DiagramSlot]> = {
   canine: [
-    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.65, heightIn: 4.85, maxWidthIn: 4.85 },
+    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
     { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },
   ],
   feline: [
-    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.65, heightIn: 4.85, maxWidthIn: 4.85 },
+    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
     { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },
   ],
 };

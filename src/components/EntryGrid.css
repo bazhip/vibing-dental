@@ -1026,6 +1026,22 @@
   color: var(--primary);
 }
 
+/* Free (unanchored) comments have no header, so the textarea fills the
+ * full box and text starts at the top. The delete button floats in the
+ * top-right corner over the textarea. Drag is handled by the whole shell
+ * (the comment div itself binds pointerdown). */
+.diagram-comment--unanchored {
+  cursor: move;
+  touch-action: none;
+}
+
+.diagram-comment__delete--floating {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  z-index: 2;
+}
+
 .diagram-comment__text {
   flex: 1;
   /* `height: 0` + `flex: 1` makes the textarea fill remaining space without
