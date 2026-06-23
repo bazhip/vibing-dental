@@ -151,12 +151,12 @@ export const TOOTH_GRID_LAYOUTS: Record<'canine' | 'feline', { maxilla: ToothGri
 };
 
 export const TOOTH_DATA_ROWS: Array<{ label: string; suffix: string }> = [
-  { label: 'Mob', suffix: 'mob' },
-  { label: 'Rec', suffix: 'rec' },
-  { label: 'Poc', suffix: 'poc' },
-  { label: 'Fur', suffix: 'fur' },
-  { label: 'Hyp', suffix: 'hyp' },
-  { label: 'Cal', suffix: 'cal' },
-  { label: 'Gin', suffix: 'gin' },
-  { label: 'PDS', suffix: 'pds' },
+  { label: 'Mobility', suffix: 'mob' },
+  { label: 'Recession', suffix: 'rec' },
+  { label: 'Pocket', suffix: 'poc' },
+  { label: 'Furcation', suffix: 'fur' },
+  { label: 'Hyperplasia', suffix: 'hyp' },
+  { label: 'Calculus', suffix: 'cal' },
+  { label: 'Gingivitis', suffix: 'gin' },
+  { label: 'PD Stage', suffix: 'pds' },
 ];

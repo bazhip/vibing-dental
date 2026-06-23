@@ -13,7 +13,7 @@ export const GRID_COLUMNS: ColumnDefinition[] = [
   { key: 'hyperplasia', name: 'Hyperplasia', editable: true, width: 110 },
   { key: 'calculus', name: 'Calculus', editable: true, width: 85 },
   { key: 'gingivitis', name: 'Gingivitis', editable: true, width: 90 },
-  { key: 'pdstate', name: 'PD State', editable: true, width: 85 },
+  { key: 'pdstate', name: 'PD Stage', editable: true, width: 85 },
 ];
 
 /**

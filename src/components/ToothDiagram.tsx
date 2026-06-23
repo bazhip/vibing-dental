@@ -541,9 +541,14 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     // Convert to viewBox units; floor below at the layout minimums.
     const minWVb = 70 * pxToVbX;
     const minHVb = 30 * pxToVbY;
-    // Cap width so the box can't overflow past the right edge of the overlay.
-    const comment = comments.find((c) => c.id === id);
-    const maxWVb = comment != null ? viewBoxWidth - comment.x : viewBoxWidth;
+    // Cap width so the box can't overflow past the right edge of the
+    // overlay. Anchored comments have no stored `x` until dragged, so
+    // comment.x is undefined — use the laid-out position instead, which
+    // always has a concrete x. The usable right edge is `diagram.width +
+    // sidePad` (viewBoxX + viewBoxWidth).
+    const positioned = positionedComments.find((p) => p.comment.id === id);
+    const effectiveX = positioned ? positioned.x : viewBoxX;
+    const maxWVb = diagram.width + sidePad - effectiveX;
     const newW = Math.max(minWVb, Math.min(maxWVb, newBoxWidthPx * pxToVbX));
     const newH = Math.max(minHVb, newBoxHeightPx * pxToVbY);
 
