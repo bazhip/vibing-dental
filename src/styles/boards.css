@@ -55,14 +55,6 @@
   background: var(--surface, white); border: 1px solid var(--border, #e2e8f0);
   border-radius: 12px; padding: 1.5rem; min-height: 320px;
 }
-.sidebar-layout__panel-header {
-  margin: 0 0 1.25rem; padding-bottom: 0.85rem;
-  border-bottom: 1px solid var(--border, #e2e8f0);
-}
-.sidebar-layout__panel-header h2 {
-  margin: 0; font-size: 1.5rem; font-weight: 700;
-  color: var(--text, #1f2937); letter-spacing: -0.01em;
-}
 @media (max-width: 900px) {
   .sidebar-layout { grid-template-columns: 1fr; }
   .sidebar-layout__nav { position: static; flex-direction: row; overflow-x: auto; flex-wrap: nowrap; }
@@ -74,18 +66,6 @@
 .stacked-layout__section {
   background: var(--surface, white); border: 1px solid var(--border, #e2e8f0);
   border-radius: 12px; padding: 1.5rem;
-}
-.stacked-layout__header {
-  display: flex; align-items: baseline; gap: 0.85rem;
-  margin: 0 0 1rem; padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border, #e2e8f0);
-}
-.stacked-layout__num {
-  font-size: 0.75rem; font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em; color: var(--primary, #4f46e5); font-weight: 700;
-}
-.stacked-layout__title {
-  margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text, #1f2937);
 }
 
 /* ---------- Top-nav layout (horizontal product nav) ---------------------- */
@@ -156,16 +136,6 @@
   border-radius: 12px;
   min-height: 320px;
   overflow: hidden;
-}
-.threecol-layout__header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border, #e2e8f0);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-}
-.threecol-layout__header h2 {
-  margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text, #1f2937);
-  letter-spacing: -0.01em;
 }
 .threecol-layout__feed { padding: 1.25rem 1.5rem; }
 .threecol-layout__aux {
@@ -248,10 +218,6 @@
   border-color: var(--primary, #4f46e5);
   background: var(--primary, #4f46e5);
   color: white;
-}
-.wizard-layout__panel-title {
-  margin: 0 0 1.25rem; font-size: 1.6rem; font-weight: 700;
-  color: var(--text, #1f2937); letter-spacing: -0.01em;
 }
 .wizard-layout__nav {
   display: flex; align-items: center; justify-content: space-between;
@@ -429,10 +395,6 @@ body {
   font-family: var(--font-body);
 }
 [data-theme] .entry-grid__title,
-[data-theme] .stacked-layout__title,
-[data-theme] .sidebar-layout__panel-header h2,
-[data-theme] .threecol-layout__header h2,
-[data-theme] .wizard-layout__panel-title,
 [data-theme] .dental-grid__title,
 [data-theme] .patient-form__section-title,
 [data-theme] .pdf-preview-header h2 {
@@ -1085,4 +1047,21 @@ body {
 @media (max-width: 800px) {
   .pdf-preview-body { grid-template-columns: 1fr; }
   .pdf-preview-styles { border-right: none; border-bottom: 1px solid #e2e8f0; max-height: 40vh; }
+}
+
+/* ---------- Section content is never its own card ------------------------ */
+/* `.patient-form` (Patient Info, Treatment Report) always renders inside a
+   layout panel that already supplies the card. Several board styles also
+   card `.patient-form`, which doubled the border once the section headers
+   were removed. This trailing rule (placed after every [data-style] block so
+   it wins on cascade order) keeps it a plain container under all boards. */
+[data-style] .patient-form,
+.patient-form {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }

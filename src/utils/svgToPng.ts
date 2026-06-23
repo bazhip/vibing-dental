@@ -107,8 +107,10 @@ function appendCommentSvg(svg: SVGSVGElement, c: CommentForExport, colors: Comme
     body.setAttribute('fill', colors.textColor);
 
     const wrapped = wrapText(c.text, c.w - COMMENT_PADDING * 2, COMMENT_FONT_SIZE);
+    // Always show at least one line of non-empty text — a short box could
+    // otherwise floor maxLines to 0 and drop the comment body entirely.
     const maxLines = Math.max(
-      0,
+      c.text.trim() ? 1 : 0,
       Math.floor((c.h - COMMENT_PADDING * 2 - labelOffset) / COMMENT_LINE_HEIGHT)
     );
     wrapped.slice(0, maxLines).forEach((line, idx) => {
@@ -246,8 +248,13 @@ function cropToContentBBox(
   const px = data.data;
   let minX = w, minY = h, maxX = -1, maxY = -1;
   const BLANK = 250;
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
+  // Sample every `step`th pixel instead of every pixel: scanning ~7M
+  // pixels per export on the main thread is wasteful. When we find a
+  // content pixel we pad the bbox by `step` below so the coarse scan
+  // can't clip content that fell between samples.
+  const step = 3;
+  for (let y = 0; y < h; y += step) {
+    for (let x = 0; x < w; x += step) {
       const i = (y * w + x) * 4;
       const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3];
       // Treat near-white opaque pixels as blank too — the canvas was
@@ -259,6 +266,11 @@ function cropToContentBBox(
         if (y > maxY) maxY = y;
       }
     }
+  }
+  if (maxX >= 0) {
+    // Expand by the sampling step so content between samples isn't clipped.
+    minX -= step; minY -= step;
+    maxX += step; maxY += step;
   }
   if (maxX < 0) {
     // No content found — return the original.

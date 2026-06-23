@@ -116,7 +116,11 @@ export function drawWrappedText(
   let linesDrawn = 0;
   outer: for (const para of paragraphs) {
     if (!para.trim()) {
+      // A blank paragraph still consumes a line of vertical space, so it
+      // must count against maxLines or it can overflow a capped box.
+      if (maxLines !== undefined && linesDrawn >= maxLines) break outer;
       cursorY -= lineHeight;
+      linesDrawn++;
       continue;
     }
     const wrapped = wrapToWidth(para, font, size, widthPt);

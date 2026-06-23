@@ -31,9 +31,11 @@ export async function loadParsedDiagram(url: string): Promise<ParsedDiagram> {
   if (cached) return cached;
 
   const text = await fetch(url).then((r) => r.text());
-  const dMatch = text.match(/<path[^>]*\sd="([^"]+)"/);
-  if (!dMatch) throw new Error(`No path found in ${url}`);
-  const fullD = dMatch[1];
+  // Parse the SVG with DOMParser rather than a regex — a regex for the
+  // `d=` attribute breaks if an earlier attribute value contains a `>`.
+  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+  const fullD = doc.querySelector('path')?.getAttribute('d');
+  if (!fullD) throw new Error(`No path found in ${url}`);
 
   const subpathStrs = fullD
     .split(/(?=M\s)/)

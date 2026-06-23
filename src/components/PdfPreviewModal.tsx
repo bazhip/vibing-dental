@@ -60,6 +60,13 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  // Move focus into the dialog on open so keyboard / screen-reader users
+  // land inside it rather than back on the trigger.
+  React.useEffect(() => {
+    if (open) closeButtonRef.current?.focus();
+  }, [open]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -145,7 +152,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             <h2 id="pdf-preview-title">Preview &amp; Download</h2>
             <p>Pick a style — the preview re-renders live.</p>
           </div>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
+          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
             ×
           </button>
         </header>

@@ -168,13 +168,13 @@ const felineTeeth: ToothShape[] = [
  * shape with X reflected around the mandibular midline.
  */
 {
-  // Reflection axis for deriving 310 from 410. The mandibular *anchor*
-  // center (CANINE_MAND_CX = 397) is a hair right of the PNG's true tooth
-  // midline, so reflecting 410's hand-traced path around it dropped 310's
-  // fill + X ~24px to the right of the visible tooth. The maxillary midline
-  // (385) tracks the PNG better — eyeball-calibrated, adjust if 310 still
-  // looks off against /public/diagrams/canine.png.
-  const CANINE_MIDLINE_X = CANINE_MAX_CX; // 385
+  // Reflection axis for deriving 310's hitShape from 410's traced path.
+  // Reflecting around the mandibular anchor center (397) landed 310 ~24px
+  // too far right; the maxillary midline (385) overshot ~24px left. 393.5
+  // is the value that lands 310's mirrored shape on its own eyeballed
+  // anchor (cx 592) — i.e. 2*axis - 194.9 (410 path-bbox center) = 592.
+  // Eyeball-calibrated against /public/diagrams/canine.png; nudge if needed.
+  const CANINE_MIDLINE_X = 393.5;
   const t410d =
     'M 182.8 629.5 ' +
     'L 175.9 641.1 ' +
