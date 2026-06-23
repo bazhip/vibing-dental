@@ -1,6 +1,6 @@
 import React from 'react';
-import { useApiKey, useDeepgramKey } from '../hooks/useApiKey';
-import { verifyApiKey } from '../utils/aiAutofill';
+import { useApiKey, useDeepgramKey, useSelectedModel } from '../hooks/useApiKey';
+import { verifyApiKey, listModels, KNOWN_MODELS, ModelOption } from '../utils/aiAutofill';
 
 /**
  * BYOK settings dialog. Two keys:
@@ -24,6 +24,7 @@ interface AiSettingsModalProps {
 export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose }) => {
   const { apiKey, setApiKey } = useApiKey();
   const { deepgramKey, setDeepgramKey } = useDeepgramKey();
+  const { model, setModel } = useSelectedModel();
 
   const [anthropicDraft, setAnthropicDraft] = React.useState(apiKey);
   const [deepgramDraft, setDeepgramDraft] = React.useState(deepgramKey);
@@ -31,6 +32,8 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
   const [verifying, setVerifying] = React.useState(false);
   const [verifyError, setVerifyError] = React.useState<string | null>(null);
   const [verifyOk, setVerifyOk] = React.useState(false);
+  const [models, setModels] = React.useState<ModelOption[]>(KNOWN_MODELS);
+  const [modelsLoading, setModelsLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (open) {
@@ -40,6 +43,23 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
       setVerifyOk(false);
     }
   }, [open, apiKey, deepgramKey]);
+
+  // When the dialog opens with a saved key, ask the Anthropic Models API
+  // which models the key can actually use, so the picker only offers valid
+  // IDs. Falls back to the static list on error / no key.
+  React.useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    if (!apiKey.trim()) {
+      setModels(KNOWN_MODELS);
+      return;
+    }
+    setModelsLoading(true);
+    listModels(apiKey)
+      .then((list) => { if (!cancelled) setModels(list); })
+      .finally(() => { if (!cancelled) setModelsLoading(false); });
+    return () => { cancelled = true; };
+  }, [open, apiKey]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -173,6 +193,33 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
                 </button>
               </div>
             )}
+          </section>
+
+          {/* Model picker — which Claude model powers extraction */}
+          <section className="ai-settings-section">
+            <header className="ai-settings-section-head">
+              <strong>Extraction model</strong>
+              {modelsLoading && <span className="ai-settings-section-tag">Loading…</span>}
+            </header>
+            <p className="ai-settings-section-blurb">
+              Which Claude model fills the chart from your dictation. Opus is the
+              most capable; Sonnet and Haiku are faster and cheaper for real-time
+              use. {apiKey.trim()
+                ? 'This list is fetched live from your account.'
+                : 'Save an Anthropic key to load the live model list.'}
+            </p>
+            <select
+              className="ai-settings-input"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+            >
+              {(models.some((m) => m.id === model)
+                ? models
+                : [{ id: model, displayName: model }, ...models]
+              ).map((m) => (
+                <option key={m.id} value={m.id}>{m.displayName}</option>
+              ))}
+            </select>
           </section>
 
           {/* Deepgram — optional STT upgrade */}

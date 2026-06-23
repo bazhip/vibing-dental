@@ -171,6 +171,26 @@ export function useChartState(): UseChartStateReturn {
     }));
 
   const handleSpeciesChange = (newSpecies: Species) => {
+    if (newSpecies === species) return;
+    // Switching species resets the tooth grid (cat and dog have different
+    // tooth numbering), so confirm first if the grid has any entered data
+    // — otherwise a stray toggle silently wipes the chart.
+    const TOOTH_FIELDS: (keyof ToothData)[] = [
+      'mobility', 'recession', 'pocket', 'furcation',
+      'hyperplasia', 'calculus', 'gingivitis', 'pdstate',
+    ];
+    const hasEnteredData = toothData.some((t) =>
+      TOOTH_FIELDS.some((f) => ((t[f] as string | undefined) ?? '') !== '')
+    );
+    if (
+      hasEnteredData &&
+      !window.confirm(
+        'Switching species clears the tooth chart grid (cat and dog use ' +
+          'different tooth numbering). Continue?'
+      )
+    ) {
+      return;
+    }
     setSpecies(newSpecies);
     switchSpecies(newSpecies);
   };

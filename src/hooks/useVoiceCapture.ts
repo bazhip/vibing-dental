@@ -115,6 +115,10 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   const allSegmentsRef = React.useRef<FinalSegment[]>([]);
   const browserRef = React.useRef<SpeechRecognition | null>(null);
   const deepgramRef = React.useRef<DeepgramSession | null>(null);
+  // Set when stop() is called while an async Deepgram handshake is still in
+  // flight, so the resolving session can be torn down instead of left live
+  // (which would otherwise keep the mic open with no UI handle to stop it).
+  const stopRequestedRef = React.useRef(false);
   const interimRef = React.useRef('');
 
   const onStopRef = React.useRef(onStop);
@@ -212,6 +216,14 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
           handleSessionEnd();
         },
       });
+      // If stop() fired during the handshake, tear the session straight
+      // back down instead of storing a live (mic-open) session that the
+      // UI now thinks is stopped.
+      if (stopRequestedRef.current) {
+        session.stop();
+        setRecording(false);
+        return;
+      }
       deepgramRef.current = session;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
@@ -221,12 +233,14 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const start = React.useCallback(() => {
     if (browserRef.current || deepgramRef.current) return;
+    stopRequestedRef.current = false;
     resetSession();
     if (provider === 'deepgram') startDeepgram();
     else startBrowser();
   }, [provider, resetSession, startBrowser, startDeepgram]);
 
   const stop = React.useCallback(() => {
+    stopRequestedRef.current = true;
     if (browserRef.current) {
       try { browserRef.current.stop(); } catch { /* ignore */ }
     }

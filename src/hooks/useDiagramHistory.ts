@@ -57,31 +57,32 @@ export function useDiagramHistory(
 ): DiagramHistoryControls {
   const [past, setPast] = React.useState<Snapshot[]>([]);
   const [future, setFuture] = React.useState<Snapshot[]>([]);
-  const applyingRef = React.useRef(false);
   const prevRef = React.useRef<Snapshot>({ marks, comments, strokes });
 
   // Track external state changes and push prior state to history.
+  //
+  // We don't use a boolean "are we applying an undo" flag: undo/redo fire
+  // three separate setters, and a single boolean is consumed by whichever
+  // effect pass runs first, mis-recording the rest as user edits. Instead,
+  // undo/redo set `prevRef` to the exact snapshot they're restoring (and
+  // pass those same references to the setters), so this observer sees
+  // `prev === current` for all three and skips re-recording naturally.
   React.useEffect(() => {
     const prev = prevRef.current;
     if (prev.marks === marks && prev.comments === comments && prev.strokes === strokes) {
       return;
     }
-    if (applyingRef.current) {
-      // The change was caused by our own undo/redo — don't snapshot it.
-      applyingRef.current = false;
-    } else {
-      setPast((p) => [...p, prev].slice(-HISTORY_LIMIT));
-      setFuture([]);
-    }
+    setPast((p) => [...p, prev].slice(-HISTORY_LIMIT));
+    setFuture([]);
     prevRef.current = { marks, comments, strokes };
   }, [marks, comments, strokes]);
 
   const undo = React.useCallback(() => {
     if (past.length === 0) return;
     const prev = past[past.length - 1];
-    applyingRef.current = true;
     setFuture((f) => [{ marks, comments, strokes }, ...f].slice(0, HISTORY_LIMIT));
     setPast((p) => p.slice(0, -1));
+    prevRef.current = prev;
     setters.onMarks(prev.marks);
     setters.onComments(prev.comments);
     setters.onStrokes(prev.strokes);
@@ -90,9 +91,9 @@ export function useDiagramHistory(
   const redo = React.useCallback(() => {
     if (future.length === 0) return;
     const next = future[0];
-    applyingRef.current = true;
     setPast((p) => [...p, { marks, comments, strokes }].slice(-HISTORY_LIMIT));
     setFuture((f) => f.slice(1));
+    prevRef.current = next;
     setters.onMarks(next.marks);
     setters.onComments(next.comments);
     setters.onStrokes(next.strokes);
@@ -100,6 +101,14 @@ export function useDiagramHistory(
 
   const claim = React.useCallback(() => {
     mostRecentDiagramId = diagramId;
+  }, [diagramId]);
+
+  // Release the keyboard-shortcut claim on unmount so Cmd+Z doesn't point
+  // at a diagram that's no longer mounted.
+  React.useEffect(() => {
+    return () => {
+      if (mostRecentDiagramId === diagramId) mostRecentDiagramId = null;
+    };
   }, [diagramId]);
 
   // Keyboard shortcuts — only the most-recently-claimed diagram responds.

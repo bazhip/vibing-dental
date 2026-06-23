@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApiKey } from '../hooks/useApiKey';
+import { useApiKey, useSelectedModel } from '../hooks/useApiKey';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import {
   extractChartActions,
@@ -45,6 +45,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   context, handlers, onNeedsApiKey,
 }) => {
   const { apiKey, hasApiKey } = useApiKey();
+  const { model } = useSelectedModel();
 
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -58,6 +59,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   handlersRef.current = handlers;
   const apiKeyRef = React.useRef(apiKey);
   apiKeyRef.current = apiKey;
+  const modelRef = React.useRef(model);
+  modelRef.current = model;
 
   // Sequencing: only one chunk in flight at a time. Pending chunks merge.
   const inFlightRef = React.useRef(false);
@@ -106,6 +109,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         delta,
         recentContext,
         context: contextRef.current,
+        model: modelRef.current,
       });
       const applied = applyAiActions(result.actions, handlersRef.current);
       appendActivity(applied);

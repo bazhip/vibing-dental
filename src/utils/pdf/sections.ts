@@ -126,9 +126,16 @@ export function drawCodesLegend(
   const maxRowsPerCol = Math.max(1, Math.floor(bodyHeight / lineHeight));
   const rowsPerCol = Math.min(maxRowsPerCol, Math.ceil(codes.length / cols));
 
+  // If more codes are used than fit the box, reserve the final cell for a
+  // "+N more" marker so the reader knows the legend is truncated rather
+  // than silently dropping clinically-referenced codes.
+  const capacity = cols * rowsPerCol;
+  const overflow = codes.length > capacity;
+  const shown = overflow ? codes.slice(0, capacity - 1) : codes;
+
   let col = 0, rowInCol = 0;
-  for (const c of codes) {
-    if (rowInCol >= rowsPerCol) { col++; rowInCol = 0; if (col >= cols) break; }
+  for (const c of shown) {
+    if (rowInCol >= rowsPerCol) { col++; rowInCol = 0; }
     const cx = x + col * (colWidth + colGap);
     const rowTop = bodyStartY - rowInCol * lineHeight;
     const cy = rowTop - lineHeight + 3;
@@ -147,6 +154,16 @@ export function drawCodesLegend(
     page.drawText(text, { x: cx + codeColWidth, y: cy, size: codeSize, font: regular, color: PALETTE.text });
 
     rowInCol++;
+  }
+
+  if (overflow) {
+    if (rowInCol >= rowsPerCol) { col++; rowInCol = 0; }
+    const cx = x + col * (colWidth + colGap);
+    const cy = bodyStartY - rowInCol * lineHeight - lineHeight + 3;
+    const remaining = codes.length - (capacity - 1);
+    page.drawText(`+${remaining} more`, {
+      x: cx, y: cy, size: codeSize, font: bold, color: PALETTE.muted,
+    });
   }
 }
 
@@ -177,14 +194,30 @@ export async function drawLogoAndHeader(
   // pink, VCA stays its house palette. The active style only drives the
   // surrounding chrome (titles, table headers, comment cards), not the
   // mark itself.
-  const logoBytes = await fetch(logoUrl).then((r) => r.arrayBuffer());
-  const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
-  const logoHeight = logoWidth * (png.height / png.width);
-  const logoBottomPt = logoTopPt - logoHeight;
-  page.drawImage(png, {
-    x: logoLeftPt, y: logoBottomPt,
-    width: logoWidth, height: logoHeight,
-  });
+  // Fallback placement assumes a ~2:1 logo so the doctor name / underline
+  // below still land sensibly if the asset can't be loaded.
+  let logoBottomPt = logoTopPt - logoWidth * 0.5;
+  try {
+    const res = await fetch(logoUrl);
+    if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
+    const logoBytes = await res.arrayBuffer();
+    const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
+    const logoHeight = logoWidth * (png.height / png.width);
+    logoBottomPt = logoTopPt - logoHeight;
+    page.drawImage(png, {
+      x: logoLeftPt, y: logoBottomPt,
+      width: logoWidth, height: logoHeight,
+    });
+  } catch (err) {
+    // A missing/unreachable logo must not sink the entire chart export.
+    // Drop in a text wordmark and carry on.
+    // eslint-disable-next-line no-console
+    console.warn('[pdf] logo unavailable, using text fallback', err);
+    page.drawText(logo === 'vca' ? 'VCA' : 'SoCal Veterinary Dentistry', {
+      x: logoLeftPt + 2, y: logoTopPt - 18,
+      size: 14, font: fontBold, color: PALETTE.ink,
+    });
+  }
 
   // Doctor name + (optional) "Tech: …" sub-line + colored underline.
   const drNameSize = 11;
@@ -386,7 +419,10 @@ export function drawExamSection(
     if (layout.comment) {
       const { lines, fontSize: cSize, lineHeight } = layout.comment;
       const blockHeight = lines.length * lineHeight;
-      const blockTopY = rowMidY + blockHeight / 2;
+      // Center the block in the row, but never let its top rise above the
+      // row top (a tall 2-line comment would otherwise clip into the row
+      // above).
+      const blockTopY = Math.min(rowMidY + blockHeight / 2, rowTopY - 2);
       for (let j = 0; j < lines.length; j++) {
         const baselineY = blockTopY - (j + 1) * lineHeight + (lineHeight - cSize) / 2;
         page.drawText(lines[j], { x: commentXPt, y: baselineY, size: cSize, font, color: PALETTE.text });

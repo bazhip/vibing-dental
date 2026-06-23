@@ -586,6 +586,17 @@
   width: 35%;
 }
 
+/* Free-text "Other" row — wraps onto multiple lines instead of scrolling
+   sideways like a single-line input. */
+.anesthesia-table__other {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 /* Exam table — same chrome as anesthesia, but adds a comment column. */
 .exam-table {
   width: 100%;
@@ -1113,10 +1124,25 @@
 }
 
 .entry-grid__footnote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
   text-align: center;
-  font-size: 0.78rem;
   color: var(--text-muted, #9ca3af);
-  padding: 1rem 0 0.5rem;
+  padding: 1.25rem 1rem 0.75rem;
+}
+
+.entry-grid__footnote-lead {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.entry-grid__footnote-hint {
+  font-size: 0.74rem;
+  line-height: 1.45;
+  max-width: 40rem;
+  opacity: 0.85;
 }
 
 .entry-grid__footnote a {

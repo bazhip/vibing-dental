@@ -34,7 +34,47 @@ import {
  * needs central auth, swap the call site for a tiny edge-function proxy.
  */
 
-const MODEL = 'claude-sonnet-4-6';
+/** Default extraction model. Opus 4.8 is the most capable; the AI-settings
+ *  model picker can swap it for a faster/cheaper model (Sonnet, Haiku) for
+ *  real-time voice work. */
+export const DEFAULT_MODEL = 'claude-opus-4-8';
+
+export interface ModelOption {
+  id: string;
+  displayName: string;
+}
+
+/** Static fallback list, used when the live Models API can't be reached
+ *  (no key entered yet, offline, etc.). Newest/most-capable first. */
+export const KNOWN_MODELS: ModelOption[] = [
+  { id: 'claude-opus-4-8',   displayName: 'Claude Opus 4.8 (most capable)' },
+  { id: 'claude-sonnet-4-6', displayName: 'Claude Sonnet 4.6 (balanced)' },
+  { id: 'claude-haiku-4-5',  displayName: 'Claude Haiku 4.5 (fastest)' },
+];
+
+/**
+ * Fetch the models this key can actually use, straight from the Anthropic
+ * Models API, so the picker only ever offers valid IDs. Falls back to
+ * KNOWN_MODELS on any error (bad key, offline). Filters to Claude text
+ * models and orders newest-first by `created_at`.
+ */
+export async function listModels(apiKey: string): Promise<ModelOption[]> {
+  const trimmed = apiKey.trim();
+  if (!trimmed) return KNOWN_MODELS;
+  try {
+    const client = new Anthropic({ apiKey: trimmed, dangerouslyAllowBrowser: true });
+    const out: ModelOption[] = [];
+    // The SDK page object auto-paginates when iterated.
+    for await (const m of client.models.list()) {
+      if (m.id.startsWith('claude-')) {
+        out.push({ id: m.id, displayName: m.display_name ?? m.id });
+      }
+    }
+    return out.length > 0 ? out : KNOWN_MODELS;
+  } catch {
+    return KNOWN_MODELS;
+  }
+}
 
 // ----- Tool schemas --------------------------------------------------------
 
@@ -458,6 +498,8 @@ export interface ExtractInput {
    *  Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
+  /** Model ID to extract with. Defaults to DEFAULT_MODEL when omitted. */
+  model?: string;
 }
 
 export interface ExtractResult {
@@ -475,7 +517,7 @@ export interface ExtractResult {
 export async function extractChartActions(
   input: ExtractInput
 ): Promise<ExtractResult> {
-  const { apiKey, delta, recentContext, context } = input;
+  const { apiKey, delta, recentContext, context, model } = input;
   const normalizedDelta = normalizeTranscript(delta);
   if (!chunkLooksMedical(normalizedDelta)) {
     return { actions: [], ran: false };
@@ -492,7 +534,7 @@ export async function extractChartActions(
     `Emit tool calls only for new information from this chunk. If nothing in this chunk warrants a chart change, return no tool calls.`;
 
   const send = async () => client.messages.create({
-    model: MODEL,
+    model: model || DEFAULT_MODEL,
     max_tokens: 1024,
     system: [
       {
@@ -573,6 +615,18 @@ export function applyAiActions(actions: AiAction[], h: ChartHandlers): AiAction[
   return applied;
 }
 
+// Triadan numbering: quadrants 1–4 (permanent) + 5–8 (deciduous), tooth
+// 01–11 → 100–899. The model can hallucinate a non-numeric or out-of-range
+// id (e.g. "104a"); guard so a NaN/garbage triadan never reaches the chart.
+function validTriadan(v: number): boolean {
+  return Number.isInteger(v) && v >= 100 && v <= 899;
+}
+
+const DENTAL_FIELD_SET = new Set<DentalField>([
+  'mobility', 'recession', 'pocket', 'furcation',
+  'hyperplasia', 'calculus', 'gingivitis', 'pdstate',
+]);
+
 function applyOne(action: AiAction, h: ChartHandlers): boolean {
   const { name, input } = action;
   const s = (k: string): string => String(input[k] ?? '');
@@ -582,7 +636,9 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     case 'set_tooth_mark': {
       const diagram = s('diagram');
       const triadan = n('triadan');
-      const mark = s('mark') as 'missing' | 'extracted';
+      const mark = s('mark');
+      if (!validTriadan(triadan)) return false;
+      if (mark !== 'missing' && mark !== 'extracted') return false;
       if (diagram === 'pre') h.setPreMark(triadan, mark);
       else h.setPostMark(triadan, mark);
       return true;
@@ -590,17 +646,24 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     case 'unset_tooth_mark': {
       const diagram = s('diagram');
       const triadan = n('triadan');
+      if (!validTriadan(triadan)) return false;
       if (diagram === 'pre') h.setPreMark(triadan, null);
       else h.setPostMark(triadan, null);
       return true;
     }
     case 'set_tooth_field': {
-      h.setToothField(n('triadan'), s('field') as DentalField, s('value'));
+      const triadan = n('triadan');
+      const field = s('field') as DentalField;
+      if (!validTriadan(triadan) || !DENTAL_FIELD_SET.has(field)) return false;
+      h.setToothField(triadan, field, s('value'));
       return true;
     }
     case 'add_comment': {
-      const diagram = s('diagram') as 'pre' | 'post';
-      const triadan = input.triadan != null ? n('triadan') : null;
+      const diagram = s('diagram') === 'post' ? 'post' : 'pre';
+      // Keep the note even if the anchor tooth is bogus — fall back to an
+      // unanchored comment rather than dropping the text entirely.
+      const triadan =
+        input.triadan != null && validTriadan(n('triadan')) ? n('triadan') : null;
       h.addComment(diagram, triadan, s('text'));
       return true;
     }

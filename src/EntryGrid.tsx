@@ -21,6 +21,30 @@ import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, Too
 import './components/EntryGrid.css';
 
 /**
+ * Pre-filled feedback email. The body seeds the prompts that make a bug
+ * report actionable (repro steps, expected vs. actual, the tooth/section
+ * involved, browser) so reports come back with enough detail to act on.
+ */
+const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
+  'Vibing Dental — feedback / bug report'
+)}&body=${encodeURIComponent(
+  [
+    'What I was doing:',
+    '',
+    'What I expected to happen:',
+    '',
+    'What actually happened:',
+    '',
+    'Species / tooth / section involved (if any):',
+    '',
+    'Browser & device:',
+    '',
+    '(If you can, attach a screenshot — it helps a ton.)',
+    '',
+  ].join('\n')
+)}`;
+
+/**
  * Top-level chart entry. Reads chart state (with all the persistence,
  * derivation, and PDF-load handlers) from `useChartState`; this component
  * is purely about layout: the topbar with the menu, the section list
@@ -313,8 +337,16 @@ const EntryGrid: React.FC = () => {
       />
 
       <footer className="entry-grid__footnote">
-        Have feedback? (Jared) Email{' '}
-        <a href="mailto:bazhip@gmail.com">bazhip@gmail.com</a>
+        <span className="entry-grid__footnote-lead">
+          Found a bug or have an idea? (Jared) Email{' '}
+          <a href={FEEDBACK_MAILTO}>bazhip@gmail.com</a>
+        </span>
+        <span className="entry-grid__footnote-hint">
+          The more detail the better — tell me what you were doing, what you
+          expected, what actually happened, the species/tooth or section
+          involved, and your browser. A screenshot helps a lot. (The email
+          link pre-fills these prompts for you.)
+        </span>
       </footer>
     </div>
   );

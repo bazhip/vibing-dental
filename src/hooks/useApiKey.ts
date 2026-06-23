@@ -1,5 +1,6 @@
 import React from 'react';
 import { readString, writeString, removeKey } from '../utils/storage';
+import { DEFAULT_MODEL } from '../utils/aiAutofill';
 
 /**
  * BYOK API keys, persisted to localStorage. Generic so the same hook
@@ -80,4 +81,23 @@ export function useDeepgramKey(): {
 } {
   const k = usePersistedKey('deepgram-api-key');
   return { deepgramKey: k.value, setDeepgramKey: k.setValue, hasDeepgramKey: k.has };
+}
+
+/** The Claude model used for AI chart extraction. Persisted so the choice
+ *  survives reloads; defaults to DEFAULT_MODEL when never set. */
+const MODEL_STORAGE_KEY = 'anthropic-model';
+
+export function useSelectedModel(): {
+  model: string;
+  setModel: (value: string) => void;
+} {
+  const [model, setModelState] = React.useState<string>(
+    () => readString(MODEL_STORAGE_KEY, STORAGE_VERSION, DEFAULT_MODEL)
+  );
+  const setModel = React.useCallback((next: string) => {
+    const value = next.trim() || DEFAULT_MODEL;
+    setModelState(value);
+    writeString(MODEL_STORAGE_KEY, STORAGE_VERSION, value);
+  }, []);
+  return { model, setModel };
 }

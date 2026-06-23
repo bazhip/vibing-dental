@@ -97,12 +97,22 @@ function readCheckBox(form: PDFForm, name: string): boolean {
 }
 
 function readStashedState(form: PDFForm): StashedState {
+  let raw: string | undefined;
   try {
-    const raw = form.getTextField(DIAGRAM_STATE_FIELD).getText();
-    if (!raw) return {};
+    raw = form.getTextField(DIAGRAM_STATE_FIELD).getText();
+  } catch {
+    // Field absent entirely — this is a legacy PDF, fall through to the
+    // AcroForm-field reader.
+    return {};
+  }
+  if (!raw) return {};
+  try {
     return JSON.parse(raw) as StashedState;
   } catch {
-    return {};
+    // The stash exists but is damaged. Don't silently fall back to a
+    // blank/legacy reconstruction — surface it so the caller can warn the
+    // user instead of handing them an empty chart.
+    throw new Error('Chart data is present but could not be parsed; the PDF may be damaged.');
   }
 }
 
@@ -137,13 +147,16 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
   const form = pdfDoc.getForm();
   const stash = readStashedState(form);
 
-  // Modern format: full state lives in the JSON stash. Recover and exit.
-  if (stash.patientInfo && stash.toothData && stash.species && stash.logo) {
+  // Modern format: full state lives in the JSON stash. Detect it by the
+  // presence of the core state objects rather than the truthiness of
+  // every field — `logo` in particular could legitimately be falsy and
+  // must not knock a valid modern stash down to the lossy legacy path.
+  if (stash.patientInfo && stash.toothData && stash.species) {
     return {
       patientInfo: stash.patientInfo,
       toothData: stash.toothData,
       species: stash.species,
-      logo: stash.logo,
+      logo: stash.logo ?? 'socal',
       preDiagram: stash.pre ?? EMPTY_DIAGRAM_STATE,
       postDiagram: stash.post ?? EMPTY_DIAGRAM_STATE,
     };

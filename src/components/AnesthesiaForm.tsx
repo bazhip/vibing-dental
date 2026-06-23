@@ -31,7 +31,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   logo,
 }) => {
   const handleChange = (key: keyof NerveBlocks) => (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     onNerveBlockChange(key, event.target.value);
   };
@@ -100,9 +100,9 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           <tr>
             <td className="anesthesia-table__label">Other</td>
             <td colSpan={2}>
-              <input
-                type="text"
-                className="patient-form__input"
+              <textarea
+                className="patient-form__input anesthesia-table__other"
+                rows={2}
                 value={nerveBlocks.other}
                 onChange={handleChange('other')}
               />

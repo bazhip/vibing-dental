@@ -93,9 +93,6 @@ export const SidebarLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId
             className="sidebar-layout__panel"
             style={s.id === active ? undefined : { display: 'none' }}
           >
-            <header className="sidebar-layout__panel-header">
-              <h2>{s.label}</h2>
-            </header>
             {s.content}
           </div>
         ))}
@@ -108,12 +105,8 @@ export const SidebarLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId
 export const StackedLayout: React.FC<LayoutProps> = ({ sections }) => {
   return (
     <div className="stacked-layout">
-      {sections.map((s, i) => (
+      {sections.map((s) => (
         <section key={s.id} className="stacked-layout__section">
-          <header className="stacked-layout__header">
-            <span className="stacked-layout__num">{String(i + 1).padStart(2, '0')}</span>
-            <h2 className="stacked-layout__title">{s.label}</h2>
-          </header>
           <div className="stacked-layout__body">
             {s.content}
           </div>
@@ -164,7 +157,6 @@ export const TopNavLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId 
 export const ThreeColumnLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId }) => {
   const initial = defaultActiveId ?? sections[0]?.id;
   const [active, setActive] = React.useState(initial);
-  const activeSection = sections.find((s) => s.id === active) ?? sections[0];
   return (
     <div className="threecol-layout">
       <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
@@ -185,9 +177,6 @@ export const ThreeColumnLayout: React.FC<LayoutProps> = ({ sections, defaultActi
         ))}
       </nav>
       <main className="threecol-layout__main">
-        <header className="threecol-layout__header">
-          <h2>{activeSection?.label}</h2>
-        </header>
         <div className="threecol-layout__feed">
           {sections.map((s) => (
             <div
@@ -256,7 +245,6 @@ export const WizardLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId 
         ))}
       </ol>
       <div className="wizard-layout__panel">
-        <h2 className="wizard-layout__panel-title">{active?.label}</h2>
         {sections.map((s, i) => (
           <div
             key={s.id}
