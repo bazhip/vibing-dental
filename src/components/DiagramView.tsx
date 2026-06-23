@@ -251,7 +251,13 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           )}
 
           <div className="diagram-view__hint" role="status" aria-live="polite">
-            {tool === 'mark' && 'Click a tooth to cycle: normal → missing → extracted → normal.'}
+            {tool === 'mark' && (
+              markMode === 'missing-only'
+                ? 'Click a tooth to mark it missing; click again to clear.'
+                : markMode === 'extracted-only'
+                ? 'Click a tooth to mark it extracted; click again to clear.'
+                : 'Click a tooth to cycle: normal → missing → extracted → normal.'
+            )}
             {tool === 'comment' && 'Click a tooth to anchor a comment, or use “Free comment” for a floating note.'}
             {tool === 'draw' && 'Click and drag to draw on the diagram.'}
           </div>

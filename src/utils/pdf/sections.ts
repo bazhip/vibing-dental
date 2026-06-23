@@ -562,13 +562,16 @@ export function drawTreatmentReportField(
 
 // ----------------------------------------------------------- Nerve block --
 
+/** Draws the nerve-block table and returns the y (in inches from the page
+ *  top) of its bottom edge, so the caller can place the diagram beneath it
+ *  without overlap (the "Other" row grows to fit wrapped free text). */
 export function drawNerveBlockTable(
   page: PDFPage,
   nerveBlocks: NerveBlocks,
   bold: PDFFont,
   regular: PDFFont,
   isVca: boolean
-): void {
+): number {
   const { height: pageHeight } = page.getSize();
   const x = NERVE_BLOCK_BOX.xIn * PT_PER_IN;
   const yTop = pageHeight - NERVE_BLOCK_BOX.yTopIn * PT_PER_IN;
@@ -604,8 +607,22 @@ export function drawNerveBlockTable(
     { text: 'LEFT',      xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
   ], bold, headerLabelSize);
 
-  // Alternating row tints.
-  for (let i = 0; i < rows.length; i++) {
+  // The free-text "Other" row (always last) grows to fit wrapped content
+  // instead of clipping; the L/R rows stay one line tall.
+  const lrCount = rows.length - 1;
+  const otherRow = rows[rows.length - 1] as Free;
+  const otherValueWidth = (totalW - labelW) - padX * 2;
+  const otherLineHeight = bodySize * 1.35;
+  const otherLines = otherRow.value
+    ? wrapToWidth(otherRow.value, regular, bodySize, otherValueWidth).slice(0, 12)
+    : [];
+  const otherRowH = Math.max(
+    rowH,
+    otherLines.length * otherLineHeight + (rowH - bodySize)
+  );
+
+  // Alternating row tints — L/R rows are rowH, the Other row is otherRowH.
+  for (let i = 0; i < lrCount; i++) {
     if (i % 2 === 1) {
       page.drawRectangle({
         x, y: yTop - rowH * (i + 2),
@@ -613,14 +630,17 @@ export function drawNerveBlockTable(
       });
     }
   }
+  const otherTopY = yTop - rowH * (lrCount + 1); // below header + L/R rows
+  if (lrCount % 2 === 1) {
+    page.drawRectangle({ x, y: otherTopY - otherRowH, width: totalW, height: otherRowH, color: PALETTE.rowAlt });
+  }
 
   // Borders.
-  const totalRows = rows.length + 1;
-  const totalH = rowH * totalRows;
-  for (let i = 1; i < totalRows; i++) {
+  const totalH = rowH * (lrCount + 1) + otherRowH;
+  for (let i = 1; i <= lrCount + 1; i++) {
     hlineLight(page, x, x + totalW, yTop - rowH * i);
   }
-  const lrBottomY = yTop - rowH * rows.length;
+  const lrBottomY = yTop - rowH * (lrCount + 1);
   vlineLight(page, x + labelW,          yTop - rowH, lrBottomY);
   vlineLight(page, x + labelW + valueW, yTop - rowH, lrBottomY);
   hlineStrong(page, x, x + totalW, yTop);
@@ -628,27 +648,35 @@ export function drawNerveBlockTable(
   vlineStrong(page, x,           yTop, yTop - totalH);
   vlineStrong(page, x + totalW,  yTop, yTop - totalH);
 
+  // L/R rows.
   const baselineOffset = (rowH - bodySize) / 2 + 1.5;
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const rowY = yTop - rowH * (i + 2);
-    const baselineY = rowY + baselineOffset;
+  for (let i = 0; i < lrCount; i++) {
+    const row = rows[i] as LR;
+    const baselineY = yTop - rowH * (i + 2) + baselineOffset;
     page.drawText(row.label, { x: x + padX, y: baselineY, size: bodySize, font: regular, color: PALETTE.text });
-
-    if (row.kind === 'lr') {
-      for (const [colIdx, raw] of [[1, row.right], [2, row.left]] as const) {
-        if (!raw) continue;
-        const text = `${raw} mL`;
-        const colX = x + labelW + valueW * (colIdx - 1);
-        const w = regular.widthOfTextAtSize(text, bodySize);
-        page.drawText(text, { x: colX + (valueW - w) / 2, y: baselineY, size: bodySize, font: regular, color: PALETTE.ink });
-      }
-    } else if (row.value) {
-      const valueX = x + labelW + padX;
-      const valueWidth = (totalW - labelW) - padX * 2;
-      drawClippedText(page, row.value, valueX, baselineY, bodySize, regular, PALETTE.ink, valueWidth);
+    for (const [colIdx, raw] of [[1, row.right], [2, row.left]] as const) {
+      if (!raw) continue;
+      const text = `${raw} mL`;
+      const colX = x + labelW + valueW * (colIdx - 1);
+      const w = regular.widthOfTextAtSize(text, bodySize);
+      page.drawText(text, { x: colX + (valueW - w) / 2, y: baselineY, size: bodySize, font: regular, color: PALETTE.ink });
     }
   }
+
+  // Other row — label aligned to the first line, value wrapped beneath.
+  const otherFirstBaseline = otherTopY - otherLineHeight + (otherLineHeight - bodySize) / 2 + 1.5;
+  page.drawText(otherRow.label, {
+    x: x + padX,
+    y: otherLines.length > 0 ? otherFirstBaseline : otherTopY - rowH + baselineOffset,
+    size: bodySize, font: regular, color: PALETTE.text,
+  });
+  let lineY = otherFirstBaseline;
+  for (const line of otherLines) {
+    page.drawText(line, { x: x + labelW + padX, y: lineY, size: bodySize, font: regular, color: PALETTE.ink });
+    lineY -= otherLineHeight;
+  }
+
+  return NERVE_BLOCK_BOX.yTopIn + totalH / PT_PER_IN;
 }
 
 // -------------------------------------------------------------- Diagram --

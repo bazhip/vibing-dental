@@ -349,7 +349,10 @@
 
 /* Dental Grid Styles */
 .dental-grid-section {
-  margin: 2rem 0;
+  /* No top margin — the section title should sit flush at the top of the
+     layout panel like the patient-form sections (1 and 8), not floated down
+     by a leading margin. */
+  margin: 0;
 }
 
 .dental-grid__section-header {
@@ -582,6 +585,15 @@
   padding: 0.35rem 0.6rem;
 }
 
+/* Every field in the table fills its cell with border-box sizing, so the
+   single-column L/R inputs and the colSpan-2 "Other" field share the same
+   right edge (combined with table-layout: fixed above). */
+.anesthesia-table .patient-form__input,
+.anesthesia-table__other {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .anesthesia-table__label {
   width: 30%;
   font-weight: 500;
@@ -689,6 +701,17 @@
 .diagram-with-codes__codes > * {
   position: absolute;
   inset: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Card wraps just the search + list, so the section title sits above the
+   card (matching the diagram side and every other section) instead of
+   inside it. */
+.diagram-with-codes__codes .code-ref {
+  flex: 1 1 auto;
+  min-height: 0;
   background: white;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -696,13 +719,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  min-height: 0;
   overflow: hidden;
-}
-
-.diagram-with-codes__codes .code-ref {
-  flex: 1 1 auto;
-  min-height: 0;
 }
 
 .diagram-with-codes__codes .code-ref__columns {
@@ -1223,7 +1240,7 @@
   }
 
   /* Section headers compress slightly. */
-  .dental-grid-section { margin: 1.5rem 0; }
+  .dental-grid-section { margin: 0; }
   .dental-grid__title  { font-size: 1.1rem; }
   .patient-form__section-title { font-size: 1.1rem; }
 

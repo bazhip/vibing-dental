@@ -120,8 +120,21 @@ export async function buildDentalChartPDFBytes(
   drawFooter(page1, regular, bold, 1, 2, generatedAt);
 
   // ---- Page 2 ------------------------------------------------------------
-  drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca');
-  await drawDiagramAt(pdfDoc, DIAGRAM_SLOTS[species][1], postDiagram.png);
+  // The nerve-block table grows to fit a long "Other" note; push the diagram
+  // beneath it (keeping its bottom fixed above the codes legend) so the two
+  // never overlap.
+  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca');
+  const baseSlot = DIAGRAM_SLOTS[species][1];
+  const minTopIn = nbBottomIn + 0.15;
+  const postSlot =
+    minTopIn > baseSlot.yTopIn
+      ? {
+          ...baseSlot,
+          yTopIn: minTopIn,
+          heightIn: Math.max(2.2, baseSlot.yTopIn + baseSlot.heightIn - minTopIn),
+        }
+      : baseSlot;
+  await drawDiagramAt(pdfDoc, postSlot, postDiagram.png);
   drawTreatmentReportField(page2, patientInfo.treatmentReport, regular, bold);
   drawFooter(page2, regular, bold, 2, 2, generatedAt);
 
