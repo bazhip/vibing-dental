@@ -421,7 +421,22 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   };
 
   const handleCommentEdit = (id: string, text: string) => {
-    onCommentsChange(comments.map((c) => (c.id === id ? { ...c, text } : c)));
+    // Resize the box to fit as the user types, so all text stays visible.
+    // Text edit + dimension change go in ONE state write — measuring
+    // separately (e.g. on input) would race the text update and clobber it
+    // (onCommentsChange takes an array, not a functional updater).
+    let dims: { width: number; height: number } | null = null;
+    if (!commentInteractingRef.current) {
+      const ta = wrapperRef.current?.querySelector(`[data-comment-id="${id}"]`);
+      const boxEl = ta?.closest('.diagram-comment') as HTMLElement | null;
+      if (boxEl) {
+        const size = measureCommentSize(id, boxEl, text);
+        if (size) dims = { width: size.newW, height: size.newH };
+      }
+    }
+    onCommentsChange(
+      comments.map((c) => (c.id === id ? { ...c, text, ...dims } : c))
+    );
   };
 
   // True while the user is mid-drag or mid-resize on a comment. We use it
@@ -431,28 +446,29 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const commentInteractingRef = React.useRef(false);
 
   /**
-   * Auto-shrink a comment box to its content footprint:
-   *   - longest unwrapped line of body text or the header's natural
-   *     width, whichever is wider, sets the new box width;
-   *   - the wrapped body height at that width sets the new box height.
-   * Result: top/left and bottom/right margins all match the small
-   * configured padding (no dead background space).
-   *
-   * Triggered on blur out of the comment when the focus has actually
-   * left the comment entirely (not just moved between its own
-   * controls). Caller must pre-empt during a manual drag/resize.
+   * Measure the box a comment's content wants to occupy.
+   *   - Width: wraps long body text to a comfortable reading column (so it
+   *     never stretches into one giant line), always tries to fit the
+   *     header, and is clamped to the room left before the overlay's right
+   *     edge (so right-gutter comments stay on-canvas).
+   *   - Height: the wrapped body height measured AT THAT FINAL width — this
+   *     is the fix for the clipping bug, where height used to be measured at
+   *     the un-capped single-line width and then the box was capped narrower,
+   *     hiding the wrapped overflow.
+   * Returns viewBox-unit width/height, or null if it can't measure yet.
    */
-  const autosizeComment = (id: string, boxEl: HTMLElement) => {
-    if (commentInteractingRef.current) return;
-    if (!boxEl.isConnected) return;
+  const measureCommentSize = (
+    id: string,
+    boxEl: HTMLElement,
+    text: string
+  ): { newW: number; newH: number } | null => {
+    if (!boxEl.isConnected) return null;
     const textarea = boxEl.querySelector('textarea') as HTMLTextAreaElement | null;
-    if (!textarea) return;
-
-    // Find the overlay's pixel dimensions so we can convert px → viewBox.
+    if (!textarea) return null;
     const overlayEl = boxEl.parentElement;
-    if (!overlayEl) return;
+    if (!overlayEl) return null;
     const overlayRect = overlayEl.getBoundingClientRect();
-    if (overlayRect.width <= 0 || overlayRect.height <= 0) return;
+    if (overlayRect.width <= 0 || overlayRect.height <= 0) return null;
     const pxToVbX = viewBoxWidth / overlayRect.width;
     const pxToVbY = viewBoxHeight / overlayRect.height;
 
@@ -462,99 +478,85 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const padY = parseFloat(boxCs.paddingTop) + parseFloat(boxCs.paddingBottom);
     const borderX = parseFloat(boxCs.borderLeftWidth) + parseFloat(boxCs.borderRightWidth);
     const borderY = parseFloat(boxCs.borderTopWidth) + parseFloat(boxCs.borderBottomWidth);
+    const fontPx = parseFloat(taCs.fontSize) || 15;
+    const lineHeightPx = parseFloat(taCs.lineHeight) || fontPx * 1.25;
 
-    // Measure the longest unwrapped line.
-    const measurer = document.createElement('div');
-    measurer.style.cssText = [
-      'position: absolute',
-      'visibility: hidden',
-      'top: -9999px',
-      'left: -9999px',
-      `font-family: ${taCs.fontFamily}`,
-      `font-size: ${taCs.fontSize}`,
-      `font-weight: ${taCs.fontWeight}`,
-      `line-height: ${taCs.lineHeight}`,
-      `letter-spacing: ${taCs.letterSpacing}`,
-      'white-space: pre',
-      'padding: 0; border: 0; margin: 0',
-    ].join(';');
-    document.body.appendChild(measurer);
+    const fontStyle =
+      `font-family:${taCs.fontFamily};font-size:${taCs.fontSize};` +
+      `font-weight:${taCs.fontWeight};line-height:${taCs.lineHeight};` +
+      `letter-spacing:${taCs.letterSpacing}`;
 
-    const text = textarea.value;
+    // Longest unwrapped line (respects manual newlines the user typed).
     let maxLinePx = 0;
-    for (const line of text.split('\n')) {
-      measurer.textContent = line || ' ';
-      if (measurer.scrollWidth > maxLinePx) maxLinePx = measurer.scrollWidth;
+    const lineMeasurer = document.createElement('div');
+    lineMeasurer.style.cssText =
+      `position:absolute;visibility:hidden;top:-9999px;left:-9999px;white-space:pre;padding:0;border:0;margin:0;${fontStyle}`;
+    document.body.appendChild(lineMeasurer);
+    try {
+      for (const line of text.split('\n')) {
+        lineMeasurer.textContent = line || ' ';
+        if (lineMeasurer.scrollWidth > maxLinePx) maxLinePx = lineMeasurer.scrollWidth;
+      }
+    } finally {
+      lineMeasurer.remove();
     }
-    document.body.removeChild(measurer);
 
     const header = boxEl.querySelector('.diagram-comment__header') as HTMLElement | null;
     const headerH = header ? header.offsetHeight : 0;
-
-    // The header is a flex row with `justify-content: space-between`, so
-    // its own scrollWidth always reports the full parent width — useless
-    // for natural-content measurement. Measure the label and delete
-    // button separately and add a small inter-element gap.
     const labelEl  = header?.querySelector('.diagram-comment__label')  as HTMLElement | null;
     const deleteEl = header?.querySelector('.diagram-comment__delete') as HTMLElement | null;
     const labelW  = labelEl  ? labelEl.scrollWidth  : 0;
     const deleteW = deleteEl ? deleteEl.offsetWidth : 0;
-    const headerGap = 12; // px between label and delete X
-    const headerNaturalPx = labelW + deleteW + (labelW > 0 ? headerGap : 0);
+    const headerNaturalPx = labelW + deleteW + (labelW > 0 ? 12 : 0);
 
-    const contentNaturalPx = Math.max(maxLinePx, headerNaturalPx);
-
-    // New inner width, with 4px breathing room for caret/cursor.
-    const newInnerPx = contentNaturalPx + 4;
-    const newBoxWidthPx = newInnerPx + padX + borderX;
-
-    // Re-measure wrapped body height at the new inner width.
-    let textHeightPx = 0;
-    if (text.trim().length > 0) {
-      const wrapMeasurer = document.createElement('div');
-      wrapMeasurer.style.cssText = [
-        'position: absolute',
-        'visibility: hidden',
-        'top: -9999px',
-        'left: -9999px',
-        `width: ${newInnerPx}px`,
-        `font-family: ${taCs.fontFamily}`,
-        `font-size: ${taCs.fontSize}`,
-        `font-weight: ${taCs.fontWeight}`,
-        `line-height: ${taCs.lineHeight}`,
-        `letter-spacing: ${taCs.letterSpacing}`,
-        'white-space: pre-wrap',
-        'word-wrap: break-word',
-        'padding: 0; border: 0; margin: 0',
-      ].join(';');
-      wrapMeasurer.textContent = text;
-      document.body.appendChild(wrapMeasurer);
-      textHeightPx = wrapMeasurer.scrollHeight;
-      document.body.removeChild(wrapMeasurer);
-    } else {
-      // Empty box — leave room for one line.
-      textHeightPx = parseFloat(taCs.lineHeight) || 18;
-    }
-
-    const newBoxHeightPx = headerH + textHeightPx + padY + borderY + 2;
-
-    // Convert to viewBox units; floor below at the layout minimums.
-    const minWVb = 70 * pxToVbX;
-    const minHVb = 30 * pxToVbY;
-    // Cap width so the box can't overflow past the right edge of the
-    // overlay. Anchored comments have no stored `x` until dragged, so
-    // comment.x is undefined — use the laid-out position instead, which
-    // always has a concrete x. The usable right edge is `diagram.width +
-    // sidePad` (viewBoxX + viewBoxWidth).
+    // Width budget: never past the overlay's right edge (room to the right
+    // of the box's laid-out left edge). Anchored comments have no stored x
+    // until dragged, so use the laid-out position.
     const positioned = positionedComments.find((p) => p.comment.id === id);
     const effectiveX = positioned ? positioned.x : viewBoxX;
-    const maxWVb = diagram.width + sidePad - effectiveX;
-    const newW = Math.max(minWVb, Math.min(maxWVb, newBoxWidthPx * pxToVbX));
-    const newH = Math.max(minHVb, newBoxHeightPx * pxToVbY);
+    const maxWVb = Math.max(70 * pxToVbX, diagram.width + sidePad - effectiveX);
+    const maxAvailInnerPx = Math.max(40, maxWVb / pxToVbX - padX - borderX);
 
+    // Wrap long text at a comfortable ~28-character column instead of one
+    // long line; short text stays compact at its natural width.
+    const preferredMaxInnerPx = 28 * fontPx;
+    let innerPx = Math.min(maxLinePx, preferredMaxInnerPx, maxAvailInnerPx);
+    innerPx = Math.max(innerPx, Math.min(headerNaturalPx, maxAvailInnerPx), 40);
+    innerPx = Math.min(innerPx + 4, maxAvailInnerPx); // +4 caret room, re-clamp
+
+    // Height at the FINAL inner width.
+    let textHeightPx = lineHeightPx;
+    if (text.trim().length > 0) {
+      const wrapMeasurer = document.createElement('div');
+      wrapMeasurer.style.cssText =
+        `position:absolute;visibility:hidden;top:-9999px;left:-9999px;width:${innerPx}px;` +
+        `white-space:pre-wrap;overflow-wrap:break-word;word-break:break-word;padding:0;border:0;margin:0;${fontStyle}`;
+      wrapMeasurer.textContent = text;
+      document.body.appendChild(wrapMeasurer);
+      try {
+        textHeightPx = wrapMeasurer.scrollHeight;
+      } finally {
+        wrapMeasurer.remove();
+      }
+    }
+
+    const newBoxWidthPx = innerPx + padX + borderX;
+    const newBoxHeightPx = headerH + textHeightPx + padY + borderY + 2;
+    const newW = Math.max(70 * pxToVbX, Math.min(maxWVb, newBoxWidthPx * pxToVbX));
+    const newH = Math.max(30 * pxToVbY, newBoxHeightPx * pxToVbY);
+    return { newW, newH };
+  };
+
+  // Final fit when focus leaves the comment (text already committed, so no
+  // race with edits). Pre-empted during a manual drag/resize.
+  const autosizeComment = (id: string, boxEl: HTMLElement) => {
+    if (commentInteractingRef.current) return;
+    const textarea = boxEl.querySelector('textarea') as HTMLTextAreaElement | null;
+    const size = measureCommentSize(id, boxEl, textarea ? textarea.value : '');
+    if (!size) return;
     onCommentsChange(
       comments.map((c) =>
-        c.id === id ? { ...c, width: newW, height: newH } : c
+        c.id === id ? { ...c, width: size.newW, height: size.newH } : c
       )
     );
   };

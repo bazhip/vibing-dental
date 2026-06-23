@@ -36,6 +36,16 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     onNerveBlockChange(key, event.target.value);
   };
 
+  // Auto-grow the free-text "Other" field to fit its content (typed or
+  // AI-filled) so nothing is hidden. Re-runs whenever the value changes.
+  const otherRef = React.useRef<HTMLTextAreaElement>(null);
+  React.useEffect(() => {
+    const el = otherRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, [nerveBlocks.other]);
+
   const defaultDrug = DEFAULT_NERVE_BLOCK_DRUG[logo];
   const drugList = COMMON_DRUGS.includes(defaultDrug)
     ? COMMON_DRUGS
@@ -101,6 +111,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             <td className="anesthesia-table__label">Other</td>
             <td colSpan={2}>
               <textarea
+                ref={otherRef}
                 className="patient-form__input anesthesia-table__other"
                 rows={2}
                 value={nerveBlocks.other}

@@ -114,18 +114,19 @@ export function drawWrappedText(
   const paragraphs = text.split('\n');
   let cursorY = yTopPt;
   let linesDrawn = 0;
-  outer: for (const para of paragraphs) {
+  const capReached = () => maxLines !== undefined && linesDrawn >= maxLines;
+  for (const para of paragraphs) {
+    if (capReached()) break;
     if (!para.trim()) {
       // A blank paragraph still consumes a line of vertical space, so it
       // must count against maxLines or it can overflow a capped box.
-      if (maxLines !== undefined && linesDrawn >= maxLines) break outer;
       cursorY -= lineHeight;
       linesDrawn++;
       continue;
     }
     const wrapped = wrapToWidth(para, font, size, widthPt);
     for (const line of wrapped) {
-      if (maxLines !== undefined && linesDrawn >= maxLines) break outer;
+      if (capReached()) break;
       cursorY -= lineHeight;
       page.drawText(line, { x, y: cursorY, size, font, color });
       linesDrawn++;

@@ -560,6 +560,9 @@
 .anesthesia-table {
   width: 100%;
   border-collapse: collapse;
+  /* Fixed layout so the colSpan=2 "Other" cell spans exactly the two value
+     columns — its right edge then lines up with the Left-column inputs. */
+  table-layout: fixed;
 }
 
 .anesthesia-table thead th {
@@ -593,8 +596,14 @@
 /* Free-text "Other" row — wraps onto multiple lines instead of scrolling
    sideways like a single-line input. */
 .anesthesia-table__other {
+  display: block;
   width: 100%;
-  resize: vertical;
+  box-sizing: border-box;
+  /* Auto-grown in JS to fit content; keep ~2 lines as the floor and hide the
+     scrollbar since height always matches content. */
+  min-height: 2.6em;
+  resize: none;
+  overflow: hidden;
   font-family: inherit;
   line-height: 1.35;
   white-space: pre-wrap;
@@ -1076,6 +1085,11 @@
   padding: 0;
   overflow-y: auto;
   box-sizing: border-box;
+  /* Break long unbroken words so wrapping matches the auto-resize measurer
+   * (which uses overflow-wrap: break-word) — otherwise a long word overflows
+   * the box horizontally while the measured height assumes it wrapped. */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Bottom-right resize handle — uses the active accent so it pops on
