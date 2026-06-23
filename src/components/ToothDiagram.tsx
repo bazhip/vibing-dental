@@ -517,11 +517,12 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const maxWVb = Math.max(70 * pxToVbX, diagram.width + sidePad - effectiveX);
     const maxAvailInnerPx = Math.max(40, maxWVb / pxToVbX - padX - borderX);
 
-    // Wrap long text at a comfortable ~28-character column instead of one
-    // long line; short text stays compact at its natural width.
-    const preferredMaxInnerPx = 28 * fontPx;
-    let innerPx = Math.min(maxLinePx, preferredMaxInnerPx, maxAvailInnerPx);
-    innerPx = Math.max(innerPx, Math.min(headerNaturalPx, maxAvailInnerPx), 40);
+    // Keep the box within the side gutter (~30% of the diagram width) so it
+    // wraps into a narrow column there instead of growing across the teeth.
+    // Short text still stays compact at its natural width.
+    const gutterInnerPx = Math.max(60, sidePad / pxToVbX - padX - borderX);
+    let innerPx = Math.min(maxLinePx, gutterInnerPx, maxAvailInnerPx);
+    innerPx = Math.max(innerPx, Math.min(headerNaturalPx, gutterInnerPx, maxAvailInnerPx), 50);
     innerPx = Math.min(innerPx + 4, maxAvailInnerPx); // +4 caret room, re-clamp
 
     // Height at the FINAL inner width.
