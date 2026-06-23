@@ -757,7 +757,9 @@
 
 /* Diagram view */
 .diagram-section {
-  margin: 2rem 0;
+  /* Flush top like the other sections (and aligned with the codes panel
+     beside it, which is a chrome-less .dental-grid-section). */
+  margin: 0;
 }
 
 .diagram-view {
