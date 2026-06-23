@@ -311,6 +311,11 @@ const EntryGrid: React.FC = () => {
         open={aiSettingsOpen}
         onClose={() => setAiSettingsOpen(false)}
       />
+
+      <footer className="entry-grid__footnote">
+        Have feedback? (Jared) Email{' '}
+        <a href="mailto:bazhip@gmail.com">bazhip@gmail.com</a>
+      </footer>
     </div>
   );
 };

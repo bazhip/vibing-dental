@@ -643,7 +643,7 @@
 /* Diagram + side-by-side code reference */
 .diagram-with-codes {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22rem;
+  grid-template-columns: minmax(0, 1fr) 18rem;
   gap: 1.5rem;
   align-items: stretch;
 }
@@ -1110,6 +1110,19 @@
 .entry-grid__button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.entry-grid__footnote {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted, #9ca3af);
+  padding: 1rem 0 0.5rem;
+}
+
+.entry-grid__footnote a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* =============================================================================

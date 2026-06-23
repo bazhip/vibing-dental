@@ -541,7 +541,10 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     // Convert to viewBox units; floor below at the layout minimums.
     const minWVb = 70 * pxToVbX;
     const minHVb = 30 * pxToVbY;
-    const newW = Math.max(minWVb, newBoxWidthPx * pxToVbX);
+    // Cap width so the box can't overflow past the right edge of the overlay.
+    const comment = comments.find((c) => c.id === id);
+    const maxWVb = comment != null ? viewBoxWidth - comment.x : viewBoxWidth;
+    const newW = Math.max(minWVb, Math.min(maxWVb, newBoxWidthPx * pxToVbX));
     const newH = Math.max(minHVb, newBoxHeightPx * pxToVbY);
 
     onCommentsChange(
