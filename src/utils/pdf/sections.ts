@@ -611,7 +611,12 @@ export function drawNerveBlockTable(
   // instead of clipping; the L/R rows stay one line tall.
   const lrCount = rows.length - 1;
   const otherRow = rows[rows.length - 1] as Free;
-  const otherValueWidth = (totalW - labelW) - padX * 2;
+  // The "Other" note ignores the L/R column grid — it starts right after
+  // the short "Other" label and uses the full remaining row width (the wide
+  // label column would otherwise be wasted whitespace).
+  const otherLabelW = regular.widthOfTextAtSize(otherRow.label, bodySize);
+  const otherValueX = x + padX + otherLabelW + 8;
+  const otherValueWidth = x + totalW - padX - otherValueX;
   const otherLineHeight = bodySize * 1.35;
   const otherLines = otherRow.value
     ? wrapToWidth(otherRow.value, regular, bodySize, otherValueWidth).slice(0, 12)
@@ -672,7 +677,7 @@ export function drawNerveBlockTable(
   });
   let lineY = otherFirstBaseline;
   for (const line of otherLines) {
-    page.drawText(line, { x: x + labelW + padX, y: lineY, size: bodySize, font: regular, color: PALETTE.ink });
+    page.drawText(line, { x: otherValueX, y: lineY, size: bodySize, font: regular, color: PALETTE.ink });
     lineY -= otherLineHeight;
   }
 
