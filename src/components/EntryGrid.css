@@ -1344,7 +1344,7 @@
   .pdf-preview-style { padding: 0.6rem 0.7rem; }
 
   /* Code reference panel inline list reads better full width. */
-  .code-ref__row { grid-template-columns: 5em 1fr; font-size: 0.8rem; }
+  .code-ref__row { grid-template-columns: 5em minmax(0, 1fr); font-size: 0.8rem; }
 
   /* Tabs scroll horizontally on narrow screens (existing rule at 720px,
      but reinforce here so it survives style overrides). */
@@ -1662,7 +1662,10 @@
 
 .code-ref__row {
   display: grid;
-  grid-template-columns: 7em 1fr;
+  /* minmax(0, 1fr) lets the definition column shrink below its content's
+     intrinsic width so long definitions wrap instead of overflowing (and
+     getting clipped by the card's overflow: hidden). */
+  grid-template-columns: 7em minmax(0, 1fr);
   gap: 0.5rem;
   padding: 0.2rem 0;
   font-size: 0.85rem;
@@ -1672,10 +1675,12 @@
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-weight: 600;
   color: #2b6cb0;
+  overflow-wrap: anywhere;
 }
 
 .code-ref__def {
   color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 
 .code-ref__empty {
