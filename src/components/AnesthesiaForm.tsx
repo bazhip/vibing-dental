@@ -54,7 +54,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">Anesthesia &mdash; Nerve Blocks (mL)</span>
+        <span className="dental-grid__title">Anesthesia &mdash; Nerve Blocks</span>
       </div>
 
       <div className="anesthesia-drug">
@@ -89,22 +89,21 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           {BLOCK_ROWS.map(({ label, rightKey, leftKey }) => (
             <tr key={label}>
               <td className="anesthesia-table__label">{label}</td>
-              <td>
-                <input
-                  type="text"
-                  className="patient-form__input"
-                  value={nerveBlocks[rightKey]}
-                  onChange={handleChange(rightKey)}
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  className="patient-form__input"
-                  value={nerveBlocks[leftKey]}
-                  onChange={handleChange(leftKey)}
-                />
-              </td>
+              {([rightKey, leftKey] as const).map((key) => (
+                <td key={key}>
+                  <span className="anesthesia-unit">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      className="patient-form__input"
+                      value={nerveBlocks[key]}
+                      onChange={handleChange(key)}
+                      aria-label={`${label} ${key === rightKey ? 'right' : 'left'} (mL)`}
+                    />
+                    <span className="anesthesia-unit__suffix" aria-hidden="true">mL</span>
+                  </span>
+                </td>
+              ))}
             </tr>
           ))}
           <tr>

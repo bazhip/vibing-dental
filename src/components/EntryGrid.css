@@ -540,6 +540,26 @@
   box-sizing: border-box;
 }
 
+/* Inline mL unit inside each L/R dose field. */
+.anesthesia-unit {
+  position: relative;
+  display: block;
+}
+
+.anesthesia-unit .patient-form__input {
+  padding-right: 2.5em;
+}
+
+.anesthesia-unit__suffix {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
 .anesthesia-table__label {
   width: 30%;
   font-weight: 500;

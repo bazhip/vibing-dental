@@ -214,8 +214,10 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
       { minX: 100, minY: 578, maxX: 665, maxY: 590 },  // wobbly midline dashes
     ],
     labels: [
-      { text: 'Maxilla',  x: 377, y: 440, fontSize: 26 },
-      { text: 'Mandible', x: 377, y: 725, fontSize: 26 },
+      // Centered on each arch's own centerline (the anchor-model CX values),
+      // not the whole-outline bbox — the artwork is slightly asymmetric.
+      { text: 'Maxilla',  x: CANINE_MAX_CX,  y: 440, fontSize: 26 },
+      { text: 'Mandible', x: CANINE_MAND_CX, y: 725, fontSize: 26 },
       { text: 'R', x: 89,  y: 583, fontSize: 34 },
       { text: 'L', x: 677, y: 583, fontSize: 34 },
     ],
@@ -236,8 +238,8 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
       { minX: 35,  minY: 531, maxX: 660, maxY: 548 },  // wobbly midline dashes
     ],
     labels: [
-      { text: 'Maxilla',  x: 343, y: 345, fontSize: 26 },
-      { text: 'Mandible', x: 343, y: 700, fontSize: 26 },
+      { text: 'Maxilla',  x: FELINE_CX, y: 345, fontSize: 26 },
+      { text: 'Mandible', x: FELINE_CX, y: 700, fontSize: 26 },
       { text: 'R', x: 20,  y: 540, fontSize: 34 },
       { text: 'L', x: 672, y: 540, fontSize: 34 },
     ],
