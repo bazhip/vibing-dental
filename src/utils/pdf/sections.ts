@@ -182,7 +182,12 @@ export async function drawLogoAndHeader(
   const { width: pageWidth, height: pageHeight } = page.getSize();
   const titleSize = 22;
   const subtitleSize = 9;
-  const titleText = `${species === 'canine' ? 'Canine' : 'Feline'} Dental Chart`;
+  const SPECIES_TITLES: Record<Species, string> = {
+    canine: 'Canine',
+    'canine-deciduous': 'Canine (Deciduous)',
+    feline: 'Feline',
+  };
+  const titleText = `${SPECIES_TITLES[species]} Dental Chart`;
   const subtitleText = 'Periodontal Assessment & Treatment Plan';
   const logoWidthIn = 2.20;
   const logoWidth = logoWidthIn * PT_PER_IN;

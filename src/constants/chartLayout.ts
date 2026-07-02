@@ -9,6 +9,8 @@
  * across the midline, then left side front-to-back).
  */
 
+import { Species } from '../types';
+
 export interface ChartTooth {
   triadan: number;
   abbr: string;
@@ -112,6 +114,44 @@ export const FELINE_MANDIBLE_TEETH: ChartTooth[] = [
   { triadan: 309, abbr: 'M1' },
 ];
 
+// Deciduous dog (puppy): 28 teeth per the AVDC Triadan table — i1-i3, c,
+// p2-p4 per quadrant in the 500s-800s (no x05; no molars). Display order
+// mirrors the adult charts: right side back-to-front, across the midline,
+// then left side front-to-back.
+export const CANINE_DECIDUOUS_MAXILLA_TEETH: ChartTooth[] = [
+  { triadan: 508, abbr: 'p4' },
+  { triadan: 507, abbr: 'p3' },
+  { triadan: 506, abbr: 'p2' },
+  { triadan: 504, abbr: 'c'  },
+  { triadan: 503, abbr: 'i3' },
+  { triadan: 502, abbr: 'i2' },
+  { triadan: 501, abbr: 'i1' },
+  { triadan: 601, abbr: 'i1' },
+  { triadan: 602, abbr: 'i2' },
+  { triadan: 603, abbr: 'i3' },
+  { triadan: 604, abbr: 'c'  },
+  { triadan: 606, abbr: 'p2' },
+  { triadan: 607, abbr: 'p3' },
+  { triadan: 608, abbr: 'p4' },
+];
+
+export const CANINE_DECIDUOUS_MANDIBLE_TEETH: ChartTooth[] = [
+  { triadan: 808, abbr: 'p4' },
+  { triadan: 807, abbr: 'p3' },
+  { triadan: 806, abbr: 'p2' },
+  { triadan: 804, abbr: 'c'  },
+  { triadan: 803, abbr: 'i3' },
+  { triadan: 802, abbr: 'i2' },
+  { triadan: 801, abbr: 'i1' },
+  { triadan: 701, abbr: 'i1' },
+  { triadan: 702, abbr: 'i2' },
+  { triadan: 703, abbr: 'i3' },
+  { triadan: 704, abbr: 'c'  },
+  { triadan: 706, abbr: 'p2' },
+  { triadan: 707, abbr: 'p3' },
+  { triadan: 708, abbr: 'p4' },
+];
+
 // Tooth grids are 5.50in wide (matching the exam table above) and pushed
 // down so the mandible bottom sits just above the page-1 footer rule
 // (mandible bottom ≈ 8.00in; footer rule at 8.10in). Each grid is 1.30in
@@ -119,7 +159,7 @@ export const FELINE_MANDIBLE_TEETH: ChartTooth[] = [
 //   maxilla:  yTopIn = 5.10 → ends at 6.40
 //   mandible: yTopIn = 6.70 → ends at 8.00
 // labelCol 0.50in + N tooth cols = 5.50in → toothColIn = (5.50 - 0.50) / N.
-export const TOOTH_GRID_LAYOUTS: Record<'canine' | 'feline', { maxilla: ToothGridLayout; mandible: ToothGridLayout }> = {
+export const TOOTH_GRID_LAYOUTS: Record<Species, { maxilla: ToothGridLayout; mandible: ToothGridLayout }> = {
   canine: {
     maxilla: {
       pageIndex: 0, xIn: 5.10, yTopIn: 5.10,
@@ -132,6 +172,20 @@ export const TOOTH_GRID_LAYOUTS: Record<'canine' | 'feline', { maxilla: ToothGri
       labelColIn: 0.50, toothColIn: 0.227,    // 5.00 / 22 ≈ 0.227
       rowHeightIn: 0.13, fieldWidthIn: 0.202, fieldHeightIn: 0.115,
       teeth: CANINE_MANDIBLE_TEETH,
+    },
+  },
+  'canine-deciduous': {
+    maxilla: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 5.10,
+      labelColIn: 0.50, toothColIn: 0.3571,   // 5.00 / 14 ≈ 0.357
+      rowHeightIn: 0.13, fieldWidthIn: 0.332, fieldHeightIn: 0.115,
+      teeth: CANINE_DECIDUOUS_MAXILLA_TEETH,
+    },
+    mandible: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 6.70,
+      labelColIn: 0.50, toothColIn: 0.3571,   // 5.00 / 14 ≈ 0.357
+      rowHeightIn: 0.13, fieldWidthIn: 0.332, fieldHeightIn: 0.115,
+      teeth: CANINE_DECIDUOUS_MANDIBLE_TEETH,
     },
   },
   feline: {

@@ -143,6 +143,16 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           >
             🐶 Canine
           </button>
+
+          <button
+            type="button"
+            role="radio"
+            aria-checked={species === 'canine-deciduous'}
+            className={`species-tab ${species === 'canine-deciduous' ? 'species-tab--active' : ''}`}
+            onClick={() => handleSpeciesClick('canine-deciduous')}
+          >
+            🐶 Puppy
+          </button>
         </div>
 
         <div

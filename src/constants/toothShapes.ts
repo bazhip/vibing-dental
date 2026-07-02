@@ -9,6 +9,7 @@
  */
 
 import { Species } from '../types';
+import { CANINE_ADULT_ONLY_TOOTH_CULLS } from './canineDeciduousCulls';
 
 export type ToothType = 'incisor' | 'canine' | 'premolar' | 'carnassial' | 'molar';
 
@@ -174,6 +175,41 @@ const felineTeeth: ToothShape[] = [
 // so every tooth — including 310/410/409 — resolves through the same
 // subpath auto-matching in ToothDiagram.
 
+// Shared decor for both canine dentitions (adult + deciduous reuse the
+// same artwork).
+const CANINE_LABEL_CULLS = [
+  { minX: 325, minY: 424, maxX: 427, maxY: 456 },  // "Maxilla" letterforms
+  { minX: 316, minY: 708, maxX: 448, maxY: 742 },  // "Mandible" letterforms
+  { minX: 70,  minY: 554, maxX: 108, maxY: 603 },  // "R"
+  { minX: 659, minY: 557, maxX: 695, maxY: 605 },  // "L"
+  { minX: 100, minY: 578, maxX: 665, maxY: 590 },  // wobbly midline dashes
+];
+const CANINE_LABELS = [
+  // Both words sit on one shared center axis — the midpoint of the
+  // midline (383.5) — so they center-justify against each other and
+  // the drawing as a whole.
+  { text: 'Maxilla',  x: 383.5, y: 440, fontSize: 26 },
+  { text: 'Mandible', x: 383.5, y: 725, fontSize: 26 },
+  { text: 'R', x: 89,  y: 583, fontSize: 34 },
+  { text: 'L', x: 677, y: 583, fontSize: 34 },
+];
+const CANINE_MIDLINE_DASH = { x1: 116, x2: 651, y: 583 };
+
+/** Adult teeth with no deciduous precursor: P1s, upper M1-M2, lower M1-M3.
+ *  A puppy chart shows neither their anchors nor their artwork. */
+const ADULT_ONLY_TRIADANS = new Set([
+  105, 205, 305, 405,
+  109, 110, 209, 210,
+  309, 310, 311, 409, 410, 411,
+]);
+
+// Deciduous anchors reuse the adult positions (same artwork) with the
+// Triadan quadrant shifted +400 (1xx→5xx … 4xx→8xx) and lowercase labels,
+// per the AVDC deciduous convention (i1-i3, c, p2-p4; no x05).
+const canineDeciduousTeeth: ToothShape[] = canineTeeth
+  .filter((t) => !ADULT_ONLY_TRIADANS.has(t.triadan))
+  .map((t) => ({ ...t, triadan: t.triadan + 400, label: t.label.toLowerCase() }));
+
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
     imageSrc: '/diagrams/canine.png',
@@ -182,22 +218,22 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineY: CANINE_MIDLINE,
     teeth: canineTeeth,
     cropBounds: { minY: 30, maxY: 1145 },
-    labelCulls: [
-      { minX: 325, minY: 424, maxX: 427, maxY: 456 },  // "Maxilla" letterforms
-      { minX: 316, minY: 708, maxX: 448, maxY: 742 },  // "Mandible" letterforms
-      { minX: 70,  minY: 554, maxX: 108, maxY: 603 },  // "R"
-      { minX: 659, minY: 557, maxX: 695, maxY: 605 },  // "L"
-      { minX: 100, minY: 578, maxX: 665, maxY: 590 },  // wobbly midline dashes
-    ],
-    labels: [
-      // Centered on each arch's own centerline (the anchor-model CX values),
-      // not the whole-outline bbox — the artwork is slightly asymmetric.
-      { text: 'Maxilla',  x: CANINE_MAX_CX,  y: 440, fontSize: 26 },
-      { text: 'Mandible', x: CANINE_MAND_CX, y: 725, fontSize: 26 },
-      { text: 'R', x: 89,  y: 583, fontSize: 34 },
-      { text: 'L', x: 677, y: 583, fontSize: 34 },
-    ],
-    midlineDash: { x1: 116, x2: 651, y: 583 },
+    labelCulls: CANINE_LABEL_CULLS,
+    labels: CANINE_LABELS,
+    midlineDash: CANINE_MIDLINE_DASH,
+  },
+  'canine-deciduous': {
+    imageSrc: '/diagrams/canine.png',
+    width: 802,
+    height: 1140,
+    midlineY: CANINE_MIDLINE,
+    teeth: canineDeciduousTeeth,
+    cropBounds: { minY: 30, maxY: 1145 },
+    // Cull the adult-only teeth's artwork on top of the usual label culls,
+    // so the drawing shows only the 28 deciduous-position teeth.
+    labelCulls: [...CANINE_LABEL_CULLS, ...CANINE_ADULT_ONLY_TOOTH_CULLS],
+    labels: CANINE_LABELS,
+    midlineDash: CANINE_MIDLINE_DASH,
   },
   feline: {
     imageSrc: '/diagrams/feline.png',

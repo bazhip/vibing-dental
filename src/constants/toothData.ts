@@ -107,10 +107,56 @@ export const FELINE_TOOTH_DATA: ToothData[] = [
 ];
 
 /**
+ * Deciduous canine (puppy) tooth data — 28 teeth per the AVDC Triadan
+ * table (Floyd 1991): i1-i3, c, p2-p4 per quadrant in the 500s-800s.
+ * There is no x05 (P1 has no deciduous precursor) and no molars.
+ * Lowercase labels are the AVDC convention for deciduous teeth.
+ */
+export const CANINE_DECIDUOUS_TOOTH_DATA: ToothData[] = [
+  // Upper right quadrant (501-508)
+  { tooth: 'i1', triadan: 501 },
+  { tooth: 'i2', triadan: 502 },
+  { tooth: 'i3', triadan: 503 },
+  { tooth: 'c',  triadan: 504 },
+  { tooth: 'p2', triadan: 506 },
+  { tooth: 'p3', triadan: 507 },
+  { tooth: 'p4', triadan: 508 },
+
+  // Lower right quadrant (801-808)
+  { tooth: 'i1', triadan: 801 },
+  { tooth: 'i2', triadan: 802 },
+  { tooth: 'i3', triadan: 803 },
+  { tooth: 'c',  triadan: 804 },
+  { tooth: 'p2', triadan: 806 },
+  { tooth: 'p3', triadan: 807 },
+  { tooth: 'p4', triadan: 808 },
+
+  // Upper left quadrant (601-608)
+  { tooth: 'i1', triadan: 601 },
+  { tooth: 'i2', triadan: 602 },
+  { tooth: 'i3', triadan: 603 },
+  { tooth: 'c',  triadan: 604 },
+  { tooth: 'p2', triadan: 606 },
+  { tooth: 'p3', triadan: 607 },
+  { tooth: 'p4', triadan: 608 },
+
+  // Lower left quadrant (701-708)
+  { tooth: 'i1', triadan: 701 },
+  { tooth: 'i2', triadan: 702 },
+  { tooth: 'i3', triadan: 703 },
+  { tooth: 'c',  triadan: 704 },
+  { tooth: 'p2', triadan: 706 },
+  { tooth: 'p3', triadan: 707 },
+  { tooth: 'p4', triadan: 708 },
+];
+
+/**
  * Get initial tooth data based on species
  */
 export function getInitialToothData(species: Species): ToothData[] {
-  return species === 'canine' ? CANINE_TOOTH_DATA : FELINE_TOOTH_DATA;
+  if (species === 'canine') return CANINE_TOOTH_DATA;
+  if (species === 'canine-deciduous') return CANINE_DECIDUOUS_TOOTH_DATA;
+  return FELINE_TOOTH_DATA;
 }
 
 /**
