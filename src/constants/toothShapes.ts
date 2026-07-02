@@ -168,35 +168,11 @@ const felineTeeth: ToothShape[] = [
   ...pair(FELINE_CX, 401, 301, 'I1', 'incisor', 11, 1038, 7, 12),
 ];
 
-/**
- * Hand-crafted hit shape for canine M2 (410) ONLY. On the right side the
- * SVG's outline traces 410 + 409 as a single compound subpath, so the
- * auto-matcher has no clean per-tooth boundary — this hand trace restores
- * a tooth-shaped hover/click/fill area for 410.
- *
- * 310 deliberately has NO override: on the left side the SVG has its own
- * clean outline subpath for 310 (bbox ≈ x[571..604] y[622..675], measured
- * from public/diagrams/canine.svg), so the auto-matcher fills the real
- * tooth exactly. An earlier mirrored copy of 410's trace sat off the
- * visible tooth no matter how the mirror axis was tuned.
- */
-{
-  // Extracted from the SVG itself (scripted): the compound subpath was
-  // flattened, cut at the 410/409 waist (y=692), and the outer rail of the
-  // stroke trace kept — so this polygon follows the drawn outline of 410,
-  // not a hand-eyeballed approximation.
-  const t410d =
-    'M 205.3 683.8 L 208.3 683.3 L 210.9 680.2 L 212.9 675.4 L 214.1 670.1 ' +
-    'L 214.1 666.7 L 211.6 652.3 L 209.3 645.0 L 203.2 634.9 L 197.0 629.7 ' +
-    'L 189.9 628.1 L 185.2 628.6 L 182.1 630.0 L 178.1 634.4 L 176.0 640.2 ' +
-    'L 175.8 656.7 L 177.0 668.6 L 179.5 676.7 L 181.9 680.1 L 190.4 683.7 ' +
-    'L 196.9 688.6 L 193.1 691.8 Z';
-  const t410bbox = { minX: 175.8, minY: 628.1, maxX: 214.1, maxY: 691.8 };
-
-  for (const t of canineTeeth) {
-    if (t.triadan === 410) t.hitShape = { d: t410d, bbox: t410bbox };
-  }
-}
+// No per-tooth hitShape overrides are needed: canine.svg's historically
+// fused 410+409 stroke was split into proper per-tooth outline loops
+// directly in the SVG (see the repo history for the extraction script),
+// so every tooth — including 310/410/409 — resolves through the same
+// subpath auto-matching in ToothDiagram.
 
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
