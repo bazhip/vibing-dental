@@ -1,260 +1,100 @@
 /* =============================================================================
- * Layout components (structure) and design boards (chrome). Each board
- * combines a layout component (the structural template) with a `data-style`
- * class on the document root. Together they should make this app feel like
- * a different product entirely — Twitter vs Linear vs Stripe — not just a
- * recolored card.
+ * App shell + section navigation.
+ *
+ * One layout: a full-height clinical workspace — sticky topbar (title +
+ * actions), left section rail, and a single content panel. Visual language
+ * comes entirely from the tokens in themes.css.
  * =============================================================================
  */
 
-/* ============== LAYOUTS ===================================================
- * Each .xxx-layout is a fully-formed structural template. The board picks
- * which one is rendered.
- * =========================================================================
- */
-
-/* ---------- Sidebar layout (left rail nav) ------------------------------- */
+/* ---------- Section shell (rail + panel) --------------------------------- */
 .sidebar-layout {
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
+
 .sidebar-layout__nav {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: var(--surface-alt, #f8f9fa);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  padding: 0.75rem;
+  padding: 0.25rem 0;
   position: sticky;
-  top: 1rem;
+  /* Sits below the sticky topbar (~64px). */
+  top: 4.75rem;
 }
+
 .sidebar-layout__nav-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.65rem 0.85rem; border-radius: 8px;
-  background: transparent; border: none; font: inherit; font-weight: 500;
-  color: var(--text-muted, #4a5568); text-align: left; cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
+
 .sidebar-layout__nav-item:hover {
-  background: rgba(0, 0, 0, 0.04); color: var(--text, #1f2937);
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text);
 }
+
 .sidebar-layout__nav-item--active,
 .sidebar-layout__nav-item--active:hover {
-  background: var(--surface, white); color: var(--text, #1f2937);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }
+
 .sidebar-layout__nav-num {
-  font-size: 0.7rem; font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em; color: var(--text-muted, #94a3b8); font-weight: 600;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  opacity: 0.75;
 }
-.sidebar-layout__nav-item--active .sidebar-layout__nav-num { color: var(--primary, #4f46e5); }
+
+.sidebar-layout__nav-item--active .sidebar-layout__nav-num {
+  color: var(--primary);
+  opacity: 1;
+}
+
 .sidebar-layout__main {
-  background: var(--surface, white); border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px; padding: 1.5rem; min-height: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem;
+  min-height: 420px;
 }
+
 @media (max-width: 900px) {
   .sidebar-layout { grid-template-columns: 1fr; }
-  .sidebar-layout__nav { position: static; flex-direction: row; overflow-x: auto; flex-wrap: nowrap; }
+  .sidebar-layout__nav {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding: 0;
+  }
   .sidebar-layout__nav-item { flex: 0 0 auto; }
+  .sidebar-layout__main { padding: 1.25rem; }
 }
-
-/* ---------- Stacked layout (all sections expanded) ----------------------- */
-.stacked-layout { display: flex; flex-direction: column; gap: 1.5rem; }
-.stacked-layout__section {
-  background: var(--surface, white); border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px; padding: 1.5rem;
-}
-
-/* ---------- Top-nav layout (horizontal product nav) ---------------------- */
-.topnav-layout {
-  background: var(--surface, white);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.topnav-layout__bar {
-  display: flex; gap: 0; padding: 0 1.25rem;
-  border-bottom: 1px solid var(--border, #e2e8f0);
-  background: var(--surface, white);
-  overflow-x: auto;
-  flex-wrap: nowrap;
-}
-.topnav-layout__tab {
-  padding: 1rem 1.1rem;
-  background: transparent; border: none;
-  border-bottom: 2px solid transparent;
-  font: inherit; font-weight: 500; font-size: 0.92rem;
-  color: var(--text-muted, #4a5568);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.15s, border-color 0.15s;
-}
-.topnav-layout__tab:hover { color: var(--text, #1f2937); }
-.topnav-layout__tab--active,
-.topnav-layout__tab--active:hover {
-  color: var(--primary, #4f46e5);
-  border-bottom-color: var(--primary, #4f46e5);
-}
-.topnav-layout__content { padding: 1.5rem; }
-
-/* ---------- Three-column layout (rail | feed | aux) ---------------------- */
-.threecol-layout {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 280px;
-  gap: 1.25rem;
-  align-items: start;
-}
-.threecol-layout__rail {
-  display: flex; flex-direction: column; gap: 4px;
-  background: var(--surface, white);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  padding: 0.75rem;
-  position: sticky; top: 1rem;
-}
-.threecol-layout__rail-item {
-  display: flex; align-items: center; gap: 0.85rem;
-  padding: 0.7rem 0.85rem; border-radius: 999px;
-  background: transparent; border: none; font: inherit; font-weight: 600;
-  color: var(--text, #1f2937); text-align: left; cursor: pointer;
-}
-.threecol-layout__rail-item:hover {
-  background: rgba(15, 23, 42, 0.05);
-}
-.threecol-layout__rail-item--active,
-.threecol-layout__rail-item--active:hover {
-  background: rgba(15, 23, 42, 0.08);
-}
-.threecol-layout__rail-icon { font-size: 1.05rem; line-height: 1; }
-.threecol-layout__rail-label { font-size: 0.95rem; }
-.threecol-layout__main {
-  background: var(--surface, white);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  min-height: 320px;
-  overflow: hidden;
-}
-.threecol-layout__feed { padding: 1.25rem 1.5rem; }
-.threecol-layout__aux {
-  display: flex; flex-direction: column; gap: 1rem;
-  position: sticky; top: 1rem;
-}
-.threecol-layout__aux-card {
-  background: var(--surface-alt, #f8f9fa);
-  border-radius: 14px;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--border, #e2e8f0);
-}
-.threecol-layout__aux-card strong {
-  display: block; font-weight: 700; color: var(--text, #1f2937);
-  margin-bottom: 0.4rem; font-size: 0.95rem;
-}
-.threecol-layout__aux-card p {
-  margin: 0; color: var(--text-muted, #64748b); font-size: 0.85rem;
-  line-height: 1.5;
-}
-.threecol-layout__aux-card ul {
-  list-style: none; padding: 0; margin: 0; font-size: 0.85rem;
-  color: var(--text-muted, #64748b);
-}
-.threecol-layout__aux-card kbd {
-  font-family: ui-monospace, SF Mono, monospace;
-  background: white; border: 1px solid var(--border, #e2e8f0);
-  border-radius: 4px; padding: 0.05rem 0.3rem; font-size: 0.75rem;
-}
-@media (max-width: 1100px) {
-  .threecol-layout { grid-template-columns: 200px minmax(0, 1fr); }
-  .threecol-layout__aux { display: none; }
-}
-@media (max-width: 720px) {
-  .threecol-layout { grid-template-columns: 1fr; }
-  .threecol-layout__rail { position: static; flex-direction: row; overflow-x: auto; }
-  .threecol-layout__rail-item { flex: 0 0 auto; }
-}
-
-/* ---------- Wizard layout (step-by-step) --------------------------------- */
-.wizard-layout {
-  background: var(--surface, white);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 12px;
-  padding: 2rem;
-}
-.wizard-layout__steps {
-  list-style: none; margin: 0 0 2rem; padding: 0;
-  display: flex; gap: 0.25rem; align-items: center;
-  border-bottom: 1px solid var(--border, #e2e8f0); padding-bottom: 1.5rem;
-  overflow-x: auto;
-}
-.wizard-layout__step { flex: 1 0 auto; }
-.wizard-layout__step-button {
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.4rem 0.8rem; border-radius: 999px;
-  background: transparent; border: none; font: inherit;
-  color: var(--text-muted, #94a3b8); cursor: pointer;
-  font-size: 0.92rem; font-weight: 500;
-}
-.wizard-layout__step--active .wizard-layout__step-button {
-  color: var(--primary, #4f46e5); font-weight: 700;
-}
-.wizard-layout__step--done .wizard-layout__step-button {
-  color: var(--text, #1f2937);
-}
-.wizard-layout__step-dot {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 2px solid var(--border, #e2e8f0);
-  background: white; color: inherit;
-  font-weight: 700; font-size: 0.85rem;
-}
-.wizard-layout__step--active .wizard-layout__step-dot {
-  border-color: var(--primary, #4f46e5);
-  background: var(--primary, #4f46e5);
-  color: white;
-}
-.wizard-layout__step--done .wizard-layout__step-dot {
-  border-color: var(--primary, #4f46e5);
-  background: var(--primary, #4f46e5);
-  color: white;
-}
-.wizard-layout__nav {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; margin-top: 2rem; padding-top: 1.5rem;
-  border-top: 1px solid var(--border, #e2e8f0);
-}
-.wizard-layout__nav-button {
-  padding: 0.7rem 1.3rem; border-radius: 8px; font: inherit;
-  font-weight: 600; font-size: 0.95rem;
-  background: transparent;
-  border: 1px solid var(--border, #cbd5e0);
-  color: var(--text, #1f2937);
-  cursor: pointer;
-}
-.wizard-layout__nav-button:disabled { opacity: 0.4; cursor: not-allowed; }
-.wizard-layout__nav-button:hover:not(:disabled) {
-  background: var(--surface-alt, #f8f9fa);
-}
-.wizard-layout__nav-button--primary {
-  background: var(--primary, #4f46e5);
-  border-color: var(--primary, #4f46e5);
-  color: white;
-}
-.wizard-layout__nav-button--primary:hover:not(:disabled) {
-  background: var(--primary-end, #4338ca);
-}
-.wizard-layout__progress {
-  font-size: 0.85rem; color: var(--text-muted, #64748b);
-  font-variant-numeric: tabular-nums;
-}
-
 
 /* ---------- Mobile section menu ------------------------------------------
- * Hidden by default; shown only on phones, where it replaces every
- * layout's native horizontal nav. The matching @media block at ≤600px
- * (further down in this file) hides .tabs__bar / .sidebar-layout__nav /
- * .topnav-layout__bar / .threecol-layout__rail / .wizard-layout__steps.
+ * Hidden by default; shown only on phones, where it replaces the section
+ * rail (the ≤600px block below hides .sidebar-layout__nav).
  * ------------------------------------------------------------------------ */
 .mobile-section-menu {
   display: none;
@@ -341,25 +181,7 @@
    Each layout's native nav goes hidden so the menu's the single nav. */
 @media (max-width: 600px) {
   .mobile-section-menu { display: block; }
-  .tabs__bar,
-  .sidebar-layout__nav,
-  .topnav-layout__bar,
-  .threecol-layout__rail,
-  .threecol-layout__aux,
-  .wizard-layout__steps {
-    display: none !important;
-  }
-  /* Layouts that wrap content in a card with their own padding need to
-     pull the menu inside the padding — easier than restructuring DOM. */
-  .tabs,
-  .topnav-layout,
-  .wizard-layout {
-    padding: 0.75rem;
-  }
-  .tabs__panels,
-  .topnav-layout__content {
-    padding: 0;
-  }
+  .sidebar-layout__nav { display: none !important; }
   .sidebar-layout {
     grid-template-columns: 1fr;
     gap: 0;
@@ -367,437 +189,8 @@
   .sidebar-layout__main {
     border-radius: 12px;
   }
-  .threecol-layout {
-    grid-template-columns: 1fr;
-  }
-  .threecol-layout__main {
-    min-height: auto;
-  }
-  .wizard-layout__nav {
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
 }
 
-
-/* ============== STYLES (per-theme chrome) =================================
- * Each [data-style="…"] block layers the theme's character on top of the
- * tokens defined in themes.css — fonts, surface treatments, button
- * shapes, header rhythm, etc. Tokens (var(--…)) are still the source of
- * truth for color; these blocks add what tokens alone can't express.
- * =========================================================================
- */
-
-/* Apply theme typography tokens once, on the document. Each theme sets
-   --font-body etc. in themes.css; here we propagate them to body + the
-   display/heading slot used across components. */
-body {
-  font-family: var(--font-body);
-}
-[data-theme] .entry-grid__title,
-[data-theme] .dental-grid__title,
-[data-theme] .patient-form__section-title,
-[data-theme] .pdf-preview-header h2 {
-  font-family: var(--font-display);
-  letter-spacing: var(--letter-display);
-  font-weight: var(--weight-display);
-  text-transform: var(--case-display);
-}
-
-
-/* ---------- 1. Aperture (Apple-luxe glassmorphism) ----------------------- */
-[data-style="aperture"] body { background: var(--bg-page); }
-[data-style="aperture"] .App {
-  background: transparent; box-shadow: none; border-radius: 0;
-}
-[data-style="aperture"] .entry-grid__topbar { border-bottom: 1px solid var(--border); }
-[data-style="aperture"] .patient-form,
-[data-style="aperture"] .stacked-layout__section,
-[data-style="aperture"] .sidebar-layout__main,
-[data-style="aperture"] .sidebar-layout__nav,
-[data-style="aperture"] .topnav-layout,
-[data-style="aperture"] .tabs,
-[data-style="aperture"] .threecol-layout__main,
-[data-style="aperture"] .threecol-layout__rail,
-[data-style="aperture"] .threecol-layout__aux-card {
-  background: var(--surface);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter:         saturate(180%) blur(20px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-[data-style="aperture"] .sidebar-layout__nav-item--active {
-  background: rgba(0, 122, 255, 0.10);
-  color: var(--primary);
-  box-shadow: none;
-}
-[data-style="aperture"] .entry-grid__button {
-  background: var(--primary); color: white; border-radius: 980px;
-  padding: 0.85rem 1.75rem; box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 8px 24px rgba(0,122,255,0.30);
-  text-transform: none; letter-spacing: -0.01em; font-weight: 600;
-}
-[data-style="aperture"] .entry-grid__button:hover { background: var(--primary-end); }
-
-
-/* ---------- 2. Ledger (Stripe SaaS) -------------------------------------- */
-[data-style="ledger"] body { background: var(--bg-page); }
-[data-style="ledger"] .App { background: transparent; box-shadow: none; border-radius: 0; }
-[data-style="ledger"] .patient-form,
-[data-style="ledger"] .stacked-layout__section,
-[data-style="ledger"] .sidebar-layout__main,
-[data-style="ledger"] .topnav-layout,
-[data-style="ledger"] .tabs {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-[data-style="ledger"] .sidebar-layout__nav {
-  background: transparent; border: none; padding: 0; box-shadow: none;
-}
-[data-style="ledger"] .sidebar-layout__nav-item {
-  border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; font-size: 0.875rem;
-}
-[data-style="ledger"] .sidebar-layout__nav-item--active {
-  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
-  color: var(--text);
-}
-[data-style="ledger"] .sidebar-layout__nav-num { color: var(--primary); }
-[data-style="ledger"] .entry-grid__button {
-  background: var(--primary); color: white; border-radius: var(--radius-sm);
-  padding: 0.6rem 1.25rem; box-shadow: 0 1px 2px rgba(99,91,255,0.25);
-  text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 0.92rem;
-}
-[data-style="ledger"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ---------- 3. Oracle (Linear-style dense) ------------------------------- */
-[data-style="oracle"] body { background: var(--bg-page); }
-[data-style="oracle"] .App { background: var(--surface); box-shadow: none; border-radius: 0; max-width: 1280px; }
-[data-style="oracle"] .patient-form,
-[data-style="oracle"] .stacked-layout__section,
-[data-style="oracle"] .sidebar-layout__main,
-[data-style="oracle"] .sidebar-layout__nav,
-[data-style="oracle"] .topnav-layout,
-[data-style="oracle"] .tabs {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  box-shadow: none;
-}
-[data-style="oracle"] .topnav-layout__bar { background: var(--surface-alt); padding: 0 0.75rem; }
-[data-style="oracle"] .topnav-layout__tab {
-  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
-  padding: 0.7rem 0.85rem;
-}
-[data-style="oracle"] .topnav-layout__tab--active,
-[data-style="oracle"] .topnav-layout__tab--active:hover {
-  color: var(--primary); border-bottom-color: var(--primary);
-}
-[data-style="oracle"] .entry-grid__button {
-  background: var(--primary); color: white; border-radius: var(--radius-sm);
-  padding: 0.55rem 1.1rem; box-shadow: none;
-  text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; font-size: 0.78rem;
-}
-[data-style="oracle"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ---------- 4. Folio (Editorial serif) ----------------------------------- */
-[data-style="folio"] body { background: var(--bg-page); }
-[data-style="folio"] .App { background: var(--surface); box-shadow: 0 4px 28px rgba(28,25,23,0.10); border-radius: 0; }
-[data-style="folio"] .entry-grid__title {
-  border-bottom: 3px double var(--primary); padding-bottom: 0.4rem;
-  font-style: normal; font-size: 1.75rem;
-}
-[data-style="folio"] .patient-form,
-[data-style="folio"] .stacked-layout__section,
-[data-style="folio"] .sidebar-layout__main,
-[data-style="folio"] .sidebar-layout__nav,
-[data-style="folio"] .topnav-layout,
-[data-style="folio"] .tabs {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  box-shadow: none;
-}
-[data-style="folio"] .sidebar-layout__panel-header {
-  border-bottom: 2px solid var(--primary);
-}
-[data-style="folio"] .sidebar-layout__panel-header h2,
-[data-style="folio"] .stacked-layout__title,
-[data-style="folio"] .dental-grid__title,
-[data-style="folio"] .patient-form__section-title {
-  font-style: italic;
-}
-[data-style="folio"] .sidebar-layout__nav-num,
-[data-style="folio"] .stacked-layout__num {
-  font-family: var(--font-display); font-style: italic;
-}
-[data-style="folio"] .entry-grid__button {
-  background: var(--primary); color: var(--surface); border-radius: 0;
-  padding: 0.7rem 1.5rem; box-shadow: none;
-  font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.85rem;
-  font-family: var(--font-display);
-}
-[data-style="folio"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ---------- 5. Concrete (Brutalist mono) --------------------------------- */
-[data-style="concrete"] body { background: var(--bg-page); }
-[data-style="concrete"] .App {
-  background: var(--surface); border: 2px solid #000; border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
-}
-[data-style="concrete"] .entry-grid__title {
-  text-transform: uppercase; letter-spacing: 0.02em;
-}
-[data-style="concrete"] .patient-form,
-[data-style="concrete"] .stacked-layout__section,
-[data-style="concrete"] .sidebar-layout__main,
-[data-style="concrete"] .sidebar-layout__nav,
-[data-style="concrete"] .topnav-layout,
-[data-style="concrete"] .tabs {
-  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
-}
-[data-style="concrete"] .tabs__bar { border-bottom: 2px solid #000; background: var(--surface-alt); padding: 0; }
-[data-style="concrete"] .tabs__tab {
-  border-radius: 0; border-right: 2px solid #000; padding: 0.7rem 1rem;
-  font-weight: 700; color: #000;
-}
-[data-style="concrete"] .tabs__tab--active,
-[data-style="concrete"] .tabs__tab--active:hover {
-  background: #000; color: var(--surface); box-shadow: none;
-}
-[data-style="concrete"] .entry-grid__button {
-  background: var(--primary); color: var(--surface); border: 2px solid #000;
-  border-radius: 0; padding: 0.85rem 1.75rem;
-  box-shadow: 6px 6px 0 #000;
-  text-transform: uppercase; letter-spacing: 0.02em; font-weight: 700;
-}
-[data-style="concrete"] .entry-grid__button:hover {
-  transform: translate(-2px, -2px); box-shadow: 8px 8px 0 #000;
-}
-[data-style="concrete"] .entry-grid__button:active {
-  transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000;
-}
-
-
-/* ---------- 6. Atrium (Japandi minimal) ---------------------------------- */
-[data-style="atrium"] body { background: var(--bg-page); }
-[data-style="atrium"] .App {
-  background: transparent; box-shadow: none; border-radius: 0; max-width: 1080px;
-}
-[data-style="atrium"] .entry-grid-form { gap: 3rem; }
-[data-style="atrium"] .stacked-layout { gap: 3rem; }
-[data-style="atrium"] .stacked-layout__section,
-[data-style="atrium"] .patient-form {
-  background: transparent; border: none; border-top: 1px solid var(--border-strong);
-  border-radius: 0; padding: 1.75rem 0 0; box-shadow: none;
-}
-[data-style="atrium"] .stacked-layout__header {
-  border-bottom: none; padding: 0; margin-bottom: 1.25rem;
-}
-[data-style="atrium"] .stacked-layout__num {
-  color: var(--primary); font-family: var(--font-display); font-size: 0.85rem;
-  font-style: italic; font-weight: 400; letter-spacing: 0.06em;
-}
-[data-style="atrium"] .stacked-layout__title { font-weight: 500; font-size: 1.4rem; }
-[data-style="atrium"] .entry-grid__button {
-  background: transparent; color: var(--primary);
-  border: 1px solid var(--primary); border-radius: 0;
-  padding: 0.6rem 1.5rem; box-shadow: none;
-  text-transform: none; letter-spacing: 0.05em; font-weight: 500;
-}
-[data-style="atrium"] .entry-grid__button:hover {
-  background: var(--primary); color: var(--surface); transform: none;
-}
-
-
-/* ---------- 7. Pulse (Hospital EHR) -------------------------------------- */
-[data-style="pulse"] body { background: var(--bg-page); }
-[data-style="pulse"] .App { background: transparent; box-shadow: none; border-radius: 0; }
-[data-style="pulse"] .patient-form,
-[data-style="pulse"] .stacked-layout__section,
-[data-style="pulse"] .sidebar-layout__main,
-[data-style="pulse"] .sidebar-layout__nav,
-[data-style="pulse"] .topnav-layout,
-[data-style="pulse"] .tabs {
-  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-[data-style="pulse"] .sidebar-layout__nav { padding: 0; background: transparent; border: none; box-shadow: none; }
-[data-style="pulse"] .sidebar-layout__nav-item {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  margin-bottom: 4px;
-}
-[data-style="pulse"] .sidebar-layout__nav-item--active {
-  background: var(--primary); color: var(--surface); border-color: var(--primary);
-}
-[data-style="pulse"] .sidebar-layout__nav-item--active .sidebar-layout__nav-num { color: rgba(255,255,255,0.85); }
-[data-style="pulse"] .sidebar-layout__panel-header {
-  background: var(--surface-alt);
-  margin: -1.5rem -1.5rem 1.25rem;
-  padding: 0.85rem 1.5rem;
-  border-bottom: 2px solid var(--primary);
-}
-[data-style="pulse"] .entry-grid__button {
-  background: var(--primary); color: var(--surface); border-radius: var(--radius);
-  padding: 0.7rem 1.5rem; box-shadow: var(--shadow);
-  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500; font-size: 0.85rem;
-}
-[data-style="pulse"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ---------- 8. Bauhaus (Modernist) --------------------------------------- */
-[data-style="bauhaus"] body { background: var(--bg-page); }
-[data-style="bauhaus"] .App {
-  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
-  max-width: 1280px;
-}
-[data-style="bauhaus"] .entry-grid__topbar {
-  border-bottom: 2px solid #000;
-  background: var(--primary); color: var(--surface);
-  padding: 1rem 1.5rem; margin: -2rem -1.5rem 2rem;
-}
-[data-style="bauhaus"] .entry-grid__title { color: var(--surface); }
-[data-style="bauhaus"] .stacked-layout__section,
-[data-style="bauhaus"] .patient-form {
-  background: var(--surface); border: 2px solid #000; border-radius: 0; box-shadow: none;
-}
-[data-style="bauhaus"] .stacked-layout__header {
-  background: var(--accent); color: var(--surface);
-  margin: -1.5rem -1.5rem 1.5rem; padding: 0.75rem 1.5rem;
-  border-bottom: 2px solid #000;
-}
-[data-style="bauhaus"] .stacked-layout__num { color: var(--surface); font-size: 1.4rem; font-weight: 800; }
-[data-style="bauhaus"] .stacked-layout__title { color: var(--surface); }
-[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+2) .stacked-layout__header { background: var(--primary); }
-[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__header { background: #f4c542; color: #000; }
-[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__num,
-[data-style="bauhaus"] .stacked-layout__section:nth-child(3n+3) .stacked-layout__title { color: #000; }
-[data-style="bauhaus"] .entry-grid__button {
-  background: var(--primary); color: var(--surface); border: 2px solid #000;
-  border-radius: 0; padding: 0.85rem 1.75rem; box-shadow: none;
-  text-transform: uppercase; letter-spacing: 0.04em; font-weight: 800;
-}
-[data-style="bauhaus"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ---------- 9. Vapor (Cyberpunk) ----------------------------------------- */
-[data-style="vapor"] body { background: var(--bg-page); color: var(--text); min-height: 100vh; }
-[data-style="vapor"] .App {
-  background: transparent; box-shadow: none; border-radius: 0;
-}
-[data-style="vapor"] .entry-grid__title {
-  color: var(--text); text-shadow: 0 0 12px rgba(238,68,189,0.6);
-}
-[data-style="vapor"] .patient-form,
-[data-style="vapor"] .stacked-layout__section,
-[data-style="vapor"] .sidebar-layout__main,
-[data-style="vapor"] .sidebar-layout__nav,
-[data-style="vapor"] .topnav-layout,
-[data-style="vapor"] .tabs {
-  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-}
-[data-style="vapor"] .topnav-layout__bar {
-  background: rgba(28,19,56,0.6); border-bottom: 1px solid var(--border-strong);
-}
-[data-style="vapor"] .topnav-layout__tab {
-  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.78rem;
-}
-[data-style="vapor"] .topnav-layout__tab--active,
-[data-style="vapor"] .topnav-layout__tab--active:hover {
-  color: var(--accent); border-bottom-color: var(--accent);
-  text-shadow: 0 0 8px rgba(34,211,238,0.6);
-}
-[data-style="vapor"] .entry-grid__button {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: white; border: none; border-radius: var(--radius);
-  padding: 0.75rem 1.75rem;
-  box-shadow: 0 0 20px rgba(238,68,189,0.5), 0 0 30px rgba(34,211,238,0.3);
-  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;
-}
-[data-style="vapor"] .entry-grid__button:hover {
-  box-shadow: 0 0 30px rgba(238,68,189,0.7), 0 0 50px rgba(34,211,238,0.5);
-  transform: none;
-}
-
-
-/* ---------- 10. Almanac (Vintage apothecary) ----------------------------- */
-[data-style="almanac"] body { background: var(--bg-page); }
-[data-style="almanac"] .App {
-  background: var(--surface); box-shadow: 0 4px 28px rgba(31,19,10,0.18); border-radius: 0;
-  border: 1px solid var(--border-strong);
-  max-width: 1200px;
-}
-[data-style="almanac"] .entry-grid__topbar {
-  border-bottom: 4px double var(--primary);
-  padding-bottom: 1.25rem;
-}
-[data-style="almanac"] .entry-grid__title {
-  font-family: var(--font-display); font-size: 1.85rem;
-}
-[data-style="almanac"] .stacked-layout__section,
-[data-style="almanac"] .patient-form {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 0;
-  box-shadow: none;
-}
-[data-style="almanac"] .stacked-layout__header {
-  border-bottom: 2px solid var(--primary); position: relative;
-}
-[data-style="almanac"] .stacked-layout__num {
-  font-family: var(--font-display); color: var(--primary); font-size: 2rem;
-  font-weight: 700; line-height: 1;
-}
-[data-style="almanac"] .stacked-layout__title {
-  font-family: var(--font-display); font-style: italic; font-size: 1.5rem;
-}
-[data-style="almanac"] .dental-grid__title,
-[data-style="almanac"] .patient-form__section-title {
-  font-family: var(--font-display); font-style: italic;
-}
-[data-style="almanac"] .entry-grid__button {
-  background: var(--primary); color: var(--surface); border: 1px solid var(--primary-end);
-  border-radius: 0; padding: 0.8rem 1.75rem; box-shadow: none;
-  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; font-size: 0.85rem;
-  font-family: var(--font-display);
-}
-[data-style="almanac"] .entry-grid__button:hover { background: var(--primary-end); transform: none; }
-
-
-/* ============== BOARD SWITCHER WIDGET ===================================== */
-.board-switcher {
-  position: fixed; bottom: 1rem; right: 1rem; z-index: 1000;
-  font-family: -apple-system, 'Inter', 'Segoe UI', sans-serif;
-}
-.board-switcher__toggle {
-  width: 48px; height: 48px; border-radius: 24px; border: none;
-  background: rgba(255,255,255,0.96); font-size: 22px; cursor: pointer;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.22);
-  display: flex; align-items: center; justify-content: center;
-}
-.board-switcher__toggle:hover { background: white; }
-.board-switcher__panel {
-  position: absolute; bottom: calc(100% + 10px); right: 0;
-  width: 360px; background: white; color: #1f2937;
-  border-radius: 14px; box-shadow: 0 16px 56px rgba(0,0,0,0.30);
-  border: 1px solid rgba(15,23,42,0.08); overflow: hidden;
-}
-.board-switcher__panel-head {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 0.85rem 1rem; border-bottom: 1px solid #e2e8f0; font-size: 0.85rem;
-}
-.board-switcher__current { color: #4f46e5; font-weight: 600; }
-.board-switcher__list {
-  list-style: none; margin: 0; padding: 0.4rem;
-  max-height: 460px; overflow-y: auto;
-}
-.board-switcher__option {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-  width: 100%; padding: 0.65rem 0.85rem; background: transparent;
-  border: none; border-radius: 8px; text-align: left; cursor: pointer; font: inherit;
-}
-.board-switcher__option:hover { background: #f1f5f9; }
-.board-switcher__option--active { background: #eef2ff; }
-.board-switcher__option-name { font-weight: 600; color: #0f172a; font-size: 0.95rem; }
-.board-switcher__option-vibe { font-size: 0.78rem; color: #64748b; }
 
 
 /* ============== Chart menu (top-of-app) ===================================
@@ -826,7 +219,7 @@ body {
 }
 .chart-menu--open .chart-menu__trigger {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.10);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
 }
 .chart-menu__trigger-icon { font-size: 1.05rem; line-height: 1; }
 
@@ -937,7 +330,6 @@ body {
   }
 }
 
-
 /* ============== PDF preview modal ========================================
  * Floating modal with a left-rail style picker and a live PDF iframe on
  * the right. The chrome here is intentionally neutral so the preview
@@ -1047,21 +439,4 @@ body {
 @media (max-width: 800px) {
   .pdf-preview-body { grid-template-columns: 1fr; }
   .pdf-preview-styles { border-right: none; border-bottom: 1px solid #e2e8f0; max-height: 40vh; }
-}
-
-/* ---------- Section content is never its own card ------------------------ */
-/* `.patient-form` (Patient Info, Treatment Report) always renders inside a
-   layout panel that already supplies the card. Several board styles also
-   card `.patient-form`, which doubled the border once the section headers
-   were removed. This trailing rule (placed after every [data-style] block so
-   it wins on cascade order) keeps it a plain container under all boards. */
-[data-style] .patient-form,
-.patient-form {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 0;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
 }

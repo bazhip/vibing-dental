@@ -1,5 +1,4 @@
 import React from 'react';
-import { useBoard, BOARDS } from './BoardSwitcher';
 
 interface ChartMenuProps {
   /** Triggered when the user confirms "New Chart" — caller is responsible
@@ -13,12 +12,10 @@ interface ChartMenuProps {
 
 /**
  * Top-of-app menu that bundles the actions a clinician needs at chart
- * boundaries: starting fresh, loading a saved chart back in, or switching
- * the visual board. Replaces the floating BoardSwitcher widget — there's
- * one menu and it lives where the user looks for app-level actions.
+ * boundaries: starting fresh, loading a saved chart back in, and the AI
+ * settings. Lives in the topbar where app-level actions are expected.
  */
 export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings }) => {
-  const { board, setBoardId } = useBoard();
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -110,29 +107,6 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span>Set the Anthropic API key and model for voice autofill.</span>
               </span>
             </button>
-          </section>
-
-          <section className="chart-menu__section">
-            <header className="chart-menu__section-head">
-              <span>Design board</span>
-              <span className="chart-menu__current">{board.name}</span>
-            </header>
-            <ul className="chart-menu__board-list">
-              {BOARDS.map((b) => (
-                <li key={b.id}>
-                  <button
-                    type="button"
-                    className={`chart-menu__board${b.id === board.id ? ' chart-menu__board--active' : ''}`}
-                    role="menuitemradio"
-                    aria-checked={b.id === board.id}
-                    onClick={() => setBoardId(b.id)}
-                  >
-                    <strong>{b.name}</strong>
-                    <span>{b.vibe}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
           </section>
         </div>
       )}

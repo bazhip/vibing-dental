@@ -1,377 +1,57 @@
 /* =============================================================================
- * 10 unified themes. Each [data-theme="…"] block sets color tokens; the
- * matching [data-style="…"] block in boards.css drives chrome (button
- * shapes, section titles, surface treatments, etc.). Both share an id
- * with the corresponding PDF preset in utils/pdf/styles.ts.
+ * Design tokens — single source of truth for the app's visual language.
  *
- * Tokens that every theme can override:
- *   --bg-page      page background
- *   --surface      panel/card background
- *   --surface-alt  subtle alt fill
- *   --primary      brand color (drives buttons, focus rings, accents)
- *   --primary-end  optional gradient endpoint
- *   --accent       secondary accent
- *   --text         body text
- *   --text-muted   secondary text
- *   --border       subtle hairlines
- *   --border-strong  inputs / dividers that need to read
- *   --shadow       default elevation
- *   --radius       default corner radius
- *   --font-body    body font stack
- *   --font-display optional display/serif stack
- *   --font-mono    monospace stack
- *   --letter-display  letterspacing for headings
- *   --weight-display  font-weight for headings
- *   --case-display    text-transform for headings (none / uppercase)
+ * One opinionated clinical design: calm teal accent on cool slate neutrals,
+ * system type, quiet elevation. Every component consumes these variables;
+ * changing the look of the app means changing this file.
+ *
+ * Token reference:
+ *   --bg-page         page background
+ *   --surface         panel/card background
+ *   --surface-alt     subtle alt fill (table stripes, wells)
+ *   --surface-sunken  deeper recessed fill
+ *   --primary         brand color (buttons, focus rings, active nav)
+ *   --primary-end     darker shade (hover / pressed / legacy gradient stops)
+ *   --accent          secondary accent (highlights, selection tint)
+ *   --text            body text
+ *   --text-muted      secondary text
+ *   --border          subtle hairlines
+ *   --border-strong   inputs / dividers that need to read
+ *   --shadow          default elevation
+ *   --radius(-sm/-lg) corner radii
+ *   --font-body/display/mono  type stacks
  * =============================================================================
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&family=Old+Standard+TT:wght@400;700&family=EB+Garamond:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Noto+Sans:wght@400;500;700&family=Noto+Serif:wght@400;600&display=swap');
-
 :root {
-  /* Sensible defaults — overridden per theme. */
-  --bg-page:        #f7f7f9;
+  --bg-page:        #f3f5f7;
   --surface:        #ffffff;
-  --surface-alt:    #f4f5f8;
-  --surface-sunken: #ececf0;
-  --primary:        #2563eb;
-  --primary-end:    #1d4ed8;
-  --accent:         #60a5fa;
-  --text:           #1d1d1f;
-  --text-muted:     #6e6e73;
-  --border:         #e5e5ea;
-  --border-strong:  #d2d2d7;
-  --shadow:         0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
-  --radius:         12px;
+  --surface-alt:    #f8fafc;
+  --surface-sunken: #eef1f4;
+
+  --primary:        #0f766e;
+  --primary-end:    #0c5d57;
+  --accent:         #0d9488;
+
+  --text:           #0f172a;
+  --text-muted:     #5b6b7b;
+  --border:         #e3e8ee;
+  --border-strong:  #c9d3dd;
+
+  --shadow:         0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.05);
+  --radius:         10px;
   --radius-sm:      6px;
-  --radius-lg:      20px;
+  --radius-lg:      14px;
 
-  --font-body:    -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  --font-body:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-body);
-  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                  "Liberation Mono", monospace;
 
   --letter-display: -0.01em;
-  --weight-display: 600;
+  --weight-display: 650;
   --case-display:   none;
-}
 
-/* =============================================================================
- * 1. Aperture — Apple-luxe glassmorphism. Cool greys, system blue, soft
- * gradients. Rounded corners, gentle elevation, lots of breathing room.
- * =============================================================================
- */
-[data-theme="aperture"] {
-  --bg-page:        linear-gradient(180deg, #f5f7fa 0%, #eef1f6 100%);
-  --surface:        rgba(255, 255, 255, 0.78);
-  --surface-alt:    rgba(245, 247, 250, 0.7);
-  --surface-sunken: rgba(232, 236, 244, 0.65);
-  --primary:        #007aff;
-  --primary-end:    #0051d5;
-  --accent:         #5ac8fa;
-  --text:           #1d1d1f;
-  --text-muted:     #6e6e73;
-  --border:         rgba(60, 60, 67, 0.10);
-  --border-strong:  rgba(60, 60, 67, 0.20);
-  --shadow:         0 1px 2px rgba(0, 0, 0, 0.04), 0 16px 40px rgba(0, 0, 0, 0.06);
-  --radius:         16px;
-  --radius-sm:      10px;
-  --radius-lg:      28px;
-
-  --font-body:      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
-  --font-display:   var(--font-body);
-  --letter-display: -0.022em;
-  --weight-display: 600;
-}
-
-/* =============================================================================
- * 2. Ledger — Stripe-grade SaaS. Inter, monochrome with a single violet.
- * Hairline borders, soft shadows, calm.
- * =============================================================================
- */
-[data-theme="ledger"] {
-  --bg-page:        #f7f8fa;
-  --surface:        #ffffff;
-  --surface-alt:    #f3f4f7;
-  --surface-sunken: #ecedf1;
-  --primary:        #635bff;
-  --primary-end:    #4c44e0;
-  --accent:         #8b85ff;
-  --text:           #0a0b1a;
-  --text-muted:     #525469;
-  --border:         #e6e7eb;
-  --border-strong:  #cdd0d7;
-  --shadow:         0 1px 2px rgba(15, 17, 36, 0.06), 0 4px 16px rgba(15, 17, 36, 0.05);
-  --radius:         8px;
-  --radius-sm:      4px;
-  --radius-lg:      14px;
-
-  --font-body:      "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display:   var(--font-body);
-  --letter-display: -0.014em;
-  --weight-display: 600;
-}
-
-/* =============================================================================
- * 3. Oracle — Linear-precision. Dense, electric indigo accent, sharp
- * 6px radii, no shadow elevation — flat on flat.
- * =============================================================================
- */
-[data-theme="oracle"] {
-  --bg-page:        #f6f6f7;
-  --surface:        #ffffff;
-  --surface-alt:    #fafafb;
-  --surface-sunken: #ededee;
-  --primary:        #5b5bd6;
-  --primary-end:    #4848b8;
-  --accent:         #818cf8;
-  --text:           #14141a;
-  --text-muted:     #6c6c77;
-  --border:         #e2e2e6;
-  --border-strong:  #c0c0c8;
-  --shadow:         none;
-  --radius:         6px;
-  --radius-sm:      4px;
-  --radius-lg:      8px;
-
-  --font-body:      "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display:   var(--font-body);
-  --font-mono:      "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --letter-display: 0.04em;
-  --weight-display: 600;
-  --case-display:   uppercase;
-}
-
-/* =============================================================================
- * 4. Folio — Editorial print magazine. Cream paper, sepia + ink, serif
- * throughout. Asymmetric, generous leading.
- * =============================================================================
- */
-[data-theme="folio"] {
-  --bg-page:        #f6f1e3;
-  --surface:        #fbf6e8;
-  --surface-alt:    #f1eada;
-  --surface-sunken: #e6dec8;
-  --primary:        #573012;
-  --primary-end:    #3a1d09;
-  --accent:         #a86a3c;
-  --text:           #1a120a;
-  --text-muted:     #6f5d44;
-  --border:         #d8ccac;
-  --border-strong:  #ad9e7d;
-  --shadow:         none;
-  --radius:         3px;
-  --radius-sm:      2px;
-  --radius-lg:      4px;
-
-  --font-body:      "Source Serif Pro", "Spectral", Georgia, "Times New Roman", serif;
-  --font-display:   var(--font-body);
-  --letter-display: 0;
-  --weight-display: 700;
-}
-
-/* =============================================================================
- * 5. Concrete — Brutalist mono. JetBrains Mono everywhere, hard 2px
- * borders, square corners, no shadows, signal-red accent.
- * =============================================================================
- */
-[data-theme="concrete"] {
-  --bg-page:        #ffffff;
-  --surface:        #ffffff;
-  --surface-alt:    #f0f0f0;
-  --surface-sunken: #e8e8e8;
-  --primary:        #e84638;
-  --primary-end:    #c12a1d;
-  --accent:         #ffd400;
-  --text:           #000000;
-  --text-muted:     #4a4a4a;
-  --border:         #000000;
-  --border-strong:  #000000;
-  --shadow:         4px 4px 0 #000000;
-  --radius:         0;
-  --radius-sm:      0;
-  --radius-lg:      0;
-
-  --font-body:      "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-display:   var(--font-body);
-  --letter-display: 0;
-  --weight-display: 700;
-  --case-display:   uppercase;
-}
-
-/* =============================================================================
- * 6. Atrium — Japandi minimal. Sand and charcoal, single muted ochre,
- * generous negative space, hairline rules only.
- * =============================================================================
- */
-[data-theme="atrium"] {
-  --bg-page:        #ede7d8;
-  --surface:        #f7f2e4;
-  --surface-alt:    #ebe4d2;
-  --surface-sunken: #ddd5c0;
-  --primary:        #9e6b1a;
-  --primary-end:    #7a5012;
-  --accent:         #b89668;
-  --text:           #2a251e;
-  --text-muted:     #6f6859;
-  --border:         #d4c9af;
-  --border-strong:  #a89571;
-  --shadow:         none;
-  --radius:         2px;
-  --radius-sm:      1px;
-  --radius-lg:      3px;
-
-  --font-body:      "Noto Sans", "Inter", -apple-system, sans-serif;
-  --font-display:   "Noto Serif", Georgia, serif;
-  --letter-display: 0.005em;
-  --weight-display: 500;
-}
-
-/* =============================================================================
- * 7. Pulse — Hospital EHR. White + cool blue + status chips. High
- * contrast, dense data, breadcrumb feel.
- * =============================================================================
- */
-[data-theme="pulse"] {
-  --bg-page:        #f1f5fa;
-  --surface:        #ffffff;
-  --surface-alt:    #eaf1f9;
-  --surface-sunken: #dfe9f4;
-  --primary:        #0d6bb0;
-  --primary-end:    #0a4f82;
-  --accent:         #00a8e8;
-  --text:           #0c1b2c;
-  --text-muted:     #4a5b73;
-  --border:         #d6e2ee;
-  --border-strong:  #a8bfd8;
-  --shadow:         0 1px 0 rgba(13, 27, 44, 0.08);
-  --radius:         4px;
-  --radius-sm:      2px;
-  --radius-lg:      6px;
-
-  --font-body:      "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display:   var(--font-body);
-  --letter-display: 0;
-  --weight-display: 500;
-}
-
-/* =============================================================================
- * 8. Bauhaus — Modernist. Bone background, primary RGB triad, hard
- * 8pt grid, oversized numerals.
- * =============================================================================
- */
-[data-theme="bauhaus"] {
-  --bg-page:        #f3eedf;
-  --surface:        #fbf6e6;
-  --surface-alt:    #ede4c8;
-  --surface-sunken: #e0d4b1;
-  --primary:        #dc2828;
-  --primary-end:    #a31b1b;
-  --accent:         #1855c8;       /* secondary primary — used in section blocks */
-  --text:           #050505;
-  --text-muted:     #4a4a4a;
-  --border:         #050505;
-  --border-strong:  #050505;
-  --shadow:         none;
-  --radius:         0;
-  --radius-sm:      0;
-  --radius-lg:      0;
-
-  --font-body:      "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-  --font-display:   var(--font-body);
-  --letter-display: -0.01em;
-  --weight-display: 800;
-}
-
-/* =============================================================================
- * 9. Vapor — Cyberpunk neon. Dark canvas, magenta + cyan glows, glassy
- * panels, subtle scanlines.
- * =============================================================================
- */
-[data-theme="vapor"] {
-  --bg-page:        radial-gradient(ellipse at top, #1b1338 0%, #0a0817 60%, #050410 100%);
-  --surface:        rgba(28, 19, 56, 0.78);
-  --surface-alt:    rgba(45, 28, 80, 0.55);
-  --surface-sunken: rgba(15, 9, 32, 0.65);
-  --primary:        #ee44bd;
-  --primary-end:    #b835aa;
-  --accent:         #22d3ee;
-  --text:           #f6f0ff;
-  --text-muted:     #b6a8d6;
-  --border:         rgba(238, 68, 189, 0.30);
-  --border-strong:  rgba(238, 68, 189, 0.55);
-  --shadow:         0 0 30px rgba(238, 68, 189, 0.30), 0 0 1px rgba(34, 211, 238, 0.6) inset;
-  --radius:         8px;
-  --radius-sm:      4px;
-  --radius-lg:      14px;
-
-  --font-body:      "Space Grotesk", "Inter", -apple-system, sans-serif;
-  --font-display:   var(--font-body);
-  --font-mono:      "JetBrains Mono", ui-monospace, monospace;
-  --letter-display: 0.06em;
-  --weight-display: 700;
-  --case-display:   uppercase;
-}
-
-/* =============================================================================
- * 10. Almanac — Vintage apothecary. Parchment + maroon + forest, drop
- * caps, ornamental serif rules.
- * =============================================================================
- */
-[data-theme="almanac"] {
-  --bg-page:        #f4ead4;
-  --surface:        #fcf4dc;
-  --surface-alt:    #efe2bd;
-  --surface-sunken: #e2d2a0;
-  --primary:        #732119;
-  --primary-end:    #4f120c;
-  --accent:         #2b5a2a;
-  --text:           #1f130a;
-  --text-muted:     #6e5c44;
-  --border:         #c8b58c;
-  --border-strong:  #927a4f;
-  --shadow:         none;
-  --radius:         3px;
-  --radius-sm:      2px;
-  --radius-lg:      4px;
-
-  --font-body:      "EB Garamond", "Old Standard TT", Garamond, "Times New Roman", serif;
-  --font-display:   "Old Standard TT", "EB Garamond", Garamond, serif;
-  --letter-display: 0;
-  --weight-display: 700;
-}
-
-
-/* =============================================================================
- * Layout tokens. Apply via `data-layout="<name>"` on document root.
- * =============================================================================
- */
-
-:root {
-  --container-max:    1400px;
-  --container-pad-y:  2rem;
-  --container-pad-x:  1.5rem;
-  --section-gap:      2rem;
-  --header-pad:       2rem;
-}
-
-[data-layout="compact"] {
-  --container-pad-y:  1rem;
-  --container-pad-x:  1rem;
-  --section-gap:      1.25rem;
-  --header-pad:       1.25rem;
-}
-
-[data-layout="wide"] {
-  --container-max:    100%;
-}
-
-[data-layout="centered"] {
-  --container-max:    1100px;
-}
-
-[data-layout="spacious"] {
-  --container-pad-y:  3rem;
-  --container-pad-x:  2.5rem;
-  --section-gap:      3rem;
-  --header-pad:       3rem;
+  --container-max:  1500px;
 }

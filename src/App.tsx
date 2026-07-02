@@ -4,7 +4,6 @@ import './styles/boards.css';
 import './App.css';
 import EntryGrid from './EntryGrid';
 import { Login } from './components';
-import { BoardProvider } from './components/BoardSwitcher';
 import { readString, writeString, removeKey } from './utils/storage';
 
 const AUTH_KEY = 'auth';
@@ -16,9 +15,6 @@ const AUTH_VERSION = 1;
  * Auth state persists via the unified storage util so a page refresh
  * doesn't kick the user back to the login screen. EntryGrid persists its
  * own chart data the same way — together they make a refresh a no-op.
- *
- * Wrapped in <BoardProvider> so any descendant can read the active design
- * board (layout + style + theme) via useBoard().
  */
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
@@ -35,11 +31,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <BoardProvider>
-      <div className="App">
-        <EntryGrid />
-      </div>
-    </BoardProvider>
+    <div className="App">
+      <EntryGrid />
+    </div>
   );
 };
 

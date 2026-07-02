@@ -1,45 +1,8 @@
+/* Root application frame. The app is a full-height workspace — page
+   background comes from tokens; the content column is capped and centered
+   by .entry-grid-container. */
 .App {
-  max-width: var(--container-max, 1400px);
+  min-height: 100vh;
   width: 100%;
-  margin: 0 auto;
-  background: var(--surface, white);
   color: var(--text);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow-x: hidden;
-}
-
-.app-header {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
-  color: white;
-  padding: var(--header-pad, 2rem) 1.5rem;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.app-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.app-header p {
-  margin-top: 0.5rem;
-  font-size: 1.1rem;
-  opacity: 0.95;
-}
-
-@media (max-width: 768px) {
-  .App {
-    border-radius: 0;
-  }
-
-  .app-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .app-header p {
-    font-size: 0.95rem;
-  }
 }

@@ -9,8 +9,7 @@ import {
   CodeReferencePanel,
 } from './components';
 import { DiagramViewHandle } from './components/DiagramView';
-import { SectionLayout, ChartSection } from './components/Layouts';
-import { useBoard } from './components/BoardSwitcher';
+import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import { PdfPreviewModal, ChartSnapshot } from './components/PdfPreviewModal';
 import { AiSettingsModal } from './components/AiSettingsModal';
@@ -52,7 +51,6 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
  */
 const EntryGrid: React.FC = () => {
   const chart = useChartState();
-  const { board } = useBoard();
 
   // Refs into the diagram views — we need their live SVG elements at
   // preview time so we can rasterize them with the active style's
@@ -316,7 +314,7 @@ const EntryGrid: React.FC = () => {
           if (!allow) e.preventDefault();
         }}
       >
-        <SectionLayout layout={board.layout} sections={sections} />
+        <SidebarLayout sections={sections} />
 
         <div className="entry-grid__submit">
           <button type="submit" className="entry-grid__button">

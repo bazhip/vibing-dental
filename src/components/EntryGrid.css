@@ -1,23 +1,35 @@
 .entry-grid-container {
-  padding: 2rem 1.5rem;
-  max-width: 100%;
-  overflow-x: hidden;
+  /* Horizontal page padding — the sticky topbar bleeds by this amount, so
+     the two must always match; media queries override the variable. */
+  --page-pad: 1.5rem;
+  max-width: var(--container-max, 1500px);
+  margin: 0 auto;
+  padding: 0 var(--page-pad) 3rem;
+  overflow-x: clip;
 }
 
-/* App-level topbar above the form: title + ChartMenu (new / load / theme). */
+/* App-level topbar: title + voice / chart actions. Sticky so the actions
+   stay reachable while scrolling long sections; full-bleed background via
+   negative margins so the bar reads as one band across the container. */
 .entry-grid__topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem 0;
+  margin: 0 calc(-1 * var(--page-pad, 1.5rem)) 1.5rem;
+  padding: 0.85rem var(--page-pad, 1.5rem);
+  background: color-mix(in srgb, var(--bg-page) 88%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border, #e2e8f0);
 }
 .entry-grid__title {
   margin: 0;
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 650;
   color: var(--text);
   letter-spacing: -0.01em;
 }
@@ -226,7 +238,7 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .patient-form__section-title {
@@ -242,7 +254,7 @@
   gap: 0.5rem;
   padding: 0.6rem 1.1rem;
   background: white;
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
@@ -254,7 +266,7 @@
 .patient-form__upload:hover {
   border-color: var(--accent);
   color: var(--text);
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
 }
 
 .patient-form__upload-input {
@@ -279,19 +291,21 @@
 
 .patient-form__input,
 .patient-form__textarea {
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .patient-form__input:focus,
 .patient-form__textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
 }
 
 .patient-form__textarea {
@@ -310,9 +324,9 @@
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: #f0f4f8;
-  border-radius: 12px;
-  border: 2px solid var(--border);
+  background: var(--surface-sunken, #eef1f4);
+  border-radius: 10px;
+  border: 1px solid var(--border);
   flex: 1;
   min-width: 300px;
 }
@@ -339,7 +353,7 @@
 .species-tab--active {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
 }
 
 .species-tab--active:hover {
@@ -359,7 +373,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
   padding: 0 0 0.75rem 0;
   margin-bottom: 1.5rem;
 }
@@ -368,74 +382,6 @@
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text);
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
-
-.tabs__bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  background: #f0f4f8;
-  border-bottom: 1px solid var(--border);
-}
-
-.tabs__tab {
-  padding: 0.6rem 1.1rem;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.tabs__tab:hover {
-  background: rgba(255, 255, 255, 0.6);
-  color: var(--text);
-}
-
-.tabs__tab--active,
-.tabs__tab--active:hover {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
-}
-
-.tabs__panels {
-  padding: 1.25rem 1.5rem 1.5rem;
-}
-
-.tabs__panel > .dental-grid-section,
-.tabs__panel > .diagram-section {
-  margin: 0;
-}
-
-@media (max-width: 720px) {
-  .tabs__bar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-  .tabs__tab {
-    flex: 0 0 auto;
-  }
-  .tabs__panels {
-    padding: 1rem;
-  }
 }
 
 .dental-grid {
@@ -460,9 +406,9 @@
   overflow-x: hidden;
   table-layout: fixed;
   --rdg-background-color: #ffffff;
-  --rdg-header-background-color: #667eea;
-  --rdg-row-hover-background-color: #f0f4f8;
-  --rdg-row-selected-background-color: #e6f2ff;
+  --rdg-header-background-color: var(--primary, #0f766e);
+  --rdg-row-hover-background-color: var(--surface-alt, #f8fafc);
+  --rdg-row-selected-background-color: #e0f2f0;
   --rdg-selection-color: var(--accent);
   --rdg-border-color: var(--border);
   --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -1132,32 +1078,26 @@
 }
 
 .entry-grid__button {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  background: var(--primary);
   color: white;
   border: none;
-  padding: 1rem 3rem;
-  font-size: 1.1rem;
+  padding: 0.8rem 2.25rem;
+  font-size: 1rem;
   font-weight: 600;
-  border-radius: 50px;
+  font-family: inherit;
+  border-radius: var(--radius-sm, 8px);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
 }
 
 .entry-grid__button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background: var(--primary-end);
 }
 
-.entry-grid__button:active {
-  transform: translateY(0);
-}
-
-.entry-grid__button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+.entry-grid__button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 .entry-grid__footnote {
@@ -1198,7 +1138,8 @@
 
 @media (max-width: 900px) {
   .entry-grid-container {
-    padding: 1rem 0.75rem;
+    --page-pad: 0.75rem;
+    padding: 0 var(--page-pad) 2rem;
   }
 
   .entry-grid__topbar {
@@ -1252,7 +1193,8 @@
 
 @media (max-width: 600px) {
   .entry-grid-container {
-    padding: 0.75rem 0.5rem;
+    --page-pad: 0.5rem;
+    padding: 0 var(--page-pad) 1.5rem;
   }
 
   .entry-grid__title {
@@ -1347,15 +1289,6 @@
 
   /* Code reference panel inline list reads better full width. */
   .code-ref__row { grid-template-columns: 5em minmax(0, 1fr); font-size: 0.8rem; }
-
-  /* Tabs scroll horizontally on narrow screens (existing rule at 720px,
-     but reinforce here so it survives style overrides). */
-  .tabs__bar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-  .tabs__tab { flex: 0 0 auto; }
 }
 
 /* AI Settings modal — small focused dialog for the Anthropic API key. */
@@ -1612,7 +1545,7 @@
 .code-field__code {
   font-weight: 600;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  color: #2b6cb0;
+  color: var(--primary, #0f766e);
   white-space: nowrap;
 }
 

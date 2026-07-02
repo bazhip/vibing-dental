@@ -6,15 +6,13 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-page);
-  color: var(--text);
+  background: var(--bg-page, #f3f5f7);
+  color: var(--text, #0f172a);
   min-height: 100vh;
-  padding: 2rem 1rem;
   overflow-x: hidden;
   max-width: 100vw;
 }

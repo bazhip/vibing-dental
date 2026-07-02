@@ -65,8 +65,8 @@
 
 .login-input:focus {
   outline: none;
-  border-color: #475569;
-  box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.12);
+  border-color: var(--primary, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
 }
 
 .login-input::placeholder {
@@ -92,7 +92,7 @@
 }
 
 .login-button {
-  background: #1e293b;
+  background: var(--primary, #0f766e);
   color: white;
   border: none;
   padding: 0.85rem 2rem;
@@ -106,11 +106,11 @@
 }
 
 .login-button:hover {
-  background: #334155;
+  background: var(--primary-end, #0c5d57);
 }
 
 .login-button:focus-visible {
-  outline: 2px solid #475569;
+  outline: 2px solid var(--primary, #0f766e);
   outline-offset: 2px;
 }
 
