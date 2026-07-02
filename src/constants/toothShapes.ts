@@ -57,6 +57,19 @@ export interface SpeciesDiagram {
   labels: Array<{ text: string; x: number; y: number; fontSize: number }>;
   /** Clean straight replacement for the hand-drawn midline dashes. */
   midlineDash: { x1: number; x2: number; y: number };
+  /** Optional uniform rescale + lift of the mandibular arch, applied to
+   *  outline subpaths (at parse time) and tooth anchors alike:
+   *    x' = centerX + (x - centerX) * scale
+   *    y' = targetY + (y - refY) * scale        (for content below belowY)
+   *  Used by the deciduous chart, where culling the adult molars leaves
+   *  the lower arch small and far from the midline. */
+  mandibleRescale?: {
+    belowY: number;
+    centerX: number;
+    scale: number;
+    refY: number;
+    targetY: number;
+  };
 }
 
 /**
@@ -203,12 +216,37 @@ const ADULT_ONLY_TRIADANS = new Set([
   309, 310, 311, 409, 410, 411,
 ]);
 
+// With the adult lower molars culled, the deciduous mandibular arch would
+// start ~230px below the midline (vs ~115 for the maxilla) and read
+// smaller. Scale it up and lift it so both arches sit the same distance
+// from the dashed line at a comparable visual scale. The same numbers are
+// applied to the outline subpaths at parse time (ToothDiagram).
+const CANINE_DECIDUOUS_MANDIBLE_RESCALE = {
+  belowY: 700,           // everything below this (post-cull) is the lower arch
+  centerX: CANINE_MAND_CX,
+  scale: 1.25,
+  refY: 812,             // current arch top (p4 upper edge)…
+  targetY: 698,          // …moves here: midline (583) + the maxilla's 115px gap
+};
+
 // Deciduous anchors reuse the adult positions (same artwork) with the
 // Triadan quadrant shifted +400 (1xx→5xx … 4xx→8xx) and lowercase labels,
-// per the AVDC deciduous convention (i1-i3, c, p2-p4; no x05).
+// per the AVDC deciduous convention (i1-i3, c, p2-p4; no x05). Mandible
+// anchors get the same rescale as the artwork.
 const canineDeciduousTeeth: ToothShape[] = canineTeeth
   .filter((t) => !ADULT_ONLY_TRIADANS.has(t.triadan))
-  .map((t) => ({ ...t, triadan: t.triadan + 400, label: t.label.toLowerCase() }));
+  .map((t) => {
+    const base = { ...t, triadan: t.triadan + 400, label: t.label.toLowerCase() };
+    const r = CANINE_DECIDUOUS_MANDIBLE_RESCALE;
+    if (t.cy <= r.belowY) return base;
+    return {
+      ...base,
+      cx: r.centerX + (t.cx - r.centerX) * r.scale,
+      cy: r.targetY + (t.cy - r.refY) * r.scale,
+      rx: t.rx * r.scale,
+      ry: t.ry * r.scale,
+    };
+  });
 
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
@@ -232,8 +270,16 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     // Cull the adult-only teeth's artwork on top of the usual label culls,
     // so the drawing shows only the 28 deciduous-position teeth.
     labelCulls: [...CANINE_LABEL_CULLS, ...CANINE_ADULT_ONLY_TOOTH_CULLS],
-    labels: CANINE_LABELS,
+    labels: [
+      { text: 'Maxilla',  x: 383.5, y: 440, fontSize: 26 },
+      // The lifted mandible arch starts at y≈698, so the word sits in the
+      // gap between the midline and the arch.
+      { text: 'Mandible', x: 383.5, y: 645, fontSize: 26 },
+      { text: 'R', x: 89,  y: 583, fontSize: 34 },
+      { text: 'L', x: 677, y: 583, fontSize: 34 },
+    ],
     midlineDash: CANINE_MIDLINE_DASH,
+    mandibleRescale: CANINE_DECIDUOUS_MANDIBLE_RESCALE,
   },
   feline: {
     imageSrc: '/diagrams/feline.png',

@@ -142,19 +142,53 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   // Cull the hand-drawn label letterforms and wobbly midline dashes from the
   // traced outline (their bboxes live in diagram.labelCulls) — they render
   // blurry at app scale and are replaced below with native SVG text and a
-  // straight dashed line. Everything downstream (tooth matching, outline
-  // render) consumes this cleaned version.
+  // straight dashed line. If the diagram declares a mandibleRescale (the
+  // deciduous chart), the lower-arch subpaths are then uniformly scaled and
+  // lifted to match the tooth anchors, which carry the same transform.
+  // Everything downstream (tooth matching, outline render) consumes this
+  // cleaned version.
   const parsed = React.useMemo<ParsedDiagram | null>(() => {
     if (!rawParsed) return null;
     const culls = diagram.labelCulls;
-    if (!culls.length) return rawParsed;
-    const subpaths = rawParsed.subpaths.filter((sp) => {
-      const cx = (sp.minX + sp.maxX) / 2;
-      const cy = (sp.minY + sp.maxY) / 2;
-      return !culls.some(
-        (b) => cx >= b.minX && cx <= b.maxX && cy >= b.minY && cy <= b.maxY
-      );
-    });
+    let subpaths = rawParsed.subpaths;
+    if (culls.length) {
+      subpaths = subpaths.filter((sp) => {
+        const cx = (sp.minX + sp.maxX) / 2;
+        const cy = (sp.minY + sp.maxY) / 2;
+        return !culls.some(
+          (b) => cx >= b.minX && cx <= b.maxX && cy >= b.minY && cy <= b.maxY
+        );
+      });
+    }
+    const r = diagram.mandibleRescale;
+    if (r) {
+      const tx = (x: number) => r.centerX + (x - r.centerX) * r.scale;
+      const ty = (y: number) => r.targetY + (y - r.refY) * r.scale;
+      subpaths = subpaths.map((sp) => {
+        if ((sp.minY + sp.maxY) / 2 <= r.belowY) return sp;
+        // All path data in these SVGs uses absolute M/L/C/Z commands, so
+        // coordinates are strictly alternating x,y pairs between letters.
+        const tokens = sp.d.match(/[A-Za-z]|-?\d+(?:\.\d+)?/g) ?? [];
+        let isX = true;
+        const out: string[] = [];
+        for (const tok of tokens) {
+          if (/^[A-Za-z]$/.test(tok)) {
+            out.push(tok);
+            isX = true;
+          } else {
+            out.push((isX ? tx(parseFloat(tok)) : ty(parseFloat(tok))).toFixed(2));
+            isX = !isX;
+          }
+        }
+        return {
+          d: out.join(' '),
+          minX: tx(sp.minX), maxX: tx(sp.maxX),
+          minY: ty(sp.minY), maxY: ty(sp.maxY),
+          cx: tx(sp.cx), cy: ty(sp.cy),
+        };
+      });
+    }
+    if (subpaths === rawParsed.subpaths) return rawParsed;
     return { subpaths, outlineD: subpaths.map((s) => s.d).join(' ') };
   }, [rawParsed, diagram]);
 
