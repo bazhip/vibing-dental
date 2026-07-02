@@ -159,22 +159,18 @@ const felineTeeth: ToothShape[] = [
 ];
 
 /**
- * Hand-crafted hit shape for canine M2 (410). The SVG's outline path
- * traces 410 + 409 as a single compound subpath, so the auto-matcher
- * has no clean per-tooth boundary to use — it falls back to an
- * inscribed ellipse covering the whole compound, which bleeds into
- * 409 territory. Tracing 410's outer perimeter by hand below restores
- * a tooth-shaped hover/click area. 310 (mirror left) gets the same
- * shape with X reflected around the mandibular midline.
+ * Hand-crafted hit shape for canine M2 (410) ONLY. On the right side the
+ * SVG's outline traces 410 + 409 as a single compound subpath, so the
+ * auto-matcher has no clean per-tooth boundary — this hand trace restores
+ * a tooth-shaped hover/click/fill area for 410.
+ *
+ * 310 deliberately has NO override: on the left side the SVG has its own
+ * clean outline subpath for 310 (bbox ≈ x[571..604] y[622..675], measured
+ * from public/diagrams/canine.svg), so the auto-matcher fills the real
+ * tooth exactly. An earlier mirrored copy of 410's trace sat off the
+ * visible tooth no matter how the mirror axis was tuned.
  */
 {
-  // Reflection axis for deriving 310's hitShape from 410's traced path. The
-  // shape is a faithful mirror of 410 (which fills correctly); only the
-  // horizontal position needs calibrating. Bracketed from rendered builds:
-  // 397 → ~24px too far right, 385 → too far left, 393.5 → still slightly
-  // right. 389 is the interpolated midpoint (310 bbox center ≈ 583).
-  // Calibrated against /public/diagrams/canine.png; nudge ±2 if needed.
-  const CANINE_MIDLINE_X = 389;
   const t410d =
     'M 182.8 629.5 ' +
     'L 175.9 641.1 ' +
@@ -184,35 +180,9 @@ const felineTeeth: ToothShape[] = [
     'L 212.0 654.8 ' +
     'L 195.4 629.0 Z';
   const t410bbox = { minX: 175.9, minY: 629.0, maxX: 213.9, maxY: 689.3 };
-  // Walk t410d and rebuild with x flipped (mirror around the
-  // mandibular midline) to produce the matching shape for 310.
-  const tokens = t410d.match(/[MLZ]|-?\d+(?:\.\d+)?/g) ?? [];
-  const flipped: string[] = [];
-  let isX = false;
-  for (const tok of tokens) {
-    if (/^[MLZ]$/.test(tok)) {
-      flipped.push(tok);
-      isX = tok !== 'Z';
-    } else {
-      flipped.push(
-        isX
-          ? (2 * CANINE_MIDLINE_X - parseFloat(tok)).toFixed(1)
-          : tok
-      );
-      isX = !isX;
-    }
-  }
-  const t310d = flipped.join(' ');
-  const t310bbox = {
-    minX: 2 * CANINE_MIDLINE_X - t410bbox.maxX,
-    maxX: 2 * CANINE_MIDLINE_X - t410bbox.minX,
-    minY: t410bbox.minY,
-    maxY: t410bbox.maxY,
-  };
 
   for (const t of canineTeeth) {
     if (t.triadan === 410) t.hitShape = { d: t410d, bbox: t410bbox };
-    if (t.triadan === 310) t.hitShape = { d: t310d, bbox: t310bbox };
   }
 }
 
