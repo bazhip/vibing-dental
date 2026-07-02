@@ -134,7 +134,18 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           onChange={(next) => p.onRowChange({ ...p.row, [key]: next })}
           onKeyDown={handleKeyDown}
           onBlur={() => p.onClose(true)}
-          style={{ width: '100%', height: '100%', border: 'none', padding: '8px' }}
+          // Explicit surface colors so the editor matches the cell it sits
+          // in regardless of the grid library's own theme variables.
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            padding: '0 0.4rem',
+            background: '#ffffff',
+            color: 'var(--text, #0f172a)',
+            font: 'inherit',
+            outline: 'none',
+          }}
         />
       );
     },
@@ -180,6 +191,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           <DataGrid
             ref={gridRef}
             key={containerWidth}
+            // Pin the light theme: react-data-grid's stylesheet otherwise
+            // switches its internal vars to a dark palette when the OS is
+            // in dark mode, turning the cell editor into a black box.
+            className="rdg-light"
             columns={columns}
             rows={toothData}
             onRowsChange={onToothDataChange}
