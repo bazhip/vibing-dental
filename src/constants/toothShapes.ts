@@ -46,6 +46,16 @@ export interface SpeciesDiagram {
    *  gets cropped out of the rasterized PDF. The PNG natively has more
    *  vertical bleed than the actual tooth content. */
   cropBounds: { minY: number; maxY: number };
+  /** Bboxes of vectorized hand-drawn artwork (the traced "Maxilla" /
+   *  "Mandible" words, the R/L letters, the wobbly midline dashes) that
+   *  get culled from the SVG outline at parse time. Subpaths whose bbox
+   *  center falls inside any box are dropped and replaced by the crisp
+   *  native equivalents below. Measured from the SVG files by script. */
+  labelCulls: Array<{ minX: number; minY: number; maxX: number; maxY: number }>;
+  /** Real-text replacements for the culled letterforms. */
+  labels: Array<{ text: string; x: number; y: number; fontSize: number }>;
+  /** Clean straight replacement for the hand-drawn midline dashes. */
+  midlineDash: { x1: number; x2: number; y: number };
 }
 
 /**
@@ -171,15 +181,17 @@ const felineTeeth: ToothShape[] = [
  * visible tooth no matter how the mirror axis was tuned.
  */
 {
+  // Extracted from the SVG itself (scripted): the compound subpath was
+  // flattened, cut at the 410/409 waist (y=692), and the outer rail of the
+  // stroke trace kept — so this polygon follows the drawn outline of 410,
+  // not a hand-eyeballed approximation.
   const t410d =
-    'M 182.8 629.5 ' +
-    'L 175.9 641.1 ' +
-    'L 186.5 682 ' +
-    'L 210.3 689.3 ' +
-    'L 213.9 665.2 ' +
-    'L 212.0 654.8 ' +
-    'L 195.4 629.0 Z';
-  const t410bbox = { minX: 175.9, minY: 629.0, maxX: 213.9, maxY: 689.3 };
+    'M 205.3 683.8 L 208.3 683.3 L 210.9 680.2 L 212.9 675.4 L 214.1 670.1 ' +
+    'L 214.1 666.7 L 211.6 652.3 L 209.3 645.0 L 203.2 634.9 L 197.0 629.7 ' +
+    'L 189.9 628.1 L 185.2 628.6 L 182.1 630.0 L 178.1 634.4 L 176.0 640.2 ' +
+    'L 175.8 656.7 L 177.0 668.6 L 179.5 676.7 L 181.9 680.1 L 190.4 683.7 ' +
+    'L 196.9 688.6 L 193.1 691.8 Z';
+  const t410bbox = { minX: 175.8, minY: 628.1, maxX: 214.1, maxY: 691.8 };
 
   for (const t of canineTeeth) {
     if (t.triadan === 410) t.hitShape = { d: t410d, bbox: t410bbox };
@@ -194,6 +206,20 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineY: CANINE_MIDLINE,
     teeth: canineTeeth,
     cropBounds: { minY: 30, maxY: 1145 },
+    labelCulls: [
+      { minX: 325, minY: 424, maxX: 427, maxY: 456 },  // "Maxilla" letterforms
+      { minX: 316, minY: 708, maxX: 448, maxY: 742 },  // "Mandible" letterforms
+      { minX: 70,  minY: 554, maxX: 108, maxY: 603 },  // "R"
+      { minX: 659, minY: 557, maxX: 695, maxY: 605 },  // "L"
+      { minX: 100, minY: 578, maxX: 665, maxY: 590 },  // wobbly midline dashes
+    ],
+    labels: [
+      { text: 'Maxilla',  x: 377, y: 440, fontSize: 26 },
+      { text: 'Mandible', x: 377, y: 725, fontSize: 26 },
+      { text: 'R', x: 89,  y: 583, fontSize: 34 },
+      { text: 'L', x: 677, y: 583, fontSize: 34 },
+    ],
+    midlineDash: { x1: 116, x2: 651, y: 583 },
   },
   feline: {
     imageSrc: '/diagrams/feline.png',
@@ -202,5 +228,19 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineY: FELINE_MIDLINE,
     teeth: felineTeeth,
     cropBounds: { minY: 12, maxY: 1090 },
+    labelCulls: [
+      { minX: 292, minY: 328, maxX: 395, maxY: 362 },  // "Maxilla" letterforms
+      { minX: 276, minY: 684, maxX: 410, maxY: 716 },  // "Mandible" letterforms
+      { minX: -2,  minY: 522, maxX: 37,  maxY: 571 },  // "R"
+      { minX: 657, minY: 517, maxX: 693, maxY: 566 },  // "L"
+      { minX: 35,  minY: 531, maxX: 660, maxY: 548 },  // wobbly midline dashes
+    ],
+    labels: [
+      { text: 'Maxilla',  x: 343, y: 345, fontSize: 26 },
+      { text: 'Mandible', x: 343, y: 700, fontSize: 26 },
+      { text: 'R', x: 20,  y: 540, fontSize: 34 },
+      { text: 'L', x: 672, y: 540, fontSize: 34 },
+    ],
+    midlineDash: { x1: 48, x2: 645, y: 540 },
   },
 };

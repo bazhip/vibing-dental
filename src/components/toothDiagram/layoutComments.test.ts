@@ -8,6 +8,9 @@ const diagram: SpeciesDiagram = {
   height: 1000,
   midlineY: 500,
   cropBounds: { minY: 0, maxY: 1000 },
+  labelCulls: [],
+  labels: [],
+  midlineDash: { x1: 0, x2: 800, y: 500 },
   teeth: [
     // Right-side tooth (cx < midline=400)
     { triadan: 101, label: 'I1', type: 'incisor', cx: 350, cy: 100, rx: 10, ry: 10, rotation: 0 },

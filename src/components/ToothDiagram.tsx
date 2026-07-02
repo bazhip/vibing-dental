@@ -115,7 +115,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   // per point or flood the undo history with one snapshot per point — the
   // finished stroke is committed once on pointer-up as a single undo step.
   const [liveStroke, setLiveStroke] = React.useState<DiagramStroke | null>(null);
-  const [parsed, setParsed] = React.useState<ParsedDiagram | null>(null);
+  const [rawParsed, setRawParsed] = React.useState<ParsedDiagram | null>(null);
   const [hoveredTriadan, setHoveredTriadan] = React.useState<number | null>(null);
 
   // Imperative handle deferred to after layout/viewBox computations below
@@ -126,10 +126,10 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
   React.useEffect(() => {
     let cancelled = false;
-    setParsed(null);
+    setRawParsed(null);
     loadParsedDiagram(svgUrl)
       .then((p) => {
-        if (!cancelled) setParsed(p);
+        if (!cancelled) setRawParsed(p);
       })
       .catch((err) => {
         console.error('Failed to load diagram SVG', err);
@@ -138,6 +138,25 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       cancelled = true;
     };
   }, [svgUrl]);
+
+  // Cull the hand-drawn label letterforms and wobbly midline dashes from the
+  // traced outline (their bboxes live in diagram.labelCulls) — they render
+  // blurry at app scale and are replaced below with native SVG text and a
+  // straight dashed line. Everything downstream (tooth matching, outline
+  // render) consumes this cleaned version.
+  const parsed = React.useMemo<ParsedDiagram | null>(() => {
+    if (!rawParsed) return null;
+    const culls = diagram.labelCulls;
+    if (!culls.length) return rawParsed;
+    const subpaths = rawParsed.subpaths.filter((sp) => {
+      const cx = (sp.minX + sp.maxX) / 2;
+      const cy = (sp.minY + sp.maxY) / 2;
+      return !culls.some(
+        (b) => cx >= b.minX && cx <= b.maxX && cy >= b.minY && cy <= b.maxY
+      );
+    });
+    return { subpaths, outlineD: subpaths.map((s) => s.d).join(' ') };
+  }, [rawParsed, diagram]);
 
   // Assign each subpath to closest tooth anchor, but only if it's actually
   // within that tooth's neighborhood. Subpaths that aren't close to any tooth
@@ -773,6 +792,38 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           className="tooth-diagram__outline"
         />
       )}
+
+      {/* Crisp native replacements for the culled hand-drawn artwork:
+          a straight dashed midline and real-text labels. Styling uses
+          presentation attributes (not CSS classes) so the cloned SVG
+          rasterizes identically in the PDF export. */}
+      <line
+        x1={diagram.midlineDash.x1}
+        y1={diagram.midlineDash.y}
+        x2={diagram.midlineDash.x2}
+        y2={diagram.midlineDash.y}
+        stroke="#1a202c"
+        strokeWidth={3.5}
+        strokeDasharray="24 12"
+        strokeLinecap="round"
+        pointerEvents="none"
+      />
+      {diagram.labels.map((l) => (
+        <text
+          key={`${l.text}-${l.x}`}
+          x={l.x}
+          y={l.y}
+          fontSize={l.fontSize}
+          fontWeight={600}
+          fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+          fill="#1a202c"
+          textAnchor="middle"
+          dominantBaseline="central"
+          pointerEvents="none"
+        >
+          {l.text}
+        </text>
+      ))}
 
       {/* Per-tooth click groups + mark overlays (rendered above outlines). */}
       {parsed &&
