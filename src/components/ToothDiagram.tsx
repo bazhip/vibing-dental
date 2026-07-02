@@ -162,12 +162,14 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     }
     const r = diagram.mandibleRescale;
     if (r) {
-      const tx = (x: number) => r.centerX + (x - r.centerX) * r.scale;
-      const ty = (y: number) => r.targetY + (y - r.refY) * r.scale;
-      subpaths = subpaths.map((sp) => {
-        if ((sp.minY + sp.maxY) / 2 <= r.belowY) return sp;
-        // All path data in these SVGs uses absolute M/L/C/Z commands, so
-        // coordinates are strictly alternating x,y pairs between letters.
+      // Rewrite a subpath's coordinates through an affine (x,y) map. All
+      // path data in these SVGs uses absolute M/L/C/Z commands, so
+      // coordinates are strictly alternating x,y pairs between letters.
+      const mapSubpath = (
+        sp: (typeof subpaths)[number],
+        fx: (x: number) => number,
+        fy: (y: number) => number
+      ) => {
         const tokens = sp.d.match(/[A-Za-z]|-?\d+(?:\.\d+)?/g) ?? [];
         let isX = true;
         const out: string[] = [];
@@ -176,17 +178,68 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
             out.push(tok);
             isX = true;
           } else {
-            out.push((isX ? tx(parseFloat(tok)) : ty(parseFloat(tok))).toFixed(2));
+            out.push((isX ? fx(parseFloat(tok)) : fy(parseFloat(tok))).toFixed(2));
             isX = !isX;
           }
         }
         return {
           d: out.join(' '),
-          minX: tx(sp.minX), maxX: tx(sp.maxX),
-          minY: ty(sp.minY), maxY: ty(sp.maxY),
-          cx: tx(sp.cx), cy: ty(sp.cy),
+          minX: fx(sp.minX), maxX: fx(sp.maxX),
+          minY: fy(sp.minY), maxY: fy(sp.maxY),
+          cx: fx(sp.cx), cy: fy(sp.cy),
         };
+      };
+
+      const tx = (x: number) => r.centerX + (x - r.centerX) * r.scale;
+      const ty = (y: number) => r.targetY + (y - r.refY) * r.scale;
+      const isLower = (sp: (typeof subpaths)[number]) =>
+        (sp.minY + sp.maxY) / 2 > r.belowY;
+      const lower = subpaths.filter(isLower).map((sp) => mapSubpath(sp, tx, ty));
+      const upper = subpaths.filter((sp) => !isLower(sp));
+
+      // Uniform scaling also thickens the drawn outline rings (outer rail
+      // and inner rail are separate loops whose gap is the stroke width).
+      // Restore the original ~3.5px ring: group the scaled subpaths by
+      // nearest tooth anchor, keep each tooth's largest loop (the outer
+      // silhouette) as-is, and expand everything inside it about the tooth
+      // center so the inner rail lands stroke-width inside the outer again.
+      const STROKE_W = 3.5;
+      const anchors = diagram.teeth;
+      const groupOf = (sp: (typeof lower)[number]) => {
+        let best = anchors[0];
+        let bd = Infinity;
+        for (const a of anchors) {
+          const d2 = (sp.cx - a.cx) ** 2 + (sp.cy - a.cy) ** 2;
+          if (d2 < bd) { bd = d2; best = a; }
+        }
+        return best.triadan;
+      };
+      const outerByGroup = new Map<number, (typeof lower)[number]>();
+      for (const sp of lower) {
+        const g = groupOf(sp);
+        const cur = outerByGroup.get(g);
+        const area = (sp.maxX - sp.minX) * (sp.maxY - sp.minY);
+        if (!cur || area > (cur.maxX - cur.minX) * (cur.maxY - cur.minY)) {
+          outerByGroup.set(g, sp);
+        }
+      }
+      const adjusted = lower.map((sp) => {
+        const outer = outerByGroup.get(groupOf(sp));
+        if (!outer || outer === sp) return sp;
+        const R = ((outer.maxX - outer.minX) / 2 + (outer.maxY - outer.minY) / 2) / 2;
+        const denom = R - r.scale * STROKE_W;
+        if (denom <= 0) return sp;
+        const k = (R - STROKE_W) / denom;
+        if (!isFinite(k) || k <= 1) return sp;
+        const ocx = (outer.minX + outer.maxX) / 2;
+        const ocy = (outer.minY + outer.maxY) / 2;
+        return mapSubpath(
+          sp,
+          (x) => ocx + (x - ocx) * k,
+          (y) => ocy + (y - ocy) * k
+        );
       });
+      subpaths = [...upper, ...adjusted];
     }
     if (subpaths === rawParsed.subpaths) return rawParsed;
     return { subpaths, outlineD: subpaths.map((s) => s.d).join(' ') };
