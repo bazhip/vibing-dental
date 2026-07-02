@@ -20,4 +20,3 @@ export { DiagramView }         from './DiagramView';
 export type { DiagramViewHandle } from './DiagramView';
 export { CodeField }           from './CodeField';
 export { CodeReferencePanel }  from './CodeReferencePanel';
-export { Tabs, Tab }           from './Tabs';

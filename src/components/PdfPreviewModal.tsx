@@ -180,7 +180,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
               onClick={handleDownload}
               disabled={!pdfUrl || generating}
             >
-              📄 Download PDF
+              Download PDF
             </button>
           </aside>
           <div className="pdf-preview-iframe-wrap">

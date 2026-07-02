@@ -282,7 +282,7 @@ const EntryGrid: React.FC = () => {
   return (
     <div className="entry-grid-container">
       <header className="entry-grid__topbar">
-        <h1 className="entry-grid__title">🦷 Veterinary Dental Charting</h1>
+        <h1 className="entry-grid__title">Veterinary Dental Charting</h1>
         <div className="entry-grid__topbar-actions">
           <VoiceInputButton
             context={aiContext}
@@ -320,7 +320,7 @@ const EntryGrid: React.FC = () => {
 
         <div className="entry-grid__submit">
           <button type="submit" className="entry-grid__button">
-            📄 Preview &amp; Download
+            Preview &amp; Download PDF
           </button>
         </div>
       </form>
@@ -338,14 +338,13 @@ const EntryGrid: React.FC = () => {
 
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
-          Found a bug or have an idea? (Jared) Email{' '}
+          Feedback or bug reports: email Jared at{' '}
           <a href={FEEDBACK_MAILTO}>bazhip@gmail.com</a>
         </span>
         <span className="entry-grid__footnote-hint">
-          The more detail the better — tell me what you were doing, what you
-          expected, what actually happened, the species/tooth or section
-          involved, and your browser. A screenshot helps a lot. (The email
-          link pre-fills these prompts for you.)
+          Please include what you were doing, what you expected, what actually
+          happened, the species/tooth or section involved, and your browser —
+          a screenshot helps a lot. The email link pre-fills these prompts.
         </span>
       </footer>
     </div>

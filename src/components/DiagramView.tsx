@@ -128,7 +128,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={() => setTool('mark')}
               aria-pressed={tool === 'mark'}
             >
-              🦷 Mark
+              Mark
             </button>
             <button
               type="button"

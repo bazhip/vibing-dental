@@ -24,6 +24,14 @@ code {
     monospace;
 }
 
+/* Keyboard-only focus ring. Components with their own :focus treatment
+   (higher specificity) keep it; everything else gets a consistent visible
+   ring for keyboard users without flashing on mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--primary, #4f46e5);
+  outline-offset: 2px;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

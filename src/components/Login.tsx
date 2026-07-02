@@ -28,8 +28,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate }) => {
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <h1>🦷 Veterinary Dental Charting</h1>
-          <p>Enter password to continue</p>
+          <h1>Veterinary Dental Charting</h1>
+          <p>Enter the practice password to continue</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -37,15 +37,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate }) => {
             type="password"
             className="login-input"
             placeholder="Password"
+            aria-label="Password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoFocus
           />
 
-          {error && <div className="login-error">{error}</div>}
+          {error && <div className="login-error" role="alert">{error}</div>}
 
           <button type="submit" className="login-button">
-            Enter
+            Continue
           </button>
         </form>
       </div>

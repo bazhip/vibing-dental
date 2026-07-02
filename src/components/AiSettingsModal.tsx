@@ -177,7 +177,7 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
                 onClick={() => setRevealed((r) => !r)}
                 aria-label={revealed ? 'Hide keys' : 'Show keys'}
               >
-                {revealed ? '🙈' : '👁'}
+                {revealed ? 'Hide' : 'Show'}
               </button>
             </div>
             {apiKey && (

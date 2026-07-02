@@ -88,14 +88,12 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
           <section className="chart-menu__section">
             <header className="chart-menu__section-head">Chart</header>
             <button type="button" className="chart-menu__item" role="menuitem" onClick={handleNewChart}>
-              <span className="chart-menu__item-icon" aria-hidden="true">📄</span>
               <span className="chart-menu__item-body">
                 <strong>New chart</strong>
                 <span>Clear all data and start fresh.</span>
               </span>
             </button>
             <button type="button" className="chart-menu__item" role="menuitem" onClick={handleLoadClick}>
-              <span className="chart-menu__item-icon" aria-hidden="true">📂</span>
               <span className="chart-menu__item-body">
                 <strong>Load chart PDF</strong>
                 <span>Pick a previously generated PDF to rehydrate the form.</span>
@@ -107,10 +105,9 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
               role="menuitem"
               onClick={() => { setOpen(false); onOpenAiSettings(); }}
             >
-              <span className="chart-menu__item-icon" aria-hidden="true">🤖</span>
               <span className="chart-menu__item-body">
                 <strong>AI settings</strong>
-                <span>Set the Anthropic API key for voice autofill.</span>
+                <span>Set the Anthropic API key and model for voice autofill.</span>
               </span>
             </button>
           </section>

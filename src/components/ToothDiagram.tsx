@@ -110,7 +110,11 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   // Wraps both the SVG and the HTML comment overlay; used by the
   // auto-focus effect to locate a freshly-added comment's textarea.
   const wrapperRef = React.useRef<HTMLDivElement>(null);
-  const [activeStrokeId, setActiveStrokeId] = React.useState<string | null>(null);
+  // The stroke being drawn right now. Kept in local state (not committed to
+  // the parent per pointermove) so drawing doesn't re-render the whole chart
+  // per point or flood the undo history with one snapshot per point — the
+  // finished stroke is committed once on pointer-up as a single undo step.
+  const [liveStroke, setLiveStroke] = React.useState<DiagramStroke | null>(null);
   const [parsed, setParsed] = React.useState<ParsedDiagram | null>(null);
   const [hoveredTriadan, setHoveredTriadan] = React.useState<number | null>(null);
 
@@ -445,6 +449,24 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   // the resize they just performed.
   const commentInteractingRef = React.useRef(false);
 
+  // Live view of the comments array for the drag/resize document-level
+  // pointermove handlers. Those handlers are installed once at gesture
+  // start; mapping over a captured `comments` would rebuild state from a
+  // stale snapshot and silently drop any edit (typed text, AI autofill)
+  // that landed mid-gesture.
+  const commentsRef = React.useRef(comments);
+  commentsRef.current = comments;
+
+  // Removes the document-level listeners of the in-flight drag/resize
+  // gesture, if any — called on unmount so a gesture interrupted by
+  // unmount doesn't leak pointermove/pointerup handlers on `document`.
+  const gestureCleanupRef = React.useRef<(() => void) | null>(null);
+  React.useEffect(() => {
+    return () => {
+      gestureCleanupRef.current?.();
+    };
+  }, []);
+
   /**
    * Measure the box a comment's content wants to occupy.
    *   - Width: wraps long body text to a comfortable reading column (so it
@@ -634,12 +656,13 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       const cx = Math.min(Math.max(minX, nx), maxX);
       const cy = Math.min(Math.max(minY, ny), maxY);
       onCommentsChange(
-        comments.map((c) => (c.id === id ? { ...c, x: cx, y: cy } : c))
+        commentsRef.current.map((c) => (c.id === id ? { ...c, x: cx, y: cy } : c))
       );
     };
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
+      gestureCleanupRef.current = null;
       // Clear after a frame so a focusout fired during the drag (e.g.
       // because the textarea released focus) doesn't sneak in an
       // autosize before we've reset the flag.
@@ -649,6 +672,10 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
+    gestureCleanupRef.current = () => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
   };
 
   // Comment resizing via the bottom-right corner handle.
@@ -669,18 +696,23 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       const w = Math.max(COMMENT_MIN_W, initialW + (cur.x - startSvg.x));
       const h = Math.max(COMMENT_MIN_H, initialH + (cur.y - startSvg.y));
       onCommentsChange(
-        comments.map((c) => (c.id === id ? { ...c, width: w, height: h } : c))
+        commentsRef.current.map((c) => (c.id === id ? { ...c, width: w, height: h } : c))
       );
     };
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
+      gestureCleanupRef.current = null;
       requestAnimationFrame(() => {
         commentInteractingRef.current = false;
       });
     };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
+    gestureCleanupRef.current = () => {
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    };
   };
 
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -691,23 +723,22 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     (e.target as Element).setPointerCapture?.(e.pointerId);
     const id = `s${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const arch: 'maxilla' | 'mandible' = p.y < diagram.midlineY ? 'maxilla' : 'mandible';
-    onStrokesChange([
-      ...strokes,
-      { id, arch, color: strokeColor, width: strokeWidth, points: [p] },
-    ]);
-    setActiveStrokeId(id);
+    setLiveStroke({ id, arch, color: strokeColor, width: strokeWidth, points: [p] });
   };
 
   const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (tool !== 'draw' || !activeStrokeId) return;
+    if (tool !== 'draw' || !liveStroke) return;
     const p = getSvgPoint(e);
     if (!p) return;
-    onStrokesChange(
-      strokes.map((s) => (s.id === activeStrokeId ? { ...s, points: [...s.points, p] } : s))
-    );
+    setLiveStroke((s) => (s ? { ...s, points: [...s.points, p] } : s));
   };
 
-  const handlePointerUp = () => setActiveStrokeId(null);
+  const handlePointerUp = () => {
+    if (liveStroke && liveStroke.points.length > 0) {
+      onStrokesChange([...strokes, liveStroke]);
+    }
+    setLiveStroke(null);
+  };
 
   // Convert SVG-coord (x, y, w, h) into wrapper-relative percentages
   // for the HTML comment overlay.
@@ -804,8 +835,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           );
         })}
 
-      {/* User-drawn strokes */}
-      {strokes.map((s) => {
+      {/* User-drawn strokes (committed + the one being drawn right now) */}
+      {(liveStroke ? [...strokes, liveStroke] : strokes).map((s) => {
         if (s.points.length === 0) return null;
         const d = s.points
           .map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`))
