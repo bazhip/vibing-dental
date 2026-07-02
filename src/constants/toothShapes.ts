@@ -9,7 +9,6 @@
  */
 
 import { Species } from '../types';
-import { CANINE_ADULT_ONLY_TOOTH_CULLS } from './canineDeciduousCulls';
 
 export type ToothType = 'incisor' | 'canine' | 'premolar' | 'carnassial' | 'molar';
 
@@ -57,19 +56,6 @@ export interface SpeciesDiagram {
   labels: Array<{ text: string; x: number; y: number; fontSize: number }>;
   /** Clean straight replacement for the hand-drawn midline dashes. */
   midlineDash: { x1: number; x2: number; y: number };
-  /** Optional uniform rescale + lift of the mandibular arch, applied to
-   *  outline subpaths (at parse time) and tooth anchors alike:
-   *    x' = centerX + (x - centerX) * scale
-   *    y' = targetY + (y - refY) * scale        (for content below belowY)
-   *  Used by the deciduous chart, where culling the adult molars leaves
-   *  the lower arch small and far from the midline. */
-  mandibleRescale?: {
-    belowY: number;
-    centerX: number;
-    scale: number;
-    refY: number;
-    targetY: number;
-  };
 }
 
 /**
@@ -208,45 +194,41 @@ const CANINE_LABELS = [
 ];
 const CANINE_MIDLINE_DASH = { x1: 116, x2: 651, y: 583 };
 
-/** Adult teeth with no deciduous precursor: P1s, upper M1-M2, lower M1-M3.
- *  A puppy chart shows neither their anchors nor their artwork. */
-const ADULT_ONLY_TRIADANS = new Set([
-  105, 205, 305, 405,
-  109, 110, 209, 210,
-  309, 310, 311, 409, 410, 411,
-]);
-
-// With the adult lower molars culled, the deciduous mandibular arch would
-// start ~230px below the midline (vs ~115 for the maxilla) and read
-// smaller. Scale it up and lift it so both arches sit the same distance
-// from the dashed line at a comparable visual scale. The same numbers are
-// applied to the outline subpaths at parse time (ToothDiagram).
-const CANINE_DECIDUOUS_MANDIBLE_RESCALE = {
-  belowY: 700,           // everything below this (post-cull) is the lower arch
-  centerX: CANINE_MAND_CX,
-  scale: 1.25,
-  refY: 812,             // current arch top (p4 upper edge)…
-  targetY: 698,          // …moves here: midline (583) + the maxilla's 115px gap
-};
-
-// Deciduous anchors reuse the adult positions (same artwork) with the
-// Triadan quadrant shifted +400 (1xx→5xx … 4xx→8xx) and lowercase labels,
-// per the AVDC deciduous convention (i1-i3, c, p2-p4; no x05). Mandible
-// anchors get the same rescale as the artwork.
-const canineDeciduousTeeth: ToothShape[] = canineTeeth
-  .filter((t) => !ADULT_ONLY_TRIADANS.has(t.triadan))
-  .map((t) => {
-    const base = { ...t, triadan: t.triadan + 400, label: t.label.toLowerCase() };
-    const r = CANINE_DECIDUOUS_MANDIBLE_RESCALE;
-    if (t.cy <= r.belowY) return base;
-    return {
-      ...base,
-      cx: r.centerX + (t.cx - r.centerX) * r.scale,
-      cy: r.targetY + (t.cy - r.refY) * r.scale,
-      rx: t.rx * r.scale,
-      ry: t.ry * r.scale,
-    };
-  });
+/** Deciduous (puppy) canine teeth — 28 total. Anchor positions match
+ *  the shapes drawn in canine-deciduous.svg (generated: each tooth
+ *  borrows the clinically-correct adult outline — dp2≈P3, dp3≈P4,
+ *  dp4≈M1, slender canine — with 4-fold mirror symmetry). Lowercase
+ *  labels per AVDC deciduous convention. */
+const canineDeciduousTeeth: ToothShape[] = [
+  { triadan: 501, label: "i1", type: "incisor", cx: 370, cy: 66, rx: 11.8, ry: 16.1, rotation: 0 },
+  { triadan: 502, label: "i2", type: "incisor", cx: 337, cy: 68, rx: 14, ry: 15.3, rotation: 0 },
+  { triadan: 503, label: "i3", type: "incisor", cx: 300, cy: 80, rx: 18.8, ry: 20.3, rotation: 0 },
+  { triadan: 504, label: "c", type: "canine", cx: 264, cy: 128, rx: 16.4, ry: 56.4, rotation: 0 },
+  { triadan: 506, label: "p2", type: "premolar", cx: 242, cy: 266, rx: 14.5, ry: 18.7, rotation: 0 },
+  { triadan: 507, label: "p3", type: "premolar", cx: 210, cy: 327, rx: 25, ry: 33.8, rotation: 0 },
+  { triadan: 508, label: "p4", type: "premolar", cx: 170, cy: 412, rx: 30.3, ry: 25.5, rotation: 0 },
+  { triadan: 601, label: "i1", type: "incisor", cx: 400, cy: 66, rx: 11.8, ry: 16.1, rotation: 0 },
+  { triadan: 602, label: "i2", type: "incisor", cx: 433, cy: 68, rx: 14, ry: 15.3, rotation: 0 },
+  { triadan: 603, label: "i3", type: "incisor", cx: 470, cy: 80, rx: 18.8, ry: 20.3, rotation: 0 },
+  { triadan: 604, label: "c", type: "canine", cx: 506, cy: 128, rx: 16.4, ry: 56.4, rotation: 0 },
+  { triadan: 606, label: "p2", type: "premolar", cx: 528, cy: 266, rx: 14.5, ry: 18.7, rotation: 0 },
+  { triadan: 607, label: "p3", type: "premolar", cx: 560, cy: 327, rx: 25, ry: 33.8, rotation: 0 },
+  { triadan: 608, label: "p4", type: "premolar", cx: 600, cy: 412, rx: 30.3, ry: 25.5, rotation: 0 },
+  { triadan: 701, label: "i1", type: "incisor", cx: 400, cy: 1100, rx: 11.8, ry: 16.1, rotation: 0 },
+  { triadan: 702, label: "i2", type: "incisor", cx: 433, cy: 1098, rx: 14, ry: 15.3, rotation: 0 },
+  { triadan: 703, label: "i3", type: "incisor", cx: 470, cy: 1086, rx: 18.8, ry: 20.3, rotation: 0 },
+  { triadan: 704, label: "c", type: "canine", cx: 506, cy: 1038, rx: 16.4, ry: 56.4, rotation: 0 },
+  { triadan: 706, label: "p2", type: "premolar", cx: 528, cy: 900, rx: 14.5, ry: 18.7, rotation: 0 },
+  { triadan: 707, label: "p3", type: "premolar", cx: 560, cy: 839, rx: 25, ry: 33.8, rotation: 0 },
+  { triadan: 708, label: "p4", type: "premolar", cx: 600, cy: 754, rx: 30.3, ry: 25.5, rotation: 0 },
+  { triadan: 801, label: "i1", type: "incisor", cx: 370, cy: 1100, rx: 11.8, ry: 16.1, rotation: 0 },
+  { triadan: 802, label: "i2", type: "incisor", cx: 337, cy: 1098, rx: 14, ry: 15.3, rotation: 0 },
+  { triadan: 803, label: "i3", type: "incisor", cx: 300, cy: 1086, rx: 18.8, ry: 20.3, rotation: 0 },
+  { triadan: 804, label: "c", type: "canine", cx: 264, cy: 1038, rx: 16.4, ry: 56.4, rotation: 0 },
+  { triadan: 806, label: "p2", type: "premolar", cx: 242, cy: 900, rx: 14.5, ry: 18.7, rotation: 0 },
+  { triadan: 807, label: "p3", type: "premolar", cx: 210, cy: 839, rx: 25, ry: 33.8, rotation: 0 },
+  { triadan: 808, label: "p4", type: "premolar", cx: 170, cy: 754, rx: 30.3, ry: 25.5, rotation: 0 },
+];
 
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
@@ -261,25 +243,23 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineDash: CANINE_MIDLINE_DASH,
   },
   'canine-deciduous': {
-    imageSrc: '/diagrams/canine.png',
+    // Dedicated artwork with clinically-shaped deciduous teeth; the PNG is
+    // never loaded (imageSrc only derives the .svg URL) but named to match.
+    imageSrc: '/diagrams/canine-deciduous.png',
     width: 802,
     height: 1140,
     midlineY: CANINE_MIDLINE,
     teeth: canineDeciduousTeeth,
     cropBounds: { minY: 30, maxY: 1145 },
-    // Cull the adult-only teeth's artwork on top of the usual label culls,
-    // so the drawing shows only the 28 deciduous-position teeth.
-    labelCulls: [...CANINE_LABEL_CULLS, ...CANINE_ADULT_ONLY_TOOTH_CULLS],
+    // The generated SVG carries no traced words/dashes, so nothing to cull.
+    labelCulls: [],
     labels: [
-      { text: 'Maxilla',  x: 383.5, y: 440, fontSize: 26 },
-      // The lifted mandible arch starts at y≈698, so the word sits in the
-      // gap between the midline and the arch.
-      { text: 'Mandible', x: 383.5, y: 645, fontSize: 26 },
+      { text: 'Maxilla',  x: 383.5, y: 505, fontSize: 26 },
+      { text: 'Mandible', x: 383.5, y: 662, fontSize: 26 },
       { text: 'R', x: 89,  y: 583, fontSize: 34 },
       { text: 'L', x: 677, y: 583, fontSize: 34 },
     ],
     midlineDash: CANINE_MIDLINE_DASH,
-    mandibleRescale: CANINE_DECIDUOUS_MANDIBLE_RESCALE,
   },
   feline: {
     imageSrc: '/diagrams/feline.png',
