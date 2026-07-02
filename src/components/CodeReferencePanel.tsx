@@ -1,5 +1,9 @@
 import React from 'react';
-import { DENTAL_CODES, DentalCode } from '../constants/dentalCodes';
+import {
+  DENTAL_CODE_GROUPS,
+  DentalCode,
+  DentalCodeGroup,
+} from '../constants/dentalCodes';
 
 /**
  * Always-visible collapsible search panel that lists every dental shorthand
@@ -27,11 +31,14 @@ const TITLES = { diagnosis: 'Diagnoses', procedure: 'Procedures' } as const;
 export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
 
-  const filtered = React.useMemo(
+  // Filter within each clinical group; groups with no surviving codes
+  // drop out entirely (including their header).
+  const filteredGroups = React.useMemo(
     () =>
-      DENTAL_CODES.filter(
-        (c) => (kind ? c.kind === kind : true) && matches(c, query)
-      ),
+      DENTAL_CODE_GROUPS
+        .filter((g) => (kind ? g.kind === kind : true))
+        .map((g) => ({ ...g, codes: g.codes.filter((c) => matches(c, query)) }))
+        .filter((g) => g.codes.length > 0),
     [query, kind]
   );
 
@@ -53,16 +60,16 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
         />
         <div className="code-ref__columns">
           {kind ? (
-            <CodeRefColumn title={TITLES[kind]} codes={filtered} />
+            <CodeRefColumn title={TITLES[kind]} groups={filteredGroups} />
           ) : (
             <>
               <CodeRefColumn
                 title="Diagnoses"
-                codes={filtered.filter((c) => c.kind === 'diagnosis')}
+                groups={filteredGroups.filter((g) => g.kind === 'diagnosis')}
               />
               <CodeRefColumn
                 title="Procedures"
-                codes={filtered.filter((c) => c.kind === 'procedure')}
+                groups={filteredGroups.filter((g) => g.kind === 'procedure')}
               />
             </>
           )}
@@ -74,25 +81,35 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
 
 interface CodeRefColumnProps {
   title: string;
-  codes: DentalCode[];
+  groups: DentalCodeGroup[];
 }
 
-const CodeRefColumn: React.FC<CodeRefColumnProps> = ({ title, codes }) => (
-  <div className="code-ref__column">
-    <h3 className="code-ref__heading">
-      {title} <span className="code-ref__count">({codes.length})</span>
-    </h3>
-    {codes.length === 0 ? (
-      <div className="code-ref__empty">No matches.</div>
-    ) : (
-      <ul className="code-ref__list">
-        {codes.map((c) => (
-          <li key={c.code} className="code-ref__row">
-            <span className="code-ref__code">{c.code}</span>
-            <span className="code-ref__def">{c.definition}</span>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-);
+const CodeRefColumn: React.FC<CodeRefColumnProps> = ({ title, groups }) => {
+  const total = groups.reduce((n, g) => n + g.codes.length, 0);
+  return (
+    <div className="code-ref__column">
+      <h3 className="code-ref__heading">
+        {title} <span className="code-ref__count">({total})</span>
+      </h3>
+      {total === 0 ? (
+        <div className="code-ref__empty">No matches.</div>
+      ) : (
+        <div className="code-ref__list">
+          {groups.map((g) => (
+            <section key={g.name} className="code-ref__group">
+              <h4 className="code-ref__group-head">{g.name}</h4>
+              <ul className="code-ref__group-list">
+                {g.codes.map((c: DentalCode) => (
+                  <li key={c.code} className="code-ref__row">
+                    <span className="code-ref__code">{c.code}</span>
+                    <span className="code-ref__def">{c.definition}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

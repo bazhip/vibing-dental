@@ -1624,6 +1624,35 @@
   overflow-y: auto;
 }
 
+/* Clinical group sub-headers within a codes column. Sticky so the group
+   you're scrolled into stays labeled. */
+.code-ref__group-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0.6rem 0 0.25rem;
+  padding: 0.2rem 0;
+  background: var(--surface, #fff);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.code-ref__group:first-child .code-ref__group-head {
+  margin-top: 0;
+}
+
+.code-ref__group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .code-ref__row {
   display: grid;
   /* minmax(0, 1fr) lets the definition column shrink below its content's

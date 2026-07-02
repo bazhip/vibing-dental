@@ -27,9 +27,23 @@ const P = (code: string, definition: string): DentalCode => ({
   kind: 'procedure',
 });
 
-export const DENTAL_CODES: DentalCode[] = [
+/** A clinical cluster of codes, mirroring how the AVDC list is organized.
+ *  Surfaced as sub-headers in the reference panels. */
+export interface DentalCodeGroup {
+  name: string;
+  kind: CodeKind;
+  codes: DentalCode[];
+}
+
+const G = (name: string, codes: DentalCode[]): DentalCodeGroup => ({
+  name,
+  kind: codes[0].kind,
+  codes,
+});
+
+export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   // ── Diagnoses ──────────────────────────────────────────────────────
-  // Occlusion
+  G('Occlusion', [
   D('MAL1', 'Class 1 malocclusion (neutroclusion)'),
   D('MAL2', 'Class 2 malocclusion (mandibular distoclusion)'),
   D('MAL3', 'Class 3 malocclusion (mandibular mesioclusion)'),
@@ -42,7 +56,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('MAL1/PV', 'Palatoversion'),
   D('CB/C', 'Crossbite, caudal'),
   D('CB/R', 'Crossbite, rostral'),
-  // Tooth number / eruption
+  ]),
+  G('Tooth number & eruption', [
   D('T/SN', 'Supernumerary tooth'),
   D('T/SR', 'Supernumerary root'),
   D('DT', 'Deciduous tooth'),
@@ -55,7 +70,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('ATE', 'Abnormal tooth extrusion'),
   D('RCR', 'Retained crown-root'),
   D('RTR', 'Retained tooth root'),
-  // Periodontal
+  ]),
+  G('Periodontal', [
   D('PD0', 'No periodontal disease (clinically normal)'),
   D('PD1', 'Gingivitis only (no attachment loss)'),
   D('PD2', 'Early periodontitis (<25% attachment loss)'),
@@ -66,7 +82,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('GH', 'Gingival hyperplasia'),
   D('ABE', 'Alveolar bone expansion'),
   D('AOS', 'Alveolar osteitis'),
-  // Tooth pathology
+  ]),
+  G('Tooth pathology', [
   D('TR', 'Tooth resorption'),
   D('RR', 'Internal resorption'),
   D('T/NV', 'Non-vital tooth'),
@@ -84,7 +101,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('E/H', 'Enamel hypoplasia'),
   D('E/HM', 'Enamel hypomineralization'),
   D('CA', 'Caries'),
-  // Tooth fracture (AVDC fracture classification)
+  ]),
+  G('Tooth fracture', [
   D('T/FX', 'Tooth fracture'),
   D('T/FX/EI', 'Enamel infraction'),
   D('T/FX/EF', 'Enamel fracture'),
@@ -93,14 +111,16 @@ export const DENTAL_CODES: DentalCode[] = [
   D('T/FX/UCRF', 'Uncomplicated crown-root fracture'),
   D('T/FX/CCRF', 'Complicated crown-root fracture'),
   D('T/FX/RF', 'Root fracture'),
-  // Periapical / bone
+  ]),
+  G('Periapical & bone', [
   D('PA/P', 'Periapical pathology'),
   D('PA/A', 'Periapical abscess'),
   D('PA/C', 'Periapical cyst'),
   D('PA/G', 'Periapical granuloma'),
   D('OST', 'Osteomyelitis'),
   D('OSN', 'Osteonecrosis'),
-  // Soft tissue / mucosa
+  ]),
+  G('Soft tissue & mucosa', [
   D('ST', 'Stomatitis'),
   D('ST/CS', 'Caudal stomatitis'),
   D('CU', 'Contact mucositis / contact mucosal ulceration'),
@@ -122,7 +142,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('SG/MUC/S', 'Sialocele, sublingual (ranula)'),
   D('SG/MUC/P', 'Sialocele, pharyngeal'),
   D('SG/MUC/C', 'Sialocele, cervical'),
-  // Masses / oncology
+  ]),
+  G('Masses & oncology', [
   D('OM', 'Oral mass'),
   D('OM/SCC', 'Oral mass, squamous cell carcinoma'),
   D('OM/MM', 'Oral mass, malignant melanoma'),
@@ -135,7 +156,8 @@ export const DENTAL_CODES: DentalCode[] = [
   D('MET/D', 'Metastasis, distant'),
   D('DTC', 'Dentigerous cyst'),
   D('LN/E', 'Lymph node enlargement'),
-  // Jaw / TMJ / congenital
+  ]),
+  G('Jaw, TMJ & congenital', [
   D('MN/FX', 'Mandibular fracture'),
   D('MX/FX', 'Maxillary fracture'),
   D('SYM/S', 'Symphyseal separation'),
@@ -154,9 +176,10 @@ export const DENTAL_CODES: DentalCode[] = [
   D('PDE', 'Acquired palate defect'),
   D('ONF', 'Oronasal fistula'),
   D('ESP', 'Elongated soft palate'),
+  ]),
 
   // ── Procedures ─────────────────────────────────────────────────────
-  // Imaging / diagnostics
+  G('Imaging & diagnostics', [
   P('RAD', 'Radiography'),
   P('CT', 'Computed tomography'),
   P('CT/CB', 'Cone-beam computed tomography'),
@@ -168,7 +191,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('B/NA', 'Biopsy, needle aspiration'),
   P('B/P', 'Biopsy, punch'),
   P('CS', 'Culture / sensitivity'),
-  // Periodontal treatment
+  ]),
+  G('Periodontal treatment', [
   P('PRO', 'Professional dental cleaning (scaling, polishing, irrigation)'),
   P('GC', 'Gingival curettage'),
   P('RP/C', 'Closed root planing'),
@@ -186,7 +210,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('GF/M', 'Mucosal graft'),
   P('GTR', 'Guided tissue regeneration'),
   P('FRE', 'Frenuloplasty (frenulotomy, frenulectomy)'),
-  // Endodontics
+  ]),
+  G('Endodontics', [
   P('RCT', 'Standard root canal therapy'),
   P('RCT/S', 'Surgical root canal therapy'),
   P('AP/X', 'Apicoectomy'),
@@ -201,7 +226,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('CR/A', 'Crown amputation'),
   P('CR/XP', 'Crown reduction'),
   P('ODY', 'Odontoplasty'),
-  // Restorative / prosthodontics
+  ]),
+  G('Restorative & prosthodontics', [
   P('R', 'Restoration'),
   P('R/A', 'Restoration, amalgam'),
   P('R/C', 'Restoration, composite'),
@@ -216,7 +242,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('DC', 'Diagnostic cast'),
   P('BR', 'Bite registration'),
   P('IMP', 'Implant'),
-  // Extractions
+  ]),
+  G('Extractions', [
   P('X', 'Extraction, closed (no sectioning)'),
   P('XS', 'Extraction, closed with sectioning'),
   P('XSS', 'Extraction, open (surgical)'),
@@ -225,7 +252,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('T/RI', 'Tooth reimplantation (avulsed tooth)'),
   P('T/RP', 'Tooth repositioning (luxated tooth)'),
   P('OP', 'Operculectomy'),
-  // Oral surgery
+  ]),
+  G('Oral surgery', [
   P('FB/R', 'Foreign body removal'),
   P('LAC/R', 'Laceration repair'),
   P('DTC/R', 'Dentigerous cyst removal'),
@@ -253,7 +281,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('ZYG/X', 'Zygomectomy'),
   P('COR/X', 'Coronoidectomy'),
   P('CON/X', 'Condylectomy'),
-  // Jaw fracture / TMJ repair
+  ]),
+  G('Jaw fracture & TMJ repair', [
   P('SYM/R', 'Symphyseal repair'),
   P('FX/R', 'Jaw fracture repair'),
   P('FX/R/PL', 'Jaw fracture repair, plate'),
@@ -269,7 +298,8 @@ export const DENTAL_CODES: DentalCode[] = [
   P('TMJ/LUX/R', 'TMJ luxation reduction'),
   P('TMJ/A/R', 'TMJ ankylosis repair'),
   P('OMJL/R', 'Open-mouth jaw locking reduction'),
-  // Orthodontics
+  ]),
+  G('Orthodontics', [
   P('IP/AC', 'Inclined plane, acrylic'),
   P('IP/C', 'Inclined plane, composite'),
   P('IP/M', 'Inclined plane, metal'),
@@ -284,7 +314,14 @@ export const DENTAL_CODES: DentalCode[] = [
   P('FT', 'Fiberotomy'),
   P('SR', 'Surgical repositioning'),
   P('BTH', 'Ball therapy'),
+  ]),
 ];
+
+/** Flat list, in group order — everything downstream (autocomplete,
+ *  text scanning, PDF legend) derives from this. */
+export const DENTAL_CODES: DentalCode[] = DENTAL_CODE_GROUPS.flatMap(
+  (g) => g.codes
+);
 
 export const CODES_BY_CODE: Record<string, DentalCode> = Object.fromEntries(
   DENTAL_CODES.map((c) => [c.code, c])
