@@ -50,6 +50,10 @@ export const DIAGRAM_SLOTS: Record<Species, [DiagramSlot, DiagramSlot]> = {
     { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
     { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },
   ],
+  'feline-deciduous': [
+    { pageIndex: 0, xIn: 0.15, columnWidthIn: 4.95, yTopIn: 1.85, heightIn: 4.65, maxWidthIn: 4.85 },
+    { pageIndex: 1, xIn: 0.30, columnWidthIn: 5.10, yTopIn: 1.75, heightIn: 4.70, maxWidthIn: 5.00 },
+  ],
 };
 
 // ---------- Codes-used legend ----------------------------------------------

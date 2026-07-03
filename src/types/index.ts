@@ -123,10 +123,16 @@ export interface PatientInfo {
 export const DEFAULT_VCA_DOCTOR = 'Dr. Margaret Smith, DVM, DAVDC';
 
 /**
- * Species / dentition type for dental charts. `canine-deciduous` is the
- * 28-tooth puppy dentition (Triadan quadrants 5-8; no P1, no molars).
+ * Species / dentition type for dental charts. The `-deciduous` variants are
+ * the primary dentitions: `canine-deciduous` = 28-tooth puppy (no P1, no
+ * molars); `feline-deciduous` = 26-tooth kitten (as canine-deciduous but
+ * the lower jaw also has no p2). Triadan quadrants 5-8.
  */
-export type Species = 'feline' | 'canine' | 'canine-deciduous';
+export type Species =
+  | 'feline'
+  | 'canine'
+  | 'canine-deciduous'
+  | 'feline-deciduous';
 
 /**
  * Per-tooth visual mark on the interactive diagram.

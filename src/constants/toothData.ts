@@ -151,11 +151,50 @@ export const CANINE_DECIDUOUS_TOOTH_DATA: ToothData[] = [
 ];
 
 /**
+ * Deciduous cat (kitten) tooth data — 26 teeth. Formula 2×(i3/3, c1/1,
+ * p3/2): maxilla has dp2-dp4, mandible has only dp3-dp4 (no lower dp2).
+ * No x05 and no molars. Lowercase labels per AVDC convention.
+ */
+export const FELINE_DECIDUOUS_TOOTH_DATA: ToothData[] = [
+  // Upper right (501-508)
+  { tooth: 'i1', triadan: 501 },
+  { tooth: 'i2', triadan: 502 },
+  { tooth: 'i3', triadan: 503 },
+  { tooth: 'c',  triadan: 504 },
+  { tooth: 'p2', triadan: 506 },
+  { tooth: 'p3', triadan: 507 },
+  { tooth: 'p4', triadan: 508 },
+  // Lower right (801-808) — no p2 (806)
+  { tooth: 'i1', triadan: 801 },
+  { tooth: 'i2', triadan: 802 },
+  { tooth: 'i3', triadan: 803 },
+  { tooth: 'c',  triadan: 804 },
+  { tooth: 'p3', triadan: 807 },
+  { tooth: 'p4', triadan: 808 },
+  // Upper left (601-608)
+  { tooth: 'i1', triadan: 601 },
+  { tooth: 'i2', triadan: 602 },
+  { tooth: 'i3', triadan: 603 },
+  { tooth: 'c',  triadan: 604 },
+  { tooth: 'p2', triadan: 606 },
+  { tooth: 'p3', triadan: 607 },
+  { tooth: 'p4', triadan: 608 },
+  // Lower left (701-708) — no p2 (706)
+  { tooth: 'i1', triadan: 701 },
+  { tooth: 'i2', triadan: 702 },
+  { tooth: 'i3', triadan: 703 },
+  { tooth: 'c',  triadan: 704 },
+  { tooth: 'p3', triadan: 707 },
+  { tooth: 'p4', triadan: 708 },
+];
+
+/**
  * Get initial tooth data based on species
  */
 export function getInitialToothData(species: Species): ToothData[] {
   if (species === 'canine') return CANINE_TOOTH_DATA;
   if (species === 'canine-deciduous') return CANINE_DECIDUOUS_TOOTH_DATA;
+  if (species === 'feline-deciduous') return FELINE_DECIDUOUS_TOOTH_DATA;
   return FELINE_TOOTH_DATA;
 }
 

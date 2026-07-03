@@ -186,6 +186,7 @@ export async function drawLogoAndHeader(
     canine: 'Canine',
     'canine-deciduous': 'Canine (Deciduous)',
     feline: 'Feline',
+    'feline-deciduous': 'Feline (Deciduous)',
   };
   const titleText = `${SPECIES_TITLES[species]} Dental Chart`;
   const subtitleText = 'Periodontal Assessment & Treatment Plan';

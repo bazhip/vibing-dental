@@ -152,6 +152,39 @@ export const CANINE_DECIDUOUS_MANDIBLE_TEETH: ChartTooth[] = [
   { triadan: 708, abbr: 'p4' },
 ];
 
+export const FELINE_DECIDUOUS_MAXILLA_TEETH: ChartTooth[] = [
+  { triadan: 508, abbr: 'p4' },
+  { triadan: 507, abbr: 'p3' },
+  { triadan: 506, abbr: 'p2' },
+  { triadan: 504, abbr: 'c'  },
+  { triadan: 503, abbr: 'i3' },
+  { triadan: 502, abbr: 'i2' },
+  { triadan: 501, abbr: 'i1' },
+  { triadan: 601, abbr: 'i1' },
+  { triadan: 602, abbr: 'i2' },
+  { triadan: 603, abbr: 'i3' },
+  { triadan: 604, abbr: 'c'  },
+  { triadan: 606, abbr: 'p2' },
+  { triadan: 607, abbr: 'p3' },
+  { triadan: 608, abbr: 'p4' },
+];
+
+// Kitten mandible has no deciduous p2 (12 teeth).
+export const FELINE_DECIDUOUS_MANDIBLE_TEETH: ChartTooth[] = [
+  { triadan: 808, abbr: 'p4' },
+  { triadan: 807, abbr: 'p3' },
+  { triadan: 804, abbr: 'c'  },
+  { triadan: 803, abbr: 'i3' },
+  { triadan: 802, abbr: 'i2' },
+  { triadan: 801, abbr: 'i1' },
+  { triadan: 701, abbr: 'i1' },
+  { triadan: 702, abbr: 'i2' },
+  { triadan: 703, abbr: 'i3' },
+  { triadan: 704, abbr: 'c'  },
+  { triadan: 707, abbr: 'p3' },
+  { triadan: 708, abbr: 'p4' },
+];
+
 // Tooth grids are 5.50in wide (matching the exam table above) and pushed
 // down so the mandible bottom sits just above the page-1 footer rule
 // (mandible bottom ≈ 8.00in; footer rule at 8.10in). Each grid is 1.30in
@@ -200,6 +233,20 @@ export const TOOTH_GRID_LAYOUTS: Record<Species, { maxilla: ToothGridLayout; man
       labelColIn: 0.50, toothColIn: 0.3571,   // 5.00 / 14 ≈ 0.357
       rowHeightIn: 0.13, fieldWidthIn: 0.332, fieldHeightIn: 0.115,
       teeth: FELINE_MANDIBLE_TEETH,
+    },
+  },
+  'feline-deciduous': {
+    maxilla: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 5.10,
+      labelColIn: 0.50, toothColIn: 0.3571,   // 5.00 / 14 ≈ 0.357
+      rowHeightIn: 0.13, fieldWidthIn: 0.332, fieldHeightIn: 0.115,
+      teeth: FELINE_DECIDUOUS_MAXILLA_TEETH,
+    },
+    mandible: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 6.70,
+      labelColIn: 0.50, toothColIn: 0.4167,   // 5.00 / 12 ≈ 0.417
+      rowHeightIn: 0.13, fieldWidthIn: 0.387, fieldHeightIn: 0.115,
+      teeth: FELINE_DECIDUOUS_MANDIBLE_TEETH,
     },
   },
 };

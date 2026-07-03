@@ -230,6 +230,39 @@ const canineDeciduousTeeth: ToothShape[] = [
   { triadan: 808, label: "p4", type: "premolar", cx: 170, cy: 754, rx: 30.3, ry: 25.5, rotation: 0 },
 ];
 
+/** Deciduous (kitten) cat teeth — 26 total (mandible has no p2).
+ *  Each deciduous premolar is a smaller version of its same-position
+ *  permanent successor (dp4 → P4 carnassial). Generated + mirrored
+ *  4-fold from vetted feline outlines; matches feline-deciduous.svg. */
+const felineDeciduousTeeth: ToothShape[] = [
+  { triadan: 501, label: "i1", type: "incisor", cx: 336, cy: 32, rx: 13.9, ry: 12.1, rotation: 0 },
+  { triadan: 502, label: "i2", type: "incisor", cx: 321, cy: 36, rx: 8, ry: 11.9, rotation: 0 },
+  { triadan: 503, label: "i3", type: "incisor", cx: 304, cy: 44, rx: 9.6, ry: 16.1, rotation: 0 },
+  { triadan: 504, label: "c", type: "canine", cx: 245, cy: 105, rx: 8.6, ry: 54.5, rotation: 0 },
+  { triadan: 506, label: "p2", type: "premolar", cx: 195, cy: 200, rx: 10.6, ry: 11.5, rotation: 0 },
+  { triadan: 507, label: "p3", type: "premolar", cx: 183, cy: 275, rx: 17.6, ry: 29.7, rotation: 0 },
+  { triadan: 508, label: "p4", type: "premolar", cx: 167, cy: 365, rx: 31.7, ry: 45.7, rotation: 0 },
+  { triadan: 601, label: "i1", type: "incisor", cx: 354, cy: 32, rx: 13.9, ry: 12.1, rotation: 0 },
+  { triadan: 602, label: "i2", type: "incisor", cx: 369, cy: 36, rx: 8, ry: 11.9, rotation: 0 },
+  { triadan: 603, label: "i3", type: "incisor", cx: 386, cy: 44, rx: 9.6, ry: 16.1, rotation: 0 },
+  { triadan: 604, label: "c", type: "canine", cx: 445, cy: 105, rx: 8.6, ry: 54.5, rotation: 0 },
+  { triadan: 606, label: "p2", type: "premolar", cx: 495, cy: 200, rx: 10.6, ry: 11.5, rotation: 0 },
+  { triadan: 607, label: "p3", type: "premolar", cx: 507, cy: 275, rx: 17.6, ry: 29.7, rotation: 0 },
+  { triadan: 608, label: "p4", type: "premolar", cx: 523, cy: 365, rx: 31.7, ry: 45.7, rotation: 0 },
+  { triadan: 701, label: "i1", type: "incisor", cx: 354, cy: 1048, rx: 13.9, ry: 12.1, rotation: 0 },
+  { triadan: 702, label: "i2", type: "incisor", cx: 369, cy: 1044, rx: 8, ry: 11.9, rotation: 0 },
+  { triadan: 703, label: "i3", type: "incisor", cx: 386, cy: 1036, rx: 9.6, ry: 16.1, rotation: 0 },
+  { triadan: 704, label: "c", type: "canine", cx: 445, cy: 975, rx: 8.6, ry: 54.5, rotation: 0 },
+  { triadan: 707, label: "p3", type: "premolar", cx: 507, cy: 805, rx: 17.6, ry: 29.7, rotation: 0 },
+  { triadan: 708, label: "p4", type: "premolar", cx: 523, cy: 715, rx: 31.7, ry: 45.7, rotation: 0 },
+  { triadan: 801, label: "i1", type: "incisor", cx: 336, cy: 1048, rx: 13.9, ry: 12.1, rotation: 0 },
+  { triadan: 802, label: "i2", type: "incisor", cx: 321, cy: 1044, rx: 8, ry: 11.9, rotation: 0 },
+  { triadan: 803, label: "i3", type: "incisor", cx: 304, cy: 1036, rx: 9.6, ry: 16.1, rotation: 0 },
+  { triadan: 804, label: "c", type: "canine", cx: 245, cy: 975, rx: 8.6, ry: 54.5, rotation: 0 },
+  { triadan: 807, label: "p3", type: "premolar", cx: 183, cy: 805, rx: 17.6, ry: 29.7, rotation: 0 },
+  { triadan: 808, label: "p4", type: "premolar", cx: 167, cy: 715, rx: 31.7, ry: 45.7, rotation: 0 },
+];
+
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
     imageSrc: '/diagrams/canine.png',
@@ -280,6 +313,22 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
       { text: 'Mandible', x: FELINE_CX, y: 700, fontSize: 26 },
       { text: 'R', x: 20,  y: 540, fontSize: 34 },
       { text: 'L', x: 672, y: 540, fontSize: 34 },
+    ],
+    midlineDash: { x1: 48, x2: 645, y: 540 },
+  },
+  'feline-deciduous': {
+    imageSrc: '/diagrams/feline-deciduous.png',
+    width: 690,
+    height: 1085,
+    midlineY: FELINE_MIDLINE,
+    teeth: felineDeciduousTeeth,
+    cropBounds: { minY: 12, maxY: 1090 },
+    labelCulls: [],
+    labels: [
+      { text: 'Maxilla',  x: FELINE_CX, y: 450, fontSize: 24 },
+      { text: 'Mandible', x: FELINE_CX, y: 632, fontSize: 24 },
+      { text: 'R', x: 20,  y: 540, fontSize: 32 },
+      { text: 'L', x: 672, y: 540, fontSize: 32 },
     ],
     midlineDash: { x1: 48, x2: 645, y: 540 },
   },
