@@ -556,6 +556,13 @@
   background-color: #fff !important;
 }
 
+/* The Missing column is a button, not an editable cell — clicking it
+   shouldn't paint the spreadsheet selection ring around the pill. */
+.dental-grid .rdg-cell[aria-colindex="1"][aria-selected="true"] {
+  outline: none;
+  background-color: inherit !important;
+}
+
 .dental-grid .rdg-row:hover {
   background-color: #f7fafc;
 }
