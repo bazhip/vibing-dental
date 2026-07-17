@@ -378,18 +378,23 @@
 .patient-form__selectors {
   display: flex;
   gap: 1.5rem;
-  align-items: flex-end;
+  align-items: stretch;
   flex-wrap: wrap;
 }
 
 /* Labeled selector group: caption above the segmented control, so the
-   two controls (species / chart template) say what they choose. */
+   two controls (species / chart template) say what they choose.
+   flex-basis stays auto (content-sized): the species group needs about
+   twice the room of the template group, and equal 0-basis shares made
+   its tabs overflow the bucket and overlap the neighbor at ~1000px
+   windows. With auto basis the row wraps instead. */
 .patient-form__selector {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  flex: 1;
-  min-width: 300px;
+  flex: 1 1 auto;
+  min-width: min(100%, 300px);
+  max-width: 100%;
 }
 
 .patient-form__selector-label {
@@ -400,16 +405,19 @@
 
 .patient-form__species {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.5rem;
   background: var(--surface-sunken, #eef1f4);
   border-radius: 10px;
   border: 1px solid var(--border);
+  min-width: 0;
 }
 
 .species-tab {
-  flex: 1;
-  padding: 0.875rem 2rem;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  padding: 0.875rem 1.25rem;
   background: transparent;
   border: none;
   border-radius: 8px;
