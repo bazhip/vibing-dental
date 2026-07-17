@@ -244,7 +244,11 @@
   border-radius: 12px;
   box-shadow: 0 16px 48px rgba(15, 23, 42, 0.18);
   z-index: 50;
-  overflow: hidden;
+  /* Scroll when the menu is taller than the viewport allows (e.g. the
+     admin build has extra sections) so bottom items like Sign out are
+     never clipped. */
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   max-height: min(620px, calc(100vh - 6rem));
@@ -257,8 +261,9 @@
 }
 .chart-menu__section:last-child {
   border-bottom: none;
-  flex: 1; min-height: 0;
 }
+/* Sections size to content; the panel scrolls as a whole. */
+.chart-menu__section { flex: 0 0 auto; }
 .chart-menu__section-head {
   display: flex; justify-content: space-between; align-items: baseline;
   padding: 0.7rem 1rem 0.5rem;

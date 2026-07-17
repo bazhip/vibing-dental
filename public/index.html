@@ -2,11 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0c6b63" />
+
     <!-- Modern browsers pick the SVG; older ones fall back to the .ico. -->
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
     <link rel="alternate icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0c6b63" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
     <!-- Inter for UI (tabular figures cover chart data); Geist Mono only
          for dental-code strings. Robust system fallbacks in themes.css
          keep the app usable if the font CDN is unreachable in-clinic. -->
@@ -16,39 +20,82 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
     />
+
+    <!-- ===== SEO ===== -->
+    <title>ToothOps — Veterinary Dental Charting Software (Voice, Radiographs, PDFs)</title>
     <meta
       name="description"
-      content="ToothOps Charting — veterinary dental charting with Triadan grids, AVDC codes, diagrams, and branded PDF export."
+      content="ToothOps is chairside veterinary dental charting for dogs and cats: full-mouth Triadan grids, AVDC nomenclature, voice autofill, intraoral photos and radiographs, per-patient history, recall reminders, team access, and client-ready branded PDFs. Free to try — no account needed."
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <meta name="keywords" content="veterinary dental charting, vet dental software, dental chart, Triadan chart, AVDC nomenclature, canine dental chart, feline dental chart, veterinary dentistry software, periodontal charting, dental radiographs, animal dental records" />
+    <meta name="author" content="ToothOps" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://toothops.app/" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>ToothOps Charting</title>
+    <!-- Open Graph (Facebook, LinkedIn, iMessage, Slack…) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ToothOps" />
+    <meta property="og:title" content="ToothOps — Veterinary Dental Charting" />
+    <meta
+      property="og:description"
+      content="Chart the procedure; the paperwork does itself. Triadan grids, AVDC codes, voice autofill, radiographs, and client-ready PDFs for dog and cat dentistry."
+    />
+    <meta property="og:url" content="https://toothops.app/" />
+    <meta property="og:image" content="https://toothops.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ToothOps — veterinary dental charting" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ToothOps — Veterinary Dental Charting" />
+    <meta
+      name="twitter:description"
+      content="Chairside dental charting for vets: Triadan grids, AVDC codes, voice autofill, radiographs, and branded PDFs."
+    />
+    <meta name="twitter:image" content="https://toothops.app/og-image.png" />
+
+    <!-- Structured data: helps Google show the product richly. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ToothOps",
+        "applicationCategory": "HealthApplication",
+        "applicationSubCategory": "Veterinary dental charting",
+        "operatingSystem": "Web",
+        "url": "https://toothops.app/",
+        "image": "https://toothops.app/og-image.png",
+        "description": "Chairside veterinary dental charting for dogs and cats: full-mouth Triadan grids, AVDC nomenclature, voice autofill, intraoral photos and radiographs, per-patient history, recall reminders, team access, and client-ready branded PDFs.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Free in early access — no card required."
+        },
+        "featureList": [
+          "Full-mouth Triadan dental charts (feline, canine, deciduous)",
+          "AVDC nomenclature and abbreviations",
+          "Voice dictation with AI autofill",
+          "Intraoral photo and radiograph attachments",
+          "Per-patient visit history and recall reminders",
+          "Multi-doctor team access",
+          "Client-ready branded PDF export"
+        ]
+      }
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <h1>ToothOps — Veterinary Dental Charting</h1>
+      <p>
+        ToothOps is chairside dental charting software for veterinary
+        practices: full-mouth Triadan grids for dogs and cats, AVDC
+        nomenclature, voice autofill, intraoral photos and radiographs,
+        per-patient history, recall reminders, team access, and client-ready
+        PDFs. Please enable JavaScript to use the app.
+      </p>
+    </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

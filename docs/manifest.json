@@ -21,5 +21,6 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#0C6B63",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "description": "Chairside veterinary dental charting for dogs and cats \u2014 Triadan grids, AVDC codes, voice autofill, radiographs, and client-ready PDFs."
 }
