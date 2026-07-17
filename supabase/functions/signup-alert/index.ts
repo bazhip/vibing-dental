@@ -14,6 +14,15 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+// The trial-start ping comes from the browser; without CORS the
+// preflight dies and no alert ever sends. pg_net (signup path) is
+// server-to-server and unaffected.
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
+
 const ALERT_TO = Deno.env.get('ALERT_TO') ?? 'bazhip@gmail.com';
 const ALERT_FROM = Deno.env.get('ALERT_FROM') ?? 'ToothOps Charting <onboarding@resend.dev>';
 const FRESH_WINDOW_MS = 15 * 60 * 1000;
@@ -28,11 +37,12 @@ async function sendAlert(key: string, subject: string, text: string): Promise<Re
     body: JSON.stringify({ from: ALERT_FROM, to: [ALERT_TO], subject, text }),
   });
   const body = await resp.text();
-  return new Response(body, { status: resp.ok ? 200 : 502 });
+  return new Response(body, { status: resp.ok ? 200 : 502, headers: CORS });
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method !== 'POST') return new Response('method not allowed', { status: 405 });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
+  if (req.method !== 'POST') return new Response('method not allowed', { status: 405, headers: CORS });
   let id: string | undefined;
   let trial: boolean | undefined;
   try {

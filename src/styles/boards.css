@@ -77,10 +77,18 @@
   box-shadow: var(--shadow);
   padding: 1.75rem;
   min-height: 420px;
+  /* Let the panel shrink below its content's intrinsic width so a wide
+     child (the dental grid) scrolls inside its own card instead of
+     blowing the page out horizontally on phones/tablets. */
+  min-width: 0;
 }
 
 @media (max-width: 900px) {
-  .sidebar-layout { grid-template-columns: 1fr; }
+  /* minmax(0, 1fr), not 1fr: a plain 1fr track has min-width:auto, so
+     the grid's 760px floor width would stretch the track past the
+     viewport and scroll the whole page. min-width:0 confines the
+     overflow to the .dental-grid card. */
+  .sidebar-layout { grid-template-columns: minmax(0, 1fr); }
   .sidebar-layout__nav {
     position: static;
     flex-direction: row;
@@ -183,7 +191,7 @@
   .mobile-section-menu { display: block; }
   .sidebar-layout__nav { display: none !important; }
   .sidebar-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
   .sidebar-layout__main {
@@ -711,4 +719,46 @@
   .chart-library__head-row [role='columnheader']:nth-child(4) {
     display: none;
   }
+}
+
+/* Admin panel — reuses the chart-library table shell with its own
+   column set: email, practice, chart count, last sign-in, flags. */
+.ai-settings-modal.admin-panel {
+  --lib-cols: minmax(11rem, 1.5fr) minmax(8rem, 1.2fr) 4rem minmax(9rem, 1fr)
+    minmax(6rem, 0.8fr);
+}
+
+.admin-panel .chart-library__row {
+  grid-template-columns: 1fr; /* no delete column — actions live below */
+}
+
+.admin-panel__row--active {
+  background: color-mix(in srgb, var(--primary) 10%, transparent) !important;
+}
+
+.admin-panel__actions {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-panel__names {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-panel__names .patient-form__label {
+  flex: 1 1 14rem;
+}
+
+.admin-panel__buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }

@@ -26,6 +26,8 @@ interface ChartMenuProps {
   onOpenAiSettings: () => void;
   /** View the landing page without ending the session. */
   onGoHome?: () => void;
+  /** Admin panel — present only for the admin account. */
+  onOpenAdmin?: () => void;
   /** Cloud account actions — present only when Supabase is configured. */
   cloud?: ChartMenuCloud;
 }
@@ -35,7 +37,7 @@ interface ChartMenuProps {
  * boundaries: starting fresh, loading a saved chart back in, and the AI
  * settings. Lives in the topbar where app-level actions are expected.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, onGoHome, cloud }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, onGoHome, onOpenAdmin, cloud }) => {
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -160,6 +162,23 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span className="chart-menu__item-body">
                   <strong>Practice settings</strong>
                   <span>Name, doctor line, logo, and password.</span>
+                </span>
+              </button>
+            </section>
+          )}
+
+          {onOpenAdmin && (
+            <section className="chart-menu__section">
+              <header className="chart-menu__section-head">Admin</header>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); onOpenAdmin(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Admin panel</strong>
+                  <span>Manage practice accounts — passwords, profiles, deletion.</span>
                 </span>
               </button>
             </section>

@@ -59,9 +59,21 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     return () => ro.disconnect();
   }, []);
 
+  // On phones/tablets the wrapper can be far narrower than 11 usable
+  // columns — lay the grid out against a floor width instead and let
+  // the wrapper scroll horizontally (CSS enables that ≤1000px). On
+  // desktop the container exceeds the floor and nothing changes.
+  const MIN_LAYOUT_WIDTH = 760;
+  const layoutWidth = containerWidth > 0 ? Math.max(containerWidth, MIN_LAYOUT_WIDTH) : 0;
   const getColumnWidth = (percentage: number) => {
-    return containerWidth > 0 ? Math.floor(containerWidth * percentage) : 100;
+    return layoutWidth > 0 ? Math.floor(layoutWidth * percentage) : 100;
   };
+
+  // Gloved fingers on tablets need taller touch targets than a mouse.
+  const coarsePointer = React.useMemo(
+    () => window.matchMedia?.('(pointer: coarse)').matches ?? false,
+    []
+  );
 
   // ----- Cell editor ------------------------------------------------------
   // Defined inside the component so it closes over `toothData` and
@@ -238,6 +250,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             className="rdg-light"
             columns={columns}
             rows={toothData}
+            rowHeight={coarsePointer ? 44 : 35}
             onRowsChange={onToothDataChange}
             rowKeyGetter={(row: ToothData) => row.triadan}
             rowClass={(row: ToothData) =>

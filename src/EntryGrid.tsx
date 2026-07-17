@@ -19,6 +19,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { ChartLibrary } from './components/ChartLibrary';
+import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -71,8 +72,8 @@ interface EntryGridProps {
   /** No-account trial: cloud sync off, PDFs stamped TRIAL in the
    *  doctor/practice/logo slots, topbar offers account creation. */
   trial?: boolean;
-  /** Trial-mode CTA — leave the trial for the signup flow. */
-  onRequestAccount?: () => void;
+  /** Trial-mode CTA — leave the trial for the signup or sign-in flow. */
+  onRequestAccount?: (mode: 'signup' | 'signin') => void;
   /** Show the landing page without ending the session/trial. */
   onGoHome?: () => void;
 }
@@ -88,6 +89,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
+  const isAdmin = useIsAdmin();
+  const [adminOpen, setAdminOpen] = React.useState(false);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -415,14 +418,24 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
         <div className="entry-grid__topbar-actions">
           {trial && (
-            <button
-              type="button"
-              className="chart-menu__trigger topbar-library-btn"
-              onClick={onRequestAccount}
-              title="Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo"
-            >
-              Create free account
-            </button>
+            <>
+              <button
+                type="button"
+                className="chart-menu__trigger topbar-library-btn"
+                onClick={() => onRequestAccount?.('signin')}
+                title="Already have a practice account? Sign in"
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                className="chart-menu__trigger topbar-library-btn"
+                onClick={() => onRequestAccount?.('signup')}
+                title="Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo"
+              >
+                Create free account
+              </button>
+            </>
           )}
           {cloud.enabled && (
             // The live region stays mounted permanently (several screen
@@ -481,6 +494,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
             onGoHome={onGoHome}
+            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             cloud={
               cloud.enabled
                 ? {
@@ -569,6 +583,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         onClose={() => setPracticeSettingsOpen(false)}
         profile={profile}
       />
+
+      {isAdmin && (
+        <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
+      )}
 
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">

@@ -641,6 +641,26 @@
   text-decoration: none;
 }
 
+/* Tablets & phones: 11 columns can't compress below ~760px and stay
+   usable, so the grid lays out at that floor width (DentalGrid.tsx)
+   and the card scrolls horizontally. Inside a horizontal scrollport
+   the header can't track the page scroll — pin it to the card top. */
+@media (max-width: 1000px) {
+  .dental-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dental-grid .rdg {
+    min-width: 760px;
+  }
+  .dental-grid .rdg-viewport {
+    overflow-x: auto !important;
+  }
+  .dental-grid .rdg-header-row .rdg-cell {
+    top: 0;
+  }
+}
+
 /* Text editor styling */
 .dental-grid .rdg-text-editor {
   padding: 0.4rem;
@@ -1563,28 +1583,6 @@
   .patient-form__input,
   .patient-form__textarea { padding: 0.6rem 0.75rem; font-size: 16px; /* prevent iOS zoom */ }
   .species-tab { padding: 0.85rem 1rem; font-size: 0.95rem; }
-
-  /* Dental grid is intentionally wide (10+ columns of tooth measurements).
-     Allow horizontal scroll inside the card instead of clipping. */
-  .dental-grid {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .dental-grid .rdg {
-    overflow-x: auto;
-    table-layout: auto;
-    min-width: 700px;
-  }
-  .dental-grid .rdg-viewport {
-    overflow-x: auto !important;
-  }
-  /* Inside the phone-only horizontal scroll container the header can't
-     track the page scroll — the container is its scrollport. Pin it to
-     the top of the card instead of the desktop topbar offset, which
-     floated it over the first data rows. */
-  .dental-grid .rdg-header-row .rdg-cell {
-    top: 0;
-  }
 
   /* Diagram view toolbar stacks tools above the hint text. */
   .diagram-view__toolbar { padding: 0.5rem; gap: 0.35rem; }

@@ -68,7 +68,7 @@ const App: React.FC = () => {
     notifyTrialStarted();
   };
 
-  const endTrial = (nextAuth: 'signup' | null) => {
+  const endTrial = (nextAuth: 'signup' | 'signin' | null) => {
     removeKey(TRIAL_KEY, 1);
     setTrialMode(false);
     setLandingAuth(nextAuth);
@@ -131,7 +131,7 @@ const App: React.FC = () => {
         <Suspense fallback={null}>
           <EntryGrid
             trial
-            onRequestAccount={() => endTrial('signup')}
+            onRequestAccount={(mode) => endTrial(mode)}
             onGoHome={() => setShowHome(true)}
           />
         </Suspense>
