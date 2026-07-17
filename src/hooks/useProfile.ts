@@ -26,6 +26,10 @@ export interface UseProfileReturn extends PracticeProfile {
 }
 
 const LOGO_MAX_WIDTH = 600;
+/** Reject absurd source files before decoding them in-browser. The
+ *  uploaded result is always a ≤600px PNG (tiny); this only bounds the
+ *  input. The `logos` bucket enforces its own server-side cap too. */
+const LOGO_MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 function publicLogoUrl(path: string): string {
   if (!supabase || !path) return '';
@@ -67,6 +71,9 @@ async function normalizeToPng(file: File): Promise<Blob> {
  *  the account session is created). */
 export async function uploadPracticeLogo(file: File): Promise<string> {
   if (!supabase) return '';
+  if (file.size > LOGO_MAX_UPLOAD_BYTES) {
+    throw new Error('That image is too large — logo files must be under 10 MB.');
+  }
   const { data: sessionData } = await supabase.auth.getSession();
   const userId = sessionData.session?.user.id;
   if (!userId) return '';

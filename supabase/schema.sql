@@ -107,9 +107,13 @@ create index if not exists charts_created_by_idx
 -- ------------------------------------------------------------ logo storage
 -- Public-read bucket (logos are practice branding, not clinical data);
 -- writes are scoped to the user's own folder.
-insert into storage.buckets (id, name, public)
-values ('logos', 'logos', true)
-on conflict (id) do nothing;
+-- 2 MB / PNG-only server-side cap: the app always uploads a canvas-
+-- re-encoded PNG downscaled to <=600px, so anything bigger is not ours.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('logos', 'logos', true, 2097152, array['image/png'])
+on conflict (id) do update
+  set file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
 
 create policy "users manage own logo"
   on storage.objects for all to authenticated
