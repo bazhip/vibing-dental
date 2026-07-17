@@ -55,13 +55,12 @@
   --radius-sm:      6px;
   --radius-lg:      14px;
 
-  /* IBM Plex: Sans for UI, Mono for chart data — Triadan numbers, dental
-     codes, doses, dates. A dental chart is a code-and-number document;
-     the data wears a data face. */
-  --font-body:    "IBM Plex Sans", -apple-system, BlinkMacSystemFont,
+  /* Inter for everything (tabular figures handle numeric chart data);
+     Geist Mono reserved for dental-code strings only. */
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont,
                   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-body);
-  --font-mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono",
+  --font-mono:    "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono",
                   Menlo, Consolas, "Liberation Mono", monospace;
 
   --letter-display: -0.01em;

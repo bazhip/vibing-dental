@@ -1,4 +1,5 @@
 import { StandardFonts, rgb } from 'pdf-lib';
+import { readAppTokens } from './appTheme';
 
 /**
  * PDF design system — palette + font choices + section/table rendering
@@ -35,6 +36,8 @@ export type Palette = {
   white: ReturnType<typeof rgb>;
   /** Clinical signal red — abnormal findings. Print-safe, not alarm red. */
   danger: ReturnType<typeof rgb>;
+  /** Faint wash behind abnormal rows — mirrors the app's --danger-tint. */
+  dangerTint: ReturnType<typeof rgb>;
 };
 
 export type SectionTitleVariant =
@@ -88,6 +91,7 @@ const CLINIC: Palette = {
   cellGray:     rgb(0.933, 0.949, 0.953),
   white:        rgb(1, 1, 1),
   danger:       CLINICAL_DANGER,
+  dangerTint:   rgb(0.980, 0.945, 0.937),  // #FAF1EF
 };
 
 /** Classic Blue — traditional medical-records blue. */
@@ -104,6 +108,7 @@ const CLASSIC_BLUE: Palette = {
   cellGray:     rgb(0.925, 0.945, 0.961),
   white:        rgb(1, 1, 1),
   danger:       CLINICAL_DANGER,
+  dangerTint:   rgb(0.980, 0.945, 0.937),  // #FAF1EF
 };
 
 /** Slate — pure graphite neutrals; survives black-and-white printing. */
@@ -120,6 +125,7 @@ const SLATE: Palette = {
   cellGray:     rgb(0.937, 0.945, 0.953),
   white:        rgb(1, 1, 1),
   danger:       CLINICAL_DANGER,
+  dangerTint:   rgb(0.980, 0.945, 0.937),  // #FAF1EF
 };
 
 /** Iris — quiet indigo, compact tracked headers. */
@@ -136,6 +142,7 @@ const IRIS: Palette = {
   cellGray:     rgb(0.937, 0.937, 0.965),
   white:        rgb(1, 1, 1),
   danger:       CLINICAL_DANGER,
+  dangerTint:   rgb(0.980, 0.945, 0.937),  // #FAF1EF
 };
 
 /** Journal — serif print classic; deep red accents on warm paper. */
@@ -152,6 +159,7 @@ const JOURNAL: Palette = {
   cellGray:     rgb(0.945, 0.918, 0.886),
   white:        rgb(0.996, 0.988, 0.976),
   danger:       rgb(0.561, 0.184, 0.149),
+  dangerTint:   rgb(0.973, 0.937, 0.918),
 };
 
 // ----- Live (mutable) style state ------------------------------------------
@@ -175,6 +183,24 @@ export const ACTIVE: {
 
 export function applyPdfStyle(style: PdfStyle): void {
   Object.assign(PALETTE, style.palette);
+  if (style.id === DEFAULT_PDF_STYLE_ID) {
+    // The default preset stays coupled to the app: read the live CSS
+    // tokens at export time so a re-theme in themes.css re-themes the
+    // chart without touching this file. (Falls back to the static
+    // palette outside a browser.)
+    const t = readAppTokens();
+    Object.assign(PALETTE, {
+      primary: t.primary,
+      primaryDark: t.primaryDark,
+      ink: t.ink,
+      text: t.text,
+      muted: t.muted,
+      border: t.border,
+      borderStrong: t.borderStrong,
+      danger: t.danger,
+      dangerTint: t.dangerTint,
+    });
+  }
   ACTIVE.fontFamilyKey       = style.fontFamily;
   ACTIVE.sectionTitleVariant = style.sectionTitle;
   ACTIVE.tableHeaderVariant  = style.tableHeader;
@@ -193,9 +219,9 @@ export const PDF_STYLES: PdfStyle[] = [
   {
     id: 'clinic',
     name: 'Clinic Teal',
-    description: 'Matches the app — teal accents on charcoal, clean hairlines.',
+    description: 'Matches the app — teal headers, red abnormal flags, rounded cards.',
     palette: CLINIC, fontFamily: 'sans',
-    sectionTitle: 'hairline', tableHeader: 'light',
+    sectionTitle: 'hairline', tableHeader: 'dark',
     comment: { bg: '#f2f7f6', border: '#9dbfba', labelColor: '#0c4a44', textColor: '#1b2733' },
   },
   {

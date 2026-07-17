@@ -37,11 +37,10 @@
    procedure the question is "whose mouth am I in", not "what app is this". */
 .entry-grid__title {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--text-muted);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -78,8 +77,8 @@
 }
 
 .entry-grid__patient-date {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
 }
 
 .entry-grid__patient-empty {
@@ -468,14 +467,6 @@
   color: var(--text);
 }
 
-/* Right-aligned usage hint in a section header — tells first-time users
-   the grid is type-in-place without costing vertical space. */
-.dental-grid__hint {
-  margin-left: auto;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: right;
-}
 
 .dental-grid {
   border-radius: 12px;
@@ -524,17 +515,15 @@
   width: 100% !important;
 }
 
-/* Instrument header: chart ink, not brand teal — the header labels the
-   record itself. Mono uppercase at caption size also keeps every column
-   title intact at laptop widths. */
+/* Header strip in the brand color — caption-size uppercase keeps every
+   column title intact at laptop widths. */
 .dental-grid .rdg-header-row,
 .dental-grid .rdg-header-row .rdg-cell {
-  color: #eef3f4 !important;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 0.68rem;
+  color: #f2f7f6 !important;
+  font-weight: 600;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.05em;
 }
 
 /* Freeze the column titles just below the app topbar while the page
@@ -545,8 +534,8 @@
   position: sticky;
   top: var(--topbar-height, 0px);
   z-index: 10;
-  background: var(--ink);
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--primary);
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
   padding: 0.8rem 0.5rem;
 }
 
@@ -581,14 +570,13 @@
 
 /* Label columns (Tooth + Triadan — colindex 2/3 now that the Missing
    toggle occupies column 1). Scoped to .rdg-row so the sticky header
-   cells keep their own background. Triadan numbers and tooth codes are
-   chart notation — set in the data face. */
+   cells keep their own background. */
 .dental-grid .rdg-row .rdg-cell[aria-colindex="2"],
 .dental-grid .rdg-row .rdg-cell[aria-colindex="3"] {
   background-color: var(--surface-sunken);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--text);
 }
 
@@ -687,11 +675,10 @@
 
 .anesthesia-table thead th {
   text-align: left;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }
@@ -773,11 +760,10 @@
 
 .exam-table thead th {
   text-align: left;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }

@@ -6,7 +6,6 @@ import DataGrid, {
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { ToothData, ToothMarks } from '../types';
-import { CodeField } from './CodeField';
 
 interface DentalGridProps {
   toothData: ToothData[];
@@ -133,11 +132,14 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         }
       };
 
+      // Plain input — measurements here are numeric grades (mobility,
+      // pocket depths, PD stage), so the dental-code autocomplete that
+      // CodeField provides elsewhere would only get in the way.
       return (
-        <CodeField
+        <input
           autoFocus
           value={value}
-          onChange={(next) => p.onRowChange({ ...p.row, [key]: next })}
+          onChange={(e) => p.onRowChange({ ...p.row, [key]: e.target.value })}
           onKeyDown={handleKeyDown}
           onBlur={() => p.onClose(true)}
           // Explicit surface colors so the editor matches the cell it sits
@@ -201,7 +203,15 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         );
       },
     },
-    { key: 'tooth',   name: 'Tooth',   width: getColumnWidth(0.07), editable: false },
+    {
+      key: 'tooth',
+      name: 'Tooth',
+      width: getColumnWidth(0.07),
+      editable: false,
+      // Deciduous rows store lowercase labels (i1, c, p2 — standard
+      // notation), but read better capitalized in the on-screen grid.
+      formatter: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
+    },
     { key: 'triadan', name: 'Triadan', width: getColumnWidth(0.08), editable: false },
     codeCol('mobility',    'Mobility',    0.08, 3),
     codeCol('recession',   'Recession',   0.09, 4),
@@ -217,10 +227,6 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <span className="dental-grid__title">Dental Chart</span>
-        <span className="dental-grid__hint">
-          Click a cell and type — Tab and Enter move like a spreadsheet,
-          codes autocomplete
-        </span>
       </div>
       <div className="dental-grid" ref={wrapperRef}>
         {containerWidth > 0 && (

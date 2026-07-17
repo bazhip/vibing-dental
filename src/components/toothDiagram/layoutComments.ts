@@ -17,11 +17,44 @@ import { SpeciesDiagram } from '../../constants/toothShapes';
 
 const SIDE_PAD_RATIO = 0.30;
 export const COMMENT_W = 300;
-/** Default card height fits the tooth label + two lines of text (18px
- *  font / 22px lines / 8px padding). Typical comments are one line, so a
- *  taller default just printed dead space on the PDF; users drag-resize
- *  for longer notes and stored heights are kept verbatim. */
+/** Minimum card height: tooth label + two lines of text (18px font /
+ *  22px lines / 8px padding). Cards without a user-set height grow to
+ *  fit their text via `autoCommentHeight` so the export never clips;
+ *  stored (drag-resized) heights are kept verbatim. */
 export const COMMENT_H = 96;
+
+// Text metrics mirrored from svgToPng's comment renderer — keep in sync.
+const FONT_SIZE = 18;
+const LINE_HEIGHT = 22;
+const PADDING = 8;
+const LABEL_HEIGHT = 22;
+const MAX_AUTO_H = 292; // label + 12 lines — beyond this, resize by hand
+
+/** Estimate the height needed to show all of `text` at width `w`, using
+ *  the same ~0.55em/char wrap heuristic as the SVG exporter. */
+export function autoCommentHeight(text: string, w: number): number {
+  const maxWidth = w - PADDING * 2;
+  const charsPerLine = Math.max(8, Math.floor(maxWidth / (FONT_SIZE * 0.55)));
+  let lines = 0;
+  for (const paragraph of (text || '').split('\n')) {
+    const words = paragraph.split(/\s+/).filter(Boolean);
+    if (words.length === 0) { lines += 1; continue; }
+    let current = 0;
+    let paraLines = 1;
+    for (const word of words) {
+      const add = (current === 0 ? 0 : 1) + word.length;
+      if (current + add > charsPerLine && current > 0) {
+        paraLines += 1;
+        current = word.length;
+      } else {
+        current += add;
+      }
+    }
+    lines += paraLines;
+  }
+  const needed = PADDING * 2 + LABEL_HEIGHT + lines * LINE_HEIGHT;
+  return Math.min(MAX_AUTO_H, Math.max(COMMENT_H, needed));
+}
 const COMMENT_GAP = 6;
 const COMMENT_MARGIN_X = 6;
 

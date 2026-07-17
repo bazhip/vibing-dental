@@ -11,7 +11,7 @@ import {
   NerveBlocks,
 } from '../../types';
 import { ToothGridLayout, TOOTH_DATA_ROWS } from '../../constants/chartLayout';
-import { PALETTE } from './styles';
+import { PALETTE, ACTIVE } from './styles';
 import {
   PT_PER_IN,
   PATIENT_INFO_BOX,
@@ -30,15 +30,15 @@ import {
   hlineLight,
   vlineLight,
   hlineStrong,
-  vlineStrong,
   wrapToWidth,
   fitTextToLines,
   drawClippedText,
   drawWrappedText,
   drawCenteredText,
   drawCheckGlyph,
-  drawSectionTitle,
   drawTableHeaderStrip,
+  drawSectionCard,
+  CARD_BAND_PT,
 } from './draw';
 
 /**
@@ -110,8 +110,10 @@ export function drawCodesLegend(
   const widthPt = region.widthIn * PT_PER_IN;
   const heightPt = region.heightIn * PT_PER_IN;
 
-  const bodyStartY = drawSectionTitle(page, 'Codes Used', x, yTop, widthPt, bold);
-  const bodyHeight = heightPt - (yTop - bodyStartY);
+  // One card: "Codes Used" band + entries in a single rounded frame.
+  const bandBottom = drawSectionCard(page, x, yTop, widthPt, heightPt, 'Codes Used', bold);
+  const bodyStartY = bandBottom - 3;
+  const bodyHeight = heightPt - (yTop - bodyStartY) - 4;
 
   // 3-col layout when there's enough content that 2 cols would overflow.
   const useThreeCols = codes.length > 18;
@@ -119,7 +121,9 @@ export function drawCodesLegend(
   const lineHeight = useThreeCols ? 9 : 9.5;
   const cols = useThreeCols ? 3 : 2;
   const colGap = useThreeCols ? 8 : 12;
-  const colWidth = (widthPt - colGap * (cols - 1)) / cols;
+  const innerX = x + 5;
+  const innerW = widthPt - 10;
+  const colWidth = (innerW - colGap * (cols - 1)) / cols;
   const codeColWidth = useThreeCols ? 38 : 48;
   const defWidth = colWidth - codeColWidth - 4;
   // Balance between cols rather than filling col-1 first.
@@ -136,7 +140,7 @@ export function drawCodesLegend(
   let col = 0, rowInCol = 0;
   for (const c of shown) {
     if (rowInCol >= rowsPerCol) { col++; rowInCol = 0; }
-    const cx = x + col * (colWidth + colGap);
+    const cx = innerX + col * (colWidth + colGap);
     const rowTop = bodyStartY - rowInCol * lineHeight;
     const cy = rowTop - lineHeight + 3;
 
@@ -158,7 +162,7 @@ export function drawCodesLegend(
 
   if (overflow) {
     if (rowInCol >= rowsPerCol) { col++; rowInCol = 0; }
-    const cx = x + col * (colWidth + colGap);
+    const cx = innerX + col * (colWidth + colGap);
     const cy = bodyStartY - rowInCol * lineHeight - lineHeight + 3;
     const remaining = codes.length - (capacity - 1);
     page.drawText(`+${remaining} more`, {
@@ -226,22 +230,21 @@ export async function drawLogoAndHeader(
   }
 
   // Doctor name + (optional) "Tech: …" sub-line + colored underline.
+  // Both clip with an ellipsis at the underline width so a long typed
+  // name can't run into the diagram or patient box.
   const drNameSize = 11;
   const techSize = 8;
   const drNameTopGap = 8;
+  const nameMaxW = 2.46 * PT_PER_IN;
   const drNameBaselineY = logoBottomPt - drNameTopGap - drNameSize;
-  page.drawText(doctorName, {
-    x: logoLeftPt + 2, y: drNameBaselineY,
-    size: drNameSize, font: fontBold, color: PALETTE.ink,
-  });
+  drawClippedText(page, doctorName, logoLeftPt + 2, drNameBaselineY,
+    drNameSize, fontBold, PALETTE.ink, nameMaxW);
 
   let underlineY = drNameBaselineY - 4;
   if (logo === 'vca' && techName.trim()) {
     const techBaselineY = drNameBaselineY - techSize - 4;
-    page.drawText(`Tech: ${techName}`, {
-      x: logoLeftPt + 2, y: techBaselineY,
-      size: techSize, font, color: PALETTE.muted,
-    });
+    drawClippedText(page, `Tech: ${techName}`, logoLeftPt + 2, techBaselineY,
+      techSize, font, PALETTE.muted, nameMaxW);
     underlineY = techBaselineY - 4;
   }
   page.drawLine({
@@ -250,17 +253,29 @@ export async function drawLogoAndHeader(
     thickness: 0.6, color: PALETTE.primary,
   });
 
-  // Species title + subtitle, top-right.
-  const titleW = fontBold.widthOfTextAtSize(titleText, titleSize);
+  // Species title + subtitle, top-right — top-aligned with the logo and
+  // the patient card so the header reads as one row. The title shrinks
+  // until it clears the patient-info box (right edge 7.15in + gap): a
+  // long species name must never print across the patient fields.
+  const titleTopIn = 0.32;
+  const titleMaxW = pageWidth - 0.40 * PT_PER_IN - 7.35 * PT_PER_IN;
+  let fittedTitleSize = titleSize;
+  while (
+    fittedTitleSize > 12 &&
+    fontBold.widthOfTextAtSize(titleText, fittedTitleSize) > titleMaxW
+  ) {
+    fittedTitleSize -= 0.5;
+  }
+  const titleW = fontBold.widthOfTextAtSize(titleText, fittedTitleSize);
   page.drawText(titleText, {
     x: pageWidth - 0.40 * PT_PER_IN - titleW,
-    y: pageHeight - 0.55 * PT_PER_IN - titleSize,
-    size: titleSize, font: fontBold, color: PALETTE.ink,
+    y: pageHeight - titleTopIn * PT_PER_IN - fittedTitleSize,
+    size: fittedTitleSize, font: fontBold, color: PALETTE.ink,
   });
   const subtitleW = font.widthOfTextAtSize(subtitleText, subtitleSize);
   page.drawText(subtitleText, {
     x: pageWidth - 0.40 * PT_PER_IN - subtitleW,
-    y: pageHeight - 0.55 * PT_PER_IN - titleSize - subtitleSize - 4,
+    y: pageHeight - titleTopIn * PT_PER_IN - fittedTitleSize - subtitleSize - 4,
     size: subtitleSize, font, color: PALETTE.muted,
   });
 }
@@ -290,38 +305,41 @@ export function drawPatientInfoBox(
     { label: 'Chief Complaint', value: patientInfo.complaint, multiline: true, heightIn: PATIENT_INFO_BOX.rowChiefIn },
   ];
   const labeledRowsH = rows.reduce((acc, r) => acc + r.heightIn * PT_PER_IN, 0);
-  const totalH = labeledRowsH;
 
   const labelFontSize = 7.5;
   const padX = 5;
 
-  drawSectionTitle(page, 'Patient Information', x, yTop + 0.20 * PT_PER_IN, totalW, fontBold);
+  // One card: title band + rows inside a single rounded frame. The card
+  // top sits where the floating title used to; the rows start just below
+  // the band.
+  const cardTop = yTop + 0.20 * PT_PER_IN;
+  const bodyTop = drawSectionCard(
+    page, x, cardTop, totalW, CARD_BAND_PT + labeledRowsH,
+    'Patient Information', fontBold
+  );
 
-  // Soft outer rectangle.
-  hlineLight(page, x, x + totalW, yTop);
-  hlineLight(page, x, x + totalW, yTop - totalH);
-  vlineLight(page, x, yTop, yTop - totalH);
-  vlineLight(page, x + totalW, yTop, yTop - totalH);
+  // Alternating row tints (inset so they don't poke past the corners).
+  let yCursor = bodyTop;
+  for (let i = 0; i < rows.length; i++) {
+    const rowH = rows[i].heightIn * PT_PER_IN;
+    if (i % 2 === 1) {
+      page.drawRectangle({
+        x: x + 0.6, y: yCursor - rowH,
+        width: totalW - 1.2, height: rowH, color: PALETTE.rowAlt,
+      });
+    }
+    yCursor -= rowH;
+  }
 
   // Row separators.
-  let yCursor = yTop;
+  yCursor = bodyTop;
   for (let i = 0; i < rows.length - 1; i++) {
     yCursor -= rows[i].heightIn * PT_PER_IN;
     hlineLight(page, x, x + totalW, yCursor);
   }
 
-  // Alternating row tints.
-  yCursor = yTop;
-  for (let i = 0; i < rows.length; i++) {
-    const rowH = rows[i].heightIn * PT_PER_IN;
-    if (i % 2 === 1) {
-      page.drawRectangle({ x, y: yCursor - rowH, width: totalW, height: rowH, color: PALETTE.rowAlt });
-    }
-    yCursor -= rowH;
-  }
-
   // Labels + values.
-  yCursor = yTop;
+  yCursor = bodyTop;
   const valueFontSize = 9;
   for (const row of rows) {
     const rowH = row.heightIn * PT_PER_IN;
@@ -376,8 +394,7 @@ export function drawExamSection(
   const commentXPt = EXAM_COMMENT_BOX.xIn * PT_PER_IN;
   const commentWidthPt = EXAM_COMMENT_BOX.widthIn * PT_PER_IN;
 
-  const titleYTop = pageHeight - (EXAM_TABLE_YTOP_IN - 0.20) * PT_PER_IN;
-  drawSectionTitle(page, 'Oral Exam Findings', xPt, titleYTop, sectionWidth, fontBold);
+  const bodyTopPt = pageHeight - EXAM_TABLE_YTOP_IN * PT_PER_IN;
 
   // Per-row layout: short row when 0–1 lines of comment, tall when 2.
   type RowLayout = {
@@ -399,7 +416,15 @@ export function drawExamSection(
     return { heightPt: heightIn * PT_PER_IN, comment: { lines, fontSize: cFontSize, lineHeight } };
   });
 
-  let cursorY = pageHeight - EXAM_TABLE_YTOP_IN * PT_PER_IN;
+  // One card around the band + every exam row (heights vary with comment
+  // wrapping, so the total is computed from the laid-out rows).
+  const rowsTotalH = layouts.reduce((acc, l) => acc + l.heightPt, 0);
+  drawSectionCard(
+    page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth,
+    CARD_BAND_PT + rowsTotalH, 'Oral Exam Findings', fontBold
+  );
+
+  let cursorY = bodyTopPt;
   for (let i = 0; i < EXAM_ITEMS.length; i++) {
     const { key } = EXAM_ITEMS[i];
     const item = exam[key];
@@ -410,11 +435,15 @@ export function drawExamSection(
     const cbY = rowMidY - cbSize / 2;
     const labelY = rowMidY - fontSize / 2 + 1.5;
 
-    if (i % 2 === 1) {
-      page.drawRectangle({ x: xPt, y: rowBottomY, width: sectionWidth, height: layout.heightPt, color: PALETTE.rowAlt });
-    }
-
     const abnormal = item.status === 'abnormal';
+
+    // Abnormal rows get the app's red wash; normal rows keep the zebra.
+    // Inset so fills stay inside the card's rounded corners.
+    if (abnormal) {
+      page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.dangerTint });
+    } else if (i % 2 === 1) {
+      page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.rowAlt });
+    }
 
     let glyphX = xPt;
     drawCheckGlyph(page, glyphX, cbY, cbSize, item.status === 'normal');
@@ -457,7 +486,6 @@ export function drawExamSection(
 
     cursorY = rowBottomY;
   }
-  hlineLight(page, xPt, xPt + sectionWidth, cursorY);
 }
 
 // ------------------------------------------------------------ Tooth grid --
@@ -487,51 +515,56 @@ export function drawToothGrid(
   const totalRows = 2 + TOOTH_DATA_ROWS.length;
   const totalH = rowH * totalRows;
 
-  // 0.26in clearance above so descenders / rule don't get clipped.
-  drawSectionTitle(page, archTitle, x, yTop + 0.26 * PT_PER_IN, totalW, fontBold);
+  // One card: arch title band + the grid inside a single rounded frame.
+  drawSectionCard(
+    page, x, yTop + CARD_BAND_PT, totalW,
+    CARD_BAND_PT + totalH, archTitle, fontBold
+  );
 
-  // Two header rows in a soft slate-50 fill.
-  page.drawRectangle({ x, y: yTop - rowH * 2, width: totalW, height: rowH * 2, color: PALETTE.cellGray });
-  // Data rows: alternating tint behind data cells; label column always tinted.
+  // Two header rows. The fill follows the style's table-header variant so
+  // the tooth grids speak the same language as every other table — for
+  // the default theme that's the app's solid-primary header strip.
+  const darkHeader = ACTIVE.tableHeaderVariant === 'dark';
+  const headerFill  = darkHeader ? PALETTE.primary : PALETTE.cellGray;
+  const headerText  = darkHeader ? PALETTE.white   : PALETTE.ink;
+  const headerSub   = darkHeader ? PALETTE.white   : PALETTE.muted;
+  page.drawRectangle({ x: x + 0.6, y: yTop - rowH * 2, width: totalW - 1.2, height: rowH * 2, color: headerFill });
+  // Data rows: alternating tint behind data cells; label column always
+  // tinted. Fills inset so they stay inside the card's rounded corners.
   for (let r = 0; r < TOOTH_DATA_ROWS.length; r++) {
     if (r % 2 === 1) {
       page.drawRectangle({
         x: x + labelW, y: yTop - rowH * (3 + r),
-        width: totalW - labelW, height: rowH, color: PALETTE.rowAlt,
+        width: totalW - labelW - 0.6, height: rowH, color: PALETTE.rowAlt,
       });
     }
     page.drawRectangle({
-      x, y: yTop - rowH * (3 + r),
-      width: labelW, height: rowH, color: PALETTE.cellGray,
+      x: x + 0.6, y: yTop - rowH * (3 + r),
+      width: labelW - 0.6, height: rowH, color: PALETTE.cellGray,
     });
   }
 
-  // Gridlines.
-  for (let r = 0; r <= totalRows; r++) {
+  // Gridlines — interior only; the card frame is the outer border.
+  for (let r = 1; r < totalRows; r++) {
     hlineLight(page, x, x + totalW, yTop - r * rowH);
   }
-  vlineLight(page, x, yTop, yTop - totalH);
   vlineLight(page, x + labelW, yTop, yTop - totalH);
-  for (let c = 1; c <= layout.teeth.length; c++) {
+  for (let c = 1; c < layout.teeth.length; c++) {
     vlineLight(page, x + labelW + c * toothW, yTop, yTop - totalH);
   }
-  hlineStrong(page, x, x + totalW, yTop);
-  hlineStrong(page, x, x + totalW, yTop - totalH);
-  vlineStrong(page, x, yTop, yTop - totalH);
-  vlineStrong(page, x + totalW, yTop, yTop - totalH);
   hlineStrong(page, x, x + totalW, yTop - rowH * 2);
 
   const baselineForRow = (rowIdx: number, fontSize: number) =>
     yTop - rowIdx * rowH - rowH / 2 - fontSize / 2 + 1.5;
 
-  drawCenteredText(page, 'Tooth',   x, x + labelW, baselineForRow(0, headerSize), headerSize, fontBold, PALETTE.ink);
-  drawCenteredText(page, 'Triadan', x, x + labelW, baselineForRow(1, headerSize), headerSize, fontBold, PALETTE.ink);
+  drawCenteredText(page, 'Tooth',   x, x + labelW, baselineForRow(0, headerSize), headerSize, fontBold, headerText);
+  drawCenteredText(page, 'Triadan', x, x + labelW, baselineForRow(1, headerSize), headerSize, fontBold, headerText);
   for (let i = 0; i < layout.teeth.length; i++) {
     const tooth = layout.teeth[i];
     const cellLeft = x + labelW + i * toothW;
     const cellRight = cellLeft + toothW;
-    drawCenteredText(page, tooth.abbr,            cellLeft, cellRight, baselineForRow(0, headerSize), headerSize, fontBold, PALETTE.ink);
-    drawCenteredText(page, String(tooth.triadan), cellLeft, cellRight, baselineForRow(1, headerSize), headerSize, font,     PALETTE.muted);
+    drawCenteredText(page, tooth.abbr,            cellLeft, cellRight, baselineForRow(0, headerSize), headerSize, fontBold, headerText);
+    drawCenteredText(page, String(tooth.triadan), cellLeft, cellRight, baselineForRow(1, headerSize), headerSize, font,     headerSub);
   }
 
   // Data rows — values are static text (no AcroForm fields).
@@ -567,22 +600,39 @@ export function drawTreatmentReportField(
   const fieldW = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
   const fieldH = TREATMENT_REPORT.fieldHeightIn * PT_PER_IN;
 
-  drawSectionTitle(page, 'Treatment & Surgery Report', xPt, titleYTopPt, fieldW, fontBold);
-
+  // One card: title band + writing area in a single rounded frame. The
+  // card's bottom edge stays at the old field bottom.
   const fieldY = pageHeight - (TREATMENT_REPORT.fieldYTopIn + TREATMENT_REPORT.fieldHeightIn) * PT_PER_IN;
-  page.drawRectangle({
-    x: xPt, y: fieldY, width: fieldW, height: fieldH,
-    borderColor: PALETTE.border, borderWidth: 0.6,
-  });
+  const cardH = titleYTopPt - fieldY;
+  const bodyTop = drawSectionCard(
+    page, xPt, titleYTopPt, fieldW, cardH,
+    'Treatment & Surgery Report', fontBold
+  );
 
   if (value) {
     const innerX = xPt + 8;
-    const innerYTop = fieldY + fieldH - 8;
+    const innerYTop = bodyTop - 6;
     const innerWidth = fieldW - 16;
     const fontSize = 9.5;
     const lineHeight = fontSize * 1.45;
-    drawWrappedText(page, value, innerX, innerYTop, innerWidth,
-      fontSize, lineHeight, font, PALETTE.ink);
+    // Cap at the box height — an unbounded report used to keep drawing
+    // straight through the field border and over the footer. When capped,
+    // say so: the full text still round-trips via the embedded state.
+    const maxLines = Math.floor((innerYTop - (fieldY + 10)) / lineHeight);
+    const totalLines = value
+      .split('\n')
+      .reduce((n, para) => n + Math.max(1, wrapToWidth(para, font, fontSize, innerWidth).length), 0);
+    if (totalLines > maxLines) {
+      drawWrappedText(page, value, innerX, innerYTop, innerWidth,
+        fontSize, lineHeight, font, PALETTE.ink, maxLines - 1);
+      const noteY = fieldY + 8;
+      page.drawText('… continued — full report is embedded in this file (load it back into the app).', {
+        x: innerX, y: noteY, size: 7.5, font, color: PALETTE.muted,
+      });
+    } else {
+      drawWrappedText(page, value, innerX, innerYTop, innerWidth,
+        fontSize, lineHeight, font, PALETTE.ink);
+    }
   }
 }
 
@@ -618,23 +668,9 @@ export function drawNerveBlockTable(
     { kind: 'free', label: 'Other',             value: nerveBlocks.other                 || '' },
   ];
 
-  drawSectionTitle(page, 'Anesthesia · Nerve Blocks', x, yTop + 0.20 * PT_PER_IN, totalW, bold);
-
-  const drug = nerveBlocks.drug?.trim() || (isVca ? 'Ropivacaine' : 'Bupivacaine');
-  const headerLabel = `Nerve Block 0.5% ${drug}`;
-  let headerLabelSize = headerSize;
-  const headerMaxWidth = labelW - padX * 2;
-  while (headerLabelSize > 6 && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {
-    headerLabelSize -= 0.25;
-  }
-  drawTableHeaderStrip(page, x, yTop - rowH, totalW, rowH, [
-    { text: headerLabel, xPt: x,                    widthPt: labelW, align: 'left' },
-    { text: 'RIGHT',     xPt: x + labelW,           widthPt: valueW, align: 'center' },
-    { text: 'LEFT',      xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
-  ], bold, headerLabelSize);
-
   // The free-text "Other" row (always last) grows to fit wrapped content
-  // instead of clipping; the L/R rows stay one line tall.
+  // instead of clipping; the L/R rows stay one line tall. Computed first
+  // so the card can be sized before anything draws.
   const lrCount = rows.length - 1;
   const otherRow = rows[rows.length - 1] as Free;
   // The "Other" note ignores the L/R column grid — it starts right after
@@ -651,39 +687,55 @@ export function drawNerveBlockTable(
     rowH,
     otherLines.length * otherLineHeight + (rowH - bodySize)
   );
+  const totalH = rowH * (lrCount + 1) + otherRowH;
+
+  // One card: title band + table inside a single rounded frame.
+  const cardTop = yTop + 0.20 * PT_PER_IN;
+  const bodyTop = drawSectionCard(
+    page, x, cardTop, totalW, CARD_BAND_PT + totalH,
+    'Anesthesia · Nerve Blocks', bold
+  );
+
+  const drug = nerveBlocks.drug?.trim() || (isVca ? 'Ropivacaine' : 'Bupivacaine');
+  const headerLabel = `Nerve Block 0.5% ${drug}`;
+  let headerLabelSize = headerSize;
+  const headerMaxWidth = labelW - padX * 2;
+  while (headerLabelSize > 6 && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {
+    headerLabelSize -= 0.25;
+  }
+  drawTableHeaderStrip(page, x, bodyTop - rowH, totalW, rowH, [
+    { text: headerLabel, xPt: x,                    widthPt: labelW, align: 'left' },
+    { text: 'RIGHT',     xPt: x + labelW,           widthPt: valueW, align: 'center' },
+    { text: 'LEFT',      xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
+  ], bold, headerLabelSize);
 
   // Alternating row tints — L/R rows are rowH, the Other row is otherRowH.
   for (let i = 0; i < lrCount; i++) {
     if (i % 2 === 1) {
       page.drawRectangle({
-        x, y: yTop - rowH * (i + 2),
-        width: totalW, height: rowH, color: PALETTE.rowAlt,
+        x: x + 0.6, y: bodyTop - rowH * (i + 2),
+        width: totalW - 1.2, height: rowH, color: PALETTE.rowAlt,
       });
     }
   }
-  const otherTopY = yTop - rowH * (lrCount + 1); // below header + L/R rows
+  const otherTopY = bodyTop - rowH * (lrCount + 1); // below header + L/R rows
   if (lrCount % 2 === 1) {
-    page.drawRectangle({ x, y: otherTopY - otherRowH, width: totalW, height: otherRowH, color: PALETTE.rowAlt });
+    page.drawRectangle({ x: x + 0.6, y: otherTopY - otherRowH, width: totalW - 1.2, height: otherRowH, color: PALETTE.rowAlt });
   }
 
-  // Borders.
-  const totalH = rowH * (lrCount + 1) + otherRowH;
+  // Interior gridlines — the card frame is the outer border.
   for (let i = 1; i <= lrCount + 1; i++) {
-    hlineLight(page, x, x + totalW, yTop - rowH * i);
+    hlineLight(page, x, x + totalW, bodyTop - rowH * i);
   }
-  const lrBottomY = yTop - rowH * (lrCount + 1);
-  vlineLight(page, x + labelW,          yTop - rowH, lrBottomY);
-  vlineLight(page, x + labelW + valueW, yTop - rowH, lrBottomY);
-  hlineStrong(page, x, x + totalW, yTop);
-  hlineStrong(page, x, x + totalW, yTop - totalH);
-  vlineStrong(page, x,           yTop, yTop - totalH);
-  vlineStrong(page, x + totalW,  yTop, yTop - totalH);
+  const lrBottomY = bodyTop - rowH * (lrCount + 1);
+  vlineLight(page, x + labelW,          bodyTop - rowH, lrBottomY);
+  vlineLight(page, x + labelW + valueW, bodyTop - rowH, lrBottomY);
 
   // L/R rows.
   const baselineOffset = (rowH - bodySize) / 2 + 1.5;
   for (let i = 0; i < lrCount; i++) {
     const row = rows[i] as LR;
-    const baselineY = yTop - rowH * (i + 2) + baselineOffset;
+    const baselineY = bodyTop - rowH * (i + 2) + baselineOffset;
     page.drawText(row.label, { x: x + padX, y: baselineY, size: bodySize, font: regular, color: PALETTE.text });
     for (const [colIdx, raw] of [[1, row.right], [2, row.left]] as const) {
       if (!raw) continue;
@@ -707,7 +759,9 @@ export function drawNerveBlockTable(
     lineY -= otherLineHeight;
   }
 
-  return NERVE_BLOCK_BOX.yTopIn + totalH / PT_PER_IN;
+  // Bottom edge in inches from the page top (card top → band → table).
+  const { height: ph } = page.getSize();
+  return (ph - (cardTop - CARD_BAND_PT - totalH)) / PT_PER_IN;
 }
 
 // -------------------------------------------------------------- Diagram --

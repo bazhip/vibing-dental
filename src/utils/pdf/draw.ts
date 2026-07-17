@@ -23,6 +23,105 @@ export const hlineStrong = (page: PDFPage, x1: number, x2: number, y: number) =>
 export const vlineStrong = (page: PDFPage, xv: number, y1: number, y2: number) =>
   page.drawLine({ start: { x: xv, y: y1 }, end: { x: xv, y: y2 }, thickness: 0.6, color: PALETTE.borderStrong });
 
+// ---------- Rounded card frame ---------------------------------------------
+
+/**
+ * Rounded-rectangle outline — the PDF cousin of the app's card look.
+ * (x, yTop) is the top-left corner in page coords; pdf-lib's drawSvgPath
+ * maps SVG's downward y-axis from that point.
+ */
+export function drawRoundedRect(
+  page: PDFPage,
+  x: number,
+  yTop: number,
+  w: number,
+  h: number,
+  r: number,
+  opts: { borderColor: ReturnType<typeof rgb>; borderWidth: number; color?: ReturnType<typeof rgb> }
+): void {
+  const path = [
+    `M ${r} 0`,
+    `L ${w - r} 0`, `Q ${w} 0 ${w} ${r}`,
+    `L ${w} ${h - r}`, `Q ${w} ${h} ${w - r} ${h}`,
+    `L ${r} ${h}`, `Q 0 ${h} 0 ${h - r}`,
+    `L 0 ${r}`, `Q 0 0 ${r} 0`,
+    'Z',
+  ].join(' ');
+  page.drawSvgPath(path, {
+    x,
+    y: yTop,
+    borderColor: opts.borderColor,
+    borderWidth: opts.borderWidth,
+    ...(opts.color ? { color: opts.color } : {}),
+  });
+}
+
+// ---------- Section card (title band inside the frame) ---------------------
+
+/** Height of a section card's title band. */
+export const CARD_BAND_PT = 20;
+
+/**
+ * One card per section: a rounded frame that encloses BOTH the title band
+ * and the body, instead of a floating title above a separate box (which
+ * read as two overlapping elements). The band renders per the active
+ * style's section-title variant. Returns the body's top y.
+ */
+export function drawSectionCard(
+  page: PDFPage,
+  x: number,
+  yTopPt: number,
+  widthPt: number,
+  totalHeightPt: number,
+  title: string,
+  fontBold: PDFFont
+): number {
+  const v = ACTIVE.sectionTitleVariant;
+  const r = 5;
+  const bandBottom = yTopPt - CARD_BAND_PT;
+
+  if (v === 'block') {
+    // Filled band with rounded top corners so it stays inside the frame.
+    const w = widthPt;
+    const bh = CARD_BAND_PT;
+    const path = [
+      `M ${r} 0`, `L ${w - r} 0`, `Q ${w} 0 ${w} ${r}`,
+      `L ${w} ${bh}`, `L 0 ${bh}`, `L 0 ${r}`, `Q 0 0 ${r} 0`, 'Z',
+    ].join(' ');
+    page.drawSvgPath(path, { x, y: yTopPt, color: PALETTE.primary });
+  }
+
+  const isUpper = v === 'uppercase';
+  const text = isUpper ? title.toUpperCase() : title;
+  const textSize = isUpper ? 8 : v === 'serif' ? 10.5 : 9;
+  const baseline = bandBottom + (CARD_BAND_PT - textSize) / 2 + 1.5;
+  const color =
+    v === 'block' ? PALETTE.white
+    : v === 'uppercase' || v === 'serif' ? PALETTE.primary
+    : PALETTE.ink;
+  page.drawText(text, { x: x + 7, y: baseline, size: textSize, font: fontBold, color });
+
+  if (v !== 'block') {
+    const sepColor = v === 'hairline' ? PALETTE.borderStrong : PALETTE.primary;
+    const sepWidth =
+      v === 'underline-only'
+        ? Math.min(widthPt, fontBold.widthOfTextAtSize(text, textSize) + 14)
+        : widthPt;
+    page.drawLine({
+      start: { x, y: bandBottom },
+      end: { x: x + sepWidth, y: bandBottom },
+      thickness: v === 'hairline' ? 0.5 : 0.8,
+      color: sepColor,
+    });
+  }
+
+  drawRoundedRect(page, x, yTopPt, widthPt, totalHeightPt, r, {
+    borderColor: PALETTE.borderStrong,
+    borderWidth: 0.7,
+  });
+  return bandBottom;
+}
+
 // ---------- Text helpers --------------------------------------------------
 
 /** Word-wrap to fit `maxWidth` at the given `size`. Words wider than

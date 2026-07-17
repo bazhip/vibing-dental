@@ -145,7 +145,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             className={`species-tab ${species === 'feline-deciduous' ? 'species-tab--active' : ''}`}
             onClick={() => handleSpeciesClick('feline-deciduous')}
           >
-            🐱 Kitten
+            🐱 Feline (Deciduous)
           </button>
 
           <button
@@ -165,7 +165,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             className={`species-tab ${species === 'canine-deciduous' ? 'species-tab--active' : ''}`}
             onClick={() => handleSpeciesClick('canine-deciduous')}
           >
-            🐶 Puppy
+            🐶 Canine (Deciduous)
           </button>
         </div>
         </div>

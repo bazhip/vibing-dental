@@ -47,8 +47,8 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
 const SPECIES_LABELS: Record<string, string> = {
   feline: 'Feline',
   canine: 'Canine',
-  'feline-deciduous': 'Feline · deciduous',
-  'canine-deciduous': 'Canine · deciduous',
+  'feline-deciduous': 'Feline · Deciduous',
+  'canine-deciduous': 'Canine · Deciduous',
 };
 
 /**
