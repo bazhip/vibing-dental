@@ -1184,8 +1184,13 @@
   fill: rgba(66, 153, 225, 0.4);
 }
 
-/* Keyboard focus mirrors hover, plus a stroke so it reads even on teeth
-   already tinted by a mark. */
+/* Teeth are focusable (keyboard marking), but the browser's default
+   rectangular focus ring reads as a stray blue box on the artwork —
+   suppress it everywhere and draw the indicator on the tooth shape
+   itself, only for keyboard focus. Pointer clicks show nothing extra. */
+.tooth-group:focus {
+  outline: none;
+}
 .tooth-group:focus-visible {
   outline: none;
 }
