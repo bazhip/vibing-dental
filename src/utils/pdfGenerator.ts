@@ -6,7 +6,7 @@ import {
   Species,
   Logo,
 } from '../types';
-import { TOOTH_GRID_LAYOUTS } from '../constants/chartLayout';
+import { TOOTH_GRID_LAYOUTS, TOOTH_DATA_ROWS } from '../constants/chartLayout';
 import {
   ACTIVE,
   applyPdfStyle,
@@ -21,7 +21,7 @@ import {
   DIAGRAM_SLOTS,
   LEGEND_BOXES_BY_PAGE,
 } from './pdf/layout';
-import { formatGeneratedAt } from './pdf/draw';
+import { formatGeneratedAt, CARD_BAND_PT } from './pdf/draw';
 import {
   drawLogoAndHeader,
   drawPatientInfoBox,
@@ -123,9 +123,26 @@ export async function buildDentalChartPDFBytes(
 
   await drawLogoAndHeader(pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold);
   drawPatientInfoBox(page1, patientInfo, regular, bold);
-  drawExamSection(page1, patientInfo.exam, regular, bold);
-  drawToothGrid(page1, TOOTH_GRID_LAYOUTS[species].maxilla,  toothData, regular, bold, 'Maxillary Arch');
-  drawToothGrid(page1, TOOTH_GRID_LAYOUTS[species].mandible, toothData, regular, bold, 'Mandibular Arch');
+  const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold);
+
+  // The arch grids fill the column below the exam card dynamically:
+  // whatever height the exam takes (it grows with comment wrapping), the
+  // remaining space is split into three even gaps — exam→maxilla,
+  // maxilla→mandible, mandible→page bottom — instead of leaving a fixed
+  // dead zone when findings are short.
+  const grids = TOOTH_GRID_LAYOUTS[species];
+  const bandIn = CARD_BAND_PT / 72;
+  const tableHIn = grids.maxilla.rowHeightIn * (2 + TOOTH_DATA_ROWS.length);
+  const cardHIn = bandIn + tableHIn;
+  const bottomLimitIn = 8.05; // footer rule sits at 8.10
+  const gapIn = Math.max(
+    0.08,
+    (bottomLimitIn - examBottomIn - 2 * cardHIn) / 3
+  );
+  const maxillaTopIn = examBottomIn + gapIn + bandIn;
+  const mandibleTopIn = maxillaTopIn + tableHIn + gapIn + bandIn;
+  drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, 'Maxillary Arch');
+  drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, 'Mandibular Arch');
   await drawDiagramAt(pdfDoc, DIAGRAM_SLOTS[species][0], preDiagram.png);
   drawFooter(page1, regular, bold, 1, 2, generatedAt, identityLine);
 

@@ -115,6 +115,22 @@ export function drawSectionCard(
     });
   }
 
+  // Mask the corner slivers before stroking the frame: square row fills
+  // drawn inside the card would otherwise poke past the rounded corners.
+  // Each sliver is the corner square minus its quarter-round, filled with
+  // the page white.
+  const w = widthPt;
+  const h = totalHeightPt;
+  const slivers = [
+    `M 0 ${r} L 0 0 L ${r} 0 Q 0 0 0 ${r} Z`,                          // top-left
+    `M ${w - r} 0 L ${w} 0 L ${w} ${r} Q ${w} 0 ${w - r} 0 Z`,          // top-right
+    `M ${w} ${h - r} L ${w} ${h} L ${w - r} ${h} Q ${w} ${h} ${w} ${h - r} Z`, // bottom-right
+    `M ${r} ${h} L 0 ${h} L 0 ${h - r} Q 0 ${h} ${r} ${h} Z`,           // bottom-left
+  ];
+  for (const path of slivers) {
+    page.drawSvgPath(path, { x, y: yTopPt, color: rgb(1, 1, 1), borderWidth: 0 });
+  }
+
   drawRoundedRect(page, x, yTopPt, widthPt, totalHeightPt, r, {
     borderColor: PALETTE.borderStrong,
     borderWidth: 0.7,

@@ -385,7 +385,7 @@ export function drawExamSection(
   exam: ExamFindings,
   font: PDFFont,
   fontBold: PDFFont
-): void {
+): number {
   const { height: pageHeight } = page.getSize();
   const fontSize = 9;
   const cbSize = 9;
@@ -445,7 +445,9 @@ export function drawExamSection(
       page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.rowAlt });
     }
 
-    let glyphX = xPt;
+    // Left buffer so the first checkbox doesn't sit flush against the
+    // card frame — mirrors the app's padded radio cells.
+    let glyphX = xPt + 7;
     drawCheckGlyph(page, glyphX, cbY, cbSize, item.status === 'normal');
     glyphX += cbSize + 4;
     page.drawText('N', { x: glyphX, y: labelY, size: fontSize, font, color: PALETTE.muted });
@@ -486,6 +488,10 @@ export function drawExamSection(
 
     cursorY = rowBottomY;
   }
+
+  // Bottom edge in inches from the page top, so the caller can place the
+  // arch grids dynamically beneath.
+  return (pageHeight - cursorY) / PT_PER_IN;
 }
 
 // ------------------------------------------------------------ Tooth grid --
