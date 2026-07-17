@@ -2219,3 +2219,13 @@ button.save-status--error {
   margin-top: 0.6rem;
 }
 .practice-team__add input { flex: 1; }
+
+/* Tooth hover tooltip (SVG) */
+.tooth-tooltip__bg {
+  fill: #1a202c;
+  opacity: 0.94;
+}
+.tooth-tooltip__text {
+  fill: #ffffff;
+  letter-spacing: 0.02em;
+}

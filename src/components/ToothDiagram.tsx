@@ -909,6 +909,47 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           );
         })}
 
+      {/* Hover tooltip: floats just above the hovered tooth with its
+          label + Triadan number (e.g. "C · 104"). Drawn in SVG coords so
+          it scales with the diagram; flips below the tooth near the top
+          edge and clamps horizontally so it never leaves the viewBox. */}
+      {hoveredTriadan != null && tool !== 'draw' && (() => {
+        const t = diagram.teeth.find((x) => x.triadan === hoveredTriadan);
+        const info = renderInfoByTriadan.get(hoveredTriadan);
+        if (!t || !info) return null;
+        const { bbox } = info;
+        const label = `${t.label.toUpperCase()} · ${t.triadan}`;
+        const fs = 19;
+        const padX = 9;
+        const padY = 5;
+        const w = label.length * fs * 0.56 + padX * 2;
+        const h = fs + padY * 2;
+        const cx = (bbox.minX + bbox.maxX) / 2;
+        let top = bbox.minY - h - 9;
+        if (top < viewBoxY + 2) top = bbox.maxY + 9; // flip below near top edge
+        const x = Math.max(
+          viewBoxX + 2,
+          Math.min(cx - w / 2, viewBoxX + viewBoxWidth - w - 2)
+        );
+        return (
+          <g className="tooth-tooltip" pointerEvents="none">
+            <rect x={x} y={top} width={w} height={h} rx={6} className="tooth-tooltip__bg" />
+            <text
+              x={x + w / 2}
+              y={top + h / 2 + 1}
+              fontSize={fs}
+              fontWeight={600}
+              fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="tooth-tooltip__text"
+            >
+              {label}
+            </text>
+          </g>
+        );
+      })()}
+
       {/* User-drawn strokes (committed + the one being drawn right now) */}
       {(liveStroke ? [...strokes, liveStroke] : strokes).map((s) => {
         if (s.points.length === 0) return null;
