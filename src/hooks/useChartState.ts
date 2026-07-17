@@ -101,12 +101,19 @@ export function useChartState(): UseChartStateReturn {
   // Tooth grid lives inside `useDentalData` (it owns the update helpers),
   // so persistence is a small mount-time restore + write-on-change effect.
   const { toothData, setToothDataDirectly, switchSpecies } = useDentalData(species);
+  const pristineToothData = React.useRef(toothData);
   React.useEffect(() => {
     const stored = readJson<ToothData[] | null>('chart.toothData', 1, null);
     if (stored) setToothDataDirectly(stored);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
+    // Never persist the pristine default: at mount this effect fires
+    // before the restore effect's state update lands, so it would stomp
+    // the saved chart with an empty grid — and under StrictMode's
+    // double-mount the second restore then read back that stomped
+    // default, silently wiping charted data on refresh.
+    if (toothData === pristineToothData.current) return;
     writeJson('chart.toothData', 1, toothData);
   }, [toothData]);
 

@@ -17,7 +17,11 @@ import { SpeciesDiagram } from '../../constants/toothShapes';
 
 const SIDE_PAD_RATIO = 0.30;
 export const COMMENT_W = 300;
-export const COMMENT_H = 160;
+/** Default card height fits the tooth label + two lines of text (18px
+ *  font / 22px lines / 8px padding). Typical comments are one line, so a
+ *  taller default just printed dead space on the PDF; users drag-resize
+ *  for longer notes and stored heights are kept verbatim. */
+export const COMMENT_H = 96;
 const COMMENT_GAP = 6;
 const COMMENT_MARGIN_X = 6;
 

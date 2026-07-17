@@ -337,8 +337,20 @@ export function drawPatientInfoBox(
       const valueX = x + labelW + padX;
       const valueWidth = valueW - padX * 2;
       if (row.multiline) {
-        drawWrappedText(page, row.value, valueX, yCursor - 4, valueWidth,
-          valueFontSize, valueFontSize + 2.5, font, PALETTE.ink, 3);
+        // Fit-to-box instead of a silent 3-line clamp: shrink the font
+        // toward a floor first, and if it still can't fit, end with an
+        // ellipsis so the reader knows the record is truncated here.
+        const cleaned = row.value.replace(/\s+/g, ' ').trim();
+        if (cleaned) {
+          const { lines, fontSize: fitSize } = fitTextToLines(
+            cleaned, font, valueWidth, 3, valueFontSize, 6.5
+          );
+          let lineY = yCursor - 4;
+          for (const line of lines) {
+            lineY -= fitSize + 2.5;
+            page.drawText(line, { x: valueX, y: lineY, size: fitSize, font, color: PALETTE.ink });
+          }
+        }
       } else {
         const baselineY = rowBottom + (rowH - valueFontSize) / 2 + 1.5;
         drawClippedText(page, row.value, valueX, baselineY, valueFontSize, font, PALETTE.ink, valueWidth);
@@ -402,15 +414,23 @@ export function drawExamSection(
       page.drawRectangle({ x: xPt, y: rowBottomY, width: sectionWidth, height: layout.heightPt, color: PALETTE.rowAlt });
     }
 
+    const abnormal = item.status === 'abnormal';
+
     let glyphX = xPt;
     drawCheckGlyph(page, glyphX, cbY, cbSize, item.status === 'normal');
     glyphX += cbSize + 4;
     page.drawText('N', { x: glyphX, y: labelY, size: fontSize, font, color: PALETTE.muted });
     glyphX += font.widthOfTextAtSize('N', fontSize) + 14;
 
-    drawCheckGlyph(page, glyphX, cbY, cbSize, item.status === 'abnormal');
+    // Abnormal findings carry the clinical signal color so they scan
+    // instantly on a dense page — same language as the app.
+    drawCheckGlyph(page, glyphX, cbY, cbSize, abnormal, PALETTE.danger);
     glyphX += cbSize + 4;
-    page.drawText('A', { x: glyphX, y: labelY, size: fontSize, font, color: PALETTE.muted });
+    page.drawText('A', {
+      x: glyphX, y: labelY, size: fontSize,
+      font: abnormal ? fontBold : font,
+      color: abnormal ? PALETTE.danger : PALETTE.muted,
+    });
     glyphX += font.widthOfTextAtSize('A', fontSize) + 12;
 
     vlineLight(page, glyphX - 4, rowTopY - 2, rowBottomY + 2);
@@ -418,8 +438,8 @@ export function drawExamSection(
     const labelText = EXAM_PDF_LABELS[key] ?? key;
     page.drawText(labelText, {
       x: glyphX, y: labelY, size: fontSize,
-      font: item.status === 'abnormal' ? fontBold : font,
-      color: item.status === 'abnormal' ? PALETTE.ink : PALETTE.text,
+      font: abnormal ? fontBold : font,
+      color: abnormal ? PALETTE.danger : PALETTE.text,
     });
 
     if (layout.comment) {
@@ -723,7 +743,8 @@ export function drawFooter(
   fontBold: PDFFont,
   pageNum: number,
   totalPages: number,
-  generatedAt: string
+  generatedAt: string,
+  identityLine?: string
 ): void {
   const { width: pageWidth } = page.getSize();
   const fontSize = 7;
@@ -739,6 +760,16 @@ export function drawFooter(
     x: 0.30 * PT_PER_IN, y: 0.22 * PT_PER_IN,
     size: fontSize, font, color: PALETTE.muted,
   });
+
+  // Patient identity, centered — pages of a medical record must remain
+  // attributable if they're printed or filed separately.
+  if (identityLine) {
+    const w = fontBold.widthOfTextAtSize(identityLine, fontSize);
+    page.drawText(identityLine, {
+      x: (pageWidth - w) / 2, y: 0.22 * PT_PER_IN,
+      size: fontSize, font: fontBold, color: PALETTE.text,
+    });
+  }
 
   // "Page X of Y" — page number bold-emphasized in primary color.
   const pageNumStr = `${pageNum}`;

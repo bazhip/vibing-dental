@@ -102,6 +102,16 @@ export async function buildDentalChartPDFBytes(
 
   const generatedAt = formatGeneratedAt(new Date());
 
+  // Every page of the record carries the patient identity in its footer —
+  // a page separated from the chart must stay attributable.
+  const identityLine = [
+    patientInfo.patientName,
+    patientInfo.patientNumber && `PID ${patientInfo.patientNumber}`,
+    patientInfo.date,
+  ]
+    .filter(Boolean)
+    .join('  ·  ');
+
   // ---- Page 1 ------------------------------------------------------------
   // SoCal's doctor line is the practice's signature; VCA's reflects whatever
   // the user typed in the webapp.
@@ -117,7 +127,7 @@ export async function buildDentalChartPDFBytes(
   drawToothGrid(page1, TOOTH_GRID_LAYOUTS[species].maxilla,  toothData, regular, bold, 'Maxillary Arch');
   drawToothGrid(page1, TOOTH_GRID_LAYOUTS[species].mandible, toothData, regular, bold, 'Mandibular Arch');
   await drawDiagramAt(pdfDoc, DIAGRAM_SLOTS[species][0], preDiagram.png);
-  drawFooter(page1, regular, bold, 1, 2, generatedAt);
+  drawFooter(page1, regular, bold, 1, 2, generatedAt, identityLine);
 
   // ---- Page 2 ------------------------------------------------------------
   // The nerve-block table grows to fit a long "Other" note; push the diagram
@@ -136,7 +146,7 @@ export async function buildDentalChartPDFBytes(
       : baseSlot;
   await drawDiagramAt(pdfDoc, postSlot, postDiagram.png);
   drawTreatmentReportField(page2, patientInfo.treatmentReport, regular, bold);
-  drawFooter(page2, regular, bold, 2, 2, generatedAt);
+  drawFooter(page2, regular, bold, 2, 2, generatedAt, identityLine);
 
   // ---- Codes-used legends (both pages) -----------------------------------
   const usedByPage = collectUsedCodesByPage({

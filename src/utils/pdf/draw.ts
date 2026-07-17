@@ -150,13 +150,15 @@ export function drawCenteredText(
   page.drawText(text, { x: x1 + (x2 - x1 - w) / 2, y: baselineY, size, font, color });
 }
 
-/** Drawn (non-interactive) checkbox glyph. */
+/** Drawn (non-interactive) checkbox glyph. `checkColor` tints the check
+ *  mark itself (e.g. clinical red for abnormal findings). */
 export function drawCheckGlyph(
   page: PDFPage,
   x: number,
   y: number,
   size: number,
-  checked: boolean
+  checked: boolean,
+  checkColor?: ReturnType<typeof rgb>
 ): void {
   page.drawRectangle({
     x, y,
@@ -167,19 +169,20 @@ export function drawCheckGlyph(
     color: PALETTE.white,
   });
   if (!checked) return;
+  const color = checkColor ?? PALETTE.ink;
   const pad = size * 0.22;
   const elbow = { x: x + size * 0.42, y: y + pad + 0.5 };
   page.drawLine({
     start: { x: x + pad, y: y + size * 0.55 },
     end:   elbow,
     thickness: 1.4,
-    color: PALETTE.ink,
+    color,
   });
   page.drawLine({
     start: elbow,
     end:   { x: x + size - pad, y: y + size - pad },
     thickness: 1.4,
-    color: PALETTE.ink,
+    color,
   });
 }
 
