@@ -79,6 +79,16 @@ export interface DiagramExport {
   png: Uint8Array;
 }
 
+/** Practice identity from the signed-in profile: the doctor line under
+ *  the logo, an optional uploaded logo, and the practice name (drawn as
+ *  a text wordmark when no logo is uploaded). Absent fields fall back to
+ *  template defaults, so standalone mode keeps its current output. */
+export interface PdfBranding {
+  doctorName?: string;
+  logoUrl?: string;
+  practiceName?: string;
+}
+
 /** Build the PDF as raw bytes — the entry point for both the download
  *  path and the live preview iframe. The `styleId` selects one of the
  *  presets defined in `pdf/styles.ts`. */
@@ -89,7 +99,8 @@ export async function buildDentalChartPDFBytes(
   logo: Logo,
   preDiagram: DiagramExport,
   postDiagram: DiagramExport,
-  styleId: string = DEFAULT_PDF_STYLE_ID
+  styleId: string = DEFAULT_PDF_STYLE_ID,
+  branding: PdfBranding = {}
 ): Promise<Uint8Array> {
   const style = PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
   applyPdfStyle(style);
@@ -116,13 +127,15 @@ export async function buildDentalChartPDFBytes(
     .join('  ·  ');
 
   // ---- Page 1 ------------------------------------------------------------
-  // SoCal's doctor line is the practice's signature; VCA's reflects whatever
-  // the user typed in the webapp.
+  // Doctor line: the signed-in profile wins; otherwise fall back to the
+  // template behavior (VCA shows the typed doctor field, SoCal its house
+  // line).
   const doctorLine =
-    logo === 'vca'
+    branding.doctorName?.trim() ||
+    (logo === 'vca'
       ? (patientInfo.doctor || 'Dr. Margaret Smith, DVM, DAVDC')
-      : 'Margaret Smith, DVM, DAVDC';
-  const techLine = logo === 'vca' ? patientInfo.tech : '';
+      : 'Margaret Smith, DVM, DAVDC');
+  const techLine = patientInfo.tech;
 
   // Codes are needed before the diagrams draw: each page's diagram
   // centers vertically in the space left over by its codes legend.
@@ -136,7 +149,10 @@ export async function buildDentalChartPDFBytes(
   // above the footer rule.
   const diagramBottomIn = (codes: unknown[]) => (codes.length > 0 ? 6.45 : 8.0);
 
-  await drawLogoAndHeader(pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold);
+  await drawLogoAndHeader(
+    pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold,
+    branding.logoUrl, branding.practiceName
+  );
 
   // Page 1's right column is a chain: the patient card grows with the
   // chief complaint, the exam card starts below it, and the arch grids
@@ -254,10 +270,11 @@ export async function generateDentalChartPDF(
   logo: Logo,
   preDiagram: DiagramExport,
   postDiagram: DiagramExport,
-  styleId: string = DEFAULT_PDF_STYLE_ID
+  styleId: string = DEFAULT_PDF_STYLE_ID,
+  branding: PdfBranding = {}
 ): Promise<void> {
   const pdfBytes = await buildDentalChartPDFBytes(
-    patientInfo, toothData, species, logo, preDiagram, postDiagram, styleId
+    patientInfo, toothData, species, logo, preDiagram, postDiagram, styleId, branding
   );
   const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   const filename = `${sanitize(patientInfo.patientName)}_${sanitize(patientInfo.patientNumber)}_${patientInfo.date}.pdf`;

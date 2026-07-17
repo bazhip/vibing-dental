@@ -13,6 +13,7 @@ import {
   ToothMarks,
   DiagramComment,
   DiagramStroke,
+  ChartSnapshot,
 } from '../types';
 import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
@@ -75,9 +76,28 @@ export interface UseChartStateReturn {
   /** Wipe all chart-related localStorage and reload — preserves auth +
    *  board selection (different key prefix). */
   resetChart: () => void;
+
+  // ----- Cloud sync ------------------------------------------------------
+  /** Stable id for the active chart's cloud row. New chart → new id. */
+  cloudChartId: string;
+  /** Everything needed to restore this chart (same shape the PDF embeds). */
+  getSnapshot: () => ChartSnapshot;
+  /** Overwrite local state with a snapshot (e.g. a chart opened from the
+   *  cloud) and adopt its cloud id. */
+  applySnapshot: (snapshot: ChartSnapshot, id: string) => void;
 }
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
+
+/** uuid for the chart's cloud row; crypto.randomUUID with a fallback for
+ *  older WebViews. */
+function generateChartId(): string {
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `${Date.now().toString(16)}-${Math.random().toString(16).slice(2, 10)}`;
+  }
+}
 
 export function useChartState(): UseChartStateReturn {
   const [patientInfo, setPatientInfo] = usePersistedState<PatientInfo>(
@@ -202,11 +222,48 @@ export function useChartState(): UseChartStateReturn {
     switchSpecies(newSpecies);
   };
 
+  // ----- Cloud sync -------------------------------------------------------
+
+  const [cloudChartId, setCloudChartId] = usePersistedState<string>(
+    'chart.cloudId', 1, () => generateChartId()
+  );
+
+  const getSnapshot = (): ChartSnapshot => ({
+    patientInfo,
+    toothData,
+    species,
+    logo,
+    preMarks: preToothMarks,
+    preComments: preDiagramComments,
+    preStrokes: preDiagramStrokes,
+    postMarks: postToothMarks,
+    postComments: postDiagramComments,
+    postStrokes: postDiagramStrokes,
+  });
+
+  const applySnapshot = (snapshot: ChartSnapshot, id: string): void => {
+    setPatientInfo(snapshot.patientInfo);
+    setSpecies(snapshot.species);
+    setLogo(snapshot.logo);
+    switchSpecies(snapshot.species);
+    setToothDataDirectly(snapshot.toothData);
+    setPreToothMarks(snapshot.preMarks ?? {});
+    setPreDiagramComments(snapshot.preComments ?? []);
+    setPreDiagramStrokes(snapshot.preStrokes ?? []);
+    setPostToothMarksDirect(snapshot.postMarks ?? {});
+    setPostDiagramComments(snapshot.postComments ?? []);
+    setPostDiagramStrokes(snapshot.postStrokes ?? []);
+    setCloudChartId(id);
+  };
+
   // ----- Whole-chart actions -------------------------------------------
 
   const loadFromPdf = async (file: File): Promise<void> => {
     try {
       const parsed = await parseDentalChartPDF(file);
+      // A restored PDF is its own chart — give it a fresh cloud row so
+      // autosave can't overwrite whichever chart was open before.
+      setCloudChartId(generateChartId());
       setPatientInfo(parsed.patientInfo);
       setSpecies(parsed.species);
       setLogo(parsed.logo);
@@ -273,5 +330,9 @@ export function useChartState(): UseChartStateReturn {
 
     loadFromPdf,
     resetChart,
+
+    cloudChartId,
+    getSnapshot,
+    applySnapshot,
   };
 }

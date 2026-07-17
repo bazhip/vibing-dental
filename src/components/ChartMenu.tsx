@@ -1,5 +1,11 @@
 import React from 'react';
 
+interface ChartMenuCloud {
+  onOpenLibrary: () => void;
+  onPracticeSettings: () => void;
+  onSignOut: () => void;
+}
+
 interface ChartMenuProps {
   /** Triggered when the user confirms "New Chart" — caller is responsible
    *  for resetting state + persistence. */
@@ -8,6 +14,8 @@ interface ChartMenuProps {
   onLoadPdf: (file: File) => void;
   /** Open the AI settings dialog (BYOK API key, model preferences). */
   onOpenAiSettings: () => void;
+  /** Cloud account actions — present only when Supabase is configured. */
+  cloud?: ChartMenuCloud;
 }
 
 /**
@@ -15,10 +23,11 @@ interface ChartMenuProps {
  * boundaries: starting fresh, loading a saved chart back in, and the AI
  * settings. Lives in the topbar where app-level actions are expected.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, cloud }) => {
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+
 
   // Click-outside / Esc to close.
   React.useEffect(() => {
@@ -108,6 +117,45 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
               </span>
             </button>
           </section>
+
+          {cloud && (
+            <section className="chart-menu__section">
+              <header className="chart-menu__section-head">Account</header>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onOpenLibrary(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>My charts</strong>
+                  <span>Browse and open your practice's saved charts.</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onPracticeSettings(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Practice settings</strong>
+                  <span>Practice name, doctor name, and logo for your charts.</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onSignOut(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Sign out</strong>
+                  <span>Return to the sign-in screen.</span>
+                </span>
+              </button>
+            </section>
+          )}
         </div>
       )}
     </div>

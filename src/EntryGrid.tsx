@@ -15,6 +15,10 @@ import { PdfPreviewModal, ChartSnapshot } from './components/PdfPreviewModal';
 import { AiSettingsModal } from './components/AiSettingsModal';
 import { VoiceInputButton } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
+import { useCloudSync } from './hooks/useCloudSync';
+import { useProfile } from './hooks/useProfile';
+import { PracticeSettingsModal } from './components/PracticeSettingsModal';
+import { ChartLibrary } from './components/ChartLibrary';
 import { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -25,7 +29,7 @@ import './components/EntryGrid.css';
  * involved, browser) so reports come back with enough detail to act on.
  */
 const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
-  'Vibing Dental — feedback / bug report'
+  'ToothOps Charting — feedback / bug report'
 )}&body=${encodeURIComponent(
   [
     'What I was doing:',
@@ -59,6 +63,11 @@ const SPECIES_LABELS: Record<string, string> = {
  */
 const EntryGrid: React.FC = () => {
   const chart = useChartState();
+  const cloud = useCloudSync(chart);
+  const profile = useProfile();
+  const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
+  // 'chart' = the working chart; 'library' = the full-screen chart browser.
+  const [view, setView] = React.useState<'chart' | 'library'>('chart');
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -183,6 +192,11 @@ const EntryGrid: React.FC = () => {
           comments: chart.postDiagramComments,
           strokes:  chart.postDiagramStrokes,
         },
+        branding: {
+          doctorName: profile.doctorName,
+          logoUrl: profile.logoUrl,
+          practiceName: profile.practiceName,
+        },
       });
       setPreviewOpen(true);
     } catch (error) {
@@ -200,10 +214,8 @@ const EntryGrid: React.FC = () => {
         <PatientForm
           patientInfo={chart.patientInfo}
           species={chart.species}
-          logo={chart.logo}
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
-          onLogoChange={chart.setLogo}
         />
       ),
     },
@@ -319,7 +331,18 @@ const EntryGrid: React.FC = () => {
     <div className="entry-grid-container" ref={containerRef}>
       <header className="entry-grid__topbar" ref={topbarRef}>
         <div className="entry-grid__topbar-lead">
-          <h1 className="entry-grid__title">Veterinary Dental Charting</h1>
+          {profile.doctorName.trim() ? (
+            <>
+              <h1 className="entry-grid__doctor">{profile.doctorName}</h1>
+              <span className="entry-grid__title">
+                {profile.practiceName.trim() || 'ToothOps Charting'}
+              </span>
+            </>
+          ) : (
+            <h1 className="entry-grid__title">
+              {profile.practiceName.trim() || 'ToothOps Charting'}
+            </h1>
+          )}
           {/* Live patient banner — EMR-style encounter context that stays
               visible while scrolling deep into the chart. */}
           <div className="entry-grid__patient" aria-live="off">
@@ -349,6 +372,16 @@ const EntryGrid: React.FC = () => {
           </div>
         </div>
         <div className="entry-grid__topbar-actions">
+          {cloud.enabled && (
+            <button
+              type="button"
+              className="chart-menu__trigger topbar-library-btn"
+              onClick={() => setView(view === 'library' ? 'chart' : 'library')}
+              aria-pressed={view === 'library'}
+            >
+              My charts
+            </button>
+          )}
           <VoiceInputButton
             context={aiContext}
             handlers={aiHandlers}
@@ -358,22 +391,31 @@ const EntryGrid: React.FC = () => {
             onNewChart={chart.resetChart}
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
+            cloud={
+              cloud.enabled
+                ? {
+                    onOpenLibrary: () => setView('library'),
+                    onPracticeSettings: () => setPracticeSettingsOpen(true),
+                    onSignOut: cloud.signOut,
+                  }
+                : undefined
+            }
           />
-          {/* Primary action lives in the sticky topbar so it's reachable
-              from any section without scrolling to the page floor. Submits
-              the chart form below via the form attribute. */}
-          <button
-            type="submit"
-            form="chart-form"
-            className="entry-grid__button entry-grid__button--topbar"
-          >
-            Preview PDF
-          </button>
         </div>
       </header>
+      {view === 'library' && (
+        <ChartLibrary
+          listCharts={cloud.listCharts}
+          onOpen={cloud.openChart}
+          onDelete={cloud.deleteChart}
+          onClose={() => setView('chart')}
+        />
+      )}
+
       <form
         id="chart-form"
         className="entry-grid-form"
+        style={view === 'library' ? { display: 'none' } : undefined}
         onSubmit={handleOpenPreview}
         // Stop browser-default form submit on Enter from any single-line
         // input. Textareas, the actual submit button, and inputs that
@@ -395,6 +437,17 @@ const EntryGrid: React.FC = () => {
         <SidebarLayout sections={sections} />
       </form>
 
+      {view === 'chart' && (
+        <button
+          type="submit"
+          form="chart-form"
+          className="fab-download"
+          aria-label="Preview and download the chart PDF"
+        >
+          <span aria-hidden="true">⤓</span> Preview PDF
+        </button>
+      )}
+
       <PdfPreviewModal
         open={previewOpen}
         onClose={() => setPreviewOpen(false)}
@@ -404,6 +457,12 @@ const EntryGrid: React.FC = () => {
       <AiSettingsModal
         open={aiSettingsOpen}
         onClose={() => setAiSettingsOpen(false)}
+      />
+
+      <PracticeSettingsModal
+        open={practiceSettingsOpen}
+        onClose={() => setPracticeSettingsOpen(false)}
+        profile={profile}
       />
 
       <footer className="entry-grid__footnote">

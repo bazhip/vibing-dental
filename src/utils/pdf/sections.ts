@@ -184,7 +184,12 @@ export async function drawLogoAndHeader(
   doctorName: string,
   techName: string,
   font: PDFFont,
-  fontBold: PDFFont
+  fontBold: PDFFont,
+  /** Uploaded practice logo (PNG URL); replaces the template's mark. */
+  customLogoUrl?: string,
+  /** Practice name — drawn as a text wordmark when there's no uploaded
+   *  logo, so a signed-in practice never prints another clinic's mark. */
+  practiceName?: string
 ): Promise<void> {
   const { width: pageWidth, height: pageHeight } = page.getSize();
   const titleSize = 22;
@@ -203,33 +208,64 @@ export async function drawLogoAndHeader(
   const logoLeftPt = 0.30 * PT_PER_IN;
   const logoTopPt = pageHeight - 0.35 * PT_PER_IN;
 
-  // Both logos use their original brand colors — SoCal stays dark grey +
-  // pink, VCA stays its house palette. The active style only drives the
+  // Logos keep their own colors — the active style only drives the
   // surrounding chrome (titles, table headers, comment cards), not the
-  // mark itself.
+  // mark itself. A signed-in practice's uploaded logo takes precedence
+  // over the template asset; failures fall through to the template, then
+  // to a text wordmark.
   // Fallback placement assumes a ~2:1 logo so the doctor name / underline
   // below still land sensibly if the asset can't be loaded.
   let logoBottomPt = logoTopPt - logoWidth * 0.5;
+
+  // Practice-name text wordmark: up to two wrapped lines, bold ink.
+  const drawWordmark = (name: string) => {
+    const wmSize = 15;
+    const wmLineH = wmSize * 1.2;
+    const lines = wrapToWidth(name, fontBold, wmSize, 2.46 * PT_PER_IN).slice(0, 2);
+    let y = logoTopPt - wmSize;
+    for (const line of lines) {
+      page.drawText(line, { x: logoLeftPt + 2, y, size: wmSize, font: fontBold, color: PALETTE.ink });
+      y -= wmLineH;
+    }
+    logoBottomPt = y + wmLineH - 6;
+  };
+
   try {
-    const res = await fetch(logoUrl);
-    if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
-    const logoBytes = await res.arrayBuffer();
-    const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
-    const logoHeight = logoWidth * (png.height / png.width);
-    logoBottomPt = logoTopPt - logoHeight;
-    page.drawImage(png, {
-      x: logoLeftPt, y: logoBottomPt,
-      width: logoWidth, height: logoHeight,
-    });
+    let logoBytes: ArrayBuffer | null = null;
+    if (customLogoUrl) {
+      try {
+        const customRes = await fetch(customLogoUrl);
+        if (customRes.ok) logoBytes = await customRes.arrayBuffer();
+      } catch {
+        // fall through to the wordmark / template asset
+      }
+    }
+    if (!logoBytes && practiceName?.trim()) {
+      // Signed-in practice without an uploaded logo: their name, never
+      // another clinic's mark.
+      drawWordmark(practiceName.trim());
+    } else {
+      if (!logoBytes) {
+        const res = await fetch(logoUrl);
+        if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
+        logoBytes = await res.arrayBuffer();
+      }
+      const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
+      const logoHeight = logoWidth * (png.height / png.width);
+      logoBottomPt = logoTopPt - logoHeight;
+      page.drawImage(png, {
+        x: logoLeftPt, y: logoBottomPt,
+        width: logoWidth, height: logoHeight,
+      });
+    }
   } catch (err) {
     // A missing/unreachable logo must not sink the entire chart export.
     // Drop in a text wordmark and carry on.
     // eslint-disable-next-line no-console
     console.warn('[pdf] logo unavailable, using text fallback', err);
-    page.drawText(logo === 'vca' ? 'VCA' : 'SoCal Veterinary Dentistry', {
-      x: logoLeftPt + 2, y: logoTopPt - 18,
-      size: 14, font: fontBold, color: PALETTE.ink,
-    });
+    drawWordmark(
+      practiceName?.trim() || (logo === 'vca' ? 'VCA' : 'SoCal Veterinary Dentistry')
+    );
   }
 
   // Doctor name + (optional) "Tech: …" sub-line + colored underline.

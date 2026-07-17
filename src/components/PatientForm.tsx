@@ -1,14 +1,12 @@
 import React from 'react';
-import { PatientInfo, Species, Logo } from '../types';
+import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
 
 interface PatientFormProps {
   patientInfo: PatientInfo;
   species: Species;
-  logo: Logo;
   onPatientInfoChange: (field: keyof PatientInfo, value: string) => void;
   onSpeciesChange: (species: Species) => void;
-  onLogoChange: (logo: Logo) => void;
 }
 
 /**
@@ -18,10 +16,8 @@ interface PatientFormProps {
 export const PatientForm: React.FC<PatientFormProps> = ({
   patientInfo,
   species,
-  logo,
   onPatientInfoChange,
   onSpeciesChange,
-  onLogoChange,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,10 +27,6 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   const handleSpeciesClick = (selectedSpecies: Species) => {
     onSpeciesChange(selectedSpecies);
-  };
-
-  const handleLogoClick = (selectedLogo: Logo) => {
-    onLogoChange(selectedLogo);
   };
 
   return (
@@ -79,31 +71,21 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
       </div>
 
-      {logo === 'vca' && (
-        <div className="patient-form__row">
-          <label className="patient-form__label">
-            Doctor
-            <input
-              type="text"
-              className="patient-form__input"
-              placeholder="Doctor name"
-              value={patientInfo.doctor}
-              onChange={handleInputChange('doctor')}
-            />
-          </label>
-
-          <label className="patient-form__label">
-            Tech
-            <input
-              type="text"
-              className="patient-form__input"
-              placeholder="Tech name"
-              value={patientInfo.tech}
-              onChange={handleInputChange('tech')}
-            />
-          </label>
-        </div>
-      )}
+      {/* Doctor name comes from the practice profile (set at signup / in
+          Practice settings) and is embedded in the PDF automatically —
+          only the per-procedure tech is entered here. */}
+      <div className="patient-form__row">
+        <label className="patient-form__label">
+          Tech
+          <input
+            type="text"
+            className="patient-form__input"
+            placeholder="Tech name (optional)"
+            value={patientInfo.tech}
+            onChange={handleInputChange('tech')}
+          />
+        </label>
+      </div>
 
       <div className="patient-form__row">
         <label className="patient-form__label">
@@ -166,37 +148,6 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             onClick={() => handleSpeciesClick('canine-deciduous')}
           >
             🐶 Canine (Deciduous)
-          </button>
-        </div>
-        </div>
-
-        <div className="patient-form__selector">
-        <span className="patient-form__selector-label" id="template-group-label">
-          Chart template
-        </span>
-        <div
-          className="patient-form__species"
-          role="radiogroup"
-          aria-labelledby="template-group-label"
-        >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={logo === 'socal'}
-            className={`species-tab ${logo === 'socal' ? 'species-tab--active' : ''}`}
-            onClick={() => handleLogoClick('socal')}
-          >
-            SoCal Tooth Ops
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={logo === 'vca'}
-            className={`species-tab ${logo === 'vca' ? 'species-tab--active' : ''}`}
-            onClick={() => handleLogoClick('vca')}
-          >
-            VCA
           </button>
         </div>
         </div>

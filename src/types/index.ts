@@ -178,6 +178,24 @@ export interface DiagramStroke {
 export type Logo = 'socal' | 'vca';
 
 /**
+ * Complete chart snapshot — everything needed to restore a chart. Same
+ * information the PDF round-trip embeds; also the payload synced to the
+ * cloud `charts` table.
+ */
+export interface ChartSnapshot {
+  patientInfo: PatientInfo;
+  toothData: ToothData[];
+  species: Species;
+  logo: Logo;
+  preMarks: ToothMarks;
+  preComments: DiagramComment[];
+  preStrokes: DiagramStroke[];
+  postMarks: ToothMarks;
+  postComments: DiagramComment[];
+  postStrokes: DiagramStroke[];
+}
+
+/**
  * Column definition for the data grid
  */
 export interface ColumnDefinition {

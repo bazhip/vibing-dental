@@ -3,6 +3,7 @@ import {
   buildDentalChartPDFBytes,
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
+  type PdfBranding,
 } from '../utils/pdfGenerator';
 import { diagramSvgToPng, CommentForExport } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -32,6 +33,8 @@ export interface ChartSnapshot {
   postSvg: SVGSVGElement;
   postComments: CommentForExport[];
   postState: { marks: ToothMarks; comments: DiagramComment[]; strokes: DiagramStroke[] };
+  /** Practice identity (doctor line + uploaded logo) from the profile. */
+  branding?: PdfBranding;
 }
 
 interface PdfPreviewModalProps {
@@ -89,7 +92,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           snapshot.logo,
           { state: snapshot.preState,  png: prePng  },
           { state: snapshot.postState, png: postPng },
-          styleId
+          styleId,
+          snapshot.branding ?? {}
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });

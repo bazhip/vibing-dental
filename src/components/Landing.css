@@ -1,0 +1,622 @@
+/* =============================================================================
+ * Public homepage. Same design system as the app (Inter, teal on ink,
+ * rounded cards) so the marketing page and the product read as one thing.
+ * All animation is keyframe CSS; the global prefers-reduced-motion rule
+ * switches it off wholesale.
+ * ============================================================================= */
+
+.landing {
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%),
+    var(--bg-page);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- topbar --------------------------------------------------------- */
+.landing__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+}
+
+.landing__wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.landing__wordmark-tooth {
+  display: inline-flex;
+  color: var(--primary);
+}
+
+.landing__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.landing__nav-signin {
+  background: transparent;
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+}
+
+.landing__nav-signin:hover {
+  background: rgba(23, 35, 46, 0.06);
+}
+
+.landing__nav-cta,
+.landing__cta {
+  background: var(--primary);
+  color: white;
+  border: none;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.landing__nav-cta {
+  padding: 0.5rem 1rem;
+  font-size: 0.92rem;
+}
+
+.landing__nav-cta:hover,
+.landing__cta:hover {
+  background: var(--primary-end);
+}
+
+/* ---------- hero ------------------------------------------------------------ */
+.landing__hero {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.landing__hero-copy > * {
+  opacity: 0;
+  animation: landing-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.landing__eyebrow { animation-delay: 0.05s; }
+.landing__headline { animation-delay: 0.15s; }
+.landing__sub { animation-delay: 0.3s; }
+.landing__cta-row { animation-delay: 0.45s; }
+
+.landing__eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: 0 0 1rem;
+}
+
+.landing__headline {
+  font-size: clamp(2rem, 4.4vw, 3.15rem);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  margin: 0 0 1.25rem;
+}
+
+.landing__sub {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  max-width: 34rem;
+  margin: 0 0 1.75rem;
+}
+
+.landing__cta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.landing__cta {
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.landing__cta:hover { transform: translateY(-1px); }
+
+.landing__cta-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ---------- hero demo (self-charting mock) ---------------------------------- */
+.landing__hero-demo {
+  opacity: 0;
+  animation: landing-rise 0.8s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.demo-window {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(23, 35, 46, 0.14);
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 460px;
+  margin-left: auto;
+}
+
+.demo-window__bar {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+}
+
+.demo-window__patient {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.demo-window__meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.demo-grid {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.78rem;
+}
+
+.demo-grid__row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;
+}
+
+.demo-grid__row > span {
+  padding: 0.38rem 0.55rem;
+  border-right: 1px solid var(--border);
+}
+
+.demo-grid__row > span:last-child { border-right: none; }
+
+.demo-grid__row + .demo-grid__row { border-top: 1px solid var(--border); }
+
+.demo-grid__row--head {
+  background: var(--primary);
+  color: #f2f7f6;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-grid__tooth {
+  background: var(--surface-sunken);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- three-scene loop (18s): chart → diagram → export ---------------- */
+.demo-window__steps {
+  margin-left: auto;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.demo-step {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+}
+
+.demo-step--a { animation: demo-step-a 18s infinite; }
+.demo-step--b { animation: demo-step-b 18s infinite; }
+.demo-step--c { animation: demo-step-c 18s infinite; }
+
+.demo-stage {
+  position: relative;
+  height: 250px;
+}
+
+.demo-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  opacity: 0;
+}
+
+.demo-scene--a { animation: demo-scene-a 18s infinite; }
+.demo-scene--b { animation: demo-scene-b 18s infinite; }
+.demo-scene--c { animation: demo-scene-c 18s infinite; }
+
+.demo-caption {
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Values "arrive" one by one, like a live procedure. */
+.demo-cell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  opacity: 0;
+  animation: demo-pop 18s infinite;
+}
+
+.demo-cell--1 { animation-delay: 0.7s; }
+.demo-cell--2 { animation-delay: 1.2s; }
+.demo-cell--3 { animation-delay: 1.7s; }
+.demo-cell--4 { animation-delay: 2.2s; }
+.demo-cell--5 { animation-delay: 2.7s; }
+.demo-cell--6 { animation-delay: 3.2s; }
+.demo-cell--7 { animation-delay: 3.7s; }
+.demo-cell--8 { animation-delay: 4.2s; }
+
+.demo-grid__row--missing > span {
+  animation: demo-missing-row 18s infinite;
+}
+
+.demo-grid__row--missing .demo-grid__tooth {
+  text-decoration: line-through;
+}
+
+/* Scene B: the app's real diagram artwork with a live "missing" marker. */
+.demo-artwork {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+
+.demo-artwork__img {
+  width: 130%;
+  margin-left: -15%;
+  margin-top: -4%;
+  display: block;
+}
+
+.demo-artwork__marker {
+  position: absolute;
+  /* Over the upper-left canine of the feline maxilla. */
+  left: 24%;
+  top: 30%;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--danger) 30%, transparent);
+  border: 2px solid var(--danger);
+  animation: demo-marker 18s infinite;
+  opacity: 0;
+}
+
+.demo-comment {
+  position: absolute;
+  top: 8%;
+  right: 4%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: color-mix(in srgb, var(--primary) 6%, white);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, white);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.68rem;
+  box-shadow: 0 6px 18px rgba(23, 35, 46, 0.12);
+  opacity: 0;
+  animation: demo-pop 18s infinite;
+  animation-delay: 8.6s;
+}
+
+.demo-comment strong { color: var(--primary-end); font-size: 0.66rem; }
+
+/* Scene C: voice line → document mock → download pill. */
+.demo-voice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  opacity: 0;
+  animation: demo-pop 18s infinite;
+  animation-delay: 12.6s;
+}
+
+.demo-voice__mic {
+  color: #dc2626;
+  animation: demo-mic 1.4s ease-in-out infinite;
+  font-size: 0.6rem;
+}
+
+.demo-doc {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: demo-pop 18s infinite;
+  animation-delay: 13.4s;
+}
+
+.demo-doc__logo {
+  width: 64px;
+  height: 18px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--primary) 22%, white);
+}
+
+.demo-doc__line {
+  height: 7px;
+  width: 45%;
+  border-radius: 3px;
+  background: var(--surface-sunken);
+}
+
+.demo-doc__line--wide { width: 70%; }
+
+.demo-doc__grid {
+  flex: 1;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(to right, var(--surface-sunken) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(to bottom, var(--surface-sunken) 0 1px, transparent 1px 14px),
+    linear-gradient(var(--primary) 12px, transparent 12px);
+  opacity: 0.9;
+}
+
+.demo-pdf {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: white;
+  background: var(--primary);
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--primary) 40%, transparent);
+  opacity: 0;
+  animation: demo-pop 18s infinite;
+  animation-delay: 14.6s;
+}
+
+.demo-pdf__icon { font-size: 0.9rem; }
+
+@keyframes landing-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Pop in and hold until the loop resets. */
+@keyframes demo-pop {
+  0%    { opacity: 0; transform: translateY(4px) scale(0.96); }
+  2%    { opacity: 1; transform: translateY(0) scale(1); }
+  96%   { opacity: 1; }
+  100%  { opacity: 0; }
+}
+
+/* Scene windows (18s): A 0–32%, B 33–65%, C 66–98%. */
+@keyframes demo-scene-a {
+  0% { opacity: 1; } 30% { opacity: 1; } 33% { opacity: 0; }
+  97% { opacity: 0; } 100% { opacity: 1; }
+}
+@keyframes demo-scene-b {
+  0% { opacity: 0; } 31% { opacity: 0; } 34% { opacity: 1; }
+  63% { opacity: 1; } 66% { opacity: 0; } 100% { opacity: 0; }
+}
+@keyframes demo-scene-c {
+  0% { opacity: 0; } 64% { opacity: 0; } 67% { opacity: 1; }
+  96% { opacity: 1; } 99% { opacity: 0; } 100% { opacity: 0; }
+}
+
+@keyframes demo-step-a {
+  0%, 30% { background: var(--primary); color: white; }
+  33%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
+}
+@keyframes demo-step-b {
+  0%, 31% { background: var(--surface-sunken); color: var(--text-muted); }
+  34%, 63% { background: var(--primary); color: white; }
+  66%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
+}
+@keyframes demo-step-c {
+  0%, 64% { background: var(--surface-sunken); color: var(--text-muted); }
+  67%, 96% { background: var(--primary); color: white; }
+  99%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
+}
+
+@keyframes demo-marker {
+  0%, 38%  { opacity: 0; transform: scale(0.6); }
+  41%      { opacity: 1; transform: scale(1.15); }
+  44%, 62% { opacity: 1; transform: scale(1); }
+  65%, 100% { opacity: 0; }
+}
+
+@keyframes demo-mic {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+
+@keyframes demo-missing-row {
+  0%, 25%  { background: transparent; color: inherit; }
+  28%, 96% { background: var(--danger-tint); color: #93a2b1; }
+  100%     { background: transparent; }
+}
+
+/* ---------- features --------------------------------------------------------- */
+.landing__features {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.landing__feature {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 1px 2px rgba(23, 35, 46, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.landing__feature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(23, 35, 46, 0.1);
+}
+
+.landing__feature h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.landing__feature p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* ---------- closer + footer --------------------------------------------------- */
+.landing__closer {
+  text-align: center;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.landing__closer h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
+.landing__footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1120px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.landing__footer a { color: var(--primary); }
+
+/* ---------- auth overlay ------------------------------------------------------ */
+.landing__auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(23, 35, 46, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.landing__auth-panel {
+  position: relative;
+  animation: landing-rise 0.25s ease-out;
+}
+
+.landing__auth-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.landing__auth-close:hover { background: var(--surface-sunken); }
+
+/* Login rendered inside the overlay: drop its full-page chrome. */
+.login-container--embedded {
+  min-height: 0;
+  background: transparent;
+  padding: 0;
+}
+
+/* ---------- responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .landing__hero {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    padding-top: 2.25rem;
+  }
+  .demo-window { margin: 0 auto; }
+  .landing__features { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .landing__features { grid-template-columns: 1fr; }
+  .landing__cta { width: 100%; }
+}

@@ -33,15 +33,29 @@
   min-width: 0;
 }
 
-/* App name reads as an eyebrow; the patient is the headline. During a
-   procedure the question is "whose mouth am I in", not "what app is this". */
+/* Identity block: doctor name on top, practice name as the eyebrow
+   under it, patient banner as the headline below both. */
+.entry-grid__doctor {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .entry-grid__title {
   margin: 0;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .entry-grid__patient {
@@ -93,7 +107,8 @@
 @media (max-width: 600px) {
   /* Chairside on a phone the patient context is the headline; the app
      already introduced itself on the login screen. */
-  .entry-grid__title { display: none; }
+  .entry-grid__title,
+  .entry-grid__doctor { display: none; }
   .entry-grid__patient-name { max-width: 9rem; font-size: 0.95rem; }
   .entry-grid__patient-date { display: none; }
 }
@@ -1893,5 +1908,48 @@
 @media (max-width: 720px) {
   .code-ref__columns {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Floating download action — same pill the homepage animation shows.
+   Fixed bottom-right so the primary action is reachable at any scroll
+   depth without occupying the topbar. */
+.fab-download {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 55;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.35rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--primary) 45%, transparent);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.fab-download:hover {
+  background: var(--primary-end);
+  transform: translateY(-1px);
+}
+
+.fab-download:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .fab-download {
+    right: 0.9rem;
+    bottom: 0.9rem;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
   }
 }
