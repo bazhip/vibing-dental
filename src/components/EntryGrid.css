@@ -403,7 +403,12 @@
   contain: none !important;
   width: 100% !important;
   max-width: 100%;
-  overflow-x: hidden;
+  /* No scroll container here — the page itself scrolls, and the header
+     cells position:sticky against it. `clip` still guards against stray
+     column overflow, but unlike the old `hidden` it doesn't create a
+     scrollport (which silently defeated the sticky header row). */
+  overflow-x: clip;
+  overflow-y: visible;
   table-layout: fixed;
   --rdg-background-color: #ffffff;
   --rdg-header-background-color: var(--primary, #0f766e);
@@ -435,7 +440,15 @@
   letter-spacing: 0.5px;
 }
 
+/* Freeze the column titles just below the app topbar while the page
+   scrolls through the tooth list. The header row is display:contents in
+   this react-data-grid version, so the cells are what actually stick and
+   paint — hence the background lives here, not on the row. */
 .dental-grid .rdg-header-row .rdg-cell {
+  position: sticky;
+  top: var(--topbar-height, 0px);
+  z-index: 10;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.75rem 0.5rem;
 }

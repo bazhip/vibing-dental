@@ -52,6 +52,23 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
 const EntryGrid: React.FC = () => {
   const chart = useChartState();
 
+  // Publish the sticky topbar's live height as --topbar-height on the
+  // container, so other sticky elements (the charting grid's frozen
+  // header row) can stack directly beneath it while the page scrolls.
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const topbarRef = React.useRef<HTMLElement>(null);
+  React.useEffect(() => {
+    const topbar = topbarRef.current;
+    const container = containerRef.current;
+    if (!topbar || !container) return;
+    const publish = () =>
+      container.style.setProperty('--topbar-height', `${topbar.offsetHeight}px`);
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(topbar);
+    return () => ro.disconnect();
+  }, []);
+
   // Refs into the diagram views — we need their live SVG elements at
   // preview time so we can rasterize them with the active style's
   // comment colors.
@@ -278,8 +295,8 @@ const EntryGrid: React.FC = () => {
   ];
 
   return (
-    <div className="entry-grid-container">
-      <header className="entry-grid__topbar">
+    <div className="entry-grid-container" ref={containerRef}>
+      <header className="entry-grid__topbar" ref={topbarRef}>
         <h1 className="entry-grid__title">Veterinary Dental Charting</h1>
         <div className="entry-grid__topbar-actions">
           <VoiceInputButton
