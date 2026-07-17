@@ -536,7 +536,7 @@ export function drawExamSection(
     cursorY = rowBottomY;
   }
 
-  finishSectionCard(page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth, CARD_BAND_PT + rowsTotalH);
+  finishSectionCard(page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth, CARD_BAND_PT + headPt + rowsTotalH);
 
   // Bottom edge in inches from the page top, so the caller can place the
   // arch grids dynamically beneath.
