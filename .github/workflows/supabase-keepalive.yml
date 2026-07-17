@@ -1,0 +1,26 @@
+# Supabase free-tier projects pause after ~7 days without API activity.
+# Two pings a week keeps the project awake so a practice never signs in
+# to a paused database. The key below is the public anon key (already
+# shipped in every app bundle) — RLS means this request can read nothing.
+#
+# Caveat: GitHub disables scheduled workflows after ~60 days without any
+# repo activity — a commit (or re-enabling in the Actions tab) revives it.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '17 9 * * 1,4' # Mon + Thu 09:17 UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            'https://hiefwyyoyiqxmxaxyxmx.supabase.co/rest/v1/charts?select=id&limit=1' \
+            -H 'apikey: sb_publishable_lYZt176S18M9VE2JXuql2g_A_cloTxW')
+          echo "Supabase responded HTTP $code"
+          # 2xx/4xx both mean the project is awake; only 5xx/timeouts fail.
+          [ "$code" -ge 200 ] && [ "$code" -lt 500 ]
