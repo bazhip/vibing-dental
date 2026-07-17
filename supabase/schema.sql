@@ -115,3 +115,35 @@ create policy "users manage own logo"
   on storage.objects for all to authenticated
   using (bucket_id = 'logos' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'logos' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- ------------------------------------------------------- report templates
+-- Per-user treatment/surgery report templates: pre-filled free-text
+-- reports for common procedures, insertable from the Treatment Report
+-- section. Same ownership + RLS pattern as charts.
+create table if not exists public.report_templates (
+  id uuid primary key default gen_random_uuid(),
+  created_by uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  name text not null default '',
+  body text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.report_templates enable row level security;
+
+create policy "users read own templates"
+  on public.report_templates for select to authenticated using (created_by = auth.uid());
+
+create policy "users create own templates"
+  on public.report_templates for insert to authenticated with check (created_by = auth.uid());
+
+create policy "users update own templates"
+  on public.report_templates for update to authenticated using (created_by = auth.uid());
+
+create policy "users delete own templates"
+  on public.report_templates for delete to authenticated using (created_by = auth.uid());
+
+drop trigger if exists report_templates_touch on public.report_templates;
+create trigger report_templates_touch
+  before update on public.report_templates
+  for each row execute function public.touch_updated_at();

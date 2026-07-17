@@ -852,6 +852,85 @@
   box-sizing: border-box;
 }
 
+/* Template controls share the section header row and wrap on narrow
+   screens. */
+.surgery-report__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.surgery-report__template-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.surgery-report__template-select {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 8px;
+  background: var(--surface, #fff);
+  color: var(--text);
+  max-width: 16rem;
+}
+
+.surgery-report__template-select:disabled {
+  color: var(--text-muted);
+}
+
+/* Report-templates modal */
+.report-templates__list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.report-templates__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-height: 9rem;
+  overflow-y: auto;
+}
+
+.report-templates__item {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 999px;
+  background: var(--surface, #fff);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.report-templates__item:hover {
+  border-color: var(--primary);
+}
+
+.report-templates__item--active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.report-templates__body {
+  min-height: 10rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* Diagram + side-by-side code reference */
 .diagram-with-codes {
   display: grid;
