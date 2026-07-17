@@ -33,26 +33,37 @@ export const ExamForm: React.FC<ExamFormProps> = ({
             const groupName = `exam-${key}`;
             const showComment = item.status === 'abnormal';
             return (
-              <tr key={key}>
+              <tr
+                key={key}
+                className={showComment ? 'exam-table__row--abnormal' : undefined}
+              >
                 <td className="anesthesia-table__label">{label}</td>
+                {/* The whole cell is the hit area — this gets used with
+                    gloves on; a bare 13px radio is not a target. */}
                 <td className="exam-table__radio">
-                  <input
-                    type="radio"
-                    name={groupName}
-                    checked={item.status === 'normal'}
-                    onChange={() => onStatusChange(key, 'normal')}
-                  />
+                  <label className="exam-table__radio-hit">
+                    <input
+                      type="radio"
+                      name={groupName}
+                      checked={item.status === 'normal'}
+                      onChange={() => onStatusChange(key, 'normal')}
+                      aria-label={`${label}: normal`}
+                    />
+                  </label>
                 </td>
                 <td className="exam-table__radio">
-                  <input
-                    type="radio"
-                    name={groupName}
-                    checked={item.status === 'abnormal'}
-                    onChange={() => onStatusChange(key, 'abnormal')}
-                  />
+                  <label className="exam-table__radio-hit">
+                    <input
+                      type="radio"
+                      name={groupName}
+                      checked={item.status === 'abnormal'}
+                      onChange={() => onStatusChange(key, 'abnormal')}
+                      aria-label={`${label}: abnormal`}
+                    />
+                  </label>
                 </td>
                 <td className="exam-table__comment-col">
-                  {showComment ? (
+                  {showComment && (
                     <input
                       type="text"
                       className="patient-form__input exam-table__comment"
@@ -60,8 +71,6 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       value={item.comment}
                       onChange={(e) => onCommentChange(key, e.target.value)}
                     />
-                  ) : (
-                    <span className="exam-table__comment-placeholder">&mdash;</span>
                   )}
                 </td>
               </tr>

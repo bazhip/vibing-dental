@@ -62,7 +62,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <input
             type="text"
             className="patient-form__input"
-            placeholder="Enter patient ID"
+            placeholder="Enter patient number"
             value={patientInfo.patientNumber}
             onChange={handleInputChange('patientNumber')}
           />
@@ -119,10 +119,14 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       </div>
 
       <div className="patient-form__selectors">
+        <div className="patient-form__selector">
+        <span className="patient-form__selector-label" id="species-group-label">
+          Species
+        </span>
         <div
           className="patient-form__species"
           role="radiogroup"
-          aria-label="Species"
+          aria-labelledby="species-group-label"
         >
           <button
             type="button"
@@ -164,11 +168,16 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             🐶 Puppy
           </button>
         </div>
+        </div>
 
+        <div className="patient-form__selector">
+        <span className="patient-form__selector-label" id="template-group-label">
+          Chart template
+        </span>
         <div
           className="patient-form__species"
           role="radiogroup"
-          aria-label="Logo"
+          aria-labelledby="template-group-label"
         >
           <button
             type="button"
@@ -189,6 +198,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           >
             VCA
           </button>
+        </div>
         </div>
       </div>
     </div>

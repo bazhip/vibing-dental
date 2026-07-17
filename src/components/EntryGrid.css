@@ -382,6 +382,22 @@
   flex-wrap: wrap;
 }
 
+/* Labeled selector group: caption above the segmented control, so the
+   two controls (species / chart template) say what they choose. */
+.patient-form__selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 300px;
+}
+
+.patient-form__selector-label {
+  font-weight: 500;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
 .patient-form__species {
   display: flex;
   gap: 0.5rem;
@@ -389,8 +405,6 @@
   background: var(--surface-sunken, #eef1f4);
   border-radius: 10px;
   border: 1px solid var(--border);
-  flex: 1;
-  min-width: 300px;
 }
 
 .species-tab {
@@ -444,6 +458,15 @@
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text);
+}
+
+/* Right-aligned usage hint in a section header — tells first-time users
+   the grid is type-in-place without costing vertical space. */
+.dental-grid__hint {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: right;
 }
 
 .dental-grid {
@@ -625,6 +648,7 @@
 .anesthesia-drug {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.6rem;
   margin: 0 0 0.6rem;
 }
@@ -637,6 +661,12 @@
 
 .anesthesia-drug__input {
   max-width: 14rem;
+}
+
+.anesthesia-drug__hint {
+  flex-basis: 100%;
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
 .anesthesia-table {
@@ -696,8 +726,11 @@
   pointer-events: none;
 }
 
+/* Narrow label column so the controls sit next to the words they belong
+   to instead of across a gulf of whitespace. */
 .anesthesia-table__label {
-  width: 30%;
+  width: 22%;
+  min-width: 10rem;
   font-weight: 500;
   color: var(--text-muted);
 }
@@ -754,10 +787,24 @@
 
 .exam-table__radio {
   text-align: center;
-  width: 5rem;
+  width: 6rem;
+  padding: 0 !important;
+}
+
+/* The whole cell is the click target (gloved hands, quick passes) —
+   the label stretches across it and centers a properly sized control. */
+.exam-table__radio-hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.6rem;
+  cursor: pointer;
 }
 
 .exam-table__radio input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
   cursor: pointer;
 }
 
@@ -770,8 +817,18 @@
   padding: 0.4rem 0.6rem;
 }
 
-.exam-table__comment-placeholder {
-  color: var(--border);
+/* Abnormal findings should be scannable from across the room. */
+.exam-table__row--abnormal td {
+  background: var(--danger-tint);
+}
+
+.exam-table__row--abnormal .anesthesia-table__label {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.exam-table__row--abnormal input[type="radio"] {
+  accent-color: var(--danger);
 }
 
 /* Surgery Report */
@@ -1229,13 +1286,7 @@
   touch-action: none;
 }
 
-/* Submit Button */
-.entry-grid__submit {
-  display: flex;
-  justify-content: center;
-  padding-top: 2rem;
-}
-
+/* Primary action — lives in the sticky topbar (via form attribute). */
 .entry-grid__button {
   background: var(--primary);
   color: white;
@@ -1248,6 +1299,12 @@
   cursor: pointer;
   transition: background 0.15s ease;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.entry-grid__button--topbar {
+  padding: 0.5rem 1rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
 }
 
 .entry-grid__button:hover {
@@ -1402,6 +1459,13 @@
   .dental-grid .rdg-viewport {
     overflow-x: auto !important;
   }
+  /* Inside the phone-only horizontal scroll container the header can't
+     track the page scroll — the container is its scrollport. Pin it to
+     the top of the card instead of the desktop topbar offset, which
+     floated it over the first data rows. */
+  .dental-grid .rdg-header-row .rdg-cell {
+    top: 0;
+  }
 
   /* Diagram view toolbar stacks tools above the hint text. */
   .diagram-view__toolbar { padding: 0.5rem; gap: 0.35rem; }
@@ -1417,13 +1481,10 @@
   .exam-table tbody td { padding: 0.3rem 0.45rem; }
   .anesthesia-drug__input { max-width: 100%; }
 
-  /* Submit button full width. */
-  .entry-grid__submit { padding-top: 1.25rem; }
-  .entry-grid__button {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
+  /* Topbar primary action compresses to fit beside Voice/Chart. */
+  .entry-grid__button--topbar {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
   }
 
   /* AI settings modal — full bleed with safe insets. */

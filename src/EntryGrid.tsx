@@ -359,9 +359,20 @@ const EntryGrid: React.FC = () => {
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
           />
+          {/* Primary action lives in the sticky topbar so it's reachable
+              from any section without scrolling to the page floor. Submits
+              the chart form below via the form attribute. */}
+          <button
+            type="submit"
+            form="chart-form"
+            className="entry-grid__button entry-grid__button--topbar"
+          >
+            Preview PDF
+          </button>
         </div>
       </header>
       <form
+        id="chart-form"
         className="entry-grid-form"
         onSubmit={handleOpenPreview}
         // Stop browser-default form submit on Enter from any single-line
@@ -382,12 +393,6 @@ const EntryGrid: React.FC = () => {
         }}
       >
         <SidebarLayout sections={sections} />
-
-        <div className="entry-grid__submit">
-          <button type="submit" className="entry-grid__button">
-            Preview &amp; Download PDF
-          </button>
-        </div>
       </form>
 
       <PdfPreviewModal

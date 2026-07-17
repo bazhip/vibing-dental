@@ -69,12 +69,18 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           value={nerveBlocks.drug}
           placeholder={defaultDrug}
           onChange={handleChange('drug')}
+          aria-describedby="anesthesia-drug-hint"
         />
         <datalist id="anesthesia-drug-options">
           {drugList.map((d) => (
             <option key={d} value={d} />
           ))}
         </datalist>
+        {/* The grey placeholder alone reads ambiguously — is the drug set
+            or not? Say what blank means. */}
+        <span id="anesthesia-drug-hint" className="anesthesia-drug__hint">
+          Leave blank to chart {defaultDrug} (the template default).
+        </span>
       </div>
 
       <table className="anesthesia-table">

@@ -217,6 +217,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <span className="dental-grid__title">Dental Chart</span>
+        <span className="dental-grid__hint">
+          Click a cell and type — Tab and Enter move like a spreadsheet,
+          codes autocomplete
+        </span>
       </div>
       <div className="dental-grid" ref={wrapperRef}>
         {containerWidth > 0 && (

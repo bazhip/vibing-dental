@@ -383,12 +383,15 @@
   padding: 1rem;
   display: flex; flex-direction: column;
   background: #f8fafc;
-  overflow-y: auto;
+  /* Only the style list scrolls — the Download button stays pinned at
+     the rail's bottom instead of scrolling out of reach. */
+  overflow: hidden;
 }
 .pdf-preview-styles ul {
   list-style: none; padding: 0; margin: 0;
   display: flex; flex-direction: column; gap: 4px;
-  flex: 1;
+  flex: 1; min-height: 0;
+  overflow-y: auto;
 }
 .pdf-preview-style {
   width: 100%;
