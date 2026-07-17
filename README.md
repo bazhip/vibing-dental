@@ -1,68 +1,80 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Vibing Dental — Veterinary Dental Charting
 
-## Available Scripts
+A single-page React app for charting veterinary dental procedures. A tech or
+DVM fills in the patient info, oral exam, anesthesia/nerve blocks, per-tooth
+measurements, and tooth diagrams, then downloads a filled-in chart PDF on the
+practice's template.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Patient & exam forms** — patient info, presenting complaint, oral exam
+  findings (normal/abnormal + comments), nerve block doses, and a free-text
+  treatment report.
+- **Charting grid** — spreadsheet-style entry of per-tooth measurements
+  (mobility, recession, pocket, furcation, hyperplasia, calculus, gingivitis,
+  PD state) with Excel-like keys: Tab/Shift+Tab move across cells, Enter
+  commits and moves down a row, Escape cancels. Dental-code autocomplete pops
+  up as you type. Column headers stay frozen below the topbar while you
+  scroll.
+- **Missing-tooth toggle** — each grid row has a "Missing" button that
+  crosses out the row *and* fills the tooth in on the Diagnosis diagram (the
+  two views share state, so marking a tooth on the diagram crosses out the
+  grid row too, and missing teeth are locked in the Procedure diagram).
+- **Tooth diagrams** — interactive Diagnosis (pre-surgery) and Procedure
+  (post-surgery) diagrams: mark teeth missing/extracted, attach anchored
+  comments, and draw freehand. Four dentitions: adult cat (30 teeth), adult
+  dog (42), puppy (28), and kitten (26), all Triadan-numbered.
+- **PDF export & reload** — generates the filled chart on the SoCal or VCA
+  template (`pdf-lib`), with the diagrams rasterized in. Chart state is also
+  embedded in the PDF, so a previously downloaded chart can be re-uploaded to
+  restore the whole form.
+- **Voice / AI autofill** — optional dictation (Deepgram) piped through
+  Claude to fill the chart hands-free during a procedure. Requires API keys,
+  configured in-app under AI settings.
+- **Persistence** — everything autosaves to `localStorage`, so a refresh (or
+  an accidental tab close) loses nothing. "New Chart" in the menu resets.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Development
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```bash
+npm install
+npm start        # dev server on http://localhost:3000
+npm test         # jest suite
+npm run build    # production build into build/
+```
 
-### `npm test`
+The app is gated behind a simple practice password (see
+`src/components/Login.tsx`).
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Code layout
 
-### `npm run build`
+```
+src/
+  EntryGrid.tsx        top-level layout: topbar, section rail, preview modal
+  hooks/useChartState  single source of truth for all chart state
+  components/          forms, charting grid, diagrams, modals
+  constants/           tooth data, dental codes, diagram geometry
+  utils/pdf*           PDF generation and re-parsing
+public/diagrams/       per-species diagram artwork (SVG traced per tooth)
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Deployment
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+The site is served from the `docs/` folder (GitHub Pages style). To publish
+a new build:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm run build
+rm -rf docs && cp -r build docs
+git add docs && git commit
+```
 
-### `npm run eject`
+`package.json` sets `"homepage": "."` so the build uses relative asset
+paths and works from any mount path. The reference chart PDFs
+(`canine_chart.pdf`, `feline_chart.pdf`) also live in `docs/` — keep them
+when refreshing the build.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Feedback
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Bugs and ideas: email bazhip@gmail.com (the in-app footer link pre-fills a
+report template).
