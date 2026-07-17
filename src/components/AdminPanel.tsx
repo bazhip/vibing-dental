@@ -28,6 +28,21 @@ interface AdminStats {
   templates: number;
 }
 
+interface AdminPracticeMember {
+  userId: string;
+  email: string;
+  role: string;
+}
+
+interface AdminPractice {
+  id: string;
+  name: string;
+  ownerEmail: string;
+  memberCount: number;
+  chartCount: number;
+  members: AdminPracticeMember[];
+}
+
 /** True when the signed-in user is the admin. */
 export function useIsAdmin(): boolean {
   const [isAdmin, setIsAdmin] = React.useState(false);
@@ -79,26 +94,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [notice, setNotice] = React.useState('');
+  const [tab, setTab] = React.useState<'accounts' | 'practices'>('accounts');
+  const [practices, setPractices] = React.useState<AdminPractice[] | null>(null);
+  const [selectedPracticeId, setSelectedPracticeId] = React.useState<string | null>(null);
+  const [practiceRename, setPracticeRename] = React.useState('');
+  const [memberEmail, setMemberEmail] = React.useState('');
 
   const selected = users?.find((u) => u.id === selectedId) ?? null;
+  const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
 
   const refresh = React.useCallback(async () => {
     setError('');
     try {
-      const [s, u] = await Promise.all([
+      const [s, u, pr] = await Promise.all([
         adminCall<AdminStats>({ action: 'stats' }),
         adminCall<{ users: AdminUser[] }>({ action: 'list_users' }),
+        adminCall<{ practices: AdminPractice[] }>({ action: 'list_practices' }),
       ]);
       setStats(s);
       setUsers(u.users);
+      setPractices(pr.practices);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load accounts.');
+      setError(e instanceof Error ? e.message : 'Could not load admin data.');
     }
   }, []);
 
   React.useEffect(() => {
     if (open) {
       setSelectedId(null);
+      setSelectedPracticeId(null);
       setNotice('');
       refresh();
     }
@@ -207,6 +231,53 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
+  const pickPractice = (p: AdminPractice) => {
+    setSelectedPracticeId(p.id);
+    setPracticeRename(p.name);
+    setMemberEmail('');
+    setError('');
+    setNotice('');
+  };
+
+  const handleRenamePractice = () => {
+    if (!selectedPractice) return;
+    run('Practice renamed.', async () => {
+      await adminCall({ action: 'rename_practice', practiceId: selectedPractice.id, name: practiceRename.trim() });
+      await refresh();
+    });
+  };
+
+  const handleDeletePractice = () => {
+    if (!selectedPractice) return;
+    if (!window.confirm(
+      `Delete the practice "${selectedPractice.name || 'Untitled'}"? Its ${selectedPractice.chartCount} shared ` +
+      `chart${selectedPractice.chartCount === 1 ? '' : 's'} become private to their creators; accounts are not deleted.`
+    )) return;
+    run('Practice deleted.', async () => {
+      await adminCall({ action: 'delete_practice', practiceId: selectedPractice.id });
+      setSelectedPracticeId(null);
+      await refresh();
+    });
+  };
+
+  const handleAddPracticeMember = () => {
+    if (!selectedPractice || !memberEmail.trim()) return;
+    run('Member added.', async () => {
+      await adminCall({ action: 'practice_add_member', practiceId: selectedPractice.id, email: memberEmail.trim() });
+      setMemberEmail('');
+      await refresh();
+    });
+  };
+
+  const handleRemovePracticeMember = (userId: string, email: string) => {
+    if (!selectedPractice) return;
+    if (!window.confirm(`Remove ${email} from ${selectedPractice.name || 'this practice'}?`)) return;
+    run('Member removed.', async () => {
+      await adminCall({ action: 'practice_remove_member', practiceId: selectedPractice.id, userId });
+      await refresh();
+    });
+  };
+
   const fmt = (iso: string | null) =>
     iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
@@ -227,10 +298,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
               : 'Loading…'}
           </p>
 
+          <div className="admin-panel__tabs" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'accounts'}
+              className={tab === 'accounts' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+              onClick={() => setTab('accounts')}
+            >
+              Accounts{users ? ` (${users.length})` : ''}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'practices'}
+              className={tab === 'practices' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+              onClick={() => setTab('practices')}
+            >
+              Practices{practices ? ` (${practices.length})` : ''}
+            </button>
+          </div>
+
           {error && <div className="login-error" role="alert">{error}</div>}
           {notice && <div className="login-notice" role="status">{notice}</div>}
 
-          {users !== null && users.length > 0 && (
+          {tab === 'accounts' && users !== null && users.length > 0 && (
             <div className="chart-library__table" role="table" aria-label="Practice accounts">
               <div className="chart-library__head-row" role="row">
                 <span role="columnheader">Email</span>
@@ -274,7 +366,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
             </div>
           )}
 
-          {selected && (
+          {tab === 'accounts' && selected && (
             <section className="admin-panel__actions">
               <div className="admin-panel__names">
                 <label className="patient-form__label">
@@ -326,6 +418,101 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     Delete account…
                   </button>
                 )}
+              </div>
+            </section>
+          )}
+
+          {tab === 'practices' && practices !== null && (
+            <div className="chart-library__table" role="table" aria-label="Practices">
+              <div className="chart-library__head-row admin-panel__practice-row" role="row">
+                <span role="columnheader">Practice</span>
+                <span role="columnheader">Owner</span>
+                <span role="columnheader">Members</span>
+                <span role="columnheader">Charts</span>
+              </div>
+              <div className="chart-library__scroll">
+                {practices.length === 0 && <div className="chart-library__empty">No practices.</div>}
+                {practices.map((p) => (
+                  <div key={p.id} className="chart-library__row" role="row">
+                    <button
+                      type="button"
+                      className={
+                        p.id === selectedPracticeId
+                          ? 'chart-library__row-main admin-panel__practice-row admin-panel__row--active'
+                          : 'chart-library__row-main admin-panel__practice-row'
+                      }
+                      onClick={() => pickPractice(p)}
+                      disabled={busy}
+                    >
+                      <span role="cell" className="chart-library__patient">{p.name || 'Untitled'}</span>
+                      <span role="cell" className="chart-library__cell">{p.ownerEmail}</span>
+                      <span role="cell" className="chart-library__cell">{p.memberCount}</span>
+                      <span role="cell" className="chart-library__cell">{p.chartCount}</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === 'practices' && selectedPractice && (
+            <section className="admin-panel__actions">
+              <div className="admin-panel__names">
+                <label className="patient-form__label">
+                  Practice name
+                  <input
+                    type="text"
+                    className="patient-form__input"
+                    value={practiceRename}
+                    onChange={(e) => setPracticeRename(e.target.value)}
+                  />
+                </label>
+                <button type="button" className="diagram-view__action" onClick={handleRenamePractice} disabled={busy}>
+                  Rename
+                </button>
+              </div>
+
+              <ul className="team__members">
+                {selectedPractice.members.map((m) => (
+                  <li key={m.userId} className="team__member">
+                    <span className="team__member-id"><strong>{m.email}</strong></span>
+                    <span className="team__member-role">{m.role}</span>
+                    {m.role !== 'owner' && (
+                      <button
+                        type="button"
+                        className="diagram-view__action diagram-view__action--danger"
+                        onClick={() => handleRemovePracticeMember(m.userId, m.email)}
+                        disabled={busy}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="practice-team__add">
+                <input
+                  type="email"
+                  className="patient-form__input"
+                  placeholder="Add member by email"
+                  value={memberEmail}
+                  onChange={(e) => setMemberEmail(e.target.value)}
+                />
+                <button type="button" className="diagram-view__action" onClick={handleAddPracticeMember} disabled={busy || !memberEmail.trim()}>
+                  Add
+                </button>
+              </div>
+
+              <div className="admin-panel__buttons">
+                <button
+                  type="button"
+                  className="diagram-view__action diagram-view__action--danger"
+                  onClick={handleDeletePractice}
+                  disabled={busy}
+                >
+                  Delete practice…
+                </button>
               </div>
             </section>
           )}

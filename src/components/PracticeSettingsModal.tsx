@@ -117,23 +117,6 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     }
   };
 
-  const handleCreatePractice = () => {
-    const name = practiceName.trim();
-    if (!name) {
-      setTeamError('Add a practice name above first — it names the shared practice too.');
-      return;
-    }
-    runTeam('Shared practice created. Reloading…', async () => {
-      // Persist the name so the entity and the branding match, then
-      // create the shared practice under it.
-      await profile.update({ practiceName: name, doctorName: doctorName.trim() });
-      await team.createPractice(name);
-      // Reload so this session picks up its new practice_id and starts
-      // stamping new charts as shared.
-      window.location.reload();
-    });
-  };
-
   const isOwner = team.role === 'owner';
 
   return (
@@ -212,22 +195,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             {!team.loaded ? (
               <p className="practice-logo-empty">Loading team…</p>
             ) : !team.practice ? (
-              <>
-                <p className="ai-settings-blurb">
-                  Working solo? Nothing to do. To share charts, report
-                  templates, and images with colleagues, create a shared
-                  practice — everything you chart afterwards is visible to
-                  everyone you add.
-                </p>
-                <button
-                  type="button"
-                  className="diagram-view__action"
-                  onClick={handleCreatePractice}
-                  disabled={teamBusy}
-                >
-                  {teamBusy ? 'Creating…' : 'Create a shared practice'}
-                </button>
-              </>
+              <p className="practice-logo-empty">
+                Your practice is being set up — reload in a moment.
+              </p>
             ) : (
               <>
                 <p className="ai-settings-blurb">

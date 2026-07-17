@@ -162,6 +162,81 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true });
       }
 
+      case 'list_practices': {
+        const { data: pracs } = await admin
+          .from('practices')
+          .select('id, name, owner, created_at')
+          .order('created_at', { ascending: true });
+        const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
+        const { data: chartRows } = await admin.from('charts').select('practice_id').not('practice_id', 'is', null).limit(20000);
+        const memberCount = new Map<string, number>();
+        for (const m of mems ?? []) memberCount.set(m.practice_id, (memberCount.get(m.practice_id) ?? 0) + 1);
+        const chartCount = new Map<string, number>();
+        for (const c of chartRows ?? []) if (c.practice_id) chartCount.set(c.practice_id, (chartCount.get(c.practice_id) ?? 0) + 1);
+        const practices = [];
+        for (const p of pracs ?? []) {
+          const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
+          const memberDetails = [];
+          for (const m of (mems ?? []).filter((x) => x.practice_id === p.id)) {
+            const { data: u } = await admin.auth.admin.getUserById(m.user_id);
+            memberDetails.push({ userId: m.user_id, email: u?.user?.email ?? '', role: m.role });
+          }
+          practices.push({
+            id: p.id,
+            name: p.name ?? '',
+            ownerEmail: ownerUser?.user?.email ?? '',
+            memberCount: memberCount.get(p.id) ?? 0,
+            chartCount: chartCount.get(p.id) ?? 0,
+            members: memberDetails,
+          });
+        }
+        return json({ practices });
+      }
+
+      case 'rename_practice': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const name = typeof body.name === 'string' ? body.name.trim() : '';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const { error } = await admin.from('practices').update({ name }).eq('id', practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'delete_practice': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        // Un-share the practice's records (keep them, owned by creators),
+        // clear member pointers, then drop the practice + memberships.
+        await admin.from('charts').update({ practice_id: null }).eq('practice_id', practiceId);
+        await admin.from('report_templates').update({ practice_id: null }).eq('practice_id', practiceId);
+        await admin.from('attachments').update({ practice_id: null }).eq('practice_id', practiceId);
+        await admin.from('profiles').update({ practice_id: null }).eq('practice_id', practiceId);
+        const { error } = await admin.from('practices').delete().eq('id', practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'practice_remove_member': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId || !userId) return json({ error: 'missing ids' }, 400);
+        await admin.from('practice_members').delete().eq('practice_id', practiceId).eq('user_id', userId);
+        await admin.from('profiles').update({ practice_id: null }).eq('id', userId).eq('practice_id', practiceId);
+        return json({ ok: true });
+      }
+
+      case 'practice_add_member': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const email = (typeof body.email === 'string' ? body.email : '').trim().toLowerCase();
+        if (!practiceId || !email) return json({ error: 'missing practiceId or email' }, 400);
+        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        const target = list.users.find((u) => (u.email ?? '').toLowerCase() === email);
+        if (!target) return json({ error: 'No account with that email.' }, 404);
+        await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: target.id, role: 'member' });
+        const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
+        if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
+        return json({ ok: true });
+      }
+
       default:
         return json({ error: `unknown action: ${action}` }, 400);
     }

@@ -1637,10 +1637,14 @@
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
   width: 100%; max-width: 520px;
+  /* Cap to the viewport so tall content (e.g. the Practice modal with a
+     team roster) scrolls in the body instead of overflowing off-screen. */
+  max-height: calc(100vh - 3rem);
   display: flex; flex-direction: column;
   overflow: hidden;
 }
 .ai-settings-header {
+  flex: 0 0 auto;
   display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border, #e2e8f0);
@@ -1658,6 +1662,10 @@
 .ai-settings-body {
   padding: 1rem 1.25rem;
   display: flex; flex-direction: column; gap: 0.85rem;
+  /* Scroll the middle; header + footer stay pinned. */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 .ai-settings-blurb {
   margin: 0; font-size: 0.9rem; color: var(--text-muted);
@@ -1783,7 +1791,8 @@
 }
 
 .ai-settings-footer {
-  display: flex; gap: 0.5rem; align-items: center;
+  flex: 0 0 auto;
+  display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end;
   padding: 0.85rem 1.25rem;
   border-top: 1px solid var(--border, #e2e8f0);
 }
