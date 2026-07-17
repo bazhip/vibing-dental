@@ -482,12 +482,58 @@
   background-color: #f0f4f8;
 }
 
-/* Frozen column styling */
-.dental-grid .rdg-cell[aria-colindex="1"],
-.dental-grid .rdg-cell[aria-colindex="2"] {
+/* Label columns (Tooth + Triadan — colindex 2/3 now that the Missing
+   toggle occupies column 1). Scoped to .rdg-row so the sticky header
+   cells keep their own background. */
+.dental-grid .rdg-row .rdg-cell[aria-colindex="2"],
+.dental-grid .rdg-row .rdg-cell[aria-colindex="3"] {
   background-color: #edf2f7;
   font-weight: 600;
   color: var(--text);
+}
+
+/* "Missing" toggle — leftmost cell of each row. Clicking crosses out the
+   row here and fills the tooth on the Diagnosis diagram (shared state). */
+.dental-grid__missing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: white;
+  color: #64748b;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.dental-grid__missing-btn:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.dental-grid__missing-btn--active,
+.dental-grid__missing-btn--active:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+/* Rows for teeth marked missing: struck through and dimmed so they read
+   as "not chartable" at a glance. The toggle cell itself stays legible. */
+.dental-grid .rdg-row.dental-grid__row--missing .rdg-cell {
+  text-decoration: line-through;
+  color: #94a3b8;
+  background-color: #f1f5f9;
+}
+
+.dental-grid .rdg-row.dental-grid__row--missing .rdg-cell[aria-colindex="1"] {
+  text-decoration: none;
 }
 
 /* Text editor styling */

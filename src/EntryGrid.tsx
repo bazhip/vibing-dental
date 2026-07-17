@@ -228,6 +228,19 @@ const EntryGrid: React.FC = () => {
         <DentalGrid
           toothData={chart.toothData}
           onToothDataChange={chart.setToothDataDirectly}
+          // The grid's "Missing" toggle writes the same pre-surgery marks
+          // the Diagnosis diagram edits, so marking a tooth missing in
+          // either place crosses out the grid row AND fills the tooth on
+          // the diagram (and locks it in the Procedure diagram).
+          toothMarks={chart.preToothMarks}
+          onToggleMissing={(triadan) =>
+            chart.setPreToothMarks((marks: ToothMarks) => {
+              const next = { ...marks };
+              if (next[triadan] === 'missing') delete next[triadan];
+              else next[triadan] = 'missing';
+              return next;
+            })
+          }
         />
       ),
     },

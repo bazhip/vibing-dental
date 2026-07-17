@@ -5,12 +5,16 @@ import DataGrid, {
   DataGridHandle,
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
-import { ToothData } from '../types';
+import { ToothData, ToothMarks } from '../types';
 import { CodeField } from './CodeField';
 
 interface DentalGridProps {
   toothData: ToothData[];
   onToothDataChange: (rows: ToothData[]) => void;
+  /** Diagnosis-diagram marks — rows whose tooth is marked `missing` render
+   *  crossed out, and the leading column's button toggles that mark. */
+  toothMarks: ToothMarks;
+  onToggleMissing: (triadan: number) => void;
 }
 
 /**
@@ -31,6 +35,8 @@ interface DentalGridProps {
 export const DentalGrid: React.FC<DentalGridProps> = ({
   toothData,
   onToothDataChange,
+  toothMarks,
+  onToggleMissing,
 }) => {
   const [containerWidth, setContainerWidth] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -70,12 +76,12 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       const rowIdx = toothData.findIndex((r) => r.triadan === p.row.triadan);
       const lastRowIdx = toothData.length - 1;
 
-      // Editable columns span idx 2 (mobility) … 9 (pdstate). Tab wraps
+      // Editable columns span idx 3 (mobility) … 10 (pdstate). Tab wraps
       // forward to the next row's first editable column; Shift+Tab wraps
       // back to the previous row's last editable column. Off-page edges
       // are no-ops so focus stays in the grid.
-      const FIRST_EDITABLE = 2;
-      const LAST_EDITABLE = 9;
+      const FIRST_EDITABLE = 3;
+      const LAST_EDITABLE = 10;
 
       const advance = (
         nextRow: number,
@@ -169,16 +175,42 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   });
 
   const columns: Column<ToothData>[] = [
+    {
+      key: 'missing',
+      name: 'Missing',
+      width: getColumnWidth(0.08),
+      editable: false,
+      formatter: ({ row }) => {
+        const isMissing = toothMarks[row.triadan] === 'missing';
+        return (
+          <button
+            type="button"
+            className={`dental-grid__missing-btn${
+              isMissing ? ' dental-grid__missing-btn--active' : ''
+            }`}
+            aria-pressed={isMissing}
+            title={
+              isMissing
+                ? `Unmark tooth ${row.triadan} as missing`
+                : `Mark tooth ${row.triadan} as missing — crosses out this row and fills the tooth on the Diagnosis diagram`
+            }
+            onClick={() => onToggleMissing(row.triadan)}
+          >
+            {isMissing ? 'Missing ✕' : 'Missing'}
+          </button>
+        );
+      },
+    },
     { key: 'tooth',   name: 'Tooth',   width: getColumnWidth(0.07), editable: false },
     { key: 'triadan', name: 'Triadan', width: getColumnWidth(0.08), editable: false },
-    codeCol('mobility',    'Mobility',    0.09, 2),
-    codeCol('recession',   'Recession',   0.10, 3),
-    codeCol('pocket',      'Pocket',      0.09, 4),
-    codeCol('furcation',   'Furcation',   0.10, 5),
-    codeCol('hyperplasia', 'Hyperplasia', 0.13, 6),
-    codeCol('calculus',    'Calculus',    0.10, 7),
-    codeCol('gingivitis',  'Gingivitis',  0.11, 8),
-    codeCol('pdstate',     'PD State',    0.10, 9),
+    codeCol('mobility',    'Mobility',    0.08, 3),
+    codeCol('recession',   'Recession',   0.09, 4),
+    codeCol('pocket',      'Pocket',      0.08, 5),
+    codeCol('furcation',   'Furcation',   0.10, 6),
+    codeCol('hyperplasia', 'Hyperplasia', 0.11, 7),
+    codeCol('calculus',    'Calculus',    0.09, 8),
+    codeCol('gingivitis',  'Gingivitis',  0.10, 9),
+    codeCol('pdstate',     'PD State',    0.09, 10),
   ];
 
   return (
@@ -199,6 +231,11 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             rows={toothData}
             onRowsChange={onToothDataChange}
             rowKeyGetter={(row: ToothData) => row.triadan}
+            rowClass={(row: ToothData) =>
+              toothMarks[row.triadan] === 'missing'
+                ? 'dental-grid__row--missing'
+                : undefined
+            }
           />
         )}
       </div>
