@@ -26,6 +26,7 @@ export interface CloudChartMeta {
   patient_number: string;
   species: string;
   chart_date: string;
+  recall_date: string;
   updated_at: string;
 }
 
@@ -116,6 +117,7 @@ export function useCloudSync(chart: UseChartStateReturn, active = true): UseClou
       patient_number: snap.patientInfo.patientNumber,
       species: snap.species,
       chart_date: snap.patientInfo.date,
+      recall_date: snap.patientInfo.recallDate ?? '',
       data: snap,
     });
     setStatus('saving');
@@ -218,7 +220,7 @@ export function useCloudSync(chart: UseChartStateReturn, active = true): UseClou
     if (!supabase) return [];
     const { data, error } = await supabase
       .from('charts')
-      .select('id, patient_name, patient_number, species, chart_date, updated_at')
+      .select('id, patient_name, patient_number, species, chart_date, recall_date, updated_at')
       .order('updated_at', { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);

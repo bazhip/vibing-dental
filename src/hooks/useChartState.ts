@@ -132,6 +132,7 @@ function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       ...s.patientInfo,
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
+      recallDate: s.patientInfo.recallDate ?? '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS, ...(s.patientInfo.nerveBlocks ?? {}) },
       exam: { ...EMPTY_EXAM_FINDINGS, ...(s.patientInfo.exam ?? {}) },
     },
@@ -165,6 +166,7 @@ export function useChartState(): UseChartStateReturn {
       date: new Date().toISOString().split('T')[0],
       complaint: '',
       treatmentReport: '',
+      recallDate: '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: { ...EMPTY_EXAM_FINDINGS },
     })

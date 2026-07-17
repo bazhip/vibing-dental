@@ -116,6 +116,9 @@ export interface PatientInfo {
   date: string;
   complaint: string;
   treatmentReport: string;
+  /** Next dental recheck due (yyyy-mm-dd), '' when none. Surfaced in the
+   *  chart library as a recall reminder. */
+  recallDate: string;
   nerveBlocks: NerveBlocks;
   exam: ExamFindings;
 }

@@ -85,6 +85,17 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             onChange={handleInputChange('tech')}
           />
         </label>
+
+        <label className="patient-form__label">
+          Recall due
+          <input
+            type="date"
+            className="patient-form__input"
+            value={patientInfo.recallDate}
+            onChange={handleInputChange('recallDate')}
+          />
+          <span className="patient-form__hint">Next dental recheck — shown in My charts.</span>
+        </label>
       </div>
 
       <div className="patient-form__row">

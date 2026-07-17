@@ -182,3 +182,6 @@ create policy "users manage own attachments storage"
   on storage.objects for all to authenticated
   using (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- Recall reminder column (also mirrored in PatientInfo.recallDate inside data jsonb).
+alter table public.charts add column if not exists recall_date text not null default '';

@@ -215,6 +215,7 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
     tech:            logo === 'vca' ? legacyTech   : '',
     complaint:       readTextField(form, 'chief'),
     treatmentReport: readTextField(form, 'treatmentreport'),
+    recallDate:      '', // legacy PDFs predate recall dates
     nerveBlocks,
     exam,
   };

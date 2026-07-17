@@ -762,3 +762,75 @@
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+
+/* Library controls: search + recall filter */
+.chart-library__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.chart-library__filter {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chart-library__filter:hover:not(:disabled) { border-color: var(--primary); color: var(--text); }
+.chart-library__filter:disabled { opacity: 0.5; cursor: default; }
+.chart-library__filter--on {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* Recall status colors */
+.chart-library__recall--due { color: var(--primary); font-weight: 600; }
+.chart-library__recall--overdue { color: var(--danger); font-weight: 600; }
+
+/* Patient group disclosure triangle */
+.chart-library__disclosure {
+  display: inline-block;
+  width: 1em;
+  color: var(--text-muted);
+  font-size: 0.8em;
+}
+
+/* Expanded visit rows sit indented under their patient. */
+.chart-library__visit {
+  background: var(--surface-sunken, #fafbfc);
+}
+.chart-library__visit-main {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 1.4fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0 0.5rem 2.25rem;
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+.chart-library__visit-main:hover { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.chart-library__visit-date {
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Patient-form inline hint */
+.patient-form__hint {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  font-weight: 400;
+}

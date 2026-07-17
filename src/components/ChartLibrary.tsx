@@ -16,23 +16,62 @@ const SPECIES_LABELS: Record<string, string> = {
   'canine-deciduous': 'Canine · Deciduous',
 };
 
-type SortKey = 'patient' | 'date' | 'updated';
+/** One animal's charts across visits. */
+interface PatientGroup {
+  key: string;
+  name: string;
+  number: string;
+  species: string;
+  visits: CloudChartMeta[];
+  latestUpdated: string;
+  /** Soonest upcoming (or most overdue) recall across the patient's visits. */
+  recall: string;
+}
+
+type SortKey = 'patient' | 'updated' | 'recall';
 type SortDir = 'asc' | 'desc';
 
-const COMPARATORS: Record<SortKey, (a: CloudChartMeta, b: CloudChartMeta) => number> = {
-  patient: (a, b) =>
-    a.patient_name.localeCompare(b.patient_name, undefined, { sensitivity: 'base' }),
-  // chart_date is yyyy-mm-dd, so string compare sorts chronologically.
-  date: (a, b) => a.chart_date.localeCompare(b.chart_date),
-  updated: (a, b) => a.updated_at.localeCompare(b.updated_at),
-};
+function todayIso(): string {
+  return new Date().toISOString().split('T')[0];
+}
 
-/**
- * "My charts" — the practice's saved-chart browser, presented as a
- * dialog over the working chart like the app's other popups. Search
- * filters client-side; column headers sort; rows open, the trailing
- * button deletes.
- */
+/** Group charts by patient: patient number if present, else name. */
+function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
+  const groups = new Map<string, PatientGroup>();
+  for (const c of charts) {
+    const num = c.patient_number.trim().toLowerCase();
+    const name = c.patient_name.trim().toLowerCase();
+    const key = num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
+    let g = groups.get(key);
+    if (!g) {
+      g = {
+        key,
+        name: c.patient_name.trim() || 'Unnamed patient',
+        number: c.patient_number.trim(),
+        species: c.species,
+        visits: [],
+        latestUpdated: c.updated_at,
+        recall: c.recall_date || '',
+      };
+      groups.set(key, g);
+    }
+    g.visits.push(c);
+    // Rows arrive newest-first, so the first-seen values are the latest.
+    if (c.updated_at > g.latestUpdated) g.latestUpdated = c.updated_at;
+    // Keep the soonest non-empty recall date across visits.
+    if (c.recall_date && (!g.recall || c.recall_date < g.recall)) g.recall = c.recall_date;
+  }
+  // Visits within a group: newest chart date first, then updated.
+  const list = Array.from(groups.values());
+  for (const g of list) {
+    g.visits.sort((a, b) =>
+      (b.chart_date || '').localeCompare(a.chart_date || '') ||
+      b.updated_at.localeCompare(a.updated_at)
+    );
+  }
+  return list;
+}
+
 export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   listCharts,
   onOpen,
@@ -45,6 +84,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [sortKey, setSortKey] = React.useState<SortKey>('updated');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
+  const [dueOnly, setDueOnly] = React.useState(false);
+  const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
 
   const refresh = React.useCallback(async () => {
     setError('');
@@ -67,28 +108,45 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const rows = React.useMemo(() => {
+  const today = todayIso();
+
+  const groups = React.useMemo(() => {
     if (!charts) return null;
     const q = query.trim().toLowerCase();
-    const filtered = q
-      ? charts.filter((c) =>
-          `${c.patient_name} ${c.patient_number}`.toLowerCase().includes(q)
-        )
-      : charts;
-    const sorted = [...filtered].sort(COMPARATORS[sortKey]);
-    if (sortDir === 'desc') sorted.reverse();
-    return sorted;
-  }, [charts, query, sortKey, sortDir]);
+    let g = groupByPatient(charts);
+    if (q) g = g.filter((x) => `${x.name} ${x.number}`.toLowerCase().includes(q));
+    if (dueOnly) g = g.filter((x) => x.recall && x.recall <= today);
+    const cmp: Record<SortKey, (a: PatientGroup, b: PatientGroup) => number> = {
+      patient: (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+      updated: (a, b) => a.latestUpdated.localeCompare(b.latestUpdated),
+      // Empty recall sorts last regardless of direction.
+      recall: (a, b) => (a.recall || '9999').localeCompare(b.recall || '9999'),
+    };
+    g.sort(cmp[sortKey]);
+    if (sortDir === 'desc') g.reverse();
+    return g;
+  }, [charts, query, dueOnly, sortKey, sortDir, today]);
+
+  const dueCount = React.useMemo(() => {
+    if (!charts) return 0;
+    return groupByPatient(charts).filter((g) => g.recall && g.recall <= today).length;
+  }, [charts, today]);
 
   const setSort = (key: SortKey) => {
-    if (key === sortKey) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
+    if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    else {
       setSortKey(key);
-      // Names read naturally A→Z; dates newest-first.
-      setSortDir(key === 'patient' ? 'asc' : 'desc');
+      setSortDir(key === 'patient' || key === 'recall' ? 'asc' : 'desc');
     }
   };
+
+  const toggle = (key: string) =>
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   const handleOpen = async (id: string) => {
     setBusyId(id);
@@ -104,7 +162,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const handleDelete = async (c: CloudChartMeta) => {
     const name = c.patient_name.trim() || 'this chart';
-    if (!window.confirm(`Delete ${name}? This removes the cloud copy permanently.`)) return;
+    const dateLabel = c.chart_date ? ` (${c.chart_date})` : '';
+    if (!window.confirm(`Delete the ${name}${dateLabel} chart? This removes the cloud copy permanently.`)) return;
     setBusyId(c.id);
     try {
       await onDelete(c.id);
@@ -114,6 +173,24 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     } finally {
       setBusyId(null);
     }
+  };
+
+  const recallCell = (recall: string) => {
+    if (!recall) return <span className="chart-library__cell">—</span>;
+    const overdue = recall < today;
+    const due = recall <= today;
+    return (
+      <span
+        className={
+          due
+            ? `chart-library__cell chart-library__recall--${overdue ? 'overdue' : 'due'}`
+            : 'chart-library__cell'
+        }
+      >
+        {recall}
+        {overdue ? ' · overdue' : due ? ' · today' : ''}
+      </span>
+    );
   };
 
   const sortHeader = (key: SortKey, label: string) => (
@@ -141,15 +218,26 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
         </header>
 
         <div className="chart-library-modal__body">
-          <input
-            type="search"
-            className="chart-library__search"
-            placeholder="Search by patient name or number…"
-            aria-label="Search charts"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoFocus
-          />
+          <div className="chart-library__controls">
+            <input
+              type="search"
+              className="chart-library__search"
+              placeholder="Search by patient name or number…"
+              aria-label="Search charts"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              autoFocus
+            />
+            <button
+              type="button"
+              className={dueOnly ? 'chart-library__filter chart-library__filter--on' : 'chart-library__filter'}
+              onClick={() => setDueOnly((v) => !v)}
+              aria-pressed={dueOnly}
+              disabled={dueCount === 0 && !dueOnly}
+            >
+              Due for recall{dueCount > 0 ? ` (${dueCount})` : ''}
+            </button>
+          </div>
 
           {error && <div className="login-error" role="alert">{error}</div>}
 
@@ -160,73 +248,109 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             </p>
           )}
 
-          {rows === null && !error && (
-            <div className="chart-library__empty">Loading…</div>
-          )}
+          {groups === null && !error && <div className="chart-library__empty">Loading…</div>}
 
-          {rows !== null && rows.length === 0 && (
+          {groups !== null && groups.length === 0 && (
             <div className="chart-library__empty">
               {query
-                ? 'No charts match that search.'
+                ? 'No patients match that search.'
+                : dueOnly
+                ? 'No patients are due for recall.'
                 : 'No saved charts yet — they save automatically as you chart.'}
             </div>
           )}
 
-          {rows !== null && rows.length > 0 && (
-            <div className="chart-library__table" role="table" aria-label="Saved charts">
+          {groups !== null && groups.length > 0 && (
+            <div className="chart-library__table" role="table" aria-label="Patients">
               <div className="chart-library__head-row" role="row">
                 {sortHeader('patient', 'Patient')}
                 <span role="columnheader">Patient #</span>
                 <span role="columnheader">Species</span>
-                {sortHeader('date', 'Chart date')}
+                <span role="columnheader">Visits</span>
                 {sortHeader('updated', 'Updated')}
-                <span role="columnheader">
-                  <span className="visually-hidden">Actions</span>
-                </span>
+                {sortHeader('recall', 'Recall')}
               </div>
               <div className="chart-library__scroll">
-                {rows.map((c) => (
-                  <div key={c.id} className="chart-library__row" role="row">
-                    <button
-                      type="button"
-                      className="chart-library__row-main"
-                      onClick={() => handleOpen(c.id)}
-                      disabled={busyId === c.id}
-                      title={`Open the chart for ${c.patient_name.trim() || 'unnamed patient'}`}
-                    >
-                      <span role="cell" className="chart-library__patient">
-                        {c.patient_name.trim() || 'Unnamed patient'}
-                      </span>
-                      <span role="cell" className="chart-library__cell">
-                        {c.patient_number || '—'}
-                      </span>
-                      <span role="cell" className="chart-library__cell chart-library__cell--species">
-                        {SPECIES_LABELS[c.species] ?? c.species ?? '—'}
-                      </span>
-                      <span role="cell" className="chart-library__cell chart-library__cell--date">
-                        {c.chart_date || '—'}
-                      </span>
-                      <span role="cell" className="chart-library__cell">
-                        {new Date(c.updated_at).toLocaleString(undefined, {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                        })}
-                      </span>
-                    </button>
-                    <span role="cell" className="chart-library__row-actions">
-                      <button
-                        type="button"
-                        className="chart-library__delete"
-                        onClick={() => handleDelete(c)}
-                        disabled={busyId === c.id}
-                        aria-label={`Delete chart for ${c.patient_name.trim() || 'unnamed patient'}`}
-                        title="Delete chart"
-                      >
-                        Delete
-                      </button>
-                    </span>
-                  </div>
-                ))}
+                {groups.map((g) => {
+                  const multi = g.visits.length > 1;
+                  const isOpen = expanded.has(g.key);
+                  const only = g.visits[0];
+                  return (
+                    <React.Fragment key={g.key}>
+                      <div className="chart-library__row" role="row">
+                        <button
+                          type="button"
+                          className="chart-library__row-main chart-library__group-main"
+                          onClick={() => (multi ? toggle(g.key) : handleOpen(only.id))}
+                          disabled={busyId === only.id}
+                          aria-expanded={multi ? isOpen : undefined}
+                          title={multi ? `${g.visits.length} visits — expand` : `Open ${g.name}`}
+                        >
+                          <span role="cell" className="chart-library__patient">
+                            {multi && <span className="chart-library__disclosure" aria-hidden="true">{isOpen ? '▾' : '▸'}</span>}
+                            {g.name}
+                          </span>
+                          <span role="cell" className="chart-library__cell">{g.number || '—'}</span>
+                          <span role="cell" className="chart-library__cell chart-library__cell--species">
+                            {SPECIES_LABELS[g.species] ?? g.species ?? '—'}
+                          </span>
+                          <span role="cell" className="chart-library__cell">
+                            {multi ? `${g.visits.length} visits` : '1 visit'}
+                          </span>
+                          <span role="cell" className="chart-library__cell chart-library__cell--date">
+                            {new Date(g.latestUpdated).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                          </span>
+                          {recallCell(g.recall)}
+                        </button>
+                        {!multi && (
+                          <span className="chart-library__row-actions">
+                            <button
+                              type="button"
+                              className="chart-library__delete"
+                              onClick={() => handleDelete(only)}
+                              disabled={busyId === only.id}
+                              aria-label={`Delete chart for ${g.name}`}
+                            >
+                              Delete
+                            </button>
+                          </span>
+                        )}
+                        {multi && <span className="chart-library__row-actions" aria-hidden="true" />}
+                      </div>
+
+                      {multi && isOpen &&
+                        g.visits.map((v) => (
+                          <div className="chart-library__row chart-library__visit" role="row" key={v.id}>
+                            <button
+                              type="button"
+                              className="chart-library__row-main chart-library__visit-main"
+                              onClick={() => handleOpen(v.id)}
+                              disabled={busyId === v.id}
+                              title={`Open the ${v.chart_date || 'undated'} visit`}
+                            >
+                              <span role="cell" className="chart-library__visit-date">
+                                {v.chart_date || 'Undated visit'}
+                              </span>
+                              <span role="cell" className="chart-library__cell">
+                                Updated {new Date(v.updated_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                              </span>
+                            </button>
+                            <span className="chart-library__row-actions">
+                              <button
+                                type="button"
+                                className="chart-library__delete"
+                                onClick={() => handleDelete(v)}
+                                disabled={busyId === v.id}
+                                aria-label={`Delete the ${v.chart_date || 'undated'} visit for ${g.name}`}
+                              >
+                                Delete
+                              </button>
+                            </span>
+                          </div>
+                        ))}
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </div>
           )}
