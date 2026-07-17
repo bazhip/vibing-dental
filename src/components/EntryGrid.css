@@ -26,15 +26,77 @@
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border, #e2e8f0);
 }
+.entry-grid__topbar-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+/* App name reads as an eyebrow; the patient is the headline. During a
+   procedure the question is "whose mouth am I in", not "what app is this". */
 .entry-grid__title {
   margin: 0;
-  font-size: 1.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.entry-grid__patient {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.entry-grid__patient-name {
+  font-size: 1.05rem;
   font-weight: 650;
   color: var(--text);
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 18rem;
 }
+
+.entry-grid__patient-sep {
+  align-self: center;
+  width: 1px;
+  height: 0.9em;
+  background: var(--border-strong);
+}
+
+.entry-grid__patient-meta {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.entry-grid__patient-date {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.entry-grid__patient-empty {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 600px) {
-  .entry-grid__title { font-size: 1.1rem; }
+  /* Chairside on a phone the patient context is the headline; the app
+     already introduced itself on the login screen. */
+  .entry-grid__title { display: none; }
+  .entry-grid__patient-name { max-width: 9rem; font-size: 0.95rem; }
+  .entry-grid__patient-date { display: none; }
 }
 
 .entry-grid__topbar-actions {
@@ -177,7 +239,7 @@
   background: var(--surface-alt, #f8fafc);
 }
 .voice-input__activity-time {
-  font-family: ui-monospace, "SF Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-muted);
 }
@@ -194,7 +256,7 @@
   background: var(--surface-alt, #f8fafc);
 }
 .voice-input__panel-footer kbd {
-  font-family: ui-monospace, monospace;
+  font-family: var(--font-mono);
   background: var(--surface, white);
   border: 1px solid var(--border, #e2e8f0);
   border-radius: 4px; padding: 1px 5px; font-size: 0.72rem;
@@ -351,13 +413,13 @@
 }
 
 .species-tab--active {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  background: var(--primary);
   color: white;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 1px 3px rgba(23, 35, 46, 0.2);
 }
 
 .species-tab--active:hover {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  background: var(--primary);
   color: white;
 }
 
@@ -431,13 +493,17 @@
   width: 100% !important;
 }
 
-.dental-grid .rdg-header-row {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%) !important;
-  color: white !important;
-  font-weight: 600;
-  font-size: 0.9rem;
+/* Instrument header: chart ink, not brand teal — the header labels the
+   record itself. Mono uppercase at caption size also keeps every column
+   title intact at laptop widths. */
+.dental-grid .rdg-header-row,
+.dental-grid .rdg-header-row .rdg-cell {
+  color: #eef3f4 !important;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.68rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.09em;
 }
 
 /* Freeze the column titles just below the app topbar while the page
@@ -448,9 +514,9 @@
   position: sticky;
   top: var(--topbar-height, 0px);
   z-index: 10;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.75rem 0.5rem;
+  background: var(--ink);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.8rem 0.5rem;
 }
 
 .dental-grid .rdg-cell {
@@ -484,12 +550,20 @@
 
 /* Label columns (Tooth + Triadan — colindex 2/3 now that the Missing
    toggle occupies column 1). Scoped to .rdg-row so the sticky header
-   cells keep their own background. */
+   cells keep their own background. Triadan numbers and tooth codes are
+   chart notation — set in the data face. */
 .dental-grid .rdg-row .rdg-cell[aria-colindex="2"],
 .dental-grid .rdg-row .rdg-cell[aria-colindex="3"] {
-  background-color: #edf2f7;
+  background-color: var(--surface-sunken);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text);
+}
+
+/* Measurement cells: tabular figures so columns of numbers align. */
+.dental-grid .rdg-row .rdg-cell {
+  font-variant-numeric: tabular-nums;
 }
 
 /* "Missing" toggle — leftmost cell of each row. Clicking crosses out the
@@ -513,14 +587,14 @@
 }
 
 .dental-grid__missing-btn:hover {
-  border-color: #dc2626;
-  color: #dc2626;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .dental-grid__missing-btn--active,
 .dental-grid__missing-btn--active:hover {
-  background: #dc2626;
-  border-color: #dc2626;
+  background: var(--danger);
+  border-color: var(--danger);
   color: white;
 }
 
@@ -528,8 +602,8 @@
    as "not chartable" at a glance. The toggle cell itself stays legible. */
 .dental-grid .rdg-row.dental-grid__row--missing .rdg-cell {
   text-decoration: line-through;
-  color: #94a3b8;
-  background-color: #f1f5f9;
+  color: #93a2b1;
+  background-color: var(--danger-tint);
 }
 
 .dental-grid .rdg-row.dental-grid__row--missing .rdg-cell[aria-colindex="1"] {
@@ -575,8 +649,11 @@
 
 .anesthesia-table thead th {
   text-align: left;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }
@@ -655,8 +732,11 @@
 
 .exam-table thead th {
   text-align: left;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   color: var(--text-muted);
   padding: 0.4rem 0.6rem;
 }
@@ -831,12 +911,12 @@
 }
 
 .diagram-view__tool--active {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  background: var(--primary);
   color: white;
 }
 
 .diagram-view__tool--active:hover {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-end) 100%);
+  background: var(--primary);
 }
 
 .diagram-view__action {
@@ -1222,14 +1302,14 @@
   }
 
   .entry-grid__topbar {
-    flex-wrap: wrap;
     gap: 0.5rem;
-    padding: 0.75rem 0;
+    padding: 0.75rem var(--page-pad, 0.75rem);
     margin-bottom: 1rem;
   }
-  .entry-grid__title {
-    font-size: 1.15rem;
-    flex: 1 1 auto;
+  /* The lead column shrinks (patient name ellipsizes) so the voice/chart
+     actions stay on the same row. */
+  .entry-grid__topbar-lead {
+    flex: 1 1 0;
     min-width: 0;
   }
 
@@ -1276,9 +1356,6 @@
     padding: 0 var(--page-pad) 1.5rem;
   }
 
-  .entry-grid__title {
-    font-size: 1.05rem;
-  }
   .entry-grid__topbar-actions {
     gap: 0.35rem;
   }
@@ -1432,7 +1509,7 @@
   font: inherit; font-size: 0.9rem;
   background: var(--surface);
   color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
 }
 .ai-settings-input:focus {
   outline: none; border-color: var(--primary);
@@ -1623,7 +1700,7 @@
 
 .code-field__code {
   font-weight: 600;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   color: var(--primary, #0f766e);
   white-space: nowrap;
 }
@@ -1724,7 +1801,7 @@
 }
 
 .code-ref__code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-weight: 600;
   color: #2b6cb0;
   overflow-wrap: anywhere;

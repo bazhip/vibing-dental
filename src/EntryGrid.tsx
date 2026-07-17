@@ -43,6 +43,14 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
   ].join('\n')
 )}`;
 
+/** Display names for the species toggle values, used in the patient banner. */
+const SPECIES_LABELS: Record<string, string> = {
+  feline: 'Feline',
+  canine: 'Canine',
+  'feline-deciduous': 'Feline · deciduous',
+  'canine-deciduous': 'Canine · deciduous',
+};
+
 /**
  * Top-level chart entry. Reads chart state (with all the persistence,
  * derivation, and PDF-load handlers) from `useChartState`; this component
@@ -310,7 +318,36 @@ const EntryGrid: React.FC = () => {
   return (
     <div className="entry-grid-container" ref={containerRef}>
       <header className="entry-grid__topbar" ref={topbarRef}>
-        <h1 className="entry-grid__title">Veterinary Dental Charting</h1>
+        <div className="entry-grid__topbar-lead">
+          <h1 className="entry-grid__title">Veterinary Dental Charting</h1>
+          {/* Live patient banner — EMR-style encounter context that stays
+              visible while scrolling deep into the chart. */}
+          <div className="entry-grid__patient" aria-live="off">
+            {chart.patientInfo.patientName ? (
+              <>
+                <span className="entry-grid__patient-name">
+                  {chart.patientInfo.patientName}
+                </span>
+                <span className="entry-grid__patient-sep" aria-hidden="true" />
+                <span className="entry-grid__patient-meta">
+                  {SPECIES_LABELS[chart.species]}
+                </span>
+                {chart.patientInfo.date && (
+                  <>
+                    <span className="entry-grid__patient-sep" aria-hidden="true" />
+                    <span className="entry-grid__patient-meta entry-grid__patient-date">
+                      {chart.patientInfo.date}
+                    </span>
+                  </>
+                )}
+              </>
+            ) : (
+              <span className="entry-grid__patient-empty">
+                No patient — add one in section 01
+              </span>
+            )}
+          </div>
+        </div>
         <div className="entry-grid__topbar-actions">
           <VoiceInputButton
             context={aiContext}

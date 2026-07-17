@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f1f5f9;
+  background: var(--bg-page, #f1f5f9);
   padding: 2rem;
 }
 
@@ -74,14 +74,14 @@
 }
 
 .login-error {
-  color: #e53e3e;
+  color: var(--danger, #b23c2a);
   font-size: 0.95rem;
   font-weight: 500;
   text-align: center;
   padding: 0.75rem;
-  background: #fff5f5;
+  background: var(--danger-tint, #faf1ef);
   border-radius: 8px;
-  border: 1px solid #feb2b2;
+  border: 1px solid color-mix(in srgb, var(--danger, #b23c2a) 35%, white);
   animation: shake 0.5s ease;
 }
 

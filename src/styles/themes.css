@@ -24,30 +24,45 @@
  */
 
 :root {
-  --bg-page:        #f3f5f7;
+  --bg-page:        #eef1f2;
   --surface:        #ffffff;
-  --surface-alt:    #f8fafc;
-  --surface-sunken: #eef1f4;
+  --surface-alt:    #f7f9fa;
+  --surface-sunken: #e8eced;
 
-  --primary:        #0f766e;
-  --primary-end:    #0c5d57;
+  --primary:        #0c6b63;
+  --primary-end:    #095049;
   --accent:         #0d9488;
 
-  --text:           #0f172a;
-  --text-muted:     #5b6b7b;
-  --border:         #e3e8ee;
-  --border-strong:  #c9d3dd;
+  /* Chart ink — strong instrument chrome (grid header, patient banner
+     accents). Deliberately not the brand teal: teal is for actions,
+     ink is for the record itself. */
+  --ink:            #1b2733;
+  --ink-soft:       #2b3a49;
 
-  --shadow:         0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.05);
+  /* Clinical signal red — missing teeth, abnormal findings, errors.
+     Calibrated darker than alarm-red so it reads as chart notation. */
+  --danger:         #b23c2a;
+  --danger-strong:  #96301f;
+  --danger-tint:    #faf1ef;
+
+  --text:           #17232e;
+  --text-muted:     #55677a;
+  --border:         #e2e7eb;
+  --border-strong:  #c5d0d8;
+
+  --shadow:         0 1px 2px rgba(23, 35, 46, 0.04), 0 4px 16px rgba(23, 35, 46, 0.05);
   --radius:         10px;
   --radius-sm:      6px;
   --radius-lg:      14px;
 
-  --font-body:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                  "Helvetica Neue", Arial, sans-serif;
+  /* IBM Plex: Sans for UI, Mono for chart data — Triadan numbers, dental
+     codes, doses, dates. A dental chart is a code-and-number document;
+     the data wears a data face. */
+  --font-body:    "IBM Plex Sans", -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-body);
-  --font-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-                  "Liberation Mono", monospace;
+  --font-mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono",
+                  Menlo, Consolas, "Liberation Mono", monospace;
 
   --letter-display: -0.01em;
   --weight-display: 650;

@@ -57,11 +57,12 @@
 }
 
 .sidebar-layout__nav-num {
+  font-family: var(--font-mono);
   font-size: 0.68rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.08em;
   color: var(--text-muted);
-  font-weight: 600;
+  font-weight: 500;
   opacity: 0.75;
 }
 
@@ -200,7 +201,7 @@
  */
 .chart-menu {
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
 }
 
 .chart-menu__trigger {
@@ -313,7 +314,7 @@
 }
 .chart-menu__board--active,
 .chart-menu__board--active:hover {
-  background: rgba(79, 70, 229, 0.08);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
   border-color: var(--primary);
 }
 .chart-menu__board strong {
@@ -345,13 +346,13 @@
 }
 
 .pdf-preview-modal {
-  background: white; color: #0f172a;
+  background: white; color: var(--text, #0f172a);
   border-radius: 16px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
   width: 100%; max-width: 1280px;
   display: flex; flex-direction: column;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
 }
 
 .pdf-preview-header {
@@ -401,8 +402,8 @@
 }
 .pdf-preview-style:hover { border-color: #cbd5e0; }
 .pdf-preview-style--active {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
 }
 .pdf-preview-style strong { font-size: 0.95rem; color: #0f172a; font-weight: 600; }
 .pdf-preview-style span   { font-size: 0.8rem; color: #64748b; line-height: 1.35; }
