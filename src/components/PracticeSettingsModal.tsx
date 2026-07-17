@@ -1,5 +1,6 @@
 import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
+import { useTeam } from '../hooks/useTeam';
 import { supabase } from '../utils/supabaseClient';
 
 interface PracticeSettingsModalProps {
@@ -9,9 +10,11 @@ interface PracticeSettingsModalProps {
 }
 
 /**
- * Practice profile editor: company name (topbar), doctor name (PDF
- * signature line), and the practice logo (replaces the template's mark
- * on generated charts). Reuses the AI-settings modal chrome.
+ * Everything about the practice in one place: identity (name, doctor,
+ * logo — used in the topbar and on generated PDFs), the team (colleagues
+ * who share the practice's charts), and this account's password. The
+ * practice name is single-source: the same value labels the app, the
+ * PDF, and — once created — the shared team practice.
  */
 export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   open,
@@ -27,7 +30,13 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
 
-  // Re-seed the fields each time the dialog opens.
+  // Team state (loads when the dialog opens).
+  const team = useTeam(open);
+  const [memberEmail, setMemberEmail] = React.useState('');
+  const [teamBusy, setTeamBusy] = React.useState(false);
+  const [teamError, setTeamError] = React.useState('');
+  const [teamNote, setTeamNote] = React.useState('');
+
   React.useEffect(() => {
     if (open) {
       setPracticeName(profile.practiceName);
@@ -35,12 +44,14 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       setError('');
       setNewPassword('');
       setPasswordNote('');
+      setMemberEmail('');
+      setTeamError('');
+      setTeamNote('');
       firstFieldRef.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // Escape closes, matching the other dialogs.
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -56,10 +67,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setBusy(true);
     setError('');
     try {
-      await profile.update({
-        practiceName: practiceName.trim(),
-        doctorName: doctorName.trim(),
-      });
+      await profile.update({ practiceName: practiceName.trim(), doctorName: doctorName.trim() });
       onClose();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save the profile.');
@@ -95,17 +103,52 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     }
   };
 
+  const runTeam = async (msg: string, fn: () => Promise<void>) => {
+    setTeamBusy(true);
+    setTeamError('');
+    setTeamNote('');
+    try {
+      await fn();
+      setTeamNote(msg);
+    } catch (e) {
+      setTeamError(e instanceof Error ? e.message : 'That did not work.');
+    } finally {
+      setTeamBusy(false);
+    }
+  };
+
+  const handleCreatePractice = () => {
+    const name = practiceName.trim();
+    if (!name) {
+      setTeamError('Add a practice name above first — it names the shared practice too.');
+      return;
+    }
+    runTeam('Shared practice created. Reloading…', async () => {
+      // Persist the name so the entity and the branding match, then
+      // create the shared practice under it.
+      await profile.update({ practiceName: name, doctorName: doctorName.trim() });
+      await team.createPractice(name);
+      // Reload so this session picks up its new practice_id and starts
+      // stamping new charts as shared.
+      window.location.reload();
+    });
+  };
+
+  const isOwner = team.role === 'owner';
+
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Practice settings">
+    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Practice">
       <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
-          <h2>Practice settings</h2>
+          <h2>Practice</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
             ×
           </button>
         </header>
         <div className="ai-settings-body">
+          {/* ---- Identity ------------------------------------------------ */}
           <section className="ai-settings-section">
+            <h3 className="ai-settings-subhead">Profile</h3>
             <label className="patient-form__label">
               Practice name
               <input
@@ -114,7 +157,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 className="patient-form__input"
                 value={practiceName}
                 onChange={(e) => setPracticeName(e.target.value)}
-                placeholder="Shown at the top of the app"
+                placeholder="Shown in the app and on every chart"
               />
             </label>
             <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
@@ -129,6 +172,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             </label>
           </section>
 
+          {/* ---- Logo --------------------------------------------------- */}
           <section className="ai-settings-section">
             <span className="patient-form__label">Practice logo</span>
             {profile.logoUrl ? (
@@ -162,7 +206,92 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             />
           </section>
 
+          {/* ---- Team --------------------------------------------------- */}
           <section className="ai-settings-section">
+            <h3 className="ai-settings-subhead">Team</h3>
+            {!team.loaded ? (
+              <p className="practice-logo-empty">Loading team…</p>
+            ) : !team.practice ? (
+              <>
+                <p className="ai-settings-blurb">
+                  Working solo? Nothing to do. To share charts, report
+                  templates, and images with colleagues, create a shared
+                  practice — everything you chart afterwards is visible to
+                  everyone you add.
+                </p>
+                <button
+                  type="button"
+                  className="diagram-view__action"
+                  onClick={handleCreatePractice}
+                  disabled={teamBusy}
+                >
+                  {teamBusy ? 'Creating…' : 'Create a shared practice'}
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="ai-settings-blurb">
+                  {isOwner
+                    ? 'Colleagues you add share this practice’s charts, templates, and images.'
+                    : `You’re a member of ${team.practice.name}. You share this practice’s charts.`}
+                </p>
+                <ul className="team__members">
+                  {team.members.map((m) => (
+                    <li key={m.userId} className="team__member">
+                      <span className="team__member-id">
+                        <strong>{m.email}{m.isYou ? ' (you)' : ''}</strong>
+                        {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
+                      </span>
+                      <span className="team__member-role">{m.role}</span>
+                      {isOwner && !m.isYou && (
+                        <button
+                          type="button"
+                          className="diagram-view__action diagram-view__action--danger"
+                          disabled={teamBusy}
+                          onClick={() =>
+                            window.confirm(`Remove ${m.email}? They keep their own charts.`) &&
+                            runTeam('Member removed.', () => team.removeMember(m.userId))
+                          }
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {isOwner && (
+                  <div className="practice-team__add">
+                    <input
+                      type="email"
+                      className="patient-form__input"
+                      placeholder="Colleague's email (they need an account)"
+                      value={memberEmail}
+                      onChange={(e) => setMemberEmail(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="diagram-view__action"
+                      disabled={teamBusy || !memberEmail.trim()}
+                      onClick={() =>
+                        runTeam('Colleague added.', async () => {
+                          await team.addMember(memberEmail.trim());
+                          setMemberEmail('');
+                        })
+                      }
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+            {teamError && <div className="login-error" role="alert">{teamError}</div>}
+            {teamNote && <div className="login-notice" role="status">{teamNote}</div>}
+          </section>
+
+          {/* ---- Account ------------------------------------------------ */}
+          <section className="ai-settings-section">
+            <h3 className="ai-settings-subhead">Account</h3>
             <label className="patient-form__label">
               Change password
               <input

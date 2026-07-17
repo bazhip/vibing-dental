@@ -21,7 +21,6 @@ import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
-import { TeamPanel } from './components/TeamPanel';
 import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -93,7 +92,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
-  const [teamOpen, setTeamOpen] = React.useState(false);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -521,7 +519,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     },
                     onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
-                    onOpenTeam: () => setTeamOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch(() => {
                         alert('Could not sign out — check your connection.');
@@ -599,8 +596,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {isAdmin && (
         <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
       )}
-
-      <TeamPanel open={teamOpen} onClose={() => setTeamOpen(false)} />
 
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
