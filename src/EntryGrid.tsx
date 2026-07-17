@@ -372,6 +372,15 @@ const EntryGrid: React.FC = () => {
           </div>
         </div>
         <div className="entry-grid__topbar-actions">
+          {cloud.enabled && cloud.status !== 'idle' && (
+            <span
+              className={`save-status save-status--${cloud.status}`}
+              role="status"
+              aria-live="polite"
+            >
+              {cloud.status === 'saving' ? 'Saving…' : cloud.status === 'saved' ? 'Saved' : 'Save failed'}
+            </span>
+          )}
           {cloud.enabled && (
             <button
               type="button"
@@ -394,6 +403,11 @@ const EntryGrid: React.FC = () => {
             cloud={
               cloud.enabled
                 ? {
+                    onSaveChart: () => {
+                      cloud.saveNow().catch(() => {
+                        alert('Could not save the chart — check your connection.');
+                      });
+                    },
                     onOpenLibrary: () => setView('library'),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
                     onSignOut: cloud.signOut,

@@ -1,6 +1,11 @@
 import React from 'react';
 import { Login } from './Login';
 import { cloudEnabled } from '../utils/supabaseClient';
+import {
+  DEMO_TEETH_PATHS,
+  DEMO_TEETH_VIEWBOX,
+  DEMO_CANINE_BBOX,
+} from './landingTeeth';
 import './Landing.css';
 
 interface LandingProps {
@@ -133,15 +138,36 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
                   <div className="demo-caption">Tab · Enter — charts like a spreadsheet</div>
                 </div>
 
-                {/* Scene B — the app's actual diagram artwork. */}
+                {/* Scene B — the app's actual diagram artwork (maxillary
+                    incisor + canine block from feline.svg) with the real
+                    extracted mark: a red X drawn over tooth 104. */}
                 <div className="demo-scene demo-scene--b">
                   <div className="demo-artwork">
-                    <img
-                      src={`${process.env.PUBLIC_URL}/diagrams/feline.svg`}
-                      alt=""
-                      className="demo-artwork__img"
-                    />
-                    <span className="demo-artwork__marker" />
+                    <svg viewBox={DEMO_TEETH_VIEWBOX} className="demo-artwork__svg">
+                      {/* One combined path with evenodd, exactly like the
+                          app's diagram — inner contours become hollows. */}
+                      <path
+                        d={DEMO_TEETH_PATHS.join(' ')}
+                        className="demo-artwork__tooth"
+                        fillRule="evenodd"
+                      />
+                      <g className="demo-x">
+                        <line
+                          x1={DEMO_CANINE_BBOX.minX + 2}
+                          y1={DEMO_CANINE_BBOX.minY + 6}
+                          x2={DEMO_CANINE_BBOX.maxX - 2}
+                          y2={DEMO_CANINE_BBOX.maxY - 6}
+                          className="demo-x__stroke demo-x__stroke--1"
+                        />
+                        <line
+                          x1={DEMO_CANINE_BBOX.maxX - 2}
+                          y1={DEMO_CANINE_BBOX.minY + 6}
+                          x2={DEMO_CANINE_BBOX.minX + 2}
+                          y2={DEMO_CANINE_BBOX.maxY - 6}
+                          className="demo-x__stroke demo-x__stroke--2"
+                        />
+                      </g>
+                    </svg>
                     <div className="demo-comment">
                       <strong>C (104)</strong>
                       <span>T/FX/CC — pulp exposed</span>

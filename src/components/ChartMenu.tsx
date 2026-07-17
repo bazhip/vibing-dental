@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface ChartMenuCloud {
+  onSaveChart: () => void;
   onOpenLibrary: () => void;
   onPracticeSettings: () => void;
   onSignOut: () => void;
@@ -121,6 +122,17 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
           {cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">Account</header>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onSaveChart(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Save chart</strong>
+                  <span>Charts autosave — this forces a save right now.</span>
+                </span>
+              </button>
               <button
                 type="button"
                 className="chart-menu__item"

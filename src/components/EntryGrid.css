@@ -1953,3 +1953,28 @@
     font-size: 0.9rem;
   }
 }
+
+/* Cloud save status — quiet chip in the topbar actions. */
+.save-status {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  white-space: nowrap;
+}
+
+.save-status--saved {
+  color: var(--primary-end);
+  background: color-mix(in srgb, var(--primary) 10%, white);
+}
+
+.save-status--error {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+@media (max-width: 600px) {
+  .save-status { display: none; }
+}

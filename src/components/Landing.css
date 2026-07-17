@@ -307,26 +307,32 @@
   background: white;
 }
 
-.demo-artwork__img {
-  width: 130%;
-  margin-left: -15%;
-  margin-top: -4%;
+.demo-artwork__svg {
+  width: 100%;
+  height: 100%;
   display: block;
+  padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
 }
 
-.demo-artwork__marker {
-  position: absolute;
-  /* Over the upper-left canine of the feline maxilla. */
-  left: 24%;
-  top: 30%;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--danger) 30%, transparent);
-  border: 2px solid var(--danger);
-  animation: demo-marker 18s infinite;
-  opacity: 0;
+/* Same rendering as the app's diagram: dark filled outlines. */
+.demo-artwork__tooth {
+  fill: #1a202c;
 }
+
+/* The app's "extracted" mark: a red X drawn over the tooth. Each stroke
+   draws itself on during the diagram scene. */
+.demo-x__stroke {
+  stroke: #dc2626;
+  stroke-width: 9;
+  stroke-linecap: round;
+  fill: none;
+  stroke-dasharray: 130;
+  stroke-dashoffset: 130;
+}
+
+.demo-x__stroke--1 { animation: demo-x-draw 18s infinite; }
+.demo-x__stroke--2 { animation: demo-x-draw 18s infinite; animation-delay: 0.5s; }
 
 .demo-comment {
   position: absolute;
@@ -473,11 +479,10 @@
   99%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
 }
 
-@keyframes demo-marker {
-  0%, 38%  { opacity: 0; transform: scale(0.6); }
-  41%      { opacity: 1; transform: scale(1.15); }
-  44%, 62% { opacity: 1; transform: scale(1); }
-  65%, 100% { opacity: 0; }
+@keyframes demo-x-draw {
+  0%, 40%   { stroke-dashoffset: 130; }
+  44%, 96%  { stroke-dashoffset: 0; }
+  100%      { stroke-dashoffset: 130; }
 }
 
 @keyframes demo-mic {
