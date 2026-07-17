@@ -5,6 +5,7 @@ import {
   AnesthesiaForm,
   ExamForm,
   SurgeryReportForm,
+  ImagingSection,
   DiagramView,
   CodeReferencePanel,
 } from './components';
@@ -355,6 +356,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <CodeReferencePanel kind="procedure" />
           </aside>
         </div>
+      ),
+    },
+    {
+      id: 'imaging',
+      label: 'Images',
+      content: (
+        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} />
       ),
     },
     {

@@ -151,3 +151,34 @@ drop trigger if exists report_templates_touch on public.report_templates;
 create trigger report_templates_touch
   before update on public.report_templates
   for each row execute function public.touch_updated_at();
+
+-- ---------------------------------------------------------- attachments
+-- Photos & radiographs pinned to a chart (optionally a tooth). Files in
+-- the PRIVATE `attachments` bucket at {user_id}/{chart_id}/{uuid.ext};
+-- rows hold metadata. chart_id mirrors the client cloudChartId (no hard
+-- FK — a chart row may not exist until first autosave). Per-user RLS.
+create table if not exists public.attachments (
+  id uuid primary key default gen_random_uuid(),
+  created_by uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  chart_id uuid not null,
+  path text not null,
+  caption text not null default '',
+  kind text not null default 'photo',
+  tooth_triadan int,
+  created_at timestamptz not null default now()
+);
+create index if not exists attachments_chart_idx on public.attachments (created_by, chart_id);
+alter table public.attachments enable row level security;
+create policy "users read own attachments"   on public.attachments for select to authenticated using (created_by = auth.uid());
+create policy "users create own attachments"  on public.attachments for insert to authenticated with check (created_by = auth.uid());
+create policy "users update own attachments"  on public.attachments for update to authenticated using (created_by = auth.uid());
+create policy "users delete own attachments"  on public.attachments for delete to authenticated using (created_by = auth.uid());
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('attachments', 'attachments', false, 20971520, array['image/png','image/jpeg','image/webp'])
+on conflict (id) do update
+  set file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+create policy "users manage own attachments storage"
+  on storage.objects for all to authenticated
+  using (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text);

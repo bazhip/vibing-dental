@@ -15,6 +15,7 @@ export { Login }               from './Login';
 export { AnesthesiaForm }      from './AnesthesiaForm';
 export { ExamForm }            from './ExamForm';
 export { SurgeryReportForm }   from './SurgeryReportForm';
+export { ImagingSection }      from './ImagingSection';
 export { ToothDiagram }        from './ToothDiagram';
 export { DiagramView }         from './DiagramView';
 export type { DiagramViewHandle } from './DiagramView';

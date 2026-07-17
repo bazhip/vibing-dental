@@ -2083,3 +2083,81 @@ button.save-status--error {
   cursor: pointer;
   font-family: inherit;
 }
+
+/* Images & radiographs section */
+.imaging__uploader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.imaging__kind {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+.imaging__kind-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.imaging__kind-opt--on {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+.imaging__kind-opt input { accent-color: var(--primary); }
+.imaging__tooth { max-width: 11rem; }
+
+.imaging__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.imaging__card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+.imaging__thumb-link { display: block; }
+.imaging__thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #0b1220;
+}
+.imaging__thumb--missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  background: var(--surface-sunken, #f1f5f9);
+}
+.imaging__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem;
+}
+.imaging__badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.imaging__caption { font-size: 0.85rem; }
+.imaging__delete { align-self: flex-start; }
