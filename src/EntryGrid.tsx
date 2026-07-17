@@ -403,6 +403,8 @@ const EntryGrid: React.FC = () => {
             cloud={
               cloud.enabled
                 ? {
+                    autosaveEnabled: cloud.autosaveEnabled,
+                    onToggleAutosave: () => cloud.setAutosaveEnabled(!cloud.autosaveEnabled),
                     onSaveChart: () => {
                       cloud.saveNow().catch(() => {
                         alert('Could not save the chart — check your connection.');

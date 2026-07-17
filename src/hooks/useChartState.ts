@@ -80,6 +80,9 @@ export interface UseChartStateReturn {
   // ----- Cloud sync ------------------------------------------------------
   /** Stable id for the active chart's cloud row. New chart → new id. */
   cloudChartId: string;
+  /** Mint (and adopt) a fresh cloud id — used when a save is refused
+   *  because the current row belongs to another account. */
+  resetCloudChartId: () => string;
   /** Everything needed to restore this chart (same shape the PDF embeds). */
   getSnapshot: () => ChartSnapshot;
   /** Overwrite local state with a snapshot (e.g. a chart opened from the
@@ -228,6 +231,12 @@ export function useChartState(): UseChartStateReturn {
     'chart.cloudId', 1, () => generateChartId()
   );
 
+  const resetCloudChartId = (): string => {
+    const id = generateChartId();
+    setCloudChartId(id);
+    return id;
+  };
+
   const getSnapshot = (): ChartSnapshot => ({
     patientInfo,
     toothData,
@@ -332,6 +341,7 @@ export function useChartState(): UseChartStateReturn {
     resetChart,
 
     cloudChartId,
+    resetCloudChartId,
     getSnapshot,
     applySnapshot,
   };

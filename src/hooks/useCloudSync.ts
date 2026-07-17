@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChartSnapshot } from '../types';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn } from './useChartState';
 
 /**
@@ -34,6 +35,9 @@ export interface UseCloudSyncReturn {
   status: 'idle' | 'saving' | 'saved' | 'error';
   /** Immediate save of the current chart (autosave also runs debounced). */
   saveNow: () => Promise<void>;
+  /** Debounced background saving — default on; manual Save always works. */
+  autosaveEnabled: boolean;
+  setAutosaveEnabled: (on: boolean) => void;
   listCharts: () => Promise<CloudChartMeta[]>;
   openChart: (id: string) => Promise<void>;
   deleteChart: (id: string) => Promise<void>;
@@ -60,6 +64,15 @@ function hasContent(s: ChartSnapshot): boolean {
 
 export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
   const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
+  const [autosaveEnabled, setAutosaveEnabled] = usePersistedState<boolean>('chart.autosave', 1, true);
+
+  // "Saved" is a moment, not a state — show it briefly, then clear.
+  // Errors stay visible until a save succeeds.
+  React.useEffect(() => {
+    if (status !== 'saved') return;
+    const t = window.setTimeout(() => setStatus('idle'), 2500);
+    return () => window.clearTimeout(t);
+  }, [status]);
 
   const snapshot = chart.getSnapshot();
   const serialized = JSON.stringify(snapshot);
@@ -68,23 +81,44 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
   // Latest values for the imperative saveNow (stable identity).
   const latest = React.useRef({ serialized, chartId });
   latest.current = { serialized, chartId };
+  const resetIdRef = React.useRef(chart.resetCloudChartId);
+  resetIdRef.current = chart.resetCloudChartId;
 
   const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
     if (!supabase) return;
-    const { data: sessionData } = await supabase.auth.getSession();
+    const client = supabase;
+    const { data: sessionData } = await client.auth.getSession();
     if (!sessionData.session) return;
     const snap: ChartSnapshot = JSON.parse(json);
-    setStatus('saving');
-    const { error } = await supabase.from('charts').upsert({
-      id,
+    const row = (rowId: string) => ({
+      id: rowId,
       patient_name: snap.patientInfo.patientName,
       patient_number: snap.patientInfo.patientNumber,
       species: snap.species,
       chart_date: snap.patientInfo.date,
       data: snap,
     });
-    setStatus(error ? 'error' : 'saved');
-    if (error) throw new Error(error.message);
+    setStatus('saving');
+    const { error } = await client.from('charts').upsert(row(id));
+    if (!error) {
+      setStatus('saved');
+      return;
+    }
+    // A refused save usually means the row id belongs to another account
+    // (stale localStorage after switching users) — RLS correctly blocks
+    // the update. Fork: mint a fresh id owned by this account and retry.
+    const refused =
+      error.code === '42501' ||
+      /row-level security|permission denied|duplicate key/i.test(error.message);
+    if (refused) {
+      const freshId = resetIdRef.current();
+      const { error: retryError } = await client.from('charts').upsert(row(freshId));
+      setStatus(retryError ? 'error' : 'saved');
+      if (retryError) throw new Error(retryError.message);
+      return;
+    }
+    setStatus('error');
+    throw new Error(error.message);
   }, []);
 
   const saveNow = React.useCallback(async (): Promise<void> => {
@@ -93,9 +127,10 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
     await upsertChart(json, id);
   }, [upsertChart]);
 
-  // Debounced autosave. Keyed on the serialized snapshot so any edit
-  // anywhere in the chart schedules a save.
+  // Debounced autosave. Keyed on the serialized snapshot so only actual
+  // edits schedule a save.
   const skippedFirst = React.useRef(false);
+  const suppressNext = React.useRef(false);
   React.useEffect(() => {
     if (!supabase) return;
     // Don't upsert the state we just restored at mount — only real edits.
@@ -103,6 +138,13 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
       skippedFirst.current = true;
       return;
     }
+    // Opening a cloud chart replays its own content into state — that
+    // change isn't an edit either.
+    if (suppressNext.current) {
+      suppressNext.current = false;
+      return;
+    }
+    if (!autosaveEnabled) return;
     const snap: ChartSnapshot = JSON.parse(serialized);
     if (!hasContent(snap)) return;
 
@@ -113,7 +155,7 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
       });
     }, AUTOSAVE_DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
-  }, [serialized, chartId, upsertChart]);
+  }, [serialized, chartId, upsertChart, autosaveEnabled]);
 
   const listCharts = React.useCallback(async (): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
@@ -139,6 +181,7 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
+    suppressNext.current = true;
     applyRef.current(data.data as ChartSnapshot, data.id);
   }, []);
 
@@ -153,5 +196,15 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
     await supabase.auth.signOut();
   }, []);
 
-  return { enabled: cloudEnabled, status, saveNow, listCharts, openChart, deleteChart, signOut };
+  return {
+    enabled: cloudEnabled,
+    status,
+    saveNow,
+    autosaveEnabled,
+    setAutosaveEnabled,
+    listCharts,
+    openChart,
+    deleteChart,
+    signOut,
+  };
 }

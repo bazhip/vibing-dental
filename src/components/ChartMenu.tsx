@@ -2,6 +2,8 @@ import React from 'react';
 
 interface ChartMenuCloud {
   onSaveChart: () => void;
+  autosaveEnabled: boolean;
+  onToggleAutosave: () => void;
   onOpenLibrary: () => void;
   onPracticeSettings: () => void;
   onSignOut: () => void;
@@ -169,6 +171,20 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span>Set the Anthropic API key and model for voice autofill.</span>
               </span>
             </button>
+            {cloud && (
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitemcheckbox"
+                aria-checked={cloud.autosaveEnabled}
+                onClick={cloud.onToggleAutosave}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Autosave — {cloud.autosaveEnabled ? 'On' : 'Off'}</strong>
+                  <span>Save to the cloud automatically as you edit.</span>
+                </span>
+              </button>
+            )}
             {cloud && (
               <button
                 type="button"
