@@ -265,7 +265,7 @@ const felineDeciduousTeeth: ToothShape[] = [
 
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
-    imageSrc: '/diagrams/canine.png',
+    imageSrc: process.env.PUBLIC_URL + '/diagrams/canine.png',
     width: 802,
     height: 1140,
     midlineY: CANINE_MIDLINE,
@@ -278,7 +278,7 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   'canine-deciduous': {
     // Dedicated artwork with clinically-shaped deciduous teeth; the PNG is
     // never loaded (imageSrc only derives the .svg URL) but named to match.
-    imageSrc: '/diagrams/canine-deciduous.png',
+    imageSrc: process.env.PUBLIC_URL + '/diagrams/canine-deciduous.png',
     width: 802,
     height: 1140,
     midlineY: CANINE_MIDLINE,
@@ -295,7 +295,7 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineDash: CANINE_MIDLINE_DASH,
   },
   feline: {
-    imageSrc: '/diagrams/feline.png',
+    imageSrc: process.env.PUBLIC_URL + '/diagrams/feline.png',
     width: 690,
     height: 1085,
     midlineY: FELINE_MIDLINE,
@@ -317,7 +317,7 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
     midlineDash: { x1: 48, x2: 645, y: 540 },
   },
   'feline-deciduous': {
-    imageSrc: '/diagrams/feline-deciduous.png',
+    imageSrc: process.env.PUBLIC_URL + '/diagrams/feline-deciduous.png',
     width: 690,
     height: 1085,
     midlineY: FELINE_MIDLINE,
