@@ -298,7 +298,13 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
       </footer>
 
       {auth && (
-        <div className="landing__auth-overlay" onClick={() => setAuth(null)} role="dialog" aria-modal="true">
+        <div
+          className="landing__auth-overlay"
+          onClick={() => setAuth(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={auth === 'signup' ? 'Create your practice account' : 'Sign in'}
+        >
           <div className="landing__auth-panel" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="landing__auth-close" onClick={() => setAuth(null)} aria-label="Close">
               ×

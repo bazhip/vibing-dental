@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import type Anthropic from '@anthropic-ai/sdk';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import {
   PatientInfo,
@@ -44,6 +44,13 @@ export interface ModelOption {
   displayName: string;
 }
 
+/** The SDK is only needed once a key is configured and voice autofill
+ *  actually runs — load it on first use, not with the app bundle. */
+async function createClient(apiKey: string): Promise<Anthropic> {
+  const { default: AnthropicSdk } = await import('@anthropic-ai/sdk');
+  return new AnthropicSdk({ apiKey, dangerouslyAllowBrowser: true });
+}
+
 /** Static fallback list, used when the live Models API can't be reached
  *  (no key entered yet, offline, etc.). Newest/most-capable first. */
 export const KNOWN_MODELS: ModelOption[] = [
@@ -62,7 +69,7 @@ export async function listModels(apiKey: string): Promise<ModelOption[]> {
   const trimmed = apiKey.trim();
   if (!trimmed) return KNOWN_MODELS;
   try {
-    const client = new Anthropic({ apiKey: trimmed, dangerouslyAllowBrowser: true });
+    const client = await createClient(trimmed);
     const out: ModelOption[] = [];
     // The SDK page object auto-paginates when iterated.
     for await (const m of client.models.list()) {
@@ -461,7 +468,7 @@ export async function verifyApiKey(key: string): Promise<VerifyResult> {
     };
   }
   try {
-    const client = new Anthropic({ apiKey: trimmed, dangerouslyAllowBrowser: true });
+    const client = await createClient(trimmed);
     await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1,
@@ -523,7 +530,7 @@ export async function extractChartActions(
     return { actions: [], ran: false };
   }
   const normalizedContext = recentContext ? normalizeTranscript(recentContext) : '';
-  const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+  const client = await createClient(apiKey);
 
   const userText =
     `Current chart state:\n${summarizeChart(context)}\n\n` +

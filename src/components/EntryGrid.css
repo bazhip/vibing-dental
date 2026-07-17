@@ -571,10 +571,11 @@
   background-color: #fff !important;
 }
 
-/* The Missing column is a button, not an editable cell — clicking it
-   shouldn't paint the spreadsheet selection ring around the pill. */
+/* The Missing column is a button, not an editable cell — tone the
+   spreadsheet selection ring down rather than removing it, so arrow-key
+   navigation never loses its visible position (WCAG 2.4.7). */
 .dental-grid .rdg-cell[aria-colindex="1"][aria-selected="true"] {
-  outline: none;
+  outline: 1px solid var(--accent);
   background-color: inherit !important;
 }
 
@@ -630,7 +631,9 @@
    as "not chartable" at a glance. The toggle cell itself stays legible. */
 .dental-grid .rdg-row.dental-grid__row--missing .rdg-cell {
   text-decoration: line-through;
-  color: #93a2b1;
+  /* Dimmed but still AA-readable (≥4.5:1 on the danger tint) — these are
+     real previously-entered measurements, not decoration. */
+  color: #5d6b7a;
   background-color: var(--danger-tint);
 }
 
@@ -1181,6 +1184,17 @@
   fill: rgba(66, 153, 225, 0.4);
 }
 
+/* Keyboard focus mirrors hover, plus a stroke so it reads even on teeth
+   already tinted by a mark. */
+.tooth-group:focus-visible {
+  outline: none;
+}
+.tooth-group:focus-visible .tooth-group__hover {
+  fill: rgba(66, 153, 225, 0.4);
+  stroke: var(--primary, #0c6b63);
+  stroke-width: 5;
+}
+
 .tooth-group[data-mark="missing"][data-hovered="true"] .tooth-group__hover {
   fill: rgba(229, 62, 62, 0.3);
 }
@@ -1242,6 +1256,11 @@
   font-size: 0.85rem;
   padding: 0;
   line-height: 1;
+  /* ≥24px hit target (WCAG 2.5.8) without growing the visible glyph —
+     the padding extends the hotspot, the negative margin keeps layout. */
+  min-width: 24px;
+  min-height: 24px;
+  margin: -5px;
 }
 
 .diagram-comment__delete:hover {
@@ -1296,10 +1315,12 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 14px;
-  height: 14px;
+  /* 24px hotspot for gloved fingers; the visible wedge stays small via
+     the gradient stops. */
+  width: 24px;
+  height: 24px;
   cursor: nwse-resize;
-  background: linear-gradient(135deg, transparent 0 50%, var(--accent, #d69e2e) 50% 100%);
+  background: linear-gradient(135deg, transparent 0 62%, var(--accent, #d69e2e) 62% 100%);
   touch-action: none;
 }
 
@@ -1608,7 +1629,7 @@
 .ai-settings-status {
   font-size: 0.85rem;
 }
-.ai-settings-status--ok { color: #16a34a; font-weight: 600; }
+.ai-settings-status--ok { color: #15803d; font-weight: 600; } /* AA on white at this size */
 .ai-settings-status--off { color: var(--text-muted); }
 .ai-settings-status--err {
   color: #991b1b;
@@ -1820,7 +1841,7 @@
 .code-ref__count {
   font-weight: 400;
   font-size: 0.8em;
-  color: #718096;
+  color: var(--text-muted); /* #718096 was 4.02:1 — below AA for small text */
 }
 
 .code-ref__list {
@@ -1963,5 +1984,20 @@
 }
 
 @media (max-width: 600px) {
-  .save-status { display: none; }
+  /* Phones: drop the transient chips to save topbar room, but a failed
+     save is the one state that must never be invisible — keep the retry
+     button, compact. */
+  .save-status--saving,
+  .save-status--saved { display: none; }
+  .save-status--error {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* The error chip is a real button (tap to retry). */
+button.save-status--error {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }

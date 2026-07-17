@@ -709,3 +709,19 @@
     gap: 1.75rem;
   }
 }
+
+/* The global reduced-motion kill (index.css) truncates every keyframe
+   to one instant run, which strands the demo scenes at their base
+   opacity: 0 — an empty hero box. Pin scene A (the charting grid) as a
+   static illustration instead and drop the other two scenes. */
+@media (prefers-reduced-motion: reduce) {
+  .demo-scene--a,
+  .demo-scene--a * {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .demo-scene--b,
+  .demo-scene--c {
+    display: none !important;
+  }
+}

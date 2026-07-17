@@ -11,7 +11,7 @@ import {
 import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
-import { PdfPreviewModal, ChartSnapshot } from './components/PdfPreviewModal';
+import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { AiSettingsModal } from './components/AiSettingsModal';
 import { VoiceInputButton } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
@@ -19,9 +19,15 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { ChartLibrary } from './components/ChartLibrary';
-import { ChartContext, ChartHandlers } from './utils/aiAutofill';
+import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
+
+// The PDF engine (pdf-lib + the whole draw pipeline) loads the first
+// time a preview is requested, not with the charting screen.
+const PdfPreviewModal = React.lazy(() =>
+  import('./components/PdfPreviewModal').then((m) => ({ default: m.PdfPreviewModal }))
+);
 
 /**
  * Pre-filled feedback email. The body seeds the prompts that make a bug
@@ -85,6 +91,19 @@ const EntryGrid: React.FC = () => {
     ro.observe(topbar);
     return () => ro.disconnect();
   }, []);
+
+  // Don't let a tab close/refresh slip away while a cloud save is in
+  // flight or failing — the chart would exist only in this machine's
+  // localStorage without the user ever deciding that.
+  React.useEffect(() => {
+    if (cloud.status !== 'saving' && cloud.status !== 'error') return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [cloud.status]);
 
   // Refs into the diagram views — we need their live SVG elements at
   // preview time so we can rasterize them with the active style's
@@ -200,7 +219,9 @@ const EntryGrid: React.FC = () => {
       });
       setPreviewOpen(true);
     } catch (error) {
-      alert("Couldn't open preview. Please try again.");
+      alert(
+        "Couldn't build the preview — open the Diagnosis and Procedure sections once so the diagrams render, then try again."
+      );
       console.error(error);
     }
   };
@@ -372,13 +393,41 @@ const EntryGrid: React.FC = () => {
           </div>
         </div>
         <div className="entry-grid__topbar-actions">
-          {cloud.enabled && cloud.status !== 'idle' && (
+          {cloud.enabled && (
+            // The live region stays mounted permanently (several screen
+            // reader/browser pairs drop announcements from regions that
+            // appear together with their first message); the visible chip
+            // is presentation only. A failed save renders as a retry
+            // button — the one state the user must be able to act on.
+            <span className="visually-hidden" role="status" aria-live="polite">
+              {cloud.status === 'saving'
+                ? 'Saving chart'
+                : cloud.status === 'saved'
+                ? 'Chart saved'
+                : cloud.status === 'error'
+                ? 'Chart not saved'
+                : ''}
+            </span>
+          )}
+          {cloud.enabled && cloud.status === 'error' && (
+            <button
+              type="button"
+              className="save-status save-status--error"
+              onClick={() => {
+                cloud.saveNow().catch(() => {
+                  // still failing — the chip stays; local copy is intact
+                });
+              }}
+            >
+              Not saved — retry
+            </button>
+          )}
+          {cloud.enabled && (cloud.status === 'saving' || cloud.status === 'saved') && (
             <span
               className={`save-status save-status--${cloud.status}`}
-              role="status"
-              aria-live="polite"
+              aria-hidden="true"
             >
-              {cloud.status === 'saving' ? 'Saving…' : cloud.status === 'saved' ? 'Saved' : 'Save failed'}
+              {cloud.status === 'saving' ? 'Saving…' : 'Saved'}
             </span>
           )}
           {cloud.enabled && (
@@ -407,12 +456,19 @@ const EntryGrid: React.FC = () => {
                     onToggleAutosave: () => cloud.setAutosaveEnabled(!cloud.autosaveEnabled),
                     onSaveChart: () => {
                       cloud.saveNow().catch(() => {
-                        alert('Could not save the chart — check your connection.');
+                        alert(
+                          'Could not save the chart to the cloud — check your connection. ' +
+                            'Your work is kept on this device and you can retry from the topbar.'
+                        );
                       });
                     },
                     onOpenLibrary: () => setView('library'),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
-                    onSignOut: cloud.signOut,
+                    onSignOut: () => {
+                      cloud.signOut().catch(() => {
+                        alert('Could not sign out — check your connection.');
+                      });
+                    },
                   }
                 : undefined
             }
@@ -464,11 +520,15 @@ const EntryGrid: React.FC = () => {
         </button>
       )}
 
-      <PdfPreviewModal
-        open={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        snapshot={previewSnapshot}
-      />
+      {previewSnapshot && (
+        <React.Suspense fallback={null}>
+          <PdfPreviewModal
+            open={previewOpen}
+            onClose={() => setPreviewOpen(false)}
+            snapshot={previewSnapshot}
+          />
+        </React.Suspense>
+      )}
 
       <AiSettingsModal
         open={aiSettingsOpen}

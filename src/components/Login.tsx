@@ -182,12 +182,23 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             onChange={(e) => setPassword(e.target.value)}
             autoFocus={!cloudEnabled}
           />
+          {cloudEnabled && signup && (
+            <span className="login-hint">At least 6 characters.</span>
+          )}
 
           {error && <div className="login-error" role="alert">{error}</div>}
           {notice && <div className="login-notice" role="status">{notice}</div>}
 
           <button type="submit" className="login-button" disabled={busy}>
-            {busy ? 'Working…' : signup ? 'Create account' : 'Continue'}
+            {busy
+              ? signup
+                ? 'Creating account…'
+                : 'Signing in…'
+              : signup
+              ? 'Create account'
+              : !cloudEnabled
+              ? 'Continue'
+              : 'Sign in'}
           </button>
 
           {cloudEnabled && !signup && (

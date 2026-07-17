@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import * as serviceWorker from './serviceWorker';
 
 // Suppress benign ResizeObserver loop warning from data-grid resize observers.
@@ -23,7 +24,9 @@ if (!container) throw new Error('Failed to find the root element');
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

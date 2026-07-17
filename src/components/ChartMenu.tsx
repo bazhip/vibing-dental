@@ -56,10 +56,15 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
   }, [open]);
 
   const handleNewChart = () => {
+    // With autosave on, the outgoing chart already lives in My charts —
+    // saying "cannot be undone" there would be scary and wrong, and
+    // wrong warnings teach people to ignore dialogs.
     const confirmed = window.confirm(
-      'Start a new chart? This will clear all current chart data — patient info, ' +
-      'tooth grid, exam, anesthesia, diagrams, and treatment report. ' +
-      'This cannot be undone.'
+      cloud && cloud.autosaveEnabled
+        ? 'Start a new chart? Your current chart stays saved in My charts.'
+        : 'Start a new chart? This will clear all current chart data — patient info, ' +
+          'tooth grid, exam, anesthesia, diagrams, and treatment report. ' +
+          'This cannot be undone.'
     );
     if (!confirmed) return;
     setOpen(false);
@@ -125,7 +130,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
             <button type="button" className="chart-menu__item" role="menuitem" onClick={handleLoadClick}>
               <span className="chart-menu__item-body">
                 <strong>Load chart PDF</strong>
-                <span>Pick a previously generated PDF to rehydrate the form.</span>
+                <span>Open a chart PDF made with this app to continue editing it.</span>
               </span>
             </button>
           </section>

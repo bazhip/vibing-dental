@@ -413,7 +413,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     [positionedComments, viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight]
   );
 
-  const handleToothClick = (triadan: number, e: React.MouseEvent) => {
+  const handleToothClick = (triadan: number, e: React.SyntheticEvent) => {
     if (tool === 'draw') return;
     e.stopPropagation();
     if (tool === 'mark') {
@@ -774,6 +774,14 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       ref={svgRef}
       viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
       className="tooth-diagram"
+      role="group"
+      aria-label={
+        markMode === 'extracted-only'
+          ? 'Tooth diagram — Enter or Space on a tooth toggles extracted'
+          : markMode === 'missing-only'
+          ? 'Tooth diagram — Enter or Space on a tooth toggles missing'
+          : 'Tooth diagram'
+      }
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -850,12 +858,27 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               />
             );
 
+          const locked = lockedTriadans?.has(tooth.triadan) ?? false;
           return (
             <g
               key={tooth.triadan}
               className="tooth-group"
               data-mark={mark || 'none'}
               data-hovered={hoveredTriadan === tooth.triadan ? 'true' : 'false'}
+              // Keyboard path: the diagram is the ONLY place a tooth can
+              // be marked extracted, so each tooth is a focusable toggle
+              // — pointer users see no difference.
+              role="button"
+              tabIndex={0}
+              aria-pressed={!!mark}
+              aria-disabled={locked || undefined}
+              aria-label={`Tooth ${tooth.triadan}${mark ? `, marked ${mark}` : ''}${locked ? ' (missing before this visit — locked)' : ''}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleToothClick(tooth.triadan, e);
+                }
+              }}
               onPointerEnter={() => setHoveredTriadan(tooth.triadan)}
               onPointerLeave={() =>
                 setHoveredTriadan((cur) => (cur === tooth.triadan ? null : cur))

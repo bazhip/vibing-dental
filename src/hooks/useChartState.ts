@@ -18,7 +18,6 @@ import {
 import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
 import { useDentalData } from './useDentalData';
-import { parseDentalChartPDF } from '../utils/pdfGenerator';
 
 /**
  * Single source of truth for everything that lives on a chart: patient
@@ -91,6 +90,59 @@ export interface UseChartStateReturn {
 }
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
+
+/** Remove every persisted chart key — used by New Chart and by sign-out
+ *  (so the next account on a shared clinic machine never sees the
+ *  previous account's patient data). */
+export function clearChartStorage(): void {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(STORAGE_PREFIX)) keys.push(k);
+    }
+    keys.forEach((k) => localStorage.removeItem(k));
+  } catch {
+    // ignore — callers reload or unmount, which resets in-memory state
+  }
+}
+
+/** Minimal shape check before a snapshot (from a cloud row or an
+ *  uploaded PDF — both outside our control) is committed to persisted
+ *  state. Without this, a malformed snapshot crashes on first render
+ *  AND survives the reload, because it was persisted before it threw. */
+export function isChartSnapshot(s: unknown): s is ChartSnapshot {
+  if (!s || typeof s !== 'object') return false;
+  const c = s as Partial<ChartSnapshot>;
+  return (
+    !!c.patientInfo &&
+    typeof c.patientInfo === 'object' &&
+    typeof c.patientInfo.patientName === 'string' &&
+    Array.isArray(c.toothData) &&
+    typeof c.species === 'string'
+  );
+}
+
+/** Fill any holes a snapshot from an older schema might have, so
+ *  downstream code can dereference nested fields without guards. */
+function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
+  return {
+    ...s,
+    patientInfo: {
+      ...s.patientInfo,
+      complaint: s.patientInfo.complaint ?? '',
+      treatmentReport: s.patientInfo.treatmentReport ?? '',
+      nerveBlocks: { ...EMPTY_NERVE_BLOCKS, ...(s.patientInfo.nerveBlocks ?? {}) },
+      exam: { ...EMPTY_EXAM_FINDINGS, ...(s.patientInfo.exam ?? {}) },
+    },
+    preMarks: s.preMarks ?? {},
+    preComments: s.preComments ?? [],
+    preStrokes: s.preStrokes ?? [],
+    postMarks: s.postMarks ?? {},
+    postComments: s.postComments ?? [],
+    postStrokes: s.postStrokes ?? [],
+  };
+}
 
 /** uuid for the chart's cloud row; crypto.randomUUID with a fallback for
  *  older WebViews. */
@@ -250,7 +302,11 @@ export function useChartState(): UseChartStateReturn {
     postStrokes: postDiagramStrokes,
   });
 
-  const applySnapshot = (snapshot: ChartSnapshot, id: string): void => {
+  const applySnapshot = (raw: ChartSnapshot, id: string): void => {
+    if (!isChartSnapshot(raw)) {
+      throw new Error('That chart is damaged and could not be opened.');
+    }
+    const snapshot = normalizeSnapshot(raw);
     setPatientInfo(snapshot.patientInfo);
     setSpecies(snapshot.species);
     setLogo(snapshot.logo);
@@ -269,7 +325,21 @@ export function useChartState(): UseChartStateReturn {
 
   const loadFromPdf = async (file: File): Promise<void> => {
     try {
+      // Loaded on demand — the PDF engine (pdf-lib) stays out of the
+      // main bundle until someone actually opens a chart PDF.
+      const { parseDentalChartPDF } = await import('../utils/pdfGenerator');
       const parsed = await parseDentalChartPDF(file);
+      // The stash comes from an arbitrary file — check its shape before
+      // any of it reaches persisted state (a bad write here would crash
+      // every reload until localStorage is cleared by hand).
+      if (
+        !parsed.patientInfo ||
+        typeof parsed.patientInfo !== 'object' ||
+        typeof parsed.patientInfo.patientName !== 'string' ||
+        !Array.isArray(parsed.toothData)
+      ) {
+        throw new Error('Stashed chart state has an unexpected shape');
+      }
       // A restored PDF is its own chart — give it a fresh cloud row so
       // autosave can't overwrite whichever chart was open before.
       setCloudChartId(generateChartId());
@@ -302,16 +372,7 @@ export function useChartState(): UseChartStateReturn {
   };
 
   const resetChart = () => {
-    try {
-      const keys: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith(STORAGE_PREFIX)) keys.push(k);
-      }
-      keys.forEach((k) => localStorage.removeItem(k));
-    } catch {
-      // ignore — reload still resets in-memory state
-    }
+    clearChartStorage();
     window.location.reload();
   };
 

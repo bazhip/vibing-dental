@@ -108,6 +108,15 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
       {error && <div className="login-error" role="alert">{error}</div>}
 
+      {charts !== null && charts.length >= 500 && (
+        // The fetch caps at the 500 most recent rows — say so instead of
+        // letting search silently miss older records.
+        <p className="chart-library__sub">
+          Showing the 500 most recently updated charts — older charts
+          don't appear here or in search.
+        </p>
+      )}
+
       {filtered === null && !error && (
         <div className="chart-library__empty">Loading…</div>
       )}

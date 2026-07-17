@@ -69,8 +69,17 @@
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
 }
 
+/* Placeholders double as the field labels here — they need to pass
+   AA contrast (4.5:1) or low-vision users get unlabeled boxes. */
 .login-input::placeholder {
-  color: #a0aec0;
+  color: #64748b;
+}
+
+.login-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted, #55677a);
+  margin-top: -0.55rem;
+  text-align: left;
 }
 
 .login-error {

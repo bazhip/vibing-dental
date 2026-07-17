@@ -25,6 +25,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [newPassword, setNewPassword] = React.useState('');
   const [passwordNote, setPasswordNote] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const firstFieldRef = React.useRef<HTMLInputElement>(null);
 
   // Re-seed the fields each time the dialog opens.
   React.useEffect(() => {
@@ -34,9 +35,20 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       setError('');
       setNewPassword('');
       setPasswordNote('');
+      firstFieldRef.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  // Escape closes, matching the other dialogs.
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -97,6 +109,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             <label className="patient-form__label">
               Practice name
               <input
+                ref={firstFieldRef}
                 type="text"
                 className="patient-form__input"
                 value={practiceName}

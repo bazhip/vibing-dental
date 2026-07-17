@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import './styles/themes.css';
 import './styles/boards.css';
 import './App.css';
-import EntryGrid from './EntryGrid';
-import { Landing } from './components/Landing';
-import { ResetPassword } from './components/ResetPassword';
 import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
+
+// Split the two halves of the app: visitors on the marketing page don't
+// download the charting screen (data grid, diagrams, voice pipeline),
+// and signed-in users skip the landing animation bundle.
+const EntryGrid = React.lazy(() => import('./EntryGrid'));
+const Landing = React.lazy(() =>
+  import('./components/Landing').then((m) => ({ default: m.Landing }))
+);
+const ResetPassword = React.lazy(() =>
+  import('./components/ResetPassword').then((m) => ({ default: m.ResetPassword }))
+);
 
 const AUTH_KEY = 'auth';
 const AUTH_VERSION = 1;
@@ -53,16 +61,26 @@ const App: React.FC = () => {
   }
 
   if (recovering) {
-    return <ResetPassword onDone={() => setRecovering(false)} />;
+    return (
+      <Suspense fallback={null}>
+        <ResetPassword onDone={() => setRecovering(false)} />
+      </Suspense>
+    );
   }
 
   if (!isAuthenticated) {
-    return <Landing onAuthenticate={() => setIsAuthenticated(true)} />;
+    return (
+      <Suspense fallback={null}>
+        <Landing onAuthenticate={() => setIsAuthenticated(true)} />
+      </Suspense>
+    );
   }
 
   return (
     <div className="App">
-      <EntryGrid />
+      <Suspense fallback={null}>
+        <EntryGrid />
+      </Suspense>
     </div>
   );
 };
