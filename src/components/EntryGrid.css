@@ -730,9 +730,17 @@
   color: var(--text-muted);
 }
 
-.anesthesia-table tbody td:nth-child(2),
-.anesthesia-table tbody td:nth-child(3) {
-  width: 35%;
+/* Dose values are 3–4 characters ("0.4 mL") — quarter-width columns,
+   not half-page text fields. The label column absorbs the rest.
+   table-layout is fixed, so column widths must live on the thead cells
+   (the first row); tbody widths are ignored. */
+.anesthesia-table thead th:nth-child(1) {
+  width: 50%;
+}
+
+.anesthesia-table thead th:nth-child(2),
+.anesthesia-table thead th:nth-child(3) {
+  width: 25%;
 }
 
 /* Free-text "Other" row — wraps onto multiple lines instead of scrolling
@@ -741,9 +749,9 @@
   display: block;
   width: 100%;
   box-sizing: border-box;
-  /* Auto-grown in JS to fit content; keep ~2 lines as the floor and hide the
+  /* Auto-grown in JS to fit content; keep ~3 lines as the floor and hide the
      scrollbar since height always matches content. */
-  min-height: 2.6em;
+  min-height: 4em;
   resize: none;
   overflow: hidden;
   font-family: inherit;
@@ -854,9 +862,15 @@
   min-height: 0;
 }
 
+/* The codes card rides along as a sticky sidebar sized to the browser
+   window: the search input and its results stay on screen together
+   wherever you are in the diagram, and the list scrolls inside the
+   card. */
 .diagram-with-codes__codes > * {
-  position: absolute;
-  inset: 0;
+  position: sticky;
+  top: calc(var(--topbar-height, 0px) + 0.75rem);
+  height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
+  max-height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -933,6 +947,12 @@
   background: #f8f9fa;
   border-radius: 10px;
   border: 1px solid var(--border);
+  /* Float below the app topbar while scrolling a tall diagram, so the
+     Mark/Comment/Draw tools stay reachable mid-canvas. */
+  position: sticky;
+  top: calc(var(--topbar-height, 0px) + 0.5rem);
+  z-index: 30;
+  box-shadow: 0 1px 2px rgba(23, 35, 46, 0.05);
 }
 
 .diagram-view__tool-group {
@@ -1089,12 +1109,6 @@
 
 .diagram-view__width {
   width: 90px;
-}
-
-.diagram-view__hint {
-  flex: 1 1 100%;
-  font-size: 0.85rem;
-  color: #718096;
 }
 
 /* The wrapper carries the visual chrome and the max-width cap, so the
@@ -1388,9 +1402,6 @@
     gap: 0.4rem;
     padding: 0.5rem;
   }
-  .diagram-view__hint {
-    font-size: 0.8rem;
-  }
 
   /* Section headers compress slightly. */
   .dental-grid-section { margin: 0; }
@@ -1465,7 +1476,6 @@
   .diagram-view__toolbar { padding: 0.5rem; gap: 0.35rem; }
   .diagram-view__tool { padding: 0.35rem 0.65rem; font-size: 0.85rem; }
   .diagram-view__action { padding: 0.35rem 0.65rem; font-size: 0.8rem; }
-  .diagram-view__hint { width: 100%; flex: 1 1 100%; font-size: 0.78rem; }
 
   /* Diagram comments become a touch easier to interact with. */
   .diagram-comment { font-size: 0.75rem; padding: 0.25rem 0.4rem; }

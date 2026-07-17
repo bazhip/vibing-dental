@@ -20,6 +20,8 @@ import {
   PAGE_HEIGHT_PT,
   DIAGRAM_SLOTS,
   LEGEND_BOXES_BY_PAGE,
+  PATIENT_INFO_BOX,
+  EXAM_TABLE_YTOP_IN,
 } from './pdf/layout';
 import { formatGeneratedAt, CARD_BAND_PT } from './pdf/draw';
 import {
@@ -33,6 +35,7 @@ import {
   drawFooter,
   drawCodesLegend,
   collectUsedCodesByPage,
+  measureExamRowsIn,
 } from './pdf/sections';
 import {
   parseDentalChartPDF,
@@ -121,29 +124,70 @@ export async function buildDentalChartPDFBytes(
       : 'Margaret Smith, DVM, DAVDC';
   const techLine = logo === 'vca' ? patientInfo.tech : '';
 
-  await drawLogoAndHeader(pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold);
-  drawPatientInfoBox(page1, patientInfo, regular, bold);
-  const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold);
+  // Codes are needed before the diagrams draw: each page's diagram
+  // centers vertically in the space left over by its codes legend.
+  const usedByPage = collectUsedCodesByPage({
+    patientInfo,
+    toothData,
+    preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),
+    postCommentTexts: postDiagram.state.comments.map((c) => c.text),
+  });
+  // Legend top is 6.55in when present; otherwise the region runs to just
+  // above the footer rule.
+  const diagramBottomIn = (codes: unknown[]) => (codes.length > 0 ? 6.45 : 8.0);
 
-  // The arch grids fill the column below the exam card dynamically:
-  // whatever height the exam takes (it grows with comment wrapping), the
-  // remaining space is split into three even gaps — exam→maxilla,
-  // maxilla→mandible, mandible→page bottom — instead of leaving a fixed
-  // dead zone when findings are short.
+  await drawLogoAndHeader(pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold);
+
+  // Page 1's right column is a chain: the patient card grows with the
+  // chief complaint, the exam card starts below it, and the arch grids
+  // fill whatever is left. Budget the complaint's line cap first so the
+  // chain always fits above the footer.
   const grids = TOOTH_GRID_LAYOUTS[species];
   const bandIn = CARD_BAND_PT / 72;
   const tableHIn = grids.maxilla.rowHeightIn * (2 + TOOTH_DATA_ROWS.length);
   const cardHIn = bandIn + tableHIn;
   const bottomLimitIn = 8.05; // footer rule sits at 8.10
+  const examRowsIn = measureExamRowsIn(patientInfo.exam, regular);
+  const belowPatientIn =
+    0.07 + (bandIn + examRowsIn) + 3 * 0.08 + 2 * cardHIn;
+  const patientBottomMaxIn = bottomLimitIn - belowPatientIn;
+  const fixedPatientRowsIn =
+    PATIENT_INFO_BOX.rowDateIn + PATIENT_INFO_BOX.rowPatientIn + PATIENT_INFO_BOX.rowIdIn;
+  const complaintMaxLines = Math.max(
+    1,
+    Math.floor(
+      ((patientBottomMaxIn - PATIENT_INFO_BOX.yTopIn + 0.20 - bandIn - fixedPatientRowsIn) * 72 - 10) / 11.5
+    )
+  );
+  const patientBottomIn = drawPatientInfoBox(page1, patientInfo, regular, bold, complaintMaxLines);
+  const examBodyTopIn = Math.max(EXAM_TABLE_YTOP_IN, patientBottomIn + 0.07 + bandIn);
+  const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold, examBodyTopIn);
+
+  // The arch grids fill the column below the exam card dynamically:
+  // whatever height the exam takes, the remaining space is split into
+  // three even gaps — exam→maxilla, maxilla→mandible, mandible→page
+  // bottom — instead of leaving a fixed dead zone when findings are
+  // short.
   const gapIn = Math.max(
     0.08,
     (bottomLimitIn - examBottomIn - 2 * cardHIn) / 3
   );
   const maxillaTopIn = examBottomIn + gapIn + bandIn;
   const mandibleTopIn = maxillaTopIn + tableHIn + gapIn + bandIn;
-  drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, 'Maxillary Arch');
-  drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, 'Mandibular Arch');
-  await drawDiagramAt(pdfDoc, DIAGRAM_SLOTS[species][0], preDiagram.png);
+  // Teeth marked missing on the Diagnosis diagram get their grid column
+  // washed in the clinical red tint — same signal as the app's
+  // crossed-out row.
+  const missingTriadans = new Set(
+    Object.entries(preDiagram.state.marks)
+      .filter(([, mark]) => mark === 'missing')
+      .map(([triadan]) => Number(triadan))
+  );
+  drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, 'Maxillary Arch',  missingTriadans);
+  drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, 'Mandibular Arch', missingTriadans);
+  await drawDiagramAt(
+    pdfDoc, DIAGRAM_SLOTS[species][0], preDiagram.png,
+    diagramBottomIn(usedByPage.page1)
+  );
   drawFooter(page1, regular, bold, 1, 2, generatedAt, identityLine);
 
   // ---- Page 2 ------------------------------------------------------------
@@ -161,17 +205,14 @@ export async function buildDentalChartPDFBytes(
           heightIn: Math.max(2.2, baseSlot.yTopIn + baseSlot.heightIn - minTopIn),
         }
       : baseSlot;
-  await drawDiagramAt(pdfDoc, postSlot, postDiagram.png);
+  await drawDiagramAt(
+    pdfDoc, postSlot, postDiagram.png,
+    diagramBottomIn(usedByPage.page2)
+  );
   drawTreatmentReportField(page2, patientInfo.treatmentReport, regular, bold);
   drawFooter(page2, regular, bold, 2, 2, generatedAt, identityLine);
 
   // ---- Codes-used legends (both pages) -----------------------------------
-  const usedByPage = collectUsedCodesByPage({
-    patientInfo,
-    toothData,
-    preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),
-    postCommentTexts: postDiagram.state.comments.map((c) => c.text),
-  });
   const pageCodes = [usedByPage.page1, usedByPage.page2];
   for (let i = 0; i < 2; i++) {
     drawCodesLegend(pdfDoc.getPage(i), LEGEND_BOXES_BY_PAGE[i], pageCodes[i], bold, regular);

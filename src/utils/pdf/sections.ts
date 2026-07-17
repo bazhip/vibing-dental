@@ -35,9 +35,10 @@ import {
   drawClippedText,
   drawWrappedText,
   drawCenteredText,
-  drawCheckGlyph,
+  drawRadioGlyph,
   drawTableHeaderStrip,
   drawSectionCard,
+  finishSectionCard,
   CARD_BAND_PT,
 } from './draw';
 
@@ -169,6 +170,8 @@ export function drawCodesLegend(
       x: cx, y: cy, size: codeSize, font: bold, color: PALETTE.muted,
     });
   }
+
+  finishSectionCard(page, x, yTop, widthPt, heightPt);
 }
 
 // ------------------------------------------------------------ Logo header --
@@ -282,18 +285,47 @@ export async function drawLogoAndHeader(
 
 // ----------------------------------------------------------- Patient info --
 
+/** Line metrics for the chief-complaint value text. */
+const COMPLAINT_FONT_PT = 9;
+const COMPLAINT_LINE_PT = COMPLAINT_FONT_PT + 2.5;
+
 export function drawPatientInfoBox(
   page: PDFPage,
   patientInfo: PatientInfo,
   font: PDFFont,
-  fontBold: PDFFont
-): void {
+  fontBold: PDFFont,
+  /** Cap on complaint lines, budgeted by the caller from the space left
+   *  above the exam card. Truncation past the cap gets an ellipsis. */
+  maxComplaintLines: number = 3
+): number {
   const { height: pageHeight } = page.getSize();
   const x = PATIENT_INFO_BOX.xIn * PT_PER_IN;
   const yTop = pageHeight - PATIENT_INFO_BOX.yTopIn * PT_PER_IN;
   const labelW = PATIENT_INFO_BOX.labelColIn * PT_PER_IN;
   const valueW = PATIENT_INFO_BOX.valueColIn * PT_PER_IN;
   const totalW = labelW + valueW;
+
+  // The complaint row sizes to its text: one writable blank line when
+  // empty, otherwise exactly as many rows as the wrapped text needs (up
+  // to the caller's budget) — no fixed two-line default.
+  const complaintCleaned = (patientInfo.complaint ?? '').replace(/\s+/g, ' ').trim();
+  const complaintAllLines = complaintCleaned
+    ? wrapToWidth(complaintCleaned, font, COMPLAINT_FONT_PT, valueW - 10)
+    : [];
+  const complaintTruncated = complaintAllLines.length > maxComplaintLines;
+  const complaintLines = complaintAllLines.slice(0, Math.max(1, maxComplaintLines));
+  if (complaintTruncated) {
+    const last = complaintLines.length - 1;
+    let text = complaintLines[last];
+    while (text.length > 0 && font.widthOfTextAtSize(text + '…', COMPLAINT_FONT_PT) > valueW - 10) {
+      text = text.slice(0, -1);
+    }
+    complaintLines[last] = text.trimEnd() + '…';
+  }
+  const complaintRowIn = Math.max(
+    0.26,
+    (10 + complaintLines.length * COMPLAINT_LINE_PT) / PT_PER_IN
+  );
 
   type Row = { label: string; value?: string; multiline?: boolean; heightIn: number };
   // Patient + PID for both logos — Doctor / Tech live in the logo header
@@ -302,7 +334,7 @@ export function drawPatientInfoBox(
     { label: 'Date',            value: patientInfo.date,          heightIn: PATIENT_INFO_BOX.rowDateIn },
     { label: 'Patient',         value: patientInfo.patientName,   heightIn: PATIENT_INFO_BOX.rowPatientIn },
     { label: 'PID',             value: patientInfo.patientNumber, heightIn: PATIENT_INFO_BOX.rowIdIn },
-    { label: 'Chief Complaint', value: patientInfo.complaint, multiline: true, heightIn: PATIENT_INFO_BOX.rowChiefIn },
+    { label: 'Chief Complaint', value: patientInfo.complaint, multiline: true, heightIn: complaintRowIn },
   ];
   const labeledRowsH = rows.reduce((acc, r) => acc + r.heightIn * PT_PER_IN, 0);
 
@@ -355,19 +387,11 @@ export function drawPatientInfoBox(
       const valueX = x + labelW + padX;
       const valueWidth = valueW - padX * 2;
       if (row.multiline) {
-        // Fit-to-box instead of a silent 3-line clamp: shrink the font
-        // toward a floor first, and if it still can't fit, end with an
-        // ellipsis so the reader knows the record is truncated here.
-        const cleaned = row.value.replace(/\s+/g, ' ').trim();
-        if (cleaned) {
-          const { lines, fontSize: fitSize } = fitTextToLines(
-            cleaned, font, valueWidth, 3, valueFontSize, 6.5
-          );
-          let lineY = yCursor - 4;
-          for (const line of lines) {
-            lineY -= fitSize + 2.5;
-            page.drawText(line, { x: valueX, y: lineY, size: fitSize, font, color: PALETTE.ink });
-          }
+        // Pre-wrapped above; the row is already sized to these lines.
+        let lineY = yCursor - 4;
+        for (const line of complaintLines) {
+          lineY -= COMPLAINT_LINE_PT;
+          page.drawText(line, { x: valueX, y: lineY, size: COMPLAINT_FONT_PT, font, color: PALETTE.ink });
         }
       } else {
         const baselineY = rowBottom + (rowH - valueFontSize) / 2 + 1.5;
@@ -376,32 +400,25 @@ export function drawPatientInfoBox(
     }
     yCursor = rowBottom;
   }
+
+  finishSectionCard(page, x, cardTop, totalW, CARD_BAND_PT + labeledRowsH);
+
+  // Card bottom in inches from the page top — the exam card shifts down
+  // when a long complaint grows this card.
+  return (pageHeight - (cardTop - CARD_BAND_PT - labeledRowsH)) / PT_PER_IN;
 }
 
 // ---------------------------------------------------------------- Exam ----
 
-export function drawExamSection(
-  page: PDFPage,
-  exam: ExamFindings,
-  font: PDFFont,
-  fontBold: PDFFont
-): number {
-  const { height: pageHeight } = page.getSize();
-  const fontSize = 9;
-  const cbSize = 9;
-  const xPt = EXAM_TABLE_X_IN * PT_PER_IN;
-  const sectionWidth = (EXAM_COMMENT_BOX.xIn + EXAM_COMMENT_BOX.widthIn - EXAM_TABLE_X_IN) * PT_PER_IN;
-  const commentXPt = EXAM_COMMENT_BOX.xIn * PT_PER_IN;
+// Per-row layout: short row when 0–1 lines of comment, tall when 2.
+type ExamRowLayout = {
+  heightPt: number;
+  comment: { lines: string[]; fontSize: number; lineHeight: number } | null;
+};
+
+function computeExamLayouts(exam: ExamFindings, font: PDFFont): ExamRowLayout[] {
   const commentWidthPt = EXAM_COMMENT_BOX.widthIn * PT_PER_IN;
-
-  const bodyTopPt = pageHeight - EXAM_TABLE_YTOP_IN * PT_PER_IN;
-
-  // Per-row layout: short row when 0–1 lines of comment, tall when 2.
-  type RowLayout = {
-    heightPt: number;
-    comment: { lines: string[]; fontSize: number; lineHeight: number } | null;
-  };
-  const layouts: RowLayout[] = EXAM_ITEMS.map(({ key }) => {
+  return EXAM_ITEMS.map(({ key }) => {
     const item = exam[key];
     if (item.status !== 'abnormal' || !item.comment.trim()) {
       return { heightPt: EXAM_ROW_SHORT_IN * PT_PER_IN, comment: null };
@@ -415,16 +432,63 @@ export function drawExamSection(
     const heightIn = lines.length > 1 ? EXAM_ROW_TALL_IN : EXAM_ROW_SHORT_IN;
     return { heightPt: heightIn * PT_PER_IN, comment: { lines, fontSize: cFontSize, lineHeight } };
   });
+}
 
-  // One card around the band + every exam row (heights vary with comment
-  // wrapping, so the total is computed from the laid-out rows).
+/** Height of the Normal/Abnormal column-caption row inside the card. */
+const EXAM_HEAD_IN = 0.18;
+
+/** Total height of the exam body (caption row + rows, excluding the card
+ *  band), in inches — lets the orchestrator budget page 1 before anything
+ *  draws. */
+export function measureExamRowsIn(exam: ExamFindings, font: PDFFont): number {
+  return (
+    EXAM_HEAD_IN +
+    computeExamLayouts(exam, font).reduce((acc, l) => acc + l.heightPt, 0) / PT_PER_IN
+  );
+}
+
+export function drawExamSection(
+  page: PDFPage,
+  exam: ExamFindings,
+  font: PDFFont,
+  fontBold: PDFFont,
+  bodyTopIn: number = EXAM_TABLE_YTOP_IN
+): number {
+  const { height: pageHeight } = page.getSize();
+  const fontSize = 9;
+  const xPt = EXAM_TABLE_X_IN * PT_PER_IN;
+  const sectionWidth = (EXAM_COMMENT_BOX.xIn + EXAM_COMMENT_BOX.widthIn - EXAM_TABLE_X_IN) * PT_PER_IN;
+  const commentXPt = EXAM_COMMENT_BOX.xIn * PT_PER_IN;
+
+  const bodyTopPt = pageHeight - bodyTopIn * PT_PER_IN;
+
+  const layouts = computeExamLayouts(exam, font);
+
+  // One card around the band + caption row + every exam row (heights
+  // vary with comment wrapping, so the total is computed from the
+  // laid-out rows).
+  const headPt = EXAM_HEAD_IN * PT_PER_IN;
   const rowsTotalH = layouts.reduce((acc, l) => acc + l.heightPt, 0);
   drawSectionCard(
     page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth,
-    CARD_BAND_PT + rowsTotalH, 'Oral Exam Findings', fontBold
+    CARD_BAND_PT + headPt + rowsTotalH, 'Oral Exam Findings', fontBold
   );
 
-  let cursorY = bodyTopPt;
+  // Column layout mirrors the app: label | Normal | Abnormal | Comment.
+  const labelX = xPt + 7;
+  const normalCX   = 6.60 * PT_PER_IN;
+  const abnormalCX = 7.12 * PT_PER_IN;
+  const radioR = 4.2;
+
+  // Caption row.
+  const capSize = 6.5;
+  const capBaseline = bodyTopPt - headPt + (headPt - capSize) / 2 + 1;
+  drawCenteredText(page, 'NORMAL',   normalCX - 40,   normalCX + 40,   capBaseline, capSize, fontBold, PALETTE.muted);
+  drawCenteredText(page, 'ABNORMAL', abnormalCX - 40, abnormalCX + 40, capBaseline, capSize, fontBold, PALETTE.muted);
+  page.drawText('COMMENT', { x: commentXPt, y: capBaseline, size: capSize, font: fontBold, color: PALETTE.muted });
+  hlineLight(page, xPt, xPt + sectionWidth, bodyTopPt - headPt);
+
+  let cursorY = bodyTopPt - headPt;
   for (let i = 0; i < EXAM_ITEMS.length; i++) {
     const { key } = EXAM_ITEMS[i];
     const item = exam[key];
@@ -432,7 +496,6 @@ export function drawExamSection(
     const rowTopY = cursorY;
     const rowBottomY = cursorY - layout.heightPt;
     const rowMidY = (rowTopY + rowBottomY) / 2;
-    const cbY = rowMidY - cbSize / 2;
     const labelY = rowMidY - fontSize / 2 + 1.5;
 
     const abnormal = item.status === 'abnormal';
@@ -445,33 +508,17 @@ export function drawExamSection(
       page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.rowAlt });
     }
 
-    // Left buffer so the first checkbox doesn't sit flush against the
-    // card frame — mirrors the app's padded radio cells.
-    let glyphX = xPt + 7;
-    drawCheckGlyph(page, glyphX, cbY, cbSize, item.status === 'normal');
-    glyphX += cbSize + 4;
-    page.drawText('N', { x: glyphX, y: labelY, size: fontSize, font, color: PALETTE.muted });
-    glyphX += font.widthOfTextAtSize('N', fontSize) + 14;
-
-    // Abnormal findings carry the clinical signal color so they scan
-    // instantly on a dense page — same language as the app.
-    drawCheckGlyph(page, glyphX, cbY, cbSize, abnormal, PALETTE.danger);
-    glyphX += cbSize + 4;
-    page.drawText('A', {
-      x: glyphX, y: labelY, size: fontSize,
-      font: abnormal ? fontBold : font,
-      color: abnormal ? PALETTE.danger : PALETTE.muted,
-    });
-    glyphX += font.widthOfTextAtSize('A', fontSize) + 12;
-
-    vlineLight(page, glyphX - 4, rowTopY - 2, rowBottomY + 2);
-
     const labelText = EXAM_PDF_LABELS[key] ?? key;
     page.drawText(labelText, {
-      x: glyphX, y: labelY, size: fontSize,
+      x: labelX, y: labelY, size: fontSize,
       font: abnormal ? fontBold : font,
       color: abnormal ? PALETTE.danger : PALETTE.text,
     });
+
+    // Radio pair under the Normal / Abnormal captions — abnormal carries
+    // the clinical signal color, same language as the app.
+    drawRadioGlyph(page, normalCX, rowMidY, radioR, item.status === 'normal');
+    drawRadioGlyph(page, abnormalCX, rowMidY, radioR, abnormal, PALETTE.danger);
 
     if (layout.comment) {
       const { lines, fontSize: cSize, lineHeight } = layout.comment;
@@ -488,6 +535,8 @@ export function drawExamSection(
 
     cursorY = rowBottomY;
   }
+
+  finishSectionCard(page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth, CARD_BAND_PT + rowsTotalH);
 
   // Bottom edge in inches from the page top, so the caller can place the
   // arch grids dynamically beneath.
@@ -507,7 +556,8 @@ export function drawToothGrid(
   toothData: ToothData[],
   font: PDFFont,
   fontBold: PDFFont,
-  archTitle: string
+  archTitle: string,
+  missingTriadans?: Set<number>
 ): void {
   const { height: pageHeight } = page.getSize();
   const x = layout.xIn * PT_PER_IN;
@@ -550,6 +600,21 @@ export function drawToothGrid(
     });
   }
 
+  // Missing teeth: wash the whole column in the clinical red tint — the
+  // grid twin of the app's crossed-out row.
+  if (missingTriadans && missingTriadans.size > 0) {
+    for (let i = 0; i < layout.teeth.length; i++) {
+      if (!missingTriadans.has(layout.teeth[i].triadan)) continue;
+      page.drawRectangle({
+        x: x + labelW + i * toothW,
+        y: yTop - totalH,
+        width: toothW,
+        height: totalH - rowH * 2,
+        color: PALETTE.dangerTint,
+      });
+    }
+  }
+
   // Gridlines — interior only; the card frame is the outer border.
   for (let r = 1; r < totalRows; r++) {
     hlineLight(page, x, x + totalW, yTop - r * rowH);
@@ -590,6 +655,8 @@ export function drawToothGrid(
       drawCenteredText(page, value, cellLeft, cellRight, baselineForRow(rowIdx, cellFontSize), cellFontSize, font, PALETTE.ink);
     }
   }
+
+  finishSectionCard(page, x, yTop + CARD_BAND_PT, totalW, CARD_BAND_PT + totalH);
 }
 
 // ------------------------------------------------------- Treatment Report --
@@ -604,7 +671,6 @@ export function drawTreatmentReportField(
   const xPt = TREATMENT_REPORT.xIn * PT_PER_IN;
   const titleYTopPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
   const fieldW = TREATMENT_REPORT.fieldWidthIn * PT_PER_IN;
-  const fieldH = TREATMENT_REPORT.fieldHeightIn * PT_PER_IN;
 
   // One card: title band + writing area in a single rounded frame. The
   // card's bottom edge stays at the old field bottom.
@@ -640,6 +706,8 @@ export function drawTreatmentReportField(
         fontSize, lineHeight, font, PALETTE.ink);
     }
   }
+
+  finishSectionCard(page, xPt, titleYTopPt, fieldW, cardH);
 }
 
 // ----------------------------------------------------------- Nerve block --
@@ -765,6 +833,8 @@ export function drawNerveBlockTable(
     lineY -= otherLineHeight;
   }
 
+  finishSectionCard(page, x, cardTop, totalW, CARD_BAND_PT + totalH);
+
   // Bottom edge in inches from the page top (card top → band → table).
   const { height: ph } = page.getSize();
   return (ph - (cardTop - CARD_BAND_PT - totalH)) / PT_PER_IN;
@@ -775,23 +845,44 @@ export function drawNerveBlockTable(
 export async function drawDiagramAt(
   pdfDoc: PDFDocument,
   slot: DiagramSlot,
-  pngBytes: Uint8Array
+  pngBytes: Uint8Array,
+  /** When set, the diagram centers vertically between slot.yTopIn and
+   *  this bottom edge (inches from page top) instead of hanging from the
+   *  slot top — fills tall leftover regions evenly above and below. */
+  regionBottomIn?: number
 ): Promise<void> {
   const page = pdfDoc.getPage(slot.pageIndex);
   const { height: pageHeight } = page.getSize();
   const png = await pdfDoc.embedPng(pngBytes);
   const aspect = png.width / png.height;
-  let heightPt = slot.heightIn * PT_PER_IN;
-  let widthPt = heightPt * aspect;
   const maxWidthPt = slot.maxWidthIn * PT_PER_IN;
-  if (widthPt > maxWidthPt) {
-    widthPt = maxWidthPt;
-    heightPt = widthPt / aspect;
+  let heightPt: number;
+  let widthPt: number;
+  if (regionBottomIn !== undefined) {
+    // Fill the available region: scale the (already content-cropped) PNG
+    // as large as the column width and region height allow.
+    const regionPt = (regionBottomIn - slot.yTopIn) * PT_PER_IN;
+    const scale = Math.min(maxWidthPt / png.width, regionPt / png.height);
+    widthPt = png.width * scale;
+    heightPt = png.height * scale;
+  } else {
+    heightPt = slot.heightIn * PT_PER_IN;
+    widthPt = heightPt * aspect;
+    if (widthPt > maxWidthPt) {
+      widthPt = maxWidthPt;
+      heightPt = widthPt / aspect;
+    }
   }
   const colLeftPt = slot.xIn * PT_PER_IN;
   const colWidthPt = slot.columnWidthIn * PT_PER_IN;
   const x = colLeftPt + (colWidthPt - widthPt) / 2;
-  const yTop = pageHeight - slot.yTopIn * PT_PER_IN;
+  let yTop = pageHeight - slot.yTopIn * PT_PER_IN;
+  if (regionBottomIn !== undefined) {
+    const regionPt = (regionBottomIn - slot.yTopIn) * PT_PER_IN;
+    if (regionPt > heightPt) {
+      yTop -= (regionPt - heightPt) / 2;
+    }
+  }
   page.drawImage(png, { x, y: yTop - heightPt, width: widthPt, height: heightPt });
 }
 

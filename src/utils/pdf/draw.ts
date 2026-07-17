@@ -62,10 +62,46 @@ export function drawRoundedRect(
 export const CARD_BAND_PT = 20;
 
 /**
+ * Corner masks + rounded frame stroke for a section card. MUST be called
+ * AFTER the section's content is drawn: square row fills painted later
+ * would otherwise cover the masks and poke past the rounded corners.
+ */
+export function finishSectionCard(
+  page: PDFPage,
+  x: number,
+  yTopPt: number,
+  widthPt: number,
+  totalHeightPt: number
+): void {
+  const r = 5;
+  const w = widthPt;
+  const h = totalHeightPt;
+  // Each sliver is the corner square minus its quarter-round, filled with
+  // the page white to erase anything drawn past the curve.
+  const slivers = [
+    `M 0 ${r} L 0 0 L ${r} 0 Q 0 0 0 ${r} Z`,                          // top-left
+    `M ${w - r} 0 L ${w} 0 L ${w} ${r} Q ${w} 0 ${w - r} 0 Z`,          // top-right
+    `M ${w} ${h - r} L ${w} ${h} L ${w - r} ${h} Q ${w} ${h} ${w} ${h - r} Z`, // bottom-right
+    `M ${r} ${h} L 0 ${h} L 0 ${h - r} Q 0 ${h} ${r} ${h} Z`,           // bottom-left
+  ];
+  for (const path of slivers) {
+    page.drawSvgPath(path, { x, y: yTopPt, color: rgb(1, 1, 1), borderWidth: 0 });
+  }
+  drawRoundedRect(page, x, yTopPt, widthPt, totalHeightPt, r, {
+    borderColor: PALETTE.borderStrong,
+    borderWidth: 0.7,
+  });
+}
+
+/**
  * One card per section: a rounded frame that encloses BOTH the title band
  * and the body, instead of a floating title above a separate box (which
  * read as two overlapping elements). The band renders per the active
  * style's section-title variant. Returns the body's top y.
+ *
+ * Draws only the band + separator — the section draws its content, then
+ * calls `finishSectionCard` with the same geometry to stroke the frame
+ * and mask the corners on top.
  */
 export function drawSectionCard(
   page: PDFPage,
@@ -115,26 +151,6 @@ export function drawSectionCard(
     });
   }
 
-  // Mask the corner slivers before stroking the frame: square row fills
-  // drawn inside the card would otherwise poke past the rounded corners.
-  // Each sliver is the corner square minus its quarter-round, filled with
-  // the page white.
-  const w = widthPt;
-  const h = totalHeightPt;
-  const slivers = [
-    `M 0 ${r} L 0 0 L ${r} 0 Q 0 0 0 ${r} Z`,                          // top-left
-    `M ${w - r} 0 L ${w} 0 L ${w} ${r} Q ${w} 0 ${w - r} 0 Z`,          // top-right
-    `M ${w} ${h - r} L ${w} ${h} L ${w - r} ${h} Q ${w} ${h} ${w} ${h - r} Z`, // bottom-right
-    `M ${r} ${h} L 0 ${h} L 0 ${h - r} Q 0 ${h} ${r} ${h} Z`,           // bottom-left
-  ];
-  for (const path of slivers) {
-    page.drawSvgPath(path, { x, y: yTopPt, color: rgb(1, 1, 1), borderWidth: 0 });
-  }
-
-  drawRoundedRect(page, x, yTopPt, widthPt, totalHeightPt, r, {
-    borderColor: PALETTE.borderStrong,
-    borderWidth: 0.7,
-  });
   return bandBottom;
 }
 
@@ -299,6 +315,28 @@ export function drawCheckGlyph(
     thickness: 1.4,
     color,
   });
+}
+
+/** Radio-button glyph: circle outline + filled dot when selected —
+ *  mirrors the app's exam controls. */
+export function drawRadioGlyph(
+  page: PDFPage,
+  cx: number,
+  cy: number,
+  r: number,
+  selected: boolean,
+  selectedColor?: ReturnType<typeof rgb>
+): void {
+  const accent = selectedColor ?? PALETTE.primary;
+  page.drawCircle({
+    x: cx, y: cy, size: r,
+    borderColor: selected ? accent : PALETTE.borderStrong,
+    borderWidth: selected ? 1.1 : 0.8,
+    color: PALETTE.white,
+  });
+  if (selected) {
+    page.drawCircle({ x: cx, y: cy, size: r * 0.45, color: accent });
+  }
 }
 
 /** YYYY-MM-DD HH:MM */
