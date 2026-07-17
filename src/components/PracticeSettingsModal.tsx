@@ -1,5 +1,6 @@
 import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
+import { supabase } from '../utils/supabaseClient';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -21,6 +22,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [doctorName, setDoctorName] = React.useState(profile.doctorName);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [passwordNote, setPasswordNote] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
 
   // Re-seed the fields each time the dialog opens.
@@ -29,6 +32,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       setPracticeName(profile.practiceName);
       setDoctorName(profile.doctorName);
       setError('');
+      setNewPassword('');
+      setPasswordNote('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -142,6 +147,43 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               onChange={handleLogoPick}
               style={{ display: 'none' }}
             />
+          </section>
+
+          <section className="ai-settings-section">
+            <label className="patient-form__label">
+              Change password
+              <input
+                type="password"
+                className="patient-form__input"
+                autoComplete="new-password"
+                placeholder="New password (min 6 characters)"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </label>
+            <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
+              <button
+                type="button"
+                className="diagram-view__action"
+                disabled={busy || newPassword.length < 6}
+                onClick={async () => {
+                  if (!supabase) return;
+                  setBusy(true);
+                  setError('');
+                  setPasswordNote('');
+                  const { error: pwError } = await supabase.auth.updateUser({ password: newPassword });
+                  setBusy(false);
+                  if (pwError) setError(pwError.message);
+                  else {
+                    setPasswordNote('Password updated.');
+                    setNewPassword('');
+                  }
+                }}
+              >
+                Update password
+              </button>
+              {passwordNote && <span className="practice-logo-empty">{passwordNote}</span>}
+            </div>
           </section>
 
           {error && <div className="login-error" role="alert">{error}</div>}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { uploadPracticeLogo } from '../hooks/useProfile';
 import './Login.css';
 
 interface LoginProps {
@@ -32,6 +33,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
 
   const signup = mode === 'signup';
 
@@ -75,6 +77,16 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         return;
       }
       if (data.session) {
+        // Optional logo picked during signup — upload now that the
+        // session exists. Failure isn't fatal; Practice settings can
+        // retry later.
+        if (logoFile) {
+          try {
+            await uploadPracticeLogo(logoFile);
+          } catch {
+            // ignore — the account is created either way
+          }
+        }
         onAuthenticate();
       } else {
         // Email confirmation is on — tell them what happens next.
@@ -133,6 +145,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 value={doctorName}
                 onChange={(e) => setDoctorName(e.target.value)}
               />
+              <label className="login-logo-field">
+                <span>
+                  {logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}
+                </span>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label="Practice logo (optional)"
+                  onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
             </>
           )}
 
@@ -166,6 +189,32 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           <button type="submit" className="login-button" disabled={busy}>
             {busy ? 'Working…' : signup ? 'Create account' : 'Continue'}
           </button>
+
+          {cloudEnabled && !signup && (
+            <button
+              type="button"
+              className="login-switch"
+              onClick={async () => {
+                if (!supabase) return;
+                const target = email.trim();
+                if (!target) {
+                  setError('Enter your email above first, then tap "Forgot password".');
+                  return;
+                }
+                setBusy(true);
+                setError('');
+                setNotice('');
+                const { error: resetError } = await supabase.auth.resetPasswordForEmail(target, {
+                  redirectTo: window.location.origin + window.location.pathname,
+                });
+                setBusy(false);
+                if (resetError) setError(resetError.message);
+                else setNotice('Password reset link sent — check your email.');
+              }}
+            >
+              Forgot password?
+            </button>
+          )}
 
           {cloudEnabled && (
             <button

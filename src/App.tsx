@@ -4,6 +4,7 @@ import './styles/boards.css';
 import './App.css';
 import EntryGrid from './EntryGrid';
 import { Landing } from './components/Landing';
+import { ResetPassword } from './components/ResetPassword';
 import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
 
@@ -25,6 +26,8 @@ const App: React.FC = () => {
   // With Supabase, wait for the initial session check before rendering
   // either screen — avoids a login flash for signed-in users.
   const [sessionChecked, setSessionChecked] = useState<boolean>(!cloudEnabled);
+  // True when the user arrived via a password-recovery email link.
+  const [recovering, setRecovering] = useState(false);
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
@@ -32,7 +35,8 @@ const App: React.FC = () => {
       setIsAuthenticated(!!data.session);
       setSessionChecked(true);
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') setRecovering(true);
       setIsAuthenticated(!!session);
     });
     return () => sub.subscription.unsubscribe();
@@ -46,6 +50,10 @@ const App: React.FC = () => {
 
   if (!sessionChecked) {
     return null;
+  }
+
+  if (recovering) {
+    return <ResetPassword onDone={() => setRecovering(false)} />;
   }
 
   if (!isAuthenticated) {

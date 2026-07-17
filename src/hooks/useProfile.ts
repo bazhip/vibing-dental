@@ -62,6 +62,27 @@ async function normalizeToPng(file: File): Promise<Blob> {
   }
 }
 
+/** Upload a practice logo for the CURRENT session's user — shared by the
+ *  Practice settings modal and the signup flow (which uploads right after
+ *  the account session is created). */
+export async function uploadPracticeLogo(file: File): Promise<string> {
+  if (!supabase) return '';
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData.session?.user.id;
+  if (!userId) return '';
+  const png = await normalizeToPng(file);
+  const path = `${userId}/logo.png`;
+  const { error: upError } = await supabase.storage
+    .from('logos')
+    .upload(path, png, { upsert: true, contentType: 'image/png' });
+  if (upError) throw new Error(upError.message);
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({ id: userId, logo_path: path });
+  if (error) throw new Error(error.message);
+  return publicLogoUrl(path);
+}
+
 export function useProfile(): UseProfileReturn {
   const [profile, setProfile] = React.useState<PracticeProfile>({
     practiceName: '',
@@ -116,21 +137,8 @@ export function useProfile(): UseProfileReturn {
   }, []);
 
   const uploadLogo = React.useCallback(async (file: File): Promise<void> => {
-    if (!supabase) return;
-    const { data: sessionData } = await supabase.auth.getSession();
-    const userId = sessionData.session?.user.id;
-    if (!userId) return;
-    const png = await normalizeToPng(file);
-    const path = `${userId}/logo.png`;
-    const { error: upError } = await supabase.storage
-      .from('logos')
-      .upload(path, png, { upsert: true, contentType: 'image/png' });
-    if (upError) throw new Error(upError.message);
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({ id: userId, logo_path: path });
-    if (error) throw new Error(error.message);
-    setLogoUrl(publicLogoUrl(path));
+    const url = await uploadPracticeLogo(file);
+    if (url) setLogoUrl(url);
   }, []);
 
   const removeLogo = React.useCallback(async (): Promise<void> => {

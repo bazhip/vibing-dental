@@ -7,6 +7,13 @@ interface ChartMenuCloud {
   onSignOut: () => void;
 }
 
+/*
+ * Menu structure:
+ *   Chart    — actions on the working chart (new / save / load PDF)
+ *   Practice — the practice's records & identity (cloud only)
+ *   Settings — app-level configuration and session
+ */
+
 interface ChartMenuProps {
   /** Triggered when the user confirms "New Chart" — caller is responsible
    *  for resetting state + persistence. */
@@ -76,10 +83,10 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Open chart menu"
+        aria-label="Open menu"
       >
         <span className="chart-menu__trigger-icon" aria-hidden="true">⋯</span>
-        <span className="chart-menu__trigger-label">Chart</span>
+        <span className="chart-menu__trigger-label">Menu</span>
       </button>
 
       <input
@@ -100,28 +107,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span>Clear all data and start fresh.</span>
               </span>
             </button>
-            <button type="button" className="chart-menu__item" role="menuitem" onClick={handleLoadClick}>
-              <span className="chart-menu__item-body">
-                <strong>Load chart PDF</strong>
-                <span>Pick a previously generated PDF to rehydrate the form.</span>
-              </span>
-            </button>
-            <button
-              type="button"
-              className="chart-menu__item"
-              role="menuitem"
-              onClick={() => { setOpen(false); onOpenAiSettings(); }}
-            >
-              <span className="chart-menu__item-body">
-                <strong>AI settings</strong>
-                <span>Set the Anthropic API key and model for voice autofill.</span>
-              </span>
-            </button>
-          </section>
-
-          {cloud && (
-            <section className="chart-menu__section">
-              <header className="chart-menu__section-head">Account</header>
+            {cloud && (
               <button
                 type="button"
                 className="chart-menu__item"
@@ -133,6 +119,18 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                   <span>Charts autosave — this forces a save right now.</span>
                 </span>
               </button>
+            )}
+            <button type="button" className="chart-menu__item" role="menuitem" onClick={handleLoadClick}>
+              <span className="chart-menu__item-body">
+                <strong>Load chart PDF</strong>
+                <span>Pick a previously generated PDF to rehydrate the form.</span>
+              </span>
+            </button>
+          </section>
+
+          {cloud && (
+            <section className="chart-menu__section">
+              <header className="chart-menu__section-head">Practice</header>
               <button
                 type="button"
                 className="chart-menu__item"
@@ -152,9 +150,26 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
               >
                 <span className="chart-menu__item-body">
                   <strong>Practice settings</strong>
-                  <span>Practice name, doctor name, and logo for your charts.</span>
+                  <span>Name, doctor line, logo, and password.</span>
                 </span>
               </button>
+            </section>
+          )}
+
+          <section className="chart-menu__section">
+            <header className="chart-menu__section-head">Settings</header>
+            <button
+              type="button"
+              className="chart-menu__item"
+              role="menuitem"
+              onClick={() => { setOpen(false); onOpenAiSettings(); }}
+            >
+              <span className="chart-menu__item-body">
+                <strong>AI settings</strong>
+                <span>Set the Anthropic API key and model for voice autofill.</span>
+              </span>
+            </button>
+            {cloud && (
               <button
                 type="button"
                 className="chart-menu__item"
@@ -163,11 +178,11 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
               >
                 <span className="chart-menu__item-body">
                   <strong>Sign out</strong>
-                  <span>Return to the sign-in screen.</span>
+                  <span>Return to the homepage.</span>
                 </span>
               </button>
-            </section>
-          )}
+            )}
+          </section>
         </div>
       )}
     </div>

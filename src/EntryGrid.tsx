@@ -481,7 +481,7 @@ const EntryGrid: React.FC = () => {
 
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
-          Found a bug or have an idea? (Jared) Email{' '}
+          Found a bug or have an idea? Email{' '}
           <a href={FEEDBACK_MAILTO}>bazhip@gmail.com</a>
         </span>
         <span className="entry-grid__footnote-hint">

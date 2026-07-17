@@ -5,6 +5,7 @@ import {
   DEMO_TEETH_PATHS,
   DEMO_TEETH_VIEWBOX,
   DEMO_CANINE_BBOX,
+  DEMO_MISSING_PATH,
 } from './landingTeeth';
 import './Landing.css';
 
@@ -151,6 +152,9 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
                         className="demo-artwork__tooth"
                         fillRule="evenodd"
                       />
+                      {/* Incisor 103 fills solid — the app's "missing"
+                          mark, matching the crossed-out 103 grid row. */}
+                      <path d={DEMO_MISSING_PATH} className="demo-missing-fill" />
                       <g className="demo-x">
                         <line
                           x1={DEMO_CANINE_BBOX.minX + 2}
@@ -246,6 +250,30 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
               local copy chairside, so a dropped connection never loses a
               mouth.
             </p>
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- pdf preview --- */}
+        <section className="landing__paper">
+          <div className="landing__paper-copy">
+            <h2>The chart your clients take home</h2>
+            <p>
+              One click renders the whole procedure as a clean two-page PDF —
+              your logo and doctor line up top, full-mouth grids, both
+              diagrams, exam findings, and a legend for every AVDC code used.
+            </p>
+            <ul className="landing__paper-points">
+              <li>Five professional document styles</li>
+              <li>Patient identity on every page</li>
+              <li>Re-open any PDF back into the app — the chart travels inside it</li>
+            </ul>
+          </div>
+          <div className="landing__paper-shot">
+            <img
+              src={`${process.env.PUBLIC_URL}/landing-chart.png`}
+              alt="A generated dental chart PDF: logo and doctor line, tooth diagram, oral exam findings, and full-mouth Triadan grids"
+              loading="lazy"
+            />
           </div>
         </section>
 

@@ -334,6 +334,13 @@
 .demo-x__stroke--1 { animation: demo-x-draw 18s infinite; }
 .demo-x__stroke--2 { animation: demo-x-draw 18s infinite; animation-delay: 0.5s; }
 
+/* The app's "missing" mark: the tooth shape fills solid. */
+.demo-missing-fill {
+  fill: #1a202c;
+  opacity: 0;
+  animation: demo-missing-fill 18s infinite;
+}
+
 .demo-comment {
   position: absolute;
   top: 8%;
@@ -485,6 +492,12 @@
   100%      { stroke-dashoffset: 130; }
 }
 
+@keyframes demo-missing-fill {
+  0%, 36%   { opacity: 0; }
+  39%, 96%  { opacity: 1; }
+  100%      { opacity: 0; }
+}
+
 @keyframes demo-mic {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.25; }
@@ -624,4 +637,75 @@
 @media (max-width: 600px) {
   .landing__features { grid-template-columns: 1fr; }
   .landing__cta { width: 100%; }
+}
+
+/* ---------- PDF preview section ---------------------------------------------- */
+.landing__paper {
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.landing__paper-copy h2 {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  letter-spacing: -0.02em;
+}
+
+.landing__paper-copy p {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-size: 0.98rem;
+}
+
+.landing__paper-points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.landing__paper-points li {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.landing__paper-points li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.landing__paper-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 30px 70px rgba(23, 35, 46, 0.18);
+  transform: rotate(0.6deg);
+  transition: transform 0.25s ease;
+}
+
+.landing__paper-shot img:hover {
+  transform: rotate(0deg) scale(1.01);
+}
+
+@media (max-width: 900px) {
+  .landing__paper {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
 }

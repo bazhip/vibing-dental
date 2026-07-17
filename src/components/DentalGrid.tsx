@@ -180,26 +180,25 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'missing',
       name: 'Missing',
-      width: getColumnWidth(0.08),
+      width: getColumnWidth(0.06),
       editable: false,
       formatter: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         return (
-          <button
-            type="button"
-            className={`dental-grid__missing-btn${
-              isMissing ? ' dental-grid__missing-btn--active' : ''
-            }`}
-            aria-pressed={isMissing}
-            title={
-              isMissing
-                ? `Unmark tooth ${row.triadan} as missing`
-                : `Mark tooth ${row.triadan} as missing — crosses out this row and fills the tooth on the Diagnosis diagram`
-            }
-            onClick={() => onToggleMissing(row.triadan)}
-          >
-            {isMissing ? 'Missing ✕' : 'Missing'}
-          </button>
+          <label className="dental-grid__missing-hit">
+            <input
+              type="checkbox"
+              className="dental-grid__missing-check"
+              checked={isMissing}
+              onChange={() => onToggleMissing(row.triadan)}
+              aria-label={`Tooth ${row.triadan} missing`}
+              title={
+                isMissing
+                  ? `Unmark tooth ${row.triadan} as missing`
+                  : `Mark tooth ${row.triadan} as missing — crosses out this row and fills the tooth on the Diagnosis diagram`
+              }
+            />
+          </label>
         );
       },
     },
@@ -217,9 +216,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     codeCol('recession',   'Recession',   0.09, 4),
     codeCol('pocket',      'Pocket',      0.08, 5),
     codeCol('furcation',   'Furcation',   0.10, 6),
-    codeCol('hyperplasia', 'Hyperplasia', 0.11, 7),
+    codeCol('hyperplasia', 'Hyperplasia', 0.12, 7),
     codeCol('calculus',    'Calculus',    0.09, 8),
-    codeCol('gingivitis',  'Gingivitis',  0.10, 9),
+    codeCol('gingivitis',  'Gingivitis',  0.11, 9),
     codeCol('pdstate',     'PD State',    0.09, 10),
   ];
 
