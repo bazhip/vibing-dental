@@ -5,10 +5,18 @@ import { ReportTemplatesModal } from './ReportTemplatesModal';
 interface SurgeryReportFormProps {
   value: string;
   onChange: (value: string) => void;
+  /** False in trial mode — templates live in the per-user cloud store,
+   *  which needs an account. */
+  cloudActive?: boolean;
 }
 
-export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({ value, onChange }) => {
+export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
+  value,
+  onChange,
+  cloudActive = true,
+}) => {
   const store = useReportTemplates();
+  const templatesOn = store.enabled && cloudActive;
   const [manageOpen, setManageOpen] = React.useState(false);
 
   // Inserting appends (with a blank line) rather than replacing — a
@@ -42,7 +50,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({ value, onC
     <div className="patient-form">
       <div className="patient-form__header surgery-report__header">
         <h2 className="patient-form__section-title">Treatment &amp; Surgery Report</h2>
-        {store.enabled && (
+        {templatesOn && (
           <div className="surgery-report__template-bar">
             <select
               className="surgery-report__template-select"
@@ -93,7 +101,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({ value, onC
         onChange={(e) => onChange(e.target.value)}
       />
 
-      {store.enabled && (
+      {templatesOn && (
         <ReportTemplatesModal
           open={manageOpen}
           onClose={() => setManageOpen(false)}

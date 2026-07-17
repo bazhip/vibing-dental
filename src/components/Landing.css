@@ -138,6 +138,25 @@
   flex-wrap: wrap;
 }
 
+/* Secondary "try it free" path — quiet next to the primary CTA. */
+.landing__cta-ghost {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 0.78rem 1.5rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.landing__cta-ghost:hover {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
 .landing__cta {
   padding: 0.85rem 1.5rem;
   font-size: 1rem;

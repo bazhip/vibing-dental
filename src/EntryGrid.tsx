@@ -67,13 +67,27 @@ const SPECIES_LABELS: Record<string, string> = {
  * is purely about layout: the topbar with the menu, the section list
  * driven by the active design board, and the preview modal.
  */
-const EntryGrid: React.FC = () => {
+interface EntryGridProps {
+  /** No-account trial: cloud sync off, PDFs stamped TRIAL in the
+   *  doctor/practice/logo slots, topbar offers account creation. */
+  trial?: boolean;
+  /** Trial-mode CTA — leave the trial for the signup flow. */
+  onRequestAccount?: () => void;
+  /** Show the landing page without ending the session/trial. */
+  onGoHome?: () => void;
+}
+
+const EntryGrid: React.FC<EntryGridProps> = ({
+  trial = false,
+  onRequestAccount,
+  onGoHome,
+}) => {
   const chart = useChartState();
-  const cloud = useCloudSync(chart);
+  const cloud = useCloudSync(chart, !trial);
   const profile = useProfile();
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
-  // 'chart' = the working chart; 'library' = the full-screen chart browser.
-  const [view, setView] = React.useState<'chart' | 'library'>('chart');
+  // "My charts" dialog — overlays the working chart like the other popups.
+  const [libraryOpen, setLibraryOpen] = React.useState(false);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -211,11 +225,15 @@ const EntryGrid: React.FC = () => {
           comments: chart.postDiagramComments,
           strokes:  chart.postDiagramStrokes,
         },
-        branding: {
-          doctorName: profile.doctorName,
-          logoUrl: profile.logoUrl,
-          practiceName: profile.practiceName,
-        },
+        branding: trial
+          ? // Trial charts carry no practice identity — stamp the slots
+            // so the output is obviously not a finished clinical record.
+            { doctorName: 'TRIAL', logoUrl: '', practiceName: 'TRIAL' }
+          : {
+              doctorName: profile.doctorName,
+              logoUrl: profile.logoUrl,
+              practiceName: profile.practiceName,
+            },
       });
       setPreviewOpen(true);
     } catch (error) {
@@ -343,6 +361,7 @@ const EntryGrid: React.FC = () => {
         <SurgeryReportForm
           value={chart.patientInfo.treatmentReport}
           onChange={(value) => chart.handlePatientInfoChange('treatmentReport', value)}
+          cloudActive={cloud.enabled}
         />
       ),
     },
@@ -361,7 +380,9 @@ const EntryGrid: React.FC = () => {
             </>
           ) : (
             <h1 className="entry-grid__title">
-              {profile.practiceName.trim() || 'ToothOps Charting'}
+              {trial
+                ? 'ToothOps Charting · Trial'
+                : profile.practiceName.trim() || 'ToothOps Charting'}
             </h1>
           )}
           {/* Live patient banner — EMR-style encounter context that stays
@@ -393,6 +414,16 @@ const EntryGrid: React.FC = () => {
           </div>
         </div>
         <div className="entry-grid__topbar-actions">
+          {trial && (
+            <button
+              type="button"
+              className="chart-menu__trigger topbar-library-btn"
+              onClick={onRequestAccount}
+              title="Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo"
+            >
+              Create free account
+            </button>
+          )}
           {cloud.enabled && (
             // The live region stays mounted permanently (several screen
             // reader/browser pairs drop announcements from regions that
@@ -434,8 +465,8 @@ const EntryGrid: React.FC = () => {
             <button
               type="button"
               className="chart-menu__trigger topbar-library-btn"
-              onClick={() => setView(view === 'library' ? 'chart' : 'library')}
-              aria-pressed={view === 'library'}
+              onClick={() => setLibraryOpen(true)}
+              aria-haspopup="dialog"
             >
               My charts
             </button>
@@ -449,6 +480,7 @@ const EntryGrid: React.FC = () => {
             onNewChart={chart.resetChart}
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
+            onGoHome={onGoHome}
             cloud={
               cloud.enabled
                 ? {
@@ -462,7 +494,7 @@ const EntryGrid: React.FC = () => {
                         );
                       });
                     },
-                    onOpenLibrary: () => setView('library'),
+                    onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch(() => {
@@ -475,19 +507,18 @@ const EntryGrid: React.FC = () => {
           />
         </div>
       </header>
-      {view === 'library' && (
+      {libraryOpen && (
         <ChartLibrary
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={cloud.deleteChart}
-          onClose={() => setView('chart')}
+          onClose={() => setLibraryOpen(false)}
         />
       )}
 
       <form
         id="chart-form"
         className="entry-grid-form"
-        style={view === 'library' ? { display: 'none' } : undefined}
         onSubmit={handleOpenPreview}
         // Stop browser-default form submit on Enter from any single-line
         // input. Textareas, the actual submit button, and inputs that
@@ -509,16 +540,14 @@ const EntryGrid: React.FC = () => {
         <SidebarLayout sections={sections} />
       </form>
 
-      {view === 'chart' && (
-        <button
-          type="submit"
-          form="chart-form"
-          className="fab-download"
-          aria-label="Preview and download the chart PDF"
-        >
-          <span aria-hidden="true">⤓</span> Preview PDF
-        </button>
-      )}
+      <button
+        type="submit"
+        form="chart-form"
+        className="fab-download"
+        aria-label="Preview and download the chart PDF"
+      >
+        <span aria-hidden="true">⤓</span> Preview PDF
+      </button>
 
       {previewSnapshot && (
         <React.Suspense fallback={null}>

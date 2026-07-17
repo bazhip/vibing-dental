@@ -65,7 +65,10 @@ function hasContent(s: ChartSnapshot): boolean {
   return false;
 }
 
-export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
+export function useCloudSync(chart: UseChartStateReturn, active = true): UseCloudSyncReturn {
+  // Trial mode charts stay local-only: no session exists, so autosave
+  // would just error — switch the whole hook off instead.
+  const on = cloudEnabled && active;
   const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
   const [autosaveEnabled, setAutosaveEnabled] = usePersistedState<boolean>('chart.autosave', 1, true);
 
@@ -168,7 +171,7 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
   // last edits cloud-less forever (the clinician made no further edits,
   // so no new autosave fires). Retry when the browser comes back online.
   React.useEffect(() => {
-    if (!supabase) return;
+    if (!on) return;
     const onOnline = () => {
       if (statusRef.current !== 'error') return;
       flushPending().catch(() => {
@@ -177,14 +180,14 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
     };
     window.addEventListener('online', onOnline);
     return () => window.removeEventListener('online', onOnline);
-  }, [flushPending]);
+  }, [on, flushPending]);
 
   // Debounced autosave. Keyed on the serialized snapshot so only actual
   // edits schedule a save.
   const skippedFirst = React.useRef(false);
   const suppressNext = React.useRef(false);
   React.useEffect(() => {
-    if (!supabase) return;
+    if (!on) return;
     // Don't upsert the state we just restored at mount — only real edits.
     if (!skippedFirst.current) {
       skippedFirst.current = true;
@@ -209,7 +212,7 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
       });
     }, AUTOSAVE_DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
-  }, [serialized, chartId, upsertChart, autosaveEnabled]);
+  }, [on, serialized, chartId, upsertChart, autosaveEnabled]);
 
   const listCharts = React.useCallback(async (): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
@@ -289,7 +292,7 @@ export function useCloudSync(chart: UseChartStateReturn): UseCloudSyncReturn {
   }, [isDirty, flushPending]);
 
   return {
-    enabled: cloudEnabled,
+    enabled: on,
     status,
     saveNow,
     autosaveEnabled,

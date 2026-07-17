@@ -5,7 +5,7 @@ interface ChartLibraryProps {
   listCharts: () => Promise<CloudChartMeta[]>;
   onOpen: (id: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
-  /** Back to the active chart. */
+  /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
 
@@ -16,10 +16,22 @@ const SPECIES_LABELS: Record<string, string> = {
   'canine-deciduous': 'Canine · Deciduous',
 };
 
+type SortKey = 'patient' | 'date' | 'updated';
+type SortDir = 'asc' | 'desc';
+
+const COMPARATORS: Record<SortKey, (a: CloudChartMeta, b: CloudChartMeta) => number> = {
+  patient: (a, b) =>
+    a.patient_name.localeCompare(b.patient_name, undefined, { sensitivity: 'base' }),
+  // chart_date is yyyy-mm-dd, so string compare sorts chronologically.
+  date: (a, b) => a.chart_date.localeCompare(b.chart_date),
+  updated: (a, b) => a.updated_at.localeCompare(b.updated_at),
+};
+
 /**
- * Full-screen chart browser — the practice's patient records. Scales past
- * the menu-dropdown stage: search-as-you-type across name / number, most
- * recently touched first, open or delete per row.
+ * "My charts" — the practice's saved-chart browser, presented as a
+ * dialog over the working chart like the app's other popups. Search
+ * filters client-side; column headers sort; rows open, the trailing
+ * button deletes.
  */
 export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   listCharts,
@@ -31,6 +43,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const [query, setQuery] = React.useState('');
   const [error, setError] = React.useState('');
   const [busyId, setBusyId] = React.useState<string | null>(null);
+  const [sortKey, setSortKey] = React.useState<SortKey>('updated');
+  const [sortDir, setSortDir] = React.useState<SortDir>('desc');
 
   const refresh = React.useCallback(async () => {
     setError('');
@@ -45,14 +59,36 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     refresh();
   }, [refresh]);
 
-  const filtered = React.useMemo(() => {
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const rows = React.useMemo(() => {
     if (!charts) return null;
     const q = query.trim().toLowerCase();
-    if (!q) return charts;
-    return charts.filter((c) =>
-      `${c.patient_name} ${c.patient_number}`.toLowerCase().includes(q)
-    );
-  }, [charts, query]);
+    const filtered = q
+      ? charts.filter((c) =>
+          `${c.patient_name} ${c.patient_number}`.toLowerCase().includes(q)
+        )
+      : charts;
+    const sorted = [...filtered].sort(COMPARATORS[sortKey]);
+    if (sortDir === 'desc') sorted.reverse();
+    return sorted;
+  }, [charts, query, sortKey, sortDir]);
+
+  const setSort = (key: SortKey) => {
+    if (key === sortKey) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      // Names read naturally A→Z; dates newest-first.
+      setSortDir(key === 'patient' ? 'asc' : 'desc');
+    }
+  };
 
   const handleOpen = async (id: string) => {
     setBusyId(id);
@@ -80,95 +116,122 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     }
   };
 
+  const sortHeader = (key: SortKey, label: string) => (
+    <span
+      role="columnheader"
+      aria-sort={sortKey === key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      <button type="button" className="chart-library__sort" onClick={() => setSort(key)}>
+        {label}
+        <span className="chart-library__sort-arrow" aria-hidden="true">
+          {sortKey === key ? (sortDir === 'asc' ? '▲' : '▼') : ''}
+        </span>
+      </button>
+    </span>
+  );
+
   return (
-    <div className="chart-library">
-      <div className="chart-library__head">
-        <div>
-          <h2 className="chart-library__title">My charts</h2>
-          <p className="chart-library__sub">
-            Every chart autosaves here as you work.
-          </p>
-        </div>
-        <div className="chart-library__head-actions">
-          <button type="button" className="diagram-view__action" onClick={onClose}>
-            Back to chart
+    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="My charts">
+      <div className="ai-settings-modal chart-library-modal" onClick={(e) => e.stopPropagation()}>
+        <header className="ai-settings-header">
+          <h2>My charts</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
+            ×
           </button>
+        </header>
+
+        <div className="chart-library-modal__body">
+          <input
+            type="search"
+            className="chart-library__search"
+            placeholder="Search by patient name or number…"
+            aria-label="Search charts"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
+
+          {error && <div className="login-error" role="alert">{error}</div>}
+
+          {charts !== null && charts.length >= 500 && (
+            <p className="chart-library__sub">
+              Showing the 500 most recently updated charts — older charts
+              don't appear here or in search.
+            </p>
+          )}
+
+          {rows === null && !error && (
+            <div className="chart-library__empty">Loading…</div>
+          )}
+
+          {rows !== null && rows.length === 0 && (
+            <div className="chart-library__empty">
+              {query
+                ? 'No charts match that search.'
+                : 'No saved charts yet — they save automatically as you chart.'}
+            </div>
+          )}
+
+          {rows !== null && rows.length > 0 && (
+            <div className="chart-library__table" role="table" aria-label="Saved charts">
+              <div className="chart-library__head-row" role="row">
+                {sortHeader('patient', 'Patient')}
+                <span role="columnheader">Patient #</span>
+                <span role="columnheader">Species</span>
+                {sortHeader('date', 'Chart date')}
+                {sortHeader('updated', 'Updated')}
+                <span role="columnheader">
+                  <span className="visually-hidden">Actions</span>
+                </span>
+              </div>
+              <div className="chart-library__scroll">
+                {rows.map((c) => (
+                  <div key={c.id} className="chart-library__row" role="row">
+                    <button
+                      type="button"
+                      className="chart-library__row-main"
+                      onClick={() => handleOpen(c.id)}
+                      disabled={busyId === c.id}
+                      title={`Open the chart for ${c.patient_name.trim() || 'unnamed patient'}`}
+                    >
+                      <span role="cell" className="chart-library__patient">
+                        {c.patient_name.trim() || 'Unnamed patient'}
+                      </span>
+                      <span role="cell" className="chart-library__cell">
+                        {c.patient_number || '—'}
+                      </span>
+                      <span role="cell" className="chart-library__cell chart-library__cell--species">
+                        {SPECIES_LABELS[c.species] ?? c.species ?? '—'}
+                      </span>
+                      <span role="cell" className="chart-library__cell chart-library__cell--date">
+                        {c.chart_date || '—'}
+                      </span>
+                      <span role="cell" className="chart-library__cell">
+                        {new Date(c.updated_at).toLocaleString(undefined, {
+                          dateStyle: 'medium',
+                          timeStyle: 'short',
+                        })}
+                      </span>
+                    </button>
+                    <span role="cell" className="chart-library__row-actions">
+                      <button
+                        type="button"
+                        className="chart-library__delete"
+                        onClick={() => handleDelete(c)}
+                        disabled={busyId === c.id}
+                        aria-label={`Delete chart for ${c.patient_name.trim() || 'unnamed patient'}`}
+                        title="Delete chart"
+                      >
+                        Delete
+                      </button>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      <input
-        type="search"
-        className="chart-library__search"
-        placeholder="Search by patient name or number…"
-        aria-label="Search charts"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        autoFocus
-      />
-
-      {error && <div className="login-error" role="alert">{error}</div>}
-
-      {charts !== null && charts.length >= 500 && (
-        // The fetch caps at the 500 most recent rows — say so instead of
-        // letting search silently miss older records.
-        <p className="chart-library__sub">
-          Showing the 500 most recently updated charts — older charts
-          don't appear here or in search.
-        </p>
-      )}
-
-      {filtered === null && !error && (
-        <div className="chart-library__empty">Loading…</div>
-      )}
-
-      {filtered !== null && filtered.length === 0 && (
-        <div className="chart-library__empty">
-          {query
-            ? 'No charts match that search.'
-            : 'No saved charts yet — they save automatically as you chart.'}
-        </div>
-      )}
-
-      {filtered !== null && filtered.length > 0 && (
-        <ul className="chart-library__list">
-          {filtered.map((c) => (
-            <li key={c.id} className="chart-library__row">
-              <button
-                type="button"
-                className="chart-library__row-main"
-                onClick={() => handleOpen(c.id)}
-                disabled={busyId === c.id}
-              >
-                <span className="chart-library__patient">
-                  {c.patient_name.trim() || 'Unnamed patient'}
-                </span>
-                <span className="chart-library__meta">
-                  {[
-                    c.patient_number,
-                    SPECIES_LABELS[c.species] ?? c.species,
-                    c.chart_date,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </span>
-                <span className="chart-library__updated">
-                  Updated {new Date(c.updated_at).toLocaleString()}
-                </span>
-              </button>
-              <button
-                type="button"
-                className="chart-library__delete"
-                onClick={() => handleDelete(c)}
-                disabled={busyId === c.id}
-                aria-label={`Delete chart for ${c.patient_name.trim() || 'unnamed patient'}`}
-                title="Delete chart"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };

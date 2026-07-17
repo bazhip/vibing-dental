@@ -190,7 +190,7 @@ export async function drawLogoAndHeader(
   /** Practice name — drawn as a text wordmark when there's no uploaded
    *  logo, so a signed-in practice never prints another clinic's mark. */
   practiceName?: string
-): Promise<void> {
+): Promise<number> {
   const { width: pageWidth, height: pageHeight } = page.getSize();
   const titleSize = 22;
   const subtitleSize = 9;
@@ -251,11 +251,17 @@ export async function drawLogoAndHeader(
         logoBytes = await res.arrayBuffer();
       }
       const png = await pdfDoc.embedPng(new Uint8Array(logoBytes));
-      const logoHeight = logoWidth * (png.height / png.width);
-      logoBottomPt = logoTopPt - logoHeight;
+      // Fit inside a bounded box: width-capped AND height-capped, aspect
+      // preserved. Without the height cap a square or tall uploaded logo
+      // rendered 2.2in+ tall and shoved the header into the diagram.
+      const maxLogoH = 1.10 * PT_PER_IN;
+      const scale = Math.min(logoWidth / png.width, maxLogoH / png.height);
+      const logoW = png.width * scale;
+      const logoH = png.height * scale;
+      logoBottomPt = logoTopPt - logoH;
       page.drawImage(png, {
         x: logoLeftPt, y: logoBottomPt,
-        width: logoWidth, height: logoHeight,
+        width: logoW, height: logoH,
       });
     }
   } catch (err) {
@@ -317,6 +323,11 @@ export async function drawLogoAndHeader(
     y: pageHeight - titleTopIn * PT_PER_IN - fittedTitleSize - subtitleSize - 4,
     size: subtitleSize, font, color: PALETTE.muted,
   });
+
+  // Header block's bottom edge (inches from the page top). Tall uploaded
+  // logos push this well past the default diagram-slot top — the caller
+  // uses it to keep the diagram clear of the header.
+  return (pageHeight - underlineY) / PT_PER_IN;
 }
 
 // ----------------------------------------------------------- Patient info --

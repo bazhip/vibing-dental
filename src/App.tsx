@@ -18,6 +18,23 @@ const ResetPassword = React.lazy(() =>
 
 const AUTH_KEY = 'auth';
 const AUTH_VERSION = 1;
+const TRIAL_KEY = 'trial';
+const TRIAL_NOTIFIED_KEY = 'trial.notified';
+
+/** Tell the practice owner someone started a trial — fire-and-forget,
+ *  once per browser. No personal data leaves the page (there is none
+ *  to send; trials are anonymous). */
+function notifyTrialStarted(): void {
+  if (readString(TRIAL_NOTIFIED_KEY, 1, '') === '1') return;
+  writeString(TRIAL_NOTIFIED_KEY, 1, '1');
+  fetch('https://hiefwyyoyiqxmxaxyxmx.supabase.co/functions/v1/signup-alert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ trial: true }),
+  }).catch(() => {
+    // best-effort — never bother the trial user about it
+  });
+}
 
 /**
  * Root application component with authentication.
@@ -36,6 +53,30 @@ const App: React.FC = () => {
   const [sessionChecked, setSessionChecked] = useState<boolean>(!cloudEnabled);
   // True when the user arrived via a password-recovery email link.
   const [recovering, setRecovering] = useState(false);
+  // No-account trial (persisted so a refresh mid-trial doesn't bounce
+  // back to the landing page). Signing in/up ends it.
+  const [trialMode, setTrialMode] = useState<boolean>(
+    () => readString(TRIAL_KEY, 1, '') === '1'
+  );
+  // When the trial's "Create free account" CTA sends the user back to
+  // the landing page, open the signup overlay right away.
+  const [landingAuth, setLandingAuth] = useState<'signin' | 'signup' | null>(null);
+
+  const startTrial = () => {
+    writeString(TRIAL_KEY, 1, '1');
+    setTrialMode(true);
+    notifyTrialStarted();
+  };
+
+  const endTrial = (nextAuth: 'signup' | null) => {
+    removeKey(TRIAL_KEY, 1);
+    setTrialMode(false);
+    setLandingAuth(nextAuth);
+  };
+
+  // "Homepage" from the app menu — view the landing page without
+  // leaving the session (or the trial); "Back to the app" returns.
+  const [showHome, setShowHome] = useState(false);
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
@@ -68,10 +109,48 @@ const App: React.FC = () => {
     );
   }
 
+  if (showHome && (isAuthenticated || trialMode)) {
+    return (
+      <Suspense fallback={null}>
+        <Landing
+          onAuthenticate={() => {
+            removeKey(TRIAL_KEY, 1);
+            setTrialMode(false);
+            setIsAuthenticated(true);
+            setShowHome(false);
+          }}
+          onOpenApp={() => setShowHome(false)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (!isAuthenticated && trialMode) {
+    return (
+      <div className="App">
+        <Suspense fallback={null}>
+          <EntryGrid
+            trial
+            onRequestAccount={() => endTrial('signup')}
+            onGoHome={() => setShowHome(true)}
+          />
+        </Suspense>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <Suspense fallback={null}>
-        <Landing onAuthenticate={() => setIsAuthenticated(true)} />
+        <Landing
+          onAuthenticate={() => {
+            removeKey(TRIAL_KEY, 1);
+            setTrialMode(false);
+            setIsAuthenticated(true);
+          }}
+          onTryFree={startTrial}
+          initialAuth={landingAuth}
+        />
       </Suspense>
     );
   }
@@ -79,7 +158,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Suspense fallback={null}>
-        <EntryGrid />
+        <EntryGrid onGoHome={() => setShowHome(true)} />
       </Suspense>
     </div>
   );

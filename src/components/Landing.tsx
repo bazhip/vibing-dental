@@ -11,6 +11,14 @@ import './Landing.css';
 
 interface LandingProps {
   onAuthenticate: () => void;
+  /** Start the no-account trial (chart locally, PDFs stamped TRIAL). */
+  onTryFree?: () => void;
+  /** Open the auth overlay immediately (e.g. returning from the trial's
+   *  "Create free account" CTA). */
+  initialAuth?: 'signin' | 'signup' | null;
+  /** Set when the viewer already has the app open (signed in or trial)
+   *  and is just visiting the homepage — CTAs become "Back to the app". */
+  onOpenApp?: () => void;
 }
 
 /**
@@ -23,8 +31,14 @@ interface LandingProps {
  * All motion is pure CSS keyframes and honors prefers-reduced-motion via
  * the app's global override.
  */
-export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
-  const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(null);
+export const Landing: React.FC<LandingProps> = ({
+  onAuthenticate,
+  onTryFree,
+  initialAuth = null,
+  onOpenApp,
+}) => {
+  const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(initialAuth);
+  const inApp = !!onOpenApp;
 
   React.useEffect(() => {
     if (!auth) return;
@@ -50,13 +64,21 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
           ToothOps Charting
         </span>
         <nav className="landing__nav">
-          <button type="button" className="landing__nav-signin" onClick={() => setAuth('signin')}>
-            Sign in
-          </button>
-          {cloudEnabled && (
-            <button type="button" className="landing__nav-cta" onClick={() => setAuth('signup')}>
-              Get started
+          {inApp ? (
+            <button type="button" className="landing__nav-cta" onClick={onOpenApp}>
+              Back to the app
             </button>
+          ) : (
+            <>
+              <button type="button" className="landing__nav-signin" onClick={() => setAuth('signin')}>
+                Sign in
+              </button>
+              {cloudEnabled && (
+                <button type="button" className="landing__nav-cta" onClick={() => setAuth('signup')}>
+                  Get started
+                </button>
+              )}
+            </>
           )}
         </nav>
       </header>
@@ -78,12 +100,24 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
               finish.
             </p>
             <div className="landing__cta-row">
-              {cloudEnabled ? (
+              {inApp ? (
+                <button type="button" className="landing__cta" onClick={onOpenApp}>
+                  Back to the app
+                </button>
+              ) : cloudEnabled ? (
                 <>
                   <button type="button" className="landing__cta" onClick={() => setAuth('signup')}>
                     Create your practice account
                   </button>
-                  <span className="landing__cta-note">Free in early access · no card required</span>
+                  {onTryFree && (
+                    <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
+                      Try it free — no account
+                    </button>
+                  )}
+                  <span className="landing__cta-note">
+                    Free in early access · no card required
+                    {onTryFree ? ' · trial PDFs are stamped TRIAL' : ''}
+                  </span>
                 </>
               ) : (
                 <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>
@@ -280,13 +314,22 @@ export const Landing: React.FC<LandingProps> = ({ onAuthenticate }) => {
         {/* ------------------------------------------------- final CTA --- */}
         <section className="landing__closer">
           <h2>Ready to put the clipboard down?</h2>
-          {cloudEnabled ? (
+          {inApp ? (
+            <button type="button" className="landing__cta" onClick={onOpenApp}>
+              Back to the app
+            </button>
+          ) : cloudEnabled ? (
             <button type="button" className="landing__cta" onClick={() => setAuth('signup')}>
               Create your practice account
             </button>
           ) : (
             <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>
               Open the charting app
+            </button>
+          )}
+          {!inApp && cloudEnabled && onTryFree && (
+            <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
+              Try it free — no account
             </button>
           )}
         </section>

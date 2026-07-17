@@ -149,7 +149,7 @@ export async function buildDentalChartPDFBytes(
   // above the footer rule.
   const diagramBottomIn = (codes: unknown[]) => (codes.length > 0 ? 6.45 : 8.0);
 
-  await drawLogoAndHeader(
+  const headerBottomIn = await drawLogoAndHeader(
     pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold,
     branding.logoUrl, branding.practiceName
   );
@@ -200,8 +200,21 @@ export async function buildDentalChartPDFBytes(
   );
   drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, 'Maxillary Arch',  missingTriadans);
   drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, 'Mandibular Arch', missingTriadans);
+  // The diagram slot is wide enough to pass under the patient card
+  // (card left edge 3.65in < slot right edge ~5in), and a tall uploaded
+  // logo can push the header block below the slot's default top — start
+  // the diagram below BOTH so it never overlaps either, shrinking to
+  // whatever region remains.
+  const baseSlot1 = DIAGRAM_SLOTS[species][0];
+  const minTop1In = Math.max(
+    baseSlot1.yTopIn,
+    headerBottomIn + 0.12,
+    patientBottomIn + 0.12
+  );
+  const preSlot =
+    minTop1In > baseSlot1.yTopIn ? { ...baseSlot1, yTopIn: minTop1In } : baseSlot1;
   await drawDiagramAt(
-    pdfDoc, DIAGRAM_SLOTS[species][0], preDiagram.png,
+    pdfDoc, preSlot, preDiagram.png,
     diagramBottomIn(usedByPage.page1)
   );
   drawFooter(page1, regular, bold, 1, 2, generatedAt, identityLine);

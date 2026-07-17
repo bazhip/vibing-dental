@@ -24,6 +24,8 @@ interface ChartMenuProps {
   onLoadPdf: (file: File) => void;
   /** Open the AI settings dialog (BYOK API key, model preferences). */
   onOpenAiSettings: () => void;
+  /** View the landing page without ending the session. */
+  onGoHome?: () => void;
   /** Cloud account actions — present only when Supabase is configured. */
   cloud?: ChartMenuCloud;
 }
@@ -33,7 +35,7 @@ interface ChartMenuProps {
  * boundaries: starting fresh, loading a saved chart back in, and the AI
  * settings. Lives in the topbar where app-level actions are expected.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, cloud }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, onGoHome, cloud }) => {
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -187,6 +189,19 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span className="chart-menu__item-body">
                   <strong>Autosave — {cloud.autosaveEnabled ? 'On' : 'Off'}</strong>
                   <span>Save to the cloud automatically as you edit.</span>
+                </span>
+              </button>
+            )}
+            {onGoHome && (
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); onGoHome(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Homepage</strong>
+                  <span>View the product page — your chart stays right here.</span>
                 </span>
               </button>
             )}
