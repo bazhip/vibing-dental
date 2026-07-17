@@ -6,6 +6,8 @@ interface ImagingSectionProps {
   chartId: string;
   /** False in trial/standalone: no account to scope private storage to. */
   cloudActive: boolean;
+  /** Stamp new images with the practice so teammates can see them. */
+  practiceId?: string;
 }
 
 /**
@@ -14,8 +16,8 @@ interface ImagingSectionProps {
  * Images live in a private bucket and render via short-lived signed
  * URLs. Cloud-only — the section explains itself in trial/standalone.
  */
-export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive }) => {
-  const store = useAttachments(chartId);
+export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive, practiceId = '' }) => {
+  const store = useAttachments(chartId, practiceId);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [tooth, setTooth] = React.useState('');
   const [busy, setBusy] = React.useState(false);

@@ -8,14 +8,17 @@ interface SurgeryReportFormProps {
   /** False in trial mode — templates live in the per-user cloud store,
    *  which needs an account. */
   cloudActive?: boolean;
+  /** Stamp new templates with the practice so teammates share them. */
+  practiceId?: string;
 }
 
 export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   value,
   onChange,
   cloudActive = true,
+  practiceId = '',
 }) => {
-  const store = useReportTemplates();
+  const store = useReportTemplates(practiceId);
   const templatesOn = store.enabled && cloudActive;
   const [manageOpen, setManageOpen] = React.useState(false);
 

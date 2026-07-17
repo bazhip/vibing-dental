@@ -66,10 +66,18 @@ function hasContent(s: ChartSnapshot): boolean {
   return false;
 }
 
-export function useCloudSync(chart: UseChartStateReturn, active = true): UseCloudSyncReturn {
+export function useCloudSync(
+  chart: UseChartStateReturn,
+  active = true,
+  practiceId = ''
+): UseCloudSyncReturn {
   // Trial mode charts stay local-only: no session exists, so autosave
   // would just error — switch the whole hook off instead.
   const on = cloudEnabled && active;
+  // Latest practice id (may resolve after mount) — new charts get
+  // stamped so the whole team can see them; solo users leave it null.
+  const practiceIdRef = React.useRef(practiceId);
+  practiceIdRef.current = practiceId;
   const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
   const [autosaveEnabled, setAutosaveEnabled] = usePersistedState<boolean>('chart.autosave', 1, true);
 
@@ -118,6 +126,7 @@ export function useCloudSync(chart: UseChartStateReturn, active = true): UseClou
       species: snap.species,
       chart_date: snap.patientInfo.date,
       recall_date: snap.patientInfo.recallDate ?? '',
+      practice_id: practiceIdRef.current || null,
       data: snap,
     });
     setStatus('saving');

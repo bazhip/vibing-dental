@@ -17,6 +17,8 @@ export interface PracticeProfile {
 
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
+  /** The user's current practice (for team sharing), '' when solo. */
+  practiceId: string;
   /** Public URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
@@ -96,6 +98,7 @@ export function useProfile(): UseProfileReturn {
     doctorName: '',
   });
   const [logoUrl, setLogoUrl] = React.useState('');
+  const [practiceId, setPracticeId] = React.useState('');
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
@@ -110,7 +113,7 @@ export function useProfile(): UseProfileReturn {
       }
       const { data } = await supabase
         .from('profiles')
-        .select('practice_name, doctor_name, logo_path')
+        .select('practice_name, doctor_name, logo_path, practice_id')
         .eq('id', userId)
         .maybeSingle();
       if (!cancelled) {
@@ -120,6 +123,7 @@ export function useProfile(): UseProfileReturn {
             doctorName: data.doctor_name ?? '',
           });
           setLogoUrl(publicLogoUrl(data.logo_path ?? ''));
+          setPracticeId(data.practice_id ?? '');
         }
         setLoaded(true);
       }
@@ -161,5 +165,5 @@ export function useProfile(): UseProfileReturn {
     setLogoUrl('');
   }, []);
 
-  return { ...profile, loaded, logoUrl, update, uploadLogo, removeLogo };
+  return { ...profile, loaded, practiceId, logoUrl, update, uploadLogo, removeLogo };
 }

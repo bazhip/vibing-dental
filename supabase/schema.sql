@@ -185,3 +185,35 @@ create policy "users manage own attachments storage"
 
 -- Recall reminder column (also mirrored in PatientInfo.recallDate inside data jsonb).
 alter table public.charts add column if not exists recall_date text not null default '';
+
+-- ============================================================ TEAM ACCESS
+-- Additive multi-doctor model. Rows carry an optional practice_id; NULL =
+-- private to creator. Policies grant access to creator OR practice member
+-- (is_member_of requires practice_id NOT NULL), so pre-existing per-user
+-- rows stay isolated. Full policy set applied via the team_access +
+-- team_access_row_policies migrations; summarized here.
+create table if not exists public.practices (
+  id uuid primary key default gen_random_uuid(),
+  name text not null default '',
+  owner uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+create table if not exists public.practice_members (
+  practice_id uuid not null references public.practices (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  role text not null default 'member',
+  created_at timestamptz not null default now(),
+  primary key (practice_id, user_id)
+);
+alter table public.profiles           add column if not exists practice_id uuid references public.practices (id) on delete set null;
+alter table public.charts             add column if not exists practice_id uuid;
+alter table public.report_templates   add column if not exists practice_id uuid;
+alter table public.attachments        add column if not exists practice_id uuid;
+-- SECURITY DEFINER membership checks used in row policies (see migrations
+-- team_access / team_access_row_policies for the full policy definitions):
+--   is_member_of(pid), is_owner_of(pid)
+-- charts/report_templates/attachments select|update|delete USING:
+--   created_by = auth.uid() OR public.is_member_of(practice_id)
+-- insert WITH CHECK:
+--   created_by = auth.uid() AND (practice_id IS NULL OR public.is_member_of(practice_id))
+-- Managed server-side by the team-api edge function (owner-gated).

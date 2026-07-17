@@ -54,9 +54,11 @@ async function signAll(rows: { path: string }[]): Promise<Map<string, string>> {
   return map;
 }
 
-export function useAttachments(chartId: string): UseAttachmentsReturn {
+export function useAttachments(chartId: string, practiceId = ''): UseAttachmentsReturn {
   const [items, setItems] = React.useState<Attachment[]>([]);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
+  const practiceIdRef = React.useRef(practiceId);
+  practiceIdRef.current = practiceId;
 
   const load = React.useCallback(async () => {
     if (!supabase || !chartId) {
@@ -118,6 +120,7 @@ export function useAttachments(chartId: string): UseAttachmentsReturn {
         path,
         kind,
         tooth_triadan: toothTriadan,
+        practice_id: practiceIdRef.current || null,
       });
       if (rowErr) throw new Error(rowErr.message);
       await load();

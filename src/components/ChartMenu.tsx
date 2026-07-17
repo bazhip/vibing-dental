@@ -6,6 +6,7 @@ interface ChartMenuCloud {
   onToggleAutosave: () => void;
   onOpenLibrary: () => void;
   onPracticeSettings: () => void;
+  onOpenTeam: () => void;
   onSignOut: () => void;
 }
 
@@ -162,6 +163,17 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
                 <span className="chart-menu__item-body">
                   <strong>Practice settings</strong>
                   <span>Name, doctor line, logo, and password.</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onOpenTeam(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Team</strong>
+                  <span>Add colleagues so your practice shares charts.</span>
                 </span>
               </button>
             </section>

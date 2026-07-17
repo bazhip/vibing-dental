@@ -30,9 +30,11 @@ export interface UseReportTemplatesReturn {
 const byName = (a: ReportTemplate, b: ReportTemplate) =>
   a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
 
-export function useReportTemplates(): UseReportTemplatesReturn {
+export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   const [templates, setTemplates] = React.useState<ReportTemplate[]>([]);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
+  const practiceIdRef = React.useRef(practiceId);
+  practiceIdRef.current = practiceId;
 
   React.useEffect(() => {
     if (!supabase) return;
@@ -55,7 +57,7 @@ export function useReportTemplates(): UseReportTemplatesReturn {
     if (!supabase) throw new Error('Cloud is not configured.');
     const { data, error } = await supabase
       .from('report_templates')
-      .insert({ name, body })
+      .insert({ name, body, practice_id: practiceIdRef.current || null })
       .select('id, name, body')
       .single();
     if (error) throw new Error(error.message);

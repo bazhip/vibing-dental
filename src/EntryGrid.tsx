@@ -21,6 +21,7 @@ import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
+import { TeamPanel } from './components/TeamPanel';
 import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -85,13 +86,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   onGoHome,
 }) => {
   const chart = useChartState();
-  const cloud = useCloudSync(chart, !trial);
   const profile = useProfile();
+  const cloud = useCloudSync(chart, !trial, profile.practiceId);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
+  const [teamOpen, setTeamOpen] = React.useState(false);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -362,7 +364,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'imaging',
       label: 'Images',
       content: (
-        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} />
+        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} practiceId={profile.practiceId} />
       ),
     },
     {
@@ -373,6 +375,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           value={chart.patientInfo.treatmentReport}
           onChange={(value) => chart.handlePatientInfoChange('treatmentReport', value)}
           cloudActive={cloud.enabled}
+          practiceId={profile.practiceId}
         />
       ),
     },
@@ -518,6 +521,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     },
                     onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
+                    onOpenTeam: () => setTeamOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch(() => {
                         alert('Could not sign out — check your connection.');
@@ -595,6 +599,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {isAdmin && (
         <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
       )}
+
+      <TeamPanel open={teamOpen} onClose={() => setTeamOpen(false)} />
 
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
