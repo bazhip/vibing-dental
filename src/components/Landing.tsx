@@ -95,9 +95,9 @@ export const Landing: React.FC<LandingProps> = ({
             </h1>
             <p className="landing__sub">
               Chairside dental charting for veterinary practices — full-mouth
-              Triadan grids, AVDC nomenclature, interactive tooth diagrams,
-              and a client-ready PDF with your logo on it the moment you
-              finish.
+              Triadan grids, AVDC nomenclature, voice autofill, photos and
+              radiographs, per-patient history, and a client-ready PDF with
+              your logo on it the moment you finish.
             </p>
             <div className="landing__cta-row">
               {inApp ? (
@@ -243,23 +243,24 @@ export const Landing: React.FC<LandingProps> = ({
             <p>
               Full-mouth Triadan grids for feline, canine, and deciduous
               dentition. Tab and Enter move like the tools your team already
-              knows — probing depths in, eyes on the patient.
+              knows — probing depths in, eyes on the patient. Hover any tooth
+              and its label and number float right there.
+            </p>
+          </div>
+          <div className="landing__feature">
+            <h3>Hands-free when gloved</h3>
+            <p>
+              Voice dictation with AI autofill charts findings while you
+              work — say “104 complicated crown fracture” and it lands on the
+              tooth. Bring your own keys; your data goes nowhere else.
             </p>
           </div>
           <div className="landing__feature">
             <h3>Speaks AVDC</h3>
             <p>
-              Official nomenclature and abbreviations throughout, with a
-              codes legend printed on every chart so the record reads
-              cleanly in any hands.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Your name on every page</h3>
-            <p>
-              Practice logo and doctor line are embedded automatically. Every
-              PDF carries its own data, so a saved chart re-opens in the app
-              years later — no lock-in, ever.
+              The complete AVDC abbreviation set throughout, with a codes
+              legend printed on every chart so the record reads cleanly in
+              any hands.
             </p>
           </div>
           <div className="landing__feature">
@@ -271,18 +272,42 @@ export const Landing: React.FC<LandingProps> = ({
             </p>
           </div>
           <div className="landing__feature">
-            <h3>Hands-free when gloved</h3>
+            <h3>Photos &amp; radiographs</h3>
             <p>
-              Voice dictation with AI autofill charts findings while you work
-              — bring your own keys, your data goes nowhere else.
+              Attach intraoral photos and dental rads to any chart, caption
+              them, and pin each to a tooth. Stored privately alongside the
+              record, right where you’ll look for them.
             </p>
           </div>
           <div className="landing__feature">
-            <h3>Your charts, everywhere</h3>
+            <h3>Every visit, one patient</h3>
             <p>
-              Practice accounts autosave every chart to the cloud and keep a
-              local copy chairside, so a dropped connection never loses a
-              mouth.
+              Charts group by patient, so a returning animal’s whole history
+              is one click away — open last year’s cleaning next to today’s
+              extraction.
+            </p>
+          </div>
+          <div className="landing__feature">
+            <h3>Recall built in</h3>
+            <p>
+              Set a recheck date as you chart; the patient list flags who’s
+              due and who’s overdue, so the next dental never slips.
+            </p>
+          </div>
+          <div className="landing__feature">
+            <h3>Your whole team, one record</h3>
+            <p>
+              Add colleagues to your practice and everyone shares the same
+              charts, templates, and images — with per-practice access, not a
+              shared password.
+            </p>
+          </div>
+          <div className="landing__feature">
+            <h3>Cloud &amp; chairside</h3>
+            <p>
+              Every chart autosaves to the cloud and keeps a local copy
+              chairside, so a dropped connection never loses a mouth. Reusable
+              report templates save the typing.
             </p>
           </div>
         </section>
