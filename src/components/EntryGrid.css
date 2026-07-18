@@ -2273,3 +2273,7 @@ button.save-status--manual {
 button.save-status--manual:hover {
   background: color-mix(in srgb, var(--primary) 14%, white);
 }
+
+/* Reminder composer + settings body */
+.reminder__body { min-height: 9rem; width: 100%; box-sizing: border-box; }
+.patient-form__reminder-btn { margin-top: 0.4rem; }

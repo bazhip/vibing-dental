@@ -111,9 +111,11 @@ export const EXAM_ITEMS: { key: keyof ExamFindings; label: string; pdfName: stri
 export interface PatientInfo {
   patientName: string;
   patientNumber: string;
-  /** Pet owner (client) name and phone — searchable in My charts. */
+  /** Pet owner (client) contact — name/phone searchable in My charts;
+   *  email is the recheck-reminder recipient. */
   ownerName: string;
   ownerPhone: string;
+  ownerEmail: string;
   doctor: string;
   tech: string;
   date: string;

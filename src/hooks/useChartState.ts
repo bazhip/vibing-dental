@@ -82,7 +82,7 @@ export interface UseChartStateReturn {
    *  cloud row. With no args, derives from the currently-open chart; the
    *  library passes an explicit prior snapshot's identity + gone teeth. */
   startNewVisit: (opts?: {
-    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; species: Species };
+    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
   }) => void;
 
@@ -145,6 +145,7 @@ function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       recallDate: s.patientInfo.recallDate ?? '',
       ownerName: s.patientInfo.ownerName ?? '',
       ownerPhone: s.patientInfo.ownerPhone ?? '',
+      ownerEmail: s.patientInfo.ownerEmail ?? '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS, ...(s.patientInfo.nerveBlocks ?? {}) },
       exam: { ...EMPTY_EXAM_FINDINGS, ...(s.patientInfo.exam ?? {}) },
     },
@@ -175,6 +176,7 @@ export function useChartState(): UseChartStateReturn {
       patientNumber: '',
       ownerName: '',
       ownerPhone: '',
+      ownerEmail: '',
       doctor: DEFAULT_VCA_DOCTOR,
       tech: '',
       date: new Date().toISOString().split('T')[0],
@@ -305,6 +307,7 @@ export function useChartState(): UseChartStateReturn {
     patientNumber: '',
     ownerName: '',
     ownerPhone: '',
+    ownerEmail: '',
     doctor: DEFAULT_VCA_DOCTOR,
     tech: '',
     date: new Date().toISOString().split('T')[0],
@@ -317,7 +320,7 @@ export function useChartState(): UseChartStateReturn {
   });
 
   const startNewVisit = (opts?: {
-    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; species: Species };
+    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
   }) => {
     const identity = opts?.identity;
@@ -338,6 +341,7 @@ export function useChartState(): UseChartStateReturn {
       patientNumber: identity ? identity.patientNumber : patientInfo.patientNumber,
       ownerName: identity ? identity.ownerName : patientInfo.ownerName,
       ownerPhone: identity ? identity.ownerPhone : patientInfo.ownerPhone,
+      ownerEmail: identity ? identity.ownerEmail : patientInfo.ownerEmail,
     };
     const sp = identity ? identity.species : species;
     setCloudChartId(generateChartId());

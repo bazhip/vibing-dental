@@ -218,6 +218,7 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
     recallDate:      '', // legacy PDFs predate recall dates
     ownerName:       readTextField(form, 'ownername'),
     ownerPhone:      readTextField(form, 'ownerphone'),
+    ownerEmail:      readTextField(form, 'owneremail'),
     nerveBlocks,
     exam,
   };

@@ -47,6 +47,7 @@ describe('parseDentalChartPDF (modern stash format)', () => {
       recallDate: '2027-01-15',
       ownerName: 'Alex Doe',
       ownerPhone: '555-0101',
+      ownerEmail: 'alex@example.com',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3' },
       exam: {
         ...EMPTY_EXAM_FINDINGS,
@@ -104,6 +105,7 @@ describe('parseDentalChartPDF (modern stash format)', () => {
       recallDate: '',
       ownerName: '',
       ownerPhone: '',
+      ownerEmail: '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: { ...EMPTY_EXAM_FINDINGS },
     };

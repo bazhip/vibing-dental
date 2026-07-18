@@ -222,3 +222,16 @@ alter table public.attachments        add column if not exists practice_id uuid;
 -- the practice_logo migration; owners write via the storage policy
 -- "owners manage practice logo" (is_owner_of on the folder = practice id).
 alter table public.practices add column if not exists logo_path text not null default '';
+
+-- ---------------------------------------------------- recheck reminders
+-- Owner email + reminder template/schedule (migrations: recheck_reminders,
+-- recheck_reminder_cron, reminder_lead_days). Manual send via the
+-- send-reminder edge function; auto-send via pg_cron job
+-- 'daily-recheck-reminders' → public.send_due_reminders() (fires
+-- lead_days before recall_date when practices.reminder_auto is on).
+alter table public.charts add column if not exists owner_email text not null default '';
+alter table public.charts add column if not exists reminder_sent_at timestamptz;
+alter table public.practices add column if not exists reminder_subject text not null default '';
+alter table public.practices add column if not exists reminder_body text not null default '';
+alter table public.practices add column if not exists reminder_auto boolean not null default false;
+alter table public.practices add column if not exists reminder_lead_days int not null default 0;

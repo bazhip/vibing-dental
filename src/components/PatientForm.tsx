@@ -7,6 +7,9 @@ interface PatientFormProps {
   species: Species;
   onPatientInfoChange: (field: keyof PatientInfo, value: string) => void;
   onSpeciesChange: (species: Species) => void;
+  /** Open the recheck-reminder composer (present only with cloud + an
+   *  owner email to send to). */
+  onSendReminder?: () => void;
 }
 
 /**
@@ -18,6 +21,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   species,
   onPatientInfoChange,
   onSpeciesChange,
+  onSendReminder,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -95,7 +99,18 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             value={patientInfo.ownerPhone}
             onChange={handleInputChange('ownerPhone')}
           />
-          <span className="patient-form__hint">Owner name &amp; phone are searchable in My charts.</span>
+        </label>
+
+        <label className="patient-form__label">
+          Owner email
+          <input
+            type="email"
+            className="patient-form__input"
+            placeholder="For recheck reminders"
+            autoComplete="off"
+            value={patientInfo.ownerEmail}
+            onChange={handleInputChange('ownerEmail')}
+          />
         </label>
       </div>
 
@@ -122,7 +137,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             value={patientInfo.recallDate}
             onChange={handleInputChange('recallDate')}
           />
-          <span className="patient-form__hint">Next dental recheck — shown in My charts.</span>
+          {onSendReminder && patientInfo.ownerEmail.trim() && (
+            <button
+              type="button"
+              className="diagram-view__action patient-form__reminder-btn"
+              onClick={onSendReminder}
+            >
+              Send recheck reminder…
+            </button>
+          )}
         </label>
       </div>
 

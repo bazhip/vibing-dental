@@ -23,6 +23,7 @@ export interface CloudChartMeta {
   patient_number: string;
   owner_name: string;
   owner_phone: string;
+  owner_email: string;
   species: string;
   chart_date: string;
   recall_date: string;
@@ -49,7 +50,7 @@ export interface UseCloudSyncReturn {
 function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
-  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
+  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   if (Object.values(p.nerveBlocks ?? {}).some((v) => (v ?? '').trim())) return true;
   if (Object.values(p.exam ?? {}).some((e) => e?.status || (e?.comment ?? '').trim())) return true;
   if (s.toothData.some((t) =>
@@ -131,6 +132,7 @@ export function useCloudSync(
       patient_number: snap.patientInfo.patientNumber,
       owner_name: snap.patientInfo.ownerName ?? '',
       owner_phone: snap.patientInfo.ownerPhone ?? '',
+      owner_email: snap.patientInfo.ownerEmail ?? '',
       species: snap.species,
       chart_date: snap.patientInfo.date,
       recall_date: snap.patientInfo.recallDate ?? '',
@@ -183,7 +185,7 @@ export function useCloudSync(
     if (!supabase) return [];
     const { data, error } = await supabase
       .from('charts')
-      .select('id, patient_name, patient_number, owner_name, owner_phone, species, chart_date, recall_date, updated_at')
+      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, chart_date, recall_date, updated_at')
       .order('updated_at', { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);

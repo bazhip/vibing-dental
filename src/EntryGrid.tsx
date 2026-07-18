@@ -21,6 +21,7 @@ import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
+import { ReminderModal } from './components/ReminderModal';
 import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -92,6 +93,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
+  const [reminderOpen, setReminderOpen] = React.useState(false);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -259,6 +261,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           species={chart.species}
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
+          onSendReminder={cloud.enabled ? () => setReminderOpen(true) : undefined}
         />
       ),
     },
@@ -548,6 +551,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                   patientNumber: snap.patientInfo.patientNumber,
                   ownerName: snap.patientInfo.ownerName ?? '',
                   ownerPhone: snap.patientInfo.ownerPhone ?? '',
+                  ownerEmail: snap.patientInfo.ownerEmail ?? '',
                   species: snap.species,
                 },
                 goneTeeth: Array.from(gone),
@@ -617,6 +621,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {isAdmin && (
         <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
+      )}
+
+      {cloud.enabled && (
+        <ReminderModal
+          open={reminderOpen}
+          onClose={() => setReminderOpen(false)}
+          practiceId={profile.practiceId}
+          practiceName={profile.practiceName}
+          chartId={chart.cloudChartId}
+          toEmail={chart.patientInfo.ownerEmail}
+          patientName={chart.patientInfo.patientName}
+          ownerName={chart.patientInfo.ownerName}
+          recheckDate={chart.patientInfo.recallDate}
+        />
       )}
 
       <footer className="entry-grid__footnote">
