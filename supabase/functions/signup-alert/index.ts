@@ -24,7 +24,7 @@ const CORS = {
 };
 
 const ALERT_TO = Deno.env.get('ALERT_TO') ?? 'bazhip@gmail.com';
-const ALERT_FROM = Deno.env.get('ALERT_FROM') ?? 'ToothOps Charting <onboarding@resend.dev>';
+const ALERT_FROM = Deno.env.get('ALERT_FROM') ?? 'ToothOps <noreply@toothops.app>';
 const FRESH_WINDOW_MS = 15 * 60 * 1000;
 
 async function sendAlert(key: string, subject: string, text: string): Promise<Response> {
