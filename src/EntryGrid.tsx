@@ -374,12 +374,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     }
   };
 
+  // Read-only lock for a section's editable content. Applied per block
+  // (not around the whole section) so reference-only content — the codes
+  // panel beside each diagram — stays scrollable and searchable while a
+  // saved chart is locked. Styling + pointer blocking come from
+  // .sidebar-layout__fieldset:disabled.
+  const lock = (node: React.ReactNode) => (
+    <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
+      {node}
+    </fieldset>
+  );
+
   // Section list — rendered by whichever layout the active board picks.
   const sections: ChartSection[] = [
     {
       id: 'patient',
       label: 'Patient',
-      content: (
+      content: lock(
         <PatientForm
           patientInfo={chart.patientInfo}
           species={chart.species}
@@ -391,7 +402,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'exam',
       label: 'Exam',
-      content: (
+      content: lock(
         <ExamForm
           exam={chart.patientInfo.exam}
           onStatusChange={chart.handleExamStatusChange}
@@ -402,7 +413,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'anesthesia',
       label: 'Anesthesia',
-      content: (
+      content: lock(
         <AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
           onNerveBlockChange={chart.handleNerveBlockChange}
@@ -413,7 +424,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'charting',
       label: 'Charting',
-      content: (
+      content: lock(
         <DentalGrid
           toothData={chart.toothData}
           onToothDataChange={chart.setToothDataDirectly}
@@ -440,6 +451,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
+            {lock(
             <DiagramView
               ref={preDiagramRef}
               title="Diagnosis Diagram"
@@ -454,7 +466,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               defaultTool="comment"
               highlightTriadan={aiHighlightTriadan}
             />
+            )}
           </div>
+          {/* Reference only — deliberately outside the lock so codes stay
+              browsable on read-only charts. */}
           <aside className="diagram-with-codes__codes">
             <CodeReferencePanel kind="diagnosis" />
           </aside>
@@ -467,6 +482,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
+            {lock(
             <DiagramView
               ref={postDiagramRef}
               title="Procedure Diagram"
@@ -481,6 +497,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               markMode="extracted-only"
               highlightTriadan={aiHighlightTriadan}
             />
+            )}
           </div>
           <aside className="diagram-with-codes__codes">
             <CodeReferencePanel kind="procedure" />
@@ -491,14 +508,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'imaging',
       label: 'Images',
-      content: (
+      content: lock(
         <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages} />
       ),
     },
     {
       id: 'treatment',
       label: 'Treatment Report',
-      content: (
+      content: lock(
         <SurgeryReportForm
           value={chart.patientInfo.treatmentReport}
           onChange={(value) => chart.handlePatientInfoChange('treatmentReport', value)}
@@ -825,7 +842,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={sections}
           activeId={activeSection}
           onActiveChange={setActiveSection}
-          contentDisabled={readOnly}
         />
       </form>
 
