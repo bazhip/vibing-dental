@@ -638,6 +638,25 @@
 .landing__auth-panel {
   position: relative;
   animation: landing-rise 0.25s ease-out;
+  /* Never taller than the viewport — the signup form grew past small
+     screens. The card scrolls inside while the close button (absolute
+     on the non-scrolling panel) stays put. dvh tracks mobile browser
+     chrome; vh is the fallback. */
+  display: flex;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+}
+
+.landing__auth-panel .login-container--embedded {
+  max-height: 100%;
+  min-height: 0;
+}
+
+.landing__auth-panel .login-box {
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .landing__auth-close {
