@@ -30,6 +30,43 @@ const TITLES = { diagnosis: 'Diagnoses', procedure: 'Procedures' } as const;
 
 export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
+  const cardRef = React.useRef<HTMLDivElement>(null);
+
+  // Sidebar mode only (the card is position:sticky there): keep the top
+  // anchored under the topbar but never let the bottom pass the frame —
+  // the card shrinks against the enclosing card's bottom edge as the
+  // section scrolls out. Sticky alone can't resize, so clamp on scroll.
+  React.useEffect(() => {
+    const card = cardRef.current;
+    const frame = card?.parentElement; // the section root = the rail frame
+    if (!card || !frame) return;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      if (getComputedStyle(card).position !== 'sticky') {
+        card.style.removeProperty('height');
+        card.style.removeProperty('max-height');
+        return;
+      }
+      const top = card.getBoundingClientRect().top;
+      const frameBottom = frame.getBoundingClientRect().bottom;
+      const viewportMax = window.innerHeight - top - 12;
+      const h = Math.max(0, Math.min(viewportMax, frameBottom - top));
+      card.style.height = `${h}px`;
+      card.style.maxHeight = `${h}px`;
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    apply();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+    };
+  }, []);
 
   // Filter within each clinical group; groups with no surviving codes
   // drop out entirely (including their header).
@@ -50,7 +87,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
         </span>
       </div>
 
-      <div className="code-ref">
+      <div className="code-ref" ref={cardRef}>
         <input
           type="text"
           className="code-ref__search"
