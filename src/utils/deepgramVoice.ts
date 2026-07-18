@@ -1,5 +1,5 @@
 /**
- * Deepgram Nova-3 streaming transcription. Browser-side WebSocket
+ * Deepgram Nova-3 Medical streaming transcription. Browser-side WebSocket
  * connection authenticated via the `token` sub-protocol so the API key
  * doesn't leak into the URL.
  *
@@ -14,6 +14,8 @@
  *     → on each `is_final:true` Results event, emit a finalized
  *       segment with the speaker prefix prepended ("Speaker 1: …").
  */
+
+import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
 
 export interface DeepgramSegment {
   text: string;
@@ -32,8 +34,13 @@ export interface DeepgramSession {
   stop: () => void;
 }
 
+// nova-3-medical: Deepgram's clinical-domain model — tuned for medication,
+// diagnostic, and procedure vocabulary and noisy operatory audio. Keyterm
+// prompting (VOICE_KEYTERMS) biases it toward the veterinary-dental terms
+// the human medical model won't know (Triadan, AVDC codes, vet drugs).
+const KEYTERM_QS = VOICE_KEYTERMS.map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
 const DG_URL =
-  'wss://api.deepgram.com/v1/listen?model=nova-3' +
+  'wss://api.deepgram.com/v1/listen?model=nova-3-medical' +
   '&punctuate=true' +
   '&smart_format=true' +
   '&interim_results=true' +
@@ -43,7 +50,8 @@ const DG_URL =
   '&channels=1' +
   '&language=en' +
   '&encoding=opus' +
-  '&sample_rate=48000';
+  '&sample_rate=48000' +
+  KEYTERM_QS;
 
 interface DgWord {
   word: string;
