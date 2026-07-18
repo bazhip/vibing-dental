@@ -1,6 +1,7 @@
 import React from 'react';
 import { CloudChartMeta } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useTeam } from '../hooks/useTeam';
 
 interface ChartLibraryProps {
   listCharts: () => Promise<CloudChartMeta[]>;
@@ -120,9 +121,24 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const [sortKey, setSortKey] = React.useState<SortKey>('updated');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
   const [dueOnly, setDueOnly] = React.useState(false);
+  // Visit-level filters. Doctor filters by each chart's author — the
+  // same patient can be seen by different doctors across visits, so
+  // filtering happens before grouping and a patient's row shows only
+  // the matching visits.
+  const [doctorFilter, setDoctorFilter] = React.useState('');
+  const [speciesFilter, setSpeciesFilter] = React.useState('');
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   // Mounted only while open, so the trap is always on.
   const modalRef = useModalFocus(true);
+
+  // Team roster → author labels for shared charts. Solo accounts (or a
+  // team of one) skip the doctor column and filter entirely.
+  const team = useTeam(true);
+  const doctorById = React.useMemo(
+    () => new Map(team.members.map((m) => [m.userId, m.doctorName.trim() || m.email])),
+    [team.members]
+  );
+  const showDoctors = doctorById.size > 1;
 
   const refresh = React.useCallback(async () => {
     setError('');
@@ -150,7 +166,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const groups = React.useMemo(() => {
     if (!charts) return null;
     const q = query.trim().toLowerCase();
-    let g = groupByPatient(charts);
+    let list = charts;
+    if (doctorFilter) list = list.filter((c) => c.created_by === doctorFilter);
+    if (speciesFilter) list = list.filter((c) => c.species === speciesFilter);
+    let g = groupByPatient(list);
     if (q) g = g.filter((x) => `${x.name} ${x.number} ${x.owner} ${x.ownerPhone}`.toLowerCase().includes(q));
     if (dueOnly) g = g.filter((x) => x.recall && x.recall <= today);
     const cmp: Record<SortKey, (a: PatientGroup, b: PatientGroup) => number> = {
@@ -162,7 +181,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     g.sort(cmp[sortKey]);
     if (sortDir === 'desc') g.reverse();
     return g;
-  }, [charts, query, dueOnly, sortKey, sortDir, today]);
+  }, [charts, query, dueOnly, doctorFilter, speciesFilter, sortKey, sortDir, today]);
 
   const dueCount = React.useMemo(() => {
     if (!charts) return 0;
@@ -265,6 +284,31 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
             />
+            <select
+              className="chart-library__filter-select"
+              value={speciesFilter}
+              onChange={(e) => setSpeciesFilter(e.target.value)}
+              aria-label="Filter by species"
+            >
+              <option value="">All species</option>
+              <option value="canine">Canine</option>
+              <option value="feline">Feline</option>
+            </select>
+            {showDoctors && (
+              <select
+                className="chart-library__filter-select"
+                value={doctorFilter}
+                onChange={(e) => setDoctorFilter(e.target.value)}
+                aria-label="Filter by doctor"
+              >
+                <option value="">All doctors</option>
+                {team.members.map((m) => (
+                  <option key={m.userId} value={m.userId}>
+                    {m.doctorName.trim() || m.email}
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               type="button"
               className="chart-library__filter"
@@ -305,16 +349,16 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
           {groups === null && !error && <div className="chart-library__empty">Loading…</div>}
 
-          {/* Only a truly empty library hides the table. A filter (search
-              or Due) that matches nothing keeps the header row visible so
-              its controls — the Due toggle — stay reachable. */}
-          {groups !== null && groups.length === 0 && !query && !dueOnly && (
+          {/* Only a truly empty library hides the table. A filter (search,
+              Due, doctor, species) that matches nothing keeps the header
+              row visible so its controls stay reachable. */}
+          {groups !== null && groups.length === 0 && !query && !dueOnly && !doctorFilter && !speciesFilter && (
             <div className="chart-library__empty">
               No saved charts yet — they save automatically as you chart.
             </div>
           )}
 
-          {groups !== null && (groups.length > 0 || query || dueOnly) && (
+          {groups !== null && (groups.length > 0 || query || dueOnly || doctorFilter || speciesFilter) && (
             <div className="chart-library__table" role="table" aria-label="Patients">
               {/* Header uses the exact same row/row-main structure as the
                   data rows so the six columns line up pixel-for-pixel. */}
@@ -344,7 +388,9 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   <div className="chart-library__empty">
                     {query
                       ? 'No patients match that search.'
-                      : 'No patients are due for a recheck.'}
+                      : dueOnly
+                      ? 'No patients are due for a recheck.'
+                      : 'No charts match those filters.'}
                   </div>
                 )}
                 {groups.map((g) => {
@@ -366,7 +412,15 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                             {multi && <span className="chart-library__disclosure" aria-hidden="true">{isOpen ? '▾' : '▸'}</span>}
                             <span className="chart-library__patient-main">
                               {g.name}
-                              {g.owner && <span className="chart-library__owner">{g.owner}</span>}
+                              {(() => {
+                                // Owner, plus the doctor for single-visit
+                                // rows (multi-visit patients can have a
+                                // different doctor per visit — those are
+                                // labeled on the expanded visit rows).
+                                const dr = showDoctors && !multi ? doctorById.get(only.created_by) : '';
+                                const sub = [g.owner, dr].filter(Boolean).join(' · ');
+                                return sub ? <span className="chart-library__owner">{sub}</span> : null;
+                              })()}
                             </span>
                           </span>
                           <span role="cell" className="chart-library__cell">{g.number || '—'}</span>
@@ -429,6 +483,9 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                                 {v.chart_date || 'Undated visit'}
                               </span>
                               <span role="cell" className="chart-library__cell">
+                                {showDoctors && doctorById.get(v.created_by) && (
+                                  <>{doctorById.get(v.created_by)} · </>
+                                )}
                                 Updated {new Date(v.updated_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
                               </span>
                             </button>

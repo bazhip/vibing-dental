@@ -51,6 +51,16 @@ async function inviteViaResend(admin: any, email: string, practiceName: string, 
   return { user: link.user, error: null };
 }
 
+/** Joining a practice shares the member's existing personal records
+ *  with it — new saves stamp practice_id already; this catches charts
+ *  (and templates/attachments) made before they joined. */
+// deno-lint-ignore no-explicit-any
+async function sharePersonalRecords(admin: any, practiceId: string, userId: string) {
+  await admin.from('charts').update({ practice_id: practiceId }).eq('created_by', userId).is('practice_id', null);
+  await admin.from('report_templates').update({ practice_id: practiceId }).eq('created_by', userId).is('practice_id', null);
+  await admin.from('attachments').update({ practice_id: practiceId }).eq('created_by', userId).is('practice_id', null);
+}
+
 // deno-lint-ignore no-explicit-any
 async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo?: string) {
   const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
@@ -70,6 +80,7 @@ async function addOrInviteMember(admin: any, practiceId: string, practiceName: s
     const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
     if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
   }
+  await sharePersonalRecords(admin, practiceId, target.id);
   return { status: 200, body: { ok: true, invited } };
 }
 
@@ -151,6 +162,7 @@ Deno.serve(async (req: Request) => {
         if (pErr) throw pErr;
         await admin.from('practice_members').insert({ practice_id: prac.id, user_id: caller.id, role: 'owner' });
         await admin.from('profiles').upsert({ id: caller.id, practice_id: prac.id });
+        await sharePersonalRecords(admin, prac.id, caller.id);
         return json({ practice: prac });
       }
 

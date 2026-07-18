@@ -375,6 +375,11 @@ Deno.serve(async (req: Request) => {
           const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
           if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
         }
+        // Joining shares the member's existing personal records with the
+        // practice (new saves stamp practice_id on their own).
+        await admin.from('charts').update({ practice_id: practiceId }).eq('created_by', target.id).is('practice_id', null);
+        await admin.from('report_templates').update({ practice_id: practiceId }).eq('created_by', target.id).is('practice_id', null);
+        await admin.from('attachments').update({ practice_id: practiceId }).eq('created_by', target.id).is('practice_id', null);
         return json({ ok: true, invited });
       }
 

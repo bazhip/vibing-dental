@@ -43,15 +43,18 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
     let raf = 0;
     const apply = () => {
       raf = 0;
-      if (getComputedStyle(card).position !== 'sticky') {
+      const frameRect = frame.getBoundingClientRect();
+      // Hidden section (all sections stay mounted under display:none) or
+      // stacked layout: drop any inline sizing and wait — the observer
+      // below re-fires when the section becomes visible.
+      if (frameRect.height === 0 || getComputedStyle(card).position !== 'sticky') {
         card.style.removeProperty('height');
         card.style.removeProperty('max-height');
         return;
       }
       const top = card.getBoundingClientRect().top;
-      const frameBottom = frame.getBoundingClientRect().bottom;
       const viewportMax = window.innerHeight - top - 12;
-      const h = Math.max(0, Math.min(viewportMax, frameBottom - top));
+      const h = Math.max(0, Math.min(viewportMax, frameRect.bottom - top));
       card.style.height = `${h}px`;
       card.style.maxHeight = `${h}px`;
     };
@@ -61,8 +64,13 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
     apply();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
+    // Section switches and diagram zoom resize the frame without any
+    // scroll event — recompute on frame size changes too.
+    const ro = new ResizeObserver(schedule);
+    ro.observe(frame);
     return () => {
       if (raf) cancelAnimationFrame(raf);
+      ro.disconnect();
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
     };

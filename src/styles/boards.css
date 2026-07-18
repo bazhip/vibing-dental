@@ -834,6 +834,24 @@
   gap: 0.6rem;
   flex-wrap: wrap;
 }
+/* Doctor / species dropdowns beside the search box. */
+.chart-library__filter-select {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  max-width: 13rem;
+}
+.chart-library__filter-select:focus-visible {
+  outline: 2px solid var(--primary, #0c6b63);
+  outline-offset: 1px;
+}
+
 .chart-library__filter {
   font: inherit;
   font-size: 0.85rem;

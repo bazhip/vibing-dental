@@ -29,6 +29,9 @@ export interface CloudChartMeta {
   chart_date: string;
   recall_date: string;
   updated_at: string;
+  /** The visit's author — a patient can be seen by different doctors
+   *  across visits, so this is per-chart, not per-patient. */
+  created_by: string;
 }
 
 export interface UseCloudSyncReturn {
@@ -239,7 +242,7 @@ export function useCloudSync(
     if (!supabase) return [];
     const { data, error } = await supabase
       .from('charts')
-      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at')
+      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by')
       .order('updated_at', { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
