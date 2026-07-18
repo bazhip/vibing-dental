@@ -35,6 +35,7 @@ interface PatientGroup {
   ownerPhone: string;
   ownerEmail: string;
   species: string;
+  dentition: string;
   visits: CloudChartMeta[];
   /** The chart a reminder should be sent from (latest visit that carries
    *  an owner email, else the latest visit). */
@@ -68,6 +69,7 @@ function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
         ownerPhone: c.owner_phone?.trim() || '',
         ownerEmail: c.owner_email?.trim() || '',
         species: c.species,
+        dentition: c.dentition || 'permanent',
         visits: [],
         reminderChart: null,
         latestUpdated: c.updated_at,
@@ -363,7 +365,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           </span>
                           <span role="cell" className="chart-library__cell">{g.number || '—'}</span>
                           <span role="cell" className="chart-library__cell chart-library__cell--species">
-                            {SPECIES_LABELS[g.species] ?? g.species ?? '—'}
+                            {(SPECIES_LABELS[g.species] ?? g.species ?? '—')}
+                            {g.dentition === 'deciduous' ? ' · Deciduous' : ''}
                           </span>
                           <span role="cell" className="chart-library__cell">
                             {multi ? `${g.visits.length} visits` : '1 visit'}
