@@ -84,6 +84,16 @@ Deno.serve(async (req: Request) => {
   const { data: userData } = await admin.auth.admin.getUserById(id);
   const email = userData?.user?.email ?? '(unknown)';
 
+  // Invite-created accounts are not signups: team/admin invites — and
+  // invite RESENDS, which delete + recreate the pending account — all
+  // insert a fresh profiles row and land here. The owner initiated
+  // those and already knows. Real signups carry the form's
+  // practice_name metadata; invites carry none and have invited_at.
+  const user = userData?.user;
+  if (user?.invited_at || !user?.user_metadata?.practice_name) {
+    return new Response('invite — not a signup', { status: 200 });
+  }
+
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return new Response('Resend key unavailable', { status: 500 });
 
