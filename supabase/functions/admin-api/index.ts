@@ -112,6 +112,13 @@ Deno.serve(async (req: Request) => {
           .from('charts')
           .select('created_by')
           .limit(10000);
+        // Team membership is the authoritative practice tie — invited
+        // members have an empty profiles.practice_name, so the panel
+        // needs the practice_members → practices resolution.
+        const { data: memRows } = await admin.from('practice_members').select('user_id, practice_id, role');
+        const { data: pracNameRows } = await admin.from('practices').select('id, name');
+        const pracNameById = new Map((pracNameRows ?? []).map((p) => [p.id, p.name ?? '']));
+        const memByUser = new Map((memRows ?? []).map((m) => [m.user_id, m]));
         const chartCounts = new Map<string, number>();
         for (const r of chartRows ?? []) {
           chartCounts.set(r.created_by, (chartCounts.get(r.created_by) ?? 0) + 1);
@@ -119,6 +126,7 @@ Deno.serve(async (req: Request) => {
         const profilesById = new Map((profileRows ?? []).map((p) => [p.id, p]));
         const users = usersData.users.map((u) => {
           const p = profilesById.get(u.id);
+          const mem = memByUser.get(u.id);
           return {
             id: u.id,
             email: u.email ?? '',
@@ -130,6 +138,8 @@ Deno.serve(async (req: Request) => {
             doctorName: p?.doctor_name ?? '',
             hasLogo: !!p?.logo_path,
             chartCount: chartCounts.get(u.id) ?? 0,
+            teamPractice: mem ? (pracNameById.get(mem.practice_id) ?? '') : '',
+            teamRole: mem?.role ?? '',
           };
         });
         return json({ users });
@@ -187,6 +197,31 @@ Deno.serve(async (req: Request) => {
       case 'delete_user': {
         if (!userId) return json({ error: 'missing userId' }, 400);
         if (userId === caller.id) return json({ error: 'You cannot delete the admin account you are signed in with.' }, 400);
+        // practices.owner cascades on user delete — deleting a primary
+        // owner would silently take the whole practice (and everyone's
+        // shared access) with them. Force an explicit transfer first
+        // when anyone else is on the team.
+        const { data: owned } = await admin.from('practices').select('id, name').eq('owner', userId).maybeSingle();
+        if (owned) {
+          const { count: others } = await admin
+            .from('practice_members')
+            .select('user_id', { count: 'exact', head: true })
+            .eq('practice_id', owned.id)
+            .neq('user_id', userId);
+          if ((others ?? 0) > 0) {
+            return json({
+              error: `This account is the primary owner of "${owned.name || 'a practice'}" with ${others} other member${others === 1 ? '' : 's'} — transfer ownership (Practices tab → Make owner) before deleting it.`,
+            }, 400);
+          }
+          // Sole member: the practice row goes with them — un-share
+          // record pointers and drop its logo first (mirrors
+          // delete_practice) so nothing dangles.
+          await admin.from('charts').update({ practice_id: null }).eq('practice_id', owned.id);
+          await admin.from('report_templates').update({ practice_id: null }).eq('practice_id', owned.id);
+          await admin.from('attachments').update({ practice_id: null }).eq('practice_id', owned.id);
+          await admin.from('profiles').update({ practice_id: null }).eq('practice_id', owned.id);
+          await admin.storage.from('logos').remove([`${owned.id}/logo.png`]);
+        }
         // Storage objects aren't FK-cascaded — remove the logo first.
         await admin.storage.from('logos').remove([`${userId}/logo.png`]);
         const { error } = await admin.auth.admin.deleteUser(userId);
@@ -383,6 +418,16 @@ Deno.serve(async (req: Request) => {
         if (!prac) return json({ error: 'practice not found' }, 404);
         const update: Record<string, unknown> = {};
         if (body.accountType === 'individual' || body.accountType === 'practice') {
+          if (body.accountType === 'individual') {
+            // Individual = 1 seat; don't strand a team behind the limit.
+            const { count } = await admin
+              .from('practice_members')
+              .select('user_id', { count: 'exact', head: true })
+              .eq('practice_id', practiceId);
+            if ((count ?? 0) > 1) {
+              return json({ error: `This practice has ${count} members — Individual is single-seat. Remove the other members first.` }, 400);
+            }
+          }
           update.account_type = body.accountType;
         }
         if (typeof body.comped === 'boolean') {

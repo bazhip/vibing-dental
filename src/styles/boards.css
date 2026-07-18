@@ -800,7 +800,14 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  /* A selected practice's detail (members, plan, billing, logo) can be
+     taller than the modal — scroll it instead of clipping, and keep a
+     usable slice of the table above it. */
+  overflow-y: auto;
+  min-height: 0;
+  flex: 0 1 auto;
 }
+.admin-panel .chart-library__table { min-height: 9rem; }
 
 .admin-panel__names {
   display: flex;

@@ -21,6 +21,10 @@ interface AdminUser {
   doctorName: string;
   hasLogo: boolean;
   chartCount: number;
+  /** The practice they're actually a member of (authoritative — invited
+   *  members have an empty profile practiceName). */
+  teamPractice: string;
+  teamRole: string;
 }
 
 interface AdminStats {
@@ -581,14 +585,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     >
                       <span role="cell" className="chart-library__patient">{u.email}</span>
                       <span role="cell" className="chart-library__cell">
-                        {u.practiceName.trim() || '—'}
+                        {u.teamPractice || u.practiceName.trim() || '—'}
                       </span>
                       <span role="cell" className="chart-library__cell">{u.chartCount}</span>
                       <span role="cell" className="chart-library__cell">{fmt(u.lastSignInAt)}</span>
                       <span role="cell" className="chart-library__cell">
                         {[
                           u.isAdmin && 'admin',
-                          !u.emailConfirmed && 'unconfirmed',
+                          // An unconfirmed team member is a pending invite,
+                          // not a half-finished signup.
+                          !u.emailConfirmed && (u.teamPractice ? 'pending invite' : 'unconfirmed'),
                           u.hasLogo && 'logo',
                         ]
                           .filter(Boolean)
@@ -603,6 +609,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
           {tab === 'accounts' && selected && (
             <section className="admin-panel__actions">
+              {selected.teamPractice && (
+                <p className="patient-form__hint" style={{ margin: 0 }}>
+                  {selected.teamRole === 'owner' ? 'Owner' : 'Member'} of <strong>{selected.teamPractice}</strong>
+                  {!selected.emailConfirmed && ' (invite pending)'} — membership, roles, and billing live in the
+                  Practices tab.
+                </p>
+              )}
               <div className="admin-panel__names">
                 <label className="patient-form__label">
                   Practice name
