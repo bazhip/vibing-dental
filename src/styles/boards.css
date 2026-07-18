@@ -968,6 +968,14 @@
   grid-template-columns: minmax(9rem, 1.5fr) minmax(9rem, 1.5fr) 4.5rem 4rem 7rem;
 }
 
+/* Accounts table: its own 5-column template on BOTH the header and the
+   row buttons — the default library header appends an actions track
+   (var(--lib-actions)) the data rows don't have, which skewed every
+   column boundary. */
+.admin-panel .admin-panel__account-row {
+  grid-template-columns: minmax(11rem, 1.5fr) minmax(9rem, 1.3fr) 4rem minmax(9.5rem, 1.1fr) minmax(8rem, 1fr);
+}
+
 /* Billing status chip in the practices table + detail. */
 .admin-panel__billing-status {
   display: inline-block;

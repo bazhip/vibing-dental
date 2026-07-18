@@ -563,7 +563,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
           {tab === 'accounts' && users !== null && users.length > 0 && (
             <div className="chart-library__table" role="table" aria-label="Practice accounts">
-              <div className="chart-library__head-row" role="row">
+              <div className="chart-library__head-row admin-panel__account-row" role="row">
                 <span role="columnheader">Email</span>
                 <span role="columnheader">Practice</span>
                 <span role="columnheader">Charts</span>
@@ -577,8 +577,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                       type="button"
                       className={
                         u.id === selectedId
-                          ? 'chart-library__row-main admin-panel__row--active'
-                          : 'chart-library__row-main'
+                          ? 'chart-library__row-main admin-panel__account-row admin-panel__row--active'
+                          : 'chart-library__row-main admin-panel__account-row'
                       }
                       onClick={() => pick(u)}
                       disabled={busy}
@@ -595,7 +595,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                           // An unconfirmed team member is a pending invite,
                           // not a half-finished signup.
                           !u.emailConfirmed && (u.teamPractice ? 'pending invite' : 'unconfirmed'),
-                          u.hasLogo && 'logo',
+                          u.hasLogo && 'custom logo',
                         ]
                           .filter(Boolean)
                           .join(' · ') || '—'}
