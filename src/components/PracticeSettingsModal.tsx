@@ -1,8 +1,6 @@
 import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useTeam } from '../hooks/useTeam';
-import { useReminderTemplate } from '../hooks/useReminderTemplate';
-import { supabase } from '../utils/supabaseClient';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -11,11 +9,13 @@ interface PracticeSettingsModalProps {
 }
 
 /**
- * Everything about the practice in one place: identity (name, doctor,
- * logo — used in the topbar and on generated PDFs), the team (colleagues
- * who share the practice's charts), and this account's password. The
- * practice name is single-source: the same value labels the app, the
- * PDF, and — once created — the shared team practice.
+ * The practice in one place: identity (name + logo, used in the topbar
+ * and on generated PDFs) and the team (colleagues who share the
+ * practice's charts). Per-account settings (doctor name, email,
+ * password) live in Account settings; the recheck-reminder template
+ * lives in its own Recheck reminders dialog. The practice name is
+ * single-source: the same value labels the app, the PDF, and the shared
+ * team practice.
  */
 export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   open,
@@ -23,29 +23,13 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   profile,
 }) => {
   const [practiceName, setPracticeName] = React.useState(profile.practiceName);
-  const [doctorName, setDoctorName] = React.useState(profile.doctorName);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [newPassword, setNewPassword] = React.useState('');
-  const [passwordNote, setPasswordNote] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
-  const reminder = useReminderTemplate(team.practice?.id ?? '', open);
-  const [rSubject, setRSubject] = React.useState('');
-  const [rBody, setRBody] = React.useState('');
-  const [rAuto, setRAuto] = React.useState(false);
-  const [rLead, setRLead] = React.useState(0);
-  React.useEffect(() => {
-    if (reminder.loaded) {
-      setRSubject(reminder.template.subject);
-      setRBody(reminder.template.body);
-      setRAuto(reminder.template.auto);
-      setRLead(reminder.template.leadDays);
-    }
-  }, [reminder.loaded, reminder.template]);
   const [memberEmail, setMemberEmail] = React.useState('');
   const [teamBusy, setTeamBusy] = React.useState(false);
   const [teamError, setTeamError] = React.useState('');
@@ -54,10 +38,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   React.useEffect(() => {
     if (open) {
       setPracticeName(profile.practiceName);
-      setDoctorName(profile.doctorName);
       setError('');
-      setNewPassword('');
-      setPasswordNote('');
       setMemberEmail('');
       setTeamError('');
       setTeamNote('');
@@ -81,7 +62,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setBusy(true);
     setError('');
     try {
-      await profile.update({ practiceName: practiceName.trim(), doctorName: doctorName.trim() });
+      await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
       onClose();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save the profile.');
@@ -155,16 +136,6 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 value={practiceName}
                 onChange={(e) => setPracticeName(e.target.value)}
                 placeholder="Shown in the app and on every chart"
-              />
-            </label>
-            <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
-              Doctor name
-              <input
-                type="text"
-                className="patient-form__input"
-                value={doctorName}
-                onChange={(e) => setDoctorName(e.target.value)}
-                placeholder="Printed under the logo on every chart"
               />
             </label>
           </section>
@@ -329,98 +300,6 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             )}
             {teamError && <div className="login-error" role="alert">{teamError}</div>}
             {teamNote && <div className="login-notice" role="status">{teamNote}</div>}
-          </section>
-
-          {/* ---- Recheck reminders (owners) ---------------------------- */}
-          {isOwner && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Recheck reminders</h3>
-              <p className="ai-settings-blurb">
-                Email the pet owner when a recheck is due. Placeholders:
-                {' '}<code>{'{{patient}}'}</code> <code>{'{{owner}}'}</code>{' '}
-                <code>{'{{practice}}'}</code> <code>{'{{recheck_date}}'}</code>.
-              </p>
-              <label className="patient-form__label" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
-                <input type="checkbox" checked={rAuto} onChange={(e) => setRAuto(e.target.checked)} />
-                Automatically email owners
-              </label>
-              <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                Send
-                <select
-                  className="patient-form__input"
-                  value={rLead}
-                  onChange={(e) => setRLead(Number(e.target.value))}
-                  disabled={!rAuto}
-                >
-                  <option value={0}>On the recheck date</option>
-                  <option value={3}>3 days before</option>
-                  <option value={7}>1 week before</option>
-                  <option value={14}>2 weeks before</option>
-                  <option value={30}>1 month before</option>
-                </select>
-              </label>
-              <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                Subject
-                <input className="patient-form__input" value={rSubject} onChange={(e) => setRSubject(e.target.value)} />
-              </label>
-              <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                Message
-                <textarea className="patient-form__textarea reminder__body" value={rBody} onChange={(e) => setRBody(e.target.value)} />
-              </label>
-              <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-                <button
-                  type="button"
-                  className="diagram-view__action"
-                  disabled={teamBusy}
-                  onClick={() =>
-                    runTeam('Reminder settings saved.', () =>
-                      reminder.save({ subject: rSubject, body: rBody, auto: rAuto, leadDays: rLead })
-                    )
-                  }
-                >
-                  Save reminder settings
-                </button>
-              </div>
-            </section>
-          )}
-
-          {/* ---- Account ------------------------------------------------ */}
-          <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Account</h3>
-            <label className="patient-form__label">
-              Change password
-              <input
-                type="password"
-                className="patient-form__input"
-                autoComplete="new-password"
-                placeholder="New password (min 6 characters)"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </label>
-            <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-              <button
-                type="button"
-                className="diagram-view__action"
-                disabled={busy || newPassword.length < 6}
-                onClick={async () => {
-                  if (!supabase) return;
-                  setBusy(true);
-                  setError('');
-                  setPasswordNote('');
-                  const { error: pwError } = await supabase.auth.updateUser({ password: newPassword });
-                  setBusy(false);
-                  if (pwError) setError(pwError.message);
-                  else {
-                    setPasswordNote('Password updated.');
-                    setNewPassword('');
-                  }
-                }}
-              >
-                Update password
-              </button>
-              {passwordNote && <span className="practice-logo-empty">{passwordNote}</span>}
-            </div>
           </section>
 
           {error && <div className="login-error" role="alert">{error}</div>}

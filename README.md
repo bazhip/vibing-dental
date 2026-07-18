@@ -1,9 +1,13 @@
-# Vibing Dental — Veterinary Dental Charting
+# ToothOps Charting — Veterinary Dental Charting
 
-A single-page React app for charting veterinary dental procedures. A tech or
-DVM fills in the patient info, oral exam, anesthesia/nerve blocks, per-tooth
-measurements, and tooth diagrams, then downloads a filled-in chart PDF on the
-practice's template.
+A single-page React app for charting veterinary dental procedures, live at
+[toothops.app](https://toothops.app). A tech or DVM fills in the patient
+info, oral exam, anesthesia/nerve blocks, per-tooth measurements, and tooth
+diagrams, then downloads a filled-in chart PDF on the practice's template.
+Cloud accounts (Supabase) add saved charts, visit history, team sharing,
+photo/radiograph attachments, and recheck-reminder emails.
+
+Architecture and infrastructure docs live in [`docs/`](docs/README.md).
 
 ## Features
 
@@ -43,8 +47,11 @@ npm test         # jest suite
 npm run build    # production build into build/
 ```
 
-The app is gated behind a simple practice password (see
-`src/components/Login.tsx`).
+With `REACT_APP_SUPABASE_URL`/`ANON_KEY` set (committed `.env`, public
+values) the app runs in cloud mode with real accounts. Without them it runs
+standalone: a simple shared practice password (see
+`src/components/Login.tsx`) and localStorage-only persistence — this is what
+the jest suite uses.
 
 ### Code layout
 
@@ -60,19 +67,13 @@ public/diagrams/       per-species diagram artwork (SVG traced per tooth)
 
 ## Deployment
 
-The site is served from the `docs/` folder (GitHub Pages style). To publish
-a new build:
+Vercel builds and serves the app from source on every push to `main` — no
+manual deploy step. `package.json` sets `"homepage": "."` so the build uses
+relative asset paths. (`docs/` used to hold a GitHub-Pages-style copy of the
+build; it now holds documentation instead — don't copy builds there.)
 
-```bash
-npm run build
-rm -rf docs && cp -r build docs
-git add docs && git commit
-```
-
-`package.json` sets `"homepage": "."` so the build uses relative asset
-paths and works from any mount path. The reference chart PDFs
-(`canine_chart.pdf`, `feline_chart.pdf`) also live in `docs/` — keep them
-when refreshing the build.
+See [`docs/infrastructure.md`](docs/infrastructure.md) for the full picture:
+Supabase project, edge functions, email (Resend), and scheduled jobs.
 
 ## Feedback
 

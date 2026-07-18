@@ -19,9 +19,12 @@ import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
+import { RemindersModal } from './components/RemindersModal';
+import { AccountModal } from './components/AccountModal';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
+import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
@@ -89,11 +92,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const cloud = useCloudSync(chart, !trial, profile.practiceId);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
+  const [remindersOpen, setRemindersOpen] = React.useState(false);
+  const [accountOpen, setAccountOpen] = React.useState(false);
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
-  const [reminderOpen, setReminderOpen] = React.useState(false);
+  // Recheck reminders are composed from a saved chart in My charts; this
+  // holds the target chart while the composer is open.
+  const [reminderTarget, setReminderTarget] = React.useState<CloudChartMeta | null>(null);
 
   // Publish the sticky topbar's live height as --topbar-height on the
   // container, so other sticky elements (the charting grid's frozen
@@ -261,7 +268,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           species={chart.species}
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
-          onSendReminder={cloud.enabled ? () => setReminderOpen(true) : undefined}
         />
       ),
     },
@@ -522,6 +528,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 ? {
                     onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
+                    onOpenReminders: () => setRemindersOpen(true),
+                    onOpenAccount: () => setAccountOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch(() => {
                         alert('Could not sign out — check your connection.');
@@ -561,6 +569,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               alert('Could not start a new visit — check your connection.');
             }
           }}
+          onSendReminder={(c) => setReminderTarget(c)}
           onClose={() => setLibraryOpen(false)}
         />
       )}
@@ -619,21 +628,32 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         profile={profile}
       />
 
+      <RemindersModal
+        open={remindersOpen}
+        onClose={() => setRemindersOpen(false)}
+      />
+
+      <AccountModal
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        profile={profile}
+      />
+
       {isAdmin && (
         <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
       )}
 
-      {cloud.enabled && (
+      {cloud.enabled && reminderTarget && (
         <ReminderModal
-          open={reminderOpen}
-          onClose={() => setReminderOpen(false)}
+          open={!!reminderTarget}
+          onClose={() => setReminderTarget(null)}
           practiceId={profile.practiceId}
           practiceName={profile.practiceName}
-          chartId={chart.cloudChartId}
-          toEmail={chart.patientInfo.ownerEmail ?? ''}
-          patientName={chart.patientInfo.patientName}
-          ownerName={chart.patientInfo.ownerName ?? ''}
-          recheckDate={chart.patientInfo.recallDate ?? ''}
+          chartId={reminderTarget.id}
+          toEmail={reminderTarget.owner_email ?? ''}
+          patientName={reminderTarget.patient_name}
+          ownerName={reminderTarget.owner_name ?? ''}
+          recheckDate={reminderTarget.recall_date ?? ''}
         />
       )}
 

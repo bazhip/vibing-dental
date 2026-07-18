@@ -8,6 +8,8 @@ interface ChartLibraryProps {
   /** Start a fresh visit for a patient, carrying identity + gone teeth
    *  from their most recent visit (by chart id). */
   onNewVisit: (latestChartId: string) => void;
+  /** Open the recheck-reminder composer prefilled from a saved chart. */
+  onSendReminder: (chart: CloudChartMeta) => void;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -26,8 +28,12 @@ interface PatientGroup {
   number: string;
   owner: string;
   ownerPhone: string;
+  ownerEmail: string;
   species: string;
   visits: CloudChartMeta[];
+  /** The chart a reminder should be sent from (latest visit that carries
+   *  an owner email, else the latest visit). */
+  reminderChart: CloudChartMeta | null;
   latestUpdated: string;
   /** Soonest upcoming (or most overdue) recall across the patient's visits. */
   recall: string;
@@ -55,8 +61,10 @@ function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
         number: c.patient_number.trim(),
         owner: c.owner_name?.trim() || '',
         ownerPhone: c.owner_phone?.trim() || '',
+        ownerEmail: c.owner_email?.trim() || '',
         species: c.species,
         visits: [],
+        reminderChart: null,
         latestUpdated: c.updated_at,
         recall: c.recall_date || '',
       };
@@ -68,8 +76,13 @@ function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
     // Prefer a non-empty owner from any visit.
     if (!g.owner && c.owner_name?.trim()) g.owner = c.owner_name.trim();
     if (!g.ownerPhone && c.owner_phone?.trim()) g.ownerPhone = c.owner_phone.trim();
+    if (!g.ownerEmail && c.owner_email?.trim()) g.ownerEmail = c.owner_email.trim();
     // Keep the soonest non-empty recall date across visits.
     if (c.recall_date && (!g.recall || c.recall_date < g.recall)) g.recall = c.recall_date;
+    // The visit we'd remind from: prefer one that has an owner email.
+    if (!g.reminderChart || (c.owner_email?.trim() && !g.reminderChart.owner_email?.trim())) {
+      g.reminderChart = c;
+    }
   }
   // Visits within a group: newest chart date first, then updated.
   const list = Array.from(groups.values());
@@ -87,6 +100,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onOpen,
   onDelete,
   onNewVisit,
+  onSendReminder,
   onClose,
 }) => {
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
@@ -321,6 +335,16 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           {recallCell(g.recall)}
                         </button>
                         <span className="chart-library__row-actions">
+                          {g.ownerEmail && g.reminderChart && (
+                            <button
+                              type="button"
+                              className="chart-library__act"
+                              onClick={() => onSendReminder(g.reminderChart!)}
+                              title={`Send a recheck reminder to ${g.owner || g.ownerEmail}`}
+                            >
+                              Reminder
+                            </button>
+                          )}
                           <button
                             type="button"
                             className="chart-library__act"

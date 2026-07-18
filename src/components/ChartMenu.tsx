@@ -3,6 +3,8 @@ import React from 'react';
 interface ChartMenuCloud {
   onOpenLibrary: () => void;
   onPracticeSettings: () => void;
+  onOpenReminders: () => void;
+  onOpenAccount: () => void;
   onSignOut: () => void;
 }
 
@@ -161,7 +163,29 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, on
               >
                 <span className="chart-menu__item-body">
                   <strong>Practice</strong>
-                  <span>Name, doctor line, logo, team, and password.</span>
+                  <span>Practice name, logo, and team.</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onOpenReminders(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Recheck reminders</strong>
+                  <span>The owner email template and auto-send schedule.</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__item"
+                role="menuitem"
+                onClick={() => { setOpen(false); cloud.onOpenAccount(); }}
+              >
+                <span className="chart-menu__item-body">
+                  <strong>Account settings</strong>
+                  <span>Your doctor name, email, and password.</span>
                 </span>
               </button>
             </section>
