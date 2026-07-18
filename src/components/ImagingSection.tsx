@@ -71,6 +71,11 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
     <div className="patient-form">
       <div className="patient-form__header">
         <h2 className="patient-form__section-title">Images &amp; Radiographs</h2>
+        {store.loaded && (
+          <span className="patient-form__hint">
+            {store.items.length} of {store.maxImages} images
+          </span>
+        )}
       </div>
 
       <div className="imaging__uploader">
@@ -96,7 +101,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
           type="button"
           className="diagram-view__action"
           onClick={() => fileRef.current?.click()}
-          disabled={busy}
+          disabled={busy || store.items.length >= store.maxImages}
+          title={store.items.length >= store.maxImages ? `Limit of ${store.maxImages} images reached` : undefined}
         >
           {busy ? 'Uploading…' : 'Add image'}
         </button>

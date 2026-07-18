@@ -27,12 +27,28 @@ export interface UseAttachmentsReturn {
   enabled: boolean;
   loaded: boolean;
   items: Attachment[];
+  /** Max images allowed on one chart (UI shows the count against it). */
+  maxImages: number;
   upload: (file: File, kind: AttachmentKind, caption: string) => Promise<void>;
   updateCaption: (id: string, caption: string) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
 
-const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+// Upload limits. Kept together and easy to relocate: when per-practice
+// tuning is needed, these become columns on `practices` set from the
+// admin panel and read here via practiceId. For now they're sensible
+// fixed defaults.
+const ATTACHMENT_LIMITS = {
+  /** Absolute reject ceiling for the ORIGINAL file (before downscaling). */
+  hardMaxBytes: 40 * 1024 * 1024,
+  /** Downscale anything larger than this so stored images stay lean. */
+  softMaxBytes: 4 * 1024 * 1024,
+  /** Longest edge after downscaling — plenty for photos and rads. */
+  maxDimension: 2500,
+  /** Max images pinned to a single chart. */
+  maxPerChart: 30,
+};
+
 const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
 const SIGN_TTL = 60 * 60; // 1 hour
 
@@ -40,6 +56,52 @@ function extFor(type: string): string {
   if (type === 'image/png') return 'png';
   if (type === 'image/webp') return 'webp';
   return 'jpg';
+}
+
+/** Downscale + re-encode an oversized image so a phone's 15 MB photo
+ *  doesn't balloon storage. Images already under the soft cap pass
+ *  through untouched (keeps small PNG radiographs lossless); larger ones
+ *  are scaled to fit maxDimension and JPEG-encoded, stepping quality down
+ *  until under the cap. Falls back to the original if decode fails. */
+async function downscaleIfNeeded(file: File): Promise<File> {
+  if (file.size <= ATTACHMENT_LIMITS.softMaxBytes) return file;
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error('decode failed'));
+      img.src = url;
+    });
+    const longest = Math.max(img.width, img.height);
+    const scale = Math.min(1, ATTACHMENT_LIMITS.maxDimension / longest);
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return file;
+    // White matte so a transparent PNG doesn't turn black as JPEG.
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    const toBlob = (q: number) =>
+      new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', q));
+    let quality = 0.9;
+    let blob = await toBlob(quality);
+    while (blob && blob.size > ATTACHMENT_LIMITS.softMaxBytes && quality > 0.5) {
+      quality -= 0.1;
+      blob = await toBlob(quality);
+    }
+    if (!blob) return file;
+    const base = file.name.replace(/\.[^.]+$/, '') || 'image';
+    return new File([blob], `${base}.jpg`, { type: 'image/jpeg' });
+  } catch {
+    return file;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 /** Sign a batch of storage paths for display. */
@@ -59,6 +121,8 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
   const practiceIdRef = React.useRef(practiceId);
   practiceIdRef.current = practiceId;
+  const itemsRef = React.useRef(items);
+  itemsRef.current = items;
 
   const load = React.useCallback(async () => {
     if (!supabase || !chartId) {
@@ -102,17 +166,26 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
       if (!ALLOWED.includes(file.type)) {
         throw new Error('Use a PNG, JPEG, or WEBP image.');
       }
-      if (file.size > MAX_UPLOAD_BYTES) {
-        throw new Error('That image is too large — attachments must be under 20 MB.');
+      if (itemsRef.current.length >= ATTACHMENT_LIMITS.maxPerChart) {
+        throw new Error(
+          `This chart already has the maximum of ${ATTACHMENT_LIMITS.maxPerChart} images. Delete one to add another.`
+        );
       }
+      if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
+        throw new Error(
+          `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`
+        );
+      }
+      // Shrink oversized originals before upload; small ones pass through.
+      const toUpload = await downscaleIfNeeded(file);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
       if (!uid) throw new Error('Sign in to add images.');
       const id = crypto.randomUUID();
-      const path = `${uid}/${chartId}/${id}.${extFor(file.type)}`;
+      const path = `${uid}/${chartId}/${id}.${extFor(toUpload.type)}`;
       const { error: upErr } = await supabase.storage
         .from('attachments')
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, toUpload, { contentType: toUpload.type, upsert: false });
       if (upErr) throw new Error(upErr.message);
       const { error: rowErr } = await supabase.from('attachments').insert({
         id,
@@ -147,5 +220,13 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
     [items]
   );
 
-  return { enabled: cloudEnabled, loaded, items, upload, updateCaption, remove };
+  return {
+    enabled: cloudEnabled,
+    loaded,
+    items,
+    maxImages: ATTACHMENT_LIMITS.maxPerChart,
+    upload,
+    updateCaption,
+    remove,
+  };
 }
