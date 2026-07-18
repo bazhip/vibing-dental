@@ -46,6 +46,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           Both pairs are kept on PatientInfo so values survive a logo flip. */}
       <div className="patient-form__row">
         <label className="patient-form__label">
+          {/* Needed to SAVE (the library finds charts by name), but not
+              `required`: the whole chart is one form whose submit button
+              is Preview PDF, and native validation was blocking nameless
+              previews. attemptSave in EntryGrid enforces the name. */}
           <span>Patient Name <span className="patient-form__req" aria-hidden="true">*</span></span>
           <input
             type="text"
@@ -53,8 +57,6 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             placeholder="Enter patient name"
             value={patientInfo.patientName}
             onChange={handleInputChange('patientName')}
-            required
-            aria-required="true"
           />
         </label>
 
