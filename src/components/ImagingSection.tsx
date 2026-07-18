@@ -8,6 +8,8 @@ interface ImagingSectionProps {
   cloudActive: boolean;
   /** Stamp new images with the practice so teammates can see them. */
   practiceId?: string;
+  /** Per-plan cap on images for this chart. */
+  maxImages?: number;
 }
 
 /**
@@ -16,8 +18,8 @@ interface ImagingSectionProps {
  * Images live in a private bucket and render via short-lived signed
  * URLs. Cloud-only — the section explains itself in trial/standalone.
  */
-export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive, practiceId = '' }) => {
-  const store = useAttachments(chartId, practiceId);
+export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive, practiceId = '', maxImages }) => {
+  const store = useAttachments(chartId, practiceId, maxImages);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [description, setDescription] = React.useState('');
   const [busy, setBusy] = React.useState(false);

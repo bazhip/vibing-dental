@@ -453,7 +453,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'imaging',
       label: 'Images',
       content: (
-        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} practiceId={profile.practiceId} />
+        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages} />
       ),
     },
     {
@@ -636,11 +636,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               My charts
             </button>
           )}
-          <VoiceInputButton
-            context={aiContext}
-            handlers={aiHandlers}
-            onNeedsApiKey={() => setAiSettingsOpen(true)}
-          />
+          {/* AI autofill is a Pro-plan feature. Trial (no account) and
+              Basic practices don't see it. */}
+          {(trial || profile.aiEnabled) && (
+            <VoiceInputButton
+              context={aiContext}
+              handlers={aiHandlers}
+              onNeedsApiKey={() => setAiSettingsOpen(true)}
+            />
+          )}
           <ChartMenu
             onNewChart={chart.resetChart}
             onNewVisit={

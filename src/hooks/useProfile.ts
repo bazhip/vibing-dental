@@ -15,10 +15,25 @@ export interface PracticeProfile {
   doctorName: string;
 }
 
+export type PracticePlan = 'basic' | 'pro';
+
+/** Per-plan limits. Central so the whole app agrees; when a tenant needs
+ *  a custom cap these become columns on `practices`. */
+export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean }> = {
+  basic: { maxImages: 30, aiAutofill: false },
+  pro: { maxImages: 100, aiAutofill: true },
+};
+
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
   /** The user's current practice (for team sharing), '' when solo. */
   practiceId: string;
+  /** The practice's subscription tier (gates AI + storage). */
+  plan: PracticePlan;
+  /** Whether AI autofill is included in the current plan. */
+  aiEnabled: boolean;
+  /** Max images per chart on the current plan. */
+  maxImages: number;
   /** Signed URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
@@ -124,6 +139,7 @@ export function useProfile(): UseProfileReturn {
   });
   const [logoUrl, setLogoUrl] = React.useState('');
   const [practiceId, setPracticeId] = React.useState('');
+  const [plan, setPlan] = React.useState<PracticePlan>('basic');
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
@@ -145,9 +161,11 @@ export function useProfile(): UseProfileReturn {
       // back to any legacy per-user logo.
       let effectiveLogoPath = data?.logo_path ?? '';
       const pid = data?.practice_id ?? '';
+      let practicePlan: PracticePlan = 'basic';
       if (pid) {
-        const { data: prac } = await supabase.from('practices').select('logo_path').eq('id', pid).maybeSingle();
+        const { data: prac } = await supabase.from('practices').select('logo_path, plan').eq('id', pid).maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
+        if (prac?.plan === 'pro') practicePlan = 'pro';
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
@@ -158,6 +176,7 @@ export function useProfile(): UseProfileReturn {
           });
           setLogoUrl(signedUrl);
           setPracticeId(pid);
+          setPlan(practicePlan);
         }
         setLoaded(true);
       }
@@ -204,5 +223,16 @@ export function useProfile(): UseProfileReturn {
     setLogoUrl('');
   }, []);
 
-  return { ...profile, loaded, practiceId, logoUrl, update, uploadLogo, removeLogo };
+  return {
+    ...profile,
+    loaded,
+    practiceId,
+    plan,
+    aiEnabled: PLAN_LIMITS[plan].aiAutofill,
+    maxImages: PLAN_LIMITS[plan].maxImages,
+    logoUrl,
+    update,
+    uploadLogo,
+    removeLogo,
+  };
 }

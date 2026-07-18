@@ -116,7 +116,12 @@ async function signAll(rows: { path: string }[]): Promise<Map<string, string>> {
   return map;
 }
 
-export function useAttachments(chartId: string, practiceId = ''): UseAttachmentsReturn {
+export function useAttachments(
+  chartId: string,
+  practiceId = '',
+  maxImagesOverride?: number
+): UseAttachmentsReturn {
+  const maxImages = maxImagesOverride ?? ATTACHMENT_LIMITS.maxPerChart;
   const [items, setItems] = React.useState<Attachment[]>([]);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
   const practiceIdRef = React.useRef(practiceId);
@@ -166,9 +171,9 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
       if (!ALLOWED.includes(file.type)) {
         throw new Error('Use a PNG, JPEG, or WEBP image.');
       }
-      if (itemsRef.current.length >= ATTACHMENT_LIMITS.maxPerChart) {
+      if (itemsRef.current.length >= maxImages) {
         throw new Error(
-          `This chart already has the maximum of ${ATTACHMENT_LIMITS.maxPerChart} images. Delete one to add another.`
+          `This chart already has the maximum of ${maxImages} images. Delete one to add another.`
         );
       }
       if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
@@ -198,7 +203,7 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
       if (rowErr) throw new Error(rowErr.message);
       await load();
     },
-    [chartId, load]
+    [chartId, load, maxImages]
   );
 
   const updateCaption = React.useCallback(async (id: string, caption: string): Promise<void> => {
@@ -224,7 +229,7 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
     enabled: cloudEnabled,
     loaded,
     items,
-    maxImages: ATTACHMENT_LIMITS.maxPerChart,
+    maxImages,
     upload,
     updateCaption,
     remove,

@@ -103,7 +103,6 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, on
         aria-expanded={open}
         aria-label="Open menu"
       >
-        <span className="chart-menu__trigger-icon" aria-hidden="true">⋯</span>
         <span className="chart-menu__trigger-label">Menu</span>
       </button>
 

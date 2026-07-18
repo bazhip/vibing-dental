@@ -34,6 +34,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [plan, setPlan] = useState<'basic' | 'pro'>('basic');
 
   const signup = mode === 'signup';
 
@@ -68,6 +69,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           data: {
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
+            plan,
           },
         },
       });
@@ -156,6 +158,34 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
                 />
               </label>
+
+              <fieldset className="login-plan" aria-label="Choose a plan">
+                <legend className="login-plan__legend">Plan · free during early access</legend>
+                <label className={plan === 'basic' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
+                  <input
+                    type="radio"
+                    name="plan"
+                    checked={plan === 'basic'}
+                    onChange={() => setPlan('basic')}
+                  />
+                  <span className="login-plan__body">
+                    <strong>Basic</strong>
+                    <span>Full charting, PDFs, team, reminders. 30 images per chart.</span>
+                  </span>
+                </label>
+                <label className={plan === 'pro' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
+                  <input
+                    type="radio"
+                    name="plan"
+                    checked={plan === 'pro'}
+                    onChange={() => setPlan('pro')}
+                  />
+                  <span className="login-plan__body">
+                    <strong>Pro</strong>
+                    <span>Everything in Basic, plus AI voice autofill and 100 images per chart.</span>
+                  </span>
+                </label>
+              </fieldset>
             </>
           )}
 
