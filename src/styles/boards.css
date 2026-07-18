@@ -633,6 +633,27 @@
   background: transparent;
 }
 
+/* "Due for recheck" filter — lives in the green header banner beside the
+   Recheck column; a pill that reads on the green and inverts when on. */
+.chart-library__due-toggle {
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chart-library__due-toggle:hover { background: rgba(255, 255, 255, 0.26); }
+.chart-library__due-toggle--on {
+  background: #fff;
+  color: var(--primary);
+  border-color: #fff;
+}
+
 .chart-library__head-row [role='columnheader'] {
   color: rgba(255, 255, 255, 0.92);
   font-size: 0.7rem;
@@ -820,6 +841,14 @@
 }
 .chart-library__filter:hover:not(:disabled) { border-color: var(--primary); color: var(--text); }
 .chart-library__filter:disabled { opacity: 0.5; cursor: default; }
+/* Primary action (New patient) — filled, sits on the far right. */
+.chart-library__filter--primary {
+  margin-left: auto;
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.chart-library__filter--primary:hover:not(:disabled) { filter: brightness(1.06); color: #fff; }
 .chart-library__filter--on {
   background: var(--primary);
   border-color: var(--primary);

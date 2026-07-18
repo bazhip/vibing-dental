@@ -265,27 +265,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             />
             <button
               type="button"
-              className={dueOnly ? 'chart-library__filter chart-library__filter--on' : 'chart-library__filter'}
-              onClick={() => setDueOnly((v) => !v)}
-              aria-pressed={dueOnly}
-            >
-              Due for recheck{dueCount > 0 ? ` (${dueCount})` : ''}
-            </button>
-            <button
-              type="button"
-              className="chart-library__filter"
-              onClick={onNewPatient}
-              title="Clear the working chart and start a brand-new patient"
-            >
-              + New patient
-            </button>
-            <button
-              type="button"
               className="chart-library__filter"
               onClick={() => pdfInputRef.current?.click()}
               title="Open a chart PDF made with this app to continue editing it"
             >
               Load chart PDF
+            </button>
+            <button
+              type="button"
+              className="chart-library__filter chart-library__filter--primary"
+              onClick={onNewPatient}
+              title="Clear the working chart and start a brand-new patient"
+            >
+              + New patient
             </button>
             <input
               ref={pdfInputRef}
@@ -334,7 +326,17 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   {sortHeader('updated', 'Updated')}
                   {sortHeader('recall', 'Recheck')}
                 </div>
-                <span className="chart-library__row-actions" aria-hidden="true" />
+                <span className="chart-library__row-actions">
+                  <button
+                    type="button"
+                    className={dueOnly ? 'chart-library__due-toggle chart-library__due-toggle--on' : 'chart-library__due-toggle'}
+                    onClick={() => setDueOnly((v) => !v)}
+                    aria-pressed={dueOnly}
+                    title="Show only patients due or overdue for a recheck"
+                  >
+                    Due{dueCount > 0 ? ` (${dueCount})` : ''}
+                  </button>
+                </span>
               </div>
               <div className="chart-library__scroll">
                 {groups.map((g) => {
