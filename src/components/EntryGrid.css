@@ -2259,3 +2259,17 @@ button.save-status--error {
   color: var(--danger);
   background: var(--danger-tint);
 }
+
+/* "Save changes" affordance shown when viewing a saved (opened) chart —
+   autosave is off for those, so the manual save is always one tap away. */
+button.save-status--manual {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, white);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+}
+button.save-status--manual:hover {
+  background: color-mix(in srgb, var(--primary) 14%, white);
+}

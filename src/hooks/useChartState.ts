@@ -18,6 +18,7 @@ import {
 import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
 import { useDentalData } from './useDentalData';
+import { getInitialToothData } from '../constants';
 
 /**
  * Single source of truth for everything that lives on a chart: patient
@@ -73,8 +74,18 @@ export interface UseChartStateReturn {
   /** Read a previously-downloaded chart PDF and overwrite local state. */
   loadFromPdf: (file: File) => Promise<void>;
   /** Wipe all chart-related localStorage and reload — preserves auth +
-   *  board selection (different key prefix). */
+   *  board selection (different key prefix). New patient. */
   resetChart: () => void;
+  /** Start a fresh dated visit: keeps the patient's identity (the current
+   *  patient by default, or the one passed in from the library), blanks
+   *  all clinical data, and mints a new cloud row. */
+  startNewVisit: (identity?: { patientName: string; patientNumber: string; species: Species }) => void;
+
+  /** True when the working chart was opened from the library or a PDF
+   *  (an existing saved record). Such charts don't autosave — edits are
+   *  only written on an explicit Save, so history is never overwritten
+   *  by accident. */
+  openedExisting: boolean;
 
   // ----- Cloud sync ------------------------------------------------------
   /** Stable id for the active chart's cloud row. New chart → new id. */
@@ -285,6 +296,52 @@ export function useChartState(): UseChartStateReturn {
     'chart.cloudId', 1, () => generateChartId()
   );
 
+  // Opened-from-library/PDF charts are historical records — persisted so
+  // a mid-review refresh keeps autosave off for them.
+  const [openedExisting, setOpenedExisting] = usePersistedState<boolean>(
+    'chart.openedExisting', 1, false
+  );
+
+  /** Blank patient info for a fresh chart (optionally keeping identity). */
+  const blankPatientInfo = (keep?: Partial<PatientInfo>): PatientInfo => ({
+    patientName: '',
+    patientNumber: '',
+    doctor: DEFAULT_VCA_DOCTOR,
+    tech: '',
+    date: new Date().toISOString().split('T')[0],
+    complaint: '',
+    treatmentReport: '',
+    recallDate: '',
+    nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
+    exam: { ...EMPTY_EXAM_FINDINGS },
+    ...keep,
+  });
+
+  const startNewVisit = (
+    identity?: { patientName: string; patientNumber: string; species: Species }
+  ) => {
+    // Carry the animal's identity forward; blank everything clinical.
+    const keep = {
+      patientName: identity ? identity.patientName : patientInfo.patientName,
+      patientNumber: identity ? identity.patientNumber : patientInfo.patientNumber,
+    };
+    const sp = identity ? identity.species : species;
+    setCloudChartId(generateChartId());
+    setPatientInfo(blankPatientInfo(keep));
+    if (identity) {
+      setSpecies(sp);
+      switchSpecies(sp);
+    }
+    setToothDataDirectly(getInitialToothData(sp));
+    setPreToothMarks({});
+    setPreDiagramComments([]);
+    setPreDiagramStrokes([]);
+    setPostToothMarksDirect({});
+    setPostDiagramComments([]);
+    setPostDiagramStrokes([]);
+    setOpenedExisting(false);
+  };
+
   const resetCloudChartId = (): string => {
     const id = generateChartId();
     setCloudChartId(id);
@@ -321,6 +378,8 @@ export function useChartState(): UseChartStateReturn {
     setPostDiagramComments(snapshot.postComments ?? []);
     setPostDiagramStrokes(snapshot.postStrokes ?? []);
     setCloudChartId(id);
+    // A chart opened from the library is a saved record — don't autosave.
+    setOpenedExisting(true);
   };
 
   // ----- Whole-chart actions -------------------------------------------
@@ -343,8 +402,10 @@ export function useChartState(): UseChartStateReturn {
         throw new Error('Stashed chart state has an unexpected shape');
       }
       // A restored PDF is its own chart — give it a fresh cloud row so
-      // autosave can't overwrite whichever chart was open before.
+      // autosave can't overwrite whichever chart was open before. Treat
+      // it as an existing record (manual save only).
       setCloudChartId(generateChartId());
+      setOpenedExisting(true);
       setPatientInfo(parsed.patientInfo);
       setSpecies(parsed.species);
       setLogo(parsed.logo);
@@ -402,6 +463,8 @@ export function useChartState(): UseChartStateReturn {
 
     loadFromPdf,
     resetChart,
+    startNewVisit,
+    openedExisting,
 
     cloudChartId,
     resetCloudChartId,

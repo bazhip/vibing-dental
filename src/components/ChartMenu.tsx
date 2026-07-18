@@ -17,9 +17,12 @@ interface ChartMenuCloud {
  */
 
 interface ChartMenuProps {
-  /** Triggered when the user confirms "New Chart" — caller is responsible
-   *  for resetting state + persistence. */
+  /** Triggered when the user confirms "New patient" — caller is
+   *  responsible for resetting state + persistence. */
   onNewChart: () => void;
+  /** Start a fresh visit for the same patient (present when a patient is
+   *  loaded). Keeps identity, blanks clinical data. */
+  onNewVisit?: () => void;
   /** Triggered when the user picks a PDF to load back into the app. */
   onLoadPdf: (file: File) => void;
   /** Open the AI settings dialog (BYOK API key, model preferences). */
@@ -37,7 +40,7 @@ interface ChartMenuProps {
  * boundaries: starting fresh, loading a saved chart back in, and the AI
  * settings. Lives in the topbar where app-level actions are expected.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onOpenAiSettings, onGoHome, onOpenAdmin, cloud }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, onLoadPdf, onOpenAiSettings, onGoHome, onOpenAdmin, cloud }) => {
   const [open, setOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -65,14 +68,25 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
     // wrong warnings teach people to ignore dialogs.
     const confirmed = window.confirm(
       cloud && cloud.autosaveEnabled
-        ? 'Start a new chart? Your current chart stays saved in My charts.'
-        : 'Start a new chart? This will clear all current chart data — patient info, ' +
+        ? 'Start a new patient? Your current chart stays saved in My charts.'
+        : 'Start a new patient? This clears the current chart — patient info, ' +
           'tooth grid, exam, anesthesia, diagrams, and treatment report. ' +
           'This cannot be undone.'
     );
     if (!confirmed) return;
     setOpen(false);
     onNewChart();
+  };
+
+  const handleNewVisit = () => {
+    if (!onNewVisit) return;
+    const confirmed = window.confirm(
+      'Start a new visit for this patient? Keeps the name and number, ' +
+      'blanks the clinical chart, and saves as a separate dated visit.'
+    );
+    if (!confirmed) return;
+    setOpen(false);
+    onNewVisit();
   };
 
   const handleLoadClick = () => fileInputRef.current?.click();
@@ -114,10 +128,18 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onLoadPdf, onO
             <header className="chart-menu__section-head">Chart</header>
             <button type="button" className="chart-menu__item" role="menuitem" onClick={handleNewChart}>
               <span className="chart-menu__item-body">
-                <strong>New chart</strong>
-                <span>Clear all data and start fresh.</span>
+                <strong>New patient</strong>
+                <span>Clear everything and start a brand-new patient.</span>
               </span>
             </button>
+            {onNewVisit && (
+              <button type="button" className="chart-menu__item" role="menuitem" onClick={handleNewVisit}>
+                <span className="chart-menu__item-body">
+                  <strong>New visit (same patient)</strong>
+                  <span>Keep the patient, start a fresh dated chart.</span>
+                </span>
+              </button>
+            )}
             {cloud && (
               <button
                 type="button"

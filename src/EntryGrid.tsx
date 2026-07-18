@@ -483,6 +483,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               {cloud.status === 'saving' ? 'Saving…' : 'Saved'}
             </span>
           )}
+          {cloud.enabled && chart.openedExisting && cloud.status !== 'saving' && cloud.status !== 'error' && (
+            // A saved record doesn't autosave — offer an explicit Save so
+            // history is never overwritten by accident.
+            <button
+              type="button"
+              className="save-status save-status--manual"
+              onClick={() => cloud.saveNow().catch(() => {})}
+              title="This is a saved chart — autosave is off. Save to update it."
+            >
+              {cloud.status === 'saved' ? 'Saved chart' : 'Save changes'}
+            </button>
+          )}
           {cloud.enabled && (
             <button
               type="button"
@@ -500,6 +512,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />
           <ChartMenu
             onNewChart={chart.resetChart}
+            onNewVisit={
+              chart.patientInfo.patientName.trim() ? chart.startNewVisit : undefined
+            }
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
             onGoHome={onGoHome}
@@ -535,6 +550,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={cloud.deleteChart}
+          onNewVisit={(identity) => {
+            chart.startNewVisit({
+              patientName: identity.patientName,
+              patientNumber: identity.patientNumber,
+              species: identity.species as typeof chart.species,
+            });
+            setLibraryOpen(false);
+          }}
           onClose={() => setLibraryOpen(false)}
         />
       )}

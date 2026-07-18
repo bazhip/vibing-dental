@@ -107,6 +107,11 @@ export function useCloudSync(
   statusRef.current = status;
   const autosaveRef = React.useRef(autosaveEnabled);
   autosaveRef.current = autosaveEnabled;
+  // Charts opened from the library / a PDF are saved records — never
+  // autosaved. Edits are written only on an explicit Save.
+  const openedExisting = chart.openedExisting;
+  const openedExistingRef = React.useRef(openedExisting);
+  openedExistingRef.current = openedExisting;
 
   const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
     if (!supabase) return;
@@ -213,6 +218,8 @@ export function useCloudSync(
       return;
     }
     if (!autosaveEnabled) return;
+    // Opened records don't autosave — Save chart writes them explicitly.
+    if (openedExisting) return;
     const snap: ChartSnapshot = JSON.parse(serialized);
     if (!hasContent(snap)) return;
 
@@ -223,7 +230,7 @@ export function useCloudSync(
       });
     }, AUTOSAVE_DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
-  }, [on, serialized, chartId, upsertChart, autosaveEnabled]);
+  }, [on, serialized, chartId, upsertChart, autosaveEnabled, openedExisting]);
 
   const listCharts = React.useCallback(async (): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
@@ -243,11 +250,15 @@ export function useCloudSync(
 
   const openChart = React.useCallback(async (id: string): Promise<void> => {
     if (!supabase) return;
-    // Opening replaces the working chart. Edits still inside the
-    // autosave debounce window get flushed first; with autosave off (a
-    // deliberate user choice), ask instead of silently saving or losing.
+    // Opening replaces the working chart.
     if (isDirty()) {
-      if (autosaveRef.current) {
+      if (openedExistingRef.current) {
+        // Viewing a saved record — never auto-write over it. Confirm the
+        // caller is OK discarding their unsaved edits (Save chart keeps).
+        if (!window.confirm(
+          'You have unsaved changes to this saved chart. Use “Save chart” to keep them. Open the other chart and discard these changes?'
+        )) return;
+      } else if (autosaveRef.current) {
         try {
           await flushPending();
         } catch {
@@ -282,7 +293,11 @@ export function useCloudSync(
     // Flush edits still inside the debounce window before the session
     // ends — signing out must not eat the last few seconds of charting.
     if (isDirty()) {
-      if (autosaveRef.current) {
+      if (openedExistingRef.current) {
+        if (!window.confirm(
+          'You have unsaved changes to a saved chart. Use “Save chart” first if you want to keep them. Sign out and discard?'
+        )) return;
+      } else if (autosaveRef.current) {
         try {
           await flushPending();
         } catch {

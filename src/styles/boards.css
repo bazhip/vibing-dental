@@ -546,6 +546,7 @@
      open-button share this via --lib-cols so they stay aligned. */
   --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
     minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
+  --lib-actions: 9.5rem;
 }
 
 .chart-library-modal__body {
@@ -606,7 +607,7 @@
    and inherits its grid, so it's excluded here. */
 .chart-library__head-row:not(.chart-library__row) {
   display: grid;
-  grid-template-columns: var(--lib-cols) 4.5rem;
+  grid-template-columns: var(--lib-cols) var(--lib-actions, 4.5rem);
   gap: 1rem;
   align-items: center;
   padding: 0 0.75rem;
@@ -661,7 +662,7 @@
 
 .chart-library__row {
   display: grid;
-  grid-template-columns: 1fr 4.5rem;
+  grid-template-columns: 1fr var(--lib-actions, 4.5rem);
   align-items: stretch;
   border-bottom: 1px solid var(--border);
 }
@@ -883,3 +884,26 @@
 .admin-panel .admin-panel__practice-row {
   grid-template-columns: minmax(10rem, 1.6fr) minmax(10rem, 1.6fr) 5rem 5rem;
 }
+
+/* Library row actions: New visit (+ Delete on single-visit rows). */
+.ai-settings-modal.admin-panel { --lib-actions: 5rem; }
+.chart-library__row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding-right: 0.75rem;
+}
+.chart-library__act {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chart-library__act:hover { border-color: var(--primary); }

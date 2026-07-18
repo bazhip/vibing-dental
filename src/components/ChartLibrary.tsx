@@ -5,6 +5,8 @@ interface ChartLibraryProps {
   listCharts: () => Promise<CloudChartMeta[]>;
   onOpen: (id: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  /** Start a fresh visit for a patient (from their history row). */
+  onNewVisit: (identity: { patientName: string; patientNumber: string; species: string }) => void;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -76,6 +78,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   listCharts,
   onOpen,
   onDelete,
+  onNewVisit,
   onClose,
 }) => {
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
@@ -307,8 +310,22 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           </span>
                           {recallCell(g.recall)}
                         </button>
-                        {!multi && (
-                          <span className="chart-library__row-actions">
+                        <span className="chart-library__row-actions">
+                          <button
+                            type="button"
+                            className="chart-library__act"
+                            onClick={() =>
+                              onNewVisit({
+                                patientName: only.patient_name,
+                                patientNumber: only.patient_number,
+                                species: only.species,
+                              })
+                            }
+                            title={`Start a new visit for ${g.name}`}
+                          >
+                            + Visit
+                          </button>
+                          {!multi && (
                             <button
                               type="button"
                               className="chart-library__delete"
@@ -318,9 +335,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                             >
                               Delete
                             </button>
-                          </span>
-                        )}
-                        {multi && <span className="chart-library__row-actions" aria-hidden="true" />}
+                          )}
+                        </span>
                       </div>
 
                       {multi && isOpen &&
