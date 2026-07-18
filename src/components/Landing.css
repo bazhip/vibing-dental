@@ -553,6 +553,28 @@
   box-shadow: 0 10px 28px rgba(23, 35, 46, 0.1);
 }
 
+/* AI-native feature gets an accent so it reads as the headline capability. */
+.landing__feature--ai {
+  border-color: var(--primary, #0c6b63);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 7%, white), var(--surface));
+}
+.landing__feature--ai h3 {
+  color: var(--primary, #0c6b63);
+}
+.landing__feature--ai h3::before {
+  content: 'AI';
+  display: inline-block;
+  margin-right: 0.45rem;
+  padding: 0.05rem 0.4rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: var(--primary, #0c6b63);
+  border-radius: 5px;
+  vertical-align: middle;
+}
+
 .landing__feature h3 {
   margin: 0 0 0.45rem;
   font-size: 1rem;

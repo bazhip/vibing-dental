@@ -87,17 +87,18 @@ export const Landing: React.FC<LandingProps> = ({
         {/* ------------------------------------------------------- hero --- */}
         <section className="landing__hero">
           <div className="landing__hero-copy">
-            <p className="landing__eyebrow">For veterinary dental teams</p>
+            <p className="landing__eyebrow">AI-native veterinary dental charting</p>
             <h1 className="landing__headline">
-              Chart the procedure.
+              Just talk.
               <br />
-              The paperwork does itself.
+              The chart fills itself.
             </h1>
             <p className="landing__sub">
-              Chairside dental charting for veterinary practices — full-mouth
-              Triadan grids, AVDC nomenclature, voice autofill, photos and
-              radiographs, per-patient history, and a client-ready PDF with
-              your logo on it the moment you finish.
+              Dictate as you work and AI writes the findings straight onto a
+              full-mouth Triadan chart — AVDC nomenclature, per-tooth
+              measurements, and the diagrams. Plus photos and radiographs,
+              per-patient visit history, recheck reminders, and a client-ready
+              PDF with your logo the moment you finish.
             </p>
             <div className="landing__cta-row">
               {inApp ? (
@@ -247,12 +248,13 @@ export const Landing: React.FC<LandingProps> = ({
               and its label and number float right there.
             </p>
           </div>
-          <div className="landing__feature">
-            <h3>Hands-free when gloved</h3>
+          <div className="landing__feature landing__feature--ai">
+            <h3>AI voice autofill, built in</h3>
             <p>
-              Voice dictation with AI autofill charts findings while you
-              work — say “104 complicated crown fracture” and it lands on the
-              tooth. Bring your own keys; your data goes nowhere else.
+              Say “104 complicated crown fracture” and it lands on the tooth —
+              AI transcribes and charts your findings while your hands stay on
+              the patient. No API keys, no setup; it’s part of Pro and every
+              change is shown so you can undo anything.
             </p>
           </div>
           <div className="landing__feature">

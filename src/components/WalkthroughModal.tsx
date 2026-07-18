@@ -62,27 +62,39 @@ const BASE_STEPS: Step[] = [
     ),
   },
   {
-    eyebrow: 'Section 07–08',
-    title: 'Images and the treatment report',
+    eyebrow: 'Section 07',
+    title: 'Photos & radiographs',
     body: (
       <>
-        Attach intraoral photos and radiographs (they’re downscaled and stored
-        privately), then write the treatment report — insert your saved templates
-        to move fast. Hit <strong>Preview PDF</strong> anytime to download the
-        finished chart.
+        Attach intraoral photos and dental rads — they’re downscaled and stored
+        privately with the chart, captioned, and pinned to a tooth. Hit{' '}
+        <strong>Preview PDF</strong> anytime to download the finished chart.
       </>
     ),
   },
   {
-    eyebrow: 'Saving',
-    title: 'Autosave & My charts',
+    eyebrow: 'Section 08',
+    title: 'Treatment report & templates',
+    body: (
+      <>
+        Write the surgery/treatment report free-hand, or insert a saved{' '}
+        <strong>template</strong> from the dropdown to skip the boilerplate.
+        Wrote something you’ll reuse? Save it as a new template from the same
+        menu and it’s there for every future chart.
+      </>
+    ),
+  },
+  {
+    eyebrow: 'Saving & history',
+    title: 'Autosave, past visits & switching',
     body: (
       <>
         New charts <strong>autosave</strong> once they have a patient name — no
-        Save button to remember. Open a past visit from <strong>My charts</strong>;
-        it opens read-only so history isn’t changed by accident, with an{' '}
-        <strong>Edit</strong> button when you do want to update it. Switch between
-        a patient’s visits from the date dropdown up top.
+        Save button to remember. Open a returning patient from{' '}
+        <strong>My charts</strong>; it opens read-only so history isn’t changed
+        by accident, with an <strong>Edit</strong> button when you do want to.
+        Jump between that patient’s previous visits right from the{' '}
+        <strong>date dropdown</strong> at the top of the chart.
       </>
     ),
   },
