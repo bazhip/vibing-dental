@@ -1445,6 +1445,47 @@
   user-select: none;
 }
 
+/* Zoomable viewport around the diagram. Everything inside the wrapper
+   (SVG + comment overlay) is %-positioned, so zoom is just the wrapper
+   rendered wider (or narrower) than the viewport, scrolled sideways. */
+.diagram-view__canvas {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.diagram-view__canvas .tooth-diagram-wrapper {
+  width: calc(100% * var(--diagram-zoom, 1));
+  max-width: calc(1200px * var(--diagram-zoom, 1));
+  margin-inline: auto; /* centers when zoomed out below viewport width */
+}
+
+.diagram-view__zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto; /* park zoom at the toolbar's right edge */
+}
+.diagram-view__zoom-level {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  padding: 0.2rem 0.3rem;
+  min-width: 3.2em;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.diagram-view__zoom-level:hover:not(:disabled) {
+  color: var(--primary, #0c6b63);
+  text-decoration: underline;
+}
+.diagram-view__zoom-level:disabled {
+  cursor: default;
+}
+
 .tooth-diagram {
   width: 100%;
   height: auto;

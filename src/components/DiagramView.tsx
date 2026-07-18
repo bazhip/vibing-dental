@@ -64,6 +64,16 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
+  // Zoom scales the whole canvas (teeth, marks, comments) by widening
+  // the diagram inside a scrollable viewport — everything in the wrapper
+  // is %-positioned, so one CSS variable does it. Not persisted: zoom is
+  // a momentary "let me get closer" gesture, and every chart should open
+  // at fit-to-width.
+  const [zoom, setZoom] = React.useState(1);
+  const ZOOM_MIN = 0.5;
+  const ZOOM_MAX = 3;
+  const zoomBy = (factor: number) =>
+    setZoom((z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.round(z * factor * 100) / 100)));
   // Comment-text size preference. Persisted so the user's pick survives
   // a refresh. Same key for both Diagnosis + Procedure — most vets want
   // the same text size on both diagrams. Default is Medium (1.0); the
@@ -119,8 +129,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         className="diagram-view"
         onMouseDown={history.claim}
         // Drives `.diagram-comment { font-size: var(...) }` so the text
-        // size box affects every comment in this diagram.
-        style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale}rem` }}
+        // size box affects every comment in this diagram. Multiplied by
+        // zoom so comment text grows with the teeth.
+        style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
         <div className="diagram-view__toolbar">
           <div
@@ -184,6 +195,39 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           <button type="button" className="diagram-view__action" onClick={addFreeComment}>
             + Free comment
           </button>
+
+          <div className="diagram-view__zoom" role="group" aria-label="Zoom">
+            <button
+              type="button"
+              className="diagram-view__action"
+              onClick={() => zoomBy(1 / 1.25)}
+              disabled={zoom <= ZOOM_MIN}
+              aria-label="Zoom out"
+              title="Zoom out"
+            >
+              −
+            </button>
+            <button
+              type="button"
+              className="diagram-view__zoom-level"
+              onClick={() => setZoom(1)}
+              disabled={zoom === 1}
+              title="Reset zoom to fit"
+              aria-label={`Zoom ${Math.round(zoom * 100)} percent — reset to fit`}
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              type="button"
+              className="diagram-view__action"
+              onClick={() => zoomBy(1.25)}
+              disabled={zoom >= ZOOM_MAX}
+              aria-label="Zoom in"
+              title="Zoom in"
+            >
+              +
+            </button>
+          </div>
 
           {/* Text-size picker. Visible whenever the tool isn't Draw — i.e.
               Mark and Comment, since both modes work alongside comment
@@ -256,6 +300,10 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 
         </div>
 
+        <div
+          className="diagram-view__canvas"
+          style={{ ['--diagram-zoom' as string]: zoom }}
+        >
         <ToothDiagram
           ref={innerRef}
           species={species}
@@ -272,6 +320,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           markMode={markMode}
           highlightTriadan={highlightTriadan}
         />
+        </div>
       </div>
     </div>
   );
