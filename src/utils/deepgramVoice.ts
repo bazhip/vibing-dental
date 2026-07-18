@@ -74,15 +74,23 @@ interface DgErrorMessage {
 
 type DgMessage = DgResultsMessage | DgErrorMessage | { type: string };
 
+export interface DeepgramAuth {
+  /** The credential: a long-lived API key ('token') or a short-lived
+   *  grant ('bearer'). */
+  token: string;
+  kind: 'token' | 'bearer';
+}
+
 export async function startDeepgramSession(
-  apiKey: string,
+  auth: DeepgramAuth,
   handlers: DeepgramHandlers
 ): Promise<DeepgramSession> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
   // Must construct the WebSocket BEFORE the MediaRecorder so we can buffer
-  // audio chunks while the socket completes its handshake.
-  const ws = new WebSocket(DG_URL, ['token', apiKey]);
+  // audio chunks while the socket completes its handshake. Deepgram picks
+  // the auth scheme from the sub-protocol name.
+  const ws = new WebSocket(DG_URL, [auth.kind, auth.token]);
   ws.binaryType = 'arraybuffer';
 
   let closed = false;

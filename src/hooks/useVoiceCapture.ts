@@ -210,12 +210,12 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
     // Mint a short-lived Deepgram key from the backend (Pro-gated). If it
     // isn't available (not configured, or a non-Pro/trial caller), fall
     // back to browser speech recognition.
-    let dgKey = '';
+    let dgAuth: { token: string; kind: 'token' | 'bearer' } | null = null;
     try {
       if (!supabase) throw new Error('no cloud');
       const { data, error } = await supabase.functions.invoke('deepgram-token', { body: {} });
-      if (error || !data?.key) throw new Error(data?.error || error?.message || 'no key');
-      dgKey = data.key as string;
+      if (error || !data?.token) throw new Error(data?.error || error?.message || 'no token');
+      dgAuth = { token: data.token as string, kind: (data.kind as 'token' | 'bearer') || 'bearer' };
     } catch {
       // Silent fallback to the free browser transport.
       setProvider('browser');
@@ -224,7 +224,7 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
       return;
     }
     try {
-      const session = await startDeepgramSession(dgKey, {
+      const session = await startDeepgramSession(dgAuth, {
         onInterim: setInterim,
         onFinal: (seg) => recordSegment(seg),
         onError: (msg) => setError(msg),

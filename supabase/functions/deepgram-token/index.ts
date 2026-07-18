@@ -39,33 +39,24 @@ Deno.serve(async (req: Request) => {
   const master = Deno.env.get('DEEPGRAM_API_KEY');
   if (!master) return json({ error: 'Voice transcription is not configured yet.' }, 503);
 
-  const auth = { Authorization: `Token ${master}` };
-
-  // Find the project to mint the key under.
-  const projResp = await fetch('https://api.deepgram.com/v1/projects', { headers: auth });
-  if (!projResp.ok) return json({ error: 'Could not reach Deepgram.' }, 502);
-  const projects = await projResp.json();
-  const projectId = projects?.projects?.[0]?.project_id;
-  if (!projectId) return json({ error: 'No Deepgram project available.' }, 502);
-
-  const keyResp = await fetch(`https://api.deepgram.com/v1/projects/${projectId}/keys`, {
+  // Deepgram's temporary-token grant: works with a standard API key (no
+  // keys:write scope needed) and returns a short-lived bearer token the
+  // browser uses to open the streaming socket.
+  const grantResp = await fetch('https://api.deepgram.com/v1/auth/grant', {
     method: 'POST',
-    headers: { ...auth, 'content-type': 'application/json' },
-    body: JSON.stringify({
-      comment: `toothops-ephemeral-${caller.id}`,
-      scopes: ['usage:write'],
-      time_to_live_in_seconds: TTL_SECONDS,
-    }),
+    headers: { Authorization: `Token ${master}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ ttl_seconds: TTL_SECONDS }),
   });
-  const keyText = await keyResp.text();
-  if (!keyResp.ok) return json({ error: `Could not mint a transcription key: ${keyText}` }, 502);
-  let created: { key?: string };
+  const grantText = await grantResp.text();
+  if (!grantResp.ok) return json({ error: `Could not mint a transcription token: ${grantText}` }, 502);
+  let grant: { access_token?: string; expires_in?: number };
   try {
-    created = JSON.parse(keyText);
+    grant = JSON.parse(grantText);
   } catch {
     return json({ error: 'Deepgram returned an unreadable response.' }, 502);
   }
-  if (!created.key) return json({ error: 'Deepgram did not return a key.' }, 502);
+  if (!grant.access_token) return json({ error: 'Deepgram did not return a token.' }, 502);
 
-  return json({ key: created.key, expiresInSeconds: TTL_SECONDS });
+  // `kind: bearer` tells the client which WebSocket sub-protocol to use.
+  return json({ token: grant.access_token, kind: 'bearer', expiresInSeconds: grant.expires_in ?? TTL_SECONDS });
 });
