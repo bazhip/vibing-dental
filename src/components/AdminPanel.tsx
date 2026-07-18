@@ -32,15 +32,41 @@ interface AdminPracticeMember {
   userId: string;
   email: string;
   role: string;
+  pending: boolean;
+  isPrimaryOwner: boolean;
 }
 
 interface AdminPractice {
   id: string;
   name: string;
   ownerEmail: string;
+  logoUrl: string;
   memberCount: number;
   chartCount: number;
   members: AdminPracticeMember[];
+}
+
+/** Downscale any image to a ≤600px PNG and return raw base64 (no data:
+ *  prefix) — matches the logos bucket's PNG-only rule. */
+async function toPngBase64(file: File): Promise<string> {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    await new Promise<void>((res, rej) => {
+      img.onload = () => res();
+      img.onerror = () => rej(new Error('Could not read that image.'));
+      img.src = url;
+    });
+    const scale = Math.min(1, 600 / img.width);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(img.width * scale));
+    canvas.height = Math.max(1, Math.round(img.height * scale));
+    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/png');
+    return dataUrl.split(',')[1];
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 /** True when the signed-in user is the admin. */
@@ -99,6 +125,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [selectedPracticeId, setSelectedPracticeId] = React.useState<string | null>(null);
   const [practiceRename, setPracticeRename] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
+  const logoRef = React.useRef<HTMLInputElement>(null);
 
   const selected = users?.find((u) => u.id === selectedId) ?? null;
   const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
@@ -274,6 +301,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     if (!window.confirm(`Remove ${email} from ${selectedPractice.name || 'this practice'}?`)) return;
     run('Member removed.', async () => {
       await adminCall({ action: 'practice_remove_member', practiceId: selectedPractice.id, userId });
+      await refresh();
+    });
+  };
+
+  const handleSetPracticeOwner = (userId: string, email: string) => {
+    if (!selectedPractice) return;
+    if (!window.confirm(`Make ${email} the primary owner of ${selectedPractice.name || 'this practice'}?`)) return;
+    run('Owner changed.', async () => {
+      await adminCall({ action: 'set_practice_owner', practiceId: selectedPractice.id, userId });
+      await refresh();
+    });
+  };
+
+  const handlePracticeLogoPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !selectedPractice) return;
+    run('Logo updated.', async () => {
+      const dataBase64 = await toPngBase64(file);
+      await adminCall({ action: 'set_practice_logo', practiceId: selectedPractice.id, dataBase64 });
+      await refresh();
+    });
+  };
+
+  const handleRemovePracticeLogo = () => {
+    if (!selectedPractice) return;
+    if (!window.confirm('Remove this practice’s logo?')) return;
+    run('Logo removed.', async () => {
+      await adminCall({ action: 'remove_practice_logo', practiceId: selectedPractice.id });
       await refresh();
     });
   };
@@ -472,21 +528,61 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </div>
 
+              {/* Practice logo (the primary owner's logo — the brand on
+                  their charts). */}
+              <div className="practice-logo-row">
+                {selectedPractice.logoUrl ? (
+                  <img src={selectedPractice.logoUrl} alt="Practice logo" className="practice-logo-preview" />
+                ) : (
+                  <span className="practice-logo-empty">No practice logo.</span>
+                )}
+                <div className="practice-logo-actions">
+                  <button type="button" className="diagram-view__action" onClick={() => logoRef.current?.click()} disabled={busy}>
+                    {selectedPractice.logoUrl ? 'Replace logo' : 'Upload logo'}
+                  </button>
+                  {selectedPractice.logoUrl && (
+                    <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleRemovePracticeLogo} disabled={busy}>
+                      Remove logo
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={logoRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  style={{ display: 'none' }}
+                  onChange={handlePracticeLogoPick}
+                />
+              </div>
+
               <ul className="team__members">
                 {selectedPractice.members.map((m) => (
                   <li key={m.userId} className="team__member">
                     <span className="team__member-id"><strong>{m.email}</strong></span>
-                    <span className="team__member-role">{m.role}</span>
-                    {m.role !== 'owner' && (
-                      <button
-                        type="button"
-                        className="diagram-view__action diagram-view__action--danger"
-                        onClick={() => handleRemovePracticeMember(m.userId, m.email)}
-                        disabled={busy}
-                      >
-                        Remove
-                      </button>
-                    )}
+                    {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
+                    <span className="team__member-role">{m.isPrimaryOwner ? 'Primary owner' : m.role}</span>
+                    <span className="team__member-actions">
+                      {!m.isPrimaryOwner && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          onClick={() => handleSetPracticeOwner(m.userId, m.email)}
+                          disabled={busy}
+                        >
+                          Make owner
+                        </button>
+                      )}
+                      {!m.isPrimaryOwner && (
+                        <button
+                          type="button"
+                          className="diagram-view__action diagram-view__action--danger"
+                          onClick={() => handleRemovePracticeMember(m.userId, m.email)}
+                          disabled={busy}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>

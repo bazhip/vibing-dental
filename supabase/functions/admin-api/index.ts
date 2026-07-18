@@ -176,15 +176,26 @@ Deno.serve(async (req: Request) => {
         const practices = [];
         for (const p of pracs ?? []) {
           const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
+          const { data: ownerProfile } = await admin.from('profiles').select('logo_path').eq('id', p.owner).maybeSingle();
+          const logoUrl = ownerProfile?.logo_path
+            ? `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/logos/${ownerProfile.logo_path}?t=${Date.now()}`
+            : '';
           const memberDetails = [];
           for (const m of (mems ?? []).filter((x) => x.practice_id === p.id)) {
             const { data: u } = await admin.auth.admin.getUserById(m.user_id);
-            memberDetails.push({ userId: m.user_id, email: u?.user?.email ?? '', role: m.role });
+            memberDetails.push({
+              userId: m.user_id,
+              email: u?.user?.email ?? '',
+              role: m.role,
+              pending: !u?.user?.email_confirmed_at,
+              isPrimaryOwner: m.user_id === p.owner,
+            });
           }
           practices.push({
             id: p.id,
             name: p.name ?? '',
             ownerEmail: ownerUser?.user?.email ?? '',
+            logoUrl,
             memberCount: memberCount.get(p.id) ?? 0,
             chartCount: chartCount.get(p.id) ?? 0,
             members: memberDetails,
@@ -213,6 +224,41 @@ Deno.serve(async (req: Request) => {
         await admin.from('profiles').update({ practice_id: null }).eq('practice_id', practiceId);
         const { error } = await admin.from('practices').delete().eq('id', practiceId);
         if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'set_practice_logo': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const dataBase64 = typeof body.dataBase64 === 'string' ? body.dataBase64 : '';
+        if (!practiceId || !dataBase64) return json({ error: 'missing practiceId or image' }, 400);
+        const { data: prac } = await admin.from('practices').select('owner').eq('id', practiceId).maybeSingle();
+        if (!prac) return json({ error: 'unknown practice' }, 404);
+        const bytes = Uint8Array.from(atob(dataBase64), (c) => c.charCodeAt(0));
+        const path = `${prac.owner}/logo.png`;
+        const up = await admin.storage.from('logos').upload(path, bytes, { upsert: true, contentType: 'image/png' });
+        if (up.error) return json({ error: up.error.message }, 502);
+        await admin.from('profiles').upsert({ id: prac.owner, logo_path: path });
+        return json({ ok: true });
+      }
+
+      case 'remove_practice_logo': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const { data: prac } = await admin.from('practices').select('owner').eq('id', practiceId).maybeSingle();
+        if (!prac) return json({ error: 'unknown practice' }, 404);
+        await admin.storage.from('logos').remove([`${prac.owner}/logo.png`]);
+        await admin.from('profiles').update({ logo_path: '' }).eq('id', prac.owner);
+        return json({ ok: true });
+      }
+
+      case 'set_practice_owner': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId || !userId) return json({ error: 'missing practiceId or userId' }, 400);
+        // The new owner must already be on the team.
+        const { data: memRow } = await admin.from('practice_members').select('user_id').eq('practice_id', practiceId).eq('user_id', userId).maybeSingle();
+        if (!memRow) return json({ error: 'That account is not a member of the practice.' }, 400);
+        await admin.from('practices').update({ owner: userId }).eq('id', practiceId);
+        await admin.from('practice_members').update({ role: 'owner' }).eq('practice_id', practiceId).eq('user_id', userId);
         return json({ ok: true });
       }
 
