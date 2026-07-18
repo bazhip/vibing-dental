@@ -164,6 +164,26 @@ Deno.serve(async (req: Request) => {
         return json(result.body, result.status);
       }
 
+      case 'resend_invite': {
+        const m = await requireOwner();
+        if (!m) return json({ error: 'Only a practice owner can resend invites.' }, 403);
+        if (!userId) return json({ error: 'missing userId' }, 400);
+        const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
+        const { data: memRow } = await admin.from('practice_members').select('user_id').eq('practice_id', m.practiceId).eq('user_id', userId).maybeSingle();
+        if (!memRow) return json({ error: 'That person is not on the team.' }, 400);
+        const { data: u } = await admin.auth.admin.getUserById(userId);
+        const email = (u?.user?.email ?? '').toLowerCase();
+        if (!u?.user || !email) return json({ error: 'Could not find that account.' }, 404);
+        if (u.user.email_confirmed_at) return json({ error: 'That account is already active — no invite to resend.' }, 400);
+        // Invite links only mint for brand-new accounts, so recreate the
+        // never-activated account and re-run the invite flow. Pending
+        // accounts own nothing; membership + profile are re-created by
+        // addOrInviteMember.
+        await admin.auth.admin.deleteUser(userId);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
+        return json(result.body, result.status);
+      }
+
       case 'remove_member': {
         const m = await requireOwner();
         if (!m) return json({ error: 'Only a practice owner can remove members.' }, 403);

@@ -35,6 +35,8 @@ export interface UseTeamReturn extends TeamState {
   createPractice: (name: string) => Promise<void>;
   /** Returns true when a new account was invited (vs. an existing one added). */
   addMember: (email: string) => Promise<boolean>;
+  /** Re-send the activation email to a pending (never-activated) member. */
+  resendInvite: (userId: string) => Promise<void>;
   removeMember: (userId: string) => Promise<void>;
   setRole: (userId: string, role: 'owner' | 'member') => Promise<void>;
   transferOwnership: (userId: string) => Promise<void>;
@@ -95,6 +97,12 @@ export function useTeam(open: boolean): UseTeamReturn {
     return !!res.invited;
   }, [refresh]);
 
+  const resendInvite = React.useCallback(async (userId: string) => {
+    const redirectTo = window.location.origin + window.location.pathname;
+    await call({ action: 'resend_invite', userId, redirectTo });
+    await refresh();
+  }, [refresh]);
+
   const removeMember = React.useCallback(async (userId: string) => {
     await call({ action: 'remove_member', userId });
     await refresh();
@@ -118,6 +126,7 @@ export function useTeam(open: boolean): UseTeamReturn {
     refresh,
     createPractice,
     addMember,
+    resendInvite,
     removeMember,
     setRole,
     transferOwnership,

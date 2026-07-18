@@ -305,6 +305,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
+  const handleResendInvite = (userId: string, email: string) => {
+    if (!selectedPractice) return;
+    run(`Invite re-sent to ${email}.`, async () => {
+      await adminCall({
+        action: 'practice_resend_invite',
+        practiceId: selectedPractice.id,
+        userId,
+        redirectTo: window.location.origin + window.location.pathname,
+      });
+      await refresh();
+    });
+  };
+
   const handleSetPracticeOwner = (userId: string, email: string) => {
     if (!selectedPractice) return;
     if (!window.confirm(`Make ${email} the primary owner of ${selectedPractice.name || 'this practice'}?`)) return;
@@ -562,6 +575,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
                     <span className="team__member-role">{m.isPrimaryOwner ? 'Primary owner' : m.role}</span>
                     <span className="team__member-actions">
+                      {m.pending && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          onClick={() => handleResendInvite(m.userId, m.email)}
+                          disabled={busy}
+                        >
+                          Resend invite
+                        </button>
+                      )}
                       {!m.isPrimaryOwner && (
                         <button
                           type="button"

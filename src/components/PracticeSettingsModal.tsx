@@ -203,6 +203,18 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                       </span>
                       {isOwner && !m.isYou && (
                         <span className="team__member-actions">
+                          {m.pending && (
+                            <button
+                              type="button"
+                              className="diagram-view__action"
+                              disabled={teamBusy}
+                              onClick={() =>
+                                runTeam(`Invite re-sent to ${m.email}.`, () => team.resendInvite(m.userId))
+                              }
+                            >
+                              Resend invite
+                            </button>
+                          )}
                           {m.role === 'member' ? (
                             <button
                               type="button"

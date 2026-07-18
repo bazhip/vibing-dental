@@ -19,7 +19,7 @@ export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
   /** The user's current practice (for team sharing), '' when solo. */
   practiceId: string;
-  /** Public URL of the uploaded practice logo, or '' when none. */
+  /** Signed URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
   /** Normalize to PNG (downscaled) and upload as the practice logo. */
@@ -33,11 +33,17 @@ const LOGO_MAX_WIDTH = 600;
  *  input. The `logos` bucket enforces its own server-side cap too. */
 const LOGO_MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
-function publicLogoUrl(path: string): string {
+/** The `logos` bucket is private — reads go through short-lived signed
+ *  URLs (storage RLS grants them to the practice's members). The signed
+ *  token also acts as the cache-buster across re-uploads. */
+const LOGO_URL_TTL_SECONDS = 60 * 60 * 12;
+
+async function signedLogoUrl(path: string): Promise<string> {
   if (!supabase || !path) return '';
-  const { data } = supabase.storage.from('logos').getPublicUrl(path);
-  // Cache-bust: the path is stable across re-uploads.
-  return data.publicUrl ? `${data.publicUrl}?v=${Date.now()}` : '';
+  const { data } = await supabase.storage
+    .from('logos')
+    .createSignedUrl(path, LOGO_URL_TTL_SECONDS);
+  return data?.signedUrl ?? '';
 }
 
 /** Downscale + re-encode any image file to PNG so the PDF embedder only
@@ -98,7 +104,7 @@ export async function uploadPracticeLogo(file: File): Promise<string> {
     if (upError) throw new Error(upError.message);
     const { error } = await supabase.from('practices').update({ logo_path: path }).eq('id', practiceId);
     if (error) throw new Error(error.message);
-    return publicLogoUrl(path);
+    return signedLogoUrl(path);
   }
   // Standalone fallback: per-user logo.
   const path = `${userId}/logo.png`;
@@ -108,7 +114,7 @@ export async function uploadPracticeLogo(file: File): Promise<string> {
   if (upError) throw new Error(upError.message);
   const { error } = await supabase.from('profiles').upsert({ id: userId, logo_path: path });
   if (error) throw new Error(error.message);
-  return publicLogoUrl(path);
+  return signedLogoUrl(path);
 }
 
 export function useProfile(): UseProfileReturn {
@@ -143,13 +149,14 @@ export function useProfile(): UseProfileReturn {
         const { data: prac } = await supabase.from('practices').select('logo_path').eq('id', pid).maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
       }
+      const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
         if (data) {
           setProfile({
             practiceName: data.practice_name ?? '',
             doctorName: data.doctor_name ?? '',
           });
-          setLogoUrl(publicLogoUrl(effectiveLogoPath));
+          setLogoUrl(signedUrl);
           setPracticeId(pid);
         }
         setLoaded(true);

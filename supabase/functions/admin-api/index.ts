@@ -209,9 +209,13 @@ Deno.serve(async (req: Request) => {
         const practices = [];
         for (const p of pracs ?? []) {
           const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
-          const logoUrl = p.logo_path
-            ? `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/logos/${p.logo_path}?t=${Date.now()}`
-            : '';
+          // The logos bucket is private — hand the panel a short-lived
+          // signed URL (service role bypasses storage RLS).
+          let logoUrl = '';
+          if (p.logo_path) {
+            const { data: signed } = await admin.storage.from('logos').createSignedUrl(p.logo_path, 3600);
+            logoUrl = signed?.signedUrl ?? '';
+          }
           const memberDetails = [];
           for (const m of (mems ?? []).filter((x) => x.practice_id === p.id)) {
             const { data: u } = await admin.auth.admin.getUserById(m.user_id);
@@ -324,6 +328,29 @@ Deno.serve(async (req: Request) => {
           if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
         }
         return json({ ok: true, invited });
+      }
+
+      case 'practice_resend_invite': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
+        if (!practiceId || !userId) return json({ error: 'missing ids' }, 400);
+        const { data: memRow } = await admin.from('practice_members').select('user_id').eq('practice_id', practiceId).eq('user_id', userId).maybeSingle();
+        if (!memRow) return json({ error: 'That account is not a member of the practice.' }, 400);
+        const { data: u } = await admin.auth.admin.getUserById(userId);
+        const email = (u?.user?.email ?? '').toLowerCase();
+        if (!u?.user || !email) return json({ error: 'Could not find that account.' }, 404);
+        if (u.user.email_confirmed_at) return json({ error: 'That account is already active — no invite to resend.' }, 400);
+        // Invite links only mint for brand-new accounts, so recreate the
+        // never-activated account and re-run the invite. Pending accounts
+        // own nothing; the membership + profile rows are re-created here.
+        const { data: pracRow } = await admin.from('practices').select('name').eq('id', practiceId).maybeSingle();
+        await admin.auth.admin.deleteUser(userId);
+        const inv = await inviteViaResend(admin, email, pracRow?.name ?? '', redirectTo);
+        if (inv.error || !inv.user) return json({ error: `Couldn't resend the invite: ${inv.error ?? 'unknown'}` }, 502);
+        await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: inv.user.id, role: 'member' });
+        await admin.from('profiles').upsert({ id: inv.user.id, practice_id: practiceId });
+        await admin.from('practices').delete().eq('owner', inv.user.id).neq('id', practiceId);
+        return json({ ok: true });
       }
 
       default:
