@@ -236,11 +236,18 @@ Deno.serve(async (req: Request) => {
           .select('id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at')
           .order('created_at', { ascending: true });
         const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
-        const { data: chartRows } = await admin.from('charts').select('practice_id').not('practice_id', 'is', null).limit(20000);
+        // A practice's chart count = charts shared to it PLUS members'
+        // personal charts (practice_id NULL — e.g. rows predating team
+        // sharing), so the tab matches the per-user counts in Accounts.
+        const { data: chartRows } = await admin.from('charts').select('practice_id, created_by').limit(20000);
         const memberCount = new Map<string, number>();
         for (const m of mems ?? []) memberCount.set(m.practice_id, (memberCount.get(m.practice_id) ?? 0) + 1);
+        const practiceByUser = new Map((mems ?? []).map((m) => [m.user_id, m.practice_id]));
         const chartCount = new Map<string, number>();
-        for (const c of chartRows ?? []) if (c.practice_id) chartCount.set(c.practice_id, (chartCount.get(c.practice_id) ?? 0) + 1);
+        for (const c of chartRows ?? []) {
+          const pid = c.practice_id ?? practiceByUser.get(c.created_by);
+          if (pid) chartCount.set(pid, (chartCount.get(pid) ?? 0) + 1);
+        }
         const practices = [];
         for (const p of pracs ?? []) {
           const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
