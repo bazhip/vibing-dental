@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import {
@@ -204,8 +205,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
       </button>
 
-      {/* How-it-works modal, with Start inside. */}
-      {introOpen && (
+      {/* How-it-works modal, with Start inside. Portaled to <body> so it
+          isn't trapped by the topbar's backdrop-filter containing block
+          (which would clip a position:fixed overlay to the short topbar). */}
+      {introOpen && ReactDOM.createPortal(
         <div className="ai-settings-overlay" onClick={() => setIntroOpen(false)} role="dialog" aria-modal="true" aria-label="AI autofill">
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
@@ -230,11 +233,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               </button>
             </footer>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* Live sidebar: transcript (top) + activity log (bottom). */}
-      {sidebarOpen && (
+      {/* Live sidebar: transcript (top) + activity log (bottom). Portaled to
+          <body> for the same containing-block reason as the modal above. */}
+      {sidebarOpen && ReactDOM.createPortal(
         <aside className="ai-sidebar" aria-live="polite">
           <header className="ai-sidebar__head">
             <span className={`ai-sidebar__status${voice.recording ? ' ai-sidebar__status--live' : ''}`}>
@@ -287,7 +292,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           </div>
 
           {error && <div className="voice-input__error" role="alert">{error}</div>}
-        </aside>
+        </aside>,
+        document.body
       )}
 
       {error && !sidebarOpen && <div className="voice-input__error" role="alert">{error}</div>}
