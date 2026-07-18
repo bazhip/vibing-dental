@@ -271,7 +271,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               onClick={() => pdfInputRef.current?.click()}
               title="Open a chart PDF made with this app to continue editing it"
             >
-              Load chart PDF
+              Import chart PDF
             </button>
             <button
               type="button"
