@@ -571,6 +571,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}
+          onNewPatient={() => {
+            if (
+              window.confirm(
+                'Start a new patient? This clears the current chart. Save it first if you want to keep any unsaved changes.'
+              )
+            ) {
+              chart.resetChart();
+            }
+          }}
           onClose={() => setLibraryOpen(false)}
         />
       )}

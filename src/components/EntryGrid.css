@@ -973,25 +973,26 @@
   min-height: 0;
 }
 
-/* The codes card rides along as a sticky sidebar sized to the browser
-   window: the search input and its results stay on screen together
-   wherever you are in the diagram, and the list scrolls inside the
-   card. */
+/* The wrapper spans the full rail (diagram height) in normal flow, so
+   its "… Reference" section title scrolls away with the page like the
+   diagram titles do — only the card below it sticks. */
 .diagram-with-codes__codes > * {
-  position: sticky;
-  top: calc(var(--topbar-height, 0px) + 0.75rem);
-  height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
-  max-height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
+  height: 100%;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-/* Card wraps just the search + list, so the section title sits above the
-   card (matching the diagram side and every other section) instead of
-   inside it. */
+/* The codes CARD rides along as a sticky sidebar sized to the browser
+   window: the search input and its results stay on screen together
+   wherever you are in the diagram, and the list scrolls inside the
+   card. The section title above it is not sticky. */
 .diagram-with-codes__codes .code-ref {
-  flex: 1 1 auto;
+  position: sticky;
+  top: calc(var(--topbar-height, 0px) + 0.75rem);
+  flex: 0 1 auto;
+  height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
+  max-height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
   min-height: 0;
   background: white;
   border: 1px solid var(--border);
@@ -1026,13 +1027,18 @@
   .diagram-with-codes {
     grid-template-columns: 1fr;
   }
-  /* Stacked layout: drop the absolute positioning so the panel takes
-     its natural height below the diagram. */
+  /* Stacked layout: no sticky rail — the panel takes its natural height
+     below the diagram. */
   .diagram-with-codes__codes {
     min-height: 320px;
   }
   .diagram-with-codes__codes > * {
+    height: auto;
+  }
+  .diagram-with-codes__codes .code-ref {
     position: static;
+    height: auto;
+    max-height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
   }
 }
 

@@ -10,6 +10,8 @@ interface ChartLibraryProps {
   onNewVisit: (latestChartId: string) => void;
   /** Open the recheck-reminder composer prefilled from a saved chart. */
   onSendReminder: (chart: CloudChartMeta) => void;
+  /** Clear everything and start a brand-new patient (confirms first). */
+  onNewPatient: () => void;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -101,6 +103,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onDelete,
   onNewVisit,
   onSendReminder,
+  onNewPatient,
   onClose,
 }) => {
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
@@ -260,6 +263,14 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               aria-pressed={dueOnly}
             >
               Due for recheck{dueCount > 0 ? ` (${dueCount})` : ''}
+            </button>
+            <button
+              type="button"
+              className="chart-library__filter"
+              onClick={onNewPatient}
+              title="Clear the working chart and start a brand-new patient"
+            >
+              + New patient
             </button>
           </div>
 
