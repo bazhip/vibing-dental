@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApiKey, useDeepgramKey, useSelectedModel } from '../hooks/useApiKey';
 import { verifyApiKey, listModels, KNOWN_MODELS, ModelOption } from '../utils/aiAutofill';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 /**
  * BYOK settings dialog. Two keys:
@@ -34,6 +35,7 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
   const [verifyOk, setVerifyOk] = React.useState(false);
   const [models, setModels] = React.useState<ModelOption[]>(KNOWN_MODELS);
   const [modelsLoading, setModelsLoading] = React.useState(false);
+  const modalRef = useModalFocus(open);
 
   React.useEffect(() => {
     if (open) {
@@ -132,7 +134,7 @@ export const AiSettingsModal: React.FC<AiSettingsModalProps> = ({ open, onClose 
       aria-modal="true"
       aria-labelledby="ai-settings-title"
     >
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2 id="ai-settings-title">AI settings</h2>
           <button

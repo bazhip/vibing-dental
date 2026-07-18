@@ -4,6 +4,7 @@ import './styles/boards.css';
 import './App.css';
 import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
+import { clearChartStorage } from './hooks/useChartState';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -25,9 +26,11 @@ const TRIAL_NOTIFIED_KEY = 'trial.notified';
  *  once per browser. No personal data leaves the page (there is none
  *  to send; trials are anonymous). */
 function notifyTrialStarted(): void {
+  const base = process.env.REACT_APP_SUPABASE_URL;
+  if (!base) return;
   if (readString(TRIAL_NOTIFIED_KEY, 1, '') === '1') return;
   writeString(TRIAL_NOTIFIED_KEY, 1, '1');
-  fetch('https://hiefwyyoyiqxmxaxyxmx.supabase.co/functions/v1/signup-alert', {
+  fetch(`${base}/functions/v1/signup-alert`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ trial: true }),
@@ -75,6 +78,11 @@ const App: React.FC = () => {
   };
 
   const endTrial = (nextAuth: 'signup' | 'signin' | null) => {
+    // Signing IN to an existing account is usually a different person on
+    // a shared clinic machine — don't let the trial's patient data leak
+    // into their session. Signing UP keeps the trial chart so the new
+    // account can save the work that convinced them.
+    if (nextAuth === 'signin') clearChartStorage();
     removeKey(TRIAL_KEY, 1);
     setTrialMode(false);
     setLandingAuth(nextAuth);

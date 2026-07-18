@@ -1,6 +1,7 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useReminderTemplate, fillTemplate } from '../hooks/useReminderTemplate';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 interface ReminderModalProps {
   open: boolean;
@@ -38,6 +39,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [sent, setSent] = React.useState(false);
+  const modalRef = useModalFocus(open);
 
   // Prefill once the template has loaded (or when reopened).
   React.useEffect(() => {
@@ -87,7 +89,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Send recheck reminder">
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Send recheck reminder</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>

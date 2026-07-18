@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useTeam } from '../hooks/useTeam';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -27,6 +28,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [error, setError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
+  const modalRef = useModalFocus(open);
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
@@ -116,7 +118,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Practice">
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Practice</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">

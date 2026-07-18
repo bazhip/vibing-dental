@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTeam } from '../hooks/useTeam';
 import { useReminderTemplate } from '../hooks/useReminderTemplate';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 interface RemindersModalProps {
   open: boolean;
@@ -24,6 +25,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [note, setNote] = React.useState('');
+  const modalRef = useModalFocus(open);
 
   React.useEffect(() => {
     if (reminder.loaded) {
@@ -63,7 +65,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Recheck reminders">
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Recheck reminders</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">

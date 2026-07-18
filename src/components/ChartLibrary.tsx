@@ -1,5 +1,6 @@
 import React from 'react';
 import { CloudChartMeta } from '../hooks/useCloudSync';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 interface ChartLibraryProps {
   listCharts: () => Promise<CloudChartMeta[]>;
@@ -114,6 +115,8 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
   const [dueOnly, setDueOnly] = React.useState(false);
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
+  // Mounted only while open, so the trap is always on.
+  const modalRef = useModalFocus(true);
 
   const refresh = React.useCallback(async () => {
     setError('');
@@ -237,7 +240,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="My charts">
-      <div className="ai-settings-modal chart-library-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal chart-library-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>My charts</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">

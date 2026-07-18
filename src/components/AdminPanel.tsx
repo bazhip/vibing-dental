@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 /**
  * Admin panel — visible only to the account whose app_metadata carries
@@ -126,6 +127,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [practiceRename, setPracticeRename] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
   const logoRef = React.useRef<HTMLInputElement>(null);
+  const modalRef = useModalFocus(open);
 
   const selected = users?.find((u) => u.id === selectedId) ?? null;
   const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
@@ -352,7 +354,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Admin panel">
-      <div className="ai-settings-modal chart-library-modal admin-panel" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal chart-library-modal admin-panel" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Admin panel</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">

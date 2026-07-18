@@ -119,6 +119,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return () => ro.disconnect();
   }, []);
 
+  // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
+  // brings from every other document editor. Swallows the browser's
+  // save-page dialog either way.
+  const saveShortcutRef = React.useRef<() => void>(() => {});
+  saveShortcutRef.current = () => {
+    if (cloud.enabled && cloud.dirty && cloud.status !== 'saving') {
+      cloud.saveNow().catch(() => {});
+    }
+  };
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        saveShortcutRef.current();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
   // Don't let a tab close/refresh slip away while a cloud save is in
   // flight or failing — the chart would exist only in this machine's
   // localStorage without the user ever deciding that.
@@ -472,9 +492,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {/* Manual save only — no autosave. The button shows whenever
-              the chart has unsaved changes; localStorage keeps the working
-              copy across reloads regardless. */}
+          {/* Manual save only — no autosave. The save state is always
+              visible so the model is learnable: amber button while dirty,
+              Saving…, then a quiet Saved chip. localStorage keeps the
+              working copy across reloads regardless. ⌘S / Ctrl+S saves. */}
           {cloud.enabled && cloud.status === 'saving' && (
             <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>
           )}
@@ -492,14 +513,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               type="button"
               className="save-status save-status--manual"
               onClick={() => cloud.saveNow().catch(() => {})}
-              title="Save this chart to the cloud"
+              title="Save this chart to the cloud (⌘S)"
             >
-              Save chart
+              ● Save chart
             </button>
           )}
-          {cloud.enabled && cloud.status === 'saved' && !cloud.dirty && (
-            <span className="save-status save-status--saved" aria-hidden="true">Saved</span>
-          )}
+          {cloud.enabled &&
+            (cloud.status === 'saved' ||
+              (cloud.status === 'idle' && chart.patientInfo.patientName.trim() !== '')) &&
+            !cloud.dirty && (
+              <span
+                className="save-status save-status--saved"
+                aria-hidden="true"
+                title="All changes are saved to the cloud"
+              >
+                ✓ Saved
+              </span>
+            )}
           {cloud.enabled && (
             <button
               type="button"

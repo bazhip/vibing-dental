@@ -1,5 +1,6 @@
 import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { supabase } from '../utils/supabaseClient';
 
 interface AccountModalProps {
@@ -26,6 +27,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [error, setError] = React.useState('');
   const [note, setNote] = React.useState('');
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
+  const modalRef = useModalFocus(open);
 
   React.useEffect(() => {
     if (open) {
@@ -103,7 +105,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Account settings">
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Account settings</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
