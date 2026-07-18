@@ -13,6 +13,8 @@ interface ChartLibraryProps {
   onSendReminder: (chart: CloudChartMeta) => void;
   /** Clear everything and start a brand-new patient (confirms first). */
   onNewPatient: () => void;
+  /** Load a chart PDF made by this app back in for editing. */
+  onLoadPdf: (file: File) => void;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -105,8 +107,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onNewVisit,
   onSendReminder,
   onNewPatient,
+  onLoadPdf,
   onClose,
 }) => {
+  const pdfInputRef = React.useRef<HTMLInputElement>(null);
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
   const [query, setQuery] = React.useState('');
   const [error, setError] = React.useState('');
@@ -275,6 +279,25 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             >
               + New patient
             </button>
+            <button
+              type="button"
+              className="chart-library__filter"
+              onClick={() => pdfInputRef.current?.click()}
+              title="Open a chart PDF made with this app to continue editing it"
+            >
+              Load chart PDF
+            </button>
+            <input
+              ref={pdfInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) { onLoadPdf(file); onClose(); }
+                e.target.value = '';
+              }}
+            />
           </div>
 
           {error && <div className="login-error" role="alert">{error}</div>}

@@ -644,18 +644,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             />
           )}
           <ChartMenu
-            onNewChart={chart.resetChart}
-            onNewVisit={
-              chart.patientInfo.patientName.trim() ? () => chart.startNewVisit() : undefined
-            }
-            onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             cloud={
               cloud.enabled
                 ? {
-                    onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
                     onOpenReminders: () => setRemindersOpen(true),
                     onOpenAccount: () => setAccountOpen(true),
@@ -743,12 +737,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onNewPatient={() => {
             if (
               window.confirm(
-                'Start a new patient? This clears the current chart. Save it first if you want to keep any unsaved changes.'
+                'Start a new patient? This clears the current chart. New charts autosave once they have a name.'
               )
             ) {
               chart.resetChart();
             }
           }}
+          onLoadPdf={chart.loadFromPdf}
           onClose={() => setLibraryOpen(false)}
         />
       )}
