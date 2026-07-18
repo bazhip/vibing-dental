@@ -353,6 +353,121 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true });
       }
 
+      case 'set_plan': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const plan = body.plan === 'pro' ? 'pro' : 'basic';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const { error } = await admin.from('practices').update({ plan }).eq('id', practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'get_ai_config': {
+        const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
+        const key = Deno.env.get('ANTHROPIC_API_KEY');
+        let models: Array<{ id: string; displayName: string }> = [];
+        if (key) {
+          try {
+            const r = await fetch('https://api.anthropic.com/v1/models?limit=100', {
+              headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' },
+            });
+            if (r.ok) {
+              const d = await r.json();
+              models = (d.data ?? []).map((m: { id: string; display_name?: string }) => ({
+                id: m.id,
+                displayName: m.display_name ?? m.id,
+              }));
+            }
+          } catch { /* leave models empty */ }
+        }
+        return json({ model: cfg?.ai_model ?? 'claude-opus-4-8', models, configured: !!key });
+      }
+
+      case 'set_ai_model': {
+        const model = typeof body.model === 'string' ? body.model.trim() : '';
+        if (!model) return json({ error: 'missing model' }, 400);
+        const { error } = await admin.from('app_config').update({ ai_model: model, updated_at: new Date().toISOString() }).eq('id', 1);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'ai_usage': {
+        // Per-user token totals + a rough cost estimate. Rates are $/million
+        // tokens (input/output); cache reads billed at ~10% of input.
+        const RATES: Record<string, { in: number; out: number }> = {
+          'claude-opus-4-8': { in: 15, out: 75 },
+          'claude-sonnet-4-6': { in: 3, out: 15 },
+          'claude-haiku-4-5': { in: 0.8, out: 4 },
+        };
+        const rate = (model: string) => {
+          const k = Object.keys(RATES).find((r) => model.startsWith(r));
+          return k ? RATES[k] : { in: 5, out: 20 };
+        };
+        const { data: rows } = await admin
+          .from('ai_usage')
+          .select('user_id, model, input_tokens, output_tokens, cache_read_tokens')
+          .limit(100000);
+        const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
+        let totalCost = 0;
+        for (const r of rows ?? []) {
+          const cur = byUser.get(r.user_id) ?? { input: 0, output: 0, cacheRead: 0, calls: 0, cost: 0 };
+          const rt = rate(r.model);
+          const cost =
+            (r.input_tokens / 1e6) * rt.in +
+            (r.output_tokens / 1e6) * rt.out +
+            (r.cache_read_tokens / 1e6) * rt.in * 0.1;
+          cur.input += r.input_tokens;
+          cur.output += r.output_tokens;
+          cur.cacheRead += r.cache_read_tokens;
+          cur.calls += 1;
+          cur.cost += cost;
+          totalCost += cost;
+          byUser.set(r.user_id, cur);
+        }
+        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        const emailById = new Map(list.users.map((u) => [u.id, u.email ?? '']));
+        const users = Array.from(byUser.entries())
+          .map(([userId, v]) => ({
+            userId,
+            email: emailById.get(userId) ?? '(deleted)',
+            calls: v.calls,
+            inputTokens: v.input,
+            outputTokens: v.output,
+            cacheReadTokens: v.cacheRead,
+            estCostUsd: Math.round(v.cost * 100) / 100,
+          }))
+          .sort((a, b) => b.estCostUsd - a.estCostUsd);
+        return json({ users, totalEstCostUsd: Math.round(totalCost * 100) / 100 });
+      }
+
+      case 'ai_balance': {
+        // Best-effort. Deepgram exposes balances (needs a scoped key);
+        // Anthropic has no public balance endpoint, so we report usage cost.
+        const out: { deepgram: string | null; note: string } = {
+          deepgram: null,
+          note: 'Anthropic exposes no balance API — see the token-cost estimate above. Deepgram balance requires a key with balances:read.',
+        };
+        const dg = Deno.env.get('DEEPGRAM_API_KEY');
+        if (dg) {
+          try {
+            const pr = await fetch('https://api.deepgram.com/v1/projects', { headers: { Authorization: `Token ${dg}` } });
+            if (pr.ok) {
+              const pj = await pr.json();
+              const pid = pj?.projects?.[0]?.project_id;
+              if (pid) {
+                const br = await fetch(`https://api.deepgram.com/v1/projects/${pid}/balances`, { headers: { Authorization: `Token ${dg}` } });
+                if (br.ok) {
+                  const bj = await br.json();
+                  const bal = bj?.balances?.[0];
+                  if (bal) out.deepgram = `$${Number(bal.amount).toFixed(2)} ${bal.units ?? ''}`.trim();
+                }
+              }
+            }
+          } catch { /* leave null */ }
+        }
+        return json(out);
+      }
+
       default:
         return json({ error: `unknown action: ${action}` }, 400);
     }

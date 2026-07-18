@@ -40,11 +40,22 @@ interface AdminPracticeMember {
 interface AdminPractice {
   id: string;
   name: string;
+  plan: 'basic' | 'pro';
   ownerEmail: string;
   logoUrl: string;
   memberCount: number;
   chartCount: number;
   members: AdminPracticeMember[];
+}
+
+interface AiUsageRow {
+  userId: string;
+  email: string;
+  calls: number;
+  inputTokens: number;
+  outputTokens: number;
+  cacheReadTokens: number;
+  estCostUsd: number;
 }
 
 /** Downscale any image to a ≤600px PNG and return raw base64 (no data:
@@ -121,7 +132,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [notice, setNotice] = React.useState('');
-  const [tab, setTab] = React.useState<'accounts' | 'practices'>('accounts');
+  const [tab, setTab] = React.useState<'accounts' | 'practices' | 'ai'>('accounts');
+  // AI tab state.
+  const [aiModel, setAiModel] = React.useState('');
+  const [aiModels, setAiModels] = React.useState<Array<{ id: string; displayName: string }>>([]);
+  const [aiConfigured, setAiConfigured] = React.useState(false);
+  const [aiUsage, setAiUsage] = React.useState<AiUsageRow[] | null>(null);
+  const [aiTotalCost, setAiTotalCost] = React.useState(0);
+  const [aiBalance, setAiBalance] = React.useState<{ deepgram: string | null; note: string } | null>(null);
   const [practices, setPractices] = React.useState<AdminPractice[] | null>(null);
   const [selectedPracticeId, setSelectedPracticeId] = React.useState<string | null>(null);
   const [practiceRename, setPracticeRename] = React.useState('');
@@ -172,6 +190,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     const t = setTimeout(() => { setNotice(''); setError(''); }, 4500);
     return () => clearTimeout(t);
   }, [notice, error]);
+
+  const loadAi = React.useCallback(async () => {
+    try {
+      const cfg = await adminCall<{ model: string; models: Array<{ id: string; displayName: string }>; configured: boolean }>({ action: 'get_ai_config' });
+      setAiModel(cfg.model);
+      setAiModels(cfg.models ?? []);
+      setAiConfigured(cfg.configured);
+      const usage = await adminCall<{ users: AiUsageRow[]; totalEstCostUsd: number }>({ action: 'ai_usage' });
+      setAiUsage(usage.users ?? []);
+      setAiTotalCost(usage.totalEstCostUsd ?? 0);
+      const bal = await adminCall<{ deepgram: string | null; note: string }>({ action: 'ai_balance' });
+      setAiBalance(bal);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load AI settings.');
+    }
+  }, []);
+  React.useEffect(() => {
+    if (open && tab === 'ai') loadAi();
+  }, [open, tab, loadAi]);
 
   if (!open) return null;
 
@@ -327,6 +364,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
+  const handleSetPlan = (plan: 'basic' | 'pro') => {
+    if (!selectedPractice) return;
+    run(`Plan set to ${plan === 'pro' ? 'Pro' : 'Basic'}.`, async () => {
+      await adminCall({ action: 'set_plan', practiceId: selectedPractice.id, plan });
+      await refresh();
+    });
+  };
+
+  const handleSetModel = (model: string) => {
+    if (!model) return;
+    run('AI model updated.', async () => {
+      await adminCall({ action: 'set_ai_model', model });
+      setAiModel(model);
+    });
+  };
+
   const handleSetPracticeOwner = (userId: string, email: string) => {
     if (!selectedPractice) return;
     if (!window.confirm(`Make ${email} the primary owner of ${selectedPractice.name || 'this practice'}?`)) return;
@@ -394,6 +447,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
               onClick={() => setTab('practices')}
             >
               Practices{practices ? ` (${practices.length})` : ''}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'ai'}
+              className={tab === 'ai' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+              onClick={() => setTab('ai')}
+            >
+              AI
             </button>
           </div>
 
@@ -554,6 +616,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </div>
 
+              {/* Plan (not billed yet — gates AI + storage). */}
+              <div className="admin-panel__plan">
+                <span className="patient-form__label" style={{ marginBottom: 0 }}>Plan</span>
+                <div className="admin-panel__plan-toggle" role="group" aria-label="Practice plan">
+                  {(['basic', 'pro'] as const).map((pl) => (
+                    <button
+                      key={pl}
+                      type="button"
+                      className={selectedPractice.plan === pl ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                      aria-pressed={selectedPractice.plan === pl}
+                      onClick={() => handleSetPlan(pl)}
+                      disabled={busy || selectedPractice.plan === pl}
+                    >
+                      {pl === 'pro' ? 'Pro' : 'Basic'}
+                    </button>
+                  ))}
+                  <span className="admin-panel__plan-note">
+                    Pro adds AI autofill and more image storage.
+                  </span>
+                </div>
+              </div>
+
               {/* Practice logo (the primary owner's logo — the brand on
                   their charts). */}
               <div className="practice-logo-row">
@@ -645,6 +729,77 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 >
                   Delete practice…
                 </button>
+              </div>
+            </section>
+          )}
+
+          {tab === 'ai' && (
+            <section className="admin-panel__ai">
+              {/* Model — chosen live from what the account can use. */}
+              <div className="admin-panel__ai-block">
+                <h3 className="ai-settings-subhead">Extraction model</h3>
+                {!aiConfigured && (
+                  <p className="login-error" role="alert">
+                    ANTHROPIC_API_KEY isn't set as an edge-function secret yet — AI autofill is off until it is.
+                  </p>
+                )}
+                <label className="patient-form__label">
+                  Model used for voice autofill
+                  <select
+                    className="patient-form__input"
+                    value={aiModel}
+                    onChange={(e) => handleSetModel(e.target.value)}
+                    disabled={busy || aiModels.length === 0}
+                  >
+                    {aiModels.length === 0 && <option value={aiModel}>{aiModel || '—'}</option>}
+                    {aiModels.map((m) => (
+                      <option key={m.id} value={m.id}>{m.displayName}</option>
+                    ))}
+                  </select>
+                </label>
+                <p className="patient-form__hint">Applies to every practice. Faster models (Haiku/Sonnet) cost less per call.</p>
+              </div>
+
+              {/* Credit / balance. */}
+              <div className="admin-panel__ai-block">
+                <h3 className="ai-settings-subhead">AI spend</h3>
+                <p className="admin-panel__ai-total">
+                  Estimated Claude spend to date: <strong>${aiTotalCost.toFixed(2)}</strong>
+                </p>
+                {aiBalance?.deepgram && (
+                  <p className="admin-panel__ai-total">Deepgram balance: <strong>{aiBalance.deepgram}</strong></p>
+                )}
+                {aiBalance?.note && <p className="patient-form__hint">{aiBalance.note}</p>}
+              </div>
+
+              {/* Per-user usage. */}
+              <div className="admin-panel__ai-block">
+                <h3 className="ai-settings-subhead">Token usage by user</h3>
+                {aiUsage === null ? (
+                  <p className="chart-library__empty">Loading…</p>
+                ) : aiUsage.length === 0 ? (
+                  <p className="practice-logo-empty">No AI usage recorded yet.</p>
+                ) : (
+                  <table className="admin-panel__usage-table">
+                    <thead>
+                      <tr>
+                        <th>User</th><th>Calls</th><th>Input</th><th>Output</th><th>Cache</th><th>Est. cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {aiUsage.map((u) => (
+                        <tr key={u.userId}>
+                          <td>{u.email}</td>
+                          <td>{u.calls.toLocaleString()}</td>
+                          <td>{u.inputTokens.toLocaleString()}</td>
+                          <td>{u.outputTokens.toLocaleString()}</td>
+                          <td>{u.cacheReadTokens.toLocaleString()}</td>
+                          <td>${u.estCostUsd.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </section>
           )}

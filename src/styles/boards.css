@@ -917,6 +917,29 @@
   background: var(--surface, #fff);
 }
 
+/* Plan toggle in the practice detail. */
+.admin-panel__plan { margin: 0.75rem 0; }
+.admin-panel__plan-toggle { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap; }
+.admin-panel__plan-opt {
+  font: inherit; font-size: 0.85rem; font-weight: 600;
+  padding: 0.35rem 0.9rem; border: 1px solid var(--border-strong, #cbd5e1);
+  border-radius: 999px; background: var(--surface, #fff); color: var(--text-muted, #475569); cursor: pointer;
+}
+.admin-panel__plan-opt--on { background: var(--primary, #0c6b63); border-color: var(--primary, #0c6b63); color: #fff; }
+.admin-panel__plan-opt:disabled { cursor: default; }
+.admin-panel__plan-note { font-size: 0.78rem; color: var(--text-muted, #64748b); }
+
+/* AI tab. */
+.admin-panel__ai { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.5rem; }
+.admin-panel__ai-block { display: flex; flex-direction: column; gap: 0.4rem; }
+.admin-panel__ai-total { margin: 0; font-size: 0.9rem; color: var(--text); }
+.admin-panel__usage-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.admin-panel__usage-table th, .admin-panel__usage-table td {
+  text-align: right; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.admin-panel__usage-table th:first-child, .admin-panel__usage-table td:first-child { text-align: left; }
+.admin-panel__usage-table th { color: var(--text-muted, #64748b); font-weight: 600; }
+
 .admin-panel__tab {
   font: inherit;
   font-size: 0.85rem;
