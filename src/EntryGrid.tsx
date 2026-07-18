@@ -549,19 +549,31 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     <>
                       <span className="entry-grid__patient-sep" aria-hidden="true" />
                       {canSwitch ? (
-                        <select
-                          className="entry-grid__visit-select"
-                          value={chart.cloudChartId}
-                          onChange={(e) => switchVisit(e.target.value)}
-                          aria-label="Switch between this patient's visits"
-                          title="Switch between this patient's visits"
+                        /* Visit history switcher — a pill with a history
+                           icon so it reads as a control, not a date. */
+                        <span
+                          className="entry-grid__visit-switch"
+                          title={`Visit history — ${opts.length} visits. Pick one to view it.`}
                         >
-                          {opts.map((v) => (
-                            <option key={v.id} value={v.id}>
-                              {v.chart_date || 'Undated visit'}
-                            </option>
-                          ))}
-                        </select>
+                          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                            <path
+                              d="M8 2.5a5.5 5.5 0 1 1-5.24 3.83l-1.2.9A.5.5 0 0 1 .5 6.9V3.4a.5.5 0 0 1 .8-.4l2.9 2.17a.5.5 0 0 1-.06.84l-.9.53A4.3 4.3 0 1 0 8 3.7zm-.5 2.2a.6.6 0 0 1 1.2 0v2.9l2.1 1.26a.6.6 0 0 1-.62 1.03L7.8 8.5a.6.6 0 0 1-.3-.52z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                          <select
+                            className="entry-grid__visit-select"
+                            value={chart.cloudChartId}
+                            onChange={(e) => switchVisit(e.target.value)}
+                            aria-label={`Visit history — switch between this patient's ${opts.length} visits`}
+                          >
+                            {opts.map((v, i) => (
+                              <option key={v.id} value={v.id}>
+                                {(v.chart_date || 'Undated visit') + (i === 0 ? ' · latest' : ' · earlier')}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
                       ) : (
                         <span className="entry-grid__patient-meta entry-grid__patient-date">
                           {chart.patientInfo.date}
