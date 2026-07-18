@@ -305,17 +305,16 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
           {groups === null && !error && <div className="chart-library__empty">Loading…</div>}
 
-          {groups !== null && groups.length === 0 && (
+          {/* Only a truly empty library hides the table. A filter (search
+              or Due) that matches nothing keeps the header row visible so
+              its controls — the Due toggle — stay reachable. */}
+          {groups !== null && groups.length === 0 && !query && !dueOnly && (
             <div className="chart-library__empty">
-              {query
-                ? 'No patients match that search.'
-                : dueOnly
-                ? 'No patients are due for a recheck.'
-                : 'No saved charts yet — they save automatically as you chart.'}
+              No saved charts yet — they save automatically as you chart.
             </div>
           )}
 
-          {groups !== null && groups.length > 0 && (
+          {groups !== null && (groups.length > 0 || query || dueOnly) && (
             <div className="chart-library__table" role="table" aria-label="Patients">
               {/* Header uses the exact same row/row-main structure as the
                   data rows so the six columns line up pixel-for-pixel. */}
@@ -341,6 +340,13 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                 </span>
               </div>
               <div className="chart-library__scroll">
+                {groups.length === 0 && (
+                  <div className="chart-library__empty">
+                    {query
+                      ? 'No patients match that search.'
+                      : 'No patients are due for a recheck.'}
+                  </div>
+                )}
                 {groups.map((g) => {
                   const multi = g.visits.length > 1;
                   const isOpen = expanded.has(g.key);
