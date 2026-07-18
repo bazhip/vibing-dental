@@ -1,7 +1,7 @@
 import React from 'react';
 import { Login } from './Login';
 import { cloudEnabled } from '../utils/supabaseClient';
-import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS } from '../constants/plans';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC } from '../constants/plans';
 import {
   DEMO_TEETH_PATHS,
   DEMO_TEETH_VIEWBOX,
@@ -75,7 +75,7 @@ export const Landing: React.FC<LandingProps> = ({
           ToothOps Charting
         </span>
         <nav className="landing__nav">
-          {cloudEnabled && (
+          {cloudEnabled && PRICING_PUBLIC && (
             <button type="button" className="landing__nav-signin" onClick={scrollToPricing}>
               Pricing
             </button>
@@ -132,7 +132,7 @@ export const Landing: React.FC<LandingProps> = ({
                     </button>
                   )}
                   <span className="landing__cta-note">
-                    Plans from $20/mo · {TRIAL_DAYS}-day free trial · cancel anytime
+                    {PRICING_PUBLIC ? `Plans from $20/mo · ${TRIAL_DAYS}-day free trial · cancel anytime` : `${TRIAL_DAYS}-day free trial · cancel anytime`}
                     {onTryFree ? ' · no-account trial PDFs are stamped TRIAL' : ''}
                   </span>
                 </>
@@ -331,7 +331,7 @@ export const Landing: React.FC<LandingProps> = ({
         </section>
 
         {/* ---------------------------------------------------- pricing --- */}
-        {cloudEnabled && (
+        {cloudEnabled && PRICING_PUBLIC && (
           <section className="landing__pricing" id="pricing">
             <h2>Simple monthly pricing</h2>
             <p className="landing__pricing-sub">

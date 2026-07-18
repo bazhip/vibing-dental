@@ -32,6 +32,12 @@ export interface PlanDef {
 
 export const TRIAL_DAYS = 14;
 
+/** Feature flag: show public pricing (the landing page's Pricing nav +
+ *  section and the hero's price note). Billing itself stays live either
+ *  way — signup plan choice and checkout are unaffected. Flip to true
+ *  to put pricing back on the homepage. */
+export const PRICING_PUBLIC = false;
+
 export const CONTACT_EMAIL = 'bazhip@gmail.com';
 
 export const PLANS: PlanDef[] = [
