@@ -13,7 +13,7 @@ import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
-import { VoiceInputButton } from './components/VoiceInputButton';
+import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
@@ -26,7 +26,7 @@ import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
-import type { ChartContext, ChartHandlers } from './utils/aiAutofill';
+import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
 
@@ -106,6 +106,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [editUnlocked, setEditUnlocked] = React.useState(false);
   React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
   const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
+
+  // AI autofill focus: the tooth the AI most recently edited, flashed in
+  // the diagrams/grid. Cleared a few seconds after the last edit.
+  const [aiHighlightTriadan, setAiHighlightTriadan] = React.useState<number | null>(null);
+  const aiHighlightTimer = React.useRef<number | undefined>(undefined);
+  const handleAiActivity = React.useCallback((actions: AiAction[]) => {
+    // Jump to the section of (and highlight the tooth from) the last
+    // action in the batch so the vet watches the chart fill in.
+    for (let i = actions.length - 1; i >= 0; i--) {
+      const f = actionFocus(actions[i]);
+      if (!f) continue;
+      setActiveSection(f.section);
+      if (typeof f.triadan === 'number') {
+        setAiHighlightTriadan(f.triadan);
+        window.clearTimeout(aiHighlightTimer.current);
+        aiHighlightTimer.current = window.setTimeout(() => setAiHighlightTriadan(null), 4000);
+      }
+      break;
+    }
+  }, []);
 
   // First-run walkthrough — auto-shown once per browser for real accounts,
   // and relaunchable from Settings.
@@ -397,6 +417,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <DentalGrid
           toothData={chart.toothData}
           onToothDataChange={chart.setToothDataDirectly}
+          highlightTriadan={aiHighlightTriadan}
           // The grid's "Missing" toggle writes the same pre-surgery marks
           // the Diagnosis diagram edits, so marking a tooth missing in
           // either place crosses out the grid row AND fills the tooth on
@@ -431,6 +452,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onStrokesChange={chart.setPreDiagramStrokes}
               markMode="missing-only"
               defaultTool="comment"
+              highlightTriadan={aiHighlightTriadan}
             />
           </div>
           <aside className="diagram-with-codes__codes">
@@ -457,6 +479,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onStrokesChange={chart.setPostDiagramStrokes}
               lockedTriadans={chart.lockedPostTriadans}
               markMode="extracted-only"
+              highlightTriadan={aiHighlightTriadan}
             />
           </div>
           <aside className="diagram-with-codes__codes">
@@ -653,6 +676,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
+              onActivity={handleAiActivity}
             />
           )}
           <ChartMenu

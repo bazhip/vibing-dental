@@ -14,6 +14,8 @@ interface DentalGridProps {
    *  crossed out, and the leading column's button toggles that mark. */
   toothMarks: ToothMarks;
   onToggleMissing: (triadan: number) => void;
+  /** Tooth row to flash (AI autofill just edited it). */
+  highlightTriadan?: number | null;
 }
 
 /**
@@ -36,6 +38,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   onToothDataChange,
   toothMarks,
   onToggleMissing,
+  highlightTriadan,
 }) => {
   const [containerWidth, setContainerWidth] = useState(0);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -254,9 +257,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             onRowsChange={onToothDataChange}
             rowKeyGetter={(row: ToothData) => row.triadan}
             rowClass={(row: ToothData) =>
-              toothMarks[row.triadan] === 'missing'
-                ? 'dental-grid__row--missing'
-                : undefined
+              [
+                toothMarks[row.triadan] === 'missing' ? 'dental-grid__row--missing' : '',
+                row.triadan === highlightTriadan ? 'dental-grid__row--ai' : '',
+              ].filter(Boolean).join(' ') || undefined
             }
           />
         )}

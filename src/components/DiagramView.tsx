@@ -21,6 +21,8 @@ interface DiagramViewProps {
   markMode?: MarkMode;
   /** Tool selected when the diagram first mounts (default 'mark'). */
   defaultTool?: DiagramTool;
+  /** Tooth to flash (e.g. the one AI autofill just edited). */
+  highlightTriadan?: number | null;
 }
 
 export interface DiagramViewHandle {
@@ -57,6 +59,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   lockedTriadans,
   markMode,
   defaultTool = 'mark',
+  highlightTriadan,
 }, ref) => {
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
@@ -267,6 +270,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           strokeWidth={strokeWidth}
           lockedTriadans={lockedTriadans}
           markMode={markMode}
+          highlightTriadan={highlightTriadan}
         />
       </div>
     </div>
