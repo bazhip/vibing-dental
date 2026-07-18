@@ -864,7 +864,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               key={tooth.triadan}
               className="tooth-group"
               data-mark={mark || 'none'}
-              data-hovered={hoveredTriadan === tooth.triadan ? 'true' : 'false'}
+              // No hover tint while drawing — the crosshair + strokes are
+              // the feedback there, and a tooth highlight is just noise.
+              data-hovered={tool !== 'draw' && hoveredTriadan === tooth.triadan ? 'true' : 'false'}
               // Keyboard path: the diagram is the ONLY place a tooth can
               // be marked extracted, so each tooth is a focusable toggle
               // — pointer users see no difference.

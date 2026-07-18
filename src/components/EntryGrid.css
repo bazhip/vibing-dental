@@ -95,6 +95,34 @@
   font-size: 0.8rem;
 }
 
+/* Visit switcher — reads as the date text but is a real <select> so you
+   can jump between a patient's visits from the topbar. */
+.entry-grid__visit-select {
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.1rem 1.3rem 0.1rem 0.4rem;
+  cursor: pointer;
+  /* Native caret + a hint that it's interactive on hover. */
+  appearance: auto;
+}
+.entry-grid__visit-select:hover {
+  border-color: var(--border-strong, #cbd5e1);
+  color: var(--text);
+}
+.entry-grid__visit-select:focus-visible {
+  outline: 2px solid var(--primary, #0c6b63);
+  outline-offset: 1px;
+}
+@media (max-width: 640px) {
+  .entry-grid__visit-select { display: none; }
+}
+
 .entry-grid__patient-empty {
   font-size: 0.95rem;
   font-weight: 500;
@@ -1009,7 +1037,14 @@
    card below it sticks. */
 .diagram-with-codes__codes > * {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Extend the frame down into the page's trailing space below the
+     diagram (container/card bottom padding) so the sticky card keeps its
+     travel all the way to the last scroll position and never rides up.
+     This lands within existing page height, so it adds no scroll. */
+  bottom: -9rem;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -1023,6 +1058,10 @@
   position: sticky;
   top: calc(var(--topbar-height, 0px) + 0.75rem);
   flex: 0 1 auto;
+  /* Full height (fills to the viewport bottom, no trailing whitespace);
+     the code list scrolls inside. The frame above is extended past the
+     diagram so this never rides up at the end of the scroll. */
+  height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
   max-height: calc(100vh - var(--topbar-height, 0px) - 1.5rem);
   min-height: 0;
   background: white;

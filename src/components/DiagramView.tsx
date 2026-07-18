@@ -178,11 +178,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          {tool === 'comment' && (
-            <button type="button" className="diagram-view__action" onClick={addFreeComment}>
-              + Free comment
-            </button>
-          )}
+          <button type="button" className="diagram-view__action" onClick={addFreeComment}>
+            + Free comment
+          </button>
 
           {/* Text-size picker. Visible whenever the tool isn't Draw — i.e.
               Mark and Comment, since both modes work alongside comment

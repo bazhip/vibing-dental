@@ -142,6 +142,44 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (chart.patientInfo.patientName.trim()) setSaveHint('');
   }, [chart.patientInfo.patientName]);
 
+  // The open patient's other visits, for the topbar date switcher. Loaded
+  // when the active chart changes (open / new visit / new patient) rather
+  // than on every keystroke.
+  const [visits, setVisits] = React.useState<CloudChartMeta[]>([]);
+  React.useEffect(() => {
+    if (!cloud.enabled) { setVisits([]); return; }
+    const num = chart.patientInfo.patientNumber.trim().toLowerCase();
+    const name = chart.patientInfo.patientName.trim().toLowerCase();
+    if (!num && !name) { setVisits([]); return; }
+    const key = num ? `n:${num}` : `p:${name}`;
+    let cancelled = false;
+    cloud.listCharts()
+      .then((all) => {
+        if (cancelled) return;
+        const mine = all
+          .filter((c) => {
+            const n = c.patient_number.trim().toLowerCase();
+            const nm = c.patient_name.trim().toLowerCase();
+            return (n ? `n:${n}` : `p:${nm}`) === key;
+          })
+          .sort((a, b) =>
+            (b.chart_date || '').localeCompare(a.chart_date || '') ||
+            b.updated_at.localeCompare(a.updated_at)
+          );
+        setVisits(mine);
+      })
+      .catch(() => { if (!cancelled) setVisits([]); });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cloud.enabled, chart.cloudChartId]);
+
+  const switchVisit = (id: string) => {
+    if (id === chart.cloudChartId) return;
+    cloud.openChart(id).catch(() => {
+      alert('Could not open that visit — check your connection.');
+    });
+  };
+
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
   // save-page dialog either way.
@@ -462,14 +500,37 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 <span className="entry-grid__patient-meta">
                   {SPECIES_LABELS[chart.species]}
                 </span>
-                {chart.patientInfo.date && (
-                  <>
-                    <span className="entry-grid__patient-sep" aria-hidden="true" />
-                    <span className="entry-grid__patient-meta entry-grid__patient-date">
-                      {chart.patientInfo.date}
-                    </span>
-                  </>
-                )}
+                {chart.patientInfo.date && (() => {
+                  const hasCurrent = visits.some((v) => v.id === chart.cloudChartId);
+                  const opts = hasCurrent
+                    ? visits
+                    : [{ id: chart.cloudChartId, chart_date: chart.patientInfo.date } as CloudChartMeta, ...visits];
+                  const canSwitch = cloud.enabled && opts.length >= 2;
+                  return (
+                    <>
+                      <span className="entry-grid__patient-sep" aria-hidden="true" />
+                      {canSwitch ? (
+                        <select
+                          className="entry-grid__visit-select"
+                          value={chart.cloudChartId}
+                          onChange={(e) => switchVisit(e.target.value)}
+                          aria-label="Switch between this patient's visits"
+                          title="Switch between this patient's visits"
+                        >
+                          {opts.map((v) => (
+                            <option key={v.id} value={v.id}>
+                              {v.chart_date || 'Undated visit'}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className="entry-grid__patient-meta entry-grid__patient-date">
+                          {chart.patientInfo.date}
+                        </span>
+                      )}
+                    </>
+                  );
+                })()}
               </>
             ) : (
               <span className="entry-grid__patient-empty">
