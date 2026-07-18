@@ -157,21 +157,24 @@ export function useProfile(): UseProfileReturn {
         .select('practice_name, doctor_name, logo_path, practice_id')
         .eq('id', userId)
         .maybeSingle();
-      // Logo is shared per practice — prefer the practice's logo, falling
-      // back to any legacy per-user logo.
+      // Logo and NAME are shared per practice — the practice row is the
+      // single source for team members (invited accounts have an empty
+      // per-profile copy), falling back to the profile for solo users.
       let effectiveLogoPath = data?.logo_path ?? '';
+      let effectivePracticeName = data?.practice_name ?? '';
       const pid = data?.practice_id ?? '';
       let practicePlan: PracticePlan = 'basic';
       if (pid) {
-        const { data: prac } = await supabase.from('practices').select('logo_path, plan').eq('id', pid).maybeSingle();
+        const { data: prac } = await supabase.from('practices').select('logo_path, plan, name').eq('id', pid).maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
+        if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
         if (prac?.plan === 'pro') practicePlan = 'pro';
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
         if (data) {
           setProfile({
-            practiceName: data.practice_name ?? '',
+            practiceName: effectivePracticeName,
             doctorName: data.doctor_name ?? '',
           });
           setLogoUrl(signedUrl);
@@ -198,6 +201,13 @@ export function useProfile(): UseProfileReturn {
       doctor_name: next.doctorName,
     });
     if (error) throw new Error(error.message);
+    // The shared practice name lives on the practice row — renaming is
+    // owner-only (the UI gates it, and practices RLS only lets owners
+    // write, so a member's attempt is a silent no-op).
+    const pid = await myPracticeId(userId);
+    if (pid && next.practiceName.trim()) {
+      await supabase.from('practices').update({ name: next.practiceName.trim() }).eq('id', pid);
+    }
   }, []);
 
   const uploadLogo = React.useCallback(async (file: File): Promise<void> => {

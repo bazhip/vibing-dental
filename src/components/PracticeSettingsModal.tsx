@@ -142,6 +142,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   };
 
   const isOwner = team.role === 'owner';
+  // Renaming the practice writes practices.name, which RLS restricts to
+  // the PRIMARY owner — gate the field the same way. Solo accounts (no
+  // practice yet) edit their own profile copy freely.
+  const isPrimaryOwner = team.members.some((m) => m.isYou && m.isPrimaryOwner);
+  const canRename = !team.loaded || !team.practice || isPrimaryOwner;
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Practice">
@@ -165,8 +170,14 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 value={practiceName}
                 onChange={(e) => setPracticeName(e.target.value)}
                 placeholder="Shown in the app and on every chart"
+                disabled={!canRename}
               />
             </label>
+            {!canRename && (
+              <p className="patient-form__hint">
+                The practice name is shared by the whole team — only the primary owner can change it.
+              </p>
+            )}
           </section>
 
           {/* ---- Logo --------------------------------------------------- */}
