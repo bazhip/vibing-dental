@@ -20,14 +20,32 @@ export interface ChartSection {
 interface LayoutProps {
   sections: ChartSection[];
   defaultActiveId?: string;
+  /** Controlled active section — when set, the parent owns navigation
+   *  (so it can jump the user to a section, e.g. on a blocked save). */
+  activeId?: string;
+  onActiveChange?: (id: string) => void;
 }
 
-export const SidebarLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId }) => {
-  const initial = defaultActiveId ?? sections[0]?.id;
-  const [active, setActive] = React.useState(initial);
+export const SidebarLayout: React.FC<LayoutProps> = ({
+  sections,
+  defaultActiveId,
+  activeId,
+  onActiveChange,
+}) => {
+  const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
+  const [internal, setInternal] = React.useState(initial);
+  // Follow the controlled value when the parent drives it.
+  React.useEffect(() => {
+    if (activeId !== undefined) setInternal(activeId);
+  }, [activeId]);
+  const active = activeId ?? internal;
+  const choose = (id: string) => {
+    setInternal(id);
+    onActiveChange?.(id);
+  };
   return (
     <div className="sidebar-layout">
-      <MobileSectionMenu sections={sections} activeId={active} onSelect={setActive} />
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
       <nav className="sidebar-layout__nav" role="tablist">
         {sections.map((s, i) => (
           <button
@@ -36,7 +54,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({ sections, defaultActiveId
             role="tab"
             aria-selected={s.id === active}
             className={`sidebar-layout__nav-item${s.id === active ? ' sidebar-layout__nav-item--active' : ''}`}
-            onClick={() => setActive(s.id)}
+            onClick={() => choose(s.id)}
           >
             <span className="sidebar-layout__nav-num">{String(i + 1).padStart(2, '0')}</span>
             <span className="sidebar-layout__nav-label">{s.label}</span>

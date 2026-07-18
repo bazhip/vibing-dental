@@ -105,9 +105,13 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                   type="email"
                   className="patient-form__input"
                   value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                  placeholder="owner@example.com"
+                  readOnly
+                  aria-readonly="true"
+                  title="Reminders go to the owner email saved on this chart. Edit it on the chart to change it."
                 />
+                <span className="patient-form__hint">
+                  Goes to the owner email on this chart. To change it, edit the chart's owner email.
+                </span>
               </label>
               <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
                 Subject

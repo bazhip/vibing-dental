@@ -94,6 +94,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
+  // Which chart section is showing (controlled so a blocked save can jump
+  // the user to Patient).
+  const [activeSection, setActiveSection] = React.useState('patient');
+  // Inline reason a save was blocked (e.g. missing patient name).
+  const [saveHint, setSaveHint] = React.useState('');
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
@@ -119,13 +124,31 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return () => ro.disconnect();
   }, []);
 
+  // Single save gate for the button, ⌘S, and retry: a chart with no
+  // patient name can't be found again in My charts (the library groups by
+  // number-else-name), so require one before it reaches the cloud.
+  const attemptSave = () => {
+    if (!cloud.enabled) return;
+    if (!chart.patientInfo.patientName.trim()) {
+      setSaveHint('Add a patient name before saving — it’s how you’ll find this chart again.');
+      setActiveSection('patient');
+      return;
+    }
+    setSaveHint('');
+    cloud.saveNow().catch(() => {});
+  };
+  // Clear the hint the moment a name exists.
+  React.useEffect(() => {
+    if (chart.patientInfo.patientName.trim()) setSaveHint('');
+  }, [chart.patientInfo.patientName]);
+
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
   // save-page dialog either way.
   const saveShortcutRef = React.useRef<() => void>(() => {});
   saveShortcutRef.current = () => {
     if (cloud.enabled && cloud.dirty && cloud.status !== 'saving') {
-      cloud.saveNow().catch(() => {});
+      attemptSave();
     }
   };
   React.useEffect(() => {
@@ -488,7 +511,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : cloud.status === 'saved'
                 ? 'Chart saved'
                 : cloud.status === 'error'
-                ? 'Chart not saved'
+                ? cloud.saveError || 'Chart not saved'
                 : ''}
             </span>
           )}
@@ -500,19 +523,31 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>
           )}
           {cloud.enabled && cloud.status === 'error' && (
-            <button
-              type="button"
-              className="save-status save-status--error"
-              onClick={() => cloud.saveNow().catch(() => {})}
-            >
-              Not saved — retry
-            </button>
+            <span className="save-status-error-wrap">
+              <button
+                type="button"
+                className="save-status save-status--error"
+                onClick={attemptSave}
+                title={cloud.saveError || 'Retry saving this chart'}
+              >
+                Not saved — retry
+              </button>
+              {cloud.saveError && (
+                <span className="save-status__detail">{cloud.saveError}</span>
+              )}
+            </span>
+          )}
+          {cloud.enabled && saveHint && cloud.status !== 'error' && (
+            <span className="save-status-error-wrap" role="alert">
+              <span className="save-status save-status--error">Not saved</span>
+              <span className="save-status__detail">{saveHint}</span>
+            </span>
           )}
           {cloud.enabled && cloud.status !== 'saving' && cloud.status !== 'error' && cloud.dirty && (
             <button
               type="button"
               className="save-status save-status--manual"
-              onClick={() => cloud.saveNow().catch(() => {})}
+              onClick={attemptSave}
               title="Save this chart to the cloud (⌘S)"
             >
               ● Save chart
@@ -635,7 +670,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           if (!allow) e.preventDefault();
         }}
       >
-        <SidebarLayout sections={sections} />
+        <SidebarLayout
+          sections={sections}
+          activeId={activeSection}
+          onActiveChange={setActiveSection}
+        />
       </form>
 
       <button

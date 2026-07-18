@@ -39,13 +39,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           Both pairs are kept on PatientInfo so values survive a logo flip. */}
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Patient Name
+          <span>Patient Name <span className="patient-form__req" aria-hidden="true">*</span></span>
           <input
             type="text"
             className="patient-form__input"
             placeholder="Enter patient name"
             value={patientInfo.patientName}
             onChange={handleInputChange('patientName')}
+            required
+            aria-required="true"
           />
         </label>
 

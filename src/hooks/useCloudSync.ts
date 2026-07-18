@@ -34,6 +34,8 @@ export interface UseCloudSyncReturn {
   enabled: boolean;
   /** 'idle' | 'saving' | 'saved' | 'error'. */
   status: 'idle' | 'saving' | 'saved' | 'error';
+  /** Plain-language reason the last save failed ('' when none). */
+  saveError: string;
   /** True when the working chart has content the cloud hasn't stored. */
   dirty: boolean;
   /** Save the current chart to the cloud now. */
@@ -63,6 +65,26 @@ function hasContent(s: ChartSnapshot): boolean {
   return false;
 }
 
+/** Turn a raw Supabase/network failure into something a vet can act on.
+ *  The categories map to the real recovery step, not the internal cause. */
+function describeSaveError(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err ?? '');
+  const code = (err as { code?: string } | null)?.code ?? '';
+  if (/signed out|session|jwt|token|not authenticated|401/i.test(msg)) {
+    return 'Your session expired. Sign in again, then save — your chart is still here on this device.';
+  }
+  if (code === '42501' || /row-level security|permission denied|not authorized|403/i.test(msg)) {
+    return "This chart couldn't be saved to your account. Contact your practice owner if this keeps happening.";
+  }
+  if (code === '54000' || /quota|payload|too large|entity too large|413/i.test(msg)) {
+    return 'This chart is too large to save (usually too many or too big images). Remove an attachment and retry.';
+  }
+  if (/failed to fetch|network|timeout|timed out|connection|offline|econn/i.test(msg)) {
+    return "Couldn't reach the server. Check your connection and retry — your chart is safe on this device.";
+  }
+  return `Save failed: ${msg || 'unknown error'}. Your chart is safe on this device — retry in a moment.`;
+}
+
 /** Cheap stable hash (djb2) — identifies the last-cloud-saved snapshot so
  *  "unsaved changes" survives a reload without storing a second full copy. */
 function hashStr(s: string): string {
@@ -82,6 +104,7 @@ export function useCloudSync(
   practiceIdRef.current = practiceId;
 
   const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
+  const [saveError, setSaveError] = React.useState('');
   // Hash of the snapshot last written to the cloud (persisted so unsaved
   // changes are still flagged after a reload).
   const [savedHash, setSavedHash] = usePersistedState<string>('chart.savedHash', 1, '');
@@ -120,48 +143,58 @@ export function useCloudSync(
   const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
     if (!supabase) return;
     const client = supabase;
-    const { data: sessionData } = await client.auth.getSession();
-    if (!sessionData.session) {
+    const fail = (err: unknown): never => {
+      setSaveError(describeSaveError(err));
       setStatus('error');
-      throw new Error('Signed out — sign in again to save.');
+      throw err instanceof Error ? err : new Error(String(err));
+    };
+    try {
+      const { data: sessionData } = await client.auth.getSession();
+      if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
+      const snap: ChartSnapshot = JSON.parse(json);
+      const row = (rowId: string) => ({
+        id: rowId,
+        patient_name: snap.patientInfo.patientName,
+        patient_number: snap.patientInfo.patientNumber,
+        owner_name: snap.patientInfo.ownerName ?? '',
+        owner_phone: snap.patientInfo.ownerPhone ?? '',
+        owner_email: snap.patientInfo.ownerEmail ?? '',
+        species: snap.species,
+        chart_date: snap.patientInfo.date,
+        recall_date: snap.patientInfo.recallDate ?? '',
+        practice_id: practiceIdRef.current || null,
+        data: snap,
+      });
+      setStatus('saving');
+      setSaveError('');
+      const { error } = await client.from('charts').upsert(row(id));
+      if (!error) {
+        setSavedHash(hashStr(json));
+        setStatus('saved');
+        return;
+      }
+      // A refused save usually means the row id belongs to another account
+      // (stale localStorage after switching users) — RLS blocks the update.
+      // Fork: mint a fresh id owned by this account and retry.
+      const refused =
+        error.code === '42501' ||
+        /row-level security|permission denied|duplicate key/i.test(error.message);
+      if (refused) {
+        const freshId = resetIdRef.current();
+        const { error: retryError } = await client.from('charts').upsert(row(freshId));
+        if (retryError) fail(retryError);
+        setSavedHash(hashStr(json));
+        setStatus('saved');
+        return;
+      }
+      fail(error);
+    } catch (err) {
+      // Network/parse rejections land here (supabase-js throws these rather
+      // than returning {error}); categorize the same way.
+      if (status !== 'error') setSaveError(describeSaveError(err));
+      setStatus('error');
+      throw err;
     }
-    const snap: ChartSnapshot = JSON.parse(json);
-    const row = (rowId: string) => ({
-      id: rowId,
-      patient_name: snap.patientInfo.patientName,
-      patient_number: snap.patientInfo.patientNumber,
-      owner_name: snap.patientInfo.ownerName ?? '',
-      owner_phone: snap.patientInfo.ownerPhone ?? '',
-      owner_email: snap.patientInfo.ownerEmail ?? '',
-      species: snap.species,
-      chart_date: snap.patientInfo.date,
-      recall_date: snap.patientInfo.recallDate ?? '',
-      practice_id: practiceIdRef.current || null,
-      data: snap,
-    });
-    setStatus('saving');
-    const { error } = await client.from('charts').upsert(row(id));
-    if (!error) {
-      setSavedHash(hashStr(json));
-      setStatus('saved');
-      return;
-    }
-    // A refused save usually means the row id belongs to another account
-    // (stale localStorage after switching users) — RLS blocks the update.
-    // Fork: mint a fresh id owned by this account and retry.
-    const refused =
-      error.code === '42501' ||
-      /row-level security|permission denied|duplicate key/i.test(error.message);
-    if (refused) {
-      const freshId = resetIdRef.current();
-      const { error: retryError } = await client.from('charts').upsert(row(freshId));
-      if (!retryError) setSavedHash(hashStr(json));
-      setStatus(retryError ? 'error' : 'saved');
-      if (retryError) throw new Error(retryError.message);
-      return;
-    }
-    setStatus('error');
-    throw new Error(error.message);
     // setSavedHash identity is stable (usePersistedState) — safe to omit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -206,6 +239,8 @@ export function useCloudSync(
     if (error) throw new Error(error.message);
     baselineNext.current = true; // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
+    setStatus('idle');
+    setSaveError('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -235,6 +270,7 @@ export function useCloudSync(
   return {
     enabled: on,
     status,
+    saveError,
     dirty,
     saveNow,
     listCharts,

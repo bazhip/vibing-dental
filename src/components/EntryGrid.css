@@ -365,6 +365,17 @@
   font-size: 0.95rem;
 }
 
+.patient-form__req {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.patient-form__hint {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 .patient-form__input,
 .patient-form__textarea {
   padding: 0.6rem 0.85rem;
@@ -2097,6 +2108,26 @@ button.save-status--error {
   border: none;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* Failed-save detail: the plain-language reason + recovery step, shown
+   next to the retry button. Capped so it wraps instead of shoving the
+   topbar; hidden on phones (the button's title + the SR live region
+   still carry it) to protect the cramped mobile topbar. */
+.save-status-error-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.save-status__detail {
+  font-size: 0.72rem;
+  color: var(--danger);
+  max-width: 22rem;
+  line-height: 1.25;
+}
+@media (max-width: 900px) {
+  .save-status__detail { display: none; }
 }
 
 /* Images & radiographs section */
