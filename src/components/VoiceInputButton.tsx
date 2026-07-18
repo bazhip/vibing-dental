@@ -224,7 +224,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
                 <li>Press <strong>Stop</strong> (same button) when you’re done.</li>
               </ul>
-              <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 (high accuracy + speaker labels)' : 'your browser’s speech recognition'}.</p>
+              <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 Medical, tuned for clinical terms + speaker labels' : 'your browser’s speech recognition'}.</p>
             </div>
             <footer className="ai-settings-footer">
               <button type="button" className="diagram-view__action" onClick={() => setIntroOpen(false)}>Cancel</button>
