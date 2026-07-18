@@ -725,15 +725,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 Editing a saved chart — saving <strong>overwrites</strong> it.
                 {cloud.status === 'saving' ? ' Saving…' : cloud.status === 'saved' || !cloud.dirty ? ' All changes saved.' : ' Unsaved changes.'}
               </span>
-              <button
-                type="button"
-                className="entry-grid__button entry-grid__button--topbar"
-                onClick={attemptSave}
-                disabled={!cloud.dirty || cloud.status === 'saving'}
-                title="Overwrite the saved chart (⌘S)"
-              >
-                {cloud.status === 'saving' ? 'Saving…' : 'Save changes'}
-              </button>
+              {/* Only offer the save while there's something to save — a
+                  permanently visible (if disabled) button read as a nag. */}
+              {(cloud.dirty || cloud.status === 'saving') && (
+                <button
+                  type="button"
+                  className="entry-grid__button entry-grid__button--topbar"
+                  onClick={attemptSave}
+                  disabled={!cloud.dirty || cloud.status === 'saving'}
+                  title="Overwrite the saved chart (⌘S)"
+                >
+                  {cloud.status === 'saving' ? 'Saving…' : 'Save changes'}
+                </button>
+              )}
             </>
           )}
           {cloud.status === 'error' && cloud.saveError && (
