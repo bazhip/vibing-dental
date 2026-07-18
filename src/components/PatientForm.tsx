@@ -170,15 +170,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             role="radiogroup"
             aria-labelledby="species-group-label"
           >
-            <button
-              type="button"
-              role="radio"
-              aria-checked={base === 'feline'}
-              className={`species-tab ${base === 'feline' ? 'species-tab--active' : ''}`}
-              onClick={() => handleBaseChange('feline')}
-            >
-              Feline
-            </button>
+            {/* Canine first — it's also the default species. */}
             <button
               type="button"
               role="radio"
@@ -187,6 +179,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               onClick={() => handleBaseChange('canine')}
             >
               Canine
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={base === 'feline'}
+              className={`species-tab ${base === 'feline' ? 'species-tab--active' : ''}`}
+              onClick={() => handleBaseChange('feline')}
+            >
+              Feline
             </button>
           </div>
         </div>

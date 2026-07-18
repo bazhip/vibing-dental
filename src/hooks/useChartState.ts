@@ -193,7 +193,7 @@ export function useChartState(): UseChartStateReturn {
     })
   );
 
-  const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'feline');
+  const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'canine');
   const [logo, setLogo]       = usePersistedState<Logo>('chart.logo', 1, 'socal');
 
   // Tooth grid lives inside `useDentalData` (it owns the update helpers),
