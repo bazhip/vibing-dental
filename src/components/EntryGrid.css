@@ -739,6 +739,14 @@
   padding: 0.8rem 0.5rem;
 }
 
+/* The columns can end short of the container's right edge, so the
+   container's rounded clip never reaches the teal header — round the
+   last header cell itself to match the MISSING corner on the left. */
+.dental-grid .rdg-header-row .rdg-cell:last-child {
+  border-top-right-radius: 12px;
+  border-right: none;
+}
+
 .dental-grid .rdg-cell {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
