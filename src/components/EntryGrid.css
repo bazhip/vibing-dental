@@ -1418,7 +1418,13 @@
 .tooth-diagram-wrapper {
   position: relative;
   width: 100%;
-  max-width: 1200px;
+  /* Cap the width so the aspect-driven height fits the viewport without
+     scrolling to reach lower teeth. The SVG stays width:100% of the
+     wrapper (so the comment overlay stays aligned); we just shrink the
+     wrapper. The multiplier ≈ the diagram's width:height aspect, kept a
+     touch generous so it's the binding constraint on short screens. */
+  max-width: min(1100px, calc((100vh - var(--topbar-height, 64px) - 16.5rem) * 0.85));
+  margin-inline: auto;
   background: white;
   border: 1px solid var(--border);
   border-radius: 12px;
