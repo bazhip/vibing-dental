@@ -1,7 +1,7 @@
 import React from 'react';
 import { Login } from './Login';
 import { cloudEnabled } from '../utils/supabaseClient';
-import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC } from '../constants/plans';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC, PAID_SIGNUP } from '../constants/plans';
 import {
   DEMO_TEETH_PATHS,
   DEMO_TEETH_VIEWBOX,
@@ -124,7 +124,7 @@ export const Landing: React.FC<LandingProps> = ({
               ) : cloudEnabled ? (
                 <>
                   <button type="button" className="landing__cta" onClick={() => openSignup()}>
-                    Start your {TRIAL_DAYS}-day free trial
+                    {PAID_SIGNUP ? `Start your ${TRIAL_DAYS}-day free trial` : 'Create your free account'}
                   </button>
                   {onTryFree && (
                     <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
@@ -132,7 +132,9 @@ export const Landing: React.FC<LandingProps> = ({
                     </button>
                   )}
                   <span className="landing__cta-note">
-                    {PRICING_PUBLIC ? `Plans from $20/mo · ${TRIAL_DAYS}-day free trial · cancel anytime` : `${TRIAL_DAYS}-day free trial · cancel anytime`}
+                    {PAID_SIGNUP
+                      ? (PRICING_PUBLIC ? `Plans from $20/mo · ${TRIAL_DAYS}-day free trial · cancel anytime` : `${TRIAL_DAYS}-day free trial · cancel anytime`)
+                      : 'Free plan · no card required'}
                     {onTryFree ? ' · no-account trial PDFs are stamped TRIAL' : ''}
                   </span>
                 </>
@@ -404,7 +406,7 @@ export const Landing: React.FC<LandingProps> = ({
             </button>
           ) : cloudEnabled ? (
             <button type="button" className="landing__cta" onClick={() => openSignup()}>
-              Start your {TRIAL_DAYS}-day free trial
+              {PAID_SIGNUP ? `Start your ${TRIAL_DAYS}-day free trial` : 'Create your free account'}
             </button>
           ) : (
             <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>

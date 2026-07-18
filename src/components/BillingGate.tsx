@@ -1,6 +1,6 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
-import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey } from '../constants/plans';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey, PAID_SIGNUP } from '../constants/plans';
 import {
   BillingInfo,
   ACCESS_STATUSES,
@@ -135,6 +135,13 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   if (!info || isAdmin === null) return null;
 
   if (ACCESS_STATUSES.includes(info.status)) {
+    return <>{children}</>;
+  }
+
+  // Paid signup is off: never-subscribed accounts ARE the free plan —
+  // straight in (single-user + no-image limits come from useProfile).
+  // Lapsed paid subscriptions still hit the recovery paths below.
+  if (!PAID_SIGNUP && info.status === 'none') {
     return <>{children}</>;
   }
 

@@ -73,13 +73,23 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
     <div className="patient-form">
       <div className="patient-form__header">
         <h2 className="patient-form__section-title">Images &amp; Radiographs</h2>
-        {store.loaded && (
+        {store.loaded && store.maxImages > 0 && (
           <span className="patient-form__hint">
             {store.items.length} of {store.maxImages} images
           </span>
         )}
       </div>
 
+      {/* Zero-image plans (the free tier) get a plain explanation instead
+          of a dead uploader. Existing images (e.g. from a lapsed paid
+          plan) still render below. */}
+      {store.maxImages === 0 && (
+        <p className="patient-form__hint">
+          Photo &amp; radiograph uploads aren't included in the free plan.
+        </p>
+      )}
+
+      {store.maxImages > 0 && (
       <div className="imaging__uploader">
         <div className="imaging__kind" role="radiogroup" aria-label="Image type">
           <label className={kind === 'photo' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
@@ -116,15 +126,18 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
           style={{ display: 'none' }}
         />
       </div>
+      )}
 
       {error && <div className="login-error" role="alert">{error}</div>}
 
       {!store.loaded ? (
         <p className="practice-logo-empty">Loading images…</p>
       ) : store.items.length === 0 ? (
-        <p className="practice-logo-empty">
-          No images yet. Add intraoral photos or dental radiographs above.
-        </p>
+        store.maxImages > 0 ? (
+          <p className="practice-logo-empty">
+            No images yet. Add intraoral photos or dental radiographs above.
+          </p>
+        ) : null
       ) : (
         <ul className="imaging__grid">
           {store.items.map((a) => (

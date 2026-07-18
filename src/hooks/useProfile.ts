@@ -15,11 +15,14 @@ export interface PracticeProfile {
   doctorName: string;
 }
 
-export type PracticePlan = 'basic' | 'pro';
+export type PracticePlan = 'free' | 'basic' | 'pro';
 
 /** Per-plan limits. Central so the whole app agrees; when a tenant needs
- *  a custom cap these become columns on `practices`. */
+ *  a custom cap these become columns on `practices`. 'free' is the
+ *  unpaid tier (single user, no image uploads) — any account without a
+ *  live/comped subscription resolves to it. */
 export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean }> = {
+  free: { maxImages: 0, aiAutofill: false },
   basic: { maxImages: 30, aiAutofill: false },
   pro: { maxImages: 100, aiAutofill: true },
 };
@@ -163,12 +166,20 @@ export function useProfile(): UseProfileReturn {
       let effectiveLogoPath = data?.logo_path ?? '';
       let effectivePracticeName = data?.practice_name ?? '';
       const pid = data?.practice_id ?? '';
-      let practicePlan: PracticePlan = 'basic';
+      // No practice = never subscribed = the free tier. Practices only
+      // get basic/pro features while their subscription is alive (or
+      // comped/grandfathered) — a lapsed or never-started one is free.
+      let practicePlan: PracticePlan = 'free';
       if (pid) {
-        const { data: prac } = await supabase.from('practices').select('logo_path, plan, name').eq('id', pid).maybeSingle();
+        const { data: prac } = await supabase
+          .from('practices')
+          .select('logo_path, plan, name, subscription_status')
+          .eq('id', pid)
+          .maybeSingle();
         if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
         if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
-        if (prac?.plan === 'pro') practicePlan = 'pro';
+        const paidStatus = ['active', 'trialing', 'comped', 'past_due'].includes(prac?.subscription_status ?? '');
+        if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {

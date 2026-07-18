@@ -33,10 +33,16 @@ export interface PlanDef {
 export const TRIAL_DAYS = 14;
 
 /** Feature flag: show public pricing (the landing page's Pricing nav +
- *  section and the hero's price note). Billing itself stays live either
- *  way — signup plan choice and checkout are unaffected. Flip to true
- *  to put pricing back on the homepage. */
+ *  section and the hero's price note). Flip to true to put pricing back
+ *  on the homepage. */
 export const PRICING_PUBLIC = false;
+
+/** Feature flag: paid signup. While false, new accounts land on the FREE
+ *  plan (single user, no image uploads) — signup hides the plan pickers
+ *  and the BillingGate lets never-subscribed accounts straight in. All
+ *  the Stripe machinery (checkout, webhook, portal, freeze/purge) stays
+ *  live for existing subscriptions; flip to true to resume selling. */
+export const PAID_SIGNUP = false;
 
 export const CONTACT_EMAIL = 'bazhip@gmail.com';
 

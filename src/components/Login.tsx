@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
-import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS } from '../constants/plans';
+import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
 import './Login.css';
 
 interface LoginProps {
@@ -81,8 +81,9 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           data: {
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
-            plan,
-            account_type: accountType,
+            // While paid signup is off, accounts land on the free tier.
+            plan: PAID_SIGNUP ? plan : 'free',
+            account_type: PAID_SIGNUP ? accountType : 'individual',
           },
         },
       });
@@ -105,7 +106,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         onAuthenticate();
       } else {
         // Email confirmation is on — tell them what happens next.
-        setNotice('Check your email to confirm your account, then sign in — your free trial starts there.');
+        setNotice(
+          PAID_SIGNUP
+            ? 'Check your email to confirm your account, then sign in — your free trial starts there.'
+            : 'Check your email to confirm your account, then sign in.'
+        );
         setMode('signin');
       }
       return;
@@ -172,6 +177,15 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 />
               </label>
 
+              {!PAID_SIGNUP && (
+                <span className="login-hint">
+                  Free plan: full charting, diagrams &amp; PDFs for a single user. Image
+                  uploads and team access come with paid plans, later.
+                </span>
+              )}
+
+              {PAID_SIGNUP && (
+              <>
               <fieldset className="login-plan" aria-label="Account type">
                 <legend className="login-plan__legend">Who's charting?</legend>
                 <label className={accountType === 'individual' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
@@ -233,6 +247,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                   </span>
                 )}
               </fieldset>
+              </>
+              )}
             </>
           )}
 
