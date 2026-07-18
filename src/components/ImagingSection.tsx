@@ -19,7 +19,7 @@ interface ImagingSectionProps {
 export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive, practiceId = '' }) => {
   const store = useAttachments(chartId, practiceId);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
-  const [tooth, setTooth] = React.useState('');
+  const [description, setDescription] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
@@ -45,9 +45,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
     setBusy(true);
     setError('');
     try {
-      const t = tooth.trim() ? Number(tooth.trim()) : null;
-      await store.upload(file, kind, Number.isFinite(t as number) ? t : null);
-      setTooth('');
+      await store.upload(file, kind, description);
+      setDescription('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not add that image.');
     } finally {
@@ -87,12 +86,11 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
         </div>
         <input
           type="text"
-          inputMode="numeric"
-          className="patient-form__input imaging__tooth"
-          placeholder="Tooth # (optional)"
-          aria-label="Tooth number (optional)"
-          value={tooth}
-          onChange={(e) => setTooth(e.target.value)}
+          className="patient-form__input imaging__desc"
+          placeholder="Description (optional)"
+          aria-label="Image description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <button
           type="button"
@@ -133,7 +131,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
               <div className="imaging__meta">
                 <span className="imaging__badge">
                   {a.kind === 'xray' ? 'Radiograph' : 'Photo'}
-                  {a.toothTriadan ? ` · ${a.toothTriadan}` : ''}
                 </span>
                 <input
                   type="text"

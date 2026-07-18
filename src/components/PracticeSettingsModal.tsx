@@ -212,46 +212,104 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                         <strong>{m.email}{m.isYou ? ' (you)' : ''}</strong>
                         {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
                       </span>
-                      <span className="team__member-role">{m.role}</span>
+                      {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
+                      <span className="team__member-role">
+                        {m.isPrimaryOwner ? 'Primary owner' : m.role}
+                      </span>
                       {isOwner && !m.isYou && (
-                        <button
-                          type="button"
-                          className="diagram-view__action diagram-view__action--danger"
-                          disabled={teamBusy}
-                          onClick={() =>
-                            window.confirm(`Remove ${m.email}? They keep their own charts.`) &&
-                            runTeam('Member removed.', () => team.removeMember(m.userId))
-                          }
-                        >
-                          Remove
-                        </button>
+                        <span className="team__member-actions">
+                          {m.role === 'member' ? (
+                            <button
+                              type="button"
+                              className="diagram-view__action"
+                              disabled={teamBusy}
+                              onClick={() => runTeam('Now an owner.', () => team.setRole(m.userId, 'owner'))}
+                            >
+                              Make owner
+                            </button>
+                          ) : !m.isPrimaryOwner ? (
+                            <button
+                              type="button"
+                              className="diagram-view__action"
+                              disabled={teamBusy}
+                              onClick={() => runTeam('Now a member.', () => team.setRole(m.userId, 'member'))}
+                            >
+                              Make member
+                            </button>
+                          ) : null}
+                          {!m.isPrimaryOwner && !m.pending && (
+                            <button
+                              type="button"
+                              className="diagram-view__action"
+                              disabled={teamBusy}
+                              onClick={() =>
+                                window.confirm(`Transfer primary ownership of the practice to ${m.email}? You stay an owner.`) &&
+                                runTeam('Ownership transferred.', () => team.transferOwnership(m.userId))
+                              }
+                            >
+                              Transfer ownership
+                            </button>
+                          )}
+                          {!m.isPrimaryOwner && (
+                            <button
+                              type="button"
+                              className="diagram-view__action diagram-view__action--danger"
+                              disabled={teamBusy}
+                              onClick={() =>
+                                window.confirm(`Remove ${m.email}? They keep their own charts.`) &&
+                                runTeam('Member removed.', () => team.removeMember(m.userId))
+                              }
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </span>
                       )}
                     </li>
                   ))}
                 </ul>
                 {isOwner && (
-                  <div className="practice-team__add">
-                    <input
-                      type="email"
-                      className="patient-form__input"
-                      placeholder="Colleague's email (they need an account)"
-                      value={memberEmail}
-                      onChange={(e) => setMemberEmail(e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="diagram-view__action"
-                      disabled={teamBusy || !memberEmail.trim()}
-                      onClick={() =>
-                        runTeam('Colleague added.', async () => {
-                          await team.addMember(memberEmail.trim());
-                          setMemberEmail('');
-                        })
-                      }
-                    >
-                      Add
-                    </button>
-                  </div>
+                  <>
+                    <div className="practice-team__add">
+                      <input
+                        type="email"
+                        className="patient-form__input"
+                        placeholder="Colleague's email"
+                        value={memberEmail}
+                        onChange={(e) => setMemberEmail(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="diagram-view__action"
+                        disabled={teamBusy || !memberEmail.trim()}
+                        onClick={() => {
+                          const email = memberEmail.trim();
+                          setTeamBusy(true);
+                          setTeamError('');
+                          setTeamNote('');
+                          team
+                            .addMember(email)
+                            .then((invited) => {
+                              setTeamNote(
+                                invited
+                                  ? `Invite emailed to ${email} — they set a password and they're in.`
+                                  : 'Colleague added.'
+                              );
+                              setMemberEmail('');
+                            })
+                            .catch((e) =>
+                              setTeamError(e instanceof Error ? e.message : 'Could not add them.')
+                            )
+                            .finally(() => setTeamBusy(false));
+                        }}
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <p className="patient-form__hint">
+                      No account yet? We'll email them an invite to set a password and join.
+                    </p>
+                  </>
                 )}
               </>
             )}

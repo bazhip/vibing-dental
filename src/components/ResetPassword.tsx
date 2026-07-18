@@ -6,14 +6,17 @@ interface ResetPasswordProps {
   /** Called once the new password is set — the recovery session is now a
    *  normal signed-in session. */
   onDone: () => void;
+  /** 'invite' = new teammate activating their account; 'recovery' = a
+   *  password reset. Only changes the copy. */
+  mode?: 'invite' | 'recovery';
 }
 
 /**
- * Shown when the user arrives via a password-recovery email link
- * (Supabase fires PASSWORD_RECOVERY and signs them into a temporary
- * session). One job: set the new password.
+ * Shown when the user arrives via a password-recovery link OR a team
+ * invite link (both establish a temporary session). One job: set the
+ * password, which activates/recovers the account.
  */
-export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone }) => {
+export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 'recovery' }) => {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
@@ -45,8 +48,12 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone }) => {
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <h1>Set a new password</h1>
-          <p>You followed a password reset link — choose a new password.</p>
+          <h1>{mode === 'invite' ? 'Activate your account' : 'Set a new password'}</h1>
+          <p>
+            {mode === 'invite'
+              ? 'You’ve been added to a practice on ToothOps — choose a password to finish.'
+              : 'You followed a password reset link — choose a new password.'}
+          </p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
           <input

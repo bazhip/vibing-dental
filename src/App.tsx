@@ -53,6 +53,12 @@ const App: React.FC = () => {
   const [sessionChecked, setSessionChecked] = useState<boolean>(!cloudEnabled);
   // True when the user arrived via a password-recovery email link.
   const [recovering, setRecovering] = useState(false);
+  // True when the user arrived via a team-invite link (Supabase invite
+  // establishes a session but no password is set yet). Captured from the
+  // URL hash before supabase-js consumes it. Both land on ResetPassword.
+  const [invited, setInvited] = useState<boolean>(
+    () => /[#&]type=(invite|signup)\b/.test(window.location.hash)
+  );
   // No-account trial (persisted so a refresh mid-trial doesn't bounce
   // back to the landing page). Signing in/up ends it.
   const [trialMode, setTrialMode] = useState<boolean>(
@@ -101,10 +107,16 @@ const App: React.FC = () => {
     return null;
   }
 
-  if (recovering) {
+  if (recovering || invited) {
     return (
       <Suspense fallback={null}>
-        <ResetPassword onDone={() => setRecovering(false)} />
+        <ResetPassword
+          mode={invited ? 'invite' : 'recovery'}
+          onDone={() => {
+            setRecovering(false);
+            setInvited(false);
+          }}
+        />
       </Suspense>
     );
   }

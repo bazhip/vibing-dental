@@ -541,8 +541,11 @@
      of stylesheet load order. */
   max-width: 62rem;
   height: min(80vh, 46rem);
-  --lib-cols: minmax(9rem, 1.6fr) minmax(5.5rem, 0.8fr) minmax(7rem, 1fr)
-    minmax(6.5rem, 0.9fr) minmax(10rem, 1.2fr);
+  /* Six columns matching the grouped table: Patient · Patient # ·
+     Species · Visits · Updated · Recall. Header row and each row's
+     open-button share this via --lib-cols so they stay aligned. */
+  --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
+    minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
 }
 
 .chart-library-modal__body {
@@ -592,15 +595,27 @@
   overflow: hidden;
 }
 
-/* Column titles — same treatment as the charting grid's header so the
-   two read as one system. */
+/* The header shares .chart-library__row / __row-main with the data rows
+   (identical grids) so columns align exactly; this only restyles it. */
 .chart-library__head-row {
+  background: var(--primary);
+  border-bottom: none;
+}
+/* Admin tables still use a header that isn't also a data row — give it
+   the grid directly. The chart library's header IS a .chart-library__row
+   and inherits its grid, so it's excluded here. */
+.chart-library__head-row:not(.chart-library__row) {
   display: grid;
   grid-template-columns: var(--lib-cols) 4.5rem;
   gap: 1rem;
   align-items: center;
   padding: 0 0.75rem;
-  background: var(--primary);
+}
+.chart-library__head-main {
+  cursor: default;
+}
+.chart-library__head-main:hover {
+  background: transparent;
 }
 
 .chart-library__head-row [role='columnheader'] {
@@ -712,16 +727,17 @@
 }
 
 @media (max-width: 700px) {
-  /* Phones: drop Species + Chart date; Patient, number, and Updated
-     carry the row. */
+  /* Phones: keep Patient · Patient # · Visits · Updated; drop Species
+     (col 3) and Recall (col 6) to fit. */
   .ai-settings-modal.chart-library-modal {
-    --lib-cols: minmax(7rem, 1.4fr) minmax(4rem, 0.7fr) minmax(7.5rem, 1fr);
+    --lib-cols: minmax(6.5rem, 1.6fr) minmax(3.5rem, 0.7fr)
+      minmax(3.5rem, 0.7fr) minmax(6rem, 1fr);
     height: min(88vh, 46rem);
   }
   .chart-library__cell--species,
-  .chart-library__cell--date,
+  .chart-library__cell--recall,
   .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library__head-row [role='columnheader']:nth-child(4) {
+  .chart-library__head-row [role='columnheader']:nth-child(6) {
     display: none;
   }
 }

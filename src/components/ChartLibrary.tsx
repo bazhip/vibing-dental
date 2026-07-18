@@ -176,15 +176,15 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   };
 
   const recallCell = (recall: string) => {
-    if (!recall) return <span className="chart-library__cell">—</span>;
+    if (!recall) return <span className="chart-library__cell chart-library__cell--recall">—</span>;
     const overdue = recall < today;
     const due = recall <= today;
     return (
       <span
         className={
           due
-            ? `chart-library__cell chart-library__recall--${overdue ? 'overdue' : 'due'}`
-            : 'chart-library__cell'
+            ? `chart-library__cell chart-library__cell--recall chart-library__recall--${overdue ? 'overdue' : 'due'}`
+            : 'chart-library__cell chart-library__cell--recall'
         }
       >
         {recall}
@@ -262,13 +262,18 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
           {groups !== null && groups.length > 0 && (
             <div className="chart-library__table" role="table" aria-label="Patients">
-              <div className="chart-library__head-row" role="row">
-                {sortHeader('patient', 'Patient')}
-                <span role="columnheader">Patient #</span>
-                <span role="columnheader">Species</span>
-                <span role="columnheader">Visits</span>
-                {sortHeader('updated', 'Updated')}
-                {sortHeader('recall', 'Recall')}
+              {/* Header uses the exact same row/row-main structure as the
+                  data rows so the six columns line up pixel-for-pixel. */}
+              <div className="chart-library__row chart-library__head-row" role="row">
+                <div className="chart-library__row-main chart-library__head-main">
+                  {sortHeader('patient', 'Patient')}
+                  <span role="columnheader">Patient #</span>
+                  <span role="columnheader">Species</span>
+                  <span role="columnheader">Visits</span>
+                  {sortHeader('updated', 'Updated')}
+                  {sortHeader('recall', 'Recall')}
+                </div>
+                <span className="chart-library__row-actions" aria-hidden="true" />
               </div>
               <div className="chart-library__scroll">
                 {groups.map((g) => {

@@ -2121,7 +2121,7 @@ button.save-status--error {
   background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 .imaging__kind-opt input { accent-color: var(--primary); }
-.imaging__tooth { max-width: 11rem; }
+.imaging__desc { flex: 1; min-width: 12rem; max-width: 22rem; }
 
 .imaging__grid {
   list-style: none;
@@ -2237,4 +2237,25 @@ button.save-status--error {
 .tooth-tooltip__text {
   fill: #ffffff;
   letter-spacing: 0.02em;
+}
+
+/* Team member rows: allow actions to wrap under the identity on narrow modals */
+.team__member { flex-wrap: wrap; }
+.team__member-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.team__badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.team__badge--pending {
+  color: var(--danger);
+  background: var(--danger-tint);
 }

@@ -27,7 +27,7 @@ export interface UseAttachmentsReturn {
   enabled: boolean;
   loaded: boolean;
   items: Attachment[];
-  upload: (file: File, kind: AttachmentKind, toothTriadan: number | null) => Promise<void>;
+  upload: (file: File, kind: AttachmentKind, caption: string) => Promise<void>;
   updateCaption: (id: string, caption: string) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
@@ -97,7 +97,7 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
   }, [load]);
 
   const upload = React.useCallback(
-    async (file: File, kind: AttachmentKind, toothTriadan: number | null): Promise<void> => {
+    async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
       if (!supabase) throw new Error('Cloud is not configured.');
       if (!ALLOWED.includes(file.type)) {
         throw new Error('Use a PNG, JPEG, or WEBP image.');
@@ -119,7 +119,7 @@ export function useAttachments(chartId: string, practiceId = ''): UseAttachments
         chart_id: chartId,
         path,
         kind,
-        tooth_triadan: toothTriadan,
+        caption: caption.trim(),
         practice_id: practiceIdRef.current || null,
       });
       if (rowErr) throw new Error(rowErr.message);

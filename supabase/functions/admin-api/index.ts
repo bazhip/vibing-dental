@@ -227,14 +227,31 @@ Deno.serve(async (req: Request) => {
       case 'practice_add_member': {
         const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
         const email = (typeof body.email === 'string' ? body.email : '').trim().toLowerCase();
+        const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
         if (!practiceId || !email) return json({ error: 'missing practiceId or email' }, 400);
         const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-        const target = list.users.find((u) => (u.email ?? '').toLowerCase() === email);
-        if (!target) return json({ error: 'No account with that email.' }, 404);
+        let target = list.users.find((u) => (u.email ?? '').toLowerCase() === email);
+        let invited = false;
+        if (!target) {
+          // No account yet — invite them (creates the account + emails a
+          // set-password link).
+          const { data: inv, error: invErr } = await admin.auth.admin.inviteUserByEmail(
+            email,
+            redirectTo ? { redirectTo } : undefined
+          );
+          if (invErr || !inv?.user) return json({ error: `Couldn't send the invite: ${invErr?.message ?? 'unknown'}` }, 502);
+          target = inv.user;
+          invited = true;
+        }
         await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: target.id, role: 'member' });
-        const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
-        if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
-        return json({ ok: true });
+        if (invited) {
+          await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
+          await admin.from('practices').delete().eq('owner', target.id).neq('id', practiceId);
+        } else {
+          const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
+          if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
+        }
+        return json({ ok: true, invited });
       }
 
       default:

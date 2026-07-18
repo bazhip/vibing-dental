@@ -14,11 +14,16 @@ export interface TeamMember {
   doctorName: string;
   role: 'owner' | 'member';
   isYou: boolean;
+  /** Invited but hasn't set a password / confirmed yet. */
+  pending: boolean;
+  /** The practice's primary owner (billing/deletion anchor). */
+  isPrimaryOwner: boolean;
 }
 
 export interface TeamState {
   practice: { id: string; name: string } | null;
   role: 'owner' | 'member' | null;
+  primaryOwnerId: string | null;
   members: TeamMember[];
 }
 
@@ -28,8 +33,11 @@ export interface UseTeamReturn extends TeamState {
   error: string;
   refresh: () => Promise<void>;
   createPractice: (name: string) => Promise<void>;
-  addMember: (email: string) => Promise<void>;
+  /** Returns true when a new account was invited (vs. an existing one added). */
+  addMember: (email: string) => Promise<boolean>;
   removeMember: (userId: string) => Promise<void>;
+  setRole: (userId: string, role: 'owner' | 'member') => Promise<void>;
+  transferOwnership: (userId: string) => Promise<void>;
 }
 
 async function call<T = Record<string, unknown>>(body: object): Promise<T> {
@@ -51,7 +59,7 @@ async function call<T = Record<string, unknown>>(body: object): Promise<T> {
 }
 
 export function useTeam(open: boolean): UseTeamReturn {
-  const [state, setState] = React.useState<TeamState>({ practice: null, role: null, members: [] });
+  const [state, setState] = React.useState<TeamState>({ practice: null, role: null, primaryOwnerId: null, members: [] });
   const [loaded, setLoaded] = React.useState(false);
   const [error, setError] = React.useState('');
 
@@ -59,7 +67,7 @@ export function useTeam(open: boolean): UseTeamReturn {
     setError('');
     try {
       const data = await call<TeamState>({ action: 'get_team' });
-      setState({ practice: data.practice, role: data.role, members: data.members ?? [] });
+      setState({ practice: data.practice, role: data.role, primaryOwnerId: data.primaryOwnerId ?? null, members: data.members ?? [] });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load your team.');
     } finally {
@@ -79,13 +87,26 @@ export function useTeam(open: boolean): UseTeamReturn {
     await refresh();
   }, [refresh]);
 
-  const addMember = React.useCallback(async (email: string) => {
-    await call({ action: 'add_member', email });
+  const addMember = React.useCallback(async (email: string): Promise<boolean> => {
+    // Invited accounts get an email link back to wherever the owner is.
+    const redirectTo = window.location.origin + window.location.pathname;
+    const res = await call<{ invited?: boolean }>({ action: 'add_member', email, redirectTo });
     await refresh();
+    return !!res.invited;
   }, [refresh]);
 
   const removeMember = React.useCallback(async (userId: string) => {
     await call({ action: 'remove_member', userId });
+    await refresh();
+  }, [refresh]);
+
+  const setRole = React.useCallback(async (userId: string, role: 'owner' | 'member') => {
+    await call({ action: 'set_role', userId, role });
+    await refresh();
+  }, [refresh]);
+
+  const transferOwnership = React.useCallback(async (userId: string) => {
+    await call({ action: 'transfer_ownership', userId });
     await refresh();
   }, [refresh]);
 
@@ -98,5 +119,7 @@ export function useTeam(open: boolean): UseTeamReturn {
     createPractice,
     addMember,
     removeMember,
+    setRole,
+    transferOwnership,
   };
 }
