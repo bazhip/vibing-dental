@@ -20,6 +20,8 @@ import { useProfile } from './hooks/useProfile';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
+import { WalkthroughModal } from './components/WalkthroughModal';
+import { readString, writeString } from './utils/storage';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
@@ -104,6 +106,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [editUnlocked, setEditUnlocked] = React.useState(false);
   React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
   const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
+
+  // First-run walkthrough — auto-shown once per browser for real accounts,
+  // and relaunchable from Settings.
+  const [walkthroughOpen, setWalkthroughOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (trial || !profile.loaded) return;
+    if (readString('onboarding.seen', 1, '') === '1') return;
+    writeString('onboarding.seen', 1, '1');
+    setWalkthroughOpen(true);
+  }, [trial, profile.loaded]);
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
@@ -644,6 +656,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             />
           )}
           <ChartMenu
+            onOpenWalkthrough={() => setWalkthroughOpen(true)}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             cloud={
@@ -794,6 +807,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />
         </React.Suspense>
       )}
+
+      <WalkthroughModal
+        open={walkthroughOpen}
+        onClose={() => setWalkthroughOpen(false)}
+        aiEnabled={profile.aiEnabled}
+      />
 
       <PracticeSettingsModal
         open={practiceSettingsOpen}

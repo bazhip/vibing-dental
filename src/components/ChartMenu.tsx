@@ -14,6 +14,8 @@ interface ChartMenuCloud {
  */
 
 interface ChartMenuProps {
+  /** Relaunch the getting-started walkthrough. */
+  onOpenWalkthrough: () => void;
   /** View the landing page without ending the session. */
   onGoHome?: () => void;
   /** Admin panel — present only for the admin account. */
@@ -27,7 +29,7 @@ interface ChartMenuProps {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onGoHome, onOpenAdmin, cloud }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, cloud }) => {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -100,6 +102,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onGoHome, onOpenAdmin, clo
 
           <section className="chart-menu__section">
             <header className="chart-menu__section-head">App</header>
+            {item('Getting started', 'Replay the walkthrough of every part of the app.', onOpenWalkthrough)}
             {onGoHome && item('Homepage', 'View the product page — your chart stays right here.', onGoHome)}
             {cloud && item('Sign out', 'End your session and return to the homepage.', cloud.onSignOut)}
           </section>
