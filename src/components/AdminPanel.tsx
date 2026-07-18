@@ -166,6 +166,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
+  // Auto-dismiss the result banner so it reads as a transient toast.
+  React.useEffect(() => {
+    if (!notice && !error) return;
+    const t = setTimeout(() => { setNotice(''); setError(''); }, 4500);
+    return () => clearTimeout(t);
+  }, [notice, error]);
+
   if (!open) return null;
 
   const pick = (u: AdminUser) => {
@@ -189,13 +196,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       setBusy(false);
     }
   };
-
-  // Auto-dismiss the result banner so it reads as a transient toast.
-  React.useEffect(() => {
-    if (!notice && !error) return;
-    const t = setTimeout(() => { setNotice(''); setError(''); }, 4500);
-    return () => clearTimeout(t);
-  }, [notice, error]);
 
   const handleSetPassword = () => {
     if (!selected) return;
