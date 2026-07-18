@@ -1,4 +1,5 @@
 import type Anthropic from '@anthropic-ai/sdk';
+import { supabase } from './supabaseClient';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import {
   PatientInfo,
@@ -498,15 +499,12 @@ export interface AiAction {
 }
 
 export interface ExtractInput {
-  apiKey: string;
   /** New transcript text since the last extraction. */
   delta: string;
   /** Recent transcript context (last ~60s) for resolving "this one" references.
    *  Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
-  /** Model ID to extract with. Defaults to DEFAULT_MODEL when omitted. */
-  model?: string;
 }
 
 export interface ExtractResult {
@@ -517,20 +515,22 @@ export interface ExtractResult {
 }
 
 /**
- * Extract tool calls from a chunk of transcript. Static prompt is cached
- * via `cache_control` so subsequent chunks pay cache-read pricing. One
- * retry on transient errors.
+ * Extract tool calls from a chunk of transcript. The request is built
+ * here but SENT through the `ai-autofill` edge function, which holds the
+ * Anthropic key server-side, enforces the Pro plan, picks the model, and
+ * logs usage. Static prompt keeps `cache_control` so Anthropic prompt-
+ * caches it. One retry on transient errors.
  */
 export async function extractChartActions(
   input: ExtractInput
 ): Promise<ExtractResult> {
-  const { apiKey, delta, recentContext, context, model } = input;
+  const { delta, recentContext, context } = input;
   const normalizedDelta = normalizeTranscript(delta);
   if (!chunkLooksMedical(normalizedDelta)) {
     return { actions: [], ran: false };
   }
+  if (!supabase) throw new Error('Cloud is not configured.');
   const normalizedContext = recentContext ? normalizeTranscript(recentContext) : '';
-  const client = await createClient(apiKey);
 
   const userText =
     `Current chart state:\n${summarizeChart(context)}\n\n` +
@@ -540,34 +540,42 @@ export async function extractChartActions(
     `New transcript chunk to extract from:\n${normalizedDelta}\n\n` +
     `Emit tool calls only for new information from this chunk. If nothing in this chunk warrants a chart change, return no tool calls.`;
 
-  const send = async () => client.messages.create({
-    model: model || DEFAULT_MODEL,
+  const requestBody = {
     max_tokens: 1024,
     system: [
-      {
-        type: 'text',
-        text: buildStaticSystemPrompt(),
-        cache_control: { type: 'ephemeral' },
-      },
+      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
     ],
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
-  });
+  };
 
-  let response;
+  const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
+    const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });
+    if (error) {
+      let msg = error.message;
+      try {
+        const detail = await (error as { context?: Response }).context?.json();
+        if (detail?.error) msg = detail.error;
+      } catch { /* keep msg */ }
+      throw new Error(msg);
+    }
+    if (data && (data as { error?: string }).error) throw new Error((data as { error: string }).error);
+    return ((data as { content?: Array<Anthropic.ContentBlock> })?.content) ?? [];
+  };
+
+  let content: Array<Anthropic.ContentBlock>;
   try {
-    response = await send();
+    content = await send();
   } catch (err) {
-    // Retry once on transient errors (network blip, rate limit).
     const retryable =
       err instanceof Error && /rate|timeout|network|503|502|429/i.test(err.message);
     if (!retryable) throw err;
     await new Promise((r) => setTimeout(r, 800));
-    response = await send();
+    content = await send();
   }
 
   const actions: AiAction[] = [];
-  for (const block of response.content) {
+  for (const block of content) {
     if (block.type === 'tool_use') {
       actions.push({ name: block.name, input: block.input as Record<string, unknown> });
     }

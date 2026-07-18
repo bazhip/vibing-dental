@@ -13,7 +13,6 @@ import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
-import { AiSettingsModal } from './components/AiSettingsModal';
 import { VoiceInputButton } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -228,7 +227,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // PDF preview modal state.
   const [previewSnapshot, setPreviewSnapshot] = React.useState<ChartSnapshot | null>(null);
   const [previewOpen, setPreviewOpen] = React.useState(false);
-  const [aiSettingsOpen, setAiSettingsOpen] = React.useState(false);
 
   // ----- AI autofill plumbing -------------------------------------------
   // Snapshot of state Claude sees alongside the transcript.
@@ -618,7 +616,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <span className="save-status save-status--manual" title="Autosaves once the patient has a name">
                 Add a patient name to save
               </span>
-            ) : cloud.status === 'saved' || (!cloud.dirty && chart.patientInfo.patientName.trim() !== '') ? (
+            ) : cloud.status === 'saved' ? (
+              // Transient — useCloudSync flips 'saved' back to 'idle' after
+              // ~2.5s, so this chip fades on its own.
               <span className="save-status save-status--saved" aria-hidden="true" title="Autosaved to the cloud">
                 ✓ Saved
               </span>
@@ -634,17 +634,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               My charts
             </button>
           )}
-          {/* AI autofill is a Pro-plan feature. Trial (no account) and
-              Basic practices don't see it. */}
-          {(trial || profile.aiEnabled) && (
+          {/* AI autofill is a Pro-plan feature; the keys live server-side
+              behind JWT-gated edge functions, so trial (no account) and
+              Basic practices don't get it. */}
+          {profile.aiEnabled && (
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
-              onNeedsApiKey={() => setAiSettingsOpen(true)}
             />
           )}
           <ChartMenu
-            onOpenAiSettings={() => setAiSettingsOpen(true)}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             cloud={
@@ -795,11 +794,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />
         </React.Suspense>
       )}
-
-      <AiSettingsModal
-        open={aiSettingsOpen}
-        onClose={() => setAiSettingsOpen(false)}
-      />
 
       <PracticeSettingsModal
         open={practiceSettingsOpen}

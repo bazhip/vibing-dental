@@ -1,5 +1,4 @@
 import React from 'react';
-import { useApiKey, useSelectedModel } from '../hooks/useApiKey';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import {
   extractChartActions,
@@ -24,9 +23,6 @@ import {
 interface VoiceInputButtonProps {
   context: ChartContext;
   handlers: ChartHandlers;
-  /** When the user clicks the mic but no key is configured, open the
-   *  Settings dialog instead. */
-  onNeedsApiKey: () => void;
 }
 
 interface ActivityEntry {
@@ -42,11 +38,8 @@ const CHUNK_INTERVAL_MS = 22_000;
 const RECENT_CONTEXT_MS = 90_000;
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onNeedsApiKey,
+  context, handlers,
 }) => {
-  const { apiKey, hasApiKey } = useApiKey();
-  const { model } = useSelectedModel();
-
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
   const [error, setError] = React.useState<string | null>(null);
@@ -57,10 +50,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   contextRef.current = context;
   const handlersRef = React.useRef(handlers);
   handlersRef.current = handlers;
-  const apiKeyRef = React.useRef(apiKey);
-  apiKeyRef.current = apiKey;
-  const modelRef = React.useRef(model);
-  modelRef.current = model;
 
   // Sequencing: only one chunk in flight at a time. Pending chunks merge.
   const inFlightRef = React.useRef(false);
@@ -105,11 +94,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setActiveChunkCount((c) => c + 1);
     try {
       const result = await extractChartActions({
-        apiKey: apiKeyRef.current,
         delta,
         recentContext,
         context: contextRef.current,
-        model: modelRef.current,
       });
       const applied = applyAiActions(result.actions, handlersRef.current);
       appendActivity(applied);
@@ -159,10 +146,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, [error]);
 
   const handleClick = () => {
-    if (!hasApiKey) {
-      onNeedsApiKey();
-      return;
-    }
     if (!voice.supported) {
       setError('Voice input needs Chrome, Edge, or Safari.');
       return;
@@ -241,7 +224,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         className={className}
         onClick={handleClick}
         aria-pressed={voice.recording}
-        title={hasApiKey ? 'AI autofill — dictate to fill the chart; start/stop recording' : 'Set Claude API key to enable'}
+        title="AI autofill — dictate to fill the chart; start/stop recording"
       >
         {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
         <span className="voice-input__label">{label}</span>

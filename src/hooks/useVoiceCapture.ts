@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDeepgramKey } from './useApiKey';
+import { supabase } from '../utils/supabaseClient';
 import { startDeepgramSession, DeepgramSession } from '../utils/deepgramVoice';
 
 /**
@@ -94,14 +94,15 @@ interface UseVoiceCaptureOptions {
 
 export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceCapture {
   const browserCtor = React.useMemo(getRecognitionCtor, []);
-  const { deepgramKey, hasDeepgramKey } = useDeepgramKey();
-  const provider: VoiceProvider = hasDeepgramKey ? 'deepgram' : 'browser';
-  // Deepgram needs MediaRecorder + getUserMedia; Web Speech needs the
-  // SpeechRecognition constructor. We're "supported" if at least one of
-  // the transports works in this browser.
-  const supported = provider === 'deepgram'
-    ? typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices
-    : browserCtor !== null;
+  // Deepgram (high accuracy + diarization) is preferred when the browser
+  // can capture audio; its key is minted per-session by the backend, so
+  // there's no BYOK. Web Speech is the fallback (and what a failed mint
+  // or a non-Pro/trial account falls back to).
+  const canCaptureAudio = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices;
+  const [provider, setProvider] = React.useState<VoiceProvider>(
+    canCaptureAudio ? 'deepgram' : 'browser'
+  );
+  const supported = canCaptureAudio || browserCtor !== null;
 
   const [recording, setRecording] = React.useState(false);
   const [transcript, setTranscript] = React.useState('');
@@ -206,8 +207,24 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const startDeepgram = React.useCallback(async () => {
     setRecording(true);
+    // Mint a short-lived Deepgram key from the backend (Pro-gated). If it
+    // isn't available (not configured, or a non-Pro/trial caller), fall
+    // back to browser speech recognition.
+    let dgKey = '';
     try {
-      const session = await startDeepgramSession(deepgramKey, {
+      if (!supabase) throw new Error('no cloud');
+      const { data, error } = await supabase.functions.invoke('deepgram-token', { body: {} });
+      if (error || !data?.key) throw new Error(data?.error || error?.message || 'no key');
+      dgKey = data.key as string;
+    } catch {
+      // Silent fallback to the free browser transport.
+      setProvider('browser');
+      setRecording(false);
+      startBrowser();
+      return;
+    }
+    try {
+      const session = await startDeepgramSession(dgKey, {
         onInterim: setInterim,
         onFinal: (seg) => recordSegment(seg),
         onError: (msg) => setError(msg),
@@ -229,7 +246,7 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
       setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
       setRecording(false);
     }
-  }, [deepgramKey, recordSegment, setInterim, handleSessionEnd]);
+  }, [recordSegment, setInterim, handleSessionEnd, startBrowser]);
 
   const start = React.useCallback(() => {
     if (browserRef.current || deepgramRef.current) return;
