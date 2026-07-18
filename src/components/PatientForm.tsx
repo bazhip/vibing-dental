@@ -85,7 +85,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             className="patient-form__input"
             placeholder="Pet owner / client"
             autoComplete="off"
-            value={patientInfo.ownerName}
+            value={patientInfo.ownerName ?? ''}
             onChange={handleInputChange('ownerName')}
           />
         </label>
@@ -96,7 +96,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             className="patient-form__input"
             placeholder="Contact number"
             autoComplete="off"
-            value={patientInfo.ownerPhone}
+            value={patientInfo.ownerPhone ?? ''}
             onChange={handleInputChange('ownerPhone')}
           />
         </label>
@@ -108,7 +108,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             className="patient-form__input"
             placeholder="For recheck reminders"
             autoComplete="off"
-            value={patientInfo.ownerEmail}
+            value={patientInfo.ownerEmail ?? ''}
             onChange={handleInputChange('ownerEmail')}
           />
         </label>
@@ -134,10 +134,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <input
             type="date"
             className="patient-form__input"
-            value={patientInfo.recallDate}
+            value={patientInfo.recallDate ?? ''}
             onChange={handleInputChange('recallDate')}
           />
-          {onSendReminder && patientInfo.ownerEmail.trim() && (
+          {onSendReminder && (patientInfo.ownerEmail ?? '').trim() && (
             <button
               type="button"
               className="diagram-view__action patient-form__reminder-btn"

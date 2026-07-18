@@ -630,10 +630,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           practiceId={profile.practiceId}
           practiceName={profile.practiceName}
           chartId={chart.cloudChartId}
-          toEmail={chart.patientInfo.ownerEmail}
+          toEmail={chart.patientInfo.ownerEmail ?? ''}
           patientName={chart.patientInfo.patientName}
-          ownerName={chart.patientInfo.ownerName}
-          recheckDate={chart.patientInfo.recallDate}
+          ownerName={chart.patientInfo.ownerName ?? ''}
+          recheckDate={chart.patientInfo.recallDate ?? ''}
         />
       )}
 
