@@ -2,6 +2,9 @@ import React from 'react';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useTeam } from '../hooks/useTeam';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { cloudEnabled } from '../utils/supabaseClient';
+import { BillingInfo, fetchBilling, openBillingPortal, changePlan } from '../hooks/useBilling';
+import { PLANS, PlanKey, CONTACT_EMAIL, planKeyFor, planByKey } from '../constants/plans';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -36,6 +39,30 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [teamBusy, setTeamBusy] = React.useState(false);
   const [teamError, setTeamError] = React.useState('');
   const [teamNote, setTeamNote] = React.useState('');
+
+  // Billing state (owner-managed; members just see the plan).
+  const [billing, setBilling] = React.useState<BillingInfo | null>(null);
+  const [billingBusy, setBillingBusy] = React.useState(false);
+  const [billingError, setBillingError] = React.useState('');
+  const [billingNote, setBillingNote] = React.useState('');
+
+  React.useEffect(() => {
+    if (!open || !cloudEnabled) return;
+    let cancelled = false;
+    setBilling(null);
+    setBillingError('');
+    setBillingNote('');
+    fetchBilling()
+      .then((b) => {
+        if (!cancelled) setBilling(b);
+      })
+      .catch((e) => {
+        if (!cancelled) setBillingError(e instanceof Error ? e.message : 'Could not load billing.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
 
   React.useEffect(() => {
     if (open) {
@@ -315,6 +342,102 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             {teamError && <div className="login-error" role="alert">{teamError}</div>}
             {teamNote && <div className="login-notice" role="status">{teamNote}</div>}
           </section>
+
+          {/* ---- Billing ------------------------------------------------- */}
+          {cloudEnabled && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">Billing</h3>
+              {!billing ? (
+                <p className="practice-logo-empty">{billingError || 'Loading billing…'}</p>
+              ) : billing.status === 'comped' ? (
+                <p className="ai-settings-blurb">
+                  This practice has complimentary access — no subscription needed.
+                </p>
+              ) : (
+                <>
+                  <p className="ai-settings-blurb">
+                    <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? 'No plan'}</strong>
+                    {' · '}
+                    {billing.status === 'trialing'
+                      ? `free trial${billing.periodEnd ? ` — first payment ${new Date(billing.periodEnd).toLocaleDateString()}` : ''}`
+                      : billing.status === 'active'
+                      ? `active${billing.periodEnd ? ` — renews ${new Date(billing.periodEnd).toLocaleDateString()}` : ''}`
+                      : billing.status === 'past_due'
+                      ? 'payment failed — update your card'
+                      : billing.status === 'none'
+                      ? 'not subscribed yet'
+                      : billing.status}
+                    {billing.accountType === 'practice' && ` · ${billing.memberCount}/${billing.seats} seats`}
+                  </p>
+                  {billing.role === 'owner' ? (
+                    <>
+                      {billing.hasStripe && (
+                        <div className="practice-team__add">
+                          <select
+                            className="patient-form__input"
+                            value={planKeyFor(billing.accountType, billing.plan)}
+                            disabled={billingBusy}
+                            aria-label="Change plan"
+                            onChange={(e) => {
+                              const next = e.target.value as PlanKey;
+                              const def = planByKey(next);
+                              if (!def) return;
+                              if (!window.confirm(`Switch to ${def.name} at $${def.priceMonthly}/mo? The difference is prorated.`)) return;
+                              setBillingBusy(true);
+                              setBillingError('');
+                              setBillingNote('');
+                              changePlan(next)
+                                .then(() => fetchBilling())
+                                .then((b) => {
+                                  setBilling(b);
+                                  setBillingNote('Plan updated.');
+                                })
+                                .catch((err) => setBillingError(err instanceof Error ? err.message : 'Could not change the plan.'))
+                                .finally(() => setBillingBusy(false));
+                            }}
+                          >
+                            {PLANS.map((p) => (
+                              <option key={p.key} value={p.key}>
+                                {p.name} — ${p.priceMonthly}/mo
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            className="diagram-view__action"
+                            disabled={billingBusy}
+                            onClick={() => {
+                              setBillingBusy(true);
+                              setBillingError('');
+                              openBillingPortal().catch((err) => {
+                                setBillingError(err instanceof Error ? err.message : 'Could not open the billing portal.');
+                                setBillingBusy(false);
+                              });
+                            }}
+                          >
+                            Manage billing
+                          </button>
+                        </div>
+                      )}
+                      <p className="patient-form__hint">
+                        {billing.hasStripe
+                          ? 'Manage billing opens Stripe — card, invoices, and cancellation.'
+                          : 'You’ll be asked to pick a plan when your access needs one.'}
+                        {' '}Need more than 5 seats?{' '}
+                        <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+                      </p>
+                    </>
+                  ) : (
+                    <p className="patient-form__hint">
+                      Billing is managed by {billing.ownerEmail || 'the practice owner'}.
+                    </p>
+                  )}
+                  {billingError && <div className="login-error" role="alert">{billingError}</div>}
+                  {billingNote && <div className="login-notice" role="status">{billingNote}</div>}
+                </>
+              )}
+            </section>
+          )}
 
           {error && <div className="login-error" role="alert">{error}</div>}
         </div>

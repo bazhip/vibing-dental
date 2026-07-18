@@ -198,7 +198,7 @@ Deno.serve(async (req: Request) => {
       case 'list_practices': {
         const { data: pracs } = await admin
           .from('practices')
-          .select('id, name, owner, logo_path, created_at')
+          .select('id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at')
           .order('created_at', { ascending: true });
         const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
         const { data: chartRows } = await admin.from('charts').select('practice_id').not('practice_id', 'is', null).limit(20000);
@@ -235,6 +235,12 @@ Deno.serve(async (req: Request) => {
             memberCount: memberCount.get(p.id) ?? 0,
             chartCount: chartCount.get(p.id) ?? 0,
             members: memberDetails,
+            plan: p.plan === 'pro' ? 'pro' : 'basic',
+            accountType: p.account_type === 'practice' ? 'practice' : 'individual',
+            subscriptionStatus: p.subscription_status ?? 'none',
+            periodEnd: p.billing_period_end ?? null,
+            frozenAt: p.frozen_at ?? null,
+            hasStripe: !!p.stripe_subscription_id,
           });
         }
         return json({ practices });
@@ -358,6 +364,35 @@ Deno.serve(async (req: Request) => {
         const plan = body.plan === 'pro' ? 'pro' : 'basic';
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);
         const { error } = await admin.from('practices').update({ plan }).eq('id', practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      case 'set_billing': {
+        // Admin overrides on the billing columns: flip the account type
+        // (seat limit) or comp a practice (full access, no Stripe).
+        // Practices with a live Stripe subscription are Stripe's to
+        // manage — their status only changes via the webhook.
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const { data: prac } = await admin
+          .from('practices')
+          .select('subscription_status, stripe_subscription_id')
+          .eq('id', practiceId)
+          .maybeSingle();
+        if (!prac) return json({ error: 'practice not found' }, 404);
+        const update: Record<string, unknown> = {};
+        if (body.accountType === 'individual' || body.accountType === 'practice') {
+          update.account_type = body.accountType;
+        }
+        if (typeof body.comped === 'boolean') {
+          if (prac.stripe_subscription_id && ['active', 'trialing', 'past_due'].includes(prac.subscription_status ?? '')) {
+            return json({ error: 'This practice has a live Stripe subscription — cancel it in Stripe (or via the owner\'s billing portal) before comping.' }, 400);
+          }
+          update.subscription_status = body.comped ? 'comped' : 'none';
+        }
+        if (Object.keys(update).length === 0) return json({ error: 'nothing to change' }, 400);
+        const { error } = await admin.from('practices').update(update).eq('id', practiceId);
         if (error) throw error;
         return json({ ok: true });
       }

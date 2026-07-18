@@ -1,6 +1,7 @@
 import React from 'react';
 import { Login } from './Login';
 import { cloudEnabled } from '../utils/supabaseClient';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS } from '../constants/plans';
 import {
   DEMO_TEETH_PATHS,
   DEMO_TEETH_VIEWBOX,
@@ -38,7 +39,17 @@ export const Landing: React.FC<LandingProps> = ({
   onOpenApp,
 }) => {
   const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(initialAuth);
+  // Set when a pricing card's CTA opened the signup — preselects the plan.
+  const [signupPlan, setSignupPlan] = React.useState<PlanKey | undefined>(undefined);
   const inApp = !!onOpenApp;
+
+  const openSignup = (plan?: PlanKey) => {
+    setSignupPlan(plan);
+    setAuth('signup');
+  };
+
+  const scrollToPricing = () =>
+    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   React.useEffect(() => {
     if (!auth) return;
@@ -64,6 +75,11 @@ export const Landing: React.FC<LandingProps> = ({
           ToothOps Charting
         </span>
         <nav className="landing__nav">
+          {cloudEnabled && (
+            <button type="button" className="landing__nav-signin" onClick={scrollToPricing}>
+              Pricing
+            </button>
+          )}
           {inApp ? (
             <button type="button" className="landing__nav-cta" onClick={onOpenApp}>
               Back to the app
@@ -74,7 +90,7 @@ export const Landing: React.FC<LandingProps> = ({
                 Sign in
               </button>
               {cloudEnabled && (
-                <button type="button" className="landing__nav-cta" onClick={() => setAuth('signup')}>
+                <button type="button" className="landing__nav-cta" onClick={() => openSignup()}>
                   Get started
                 </button>
               )}
@@ -107,8 +123,8 @@ export const Landing: React.FC<LandingProps> = ({
                 </button>
               ) : cloudEnabled ? (
                 <>
-                  <button type="button" className="landing__cta" onClick={() => setAuth('signup')}>
-                    Create your practice account
+                  <button type="button" className="landing__cta" onClick={() => openSignup()}>
+                    Start your {TRIAL_DAYS}-day free trial
                   </button>
                   {onTryFree && (
                     <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
@@ -116,8 +132,8 @@ export const Landing: React.FC<LandingProps> = ({
                     </button>
                   )}
                   <span className="landing__cta-note">
-                    Free in early access · no card required
-                    {onTryFree ? ' · trial PDFs are stamped TRIAL' : ''}
+                    Plans from $20/mo · {TRIAL_DAYS}-day free trial · cancel anytime
+                    {onTryFree ? ' · no-account trial PDFs are stamped TRIAL' : ''}
                   </span>
                 </>
               ) : (
@@ -314,6 +330,47 @@ export const Landing: React.FC<LandingProps> = ({
           </div>
         </section>
 
+        {/* ---------------------------------------------------- pricing --- */}
+        {cloudEnabled && (
+          <section className="landing__pricing" id="pricing">
+            <h2>Simple monthly pricing</h2>
+            <p className="landing__pricing-sub">
+              Every plan starts with a {TRIAL_DAYS}-day free trial. Cancel anytime — we keep
+              your charts safe for 30 days in case you come back.
+            </p>
+            <div className="landing__pricing-grid">
+              {PLANS.map((p) => (
+                <div key={p.key} className={p.key === 'practice_basic' ? 'pricing-card pricing-card--featured' : 'pricing-card'}>
+                  {p.key === 'practice_basic' && <span className="pricing-card__flag">Most popular</span>}
+                  <h3>{p.name}</h3>
+                  <p className="pricing-card__price">
+                    ${p.priceMonthly}
+                    <span>/mo</span>
+                  </p>
+                  <p className="pricing-card__tagline">{p.tagline}</p>
+                  <ul>
+                    {p.features.map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                  {!inApp && (
+                    <button type="button" className="pricing-card__cta" onClick={() => openSignup(p.key)}>
+                      Start free trial
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="landing__pricing-contact">
+              Bigger team? Multi-location group? University program?{' '}
+              <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20pricing%20for%20a%20larger%20team`}>
+                Contact us
+              </a>{' '}
+              for pricing beyond 5 seats.
+            </p>
+          </section>
+        )}
+
         {/* -------------------------------------------------- pdf preview --- */}
         <section className="landing__paper">
           <div className="landing__paper-copy">
@@ -346,8 +403,8 @@ export const Landing: React.FC<LandingProps> = ({
               Back to the app
             </button>
           ) : cloudEnabled ? (
-            <button type="button" className="landing__cta" onClick={() => setAuth('signup')}>
-              Create your practice account
+            <button type="button" className="landing__cta" onClick={() => openSignup()}>
+              Start your {TRIAL_DAYS}-day free trial
             </button>
           ) : (
             <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>
@@ -379,7 +436,7 @@ export const Landing: React.FC<LandingProps> = ({
             <button type="button" className="landing__auth-close" onClick={() => setAuth(null)} aria-label="Close">
               ×
             </button>
-            <Login onAuthenticate={onAuthenticate} initialMode={auth} embedded />
+            <Login onAuthenticate={onAuthenticate} initialMode={auth} embedded initialPlan={signupPlan} />
           </div>
         </div>
       )}

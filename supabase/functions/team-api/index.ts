@@ -160,6 +160,22 @@ Deno.serve(async (req: Request) => {
         if (!email) return json({ error: 'Enter an email.' }, 400);
         const m = await requireOwner();
         if (!m) return json({ error: 'Only a practice owner can add members.' }, 403);
+        // Seat limits come from the subscription: Individual plans are
+        // single-user, Practice plans include up to 5. (The admin panel
+        // can bypass via admin-api for hand-arranged deals.)
+        const { data: prac } = await admin.from('practices').select('account_type').eq('id', m.practiceId).maybeSingle();
+        const seats = prac?.account_type === 'practice' ? 5 : 1;
+        const { count } = await admin
+          .from('practice_members')
+          .select('user_id', { count: 'exact', head: true })
+          .eq('practice_id', m.practiceId);
+        if ((count ?? 0) >= seats) {
+          return json({
+            error: seats === 1
+              ? 'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.'
+              : 'Practice plans include up to 5 team members — contact us about a larger plan.',
+          }, 403);
+        }
         const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
         return json(result.body, result.status);
       }

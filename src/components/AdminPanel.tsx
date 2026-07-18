@@ -41,11 +41,25 @@ interface AdminPractice {
   id: string;
   name: string;
   plan: 'basic' | 'pro';
+  accountType: 'individual' | 'practice';
+  subscriptionStatus: string;
+  periodEnd: string | null;
+  frozenAt: string | null;
+  hasStripe: boolean;
   ownerEmail: string;
   logoUrl: string;
   memberCount: number;
   chartCount: number;
   members: AdminPracticeMember[];
+}
+
+interface BillingOverviewRow {
+  practiceName: string;
+  planKey: string;
+  status: string;
+  amountUsd: number;
+  periodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
 }
 
 interface AiUsageRow {
@@ -98,10 +112,11 @@ export function useIsAdmin(): boolean {
   return isAdmin;
 }
 
-/** Call the admin-api function; surfaces server-side error messages. */
-async function adminCall<T = Record<string, unknown>>(body: object): Promise<T> {
+/** Call the admin-api (or billing-api's admin actions); surfaces
+ *  server-side error messages. */
+async function adminCall<T = Record<string, unknown>>(body: object, fn: 'admin-api' | 'billing-api' = 'admin-api'): Promise<T> {
   if (!supabase) throw new Error('Cloud is not configured.');
-  const { data, error } = await supabase.functions.invoke('admin-api', { body });
+  const { data, error } = await supabase.functions.invoke(fn, { body });
   if (error) {
     // FunctionsHttpError carries the response; pull the real message out.
     try {
@@ -132,7 +147,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [notice, setNotice] = React.useState('');
-  const [tab, setTab] = React.useState<'accounts' | 'practices' | 'ai'>('accounts');
+  const [tab, setTab] = React.useState<'accounts' | 'practices' | 'billing' | 'ai'>('accounts');
+  // Billing tab state.
+  const [billingRows, setBillingRows] = React.useState<BillingOverviewRow[] | null>(null);
+  const [billingMrr, setBillingMrr] = React.useState(0);
+  const [billingComped, setBillingComped] = React.useState(0);
+  const [setupNote, setSetupNote] = React.useState('');
   // AI tab state.
   const [aiModel, setAiModel] = React.useState('');
   const [aiModels, setAiModels] = React.useState<Array<{ id: string; displayName: string }>>([]);
@@ -209,6 +229,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   React.useEffect(() => {
     if (open && tab === 'ai') loadAi();
   }, [open, tab, loadAi]);
+
+  const loadBilling = React.useCallback(async () => {
+    try {
+      const o = await adminCall<{ subscriptions: BillingOverviewRow[]; mrrUsd: number; compedCount: number }>(
+        { action: 'admin_overview' },
+        'billing-api'
+      );
+      setBillingRows(o.subscriptions ?? []);
+      setBillingMrr(o.mrrUsd ?? 0);
+      setBillingComped(o.compedCount ?? 0);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load billing.');
+      setBillingRows([]);
+    }
+  }, []);
+  React.useEffect(() => {
+    if (open && tab === 'billing') loadBilling();
+  }, [open, tab, loadBilling]);
 
   if (!open) return null;
 
@@ -372,6 +410,50 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
+  const handleSetAccountType = (accountType: 'individual' | 'practice') => {
+    if (!selectedPractice) return;
+    run(`Account type set to ${accountType}.`, async () => {
+      await adminCall({ action: 'set_billing', practiceId: selectedPractice.id, accountType });
+      await refresh();
+    });
+  };
+
+  const handleSetComped = (comped: boolean) => {
+    if (!selectedPractice) return;
+    if (comped && !window.confirm(`Give ${selectedPractice.name || 'this practice'} complimentary access (no subscription required)?`)) return;
+    if (!comped && !window.confirm('Remove complimentary access? They will hit the plan chooser on next load.')) return;
+    run(comped ? 'Comped — full access, no billing.' : 'Comp removed.', async () => {
+      await adminCall({ action: 'set_billing', practiceId: selectedPractice.id, comped });
+      await refresh();
+    });
+  };
+
+  const handleStripeSetup = () => {
+    run('Stripe setup complete.', async () => {
+      const r = await adminCall<{ prices: Record<string, string>; webhookUrl: string; createdWebhook: boolean; livemode: boolean }>(
+        { action: 'admin_setup' },
+        'billing-api'
+      );
+      setSetupNote(
+        `${Object.keys(r.prices).length} prices ready · webhook ${r.createdWebhook ? 'created' : 'already in place'} (${r.webhookUrl}) · ${r.livemode ? 'LIVE mode' : 'test mode'}`
+      );
+      await loadBilling();
+    });
+  };
+
+  /** Short status chip for a practice's subscription. */
+  const billingChip = (status: string) => {
+    const cls =
+      ['active', 'trialing', 'comped'].includes(status)
+        ? 'admin-panel__billing-status admin-panel__billing-status--good'
+        : status === 'past_due'
+        ? 'admin-panel__billing-status admin-panel__billing-status--warn'
+        : status === 'none'
+        ? 'admin-panel__billing-status'
+        : 'admin-panel__billing-status admin-panel__billing-status--bad';
+    return <span className={cls}>{status === 'none' ? 'unbilled' : status.replace(/_/g, ' ')}</span>;
+  };
+
   const handleSetModel = (model: string) => {
     if (!model) return;
     run('AI model updated.', async () => {
@@ -447,6 +529,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
               onClick={() => setTab('practices')}
             >
               Practices{practices ? ` (${practices.length})` : ''}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'billing'}
+              className={tab === 'billing' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+              onClick={() => setTab('billing')}
+            >
+              Billing
             </button>
             <button
               type="button"
@@ -573,6 +664,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 <span role="columnheader">Owner</span>
                 <span role="columnheader">Members</span>
                 <span role="columnheader">Charts</span>
+                <span role="columnheader">Billing</span>
               </div>
               <div className="chart-library__scroll">
                 {practices.length === 0 && <div className="chart-library__empty">No practices.</div>}
@@ -592,6 +684,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                       <span role="cell" className="chart-library__cell">{p.ownerEmail}</span>
                       <span role="cell" className="chart-library__cell">{p.memberCount}</span>
                       <span role="cell" className="chart-library__cell">{p.chartCount}</span>
+                      <span role="cell" className="chart-library__cell">{billingChip(p.subscriptionStatus)}</span>
                     </button>
                   </div>
                 ))}
@@ -616,7 +709,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </div>
 
-              {/* Plan (not billed yet — gates AI + storage). */}
+              {/* Billing overrides. Tier + account type gate features and
+                  seats; Stripe-managed practices sync from the webhook, so
+                  hand-edits there are only for comps and corrections. */}
               <div className="admin-panel__plan">
                 <span className="patient-form__label" style={{ marginBottom: 0 }}>Plan</span>
                 <div className="admin-panel__plan-toggle" role="group" aria-label="Practice plan">
@@ -635,6 +730,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                   <span className="admin-panel__plan-note">
                     Pro adds AI autofill and more image storage.
                   </span>
+                </div>
+              </div>
+
+              <div className="admin-panel__plan">
+                <span className="patient-form__label" style={{ marginBottom: 0 }}>Account type</span>
+                <div className="admin-panel__plan-toggle" role="group" aria-label="Account type">
+                  {(['individual', 'practice'] as const).map((at) => (
+                    <button
+                      key={at}
+                      type="button"
+                      className={selectedPractice.accountType === at ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                      aria-pressed={selectedPractice.accountType === at}
+                      onClick={() => handleSetAccountType(at)}
+                      disabled={busy || selectedPractice.accountType === at}
+                    >
+                      {at === 'practice' ? 'Practice (5 seats)' : 'Individual (1 seat)'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="admin-panel__plan">
+                <span className="patient-form__label" style={{ marginBottom: 0 }}>Subscription</span>
+                <div className="admin-panel__plan-toggle">
+                  {billingChip(selectedPractice.subscriptionStatus)}
+                  {selectedPractice.periodEnd && (
+                    <span className="admin-panel__plan-note">
+                      {selectedPractice.subscriptionStatus === 'trialing' ? 'trial ends' : 'renews'}{' '}
+                      {new Date(selectedPractice.periodEnd).toLocaleDateString()}
+                    </span>
+                  )}
+                  {selectedPractice.frozenAt && (
+                    <span className="admin-panel__plan-note">
+                      frozen — purge deletes it{' '}
+                      {new Date(new Date(selectedPractice.frozenAt).getTime() + 30 * 86400000).toLocaleDateString()}
+                    </span>
+                  )}
+                  {selectedPractice.hasStripe ? (
+                    <span className="admin-panel__plan-note">Stripe-managed — status syncs from the webhook.</span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="admin-panel__plan-opt"
+                      onClick={() => handleSetComped(selectedPractice.subscriptionStatus !== 'comped')}
+                      disabled={busy}
+                    >
+                      {selectedPractice.subscriptionStatus === 'comped' ? 'Remove comp' : 'Comp (free access)'}
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -729,6 +873,62 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 >
                   Delete practice…
                 </button>
+              </div>
+            </section>
+          )}
+
+          {tab === 'billing' && (
+            <section className="admin-panel__billing">
+              <div className="admin-panel__ai-block">
+                <h3 className="ai-settings-subhead">Stripe</h3>
+                <p className="admin-panel__ai-total">
+                  Monthly recurring revenue: <strong>${billingMrr.toFixed(2)}</strong>
+                  {billingComped > 0 && <> · {billingComped} comped practice{billingComped === 1 ? '' : 's'}</>}
+                </p>
+                <div className="practice-logo-actions">
+                  <button type="button" className="diagram-view__action" onClick={handleStripeSetup} disabled={busy}>
+                    Run Stripe setup
+                  </button>
+                  <button type="button" className="diagram-view__action" onClick={loadBilling} disabled={busy}>
+                    Refresh
+                  </button>
+                </div>
+                {setupNote && <p className="patient-form__hint">{setupNote}</p>}
+                <p className="patient-form__hint">
+                  Setup is idempotent: it creates the four plan prices (by lookup key) and the webhook endpoint in
+                  Stripe if they don't exist yet. Run it once per Stripe account (and again after switching test → live keys).
+                </p>
+              </div>
+
+              <div className="admin-panel__ai-block">
+                <h3 className="ai-settings-subhead">Subscriptions</h3>
+                {billingRows === null ? (
+                  <p className="chart-library__empty">Loading…</p>
+                ) : billingRows.length === 0 ? (
+                  <p className="practice-logo-empty">No Stripe subscriptions yet.</p>
+                ) : (
+                  <table className="admin-panel__usage-table">
+                    <thead>
+                      <tr>
+                        <th>Practice</th><th>Plan</th><th>Status</th><th>$/mo</th><th>Renews</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {billingRows.map((r, i) => (
+                        <tr key={i}>
+                          <td>{r.practiceName}</td>
+                          <td>{r.planKey.replace(/_/g, ' ') || '—'}</td>
+                          <td>
+                            {r.status.replace(/_/g, ' ')}
+                            {r.cancelAtPeriodEnd ? ' (canceling)' : ''}
+                          </td>
+                          <td>${r.amountUsd.toFixed(0)}</td>
+                          <td>{r.periodEnd ? new Date(r.periodEnd).toLocaleDateString() : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </section>
           )}

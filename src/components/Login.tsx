@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
+import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS } from '../constants/plans';
 import './Login.css';
 
 interface LoginProps {
@@ -9,6 +10,8 @@ interface LoginProps {
   initialMode?: 'signin' | 'signup';
   /** Rendered bare (no full-page background) inside the landing overlay. */
   embedded?: boolean;
+  /** Plan preselected from the pricing page's card CTAs. */
+  initialPlan?: PlanKey;
 }
 
 type Mode = 'signin' | 'signup';
@@ -17,14 +20,16 @@ type Mode = 'signin' | 'signup';
  * Sign-in / sign-up screen.
  *
  * With a Supabase project configured: email + password accounts. Signup
- * also collects the practice profile (company + doctor name), passed as
- * user metadata — a database trigger turns it into the `profiles` row.
- * Free while the product finds its feet; billing comes later.
+ * also collects the practice profile (company + doctor name) plus the
+ * chosen plan, passed as user metadata — a database trigger turns the
+ * profile into the `profiles` row, and after email confirmation the
+ * BillingGate picks the plan back up and sends them to Stripe Checkout
+ * (every plan starts with a free trial).
  *
  * Without Supabase (local dev, tests): the legacy shared practice
  * password, so the app keeps working standalone.
  */
-export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false }) => {
+export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan }) => {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +39,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [plan, setPlan] = useState<'basic' | 'pro'>('basic');
+  const [accountType, setAccountType] = useState<AccountType>(
+    initialPlan ? (planByKey(initialPlan)?.accountType ?? 'individual') : 'individual'
+  );
+  const [plan, setPlan] = useState<PlanTier>(
+    initialPlan ? (planByKey(initialPlan)?.tier ?? 'basic') : 'basic'
+  );
+
+  const chosenPlan = planByKey(planKeyFor(accountType, plan));
 
   const signup = mode === 'signup';
 
@@ -70,6 +82,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
             plan,
+            account_type: accountType,
           },
         },
       });
@@ -92,7 +105,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         onAuthenticate();
       } else {
         // Email confirmation is on — tell them what happens next.
-        setNotice('Check your email to confirm your account, then sign in.');
+        setNotice('Check your email to confirm your account, then sign in — your free trial starts there.');
         setMode('signin');
       }
       return;
@@ -159,8 +172,36 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 />
               </label>
 
+              <fieldset className="login-plan" aria-label="Account type">
+                <legend className="login-plan__legend">Who's charting?</legend>
+                <label className={accountType === 'individual' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
+                  <input
+                    type="radio"
+                    name="account-type"
+                    checked={accountType === 'individual'}
+                    onChange={() => setAccountType('individual')}
+                  />
+                  <span className="login-plan__body">
+                    <strong>Individual</strong>
+                    <span>Just you. From $20/mo.</span>
+                  </span>
+                </label>
+                <label className={accountType === 'practice' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
+                  <input
+                    type="radio"
+                    name="account-type"
+                    checked={accountType === 'practice'}
+                    onChange={() => setAccountType('practice')}
+                  />
+                  <span className="login-plan__body">
+                    <strong>Practice</strong>
+                    <span>Up to 5 team members sharing charts. From $60/mo.</span>
+                  </span>
+                </label>
+              </fieldset>
+
               <fieldset className="login-plan" aria-label="Choose a plan">
-                <legend className="login-plan__legend">Plan · free during early access</legend>
+                <legend className="login-plan__legend">Plan · {TRIAL_DAYS}-day free trial on every plan</legend>
                 <label className={plan === 'basic' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
                   <input
                     type="radio"
@@ -169,8 +210,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setPlan('basic')}
                   />
                   <span className="login-plan__body">
-                    <strong>Basic</strong>
-                    <span>Full charting, PDFs, team, reminders. 30 images per chart.</span>
+                    <strong>Basic · ${planByKey(planKeyFor(accountType, 'basic'))?.priceMonthly}/mo</strong>
+                    <span>Full charting, PDFs, reminders. 30 images per chart.</span>
                   </span>
                 </label>
                 <label className={plan === 'pro' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
@@ -181,10 +222,16 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setPlan('pro')}
                   />
                   <span className="login-plan__body">
-                    <strong>Pro</strong>
+                    <strong>Pro · ${planByKey(planKeyFor(accountType, 'pro'))?.priceMonthly}/mo</strong>
                     <span>Everything in Basic, plus AI voice autofill and 100 images per chart.</span>
                   </span>
                 </label>
+                {chosenPlan && (
+                  <span className="login-hint">
+                    {chosenPlan.name} — ${chosenPlan.priceMonthly}/mo after a {TRIAL_DAYS}-day free trial. You'll enter payment
+                    after confirming your email; cancel anytime.
+                  </span>
+                )}
               </fieldset>
             </>
           )}

@@ -16,6 +16,9 @@ const Landing = React.lazy(() =>
 const ResetPassword = React.lazy(() =>
   import('./components/ResetPassword').then((m) => ({ default: m.ResetPassword }))
 );
+const BillingGate = React.lazy(() =>
+  import('./components/BillingGate').then((m) => ({ default: m.BillingGate }))
+);
 
 const AUTH_KEY = 'auth';
 const AUTH_VERSION = 1;
@@ -178,7 +181,11 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <Suspense fallback={null}>
-        <EntryGrid onGoHome={() => setShowHome(true)} />
+        {/* Signed in — but the charting app is behind the subscription
+            gate (trials, comps, and admins pass straight through). */}
+        <BillingGate>
+          <EntryGrid onGoHome={() => setShowHome(true)} />
+        </BillingGate>
       </Suspense>
     </div>
   );
