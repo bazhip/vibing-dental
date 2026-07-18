@@ -68,10 +68,17 @@
         "image": "https://toothops.app/og-image.png",
         "description": "Chairside veterinary dental charting for dogs and cats: full-mouth Triadan grids, AVDC nomenclature, voice autofill, intraoral photos and radiographs, per-patient history, recall reminders, team access, and client-ready branded PDFs.",
         "offers": {
-          "@type": "Offer",
-          "price": "0",
+          "@type": "AggregateOffer",
           "priceCurrency": "USD",
-          "description": "Free in early access — no card required."
+          "lowPrice": "20",
+          "highPrice": "120",
+          "offerCount": "4",
+          "offers": [
+            { "@type": "Offer", "name": "Individual", "price": "20", "priceCurrency": "USD", "description": "Solo practitioner, monthly. 14-day free trial." },
+            { "@type": "Offer", "name": "Individual Pro", "price": "40", "priceCurrency": "USD", "description": "Solo with AI voice autofill, monthly. 14-day free trial." },
+            { "@type": "Offer", "name": "Practice", "price": "60", "priceCurrency": "USD", "description": "Up to 5 team members, monthly. 14-day free trial." },
+            { "@type": "Offer", "name": "Practice Pro", "price": "120", "priceCurrency": "USD", "description": "Up to 5 team members with AI voice autofill, monthly. 14-day free trial." }
+          ]
         },
         "featureList": [
           "Full-mouth Triadan dental charts (feline, canine, deciduous)",
