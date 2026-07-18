@@ -237,6 +237,21 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     codeCol('pdstate',     'PD State',    0.09, 10),
   ];
 
+  // The percentage floors above add to ~97%, which left a dead strip
+  // after PD State instead of the grid meeting the card's rounded
+  // corner. Hand the slack to the last column so the columns fill the
+  // container exactly (minus its 1px side borders).
+  if (layoutWidth > 0) {
+    const used = columns
+      .slice(0, -1)
+      .reduce((n, c) => n + (typeof c.width === 'number' ? c.width : 0), 0);
+    const last = columns[columns.length - 1];
+    columns[columns.length - 1] = {
+      ...last,
+      width: Math.max(layoutWidth - 2 - used, typeof last.width === 'number' ? last.width : 0),
+    };
+  }
+
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
