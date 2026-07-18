@@ -462,38 +462,33 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
+          {/* Manual save only — no autosave. The button shows whenever
+              the chart has unsaved changes; localStorage keeps the working
+              copy across reloads regardless. */}
+          {cloud.enabled && cloud.status === 'saving' && (
+            <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>
+          )}
           {cloud.enabled && cloud.status === 'error' && (
             <button
               type="button"
               className="save-status save-status--error"
-              onClick={() => {
-                cloud.saveNow().catch(() => {
-                  // still failing — the chip stays; local copy is intact
-                });
-              }}
+              onClick={() => cloud.saveNow().catch(() => {})}
             >
               Not saved — retry
             </button>
           )}
-          {cloud.enabled && (cloud.status === 'saving' || cloud.status === 'saved') && (
-            <span
-              className={`save-status save-status--${cloud.status}`}
-              aria-hidden="true"
-            >
-              {cloud.status === 'saving' ? 'Saving…' : 'Saved'}
-            </span>
-          )}
-          {cloud.enabled && chart.openedExisting && cloud.status !== 'saving' && cloud.status !== 'error' && (
-            // A saved record doesn't autosave — offer an explicit Save so
-            // history is never overwritten by accident.
+          {cloud.enabled && cloud.status !== 'saving' && cloud.status !== 'error' && cloud.dirty && (
             <button
               type="button"
               className="save-status save-status--manual"
               onClick={() => cloud.saveNow().catch(() => {})}
-              title="This is a saved chart — autosave is off. Save to update it."
+              title="Save this chart to the cloud"
             >
-              {cloud.status === 'saved' ? 'Saved chart' : 'Save changes'}
+              Save chart
             </button>
+          )}
+          {cloud.enabled && cloud.status === 'saved' && !cloud.dirty && (
+            <span className="save-status save-status--saved" aria-hidden="true">Saved</span>
           )}
           {cloud.enabled && (
             <button
@@ -513,7 +508,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <ChartMenu
             onNewChart={chart.resetChart}
             onNewVisit={
-              chart.patientInfo.patientName.trim() ? chart.startNewVisit : undefined
+              chart.patientInfo.patientName.trim() ? () => chart.startNewVisit() : undefined
             }
             onLoadPdf={chart.loadFromPdf}
             onOpenAiSettings={() => setAiSettingsOpen(true)}
@@ -522,16 +517,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             cloud={
               cloud.enabled
                 ? {
-                    autosaveEnabled: cloud.autosaveEnabled,
-                    onToggleAutosave: () => cloud.setAutosaveEnabled(!cloud.autosaveEnabled),
-                    onSaveChart: () => {
-                      cloud.saveNow().catch(() => {
-                        alert(
-                          'Could not save the chart to the cloud — check your connection. ' +
-                            'Your work is kept on this device and you can retry from the topbar.'
-                        );
-                      });
-                    },
                     onOpenLibrary: () => setLibraryOpen(true),
                     onPracticeSettings: () => setPracticeSettingsOpen(true),
                     onSignOut: () => {
@@ -550,13 +535,27 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={cloud.deleteChart}
-          onNewVisit={(identity) => {
-            chart.startNewVisit({
-              patientName: identity.patientName,
-              patientNumber: identity.patientNumber,
-              species: identity.species as typeof chart.species,
-            });
-            setLibraryOpen(false);
+          onNewVisit={async (latestChartId) => {
+            try {
+              const snap = await cloud.fetchChart(latestChartId);
+              // Teeth already gone: missing (pre) ∪ extracted (post).
+              const gone = new Set<number>();
+              for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
+              for (const [k, v] of Object.entries(snap.postMarks ?? {})) if (v === 'extracted') gone.add(Number(k));
+              chart.startNewVisit({
+                identity: {
+                  patientName: snap.patientInfo.patientName,
+                  patientNumber: snap.patientInfo.patientNumber,
+                  ownerName: snap.patientInfo.ownerName ?? '',
+                  ownerPhone: snap.patientInfo.ownerPhone ?? '',
+                  species: snap.species,
+                },
+                goneTeeth: Array.from(gone),
+              });
+              setLibraryOpen(false);
+            } catch {
+              alert('Could not start a new visit — check your connection.');
+            }
           }}
           onClose={() => setLibraryOpen(false)}
         />

@@ -45,6 +45,8 @@ describe('parseDentalChartPDF (modern stash format)', () => {
       complaint: 'tartar buildup',
       treatmentReport: 'Cleaning + extraction of 209.',
       recallDate: '2027-01-15',
+      ownerName: 'Alex Doe',
+      ownerPhone: '555-0101',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3' },
       exam: {
         ...EMPTY_EXAM_FINDINGS,
@@ -100,6 +102,8 @@ describe('parseDentalChartPDF (modern stash format)', () => {
       complaint: '',
       treatmentReport: '',
       recallDate: '',
+      ownerName: '',
+      ownerPhone: '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: { ...EMPTY_EXAM_FINDINGS },
     };

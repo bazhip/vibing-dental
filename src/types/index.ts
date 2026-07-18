@@ -111,6 +111,9 @@ export const EXAM_ITEMS: { key: keyof ExamFindings; label: string; pdfName: stri
 export interface PatientInfo {
   patientName: string;
   patientNumber: string;
+  /** Pet owner (client) name and phone — searchable in My charts. */
+  ownerName: string;
+  ownerPhone: string;
   doctor: string;
   tech: string;
   date: string;

@@ -1,9 +1,6 @@
 import React from 'react';
 
 interface ChartMenuCloud {
-  onSaveChart: () => void;
-  autosaveEnabled: boolean;
-  onToggleAutosave: () => void;
   onOpenLibrary: () => void;
   onPracticeSettings: () => void;
   onSignOut: () => void;
@@ -63,15 +60,9 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, on
   }, [open]);
 
   const handleNewChart = () => {
-    // With autosave on, the outgoing chart already lives in My charts —
-    // saying "cannot be undone" there would be scary and wrong, and
-    // wrong warnings teach people to ignore dialogs.
     const confirmed = window.confirm(
-      cloud && cloud.autosaveEnabled
-        ? 'Start a new patient? Your current chart stays saved in My charts.'
-        : 'Start a new patient? This clears the current chart — patient info, ' +
-          'tooth grid, exam, anesthesia, diagrams, and treatment report. ' +
-          'This cannot be undone.'
+      'Start a new patient? This clears the current chart. Save it first ' +
+      '(top of the screen) if you want to keep any unsaved changes.'
     );
     if (!confirmed) return;
     setOpen(false);
@@ -137,19 +128,6 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, on
                 <span className="chart-menu__item-body">
                   <strong>New visit (same patient)</strong>
                   <span>Keep the patient, start a fresh dated chart.</span>
-                </span>
-              </button>
-            )}
-            {cloud && (
-              <button
-                type="button"
-                className="chart-menu__item"
-                role="menuitem"
-                onClick={() => { setOpen(false); cloud.onSaveChart(); }}
-              >
-                <span className="chart-menu__item-body">
-                  <strong>Save chart</strong>
-                  <span>Charts autosave — this forces a save right now.</span>
                 </span>
               </button>
             )}
@@ -219,20 +197,6 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onNewChart, onNewVisit, on
                 <span>Set the Anthropic API key and model for voice autofill.</span>
               </span>
             </button>
-            {cloud && (
-              <button
-                type="button"
-                className="chart-menu__item"
-                role="menuitemcheckbox"
-                aria-checked={cloud.autosaveEnabled}
-                onClick={cloud.onToggleAutosave}
-              >
-                <span className="chart-menu__item-body">
-                  <strong>Autosave — {cloud.autosaveEnabled ? 'On' : 'Off'}</strong>
-                  <span>Save to the cloud automatically as you edit.</span>
-                </span>
-              </button>
-            )}
             {onGoHome && (
               <button
                 type="button"

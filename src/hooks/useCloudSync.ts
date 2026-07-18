@@ -7,14 +7,11 @@ import { UseChartStateReturn, clearChartStorage } from './useChartState';
 /**
  * Cloud persistence on top of `useChartState`.
  *
- * localStorage stays the working copy (chairside offline resilience);
- * this hook mirrors the active chart to the practice's Supabase project:
- *
- *   - autosave: debounced upsert of the full snapshot whenever the chart
- *     changes (and has any content — pristine empty charts don't create
- *     rows),
- *   - listCharts / openChart: the "My charts" menu,
- *   - deleteChart, signOut.
+ * localStorage is always the working copy (survives reloads, offline
+ * resilient). Saving to the practice's Supabase project is MANUAL: the
+ * topbar shows a Save button whenever the chart has unsaved changes, and
+ * that's the only thing that writes to the cloud — no autosave, so a
+ * saved chart is never overwritten without an explicit action.
  *
  * Sync is last-write-wins per chart row — fine for a small practice
  * where a chart has one author at a time.
@@ -24,6 +21,8 @@ export interface CloudChartMeta {
   id: string;
   patient_name: string;
   patient_number: string;
+  owner_name: string;
+  owner_phone: string;
   species: string;
   chart_date: string;
   recall_date: string;
@@ -32,28 +31,25 @@ export interface CloudChartMeta {
 
 export interface UseCloudSyncReturn {
   enabled: boolean;
-  /** 'idle' | 'saving' | 'saved' | 'error' — for a small status hint. */
+  /** 'idle' | 'saving' | 'saved' | 'error'. */
   status: 'idle' | 'saving' | 'saved' | 'error';
-  /** Immediate save of the current chart (autosave also runs debounced). */
+  /** True when the working chart has content the cloud hasn't stored. */
+  dirty: boolean;
+  /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
-  /** Debounced background saving — default on; manual Save always works. */
-  autosaveEnabled: boolean;
-  setAutosaveEnabled: (on: boolean) => void;
   listCharts: () => Promise<CloudChartMeta[]>;
   openChart: (id: string) => Promise<void>;
+  /** Fetch a chart's full snapshot (for "new visit from this patient"). */
+  fetchChart: (id: string) => Promise<ChartSnapshot>;
   deleteChart: (id: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
-const AUTOSAVE_DEBOUNCE_MS = 1500;
-
-/** A chart worth a cloud row: anything typed, marked, or drawn.
- *  Defensive against partial snapshots (older schema, hand-edited rows)
- *  — this runs inside an effect, where a throw would crash the app. */
+/** A chart worth a cloud row: anything typed, marked, or drawn. */
 function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
-  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
+  if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
   if (Object.values(p.nerveBlocks ?? {}).some((v) => (v ?? '').trim())) return true;
   if (Object.values(p.exam ?? {}).some((e) => e?.status || (e?.comment ?? '').trim())) return true;
   if (s.toothData.some((t) =>
@@ -66,23 +62,30 @@ function hasContent(s: ChartSnapshot): boolean {
   return false;
 }
 
+/** Cheap stable hash (djb2) — identifies the last-cloud-saved snapshot so
+ *  "unsaved changes" survives a reload without storing a second full copy. */
+function hashStr(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return String(h >>> 0);
+}
+
 export function useCloudSync(
   chart: UseChartStateReturn,
   active = true,
   practiceId = ''
 ): UseCloudSyncReturn {
-  // Trial mode charts stay local-only: no session exists, so autosave
-  // would just error — switch the whole hook off instead.
+  // Trial/standalone: no account to save to — the hook is inert.
   const on = cloudEnabled && active;
-  // Latest practice id (may resolve after mount) — new charts get
-  // stamped so the whole team can see them; solo users leave it null.
   const practiceIdRef = React.useRef(practiceId);
   practiceIdRef.current = practiceId;
-  const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
-  const [autosaveEnabled, setAutosaveEnabled] = usePersistedState<boolean>('chart.autosave', 1, true);
 
-  // "Saved" is a moment, not a state — show it briefly, then clear.
-  // Errors stay visible until a save succeeds.
+  const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
+  // Hash of the snapshot last written to the cloud (persisted so unsaved
+  // changes are still flagged after a reload).
+  const [savedHash, setSavedHash] = usePersistedState<string>('chart.savedHash', 1, '');
+
+  // "Saved" is a moment — show briefly, then clear.
   React.useEffect(() => {
     if (status !== 'saved') return;
     const t = window.setTimeout(() => setStatus('idle'), 2500);
@@ -92,42 +95,42 @@ export function useCloudSync(
   const snapshot = chart.getSnapshot();
   const serialized = JSON.stringify(snapshot);
   const chartId = chart.cloudChartId;
+  const currentHash = hashStr(serialized);
+  const dirty = on && hasContent(snapshot) && currentHash !== savedHash;
 
-  // Latest values for the imperative saveNow (stable identity).
   const latest = React.useRef({ serialized, chartId });
   latest.current = { serialized, chartId };
+  const dirtyRef = React.useRef(dirty);
+  dirtyRef.current = dirty;
   const resetIdRef = React.useRef(chart.resetCloudChartId);
   resetIdRef.current = chart.resetCloudChartId;
 
-  // The serialization that last reached the cloud — anything newer in
-  // `latest` is unsaved work that chart switches and sign-out must not
-  // silently drop.
-  const lastSavedRef = React.useRef<string | null>(null);
-  const statusRef = React.useRef(status);
-  statusRef.current = status;
-  const autosaveRef = React.useRef(autosaveEnabled);
-  autosaveRef.current = autosaveEnabled;
-  // Charts opened from the library / a PDF are saved records — never
-  // autosaved. Edits are written only on an explicit Save.
-  const openedExisting = chart.openedExisting;
-  const openedExistingRef = React.useRef(openedExisting);
-  openedExistingRef.current = openedExisting;
+  // Opening a cloud chart replays its content into state — treat that
+  // applied state as the saved baseline (not a dirty edit).
+  const baselineNext = React.useRef(false);
+  React.useEffect(() => {
+    if (baselineNext.current) {
+      baselineNext.current = false;
+      setSavedHash(currentHash);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serialized]);
 
   const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
     if (!supabase) return;
     const client = supabase;
     const { data: sessionData } = await client.auth.getSession();
     if (!sessionData.session) {
-      // Expired/broken session: autosave would otherwise become a
-      // silent no-op while the clinician keeps charting.
       setStatus('error');
-      throw new Error('Signed out — sign in again to resume cloud saving.');
+      throw new Error('Signed out — sign in again to save.');
     }
     const snap: ChartSnapshot = JSON.parse(json);
     const row = (rowId: string) => ({
       id: rowId,
       patient_name: snap.patientInfo.patientName,
       patient_number: snap.patientInfo.patientNumber,
+      owner_name: snap.patientInfo.ownerName ?? '',
+      owner_phone: snap.patientInfo.ownerPhone ?? '',
       species: snap.species,
       chart_date: snap.patientInfo.date,
       recall_date: snap.patientInfo.recallDate ?? '',
@@ -137,26 +140,28 @@ export function useCloudSync(
     setStatus('saving');
     const { error } = await client.from('charts').upsert(row(id));
     if (!error) {
-      lastSavedRef.current = json;
+      setSavedHash(hashStr(json));
       setStatus('saved');
       return;
     }
     // A refused save usually means the row id belongs to another account
-    // (stale localStorage after switching users) — RLS correctly blocks
-    // the update. Fork: mint a fresh id owned by this account and retry.
+    // (stale localStorage after switching users) — RLS blocks the update.
+    // Fork: mint a fresh id owned by this account and retry.
     const refused =
       error.code === '42501' ||
       /row-level security|permission denied|duplicate key/i.test(error.message);
     if (refused) {
       const freshId = resetIdRef.current();
       const { error: retryError } = await client.from('charts').upsert(row(freshId));
-      if (!retryError) lastSavedRef.current = json;
+      if (!retryError) setSavedHash(hashStr(json));
       setStatus(retryError ? 'error' : 'saved');
       if (retryError) throw new Error(retryError.message);
       return;
     }
     setStatus('error');
     throw new Error(error.message);
+    // setSavedHash identity is stable (usePersistedState) — safe to omit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveNow = React.useCallback(async (): Promise<void> => {
@@ -165,122 +170,49 @@ export function useCloudSync(
     await upsertChart(json, id);
   }, [upsertChart]);
 
-  /** True when the working chart has edits the cloud hasn't seen. */
-  const isDirty = React.useCallback((): boolean => {
-    const { serialized: json } = latest.current;
-    if (json === lastSavedRef.current) return false;
-    try {
-      return hasContent(JSON.parse(json));
-    } catch {
-      return false;
-    }
-  }, []);
-
-  /** Push unsaved edits (the debounce window's contents) right now. */
-  const flushPending = React.useCallback(async (): Promise<void> => {
-    if (!isDirty()) return;
-    const { serialized: json, chartId: id } = latest.current;
-    await upsertChart(json, id);
-  }, [isDirty, upsertChart]);
-
-  // A connection blip during the final debounce can leave the chart's
-  // last edits cloud-less forever (the clinician made no further edits,
-  // so no new autosave fires). Retry when the browser comes back online.
-  React.useEffect(() => {
-    if (!on) return;
-    const onOnline = () => {
-      if (statusRef.current !== 'error') return;
-      flushPending().catch(() => {
-        // still failing — the error chip stays up
-      });
-    };
-    window.addEventListener('online', onOnline);
-    return () => window.removeEventListener('online', onOnline);
-  }, [on, flushPending]);
-
-  // Debounced autosave. Keyed on the serialized snapshot so only actual
-  // edits schedule a save.
-  const skippedFirst = React.useRef(false);
-  const suppressNext = React.useRef(false);
-  React.useEffect(() => {
-    if (!on) return;
-    // Don't upsert the state we just restored at mount — only real edits.
-    if (!skippedFirst.current) {
-      skippedFirst.current = true;
-      lastSavedRef.current = serialized;
-      return;
-    }
-    // Opening a cloud chart replays its own content into state — that
-    // change isn't an edit either.
-    if (suppressNext.current) {
-      suppressNext.current = false;
-      lastSavedRef.current = serialized;
-      return;
-    }
-    if (!autosaveEnabled) return;
-    // Opened records don't autosave — Save chart writes them explicitly.
-    if (openedExisting) return;
-    const snap: ChartSnapshot = JSON.parse(serialized);
-    if (!hasContent(snap)) return;
-
-    const timer = window.setTimeout(() => {
-      upsertChart(serialized, chartId).catch((e) => {
-        // eslint-disable-next-line no-console
-        console.warn('[cloud] chart save failed:', e instanceof Error ? e.message : e);
-      });
-    }, AUTOSAVE_DEBOUNCE_MS);
-    return () => window.clearTimeout(timer);
-  }, [on, serialized, chartId, upsertChart, autosaveEnabled, openedExisting]);
+  // Guard leaving a chart with unsaved changes (no autosave to catch it).
+  const confirmDiscardIfDirty = (verb: string): boolean => {
+    if (!dirtyRef.current) return true;
+    return window.confirm(
+      `This chart has unsaved changes. ${verb} anyway? ` +
+      'Save first (top of the screen) if you want them in the cloud.'
+    );
+  };
 
   const listCharts = React.useCallback(async (): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
     const { data, error } = await supabase
       .from('charts')
-      .select('id, patient_name, patient_number, species, chart_date, recall_date, updated_at')
+      .select('id, patient_name, patient_number, owner_name, owner_phone, species, chart_date, recall_date, updated_at')
       .order('updated_at', { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
     return (data ?? []) as CloudChartMeta[];
   }, []);
 
-  // applySnapshot comes from useChartState, which returns a fresh object
-  // every render — hold the latest via ref so openChart stays stable.
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
   const openChart = React.useCallback(async (id: string): Promise<void> => {
     if (!supabase) return;
-    // Opening replaces the working chart.
-    if (isDirty()) {
-      if (openedExistingRef.current) {
-        // Viewing a saved record — never auto-write over it. Confirm the
-        // caller is OK discarding their unsaved edits (Save chart keeps).
-        if (!window.confirm(
-          'You have unsaved changes to this saved chart. Use “Save chart” to keep them. Open the other chart and discard these changes?'
-        )) return;
-      } else if (autosaveRef.current) {
-        try {
-          await flushPending();
-        } catch {
-          if (!window.confirm(
-            'Your current chart could not be saved to the cloud. Open the other chart anyway? Unsaved changes will be lost.'
-          )) return;
-        }
-      } else if (!window.confirm(
-        'Autosave is off and your current chart has unsaved changes. Open the other chart anyway? Unsaved changes will be lost.'
-      )) {
-        return;
-      }
-    }
+    if (!confirmDiscardIfDirty('Open the other chart')) return;
     const { data, error } = await supabase
       .from('charts')
       .select('id, data')
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
-    suppressNext.current = true;
+    baselineNext.current = true; // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
-  }, [isDirty, flushPending]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
+    if (!supabase) throw new Error('Cloud is not configured.');
+    const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
+    if (error) throw new Error(error.message);
+    return data.data as ChartSnapshot;
+  }, []);
 
   const deleteChart = React.useCallback(async (id: string): Promise<void> => {
     if (!supabase) return;
@@ -290,41 +222,22 @@ export function useCloudSync(
 
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
-    // Flush edits still inside the debounce window before the session
-    // ends — signing out must not eat the last few seconds of charting.
-    if (isDirty()) {
-      if (openedExistingRef.current) {
-        if (!window.confirm(
-          'You have unsaved changes to a saved chart. Use “Save chart” first if you want to keep them. Sign out and discard?'
-        )) return;
-      } else if (autosaveRef.current) {
-        try {
-          await flushPending();
-        } catch {
-          if (!window.confirm(
-            'Your chart could not be saved to the cloud. Sign out anyway? It stays on this device only.'
-          )) return;
-        }
-      } else if (!window.confirm(
-        'Autosave is off and your chart has unsaved changes. Sign out anyway? It stays on this device only.'
-      )) {
-        return;
-      }
-    }
+    if (!confirmDiscardIfDirty('Sign out')) return;
     await supabase.auth.signOut();
     // Shared clinic machines: the next account must not inherit this
     // patient's chart from localStorage.
     clearChartStorage();
-  }, [isDirty, flushPending]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     enabled: on,
     status,
+    dirty,
     saveNow,
-    autosaveEnabled,
-    setAutosaveEnabled,
     listCharts,
     openChart,
+    fetchChart,
     deleteChart,
     signOut,
   };

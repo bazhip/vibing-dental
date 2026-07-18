@@ -907,3 +907,14 @@
   white-space: nowrap;
 }
 .chart-library__act:hover { border-color: var(--primary); }
+
+/* Owner name under the patient name in My charts. */
+.chart-library__patient-main { display: inline-flex; flex-direction: column; min-width: 0; }
+.chart-library__owner {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

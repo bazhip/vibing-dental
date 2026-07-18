@@ -71,6 +71,34 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
       </div>
 
+      {/* Pet owner (client) — sits right under the pet's identity, above
+          the per-procedure fields. Searchable in My charts. */}
+      <div className="patient-form__row">
+        <label className="patient-form__label">
+          Owner name
+          <input
+            type="text"
+            className="patient-form__input"
+            placeholder="Pet owner / client"
+            autoComplete="off"
+            value={patientInfo.ownerName}
+            onChange={handleInputChange('ownerName')}
+          />
+        </label>
+        <label className="patient-form__label">
+          Owner phone
+          <input
+            type="tel"
+            className="patient-form__input"
+            placeholder="Contact number"
+            autoComplete="off"
+            value={patientInfo.ownerPhone}
+            onChange={handleInputChange('ownerPhone')}
+          />
+          <span className="patient-form__hint">Owner name &amp; phone are searchable in My charts.</span>
+        </label>
+      </div>
+
       {/* Doctor name comes from the practice profile (set at signup / in
           Practice settings) and is embedded in the PDF automatically —
           only the per-procedure tech is entered here. */}
@@ -87,7 +115,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
 
         <label className="patient-form__label">
-          Recall due
+          Recheck due
           <input
             type="date"
             className="patient-form__input"

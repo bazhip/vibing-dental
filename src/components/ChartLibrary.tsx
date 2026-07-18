@@ -5,8 +5,9 @@ interface ChartLibraryProps {
   listCharts: () => Promise<CloudChartMeta[]>;
   onOpen: (id: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
-  /** Start a fresh visit for a patient (from their history row). */
-  onNewVisit: (identity: { patientName: string; patientNumber: string; species: string }) => void;
+  /** Start a fresh visit for a patient, carrying identity + gone teeth
+   *  from their most recent visit (by chart id). */
+  onNewVisit: (latestChartId: string) => void;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -23,6 +24,8 @@ interface PatientGroup {
   key: string;
   name: string;
   number: string;
+  owner: string;
+  ownerPhone: string;
   species: string;
   visits: CloudChartMeta[];
   latestUpdated: string;
@@ -50,6 +53,8 @@ function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
         key,
         name: c.patient_name.trim() || 'Unnamed patient',
         number: c.patient_number.trim(),
+        owner: c.owner_name?.trim() || '',
+        ownerPhone: c.owner_phone?.trim() || '',
         species: c.species,
         visits: [],
         latestUpdated: c.updated_at,
@@ -60,6 +65,9 @@ function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
     g.visits.push(c);
     // Rows arrive newest-first, so the first-seen values are the latest.
     if (c.updated_at > g.latestUpdated) g.latestUpdated = c.updated_at;
+    // Prefer a non-empty owner from any visit.
+    if (!g.owner && c.owner_name?.trim()) g.owner = c.owner_name.trim();
+    if (!g.ownerPhone && c.owner_phone?.trim()) g.ownerPhone = c.owner_phone.trim();
     // Keep the soonest non-empty recall date across visits.
     if (c.recall_date && (!g.recall || c.recall_date < g.recall)) g.recall = c.recall_date;
   }
@@ -117,7 +125,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     if (!charts) return null;
     const q = query.trim().toLowerCase();
     let g = groupByPatient(charts);
-    if (q) g = g.filter((x) => `${x.name} ${x.number}`.toLowerCase().includes(q));
+    if (q) g = g.filter((x) => `${x.name} ${x.number} ${x.owner} ${x.ownerPhone}`.toLowerCase().includes(q));
     if (dueOnly) g = g.filter((x) => x.recall && x.recall <= today);
     const cmp: Record<SortKey, (a: PatientGroup, b: PatientGroup) => number> = {
       patient: (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
@@ -238,7 +246,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               aria-pressed={dueOnly}
               disabled={dueCount === 0 && !dueOnly}
             >
-              Due for recall{dueCount > 0 ? ` (${dueCount})` : ''}
+              Due for recheck{dueCount > 0 ? ` (${dueCount})` : ''}
             </button>
           </div>
 
@@ -258,7 +266,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               {query
                 ? 'No patients match that search.'
                 : dueOnly
-                ? 'No patients are due for recall.'
+                ? 'No patients are due for a recheck.'
                 : 'No saved charts yet — they save automatically as you chart.'}
             </div>
           )}
@@ -274,7 +282,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   <span role="columnheader">Species</span>
                   <span role="columnheader">Visits</span>
                   {sortHeader('updated', 'Updated')}
-                  {sortHeader('recall', 'Recall')}
+                  {sortHeader('recall', 'Recheck')}
                 </div>
                 <span className="chart-library__row-actions" aria-hidden="true" />
               </div>
@@ -296,7 +304,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                         >
                           <span role="cell" className="chart-library__patient">
                             {multi && <span className="chart-library__disclosure" aria-hidden="true">{isOpen ? '▾' : '▸'}</span>}
-                            {g.name}
+                            <span className="chart-library__patient-main">
+                              {g.name}
+                              {g.owner && <span className="chart-library__owner">{g.owner}</span>}
+                            </span>
                           </span>
                           <span role="cell" className="chart-library__cell">{g.number || '—'}</span>
                           <span role="cell" className="chart-library__cell chart-library__cell--species">
@@ -314,13 +325,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           <button
                             type="button"
                             className="chart-library__act"
-                            onClick={() =>
-                              onNewVisit({
-                                patientName: only.patient_name,
-                                patientNumber: only.patient_number,
-                                species: only.species,
-                              })
-                            }
+                            onClick={() => onNewVisit(g.visits[0].id)}
                             title={`Start a new visit for ${g.name}`}
                           >
                             + Visit
