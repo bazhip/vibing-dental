@@ -218,7 +218,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const label = (() => {
     if (voice.recording) return 'Stop';
     if (activeChunkCount > 0) return 'Finishing…';
-    return 'Voice';
+    return 'AI autofill';
   })();
   const subLabel = (() => {
     if (voice.recording && activeChunkCount > 0) return 'listening · sending…';
@@ -241,11 +241,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         className={className}
         onClick={handleClick}
         aria-pressed={voice.recording}
-        title={hasApiKey ? 'Voice autofill — start/stop recording' : 'Set Claude API key to enable'}
+        title={hasApiKey ? 'AI autofill — dictate to fill the chart; start/stop recording' : 'Set Claude API key to enable'}
       >
-        <span className="voice-input__icon" aria-hidden="true">
-          {voice.recording ? '⏹' : '🎙'}
-        </span>
+        {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
       </button>

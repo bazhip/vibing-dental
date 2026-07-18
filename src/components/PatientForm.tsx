@@ -25,9 +25,16 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     onPatientInfoChange(field, event.target.value);
   };
 
-  const handleSpeciesClick = (selectedSpecies: Species) => {
-    onSpeciesChange(selectedSpecies);
-  };
+  // The one Species value carries both axes; the UI splits them into a
+  // species picker (feline/canine) and a dentition picker (permanent/
+  // deciduous) so neither list is a four-way combo.
+  const base: 'feline' | 'canine' = species.startsWith('canine') ? 'canine' : 'feline';
+  const dentition: 'permanent' | 'deciduous' = species.endsWith('deciduous') ? 'deciduous' : 'permanent';
+  const combine = (b: 'feline' | 'canine', d: 'permanent' | 'deciduous'): Species =>
+    (d === 'deciduous' ? `${b}-deciduous` : b) as Species;
+
+  const handleBaseChange = (b: 'feline' | 'canine') => onSpeciesChange(combine(b, dentition));
+  const handleDentitionChange = (d: 'permanent' | 'deciduous') => onSpeciesChange(combine(base, d));
 
   return (
     <div className="patient-form">
@@ -153,54 +160,63 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
       <div className="patient-form__selectors">
         <div className="patient-form__selector">
-        <span className="patient-form__selector-label" id="species-group-label">
-          Species
-        </span>
-        <div
-          className="patient-form__species"
-          role="radiogroup"
-          aria-labelledby="species-group-label"
-        >
-          <button
-            type="button"
-            role="radio"
-            aria-checked={species === 'feline'}
-            className={`species-tab ${species === 'feline' ? 'species-tab--active' : ''}`}
-            onClick={() => handleSpeciesClick('feline')}
+          <span className="patient-form__selector-label" id="species-group-label">
+            Species
+          </span>
+          <div
+            className="patient-form__species"
+            role="radiogroup"
+            aria-labelledby="species-group-label"
           >
-            Feline
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={species === 'feline-deciduous'}
-            className={`species-tab ${species === 'feline-deciduous' ? 'species-tab--active' : ''}`}
-            onClick={() => handleSpeciesClick('feline-deciduous')}
-          >
-            Feline (Deciduous)
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={species === 'canine'}
-            className={`species-tab ${species === 'canine' ? 'species-tab--active' : ''}`}
-            onClick={() => handleSpeciesClick('canine')}
-          >
-            Canine
-          </button>
-
-          <button
-            type="button"
-            role="radio"
-            aria-checked={species === 'canine-deciduous'}
-            className={`species-tab ${species === 'canine-deciduous' ? 'species-tab--active' : ''}`}
-            onClick={() => handleSpeciesClick('canine-deciduous')}
-          >
-            Canine (Deciduous)
-          </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={base === 'feline'}
+              className={`species-tab ${base === 'feline' ? 'species-tab--active' : ''}`}
+              onClick={() => handleBaseChange('feline')}
+            >
+              Feline
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={base === 'canine'}
+              className={`species-tab ${base === 'canine' ? 'species-tab--active' : ''}`}
+              onClick={() => handleBaseChange('canine')}
+            >
+              Canine
+            </button>
+          </div>
         </div>
+
+        <div className="patient-form__selector">
+          <span className="patient-form__selector-label" id="dentition-group-label">
+            Dentition
+          </span>
+          <div
+            className="patient-form__species"
+            role="radiogroup"
+            aria-labelledby="dentition-group-label"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={dentition === 'permanent'}
+              className={`species-tab ${dentition === 'permanent' ? 'species-tab--active' : ''}`}
+              onClick={() => handleDentitionChange('permanent')}
+            >
+              Permanent
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={dentition === 'deciduous'}
+              className={`species-tab ${dentition === 'deciduous' ? 'species-tab--active' : ''}`}
+              onClick={() => handleDentitionChange('deciduous')}
+            >
+              Deciduous
+            </button>
+          </div>
         </div>
       </div>
     </div>

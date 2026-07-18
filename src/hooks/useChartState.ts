@@ -285,8 +285,9 @@ export function useChartState(): UseChartStateReturn {
     if (
       hasEnteredData &&
       !window.confirm(
-        'Switching species clears the tooth chart grid (cat and dog use ' +
-          'different tooth numbering). Continue?'
+        'Changing the species or dentition clears the tooth chart grid — ' +
+          'cats, dogs, and baby (deciduous) teeth use different tooth ' +
+          'numbering. Continue?'
       )
     ) {
       return;
