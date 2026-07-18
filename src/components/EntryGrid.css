@@ -1418,13 +1418,7 @@
 .tooth-diagram-wrapper {
   position: relative;
   width: 100%;
-  /* Cap the width so the aspect-driven height fits the viewport without
-     scrolling to reach lower teeth. The SVG stays width:100% of the
-     wrapper (so the comment overlay stays aligned); we just shrink the
-     wrapper. The multiplier ≈ the diagram's width:height aspect, kept a
-     touch generous so it's the binding constraint on short screens. */
-  max-width: min(1100px, calc((100vh - var(--topbar-height, 64px) - 16.5rem) * 0.85));
-  margin-inline: auto;
+  max-width: 1200px;
   background: white;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -2289,7 +2283,36 @@ button.save-status--error {
   font-family: inherit;
 }
 
-/* Onboarding walkthrough */
+/* Anchored product tour: spotlight + popover pointing at real elements. */
+.tour { position: fixed; inset: 0; z-index: 200; }
+.tour__dim { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.55); }
+.tour__spotlight {
+  position: fixed;
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 0 2px var(--primary, #0c6b63);
+  pointer-events: none;
+  transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+.tour__pop {
+  position: fixed;
+  background: var(--surface, #fff);
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.28);
+  padding: 1rem 1.1rem;
+  z-index: 201;
+}
+.tour__eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-muted, #94a3b8); }
+.tour__title { margin: 0.2rem 0 0.4rem; font-size: 1.05rem; color: var(--text, #0f172a); }
+.tour__body { margin: 0 0 0.8rem; font-size: 0.9rem; line-height: 1.45; color: var(--text-muted, #475569); }
+.tour__foot { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.tour__dots { display: flex; gap: 0.28rem; }
+.tour__dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--border-strong, #cbd5e1); }
+.tour__dot--on { background: var(--primary, #0c6b63); }
+.tour__nav { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; }
+.tour__skip { background: none; border: none; color: var(--text-muted, #64748b); font: inherit; font-size: 0.82rem; cursor: pointer; padding: 0.3rem 0.4rem; }
+@media (prefers-reduced-motion: reduce) { .tour__spotlight { transition: none; } }
+
+/* Onboarding walkthrough (legacy centered variant, kept for reference) */
 .walkthrough { max-width: 30rem; }
 .walkthrough__body { min-height: 8.5rem; }
 .walkthrough__eyebrow {

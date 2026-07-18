@@ -836,6 +836,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         open={walkthroughOpen}
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled}
+        onNavigate={setActiveSection}
       />
 
       <PracticeSettingsModal
