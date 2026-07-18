@@ -24,6 +24,9 @@ interface LayoutProps {
    *  (so it can jump the user to a section, e.g. on a blocked save). */
   activeId?: string;
   onActiveChange?: (id: string) => void;
+  /** Read-only: section CONTENT is disabled (a saved chart being viewed)
+   *  while the section nav stays usable so it can still be browsed. */
+  contentDisabled?: boolean;
 }
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
@@ -31,6 +34,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   defaultActiveId,
   activeId,
   onActiveChange,
+  contentDisabled = false,
 }) => {
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
@@ -69,7 +73,9 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
             className="sidebar-layout__panel"
             style={s.id === active ? undefined : { display: 'none' }}
           >
-            {s.content}
+            <fieldset className="sidebar-layout__fieldset" disabled={contentDisabled}>
+              {s.content}
+            </fieldset>
           </div>
         ))}
       </main>

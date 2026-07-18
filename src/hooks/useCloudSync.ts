@@ -205,6 +205,21 @@ export function useCloudSync(
     await upsertChart(json, id);
   }, [upsertChart]);
 
+  // Autosave — for NEW charts only. Charts opened from a saved one
+  // (openedExisting) never autosave: they're read-only until the user
+  // unlocks and saves deliberately, so history isn't overwritten. A
+  // patient name is required first (that's how charts are found again).
+  const saveNowRef = React.useRef(saveNow);
+  saveNowRef.current = saveNow;
+  React.useEffect(() => {
+    if (!on || chart.openedExisting) return;
+    if (!dirty) return;
+    if (!snapshot.patientInfo.patientName.trim()) return;
+    const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [on, chart.openedExisting, dirty, serialized]);
+
   // Guard leaving a chart with unsaved changes (no autosave to catch it).
   const confirmDiscardIfDirty = (verb: string): boolean => {
     if (!dirtyRef.current) return true;

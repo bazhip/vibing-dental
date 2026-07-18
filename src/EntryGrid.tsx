@@ -99,6 +99,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [activeSection, setActiveSection] = React.useState('patient');
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
+  // Saved charts open read-only; the user unlocks to edit them, and each
+  // save then overwrites the original deliberately. Reset whenever the
+  // active chart changes.
+  const [editUnlocked, setEditUnlocked] = React.useState(false);
+  React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
+  const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
   // "My charts" dialog — overlays the working chart like the other popups.
   const [libraryOpen, setLibraryOpen] = React.useState(false);
   const isAdmin = useIsAdmin();
@@ -128,7 +134,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // patient name can't be found again in My charts (the library groups by
   // number-else-name), so require one before it reaches the cloud.
   const attemptSave = () => {
-    if (!cloud.enabled) return;
+    if (!cloud.enabled || readOnly) return;
     if (!chart.patientInfo.patientName.trim()) {
       setSaveHint('Add a patient name before saving — it’s how you’ll find this chart again.');
       setActiveSection('patient');
@@ -604,28 +610,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <span className="save-status__detail">{saveHint}</span>
             </span>
           )}
-          {cloud.enabled && cloud.status !== 'saving' && cloud.status !== 'error' && cloud.dirty && (
-            <button
-              type="button"
-              className="save-status save-status--manual"
-              onClick={attemptSave}
-              title="Save this chart to the cloud (⌘S)"
-            >
-              ● Save chart
-            </button>
-          )}
-          {cloud.enabled &&
-            (cloud.status === 'saved' ||
-              (cloud.status === 'idle' && chart.patientInfo.patientName.trim() !== '')) &&
-            !cloud.dirty && (
-              <span
-                className="save-status save-status--saved"
-                aria-hidden="true"
-                title="All changes are saved to the cloud"
-              >
+          {/* New charts autosave — show a quiet "Saved" once there's a
+              name and nothing pending, or a nudge to add a name. Opened
+              (existing) charts are driven by the banner below, not here. */}
+          {cloud.enabled && !chart.openedExisting && cloud.status !== 'saving' && cloud.status !== 'error' && (
+            chart.patientInfo.patientName.trim() === '' && cloud.dirty ? (
+              <span className="save-status save-status--manual" title="Autosaves once the patient has a name">
+                Add a patient name to save
+              </span>
+            ) : cloud.status === 'saved' || (!cloud.dirty && chart.patientInfo.patientName.trim() !== '') ? (
+              <span className="save-status save-status--saved" aria-hidden="true" title="Autosaved to the cloud">
                 ✓ Saved
               </span>
-            )}
+            ) : null
+          )}
           {cloud.enabled && (
             <button
               type="button"
@@ -672,6 +670,47 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />
         </div>
       </header>
+
+      {/* Opened-from-saved notice: view is locked until the user chooses
+          to edit, and saving then overwrites the original — a deliberate
+          act, so historical charts aren't changed by accident. */}
+      {cloud.enabled && chart.openedExisting && (
+        <div className={`chart-lock-banner${readOnly ? '' : ' chart-lock-banner--editing'}`} role="status">
+          {readOnly ? (
+            <>
+              <span className="chart-lock-banner__text">
+                You're viewing a saved chart. Editing is locked so it isn't changed by accident.
+              </span>
+              <button
+                type="button"
+                className="entry-grid__button entry-grid__button--topbar"
+                onClick={() => setEditUnlocked(true)}
+              >
+                Edit chart
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="chart-lock-banner__text">
+                Editing a saved chart — saving <strong>overwrites</strong> it.
+                {cloud.status === 'saving' ? ' Saving…' : cloud.status === 'saved' || !cloud.dirty ? ' All changes saved.' : ' Unsaved changes.'}
+              </span>
+              <button
+                type="button"
+                className="entry-grid__button entry-grid__button--topbar"
+                onClick={attemptSave}
+                disabled={!cloud.dirty || cloud.status === 'saving'}
+                title="Overwrite the saved chart (⌘S)"
+              >
+                {cloud.status === 'saving' ? 'Saving…' : 'Save changes'}
+              </button>
+            </>
+          )}
+          {cloud.status === 'error' && cloud.saveError && (
+            <span className="save-status__detail">{cloud.saveError}</span>
+          )}
+        </div>
+      )}
       {libraryOpen && (
         <ChartLibrary
           listCharts={cloud.listCharts}
@@ -739,6 +778,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={sections}
           activeId={activeSection}
           onActiveChange={setActiveSection}
+          contentDisabled={readOnly}
         />
       </form>
 

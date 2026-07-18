@@ -2172,6 +2172,28 @@ button.save-status--error {
   font-family: inherit;
 }
 
+/* Saved-chart lock notice, below the topbar. Neutral while viewing;
+   amber while editing (a reminder that saving overwrites history). */
+.chart-lock-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border-strong, #cbd5e1);
+  border-radius: 10px;
+  background: var(--surface-sunken, #f1f5f9);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.chart-lock-banner--editing {
+  border-color: #f6c343;
+  background: #fef7e3;
+}
+.chart-lock-banner__text { flex: 1 1 auto; min-width: 0; }
+.chart-lock-banner .entry-grid__button { flex: none; }
+
 /* Failed-save detail: the plain-language reason + recovery step, shown
    next to the retry button. Capped so it wraps instead of shoving the
    topbar; hidden on phones (the button's title + the SR live region

@@ -97,6 +97,11 @@ export interface UseChartStateReturn {
   /** Overwrite local state with a snapshot (e.g. a chart opened from the
    *  cloud) and adopt its cloud id. */
   applySnapshot: (snapshot: ChartSnapshot, id: string) => void;
+
+  /** True when the working chart came from a saved chart (cloud/PDF) —
+   *  it opens read-only and needs a deliberate manual save. */
+  openedExisting: boolean;
+  setOpenedExisting: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
@@ -302,6 +307,15 @@ export function useChartState(): UseChartStateReturn {
     'chart.cloudId', 1, () => generateChartId()
   );
 
+  // True when the working chart was OPENED from an existing saved chart
+  // (cloud library or PDF), vs. a brand-new one. New charts autosave;
+  // opened ones start read-only and require a deliberate manual save so
+  // history isn't overwritten by accident. Persisted so a refresh mid-
+  // review keeps the read-only stance.
+  const [openedExisting, setOpenedExisting] = usePersistedState<boolean>(
+    'chart.openedExisting', 1, false
+  );
+
   /** Blank patient info for a fresh chart (optionally keeping identity). */
   const blankPatientInfo = (keep?: Partial<PatientInfo>): PatientInfo => ({
     patientName: '',
@@ -346,6 +360,7 @@ export function useChartState(): UseChartStateReturn {
     };
     const sp = identity ? identity.species : species;
     setCloudChartId(generateChartId());
+    setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setPatientInfo(blankPatientInfo(keep));
     if (identity) {
       setSpecies(sp);
@@ -388,6 +403,7 @@ export function useChartState(): UseChartStateReturn {
       throw new Error('That chart is damaged and could not be opened.');
     }
     const snapshot = normalizeSnapshot(raw);
+    setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
     setPatientInfo(snapshot.patientInfo);
     setSpecies(snapshot.species);
     setLogo(snapshot.logo);
@@ -422,8 +438,10 @@ export function useChartState(): UseChartStateReturn {
         throw new Error('Stashed chart state has an unexpected shape');
       }
       // A restored PDF is its own chart — give it a fresh cloud row so
-      // saving can't overwrite whichever chart was open before.
+      // saving can't overwrite whichever chart was open before. Treat it
+      // as an opened existing chart (read-only until the user unlocks).
       setCloudChartId(generateChartId());
+      setOpenedExisting(true);
       setPatientInfo(parsed.patientInfo);
       setSpecies(parsed.species);
       setLogo(parsed.logo);
@@ -487,5 +505,8 @@ export function useChartState(): UseChartStateReturn {
     resetCloudChartId,
     getSnapshot,
     applySnapshot,
+
+    openedExisting,
+    setOpenedExisting,
   };
 }

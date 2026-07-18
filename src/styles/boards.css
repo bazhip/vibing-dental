@@ -70,6 +70,20 @@
   opacity: 1;
 }
 
+/* Reset the wrapping fieldset so it's layout-invisible; when disabled
+   (viewing a saved chart) it also blocks the SVG diagrams' pointer
+   interactions, which the disabled attribute alone doesn't cover. */
+.sidebar-layout__fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+.sidebar-layout__fieldset:disabled {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
 .sidebar-layout__main {
   background: var(--surface);
   border: 1px solid var(--border);
