@@ -217,3 +217,8 @@ alter table public.attachments        add column if not exists practice_id uuid;
 -- insert WITH CHECK:
 --   created_by = auth.uid() AND (practice_id IS NULL OR public.is_member_of(practice_id))
 -- Managed server-side by the team-api edge function (owner-gated).
+
+-- Shared per-practice logo (logos/{practice_id}/logo.png). Applied via
+-- the practice_logo migration; owners write via the storage policy
+-- "owners manage practice logo" (is_owner_of on the folder = practice id).
+alter table public.practices add column if not exists logo_path text not null default '';

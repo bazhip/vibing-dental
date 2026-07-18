@@ -244,7 +244,6 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               className={dueOnly ? 'chart-library__filter chart-library__filter--on' : 'chart-library__filter'}
               onClick={() => setDueOnly((v) => !v)}
               aria-pressed={dueOnly}
-              disabled={dueCount === 0 && !dueOnly}
             >
               Due for recheck{dueCount > 0 ? ` (${dueCount})` : ''}
             </button>

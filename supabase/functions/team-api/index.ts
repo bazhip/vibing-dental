@@ -17,14 +17,48 @@ const CORS = {
 const json = (b: Json, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { 'Content-Type': 'application/json', ...CORS } });
 
+const INVITE_FROM = 'ToothOps <noreply@toothops.app>';
+
+/** Create the account + email a set-password link via Resend (verified
+ *  domain → delivers to anyone; not rate-limited like the built-in
+ *  mailer). Returns the created user or an error. */
 // deno-lint-ignore no-explicit-any
-async function addOrInviteMember(admin: any, practiceId: string, email: string, redirectTo?: string) {
+async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo?: string) {
+  const { data: link, error } = await admin.auth.admin.generateLink({
+    type: 'invite',
+    email,
+    options: redirectTo ? { redirectTo } : undefined,
+  });
+  if (error || !link?.user || !link?.properties?.action_link) {
+    return { user: null, error: error?.message ?? 'Could not create the invite.' };
+  }
+  const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
+  if (key) {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: INVITE_FROM,
+        to: [email],
+        subject: `You've been added to ${practiceName || 'a practice'} on ToothOps`,
+        text:
+          `You've been added to ${practiceName || 'a practice'} on ToothOps — chairside veterinary dental charting.\n\n` +
+          `Set your password to activate your account:\n${link.properties.action_link}\n\n` +
+          `If you weren't expecting this, you can ignore this email.`,
+      }),
+    }).catch(() => {});
+  }
+  return { user: link.user, error: null };
+}
+
+// deno-lint-ignore no-explicit-any
+async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo?: string) {
   const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   let target = list.users.find((u: { email?: string }) => (u.email ?? '').toLowerCase() === email);
   let invited = false;
   if (!target) {
-    const { data: inv, error: invErr } = await admin.auth.admin.inviteUserByEmail(email, redirectTo ? { redirectTo } : undefined);
-    if (invErr || !inv?.user) return { status: 502, body: { error: `Couldn't send the invite: ${invErr?.message ?? 'unknown error'}` } };
+    const inv = await inviteViaResend(admin, email, practiceName, redirectTo);
+    if (inv.error || !inv.user) return { status: 502, body: { error: `Couldn't send the invite: ${inv.error ?? 'unknown error'}` } };
     target = inv.user;
     invited = true;
   }
@@ -126,7 +160,7 @@ Deno.serve(async (req: Request) => {
         if (!email) return json({ error: 'Enter an email.' }, 400);
         const m = await requireOwner();
         if (!m) return json({ error: 'Only a practice owner can add members.' }, 403);
-        const result = await addOrInviteMember(admin, m.practiceId, email, redirectTo);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
         return json(result.body, result.status);
       }
 

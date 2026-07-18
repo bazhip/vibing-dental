@@ -68,9 +68,18 @@ async function normalizeToPng(file: File): Promise<Blob> {
   }
 }
 
-/** Upload a practice logo for the CURRENT session's user — shared by the
- *  Practice settings modal and the signup flow (which uploads right after
- *  the account session is created). */
+/** The caller's practice id (their shared practice), or '' when solo. */
+async function myPracticeId(userId: string): Promise<string> {
+  if (!supabase) return '';
+  const { data } = await supabase.from('profiles').select('practice_id').eq('id', userId).maybeSingle();
+  return data?.practice_id ?? '';
+}
+
+/** Upload the practice logo (shared across the whole practice team) — the
+ *  file lives at logos/{practice_id}/logo.png and the path is stored on
+ *  the practice. Only a practice owner may write (RLS). Falls back to a
+ *  per-user logo when the account has no practice (standalone). Shared by
+ *  Practice settings and the signup flow. */
 export async function uploadPracticeLogo(file: File): Promise<string> {
   if (!supabase) return '';
   if (file.size > LOGO_MAX_UPLOAD_BYTES) {
@@ -80,14 +89,24 @@ export async function uploadPracticeLogo(file: File): Promise<string> {
   const userId = sessionData.session?.user.id;
   if (!userId) return '';
   const png = await normalizeToPng(file);
+  const practiceId = await myPracticeId(userId);
+  if (practiceId) {
+    const path = `${practiceId}/logo.png`;
+    const { error: upError } = await supabase.storage
+      .from('logos')
+      .upload(path, png, { upsert: true, contentType: 'image/png' });
+    if (upError) throw new Error(upError.message);
+    const { error } = await supabase.from('practices').update({ logo_path: path }).eq('id', practiceId);
+    if (error) throw new Error(error.message);
+    return publicLogoUrl(path);
+  }
+  // Standalone fallback: per-user logo.
   const path = `${userId}/logo.png`;
   const { error: upError } = await supabase.storage
     .from('logos')
     .upload(path, png, { upsert: true, contentType: 'image/png' });
   if (upError) throw new Error(upError.message);
-  const { error } = await supabase
-    .from('profiles')
-    .upsert({ id: userId, logo_path: path });
+  const { error } = await supabase.from('profiles').upsert({ id: userId, logo_path: path });
   if (error) throw new Error(error.message);
   return publicLogoUrl(path);
 }
@@ -116,14 +135,22 @@ export function useProfile(): UseProfileReturn {
         .select('practice_name, doctor_name, logo_path, practice_id')
         .eq('id', userId)
         .maybeSingle();
+      // Logo is shared per practice — prefer the practice's logo, falling
+      // back to any legacy per-user logo.
+      let effectiveLogoPath = data?.logo_path ?? '';
+      const pid = data?.practice_id ?? '';
+      if (pid) {
+        const { data: prac } = await supabase.from('practices').select('logo_path').eq('id', pid).maybeSingle();
+        if (prac?.logo_path) effectiveLogoPath = prac.logo_path;
+      }
       if (!cancelled) {
         if (data) {
           setProfile({
             practiceName: data.practice_name ?? '',
             doctorName: data.doctor_name ?? '',
           });
-          setLogoUrl(publicLogoUrl(data.logo_path ?? ''));
-          setPracticeId(data.practice_id ?? '');
+          setLogoUrl(publicLogoUrl(effectiveLogoPath));
+          setPracticeId(pid);
         }
         setLoaded(true);
       }
@@ -157,11 +184,16 @@ export function useProfile(): UseProfileReturn {
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user.id;
     if (!userId) return;
-    await supabase.storage.from('logos').remove([`${userId}/logo.png`]);
-    const { error } = await supabase
-      .from('profiles')
-      .upsert({ id: userId, logo_path: '' });
-    if (error) throw new Error(error.message);
+    const pid = await myPracticeId(userId);
+    if (pid) {
+      await supabase.storage.from('logos').remove([`${pid}/logo.png`]);
+      const { error } = await supabase.from('practices').update({ logo_path: '' }).eq('id', pid);
+      if (error) throw new Error(error.message);
+    } else {
+      await supabase.storage.from('logos').remove([`${userId}/logo.png`]);
+      const { error } = await supabase.from('profiles').upsert({ id: userId, logo_path: '' });
+      if (error) throw new Error(error.message);
+    }
     setLogoUrl('');
   }, []);
 

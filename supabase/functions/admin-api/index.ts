@@ -13,6 +13,39 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 type Json = Record<string, unknown>;
 
+const INVITE_FROM = 'ToothOps <noreply@toothops.app>';
+
+/** Create the account + email a set-password link via Resend (verified
+ *  domain → delivers to anyone). Returns the created user or an error. */
+// deno-lint-ignore no-explicit-any
+async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo?: string) {
+  const { data: link, error } = await admin.auth.admin.generateLink({
+    type: 'invite',
+    email,
+    options: redirectTo ? { redirectTo } : undefined,
+  });
+  if (error || !link?.user || !link?.properties?.action_link) {
+    return { user: null, error: error?.message ?? 'Could not create the invite.' };
+  }
+  const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
+  if (key) {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: INVITE_FROM,
+        to: [email],
+        subject: `You've been added to ${practiceName || 'a practice'} on ToothOps`,
+        text:
+          `You've been added to ${practiceName || 'a practice'} on ToothOps.\n\n` +
+          `Set your password to activate your account:\n${link.properties.action_link}\n\n` +
+          `If you weren't expecting this, you can ignore this email.`,
+      }),
+    }).catch(() => {});
+  }
+  return { user: link.user, error: null };
+}
+
 // Browser calls come from the app's origins (github.io / vercel /
 // localhost dev) — auth is enforced by the JWT + role check, not CORS.
 const CORS = {
@@ -165,7 +198,7 @@ Deno.serve(async (req: Request) => {
       case 'list_practices': {
         const { data: pracs } = await admin
           .from('practices')
-          .select('id, name, owner, created_at')
+          .select('id, name, owner, logo_path, created_at')
           .order('created_at', { ascending: true });
         const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
         const { data: chartRows } = await admin.from('charts').select('practice_id').not('practice_id', 'is', null).limit(20000);
@@ -176,9 +209,8 @@ Deno.serve(async (req: Request) => {
         const practices = [];
         for (const p of pracs ?? []) {
           const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
-          const { data: ownerProfile } = await admin.from('profiles').select('logo_path').eq('id', p.owner).maybeSingle();
-          const logoUrl = ownerProfile?.logo_path
-            ? `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/logos/${ownerProfile.logo_path}?t=${Date.now()}`
+          const logoUrl = p.logo_path
+            ? `${Deno.env.get('SUPABASE_URL')}/storage/v1/object/public/logos/${p.logo_path}?t=${Date.now()}`
             : '';
           const memberDetails = [];
           for (const m of (mems ?? []).filter((x) => x.practice_id === p.id)) {
@@ -231,23 +263,21 @@ Deno.serve(async (req: Request) => {
         const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
         const dataBase64 = typeof body.dataBase64 === 'string' ? body.dataBase64 : '';
         if (!practiceId || !dataBase64) return json({ error: 'missing practiceId or image' }, 400);
-        const { data: prac } = await admin.from('practices').select('owner').eq('id', practiceId).maybeSingle();
-        if (!prac) return json({ error: 'unknown practice' }, 404);
         const bytes = Uint8Array.from(atob(dataBase64), (c) => c.charCodeAt(0));
-        const path = `${prac.owner}/logo.png`;
+        const path = `${practiceId}/logo.png`;
         const up = await admin.storage.from('logos').upload(path, bytes, { upsert: true, contentType: 'image/png' });
         if (up.error) return json({ error: up.error.message }, 502);
-        await admin.from('profiles').upsert({ id: prac.owner, logo_path: path });
+        const { error } = await admin.from('practices').update({ logo_path: path }).eq('id', practiceId);
+        if (error) throw error;
         return json({ ok: true });
       }
 
       case 'remove_practice_logo': {
         const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);
-        const { data: prac } = await admin.from('practices').select('owner').eq('id', practiceId).maybeSingle();
-        if (!prac) return json({ error: 'unknown practice' }, 404);
-        await admin.storage.from('logos').remove([`${prac.owner}/logo.png`]);
-        await admin.from('profiles').update({ logo_path: '' }).eq('id', prac.owner);
+        await admin.storage.from('logos').remove([`${practiceId}/logo.png`]);
+        const { error } = await admin.from('practices').update({ logo_path: '' }).eq('id', practiceId);
+        if (error) throw error;
         return json({ ok: true });
       }
 
@@ -275,17 +305,13 @@ Deno.serve(async (req: Request) => {
         const email = (typeof body.email === 'string' ? body.email : '').trim().toLowerCase();
         const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
         if (!practiceId || !email) return json({ error: 'missing practiceId or email' }, 400);
+        const { data: pracRow } = await admin.from('practices').select('name').eq('id', practiceId).maybeSingle();
         const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
         let target = list.users.find((u) => (u.email ?? '').toLowerCase() === email);
         let invited = false;
         if (!target) {
-          // No account yet — invite them (creates the account + emails a
-          // set-password link).
-          const { data: inv, error: invErr } = await admin.auth.admin.inviteUserByEmail(
-            email,
-            redirectTo ? { redirectTo } : undefined
-          );
-          if (invErr || !inv?.user) return json({ error: `Couldn't send the invite: ${invErr?.message ?? 'unknown'}` }, 502);
+          const inv = await inviteViaResend(admin, email, pracRow?.name ?? '', redirectTo);
+          if (inv.error || !inv.user) return json({ error: `Couldn't send the invite: ${inv.error ?? 'unknown'}` }, 502);
           target = inv.user;
           invited = true;
         }
