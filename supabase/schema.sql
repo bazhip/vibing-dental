@@ -239,6 +239,32 @@ alter table public.practices add column if not exists reminder_body text not nul
 alter table public.practices add column if not exists reminder_auto boolean not null default false;
 alter table public.practices add column if not exists reminder_lead_days int not null default 0;
 
+-- ------------------------------------------------ species / dentition split
+-- `species` is now canine|feline only; the deciduous-vs-permanent axis lives
+-- in its own `dentition` column so a patient can move deciduous -> permanent
+-- across visits. The 4-way tooth layout key still lives inside the chart JSON
+-- (data.species); these columns are for storage/queries and the My-charts
+-- grouping label. Backfill migration split legacy '<species>-deciduous' keys.
+alter table public.charts add column if not exists dentition text not null default 'permanent';
+
+-- ------------------------------------------------------- subscription plans
+-- Legacy per-account plan column (superseded by practices.plan + the
+-- BILLING section below — Stripe billing landed 2026-07-18). AI proxying
+-- + usage/costs recorded server-side.
+alter table public.profiles add column if not exists plan text not null default 'basic';
+create table if not exists public.app_config (
+  key text primary key,
+  value text not null default ''
+);
+create table if not exists public.ai_usage (
+  id bigint generated always as identity primary key,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  model text not null default '',
+  input_tokens int not null default 0,
+  output_tokens int not null default 0,
+  created_at timestamptz not null default now()
+);
+
 -- ================================================================ BILLING
 -- Stripe subscriptions (billing migration, 2026-07-18). The practice row
 -- is the billing anchor: every subscriber has a practice (billing-api

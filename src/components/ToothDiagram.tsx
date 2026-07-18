@@ -68,6 +68,8 @@ interface ToothDiagramProps {
   lockedTriadans?: Set<number>;
   /** Constrains which marks this diagram can toggle through. */
   markMode?: MarkMode;
+  /** Tooth to flash briefly (AI autofill just edited it). */
+  highlightTriadan?: number | null;
 }
 
 // Pure SVG-parser + comment-layout helpers live in `./toothDiagram/*` —
@@ -104,6 +106,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   strokeColor,
   strokeWidth,
   lockedTriadans,
+  highlightTriadan,
   markMode = 'all',
 }, ref) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -867,6 +870,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               // No hover tint while drawing — the crosshair + strokes are
               // the feedback there, and a tooth highlight is just noise.
               data-hovered={tool !== 'draw' && hoveredTriadan === tooth.triadan ? 'true' : 'false'}
+              data-ai-highlight={highlightTriadan === tooth.triadan ? 'true' : undefined}
               // Keyboard path: the diagram is the ONLY place a tooth can
               // be marked extracted, so each tooth is a focusable toggle
               // — pointer users see no difference.

@@ -25,6 +25,7 @@ export interface CloudChartMeta {
   owner_phone: string;
   owner_email: string;
   species: string;
+  dentition: string;
   chart_date: string;
   recall_date: string;
   updated_at: string;
@@ -152,6 +153,10 @@ export function useCloudSync(
       const { data: sessionData } = await client.auth.getSession();
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
       const snap: ChartSnapshot = JSON.parse(json);
+      // The snapshot's `species` is the combined layout key (e.g.
+      // 'canine-deciduous'); the row stores species + dentition split out.
+      const speciesBase = snap.species.startsWith('canine') ? 'canine' : 'feline';
+      const dentition = snap.species.endsWith('deciduous') ? 'deciduous' : 'permanent';
       const row = (rowId: string) => ({
         id: rowId,
         patient_name: snap.patientInfo.patientName,
@@ -159,7 +164,8 @@ export function useCloudSync(
         owner_name: snap.patientInfo.ownerName ?? '',
         owner_phone: snap.patientInfo.ownerPhone ?? '',
         owner_email: snap.patientInfo.ownerEmail ?? '',
-        species: snap.species,
+        species: speciesBase,
+        dentition,
         chart_date: snap.patientInfo.date,
         recall_date: snap.patientInfo.recallDate ?? '',
         practice_id: practiceIdRef.current || null,
@@ -233,7 +239,7 @@ export function useCloudSync(
     if (!supabase) return [];
     const { data, error } = await supabase
       .from('charts')
-      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, chart_date, recall_date, updated_at')
+      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at')
       .order('updated_at', { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
