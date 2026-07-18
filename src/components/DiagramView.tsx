@@ -19,6 +19,8 @@ interface DiagramViewProps {
   lockedTriadans?: Set<number>;
   /** Restricts the click cycle to a single mark type per diagram. */
   markMode?: MarkMode;
+  /** Tool selected when the diagram first mounts (default 'mark'). */
+  defaultTool?: DiagramTool;
 }
 
 export interface DiagramViewHandle {
@@ -54,8 +56,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   onStrokesChange,
   lockedTriadans,
   markMode,
+  defaultTool = 'mark',
 }, ref) => {
-  const [tool, setTool] = React.useState<DiagramTool>('mark');
+  const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
   // Comment-text size preference. Persisted so the user's pick survives

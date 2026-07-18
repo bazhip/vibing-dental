@@ -333,6 +333,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               strokes={chart.preDiagramStrokes}
               onStrokesChange={chart.setPreDiagramStrokes}
               markMode="missing-only"
+              defaultTool="comment"
             />
           </div>
           <aside className="diagram-with-codes__codes">
