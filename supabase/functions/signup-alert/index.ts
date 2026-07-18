@@ -56,15 +56,44 @@ Deno.serve(async (req: Request) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
-  // Anonymous no-account trial started — nothing to look up, no PII.
-  // The client fires this at most once per browser.
+  // Anonymous no-account trial started — nothing to look up. The client
+  // fires this at most once per browser; the request itself carries the
+  // visitor context (IP, user agent), which we enrich with a best-effort
+  // IP geolocation for the owner's alert.
   if (trial === true) {
     const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
     if (!key) return new Response('Resend key unavailable', { status: 500 });
+    const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+    const ua = req.headers.get('user-agent') ?? '';
+    const lang = req.headers.get('accept-language') ?? '';
+    const origin = req.headers.get('origin') ?? req.headers.get('referer') ?? '';
+    let geo = '';
+    if (ip) {
+      try {
+        const r = await fetch(`https://ipwho.is/${ip}`, { signal: AbortSignal.timeout(4000) });
+        const g = await r.json();
+        if (g?.success) {
+          geo = [g.city, g.region, g.country].filter(Boolean).join(', ');
+          if (g.connection?.isp) geo += ` · ${g.connection.isp}`;
+        }
+      } catch {
+        /* geo is a bonus — never block the alert on it */
+      }
+    }
     return sendAlert(
       key,
       'ToothOps: someone started a trial',
-      'A visitor started the no-account trial on the ToothOps landing page.'
+      [
+        'A visitor started the no-account trial on the ToothOps landing page.',
+        '',
+        `IP: ${ip || '(unknown)'}`,
+        geo && `Location: ${geo}`,
+        ua && `Browser: ${ua}`,
+        lang && `Language: ${lang}`,
+        origin && `From: ${origin}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
     );
   }
 
