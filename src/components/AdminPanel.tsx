@@ -190,6 +190,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     }
   };
 
+  // Auto-dismiss the result banner so it reads as a transient toast.
+  React.useEffect(() => {
+    if (!notice && !error) return;
+    const t = setTimeout(() => { setNotice(''); setError(''); }, 4500);
+    return () => clearTimeout(t);
+  }, [notice, error]);
+
   const handleSetPassword = () => {
     if (!selected) return;
     const pw = window.prompt(`New password for ${selected.email} (min 6 characters):`, '');
@@ -390,8 +397,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
             </button>
           </div>
 
-          {error && <div className="login-error" role="alert">{error}</div>}
-          {notice && <div className="login-notice" role="status">{notice}</div>}
+          {(error || notice) && (
+            <div className="admin-panel__banner">
+              {error && <div className="login-error" role="alert">{error}</div>}
+              {notice && <div className="login-notice" role="status">{notice}</div>}
+            </div>
+          )}
 
           {tab === 'accounts' && users !== null && users.length > 0 && (
             <div className="chart-library__table" role="table" aria-label="Practice accounts">

@@ -907,6 +907,16 @@
   border-bottom: 1px solid var(--border);
   margin-bottom: 0.25rem;
 }
+/* Result banner (e.g. "Invite re-sent") sticks to the top of the admin
+   modal body so it's seen even when the member list is scrolled. */
+.admin-panel__banner {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding-top: 0.25rem;
+  background: var(--surface, #fff);
+}
+
 .admin-panel__tab {
   font: inherit;
   font-size: 0.85rem;
