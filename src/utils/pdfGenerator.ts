@@ -133,8 +133,8 @@ export async function buildDentalChartPDFBytes(
   const doctorLine =
     branding.doctorName?.trim() ||
     (logo === 'vca'
-      ? (patientInfo.doctor || 'Dr. Margaret Smith, DVM, DAVDC')
-      : 'Margaret Smith, DVM, DAVDC');
+      ? (patientInfo.doctor || 'Dr. Sam Waggoner, DVM, DAVDC')
+      : 'Sam Waggoner, DVM, DAVDC');
   const techLine = patientInfo.tech;
 
   // Codes are needed before the diagrams draw: each page's diagram

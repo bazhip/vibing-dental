@@ -39,7 +39,7 @@ describe('parseDentalChartPDF (modern stash format)', () => {
     const patientInfo: PatientInfo = {
       patientName: 'Whiskers',
       patientNumber: 'P-42',
-      doctor: 'Dr. Margaret Smith, DVM, DAVDC',
+      doctor: 'Dr. Sam Waggoner, DVM, DAVDC',
       tech: 'Alex',
       date: '2026-04-15',
       complaint: 'tartar buildup',
@@ -97,7 +97,7 @@ describe('parseDentalChartPDF (modern stash format)', () => {
     const patientInfo: PatientInfo = {
       patientName: 'Rex',
       patientNumber: 'P-1',
-      doctor: 'Dr. Margaret Smith, DVM, DAVDC',
+      doctor: 'Dr. Sam Waggoner, DVM, DAVDC',
       tech: '',
       date: '2026-04-15',
       complaint: '',

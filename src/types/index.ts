@@ -128,7 +128,7 @@ export interface PatientInfo {
   exam: ExamFindings;
 }
 
-export const DEFAULT_VCA_DOCTOR = 'Dr. Margaret Smith, DVM, DAVDC';
+export const DEFAULT_VCA_DOCTOR = 'Dr. Sam Waggoner, DVM, DAVDC';
 
 /**
  * Species / dentition type for dental charts. The `-deciduous` variants are

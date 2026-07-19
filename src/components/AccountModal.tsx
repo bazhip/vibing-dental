@@ -125,7 +125,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 className="patient-form__input"
                 value={doctorName}
                 onChange={(e) => setDoctorName(e.target.value)}
-                placeholder="e.g. Dr. Margaret Smith, DVM, DAVDC"
+                placeholder="e.g. Dr. Sam Waggoner, DVM, DAVDC"
               />
             </label>
             <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>

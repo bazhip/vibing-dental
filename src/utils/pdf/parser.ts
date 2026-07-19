@@ -211,7 +211,7 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
     date:            readTextField(form, 'date'),
     patientName,
     patientNumber,
-    doctor:          logo === 'vca' ? legacyDoctor : 'Dr. Margaret Smith, DVM, DAVDC',
+    doctor:          logo === 'vca' ? legacyDoctor : 'Dr. Sam Waggoner, DVM, DAVDC',
     tech:            logo === 'vca' ? legacyTech   : '',
     complaint:       readTextField(form, 'chief'),
     treatmentReport: readTextField(form, 'treatmentreport'),
