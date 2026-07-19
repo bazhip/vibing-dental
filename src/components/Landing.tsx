@@ -46,6 +46,18 @@ export const Landing: React.FC<LandingProps> = ({
   // on-page pause (prefers-reduced-motion alone only covers users who
   // set the OS switch).
   const [demoPaused, setDemoPaused] = React.useState(false);
+  // Full-size lightbox for the sample chart pages.
+  const [zoomedChart, setZoomedChart] = React.useState<{ src: string; alt: string } | null>(null);
+  const lightboxCloseRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    if (!zoomedChart) return;
+    lightboxCloseRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoomedChart(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [zoomedChart]);
   const inApp = !!onOpenApp;
 
   const openSignup = (plan?: PlanKey) => {
@@ -333,18 +345,45 @@ export const Landing: React.FC<LandingProps> = ({
               <li>Patient identity on every page</li>
               <li>Re-open any PDF back into the app — the chart travels inside it</li>
             </ul>
+            {/* Page 2 sits under the copy so the section's two columns
+                fill evenly — page 1 alone runs taller than the text. */}
+            <button
+              type="button"
+              className="landing__paper-zoom"
+              onClick={() =>
+                setZoomedChart({
+                  src: '/landing-chart-p2.png',
+                  alt: 'Page two of the sample chart, full size',
+                })
+              }
+              aria-label="View page two of the sample chart full size"
+            >
+              <img
+                className="landing__paper-p2"
+                src="/landing-chart-p2.png"
+                alt="Page two of the same chart: nerve block doses, the procedure diagram with extractions marked, the treatment and surgery report, and the procedure codes used"
+                loading="lazy"
+              />
+            </button>
           </div>
-          <div className="landing__paper-shot landing__paper-shot--pages">
-            <img
-              src="/landing-chart.png"
-              alt="Page one of a generated dental chart PDF: practice logo and doctor line, diagnosis diagram with anchored comments, oral exam findings with comments, partial Triadan probing grids, and a legend of the AVDC codes used"
-              loading="lazy"
-            />
-            <img
-              src="/landing-chart-p2.png"
-              alt="Page two of the same chart: nerve block doses, the procedure diagram with an extraction marked, the treatment and surgery report, and the procedure codes used"
-              loading="lazy"
-            />
+          <div className="landing__paper-shot">
+            <button
+              type="button"
+              className="landing__paper-zoom"
+              onClick={() =>
+                setZoomedChart({
+                  src: '/landing-chart.png',
+                  alt: 'Page one of the sample chart, full size',
+                })
+              }
+              aria-label="View page one of the sample chart full size"
+            >
+              <img
+                src="/landing-chart.png"
+                alt="Page one of a generated dental chart PDF: practice logo and doctor line, diagnosis diagram with anchored comments, oral exam findings with comments, partial Triadan probing grids, and a legend of the AVDC codes used"
+                loading="lazy"
+              />
+            </button>
           </div>
         </section>
 
@@ -391,6 +430,27 @@ export const Landing: React.FC<LandingProps> = ({
             </button>
             <Login onAuthenticate={onAuthenticate} initialMode={auth} embedded initialPlan={signupPlan} />
           </div>
+        </div>
+      )}
+
+      {zoomedChart && (
+        <div
+          className="landing__lightbox"
+          onClick={() => setZoomedChart(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomedChart.alt}
+        >
+          <button
+            ref={lightboxCloseRef}
+            type="button"
+            className="landing__lightbox-close"
+            onClick={() => setZoomedChart(null)}
+            aria-label="Close full-size view"
+          >
+            ×
+          </button>
+          <img src={zoomedChart.src} alt={zoomedChart.alt} />
         </div>
       )}
     </div>

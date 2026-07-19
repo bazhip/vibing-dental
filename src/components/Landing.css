@@ -967,7 +967,9 @@
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 3rem;
-  align-items: center;
+  /* Top-aligned: the copy column carries page 2 of the sample chart
+     below its text, so both columns run tall together. */
+  align-items: start;
 }
 
 .landing__paper-copy h2 {
@@ -1022,20 +1024,82 @@
   transform: rotate(0deg) scale(1.01);
 }
 
-/* Both pages of the sample chart, stacked with opposing tilts so they
-   read as two sheets from the same printout. */
-.landing__paper-shot--pages {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.landing__paper-shot--pages img + img {
+/* Page 2 of the sample chart — lives under the copy column, tilted
+   opposite to page 1 so the pair reads as two sheets of one printout. */
+.landing__paper-p2 {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 30px 70px rgba(23, 35, 46, 0.18);
   transform: rotate(-0.6deg);
+  transition: transform 0.25s ease;
 }
 
-.landing__paper-shot--pages img + img:hover {
+.landing__paper-p2:hover {
   transform: rotate(0deg) scale(1.01);
+}
+
+/* Bare-button wrapper so a chart page is clickable without changing its
+   card look; the zoom affordance is the cursor + focus ring. */
+.landing__paper-zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+}
+
+/* Full-size view of a chart page. */
+.landing__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.75);
+  cursor: zoom-out;
+  animation: feature-fade 0.15s ease;
+}
+
+.landing__lightbox img {
+  max-width: min(1200px, 96vw);
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.5);
+  background: #fff;
+}
+
+.landing__lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.landing__lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing__lightbox {
+    animation: none;
+  }
 }
 
 @media (max-width: 900px) {
