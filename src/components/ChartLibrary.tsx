@@ -12,6 +12,9 @@ interface ChartLibraryProps {
   onNewVisit: (latestChartId: string) => void;
   /** Open the recheck-reminder composer prefilled from a saved chart. */
   onSendReminder: (chart: CloudChartMeta) => void;
+  /** Clear the recheck reminders on these charts (recheck happened, or
+   *  it's no longer wanted) so the patient leaves the Due list. */
+  onClearRecalls: (chartIds: string[]) => Promise<void>;
   /** Clear everything and start a brand-new patient (confirms first). */
   onNewPatient: () => void;
   /** Load a chart PDF made by this app back in for editing. */
@@ -113,6 +116,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onDelete,
   onNewVisit,
   onSendReminder,
+  onClearRecalls,
   onNewPatient,
   onLoadPdf,
   onClose,
@@ -216,17 +220,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   // The Due badge counts due PATIENTS across the whole library, not just
   // the loaded page — its own (small) query, grouped the same way.
-  React.useEffect(() => {
-    let cancelled = false;
+  // Refreshable so clearing a recheck updates the badge immediately.
+  const refreshDueCount = React.useCallback(() => {
     listCharts({ dueOnly: true, limit: 500 })
       .then((page) => {
-        if (cancelled) return;
         const today = todayIso();
         setDueCount(groupByPatient(page.rows).filter((g) => g.recall && g.recall <= today).length);
       })
       .catch(() => { /* badge only — never block the library on it */ });
-    return () => { cancelled = true; };
   }, [listCharts]);
+
+  React.useEffect(() => {
+    refreshDueCount();
+  }, [refreshDueCount]);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -290,8 +296,27 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     try {
       await onDelete(c.id);
       await refresh(charts?.length ?? 0);
+      refreshDueCount();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not delete that chart.');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleClearRecalls = async (group: PatientGroup) => {
+    const withRecall = group.visits.filter((v) => (v.recall_date ?? '').trim() !== '');
+    if (withRecall.length === 0) return;
+    if (!window.confirm(
+      `Clear the recheck reminder for ${group.name}? Use this when the recheck happened without a new chart (or isn't needed) — they'll drop off the Due list.`
+    )) return;
+    setBusyId(withRecall[0].id);
+    try {
+      await onClearRecalls(withRecall.map((v) => v.id));
+      await refresh(charts?.length ?? 0);
+      refreshDueCount();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not clear that recheck.');
     } finally {
       setBusyId(null);
     }
@@ -504,6 +529,17 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               title={`Send a recheck reminder to ${g.owner || g.ownerEmail}`}
                             >
                               Reminder
+                            </button>
+                          )}
+                          {g.recall && (
+                            <button
+                              type="button"
+                              className="chart-library__act"
+                              onClick={() => handleClearRecalls(g)}
+                              disabled={busyId !== null}
+                              title={`Clear ${g.name}'s recheck reminder — e.g. after a recheck that didn't produce a new chart`}
+                            >
+                              Clear recheck
                             </button>
                           )}
                           <button

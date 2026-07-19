@@ -77,6 +77,12 @@ export interface UseCloudSyncReturn {
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
   deleteChart: (id: string) => Promise<void>;
+  /** Clear recheck reminders on these charts — for rechecks that happened
+   *  without producing a new chart (the patient would otherwise sit in
+   *  the Due list forever). Clears the row column AND the snapshot copy
+   *  so a later re-save can't resurrect the date; logs to the audit
+   *  trail. */
+  clearRecalls: (chartIds: string[]) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -403,6 +409,27 @@ export function useCloudSync(
     if (error) throw new Error(error.message);
   }, []);
 
+  const clearRecalls = React.useCallback(async (chartIds: string[]): Promise<void> => {
+    if (!supabase || chartIds.length === 0) return;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const clearedBy = sessionData.session?.user.email ?? '';
+    for (const id of chartIds) {
+      const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
+      if (error) throw new Error(error.message);
+      const snap = data.data as ChartSnapshot;
+      if (snap?.patientInfo) snap.patientInfo.recallDate = '';
+      snap.auditLog = [
+        ...(snap.auditLog ?? []).slice(-99),
+        { at: new Date().toISOString(), by: clearedBy, action: 'recall-cleared' as const },
+      ];
+      const { error: updateError } = await supabase
+        .from('charts')
+        .update({ recall_date: '', data: snap })
+        .eq('id', id);
+      if (updateError) throw new Error(updateError.message);
+    }
+  }, []);
+
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
     if (!confirmDiscardIfDirty('Sign out')) return;
@@ -436,6 +463,7 @@ export function useCloudSync(
     openChart,
     fetchChart,
     deleteChart,
+    clearRecalls,
     signOut,
   };
 }

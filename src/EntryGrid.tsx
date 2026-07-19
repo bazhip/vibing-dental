@@ -992,6 +992,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}
+          onClearRecalls={async (chartIds) => {
+            await cloud.clearRecalls(chartIds);
+            // If the working chart is one of them, mirror the clear
+            // locally — a later save must not resurrect the date.
+            if (chartIds.includes(chart.cloudChartId)) {
+              chart.handlePatientInfoChange('recallDate', '');
+            }
+          }}
           onNewPatient={() => {
             if (
               window.confirm(

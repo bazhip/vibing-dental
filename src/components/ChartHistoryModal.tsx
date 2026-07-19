@@ -12,6 +12,7 @@ const ACTION_LABELS: Record<ChartAuditEntry['action'], string> = {
   created: 'Created',
   saved: 'Saved',
   'imported-pdf': 'Imported from a chart PDF',
+  'recall-cleared': 'Recheck cleared',
 };
 
 /**

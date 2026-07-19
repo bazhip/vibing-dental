@@ -212,7 +212,7 @@ export interface ChartAuditEntry {
   at: string;
   /** The signed-in account's email ('' when unknown, e.g. PDF import). */
   by: string;
-  action: 'created' | 'saved' | 'imported-pdf';
+  action: 'created' | 'saved' | 'imported-pdf' | 'recall-cleared';
 }
 
 export interface ChartSnapshot {
