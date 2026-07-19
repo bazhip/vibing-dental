@@ -28,6 +28,22 @@
 }
 .entry-grid__topbar-lead {
   display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+/* Uploaded practice logo, left of the identity block. */
+.entry-grid__topbar-logo {
+  height: 36px;
+  max-width: 96px;
+  object-fit: contain;
+  flex: none;
+  border-radius: 4px;
+}
+
+.entry-grid__topbar-identity {
+  display: flex;
   flex-direction: column;
   gap: 1px;
   min-width: 0;
@@ -155,6 +171,7 @@
      already introduced itself on the login screen. */
   .entry-grid__title,
   .entry-grid__doctor { display: none; }
+  .entry-grid__topbar-logo { height: 26px; max-width: 64px; }
   .entry-grid__patient-name { max-width: 9rem; font-size: 0.95rem; }
   .entry-grid__patient-date { display: none; }
 }

@@ -530,6 +530,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <div className="entry-grid-container" ref={containerRef}>
       <header className="entry-grid__topbar" ref={topbarRef}>
         <div className="entry-grid__topbar-lead">
+          {/* Uploaded practice logo leads the identity block (decorative —
+              the practice name is right beside it). */}
+          {profile.logoUrl && (
+            <img src={profile.logoUrl} alt="" className="entry-grid__topbar-logo" />
+          )}
+          <div className="entry-grid__topbar-identity">
           {profile.doctorName.trim() ? (
             <>
               <h1 className="entry-grid__doctor">{profile.doctorName}</h1>
@@ -605,6 +611,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 No patient — add one in section 01
               </span>
             )}
+          </div>
           </div>
         </div>
         <div className="entry-grid__topbar-actions">
