@@ -106,6 +106,10 @@ export interface UseChartStateReturn {
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
 
+/** Written into every snapshot so future schema changes have a version
+ *  to migrate from. Snapshots without the field predate it (= 1). */
+export const CHART_SNAPSHOT_VERSION = 1;
+
 /** Remove every persisted chart key — used by New Chart and by sign-out
  *  (so the next account on a shared clinic machine never sees the
  *  previous account's patient data). */
@@ -385,7 +389,11 @@ export function useChartState(): UseChartStateReturn {
     return id;
   };
 
-  const getSnapshot = (): ChartSnapshot => ({
+  // Memoized so consumers (useCloudSync's dirty tracking) can hang
+  // referential-equality caches off it — without this, every render
+  // built a fresh object and the full chart re-serialized per keystroke.
+  const snapshot = React.useMemo<ChartSnapshot>(() => ({
+    version: CHART_SNAPSHOT_VERSION,
     patientInfo,
     toothData,
     species,
@@ -396,7 +404,12 @@ export function useChartState(): UseChartStateReturn {
     postMarks: postToothMarks,
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
-  });
+  }), [
+    patientInfo, toothData, species, logo,
+    preToothMarks, preDiagramComments, preDiagramStrokes,
+    postToothMarks, postDiagramComments, postDiagramStrokes,
+  ]);
+  const getSnapshot = (): ChartSnapshot => snapshot;
 
   const applySnapshot = (raw: ChartSnapshot, id: string): void => {
     if (!isChartSnapshot(raw)) {

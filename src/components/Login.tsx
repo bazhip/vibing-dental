@@ -146,25 +146,29 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         <form onSubmit={handleSubmit} className="login-form">
           {cloudEnabled && signup && (
             <>
-              <input
-                type="text"
-                className="login-input"
-                placeholder="Practice name (e.g. SoCal Tooth Ops)"
-                aria-label="Practice name"
-                autoComplete="organization"
-                value={practiceName}
-                onChange={(e) => setPracticeName(e.target.value)}
-                autoFocus
-              />
-              <input
-                type="text"
-                className="login-input"
-                placeholder="Doctor name (e.g. Dr. M. Smith, DVM, DAVDC)"
-                aria-label="Doctor name"
-                autoComplete="name"
-                value={doctorName}
-                onChange={(e) => setDoctorName(e.target.value)}
-              />
+              <label className="login-field">
+                <span className="login-field__label">Practice name</span>
+                <input
+                  type="text"
+                  className="login-input"
+                  placeholder="e.g. SoCal Tooth Ops"
+                  autoComplete="organization"
+                  value={practiceName}
+                  onChange={(e) => setPracticeName(e.target.value)}
+                  autoFocus
+                />
+              </label>
+              <label className="login-field">
+                <span className="login-field__label">Doctor name</span>
+                <input
+                  type="text"
+                  className="login-input"
+                  placeholder="e.g. Dr. M. Smith, DVM, DAVDC"
+                  autoComplete="name"
+                  value={doctorName}
+                  onChange={(e) => setDoctorName(e.target.value)}
+                />
+              </label>
               <label className="login-logo-field">
                 <span>
                   {logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}
@@ -253,28 +257,31 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           )}
 
           {cloudEnabled && (
-            <input
-              type="email"
-              className="login-input"
-              placeholder="Email"
-              aria-label="Email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoFocus={!signup}
-            />
+            <label className="login-field">
+              <span className="login-field__label">Email</span>
+              <input
+                type="email"
+                className="login-input"
+                placeholder="you@yourpractice.com"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoFocus={!signup}
+              />
+            </label>
           )}
 
-          <input
-            type="password"
-            className="login-input"
-            placeholder="Password"
-            aria-label="Password"
-            autoComplete={signup ? 'new-password' : 'current-password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoFocus={!cloudEnabled}
-          />
+          <label className="login-field">
+            <span className="login-field__label">Password</span>
+            <input
+              type="password"
+              className="login-input"
+              autoComplete={signup ? 'new-password' : 'current-password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoFocus={!cloudEnabled}
+            />
+          </label>
           {cloudEnabled && signup && (
             <span className="login-hint">At least 6 characters.</span>
           )}

@@ -90,9 +90,9 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">
+        <h2 className="dental-grid__title">
           {kind ? `${TITLES[kind]} Reference` : 'Code Reference'}
-        </span>
+        </h2>
       </div>
 
       <div className="code-ref" ref={cardRef}>

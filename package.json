@@ -6,15 +6,16 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
     "@supabase/supabase-js": "^2.110.7",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.4.3",
     "@vercel/analytics": "^2.0.1",
     "downloadjs": "^1.4.7",
     "pdf-lib": "^1.17.1",
-    "react": "^18.2.0",
-    "react-data-grid": "7.0.0-beta.19",
-    "react-dom": "^18.2.0",
+    "react": "^19.2.7",
+    "react-data-grid": "^7.0.0-beta.61",
+    "react-dom": "^19.2.7",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -25,6 +26,11 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-data-grid)/"
+    ]
   },
   "browserslist": {
     "production": [
@@ -39,8 +45,8 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^4.9.5"
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
   }
 }

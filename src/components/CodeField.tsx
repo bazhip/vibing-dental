@@ -122,7 +122,8 @@ export const CodeField: React.FC<CodeFieldProps> = ({
   };
 
   const sharedProps = {
-    ref: inputRef as any,
+    // One ref serves both branches; each element narrows it on mount.
+    ref: inputRef as React.Ref<HTMLInputElement & HTMLTextAreaElement>,
     value,
     onChange: handleChange,
     onKeyDown: handleKeyDown,

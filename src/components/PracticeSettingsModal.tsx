@@ -456,8 +456,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>
             Cancel
           </button>
+          {/* The footer commits ONLY the practice name — the logo saves on
+              pick and team actions apply instantly, so a bare "Save" reads
+              as if it covered all three. */}
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={handleSave} disabled={busy}>
-            {busy ? 'Saving…' : 'Save'}
+            {busy ? 'Saving…' : 'Save practice name'}
           </button>
         </footer>
       </div>

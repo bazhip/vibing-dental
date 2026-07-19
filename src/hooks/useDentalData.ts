@@ -12,34 +12,6 @@ export function useDentalData(initialSpecies: Species = 'feline') {
   );
 
   /**
-   * Updates tooth data when cells are edited in the grid
-   * @param fromRow - Starting row index
-   * @param toRow - Ending row index
-   * @param updated - Object containing the updated field values
-   */
-  const updateToothData = useCallback(
-    (fromRow: number, toRow: number, updated: Partial<ToothData>) => {
-      setToothData((prevData) => {
-        const newData = [...prevData];
-
-        for (let i = fromRow; i <= toRow; i++) {
-          newData[i] = { ...newData[i], ...updated };
-        }
-
-        return newData;
-      });
-    },
-    []
-  );
-
-  /**
-   * Resets tooth data to initial state for a specific species
-   */
-  const resetToothData = useCallback((species: Species) => {
-    setToothData(getInitialToothData(species));
-  }, []);
-
-  /**
    * Sets tooth data directly (for react-data-grid v7 onRowsChange)
    */
   const setToothDataDirectly = useCallback((rows: ToothData[]) => {
@@ -55,9 +27,7 @@ export function useDentalData(initialSpecies: Species = 'feline') {
 
   return {
     toothData,
-    updateToothData,
     setToothDataDirectly,
-    resetToothData,
     switchSpecies,
   };
 }

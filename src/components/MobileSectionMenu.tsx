@@ -43,11 +43,11 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
       className={`mobile-section-menu${open ? ' mobile-section-menu--open' : ''}`}
       ref={containerRef}
     >
+      {/* Disclosure, not an ARIA menu — no arrow-key/roving-focus contract. */}
       <button
         type="button"
         className="mobile-section-menu__trigger"
         onClick={() => setOpen((o) => !o)}
-        aria-haspopup="menu"
         aria-expanded={open}
       >
         <span className="mobile-section-menu__icon" aria-hidden="true">☰</span>
@@ -56,13 +56,12 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
       </button>
 
       {open && (
-        <ul className="mobile-section-menu__list" role="menu">
+        <ul className="mobile-section-menu__list">
           {sections.map((s, i) => (
             <li key={s.id}>
               <button
                 type="button"
-                role="menuitemradio"
-                aria-checked={s.id === activeId}
+                aria-current={s.id === activeId ? 'true' : undefined}
                 className={`mobile-section-menu__item${s.id === activeId ? ' mobile-section-menu__item--active' : ''}`}
                 onClick={() => { onSelect(s.id); setOpen(false); }}
               >

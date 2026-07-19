@@ -176,6 +176,38 @@
   animation: landing-rise 0.8s 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
+/* On-page pause (WCAG 2.2.2) — freezes every keyframe animation inside
+   the demo mid-cycle; the entrance fade must still complete or a pause
+   during it would leave the demo invisible. */
+.landing__hero-demo--paused {
+  opacity: 1;
+  animation: none;
+}
+.landing__hero-demo--paused * {
+  animation-play-state: paused !important;
+}
+
+.landing__demo-pause {
+  /* Third child of the 2-col hero grid — pin it under the demo column. */
+  grid-column: 2;
+  justify-self: end;
+  margin-top: -2.4rem;
+  display: block;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border, #d8e0e8);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted, #55677a);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.landing__demo-pause:hover {
+  color: var(--text, #1b2733);
+  border-color: var(--border-strong, #b8c4cf);
+}
+
 .demo-window {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -691,6 +723,11 @@
     padding-top: 2.25rem;
   }
   .demo-window { margin: 0 auto; }
+  .landing__demo-pause {
+    grid-column: auto;
+    justify-self: center;
+    margin-top: -1.5rem;
+  }
   .landing__features { grid-template-columns: 1fr 1fr; }
 }
 

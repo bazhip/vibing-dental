@@ -54,6 +54,23 @@
   gap: 1rem;
 }
 
+/* Visible field labels (WCAG 3.3.2) — placeholders are examples only. */
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.login-field__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text, #1b2733);
+}
+
+.login-field .login-input {
+  width: 100%;
+}
+
 .login-input {
   padding: 0.85rem 1rem;
   border: 1px solid #cbd5e1;

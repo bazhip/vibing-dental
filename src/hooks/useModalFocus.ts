@@ -13,7 +13,7 @@ const FOCUSABLE =
  */
 export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
   open: boolean
-): React.RefObject<T> {
+): React.RefObject<T | null> {
   const containerRef = React.useRef<T>(null);
 
   React.useEffect(() => {

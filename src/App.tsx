@@ -1,10 +1,13 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import './styles/themes.css';
 import './styles/boards.css';
 import './App.css';
 import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
 import { clearChartStorage } from './hooks/useChartState';
+import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
+import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
+import { useHashRoute } from './hooks/useHashRoute';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -92,18 +95,58 @@ const App: React.FC = () => {
   };
 
   // "Homepage" from the app menu — view the landing page without
-  // leaving the session (or the trial); "Back to the app" returns.
-  const [showHome, setShowHome] = useState(false);
+  // leaving the session (or the trial); "Back to the app" (or the Back
+  // button, now that it's a route) returns.
+  const { route, navigate } = useHashRoute();
+  const showHome = route.view === 'home';
+  const setShowHome = (next: boolean) =>
+    navigate(next ? '#/home' : '#/chart', { replace: !next });
+
+  // Session expired out from under a signed-in user (token expiry on
+  // clinic Wi-Fi, revoked session, …). The chart stays mounted and a
+  // sign-in overlay floats above it — see SessionExpiredOverlay.
+  const [sessionExpired, setSessionExpired] = useState(false);
+  // Who was signed in when the session died — prefills the overlay, and
+  // detects a DIFFERENT account re-authenticating (shared machine).
+  const lastUserIdRef = useRef('');
+  const [lastEmail, setLastEmail] = useState('');
+  // Mirror of isAuthenticated for the auth-event handler (registered
+  // once, so it can't read the state directly without going stale).
+  const isAuthedRef = useRef(isAuthenticated);
+  useEffect(() => { isAuthedRef.current = isAuthenticated; }, [isAuthenticated]);
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
     supabase.auth.getSession().then(({ data }) => {
       setIsAuthenticated(!!data.session);
+      if (data.session) {
+        lastUserIdRef.current = data.session.user.id;
+        setLastEmail(data.session.user.email ?? '');
+      }
       setSessionChecked(true);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') setRecovering(true);
-      setIsAuthenticated(!!session);
+      if (session) {
+        // A different account signing in over an expired session must not
+        // inherit the previous patient's working chart (shared machines).
+        if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
+          clearChartStorage();
+        }
+        lastUserIdRef.current = session.user.id;
+        setLastEmail(session.user.email ?? '');
+        setSessionExpired(false);
+        setIsAuthenticated(true);
+        return;
+      }
+      // No session. Deliberate sign-outs go to the landing page; anything
+      // else while signed in is an expiry — keep the chart mounted.
+      if (consumeExplicitSignOut() || !isAuthedRef.current) {
+        setSessionExpired(false);
+        setIsAuthenticated(false);
+      } else {
+        setSessionExpired(true);
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, []);
@@ -187,6 +230,23 @@ const App: React.FC = () => {
           <EntryGrid onGoHome={() => setShowHome(true)} />
         </BillingGate>
       </Suspense>
+      {/* Session expired mid-work: the chart stays mounted (every edit is
+          in localStorage) and this overlay re-authenticates in place. */}
+      {sessionExpired && (
+        <SessionExpiredOverlay
+          email={lastEmail}
+          onSignOut={() => {
+            // The user chose the landing page over re-auth. The session is
+            // already gone server-side; sweep the working chart exactly
+            // like a normal sign-out would (shared clinic machines), and
+            // mark intent in case a stray SIGNED_OUT event still fires.
+            markExplicitSignOut();
+            clearChartStorage();
+            setSessionExpired(false);
+            setIsAuthenticated(false);
+          }}
+        />
+      )}
     </div>
   );
 };

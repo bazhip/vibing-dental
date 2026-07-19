@@ -379,10 +379,33 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     return map;
   }, [renderInfoByTriadan]);
 
-  const positionedComments = React.useMemo(
-    () => layoutComments(comments, diagram, bboxByTriadan),
-    [comments, diagram, bboxByTriadan]
-  );
+  // Mid-gesture comment position/size, committed to the parent once on
+  // pointerup — the liveStroke pattern. Writing parent state per
+  // pointermove re-rendered (and re-serialized) the whole chart for
+  // every pixel of a drag.
+  const [liveCommentPatch, setLiveCommentPatch] = React.useState<{
+    id: string;
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
+  } | null>(null);
+
+  const positionedComments = React.useMemo(() => {
+    const laid = layoutComments(comments, diagram, bboxByTriadan);
+    if (!liveCommentPatch) return laid;
+    return laid.map((p) =>
+      p.comment.id === liveCommentPatch.id
+        ? {
+            ...p,
+            x: liveCommentPatch.x ?? p.x,
+            y: liveCommentPatch.y ?? p.y,
+            w: liveCommentPatch.width ?? p.w,
+            h: liveCommentPatch.height ?? p.h,
+          }
+        : p
+    );
+  }, [comments, diagram, bboxByTriadan, liveCommentPatch]);
 
   const sidePad = diagram.width * SIDE_PAD_RATIO;
   const topPad = diagram.height * TOP_PAD_RATIO;
@@ -670,21 +693,32 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const maxX = diagram.width + sidePad - w;
     const minY = -topPad;
     const maxY = diagram.height + bottomPad - h;
+    // Track locally, render via liveCommentPatch, and commit to the
+    // parent ONCE on pointerup — per-move parent commits re-rendered the
+    // whole chart for every pixel.
+    let lastX = initialX;
+    let lastY = initialY;
+    let moved = false;
     const onMove = (ev: PointerEvent) => {
       const cur = getSvgPointFromXY(ev.clientX, ev.clientY);
       if (!cur) return;
       const nx = initialX + (cur.x - startSvg.x);
       const ny = initialY + (cur.y - startSvg.y);
-      const cx = Math.min(Math.max(minX, nx), maxX);
-      const cy = Math.min(Math.max(minY, ny), maxY);
-      onCommentsChange(
-        commentsRef.current.map((c) => (c.id === id ? { ...c, x: cx, y: cy } : c))
-      );
+      lastX = Math.min(Math.max(minX, nx), maxX);
+      lastY = Math.min(Math.max(minY, ny), maxY);
+      moved = true;
+      setLiveCommentPatch({ id, x: lastX, y: lastY });
     };
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
       gestureCleanupRef.current = null;
+      if (moved) {
+        onCommentsChange(
+          commentsRef.current.map((c) => (c.id === id ? { ...c, x: lastX, y: lastY } : c))
+        );
+      }
+      setLiveCommentPatch(null);
       // Clear after a frame so a focusout fired during the drag (e.g.
       // because the textarea released focus) doesn't sneak in an
       // autosize before we've reset the flag.
@@ -712,19 +746,28 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     const initialW = target.width ?? positioned.w;
     const initialH = target.height ?? positioned.h;
 
+    // Same one-commit-on-pointerup buffering as the drag handler above.
+    let lastW = initialW;
+    let lastH = initialH;
+    let resized = false;
     const onMove = (ev: PointerEvent) => {
       const cur = getSvgPointFromXY(ev.clientX, ev.clientY);
       if (!cur) return;
-      const w = Math.max(COMMENT_MIN_W, initialW + (cur.x - startSvg.x));
-      const h = Math.max(COMMENT_MIN_H, initialH + (cur.y - startSvg.y));
-      onCommentsChange(
-        commentsRef.current.map((c) => (c.id === id ? { ...c, width: w, height: h } : c))
-      );
+      lastW = Math.max(COMMENT_MIN_W, initialW + (cur.x - startSvg.x));
+      lastH = Math.max(COMMENT_MIN_H, initialH + (cur.y - startSvg.y));
+      resized = true;
+      setLiveCommentPatch({ id, width: lastW, height: lastH });
     };
     const onUp = () => {
       document.removeEventListener('pointermove', onMove);
       document.removeEventListener('pointerup', onUp);
       gestureCleanupRef.current = null;
+      if (resized) {
+        onCommentsChange(
+          commentsRef.current.map((c) => (c.id === id ? { ...c, width: lastW, height: lastH } : c))
+        );
+      }
+      setLiveCommentPatch(null);
       requestAnimationFrame(() => {
         commentInteractingRef.current = false;
       });

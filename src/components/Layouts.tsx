@@ -46,13 +46,14 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   return (
     <div className="sidebar-layout">
       <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
-      <nav className="sidebar-layout__nav" role="tablist">
+      {/* Plain navigation, not an ARIA tablist — the buttons have no
+          arrow-key contract, and sections read better as nav anyway. */}
+      <nav className="sidebar-layout__nav" aria-label="Chart sections">
         {sections.map((s, i) => (
           <button
             key={s.id}
             type="button"
-            role="tab"
-            aria-selected={s.id === active}
+            aria-current={s.id === active ? 'true' : undefined}
             className={`sidebar-layout__nav-item${s.id === active ? ' sidebar-layout__nav-item--active' : ''}`}
             onClick={() => choose(s.id)}
           >
@@ -65,7 +66,6 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
         {sections.map((s) => (
           <div
             key={s.id}
-            role="tabpanel"
             className="sidebar-layout__panel"
             style={s.id === active ? undefined : { display: 'none' }}
           >

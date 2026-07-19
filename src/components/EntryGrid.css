@@ -684,9 +684,31 @@
 }
 
 .dental-grid__title {
+  /* Real <h2>s (screen-reader landmarks) styled like the spans they
+     replaced — the browser's heading margins/size must not apply. */
+  margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text);
+}
+
+/* Keyboard skip link — visually hidden until focused, then a small
+   pill pinned to the top-left above the sticky topbar. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm, 8px);
+  background: var(--primary, #0c6b63);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus-visible {
+  left: 0.5rem;
+  top: 0.5rem;
 }
 
 
@@ -722,15 +744,6 @@
   --rdg-row-selected-background-color: #e0f2f0;
   --rdg-selection-color: var(--accent);
   --rdg-border-color: var(--border);
-  --rdg-frozen-cell-box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.dental-grid .rdg-viewport {
-  height: auto !important;
-  min-height: auto !important;
-  overflow: visible !important;
-  width: 100% !important;
-  max-width: 100%;
 }
 
 .dental-grid .rdg-row {
@@ -797,11 +810,14 @@
   background-color: #f7fafc;
 }
 
-.dental-grid .rdg-row:nth-child(even) {
+/* Striping keys off the library's own row-parity classes — the grid
+   root also contains non-row measuring cells, so nth-child parity is
+   not a reliable signal anymore. */
+.dental-grid .rdg-row.rdg-row-even {
   background-color: #fafbfc;
 }
 
-.dental-grid .rdg-row:nth-child(even):hover {
+.dental-grid .rdg-row.rdg-row-even:hover {
   background-color: #f0f4f8;
 }
 
@@ -867,23 +883,9 @@
   .dental-grid .rdg {
     min-width: 760px;
   }
-  .dental-grid .rdg-viewport {
-    overflow-x: auto !important;
-  }
   .dental-grid .rdg-header-row .rdg-cell {
     top: 0;
   }
-}
-
-/* Text editor styling */
-.dental-grid .rdg-text-editor {
-  padding: 0.4rem;
-  font-size: 0.875rem;
-  border: 2px solid var(--accent);
-  border-radius: 4px;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 /* Anesthesia Table */
@@ -2123,10 +2125,6 @@
 }
 
 /* Inside a react-data-grid cell editor, fill the entire cell. */
-.rdg-cell .code-field {
-  height: 100%;
-}
-
 .code-field__popup {
   position: absolute;
   z-index: 30;
@@ -2465,6 +2463,16 @@ button.save-status--error {
 .chart-lock-banner--editing {
   border-color: #f6c343;
   background: #fef7e3;
+}
+/* Two-tab warning — danger-tinted so it reads as "act now". */
+.chart-lock-banner--warning {
+  border-color: var(--danger, #b23c2a);
+  background: #fdf1ef;
+}
+
+/* Re-auth-in-place dialog — a narrow sign-in card over the live chart. */
+.session-expired-modal {
+  max-width: 420px;
 }
 .chart-lock-banner__text { flex: 1 1 auto; min-width: 0; }
 .chart-lock-banner .entry-grid__button { flex: none; }

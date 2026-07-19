@@ -22,6 +22,7 @@ import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
 import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
+import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
@@ -92,12 +93,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chart = useChartState();
   const profile = useProfile();
   const cloud = useCloudSync(chart, !trial, profile.practiceId);
+  const { route, navigate } = useHashRoute();
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
-  // the user to Patient).
-  const [activeSection, setActiveSection] = React.useState('patient');
+  // the user to Patient). Mirrored into the hash (#/chart/:id/:section)
+  // so a refresh or shared link lands on the same section.
+  const [activeSection, setActiveSection] = React.useState(
+    () => (route.view === 'chart' && route.section) || 'patient'
+  );
+  // Follow the hash when it names a different section (Back/Forward, a
+  // hand-edited URL) — state-driven changes are already in sync.
+  React.useEffect(() => {
+    if (route.view === 'chart' && route.section) setActiveSection(route.section);
+  }, [route.view, route.section]);
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   // Saved charts open read-only; the user unlocks to edit them, and each
@@ -136,8 +146,54 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     writeString('onboarding.seen', 1, '1');
     setWalkthroughOpen(true);
   }, [trial, profile.loaded]);
-  // "My charts" dialog — overlays the working chart like the other popups.
-  const [libraryOpen, setLibraryOpen] = React.useState(false);
+  // "My charts" dialog — a real route (#/library) so the Back button and
+  // gesture-back close it instead of exiting the site, and a refresh
+  // reopens it.
+  const libraryOpen = cloud.enabled && route.view === 'library';
+  // True when THIS session pushed #/library — closing can then be a
+  // history.back() (clean stack). A deep-linked/refreshed library has no
+  // in-app entry behind it, so closing navigates to the chart instead.
+  const libraryPushedRef = React.useRef(false);
+  const openLibrary = () => {
+    libraryPushedRef.current = true;
+    navigate('#/library');
+  };
+  const closeLibrary = React.useCallback(() => {
+    if (libraryPushedRef.current) {
+      libraryPushedRef.current = false;
+      window.history.back();
+    } else {
+      navigate(`#/chart/${chart.cloudChartId}`, { replace: true });
+    }
+  }, [navigate, chart.cloudChartId]);
+
+  // Deep link support: arriving on #/chart/:id for a chart that isn't
+  // the working one opens it from the cloud (same path as the library,
+  // including the unsaved-changes confirm). Mount-time only — reacting
+  // to every hash change would fight history.back() from the library,
+  // whose restored hash names the previously open chart. A stale or
+  // foreign id keeps the current chart; the canonicalizing effect below
+  // rewrites the hash either way.
+  const initialChartLinkRef = React.useRef(
+    route.view === 'chart' ? route.chartId : undefined
+  );
+  React.useEffect(() => {
+    const id = initialChartLinkRef.current;
+    if (!cloud.enabled || !id || id === chart.cloudChartId) return;
+    cloud.openChart(id).catch(() => { /* stale link — keep the working chart */ });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep the hash naming the working chart and section (replace, not
+  // push — typing, section switches, and visit switches must not pollute
+  // the Back stack). Trial mode has no meaningful chart id, so its hash
+  // carries the section alone.
+  React.useEffect(() => {
+    if (route.view !== 'chart') return;
+    const base = cloud.enabled ? `#/chart/${chart.cloudChartId}` : '#/chart';
+    navigate(`${base}/${activeSection}`, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cloud.enabled, route.view, chart.cloudChartId, activeSection]);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
   // Recheck reminders are composed from a saved chart in My charts; this
@@ -190,7 +246,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (!num && !name) { setVisits([]); return; }
     const key = num ? `n:${num}` : `p:${name}`;
     let cancelled = false;
-    cloud.listCharts()
+    // Server-side patient lookup — correct however many charts the
+    // practice has. The exact key filter re-applies the library's
+    // grouping rule to the (already narrow) result set.
+    cloud.listPatientVisits(chart.patientInfo.patientNumber, chart.patientInfo.patientName)
       .then((all) => {
         if (cancelled) return;
         const mine = all
@@ -235,6 +294,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  // Two tabs share the same localStorage working copy, last-write-wins.
+  // A `storage` event for any chart key means another tab of this app is
+  // editing too — warn once so nobody loses work to a silent overwrite.
+  const [otherTabWarning, setOtherTabWarning] = React.useState(false);
+  React.useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key && e.key.startsWith('vibing-dental.chart.') && e.newValue !== null) {
+        setOtherTabWarning(true);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   // Don't let a tab close/refresh slip away while a cloud save is in
@@ -528,6 +601,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   return (
     <div className="entry-grid-container" ref={containerRef}>
+      {/* Keyboard users skip the topbar controls straight to the chart. */}
+      <a className="skip-link" href="#chart-form">
+        Skip to the chart
+      </a>
       <header className="entry-grid__topbar" ref={topbarRef}>
         <div className="entry-grid__topbar-lead">
           {/* Uploaded practice logo leads the identity block (decorative —
@@ -608,7 +685,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               </>
             ) : (
               <span className="entry-grid__patient-empty">
-                No patient — add one in section 01
+                No patient yet — add one in the Patient section
               </span>
             )}
           </div>
@@ -699,7 +776,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <button
               type="button"
               className="chart-menu__trigger topbar-library-btn"
-              onClick={() => setLibraryOpen(true)}
+              onClick={openLibrary}
               aria-haspopup="dialog"
             >
               My charts
@@ -736,6 +813,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />
         </div>
       </header>
+
+      {otherTabWarning && (
+        <div className="chart-lock-banner chart-lock-banner--warning" role="alert">
+          <span className="chart-lock-banner__text">
+            This chart is open in another tab or window. Both tabs edit the
+            same working copy — close one to avoid overwriting your changes.
+          </span>
+          <button
+            type="button"
+            className="entry-grid__button entry-grid__button--topbar"
+            onClick={() => setOtherTabWarning(false)}
+          >
+            Got it
+          </button>
+        </div>
+      )}
 
       {/* Opened-from-saved notice: view is locked until the user chooses
           to edit, and saving then overwrites the original — a deliberate
@@ -804,7 +897,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 },
                 goneTeeth: Array.from(gone),
               });
-              setLibraryOpen(false);
+              closeLibrary();
             } catch {
               alert('Could not start a new visit — check your connection.');
             }
@@ -820,13 +913,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           }}
           onLoadPdf={chart.loadFromPdf}
-          onClose={() => setLibraryOpen(false)}
+          onClose={closeLibrary}
         />
       )}
 
       <form
         id="chart-form"
         className="entry-grid-form"
+        // Focus target for the skip link — without it the anchor jump
+        // scrolls but keyboard focus stays on the link.
+        tabIndex={-1}
         onSubmit={handleOpenPreview}
         // Stop browser-default form submit on Enter from any single-line
         // input. Textareas, the actual submit button, and inputs that

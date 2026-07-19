@@ -54,7 +54,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">Anesthesia &mdash; Nerve Blocks</span>
+        <h2 className="dental-grid__title">Anesthesia &mdash; Nerve Blocks</h2>
       </div>
 
       <div className="anesthesia-drug">

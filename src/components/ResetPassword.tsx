@@ -56,25 +56,27 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
           </p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
-          <input
-            type="password"
-            className="login-input"
-            placeholder="New password"
-            aria-label="New password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoFocus
-          />
-          <input
-            type="password"
-            className="login-input"
-            placeholder="Confirm new password"
-            aria-label="Confirm new password"
-            autoComplete="new-password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-          />
+          <label className="login-field">
+            <span className="login-field__label">New password</span>
+            <input
+              type="password"
+              className="login-input"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoFocus
+            />
+          </label>
+          <label className="login-field">
+            <span className="login-field__label">Confirm new password</span>
+            <input
+              type="password"
+              className="login-input"
+              autoComplete="new-password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+            />
+          </label>
           {error && <div className="login-error" role="alert">{error}</div>}
           <button type="submit" className="login-button" disabled={busy}>
             {busy ? 'Saving…' : 'Set password'}

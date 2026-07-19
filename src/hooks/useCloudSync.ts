@@ -3,6 +3,7 @@ import { ChartSnapshot } from '../types';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
+import { markExplicitSignOut } from '../utils/signOutIntent';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -34,6 +35,30 @@ export interface CloudChartMeta {
   created_by: string;
 }
 
+/** Server-side chart listing — filters, search, and pagination all run
+ *  in Postgres so chart #501+ is exactly as findable as chart #1. */
+export interface ChartListQuery {
+  /** Case-insensitive substring match over patient name/number and
+   *  owner name/phone. */
+  search?: string;
+  /** 'canine' | 'feline'. */
+  species?: string;
+  /** Visit author (user id). */
+  createdBy?: string;
+  /** Only charts whose recheck date is today or past. */
+  dueOnly?: boolean;
+  sortKey?: 'patient' | 'updated' | 'recall';
+  sortDir?: 'asc' | 'desc';
+  offset?: number;
+  limit?: number;
+}
+
+export interface ChartListPage {
+  rows: CloudChartMeta[];
+  /** True when another `offset += limit` page exists. */
+  hasMore: boolean;
+}
+
 export interface UseCloudSyncReturn {
   enabled: boolean;
   /** 'idle' | 'saving' | 'saved' | 'error'. */
@@ -44,7 +69,10 @@ export interface UseCloudSyncReturn {
   dirty: boolean;
   /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
-  listCharts: () => Promise<CloudChartMeta[]>;
+  listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
+  /** All visits for one patient (matched by number when present, else
+   *  by name) — powers the topbar visit switcher. */
+  listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
   openChart: (id: string) => Promise<void>;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
@@ -89,6 +117,20 @@ function describeSaveError(err: unknown): string {
   return `Save failed: ${msg || 'unknown error'}. Your chart is safe on this device — retry in a moment.`;
 }
 
+const CHART_META_COLUMNS =
+  'id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by';
+
+const DEFAULT_PAGE_SIZE = 200;
+
+/** Escape LIKE wildcards so user input matches literally. */
+function escapeLike(s: string): string {
+  return s.replace(/[\\%_]/g, (c) => `\\${c}`);
+}
+
+function todayIso(): string {
+  return new Date().toISOString().split('T')[0];
+}
+
 /** Cheap stable hash (djb2) — identifies the last-cloud-saved snapshot so
  *  "unsaved changes" survives a reload without storing a second full copy. */
 function hashStr(s: string): string {
@@ -120,11 +162,14 @@ export function useCloudSync(
     return () => window.clearTimeout(t);
   }, [status]);
 
+  // getSnapshot is memoized upstream, so serialization/hashing runs once
+  // per actual chart change instead of once per render.
   const snapshot = chart.getSnapshot();
-  const serialized = JSON.stringify(snapshot);
+  const serialized = React.useMemo(() => JSON.stringify(snapshot), [snapshot]);
   const chartId = chart.cloudChartId;
-  const currentHash = hashStr(serialized);
-  const dirty = on && hasContent(snapshot) && currentHash !== savedHash;
+  const currentHash = React.useMemo(() => hashStr(serialized), [serialized]);
+  const contentful = React.useMemo(() => hasContent(snapshot), [snapshot]);
+  const dirty = on && contentful && currentHash !== savedHash;
 
   const latest = React.useRef({ serialized, chartId });
   latest.current = { serialized, chartId };
@@ -238,13 +283,61 @@ export function useCloudSync(
     );
   };
 
-  const listCharts = React.useCallback(async (): Promise<CloudChartMeta[]> => {
+  const listCharts = React.useCallback(async (q: ChartListQuery = {}): Promise<ChartListPage> => {
+    if (!supabase) return { rows: [], hasMore: false };
+    const limit = q.limit ?? DEFAULT_PAGE_SIZE;
+    const offset = q.offset ?? 0;
+    let query = supabase.from('charts').select(CHART_META_COLUMNS);
+    // PostgREST's or= syntax splits on commas/parens, so those can't
+    // appear in the pattern; spaces stand in for them (names never need
+    // them to match). %/_ are LIKE wildcards — escape so they're literal.
+    const term = (q.search ?? '').replace(/[(),]/g, ' ').trim();
+    if (term) {
+      const pattern = `%${escapeLike(term)}%`;
+      query = query.or(
+        ['patient_name', 'patient_number', 'owner_name', 'owner_phone']
+          .map((col) => `${col}.ilike.${pattern}`)
+          .join(',')
+      );
+    }
+    if (q.species) query = query.eq('species', q.species);
+    if (q.createdBy) query = query.eq('created_by', q.createdBy);
+    // recall_date is text, '' when unset — gt('') keeps only real dates.
+    if (q.dueOnly) query = query.gt('recall_date', '').lte('recall_date', todayIso());
+    const sortCol =
+      q.sortKey === 'patient' ? 'patient_name'
+      : q.sortKey === 'recall' ? 'recall_date'
+      : 'updated_at';
+    const ascending = (q.sortDir ?? (sortCol === 'updated_at' ? 'desc' : 'asc')) === 'asc';
+    query = query.order(sortCol, { ascending });
+    if (sortCol !== 'updated_at') query = query.order('updated_at', { ascending: false });
+    // One row past the page tells us whether more exist without a
+    // second count query.
+    const { data, error } = await query.range(offset, offset + limit);
+    if (error) throw new Error(error.message);
+    const rows = (data ?? []) as CloudChartMeta[];
+    return { rows: rows.slice(0, limit), hasMore: rows.length > limit };
+  }, []);
+
+  const listPatientVisits = React.useCallback(async (
+    patientNumber: string,
+    patientName: string
+  ): Promise<CloudChartMeta[]> => {
     if (!supabase) return [];
-    const { data, error } = await supabase
+    const num = patientNumber.trim();
+    const name = patientName.trim();
+    if (!num && !name) return [];
+    let query = supabase
       .from('charts')
-      .select('id, patient_name, patient_number, owner_name, owner_phone, owner_email, species, dentition, chart_date, recall_date, updated_at, created_by')
+      .select(CHART_META_COLUMNS)
       .order('updated_at', { ascending: false })
-      .limit(500);
+      .limit(200);
+    // Same identity rule the library's grouping uses: the patient number
+    // is the key when present; name-keyed only for number-less charts.
+    // ilike without wildcards = case-insensitive equality.
+    if (num) query = query.ilike('patient_number', escapeLike(num));
+    else query = query.ilike('patient_name', escapeLike(name)).eq('patient_number', '');
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     return (data ?? []) as CloudChartMeta[];
   }, []);
@@ -284,10 +377,22 @@ export function useCloudSync(
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
     if (!confirmDiscardIfDirty('Sign out')) return;
+    // Deliberate sign-out — App must NOT treat the coming SIGNED_OUT
+    // event as a session expiry (which keeps the chart mounted).
+    markExplicitSignOut();
     await supabase.auth.signOut();
     // Shared clinic machines: the next account must not inherit this
     // patient's chart from localStorage.
     clearChartStorage();
+    // Legacy BYOK era left API keys in localStorage; the app no longer
+    // collects keys client-side, so sweep any stragglers with the session.
+    for (const k of [
+      'vibing-dental.anthropic-api-key.v1',
+      'vibing-dental.deepgram-api-key.v1',
+      'vibing-dental.anthropic-model.v1',
+    ]) {
+      try { localStorage.removeItem(k); } catch { /* storage unavailable */ }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -298,6 +403,7 @@ export function useCloudSync(
     dirty,
     saveNow,
     listCharts,
+    listPatientVisits,
     openChart,
     fetchChart,
     deleteChart,

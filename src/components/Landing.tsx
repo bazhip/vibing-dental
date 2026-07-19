@@ -41,6 +41,10 @@ export const Landing: React.FC<LandingProps> = ({
   const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(initialAuth);
   // Set when a pricing card's CTA opened the signup — preselects the plan.
   const [signupPlan, setSignupPlan] = React.useState<PlanKey | undefined>(undefined);
+  // WCAG 2.2.2 — the hero demo loops indefinitely, so it needs an
+  // on-page pause (prefers-reduced-motion alone only covers users who
+  // set the OS switch).
+  const [demoPaused, setDemoPaused] = React.useState(false);
   const inApp = !!onOpenApp;
 
   const openSignup = (plan?: PlanKey) => {
@@ -148,7 +152,10 @@ export const Landing: React.FC<LandingProps> = ({
 
           {/* Self-charting product mock — three CSS-animated scenes that
               loop: grid charting → the real diagram artwork → export. */}
-          <div className="landing__hero-demo" aria-hidden="true">
+          <div
+            className={`landing__hero-demo${demoPaused ? ' landing__hero-demo--paused' : ''}`}
+            aria-hidden="true"
+          >
             <div className="demo-window">
               <div className="demo-window__bar">
                 <span className="demo-window__patient">Biscuit</span>
@@ -253,6 +260,15 @@ export const Landing: React.FC<LandingProps> = ({
               </div>
             </div>
           </div>
+          {/* Outside the aria-hidden demo so assistive tech can reach it. */}
+          <button
+            type="button"
+            className="landing__demo-pause"
+            onClick={() => setDemoPaused((p) => !p)}
+            aria-pressed={demoPaused}
+          >
+            {demoPaused ? '▶ Play animation' : '❚❚ Pause animation'}
+          </button>
         </section>
 
         {/* --------------------------------------------------- features --- */}

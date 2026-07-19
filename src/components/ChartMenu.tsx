@@ -53,7 +53,6 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
     <button
       type="button"
       className="chart-menu__item"
-      role="menuitem"
       onClick={() => { setOpen(false); onClick(); }}
     >
       <span className="chart-menu__item-body">
@@ -65,11 +64,13 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
 
   return (
     <div className={`chart-menu${open ? ' chart-menu--open' : ''}`} ref={containerRef}>
+      {/* Disclosure semantics (button + aria-expanded), not an ARIA menu —
+          these are plain buttons with no roving-focus/arrow-key contract,
+          and pretending otherwise misleads screen-reader users. */}
       <button
         type="button"
         className="chart-menu__trigger"
         onClick={() => setOpen((o) => !o)}
-        aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Open settings menu"
       >
@@ -77,7 +78,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
       </button>
 
       {open && (
-        <div className="chart-menu__panel" role="menu">
+        <div className="chart-menu__panel">
           {cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">Practice</header>

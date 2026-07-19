@@ -122,7 +122,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   return (
     <div className="diagram-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">{title}</span>
+        <h2 className="dental-grid__title">{title}</h2>
       </div>
 
       <div

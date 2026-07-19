@@ -1,10 +1,10 @@
 import React from 'react';
-import { CloudChartMeta } from '../hooks/useCloudSync';
+import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
 
 interface ChartLibraryProps {
-  listCharts: () => Promise<CloudChartMeta[]>;
+  listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   onOpen: (id: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   /** Start a fresh visit for a patient, carrying identity + gone teeth
@@ -48,6 +48,10 @@ interface PatientGroup {
 
 type SortKey = 'patient' | 'updated' | 'recall';
 type SortDir = 'asc' | 'desc';
+
+/** Visits fetched per page — grouping happens on the loaded set, so a
+ *  page comfortably covers a screenful of patients. */
+const PAGE_SIZE = 200;
 
 function todayIso(): string {
   return new Date().toISOString().split('T')[0];
@@ -115,12 +119,21 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 }) => {
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
   const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
+  const [hasMore, setHasMore] = React.useState(false);
+  const [loadingMore, setLoadingMore] = React.useState(false);
   const [query, setQuery] = React.useState('');
+  // Search runs server-side — debounce so we query per pause, not per key.
+  const [debouncedQuery, setDebouncedQuery] = React.useState('');
+  React.useEffect(() => {
+    const t = window.setTimeout(() => setDebouncedQuery(query), 250);
+    return () => window.clearTimeout(t);
+  }, [query]);
   const [error, setError] = React.useState('');
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [sortKey, setSortKey] = React.useState<SortKey>('updated');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
   const [dueOnly, setDueOnly] = React.useState(false);
+  const [dueCount, setDueCount] = React.useState(0);
   // Visit-level filters. Doctor filters by each chart's author — the
   // same patient can be seen by different doctors across visits, so
   // filtering happens before grouping and a patient's row shows only
@@ -140,18 +153,65 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   );
   const showDoctors = doctorById.size > 1;
 
-  const refresh = React.useCallback(async () => {
+  // Everything the server needs to produce the visible set. Filters and
+  // search happen in Postgres — the full library is searchable no matter
+  // how many charts exist; pagination only decides how much is SHOWN.
+  const listQuery = React.useMemo<ChartListQuery>(() => ({
+    search: debouncedQuery.trim() || undefined,
+    species: speciesFilter || undefined,
+    createdBy: doctorFilter || undefined,
+    dueOnly: dueOnly || undefined,
+    sortKey,
+    sortDir,
+  }), [debouncedQuery, speciesFilter, doctorFilter, dueOnly, sortKey, sortDir]);
+
+  const refresh = React.useCallback(async (keepCount?: number) => {
     setError('');
     try {
-      setCharts(await listCharts());
+      // After a delete, re-fetch at least as many rows as were showing so
+      // the user's scroll position doesn't collapse back to one page.
+      const limit = Math.max(PAGE_SIZE, keepCount ?? 0);
+      const page = await listCharts({ ...listQuery, offset: 0, limit });
+      setCharts(page.rows);
+      setHasMore(page.hasMore);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load charts.');
     }
-  }, [listCharts]);
+  }, [listCharts, listQuery]);
 
   React.useEffect(() => {
+    setCharts(null);
     refresh();
   }, [refresh]);
+
+  const loadMore = async () => {
+    if (!charts || loadingMore) return;
+    setLoadingMore(true);
+    setError('');
+    try {
+      const page = await listCharts({ ...listQuery, offset: charts.length, limit: PAGE_SIZE });
+      setCharts([...charts, ...page.rows]);
+      setHasMore(page.hasMore);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load more charts.');
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // The Due badge counts due PATIENTS across the whole library, not just
+  // the loaded page — its own (small) query, grouped the same way.
+  React.useEffect(() => {
+    let cancelled = false;
+    listCharts({ dueOnly: true, limit: 500 })
+      .then((page) => {
+        if (cancelled) return;
+        const today = todayIso();
+        setDueCount(groupByPatient(page.rows).filter((g) => g.recall && g.recall <= today).length);
+      })
+      .catch(() => { /* badge only — never block the library on it */ });
+    return () => { cancelled = true; };
+  }, [listCharts]);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -163,15 +223,11 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const today = todayIso();
 
+  // Search, filters, and Due all happened server-side — this is purely
+  // grouping the returned visits into patients and ordering the groups.
   const groups = React.useMemo(() => {
     if (!charts) return null;
-    const q = query.trim().toLowerCase();
-    let list = charts;
-    if (doctorFilter) list = list.filter((c) => c.created_by === doctorFilter);
-    if (speciesFilter) list = list.filter((c) => c.species === speciesFilter);
-    let g = groupByPatient(list);
-    if (q) g = g.filter((x) => `${x.name} ${x.number} ${x.owner} ${x.ownerPhone}`.toLowerCase().includes(q));
-    if (dueOnly) g = g.filter((x) => x.recall && x.recall <= today);
+    const g = groupByPatient(charts);
     const cmp: Record<SortKey, (a: PatientGroup, b: PatientGroup) => number> = {
       patient: (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
       updated: (a, b) => a.latestUpdated.localeCompare(b.latestUpdated),
@@ -181,12 +237,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     g.sort(cmp[sortKey]);
     if (sortDir === 'desc') g.reverse();
     return g;
-  }, [charts, query, dueOnly, doctorFilter, speciesFilter, sortKey, sortDir, today]);
-
-  const dueCount = React.useMemo(() => {
-    if (!charts) return 0;
-    return groupByPatient(charts).filter((g) => g.recall && g.recall <= today).length;
-  }, [charts, today]);
+  }, [charts, sortKey, sortDir]);
 
   const setSort = (key: SortKey) => {
     if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
@@ -223,7 +274,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     setBusyId(c.id);
     try {
       await onDelete(c.id);
-      await refresh();
+      await refresh(charts?.length ?? 0);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not delete that chart.');
     } finally {
@@ -339,13 +390,6 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
           </div>
 
           {error && <div className="login-error" role="alert">{error}</div>}
-
-          {charts !== null && charts.length >= 500 && (
-            <p className="chart-library__sub">
-              Showing the 500 most recently updated charts — older charts
-              don't appear here or in search.
-            </p>
-          )}
 
           {groups === null && !error && <div className="chart-library__empty">Loading…</div>}
 
@@ -505,6 +549,18 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                     </React.Fragment>
                   );
                 })}
+                {hasMore && (
+                  <div className="chart-library__more">
+                    <button
+                      type="button"
+                      className="chart-library__filter"
+                      onClick={loadMore}
+                      disabled={loadingMore}
+                    >
+                      {loadingMore ? 'Loading…' : 'Load more charts'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}

@@ -15,7 +15,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">Oral Exam &mdash; Normal / Abnormal</span>
+        <h2 className="dental-grid__title">Oral Exam &mdash; Normal / Abnormal</h2>
       </div>
 
       <table className="exam-table">

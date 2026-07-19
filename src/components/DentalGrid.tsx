@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import DataGrid, {
+import React, { useRef } from 'react';
+import {
+  DataGrid,
   Column,
-  EditorProps,
+  RenderEditCellProps,
   DataGridHandle,
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
@@ -19,20 +20,139 @@ interface DentalGridProps {
 }
 
 /**
- * Data grid component for dental chart entry. Click any editable cell
- * to start typing; Excel-style key behavior throughout:
+ * Data grid component for dental chart entry. A single click on any
+ * editable cell starts typing; Excel-style key behavior throughout:
  *
  *   - Tab / Shift+Tab   commit and move to the next / previous cell
  *   - Enter             commit and move to the same column in the next row
  *   - Escape            cancel and discard the edit
  *
- * The grid ref exposes `selectCell(position, enableEditor)`, which is
+ * The grid ref exposes `setActivePosition(position, options)`, which is
  * how we drive the Enter-advances-row behavior — the cell editor commits
  * via `onClose(true)`, then we explicitly select the row below.
  *
  * Enter is also blocked from bubbling to the enclosing <form>, which
  * would otherwise submit and open the PDF preview modal.
  */
+
+// Editable columns span idx 3 (mobility) … 10 (pdstate). Tab wraps
+// forward to the next row's first editable column; Shift+Tab wraps
+// back to the previous row's last editable column. Off-page edges
+// are no-ops so focus stays in the grid.
+const FIRST_EDITABLE = 3;
+const LAST_EDITABLE = 10;
+
+/** The bits of grid state the module-scope editor needs — refs only, so
+ *  the editor component's identity never changes (recreating it per
+ *  render made the grid remount its editor on every keystroke). */
+interface EditorWiring {
+  gridRef: React.RefObject<DataGridHandle | null>;
+  rowCountRef: React.MutableRefObject<number>;
+}
+
+const EditorWiringContext = React.createContext<EditorWiring | null>(null);
+
+/** Plain input — measurements here are numeric grades (mobility, pocket
+ *  depths, PD stage), so the dental-code autocomplete that CodeField
+ *  provides elsewhere would only get in the way. */
+function CodeCellEditor({
+  column,
+  row,
+  rowIdx,
+  onRowChange,
+  onClose,
+}: RenderEditCellProps<ToothData>) {
+  const wiring = React.useContext(EditorWiringContext);
+  const key = column.key as keyof ToothData;
+  const current = row[key];
+  const value = typeof current === 'string' ? current : '';
+  const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
+
+  const advance = (nextRow: number, nextIdx: number, enableEditor: boolean) => {
+    if (nextRow < 0 || nextRow > lastRowIdx) return;
+    queueMicrotask(() => {
+      wiring?.gridRef.current?.setActivePosition(
+        { rowIdx: nextRow, idx: nextIdx },
+        { enableEditor, shouldFocus: true }
+      );
+    });
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler = (e) => {
+    if (e.key === 'Tab') {
+      // Drive Tab navigation explicitly so it can wrap across rows —
+      // left to the browser, Tab would leave the grid entirely.
+      e.preventDefault();
+      e.stopPropagation();
+      onClose(true);
+      if (e.shiftKey) {
+        if (column.idx > FIRST_EDITABLE) {
+          advance(rowIdx, column.idx - 1, false);
+        } else if (rowIdx > 0) {
+          advance(rowIdx - 1, LAST_EDITABLE, false);
+        }
+      } else {
+        if (column.idx < LAST_EDITABLE) {
+          advance(rowIdx, column.idx + 1, false);
+        } else if (rowIdx < lastRowIdx) {
+          advance(rowIdx + 1, FIRST_EDITABLE, false);
+        }
+      }
+      return;
+    }
+    if (e.key === 'Enter') {
+      // Commit, then move down a row in the same column. Block the
+      // event from bubbling to the form (which would submit).
+      e.preventDefault();
+      e.stopPropagation();
+      onClose(true);
+      advance(rowIdx + 1, column.idx, false);
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose(false);
+      return;
+    }
+  };
+
+  return (
+    <input
+      autoFocus
+      value={value}
+      onChange={(e) => onRowChange({ ...row, [key]: e.target.value })}
+      onKeyDown={handleKeyDown}
+      onBlur={() => onClose(true)}
+      // Explicit surface colors so the editor matches the cell it sits
+      // in regardless of the grid library's own theme variables.
+      style={{
+        width: '100%',
+        height: '100%',
+        border: 'none',
+        padding: '0 0.4rem',
+        background: '#ffffff',
+        color: 'var(--text, #0f172a)',
+        font: 'inherit',
+        outline: 'none',
+      }}
+    />
+  );
+}
+
+// Column widths are percentages of the grid (min 760px via CSS, so
+// narrow screens scroll horizontally instead of crushing columns) —
+// no JS measurement, no remount on resize.
+const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; width: string }> = [
+  { key: 'mobility',    name: 'Mobility',    width: '8%' },
+  { key: 'recession',   name: 'Recession',   width: '9%' },
+  { key: 'pocket',      name: 'Pocket',      width: '8%' },
+  { key: 'furcation',   name: 'Furcation',   width: '10%' },
+  { key: 'hyperplasia', name: 'Hyperplasia', width: '12%' },
+  { key: 'calculus',    name: 'Calculus',    width: '9%' },
+  { key: 'gingivitis',  name: 'Gingivitis',  width: '11%' },
+  { key: 'pdstate',     name: 'PD State',    width: '12%' },
+];
+
 export const DentalGrid: React.FC<DentalGridProps> = ({
   toothData,
   onToothDataChange,
@@ -40,37 +160,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   onToggleMissing,
   highlightTriadan,
 }) => {
-  const [containerWidth, setContainerWidth] = useState(0);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<DataGridHandle>(null);
-
-  // Watch the wrapper with ResizeObserver — that way we measure correctly
-  // both at mount and when the grid becomes visible after a `display: none`
-  // toggle (e.g. when its containing tab is activated). A plain mount-time
-  // offsetWidth read returns 0 while the panel is hidden, which is why the
-  // grid was rendering blank inside the Charting tab.
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const measure = () => {
-      const w = el.offsetWidth;
-      if (w > 0) setContainerWidth(w);
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  // On phones/tablets the wrapper can be far narrower than 11 usable
-  // columns — lay the grid out against a floor width instead and let
-  // the wrapper scroll horizontally (CSS enables that ≤1000px). On
-  // desktop the container exceeds the floor and nothing changes.
-  const MIN_LAYOUT_WIDTH = 760;
-  const layoutWidth = containerWidth > 0 ? Math.max(containerWidth, MIN_LAYOUT_WIDTH) : 0;
-  const getColumnWidth = (percentage: number) => {
-    return layoutWidth > 0 ? Math.floor(layoutWidth * percentage) : 100;
-  };
+  const rowCountRef = useRef(toothData.length);
+  rowCountRef.current = toothData.length;
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef }), []);
 
   // Gloved fingers on tablets need taller touch targets than a mouse.
   const coarsePointer = React.useMemo(
@@ -78,126 +171,12 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     []
   );
 
-  // ----- Cell editor ------------------------------------------------------
-  // Defined inside the component so it closes over `toothData` and
-  // `gridRef` — needed for Enter-to-advance.
-  const makeCodeCellEditor = React.useCallback(
-    (column: { key: string; idx: number }) => (p: EditorProps<ToothData>) => {
-      const key = p.column.key as keyof ToothData;
-      const current = p.row[key];
-      const value = typeof current === 'string' ? current : '';
-
-      const rowIdx = toothData.findIndex((r) => r.triadan === p.row.triadan);
-      const lastRowIdx = toothData.length - 1;
-
-      // Editable columns span idx 3 (mobility) … 10 (pdstate). Tab wraps
-      // forward to the next row's first editable column; Shift+Tab wraps
-      // back to the previous row's last editable column. Off-page edges
-      // are no-ops so focus stays in the grid.
-      const FIRST_EDITABLE = 3;
-      const LAST_EDITABLE = 10;
-
-      const advance = (
-        nextRow: number,
-        nextIdx: number,
-        enableEditor: boolean
-      ) => {
-        if (nextRow < 0 || nextRow > lastRowIdx) return;
-        queueMicrotask(() => {
-          gridRef.current?.selectCell({ rowIdx: nextRow, idx: nextIdx }, enableEditor);
-        });
-      };
-
-      const handleKeyDown: React.KeyboardEventHandler = (e) => {
-        if (e.key === 'Tab') {
-          // Drive Tab navigation explicitly — the beta build of RDG
-          // doesn't catch Tab from inside our editor reliably, so the
-          // browser was letting Tab leave the grid entirely.
-          e.preventDefault();
-          e.stopPropagation();
-          p.onClose(true);
-          if (e.shiftKey) {
-            if (column.idx > FIRST_EDITABLE) {
-              advance(rowIdx, column.idx - 1, false);
-            } else if (rowIdx > 0) {
-              advance(rowIdx - 1, LAST_EDITABLE, false);
-            }
-          } else {
-            if (column.idx < LAST_EDITABLE) {
-              advance(rowIdx, column.idx + 1, false);
-            } else if (rowIdx < lastRowIdx) {
-              advance(rowIdx + 1, FIRST_EDITABLE, false);
-            }
-          }
-          return;
-        }
-        if (e.key === 'Enter') {
-          // Commit, then move down a row in the same column. Block the
-          // event from bubbling to the form (which would submit).
-          e.preventDefault();
-          e.stopPropagation();
-          p.onClose(true);
-          advance(rowIdx + 1, column.idx, false);
-          return;
-        }
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          p.onClose(false);
-          return;
-        }
-      };
-
-      // Plain input — measurements here are numeric grades (mobility,
-      // pocket depths, PD stage), so the dental-code autocomplete that
-      // CodeField provides elsewhere would only get in the way.
-      return (
-        <input
-          autoFocus
-          value={value}
-          onChange={(e) => p.onRowChange({ ...p.row, [key]: e.target.value })}
-          onKeyDown={handleKeyDown}
-          onBlur={() => p.onClose(true)}
-          // Explicit surface colors so the editor matches the cell it sits
-          // in regardless of the grid library's own theme variables.
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            padding: '0 0.4rem',
-            background: '#ffffff',
-            color: 'var(--text, #0f172a)',
-            font: 'inherit',
-            outline: 'none',
-          }}
-        />
-      );
-    },
-    [toothData]
-  );
-
-  // ----- Columns ----------------------------------------------------------
-  // Column index passed through to the editor so Enter-to-row-below stays
-  // on the same column even if columns get reordered later.
-  const codeCol = (
-    key: keyof ToothData,
-    name: string,
-    widthPct: number,
-    idx: number
-  ): Column<ToothData> => ({
-    key: key as string,
-    name,
-    width: getColumnWidth(widthPct),
-    editable: true,
-    editor: makeCodeCellEditor({ key: key as string, idx }),
-  });
-
-  const columns: Column<ToothData>[] = [
+  const columns = React.useMemo((): readonly Column<ToothData>[] => [
     {
       key: 'missing',
       name: 'Missing',
-      width: getColumnWidth(0.06),
-      editable: false,
-      formatter: ({ row }) => {
+      width: '6%',
+      renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         return (
           <label className="dental-grid__missing-hit">
@@ -220,48 +199,29 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'tooth',
       name: 'Tooth',
-      width: getColumnWidth(0.07),
-      editable: false,
+      width: '7%',
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
-      formatter: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
+      renderCell: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
     },
-    { key: 'triadan', name: 'Triadan', width: getColumnWidth(0.08), editable: false },
-    codeCol('mobility',    'Mobility',    0.08, 3),
-    codeCol('recession',   'Recession',   0.09, 4),
-    codeCol('pocket',      'Pocket',      0.08, 5),
-    codeCol('furcation',   'Furcation',   0.10, 6),
-    codeCol('hyperplasia', 'Hyperplasia', 0.12, 7),
-    codeCol('calculus',    'Calculus',    0.09, 8),
-    codeCol('gingivitis',  'Gingivitis',  0.11, 9),
-    codeCol('pdstate',     'PD State',    0.09, 10),
-  ];
-
-  // The percentage floors above add to ~97%, which left a dead strip
-  // after PD State instead of the grid meeting the card's rounded
-  // corner. Hand the slack to the last column so the columns fill the
-  // container exactly (minus its 1px side borders).
-  if (layoutWidth > 0) {
-    const used = columns
-      .slice(0, -1)
-      .reduce((n, c) => n + (typeof c.width === 'number' ? c.width : 0), 0);
-    const last = columns[columns.length - 1];
-    columns[columns.length - 1] = {
-      ...last,
-      width: Math.max(layoutWidth - 2 - used, typeof last.width === 'number' ? last.width : 0),
-    };
-  }
+    { key: 'triadan', name: 'Triadan', width: '8%' },
+    ...CODE_COLUMNS.map(({ key, name, width }): Column<ToothData> => ({
+      key,
+      name,
+      width,
+      renderEditCell: CodeCellEditor,
+    })),
+  ], [toothMarks, onToggleMissing]);
 
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <span className="dental-grid__title">Dental Chart</span>
+        <h2 className="dental-grid__title">Dental Chart</h2>
       </div>
-      <div className="dental-grid" ref={wrapperRef}>
-        {containerWidth > 0 && (
+      <div className="dental-grid">
+        <EditorWiringContext.Provider value={wiring}>
           <DataGrid
             ref={gridRef}
-            key={containerWidth}
             // Pin the light theme: react-data-grid's stylesheet otherwise
             // switches its internal vars to a dark palette when the OS is
             // in dark mode, turning the cell editor into a black box.
@@ -271,6 +231,14 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             rowHeight={coarsePointer ? 44 : 35}
             onRowsChange={onToothDataChange}
             rowKeyGetter={(row: ToothData) => row.triadan}
+            // Single click puts an editable cell straight into edit mode —
+            // one tap per measurement chairside, no double-click dance.
+            // Non-editable columns just select (setActivePosition(true)
+            // is a plain focus when the column has no editor).
+            onCellClick={(args) => args.setActivePosition(true)}
+            // 42 rows at most — the page scrolls, the grid doesn't, so
+            // virtualization would only fight the sticky-header layout.
+            enableVirtualization={false}
             rowClass={(row: ToothData) =>
               [
                 toothMarks[row.triadan] === 'missing' ? 'dental-grid__row--missing' : '',
@@ -278,7 +246,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               ].filter(Boolean).join(' ') || undefined
             }
           />
-        )}
+        </EditorWiringContext.Provider>
       </div>
     </div>
   );
