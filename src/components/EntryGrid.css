@@ -807,6 +807,24 @@
   text-decoration: none;
 }
 
+/* Recheck-due quick-pick: date input + interval dropdown side by side. */
+.patient-form__recall {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.patient-form__recall .patient-form__input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.patient-form__recall .patient-form__recall-quick {
+  flex: 0 0 auto;
+  width: auto;
+  color: var(--text-muted, #55677a);
+}
+
 /* Owner Report section */
 .owner-report__block {
   display: block;
@@ -1319,7 +1337,9 @@
    card. The section title above it is not sticky. */
 .diagram-with-codes__codes .code-ref {
   position: sticky;
-  top: calc(var(--topbar-height, 0px) + 0.75rem);
+  /* Same anchor as the diagram's Mark/Comment/Draw toolbar so the two
+     rails pin at the same line under the topbar. */
+  top: calc(var(--topbar-height, 0px) + 0.5rem);
   flex: 0 1 auto;
   /* Full height (fills to the viewport bottom, no trailing whitespace);
      the code list scrolls inside. The frame above is extended past the

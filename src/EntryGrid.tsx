@@ -336,6 +336,29 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     });
   };
 
+  // Start a fresh visit for a patient, carrying identity plus the teeth
+  // already gone (missing ∪ extracted) from their most recent saved
+  // visit. Shared by the library's "+ Visit" and the saved-chart
+  // banner's "+ New visit".
+  const startVisitFromChart = async (latestChartId: string) => {
+    const snap = await cloud.fetchChart(latestChartId);
+    const gone = new Set<number>();
+    for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
+    for (const [k, v] of Object.entries(snap.postMarks ?? {})) if (v === 'extracted') gone.add(Number(k));
+    chart.startNewVisit({
+      identity: {
+        patientName: snap.patientInfo.patientName,
+        patientNumber: snap.patientInfo.patientNumber,
+        ownerName: snap.patientInfo.ownerName ?? '',
+        ownerPhone: snap.patientInfo.ownerPhone ?? '',
+        ownerEmail: snap.patientInfo.ownerEmail ?? '',
+        species: snap.species,
+      },
+      goneTeeth: Array.from(gone),
+    });
+    setActiveSection('patient');
+  };
+
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
   // save-page dialog either way.
@@ -931,6 +954,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               )}
               <button
                 type="button"
+                className="chart-menu__trigger topbar-library-btn"
+                onClick={() => {
+                  // Carry forward from the patient's LATEST visit — this
+                  // banner also shows when viewing an older one.
+                  const latest = visits[0]?.id ?? chart.cloudChartId;
+                  startVisitFromChart(latest).catch(() => {
+                    alert('Could not start a new visit — check your connection.');
+                  });
+                }}
+                title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
+              >
+                + New visit
+              </button>
+              <button
+                type="button"
                 className="entry-grid__button entry-grid__button--topbar"
                 onClick={() => setEditUnlocked(true)}
               >
@@ -970,22 +1008,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onDelete={cloud.deleteChart}
           onNewVisit={async (latestChartId) => {
             try {
-              const snap = await cloud.fetchChart(latestChartId);
-              // Teeth already gone: missing (pre) ∪ extracted (post).
-              const gone = new Set<number>();
-              for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
-              for (const [k, v] of Object.entries(snap.postMarks ?? {})) if (v === 'extracted') gone.add(Number(k));
-              chart.startNewVisit({
-                identity: {
-                  patientName: snap.patientInfo.patientName,
-                  patientNumber: snap.patientInfo.patientNumber,
-                  ownerName: snap.patientInfo.ownerName ?? '',
-                  ownerPhone: snap.patientInfo.ownerPhone ?? '',
-                  ownerEmail: snap.patientInfo.ownerEmail ?? '',
-                  species: snap.species,
-                },
-                goneTeeth: Array.from(gone),
-              });
+              await startVisitFromChart(latestChartId);
               closeLibrary();
             } catch {
               alert('Could not start a new visit — check your connection.');

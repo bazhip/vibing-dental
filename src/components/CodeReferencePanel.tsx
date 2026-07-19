@@ -44,17 +44,24 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
     const apply = () => {
       raf = 0;
       const frameRect = frame.getBoundingClientRect();
+      const style = getComputedStyle(card);
       // Hidden section (all sections stay mounted under display:none) or
       // stacked layout: drop any inline sizing and wait — the observer
       // below re-fires when the section becomes visible.
-      if (frameRect.height === 0 || getComputedStyle(card).position !== 'sticky') {
+      if (frameRect.height === 0 || style.position !== 'sticky') {
         card.style.removeProperty('height');
         card.style.removeProperty('max-height');
         return;
       }
-      const top = card.getBoundingClientRect().top;
-      const viewportMax = window.innerHeight - top - 12;
-      const h = Math.max(0, Math.min(viewportMax, frameRect.bottom - top));
+      // Clamp against the INTENDED sticky anchor, never the card's live
+      // rect: once the frame's bottom starts pushing the card up, its
+      // live top is already above the anchor, so measuring it would keep
+      // the height large and let the search scroll under the topbar. By
+      // sizing the card to end exactly at the frame's bottom edge, the
+      // push never happens — the card shrinks in place, search pinned.
+      const anchorTop = parseFloat(style.top) || 0;
+      const viewportMax = window.innerHeight - anchorTop - 12;
+      const h = Math.max(0, Math.min(viewportMax, frameRect.bottom - anchorTop));
       card.style.height = `${h}px`;
       card.style.maxHeight = `${h}px`;
     };

@@ -138,12 +138,37 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
         <label className="patient-form__label">
           Recheck due
-          <input
-            type="date"
-            className="patient-form__input"
-            value={patientInfo.recallDate ?? ''}
-            onChange={handleInputChange('recallDate')}
-          />
+          <span className="patient-form__recall">
+            <input
+              type="date"
+              className="patient-form__input"
+              value={patientInfo.recallDate ?? ''}
+              onChange={handleInputChange('recallDate')}
+            />
+            {/* Quick-pick: common recheck intervals, counted from the
+                visit date (falling back to today). Selecting one fills
+                the date field; it can still be hand-adjusted after. */}
+            <select
+              className="patient-form__input patient-form__recall-quick"
+              value=""
+              aria-label="Set the recheck date a common interval after the visit date"
+              onChange={(e) => {
+                const days = Number(e.target.value);
+                if (!days) return;
+                const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
+                base.setDate(base.getDate() + days);
+                onPatientInfoChange('recallDate', base.toISOString().split('T')[0]);
+              }}
+            >
+              <option value="">+ interval</option>
+              <option value="7">1 week</option>
+              <option value="14">2 weeks</option>
+              <option value="30">1 month</option>
+              <option value="90">3 months</option>
+              <option value="182">6 months</option>
+              <option value="365">1 year</option>
+            </select>
+          </span>
         </label>
       </div>
 
