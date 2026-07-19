@@ -165,16 +165,24 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     sortDir,
   }), [debouncedQuery, speciesFilter, doctorFilter, dueOnly, sortKey, sortDir]);
 
+  // Monotonic request sequence: filters/search can change while a fetch
+  // is in flight, and a slow page-0 response must not overwrite a newer
+  // one (nor a stale Load-more append onto a re-filtered list).
+  const requestSeqRef = React.useRef(0);
+
   const refresh = React.useCallback(async (keepCount?: number) => {
+    const seq = ++requestSeqRef.current;
     setError('');
     try {
       // After a delete, re-fetch at least as many rows as were showing so
       // the user's scroll position doesn't collapse back to one page.
       const limit = Math.max(PAGE_SIZE, keepCount ?? 0);
       const page = await listCharts({ ...listQuery, offset: 0, limit });
+      if (seq !== requestSeqRef.current) return; // superseded by a newer query
       setCharts(page.rows);
       setHasMore(page.hasMore);
     } catch (e) {
+      if (seq !== requestSeqRef.current) return;
       setError(e instanceof Error ? e.message : 'Could not load charts.');
     }
   }, [listCharts, listQuery]);
@@ -186,15 +194,22 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const loadMore = async () => {
     if (!charts || loadingMore) return;
+    const seq = ++requestSeqRef.current;
     setLoadingMore(true);
     setError('');
     try {
       const page = await listCharts({ ...listQuery, offset: charts.length, limit: PAGE_SIZE });
-      setCharts([...charts, ...page.rows]);
-      setHasMore(page.hasMore);
+      if (seq === requestSeqRef.current) {
+        setCharts((prev) => [...(prev ?? []), ...page.rows]);
+        setHasMore(page.hasMore);
+      }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load more charts.');
+      if (seq === requestSeqRef.current) {
+        setError(e instanceof Error ? e.message : 'Could not load more charts.');
+      }
     } finally {
+      // Always release the flag — if a newer refresh superseded this
+      // fetch, its results were discarded and nothing is loading now.
       setLoadingMore(false);
     }
   };

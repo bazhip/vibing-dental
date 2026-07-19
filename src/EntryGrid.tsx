@@ -121,6 +121,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // the diagrams/grid. Cleared a few seconds after the last edit.
   const [aiHighlightTriadan, setAiHighlightTriadan] = React.useState<number | null>(null);
   const aiHighlightTimer = React.useRef<number | undefined>(undefined);
+  React.useEffect(() => () => window.clearTimeout(aiHighlightTimer.current), []);
+  // Stable identity: the setter from usePersistedState never changes, so
+  // DentalGrid's memoized column definitions survive unrelated re-renders
+  // (an inline arrow here rebuilt them on every keystroke elsewhere).
+  const { setPreToothMarks } = chart;
+  const toggleMissing = React.useCallback((triadan: number) => {
+    setPreToothMarks((marks: ToothMarks) => {
+      const next = { ...marks };
+      if (next[triadan] === 'missing') delete next[triadan];
+      else next[triadan] = 'missing';
+      return next;
+    });
+  }, [setPreToothMarks]);
+
   const handleAiActivity = React.useCallback((actions: AiAction[]) => {
     // Jump to the section of (and highlight the tooth from) the last
     // action in the batch so the vet watches the chart fill in.
@@ -192,8 +206,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (route.view !== 'chart') return;
     const base = cloud.enabled ? `#/chart/${chart.cloudChartId}` : '#/chart';
     navigate(`${base}/${activeSection}`, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cloud.enabled, route.view, chart.cloudChartId, activeSection]);
+  }, [cloud.enabled, route.view, chart.cloudChartId, activeSection, navigate]);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
   // Recheck reminders are composed from a saved chart in My charts; this
@@ -507,14 +520,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           // either place crosses out the grid row AND fills the tooth on
           // the diagram (and locks it in the Procedure diagram).
           toothMarks={chart.preToothMarks}
-          onToggleMissing={(triadan) =>
-            chart.setPreToothMarks((marks: ToothMarks) => {
-              const next = { ...marks };
-              if (next[triadan] === 'missing') delete next[triadan];
-              else next[triadan] = 'missing';
-              return next;
-            })
-          }
+          onToggleMissing={toggleMissing}
         />
       ),
     },

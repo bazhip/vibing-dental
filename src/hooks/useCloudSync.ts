@@ -243,9 +243,11 @@ export function useCloudSync(
       }
       fail(error);
     } catch (err) {
-      // Network/parse rejections land here (supabase-js throws these rather
-      // than returning {error}); categorize the same way.
-      if (status !== 'error') setSaveError(describeSaveError(err));
+      // Network/parse rejections land here (supabase-js throws these
+      // rather than returning {error}); categorize the same way. fail()
+      // rethrows through here too — describeSaveError is deterministic,
+      // so re-setting the same message is harmless.
+      setSaveError(describeSaveError(err));
       setStatus('error');
       throw err;
     }
