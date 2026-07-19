@@ -1,13 +1,11 @@
 {
-  "name": "react-data",
+  "name": "toothops-charting",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.92.0",
     "@supabase/supabase-js": "^2.110.7",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.4.3",
     "@vercel/analytics": "^2.0.1",
@@ -15,38 +13,23 @@
     "pdf-lib": "^1.17.1",
     "react": "^19.2.7",
     "react-data-grid": "^7.0.0-beta.61",
-    "react-dom": "^19.2.7",
-    "react-scripts": "5.0.1"
+    "react-dom": "^19.2.7"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-data-grid)/"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "typescript": "^5.9.3"
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }

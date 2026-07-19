@@ -1,4 +1,5 @@
 import React from 'react';
+import { vi, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DentalGrid } from './DentalGrid';
 import { getInitialToothData } from '../constants';
@@ -31,9 +32,9 @@ beforeAll(() => {
 function renderGrid(overrides: Partial<React.ComponentProps<typeof DentalGrid>> = {}) {
   const props = {
     toothData: getInitialToothData('canine'),
-    onToothDataChange: jest.fn(),
+    onToothDataChange: vi.fn(),
     toothMarks: {},
-    onToggleMissing: jest.fn(),
+    onToggleMissing: vi.fn(),
     ...overrides,
   };
   const utils = render(<DentalGrid {...props} />);
@@ -45,8 +46,9 @@ test('renders every tooth row plus the header', () => {
   const grid = screen.getByRole('grid');
   // 42 adult canine teeth + 1 header row.
   expect(grid).toHaveAttribute('aria-rowcount', String(42 + 1));
-  expect(screen.getByRole('columnheader', { name: 'Mobility' })).toBeInTheDocument();
-  expect(screen.getByRole('columnheader', { name: 'PD State' })).toBeInTheDocument();
+  // Header names include the set-all-teeth button's label — match loosely.
+  expect(screen.getByRole('columnheader', { name: /^Mobility/ })).toBeInTheDocument();
+  expect(screen.getByRole('columnheader', { name: /^PD State/ })).toBeInTheDocument();
 });
 
 test('missing checkbox reflects marks and reports toggles', () => {
@@ -74,6 +76,6 @@ test('a single click opens the editor and typing commits the value', () => {
   fireEvent.change(editor, { target: { value: 'M2' } });
   fireEvent.blur(editor);
   expect(props.onToothDataChange).toHaveBeenCalled();
-  const lastCall = (props.onToothDataChange as jest.Mock).mock.calls.at(-1)![0] as ToothData[];
+  const lastCall = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
   expect(lastCall.find((t) => t.triadan === 101)?.mobility).toBe('M2');
 });

@@ -4,11 +4,10 @@ import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import * as serviceWorker from './serviceWorker';
 
-// Suppress benign ResizeObserver loop warning from data-grid resize observers.
-// This message is non-actionable and only surfaces because CRA's dev overlay
-// promotes any window 'error' event into a runtime error banner.
+// Suppress the benign "ResizeObserver loop" message the data grid's
+// resize observers can trigger — non-actionable, and dev-overlay tooling
+// otherwise promotes it into a runtime error banner.
 const RESIZE_OBSERVER_MSGS = [
   'ResizeObserver loop completed with undelivered notifications.',
   'ResizeObserver loop limit exceeded',
@@ -33,8 +32,3 @@ root.render(
     <Analytics />
   </React.StrictMode>
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

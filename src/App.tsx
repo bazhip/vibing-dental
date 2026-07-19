@@ -32,7 +32,7 @@ const TRIAL_NOTIFIED_KEY = 'trial.notified';
  *  once per browser. No personal data leaves the page (there is none
  *  to send; trials are anonymous). */
 function notifyTrialStarted(): void {
-  const base = process.env.REACT_APP_SUPABASE_URL;
+  const base = import.meta.env.VITE_SUPABASE_URL;
   if (!base) return;
   if (readString(TRIAL_NOTIFIED_KEY, 1, '') === '1') return;
   writeString(TRIAL_NOTIFIED_KEY, 1, '1');

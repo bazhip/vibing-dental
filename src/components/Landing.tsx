@@ -406,7 +406,7 @@ export const Landing: React.FC<LandingProps> = ({
           </div>
           <div className="landing__paper-shot">
             <img
-              src={`${process.env.PUBLIC_URL}/landing-chart.png`}
+              src="/landing-chart.png"
               alt="A generated dental chart PDF: logo and doctor line, tooth diagram, oral exam findings, and full-mouth Triadan grids"
               loading="lazy"
             />
