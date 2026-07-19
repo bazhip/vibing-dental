@@ -12,7 +12,7 @@
         { "key": "Permissions-Policy", "value": "microphone=(self), camera=(), geolocation=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com wss://api.deepgram.com https://cloudflareinsights.com https://static.cloudflareinsights.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+          "value": "default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com wss://api.deepgram.com https://cloudflareinsights.com https://static.cloudflareinsights.com; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
         }
       ]
     },
