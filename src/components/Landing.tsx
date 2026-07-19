@@ -334,10 +334,15 @@ export const Landing: React.FC<LandingProps> = ({
               <li>Re-open any PDF back into the app — the chart travels inside it</li>
             </ul>
           </div>
-          <div className="landing__paper-shot">
+          <div className="landing__paper-shot landing__paper-shot--pages">
             <img
               src="/landing-chart.png"
-              alt="A generated dental chart PDF: logo and doctor line, tooth diagram, oral exam findings, and full-mouth Triadan grids"
+              alt="Page one of a generated dental chart PDF: practice logo and doctor line, diagnosis diagram with anchored comments, oral exam findings with comments, partial Triadan probing grids, and a legend of the AVDC codes used"
+              loading="lazy"
+            />
+            <img
+              src="/landing-chart-p2.png"
+              alt="Page two of the same chart: nerve block doses, the procedure diagram with an extraction marked, the treatment and surgery report, and the procedure codes used"
               loading="lazy"
             />
           </div>

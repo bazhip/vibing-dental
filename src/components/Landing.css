@@ -1022,6 +1022,22 @@
   transform: rotate(0deg) scale(1.01);
 }
 
+/* Both pages of the sample chart, stacked with opposing tilts so they
+   read as two sheets from the same printout. */
+.landing__paper-shot--pages {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.landing__paper-shot--pages img + img {
+  transform: rotate(-0.6deg);
+}
+
+.landing__paper-shot--pages img + img:hover {
+  transform: rotate(0deg) scale(1.01);
+}
+
 @media (max-width: 900px) {
   .landing__paper {
     grid-template-columns: 1fr;
