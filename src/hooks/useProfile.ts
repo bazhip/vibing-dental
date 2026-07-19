@@ -37,6 +37,9 @@ export interface UseProfileReturn extends PracticeProfile {
   aiEnabled: boolean;
   /** Max images per chart on the current plan. */
   maxImages: number;
+  /** Owner-report feature flag — per practice, admin-controlled, off by
+   *  default (practices.owner_report_enabled). */
+  ownerReportEnabled: boolean;
   /** Signed URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
@@ -143,6 +146,7 @@ export function useProfile(): UseProfileReturn {
   const [logoUrl, setLogoUrl] = React.useState('');
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
+  const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
@@ -170,6 +174,7 @@ export function useProfile(): UseProfileReturn {
       // get basic/pro features while their subscription is alive (or
       // comped/grandfathered) — a lapsed or never-started one is free.
       let practicePlan: PracticePlan = 'free';
+      let ownerReportOn = false;
       if (pid) {
         const { data: prac } = await supabase
           .from('practices')
@@ -180,6 +185,17 @@ export function useProfile(): UseProfileReturn {
         if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
         const paidStatus = ['active', 'trialing', 'comped', 'past_due'].includes(prac?.subscription_status ?? '');
         if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
+        // Separate query so a database that predates the column (it ships
+        // via migration) degrades to flag-off instead of breaking the
+        // whole profile load.
+        const { data: features, error: featuresError } = await supabase
+          .from('practices')
+          .select('owner_report_enabled')
+          .eq('id', pid)
+          .maybeSingle();
+        if (!featuresError) {
+          ownerReportOn = !!(features as { owner_report_enabled?: boolean } | null)?.owner_report_enabled;
+        }
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
@@ -191,6 +207,7 @@ export function useProfile(): UseProfileReturn {
           setLogoUrl(signedUrl);
           setPracticeId(pid);
           setPlan(practicePlan);
+          setOwnerReportEnabled(ownerReportOn);
         }
         setLoaded(true);
       }
@@ -251,6 +268,7 @@ export function useProfile(): UseProfileReturn {
     plan,
     aiEnabled: PLAN_LIMITS[plan].aiAutofill,
     maxImages: PLAN_LIMITS[plan].maxImages,
+    ownerReportEnabled,
     logoUrl,
     update,
     uploadLogo,

@@ -29,6 +29,7 @@ export const CHART_SECTION_IDS = [
   'procedure',
   'imaging',
   'treatment',
+  'owner-report',
 ] as const;
 
 export interface HashRoute {

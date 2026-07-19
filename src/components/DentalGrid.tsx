@@ -17,6 +17,14 @@ interface DentalGridProps {
   onToggleMissing: (triadan: number) => void;
   /** Tooth row to flash (AI autofill just edited it). */
   highlightTriadan?: number | null;
+  /** The patient's previous visit, keyed by triadan — rendered as muted
+   *  hints in empty cells and "Last visit" tooltips on filled ones.
+   *  Reference only; hinted cells stay empty until typed into. */
+  priorToothData?: Record<number, ToothData> | null;
+  /** Teeth already gone (missing/extracted) at the previous visit — the
+   *  new-visit flow pre-marks these missing; the Missing column badges
+   *  them as carried forward rather than found today. */
+  priorGoneTeeth?: Set<number> | null;
 }
 
 /**
@@ -100,9 +108,13 @@ function CodeCellEditor({
       }
       return;
     }
-    if (e.key === 'Enter') {
-      // Commit, then move down a row in the same column. Block the
-      // event from bubbling to the form (which would submit).
+    if (e.key === 'Enter' || e.key === ' ') {
+      // Commit, then move down a row in the same column — Enter and
+      // Space both, so a run of probing depths can be entered exactly
+      // as it's called out ("3 [space] 2 [space] 4 …"). These cells
+      // hold short grades/codes; a literal space is never content.
+      // Enter is also blocked from bubbling to the form (which would
+      // submit).
       e.preventDefault();
       e.stopPropagation();
       onClose(true);
@@ -159,11 +171,33 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   toothMarks,
   onToggleMissing,
   highlightTriadan,
+  priorToothData,
+  priorGoneTeeth,
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
   const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef }), []);
+
+  // Whole-mouth scoring (calculus, gingivitis, …): one value applied to
+  // every chartable tooth from the column header. Refs keep the handler
+  // identity stable so the memoized columns survive edits.
+  const toothDataRef = useRef(toothData);
+  toothDataRef.current = toothData;
+  const toothMarksRef = useRef(toothMarks);
+  toothMarksRef.current = toothMarks;
+  const setAllForColumn = React.useCallback((key: keyof ToothData, name: string) => {
+    const input = window.prompt(
+      `Set ${name} for every tooth (teeth marked missing are skipped).\nLeave empty and press OK to clear the column:`
+    );
+    if (input === null) return;
+    const value = input.trim();
+    onToothDataChange(
+      toothDataRef.current.map((t) =>
+        toothMarksRef.current[t.triadan] === 'missing' ? t : { ...t, [key]: value }
+      )
+    );
+  }, [onToothDataChange]);
 
   // Gloved fingers on tablets need taller touch targets than a mouse.
   const coarsePointer = React.useMemo(
@@ -178,6 +212,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       width: '6%',
       renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
+        const carried = isMissing && !!priorGoneTeeth?.has(row.triadan);
         return (
           <label className="dental-grid__missing-hit">
             <input
@@ -185,13 +220,20 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               className="dental-grid__missing-check"
               checked={isMissing}
               onChange={() => onToggleMissing(row.triadan)}
-              aria-label={`Tooth ${row.triadan} missing`}
+              aria-label={`Tooth ${row.triadan} missing${carried ? ' (carried from the previous visit)' : ''}`}
               title={
-                isMissing
+                carried
+                  ? `Tooth ${row.triadan} was already missing or extracted at the previous visit — carried forward automatically`
+                  : isMissing
                   ? `Unmark tooth ${row.triadan} as missing`
                   : `Mark tooth ${row.triadan} as missing — crosses out this row and fills the tooth on the Diagnosis diagram`
               }
             />
+            {carried && (
+              <span className="dental-grid__prior-chip" aria-hidden="true">
+                prev
+              </span>
+            )}
           </label>
         );
       },
@@ -210,8 +252,39 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       name,
       width,
       renderEditCell: CodeCellEditor,
+      renderCell: ({ row }) => {
+        const value = typeof row[key] === 'string' ? (row[key] as string) : '';
+        const prior = priorToothData?.[row.triadan]?.[key];
+        const priorValue = typeof prior === 'string' ? prior.trim() : '';
+        if (value) {
+          // Entered — surface the previous visit's value for comparison
+          // when it differs (probing-depth trends at a glance).
+          return priorValue && priorValue !== value
+            ? <span title={`Last visit: ${priorValue}`}>{value}</span>
+            : <>{value}</>;
+        }
+        return priorValue ? (
+          <span className="dental-grid__prior-hint" title={`Last visit: ${priorValue} — shown for reference, not carried forward`}>
+            {priorValue}
+          </span>
+        ) : null;
+      },
+      renderHeaderCell: () => (
+        <span className="dental-grid__head">
+          {name}
+          <button
+            type="button"
+            className="dental-grid__set-all"
+            onClick={() => setAllForColumn(key, name)}
+            title={`Set ${name} for every tooth at once`}
+            aria-label={`Set ${name} for every tooth at once`}
+          >
+            ⋯
+          </button>
+        </span>
+      ),
     })),
-  ], [toothMarks, onToggleMissing]);
+  ], [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth]);
 
   return (
     <div className="dental-grid-section">

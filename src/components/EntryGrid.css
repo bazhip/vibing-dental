@@ -781,6 +781,109 @@
   border-right: none;
 }
 
+/* Previous visit's value shown in an empty cell — visibly "not this
+   visit's data": muted and italic, with the detail in the tooltip. */
+.dental-grid__prior-hint {
+  color: var(--text-muted, #55677a);
+  font-style: italic;
+  opacity: 0.65;
+}
+
+/* "prev" chip beside the Missing checkbox — this tooth was already gone
+   at the previous visit and was carried forward automatically. */
+.dental-grid__prior-chip {
+  flex: none;
+  margin-left: 0.25rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: var(--surface-sunken, #f1f5f9);
+  border: 1px solid var(--border, #d8e0e8);
+  color: var(--text-muted, #55677a);
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+/* Owner Report section */
+.owner-report__block {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.owner-report__block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.owner-report__reset {
+  font-size: 0.78rem;
+}
+
+.owner-report__textarea {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.5;
+}
+
+.owner-report__preview {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-sunken, #f8fafc);
+}
+
+.owner-report__preview-line {
+  margin: 0.35rem 0;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.owner-report__preview-list {
+  margin: 0.35rem 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.owner-report__preview-list li {
+  margin: 0.25rem 0;
+}
+
+/* Column header with the set-all-teeth action beside the title. */
+.dental-grid__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-width: 100%;
+}
+
+.dental-grid__set-all {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dental-grid__set-all:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
 .dental-grid .rdg-cell {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -2289,6 +2392,34 @@
 /* Floating download action — same pill the homepage animation shows.
    Fixed bottom-right so the primary action is reachable at any scroll
    depth without occupying the topbar. */
+/* Owner report — quieter sibling stacked above the main download FAB.
+   Doubled class beats the base .fab-download rule below regardless of
+   source order (equal specificity previously let the base bottom win,
+   piling both buttons onto the same spot). */
+.fab-download.fab-download--secondary {
+  bottom: 5.1rem;
+  background: var(--surface, #fff);
+  color: var(--primary, #0c6b63);
+  border: 1px solid var(--border-strong, #cbd5e1);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.fab-download.fab-download--secondary:hover {
+  background: var(--surface-sunken, #f1f5f9);
+}
+
+/* Owner-report tag on an image card. */
+.imaging__role {
+  flex: none;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--surface, #fff);
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
 .fab-download {
   position: fixed;
   right: 1.5rem;
@@ -2473,6 +2604,45 @@ button.save-status--error {
 /* Re-auth-in-place dialog — a narrow sign-in card over the live chart. */
 .session-expired-modal {
   max-width: 420px;
+}
+
+/* Chart save-history dialog. */
+.chart-history-modal {
+  max-width: 480px;
+}
+
+.chart-history__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-history__entry {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+
+.chart-history__entry:last-child {
+  border-bottom: none;
+}
+
+.chart-history__action {
+  font-weight: 600;
+  color: var(--text);
+  flex: none;
+}
+
+.chart-history__meta {
+  color: var(--text-muted);
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 .chart-lock-banner__text { flex: 1 1 auto; min-width: 0; }
 .chart-lock-banner .entry-grid__button { flex: none; }

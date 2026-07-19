@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChartSnapshot } from '../types';
+import { ChartSnapshot, ChartAuditEntry } from '../types';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
@@ -167,7 +167,14 @@ export function useCloudSync(
   const snapshot = chart.getSnapshot();
   const serialized = React.useMemo(() => JSON.stringify(snapshot), [snapshot]);
   const chartId = chart.cloudChartId;
-  const currentHash = React.useMemo(() => hashStr(serialized), [serialized]);
+  // Dirty-tracking hashes the snapshot WITHOUT its save history — every
+  // successful save appends an audit entry, and hashing that would flag
+  // the chart dirty the moment it finished saving.
+  const contentSerialized = React.useMemo(() => {
+    const { auditLog: _auditLog, ...content } = snapshot;
+    return JSON.stringify(content);
+  }, [snapshot]);
+  const currentHash = React.useMemo(() => hashStr(contentSerialized), [contentSerialized]);
   const contentful = React.useMemo(() => hasContent(snapshot), [snapshot]);
   const dirty = on && contentful && currentHash !== savedHash;
 
@@ -177,6 +184,11 @@ export function useCloudSync(
   dirtyRef.current = dirty;
   const resetIdRef = React.useRef(chart.resetCloudChartId);
   resetIdRef.current = chart.resetCloudChartId;
+  // Local state mirrors the audit entry each save wrote to the cloud row,
+  // so per-save history accumulates across a session (upsertChart's
+  // useCallback([]) can't see fresh chart state directly).
+  const appendAuditRef = React.useRef(chart.appendAuditEntry);
+  appendAuditRef.current = chart.appendAuditEntry;
 
   // Opening a cloud chart replays its content into state — treat that
   // applied state as the saved baseline (not a dirty edit).
@@ -187,7 +199,7 @@ export function useCloudSync(
       setSavedHash(currentHash);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serialized]);
+  }, [contentSerialized]);
 
   const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
     if (!supabase) return;
@@ -201,6 +213,19 @@ export function useCloudSync(
       const { data: sessionData } = await client.auth.getSession();
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
       const snap: ChartSnapshot = JSON.parse(json);
+      // The saved-baseline hash must match the live dirty hash, which
+      // excludes the save history (see above).
+      const contentHash = (() => {
+        const { auditLog: _auditLog, ...content } = snap;
+        return hashStr(JSON.stringify(content));
+      })();
+      // This write becomes a line in the chart's history.
+      const auditEntry: ChartAuditEntry = {
+        at: new Date().toISOString(),
+        by: sessionData.session?.user.email ?? '',
+        action: (snap.auditLog?.length ?? 0) === 0 ? 'created' : 'saved',
+      };
+      snap.auditLog = [...(snap.auditLog ?? []).slice(-99), auditEntry];
       // The snapshot's `species` is the combined layout key (e.g.
       // 'canine-deciduous'); the row stores species + dentition split out.
       const speciesBase = snap.species.startsWith('canine') ? 'canine' : 'feline';
@@ -223,7 +248,8 @@ export function useCloudSync(
       setSaveError('');
       const { error } = await client.from('charts').upsert(row(id));
       if (!error) {
-        setSavedHash(hashStr(json));
+        setSavedHash(contentHash);
+        appendAuditRef.current(auditEntry);
         setStatus('saved');
         return;
       }
@@ -237,7 +263,8 @@ export function useCloudSync(
         const freshId = resetIdRef.current();
         const { error: retryError } = await client.from('charts').upsert(row(freshId));
         if (retryError) fail(retryError);
-        setSavedHash(hashStr(json));
+        setSavedHash(contentHash);
+        appendAuditRef.current(auditEntry);
         setStatus('saved');
         return;
       }
@@ -274,7 +301,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, dirty, serialized]);
+  }, [on, chart.openedExisting, dirty, contentSerialized]);
 
   // Guard leaving a chart with unsaved changes (no autosave to catch it).
   const confirmDiscardIfDirty = (verb: string): boolean => {

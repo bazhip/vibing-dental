@@ -233,7 +233,7 @@ Deno.serve(async (req: Request) => {
       case 'list_practices': {
         const { data: pracs } = await admin
           .from('practices')
-          .select('id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at')
+          .select('id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at, owner_report_enabled')
           .order('created_at', { ascending: true });
         const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
         // A practice's chart count = charts shared to it PLUS members'
@@ -283,6 +283,7 @@ Deno.serve(async (req: Request) => {
             periodEnd: p.billing_period_end ?? null,
             frozenAt: p.frozen_at ?? null,
             hasStripe: !!p.stripe_subscription_id,
+            ownerReportEnabled: !!p.owner_report_enabled,
           });
         }
         return json({ practices });
@@ -293,6 +294,24 @@ Deno.serve(async (req: Request) => {
         const name = typeof body.name === 'string' ? body.name.trim() : '';
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);
         const { error } = await admin.from('practices').update({ name }).eq('id', practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
+      // Per-practice feature flags. One column per feature keeps the
+      // schema self-documenting; extend the map as features graduate
+      // from beta.
+      case 'set_feature': {
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        const feature = typeof body.feature === 'string' ? body.feature : '';
+        const enabled = body.enabled === true;
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const FEATURE_COLUMNS: Record<string, string> = {
+          owner_report: 'owner_report_enabled',
+        };
+        const column = FEATURE_COLUMNS[feature];
+        if (!column) return json({ error: `unknown feature: ${feature}` }, 400);
+        const { error } = await admin.from('practices').update({ [column]: enabled }).eq('id', practiceId);
         if (error) throw error;
         return json({ ok: true });
       }

@@ -190,11 +190,44 @@ export type Logo = 'socal' | 'vca';
  * information the PDF round-trip embeds; also the payload synced to the
  * cloud `charts` table.
  */
+/** Owner-report tag for an attached image: which side of a Before &
+ *  After pair it belongs to. Untagged images stay out of the report. */
+export type ImageRole = 'before' | 'after';
+
+/** Hand-edited overrides for the owner report. Every block starts
+ *  auto-generated from the chart; a field is present here only when the
+ *  team customized it (absent = keep using the generated text). */
+export interface OwnerReportOverrides {
+  /** Opening summary paragraph. */
+  intro?: string;
+  /** Home-care advice, one tip per line. */
+  homecare?: string;
+  /** Optional extra note from the team, printed as its own section. */
+  extraNotes?: string;
+}
+
+/** One line of a chart's save history — who wrote the cloud row, when. */
+export interface ChartAuditEntry {
+  /** ISO timestamp of the save. */
+  at: string;
+  /** The signed-in account's email ('' when unknown, e.g. PDF import). */
+  by: string;
+  action: 'created' | 'saved' | 'imported-pdf';
+}
+
 export interface ChartSnapshot {
   /** Snapshot schema version — absent on charts saved before the field
    *  existed (treat as 1). Bump when the shape changes incompatibly so
    *  loaders have something to key migrations on. */
   version?: number;
+  /** Save history, appended on every cloud write (capped at 100).
+   *  Excluded from dirty-tracking — see useCloudSync. */
+  auditLog?: ChartAuditEntry[];
+  /** Before/after tags for attached images (by attachment id), used by
+   *  the owner report's photo section. */
+  imageRoles?: Record<string, ImageRole>;
+  /** Hand-edited owner-report text blocks (absent fields = generated). */
+  ownerReport?: OwnerReportOverrides;
   patientInfo: PatientInfo;
   toothData: ToothData[];
   species: Species;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
+import { ImageRole } from '../types';
 
 interface ImagingSectionProps {
   /** The active chart's cloud id — attachments are scoped to it. */
@@ -10,6 +11,10 @@ interface ImagingSectionProps {
   practiceId?: string;
   /** Per-plan cap on images for this chart. */
   maxImages?: number;
+  /** Owner-report before/after tags (attachment id → role). */
+  imageRoles?: Record<string, ImageRole>;
+  /** Tag (or untag, with null) an image for the owner report. */
+  onImageRoleChange?: (attachmentId: string, role: ImageRole | null) => void;
 }
 
 /**
@@ -18,7 +23,14 @@ interface ImagingSectionProps {
  * Images live in a private bucket and render via short-lived signed
  * URLs. Cloud-only — the section explains itself in trial/standalone.
  */
-export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudActive, practiceId = '', maxImages }) => {
+export const ImagingSection: React.FC<ImagingSectionProps> = ({
+  chartId,
+  cloudActive,
+  practiceId = '',
+  maxImages,
+  imageRoles = {},
+  onImageRoleChange,
+}) => {
   const store = useAttachments(chartId, practiceId, maxImages);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [description, setDescription] = React.useState('');
@@ -153,6 +165,21 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({ chartId, cloudAc
                 <span className="imaging__badge">
                   {a.kind === 'xray' ? 'Radiograph' : 'Photo'}
                 </span>
+                {onImageRoleChange && (
+                  <select
+                    className="imaging__role"
+                    value={imageRoles[a.id] ?? ''}
+                    onChange={(e) =>
+                      onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)
+                    }
+                    aria-label="Owner-report tag for this image"
+                    title="Tag this image for the owner report's Before & After section"
+                  >
+                    <option value="">Not in report</option>
+                    <option value="before">Before</option>
+                    <option value="after">After</option>
+                  </select>
+                )}
                 <input
                   type="text"
                   className="patient-form__input imaging__caption"

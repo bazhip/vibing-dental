@@ -24,6 +24,8 @@ import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
+import { ChartHistoryModal } from './components/ChartHistoryModal';
+import { OwnerReportSection } from './components/OwnerReportSection';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
@@ -35,6 +37,9 @@ import './components/EntryGrid.css';
 // time a preview is requested, not with the charting screen.
 const PdfPreviewModal = React.lazy(() =>
   import('./components/PdfPreviewModal').then((m) => ({ default: m.PdfPreviewModal }))
+);
+const OwnerReportModal = React.lazy(() =>
+  import('./components/OwnerReportModal').then((m) => ({ default: m.OwnerReportModal }))
 );
 
 /**
@@ -93,10 +98,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chart = useChartState();
   const profile = useProfile();
   const cloud = useCloudSync(chart, !trial, profile.practiceId);
+  // Owner report is per-practice, admin-flagged, and off by default —
+  // everything it touches (section, FAB, image tags, modal) gates here.
+  const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
   const { route, navigate } = useHashRoute();
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
+  const [historyOpen, setHistoryOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
   // the user to Patient). Mirrored into the hash (#/chart/:id/:section)
   // so a refresh or shared link lands on the same section.
@@ -282,6 +291,44 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cloud.enabled, chart.cloudChartId]);
 
+  // The previous visit's per-tooth values — shown as muted hints in
+  // empty grid cells and as "Last visit" tooltips, so the person probing
+  // can compare without opening the old chart. Values are NEVER
+  // prefilled: a stale probing depth must not save as if measured today.
+  const [priorTooth, setPriorTooth] = React.useState<Record<number, ToothData> | null>(null);
+  // Teeth already gone (missing or extracted) at the previous visit —
+  // startNewVisit pre-marks them missing so nobody re-enters them, and
+  // the grid badges them as carried forward rather than found today.
+  const [priorGone, setPriorGone] = React.useState<Set<number> | null>(null);
+  React.useEffect(() => {
+    if (!cloud.enabled || visits.length === 0) { setPriorTooth(null); setPriorGone(null); return; }
+    // `visits` is sorted newest-first. For a saved visit, "prior" is the
+    // one before it; for an unsaved new visit (id not in the list yet),
+    // it's the patient's latest saved visit.
+    const idx = visits.findIndex((v) => v.id === chart.cloudChartId);
+    const prior = idx >= 0 ? visits[idx + 1] : visits[0];
+    if (!prior) { setPriorTooth(null); setPriorGone(null); return; }
+    let cancelled = false;
+    cloud.fetchChart(prior.id)
+      .then((snap) => {
+        if (cancelled) return;
+        const byTriadan: Record<number, ToothData> = {};
+        for (const tooth of snap.toothData ?? []) byTriadan[tooth.triadan] = tooth;
+        setPriorTooth(byTriadan);
+        const gone = new Set<number>();
+        for (const [key, mark] of Object.entries(snap.preMarks ?? {})) {
+          if (mark === 'missing') gone.add(Number(key));
+        }
+        for (const [key, mark] of Object.entries(snap.postMarks ?? {})) {
+          if (mark === 'extracted') gone.add(Number(key));
+        }
+        setPriorGone(gone);
+      })
+      .catch(() => { if (!cancelled) { setPriorTooth(null); setPriorGone(null); } });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cloud.enabled, visits, chart.cloudChartId]);
+
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
     cloud.openChart(id).catch(() => {
@@ -345,6 +392,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // PDF preview modal state.
   const [previewSnapshot, setPreviewSnapshot] = React.useState<ChartSnapshot | null>(null);
   const [previewOpen, setPreviewOpen] = React.useState(false);
+  // Owner report — the chart translated for the pet's owner.
+  const [ownerReportOpen, setOwnerReportOpen] = React.useState(false);
 
   // ----- AI autofill plumbing -------------------------------------------
   // Snapshot of state Claude sees alongside the transcript.
@@ -521,6 +570,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           // the diagram (and locks it in the Procedure diagram).
           toothMarks={chart.preToothMarks}
           onToggleMissing={toggleMissing}
+          priorToothData={priorTooth}
+          priorGoneTeeth={priorGone}
         />
       ),
     },
@@ -588,7 +639,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'imaging',
       label: 'Images',
       content: lock(
-        <ImagingSection chartId={chart.cloudChartId} cloudActive={cloud.enabled} practiceId={profile.practiceId} maxImages={profile.maxImages} />
+        <ImagingSection
+          chartId={chart.cloudChartId}
+          cloudActive={cloud.enabled}
+          practiceId={profile.practiceId}
+          maxImages={profile.maxImages}
+          imageRoles={chart.imageRoles}
+          onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
+        />
       ),
     },
     {
@@ -603,6 +661,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       ),
     },
+    // Feature-flagged per practice (admin panel), off by default.
+    ...(ownerReportOn
+      ? [{
+          id: 'owner-report',
+          label: 'Owner Report',
+          content: lock(
+            <OwnerReportSection
+              snapshot={chart.getSnapshot()}
+              overrides={chart.ownerReport}
+              onOverrideChange={chart.setOwnerReportOverride}
+              onPreview={() => setOwnerReportOpen(true)}
+            />
+          ),
+        }]
+      : []),
   ];
 
   return (
@@ -846,6 +919,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <span className="chart-lock-banner__text">
                 You're viewing a saved chart. Editing is locked so it isn't changed by accident.
               </span>
+              {chart.auditLog.length > 0 && (
+                <button
+                  type="button"
+                  className="chart-menu__trigger topbar-library-btn"
+                  onClick={() => setHistoryOpen(true)}
+                  aria-haspopup="dialog"
+                >
+                  History
+                </button>
+              )}
               <button
                 type="button"
                 className="entry-grid__button entry-grid__button--topbar"
@@ -954,6 +1037,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       </form>
 
+      {ownerReportOn && (
+        <button
+          type="button"
+          className="fab-download fab-download--secondary"
+          onClick={() => setOwnerReportOpen(true)}
+          aria-haspopup="dialog"
+          aria-label="Preview and download the owner report"
+        >
+          <span aria-hidden="true">♥</span> Owner report
+        </button>
+      )}
+
       <button
         type="submit"
         form="chart-form"
@@ -962,6 +1057,25 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       >
         <span aria-hidden="true">⤓</span> Preview PDF
       </button>
+
+      {ownerReportOn && ownerReportOpen && (
+        <React.Suspense fallback={null}>
+          <OwnerReportModal
+            open
+            onClose={() => setOwnerReportOpen(false)}
+            snapshot={chart.getSnapshot()}
+            branding={{
+              practiceName: profile.practiceName,
+              doctorName: profile.doctorName,
+              logoUrl: profile.logoUrl,
+            }}
+            imageRoles={chart.imageRoles}
+            chartId={chart.cloudChartId}
+            practiceId={profile.practiceId}
+            cloudActive={cloud.enabled}
+          />
+        </React.Suspense>
+      )}
 
       {previewSnapshot && (
         <React.Suspense fallback={null}>
@@ -978,6 +1092,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled}
         onNavigate={setActiveSection}
+      />
+
+      <ChartHistoryModal
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        entries={chart.auditLog}
       />
 
       <PracticeSettingsModal

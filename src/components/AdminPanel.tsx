@@ -55,6 +55,9 @@ interface AdminPractice {
   memberCount: number;
   chartCount: number;
   members: AdminPracticeMember[];
+  /** Feature flag: owner-facing report PDF (beta). Absent until the
+   *  admin-api's list_practices includes it — treated as off. */
+  ownerReportEnabled?: boolean;
 }
 
 interface BillingOverviewRow {
@@ -422,6 +425,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
+  const handleSetOwnerReport = (enabled: boolean) => {
+    if (!selectedPractice) return;
+    run(enabled ? 'Owner report enabled for this practice.' : 'Owner report disabled.', async () => {
+      await adminCall({
+        action: 'set_feature',
+        practiceId: selectedPractice.id,
+        feature: 'owner_report',
+        enabled,
+      });
+      await refresh();
+    });
+  };
+
   const handleSetComped = (comped: boolean) => {
     if (!selectedPractice) return;
     if (comped && !window.confirm(`Give ${selectedPractice.name || 'this practice'} complimentary access (no subscription required)?`)) return;
@@ -761,6 +777,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                       {at === 'practice' ? 'Practice (5 seats)' : 'Individual (1 seat)'}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              <div className="admin-panel__plan">
+                <span className="patient-form__label" style={{ marginBottom: 0 }}>Features</span>
+                <div className="admin-panel__plan-toggle" role="group" aria-label="Feature flags">
+                  <button
+                    type="button"
+                    className={selectedPractice.ownerReportEnabled ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                    aria-pressed={!!selectedPractice.ownerReportEnabled}
+                    onClick={() => handleSetOwnerReport(!selectedPractice.ownerReportEnabled)}
+                    disabled={busy}
+                  >
+                    Owner report: {selectedPractice.ownerReportEnabled ? 'on' : 'off'}
+                  </button>
+                  <span className="admin-panel__plan-note">
+                    Owner-facing take-home PDF (beta) — off by default for every practice.
+                  </span>
                 </div>
               </div>
 
