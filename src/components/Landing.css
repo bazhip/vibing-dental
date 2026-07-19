@@ -577,12 +577,234 @@
   border-radius: 12px;
   padding: 1.25rem 1.35rem;
   box-shadow: 0 1px 2px rgba(23, 35, 46, 0.04);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  /* Cards are buttons now (they open a detail dialog) — reset the
+     button chrome and keep the card look. */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 .landing__feature:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(23, 35, 46, 0.1);
+  border-color: var(--border-strong, #b8c4cf);
+}
+
+.landing__feature-more {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary, #0c6b63);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.landing__feature:hover .landing__feature-more,
+.landing__feature:focus-visible .landing__feature-more {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---------- feature detail dialog ------------------------------------------- */
+.feature-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.45);
+  animation: feature-fade 0.18s ease;
+}
+
+.feature-modal {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 2.5rem);
+  overflow-y: auto;
+  background: var(--surface, #fff);
+  border-radius: 16px;
+  padding: 1.4rem 1.6rem 1.1rem;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+  animation: feature-rise 0.22s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.feature-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.feature-modal__header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text, #1b2733);
+}
+
+.feature-modal__tag {
+  display: inline-block;
+  margin-left: 0.55rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--primary, #0c6b63);
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  vertical-align: 0.15rem;
+}
+
+.feature-modal__shot-wrap {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #f8fafc;
+}
+
+.feature-modal__shot {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  object-position: top;
+  animation: feature-shot 0.5s ease;
+}
+
+.feature-modal__lead {
+  margin: 0 0 0.6rem;
+  color: var(--text, #1b2733);
+  font-weight: 500;
+}
+
+.feature-modal__points {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+  color: var(--text-muted, #55677a);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.feature-modal__points li {
+  margin: 0.3rem 0;
+}
+
+.feature-modal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.8rem;
+}
+
+.feature-modal__nav-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text, #1b2733);
+  cursor: pointer;
+}
+
+.feature-modal__nav-btn:hover {
+  background: var(--surface-sunken, #f1f5f9);
+}
+
+.feature-modal__nav-count {
+  font-size: 0.8rem;
+  color: var(--text-muted, #55677a);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Voice mock — the transcript "typing" into structured chart actions,
+   looping. Replaces a screenshot for the AI card. */
+.feature-modal__voice {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 5%, white), var(--surface));
+  font-size: 0.9rem;
+}
+
+.feature-modal__voice-line {
+  color: var(--text, #1b2733);
+  font-style: italic;
+  margin-bottom: 0.65rem;
+}
+
+.feature-modal__mic {
+  color: #b23c2a;
+  margin-right: 0.45rem;
+  animation: feature-mic 1.6s ease-in-out infinite;
+}
+
+.feature-modal__voice-result {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--primary, #0c6b63);
+  padding: 0.22rem 0;
+  opacity: 0;
+  animation: feature-result 6s ease infinite;
+}
+
+.feature-modal__voice-result--2 { animation-delay: 1s; }
+.feature-modal__voice-result--3 { animation-delay: 2s; }
+
+@keyframes feature-fade {
+  from { opacity: 0; }
+}
+
+@keyframes feature-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+}
+
+@keyframes feature-shot {
+  from { opacity: 0; transform: scale(1.015); }
+}
+
+@keyframes feature-mic {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+@keyframes feature-result {
+  0%, 8% { opacity: 0; transform: translateY(3px); }
+  16%, 85% { opacity: 1; transform: translateY(0); }
+  95%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-modal__overlay,
+  .feature-modal,
+  .feature-modal__shot {
+    animation: none;
+  }
+  .feature-modal__mic { animation: none; }
+  .feature-modal__voice-result { animation: none; opacity: 1; }
+  .landing__feature-more { transition: none; }
+}
+
+@media (max-width: 600px) {
+  .feature-modal {
+    padding: 1.1rem 1.1rem 0.9rem;
+  }
+  .feature-modal__shot {
+    max-height: 220px;
+  }
 }
 
 /* AI-native feature gets an accent so it reads as the headline capability. */

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Login } from './Login';
+import { LandingFeatures } from './LandingFeatures';
 import { cloudEnabled } from '../utils/supabaseClient';
 import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC, PAID_SIGNUP } from '../constants/plans';
 import {
@@ -272,81 +273,10 @@ export const Landing: React.FC<LandingProps> = ({
         </section>
 
         {/* --------------------------------------------------- features --- */}
-        <section className="landing__features">
-          <div className="landing__feature">
-            <h3>Charts like a spreadsheet</h3>
-            <p>
-              Full-mouth Triadan grids for feline, canine, and deciduous
-              dentition. Tab and Enter move like the tools your team already
-              knows — probing depths in, eyes on the patient. Hover any tooth
-              and its label and number float right there.
-            </p>
-          </div>
-          <div className="landing__feature landing__feature--ai">
-            <h3>AI voice autofill, built in</h3>
-            <p>
-              Say “104 complicated crown fracture” and it lands on the tooth —
-              AI transcribes and charts your findings while your hands stay on
-              the patient. No API keys, no setup; it’s part of Pro and every
-              change is shown so you can undo anything.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Speaks AVDC</h3>
-            <p>
-              The complete AVDC abbreviation set throughout, with a codes
-              legend printed on every chart so the record reads cleanly in
-              any hands.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Mark it missing, everywhere</h3>
-            <p>
-              Diagnosis and procedure diagrams stay in sync with the grid —
-              cross a tooth out once and the whole record follows, chart to
-              PDF.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Photos &amp; radiographs</h3>
-            <p>
-              Attach intraoral photos and dental rads to any chart, caption
-              them, and pin each to a tooth. Stored privately alongside the
-              record, right where you’ll look for them.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Every visit, one patient</h3>
-            <p>
-              Charts group by patient, so a returning animal’s whole history
-              is one click away — open last year’s cleaning next to today’s
-              extraction.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Recall built in</h3>
-            <p>
-              Set a recheck date as you chart; the patient list flags who’s
-              due and who’s overdue, so the next dental never slips.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Your whole team, one record</h3>
-            <p>
-              Add colleagues to your practice and everyone shares the same
-              charts, templates, and images — with per-practice access, not a
-              shared password.
-            </p>
-          </div>
-          <div className="landing__feature">
-            <h3>Cloud &amp; chairside</h3>
-            <p>
-              Every chart autosaves to the cloud and keeps a local copy
-              chairside, so a dropped connection never loses a mouth. Reusable
-              report templates save the typing.
-            </p>
-          </div>
-        </section>
+        {/* Clickable cards — each opens a detail dialog with a real product
+            screenshot and the feature's full story (LandingFeatures owns
+            the data, so this list can't drift from the app again). */}
+        <LandingFeatures />
 
         {/* ---------------------------------------------------- pricing --- */}
         {cloudEnabled && PRICING_PUBLIC && (
