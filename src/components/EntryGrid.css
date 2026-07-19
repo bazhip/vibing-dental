@@ -28,16 +28,20 @@
 }
 .entry-grid__topbar-lead {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0.65rem;
   min-width: 0;
 }
 
-/* Uploaded practice logo, left of the identity block. */
+/* Uploaded practice logo, left of the identity block — stretches to the
+   identity column's full height (doctor + practice + patient rows). */
 .entry-grid__topbar-logo {
-  height: 36px;
-  max-width: 96px;
+  align-self: stretch;
+  height: auto;
+  width: auto;
+  max-width: 130px;
   object-fit: contain;
+  object-position: left center;
   flex: none;
   border-radius: 4px;
 }
