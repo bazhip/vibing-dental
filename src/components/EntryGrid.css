@@ -767,7 +767,10 @@
    paint — hence the background lives here, not on the row. */
 .dental-grid .rdg-header-row .rdg-cell {
   position: sticky;
-  top: var(--topbar-height, 0px);
+  /* !important: react-data-grid (beta.61) writes inset-block-start: 0
+     as an INLINE style on header cells, which otherwise wins and parks
+     the header underneath the sticky app topbar. */
+  top: var(--topbar-height, 0px) !important;
   z-index: 10;
   background: var(--primary);
   border-right: 1px solid rgba(255, 255, 255, 0.16);
@@ -1005,7 +1008,7 @@
     min-width: 760px;
   }
   .dental-grid .rdg-header-row .rdg-cell {
-    top: 0;
+    top: 0 !important;
   }
 }
 
