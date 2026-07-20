@@ -25,7 +25,6 @@ import { readString, writeString } from './utils/storage';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
-import { ChartHistoryModal } from './components/ChartHistoryModal';
 import { OwnerReportSection } from './components/OwnerReportSection';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
@@ -106,7 +105,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
-  const [historyOpen, setHistoryOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
   // the user to Patient). Mirrored into the hash (#/chart/:id/:section)
   // so a refresh or shared link lands on the same section.
@@ -583,20 +581,28 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'charting',
       label: 'Charting',
+      // Unlike the diagrams (whose mounted SVGs the PDF export needs),
+      // the grid keeps no cross-section refs — so it only mounts while
+      // its section is visible. react-data-grid runs measurement layout
+      // effects that can storm ("Maximum update depth exceeded") when
+      // the whole row set is swapped inside a display:none panel, which
+      // is exactly what starting a new visit from a saved chart does.
       content: lock(
-        <DentalGrid
-          toothData={chart.toothData}
-          onToothDataChange={chart.setToothDataDirectly}
-          highlightTriadan={aiHighlightTriadan}
-          // The grid's "Missing" toggle writes the same pre-surgery marks
-          // the Diagnosis diagram edits, so marking a tooth missing in
-          // either place crosses out the grid row AND fills the tooth on
-          // the diagram (and locks it in the Procedure diagram).
-          toothMarks={chart.preToothMarks}
-          onToggleMissing={toggleMissing}
-          priorToothData={priorTooth}
-          priorGoneTeeth={priorGone}
-        />
+        activeSection === 'charting' ? (
+          <DentalGrid
+            toothData={chart.toothData}
+            onToothDataChange={chart.setToothDataDirectly}
+            highlightTriadan={aiHighlightTriadan}
+            // The grid's "Missing" toggle writes the same pre-surgery marks
+            // the Diagnosis diagram edits, so marking a tooth missing in
+            // either place crosses out the grid row AND fills the tooth on
+            // the diagram (and locks it in the Procedure diagram).
+            toothMarks={chart.preToothMarks}
+            onToggleMissing={toggleMissing}
+            priorToothData={priorTooth}
+            priorGoneTeeth={priorGone}
+          />
+        ) : null
       ),
     },
     {
@@ -943,16 +949,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <span className="chart-lock-banner__text">
                 You're viewing a saved chart. Editing is locked so it isn't changed by accident.
               </span>
-              {chart.auditLog.length > 0 && (
-                <button
-                  type="button"
-                  className="chart-menu__trigger topbar-library-btn"
-                  onClick={() => setHistoryOpen(true)}
-                  aria-haspopup="dialog"
-                >
-                  History
-                </button>
-              )}
               <button
                 type="button"
                 className="chart-menu__trigger topbar-library-btn"
@@ -1124,12 +1120,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled}
         onNavigate={setActiveSection}
-      />
-
-      <ChartHistoryModal
-        open={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        entries={chart.auditLog}
       />
 
       <PracticeSettingsModal

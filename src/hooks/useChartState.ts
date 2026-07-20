@@ -14,7 +14,6 @@ import {
   DiagramComment,
   DiagramStroke,
   ChartSnapshot,
-  ChartAuditEntry,
   ImageRole,
   OwnerReportOverrides,
 } from '../types';
@@ -105,11 +104,6 @@ export interface UseChartStateReturn {
    *  it opens read-only and needs a deliberate manual save. */
   openedExisting: boolean;
   setOpenedExisting: React.Dispatch<React.SetStateAction<boolean>>;
-
-  /** Save history for this chart (appended by useCloudSync per save). */
-  auditLog: ChartAuditEntry[];
-  /** Append a save-history entry, keeping the log capped at 100. */
-  appendAuditEntry: (entry: ChartAuditEntry) => void;
 
   /** Owner-report before/after tags for attached images. */
   imageRoles: Record<string, ImageRole>;
@@ -329,15 +323,6 @@ export function useChartState(): UseChartStateReturn {
     'chart.cloudId', 1, () => generateChartId()
   );
 
-  // Save history — who wrote this chart's cloud row and when. Not chart
-  // content: excluded from dirty-tracking, cleared with the chart.
-  const [auditLog, setAuditLog] = usePersistedState<ChartAuditEntry[]>('chart.auditLog', 1, []);
-  const appendAuditEntry = React.useCallback((entry: ChartAuditEntry) => {
-    setAuditLog((prev) => [...prev.slice(-99), entry]);
-    // setAuditLog identity is stable (usePersistedState).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Which attached images belong in the owner report's Before & After
   // section. Keyed by attachment id; part of the chart, so it saves,
   // restores, and clears with everything else.
@@ -424,7 +409,6 @@ export function useChartState(): UseChartStateReturn {
     const sp = identity ? identity.species : species;
     setCloudChartId(generateChartId());
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
-    setAuditLog([]); // its save history starts fresh too
     setImageRoles({}); // image tags belong to the prior visit's images
     setOwnerReport({}); // report edits are visit-specific
     setPatientInfo(blankPatientInfo(keep));
@@ -456,7 +440,6 @@ export function useChartState(): UseChartStateReturn {
   // built a fresh object and the full chart re-serialized per keystroke.
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
     version: CHART_SNAPSHOT_VERSION,
-    auditLog,
     imageRoles,
     ownerReport,
     patientInfo,
@@ -470,7 +453,7 @@ export function useChartState(): UseChartStateReturn {
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
   }), [
-    auditLog, imageRoles, ownerReport, patientInfo, toothData, species, logo,
+    imageRoles, ownerReport, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -482,7 +465,6 @@ export function useChartState(): UseChartStateReturn {
     }
     const snapshot = normalizeSnapshot(raw);
     setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
-    setAuditLog(snapshot.auditLog ?? []);
     setImageRoles(snapshot.imageRoles ?? {});
     setOwnerReport(snapshot.ownerReport ?? {});
     setPatientInfo(snapshot.patientInfo);
@@ -523,9 +505,6 @@ export function useChartState(): UseChartStateReturn {
       // as an opened existing chart (read-only until the user unlocks).
       setCloudChartId(generateChartId());
       setOpenedExisting(true);
-      // Provenance: the chart entered this account via a PDF file. Its
-      // original save history isn't in the stash — start from the import.
-      setAuditLog([{ at: new Date().toISOString(), by: '', action: 'imported-pdf' }]);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
       setOwnerReport({}); // report edits don't either
       setPatientInfo(parsed.patientInfo);
@@ -594,9 +573,6 @@ export function useChartState(): UseChartStateReturn {
 
     openedExisting,
     setOpenedExisting,
-
-    auditLog,
-    appendAuditEntry,
 
     imageRoles,
     setImageRole,

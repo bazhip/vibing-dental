@@ -2629,44 +2629,6 @@ button.save-status--error {
   max-width: 420px;
 }
 
-/* Chart save-history dialog. */
-.chart-history-modal {
-  max-width: 480px;
-}
-
-.chart-history__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.chart-history__entry {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.88rem;
-}
-
-.chart-history__entry:last-child {
-  border-bottom: none;
-}
-
-.chart-history__action {
-  font-weight: 600;
-  color: var(--text);
-  flex: none;
-}
-
-.chart-history__meta {
-  color: var(--text-muted);
-  text-align: right;
-  overflow-wrap: anywhere;
-}
 .chart-lock-banner__text { flex: 1 1 auto; min-width: 0; }
 .chart-lock-banner .entry-grid__button { flex: none; }
 

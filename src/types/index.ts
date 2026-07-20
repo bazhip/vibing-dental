@@ -206,23 +206,11 @@ export interface OwnerReportOverrides {
   extraNotes?: string;
 }
 
-/** One line of a chart's save history — who wrote the cloud row, when. */
-export interface ChartAuditEntry {
-  /** ISO timestamp of the save. */
-  at: string;
-  /** The signed-in account's email ('' when unknown, e.g. PDF import). */
-  by: string;
-  action: 'created' | 'saved' | 'imported-pdf' | 'recall-cleared';
-}
-
 export interface ChartSnapshot {
   /** Snapshot schema version — absent on charts saved before the field
    *  existed (treat as 1). Bump when the shape changes incompatibly so
    *  loaders have something to key migrations on. */
   version?: number;
-  /** Save history, appended on every cloud write (capped at 100).
-   *  Excluded from dirty-tracking — see useCloudSync. */
-  auditLog?: ChartAuditEntry[];
   /** Before/after tags for attached images (by attachment id), used by
    *  the owner report's photo section. */
   imageRoles?: Record<string, ImageRole>;
