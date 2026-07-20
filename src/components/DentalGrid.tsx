@@ -151,18 +151,26 @@ function CodeCellEditor({
   );
 }
 
-// Column widths are percentages of the grid (min 760px via CSS, so
-// narrow screens scroll horizontally instead of crushing columns) —
-// no JS measurement, no remount on resize.
-const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; width: string }> = [
-  { key: 'mobility',    name: 'Mobility',    width: '8%' },
-  { key: 'recession',   name: 'Recession',   width: '9%' },
-  { key: 'pocket',      name: 'Pocket',      width: '8%' },
-  { key: 'furcation',   name: 'Furcation',   width: '10%' },
-  { key: 'hyperplasia', name: 'Hyperplasia', width: '12%' },
-  { key: 'calculus',    name: 'Calculus',    width: '9%' },
-  { key: 'gingivitis',  name: 'Gingivitis',  width: '11%' },
-  { key: 'pdstate',     name: 'PD State',    width: '12%' },
+// Column shares of the grid width. Resolved to NUMERIC pixel widths
+// before they reach react-data-grid: the library re-measures string
+// widths ('8%') in a layout effect that can feed back into itself
+// ("Maximum update depth exceeded" via updateMeasuredAndResizedWidths)
+// — numeric widths never enter that code path. The floor is 760px
+// (matching the ≤1000px horizontal-scroll CSS) so narrow screens
+// scroll instead of crushing columns.
+const MIN_LAYOUT_WIDTH = 760;
+
+const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number }> = [
+  { key: 'mobility',    name: 'Mobility',    share: 0.08 },
+  { key: 'recession',   name: 'Recession',   share: 0.09 },
+  { key: 'pocket',      name: 'Pocket',      share: 0.08 },
+  { key: 'furcation',   name: 'Furcation',   share: 0.10 },
+  { key: 'hyperplasia', name: 'Hyperplasia', share: 0.12 },
+  { key: 'calculus',    name: 'Calculus',    share: 0.09 },
+  { key: 'gingivitis',  name: 'Gingivitis',  share: 0.11 },
+  // pdstate's share is nominal — as the last column it takes whatever
+  // slack is left so the columns always total the container exactly.
+  { key: 'pdstate',     name: 'PD State',    share: 0.12 },
 ];
 
 export const DentalGrid: React.FC<DentalGridProps> = ({
@@ -178,6 +186,28 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
   const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef }), []);
+
+  // Container width for the numeric column widths. Integer-rounded and
+  // only committed on change, so subpixel ResizeObserver reports can't
+  // churn renders. The default carries jsdom/hidden-panel mounts until
+  // the observer reports a real width (no remount — columns just update).
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = React.useState(1100);
+  React.useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const measure = () => {
+      const width = Math.round(el.offsetWidth);
+      if (width > 0) setContainerWidth((prev) => (prev === width ? prev : width));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  // -2 for the card's side borders; floor keeps parity with the
+  // horizontal-scroll breakpoint.
+  const layoutWidth = Math.max(containerWidth, MIN_LAYOUT_WIDTH) - 2;
 
   // Whole-mouth scoring (calculus, gingivitis, …): one value applied to
   // every chartable tooth from the column header. Refs keep the handler
@@ -205,11 +235,17 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     []
   );
 
-  const columns = React.useMemo((): readonly Column<ToothData>[] => [
+  const columns = React.useMemo((): readonly Column<ToothData>[] => {
+    const px = (share: number) => Math.floor(layoutWidth * share);
+    const fixedTotal =
+      px(0.06) + px(0.07) + px(0.08) +
+      CODE_COLUMNS.slice(0, -1).reduce((sum, column) => sum + px(column.share), 0);
+    const lastColumnWidth = Math.max(layoutWidth - fixedTotal, 60);
+    return [
     {
       key: 'missing',
       name: 'Missing',
-      width: '6%',
+      width: px(0.06),
       renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         const carried = isMissing && !!priorGoneTeeth?.has(row.triadan);
@@ -241,16 +277,16 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'tooth',
       name: 'Tooth',
-      width: '7%',
+      width: px(0.07),
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
     },
-    { key: 'triadan', name: 'Triadan', width: '8%' },
-    ...CODE_COLUMNS.map(({ key, name, width }): Column<ToothData> => ({
+    { key: 'triadan', name: 'Triadan', width: px(0.08) },
+    ...CODE_COLUMNS.map(({ key, name, share }, index): Column<ToothData> => ({
       key,
       name,
-      width,
+      width: index === CODE_COLUMNS.length - 1 ? lastColumnWidth : px(share),
       renderEditCell: CodeCellEditor,
       renderCell: ({ row }) => {
         const value = typeof row[key] === 'string' ? (row[key] as string) : '';
@@ -284,14 +320,15 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         </span>
       ),
     })),
-  ], [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth]);
+    ];
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth]);
 
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">Dental Chart</h2>
       </div>
-      <div className="dental-grid">
+      <div className="dental-grid" ref={wrapperRef}>
         <EditorWiringContext.Provider value={wiring}>
           <DataGrid
             ref={gridRef}
