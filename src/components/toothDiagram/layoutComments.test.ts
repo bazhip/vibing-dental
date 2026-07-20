@@ -79,3 +79,26 @@ describe('layoutComments', () => {
     expect(placed.anchor).toEqual({ x: 200, y: 700, label: 'I1 (101)' });
   });
 });
+
+describe('comment height clamping', () => {
+  it('grows a box whose stored height would hide its text', () => {
+    const longText =
+      'Complicated crown fracture with pulp exposure, surgical extraction ' +
+      'advised at the next available anesthetic slot; owner declined today.';
+    const comments: DiagramComment[] = [
+      { id: 'c1', text: longText, anchorTriadan: 101, x: 10, y: 10, width: 150, height: 50 },
+    ];
+    const [placed] = layoutComments(comments, diagram, new Map());
+    expect(placed.h).toBeGreaterThan(50);
+    // Narrow box + long text needs several wrapped lines.
+    expect(placed.h).toBeGreaterThan(COMMENT_H);
+  });
+
+  it('keeps a stored height that is larger than the text needs', () => {
+    const comments: DiagramComment[] = [
+      { id: 'c1', text: 'short', anchorTriadan: 101, x: 10, y: 10, width: 300, height: 240 },
+    ];
+    const [placed] = layoutComments(comments, diagram, new Map());
+    expect(placed.h).toBe(240);
+  });
+});

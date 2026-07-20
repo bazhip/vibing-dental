@@ -90,7 +90,11 @@ export function layoutComments(
 
   for (const c of comments) {
     const w = c.width ?? COMMENT_W;
-    const h = c.height ?? COMMENT_H;
+    // Never shorter than the text needs: stored heights (hand resizes,
+    // or undersized values written by older versions) still win when
+    // LARGER, but a box that would hide its own text grows to fit —
+    // on screen and in the PDF export, which reads these same boxes.
+    const h = Math.max(c.height ?? 0, autoCommentHeight(c.text, w));
 
     let anchor: PositionedComment['anchor'] = null;
     let anchorX = -1;
