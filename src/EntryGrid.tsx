@@ -22,6 +22,7 @@ import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
 import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
+import { lazyWithReload } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
 import { ChartHistoryModal } from './components/ChartHistoryModal';
@@ -35,10 +36,10 @@ import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
 // time a preview is requested, not with the charting screen.
-const PdfPreviewModal = React.lazy(() =>
+const PdfPreviewModal = lazyWithReload(() =>
   import('./components/PdfPreviewModal').then((m) => ({ default: m.PdfPreviewModal }))
 );
-const OwnerReportModal = React.lazy(() =>
+const OwnerReportModal = lazyWithReload(() =>
   import('./components/OwnerReportModal').then((m) => ({ default: m.OwnerReportModal }))
 );
 

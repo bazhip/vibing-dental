@@ -8,18 +8,19 @@ import { clearChartStorage } from './hooks/useChartState';
 import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { useHashRoute } from './hooks/useHashRoute';
+import { lazyWithReload } from './utils/lazyWithReload';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
 // and signed-in users skip the landing animation bundle.
-const EntryGrid = React.lazy(() => import('./EntryGrid'));
-const Landing = React.lazy(() =>
+const EntryGrid = lazyWithReload(() => import('./EntryGrid'));
+const Landing = lazyWithReload(() =>
   import('./components/Landing').then((m) => ({ default: m.Landing }))
 );
-const ResetPassword = React.lazy(() =>
+const ResetPassword = lazyWithReload(() =>
   import('./components/ResetPassword').then((m) => ({ default: m.ResetPassword }))
 );
-const BillingGate = React.lazy(() =>
+const BillingGate = lazyWithReload(() =>
   import('./components/BillingGate').then((m) => ({ default: m.BillingGate }))
 );
 
