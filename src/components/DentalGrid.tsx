@@ -165,7 +165,7 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number }>
   { key: 'recession',   name: 'Recession',   share: 0.09 },
   { key: 'pocket',      name: 'Pocket',      share: 0.08 },
   { key: 'furcation',   name: 'Furcation',   share: 0.10 },
-  { key: 'hyperplasia', name: 'Hyperplasia', share: 0.12 },
+  { key: 'hyperplasia', name: 'Enlargement', share: 0.12 },
   { key: 'calculus',    name: 'Calculus',    share: 0.09 },
   { key: 'gingivitis',  name: 'Gingivitis',  share: 0.11 },
   // pdstate's share is nominal — as the last column it takes whatever

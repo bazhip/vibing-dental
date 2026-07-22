@@ -37,6 +37,8 @@ export const VOICE_KEYTERMS: string[] = [
   'gingivitis',
   'gingival recession',
   'gingival hyperplasia',
+  'gingival enlargement',
+  'enlargement',
   'furcation',
   'furcation exposure',
   'periodontal pocket',

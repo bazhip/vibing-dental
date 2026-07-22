@@ -10,7 +10,7 @@ export const GRID_COLUMNS: ColumnDefinition[] = [
   { key: 'recession', name: 'Recession', editable: true, width: 85 },
   { key: 'pocket', name: 'Pocket', editable: true, width: 70 },
   { key: 'furcation', name: 'Furcation', editable: true, width: 90 },
-  { key: 'hyperplasia', name: 'Hyperplasia', editable: true, width: 110 },
+  { key: 'hyperplasia', name: 'Enlargement', editable: true, width: 110 },
   { key: 'calculus', name: 'Calculus', editable: true, width: 85 },
   { key: 'gingivitis', name: 'Gingivitis', editable: true, width: 90 },
   { key: 'pdstate', name: 'PD Stage', editable: true, width: 85 },

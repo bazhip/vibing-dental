@@ -256,7 +256,7 @@ export const TOOTH_DATA_ROWS: Array<{ label: string; suffix: string }> = [
   { label: 'Recession', suffix: 'rec' },
   { label: 'Pocket', suffix: 'poc' },
   { label: 'Furcation', suffix: 'fur' },
-  { label: 'Hyperplasia', suffix: 'hyp' },
+  { label: 'Enlargement', suffix: 'hyp' },
   { label: 'Calculus', suffix: 'cal' },
   { label: 'Gingivitis', suffix: 'gin' },
   { label: 'PD Stage', suffix: 'pds' },
