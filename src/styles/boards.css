@@ -1042,6 +1042,20 @@
 }
 .chart-library__act:hover { border-color: var(--primary); }
 
+/* Clear-recheck: a compact red × instead of a wide text button, so the
+   actions column doesn't overflow left into the Recheck date. */
+.chart-library__clear-recall {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.15rem 0.4rem;
+}
+.chart-library__clear-recall:hover {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
 /* Owner name under the patient name in My charts. */
 .chart-library__patient-main { display: inline-flex; flex-direction: column; min-width: 0; }
 .chart-library__owner {

@@ -534,12 +534,13 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           {g.recall && (
                             <button
                               type="button"
-                              className="chart-library__act"
+                              className="chart-library__act chart-library__clear-recall"
                               onClick={() => handleClearRecalls(g)}
                               disabled={busyId !== null}
+                              aria-label={`Clear ${g.name}'s recheck reminder`}
                               title={`Clear ${g.name}'s recheck reminder — e.g. after a recheck that didn't produce a new chart`}
                             >
-                              Clear recheck
+                              ×
                             </button>
                           )}
                           <button
