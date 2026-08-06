@@ -750,6 +750,21 @@
   width: 100% !important;
 }
 
+/* react-data-grid lays every row out as a subgrid of the grid's columns.
+   Chrome/Edge below 117 have no subgrid, and the rows collapse into a
+   single stacked column. The root sets grid-template-columns inline and
+   rows are its direct children, so inheriting that track list reproduces
+   the same geometry — the columns here are fixed pixel widths, so the two
+   resolve identically. */
+@supports not (grid-template-columns: subgrid) {
+  .dental-grid .rdg-header-row,
+  .dental-grid .rdg-row,
+  .dental-grid .rdg-summary-row {
+    grid-template-columns: inherit;
+    grid-template-rows: none;
+  }
+}
+
 /* Header strip in the brand color — caption-size uppercase keeps every
    column title intact at laptop widths. */
 .dental-grid .rdg-header-row,

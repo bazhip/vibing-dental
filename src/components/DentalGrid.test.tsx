@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DentalGrid } from './DentalGrid';
 import { getInitialToothData } from '../constants';
 import { ToothData } from '../types';
+import { installScopeSelectorFallback } from '../utils/scopeSelector';
 
 // react-data-grid measures itself with ResizeObserver; jsdom has none.
 beforeAll(() => {
@@ -15,14 +16,10 @@ beforeAll(() => {
       disconnect() {}
     };
 
-  // react-data-grid calls querySelector('& > …') (CSS-nesting relative
-  // selectors — fine in real browsers, unsupported by jsdom's selector
-  // engine). Rewrite to the equivalent :scope form for tests.
-  const originalQuerySelector = Element.prototype.querySelector;
-  // eslint-disable-next-line no-extend-native
-  Element.prototype.querySelector = function (this: Element, selector: string) {
-    return originalQuerySelector.call(this, selector.replace(/^\s*&\s*/, ':scope '));
-  } as typeof Element.prototype.querySelector;
+  // react-data-grid calls querySelector('& > …'); jsdom resolves only the
+  // first level of that, same as browsers without CSS nesting. The app ships
+  // a fallback for exactly this — use it here rather than a second shim.
+  installScopeSelectorFallback();
 
   // jsdom has no layout, so scrollIntoView (used when the grid focuses a
   // cell) doesn't exist.

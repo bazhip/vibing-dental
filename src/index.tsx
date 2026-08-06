@@ -5,11 +5,14 @@ import './index.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { installIteratorHelpers } from './utils/iteratorHelpers';
+import { installScopeSelectorFallback } from './utils/scopeSelector';
 
-// react-data-grid chains ES2025 iterator helpers onto generators; browsers
-// older than Chrome 122 / Firefox 131 / Safari 18.4 crash the grid without
-// them. Install before anything renders.
+// react-data-grid leans on two features older browsers lack: ES2025 iterator
+// helpers (Chrome 122 / Firefox 131 / Safari 18.4) for rendering, and the `&`
+// nesting selector in querySelector (Chrome 120 / Firefox 117 / Safari 17.2)
+// for cell focus. Install both before anything renders.
 installIteratorHelpers();
+installScopeSelectorFallback();
 
 // Suppress the benign "ResizeObserver loop" message the data grid's
 // resize observers can trigger — non-actionable, and dev-overlay tooling

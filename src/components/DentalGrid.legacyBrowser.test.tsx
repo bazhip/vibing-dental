@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { DentalGrid } from './DentalGrid';
 import { getInitialToothData } from '../constants';
 import { installIteratorHelpers } from '../utils/iteratorHelpers';
+import { installScopeSelectorFallback } from '../utils/scopeSelector';
 
 // Reproduces the production crash reported from an older browser:
 // "p(...).toArray is not a function" inside a react-data-grid useMemo.
@@ -27,10 +28,7 @@ beforeAll(() => {
       unobserve() {}
       disconnect() {}
     };
-  const originalQuerySelector = Element.prototype.querySelector;
-  Element.prototype.querySelector = function (this: Element, selector: string) {
-    return originalQuerySelector.call(this, selector.replace(/^\s*&\s*/, ':scope '));
-  } as typeof Element.prototype.querySelector;
+  installScopeSelectorFallback();
   Element.prototype.scrollIntoView = Element.prototype.scrollIntoView ?? (() => {});
 });
 
