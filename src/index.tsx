@@ -4,6 +4,12 @@ import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { installIteratorHelpers } from './utils/iteratorHelpers';
+
+// react-data-grid chains ES2025 iterator helpers onto generators; browsers
+// older than Chrome 122 / Firefox 131 / Safari 18.4 crash the grid without
+// them. Install before anything renders.
+installIteratorHelpers();
 
 // Suppress the benign "ResizeObserver loop" message the data grid's
 // resize observers can trigger — non-actionable, and dev-overlay tooling
