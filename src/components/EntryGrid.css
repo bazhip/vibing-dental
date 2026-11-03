@@ -692,6 +692,30 @@
   color: var(--text);
 }
 
+/* Charting → Diagnosis / PDF switches, pushed to the header's right
+   edge; they wrap under the title on narrow screens. */
+.dental-grid__options {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem 1.1rem;
+}
+
+.dental-grid__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.dental-grid__option--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Keyboard skip link — visually hidden until focused, then a small
    pill pinned to the top-left above the sticky topbar. */
 .skip-link {

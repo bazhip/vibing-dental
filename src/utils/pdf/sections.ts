@@ -96,12 +96,30 @@ export function collectUsedCodesByPage({
   };
 }
 
+/** Column count the legend uses for `count` codes: 3 once 2 would
+ *  overflow the standard box, 1 when the caller pins a narrow column. */
+export function codesLegendCols(count: number, maxCols = 3): number {
+  return Math.min(maxCols, count > 18 ? 3 : 2);
+}
+
+const legendLineHeight = (cols: number) => (cols >= 3 ? 9 : 9.5);
+/** Band + body inset above the first row and below the last. */
+const LEGEND_CHROME_PT = CARD_BAND_PT + 3 + 4 + 2;
+
+/** Height (inches) the legend needs to list every code, so the box can
+ *  shrink to its content instead of reserving a fixed block. */
+export function codesLegendHeightIn(count: number, cols: number): number {
+  const rows = Math.ceil(count / cols);
+  return (LEGEND_CHROME_PT + rows * legendLineHeight(cols)) / PT_PER_IN;
+}
+
 export function drawCodesLegend(
   page: PDFPage,
   region: LegendBox,
   codes: DentalCode[],
   bold: PDFFont,
-  regular: PDFFont
+  regular: PDFFont,
+  maxCols = 3
 ): void {
   if (codes.length === 0) return;
 
@@ -117,10 +135,10 @@ export function drawCodesLegend(
   const bodyHeight = heightPt - (yTop - bodyStartY) - 4;
 
   // 3-col layout when there's enough content that 2 cols would overflow.
-  const useThreeCols = codes.length > 18;
+  const cols = codesLegendCols(codes.length, maxCols);
+  const useThreeCols = cols >= 3;
   const codeSize = useThreeCols ? 6.5 : 7;
-  const lineHeight = useThreeCols ? 9 : 9.5;
-  const cols = useThreeCols ? 3 : 2;
+  const lineHeight = legendLineHeight(cols);
   const colGap = useThreeCols ? 8 : 12;
   const innerX = x + 5;
   const innerW = widthPt - 10;
@@ -457,14 +475,52 @@ export function drawPatientInfoBox(
 
 // ---------------------------------------------------------------- Exam ----
 
-// Per-row layout: short row when 0–1 lines of comment, tall when 2.
+/** Where the exam card sits and how its columns fall. The standard
+ *  card runs label | Normal | Abnormal | Comment across the right half
+ *  of page 1; the compact card (grid left off the PDF) is a narrow
+ *  right-hand column with each abnormal comment on its own line(s)
+ *  beneath the label. */
+export interface ExamGeometry {
+  xIn: number;
+  widthIn: number;
+  normalCXIn: number;
+  abnormalCXIn: number;
+  commentXIn: number;
+  commentWidthIn: number;
+  commentBelow: boolean;
+}
+
+export const EXAM_GEOMETRY_STANDARD: ExamGeometry = {
+  xIn: EXAM_TABLE_X_IN,
+  widthIn: EXAM_COMMENT_BOX.xIn + EXAM_COMMENT_BOX.widthIn - EXAM_TABLE_X_IN,
+  normalCXIn: 6.60,
+  abnormalCXIn: 7.12,
+  commentXIn: EXAM_COMMENT_BOX.xIn,
+  commentWidthIn: EXAM_COMMENT_BOX.widthIn,
+  commentBelow: false,
+};
+
+export function compactExamGeometry(xIn: number, widthIn: number): ExamGeometry {
+  return {
+    xIn,
+    widthIn,
+    normalCXIn: xIn + widthIn - 1.05,
+    abnormalCXIn: xIn + widthIn - 0.50,
+    commentXIn: xIn + 0.20,
+    commentWidthIn: widthIn - 0.30,
+    commentBelow: true,
+  };
+}
+
+// Per-row layout: short row when 0–1 lines of comment, tall when 2 —
+// or, with comments below the label, the short row plus its lines.
 type ExamRowLayout = {
   heightPt: number;
   comment: { lines: string[]; fontSize: number; lineHeight: number } | null;
 };
 
-function computeExamLayouts(exam: ExamFindings, font: PDFFont): ExamRowLayout[] {
-  const commentWidthPt = EXAM_COMMENT_BOX.widthIn * PT_PER_IN;
+function computeExamLayouts(exam: ExamFindings, font: PDFFont, geo: ExamGeometry): ExamRowLayout[] {
+  const commentWidthPt = geo.commentWidthIn * PT_PER_IN;
   return EXAM_ITEMS.map(({ key }) => {
     const item = exam[key];
     if (item.status !== 'abnormal' || !item.comment.trim()) {
@@ -472,12 +528,14 @@ function computeExamLayouts(exam: ExamFindings, font: PDFFont): ExamRowLayout[] 
     }
     const cleaned = item.comment.replace(/\s+/g, ' ').trim();
     const { lines, fontSize: cFontSize } = fitTextToLines(
-      cleaned, font, commentWidthPt, 2,
+      cleaned, font, commentWidthPt, geo.commentBelow ? 3 : 2,
       EXAM_COMMENT_BOX.maxFontSizePt, EXAM_COMMENT_BOX.minFontSizePt
     );
     const lineHeight = cFontSize * EXAM_COMMENT_BOX.lineHeightFactor;
-    const heightIn = lines.length > 1 ? EXAM_ROW_TALL_IN : EXAM_ROW_SHORT_IN;
-    return { heightPt: heightIn * PT_PER_IN, comment: { lines, fontSize: cFontSize, lineHeight } };
+    const heightPt = geo.commentBelow
+      ? EXAM_ROW_SHORT_IN * PT_PER_IN + lines.length * lineHeight + 3
+      : (lines.length > 1 ? EXAM_ROW_TALL_IN : EXAM_ROW_SHORT_IN) * PT_PER_IN;
+    return { heightPt, comment: { lines, fontSize: cFontSize, lineHeight } };
   });
 }
 
@@ -487,10 +545,14 @@ const EXAM_HEAD_IN = 0.18;
 /** Total height of the exam body (caption row + rows, excluding the card
  *  band), in inches — lets the orchestrator budget page 1 before anything
  *  draws. */
-export function measureExamRowsIn(exam: ExamFindings, font: PDFFont): number {
+export function measureExamRowsIn(
+  exam: ExamFindings,
+  font: PDFFont,
+  geo: ExamGeometry = EXAM_GEOMETRY_STANDARD
+): number {
   return (
     EXAM_HEAD_IN +
-    computeExamLayouts(exam, font).reduce((acc, l) => acc + l.heightPt, 0) / PT_PER_IN
+    computeExamLayouts(exam, font, geo).reduce((acc, l) => acc + l.heightPt, 0) / PT_PER_IN
   );
 }
 
@@ -499,17 +561,18 @@ export function drawExamSection(
   exam: ExamFindings,
   font: PDFFont,
   fontBold: PDFFont,
-  bodyTopIn: number = EXAM_TABLE_YTOP_IN
+  bodyTopIn: number = EXAM_TABLE_YTOP_IN,
+  geo: ExamGeometry = EXAM_GEOMETRY_STANDARD
 ): number {
   const { height: pageHeight } = page.getSize();
   const fontSize = 9;
-  const xPt = EXAM_TABLE_X_IN * PT_PER_IN;
-  const sectionWidth = (EXAM_COMMENT_BOX.xIn + EXAM_COMMENT_BOX.widthIn - EXAM_TABLE_X_IN) * PT_PER_IN;
-  const commentXPt = EXAM_COMMENT_BOX.xIn * PT_PER_IN;
+  const xPt = geo.xIn * PT_PER_IN;
+  const sectionWidth = geo.widthIn * PT_PER_IN;
+  const commentXPt = geo.commentXIn * PT_PER_IN;
 
   const bodyTopPt = pageHeight - bodyTopIn * PT_PER_IN;
 
-  const layouts = computeExamLayouts(exam, font);
+  const layouts = computeExamLayouts(exam, font, geo);
 
   // One card around the band + caption row + every exam row (heights
   // vary with comment wrapping, so the total is computed from the
@@ -523,8 +586,8 @@ export function drawExamSection(
 
   // Column layout mirrors the app: label | Normal | Abnormal | Comment.
   const labelX = xPt + 7;
-  const normalCX   = 6.60 * PT_PER_IN;
-  const abnormalCX = 7.12 * PT_PER_IN;
+  const normalCX   = geo.normalCXIn * PT_PER_IN;
+  const abnormalCX = geo.abnormalCXIn * PT_PER_IN;
   const radioR = 4.2;
 
   // Caption row.
@@ -532,7 +595,9 @@ export function drawExamSection(
   const capBaseline = bodyTopPt - headPt + (headPt - capSize) / 2 + 1;
   drawCenteredText(page, 'NORMAL',   normalCX - 40,   normalCX + 40,   capBaseline, capSize, fontBold, PALETTE.muted);
   drawCenteredText(page, 'ABNORMAL', abnormalCX - 40, abnormalCX + 40, capBaseline, capSize, fontBold, PALETTE.muted);
-  page.drawText('COMMENT', { x: commentXPt, y: capBaseline, size: capSize, font: fontBold, color: PALETTE.muted });
+  if (!geo.commentBelow) {
+    page.drawText('COMMENT', { x: commentXPt, y: capBaseline, size: capSize, font: fontBold, color: PALETTE.muted });
+  }
   hlineLight(page, xPt, xPt + sectionWidth, bodyTopPt - headPt);
 
   let cursorY = bodyTopPt - headPt;
@@ -542,7 +607,11 @@ export function drawExamSection(
     const layout = layouts[i];
     const rowTopY = cursorY;
     const rowBottomY = cursorY - layout.heightPt;
-    const rowMidY = (rowTopY + rowBottomY) / 2;
+    // With comments below, the label + radios keep the short row's
+    // midline and the comment fills the space under them.
+    const rowMidY = geo.commentBelow
+      ? rowTopY - (EXAM_ROW_SHORT_IN * PT_PER_IN) / 2
+      : (rowTopY + rowBottomY) / 2;
     const labelY = rowMidY - fontSize / 2 + 1.5;
 
     const abnormal = item.status === 'abnormal';
@@ -573,7 +642,9 @@ export function drawExamSection(
       // Center the block in the row, but never let its top rise above the
       // row top (a tall 2-line comment would otherwise clip into the row
       // above).
-      const blockTopY = Math.min(rowMidY + blockHeight / 2, rowTopY - 2);
+      const blockTopY = geo.commentBelow
+        ? rowTopY - EXAM_ROW_SHORT_IN * PT_PER_IN + 1
+        : Math.min(rowMidY + blockHeight / 2, rowTopY - 2);
       for (let j = 0; j < lines.length; j++) {
         const baselineY = blockTopY - (j + 1) * lineHeight + (lineHeight - cSize) / 2;
         page.drawText(lines[j], { x: commentXPt, y: baselineY, size: cSize, font, color: PALETTE.text });

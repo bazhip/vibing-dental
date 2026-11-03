@@ -35,6 +35,8 @@ export interface ChartSnapshot {
   postState: { marks: ToothMarks; comments: DiagramComment[]; strokes: DiagramStroke[] };
   /** Practice identity (doctor line + uploaded logo) from the profile. */
   branding?: PdfBranding;
+  /** False drops the arch grids from page 1 (diagram-first layout). */
+  includeGrid?: boolean;
 }
 
 interface PdfPreviewModalProps {
@@ -93,7 +95,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.preState,  png: prePng  },
           { state: snapshot.postState, png: postPng },
           styleId,
-          snapshot.branding ?? {}
+          snapshot.branding ?? {},
+          { includeGrid: snapshot.includeGrid }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });

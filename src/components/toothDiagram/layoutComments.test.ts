@@ -26,7 +26,8 @@ describe('layoutComments', () => {
     ];
     const placed = layoutComments(comments, diagram, new Map());
     expect(placed).toHaveLength(1);
-    expect(placed[0]).toMatchObject({ x: 123, y: 456, w: COMMENT_W, h: COMMENT_H });
+    // Short free comment: one text line, no label row.
+    expect(placed[0]).toMatchObject({ x: 123, y: 456, w: COMMENT_W, h: 38 });
   });
 
   it('drops free comments without position near bottom-center', () => {
@@ -34,8 +35,8 @@ describe('layoutComments', () => {
       { id: 'c1', text: 'free', anchorTriadan: null },
     ];
     const [placed] = layoutComments(comments, diagram, new Map());
-    expect(placed.x).toBe(diagram.width / 2 - COMMENT_W / 2);
-    expect(placed.y).toBe(diagram.height - COMMENT_H - 8);
+    expect(placed.x).toBe(diagram.width / 2 - placed.w / 2);
+    expect(placed.y).toBe(diagram.height - placed.h - 8);
     expect(placed.anchor).toBeNull();
   });
 
@@ -100,5 +101,32 @@ describe('comment height clamping', () => {
     ];
     const [placed] = layoutComments(comments, diagram, new Map());
     expect(placed.h).toBe(240);
+  });
+});
+
+describe('compact cards', () => {
+  it('a one-line anchored comment is one line tall', () => {
+    const [placed] = layoutComments(
+      [{ id: 'c1', text: 'Mobility 1', anchorTriadan: 101 }], diagram, new Map()
+    );
+    expect(placed.h).toBe(COMMENT_H);
+  });
+
+  it('keeps a fitted (stored) height down to the one-line floor', () => {
+    const [placed] = layoutComments(
+      [{ id: 'c1', text: 'Mobility 1', anchorTriadan: 101, width: 140, height: 62 }], diagram, new Map()
+    );
+    expect(placed).toMatchObject({ w: 140, h: 62 });
+  });
+
+  it('right-aligns narrow left-gutter cards against the teeth', () => {
+    const [narrow, wide] = layoutComments(
+      [
+        { id: 'c1', text: 'a', anchorTriadan: 101, width: 120 },
+        { id: 'c2', text: 'b', anchorTriadan: 101 },
+      ],
+      diagram, new Map()
+    );
+    expect(narrow.x + narrow.w).toBe(wide.x + wide.w);
   });
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ToothMarks, DiagramComment, DiagramStroke } from '../types';
+import { isGridComment } from '../utils/gridComments';
 
 /**
  * Snapshot-based undo/redo for a single diagram (marks + comments + strokes
@@ -13,6 +14,11 @@ import { ToothMarks, DiagramComment, DiagramStroke } from '../types';
  *     cleared, since the user just diverged from the redo timeline).
  *   - `undo()`/`redo()` set a guard ref before calling the change
  *     handlers so the resulting effect knows to skip pushing.
+ *   - Comments mirrored from the Charting grid sit outside the timeline:
+ *     the grid owns them, so a change touching only those is never
+ *     recorded, and undo/redo keep whatever mirrored comments are current
+ *     (restoring stale ones would just be re-synced — an undo that
+ *     immediately re-records itself, leaving Cmd+Z stuck).
  *   - Each diagram has its own history. `Cmd/Ctrl+Z` is dispatched to
  *     whichever diagram the user most recently interacted with — caller
  *     calls `claim()` on every user action it surfaces (a click in the
@@ -43,6 +49,21 @@ export interface DiagramHistoryControls {
 
 const HISTORY_LIMIT = 50;
 
+const ownComments = (c: DiagramComment[]) => c.filter((x) => !isGridComment(x));
+
+/** Same hand-written comments (by reference — untouched comments keep
+ *  their identity through every update). */
+function sameOwnComments(a: DiagramComment[], b: DiagramComment[]): boolean {
+  if (a === b) return true;
+  const oa = ownComments(a);
+  const ob = ownComments(b);
+  return oa.length === ob.length && oa.every((c, i) => c === ob[i]);
+}
+
+/** A snapshot's hand-written comments with the current mirrored ones. */
+const withCurrentMirrored = (snap: DiagramComment[], current: DiagramComment[]) =>
+  [...ownComments(snap), ...current.filter(isGridComment)];
+
 /** Module-level: which diagram id was most recently interacted with.
  *  Cmd+Z routes to that one. Reset to null when the last hook unmounts
  *  (we don't bother — stale value is harmless until another hook claims). */
@@ -72,6 +93,11 @@ export function useDiagramHistory(
     if (prev.marks === marks && prev.comments === comments && prev.strokes === strokes) {
       return;
     }
+    if (prev.marks === marks && prev.strokes === strokes && sameOwnComments(prev.comments, comments)) {
+      // Only mirrored grid comments moved — not an undoable edit.
+      prevRef.current = { marks, comments, strokes };
+      return;
+    }
     setPast((p) => [...p, prev].slice(-HISTORY_LIMIT));
     setFuture([]);
     prevRef.current = { marks, comments, strokes };
@@ -79,7 +105,8 @@ export function useDiagramHistory(
 
   const undo = React.useCallback(() => {
     if (past.length === 0) return;
-    const prev = past[past.length - 1];
+    const prev = { ...past[past.length - 1] };
+    prev.comments = withCurrentMirrored(prev.comments, comments);
     setFuture((f) => [{ marks, comments, strokes }, ...f].slice(0, HISTORY_LIMIT));
     setPast((p) => p.slice(0, -1));
     prevRef.current = prev;
@@ -90,7 +117,8 @@ export function useDiagramHistory(
 
   const redo = React.useCallback(() => {
     if (future.length === 0) return;
-    const next = future[0];
+    const next = { ...future[0] };
+    next.comments = withCurrentMirrored(next.comments, comments);
     setPast((p) => [...p, { marks, comments, strokes }].slice(-HISTORY_LIMIT));
     setFuture((f) => f.slice(1));
     prevRef.current = next;

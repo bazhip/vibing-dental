@@ -17,6 +17,9 @@ import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
+import { usePersistedState } from './hooks/usePersistedState';
+import { TOOTH_DIAGRAMS } from './constants/toothShapes';
+import { syncGridComments } from './utils/gridComments';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -142,6 +145,31 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       return next;
     });
   }, [setPreToothMarks]);
+
+  // Charting → Diagnosis: optionally mirror each tooth's grid findings
+  // onto the Diagnosis diagram as anchored comments (owners follow the
+  // mouth picture far better than the spreadsheet). A per-browser
+  // preference, toggled from the Charting section. Read-only charts are
+  // left as saved — the sync catches up once the user unlocks to edit.
+  const [mirrorToDiagnosis, setMirrorToDiagnosis] = usePersistedState<boolean>(
+    'charting.mirrorToDiagnosis', 1, false
+  );
+  // Companion switch: leave the arch grids off the PDF since the diagram
+  // now carries the same findings. Only honored while mirroring is on,
+  // so turning mirroring off can never silently drop the grid data.
+  const [pdfIncludeGrid, setPdfIncludeGrid] = usePersistedState<boolean>(
+    'charting.pdfIncludeGrid', 1, true
+  );
+  const { setPreDiagramComments } = chart;
+  React.useEffect(() => {
+    if (readOnly) return;
+    const diag = TOOTH_DIAGRAMS[chart.species];
+    // Same seat as the diagram's "add comment" button.
+    const seat = { x: diag.width / 2 - 65, y: diag.midlineY + 20 };
+    setPreDiagramComments((prev) =>
+      syncGridComments(prev, chart.toothData, chart.preToothMarks, mirrorToDiagnosis, seat)
+    );
+  }, [readOnly, mirrorToDiagnosis, chart.species, chart.toothData, chart.preToothMarks, setPreDiagramComments]);
 
   const handleAiActivity = React.useCallback((actions: AiAction[]) => {
     // Jump to the section of (and highlight the tooth from) the last
@@ -512,6 +540,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           comments: chart.postDiagramComments,
           strokes:  chart.postDiagramStrokes,
         },
+        includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
         branding: trial
           ? // Trial charts carry no practice identity — stamp the slots
             // so the output is obviously not a finished clinical record.
@@ -601,6 +630,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onToggleMissing={toggleMissing}
             priorToothData={priorTooth}
             priorGoneTeeth={priorGone}
+            mirrorToDiagnosis={mirrorToDiagnosis}
+            onMirrorToDiagnosisChange={setMirrorToDiagnosis}
+            pdfIncludeGrid={pdfIncludeGrid}
+            onPdfIncludeGridChange={setPdfIncludeGrid}
           />
         ) : null
       ),

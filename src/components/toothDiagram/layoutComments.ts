@@ -17,11 +17,13 @@ import { SpeciesDiagram } from '../../constants/toothShapes';
 
 const SIDE_PAD_RATIO = 0.30;
 export const COMMENT_W = 300;
-/** Minimum card height: tooth label + two lines of text (18px font /
+/** Minimum card height: tooth label + one line of text (18px font /
  *  22px lines / 8px padding). Cards without a user-set height grow to
  *  fit their text via `autoCommentHeight` so the export never clips;
- *  stored (drag-resized) heights are kept verbatim. */
-export const COMMENT_H = 96;
+ *  stored heights (drag-resizes, and the on-screen fit-to-text pass)
+ *  are kept down to this floor — a two-line floor here used to undo
+ *  that fit and leave one-line cards with a blank second line. */
+export const COMMENT_H = 60;
 
 // Text metrics mirrored from svgToPng's comment renderer — keep in sync.
 const FONT_SIZE = 18;
@@ -29,12 +31,15 @@ const LINE_HEIGHT = 22;
 const PADDING = 8;
 const LABEL_HEIGHT = 22;
 const MAX_AUTO_H = 292; // label + 12 lines — beyond this, resize by hand
+/** Same ~0.55em/char estimate the exporter wraps with. */
+const CHAR_W = FONT_SIZE * 0.55;
 
 /** Estimate the height needed to show all of `text` at width `w`, using
- *  the same ~0.55em/char wrap heuristic as the SVG exporter. */
-export function autoCommentHeight(text: string, w: number): number {
+ *  the same ~0.55em/char wrap heuristic as the SVG exporter. Free
+ *  comments have no tooth-label row. */
+export function autoCommentHeight(text: string, w: number, hasLabel = true): number {
   const maxWidth = w - PADDING * 2;
-  const charsPerLine = Math.max(8, Math.floor(maxWidth / (FONT_SIZE * 0.55)));
+  const charsPerLine = Math.max(8, Math.floor(maxWidth / CHAR_W));
   let lines = 0;
   for (const paragraph of (text || '').split('\n')) {
     const words = paragraph.split(/\s+/).filter(Boolean);
@@ -52,8 +57,9 @@ export function autoCommentHeight(text: string, w: number): number {
     }
     lines += paraLines;
   }
-  const needed = PADDING * 2 + LABEL_HEIGHT + lines * LINE_HEIGHT;
-  return Math.min(MAX_AUTO_H, Math.max(COMMENT_H, needed));
+  const labelH = hasLabel ? LABEL_HEIGHT : 0;
+  const needed = PADDING * 2 + labelH + lines * LINE_HEIGHT;
+  return Math.min(MAX_AUTO_H, Math.max(PADDING * 2 + labelH + LINE_HEIGHT, needed));
 }
 const COMMENT_GAP = 6;
 const COMMENT_MARGIN_X = 6;
@@ -89,13 +95,6 @@ export function layoutComments(
   const midline = diagram.width / 2;
 
   for (const c of comments) {
-    const w = c.width ?? COMMENT_W;
-    // Never shorter than the text needs: stored heights (hand resizes,
-    // or undersized values written by older versions) still win when
-    // LARGER, but a box that would hide its own text grows to fit —
-    // on screen and in the PDF export, which reads these same boxes.
-    const h = Math.max(c.height ?? 0, autoCommentHeight(c.text, w));
-
     let anchor: PositionedComment['anchor'] = null;
     let anchorX = -1;
     let anchorY = -1;
@@ -109,6 +108,13 @@ export function layoutComments(
       }
     }
 
+    const w = c.width ?? COMMENT_W;
+    // Never shorter than the text needs: stored heights (hand resizes,
+    // or undersized values written by older versions) still win when
+    // LARGER, but a box that would hide its own text grows to fit —
+    // on screen and in the PDF export, which reads these same boxes.
+    const h = Math.max(c.height ?? 0, autoCommentHeight(c.text, w, !!anchor));
+
     if (typeof c.x === 'number' && typeof c.y === 'number') {
       // User-positioned (free comments always have x/y; anchored comments
       // get them once dragged).
@@ -120,8 +126,10 @@ export function layoutComments(
       // Right-side teeth (anchorX < midline) → left whitespace
       // (negative x in the viewBox); left-side teeth → right whitespace.
       const onRight = anchorX < midline;
+      // Left-gutter cards right-align so a narrow card still sits
+      // against the teeth instead of out at the page edge.
       const x = onRight
-        ? -sidePad + COMMENT_MARGIN_X
+        ? -sidePad + COMMENT_MARGIN_X + (COMMENT_W - w)
         : diagram.width + COMMENT_MARGIN_X;
       const target: PositionedComment = {
         comment: c,

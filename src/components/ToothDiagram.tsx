@@ -9,6 +9,7 @@ import {
 } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { CodeField } from './CodeField';
+import { isGridComment } from '../utils/gridComments';
 // Pure helpers extracted from this component for testability.
 import {
   layoutComments,
@@ -628,6 +629,35 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       )
     );
   };
+
+  // Comments mirrored from the Charting grid never get focus, so the
+  // on-blur fit never runs for them. Fit any that lack a size (new, or
+  // re-texted by the sync) once the diagram is visible — measurement
+  // needs real layout, so a hidden section just waits for its next
+  // render. Runs after every render but exits immediately when there's
+  // nothing to fit.
+  React.useEffect(() => {
+    if (commentInteractingRef.current) return;
+    const pending = comments.filter(
+      (c) => isGridComment(c) && (c.width == null || c.height == null)
+    );
+    if (pending.length === 0) return;
+    const sizes = new Map<string, { newW: number; newH: number }>();
+    for (const c of pending) {
+      const el = wrapperRef.current?.querySelector(
+        `.diagram-comment[data-comment-id="${c.id}"]`
+      ) as HTMLElement | null;
+      const size = el && measureCommentSize(c.id, el, c.text);
+      if (size) sizes.set(c.id, size);
+    }
+    if (sizes.size === 0) return;
+    onCommentsChange(
+      comments.map((c) => {
+        const size = sizes.get(c.id);
+        return size ? { ...c, width: size.newW, height: size.newH } : c;
+      })
+    );
+  });
 
   const handleCommentDelete = (id: string) => {
     onCommentsChange(comments.filter((c) => c.id !== id));

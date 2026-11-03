@@ -25,6 +25,14 @@ interface DentalGridProps {
    *  new-visit flow pre-marks these missing; the Missing column badges
    *  them as carried forward rather than found today. */
   priorGoneTeeth?: Set<number> | null;
+  /** Whether grid findings are mirrored onto the Diagnosis diagram as
+   *  anchored comments (the checkbox in this section's header). */
+  mirrorToDiagnosis?: boolean;
+  onMirrorToDiagnosisChange?: (on: boolean) => void;
+  /** Whether the PDF keeps the arch grids — offered only while findings
+   *  are mirrored, since the diagram then carries the same data. */
+  pdfIncludeGrid?: boolean;
+  onPdfIncludeGridChange?: (on: boolean) => void;
 }
 
 /**
@@ -181,6 +189,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   highlightTriadan,
   priorToothData,
   priorGoneTeeth,
+  mirrorToDiagnosis,
+  onMirrorToDiagnosisChange,
+  pdfIncludeGrid,
+  onPdfIncludeGridChange,
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
@@ -327,6 +339,39 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">Dental Chart</h2>
+        {onMirrorToDiagnosisChange && (
+          <div className="dental-grid__options">
+            <label
+              className="dental-grid__option"
+              title="Adds a comment on each charted tooth in the Diagnosis diagram and keeps it updated as you chart. Your own comments are left alone."
+            >
+              <input
+                type="checkbox"
+                checked={!!mirrorToDiagnosis}
+                onChange={(e) => onMirrorToDiagnosisChange(e.target.checked)}
+              />
+              Show findings on Diagnosis diagram
+            </label>
+            {onPdfIncludeGridChange && (
+              <label
+                className={`dental-grid__option${mirrorToDiagnosis ? '' : ' dental-grid__option--disabled'}`}
+                title={
+                  mirrorToDiagnosis
+                    ? 'Untick to leave the arch grids off the PDF — the Diagnosis diagram already shows these findings, and gets the extra room.'
+                    : 'Available when findings are shown on the Diagnosis diagram.'
+                }
+              >
+                <input
+                  type="checkbox"
+                  checked={!mirrorToDiagnosis || !!pdfIncludeGrid}
+                  disabled={!mirrorToDiagnosis}
+                  onChange={(e) => onPdfIncludeGridChange(e.target.checked)}
+                />
+                Include grid in PDF
+              </label>
+            )}
+          </div>
+        )}
       </div>
       <div className="dental-grid" ref={wrapperRef}>
         <EditorWiringContext.Provider value={wiring}>
