@@ -19,8 +19,11 @@ export interface Attachment {
   kind: AttachmentKind;
   toothTriadan: number | null;
   createdAt: string;
-  /** Signed URL for <img src>; refreshed on load, may expire. */
+  /** Signed URL of the full image; refreshed on load, may expire. */
   url: string;
+  /** Signed URL of the small grid thumbnail. Falls back to `url` for
+   *  images uploaded before thumbnails existed. */
+  thumbUrl: string;
 }
 
 export interface UseAttachmentsReturn {
@@ -41,15 +44,21 @@ export interface UseAttachmentsReturn {
 // admin panel and read here via practiceId. For now they're sensible
 // fixed defaults.
 const ATTACHMENT_LIMITS = {
-  /** Absolute reject ceiling for the ORIGINAL file (before downscaling). */
+  /** Absolute reject ceiling for the ORIGINAL file (before shrinking). */
   hardMaxBytes: 40 * 1024 * 1024,
-  /** Downscale anything larger than this so stored images stay lean. */
-  softMaxBytes: 4 * 1024 * 1024,
-  /** Longest edge after downscaling — plenty for photos and rads. */
-  maxDimension: 2500,
+  /** Nothing larger than this is ever uploaded — keeps storage and
+   *  egress inside the Supabase free tier as long as possible. */
+  maxUploadBytes: 2 * 1024 * 1024,
+  /** Longest edge of every stored image — plenty for photos and rads,
+   *  and the PDF prints at most ~5in wide. */
+  maxDimension: 2000,
+  /** Longest edge of the grid thumbnail (≈200 CSS px at 2× density). */
+  thumbDimension: 400,
   /** Max images pinned to a single chart. */
   maxPerChart: 30,
 };
+
+export const MAX_UPLOAD_BYTES = ATTACHMENT_LIMITS.maxUploadBytes;
 
 const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
 const SIGN_TTL = 60 * 60; // 1 hour
@@ -60,50 +69,107 @@ function extFor(type: string): string {
   return 'jpg';
 }
 
-/** Downscale + re-encode an oversized image so a phone's 15 MB photo
- *  doesn't balloon storage. Images already under the soft cap pass
- *  through untouched (keeps small PNG radiographs lossless); larger ones
- *  are scaled to fit maxDimension and JPEG-encoded, stepping quality down
- *  until under the cap. Falls back to the original if decode fails. */
-async function downscaleIfNeeded(file: File): Promise<File> {
-  if (file.size <= ATTACHMENT_LIMITS.softMaxBytes) return file;
-  const url = URL.createObjectURL(file);
-  try {
-    const img = new Image();
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error('decode failed'));
-      img.src = url;
-    });
-    const longest = Math.max(img.width, img.height);
-    const scale = Math.min(1, ATTACHMENT_LIMITS.maxDimension / longest);
-    const w = Math.max(1, Math.round(img.width * scale));
-    const h = Math.max(1, Math.round(img.height * scale));
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return file;
-    // White matte so a transparent PNG doesn't turn black as JPEG.
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, w, h);
-    ctx.drawImage(img, 0, 0, w, h);
-    const toBlob = (q: number) =>
-      new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', q));
-    let quality = 0.9;
-    let blob = await toBlob(quality);
-    while (blob && blob.size > ATTACHMENT_LIMITS.softMaxBytes && quality > 0.5) {
-      quality -= 0.1;
-      blob = await toBlob(quality);
+/** Quality steps tried at each size before shrinking the dimensions. */
+const QUALITY_STEPS = [0.85, 0.75, 0.65, 0.55];
+/** Each size pass shrinks both edges to this fraction of the last. */
+const SHRINK_STEP = 0.75;
+const MAX_SIZE_PASSES = 8;
+
+/** Find an encoding under `maxBytes`: step JPEG quality down at full
+ *  size, then shrink the dimensions and try again. `encode(scale, q)`
+ *  renders at `scale` (1 = the starting size). Null if nothing fits or
+ *  an encode fails. Exported for tests — the real encoder needs canvas. */
+export async function encodeUnderLimit(
+  encode: (scale: number, quality: number) => Promise<Blob | null>,
+  maxBytes: number
+): Promise<Blob | null> {
+  let scale = 1;
+  for (let pass = 0; pass < MAX_SIZE_PASSES; pass++) {
+    for (const quality of QUALITY_STEPS) {
+      const blob = await encode(scale, quality);
+      if (!blob) return null;
+      if (blob.size <= maxBytes) return blob;
     }
-    if (!blob) return file;
-    const base = file.name.replace(/\.[^.]+$/, '') || 'image';
-    return new File([blob], `${base}.jpg`, { type: 'image/jpeg' });
-  } catch {
-    return file;
-  } finally {
-    URL.revokeObjectURL(url);
+    scale *= SHRINK_STEP;
   }
+  return null;
+}
+
+/** Thumbnail path for a stored image: sits next to the original, so it
+ *  inherits the same storage access rules and needs no extra column. */
+export function thumbPathFor(path: string): string {
+  return path.replace(/\.[^./]+$/, '') + '.thumb.jpg';
+}
+
+function decodeImage(file: File): Promise<HTMLImageElement | null> {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  return new Promise<HTMLImageElement | null>((resolve) => {
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = url;
+  }).finally(() => URL.revokeObjectURL(url));
+}
+
+/** Draw `img` at `w`×`h` on a white matte (so transparent PNGs don't
+ *  turn black as JPEG) and return a JPEG encoder bound to that canvas. */
+function rasterize(img: HTMLImageElement, w: number, h: number) {
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(w));
+  canvas.height = Math.max(1, Math.round(h));
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return (quality: number) =>
+    new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', quality));
+}
+
+/**
+ * Turn a picked file into what gets stored: the main image (at most
+ * maxUploadBytes and maxDimension) plus a small grid thumbnail.
+ *
+ * A file already within both limits uploads untouched (keeps small PNG
+ * radiographs lossless); anything bigger is re-encoded as JPEG, stepping
+ * quality and then size down until it fits. Throws rather than ever
+ * uploading an oversized original. The thumbnail is best-effort — null
+ * if the browser can't make one, and the grid falls back to the full
+ * image.
+ */
+async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | null }> {
+  const { maxUploadBytes: maxBytes, maxDimension, thumbDimension } = ATTACHMENT_LIMITS;
+  const img = await decodeImage(file);
+  if (!img) {
+    if (file.size <= maxBytes) return { main: file, thumb: null };
+    throw new Error("Couldn't read that image to shrink it. Try saving it as a JPEG first.");
+  }
+  const longest = Math.max(img.width, img.height);
+
+  const thumbScale = Math.min(1, thumbDimension / longest);
+  const thumbEncode = rasterize(img, img.width * thumbScale, img.height * thumbScale);
+  const thumb = thumbEncode ? await thumbEncode(0.7) : null;
+
+  if (file.size <= maxBytes && longest <= maxDimension) return { main: file, thumb };
+
+  const baseScale = Math.min(1, maxDimension / longest);
+  let current: { scale: number; encode: (q: number) => Promise<Blob | null> } | null = null;
+  const encode = (scale: number, quality: number) => {
+    if (!current || current.scale !== scale) {
+      const enc = rasterize(img, img.width * baseScale * scale, img.height * baseScale * scale);
+      if (!enc) return Promise.resolve(null);
+      current = { scale, encode: enc };
+    }
+    return current.encode(quality);
+  };
+  const blob = await encodeUnderLimit(encode, maxBytes);
+  if (!blob) {
+    throw new Error(
+      `Couldn't shrink that image under ${Math.round(maxBytes / 1024 / 1024)} MB. Try a smaller file.`
+    );
+  }
+  const base = file.name.replace(/\.[^.]+$/, '') || 'image';
+  return { main: new File([blob], `${base}.jpg`, { type: 'image/jpeg' }), thumb };
 }
 
 /** Sign a batch of storage paths for display. */
@@ -131,7 +197,12 @@ export async function listChartAttachments(chartId: string): Promise<Attachment[
     .order('created_at', { ascending: true });
   if (error) return null;
   const rows = data ?? [];
-  const signed = await signAll(rows);
+  // Separate signing call for thumbnails: older images have none, and a
+  // missing thumbnail must never cost the full image its URL.
+  const [signed, signedThumbs] = await Promise.all([
+    signAll(rows),
+    signAll(rows.map((r) => ({ path: thumbPathFor(r.path) }))).catch(() => new Map<string, string>()),
+  ]);
   return rows.map((r) => ({
     id: r.id,
     chartId: r.chart_id,
@@ -141,6 +212,7 @@ export async function listChartAttachments(chartId: string): Promise<Attachment[
     toothTriadan: r.tooth_triadan ?? null,
     createdAt: r.created_at,
     url: signed.get(r.path) ?? '',
+    thumbUrl: signedThumbs.get(thumbPathFor(r.path)) ?? signed.get(r.path) ?? '',
   }));
 }
 
@@ -184,8 +256,8 @@ export function useAttachments(
           `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`
         );
       }
-      // Shrink oversized originals before upload; small ones pass through.
-      const toUpload = await downscaleIfNeeded(file);
+      // Fit to the size/dimension caps and make the grid thumbnail.
+      const { main: toUpload, thumb } = await prepareUpload(file);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
       if (!uid) throw new Error('Sign in to add images.');
@@ -195,6 +267,13 @@ export function useAttachments(
         .from('attachments')
         .upload(path, toUpload, { contentType: toUpload.type, upsert: false });
       if (upErr) throw new Error(upErr.message);
+      if (thumb) {
+        // Best-effort: without it the grid just shows the full image.
+        await supabase.storage
+          .from('attachments')
+          .upload(thumbPathFor(path), thumb, { contentType: 'image/jpeg', upsert: false })
+          .catch(() => undefined);
+      }
       const { error: rowErr } = await supabase.from('attachments').insert({
         id,
         chart_id: chartId,
@@ -227,7 +306,9 @@ export function useAttachments(
     async (id: string): Promise<void> => {
       if (!supabase) return;
       const target = items.find((it) => it.id === id);
-      if (target) await supabase.storage.from('attachments').remove([target.path]);
+      if (target) {
+        await supabase.storage.from('attachments').remove([target.path, thumbPathFor(target.path)]);
+      }
       const { error } = await supabase.from('attachments').delete().eq('id', id);
       if (error) throw new Error(error.message);
       setItems((prev) => prev.filter((it) => it.id !== id));

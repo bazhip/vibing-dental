@@ -185,7 +185,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
             <li key={a.id} className="imaging__card">
               <a href={a.url} target="_blank" rel="noreferrer" className="imaging__thumb-link">
                 {a.url ? (
-                  <img src={a.url} alt={a.caption || `${a.kind} image`} className="imaging__thumb" loading="lazy" />
+                  <img src={a.thumbUrl || a.url} alt={a.caption || `${a.kind} image`} className="imaging__thumb" loading="lazy" />
                 ) : (
                   <span className="imaging__thumb imaging__thumb--missing">image</span>
                 )}
