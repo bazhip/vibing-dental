@@ -1,4 +1,4 @@
-import { PDFDocument, PDFFont, PDFForm, PDFPage } from 'pdf-lib';
+import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { DENTAL_CODES, DentalCode, findCodesInText } from '../../constants/dentalCodes';
 import {
   PatientInfo,
@@ -1059,3 +1059,112 @@ export function drawFooter(
 // signature for some callers is preserved as `_form: PDFForm` to avoid
 // rippling changes through generateDentalChartPDF. Suppress unused.
 export function _unusedFormSignaturePin(_: PDFForm): void { /* no-op */ }
+
+// --------------------------------------------------------------- Images --
+
+/** One chart image for the PDF's image pages. `jpegBytes: null` means the
+ *  file couldn't be fetched — it still gets a labelled cell so the PDF
+ *  never silently drops part of the record. */
+export interface PdfImage {
+  jpegBytes: Uint8Array | null;
+  caption: string;
+  kind: 'photo' | 'xray';
+}
+
+export const IMAGES_PER_PAGE = 4;
+
+/** Drop characters the standard (WinAnsi) font can't encode — a caption
+ *  with an emoji or arrow would otherwise throw and sink the whole PDF. */
+function pdfSafe(text: string, font: PDFFont): string {
+  let out = '';
+  for (const ch of text) {
+    try {
+      font.encodeText(ch);
+      out += ch;
+    } catch {
+      /* unsupported glyph — skip */
+    }
+  }
+  return out;
+}
+
+/**
+ * One page of chart images in a 2×2 grid inside a single section card.
+ * Each cell fits its image (aspect preserved, centered) above a one-line
+ * "N. Photo — caption" label. `startIndex` is the 0-based number of the
+ * first image on this page, so labels count across pages.
+ */
+export async function drawImagePage(
+  pdfDoc: PDFDocument,
+  page: PDFPage,
+  images: PdfImage[],
+  startIndex: number,
+  totalImages: number,
+  font: PDFFont,
+  fontBold: PDFFont
+): Promise<void> {
+  const { height: pageHeight } = page.getSize();
+  const cardX = 0.30 * PT_PER_IN;
+  const cardW = 10.40 * PT_PER_IN;
+  const cardTop = pageHeight - 0.30 * PT_PER_IN;
+  const cardBottom = pageHeight - 8.02 * PT_PER_IN; // footer rule at 8.10
+  const cardH = cardTop - cardBottom;
+
+  const first = startIndex + 1;
+  const last = startIndex + images.length;
+  const title =
+    totalImages === 1
+      ? 'Images & Radiographs'
+      : `Images & Radiographs (${first === last ? first : `${first}–${last}`} of ${totalImages})`;
+  const bodyTop = drawSectionCard(page, cardX, cardTop, cardW, cardH, title, fontBold);
+
+  const pad = 10;
+  const gap = 14;
+  const labelH = 16;
+  const cols = 2;
+  const rows = 2;
+  const cellW = (cardW - 2 * pad - (cols - 1) * gap) / cols;
+  const cellH = (bodyTop - cardBottom - 2 * pad - (rows - 1) * gap) / rows;
+  const boxH = cellH - labelH;
+
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cellX = cardX + pad + col * (cellW + gap);
+    const cellTop = bodyTop - pad - row * (cellH + gap);
+    const boxBottom = cellTop - boxH;
+
+    let embedded: PDFImage | null = null;
+    if (img.jpegBytes) {
+      try {
+        embedded = await pdfDoc.embedJpg(img.jpegBytes);
+      } catch {
+        embedded = null;
+      }
+    }
+    if (embedded) {
+      const scale = Math.min(cellW / embedded.width, boxH / embedded.height);
+      const w = embedded.width * scale;
+      const h = embedded.height * scale;
+      const x = cellX + (cellW - w) / 2;
+      const y = boxBottom + (boxH - h) / 2;
+      page.drawImage(embedded, { x, y, width: w, height: h });
+      page.drawRectangle({ x, y, width: w, height: h, borderColor: PALETTE.border, borderWidth: 0.5 });
+    } else {
+      page.drawRectangle({
+        x: cellX, y: boxBottom, width: cellW, height: boxH,
+        color: PALETTE.rowAlt, borderColor: PALETTE.border, borderWidth: 0.5,
+      });
+      drawCenteredText(page, 'Image could not be loaded', cellX, cellX + cellW, boxBottom + boxH / 2 - 4, 9, font, PALETTE.muted);
+    }
+
+    const n = startIndex + i + 1;
+    const kindLabel = img.kind === 'xray' ? 'Radiograph' : 'Photo';
+    const caption = pdfSafe(img.caption.trim().replace(/\s+/g, ' '), font);
+    const label = `${n}. ${kindLabel}${caption ? ` — ${caption}` : ''}`;
+    drawClippedText(page, label, cellX, boxBottom - 11, 8.5, font, PALETTE.text, cellW);
+  }
+
+  finishSectionCard(page, cardX, cardTop, cardW, cardH);
+}

@@ -159,7 +159,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const handleButton = () => {
     if (voice.recording) voice.stop();
+    else if (voice.interrupted) voice.resume();
     else setIntroOpen(true);
+  };
+
+  const closeSidebar = () => {
+    setActivity([]);
+    voice.dismissInterruption();
   };
 
   const handleDownloadTranscript = () => {
@@ -185,10 +191,16 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const label = voice.recording ? 'Stop' : activeChunkCount > 0 ? 'Finishing…' : 'AI autofill';
+  const label = voice.recording
+    ? 'Stop'
+    : activeChunkCount > 0
+      ? 'Finishing…'
+      : voice.interrupted
+        ? 'Resume'
+        : 'AI autofill';
   const subLabel = voice.recording && activeChunkCount > 0 ? 'listening · sending…' : voice.recording ? 'listening' : null;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', activeChunkCount > 0 ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
-  const sidebarOpen = voice.recording || activity.length > 0;
+  const sidebarOpen = voice.recording || voice.interrupted || activity.length > 0;
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
 
   return (
@@ -243,7 +255,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         <aside className="ai-sidebar" aria-live="polite">
           <header className="ai-sidebar__head">
             <span className={`ai-sidebar__status${voice.recording ? ' ai-sidebar__status--live' : ''}`}>
-              {voice.recording ? '● Listening' : 'Last session'}
+              {voice.recording ? '● Listening' : voice.interrupted ? 'Paused' : 'Last session'}
             </span>
             <span className="voice-input__provider-badge">
               {voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}
@@ -253,10 +265,28 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <button type="button" className="voice-input__panel-clear" onClick={handleDownloadTranscript} title="Download transcript">⬇</button>
               )}
               {!voice.recording && (
-                <button type="button" className="voice-input__panel-close" onClick={() => setActivity([])} aria-label="Close">×</button>
+                <button type="button" className="voice-input__panel-close" onClick={closeSidebar} aria-label="Close">×</button>
               )}
             </div>
           </header>
+
+          {voice.interrupted && !voice.recording && (
+            <div className="ai-sidebar__paused" role="alert">
+              <p>
+                Dictation stopped because the microphone was interrupted
+                (camera, phone call, or leaving the page). Everything heard
+                before that was kept.
+              </p>
+              <div className="ai-sidebar__paused-actions">
+                <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={voice.resume}>
+                  Resume dictation
+                </button>
+                <button type="button" className="diagram-view__action" onClick={voice.dismissInterruption}>
+                  Done
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="ai-sidebar__section-label">Transcript</div>
           <div className="ai-sidebar__transcript">

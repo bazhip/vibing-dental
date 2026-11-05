@@ -417,6 +417,18 @@
 .ai-sidebar__status { font-weight: 700; font-size: 0.85rem; color: var(--text-muted, #64748b); }
 .ai-sidebar__status--live { color: #dc2626; }
 .ai-sidebar__head-actions { margin-left: auto; display: flex; gap: 0.3rem; }
+.ai-sidebar__paused {
+  margin: 0.6rem 0.8rem 0.2rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #78350f;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.ai-sidebar__paused p { margin: 0 0 0.5rem; }
+.ai-sidebar__paused-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .ai-sidebar__section-label {
   display: flex;
   align-items: center;
@@ -2692,6 +2704,11 @@ button.save-status--error {
 }
 
 /* Images & radiographs section */
+.imaging__pdf-option {
+  margin: 0 0 0.75rem;
+  flex-wrap: wrap;
+}
+
 .imaging__uploader {
   display: flex;
   align-items: center;
@@ -2759,12 +2776,24 @@ button.save-status--error {
   gap: 0.4rem;
   padding: 0.6rem;
 }
-.imaging__badge {
-  font-size: 0.72rem;
+.imaging__kind-select {
+  align-self: flex-start;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--surface, #fff);
+  font: inherit;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text);
+}
+.imaging__in-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
 }
 .imaging__caption { font-size: 0.85rem; }
 .imaging__delete { align-self: flex-start; }

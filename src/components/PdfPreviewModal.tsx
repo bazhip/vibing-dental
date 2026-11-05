@@ -4,7 +4,10 @@ import {
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
   type PdfBranding,
+  type PdfImage,
 } from '../utils/pdfGenerator';
+import { listChartAttachments } from '../hooks/useAttachments';
+import { fetchAsJpeg } from '../utils/imageJpeg';
 import { diagramSvgToPng, CommentForExport } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import {
@@ -37,7 +40,16 @@ export interface ChartSnapshot {
   branding?: PdfBranding;
   /** False drops the arch grids from page 1 (diagram-first layout). */
   includeGrid?: boolean;
+  /** Cloud chart id whose images get appended as extra pages (4 per
+   *  page). Absent/empty → no image pages. */
+  imagesChartId?: string;
+  /** Image ids the user left out of the PDF. */
+  pdfExcludedImages?: string[];
 }
+
+/** Longest edge for images on the PDF's image pages. A 2×2 cell is ~5in
+ *  wide, so this prints at ~280 dpi while keeping file size sane. */
+const PDF_IMAGE_MAX_EDGE = 1400;
 
 interface PdfPreviewModalProps {
   open: boolean;
@@ -54,6 +66,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  // Chart images, fetched once per open (not per style switch). null =
+  // still loading; [] = none / not requested.
+  const [images, setImages] = React.useState<PdfImage[] | null>(null);
+  const [imageWarning, setImageWarning] = React.useState<string | null>(null);
 
   // Move focus into the dialog on open so keyboard / screen-reader users
   // land inside it rather than back on the trigger.
@@ -71,7 +87,52 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   }, [open, onClose]);
 
   React.useEffect(() => {
-    if (!open || !snapshot) return;
+    if (!open || !snapshot) {
+      setImages(null);
+      return;
+    }
+    const chartId = snapshot.imagesChartId;
+    if (!chartId) {
+      setImages([]);
+      return;
+    }
+    let cancelled = false;
+    setImages(null);
+    setImageWarning(null);
+    const warn = "Couldn't load the chart's images, so they're not in this PDF. Close and reopen the preview to retry.";
+    (async () => {
+      const items = await listChartAttachments(chartId);
+      if (cancelled) return;
+      if (!items) {
+        setImageWarning(warn);
+        setImages([]);
+        return;
+      }
+      const excluded = new Set(snapshot.pdfExcludedImages ?? []);
+      const out: PdfImage[] = [];
+      for (const item of items.filter((it) => !excluded.has(it.id))) {
+        const jpegBytes = item.url ? await fetchAsJpeg(item.url, PDF_IMAGE_MAX_EDGE, 0.85) : null;
+        if (cancelled) return;
+        out.push({ jpegBytes, caption: item.caption, kind: item.kind });
+      }
+      if (!cancelled) {
+        if (out.some((img) => !img.jpegBytes)) {
+          setImageWarning('Some images could not be loaded. They show as blank boxes in the PDF.');
+        }
+        setImages(out);
+      }
+    })().catch((err) => {
+      console.error(err);
+      if (!cancelled) {
+        setImageWarning(warn);
+        setImages([]);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [open, snapshot]);
+
+  React.useEffect(() => {
+    if (!open || !snapshot || images === null) return;
     let cancelled = false;
     let createdUrl: string | null = null;
     setGenerating(true);
@@ -96,7 +157,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.postState, png: postPng },
           styleId,
           snapshot.branding ?? {},
-          { includeGrid: snapshot.includeGrid }
+          { includeGrid: snapshot.includeGrid, images }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
@@ -116,7 +177,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       cancelled = true;
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-  }, [open, snapshot, styleId]);
+  }, [open, snapshot, styleId, images]);
 
   const handleDownload = () => {
     if (!pdfUrl || !snapshot) return;
@@ -173,14 +234,19 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
               type="button"
               className="pdf-preview-download"
               onClick={handleDownload}
-              disabled={!pdfUrl || generating}
+              disabled={!pdfUrl || generating || images === null}
             >
               Download PDF
             </button>
+            {imageWarning && (
+              <p className="pdf-preview-warning" role="status">{imageWarning}</p>
+            )}
           </aside>
           <div className="pdf-preview-iframe-wrap">
-            {generating && (
-              <div className="pdf-preview-status">Generating preview…</div>
+            {(generating || (images === null && !error)) && (
+              <div className="pdf-preview-status">
+                {images === null ? 'Loading images…' : 'Generating preview…'}
+              </div>
             )}
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>

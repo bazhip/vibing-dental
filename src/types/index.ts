@@ -214,6 +214,9 @@ export interface ChartSnapshot {
   /** Before/after tags for attached images (by attachment id), used by
    *  the owner report's photo section. */
   imageRoles?: Record<string, ImageRole>;
+  /** Attachment ids left OUT of the chart PDF's image pages. Stored as
+   *  exclusions so a newly added image is in the PDF by default. */
+  pdfExcludedImages?: string[];
   /** Hand-edited owner-report text blocks (absent fields = generated). */
   ownerReport?: OwnerReportOverrides;
   patientInfo: PatientInfo;

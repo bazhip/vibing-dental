@@ -160,6 +160,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [pdfIncludeGrid, setPdfIncludeGrid] = usePersistedState<boolean>(
     'charting.pdfIncludeGrid', 1, true
   );
+  // Append the chart's photos/radiographs to the PDF as extra pages, four
+  // per page. Per-browser preference, toggled from the Images section.
+  const [pdfIncludeImages, setPdfIncludeImages] = usePersistedState<boolean>(
+    'imaging.pdfIncludeImages', 1, true
+  );
   const { setPreDiagramComments } = chart;
   React.useEffect(() => {
     if (readOnly) return;
@@ -541,6 +546,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           strokes:  chart.postDiagramStrokes,
         },
         includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
+        imagesChartId:
+          pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
+        pdfExcludedImages: chart.pdfExcludedImages,
         branding: trial
           ? // Trial charts carry no practice identity — stamp the slots
             // so the output is obviously not a finished clinical record.
@@ -709,6 +717,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           maxImages={profile.maxImages}
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
+          includeInPdf={pdfIncludeImages}
+          onIncludeInPdfChange={setPdfIncludeImages}
+          pdfExcludedImages={chart.pdfExcludedImages}
+          onImageInPdfChange={chart.setImageInPdf}
         />
       ),
     },

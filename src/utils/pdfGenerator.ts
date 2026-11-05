@@ -39,6 +39,9 @@ import {
   codesLegendCols,
   codesLegendHeightIn,
   compactExamGeometry,
+  drawImagePage,
+  IMAGES_PER_PAGE,
+  type PdfImage,
 } from './pdf/sections';
 import {
   parseDentalChartPDF,
@@ -60,6 +63,7 @@ import {
  *     → drawNerveBlockTable, drawDiagramAt,
  *       drawTreatmentReportField, drawFooter           # page 2
  *     → drawCodesLegend × 2
+ *     → drawImagePage × ceil(images / 4)                 # optional
  *     → stash full chart state in a hidden form field for round-trip
  *     → return raw bytes
  *
@@ -72,7 +76,7 @@ import {
 
 // Re-exports for callers that still go through this file.
 export { PDF_STYLES, DEFAULT_PDF_STYLE_ID, parseDentalChartPDF };
-export type { CommentStyle, DiagramState, ParsedChart };
+export type { CommentStyle, DiagramState, ParsedChart, PdfImage };
 
 // DiagramExport is the runtime payload the orchestrator needs per arch:
 // the raw PNG (already rasterized from the SVG) plus the JSON-serializable
@@ -99,6 +103,10 @@ export interface PdfBranding {
  *  still round-trips through the hidden stash either way. */
 export interface PdfLayoutOptions {
   includeGrid?: boolean;
+  /** Chart images to append after page 2, IMAGES_PER_PAGE to a page.
+   *  Empty / absent → no image pages. Not round-tripped through the
+   *  stash: the images live in cloud storage with the chart. */
+  images?: PdfImage[];
 }
 
 /** Build the PDF as raw bytes — the entry point for both the download
@@ -116,6 +124,9 @@ export async function buildDentalChartPDFBytes(
   layoutOptions: PdfLayoutOptions = {}
 ): Promise<Uint8Array> {
   const includeGrid = layoutOptions.includeGrid ?? true;
+  const images = layoutOptions.images ?? [];
+  const imagePageCount = Math.ceil(images.length / IMAGES_PER_PAGE);
+  const totalPages = 2 + imagePageCount;
   const style = PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
   applyPdfStyle(style);
 
@@ -262,7 +273,7 @@ export async function buildDentalChartPDFBytes(
       8.0
     );
   }
-  drawFooter(page1, regular, bold, 1, 2, generatedAt, identityLine);
+  drawFooter(page1, regular, bold, 1, totalPages, generatedAt, identityLine);
 
   // ---- Page 2 ------------------------------------------------------------
   // The nerve-block table grows to fit a long "Other" note; push the diagram
@@ -284,10 +295,20 @@ export async function buildDentalChartPDFBytes(
     diagramBottomIn(1, usedByPage.page2)
   );
   drawTreatmentReportField(page2, patientInfo.treatmentReport, regular, bold);
-  drawFooter(page2, regular, bold, 2, 2, generatedAt, identityLine);
+  drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------
   drawCodesLegend(page2, legendBox(1, usedByPage.page2), usedByPage.page2, bold, regular);
+
+  // ---- Image pages (optional) ------------------------------------------
+  for (let p = 0; p < imagePageCount; p++) {
+    const page = pdfDoc.addPage([PAGE_WIDTH_PT, PAGE_HEIGHT_PT]);
+    const start = p * IMAGES_PER_PAGE;
+    await drawImagePage(
+      pdfDoc, page, images.slice(start, start + IMAGES_PER_PAGE), start, images.length, regular, bold
+    );
+    drawFooter(page, regular, bold, 3 + p, totalPages, generatedAt, identityLine);
+  }
 
   // ---- Hidden round-trip stash -------------------------------------------
   // The visible PDF is a static print artifact — every value lives only

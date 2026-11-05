@@ -2,6 +2,7 @@ import React from 'react';
 import { ChartSnapshot, ImageRole } from '../types';
 import { useAttachments } from '../hooks/useAttachments';
 import { buildOwnerReportModel } from '../utils/ownerReport';
+import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
 
 interface OwnerReportModalProps {
@@ -20,29 +21,6 @@ interface OwnerReportModalProps {
 /** Longest edge for photos embedded in the report — keeps a report with
  *  several photos around a couple of MB. */
 const REPORT_PHOTO_MAX_EDGE = 1000;
-
-/** Fetch a signed image URL and re-encode it as a right-sized JPEG. */
-async function toReportJpeg(url: string): Promise<Uint8Array | null> {
-  try {
-    const blob = await (await fetch(url)).blob();
-    const bitmap = await createImageBitmap(blob);
-    const scale = Math.min(1, REPORT_PHOTO_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const jpeg = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, 'image/jpeg', 0.82)
-    );
-    return jpeg ? new Uint8Array(await jpeg.arrayBuffer()) : null;
-  } catch {
-    return null; // a photo that won't load shouldn't sink the report
-  }
-}
 
 /**
  * Owner report preview: the chart's findings rendered as a plain-English
@@ -93,7 +71,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         const photos: OwnerReportPhoto[] = [];
         for (const { item, role } of tagged) {
           if (!item.url) continue;
-          const jpegBytes = await toReportJpeg(item.url);
+          const jpegBytes = await fetchAsJpeg(item.url, REPORT_PHOTO_MAX_EDGE);
           if (jpegBytes) photos.push({ role, caption: item.caption, jpegBytes });
         }
         if (cancelled) return;

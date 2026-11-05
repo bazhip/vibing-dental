@@ -110,6 +110,11 @@ export interface UseChartStateReturn {
   /** Tag (or untag, with null) an image for the owner report. */
   setImageRole: (attachmentId: string, role: ImageRole | null) => void;
 
+  /** Attachment ids left out of the chart PDF (everything else is in). */
+  pdfExcludedImages: string[];
+  /** Include or leave out one image from the chart PDF. */
+  setImageInPdf: (attachmentId: string, include: boolean) => void;
+
   /** Hand-edited owner-report text blocks (absent = auto-generated). */
   ownerReport: OwnerReportOverrides;
   /** Set an owner-report block; null restores the generated text. */
@@ -338,6 +343,19 @@ export function useChartState(): UseChartStateReturn {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Images the user unticked for the chart PDF. Exclusions (not
+  // inclusions) so a new upload lands in the PDF without extra clicks.
+  const [pdfExcludedImages, setPdfExcludedImages] = usePersistedState<string[]>(
+    'chart.pdfExcludedImages', 1, []
+  );
+  const setImageInPdf = React.useCallback((attachmentId: string, include: boolean) => {
+    setPdfExcludedImages((prev) => {
+      const rest = prev.filter((id) => id !== attachmentId);
+      return include ? rest : [...rest, attachmentId];
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Hand-edited owner-report blocks. A field exists only when customized
   // — the report generator falls back to generated text otherwise.
   const [ownerReport, setOwnerReport] = usePersistedState<OwnerReportOverrides>('chart.ownerReport', 1, {});
@@ -410,6 +428,7 @@ export function useChartState(): UseChartStateReturn {
     setCloudChartId(generateChartId());
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setImageRoles({}); // image tags belong to the prior visit's images
+    setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
     setPatientInfo(blankPatientInfo(keep));
     if (identity) {
@@ -441,6 +460,7 @@ export function useChartState(): UseChartStateReturn {
   const snapshot = React.useMemo<ChartSnapshot>(() => ({
     version: CHART_SNAPSHOT_VERSION,
     imageRoles,
+    pdfExcludedImages,
     ownerReport,
     patientInfo,
     toothData,
@@ -453,7 +473,7 @@ export function useChartState(): UseChartStateReturn {
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
   }), [
-    imageRoles, ownerReport, patientInfo, toothData, species, logo,
+    imageRoles, pdfExcludedImages, ownerReport, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -466,6 +486,7 @@ export function useChartState(): UseChartStateReturn {
     const snapshot = normalizeSnapshot(raw);
     setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
     setImageRoles(snapshot.imageRoles ?? {});
+    setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
     setPatientInfo(snapshot.patientInfo);
     setSpecies(snapshot.species);
@@ -506,6 +527,7 @@ export function useChartState(): UseChartStateReturn {
       setCloudChartId(generateChartId());
       setOpenedExisting(true);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
+      setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
       setPatientInfo(parsed.patientInfo);
       setSpecies(parsed.species);
@@ -576,6 +598,9 @@ export function useChartState(): UseChartStateReturn {
 
     imageRoles,
     setImageRole,
+
+    pdfExcludedImages,
+    setImageInPdf,
 
     ownerReport,
     setOwnerReportOverride,

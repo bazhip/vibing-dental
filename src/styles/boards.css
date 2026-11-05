@@ -448,6 +448,12 @@
 }
 .pdf-preview-download:disabled { opacity: 0.45; cursor: not-allowed; }
 .pdf-preview-download:hover:not(:disabled) { background: #020617; }
+.pdf-preview-warning {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #92400e;
+}
 
 .pdf-preview-iframe-wrap {
   position: relative;

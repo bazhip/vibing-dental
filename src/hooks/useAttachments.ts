@@ -31,6 +31,8 @@ export interface UseAttachmentsReturn {
   maxImages: number;
   upload: (file: File, kind: AttachmentKind, caption: string) => Promise<void>;
   updateCaption: (id: string, caption: string) => Promise<void>;
+  /** Relabel an image as a photo or a radiograph. */
+  updateKind: (id: string, kind: AttachmentKind) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
 
@@ -116,6 +118,32 @@ async function signAll(rows: { path: string }[]): Promise<Map<string, string>> {
   return map;
 }
 
+/** One-shot fetch of a chart's attachments (oldest first) with fresh
+ *  signed URLs. Null when cloud is off, there's no chart, or the query
+ *  fails. Used by the hook and by the PDF preview, which needs a fresh
+ *  list each time it opens. */
+export async function listChartAttachments(chartId: string): Promise<Attachment[] | null> {
+  if (!supabase || !chartId) return null;
+  const { data, error } = await supabase
+    .from('attachments')
+    .select('id, chart_id, path, caption, kind, tooth_triadan, created_at')
+    .eq('chart_id', chartId)
+    .order('created_at', { ascending: true });
+  if (error) return null;
+  const rows = data ?? [];
+  const signed = await signAll(rows);
+  return rows.map((r) => ({
+    id: r.id,
+    chartId: r.chart_id,
+    path: r.path,
+    caption: r.caption ?? '',
+    kind: (r.kind as AttachmentKind) ?? 'photo',
+    toothTriadan: r.tooth_triadan ?? null,
+    createdAt: r.created_at,
+    url: signed.get(r.path) ?? '',
+  }));
+}
+
 export function useAttachments(
   chartId: string,
   practiceId = '',
@@ -130,33 +158,8 @@ export function useAttachments(
   itemsRef.current = items;
 
   const load = React.useCallback(async () => {
-    if (!supabase || !chartId) {
-      setLoaded(true);
-      return;
-    }
-    const { data, error } = await supabase
-      .from('attachments')
-      .select('id, chart_id, path, caption, kind, tooth_triadan, created_at')
-      .eq('chart_id', chartId)
-      .order('created_at', { ascending: true });
-    if (error) {
-      setLoaded(true);
-      return;
-    }
-    const rows = data ?? [];
-    const signed = await signAll(rows);
-    setItems(
-      rows.map((r) => ({
-        id: r.id,
-        chartId: r.chart_id,
-        path: r.path,
-        caption: r.caption ?? '',
-        kind: (r.kind as AttachmentKind) ?? 'photo',
-        toothTriadan: r.tooth_triadan ?? null,
-        createdAt: r.created_at,
-        url: signed.get(r.path) ?? '',
-      }))
-    );
+    const rows = await listChartAttachments(chartId);
+    if (rows) setItems(rows);
     setLoaded(true);
   }, [chartId]);
 
@@ -213,6 +216,13 @@ export function useAttachments(
     if (error) throw new Error(error.message);
   }, []);
 
+  const updateKind = React.useCallback(async (id: string, kind: AttachmentKind): Promise<void> => {
+    if (!supabase) return;
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, kind } : it)));
+    const { error } = await supabase.from('attachments').update({ kind }).eq('id', id);
+    if (error) throw new Error(error.message);
+  }, []);
+
   const remove = React.useCallback(
     async (id: string): Promise<void> => {
       if (!supabase) return;
@@ -232,6 +242,7 @@ export function useAttachments(
     maxImages,
     upload,
     updateCaption,
+    updateKind,
     remove,
   };
 }

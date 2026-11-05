@@ -15,6 +15,12 @@ interface ImagingSectionProps {
   imageRoles?: Record<string, ImageRole>;
   /** Tag (or untag, with null) an image for the owner report. */
   onImageRoleChange?: (attachmentId: string, role: ImageRole | null) => void;
+  /** Append this chart's images to the PDF as extra pages (4 per page). */
+  includeInPdf?: boolean;
+  onIncludeInPdfChange?: (include: boolean) => void;
+  /** Image ids unticked for the PDF; everything else goes in. */
+  pdfExcludedImages?: string[];
+  onImageInPdfChange?: (attachmentId: string, include: boolean) => void;
 }
 
 /**
@@ -30,6 +36,10 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   maxImages,
   imageRoles = {},
   onImageRoleChange,
+  includeInPdf = true,
+  onIncludeInPdfChange,
+  pdfExcludedImages = [],
+  onImageInPdfChange,
 }) => {
   const store = useAttachments(chartId, practiceId, maxImages);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
@@ -91,6 +101,25 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           </span>
         )}
       </div>
+
+      {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
+        <label
+          className="dental-grid__option imaging__pdf-option"
+          title="Adds the chart's images on extra pages at the end of the PDF, four per page, with their captions."
+        >
+          <input
+            type="checkbox"
+            checked={includeInPdf}
+            onChange={(e) => onIncludeInPdfChange(e.target.checked)}
+          />
+          Add images to the PDF (4 per page)
+          {includeInPdf && store.items.length > 0 && (
+            <span className="patient-form__hint">
+              {store.items.filter((a) => !pdfExcludedImages.includes(a.id)).length} of {store.items.length} selected
+            </span>
+          )}
+        </label>
+      )}
 
       {/* Zero-image plans (the free tier) get a plain explanation instead
           of a dead uploader. Existing images (e.g. from a lapsed paid
@@ -162,9 +191,30 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 )}
               </a>
               <div className="imaging__meta">
-                <span className="imaging__badge">
-                  {a.kind === 'xray' ? 'Radiograph' : 'Photo'}
-                </span>
+                <select
+                  className="imaging__kind-select"
+                  value={a.kind}
+                  onChange={(e) => {
+                    store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
+                      setError(err instanceof Error ? err.message : 'Could not change the image type.')
+                    );
+                  }}
+                  aria-label="Image type"
+                  title="Shown on the PDF label"
+                >
+                  <option value="photo">Photo</option>
+                  <option value="xray">Radiograph</option>
+                </select>
+                {onImageInPdfChange && includeInPdf && (
+                  <label className="imaging__in-pdf" title="Include this image on the PDF's image pages">
+                    <input
+                      type="checkbox"
+                      checked={!pdfExcludedImages.includes(a.id)}
+                      onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
+                    />
+                    In PDF
+                  </label>
+                )}
                 {onImageRoleChange && (
                   <select
                     className="imaging__role"
@@ -183,7 +233,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 <input
                   type="text"
                   className="patient-form__input imaging__caption"
-                  placeholder="Caption…"
+                  placeholder="Label for the PDF…"
                   defaultValue={a.caption}
                   onBlur={(e) => {
                     if (e.target.value !== a.caption) {

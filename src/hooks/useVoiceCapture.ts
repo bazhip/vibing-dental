@@ -86,6 +86,22 @@ export interface VoiceCapture {
   startedAt: Date | null;
   /** Which transport will be used at the next `start()` call. */
   provider: VoiceProvider;
+  /** True when the last session ended without the user pressing stop:
+   *  the OS took the mic (iOS camera, a call), the page went to the
+   *  background on a phone, or the connection dropped. Whatever was
+   *  heard before that is kept, and onStop still fires for it. */
+  interrupted: boolean;
+  /** Start listening again after an interruption, keeping the transcript. */
+  resume: () => void;
+  /** Clear the interrupted flag without resuming. */
+  dismissInterruption: () => void;
+}
+
+/** Phones and tablets: leaving the page (app switch, lock, camera
+ *  picker) cuts the mic, so treat it as an interruption up front. On
+ *  desktop the mic keeps working in a background tab, so leave it be. */
+function isTouchPrimary(): boolean {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 }
 
 interface UseVoiceCaptureOptions {
@@ -108,6 +124,7 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   const [transcript, setTranscript] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
+  const [interrupted, setInterrupted] = React.useState(false);
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
@@ -120,6 +137,11 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   // flight, so the resolving session can be torn down instead of left live
   // (which would otherwise keep the mic open with no UI handle to stop it).
   const stopRequestedRef = React.useRef(false);
+  // True once a session is actually listening — a session that fails to
+  // start is an error, not an interruption.
+  const sessionLiveRef = React.useRef(false);
+  // Mic permission refused: the session ends, but "resume" can't help.
+  const fatalRef = React.useRef(false);
   const interimRef = React.useRef('');
 
   const onStopRef = React.useRef(onStop);
@@ -160,6 +182,10 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const handleSessionEnd = React.useCallback(() => {
     const finalText = finalRef.current.trim();
+    if (sessionLiveRef.current && !stopRequestedRef.current && !fatalRef.current) {
+      setInterrupted(true);
+    }
+    sessionLiveRef.current = false;
     setRecording(false);
     onStopRef.current?.(finalText);
   }, []);
@@ -188,7 +214,10 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
       }
       if (interim) setInterim(interim);
     };
-    rec.onerror = (e) => setError(`Recognition error: ${e.error ?? 'unknown'}`);
+    rec.onerror = (e) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') fatalRef.current = true;
+      setError(`Recognition error: ${e.error ?? 'unknown'}`);
+    };
     rec.onend = () => {
       browserRef.current = null;
       handleSessionEnd();
@@ -198,6 +227,7 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
     setRecording(true);
     try {
       rec.start();
+      sessionLiveRef.current = true;
     } catch (err) {
       setError(`Couldn't start microphone: ${(err as Error).message}`);
       browserRef.current = null;
@@ -242,19 +272,57 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
         return;
       }
       deepgramRef.current = session;
+      sessionLiveRef.current = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
       setRecording(false);
     }
   }, [recordSegment, setInterim, handleSessionEnd, startBrowser]);
 
-  const start = React.useCallback(() => {
-    if (browserRef.current || deepgramRef.current) return;
+  const begin = React.useCallback(() => {
     stopRequestedRef.current = false;
-    resetSession();
+    fatalRef.current = false;
+    setInterrupted(false);
     if (provider === 'deepgram') startDeepgram();
     else startBrowser();
-  }, [provider, resetSession, startBrowser, startDeepgram]);
+  }, [provider, startBrowser, startDeepgram]);
+
+  const start = React.useCallback(() => {
+    if (browserRef.current || deepgramRef.current) return;
+    resetSession();
+    begin();
+  }, [resetSession, begin]);
+
+  const resume = React.useCallback(() => {
+    if (browserRef.current || deepgramRef.current) return;
+    setError(null);
+    begin();
+  }, [begin]);
+
+  const dismissInterruption = React.useCallback(() => setInterrupted(false), []);
+
+  // End the session (as an interruption, not a user stop) when a phone
+  // leaves the page — the mic is gone either way, and ending it cleanly
+  // flushes what was heard and tells the user instead of silently
+  // recording nothing.
+  React.useEffect(() => {
+    if (!recording || !isTouchPrimary()) return;
+    const interrupt = () => {
+      if (browserRef.current) {
+        try { browserRef.current.stop(); } catch { /* ignore */ }
+      }
+      deepgramRef.current?.stop();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') interrupt();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', interrupt);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', interrupt);
+    };
+  }, [recording]);
 
   const stop = React.useCallback(() => {
     stopRequestedRef.current = true;
@@ -296,6 +364,6 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   return {
     supported, recording, transcript, start, stop, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
-    provider,
+    provider, interrupted, resume, dismissInterruption,
   };
 }

@@ -89,6 +89,10 @@ export interface DeepgramAuth {
   kind: 'token' | 'bearer';
 }
 
+/** How long a muted mic track may stay muted before the session is
+ *  treated as interrupted. */
+const MUTE_GRACE_MS = 1500;
+
 export async function startDeepgramSession(
   auth: DeepgramAuth,
   handlers: DeepgramHandlers
@@ -104,6 +108,7 @@ export async function startDeepgramSession(
   let closed = false;
   let recorder: MediaRecorder | null = null;
   let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
+  let muteTimer: ReturnType<typeof setTimeout> | null = null;
   const audioBuffer: Blob[] = [];
 
   const cleanup = () => {
@@ -111,6 +116,8 @@ export async function startDeepgramSession(
     closed = true;
     if (keepAliveTimer) clearInterval(keepAliveTimer);
     keepAliveTimer = null;
+    if (muteTimer) clearTimeout(muteTimer);
+    muteTimer = null;
     if (recorder && recorder.state !== 'inactive') {
       try { recorder.stop(); } catch { /* ignore */ }
     }
@@ -200,6 +207,25 @@ export async function startDeepgramSession(
     handlers.onError(err);
     cleanup();
   };
+
+  // The OS can take the mic away mid-session (iOS camera, a phone call,
+  // another app). The track then ends, or goes muted and stays muted —
+  // either way the recorder would keep "recording" silence. End the
+  // session so the caller sees it stop instead of losing speech silently.
+  // A brief mute (route change, AirPods connecting) is tolerated.
+  for (const track of stream.getAudioTracks()) {
+    track.addEventListener('ended', cleanup);
+    track.addEventListener('mute', () => {
+      if (muteTimer) clearTimeout(muteTimer);
+      muteTimer = setTimeout(() => {
+        if (track.muted) cleanup();
+      }, MUTE_GRACE_MS);
+    });
+    track.addEventListener('unmute', () => {
+      if (muteTimer) clearTimeout(muteTimer);
+      muteTimer = null;
+    });
+  }
 
   recorder.start(250);
 
