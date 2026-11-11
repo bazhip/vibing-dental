@@ -266,13 +266,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
   const handleAiActivity = React.useCallback((actions: AiAction[]) => {
-    // Highlight the tooth from the last action in the batch. Dictation is
-    // scoped to the section on screen, so this stays put there; only on
-    // unscoped pages (Images, Owner report) does it jump to the section.
+    // Never navigate: the vet stays on the page they chose, and the voice
+    // panel says where anything else went ("→ Exam: …"). Just flash the
+    // tooth from the last change that belongs on this page.
     for (let i = actions.length - 1; i >= 0; i--) {
       const f = actionFocus(actions[i], activeSectionRef.current);
-      if (!f) continue;
-      goToSection(f.section);
+      if (!f || f.section !== activeSectionRef.current) continue;
       if (typeof f.triadan === 'number') {
         setAiHighlightTriadan(f.triadan);
         window.clearTimeout(aiHighlightTimer.current);
@@ -280,7 +279,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       }
       break;
     }
-  }, [goToSection]);
+  }, []);
 
   // First-run walkthrough — auto-shown once per browser for real accounts,
   // and relaunchable from Settings.

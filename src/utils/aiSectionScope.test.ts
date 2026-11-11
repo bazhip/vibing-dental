@@ -1,5 +1,5 @@
-import { actionAllowedInSection, isScopedSection } from './aiAutofill';
-import { actionFocus } from '../components/VoiceInputButton';
+import { actionAllowedInSection, actionAllowedAnywhere, isScopedSection } from './aiAutofill';
+import { actionFocus, withDestination } from '../components/VoiceInputButton';
 
 const field = { name: 'set_tooth_field', input: { triadan: 104, field: 'pocket', value: '4' } };
 const preComment = { name: 'add_comment', input: { diagram: 'pre', triadan: 104, text: 'Fractured' } };
@@ -35,5 +35,27 @@ describe('section scoping', () => {
     expect(actionFocus(preMissing)?.section).toBe('diagnosis');
     expect(actionFocus(preComment, 'imaging')?.section).toBe('diagnosis');
     expect(actionFocus(preComment, 'charting')?.section).toBe('charting');
+  });
+});
+
+describe('dictating from any page', () => {
+  it('every finding is allowed, except perio scores written as a diagram note', () => {
+    for (const a of [field, preComment, preMissing, postExtracted, exam]) expect(actionAllowedAnywhere(a)).toBe(true);
+    expect(actionAllowedAnywhere({ name: 'add_comment', input: { diagram: 'pre', triadan: 104, text: 'GI 2, calc 1' } })).toBe(false);
+  });
+
+  it('focus follows a finding that belongs on another page', () => {
+    expect(actionFocus(exam, 'charting')?.section).toBe('exam');
+    expect(actionFocus(postExtracted, 'charting')?.section).toBe('procedure');
+  });
+});
+
+describe('activity lines name where a change went', () => {
+  it('no prefix when the change belongs on the open page', () => {
+    expect(withDestination(field, 'charting')).not.toMatch(/^→/);
+  });
+  it('prefixes the destination page otherwise', () => {
+    expect(withDestination(exam, 'charting')).toMatch(/^→ Exam: /);
+    expect(withDestination(field, 'exam')).toMatch(/^→ Charting: /);
   });
 });

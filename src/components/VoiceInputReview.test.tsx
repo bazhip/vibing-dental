@@ -58,7 +58,7 @@ describe('review queue', () => {
     });
     const handlers = { addComment: vi.fn(), removeComment: vi.fn() };
     render(<VoiceInputButton context={context} handlers={handlers as never} activeSection="charting" sessionKey="a" />);
-    fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     act(() => FakeRecognition.last!.say('1098T'));
     await flush(3000); // utterance flush + extraction
 
@@ -92,7 +92,7 @@ describe('review queue', () => {
     extract.mockResolvedValueOnce({ actions: [clear], skipped: [], ran: true, flags: [] });
     const handlers = { addComment: vi.fn(), removeComment: vi.fn() };
     render(<VoiceInputButton context={context} handlers={handlers as never} activeSection="charting" sessionKey="a" />);
-    fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     act(() => FakeRecognition.last!.say('1098T'));
     await flush(3000);
     expect(screen.getByText(/Needs review \(1\)/)).toBeInTheDocument();

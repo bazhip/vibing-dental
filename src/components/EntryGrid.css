@@ -233,6 +233,7 @@
 }
 /* Recording indicator — a live red dot (drawn in CSS, not an emoji),
    pulsing to read as "REC". Only shown while recording. */
+.voice-input__mic { flex: none; }
 .voice-input__rec-dot {
   width: 0.55rem;
   height: 0.55rem;
@@ -395,10 +396,10 @@
   padding-left: 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--text-muted, #475569);
-  line-height: 1.4;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.45;
 }
 .ai-intro__list em { color: var(--text); font-style: italic; }
 .ai-intro__foot { margin: 0; font-size: 0.8rem; color: var(--text-muted, #64748b); }
@@ -3531,4 +3532,35 @@ button.save-status--manual:hover {
   gap: 0.5rem;
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+/* ---- Dictate panel: full screen on phones -------------------------- */
+/* The app no longer jumps to where each finding lands, so on a phone the
+   panel is the feedback: expanded, it takes the whole screen with room
+   for the transcript and every change. Collapsed (▾) it drops back to a
+   one-line bar over the chart. Below dialogs (1100+), above the topbar. */
+@media (max-width: 700px) {
+  .ai-sidebar:not(.ai-sidebar--collapsed) {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    z-index: 1000;
+  }
+  .ai-sidebar:not(.ai-sidebar--collapsed) .ai-sidebar__head { padding: 0.6rem 0.75rem 0.6rem 0.5rem; }
+  .ai-sidebar:not(.ai-sidebar--collapsed) .ai-sidebar__transcript { max-height: 32dvh; font-size: 1.05rem; line-height: 1.5; }
+  .ai-sidebar:not(.ai-sidebar--collapsed) .ai-sidebar__activity { flex: 1 1 0; min-height: 6rem; }
+  .ai-sidebar:not(.ai-sidebar--collapsed) .ai-sidebar__row { font-size: 1rem; }
+  .ai-sidebar:not(.ai-sidebar--collapsed) .ai-review__list { max-height: 36dvh; }
+  /* Full screen hides the chart, so nothing needs to scroll clear of it. */
+  body.ai-panel-open .entry-grid-container { padding-bottom: 7.5rem; }
+  body.ai-panel-open { overflow: hidden; }
 }

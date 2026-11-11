@@ -719,6 +719,13 @@ export function sectionLabel(section: string): string {
   return SECTION_SCOPES[section]?.label ?? section;
 }
 
+/** What dictation may do on any page: everything except a diagram note
+ *  holding only perio scores (those belong in the grid, which mirrors
+ *  them onto the diagram itself). */
+export function actionAllowedAnywhere(a: AiAction): boolean {
+  return !(a.name === 'add_comment' && isPerioOnlyText(String(a.input.text ?? '')));
+}
+
 export function actionAllowedInSection(a: AiAction, section: string | undefined): boolean {
   const scope = section ? SECTION_SCOPES[section] : undefined;
   return scope ? scope.allows(a) : true;
@@ -738,7 +745,8 @@ export interface ExtractInput {
    *  straddle chunks. Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
-  /** Id of the chart section on screen; output is limited to it. */
+  /** Id of the chart section on screen — a tie-break hint only; findings
+   *  go wherever they belong. */
   section?: string;
 }
 
@@ -790,8 +798,8 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
       : '') +
     transcriptBlock('New transcript chunk to extract from', delta) +
     (scope
-      ? `ACTIVE SECTION: the vet is on the ${scope.label} page. Fill THIS page. Allowed: ${scope.guidance} ` +
-        `When a finding could go on this page or elsewhere, put it on this page. Findings that only fit another page get no tool call.\n\n`
+      ? `OPEN PAGE: the vet has the ${scope.label} page on screen. That doesn't limit anything — chart every finding where it belongs, ` +
+        `whichever page it's on. Only when a finding could equally go in two places (e.g. a note for the Diagnosis or the Procedure diagram) prefer this page.\n\n`
       : '') +
     `Emit tool calls only for new information from this chunk. If nothing in this chunk warrants a chart change, return no tool calls.`;
 
@@ -950,23 +958,19 @@ export async function extractChartActions(
   const requestBody = buildChunkRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   const content = await sendAutofill(requestBody);
-  return { ...parseAutofillContent(content, (a) => actionAllowedInSection(a, input.section)), ran: true };
+  return { ...parseAutofillContent(content, actionAllowedAnywhere), ran: true };
 }
 
 /**
  * The end-of-dictation check (see buildReviewRequest). Every change it
  * makes is flagged for review, since it lands after the vet stopped
- * watching the live feed. `sections` are the pages dictated on this
- * session; actions are limited to what those pages allow.
+ * watching the live feed.
  */
-export async function reviewFullTranscript(
-  input: ReviewInput & { sections: Array<string | undefined> }
-): Promise<ExtractResult> {
+export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractResult> {
   const requestBody = buildReviewRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   const content = await sendAutofill(requestBody);
-  const sections = input.sections.length ? input.sections : [undefined];
-  const result = parseAutofillContent(content, (a) => sections.some((s) => actionAllowedInSection(a, s)));
+  const result = parseAutofillContent(content, actionAllowedAnywhere);
   return { ...result, flags: markFinalCheck(result), ran: true };
 }
 
