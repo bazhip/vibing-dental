@@ -144,8 +144,15 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               className={`diagram-view__tool ${tool === 'mark' ? 'diagram-view__tool--active' : ''}`}
               onClick={() => setTool('mark')}
               aria-pressed={tool === 'mark'}
+              title={
+                markMode === 'missing-only'
+                  ? 'Tap a tooth to mark it missing (tap again to clear)'
+                  : markMode === 'extracted-only'
+                    ? 'Tap a tooth to mark it extracted (tap again to clear)'
+                    : 'Tap a tooth to mark it missing or extracted'
+              }
             >
-              Mark
+              {markMode === 'missing-only' ? 'Mark missing' : markMode === 'extracted-only' ? 'Mark extracted' : 'Mark'}
             </button>
             <button
               type="button"
