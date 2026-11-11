@@ -5,8 +5,11 @@
 // email (Supabase's confirm-signup email re-sent) — and sends at most
 // two polite reminders:
 //   1st: 24h+ after the invite   ·   2nd (final): 5 days+ after the invite
-// then stops — the invite stays "pending" in Practice settings, where the
-// owner can resend or remove it.
+// The final TEAM-INVITE reminder says the invite expires in 14 days; once
+// that date passes the never-activated account is deleted (it owns
+// nothing — the owner can always invite again). Self-signups are only
+// reminded, never deleted. Accounts whose final reminder predates the
+// expiry warning carry no invite_expires_at and are left alone.
 //
 // Each reminder carries a fresh set-password link (the original invite
 // link has long expired). Progress is kept in the user's app_metadata
@@ -27,6 +30,10 @@ const SCHEDULE_DAYS = [1, 5];
 const MAX_AGE_DAYS = 21;
 /** Hard cap on emails per run, whatever happens. */
 const MAX_PER_RUN = 25;
+/** Days after the final invite reminder before the pending account is deleted. */
+const EXPIRE_DAYS = 14;
+/** Hard cap on expired-invite deletions per run. */
+const MAX_DELETES_PER_RUN = 25;
 
 /** j***@gmail.com — enough to recognise an account in a dry run. */
 const mask = (email: string) => {
@@ -45,6 +52,8 @@ Deno.serve(async (req: Request) => {
   let dryRun = false;
   try { dryRun = (await req.json())?.dryRun === true; } catch { /* no body */ }
   const preview: { email: string; kind: 'invite' | 'signup'; reminder: number }[] = [];
+  const deletePreview: string[] = [];
+  let deleted = 0;
 
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
@@ -69,7 +78,30 @@ Deno.serve(async (req: Request) => {
       const startedAt = u.invited_at ?? u.created_at;
       const meta = (u.app_metadata ?? {}) as Record<string, unknown>;
       const count = typeof meta.invite_reminders === 'number' ? meta.invite_reminders : 0;
-      if (count >= SCHEDULE_DAYS.length) { note('all_reminders_sent'); continue; }
+      if (count >= SCHEDULE_DAYS.length) {
+        // Expire invites whose final reminder warned about it.
+        const expiresAt = typeof meta.invite_expires_at === 'string' ? Date.parse(meta.invite_expires_at) : NaN;
+        if (Number.isNaN(expiresAt)) { note('all_reminders_sent'); continue; }
+        if (now < expiresAt) { note('invite_not_expired_yet'); continue; }
+        // Belt and braces: only a pending account that never got in and
+        // owns nothing. (Unconfirmed email was checked above.)
+        if (u.last_sign_in_at) { note('expired_but_signed_in'); continue; }
+        if (meta.role === 'admin') { note('expired_admin_skipped'); continue; }
+        const { count: owned } = await admin
+          .from('practices').select('id', { count: 'exact', head: true }).eq('owner', u.id);
+        if ((owned ?? 0) > 0) { note('expired_owns_practice'); continue; }
+        const { count: charts } = await admin
+          .from('charts').select('id', { count: 'exact', head: true }).eq('created_by', u.id);
+        if ((charts ?? 0) > 0) { note('expired_has_charts'); continue; }
+        if (deleted + deletePreview.length >= MAX_DELETES_PER_RUN) { note('delete_cap_reached'); continue; }
+        if (dryRun) { deletePreview.push(mask(u.email)); continue; }
+        // Membership rows cascade with the user.
+        const { error: delErr } = await admin.auth.admin.deleteUser(u.id);
+        if (delErr) { note('expire_delete_failed'); continue; }
+        note('expired_invite_deleted');
+        deleted++;
+        continue;
+      }
       if (count === 0 && now - Date.parse(startedAt) > MAX_AGE_DAYS * DAY) { note('too_old_to_start'); continue; }
       if (sent.length + preview.length >= MAX_PER_RUN) { note('run_cap_reached'); continue; }
       const dueAt = Date.parse(startedAt) + SCHEDULE_DAYS[count] * DAY;
@@ -86,11 +118,21 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', u.id);
       const invitedTo = (mems ?? []).find((m) => (m.practices as { owner?: string } | null)?.owner !== u.id);
 
+      // The final reminder to a team invitee starts the expiry clock (and
+      // the email says so); self-signups never expire.
+      const final = count === SCHEDULE_DAYS.length - 1;
+      const expiresAt = final && invitedTo ? new Date(now + EXPIRE_DAYS * DAY) : null;
+
       // Count the reminder BEFORE sending: if anything fails after this,
       // the person gets fewer emails, never a repeat.
       const markSent = async () => {
         const { error: metaErr } = await admin.auth.admin.updateUserById(u.id, {
-          app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
+          app_metadata: {
+            ...meta,
+            invite_reminders: count + 1,
+            invite_reminded_at: new Date().toISOString(),
+            ...(expiresAt ? { invite_expires_at: expiresAt.toISOString() } : {}),
+          },
         });
         return !metaErr;
       };
@@ -121,8 +163,10 @@ Deno.serve(async (req: Request) => {
       });
       if (linkErr || !link?.properties?.action_link) { note('link_failed'); skipped.push(u.email); continue; }
 
-      const final = count === SCHEDULE_DAYS.length - 1;
       const who = practice || 'your practice';
+      const expiryDate = expiresAt
+        ? expiresAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+        : '';
       const subject = final
         ? `Last reminder: join ${who} on ToothOps`
         : `Reminder: ${who} invited you to ToothOps`;
@@ -135,7 +179,7 @@ Deno.serve(async (req: Request) => {
         ],
         button: { label: 'Set your password & join', url: link.properties.action_link },
         footnote: final
-          ? `This is the last reminder we’ll send. If the link expires, ask ${who} to resend your invite.`
+          ? `This is the last reminder we’ll send. If you haven’t joined by ${expiryDate}, this invite expires and the pending account is removed — ${who} can invite you again anytime.`
           : 'Not expecting this, or don’t want to join? Just ignore this email — we’ll send at most one more reminder.',
       });
       if (!ok) { note('email_failed'); skipped.push(u.email); continue; }
@@ -145,6 +189,8 @@ Deno.serve(async (req: Request) => {
     if (users.length < 1000) break;
   }
 
-  if (dryRun) return json({ ok: true, dryRun: true, wouldSend: preview.length, preview, why });
-  return json({ ok: true, sent: sent.length, skipped: skipped.length, why });
+  if (dryRun) {
+    return json({ ok: true, dryRun: true, wouldSend: preview.length, preview, wouldDelete: deletePreview.length, deletePreview, why });
+  }
+  return json({ ok: true, sent: sent.length, skipped: skipped.length, deleted, why });
 });
