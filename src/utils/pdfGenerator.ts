@@ -158,11 +158,10 @@ export async function buildDentalChartPDFBytes(
   // Doctor line: the signed-in profile wins; otherwise fall back to the
   // template behavior (VCA shows the typed doctor field, SoCal its house
   // line).
-  const doctorLine =
-    branding.doctorName?.trim() ||
-    (logo === 'vca'
-      ? (patientInfo.doctor || 'Dr. Sam Waggoner, DVM, DAVDC')
-      : 'Sam Waggoner, DVM, DAVDC');
+  // Practice profile first, then the doctor typed on this chart. Never a
+  // hard-coded name — that printed one specific doctor on every
+  // practice's PDFs when no profile name was set.
+  const doctorLine = branding.doctorName?.trim() || patientInfo.doctor?.trim() || '';
   const techLine = patientInfo.tech;
 
   // Codes are needed before the diagrams draw: each page's diagram

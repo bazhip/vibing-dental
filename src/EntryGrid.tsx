@@ -444,14 +444,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // flight or failing — the chart would exist only in this machine's
   // localStorage without the user ever deciding that.
   React.useEffect(() => {
-    if (cloud.status !== 'saving' && cloud.status !== 'error') return;
+    // Warn on close/refresh while anything isn't in the cloud yet: a save
+    // in flight, a failed save, or plain unsaved edits (they'd survive on
+    // this device, but not on another computer or after signing out).
+    if (cloud.status !== 'saving' && cloud.status !== 'error' && !cloud.dirty) return;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       e.returnValue = '';
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
-  }, [cloud.status]);
+  }, [cloud.status, cloud.dirty]);
 
   // Refs into the diagram views — we need their live SVG elements at
   // preview time so we can rasterize them with the active style's
@@ -709,7 +712,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <div className="diagram-with-codes__diagram">
             {lock(
             <DiagramView
+              // Remount per chart: undo history must not carry another
+              // patient's marks into this one.
+              key={`pre-${chart.chartSession}`}
               ref={preDiagramRef}
+              readOnly={readOnly}
               title="Diagnosis Diagram"
               species={chart.species}
               toothMarks={chart.preToothMarks}
@@ -740,7 +747,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <div className="diagram-with-codes__diagram">
             {lock(
             <DiagramView
+              key={`post-${chart.chartSession}`}
               ref={postDiagramRef}
+              readOnly={readOnly}
               title="Procedure Diagram"
               species={chart.species}
               toothMarks={chart.effectivePostMarks}

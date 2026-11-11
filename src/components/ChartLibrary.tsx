@@ -1,4 +1,5 @@
 import React from 'react';
+import { localDateISO } from '../utils/localDate';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -58,7 +59,7 @@ type SortDir = 'asc' | 'desc';
 const PAGE_SIZE = 200;
 
 function todayIso(): string {
-  return new Date().toISOString().split('T')[0];
+  return localDateISO();
 }
 
 /** Group charts by patient: patient number if present, else name. */

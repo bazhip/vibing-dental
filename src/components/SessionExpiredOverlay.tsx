@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { confirmDialog } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import './Login.css';
@@ -44,7 +45,17 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
     });
     setBusy(false);
     if (authError) {
-      setError('Incorrect email or password');
+      const code = (authError as { code?: string }).code ?? '';
+      const msg = authError.message ?? '';
+      setError(
+        code === 'invalid_credentials' || /invalid login credentials/i.test(msg)
+          ? 'Incorrect email or password.'
+          : authError.status === 429 || /rate limit|too many/i.test(msg)
+            ? 'Too many attempts. Wait a minute and try again.'
+            : /fetch|network/i.test(msg)
+              ? 'Can’t reach ToothOps — check your connection and try again.'
+              : msg || 'Couldn’t sign in. Please try again.'
+      );
       setPassword('');
       return;
     }
@@ -93,7 +104,15 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
             <button
               type="button"
               className="login-switch"
-              onClick={onSignOut}
+              onClick={async () => {
+                if (await confirmDialog({
+                  title: 'Sign out and remove this chart?',
+                  message: 'The chart kept on this device is cleared. Anything not yet saved to the cloud is lost — sign in instead to keep it.',
+                  confirmLabel: 'Sign out and remove',
+                  cancelLabel: 'Keep chart',
+                  danger: true,
+                })) onSignOut();
+              }}
               disabled={busy}
             >
               Sign out instead — leave this chart

@@ -1,4 +1,11 @@
 import React, { useRef } from 'react';
+import { promptDialog, confirmDialog, toast } from './ui/dialogs';
+
+/** Valid scales for numeric grid columns (mirrors the AI's checks). */
+const COLUMN_RANGES: Record<string, [number, number]> = {
+  mobility: [0, 3], furcation: [0, 3], calculus: [0, 3], gingivitis: [0, 3], pdstate: [0, 4],
+  pocket: [0, 15], recession: [0, 15],
+};
 import {
   DataGrid,
   Column,
@@ -228,18 +235,53 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   toothDataRef.current = toothData;
   const toothMarksRef = useRef(toothMarks);
   toothMarksRef.current = toothMarks;
-  const setAllForColumn = React.useCallback((key: keyof ToothData, name: string) => {
-    const input = window.prompt(
-      `Set ${name} for every tooth (teeth marked missing are skipped).\nLeave empty and press OK to clear the column:`
-    );
+  const setAllForColumn = React.useCallback(async (key: keyof ToothData, name: string) => {
+    const range = COLUMN_RANGES[key as string];
+    const input = await promptDialog({
+      title: `Set ${name} for every tooth`,
+      message: `Applies to every tooth not marked missing.${range ? ` Use a number from ${range[0]} to ${range[1]}.` : ''} Leave it empty to clear the column.`,
+      label: name,
+      placeholder: range ? `${range[0]}–${range[1]}` : '',
+      confirmLabel: 'Apply to all',
+      validate: (v) => {
+        const t = v.trim();
+        if (!t) return null; // empty = clear (confirmed next)
+        if (range && !t.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= range[0] && Number(n) <= range[1])) {
+          return `${name} must be a number from ${range[0]} to ${range[1]}.`;
+        }
+        return null;
+      },
+    });
     if (input === null) return;
-    const value = input.trim();
+    if (!input.trim()) { await clearColumn(key, name); return; }
+    applyColumn(key, name, input.trim());
+  }, // eslint-disable-next-line react-hooks/exhaustive-deps
+  [onToothDataChange]);
+
+  /** Write one value to a column for every present tooth, with Undo. */
+  const applyColumn = (key: keyof ToothData, name: string, value: string) => {
+    const before = toothDataRef.current;
     onToothDataChange(
-      toothDataRef.current.map((t) =>
-        toothMarksRef.current[t.triadan] === 'missing' ? t : { ...t, [key]: value }
-      )
+      before.map((t) => (toothMarksRef.current[t.triadan] === 'missing' ? t : { ...t, [key]: value }))
     );
-  }, [onToothDataChange]);
+    toast(value ? `${name} set to ${value} on every tooth.` : `${name} cleared on every tooth.`, {
+      kind: 'success',
+      action: { label: 'Undo', onClick: () => onToothDataChange(before) },
+    });
+  };
+
+  const clearColumn = React.useCallback(async (key: keyof ToothData, name: string) => {
+    const filled = toothDataRef.current.filter((t) => String(t[key] ?? '').trim()).length;
+    if (filled === 0) return;
+    if (!(await confirmDialog({
+      title: `Clear ${name} for every tooth?`,
+      message: `Removes ${filled} ${filled === 1 ? 'value' : 'values'} from the ${name} column.`,
+      confirmLabel: 'Clear column',
+      danger: true,
+    }))) return;
+    applyColumn(key, name, '');
+  }, // eslint-disable-next-line react-hooks/exhaustive-deps
+  [onToothDataChange]);
 
   // Gloved fingers on tablets need taller touch targets than a mouse.
   const coarsePointer = React.useMemo(

@@ -1,4 +1,5 @@
 import React from 'react';
+import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
 import { confirmDialog } from '../components/ui/dialogs';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
@@ -138,7 +139,7 @@ function escapeLike(s: string): string {
 }
 
 function todayIso(): string {
-  return new Date().toISOString().split('T')[0];
+  return localDateISO();
 }
 
 /** Cheap stable hash (djb2) — identifies the last-cloud-saved snapshot so

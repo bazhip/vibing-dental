@@ -23,6 +23,8 @@ interface DiagramViewProps {
   defaultTool?: DiagramTool;
   /** Tooth to flash (e.g. the one AI autofill just edited). */
   highlightTriadan?: number | null;
+  /** Locked (saved chart being viewed): keyboard undo is off. */
+  readOnly?: boolean;
 }
 
 export interface DiagramViewHandle {
@@ -60,7 +62,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   markMode,
   defaultTool = 'mark',
   highlightTriadan,
+  readOnly = false,
 }, ref) => {
+  const rootRef = React.useRef<HTMLDivElement>(null);
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
@@ -96,7 +100,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
       onMarks: onToothMarksChange,
       onComments: onCommentsChange,
       onStrokes: onStrokesChange,
-    }
+    },
+    { scopeRef: rootRef, disabled: readOnly }
   );
 
   React.useImperativeHandle(ref, () => ({
@@ -120,7 +125,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const clearStrokes = () => onStrokesChange([]);
 
   return (
-    <div className="diagram-section">
+    <div className="diagram-section" ref={rootRef}>
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">{title}</h2>
       </div>

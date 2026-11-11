@@ -95,7 +95,11 @@ export function useDiagramHistory(
   marks: ToothMarks,
   comments: DiagramComment[],
   strokes: DiagramStroke[],
-  setters: DiagramSetters
+  setters: DiagramSetters,
+  /** `scopeRef`: the diagram's root — ⌘Z only acts while it's visible and
+   *  focus isn't somewhere else (another section, the grid). `disabled`:
+   *  no keyboard undo (read-only chart). */
+  opts: { scopeRef?: React.RefObject<HTMLElement | null>; disabled?: boolean } = {}
 ): DiagramHistoryControls {
   const [past, setPast] = React.useState<Snapshot[]>([]);
   const [future, setFuture] = React.useState<Snapshot[]>([]);
@@ -169,18 +173,28 @@ export function useDiagramHistory(
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (mostRecentDiagramId !== diagramId) return;
+      if (opts.disabled) return;
       if (!(e.metaKey || e.ctrlKey)) return;
-      if (e.key.toLowerCase() !== 'z') return;
+      const key = e.key.toLowerCase();
+      // ⌘Z / Ctrl+Z undo; ⌘⇧Z / Ctrl+Shift+Z / Ctrl+Y redo.
+      if (key !== 'z' && !(key === 'y' && e.ctrlKey)) return;
       // Don't intercept the browser's text-edit undo inside form fields.
       const ae = document.activeElement as HTMLElement | null;
-      if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+      if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+      // Only when this diagram is on screen and nothing outside it has
+      // focus — ⌘Z on the Charting grid must not revert a hidden diagram.
+      const scope = opts.scopeRef?.current;
+      if (scope) {
+        if (scope.getClientRects().length === 0) return;
+        if (ae && ae !== document.body && !scope.contains(ae)) return;
+      }
       e.preventDefault();
-      if (e.shiftKey) redo();
+      if (e.shiftKey || key === 'y') redo();
       else undo();
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [diagramId, undo, redo]);
+  }, [diagramId, undo, redo, opts.disabled, opts.scopeRef]);
 
   return {
     undo,

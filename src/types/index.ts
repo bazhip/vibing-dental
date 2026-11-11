@@ -128,7 +128,10 @@ export interface PatientInfo {
   exam: ExamFindings;
 }
 
-export const DEFAULT_VCA_DOCTOR = 'Dr. Sam Waggoner, DVM, DAVDC';
+/** New charts start with no doctor; the practice profile's doctor name
+ *  brands PDFs. (Was a specific doctor's name — wrong for every other
+ *  practice.) */
+export const DEFAULT_VCA_DOCTOR = '';
 
 /**
  * Species / dentition type for dental charts. The `-deciduous` variants are

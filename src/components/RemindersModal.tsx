@@ -1,4 +1,5 @@
 import React from 'react';
+import { confirmDialog, toast } from './ui/dialogs';
 import { useTeam } from '../hooks/useTeam';
 import { useReminderTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -36,14 +37,31 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
     }
   }, [reminder.loaded, reminder.template]);
 
+  const dirty =
+    reminder.loaded &&
+    (subject !== reminder.template.subject || body !== reminder.template.body ||
+      auto !== reminder.template.auto || lead !== reminder.template.leadDays);
+
+  // Closing with unsaved template edits asks first (Done, Escape, backdrop).
+  const requestClose = React.useCallback(async () => {
+    if (dirty && !(await confirmDialog({
+      title: 'Discard reminder changes?',
+      message: 'Your edits to the reminder settings haven’t been saved.',
+      confirmLabel: 'Discard',
+      cancelLabel: 'Keep editing',
+      danger: true,
+    }))) return;
+    onClose();
+  }, [dirty, onClose]);
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') void requestClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, requestClose]);
 
   if (!open) return null;
 
@@ -55,7 +73,8 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
     setNote('');
     try {
       await reminder.save({ subject, body, auto, leadDays: lead });
-      setNote('Reminder settings saved.');
+      toast('Reminder settings saved.', { kind: 'success' });
+      onClose();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not save the reminder settings.');
     } finally {
@@ -64,7 +83,14 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
   };
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Recheck reminders">
+    <div
+      className="ai-settings-overlay"
+      onMouseDown={(e) => { (e.currentTarget as HTMLElement).dataset.downOnBackdrop = String(e.target === e.currentTarget); }}
+      onClick={(e) => { if (e.target === e.currentTarget && (e.currentTarget as HTMLElement).dataset.downOnBackdrop === 'true') void requestClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Recheck reminders"
+    >
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>Recheck reminders</h2>
@@ -116,11 +142,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
                   Message
                   <textarea className="patient-form__textarea reminder__body" value={body} onChange={(e) => setBody(e.target.value)} />
                 </label>
-                <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-                  <button type="button" className="diagram-view__action" disabled={busy} onClick={save}>
-                    Save reminder settings
-                  </button>
-                </div>
+
               </>
             )}
 
@@ -129,9 +151,20 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
           </section>
         </div>
         <footer className="ai-settings-footer">
-          <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose} disabled={busy}>
-            Done
-          </button>
+          {isOwner && dirty ? (
+            <>
+              <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={busy}>
+                Cancel
+              </button>
+              <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={save} disabled={busy}>
+                {busy ? 'Saving…' : 'Save'}
+              </button>
+            </>
+          ) : (
+            <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose} disabled={busy}>
+              Done
+            </button>
+          )}
         </footer>
       </div>
     </div>

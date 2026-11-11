@@ -1,4 +1,5 @@
 import React from 'react';
+import { localDateISO } from '../utils/localDate';
 import { toast, confirmDialog } from '../components/ui/dialogs';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import {
@@ -209,7 +210,7 @@ export function useChartState(): UseChartStateReturn {
       ownerEmail: '',
       doctor: DEFAULT_VCA_DOCTOR,
       tech: '',
-      date: new Date().toISOString().split('T')[0],
+      date: localDateISO(),
       complaint: '',
       treatmentReport: '',
       recallDate: '',
@@ -418,7 +419,7 @@ export function useChartState(): UseChartStateReturn {
     ownerEmail: '',
     doctor: DEFAULT_VCA_DOCTOR,
     tech: '',
-    date: new Date().toISOString().split('T')[0],
+    date: localDateISO(),
     complaint: '',
     treatmentReport: '',
     recallDate: '',

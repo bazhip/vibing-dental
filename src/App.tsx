@@ -6,6 +6,7 @@ import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
 import { clearChartStorage } from './hooks/useChartState';
 import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
+import { confirmDialog } from './components/ui/dialogs';
 import { JoinPracticeModal } from './components/JoinPracticeModal';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { useHashRoute } from './hooks/useHashRoute';
@@ -85,12 +86,21 @@ const App: React.FC = () => {
     notifyTrialStarted();
   };
 
-  const endTrial = (nextAuth: 'signup' | 'signin' | null) => {
+  const endTrial = async (nextAuth: 'signup' | 'signin' | null) => {
     // Signing IN to an existing account is usually a different person on
     // a shared clinic machine — don't let the trial's patient data leak
     // into their session. Signing UP keeps the trial chart so the new
-    // account can save the work that convinced them.
-    if (nextAuth === 'signin') clearChartStorage();
+    // account can save the work that convinced them. Say so first.
+    if (nextAuth === 'signin') {
+      const ok = await confirmDialog({
+        title: 'Sign in and clear the trial chart?',
+        message: 'Signing in to an existing account clears the trial chart on this device. To keep it, download its PDF first — or create a free account instead, which keeps it.',
+        confirmLabel: 'Clear and sign in',
+        cancelLabel: 'Keep charting',
+      });
+      if (!ok) return;
+      clearChartStorage();
+    }
     removeKey(TRIAL_KEY, 1);
     setTrialMode(false);
     setLandingAuth(nextAuth);

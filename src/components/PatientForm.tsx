@@ -1,4 +1,5 @@
 import React from 'react';
+import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
 
@@ -157,7 +158,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
                 if (!days) return;
                 const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
                 base.setDate(base.getDate() + days);
-                onPatientInfoChange('recallDate', base.toISOString().split('T')[0]);
+                onPatientInfoChange('recallDate', localDateISO(base));
               }}
             >
               <option value="">+ interval</option>
