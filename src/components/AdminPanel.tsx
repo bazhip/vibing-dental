@@ -1,4 +1,5 @@
 import React from 'react';
+import { AI_MODEL_CHOICES } from '../constants/aiModels';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 
@@ -996,15 +997,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     className="patient-form__input"
                     value={aiModel}
                     onChange={(e) => handleSetModel(e.target.value)}
-                    disabled={busy || aiModels.length === 0}
+                    disabled={busy || !aiConfigured}
                   >
-                    {aiModels.length === 0 && <option value={aiModel}>{aiModel || '—'}</option>}
-                    {aiModels.map((m) => (
-                      <option key={m.id} value={m.id}>{m.displayName}</option>
-                    ))}
+                    {aiModel && !AI_MODEL_CHOICES.some((c) => c.id === aiModel) && (
+                      <option value={aiModel}>{aiModel} (current — not tuned)</option>
+                    )}
+                    {AI_MODEL_CHOICES.map((c) => {
+                      // Grey out models this API key can't use (when the
+                      // live list loaded at all).
+                      const unavailable = aiModels.length > 0 && !aiModels.some((m) => m.id === c.id);
+                      return (
+                        <option key={c.id} value={c.id} disabled={unavailable}>
+                          {c.label} — {c.speed}, {c.costPerHour}{unavailable ? ' (not on this account)' : ''}
+                        </option>
+                      );
+                    })}
                   </select>
                 </label>
-                <p className="patient-form__hint">Applies to every practice. Faster models (Haiku/Sonnet) cost less per call.</p>
+                <p className="patient-form__hint">
+                  {AI_MODEL_CHOICES.find((c) => c.id === aiModel)?.note ?? 'Pick a model above.'}{' '}
+                  Applies to every practice. Costs are rough estimates for an hour of continuous dictation.
+                </p>
               </div>
 
               {/* Credit / balance. */}

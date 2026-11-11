@@ -491,28 +491,36 @@ Deno.serve(async (req: Request) => {
             }
           } catch { /* leave models empty */ }
         }
-        return json({ model: cfg?.ai_model ?? 'claude-opus-4-8', models, configured: !!key });
+        return json({ model: cfg?.ai_model ?? 'claude-sonnet-5-5', models, configured: !!key });
       }
 
       case 'set_ai_model': {
         const model = typeof body.model === 'string' ? body.model.trim() : '';
         if (!model) return json({ error: 'missing model' }, 400);
+        // Only models ai-autofill has tuned request settings for
+        // (MODEL_SETTINGS there; AI_MODEL_CHOICES in the app).
+        const ALLOWED = ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-opus-4-8'];
+        if (!ALLOWED.includes(model)) return json({ error: `unsupported model: ${model}` }, 400);
         const { error } = await admin.from('app_config').update({ ai_model: model, updated_at: new Date().toISOString() }).eq('id', 1);
         if (error) throw error;
         return json({ ok: true });
       }
 
       case 'ai_usage': {
-        // Per-user token totals + a rough cost estimate. Rates are $/million
-        // tokens (input/output); cache reads billed at ~10% of input.
-        const RATES: Record<string, { in: number; out: number }> = {
-          'claude-opus-4-8': { in: 15, out: 75 },
-          'claude-sonnet-4-6': { in: 3, out: 15 },
-          'claude-haiku-4-5': { in: 0.8, out: 4 },
+        // Per-user token totals + a rough cost estimate. Rates are list
+        // $/million tokens. Cache writes are logged as input (billed ×1.25,
+        // so this slightly under-counts them).
+        const RATES: Record<string, { in: number; out: number; cacheRead: number }> = {
+          'claude-opus-5-5':   { in: 4,    out: 20,   cacheRead: 0.20 },
+          'claude-sonnet-5-5': { in: 2,    out: 10,   cacheRead: 0.10 },
+          'claude-haiku-5-5':  { in: 0.10, out: 0.50, cacheRead: 0.01 },
+          'claude-opus-4':     { in: 5,    out: 25,   cacheRead: 0.50 },
+          'claude-sonnet-4':   { in: 3,    out: 15,   cacheRead: 0.30 },
+          'claude-haiku-4':    { in: 1,    out: 5,    cacheRead: 0.10 },
         };
         const rate = (model: string) => {
           const k = Object.keys(RATES).find((r) => model.startsWith(r));
-          return k ? RATES[k] : { in: 5, out: 20 };
+          return k ? RATES[k] : { in: 5, out: 25, cacheRead: 0.5 };
         };
         const { data: rows } = await admin
           .from('ai_usage')
@@ -526,7 +534,7 @@ Deno.serve(async (req: Request) => {
           const cost =
             (r.input_tokens / 1e6) * rt.in +
             (r.output_tokens / 1e6) * rt.out +
-            (r.cache_read_tokens / 1e6) * rt.in * 0.1;
+            (r.cache_read_tokens / 1e6) * rt.cacheRead;
           cur.input += r.input_tokens;
           cur.output += r.output_tokens;
           cur.cacheRead += r.cache_read_tokens;
