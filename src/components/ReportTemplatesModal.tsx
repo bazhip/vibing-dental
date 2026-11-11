@@ -1,4 +1,5 @@
 import React from 'react';
+import { confirmDialog } from './ui/dialogs';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
 interface ReportTemplatesModalProps {
@@ -90,7 +91,12 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
 
   const handleDelete = async () => {
     if (!selectedId) return;
-    if (!window.confirm(`Delete the template "${name.trim() || 'Untitled'}"? This cannot be undone.`)) return;
+    if (!(await confirmDialog({
+      title: `Delete “${name.trim() || 'Untitled'}”?`,
+      message: 'This template is removed for everyone in your practice. This can’t be undone.',
+      confirmLabel: 'Delete template',
+      danger: true,
+    }))) return;
     setBusy(true);
     setError('');
     try {

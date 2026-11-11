@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChartSnapshot } from '../types';
+import { confirmDialog } from '../components/ui/dialogs';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
@@ -73,8 +74,11 @@ export interface UseCloudSyncReturn {
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
   listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
+  /** Ask before replacing a chart that has unsaved changes; true = go ahead. */
+  confirmDiscardIfDirty: (verb: string) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
-  openChart: (id: string, opts?: { ifClean?: boolean }) => Promise<void>;
+  /** Resolves true when the chart was opened, false when the user cancelled. */
+  openChart: (id: string, opts?: { ifClean?: boolean }) => Promise<boolean>;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
   deleteChart: (id: string) => Promise<void>;
@@ -282,13 +286,15 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [on, chart.openedExisting, dirty, serialized]);
 
-  // Guard leaving a chart with unsaved changes (no autosave to catch it).
-  const confirmDiscardIfDirty = (verb: string): boolean => {
+  // Guard leaving a chart with unsaved changes.
+  const confirmDiscardIfDirty = async (verb: string): Promise<boolean> => {
     if (!dirtyRef.current) return true;
-    return window.confirm(
-      `This chart has unsaved changes. ${verb} anyway? ` +
-      'Save first (top of the screen) if you want them in the cloud.'
-    );
+    return confirmDialog({
+      title: 'Discard unsaved changes?',
+      message: `This chart has changes that aren’t saved to the cloud yet. ${verb} anyway? To keep them, cancel and press Save first.`,
+      confirmLabel: `Discard & ${verb.toLowerCase()}`,
+      danger: true,
+    });
   };
 
   const listCharts = React.useCallback(async (q: ChartListQuery = {}): Promise<ChartListPage> => {
@@ -353,13 +359,13 @@ export function useCloudSync(
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
-  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean } = {}): Promise<void> => {
-    if (!supabase) return;
+  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean } = {}): Promise<boolean> => {
+    if (!supabase) return false;
     // Deep links on page load never prompt: a working chart with edits
     // simply stays put (the user just reloaded their own work).
     if (opts.ifClean) {
-      if (dirtyRef.current) return;
-    } else if (!confirmDiscardIfDirty('Open the other chart')) return;
+      if (dirtyRef.current) return false;
+    } else if (!(await confirmDiscardIfDirty('Open the other chart'))) return false;
     const { data, error } = await supabase
       .from('charts')
       .select('id, data')
@@ -370,6 +376,7 @@ export function useCloudSync(
     applyRef.current(data.data as ChartSnapshot, data.id);
     setStatus('idle');
     setSaveError('');
+    return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -403,7 +410,7 @@ export function useCloudSync(
 
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
-    if (!confirmDiscardIfDirty('Sign out')) return;
+    if (!(await confirmDiscardIfDirty('Sign out'))) return;
     // Deliberate sign-out — App must NOT treat the coming SIGNED_OUT
     // event as a session expiry (which keeps the chart mounted).
     markExplicitSignOut();
@@ -428,6 +435,7 @@ export function useCloudSync(
     status,
     saveError,
     dirty,
+    confirmDiscardIfDirty,
     saveNow,
     listCharts,
     listPatientVisits,

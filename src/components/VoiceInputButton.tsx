@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { confirmDialog } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import {
@@ -552,8 +553,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setPanelOpen(false);
   };
 
-  const startOver = () => {
-    if (hasSession && !window.confirm('Start a new dictation? The transcript and activity log are cleared — entries already in the chart stay.')) return;
+  const startOver = async () => {
+    if (hasSession && !(await confirmDialog({
+      title: 'Start a new dictation?',
+      message: 'The transcript, activity log and review list are cleared. Everything already entered in the chart stays.',
+      confirmLabel: 'Start over',
+    }))) return;
     if (voice.recording) voice.stop();
     voice.clear();
     setActivity([]);

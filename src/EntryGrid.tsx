@@ -20,6 +20,7 @@ import { useProfile } from './hooks/useProfile';
 import { usePersistedState } from './hooks/usePersistedState';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
+import { toast, friendlyError } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -369,8 +370,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
-    cloud.openChart(id).catch(() => {
-      alert('Could not open that visit — check your connection.');
+    cloud.openChart(id).catch((err) => {
+      toast(`Couldn’t open that visit. ${friendlyError(err)}`, { kind: 'error' });
     });
   };
 
@@ -378,7 +379,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // already gone (missing ∪ extracted) from their most recent saved
   // visit. Shared by the library's "+ Visit" and the saved-chart
   // banner's "+ New visit".
-  const startVisitFromChart = async (latestChartId: string) => {
+  const startVisitFromChart = async (latestChartId: string): Promise<boolean> => {
+    // Starting a visit replaces the open chart — never silently.
+    if (!(await cloud.confirmDiscardIfDirty('Start a new visit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
     const gone = new Set<number>();
     for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
@@ -395,6 +398,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       goneTeeth: Array.from(gone),
     });
     setActiveSection('patient');
+    const name = snap.patientInfo.patientName?.trim();
+    toast(
+      `New visit${name ? ` for ${name}` : ''} started${gone.size ? ` — ${gone.size} missing/extracted ${gone.size === 1 ? 'tooth' : 'teeth'} carried forward` : ''}.`,
+      { kind: 'success' }
+    );
+    return true;
   };
 
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
@@ -609,9 +618,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       });
       setPreviewOpen(true);
     } catch (error) {
-      alert(
-        "Couldn't build the preview — open the Diagnosis and Procedure sections once so the diagrams render, then try again."
-      );
+      toast('Couldn’t build the preview yet — the diagrams are still loading. Try again in a moment.', { kind: 'error' });
       console.error(error);
     }
   };
@@ -1007,8 +1014,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     onOpenReminders: () => setRemindersOpen(true),
                     onOpenAccount: () => setAccountOpen(true),
                     onSignOut: () => {
-                      cloud.signOut().catch(() => {
-                        alert('Could not sign out — check your connection.');
+                      cloud.signOut().catch((err) => {
+                        toast(`Couldn’t sign out. ${friendlyError(err)}`, { kind: 'error' });
                       });
                     },
                   }
@@ -1051,8 +1058,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                   // Carry forward from the patient's LATEST visit — this
                   // banner also shows when viewing an older one.
                   const latest = visits[0]?.id ?? chart.cloudChartId;
-                  startVisitFromChart(latest).catch(() => {
-                    alert('Could not start a new visit — check your connection.');
+                  startVisitFromChart(latest).catch((err) => {
+                    toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
                   });
                 }}
                 title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
@@ -1100,10 +1107,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onDelete={cloud.deleteChart}
           onNewVisit={async (latestChartId) => {
             try {
-              await startVisitFromChart(latestChartId);
-              closeLibrary();
-            } catch {
-              alert('Could not start a new visit — check your connection.');
+              // Cancelled at the unsaved-changes prompt → stay in the library.
+              if (await startVisitFromChart(latestChartId)) closeLibrary();
+            } catch (err) {
+              toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}
@@ -1115,16 +1122,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               chart.handlePatientInfoChange('recallDate', '');
             }
           }}
-          onNewPatient={() => {
-            if (
-              window.confirm(
-                'Start a new patient? This clears the current chart. New charts autosave once they have a name.'
-              )
-            ) {
-              chart.resetChart();
-            }
+          onNewPatient={async () => {
+            // Only ask when something would actually be lost.
+            if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return;
+            chart.resetChart();
           }}
-          onLoadPdf={chart.loadFromPdf}
+          onLoadPdf={async (file) => {
+            if (!(await cloud.confirmDiscardIfDirty('Import this PDF'))) return;
+            await chart.loadFromPdf(file);
+          }}
           onClose={closeLibrary}
         />
       )}

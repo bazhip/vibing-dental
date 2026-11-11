@@ -38,9 +38,9 @@ function handleWriteError(err: unknown): void {
   try {
     // eslint-disable-next-line no-console
     console.warn('[storage] localStorage is full — changes may not be saved.');
-    window.alert(
-      'Storage is full — recent changes may not be saved. ' +
-        'Export your chart to PDF to avoid losing work.'
+    // Lazy import keeps this low-level util free of UI at load time.
+    void import('../components/ui/dialogs').then(({ toast }) =>
+      toast('This browser’s storage is full — recent changes may not be kept on this device. Save the chart or download its PDF.', { kind: 'error' })
     );
   } catch {
     // non-browser env or alert blocked — the console.warn still fired

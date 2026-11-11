@@ -1,4 +1,5 @@
 import React from 'react';
+import { promptDialog, toast, friendlyError } from './ui/dialogs';
 import { useReportTemplates } from '../hooks/useReportTemplates';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
 
@@ -33,19 +34,20 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   };
 
   const saveCurrentAsTemplate = async () => {
-    const name = window.prompt(
-      'Name this template (it labels it in the insert menu):',
-      ''
-    );
+    const name = await promptDialog({
+      title: 'Save as template',
+      message: 'Saves this report text so you can insert it into future charts.',
+      label: 'Template name',
+      placeholder: 'e.g. Routine cleaning',
+      confirmLabel: 'Save template',
+      validate: (v) => (v.trim() ? null : 'Give the template a name.'),
+    });
     if (name === null) return;
-    if (!name.trim()) {
-      alert('The template needs a name.');
-      return;
-    }
     try {
       await store.create(name.trim(), value);
+      toast(`Template “${name.trim()}” saved.`, { kind: 'success' });
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Could not save the template.');
+      toast(`Couldn’t save the template. ${friendlyError(e)}`, { kind: 'error' });
     }
   };
 

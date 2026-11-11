@@ -1,11 +1,12 @@
 import React from 'react';
+import { confirmDialog, friendlyError } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
 
 interface ChartLibraryProps {
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
-  onOpen: (id: string) => Promise<void>;
+  onOpen: (id: string) => Promise<boolean | void>;
   onDelete: (id: string) => Promise<void>;
   /** Start a fresh visit for a patient, carrying identity + gone teeth
    *  from their most recent visit (by chart id). */
@@ -16,9 +17,9 @@ interface ChartLibraryProps {
    *  it's no longer wanted) so the patient leaves the Due list. */
   onClearRecalls: (chartIds: string[]) => Promise<void>;
   /** Clear everything and start a brand-new patient (confirms first). */
-  onNewPatient: () => void;
+  onNewPatient: () => void | Promise<void>;
   /** Load a chart PDF made by this app back in for editing. */
-  onLoadPdf: (file: File) => void;
+  onLoadPdf: (file: File) => void | Promise<void>;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -187,7 +188,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       setHasMore(page.hasMore);
     } catch (e) {
       if (seq !== requestSeqRef.current) return;
-      setError(e instanceof Error ? e.message : 'Could not load charts.');
+      setError(`Couldn’t load your charts. ${friendlyError(e)}`);
     }
   }, [listCharts, listQuery]);
 
@@ -209,7 +210,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       }
     } catch (e) {
       if (seq === requestSeqRef.current) {
-        setError(e instanceof Error ? e.message : 'Could not load more charts.');
+        setError(`Couldn’t load more charts. ${friendlyError(e)}`);
       }
     } finally {
       // Always release the flag — if a newer refresh superseded this
@@ -279,10 +280,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const handleOpen = async (id: string) => {
     setBusyId(id);
     try {
-      await onOpen(id);
-      onClose();
+      // false = cancelled at the unsaved-changes prompt: stay here.
+      if ((await onOpen(id)) !== false) onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not open that chart.');
+      setError(`Couldn’t open that chart. ${friendlyError(e)}`);
     } finally {
       setBusyId(null);
     }
@@ -291,14 +292,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const handleDelete = async (c: CloudChartMeta) => {
     const name = c.patient_name.trim() || 'this chart';
     const dateLabel = c.chart_date ? ` (${c.chart_date})` : '';
-    if (!window.confirm(`Delete the ${name}${dateLabel} chart? This removes the cloud copy permanently.`)) return;
+    if (!(await confirmDialog({
+      title: `Delete ${name}${dateLabel}?`,
+      message: 'This visit is removed from the cloud for everyone in your practice. This can’t be undone.',
+      confirmLabel: 'Delete visit',
+      danger: true,
+    }))) return;
     setBusyId(c.id);
     try {
       await onDelete(c.id);
       await refresh(charts?.length ?? 0);
       refreshDueCount();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not delete that chart.');
+      setError(`Couldn’t delete that visit. ${friendlyError(e)}`);
     } finally {
       setBusyId(null);
     }
@@ -307,16 +313,18 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const handleClearRecalls = async (group: PatientGroup) => {
     const withRecall = group.visits.filter((v) => (v.recall_date ?? '').trim() !== '');
     if (withRecall.length === 0) return;
-    if (!window.confirm(
-      `Clear the recheck reminder for ${group.name}? Use this when the recheck happened without a new chart (or isn't needed) — they'll drop off the Due list.`
-    )) return;
+    if (!(await confirmDialog({
+      title: `Clear ${group.name}’s recheck?`,
+      message: 'Use this when the recheck happened without a new chart, or isn’t needed. They’ll drop off the Due list.',
+      confirmLabel: 'Clear recheck',
+    }))) return;
     setBusyId(withRecall[0].id);
     try {
       await onClearRecalls(withRecall.map((v) => v.id));
       await refresh(charts?.length ?? 0);
       refreshDueCount();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not clear that recheck.');
+      setError(`Couldn’t clear that recheck. ${friendlyError(e)}`);
     } finally {
       setBusyId(null);
     }
@@ -423,7 +431,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               style={{ display: 'none' }}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file) { onLoadPdf(file); onClose(); }
+                if (file) { void onLoadPdf(file); onClose(); }
                 e.target.value = '';
               }}
             />

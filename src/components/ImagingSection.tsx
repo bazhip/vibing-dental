@@ -1,4 +1,5 @@
 import React from 'react';
+import { confirmDialog } from './ui/dialogs';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
 
@@ -79,7 +80,12 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   };
 
   const onDelete = async (id: string, caption: string) => {
-    if (!window.confirm(`Remove ${caption.trim() || 'this image'}? This deletes it permanently.`)) return;
+    if (!(await confirmDialog({
+      title: `Delete ${caption.trim() ? `“${caption.trim()}”` : 'this image'}?`,
+      message: 'The image is removed from this chart and its PDF. This can’t be undone.',
+      confirmLabel: 'Delete image',
+      danger: true,
+    }))) return;
     setBusy(true);
     setError('');
     try {
@@ -235,9 +241,16 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   className="patient-form__input imaging__caption"
                   placeholder="Label for the PDF…"
                   defaultValue={a.caption}
+                  aria-label="Caption"
                   onBlur={(e) => {
-                    if (e.target.value !== a.caption) {
-                      store.updateCaption(a.id, e.target.value).catch(() => {});
+                    const input = e.target;
+                    if (input.value !== a.caption) {
+                      store.updateCaption(a.id, input.value).catch(() => {
+                        // Put the saved caption back so the field never
+                        // shows text that isn't actually stored.
+                        input.value = a.caption;
+                        setError('Couldn’t save that caption — check your connection and try again.');
+                      });
                     }
                   }}
                 />

@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { DialogHost } from './components/ui/dialogs';
 import { installIteratorHelpers } from './utils/iteratorHelpers';
 import { installScopeSelectorFallback } from './utils/scopeSelector';
 
@@ -35,6 +36,8 @@ root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <App />
+      {/* App-wide confirm/prompt dialogs and toasts. */}
+      <DialogHost />
     </ErrorBoundary>
     {/* Vercel Web Analytics — page views + custom events, alongside the
         cookieless Cloudflare beacon in index.html. No-op outside Vercel. */}
