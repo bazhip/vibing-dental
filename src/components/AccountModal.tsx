@@ -4,6 +4,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { supabase } from '../utils/supabaseClient';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
+import { deleteMyAccount } from '../utils/accountDeletion';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -317,6 +318,26 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             </div>
             {sectionError('password')}
           </form>
+
+          {currentEmail && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">Delete account</h3>
+              <p className="patient-form__hint">
+                Permanently deletes your account, your private charts and their images.
+                Charts you shared with a practice stay with the practice.
+              </p>
+              <div className="practice-logo-actions">
+                <button
+                  type="button"
+                  className="diagram-view__action diagram-view__action--danger"
+                  disabled={!!busy}
+                  onClick={() => void deleteMyAccount(currentEmail)}
+                >
+                  Delete account…
+                </button>
+              </div>
+            </section>
+          )}
         </div>
         <footer className="ai-settings-footer">
           <button

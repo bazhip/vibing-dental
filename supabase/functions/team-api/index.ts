@@ -8,6 +8,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { sendBrandedEmail } from '../_shared/email.ts';
+import { purgeAccount, purgePractice } from '../_shared/deletion.ts';
 
 /** Free beta — keep in step with FREE_BETA in src/constants/plans.ts. */
 const FREE_BETA = true;
@@ -357,6 +358,53 @@ Deno.serve(async (req: Request) => {
         }
         const { error } = await admin.from('practices').update({ owner_report_config: config }).eq('id', m.practiceId);
         if (error) throw error;
+        return json({ ok: true });
+      }
+
+      // Primary owner permanently deletes the practice: every chart shared
+      // to it (and its images) is deleted, any subscription is cancelled,
+      // members keep their accounts and private charts. The caller must
+      // type the practice name (or DELETE for an unnamed practice).
+      case 'delete_practice': {
+        const m = await myMembership();
+        if (!m || !m.practice) return json({ error: 'You’re not in a practice.' }, 400);
+        if (m.practice.owner !== caller.id) {
+          return json({ error: 'Only the primary owner can delete the practice.' }, 403);
+        }
+        const expected = (m.practice.name ?? '').trim() || 'DELETE';
+        const typed = typeof body.confirm === 'string' ? body.confirm.trim() : '';
+        if (typed !== expected) {
+          return json({ error: `Type ${expected === 'DELETE' ? 'DELETE' : 'the practice name'} exactly to confirm.` }, 400);
+        }
+        await purgePractice(admin, m.practiceId);
+        return json({ ok: true });
+      }
+
+      // The caller deletes their own account (and, if they're its only
+      // member, the practice they own). The caller must type their email.
+      case 'delete_account': {
+        const email = (caller.email ?? '').trim().toLowerCase();
+        const typed = typeof body.confirm === 'string' ? body.confirm.trim().toLowerCase() : '';
+        if (!email || typed !== email) return json({ error: 'Type your email exactly to confirm.' }, 400);
+        if (caller.app_metadata?.role === 'admin') {
+          return json({ error: 'Admin accounts can’t be deleted from here.' }, 400);
+        }
+        // practices.owner cascades on user delete — a primary owner leaving
+        // would silently take everyone's shared practice with them.
+        const { data: owned } = await admin.from('practices').select('id, name').eq('owner', caller.id).maybeSingle();
+        if (owned) {
+          const { count: others } = await admin
+            .from('practice_members')
+            .select('user_id', { count: 'exact', head: true })
+            .eq('practice_id', owned.id)
+            .neq('user_id', caller.id);
+          if ((others ?? 0) > 0) {
+            return json({
+              error: `You’re the primary owner of ${owned.name ? `“${owned.name}”` : 'your practice'}, which has ${others} other member${others === 1 ? '' : 's'}. Transfer ownership or delete the practice first.`,
+            }, 400);
+          }
+        }
+        await purgeAccount(admin, caller.id, owned?.id ?? null);
         return json({ ok: true });
       }
 
