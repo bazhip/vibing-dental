@@ -16,6 +16,7 @@ import {
 } from '../constants/plans';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
+import { deleteMyPractice } from '../utils/accountDeletion';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -696,6 +697,27 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                   {billingNote && <div className="login-notice settings-msg" role="status">{billingNote}</div>}
                 </>
               )}
+            </section>
+          )}
+
+          {/* ---- Delete practice (primary owner only) -------------------- */}
+          {team.practice && team.primaryOwnerId != null &&
+            team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">Delete practice</h3>
+              <p className="patient-form__hint">
+                Permanently deletes the practice and every chart shared with it, including your
+                team’s, and cancels any subscription. Team members keep their accounts and private charts.
+              </p>
+              <div className="practice-logo-actions">
+                <button
+                  type="button"
+                  className="diagram-view__action diagram-view__action--danger"
+                  onClick={() => void deleteMyPractice(team.practice?.name ?? '')}
+                >
+                  Delete practice…
+                </button>
+              </div>
             </section>
           )}
         </div>
