@@ -5,7 +5,9 @@ import {
   Species,
   Logo,
   NerveBlocks,
+  NerveBlockSite,
   EMPTY_NERVE_BLOCKS,
+  normalizeNerveBlocks,
   ExamFindings,
   ExamFinding,
   EMPTY_EXAM_FINDINGS,
@@ -61,7 +63,7 @@ export interface StashedState {
 /** Maps NerveBlocks keys → PDF form field names. The Other field had no
  *  PDF form-field equivalent in newer versions (it became free-text), so
  *  we handle it separately in the parser. */
-const NERVE_BLOCK_FIELDS: Array<[Exclude<keyof NerveBlocks, 'other'>, string]> = [
+const NERVE_BLOCK_FIELDS: Array<[Exclude<NerveBlockSite, 'other'>, string]> = [
   ['infraorbitalRight',     'nbior'],
   ['infraorbitalLeft',      'nbiol'],
   ['inferiorAlveolarRight', 'nbiar'],
@@ -153,7 +155,8 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
   // must not knock a valid modern stash down to the lossy legacy path.
   if (stash.patientInfo && stash.toothData && stash.species) {
     return {
-      patientInfo: stash.patientInfo,
+      // Older PDFs stashed a single `drug` string — migrate to the list.
+      patientInfo: { ...stash.patientInfo, nerveBlocks: normalizeNerveBlocks(stash.patientInfo.nerveBlocks) },
       toothData: stash.toothData,
       species: stash.species,
       logo: stash.logo ?? 'socal',
@@ -175,7 +178,7 @@ export async function parseDentalChartPDF(file: File): Promise<ParsedChart> {
     logo === 'vca' ? readTextField(form, 'tech') : readTextField(form, 'pid');
 
   const nerveBlocks: NerveBlocks = stash.nerveBlocks
-    ? { ...EMPTY_NERVE_BLOCKS, ...stash.nerveBlocks }
+    ? normalizeNerveBlocks(stash.nerveBlocks)
     : (() => {
         const fallback: NerveBlocks = { ...EMPTY_NERVE_BLOCKS };
         for (const [key, fieldName] of NERVE_BLOCK_FIELDS) {

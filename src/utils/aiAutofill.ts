@@ -8,7 +8,8 @@ import {
   ToothData,
   ToothMarks,
   DiagramComment,
-  NerveBlocks,
+  NerveBlockSite,
+  formatAnestheticDrug,
   ExamFindings,
   ExamFinding,
   DentalField,
@@ -211,10 +212,13 @@ const chartTools: Anthropic.Messages.Tool[] = [
   },
   {
     name: 'set_anesthetic_drug',
-    description: 'Set the anesthetic drug name used for the nerve blocks (e.g. "Bupivacaine", "Ropivacaine").',
+    description: 'Record an anesthetic used for the nerve blocks (e.g. "Bupivacaine", "Lidocaine"). When several drugs are mixed, call once per drug — each call adds to the list (a drug already listed is updated, not duplicated).',
     input_schema: {
       type: 'object',
-      properties: { drug: { type: 'string' } },
+      properties: {
+        drug: { type: 'string' },
+        concentration: { type: 'string', description: 'Percent strength if stated, as a number string without "%", e.g. "0.5" or "2".' },
+      },
       required: ['drug'],
     },
   },
@@ -306,6 +310,10 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 
 [EX 9] "0.4 on the left mental" (drug already discussed earlier)
 → set_nerve_block(site=mentalLeft, mL=0.4)
+
+[EX 9b] "blocks were a mix of half percent bupivacaine and two percent lidocaine"
+→ set_anesthetic_drug(drug=Bupivacaine, concentration=0.5)
+→ set_anesthetic_drug(drug=Lidocaine, concentration=2)
 
 [EX 10] "401 has a fractured slab, took a biopsy"
 → add_comment(diagram=pre, triadan=401, text="T/FX")
@@ -568,9 +576,13 @@ function summarizeChart(c: ChartContext): string {
         .join(' ')
     );
   }
-  const blocks = Object.entries(c.patientInfo.nerveBlocks).filter(([, v]) => v);
-  if (blocks.length) {
-    lines.push(`nerveBlocks: ${blocks.map(([k, v]) => `${k}=${v}`).join(' ')}`);
+  const nb = c.patientInfo.nerveBlocks;
+  const blocks = Object.entries(nb).filter(([k, v]) => k !== 'drugs' && typeof v === 'string' && v);
+  const drugs = (nb.drugs ?? []).filter((d) => d.name.trim()).map(formatAnestheticDrug);
+  if (blocks.length || drugs.length) {
+    const parts = blocks.map(([k, v]) => `${k}=${v}`);
+    if (drugs.length) parts.unshift(`drugs=${JSON.stringify(drugs.join(' + '))}`);
+    lines.push(`nerveBlocks: ${parts.join(' ')}`);
   }
   return lines.join('\n');
 }
@@ -942,8 +954,9 @@ export interface ChartHandlers {
    *  is left) — used to take back a guess the vet rejected in review. */
   removeComment: (diagram: 'pre' | 'post', triadan: number | null, text: string) => void;
   setExamFinding: (area: keyof ExamFindings, status: ExamFinding, comment?: string) => void;
-  setNerveBlock: (site: keyof NerveBlocks, mL: string) => void;
-  setAnestheticDrug: (drug: string) => void;
+  setNerveBlock: (site: NerveBlockSite, mL: string) => void;
+  /** Add `drug` to the anesthetic list (or update its strength). */
+  setAnestheticDrug: (drug: string, concentration?: string) => void;
   setPatientField: (field: keyof PatientInfo, value: string) => void;
   appendTreatmentReport: (text: string) => void;
 }
@@ -962,7 +975,7 @@ export function describeAction(action: AiAction): string {
     case 'add_comment':          return `${get('diagram') === 'post' ? 'Procedure' : 'Diagnosis'} note${input.triadan ? ` @${get('triadan')}` : ''}: "${get('text').slice(0, 60)}"`;
     case 'set_exam_finding':     return `${get('area')} ${get('status')}${input.comment ? ` — ${get('comment')}` : ''}`;
     case 'set_nerve_block':      return `block ${get('site')} = ${get('mL')} mL`;
-    case 'set_anesthetic_drug':  return `anesthetic = ${get('drug')}`;
+    case 'set_anesthetic_drug':  return `anesthetic + ${input.concentration ? `${get('concentration')}% ` : ''}${get('drug')}`;
     case 'set_patient_field':    return `${get('field')} = ${get('value')}`;
     case 'append_treatment_report': return `report += "${get('text').slice(0, 60)}…"`;
     default:                     return name;
@@ -1038,9 +1051,14 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
       return !!cur && cur.status === str('status') && (!str('comment') || cur.comment === str('comment'));
     }
     case 'set_nerve_block':
-      return String(c.patientInfo.nerveBlocks?.[str('site') as keyof NerveBlocks] ?? '') === str('mL');
-    case 'set_anesthetic_drug':
-      return String((c.patientInfo.nerveBlocks as unknown as Record<string, string>)?.drug ?? '').toLowerCase() === str('drug').toLowerCase();
+      return String(c.patientInfo.nerveBlocks?.[str('site') as NerveBlockSite] ?? '') === str('mL');
+    case 'set_anesthetic_drug': {
+      const want = str('drug').trim().toLowerCase();
+      const conc = str('concentration').replace(/%/g, '').trim();
+      return (c.patientInfo.nerveBlocks?.drugs ?? []).some(
+        (d) => d.name.trim().toLowerCase() === want && (!conc || d.concentration.trim() === conc)
+      );
+    }
     case 'set_patient_field':
       return String(c.patientInfo[str('field') as keyof PatientInfo] ?? '').trim() === str('value');
     case 'append_treatment_report':
@@ -1136,11 +1154,12 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     }
     case 'set_nerve_block': {
       if (!NERVE_SITES.has(s('site'))) return false;
-      h.setNerveBlock(s('site') as keyof NerveBlocks, s('mL'));
+      h.setNerveBlock(s('site') as NerveBlockSite, s('mL'));
       return true;
     }
     case 'set_anesthetic_drug': {
-      h.setAnestheticDrug(s('drug'));
+      if (!s('drug').trim()) return false;
+      h.setAnestheticDrug(s('drug').trim(), s('concentration').replace(/%/g, '').trim() || undefined);
       return true;
     }
     case 'set_patient_field': {

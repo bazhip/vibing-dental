@@ -6,8 +6,10 @@ import {
   PatientInfo,
   Species,
   Logo,
-  NerveBlocks,
+  NerveBlockSite,
+  AnestheticDrug,
   EMPTY_NERVE_BLOCKS,
+  normalizeNerveBlocks,
   DEFAULT_VCA_DOCTOR,
   ExamFindings,
   ExamFinding,
@@ -70,7 +72,9 @@ export interface UseChartStateReturn {
 
   // ----- Field-level dispatchers --------------------------------------
   handlePatientInfoChange: (field: keyof PatientInfo, value: string) => void;
-  handleNerveBlockChange: (key: keyof NerveBlocks, value: string) => void;
+  handleNerveBlockChange: (key: NerveBlockSite, value: string) => void;
+  /** Replace the anesthetic list (functional updates see the latest list). */
+  setNerveBlockDrugs: (update: (prev: AnestheticDrug[]) => AnestheticDrug[]) => void;
   handleExamStatusChange: (key: keyof ExamFindings, value: ExamFinding) => void;
   handleExamCommentChange: (key: keyof ExamFindings, value: string) => void;
   handleSpeciesChange: (newSpecies: Species) => void;
@@ -177,7 +181,7 @@ function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       ownerName: s.patientInfo.ownerName ?? '',
       ownerPhone: s.patientInfo.ownerPhone ?? '',
       ownerEmail: s.patientInfo.ownerEmail ?? '',
-      nerveBlocks: { ...EMPTY_NERVE_BLOCKS, ...(s.patientInfo.nerveBlocks ?? {}) },
+      nerveBlocks: normalizeNerveBlocks(s.patientInfo.nerveBlocks),
       exam: { ...EMPTY_EXAM_FINDINGS, ...(s.patientInfo.exam ?? {}) },
     },
     preMarks: s.preMarks ?? {},
@@ -216,7 +220,9 @@ export function useChartState(): UseChartStateReturn {
       recallDate: '',
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: { ...EMPTY_EXAM_FINDINGS },
-    })
+    }),
+    // Pre-multi-drug builds stored a single `drug` string.
+    (stored) => ({ ...stored, nerveBlocks: normalizeNerveBlocks(stored.nerveBlocks) })
   );
 
   const [species, setSpecies] = usePersistedState<Species>('chart.species', 1, 'canine');
@@ -283,10 +289,16 @@ export function useChartState(): UseChartStateReturn {
   const handlePatientInfoChange = (field: keyof PatientInfo, value: string) =>
     setPatientInfo((prev) => ({ ...prev, [field]: value }));
 
-  const handleNerveBlockChange = (key: keyof NerveBlocks, value: string) =>
+  const handleNerveBlockChange = (key: NerveBlockSite, value: string) =>
     setPatientInfo((prev) => ({
       ...prev,
       nerveBlocks: { ...prev.nerveBlocks, [key]: value },
+    }));
+
+  const setNerveBlockDrugs = (update: (prev: AnestheticDrug[]) => AnestheticDrug[]) =>
+    setPatientInfo((prev) => ({
+      ...prev,
+      nerveBlocks: { ...prev.nerveBlocks, drugs: update(prev.nerveBlocks.drugs ?? []) },
     }));
 
   const handleExamStatusChange = (key: keyof ExamFindings, value: ExamFinding) =>
@@ -617,6 +629,7 @@ export function useChartState(): UseChartStateReturn {
 
     handlePatientInfoChange,
     handleNerveBlockChange,
+    setNerveBlockDrugs,
     handleExamStatusChange,
     handleExamCommentChange,
     handleSpeciesChange,

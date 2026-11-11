@@ -1231,10 +1231,90 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
+  /* Line the label up with the first drug row, not the list's middle. */
+  align-self: flex-start;
+  padding-top: 0.55rem;
+}
+
+.anesthesia-drug__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.anesthesia-drug__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.anesthesia-drug__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .anesthesia-drug__input {
   max-width: 14rem;
+}
+
+.anesthesia-drug__strength {
+  width: 5.5rem;
+  flex: none;
+}
+
+.anesthesia-drug__strength .patient-form__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 0.7em;
+  padding-right: 1.8em;
+}
+
+.anesthesia-drug__remove {
+  flex: none;
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.anesthesia-drug__remove:hover {
+  color: var(--danger, #b42318);
+  border-color: var(--border-strong, #cbd5e1);
+}
+
+.anesthesia-drug__add {
+  padding: 0.4rem 0.75rem;
+  border: 1px dashed var(--border-strong, #cbd5e1);
+  border-radius: 6px;
+  background: none;
+  color: var(--primary, #0c6b63);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.anesthesia-drug__add:hover {
+  border-color: var(--primary, #0c6b63);
+  border-style: solid;
+}
+
+.anesthesia-drug__remove:focus-visible,
+.anesthesia-drug__add:focus-visible {
+  outline: 2px solid var(--primary, #0c6b63);
+  outline-offset: 2px;
 }
 
 .anesthesia-drug__hint {
@@ -2207,7 +2287,10 @@
   /* Anesthesia + exam tables get less padding. */
   .anesthesia-table tbody td,
   .exam-table tbody td { padding: 0.3rem 0.45rem; }
-  .anesthesia-drug__input { max-width: 100%; }
+  .anesthesia-drug__label { flex-basis: 100%; padding-top: 0; }
+  .anesthesia-drug__stack { flex: 1; min-width: 0; align-items: stretch; }
+  .anesthesia-drug__input { max-width: none; min-width: 0; width: auto; flex: 1; }
+  .anesthesia-drug__add { align-self: flex-start; }
 
   /* Topbar primary action compresses to fit beside Voice/Chart. */
   .entry-grid__button--topbar {

@@ -34,7 +34,7 @@ import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
-import { DiagramComment, PatientInfo, NerveBlocks, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
+import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -587,10 +587,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       if (comment !== undefined) chart.handleExamCommentChange(area, comment);
     },
     setNerveBlock: (site, mL) => {
-      chart.handleNerveBlockChange(site as keyof NerveBlocks, mL);
+      chart.handleNerveBlockChange(site as NerveBlockSite, mL);
     },
-    setAnestheticDrug: (drug) => {
-      chart.handleNerveBlockChange('drug', drug);
+    setAnestheticDrug: (drug, concentration) => {
+      chart.setNerveBlockDrugs((prev) => {
+        const named = prev.filter((d) => d.name.trim());
+        const i = named.findIndex((d) => d.name.trim().toLowerCase() === drug.toLowerCase());
+        const strength = concentration ?? (i >= 0 ? named[i].concentration : usualConcentration(drug));
+        if (i < 0) return [...named, { name: drug, concentration: strength }];
+        return named.map((d, j) => (j === i ? { ...d, concentration: strength } : d));
+      });
     },
     setPatientField: (field, value) => {
       chart.handlePatientInfoChange(field as keyof PatientInfo, value);
@@ -708,6 +714,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
           onNerveBlockChange={chart.handleNerveBlockChange}
+          onDrugsChange={chart.setNerveBlockDrugs}
           logo={chart.logo}
         />
       ),

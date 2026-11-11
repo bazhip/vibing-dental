@@ -1,19 +1,30 @@
 import React from 'react';
-import { NerveBlocks, Logo, DEFAULT_NERVE_BLOCK_DRUG } from '../types';
+import {
+  NerveBlocks,
+  NerveBlockSite,
+  AnestheticDrug,
+  Logo,
+  DEFAULT_NERVE_BLOCK_DRUG,
+  DEFAULT_NERVE_BLOCK_CONCENTRATION,
+  usualConcentration,
+} from '../types';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
-  onNerveBlockChange: (key: keyof NerveBlocks, value: string) => void;
+  onNerveBlockChange: (key: NerveBlockSite, value: string) => void;
+  /** Functional update of the anesthetic list. */
+  onDrugsChange: (update: (prev: AnestheticDrug[]) => AnestheticDrug[]) => void;
   /** Used to populate the drug-name placeholder with the template default. */
   logo: Logo;
 }
 
 const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
+const BLANK_DRUG: AnestheticDrug = { name: '', concentration: '' };
 
 interface BlockRow {
   label: string;
-  rightKey: keyof NerveBlocks;
-  leftKey: keyof NerveBlocks;
+  rightKey: NerveBlockSite;
+  leftKey: NerveBlockSite;
 }
 
 // "Other" is rendered as a single full-width free-text field below the
@@ -28,9 +39,10 @@ const BLOCK_ROWS: BlockRow[] = [
 export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   nerveBlocks,
   onNerveBlockChange,
+  onDrugsChange,
   logo,
 }) => {
-  const handleChange = (key: keyof NerveBlocks) => (
+  const handleChange = (key: NerveBlockSite) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     onNerveBlockChange(key, event.target.value);
@@ -51,6 +63,50 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     ? COMMON_DRUGS
     : [defaultDrug, ...COMMON_DRUGS];
 
+  // An empty list means "template default" — still show one blank row so
+  // there's somewhere to type. Editing it materialises the list.
+  const drugs = nerveBlocks.drugs ?? [];
+  const usingDefault = drugs.length === 0;
+  const rows = usingDefault ? [BLANK_DRUG] : drugs;
+
+  const updateDrug = (index: number, patch: Partial<AnestheticDrug>) =>
+    onDrugsChange((prev) => {
+      const list = prev.length ? [...prev] : [{ ...BLANK_DRUG }];
+      const cur = list[index] ?? BLANK_DRUG;
+      const next = { ...cur, ...patch };
+      // Picking a drug pre-fills its usual strength, unless the vet has
+      // already typed a custom one.
+      if (patch.name !== undefined && (!cur.concentration || cur.concentration === usualConcentration(cur.name))) {
+        next.concentration = usualConcentration(patch.name);
+      }
+      list[index] = next;
+      return list;
+    });
+
+  // Focus the new row's name field right after "+ Add anesthetic".
+  const nameRefs = React.useRef<Array<HTMLInputElement | null>>([]);
+  const focusIndexRef = React.useRef<number | null>(null);
+  React.useEffect(() => {
+    const i = focusIndexRef.current;
+    if (i === null) return;
+    focusIndexRef.current = null;
+    nameRefs.current[i]?.focus();
+  }, [rows.length]);
+
+  const addDrug = () => {
+    focusIndexRef.current = rows.length;
+    onDrugsChange((prev) =>
+      prev.length
+        ? [...prev, { ...BLANK_DRUG }]
+        // The blank first row stood for the default — make it explicit so
+        // adding a second drug doesn't silently drop the first.
+        : [{ name: defaultDrug, concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION }, { ...BLANK_DRUG }]
+    );
+  };
+
+  const removeDrug = (index: number) =>
+    onDrugsChange((prev) => prev.filter((_, i) => i !== index));
+
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
@@ -58,28 +114,65 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
       </div>
 
       <div className="anesthesia-drug">
-        <label className="anesthesia-drug__label" htmlFor="anesthesia-drug-input">
-          Anesthetic
-        </label>
-        <input
-          id="anesthesia-drug-input"
-          type="text"
-          list="anesthesia-drug-options"
-          className="patient-form__input anesthesia-drug__input"
-          value={nerveBlocks.drug}
-          placeholder={defaultDrug}
-          onChange={handleChange('drug')}
-          aria-describedby="anesthesia-drug-hint"
-        />
-        <datalist id="anesthesia-drug-options">
-          {drugList.map((d) => (
-            <option key={d} value={d} />
-          ))}
-        </datalist>
+        <span className="anesthesia-drug__label" id="anesthesia-drug-label">
+          {rows.length > 1 ? 'Anesthetics' : 'Anesthetic'}
+        </span>
+        <div className="anesthesia-drug__stack">
+          <ul className="anesthesia-drug__list" aria-labelledby="anesthesia-drug-label">
+            {rows.map((d, i) => (
+              <li key={i} className="anesthesia-drug__row">
+                <input
+                  ref={(el) => { nameRefs.current[i] = el; }}
+                  type="text"
+                  list="anesthesia-drug-options"
+                  className="patient-form__input anesthesia-drug__input"
+                  value={d.name}
+                  placeholder={usingDefault ? defaultDrug : 'Drug'}
+                  onChange={(e) => updateDrug(i, { name: e.target.value })}
+                  aria-label={`Anesthetic ${i + 1} name`}
+                  aria-describedby="anesthesia-drug-hint"
+                />
+                <span className="anesthesia-unit anesthesia-drug__strength">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="patient-form__input"
+                    value={d.concentration}
+                    placeholder={usingDefault ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
+                    onChange={(e) => updateDrug(i, { concentration: e.target.value.replace(/%/g, '') })}
+                    aria-label={`Anesthetic ${i + 1} concentration (%)`}
+                  />
+                  <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
+                </span>
+                {rows.length > 1 && (
+                  <button
+                    type="button"
+                    className="anesthesia-drug__remove"
+                    onClick={() => removeDrug(i)}
+                    aria-label={`Remove ${d.name.trim() || `anesthetic ${i + 1}`}`}
+                    title="Remove"
+                  >
+                    &times;
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+          <datalist id="anesthesia-drug-options">
+            {drugList.map((d) => (
+              <option key={d} value={d} />
+            ))}
+          </datalist>
+          <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
+            <span aria-hidden="true">+</span> Add anesthetic
+          </button>
+        </div>
         {/* The grey placeholder alone reads ambiguously — is the drug set
             or not? Say what blank means. */}
         <span id="anesthesia-drug-hint" className="anesthesia-drug__hint">
-          Leave blank to chart {defaultDrug} (the template default).
+          {rows.length > 1
+            ? 'Mixed together — the doses below are mL of the combined mix.'
+            : `Leave blank to chart ${DEFAULT_NERVE_BLOCK_CONCENTRATION}% ${defaultDrug} (the template default).`}
         </span>
       </div>
 

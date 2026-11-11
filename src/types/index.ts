@@ -18,6 +18,13 @@ export interface ToothData {
   pdstate?: string;
 }
 
+/** One anesthetic in the nerve-block mix. `concentration` is the percent
+ *  strength as typed (e.g. "0.5", "2") — the "%" is added on display. */
+export interface AnestheticDrug {
+  name: string;
+  concentration: string;
+}
+
 /**
  * Nerve block dose entries (mL of anesthetic per site).
  * Field names map to PDF form fields nb_{io|ia|men|oth}_{r|l}.
@@ -31,10 +38,15 @@ export interface NerveBlocks {
   mentalLeft: string;
   /** Free-text "other" block — single field that spans the row, no L/R or mL. */
   other: string;
-  /** Anesthetic name used for all blocks. Empty string means "use the
-   *  template default" (Ropivacaine for VCA, Bupivacaine for SoCal). */
-  drug: string;
+  /** Anesthetics mixed for the blocks (the mL doses are of the mix). An
+   *  empty list — or only blank names — means "use the template default"
+   *  (0.5% Ropivacaine for VCA, 0.5% Bupivacaine for SoCal). Replaces the
+   *  legacy single `drug` string; see normalizeNerveBlocks. */
+  drugs: AnestheticDrug[];
 }
+
+/** The per-site text fields of NerveBlocks (everything but the drug list). */
+export type NerveBlockSite = Exclude<keyof NerveBlocks, 'drugs'>;
 
 export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
   infraorbitalRight: '',
@@ -44,14 +56,73 @@ export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
   mentalRight: '',
   mentalLeft: '',
   other: '',
-  drug: '',
+  drugs: [],
 };
 
-/** Default anesthetic per logo. Used when nerveBlocks.drug is empty. */
+/** Default anesthetic per logo. Used when nerveBlocks.drugs is empty. */
 export const DEFAULT_NERVE_BLOCK_DRUG: Record<'socal' | 'vca', string> = {
   vca: 'Ropivacaine',
   socal: 'Bupivacaine',
 };
+
+/** Strength the template default (and legacy single-drug charts) printed. */
+export const DEFAULT_NERVE_BLOCK_CONCENTRATION = '0.5';
+
+/** Usual veterinary nerve-block strength (%) per drug, for pre-filling the
+ *  concentration when a drug is picked. Unknown drugs get ''. */
+const USUAL_CONCENTRATION: Record<string, string> = {
+  bupivacaine: '0.5',
+  ropivacaine: '0.5',
+  lidocaine: '2',
+  mepivacaine: '2',
+};
+
+export function usualConcentration(name: string): string {
+  return USUAL_CONCENTRATION[name.trim().toLowerCase()] ?? '';
+}
+
+/** Drugs that will actually be charted: blank names dropped, falling back
+ *  to the template default when nothing is left. */
+export function effectiveNerveBlockDrugs(
+  nerveBlocks: Pick<NerveBlocks, 'drugs'>,
+  logo: 'socal' | 'vca'
+): AnestheticDrug[] {
+  const named = (nerveBlocks.drugs ?? [])
+    .map((d) => ({ name: (d?.name ?? '').trim(), concentration: (d?.concentration ?? '').trim() }))
+    .filter((d) => d.name);
+  return named.length
+    ? named
+    : [{ name: DEFAULT_NERVE_BLOCK_DRUG[logo], concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION }];
+}
+
+/** "0.5% Bupivacaine" / "Bupivacaine" (no strength given). */
+export function formatAnestheticDrug(d: AnestheticDrug): string {
+  const c = d.concentration.trim().replace(/%$/, '');
+  return c ? `${c}% ${d.name.trim()}` : d.name.trim();
+}
+
+/**
+ * Coerce stored/stashed nerve-block data (possibly from before multi-drug
+ * support, when it carried a single `drug` string) into the current shape.
+ * Legacy charts always printed "0.5%", so that's the migrated strength.
+ */
+export function normalizeNerveBlocks(raw: unknown): NerveBlocks {
+  const r = (raw && typeof raw === 'object' ? raw : {}) as Partial<NerveBlocks> & { drug?: unknown };
+  const out: NerveBlocks = { ...EMPTY_NERVE_BLOCKS };
+  for (const key of Object.keys(EMPTY_NERVE_BLOCKS) as Array<keyof NerveBlocks>) {
+    if (key === 'drugs') continue;
+    const v = r[key];
+    if (typeof v === 'string') out[key] = v;
+  }
+  if (Array.isArray(r.drugs)) {
+    out.drugs = r.drugs
+      .filter((d): d is AnestheticDrug => !!d && typeof d === 'object')
+      .map((d) => ({ name: String(d.name ?? ''), concentration: String(d.concentration ?? '') }));
+  } else if (typeof r.drug === 'string' && r.drug.trim()) {
+    out.drugs = [{ name: r.drug.trim(), concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION }];
+  }
+  return out;
+}
 
 /**
  * Result of a single oral-exam item: either Normal, Abnormal, or unset.

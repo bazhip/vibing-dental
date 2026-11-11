@@ -12,11 +12,14 @@ import { readJson, writeJson } from '../utils/storage';
 export function usePersistedState<T>(
   key: string,
   version: number,
-  initial: T | (() => T)
+  initial: T | (() => T),
+  /** Upgrades a value read from storage that an older build wrote. */
+  migrate?: (stored: T) => T
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [value, setValue] = useState<T>(() => {
     const fallback = typeof initial === 'function' ? (initial as () => T)() : initial;
-    return readJson<T>(key, version, fallback);
+    const stored = readJson<T>(key, version, fallback);
+    return migrate ? migrate(stored) : stored;
   });
 
   // Skip the first effect tick so we don't re-write the just-loaded value

@@ -9,6 +9,8 @@ import {
   ExamFindings,
   EXAM_ITEMS,
   NerveBlocks,
+  effectiveNerveBlockDrugs,
+  formatAnestheticDrug,
 } from '../../types';
 import { ToothGridLayout, TOOTH_DATA_ROWS } from '../../constants/chartLayout';
 import { PALETTE, ACTIVE } from './styles';
@@ -879,7 +881,49 @@ export function drawNerveBlockTable(
     rowH,
     otherLines.length * otherLineHeight + (rowH - bodySize)
   );
-  const totalH = rowH * (lrCount + 1) + otherRowH;
+  // Anesthetics. One drug that fits keeps the classic header label
+  // ("Nerve Block 0.5% Bupivacaine"); a mix — or a long name — gets its
+  // own full-width row above the header, wrapping whole drugs per line.
+  const drugs = effectiveNerveBlockDrugs(nerveBlocks, isVca ? 'vca' : 'socal').map(formatAnestheticDrug);
+  const headerMaxWidth = labelW - padX * 2;
+  const minHeaderSize = 6.5;
+  const singleLabel = `Nerve Block ${drugs[0]}`;
+  const useDrugRow =
+    drugs.length > 1 || bold.widthOfTextAtSize(singleLabel, minHeaderSize) > headerMaxWidth;
+  const drugLabel = drugs.length > 1 ? 'Anesthetics' : 'Anesthetic';
+  const drugLabelW = bold.widthOfTextAtSize(drugLabel, bodySize);
+  const drugValueX = x + padX + drugLabelW + 8;
+  const drugValueWidth = x + totalW - padX - drugValueX;
+  const drugLineHeight = bodySize * 1.35;
+  const drugLines: string[] = [];
+  if (useDrugRow) {
+    const sep = '  +  ';
+    let line = '';
+    for (const d of drugs) {
+      const candidate = line ? `${line}${sep}${d}` : d;
+      // Leave room for a trailing "  +" should the next drug wrap.
+      if (!line || regular.widthOfTextAtSize(`${candidate}  +`, bodySize) <= drugValueWidth) {
+        line = candidate;
+      } else {
+        // Trailing "+" keeps the mix reading as one list across lines.
+        drugLines.push(`${line}  +`);
+        line = d;
+      }
+    }
+    if (line) drugLines.push(line);
+    // A single over-long name still has to fit: break it within the word.
+    const fitted = drugLines.flatMap((l) =>
+      regular.widthOfTextAtSize(l, bodySize) > drugValueWidth
+        ? wrapToWidth(l, regular, bodySize, drugValueWidth)
+        : [l]
+    );
+    drugLines.splice(0, drugLines.length, ...fitted.slice(0, 6));
+  }
+  const drugRowH = useDrugRow
+    ? Math.max(rowH, drugLines.length * drugLineHeight + (rowH - bodySize))
+    : 0;
+
+  const totalH = drugRowH + rowH * (lrCount + 1) + otherRowH;
 
   // One card: title band + table inside a single rounded frame.
   const cardTop = yTop + 0.20 * PT_PER_IN;
@@ -888,14 +932,27 @@ export function drawNerveBlockTable(
     'Anesthesia · Nerve Blocks', bold
   );
 
-  const drug = nerveBlocks.drug?.trim() || (isVca ? 'Ropivacaine' : 'Bupivacaine');
-  const headerLabel = `Nerve Block 0.5% ${drug}`;
+  if (useDrugRow) {
+    const firstBaseline = bodyTop - drugLineHeight + (drugLineHeight - bodySize) / 2 + 1.5
+      - (drugRowH - drugLines.length * drugLineHeight) / 2;
+    page.drawText(drugLabel, { x: x + padX, y: firstBaseline, size: bodySize, font: bold, color: PALETTE.text });
+    let dy = firstBaseline;
+    for (const line of drugLines) {
+      page.drawText(line, { x: drugValueX, y: dy, size: bodySize, font: regular, color: PALETTE.ink });
+      dy -= drugLineHeight;
+    }
+  }
+  // Everything below the drug row lays out from here, as it did before
+  // the row existed.
+  const tableTop = bodyTop - drugRowH;
+  if (useDrugRow) hlineLight(page, x, x + totalW, tableTop);
+
+  const headerLabel = useDrugRow ? 'Nerve Block' : singleLabel;
   let headerLabelSize = headerSize;
-  const headerMaxWidth = labelW - padX * 2;
-  while (headerLabelSize > 6 && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {
+  while (headerLabelSize > minHeaderSize && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {
     headerLabelSize -= 0.25;
   }
-  drawTableHeaderStrip(page, x, bodyTop - rowH, totalW, rowH, [
+  drawTableHeaderStrip(page, x, tableTop - rowH, totalW, rowH, [
     { text: headerLabel, xPt: x,                    widthPt: labelW, align: 'left' },
     { text: 'RIGHT',     xPt: x + labelW,           widthPt: valueW, align: 'center' },
     { text: 'LEFT',      xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
@@ -905,29 +962,29 @@ export function drawNerveBlockTable(
   for (let i = 0; i < lrCount; i++) {
     if (i % 2 === 1) {
       page.drawRectangle({
-        x: x + 0.6, y: bodyTop - rowH * (i + 2),
+        x: x + 0.6, y: tableTop - rowH * (i + 2),
         width: totalW - 1.2, height: rowH, color: PALETTE.rowAlt,
       });
     }
   }
-  const otherTopY = bodyTop - rowH * (lrCount + 1); // below header + L/R rows
+  const otherTopY = tableTop - rowH * (lrCount + 1); // below header + L/R rows
   if (lrCount % 2 === 1) {
     page.drawRectangle({ x: x + 0.6, y: otherTopY - otherRowH, width: totalW - 1.2, height: otherRowH, color: PALETTE.rowAlt });
   }
 
   // Interior gridlines — the card frame is the outer border.
   for (let i = 1; i <= lrCount + 1; i++) {
-    hlineLight(page, x, x + totalW, bodyTop - rowH * i);
+    hlineLight(page, x, x + totalW, tableTop - rowH * i);
   }
-  const lrBottomY = bodyTop - rowH * (lrCount + 1);
-  vlineLight(page, x + labelW,          bodyTop - rowH, lrBottomY);
-  vlineLight(page, x + labelW + valueW, bodyTop - rowH, lrBottomY);
+  const lrBottomY = tableTop - rowH * (lrCount + 1);
+  vlineLight(page, x + labelW,          tableTop - rowH, lrBottomY);
+  vlineLight(page, x + labelW + valueW, tableTop - rowH, lrBottomY);
 
   // L/R rows.
   const baselineOffset = (rowH - bodySize) / 2 + 1.5;
   for (let i = 0; i < lrCount; i++) {
     const row = rows[i] as LR;
-    const baselineY = bodyTop - rowH * (i + 2) + baselineOffset;
+    const baselineY = tableTop - rowH * (i + 2) + baselineOffset;
     page.drawText(row.label, { x: x + padX, y: baselineY, size: bodySize, font: regular, color: PALETTE.text });
     for (const [colIdx, raw] of [[1, row.right], [2, row.left]] as const) {
       if (!raw) continue;

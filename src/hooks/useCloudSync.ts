@@ -100,7 +100,11 @@ function hasContent(s: ChartSnapshot): boolean {
   const p = s?.patientInfo;
   if (!p || typeof p !== 'object' || !Array.isArray(s.toothData)) return false;
   if ((p.patientName ?? '').trim() || (p.patientNumber ?? '').trim() || (p.ownerName ?? '').trim() || (p.ownerPhone ?? '').trim() || (p.ownerEmail ?? '').trim() || (p.complaint ?? '').trim() || (p.treatmentReport ?? '').trim()) return true;
-  if (Object.values(p.nerveBlocks ?? {}).some((v) => (v ?? '').trim())) return true;
+  // Values are strings, except the drug list (and legacy `drug`); only a
+  // named drug counts as content.
+  if (Object.values(p.nerveBlocks ?? {}).some((v) =>
+    Array.isArray(v) ? v.some((d) => (d?.name ?? '').trim()) : typeof v === 'string' && v.trim()
+  )) return true;
   if (Object.values(p.exam ?? {}).some((e) => e?.status || (e?.comment ?? '').trim())) return true;
   if (s.toothData.some((t) =>
     [t.mobility, t.recession, t.pocket, t.furcation, t.hyperplasia, t.calculus, t.gingivitis, t.pdstate]
