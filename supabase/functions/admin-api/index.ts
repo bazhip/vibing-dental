@@ -231,10 +231,16 @@ Deno.serve(async (req: Request) => {
       }
 
       case 'list_practices': {
-        const { data: pracs } = await admin
-          .from('practices')
-          .select('id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at, owner_report_enabled')
-          .order('created_at', { ascending: true });
+        // owner_report_enabled comes from a later migration. If it hasn't
+        // been applied, retry without it rather than silently listing no
+        // practices; any other error surfaces in the panel.
+        const BASE_COLS = 'id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at';
+        let pracRes = await admin.from('practices').select(`${BASE_COLS}, owner_report_enabled`).order('created_at', { ascending: true });
+        if (pracRes.error && /owner_report_enabled/.test(pracRes.error.message)) {
+          pracRes = await admin.from('practices').select(BASE_COLS).order('created_at', { ascending: true });
+        }
+        if (pracRes.error) throw new Error(`Could not list practices: ${pracRes.error.message}`);
+        const pracs = pracRes.data as Array<Record<string, any>>;
         const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
         // A practice's chart count = charts shared to it PLUS members'
         // personal charts (practice_id NULL — e.g. rows predating team
