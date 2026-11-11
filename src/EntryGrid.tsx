@@ -19,7 +19,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { usePersistedState } from './hooks/usePersistedState';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
-import { syncGridComments } from './utils/gridComments';
+import { syncGridComments, isGridComment } from './utils/gridComments';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -498,10 +498,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       );
     },
     addComment: (diagram, triadan, text) => {
-      const id = `ai${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-      const newComment: DiagramComment = { id, text, anchorTriadan: triadan };
       const setter = diagram === 'pre' ? chart.setPreDiagramComments : chart.setPostDiagramComments;
-      setter((prev: DiagramComment[]) => [...prev, newComment]);
+      setter((prev: DiagramComment[]) => {
+        // One note per tooth, like the diagram's own comment tool: add to
+        // the tooth's existing note (not a mirrored grid card) instead of
+        // stacking a second card. Dropping the size lets it re-fit.
+        const existing = triadan != null
+          ? prev.find((c) => c.anchorTriadan === triadan && !isGridComment(c))
+          : undefined;
+        if (existing) {
+          if (existing.text.includes(text)) return prev;
+          const { width: _w, height: _h, ...rest } = existing;
+          const merged = existing.text.trim() ? `${existing.text.trim()}\n${text}` : text;
+          return prev.map((c) => (c === existing ? { ...rest, text: merged } : c));
+        }
+        const id = `ai${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+        return [...prev, { id, text, anchorTriadan: triadan }];
+      });
     },
     setExamFinding: (area, status, comment) => {
       chart.handleExamStatusChange(area, status as ExamFinding);

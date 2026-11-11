@@ -630,17 +630,24 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     );
   };
 
-  // Comments mirrored from the Charting grid never get focus, so the
-  // on-blur fit never runs for them. Fit any that lack a size (new, or
-  // re-texted by the sync) once the diagram is visible — measurement
-  // needs real layout, so a hidden section just waits for its next
-  // render. Runs after every render but exits immediately when there's
-  // nothing to fit.
+  // Comments that arrive without being typed — mirrored from the Charting
+  // grid, or added by voice autofill — never get focus, so the on-blur fit
+  // never runs for them. Fit any with text but no size (new, or re-texted)
+  // once the diagram is visible; the side stacks then re-pack around the
+  // real heights. Measurement needs real layout, so a hidden section just
+  // waits for its next render. Skips the comment being typed in (that one
+  // fits as you type). Runs after every render but exits immediately when
+  // there's nothing to fit.
   React.useEffect(() => {
     if (commentInteractingRef.current) return;
-    const pending = comments.filter(
-      (c) => isGridComment(c) && (c.width == null || c.height == null)
-    );
+    const focused = document.activeElement;
+    const pending = comments.filter((c) => {
+      if (c.width != null && c.height != null) return false;
+      if (isGridComment(c)) return true;
+      if (!c.text.trim()) return false;
+      const el = wrapperRef.current?.querySelector(`.diagram-comment[data-comment-id="${c.id}"]`);
+      return !(el && focused && el.contains(focused));
+    });
     if (pending.length === 0) return;
     const sizes = new Map<string, { newW: number; newH: number }>();
     for (const c of pending) {

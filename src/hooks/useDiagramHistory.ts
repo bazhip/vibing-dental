@@ -60,6 +60,27 @@ function sameOwnComments(a: DiagramComment[], b: DiagramComment[]): boolean {
   return oa.length === ob.length && oa.every((c, i) => c === ob[i]);
 }
 
+/** True when the only change to hand-written comments is a size being
+ *  filled in on comments that had none — the diagram's automatic
+ *  fit-to-text after an AI or mirrored comment appears. That's layout,
+ *  not an edit: recording it would make undo restore the unsized
+ *  comment, which re-fits and records again (Cmd+Z stuck). */
+function onlyFitted(a: DiagramComment[], b: DiagramComment[]): boolean {
+  const oa = ownComments(a);
+  const ob = ownComments(b);
+  if (oa.length !== ob.length) return false;
+  return oa.every((x, i) => {
+    const y = ob[i];
+    if (x === y) return true;
+    return (
+      (x.width == null || x.height == null) &&
+      y.width != null && y.height != null &&
+      x.id === y.id && x.text === y.text && x.anchorTriadan === y.anchorTriadan &&
+      x.x === y.x && x.y === y.y
+    );
+  });
+}
+
 /** A snapshot's hand-written comments with the current mirrored ones. */
 const withCurrentMirrored = (snap: DiagramComment[], current: DiagramComment[]) =>
   [...ownComments(snap), ...current.filter(isGridComment)];
@@ -95,6 +116,11 @@ export function useDiagramHistory(
     }
     if (prev.marks === marks && prev.strokes === strokes && sameOwnComments(prev.comments, comments)) {
       // Only mirrored grid comments moved — not an undoable edit.
+      prevRef.current = { marks, comments, strokes };
+      return;
+    }
+    if (prev.marks === marks && prev.strokes === strokes && onlyFitted(prev.comments, comments)) {
+      // Automatic fit-to-text — layout, not an edit.
       prevRef.current = { marks, comments, strokes };
       return;
     }
