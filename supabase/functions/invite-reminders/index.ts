@@ -22,6 +22,17 @@ const APP_URL = 'https://toothops.app/';
 const DAY = 24 * 60 * 60 * 1000;
 /** Days after the invite at which reminder #1 and #2 go out. */
 const SCHEDULE_DAYS = [1, 5];
+// Anti-spam guards:
+/** Never start reminding accounts older than this (stale/dead signups). */
+const MAX_AGE_DAYS = 21;
+/** Hard cap on emails per run, whatever happens. */
+const MAX_PER_RUN = 25;
+
+/** j***@gmail.com — enough to recognise an account in a dry run. */
+const mask = (email: string) => {
+  const [user, domain] = email.split('@');
+  return `${user.slice(0, 1)}***@${domain ?? ''}`;
+};
 
 const json = (b: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { 'Content-Type': 'application/json' } });
@@ -30,6 +41,10 @@ Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405);
   const secret = Deno.env.get('CRON_SECRET');
   if (!secret || req.headers.get('x-cron-secret') !== secret) return json({ error: 'unauthorized' }, 401);
+
+  let dryRun = false;
+  try { dryRun = (await req.json())?.dryRun === true; } catch { /* no body */ }
+  const preview: { email: string; kind: 'invite' | 'signup'; reminder: number }[] = [];
 
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
@@ -55,6 +70,8 @@ Deno.serve(async (req: Request) => {
       const meta = (u.app_metadata ?? {}) as Record<string, unknown>;
       const count = typeof meta.invite_reminders === 'number' ? meta.invite_reminders : 0;
       if (count >= SCHEDULE_DAYS.length) { note('all_reminders_sent'); continue; }
+      if (count === 0 && now - Date.parse(startedAt) > MAX_AGE_DAYS * DAY) { note('too_old_to_start'); continue; }
+      if (sent.length + preview.length >= MAX_PER_RUN) { note('run_cap_reached'); continue; }
       const dueAt = Date.parse(startedAt) + SCHEDULE_DAYS[count] * DAY;
       if (now < dueAt) { note('not_due_yet'); continue; }
       // Space reminders out even for old invites (both "due" at once).
@@ -69,14 +86,26 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', u.id);
       const invitedTo = (mems ?? []).find((m) => (m.practices as { owner?: string } | null)?.owner !== u.id);
 
+      // Count the reminder BEFORE sending: if anything fails after this,
+      // the person gets fewer emails, never a repeat.
+      const markSent = async () => {
+        const { error: metaErr } = await admin.auth.admin.updateUserById(u.id, {
+          app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
+        });
+        return !metaErr;
+      };
+
+      if (dryRun) {
+        preview.push({ email: mask(u.email), kind: invitedTo ? 'invite' : 'signup', reminder: count + 1 });
+        continue;
+      }
+      if (!(await markSent())) { note('could_not_record'); continue; }
+
       if (!invitedTo) {
         // Self-signup: re-send Supabase's confirm-signup email (the branded
         // template, delivered through Resend SMTP).
         const { error: resendErr } = await admin.auth.resend({ type: 'signup', email: u.email, options: { emailRedirectTo: APP_URL } });
         if (resendErr) { note('signup_resend_failed'); skipped.push(u.email); continue; }
-        await admin.auth.admin.updateUserById(u.id, {
-          app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
-        });
         note('signup_confirmation_resent');
         sent.push(u.email);
         continue;
@@ -110,14 +139,12 @@ Deno.serve(async (req: Request) => {
           : 'Not expecting this, or don’t want to join? Just ignore this email — we’ll send at most one more reminder.',
       });
       if (!ok) { note('email_failed'); skipped.push(u.email); continue; }
-
-      await admin.auth.admin.updateUserById(u.id, {
-        app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
-      });
+      note('invite_reminder_sent');
       sent.push(u.email);
     }
     if (users.length < 1000) break;
   }
 
+  if (dryRun) return json({ ok: true, dryRun: true, wouldSend: preview.length, preview, why });
   return json({ ok: true, sent: sent.length, skipped: skipped.length, why });
 });
