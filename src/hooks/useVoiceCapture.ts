@@ -59,6 +59,8 @@ export type VoiceProvider = 'deepgram' | 'browser';
 
 export interface FinalSegment {
   text: string;
+  /** Text for the AI, with low-confidence words marked "[?word]". */
+  annotated?: string;
   /** ms timestamp from performance.now() at receipt. */
   receivedAt: number;
 }
@@ -74,6 +76,8 @@ export interface VoiceCapture {
   start: () => void;
   /** Clear the transcript without starting. Stable. */
   clear: () => void;
+  /** Ignore the mic while true (the app is speaking a prompt). Stable. */
+  setMuted: (muted: boolean) => void;
   /** Stable across renders — also fires onStop with the final transcript. */
   stop: () => void;
   error: string | null;
@@ -347,6 +351,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
 
   const dismissInterruption = React.useCallback(() => setInterrupted(false), []);
 
+  const setMuted = React.useCallback((m: boolean) => {
+    deepgramRef.current?.setMuted(m);
+  }, []);
+
   const stop = React.useCallback(() => {
     stopRequestedRef.current = true;
     // Show "stopped" right away; the session finishes flushing in the
@@ -416,7 +424,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   }, []);
 
   return {
-    supported, recording, transcript, interim, start, clear, stop, error,
+    supported, recording, transcript, interim, start, clear, stop, setMuted, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
     provider, interrupted, resume, dismissInterruption,
   };

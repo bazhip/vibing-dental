@@ -25,6 +25,9 @@ import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
 
 export interface DeepgramSegment {
   text: string;
+  /** Same text with low-confidence words marked "[?word]" — what the AI
+   *  sees, so it knows which words may be misheard. */
+  annotated: string;
   /** ms timestamp from performance.now(). */
   receivedAt: number;
 }
@@ -41,7 +44,13 @@ export interface DeepgramSession {
    *  already has (the last words before Stop) before the socket closes.
    *  onClose fires once that's done. */
   stop: () => void;
+  /** Drop mic audio while true — the app mutes itself while it speaks a
+   *  prompt so it doesn't transcribe its own voice. */
+  setMuted: (muted: boolean) => void;
 }
+
+/** Below this, a word is marked as possibly misheard. */
+const LOW_CONFIDENCE = 0.6;
 
 // nova-3-medical: Deepgram's clinical-domain model — tuned for medication,
 // diagnostic, and procedure vocabulary and noisy operatory audio. Keyterm
@@ -67,6 +76,7 @@ interface DgWord {
   word: string;
   punctuated_word?: string;
   speaker?: number;
+  confidence?: number;
 }
 
 interface DgAlternative {
@@ -161,6 +171,7 @@ export async function startDeepgramSession(
 
   let closed = false;
   let micReleased = false;
+  let muted = false;
   let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
   let muteTimer: ReturnType<typeof setTimeout> | null = null;
   let drainTimer: ReturnType<typeof setTimeout> | null = null;
@@ -219,7 +230,7 @@ export async function startDeepgramSession(
   };
 
   const onAudio = (frame: Float32Array) => {
-    if (closed || micReleased) return;
+    if (closed || micReleased || muted) return;
     const pcm = resampler.process(frame);
     if (!pcm.byteLength) return;
     if (ws.readyState === WebSocket.OPEN) {
@@ -275,7 +286,11 @@ export async function startDeepgramSession(
         // reads as "Speaker 0: foo. Speaker 1: bar.".
         const words = alt?.words ?? [];
         const text = formatSpeakerLabeled(transcript, words);
-        handlers.onFinal({ text, receivedAt: performance.now() });
+        const annotated = formatSpeakerLabeled(transcript, words, (w) => {
+          const shown = w.punctuated_word ?? w.word;
+          return w.confidence != null && w.confidence < LOW_CONFIDENCE ? `[?${shown}]` : shown;
+        });
+        handlers.onFinal({ text, annotated, receivedAt: performance.now() });
       }
     }
   };
@@ -331,7 +346,7 @@ export async function startDeepgramSession(
     });
   }
 
-  return { stop: stopGracefully };
+  return { stop: stopGracefully, setMuted: (m: boolean) => { muted = m; } };
 }
 
 /** AudioWorklet when available (off the main thread); ScriptProcessor
@@ -393,7 +408,11 @@ export class Resampler {
   }
 }
 
-function formatSpeakerLabeled(transcript: string, words: DgWord[]): string {
+export function formatSpeakerLabeled(
+  transcript: string,
+  words: DgWord[],
+  show: (w: DgWord) => string = (w) => w.punctuated_word ?? w.word
+): string {
   if (!words.length || !words.some((w) => w.speaker != null)) {
     return transcript.trim();
   }
@@ -407,7 +426,7 @@ function formatSpeakerLabeled(transcript: string, words: DgWord[]): string {
       if (i > runStart) {
         const text = words
           .slice(runStart, i)
-          .map((w) => w.punctuated_word ?? w.word)
+          .map(show)
           .join(' ');
         const label = currentSpeaker != null ? `Speaker ${currentSpeaker}: ` : '';
         parts.push(label + text);

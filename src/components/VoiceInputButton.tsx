@@ -7,6 +7,8 @@ import {
   applyAiActions,
   dedupeActions,
   normalizeTranscript,
+  codeOnlyComment,
+  ReviewFlag,
   describeAction,
   prewarmAutofill,
   isScopedSection,
@@ -89,6 +91,54 @@ interface ActivityEntry {
   description: string;
   at: Date;
   skipped?: boolean;
+  uncertain?: boolean;
+}
+
+/** A finding the vet should check — see ReviewFlag. */
+interface ReviewItem {
+  id: string;
+  flag: ReviewFlag;
+  /** Undo the applied best guess (absent for questions, or when the
+   *  change can't be cleanly undone). */
+  revert?: () => void;
+  /** Already announced in the earpiece. */
+  spoken: boolean;
+}
+
+/** What an action writes to — two actions with the same target are the
+ *  same finding, so a later clear statement resolves an earlier flag. */
+function targetKey(a: AiAction): string {
+  const i = a.input;
+  switch (a.name) {
+    case 'set_tooth_field': return `field:${i.triadan}:${i.field}`;
+    case 'set_tooth_mark':
+    case 'unset_tooth_mark': return `mark:${i.diagram === 'post' ? 'post' : 'pre'}:${i.triadan}`;
+    case 'add_comment': return `note:${i.diagram === 'post' ? 'post' : 'pre'}:${i.triadan ?? '-'}`;
+    case 'set_exam_finding': return `exam:${i.area}`;
+    case 'set_nerve_block': return `block:${i.site}`;
+    case 'set_patient_field': return `patient:${i.field}`;
+    default: return a.name;
+  }
+}
+
+/** Quiet this long (no words being heard) before a prompt is spoken, so
+ *  the earpiece never talks over the vet. */
+const PROMPT_SILENCE_MS = 4_000;
+const VOICE_PROMPTS_KEY = 'ai.voicePrompts';
+
+function speechAvailable(): boolean {
+  return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+}
+
+/** "Check 109", "Check 109 and 204", "Check 109, 204 and 308". */
+function promptFor(items: ReviewItem[]): string {
+  const teeth = Array.from(new Set(items.map((r) => r.flag.triadan).filter((t): t is number => typeof t === 'number')));
+  const others = items.filter((r) => typeof r.flag.triadan !== 'number').length;
+  const parts = teeth.map(String);
+  if (others) parts.push(others === 1 ? 'one finding' : `${others} findings`);
+  if (parts.length === 0) return '';
+  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+  return `Check ${list}.`;
 }
 
 /** Safety-net flush while recording, in case no pause is ever detected. */
@@ -143,6 +193,21 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const [intro, setIntro] = React.useState<null | 'start' | 'info'>(null);
   const introRef = useModalFocus(intro !== null);
   const [panelOpen, setPanelOpen] = React.useState(false);
+  const [reviews, setReviews] = React.useState<ReviewItem[]>([]);
+  const reviewsRef = React.useRef(reviews);
+  reviewsRef.current = reviews;
+  const [voicePrompts, setVoicePrompts] = React.useState(() => {
+    try { return window.localStorage.getItem(VOICE_PROMPTS_KEY) !== 'off'; } catch { return true; }
+  });
+  const toggleVoicePrompts = () => {
+    setVoicePrompts((v) => {
+      try { window.localStorage.setItem(VOICE_PROMPTS_KEY, v ? 'off' : 'on'); } catch { /* ignore */ }
+      if (v && speechAvailable()) window.speechSynthesis.cancel();
+      return !v;
+    });
+  };
+  /** performance.now() of the last sign of speech (words being heard). */
+  const lastSpeechRef = React.useRef(0);
   const [collapsed, setCollapsed] = React.useState(() => {
     const saved = session.get(COLLAPSED_KEY);
     return saved === null ? isPhone() : saved === '1';
@@ -169,12 +234,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const queuedFlushRef = React.useRef(false);
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
-  const appendActivity = (actions: AiAction[], skipped: AiAction[] = []) => {
+  const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
     if (!actions.length && !skipped.length) return;
     const now = new Date();
     setActivity((prev) => [
       ...prev,
-      ...actions.map((a, i) => ({ id: `${now.getTime()}_${i}`, description: describeAction(a), at: now })),
+      ...actions.map((a, i) => ({
+        id: `${now.getTime()}_${i}`,
+        description: describeAction(a),
+        at: now,
+        uncertain: uncertain.has(a),
+      })),
       ...skipped.map((a, i) => {
         const home = actionFocus(a)?.section;
         return {
@@ -202,7 +272,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const section = sectionOverride ?? sectionRef.current;
     const segments: FinalSegment[] = voiceRef.current.consumeFinalSegments();
     if (segments.length === 0) return;
-    const delta = segments.map((s) => s.text).join(' ').trim();
+    // The AI gets the annotated text: low-confidence words marked [?…].
+    const delta = segments.map((s) => s.annotated ?? s.text).join(' ').trim();
     if (!delta) return;
     const sentSet = new Set(segments.map((s) => s.receivedAt));
     const contextSegments = voiceRef.current.recentSegments(RECENT_CONTEXT_MS).filter((s) => !sentSet.has(s.receivedAt));
@@ -212,9 +283,42 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setActiveChunkCount((c) => c + 1);
     try {
       const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
-      const fresh = dedupeActions(result.actions, contextRef.current);
+      const before = contextRef.current;
+      const fresh = dedupeActions(result.actions, before);
+      // Undo info has to be captured from the chart BEFORE applying.
+      const reverts = new Map<AiAction, (() => void) | undefined>();
+      for (const f of result.flags) if (f.applied) reverts.set(f.applied, revertFor(f.applied, before));
       const applied = applyAiActions(fresh, handlersRef.current);
-      appendActivity(applied, result.skipped);
+      const appliedSet = new Set(applied);
+
+      const newItems: ReviewItem[] = [];
+      for (const f of result.flags) {
+        if (f.applied && !fresh.includes(f.applied)) continue; // already on the chart
+        const wasApplied = !!f.applied && appliedSet.has(f.applied);
+        newItems.push({
+          id: `rv${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          flag: wasApplied ? f : { ...f, applied: undefined },
+          revert: wasApplied ? reverts.get(f.applied!) : undefined,
+          spoken: false,
+        });
+      }
+      const flaggedActions = new Set(newItems.map((r) => r.flag.applied).filter(Boolean) as AiAction[]);
+      // A clear (unflagged) statement about the same thing settles an
+      // earlier flag — the vet just said the correction out loud.
+      const settled = applied.filter((a) => !flaggedActions.has(a));
+      if (settled.length || newItems.length) {
+        setReviews((prev) => {
+          const keys = new Set(settled.map(targetKey));
+          const teeth = new Set(settled.map((a) => a.input.triadan).filter((t) => t != null));
+          const remaining = prev.filter((r) => {
+            if (r.flag.applied) return !keys.has(targetKey(r.flag.applied));
+            const optKeys = r.flag.options.map((o) => targetKey(o.action));
+            return !optKeys.some((k) => keys.has(k)) && !(r.flag.triadan != null && teeth.has(r.flag.triadan));
+          });
+          return [...remaining, ...newItems];
+        });
+      }
+      appendActivity(applied, result.skipped, flaggedActions);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
       setError(err instanceof Error ? err.message : 'Voice autofill failed');
@@ -227,10 +331,60 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }
   }, []);
 
+  /** How to take back `a` if the vet rejects it, from the chart as it was
+   *  just before. Undefined when there's no clean undo. */
+  function revertFor(a: AiAction, before: ChartContext): (() => void) | undefined {
+    const h = () => handlersRef.current;
+    const i = a.input;
+    const t = Number(i.triadan);
+    const post = i.diagram === 'post';
+    switch (a.name) {
+      case 'set_tooth_field': {
+        const tooth = before.toothData.find((x) => x.triadan === t);
+        const prior = tooth ? String(tooth[i.field as keyof typeof tooth] ?? '') : '';
+        return () => h().setToothField(t, i.field as never, prior);
+      }
+      case 'set_tooth_mark':
+      case 'unset_tooth_mark': {
+        const prior = (post ? before.postMarks : before.preMarks)[t] ?? null;
+        return () => (post ? h().setPostMark : h().setPreMark)(t, prior as never);
+      }
+      case 'add_comment': {
+        const text = codeOnlyComment(String(i.text ?? ''));
+        return () => h().removeComment(post ? 'post' : 'pre', i.triadan != null ? t : null, text);
+      }
+      default:
+        return undefined;
+    }
+  }
+
+  const resolveReview = (id: string, choice: 'keep' | 'remove' | { label: string; action: AiAction }) => {
+    const item = reviewsRef.current.find((r) => r.id === id);
+    if (!item) return;
+    setReviews((prev) => prev.filter((r) => r.id !== id));
+    const now = new Date();
+    if (choice === 'keep') return;
+    item.revert?.();
+    if (choice === 'remove') {
+      if (item.flag.applied) {
+        setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: `Removed: ${describeAction(item.flag.applied!)}`, at: now }]);
+      }
+      return;
+    }
+    const applied = applyAiActions([choice.action], handlersRef.current);
+    appendActivity(applied);
+  };
+
+  const showReview = (item: ReviewItem) => {
+    const a = item.flag.applied ?? item.flag.options[0]?.action;
+    if (a) onActivityRef.current?.([a]);
+  };
+
   const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
   // Send each utterance as soon as the speaker pauses, rather than on a
   // fixed timer; cap the wait so continuous speech still flows.
   const onSegment = React.useCallback((seg: FinalSegment) => {
+    lastSpeechRef.current = performance.now();
     const flush = () => { processChunk(false).catch(console.error); };
     const dangling = DANGLING_RE.test(normalizeTranscript(seg.text));
     window.clearTimeout(quietTimerRef.current);
@@ -245,6 +399,49 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, []);
   const voice = useVoiceCapture({ onStop, onSegment });
   voiceRef.current = voice;
+  React.useEffect(() => {
+    if (voice.interim) lastSpeechRef.current = performance.now();
+  }, [voice.interim]);
+
+  // ---- Earpiece prompts --------------------------------------------------
+  // Spoken only after a stretch of silence, never over the vet. The mic is
+  // muted while the app speaks so it doesn't transcribe itself.
+  const speakingRef = React.useRef(false);
+  const speak = React.useCallback((text: string, onDone?: () => void) => {
+    if (!text || !speechAvailable()) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.05;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      speakingRef.current = false;
+      voiceRef.current?.setMuted(false);
+      // Our own voice isn't the vet's speech — restart the silence clock.
+      lastSpeechRef.current = performance.now();
+      onDone?.();
+    };
+    u.onend = finish;
+    u.onerror = finish;
+    speakingRef.current = true;
+    voiceRef.current?.setMuted(true);
+    window.speechSynthesis.speak(u);
+    window.setTimeout(finish, 8000); // safety: never leave the mic muted
+  }, []);
+
+  React.useEffect(() => {
+    if (!voice.recording || !voicePrompts) return;
+    const id = window.setInterval(() => {
+      if (speakingRef.current) return;
+      if (performance.now() - lastSpeechRef.current < PROMPT_SILENCE_MS) return;
+      const pending = reviewsRef.current.filter((r) => !r.spoken);
+      if (pending.length === 0) return;
+      const ids = new Set(pending.map((r) => r.id));
+      setReviews((prev) => prev.map((r) => (ids.has(r.id) ? { ...r, spoken: true } : r)));
+      speak(promptFor(pending));
+    }, 500);
+    return () => window.clearInterval(id);
+  }, [voice.recording, voicePrompts, speak]);
 
   React.useEffect(() => {
     if (!voice.recording) return;
@@ -271,7 +468,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, [error]);
 
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
-  const hasSession = transcriptText.length > 0 || activity.length > 0;
+  const hasSession = transcriptText.length > 0 || activity.length > 0 || reviews.length > 0;
 
   // A different chart: start over so nothing carries across patients.
   const prevKeyRef = React.useRef(sessionKey);
@@ -281,6 +478,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (voiceRef.current?.recording) voiceRef.current.stop();
     voiceRef.current?.clear();
     setActivity([]);
+    setReviews([]);
     setPanelOpen(false);
   }, [sessionKey]);
 
@@ -291,8 +489,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }
     setError(null);
     setPanelOpen(true);
+    // iOS only lets a page speak after it has spoken inside a tap.
+    if (voicePrompts && speechAvailable()) {
+      try { window.speechSynthesis.speak(new SpeechSynthesisUtterance('')); } catch { /* ignore */ }
+    }
     if (fresh) {
       setActivity([]);
+      setReviews([]);
       voice.start();
     } else {
       voice.resume();
@@ -308,9 +511,20 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     listen(true);
   };
 
+  /** Stop listening; if anything needs checking, say so and show it. */
+  const stopListening = () => {
+    voice.stop();
+    const open = reviewsRef.current.length;
+    if (open > 0) {
+      setPanelOpen(true);
+      setCollapsed(false);
+      if (voicePrompts) speak(open === 1 ? 'One item to review.' : `${open} items to review.`);
+    }
+  };
+
   const handleButton = () => {
     if (voice.recording) {
-      voice.stop();
+      stopListening();
       setPanelOpen(true);
     } else if (hasSession) {
       listen(false);
@@ -332,6 +546,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (voice.recording) voice.stop();
     voice.clear();
     setActivity([]);
+    setReviews([]);
   };
 
   const handleDownloadTranscript = () => {
@@ -376,9 +591,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const sending = activeChunkCount > 0;
   const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'AI autofill';
+  const reviewLabel = reviews.length ? `${reviews.length} to review` : null;
   const subLabel = voice.recording
-    ? (sending ? 'listening · sending…' : 'listening')
-    : sending ? 'finishing…' : null;
+    ? (sending ? 'listening · sending…' : reviewLabel ?? 'listening')
+    : sending ? 'finishing…' : reviewLabel;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
 
   const status = voice.recording
@@ -394,12 +610,14 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // now, else the latest chart change, else a prompt.
   const peek = voice.interim
     ? { text: voice.interim, cls: 'ai-sidebar__peek--interim' }
+    : reviews.length
+      ? { text: `⚠ ${reviews.length} to review — tap to check`, cls: 'ai-sidebar__peek--review' }
     : lastActivity
       ? { text: lastActivity.description, cls: lastActivity.skipped ? 'ai-sidebar__peek--skipped' : '' }
       : { text: voice.recording ? 'Start talking — findings appear as they’re charted.' : 'Press Resume to keep dictating.', cls: 'ai-sidebar__peek--empty' };
 
   const primary = voice.recording
-    ? { text: 'Stop', onClick: () => voice.stop(), cls: 'ai-sidebar__primary--stop' }
+    ? { text: 'Stop', onClick: stopListening, cls: 'ai-sidebar__primary--stop' }
     : { text: hasSession ? 'Resume' : 'Start', onClick: () => listen(!hasSession), cls: '' };
 
   return (
@@ -414,6 +632,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
+        {reviews.length > 0 && (
+          <span className="voice-input__review-badge" aria-label={`${reviews.length} to review`}>{reviews.length}</span>
+        )}
       </button>
 
       {/* How-it-works modal. Portaled to <body> so it isn't trapped by the
@@ -433,6 +654,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <li>It fills <strong>the section you’re on</strong> — open Charting for perio values, Exam for exam findings, and so on. On Charting, diagnosis codes (T/FX, CCF…) also go onto the Diagnosis diagram.</li>
                 <li>A live panel shows the <strong>transcript</strong> and every <strong>change</strong> as it lands; each value is highlighted in the chart.</li>
                 <li><strong>Stop</strong> any time — press the button again to carry on with the same transcript. <strong>New</strong> in the panel starts over.</li>
+                <li>When it isn’t sure it heard you right, it flags the finding. After a pause you’ll hear a short prompt like <em>“Check 109”</em> — just say the correction, or tap through <strong>Needs review</strong> later.</li>
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
               </ul>
               <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 Medical, tuned for clinical terms + speaker labels' : 'your browser’s speech recognition'}.</p>
@@ -491,6 +713,41 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             </button>
           ) : (
             <>
+              {reviews.length > 0 && (
+                <section className="ai-review" aria-label="Needs review">
+                  <div className="ai-sidebar__section-label ai-review__label">Needs review ({reviews.length})</div>
+                  <ul className="ai-review__list">
+                    {reviews.map((r) => (
+                      <li key={r.id} className="ai-review__item">
+                        <button type="button" className="ai-review__what" onClick={() => showReview(r)} title="Show in the chart">
+                          <span className="ai-review__heard">
+                            {r.flag.applied ? describeAction(r.flag.applied) : `“${r.flag.heard}”`}
+                          </span>
+                          <span className="ai-review__reason">
+                            {r.flag.applied ? 'Charted as a guess — ' : 'Not charted — '}{r.flag.reason}
+                          </span>
+                        </button>
+                        <div className="ai-review__actions">
+                          {r.flag.options.map((o, i) => (
+                            <button key={i} type="button" className="ai-review__opt" onClick={() => resolveReview(r.id, o)}>
+                              {o.label}
+                            </button>
+                          ))}
+                          {r.flag.applied && (
+                            <button type="button" className="ai-review__opt ai-review__opt--keep" onClick={() => resolveReview(r.id, 'keep')}>
+                              Keep
+                            </button>
+                          )}
+                          <button type="button" className="ai-review__opt ai-review__opt--quiet" onClick={() => resolveReview(r.id, 'remove')}>
+                            {r.flag.applied && r.revert ? 'Remove' : 'Dismiss'}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
               {voice.interrupted && !voice.recording && (
                 <div className="ai-sidebar__notice" role="alert">
                   The microphone was interrupted (camera, phone call, or leaving the page). Everything heard before that was kept — press <strong>Resume</strong> to carry on.
@@ -520,9 +777,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                   <div className="ai-sidebar__empty">Chart changes show here as the AI applies them.</div>
                 ) : (
                   activity.map((entry) => (
-                    <div key={entry.id} className={`ai-sidebar__row${entry.skipped ? ' ai-sidebar__row--skipped' : ''}`}>
+                    <div key={entry.id} className={`ai-sidebar__row${entry.skipped ? ' ai-sidebar__row--skipped' : ''}${entry.uncertain ? ' ai-sidebar__row--uncertain' : ''}`}>
                       <span className="ai-sidebar__row-time">{entry.at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</span>
-                      <span className="ai-sidebar__row-desc">{entry.description}</span>
+                      <span className="ai-sidebar__row-desc">{entry.description}{entry.uncertain && <span className="ai-sidebar__row-flag" title="Guess — check the review list"> ?</span>}</span>
                     </div>
                   ))
                 )}
@@ -532,6 +789,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>New</button>
                 <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>Download</button>
                 <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')}>How it works</button>
+                {speechAvailable() && (
+                  <button
+                    type="button"
+                    className="ai-sidebar__link"
+                    onClick={toggleVoicePrompts}
+                    aria-pressed={voicePrompts}
+                    title="Short spoken prompts (e.g. “Check 109”) after a pause, for things worth checking"
+                  >
+                    Voice prompts: {voicePrompts ? 'On' : 'Off'}
+                  </button>
+                )}
                 <span className="voice-input__provider-badge">{voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}</span>
               </footer>
             </>

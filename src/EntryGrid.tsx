@@ -516,6 +516,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         return [...prev, { id, text, anchorTriadan: triadan }];
       });
     },
+    removeComment: (diagram, triadan, text) => {
+      const setter = diagram === 'pre' ? chart.setPreDiagramComments : chart.setPostDiagramComments;
+      setter((prev: DiagramComment[]) => {
+        const target = text.trim();
+        const note = prev.find((c) => (c.anchorTriadan ?? null) === triadan && !isGridComment(c) && c.text.includes(target));
+        if (!note) return prev;
+        // Notes merge findings one per line; drop that line, or the text
+        // itself if it shares a line. An emptied note is deleted.
+        const lines = note.text.split('\n');
+        const kept = lines.filter((l) => l.trim() !== target);
+        const next = (kept.length < lines.length ? kept.join('\n') : note.text.replace(target, '')).replace(/[ \t]{2,}/g, ' ').trim();
+        if (!next) return prev.filter((c) => c !== note);
+        const { width: _w, height: _h, ...keep } = note;
+        return prev.map((c) => (c === note ? { ...keep, text: next } : c));
+      });
+    },
     setExamFinding: (area, status, comment) => {
       chart.handleExamStatusChange(area, status as ExamFinding);
       if (comment !== undefined) chart.handleExamCommentChange(area, comment);

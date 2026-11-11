@@ -3042,3 +3042,61 @@ button.save-status--manual:hover {
 /* Reminder composer + settings body */
 .reminder__body { min-height: 9rem; width: 100%; box-sizing: border-box; }
 .patient-form__reminder-btn { margin-top: 0.4rem; }
+
+/* ---- AI autofill: review queue ------------------------------------ */
+.voice-input__review-badge {
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #d97706;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2rem;
+  text-align: center;
+}
+.ai-review { border-bottom: 1px solid var(--border, #e2e8f0); background: #fffbeb; }
+.ai-review__label { color: #b45309; }
+.ai-review__list { list-style: none; margin: 0; padding: 0 0.6rem 0.5rem; max-height: 30vh; max-height: 30dvh; overflow-y: auto; overscroll-behavior: contain; }
+.ai-review__item {
+  padding: 0.5rem 0.55rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  background: #fff;
+}
+.ai-review__what {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ai-review__heard { display: block; font-weight: 700; font-size: 0.92rem; color: var(--text); }
+.ai-review__reason { display: block; font-size: 0.8rem; color: #92400e; margin-top: 0.1rem; }
+.ai-review__actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.45rem; }
+.ai-review__opt {
+  min-height: 36px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--primary, #0c6b63);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary, #0c6b63);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ai-review__opt--keep { background: var(--primary, #0c6b63); color: #fff; }
+.ai-review__opt--quiet { border-color: var(--border, #cbd5e1); color: var(--text-muted, #64748b); }
+.ai-sidebar__peek--review { color: #b45309; font-weight: 600; }
+.ai-sidebar__row--uncertain .ai-sidebar__row-desc { color: #92400e; }
+.ai-sidebar__row-flag { font-weight: 700; color: #d97706; }
+@media (max-width: 700px) {
+  .ai-review__opt { min-height: 44px; font-size: 0.92rem; }
+  .ai-review__list { max-height: 26dvh; }
+}

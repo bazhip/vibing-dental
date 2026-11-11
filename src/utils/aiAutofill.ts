@@ -86,7 +86,31 @@ export async function listModels(apiKey: string): Promise<ModelOption[]> {
 
 // ----- Tool schemas --------------------------------------------------------
 
-const tools: Anthropic.Messages.Tool[] = [
+// Every charting tool also accepts these, so the model can apply its best
+// guess while saying it isn't sure and what else it might have been.
+const REVIEW_PROPS = {
+  uncertain: {
+    type: 'boolean',
+    description: 'True when you are NOT confident this is what the vet said (misheard word, garbled number, ambiguous tooth, [?]-marked word, unclear speaker). The change is applied and queued for the vet to review.',
+  },
+  reason: { type: 'string', description: 'When uncertain: a few words on why, e.g. "\"8T\" may be AT".' },
+  alternatives: {
+    type: 'array',
+    description: 'When uncertain: up to 3 other likely readings, each as a complete tool call.',
+    maxItems: 3,
+    items: {
+      type: 'object',
+      properties: {
+        label: { type: 'string', description: 'Short, e.g. "108 T/FX".' },
+        name: { type: 'string', description: 'Tool name for this reading.' },
+        input: { type: 'object', description: 'Tool input for this reading.' },
+      },
+      required: ['label', 'name', 'input'],
+    },
+  },
+} as const;
+
+const chartTools: Anthropic.Messages.Tool[] = [
   {
     name: 'set_tooth_mark',
     description:
@@ -221,6 +245,33 @@ const tools: Anthropic.Messages.Tool[] = [
   },
 ];
 
+const FLAG_UNCLEAR_TOOL: Anthropic.Messages.Tool = {
+  name: 'flag_unclear',
+  description:
+    'Use when something sounds like a finding but you cannot pick a best reading (garbled tooth number, homophone with no clear winner, fragment). Nothing is applied; the vet hears a short prompt and picks from your options later. Prefer a best-guess tool call with uncertain=true when one reading is clearly most likely.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      heard: { type: 'string', description: 'The words as transcribed, e.g. "1098T".' },
+      reason: { type: 'string', description: 'Why it is unclear, in a few words.' },
+      triadan: { type: 'integer', description: 'The tooth, if known.' },
+      options: REVIEW_PROPS.alternatives,
+    },
+    required: ['heard', 'reason', 'options'],
+  },
+};
+
+const tools: Anthropic.Messages.Tool[] = [
+  ...chartTools.map((t) => ({
+    ...t,
+    input_schema: {
+      ...t.input_schema,
+      properties: { ...(t.input_schema.properties as Record<string, unknown>), ...REVIEW_PROPS },
+    },
+  })),
+  FLAG_UNCLEAR_TOOL,
+];
+
 // ----- Static (cacheable) system prompt + few-shot examples ----------------
 
 const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these patterns.
@@ -282,6 +333,16 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 [EX 16] "I want to redo what I said about 209, that's actually fine"
 → unset_tooth_mark(diagram=post, triadan=209)
 
+[EX 16b] "1098T" (speech-to-text garbled "109 AT")
+→ add_comment(diagram=pre, triadan=109, text="AT", uncertain=true, reason="\"8T\" heard — likely AT", alternatives=[{label:"108 T (no code)", name:"flag_unclear", ...}])
+   Better when no second reading is plausible: just the best guess with uncertain=true and no alternatives.
+
+[EX 16c] "two [?oh] [?for] GI 2"
+→ set_tooth_field(triadan=204, field=gingivitis, value=2, uncertain=true, reason="tooth number low confidence", alternatives=[{label:"104 GI 2", name:"set_tooth_field", input:{triadan:104, field:"gingivitis", value:"2"}}])
+
+[EX 16d] "ninety-nine T/FX" (no valid tooth)
+→ flag_unclear(heard="ninety-nine T/FX", reason="99 isn't a Triadan number", options=[{label:"109 T/FX", name:"add_comment", input:{diagram:"pre", triadan:109, text:"T/FX"}}, {label:"409 T/FX", name:"add_comment", input:{diagram:"pre", triadan:409, text:"T/FX"}}])
+
 [EX 17] "101 GI 2, calc 2, F3. 102 GI 2, calc 2, mobility 3. 103 GI 2, calc 2, 5 millimeter pocket"
 (several teeth in one breath — every value belongs to the most recent tooth number; cover ALL of them)
 → set_tooth_field(triadan=101, field=gingivitis, value=2)
@@ -320,6 +381,13 @@ function buildStaticSystemPrompt(): string {
     '8. Dictation often runs through several teeth in one breath. Each Triadan number starts a new tooth; every value after it belongs to that tooth until the next number. Emit a call for EVERY value of EVERY tooth in the chunk — never stop after the first tooth.',
     '9. Periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) go ONLY in set_tooth_field, never in add_comment — the app mirrors the grid onto the diagram itself when the vet wants that.',
     '10. Diagram notes are AVDC codes, not words: "T/FX", "TR", "AB", "T/FX/CCF". Use plain words only when no code exists for the finding.',
+    '',
+    'UNCERTAINTY (the vet is looking at the mouth, not the screen — flags are how they find out):',
+    '- Words written [?like this] were low-confidence in speech-to-text. Treat them as possibly misheard.',
+    '- When one reading is clearly most likely but you are not sure, make the call with uncertain=true, a short reason, and alternatives (each a complete tool call).',
+    '- When you cannot choose at all, use flag_unclear with options. Never silently drop something that sounds like a finding.',
+    '- Typical causes: homophones ("8T" for AT, "for" for 4, "to/too" for 2), a tooth number that isn\'t valid Triadan, a value outside its range, a phrase cut off mid-finding, a finding stated by a non-vet speaker.',
+    '- Don\'t flag what is clear. Most findings are not uncertain; over-flagging makes the review list useless.',
     '',
     'FIELD SEMANTICS:',
     '- "pre" diagram = Diagnosis (findings observed at exam, before procedure). Teeth already missing, periodontal disease grades, fractures.',
@@ -677,11 +745,23 @@ export interface ExtractInput {
   section?: string;
 }
 
+/** Something the vet should check: a best guess that was applied but may
+ *  be wrong (`applied` set), or a question nothing was applied for. */
+export interface ReviewFlag {
+  heard: string;
+  reason: string;
+  triadan?: number;
+  applied?: AiAction;
+  options: { label: string; action: AiAction }[];
+}
+
 export interface ExtractResult {
   actions: AiAction[];
   /** Actions the model proposed that belong to a different section —
    *  not applied, surfaced so the vet knows something was heard. */
   skipped: AiAction[];
+  /** Uncertain guesses (also in `actions`) and unclear findings. */
+  flags: ReviewFlag[];
   /** True if the extractor ran (vs. skipped because the chunk had no
    *  medical content). */
   ran: boolean;
@@ -700,7 +780,7 @@ export async function extractChartActions(
   const { delta, recentContext, context, section } = input;
   const normalizedDelta = normalizeTranscript(delta);
   if (!chunkLooksMedical(normalizedDelta)) {
-    return { actions: [], skipped: [], ran: false };
+    return { actions: [], skipped: [], flags: [], ran: false };
   }
   const scope = section ? SECTION_SCOPES[section] : undefined;
   if (!supabase) throw new Error('Cloud is not configured.');
@@ -754,13 +834,76 @@ export async function extractChartActions(
 
   const actions: AiAction[] = [];
   const skipped: AiAction[] = [];
+  const flags: ReviewFlag[] = [];
   for (const block of content) {
-    if (block.type === 'tool_use') {
-      const action = { name: block.name, input: block.input as Record<string, unknown> };
-      (actionAllowedInSection(action, section) ? actions : skipped).push(action);
+    if (block.type !== 'tool_use') continue;
+    const input = block.input as Record<string, unknown>;
+    if (block.name === 'flag_unclear') {
+      const options = parseAlternatives(input.options).filter((o) => actionAllowedInSection(o.action, section));
+      flags.push({
+        heard: String(input.heard ?? ''),
+        reason: String(input.reason ?? 'Unclear'),
+        triadan: typeof input.triadan === 'number' ? input.triadan : undefined,
+        options,
+      });
+      continue;
+    }
+    const action = { name: block.name, input };
+    if (!actionAllowedInSection(action, section)) {
+      skipped.push(action);
+      continue;
+    }
+    actions.push(action);
+    // Uncertain per the model, or a value our own checks reject.
+    const invalid = invalidReason(action);
+    if (input.uncertain === true || invalid) {
+      flags.push({
+        heard: describeAction(action),
+        reason: invalid ?? String(input.reason ?? 'Not sure this was heard right'),
+        triadan: typeof input.triadan === 'number' ? input.triadan : undefined,
+        applied: action,
+        options: parseAlternatives(input.alternatives).filter((o) => actionAllowedInSection(o.action, section)),
+      });
     }
   }
-  return { actions, skipped, ran: true };
+  return { actions, skipped, flags, ran: true };
+}
+
+function parseAlternatives(raw: unknown): { label: string; action: AiAction }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((o): o is { label?: unknown; name?: unknown; input?: unknown } => !!o && typeof o === 'object')
+    .filter((o) => typeof o.name === 'string' && o.name !== 'flag_unclear' && !!o.input && typeof o.input === 'object')
+    .slice(0, 3)
+    .map((o) => ({
+      label: String(o.label ?? o.name),
+      action: { name: String(o.name), input: o.input as Record<string, unknown> },
+    }));
+}
+
+const FIELD_RANGES: Partial<Record<DentalField, [number, number]>> = {
+  mobility: [0, 3], furcation: [0, 3], calculus: [0, 3], gingivitis: [0, 3], pdstate: [0, 4],
+  pocket: [0, 15], recession: [0, 15],
+};
+
+/** Our own sanity check, independent of the model's confidence: a grid
+ *  value outside its scale, or a tooth number the species chart can't
+ *  have. Returns why, or null when it looks fine. */
+export function invalidReason(action: AiAction): string | null {
+  const t = Number(action.input.triadan);
+  if (action.input.triadan != null && !(Number.isInteger(t) && t >= 100 && t < 900 && t % 100 >= 1 && t % 100 <= 11)) {
+    return `${action.input.triadan} isn't a Triadan tooth number`;
+  }
+  if (action.name === 'set_tooth_field') {
+    const field = String(action.input.field) as DentalField;
+    const range = FIELD_RANGES[field];
+    if (!range) return null;
+    const nums = normalizeFieldValue(String(action.input.value ?? '')).split(/\s+/).filter(Boolean).map(Number);
+    if (nums.some((n) => Number.isNaN(n) || n < range[0] || n > range[1])) {
+      return `${field} ${action.input.value} is outside ${range[0]}–${range[1]}`;
+    }
+  }
+  return null;
 }
 
 /**
@@ -795,6 +938,9 @@ export interface ChartHandlers {
   setPostMark: (triadan: number, mark: 'missing' | 'extracted' | null) => void;
   setToothField: (triadan: number, field: DentalField, value: string) => void;
   addComment: (diagram: 'pre' | 'post', triadan: number | null, text: string) => void;
+  /** Remove `text` from that tooth's note (deleting the note if nothing
+   *  is left) — used to take back a guess the vet rejected in review. */
+  removeComment: (diagram: 'pre' | 'post', triadan: number | null, text: string) => void;
   setExamFinding: (area: keyof ExamFindings, status: ExamFinding, comment?: string) => void;
   setNerveBlock: (site: keyof NerveBlocks, mL: string) => void;
   setAnestheticDrug: (drug: string) => void;
