@@ -1,6 +1,7 @@
 # Daily: remind team invitees who haven't activated their account
 # (supabase/functions/invite-reminders — at most 2 reminders, at 24h and
-# 5 days). The function is protected by a shared secret: set
+# 5 days; team invites still pending 14 days after the final reminder are
+# deleted, as that email warns). The function is protected by a shared secret: set
 # INVITE_CRON_SECRET here (repo Settings → Secrets → Actions) and the
 # same value as CRON_SECRET in Supabase (supabase secrets set ...).
 name: Invite reminders
