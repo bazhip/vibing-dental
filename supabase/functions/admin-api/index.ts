@@ -64,6 +64,17 @@ async function listAllUsers(admin: any) {
   return all;
 }
 
+/** Chart counts per (creator, practice) pair, counted in Postgres (see
+ *  migration 20261113_admin_chart_counts). Selecting raw chart rows hit
+ *  PostgREST's max-rows cap, so counts stopped growing past 1000 charts. */
+type ChartCountRow = { created_by: string; practice_id: string | null; n: number };
+// deno-lint-ignore no-explicit-any
+async function chartCountRows(admin: any): Promise<ChartCountRow[]> {
+  const { data, error } = await admin.rpc('admin_chart_counts');
+  if (error) throw new Error(`Could not count charts: ${error.message}`);
+  return Array.isArray(data) ? data : [];
+}
+
 // Browser calls come from the app's origins (github.io / vercel /
 // localhost dev) — auth is enforced by the JWT + role check, not CORS.
 const CORS = {
@@ -125,13 +136,13 @@ Deno.serve(async (req: Request) => {
         const [
           authUsers,
           { data: profileRows },
-          { data: chartRows },
+          chartRows,
           { data: memRows },
           { data: pracNameRows },
         ] = await Promise.all([
           listAllUsers(admin),
           admin.from('profiles').select('id, practice_name, doctor_name, logo_path'),
-          admin.from('charts').select('created_by').limit(10000),
+          chartCountRows(admin),
           admin.from('practice_members').select('user_id, practice_id, role'),
           admin.from('practices').select('id, name'),
         ]);
@@ -139,7 +150,7 @@ Deno.serve(async (req: Request) => {
         const memByUser = new Map((memRows ?? []).map((m) => [m.user_id, m]));
         const chartCounts = new Map<string, number>();
         for (const r of chartRows ?? []) {
-          chartCounts.set(r.created_by, (chartCounts.get(r.created_by) ?? 0) + 1);
+          chartCounts.set(r.created_by, (chartCounts.get(r.created_by) ?? 0) + Number(r.n));
         }
         const profilesById = new Map((profileRows ?? []).map((p) => [p.id, p]));
         // deno-lint-ignore no-explicit-any
@@ -271,7 +282,7 @@ Deno.serve(async (req: Request) => {
         // rows — start them now and await after.
         const sidePromise = Promise.all([
           admin.from('practice_members').select('practice_id, user_id, role'),
-          admin.from('charts').select('practice_id, created_by').limit(20000),
+          chartCountRows(admin),
           listAllUsers(admin),
         ]);
         let pracRes = await admin.from('practices').select(`${BASE_COLS}, owner_report_enabled`).order('created_at', { ascending: true });
@@ -280,7 +291,7 @@ Deno.serve(async (req: Request) => {
         }
         if (pracRes.error) throw new Error(`Could not list practices: ${pracRes.error.message}`);
         const pracs = pracRes.data as Array<Record<string, any>>;
-        const [{ data: mems }, { data: chartRows }, authUsers] = await sidePromise;
+        const [{ data: mems }, chartRows, authUsers] = await sidePromise;
         // deno-lint-ignore no-explicit-any
         const userById = new Map(authUsers.map((u: any) => [u.id, u]));
         // The logos bucket is private — hand the panel short-lived signed
@@ -302,7 +313,7 @@ Deno.serve(async (req: Request) => {
         const chartCount = new Map<string, number>();
         for (const c of chartRows ?? []) {
           const pid = c.practice_id ?? practiceByUser.get(c.created_by);
-          if (pid) chartCount.set(pid, (chartCount.get(pid) ?? 0) + 1);
+          if (pid) chartCount.set(pid, (chartCount.get(pid) ?? 0) + Number(c.n));
         }
         const practices = [];
         for (const p of pracs ?? []) {
