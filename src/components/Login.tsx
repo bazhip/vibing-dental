@@ -14,7 +14,30 @@ interface LoginProps {
   initialPlan?: PlanKey;
 }
 
-type Mode = 'signin' | 'signup';
+type Mode = 'signin' | 'signup' | 'check-email';
+
+/** Supabase auth errors carry a stable `code`; older servers only a
+ *  message. Turn either into something a clinic user can act on. */
+type AuthErr = { code?: string; message?: string; status?: number } | null | undefined;
+const errCode = (e: AuthErr) => e?.code ?? '';
+const isUnconfirmed = (e: AuthErr) =>
+  errCode(e) === 'email_not_confirmed' || /email not confirmed/i.test(e?.message ?? '');
+function friendlyAuthError(e: AuthErr): string {
+  const code = errCode(e);
+  const msg = e?.message ?? '';
+  if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg)) return 'Incorrect email or password.';
+  if (code === 'user_already_exists' || /already registered/i.test(msg)) return 'An account with this email already exists.';
+  if (code === 'weak_password' || /password should be/i.test(msg)) return 'Choose a stronger password — at least 8 characters.';
+  if (code === 'email_address_invalid' || /invalid email|unable to validate email/i.test(msg)) return 'Enter a valid email address.';
+  if (e?.status === 429 || /rate limit|too many/i.test(msg)) return 'Too many attempts. Wait a minute and try again.';
+  if (/fetch|network/i.test(msg)) return 'Can’t reach ToothOps — check your connection and try again.';
+  return msg || 'Something went wrong. Please try again.';
+}
+
+const MIN_PASSWORD = 8;
+const RESEND_COOLDOWN_S = 60;
+/** Where confirmation / reset links land: back on this site. */
+const authRedirect = () => window.location.origin + window.location.pathname;
 
 /**
  * Sign-in / sign-up screen.
@@ -38,6 +61,44 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  /** Email awaiting confirmation — drives the check-your-inbox screen and
+   *  the "resend" action after an unconfirmed sign-in attempt. */
+  const [pendingEmail, setPendingEmail] = useState('');
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [accountExists, setAccountExists] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  React.useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setError('');
+    setNotice('');
+    setNeedsConfirm(false);
+    setAccountExists(false);
+  };
+
+  const resendConfirmation = async (target: string) => {
+    if (!supabase || !target || cooldown > 0) return;
+    setBusy(true);
+    setError('');
+    const { error: resendError } = await supabase.auth.resend({
+      type: 'signup',
+      email: target,
+      options: { emailRedirectTo: authRedirect() },
+    });
+    setBusy(false);
+    if (resendError) {
+      setError(friendlyAuthError(resendError));
+      return;
+    }
+    setCooldown(RESEND_COOLDOWN_S);
+    setNotice(`Confirmation email sent to ${target}.`);
+  };
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [accountType, setAccountType] = useState<AccountType>(
     initialPlan ? (planByKey(initialPlan)?.accountType ?? 'individual') : 'individual'
@@ -64,20 +125,26 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
       return;
     }
 
-    setBusy(true);
     setError('');
     setNotice('');
+    setNeedsConfirm(false);
+    setAccountExists(false);
 
     if (signup) {
       if (!practiceName.trim() || !doctorName.trim()) {
         setError('Practice and doctor name are required — they appear on your charts.');
-        setBusy(false);
         return;
       }
+      if (password.length < MIN_PASSWORD) {
+        setError(`Password must be at least ${MIN_PASSWORD} characters.`);
+        return;
+      }
+      setBusy(true);
       const { data, error: authError } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: authRedirect(),
           data: {
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
@@ -89,7 +156,15 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
       });
       setBusy(false);
       if (authError) {
-        setError(authError.message);
+        if (errCode(authError) === 'user_already_exists') setAccountExists(true);
+        setError(friendlyAuthError(authError));
+        return;
+      }
+      // An already-registered email comes back as a user with no
+      // identities (Supabase hides account existence from the API).
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setAccountExists(true);
+        setError('An account with this email already exists.');
         return;
       }
       if (data.session) {
@@ -105,29 +180,73 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         }
         onAuthenticate();
       } else {
-        // Email confirmation is on — tell them what happens next.
-        setNotice(
-          PAID_SIGNUP
-            ? 'Check your email to confirm your account, then sign in — your free trial starts there.'
-            : 'Check your email to confirm your account, then sign in.'
-        );
-        setMode('signin');
+        // Email confirmation is on — a dedicated screen says exactly what
+        // to do next (instead of a sign-in form that can't work yet).
+        setPendingEmail(email.trim());
+        setPassword('');
+        setCooldown(RESEND_COOLDOWN_S);
+        setMode('check-email');
       }
       return;
     }
 
+    setBusy(true);
     const { error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
     setBusy(false);
     if (authError) {
-      setError('Incorrect email or password');
+      if (isUnconfirmed(authError)) {
+        setPendingEmail(email.trim());
+        setNeedsConfirm(true);
+        setError('Confirm your email first — open the link we sent you to activate your account.');
+        return;
+      }
+      setError(friendlyAuthError(authError));
       setPassword('');
       return;
     }
     onAuthenticate();
   };
+
+  if (mode === 'check-email') {
+    return (
+      <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
+        <div className="login-box">
+          <div className="login-check">
+            <div className="login-check__icon" aria-hidden="true">✉</div>
+            <h1 className="login-check__title">Check your inbox</h1>
+            <p className="login-check__lead">
+              We sent a confirmation link to <strong>{pendingEmail}</strong>.
+              Open it on this device to activate your account — you’ll be signed in automatically.
+            </p>
+            <ul className="login-check__tips">
+              <li>It comes from <strong>ToothOps &lt;noreply@toothops.app&gt;</strong> and usually arrives within a minute.</li>
+              <li>Not there? Check your spam or promotions folder.</li>
+              {PAID_SIGNUP && <li>Your {TRIAL_DAYS}-day free trial starts once you confirm.</li>}
+            </ul>
+            {error && <div className="login-error" role="alert">{error}</div>}
+            {notice && <div className="login-notice" role="status">{notice}</div>}
+            <button
+              type="button"
+              className="login-button"
+              onClick={() => resendConfirmation(pendingEmail)}
+              disabled={busy || cooldown > 0}
+            >
+              {busy ? 'Sending…' : cooldown > 0 ? `Resend email (${cooldown}s)` : 'Resend email'}
+            </button>
+            <button type="button" className="login-switch" onClick={() => { setEmail(pendingEmail); switchMode('signup'); }}>
+              Wrong email? Go back and fix it
+            </button>
+            <button type="button" className="login-switch" onClick={() => { setEmail(pendingEmail); switchMode('signin'); }}>
+              Already confirmed? Sign in
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
@@ -273,20 +392,53 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
 
           <label className="login-field">
             <span className="login-field__label">Password</span>
-            <input
-              type="password"
-              className="login-input"
-              autoComplete={signup ? 'new-password' : 'current-password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoFocus={!cloudEnabled}
-            />
+            <span className="login-password">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className="login-input"
+                autoComplete={signup ? 'new-password' : 'current-password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoFocus={!cloudEnabled}
+                minLength={signup ? MIN_PASSWORD : undefined}
+              />
+              <button
+                type="button"
+                className="login-password__toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </span>
           </label>
           {cloudEnabled && signup && (
-            <span className="login-hint">At least 6 characters.</span>
+            <span className={`login-hint${password && password.length < MIN_PASSWORD ? ' login-hint--warn' : ''}`}>
+              At least {MIN_PASSWORD} characters{password ? ` · ${password.length}/${MIN_PASSWORD}` : ''}.
+            </span>
           )}
 
-          {error && <div className="login-error" role="alert">{error}</div>}
+          {error && (
+            <div className="login-error" role="alert">
+              {error}
+              {needsConfirm && (
+                <button
+                  type="button"
+                  className="login-inline-action"
+                  onClick={() => resendConfirmation(pendingEmail)}
+                  disabled={busy || cooldown > 0}
+                >
+                  {cooldown > 0 ? `Resend confirmation email (${cooldown}s)` : 'Resend confirmation email'}
+                </button>
+              )}
+              {accountExists && (
+                <button type="button" className="login-inline-action" onClick={() => switchMode('signin')}>
+                  Sign in instead
+                </button>
+              )}
+            </div>
+          )}
           {notice && <div className="login-notice" role="status">{notice}</div>}
 
           <button type="submit" className="login-button" disabled={busy}>
@@ -316,11 +468,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 setError('');
                 setNotice('');
                 const { error: resetError } = await supabase.auth.resetPasswordForEmail(target, {
-                  redirectTo: window.location.origin + window.location.pathname,
+                  redirectTo: authRedirect(),
                 });
                 setBusy(false);
-                if (resetError) setError(resetError.message);
-                else setNotice('Password reset link sent — check your email.');
+                if (resetError) setError(friendlyAuthError(resetError));
+                else setNotice(`If an account exists for ${target}, a password reset link is on its way. It comes from noreply@toothops.app.`);
               }}
             >
               Forgot password?
@@ -331,11 +483,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             <button
               type="button"
               className="login-switch"
-              onClick={() => {
-                setMode(signup ? 'signin' : 'signup');
-                setError('');
-                setNotice('');
-              }}
+              onClick={() => switchMode(signup ? 'signin' : 'signup')}
             >
               {signup
                 ? 'Already have an account? Sign in'
