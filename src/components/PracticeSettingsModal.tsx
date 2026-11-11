@@ -1,11 +1,23 @@
 import React from 'react';
-import { UseProfileReturn } from '../hooks/useProfile';
-import { useTeam } from '../hooks/useTeam';
+import { UseProfileReturn, PLAN_LIMITS } from '../hooks/useProfile';
+import { useTeam, TeamMember } from '../hooks/useTeam';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { cloudEnabled } from '../utils/supabaseClient';
 import { BillingInfo, fetchBilling, openBillingPortal, changePlan } from '../hooks/useBilling';
-import { PLANS, PlanKey, CONTACT_EMAIL, planKeyFor, planByKey } from '../constants/plans';
+import {
+  PLANS,
+  PlanKey,
+  CONTACT_EMAIL,
+  FREE_BETA,
+  FREE_BETA_SEATS,
+  planKeyFor,
+  planByKey,
+} from '../constants/plans';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
+import { confirmDialog, friendlyError, toast } from './ui/dialogs';
+import './Login.css';
+import './AccountSurfaces.css';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -13,14 +25,30 @@ interface PracticeSettingsModalProps {
   profile: UseProfileReturn;
 }
 
+/** Subscription statuses that mean a real (Stripe) subscription exists. */
+const LIVE_STATUSES = ['active', 'trialing', 'past_due'];
+
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+/** "Primary owner" / "Owner" / "Member" — never the raw role key. */
+export function roleLabel(m: Pick<TeamMember, 'role' | 'isPrimaryOwner'>): string {
+  if (m.isPrimaryOwner) return 'Primary owner';
+  return m.role === 'owner' ? 'Owner' : 'Member';
+}
+
 /**
  * The practice in one place: identity (name + logo, used in the topbar
- * and on generated PDFs) and the team (colleagues who share the
- * practice's charts). Per-account settings (doctor name, email,
- * password) live in Account settings; the recheck-reminder template
- * lives in its own Recheck reminders dialog. The practice name is
- * single-source: the same value labels the app, the PDF, and the shared
- * team practice.
+ * and on generated PDFs), the team (colleagues who share the practice's
+ * charts), the owner report, and billing. Per-account settings (doctor
+ * name, email, password) live in Account settings; the recheck-reminder
+ * template lives in its own Recheck reminders dialog. The practice name
+ * is single-source: the same value labels the app, the PDF, and the
+ * shared team practice.
+ *
+ * Save model: the logo, team and billing actions apply immediately; only
+ * the practice name is a draft. The footer reflects that — a single
+ * "Done" when nothing is pending, "Cancel" / "Save" once the name has
+ * been edited (and closing then asks before discarding it).
  */
 export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   open,
@@ -28,8 +56,10 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   profile,
 }) => {
   const [practiceName, setPracticeName] = React.useState(profile.practiceName);
-  const [busy, setBusy] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [nameBusy, setNameBusy] = React.useState(false);
+  const [nameError, setNameError] = React.useState('');
+  const [logoBusy, setLogoBusy] = React.useState(false);
+  const [logoError, setLogoError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
   // The owner-report template editor swaps in on top of this dialog.
@@ -42,12 +72,14 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [teamBusy, setTeamBusy] = React.useState(false);
   const [teamError, setTeamError] = React.useState('');
   const [teamNote, setTeamNote] = React.useState('');
+  const [teamRetrying, setTeamRetrying] = React.useState(false);
 
   // Billing state (owner-managed; members just see the plan).
   const [billing, setBilling] = React.useState<BillingInfo | null>(null);
   const [billingBusy, setBillingBusy] = React.useState(false);
   const [billingError, setBillingError] = React.useState('');
   const [billingNote, setBillingNote] = React.useState('');
+  const [billingLoadKey, setBillingLoadKey] = React.useState(0);
 
   React.useEffect(() => {
     if (!open || !cloudEnabled) return;
@@ -60,17 +92,18 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         if (!cancelled) setBilling(b);
       })
       .catch((e) => {
-        if (!cancelled) setBillingError(e instanceof Error ? e.message : 'Could not load billing.');
+        if (!cancelled) setBillingError(friendlyError(e, 'Could not load billing.'));
       });
     return () => {
       cancelled = true;
     };
-  }, [open]);
+  }, [open, billingLoadKey]);
 
   React.useEffect(() => {
     if (open) {
       setPracticeName(profile.practiceName);
-      setError('');
+      setNameError('');
+      setLogoError('');
       setMemberEmail('');
       setTeamError('');
       setTeamNote('');
@@ -79,16 +112,56 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  // Renaming the practice writes practices.name, which RLS restricts to
+  // the PRIMARY owner — gate the field the same way. Solo accounts (no
+  // practice yet) edit their own profile copy freely. While the team
+  // failed to load we can't tell who's the owner, so the field stays
+  // locked rather than letting a member type a name that won't save.
+  const isOwner = team.role === 'owner';
+  const isPrimaryOwner = team.members.some((m) => m.isYou && m.isPrimaryOwner);
+  const teamLoadFailed = team.loaded && !!team.error && !team.practice;
+  const canRename = !team.enabled || (!teamLoadFailed && (!team.loaded || !team.practice || isPrimaryOwner));
+  const nameDirty = canRename && practiceName.trim() !== profile.practiceName.trim();
+
+  // The field locked after the user started typing (role arrived): drop
+  // the draft so a stale value doesn't sit in a disabled field.
+  React.useEffect(() => {
+    if (!canRename) setPracticeName(profile.practiceName);
+  }, [canRename, profile.practiceName]);
+
+  const busy = nameBusy || logoBusy;
+
+  /** Close, asking first when the practice name has an unsaved edit. */
+  const requestClose = React.useCallback(async () => {
+    if (nameBusy) return;
+    if (nameDirty) {
+      const discard = await confirmDialog({
+        title: 'Discard the practice name change?',
+        message: 'The new practice name hasn’t been saved.',
+        confirmLabel: 'Discard',
+        cancelLabel: 'Keep editing',
+        danger: true,
+      });
+      if (!discard) return;
+    }
+    onClose();
+  }, [nameBusy, nameDirty, onClose]);
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       // The templates dialog handles its own Escape (unsaved-changes
       // check), so only close the practice dialog when it's on top.
-      if (e.key === 'Escape' && !templatesOpen) onClose();
+      if (e.key === 'Escape' && !templatesOpen) {
+        e.preventDefault();
+        void requestClose();
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose, templatesOpen]);
+  }, [open, requestClose, templatesOpen]);
+
+  const backdrop = useBackdropDismiss(() => void requestClose());
 
   if (!open) return null;
 
@@ -113,15 +186,17 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   }
 
   const handleSave = async () => {
-    setBusy(true);
-    setError('');
+    if (!nameDirty || nameBusy) return;
+    setNameBusy(true);
+    setNameError('');
     try {
       await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
+      toast('Practice name saved.', { kind: 'success' });
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not save the profile.');
+      setNameError(friendlyError(e, 'Could not save the practice name.'));
     } finally {
-      setBusy(false);
+      setNameBusy(false);
     }
   };
 
@@ -129,26 +204,35 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    setBusy(true);
-    setError('');
+    setLogoBusy(true);
+    setLogoError('');
     try {
       await profile.uploadLogo(file);
+      toast('Logo updated.', { kind: 'success' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not upload the logo.');
+      setLogoError(friendlyError(err, 'Could not upload the logo.'));
     } finally {
-      setBusy(false);
+      setLogoBusy(false);
     }
   };
 
   const handleLogoRemove = async () => {
-    setBusy(true);
-    setError('');
+    const ok = await confirmDialog({
+      title: 'Remove the practice logo?',
+      message: 'New charts and PDFs will use the template’s built-in mark until you upload another.',
+      confirmLabel: 'Remove logo',
+      danger: true,
+    });
+    if (!ok) return;
+    setLogoBusy(true);
+    setLogoError('');
     try {
       await profile.removeLogo();
+      toast('Logo removed.', { kind: 'success' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not remove the logo.');
+      setLogoError(friendlyError(err, 'Could not remove the logo.'));
     } finally {
-      setBusy(false);
+      setLogoBusy(false);
     }
   };
 
@@ -160,31 +244,150 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       await fn();
       setTeamNote(msg);
     } catch (e) {
-      setTeamError(e instanceof Error ? e.message : 'That did not work.');
+      setTeamError(friendlyError(e, 'That didn’t work. Please try again.'));
     } finally {
       setTeamBusy(false);
     }
   };
 
-  const isOwner = team.role === 'owner';
-  // Renaming the practice writes practices.name, which RLS restricts to
-  // the PRIMARY owner — gate the field the same way. Solo accounts (no
-  // practice yet) edit their own profile copy freely.
-  const isPrimaryOwner = team.members.some((m) => m.isYou && m.isPrimaryOwner);
-  const canRename = !team.loaded || !team.practice || isPrimaryOwner;
+  const retryTeam = async () => {
+    setTeamRetrying(true);
+    try {
+      await team.refresh();
+    } finally {
+      setTeamRetrying(false);
+    }
+  };
+
+  const handleTransfer = async (m: TeamMember) => {
+    const ok = await confirmDialog({
+      title: `Make ${m.email} the primary owner?`,
+      message:
+        'The primary owner holds billing and the practice name. You stay an owner of the practice.',
+      confirmLabel: 'Transfer ownership',
+      danger: true,
+    });
+    if (ok) await runTeam('Ownership transferred.', () => team.transferOwnership(m.userId));
+  };
+
+  const handleRemove = async (m: TeamMember) => {
+    const ok = await confirmDialog({
+      title: `Remove ${m.email} from the practice?`,
+      message: m.pending
+        ? 'Their invite is cancelled.'
+        : 'They lose access to the practice’s shared charts but keep any charts of their own.',
+      confirmLabel: m.pending ? 'Cancel invite' : 'Remove',
+      cancelLabel: 'Keep',
+      danger: true,
+    });
+    if (ok) await runTeam(m.pending ? 'Invite cancelled.' : 'Member removed.', () => team.removeMember(m.userId));
+  };
+
+  const handleAddMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = memberEmail.trim();
+    if (!email || teamBusy) return;
+    if (!EMAIL_RE.test(email)) {
+      setTeamNote('');
+      setTeamError('Enter a valid email address.');
+      return;
+    }
+    setTeamBusy(true);
+    setTeamError('');
+    setTeamNote('');
+    try {
+      const result = await team.addMember(email);
+      setTeamNote(
+        result === 'invited'
+          ? `Invite emailed to ${email} — they set a password and they're in.`
+          : `${email} already has a ToothOps account — we emailed them a link to accept. They'll appear here once they join.`
+      );
+      setMemberEmail('');
+    } catch (err) {
+      setTeamError(friendlyError(err, 'Could not add them.'));
+    } finally {
+      setTeamBusy(false);
+    }
+  };
+
+  const handlePlanChange = async (next: PlanKey) => {
+    const def = planByKey(next);
+    if (!def) return;
+    const ok = await confirmDialog({
+      title: `Switch to ${def.name}?`,
+      message: `$${def.priceMonthly}/month. The difference is prorated on your next invoice.`,
+      confirmLabel: 'Switch plan',
+    });
+    if (!ok) return;
+    setBillingBusy(true);
+    setBillingError('');
+    setBillingNote('');
+    try {
+      await changePlan(next);
+      setBilling(await fetchBilling());
+      setBillingNote('Plan updated.');
+    } catch (err) {
+      setBillingError(friendlyError(err, 'Could not change the plan.'));
+    } finally {
+      setBillingBusy(false);
+    }
+  };
+
+  const handleOpenPortal = () => {
+    setBillingBusy(true);
+    setBillingError('');
+    openBillingPortal().catch((err) => {
+      setBillingError(friendlyError(err, 'Could not open the billing portal.'));
+      setBillingBusy(false);
+    });
+  };
+
+  const teamLoadErrorRow = (
+    <div className="login-error settings-msg settings-msg--row" role="alert">
+      <span>Couldn’t load your team. {team.error}</span>
+      <button
+        type="button"
+        className="diagram-view__action settings-msg__action"
+        onClick={retryTeam}
+        disabled={teamRetrying}
+      >
+        {teamRetrying ? 'Retrying…' : 'Retry'}
+      </button>
+    </div>
+  );
+
+  const liveSubscription = !!billing && LIVE_STATUSES.includes(billing.status);
+  const onFreeBeta = FREE_BETA && !!billing && !liveSubscription && billing.status !== 'comped';
+
+  const statusText = (b: BillingInfo) =>
+    b.status === 'trialing'
+      ? `free trial${b.periodEnd ? ` — first payment ${new Date(b.periodEnd).toLocaleDateString()}` : ''}`
+      : b.status === 'active'
+      ? `active${b.periodEnd ? ` — renews ${new Date(b.periodEnd).toLocaleDateString()}` : ''}`
+      : b.status === 'past_due'
+      ? 'payment failed — update your card'
+      : b.status === 'none'
+      ? 'not subscribed yet'
+      : b.status.replace(/_/g, ' ');
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Practice">
-      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
+    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>Practice</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
+          <h2 id="practice-settings-title">Practice settings</h2>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label="Close">
             ×
           </button>
         </header>
         <div className="ai-settings-body">
           {/* ---- Identity ------------------------------------------------ */}
-          <section className="ai-settings-section">
+          <form
+            className="ai-settings-section"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSave();
+            }}
+          >
             <h3 className="ai-settings-subhead">Profile</h3>
             <label className="patient-form__label">
               Practice name
@@ -193,17 +396,23 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 type="text"
                 className="patient-form__input"
                 value={practiceName}
-                onChange={(e) => setPracticeName(e.target.value)}
+                onChange={(e) => {
+                  setPracticeName(e.target.value);
+                  setNameError('');
+                }}
                 placeholder="Shown in the app and on every chart"
-                disabled={!canRename}
+                disabled={!canRename || nameBusy}
               />
             </label>
             {!canRename && (
               <p className="patient-form__hint">
-                The practice name is shared by the whole team — only the primary owner can change it.
+                {teamLoadFailed
+                  ? 'The practice name is locked until your team loads — retry below.'
+                  : 'The practice name is shared by the whole team — only the primary owner can change it.'}
               </p>
             )}
-          </section>
+            {nameError && <div className="login-error settings-msg" role="alert">{nameError}</div>}
+          </form>
 
           {/* ---- Logo --------------------------------------------------- */}
           <section className="ai-settings-section">
@@ -213,7 +422,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 <img src={profile.logoUrl} alt="Practice logo" className="practice-logo-preview" />
                 <div className="practice-logo-actions">
                   <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                    Replace
+                    {logoBusy ? 'Working…' : 'Replace'}
                   </button>
                   <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleLogoRemove} disabled={busy}>
                     Remove
@@ -226,7 +435,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                   No logo uploaded — charts use the template's built-in mark.
                 </span>
                 <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                  Upload logo
+                  {logoBusy ? 'Uploading…' : 'Upload logo'}
                 </button>
               </div>
             )}
@@ -236,18 +445,30 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               accept="image/png,image/jpeg,image/webp"
               onChange={handleLogoPick}
               style={{ display: 'none' }}
+              aria-label="Choose a logo image"
             />
+            {logoError && <div className="login-error settings-msg" role="alert">{logoError}</div>}
           </section>
 
           {/* ---- Team --------------------------------------------------- */}
           <section className="ai-settings-section">
             <h3 className="ai-settings-subhead">Team</h3>
-            {!team.loaded ? (
+            {!team.enabled ? null : !team.loaded ? (
               <p className="practice-logo-empty">Loading team…</p>
+            ) : teamLoadFailed ? (
+              teamLoadErrorRow
             ) : !team.practice ? (
-              <p className="practice-logo-empty">
-                Your practice is being set up — reload in a moment.
-              </p>
+              <div className="settings-msg--row">
+                <p className="practice-logo-empty">Your practice is still being set up.</p>
+                <button
+                  type="button"
+                  className="diagram-view__action"
+                  onClick={retryTeam}
+                  disabled={teamRetrying}
+                >
+                  {teamRetrying ? 'Checking…' : 'Check again'}
+                </button>
+              </div>
             ) : (
               <>
                 <p className="ai-settings-blurb">
@@ -263,9 +484,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                         {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
                       </span>
                       {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
-                      <span className="team__member-role">
-                        {m.isPrimaryOwner ? 'Primary owner' : m.role}
-                      </span>
+                      <span className="team__member-role">{roleLabel(m)}</span>
                       {isOwner && !m.isYou && (
                         <span className="team__member-actions">
                           {m.pending && (
@@ -280,34 +499,34 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               Resend invite
                             </button>
                           )}
-                          {m.role === 'member' ? (
+                          {/* Roles only apply to people who've joined —
+                              a pending invite can't own anything yet. */}
+                          {!m.pending && m.role === 'member' && (
                             <button
                               type="button"
                               className="diagram-view__action"
                               disabled={teamBusy}
-                              onClick={() => runTeam('Now an owner.', () => team.setRole(m.userId, 'owner'))}
+                              onClick={() => runTeam(`${m.email} is now an owner.`, () => team.setRole(m.userId, 'owner'))}
                             >
                               Make owner
                             </button>
-                          ) : !m.isPrimaryOwner ? (
+                          )}
+                          {!m.pending && m.role === 'owner' && !m.isPrimaryOwner && (
                             <button
                               type="button"
                               className="diagram-view__action"
                               disabled={teamBusy}
-                              onClick={() => runTeam('Now a member.', () => team.setRole(m.userId, 'member'))}
+                              onClick={() => runTeam(`${m.email} is now a member.`, () => team.setRole(m.userId, 'member'))}
                             >
                               Make member
                             </button>
-                          ) : null}
+                          )}
                           {!m.isPrimaryOwner && !m.pending && (
                             <button
                               type="button"
                               className="diagram-view__action"
                               disabled={teamBusy}
-                              onClick={() =>
-                                window.confirm(`Transfer primary ownership of the practice to ${m.email}? You stay an owner.`) &&
-                                runTeam('Ownership transferred.', () => team.transferOwnership(m.userId))
-                              }
+                              onClick={() => handleTransfer(m)}
                             >
                               Transfer ownership
                             </button>
@@ -317,10 +536,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               type="button"
                               className="diagram-view__action diagram-view__action--danger"
                               disabled={teamBusy}
-                              onClick={() =>
-                                window.confirm(`Remove ${m.email}? They keep their own charts.`) &&
-                                runTeam('Member removed.', () => team.removeMember(m.userId))
-                              }
+                              onClick={() => handleRemove(m)}
                             >
                               Remove
                             </button>
@@ -332,51 +548,38 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 </ul>
                 {isOwner && (
                   <>
-                    <div className="practice-team__add">
+                    <form className="practice-team__add" onSubmit={handleAddMember} noValidate>
                       <input
                         type="email"
                         className="patient-form__input"
                         placeholder="Colleague's email"
+                        aria-label="Colleague's email"
+                        autoComplete="off"
                         value={memberEmail}
-                        onChange={(e) => setMemberEmail(e.target.value)}
+                        onChange={(e) => {
+                          setMemberEmail(e.target.value);
+                          setTeamError('');
+                        }}
                       />
                       <button
-                        type="button"
+                        type="submit"
                         className="diagram-view__action"
                         disabled={teamBusy || !memberEmail.trim()}
-                        onClick={() => {
-                          const email = memberEmail.trim();
-                          setTeamBusy(true);
-                          setTeamError('');
-                          setTeamNote('');
-                          team
-                            .addMember(email)
-                            .then((result) => {
-                              setTeamNote(
-                                result === 'invited'
-                                  ? `Invite emailed to ${email} — they set a password and they're in.`
-                                  : `${email} already has a ToothOps account — we emailed them a link to accept. They'll appear here once they join.`
-                              );
-                              setMemberEmail('');
-                            })
-                            .catch((e) =>
-                              setTeamError(e instanceof Error ? e.message : 'Could not add them.')
-                            )
-                            .finally(() => setTeamBusy(false));
-                        }}
                       >
-                        Add
+                        {teamBusy ? 'Adding…' : 'Add'}
                       </button>
-                    </div>
+                    </form>
                     <p className="patient-form__hint">
                       No account yet? We'll email them an invite to set a password and join.
                     </p>
                   </>
                 )}
+                {/* A refresh after an action failed — the list above may be stale. */}
+                {team.error && teamLoadErrorRow}
               </>
             )}
-            {teamError && <div className="login-error" role="alert">{teamError}</div>}
-            {teamNote && <div className="login-notice" role="status">{teamNote}</div>}
+            {teamError && <div className="login-error settings-msg" role="alert">{teamError}</div>}
+            {teamNote && <div className="login-notice settings-msg" role="status">{teamNote}</div>}
           </section>
 
           {/* ---- Owner report --------------------------------------------- */}
@@ -402,25 +605,51 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             <section className="ai-settings-section">
               <h3 className="ai-settings-subhead">Billing</h3>
               {!billing ? (
-                <p className="practice-logo-empty">{billingError || 'Loading billing…'}</p>
+                billingError ? (
+                  <div className="login-error settings-msg settings-msg--row" role="alert">
+                    <span>{billingError}</span>
+                    <button
+                      type="button"
+                      className="diagram-view__action settings-msg__action"
+                      onClick={() => setBillingLoadKey((k) => k + 1)}
+                    >
+                      Retry
+                    </button>
+                  </div>
+                ) : (
+                  <p className="practice-logo-empty">Loading billing…</p>
+                )
               ) : billing.status === 'comped' ? (
                 <p className="ai-settings-blurb">
                   This practice has complimentary access — no subscription needed.
                 </p>
+              ) : onFreeBeta ? (
+                <>
+                  <p className="ai-settings-blurb">
+                    <strong>Free beta</strong> · {FREE_BETA_SEATS} seats · {PLAN_LIMITS.free.maxImages} images per
+                    chart · AI dictation included
+                  </p>
+                  <p className="patient-form__hint">
+                    No card needed during the beta.
+                    {billing.memberCount > 0 && ` ${billing.memberCount} of ${FREE_BETA_SEATS} seats in use.`}
+                    {' '}Need more than {FREE_BETA_SEATS} seats?{' '}
+                    <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+                  </p>
+                  {billing.role === 'owner' && billing.hasStripe && (
+                    <div className="practice-logo-actions">
+                      <button type="button" className="diagram-view__action" disabled={billingBusy} onClick={handleOpenPortal}>
+                        Billing history
+                      </button>
+                    </div>
+                  )}
+                  {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
+                </>
               ) : (
                 <>
                   <p className="ai-settings-blurb">
                     <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? 'No plan'}</strong>
                     {' · '}
-                    {billing.status === 'trialing'
-                      ? `free trial${billing.periodEnd ? ` — first payment ${new Date(billing.periodEnd).toLocaleDateString()}` : ''}`
-                      : billing.status === 'active'
-                      ? `active${billing.periodEnd ? ` — renews ${new Date(billing.periodEnd).toLocaleDateString()}` : ''}`
-                      : billing.status === 'past_due'
-                      ? 'payment failed — update your card'
-                      : billing.status === 'none'
-                      ? 'not subscribed yet'
-                      : billing.status}
+                    {statusText(billing)}
                     {billing.accountType === 'practice' && ` · ${billing.memberCount}/${billing.seats} seats`}
                   </p>
                   {billing.role === 'owner' ? (
@@ -432,23 +661,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                             value={planKeyFor(billing.accountType, billing.plan)}
                             disabled={billingBusy}
                             aria-label="Change plan"
-                            onChange={(e) => {
-                              const next = e.target.value as PlanKey;
-                              const def = planByKey(next);
-                              if (!def) return;
-                              if (!window.confirm(`Switch to ${def.name} at $${def.priceMonthly}/mo? The difference is prorated.`)) return;
-                              setBillingBusy(true);
-                              setBillingError('');
-                              setBillingNote('');
-                              changePlan(next)
-                                .then(() => fetchBilling())
-                                .then((b) => {
-                                  setBilling(b);
-                                  setBillingNote('Plan updated.');
-                                })
-                                .catch((err) => setBillingError(err instanceof Error ? err.message : 'Could not change the plan.'))
-                                .finally(() => setBillingBusy(false));
-                            }}
+                            onChange={(e) => void handlePlanChange(e.target.value as PlanKey)}
                           >
                             {PLANS.map((p) => (
                               <option key={p.key} value={p.key}>
@@ -460,14 +673,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                             type="button"
                             className="diagram-view__action"
                             disabled={billingBusy}
-                            onClick={() => {
-                              setBillingBusy(true);
-                              setBillingError('');
-                              openBillingPortal().catch((err) => {
-                                setBillingError(err instanceof Error ? err.message : 'Could not open the billing portal.');
-                                setBillingBusy(false);
-                              });
-                            }}
+                            onClick={handleOpenPortal}
                           >
                             Manage billing
                           </button>
@@ -486,25 +692,36 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                       Billing is managed by {billing.ownerEmail || 'the practice owner'}.
                     </p>
                   )}
-                  {billingError && <div className="login-error" role="alert">{billingError}</div>}
-                  {billingNote && <div className="login-notice" role="status">{billingNote}</div>}
+                  {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
+                  {billingNote && <div className="login-notice settings-msg" role="status">{billingNote}</div>}
                 </>
               )}
             </section>
           )}
-
-          {error && <div className="login-error" role="alert">{error}</div>}
         </div>
         <footer className="ai-settings-footer">
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>
-            Cancel
-          </button>
-          {/* The footer commits ONLY the practice name — the logo saves on
-              pick and team actions apply instantly, so a bare "Save" reads
-              as if it covered all three. */}
-          <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={handleSave} disabled={busy}>
-            {busy ? 'Saving…' : 'Save practice name'}
-          </button>
+          {/* Logo, team and billing apply instantly; only the practice
+              name is a draft — so the footer only offers Save when it
+              has something to save. */}
+          {nameDirty ? (
+            <>
+              <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={nameBusy}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="entry-grid__button entry-grid__button--topbar"
+                onClick={() => void handleSave()}
+                disabled={nameBusy}
+              >
+                {nameBusy ? 'Saving…' : 'Save'}
+              </button>
+            </>
+          ) : (
+            <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose}>
+              Done
+            </button>
+          )}
         </footer>
       </div>
     </div>
