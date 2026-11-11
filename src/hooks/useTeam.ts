@@ -42,7 +42,7 @@ export interface UseTeamReturn extends TeamState {
   transferOwnership: (userId: string) => Promise<void>;
 }
 
-async function call<T = Record<string, unknown>>(body: object): Promise<T> {
+export async function call<T = Record<string, unknown>>(body: object): Promise<T> {
   if (!supabase) throw new Error('Cloud is not configured.');
   const { data, error } = await supabase.functions.invoke('team-api', { body });
   if (error) {

@@ -1,4 +1,11 @@
-import { buildOwnerReportModel, toothLayName } from './ownerReport';
+import {
+  buildOwnerReportModel,
+  toothLayName,
+  DEFAULT_HOMECARE_TIPS,
+  hasSection,
+} from './ownerReport';
+import { DEFAULT_TEMPLATE, defaultTemplate, normalizeConfig } from './ownerReportConfig';
+import { buildOwnerReportPdfBytes, pdfSafe } from './ownerReportPdf';
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 import { getInitialToothData } from '../constants';
 
@@ -97,4 +104,165 @@ test('abnormal exam areas surface with their labels', () => {
   const model = buildOwnerReportModel(snapshot);
   expect(model.examNotes).toEqual([{ area: 'Tongue', comment: 'Small ulcer, left side' }]);
   expect(model.recallDate).toBe('2027-01-19');
+});
+
+describe('templates', () => {
+  const withFindings = () => {
+    const snapshot = baseSnapshot();
+    // Fresh copies: earlier tests mutate the shared initial tooth rows.
+    snapshot.toothData = snapshot.toothData.map((t) =>
+      t.triadan === 104 ? { ...t, mobility: '', pocket: '6', calculus: '2' } : { ...t }
+    );
+    snapshot.postMarks = { 108: 'extracted' };
+    return snapshot;
+  };
+
+  test('no config reproduces the original report', () => {
+    const model = buildOwnerReportModel(withFindings());
+    expect(model.locale).toBe('en');
+    expect(model.title).toBe('Dental Visit Report');
+    expect(model.sections.map((s) => s.id)).toEqual(DEFAULT_TEMPLATE.sections.map((s) => s.id));
+    expect(model.sections.map((s) => s.heading)).toEqual([
+      'Teeth removed during this visit',
+      'Biscuit’s mouth',
+      'What we found',
+      'Already missing before this visit',
+      'Other exam notes',
+      'Before & after',
+      'A note from your veterinary team',
+      'Caring for Biscuit’s teeth at home',
+      'Recommended recheck',
+    ]);
+    expect(model.intro).toBe(
+      'Biscuit had a professional dental assessment and cleaning under anesthesia. This report explains ' +
+        'what we found in everyday language — the full clinical chart with measurements is on file and available any time.'
+    );
+    expect(model.homecareTips).toEqual(DEFAULT_HOMECARE_TIPS);
+    expect(model.visitDate).toBe('2026-07-19');
+    expect(model.closingNote).toBe('');
+    expect(model.footer).toBe('');
+    expect(model.teeth[0].notes).toEqual(['deepened gum pocket (6 mm)', 'tartar buildup (grade 2)']);
+    expect(model.extracted).toEqual(['Upper right fourth premolar (108)']);
+  });
+
+  test('disabled sections are absent; order and custom headings respected', () => {
+    const template = defaultTemplate();
+    template.sections = [
+      { id: 'homecare', enabled: true, title: 'Brushing at home' },
+      { id: 'findings', enabled: true, title: '' },
+      { id: 'custom-abc', enabled: true, title: 'About {practice}', body: 'Call {doctor} with questions about {pet}.' },
+      { id: 'custom-off', enabled: false, title: 'Hidden', body: 'nope' },
+      ...template.sections
+        .filter((s) => s.id !== 'homecare' && s.id !== 'findings')
+        .map((s) => ({ ...s, enabled: s.id === 'recheck' })),
+    ];
+    const model = buildOwnerReportModel(withFindings(), {
+      template,
+      practiceName: 'Bay Vets',
+      doctorName: 'Dr. Lee',
+    });
+    expect(model.sections.map((s) => s.id)).toEqual(['homecare', 'findings', 'custom-abc', 'recheck']);
+    expect(hasSection(model, 'diagram')).toBe(false);
+    expect(hasSection(model, 'findings')).toBe(true);
+    expect(model.sections[0].heading).toBe('Brushing at home');
+    expect(model.sections[2]).toEqual({
+      kind: 'custom', id: 'custom-abc', heading: 'About Bay Vets', body: 'Call Dr. Lee with questions about Biscuit.',
+    });
+  });
+
+  test('chart picks a template from the practice config; unknown id falls back to the default', () => {
+    const config = normalizeConfig({
+      templates: [
+        { id: 'std', name: 'Standard' },
+        { id: 'brief', name: 'Brief', title: 'Visit summary', showToothNumbers: false, showGrades: false },
+      ],
+      defaultTemplateId: 'std',
+    });
+    const snapshot = withFindings();
+    expect(buildOwnerReportModel(snapshot, { config }).title).toBe('Dental Visit Report');
+
+    snapshot.ownerReport = { templateId: 'brief' };
+    const brief = buildOwnerReportModel(snapshot, { config });
+    expect(brief.title).toBe('Visit summary');
+    expect(brief.teeth[0].layName).toBe('Upper right canine tooth');
+    expect(brief.teeth[0].notes).toEqual(['deepened gum pocket', 'tartar buildup']);
+    expect(brief.extracted).toEqual(['Upper right fourth premolar']);
+
+    snapshot.ownerReport = { templateId: 'deleted' };
+    expect(buildOwnerReportModel(snapshot, { config }).title).toBe('Dental Visit Report');
+  });
+
+  test('intro template, tips, closing note and footer fill placeholders; chart edits still win', () => {
+    const template = {
+      ...defaultTemplate(),
+      introTemplate: '{Pet} the {species} visited {practice} on {date}. Thanks, {owner}!',
+      homecareTips: ['Brush {pet} daily.', '  ', 'Use VOHC chews.'],
+      closingNote: 'See you soon, {pet}.',
+      footer: '{practice} · 555-0100 · bayvets.example',
+    };
+    const snapshot = withFindings();
+    const model = buildOwnerReportModel(snapshot, { template, practiceName: 'Bay Vets', doctorName: 'Dr. Lee' });
+    expect(model.intro).toBe('Biscuit the cat visited Bay Vets on 2026-07-19. Thanks, Sam Doe!');
+    expect(model.homecareTips).toEqual(['Brush Biscuit daily.', 'Use VOHC chews.']);
+    expect(model.closingNote).toBe('See you soon, Biscuit.');
+    expect(model.footer).toBe('Bay Vets · 555-0100 · bayvets.example');
+
+    snapshot.ownerReport = { intro: 'Hand-written.', homecare: 'Only this tip.' };
+    const edited = buildOwnerReportModel(snapshot, { template, practiceName: 'Bay Vets' });
+    expect(edited.intro).toBe('Hand-written.');
+    expect(edited.homecareTips).toEqual(['Only this tip.']);
+  });
+
+  test('language: generated text, tooth names and long dates follow the template locale', () => {
+    const snapshot = withFindings();
+    snapshot.patientInfo.exam = { ...EMPTY_EXAM_FINDINGS, tongue: { status: 'abnormal', comment: '' } };
+    const es = buildOwnerReportModel(snapshot, {
+      template: { ...defaultTemplate(), language: 'es', title: '', dateFormat: 'long' },
+    });
+    expect(es.locale).toBe('es');
+    expect(es.speciesLabel).toBe('Gato');
+    expect(es.teeth[0].layName).toBe('Canino superior derecho (104)');
+    expect(es.teeth[0].notes).toEqual(['bolsa periodontal profunda (6 mm)', 'acumulación de sarro (grado 2)']);
+    expect(es.extracted).toEqual(['Cuarto premolar superior derecho (108)']);
+    expect(es.examNotes).toEqual([{ area: 'Lengua', comment: '' }]);
+    expect(es.sections.find((s) => s.id === 'diagram')!.heading).toBe('La boca de Biscuit');
+    expect(es.intro).toMatch(/^Biscuit recibió una evaluación/);
+    expect(es.visitDate).toMatch(/2026/);
+    expect(es.visitDate).toMatch(/julio/);
+
+    expect(toothLayName(309, true, 'fr')).toBe('Première molaire inférieure gauche (309)');
+    expect(toothLayName(504, false, 'fr')).toBe('Canine supérieure droite de lait');
+    expect(toothLayName(206, false, 'de')).toBe('Zweiter oberer linker Prämolar');
+    expect(toothLayName(404, false, 'de')).toBe('Unterer rechter Eckzahn');
+    expect(toothLayName(101, false, 'pt')).toBe('Primeiro incisivo superior direito');
+  });
+
+  test('normalizeConfig: language-aware default title, unknown language falls back to English', () => {
+    const cfg = normalizeConfig({ templates: [{ id: 'a', language: 'fr' }, { id: 'b', language: 'xx' }] });
+    expect(cfg.templates[0].title).toBe('Compte rendu de la visite dentaire');
+    expect(cfg.templates[1].language).toBe('en');
+    expect(cfg.templates[1].dateFormat).toBe('iso');
+  });
+
+  test('PDF renders with a custom template (footer, custom section, non-WinAnsi text, other language)', async () => {
+    const template = {
+      ...defaultTemplate(),
+      title: 'Visit summary ✓',
+      footer: 'Call us 📞 555-0100',
+      sections: [
+        { id: 'custom-x', enabled: true, title: 'Hello 🐱', body: 'Line one\nLine two' },
+        ...defaultTemplate().sections,
+      ],
+    };
+    const branding = { practiceName: 'Bay Vets', doctorName: '', logoUrl: '' };
+    const bytes = await buildOwnerReportPdfBytes(buildOwnerReportModel(withFindings(), { template }), branding, []);
+    expect(bytes.byteLength).toBeGreaterThan(1000);
+    const de = await buildOwnerReportPdfBytes(
+      buildOwnerReportModel(withFindings(), { template: { ...template, language: 'de' } }),
+      branding,
+      []
+    );
+    expect(de.byteLength).toBeGreaterThan(1000);
+    expect(pdfSafe('Hi 🐱 ✕ – “ok”')).toBe('Hi  X – “ok”');
+  });
 });

@@ -5,6 +5,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { cloudEnabled } from '../utils/supabaseClient';
 import { BillingInfo, fetchBilling, openBillingPortal, changePlan } from '../hooks/useBilling';
 import { PLANS, PlanKey, CONTACT_EMAIL, planKeyFor, planByKey } from '../constants/plans';
+import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -31,7 +32,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [error, setError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
-  const modalRef = useModalFocus(open);
+  // The owner-report template editor swaps in on top of this dialog.
+  const [templatesOpen, setTemplatesOpen] = React.useState(false);
+  const modalRef = useModalFocus(open && !templatesOpen);
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
@@ -79,13 +82,35 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      // The templates dialog handles its own Escape (unsaved-changes
+      // check), so only close the practice dialog when it's on top.
+      if (e.key === 'Escape' && !templatesOpen) onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, templatesOpen]);
 
   if (!open) return null;
+
+  // The templates editor replaces the practice dialog while open — it
+  // manages its own focus, Escape handling, and unsaved-changes guard.
+  if (templatesOpen) {
+    return (
+      <OwnerReportTemplatesModal
+        open
+        onClose={() => setTemplatesOpen(false)}
+        config={profile.ownerReportConfig}
+        onSave={profile.saveOwnerReportConfig}
+        canEdit={team.loaded && team.role === 'owner'}
+        roleKnown={team.loaded}
+        branding={{
+          practiceName: profile.practiceName,
+          doctorName: profile.doctorName,
+          logoUrl: profile.logoUrl,
+        }}
+      />
+    );
+  }
 
   const handleSave = async () => {
     setBusy(true);
@@ -353,6 +378,24 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             {teamError && <div className="login-error" role="alert">{teamError}</div>}
             {teamNote && <div className="login-notice" role="status">{teamNote}</div>}
           </section>
+
+          {/* ---- Owner report --------------------------------------------- */}
+          {profile.ownerReportEnabled && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">Owner report</h3>
+              <p className="ai-settings-blurb">
+                The report families take home after a dental visit — sections, headings, wording,
+                language, and the practice-wide default layout.
+              </p>
+              <button
+                type="button"
+                className="diagram-view__action"
+                onClick={() => setTemplatesOpen(true)}
+              >
+                Customize owner report
+              </button>
+            </section>
+          )}
 
           {/* ---- Billing ------------------------------------------------- */}
           {cloudEnabled && (

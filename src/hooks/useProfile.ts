@@ -1,6 +1,8 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { FREE_BETA } from '../constants/plans';
+import { call as callTeamApi } from './useTeam';
+import { OwnerReportConfig, configByteSize, defaultConfig, normalizeConfig, MAX_CONFIG_BYTES } from '../utils/ownerReportConfig';
 
 /**
  * The signed-in user's practice profile (collected at signup, editable in
@@ -43,6 +45,11 @@ export interface UseProfileReturn extends PracticeProfile {
   /** Owner-report feature flag — per practice, admin-controlled, off by
    *  default (practices.owner_report_enabled). */
   ownerReportEnabled: boolean;
+  /** The practice's owner report templates (normalized; the built-in
+   *  default when the practice hasn't customized anything). */
+  ownerReportConfig: OwnerReportConfig;
+  /** Owner-only: persist the templates (team-api) and update local state. */
+  saveOwnerReportConfig: (config: OwnerReportConfig) => Promise<void>;
   /** Signed URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
@@ -150,6 +157,7 @@ export function useProfile(): UseProfileReturn {
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
+  const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
@@ -178,6 +186,7 @@ export function useProfile(): UseProfileReturn {
       // comped/grandfathered) — a lapsed or never-started one is free.
       let practicePlan: PracticePlan = 'free';
       let ownerReportOn = false;
+      let reportConfig: OwnerReportConfig | null = null;
       if (pid) {
         const { data: prac } = await supabase
           .from('practices')
@@ -199,6 +208,15 @@ export function useProfile(): UseProfileReturn {
         if (!featuresError) {
           ownerReportOn = !!(features as { owner_report_enabled?: boolean } | null)?.owner_report_enabled;
         }
+        // Same tolerance for the owner report templates column.
+        const { data: reportRow, error: reportError } = await supabase
+          .from('practices')
+          .select('owner_report_config')
+          .eq('id', pid)
+          .maybeSingle();
+        if (!reportError) {
+          reportConfig = normalizeConfig((reportRow as { owner_report_config?: unknown } | null)?.owner_report_config);
+        }
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
       if (!cancelled) {
@@ -211,6 +229,7 @@ export function useProfile(): UseProfileReturn {
           setPracticeId(pid);
           setPlan(practicePlan);
           setOwnerReportEnabled(ownerReportOn);
+          if (reportConfig) setOwnerReportConfig(reportConfig);
         }
         setLoaded(true);
       }
@@ -239,6 +258,15 @@ export function useProfile(): UseProfileReturn {
     if (pid && next.practiceName.trim()) {
       await supabase.from('practices').update({ name: next.practiceName.trim() }).eq('id', pid);
     }
+  }, []);
+
+  const saveOwnerReportConfig = React.useCallback(async (config: OwnerReportConfig): Promise<void> => {
+    const normalized = normalizeConfig(config);
+    if (configByteSize(normalized) > MAX_CONFIG_BYTES) {
+      throw new Error('Those owner report settings are too large (50 KB max) — shorten some text or remove a template.');
+    }
+    if (supabase) await callTeamApi({ action: 'set_owner_report_config', config: normalized });
+    setOwnerReportConfig(normalized);
   }, []);
 
   const uploadLogo = React.useCallback(async (file: File): Promise<void> => {
@@ -273,6 +301,8 @@ export function useProfile(): UseProfileReturn {
     maxImages: PLAN_LIMITS[plan].maxImages,
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
+    ownerReportConfig,
+    saveOwnerReportConfig,
     logoUrl,
     update,
     uploadLogo,

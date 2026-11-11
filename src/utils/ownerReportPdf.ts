@@ -1,11 +1,17 @@
 import type { PDFFont, PDFPage } from 'pdf-lib';
-import { OwnerReportModel, teethWithFindings } from './ownerReport';
+import { OwnerReportModel, OwnerReportRenderSection, teethWithFindings } from './ownerReport';
+import type { BuiltInSectionId } from './ownerReportConfig';
+import { reportStrings } from './ownerReportI18n';
 
 /**
  * Renders the owner report model as a friendly one-to-two page Letter
  * PDF: practice header, plain-English findings, before & after photos,
  * home-care advice, and the recheck date. Deliberately separate from the
  * clinical chart PDF — this document is written for the pet's owner.
+ *
+ * Section order, headings, custom text sections, the title, closing note
+ * and footer all come from the model (i.e. the practice's template); the
+ * default template reproduces the original fixed layout.
  */
 
 export interface OwnerReportBranding {
@@ -26,10 +32,43 @@ const PAGE_W = 612; // Letter portrait
 const PAGE_H = 792;
 const MARGIN = 54;
 const CONTENT_W = PAGE_W - MARGIN * 2;
+/** Baseline of the (optional) footer — inside the bottom margin, so it
+ *  never collides with body text. */
+const FOOTER_Y = 26;
 
 const TEAL = { r: 0.047, g: 0.42, b: 0.39 }; // matches the app's --primary
 const INK = { r: 0.106, g: 0.153, b: 0.2 };
 const MUTED = { r: 0.333, g: 0.404, b: 0.478 };
+
+/** Characters outside Latin-1 that WinAnsi (and so Helvetica) encodes. */
+const WIN_ANSI_EXTRA = new Set('€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ');
+const PDF_REPLACEMENTS: Record<string, string> = {
+  '✕': 'X', '✖': 'X', '✓': 'v', '✔': 'v', '→': '->', '←': '<-',
+  '≤': '<=', '≥': '>=', '−': '-', '‐': '-', '‑': '-', '\t': ' ',
+};
+
+/** Make text drawable with the standard Helvetica font: common symbols
+ *  get ASCII stand-ins; anything else WinAnsi can't encode (emoji, CJK…)
+ *  is dropped rather than crashing the whole PDF. Newlines are kept. */
+export function pdfSafe(text: string): string {
+  let out = '';
+  for (const ch of text) {
+    if (ch === '\n') {
+      out += ch;
+      continue;
+    }
+    const mapped = PDF_REPLACEMENTS[ch];
+    if (mapped !== undefined) {
+      out += mapped;
+      continue;
+    }
+    const code = ch.codePointAt(0)!;
+    if ((code >= 0x20 && code <= 0x7e) || (code >= 0xa0 && code <= 0xff) || WIN_ANSI_EXTRA.has(ch)) {
+      out += ch;
+    }
+  }
+  return out;
+}
 
 function wrap(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
   const lines: string[] = [];
@@ -56,6 +95,8 @@ export interface OwnerReportDiagram {
   png: Uint8Array;
 }
 
+type BuiltinSection = Extract<OwnerReportRenderSection, { kind: 'builtin' }>;
+
 export async function buildOwnerReportPdfBytes(
   model: OwnerReportModel,
   branding: OwnerReportBranding,
@@ -63,6 +104,7 @@ export async function buildOwnerReportPdfBytes(
   diagram?: OwnerReportDiagram
 ): Promise<Uint8Array> {
   const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+  const t = reportStrings(model.locale);
   const doc = await PDFDocument.create();
   const regular = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -89,7 +131,7 @@ export async function buildOwnerReportPdfBytes(
     const size = opts.size ?? 10.5;
     const indent = opts.indent ?? 0;
     const lineHeight = size * 1.45;
-    for (const line of wrap(text, font, size, CONTENT_W - indent)) {
+    for (const line of wrap(pdfSafe(text), font, size, CONTENT_W - indent)) {
       ensure(lineHeight);
       page.drawText(line, { x: MARGIN + indent, y: y - size, size, font, color: opts.color ?? ink });
       y -= lineHeight;
@@ -98,9 +140,16 @@ export async function buildOwnerReportPdfBytes(
   };
 
   const heading = (text: string) => {
+    const lines = wrap(pdfSafe(text), bold, 12, CONTENT_W);
     ensure(34);
     y -= 10;
-    page.drawText(text, { x: MARGIN, y: y - 12, size: 12, font: bold, color: teal });
+    lines.forEach((line, i) => {
+      if (i > 0) {
+        ensure(16);
+        y -= 16;
+      }
+      page.drawText(line, { x: MARGIN, y: y - 12, size: 12, font: bold, color: teal });
+    });
     y -= 20;
   };
 
@@ -120,20 +169,23 @@ export async function buildOwnerReportPdfBytes(
       // Logo fetch/decoding failed — header text alone is fine.
     }
   }
-  page.drawText(branding.practiceName || 'Dental Visit Report', {
+  const title = pdfSafe(model.title);
+  page.drawText(pdfSafe(branding.practiceName) || title || t.defaultTitle, {
     x: headerX, y: y - 14, size: 15, font: bold, color: ink,
   });
   if (branding.doctorName) {
-    page.drawText(branding.doctorName, { x: headerX, y: y - 28, size: 9.5, font: regular, color: muted });
+    page.drawText(pdfSafe(branding.doctorName), { x: headerX, y: y - 28, size: 9.5, font: regular, color: muted });
   }
-  const title = 'Dental Visit Report';
-  page.drawText(title, {
-    x: PAGE_W - MARGIN - bold.widthOfTextAtSize(title, 11),
-    y: y - 14, size: 11, font: bold, color: teal,
-  });
+  if (title) {
+    page.drawText(title, {
+      x: PAGE_W - MARGIN - bold.widthOfTextAtSize(title, 11),
+      y: y - 14, size: 11, font: bold, color: teal,
+    });
+  }
   if (model.visitDate) {
-    page.drawText(model.visitDate, {
-      x: PAGE_W - MARGIN - regular.widthOfTextAtSize(model.visitDate, 9.5),
+    const visitDate = pdfSafe(model.visitDate);
+    page.drawText(visitDate, {
+      x: PAGE_W - MARGIN - regular.widthOfTextAtSize(visitDate, 9.5),
       y: y - 28, size: 9.5, font: regular, color: muted,
     });
   }
@@ -146,141 +198,186 @@ export async function buildOwnerReportPdfBytes(
 
   // ---- Patient -----------------------------------------------------------
   const patientLine = [
-    `Patient: ${model.patientName || '—'} (${model.speciesLabel})`,
-    model.ownerName ? `Owner: ${model.ownerName}` : '',
+    `${t.patientLabel}: ${model.patientName || '—'} (${model.speciesLabel})`,
+    model.ownerName ? `${t.ownerLabel}: ${model.ownerName}` : '',
   ].filter(Boolean).join('    ');
   drawText(patientLine, { font: bold, size: 11, gapAfter: 6 });
 
   if (model.intro) drawText(model.intro, { color: muted, gapAfter: 4 });
 
-  // ---- Extractions -------------------------------------------------------
-  if (model.extracted.length > 0) {
-    heading('Teeth removed during this visit');
-    drawText(
-      'These teeth could not be saved and were removed so they no longer cause pain or infection:',
-      { gapAfter: 2 }
-    );
-    for (const name of model.extracted) drawText(`•  ${name}`, { indent: 10 });
-    y -= 4;
-  }
-
-  // ---- Mouth diagram -----------------------------------------------------
+  // ---- Sections, in template order ----------------------------------------
   const findingsTeeth = teethWithFindings(model);
-  const numbered = !!diagram && findingsTeeth.length > 0;
-  if (diagram) {
-    try {
-      const img = await doc.embedPng(diagram.png);
-      const maxW = CONTENT_W * 0.62;
-      const maxH = 270;
-      const scale = Math.min(maxW / img.width, maxH / img.height);
-      const w = img.width * scale;
-      const h = img.height * scale;
-      heading(`${model.patientName ? `${model.patientName}’s` : 'Your pet’s'} mouth`);
-      ensure(h + 24);
-      page.drawImage(img, { x: MARGIN + (CONTENT_W - w) / 2, y: y - h, width: w, height: h });
-      y -= h + 6;
-      const legend = [
-        numbered ? 'Numbers match the findings below' : '',
-        model.alreadyMissing.length ? 'filled = missing before this visit' : '',
-        model.extracted.length ? 'red ✕ = removed today' : '',
-      ].filter(Boolean).join('   ·   ');
-      if (legend) {
-        // Helvetica can't encode ✕ — spell it for the PDF font.
-        const safe = legend.replace('✕', 'X');
-        const lw = regular.widthOfTextAtSize(safe, 8.5);
-        page.drawText(safe, { x: MARGIN + (CONTENT_W - lw) / 2, y: y - 9, size: 8.5, font: regular, color: muted });
-        y -= 16;
+  const builtins = new Map<BuiltInSectionId, BuiltinSection>();
+  for (const section of model.sections) if (section.kind === 'builtin') builtins.set(section.id, section);
+  const findingsOn = builtins.has('findings');
+  const numbered = !!diagram && builtins.has('diagram') && findingsOn && findingsTeeth.length > 0;
+  // The "nothing found" note prints where the last of the three finding
+  // sections would have (by default: after the exam notes).
+  const emptyChart =
+    model.extracted.length === 0 && findingsTeeth.length === 0 && model.examNotes.length === 0;
+  const findingSlots = model.sections
+    .filter((s) => s.kind === 'builtin' && (s.id === 'extractions' || s.id === 'findings' || s.id === 'examNotes'))
+    .map((s) => s.id);
+  const emptyNoteAfter = findingsOn ? findingSlots[findingSlots.length - 1] : undefined;
+
+  const renderBuiltin = async (section: BuiltinSection) => {
+    switch (section.id) {
+      case 'extractions': {
+        if (model.extracted.length === 0) return;
+        heading(section.heading);
+        drawText(t.extractionsLead, { gapAfter: 2 });
+        for (const name of model.extracted) drawText(`•  ${name}`, { indent: 10 });
+        y -= 4;
+        return;
       }
-    } catch {
-      // A diagram that won't embed shouldn't cost the owner their report.
+      case 'diagram': {
+        if (!diagram) return;
+        try {
+          const img = await doc.embedPng(diagram.png);
+          const maxW = CONTENT_W * 0.62;
+          const maxH = 270;
+          const scale = Math.min(maxW / img.width, maxH / img.height);
+          const w = img.width * scale;
+          const h = img.height * scale;
+          heading(section.heading);
+          ensure(h + 24);
+          page.drawImage(img, { x: MARGIN + (CONTENT_W - w) / 2, y: y - h, width: w, height: h });
+          y -= h + 6;
+          const legend = [
+            numbered ? t.legendNumbers : '',
+            model.alreadyMissing.length ? t.legendFilled : '',
+            model.extracted.length ? t.legendRemoved : '',
+          ].filter(Boolean).join('   ·   ');
+          if (legend) {
+            // Helvetica can't encode ✕ — pdfSafe spells it as X.
+            const safe = pdfSafe(legend);
+            const lw = regular.widthOfTextAtSize(safe, 8.5);
+            page.drawText(safe, { x: MARGIN + (CONTENT_W - lw) / 2, y: y - 9, size: 8.5, font: regular, color: muted });
+            y -= 16;
+          }
+        } catch {
+          // A diagram that won't embed shouldn't cost the owner their report.
+        }
+        return;
+      }
+      case 'findings': {
+        if (findingsTeeth.length === 0) return;
+        heading(section.heading);
+        findingsTeeth.forEach((tooth, i) => {
+          ensure(30);
+          const prefix = numbered ? `${i + 1}.  ` : '';
+          drawText(`${prefix}${tooth.layName}${tooth.extracted ? `  —  ${t.removedToday}` : ''}`, { font: bold, size: 10.5 });
+          drawText(tooth.notes.join('; '), { indent: numbered ? 16 : 10, color: muted, gapAfter: 4 });
+        });
+        return;
+      }
+      case 'alreadyMissing': {
+        if (model.alreadyMissing.length === 0) return;
+        if (section.customHeading) {
+          heading(section.heading);
+          drawText(`${model.alreadyMissing.join(', ')}.`, { color: muted, gapAfter: 4 });
+        } else {
+          drawText(t.alreadyMissingLine(model.alreadyMissing.join(', ')), { color: muted, gapAfter: 4 });
+        }
+        return;
+      }
+      case 'examNotes': {
+        if (model.examNotes.length === 0) return;
+        heading(section.heading);
+        for (const note of model.examNotes) {
+          drawText(`•  ${note.area}${note.comment ? `: ${note.comment}` : ` — ${t.abnormalityNoted}`}`, { indent: 10 });
+        }
+        return;
+      }
+      case 'photos': {
+        if (photos.length === 0) return;
+        heading(section.heading);
+        const colW = (CONTENT_W - 16) / 2;
+        const befores = photos.filter((p) => p.role === 'before');
+        const afters = photos.filter((p) => p.role === 'after');
+        const rows = Math.max(befores.length, afters.length);
+        for (let i = 0; i < rows; i++) {
+          const pair = [befores[i], afters[i]];
+          // Tallest image in the row decides the row height.
+          const embedded = await Promise.all(
+            pair.map(async (photo) => (photo ? doc.embedJpg(photo.jpegBytes) : null))
+          );
+          const heights = embedded.map((img) => (img ? Math.min(180, (img.height / img.width) * colW) : 0));
+          const rowH = Math.max(...heights, 0);
+          ensure(rowH + 34);
+          pair.forEach((photo, col) => {
+            const img = embedded[col];
+            if (!photo || !img) return;
+            const x = MARGIN + col * (colW + 16);
+            const h = heights[col];
+            const w = Math.min(colW, (img.width / img.height) * h);
+            page.drawImage(img, { x, y: y - h, width: w, height: h });
+            const label = pdfSafe(`${col === 0 ? t.before : t.after}${photo.caption ? ` — ${photo.caption}` : ''}`);
+            const labelLine = wrap(label, regular, 8.5, colW)[0];
+            page.drawText(labelLine, { x, y: y - h - 12, size: 8.5, font: regular, color: muted });
+          });
+          y -= rowH + 26;
+        }
+        return;
+      }
+      case 'teamNote': {
+        if (!model.extraNotes) return;
+        heading(section.heading);
+        drawText(model.extraNotes);
+        return;
+      }
+      case 'homecare': {
+        if (model.homecareTips.length === 0) return;
+        heading(section.heading);
+        for (const tip of model.homecareTips) drawText(`•  ${tip}`, { indent: 10 });
+        return;
+      }
+      case 'recheck': {
+        if (!model.recallDate) return;
+        y -= 6;
+        ensure(20);
+        drawText(`${section.heading}: ${model.recallDate}`, { font: bold, size: 11, color: teal });
+        return;
+      }
+    }
+  };
+
+  for (const section of model.sections) {
+    if (section.kind === 'custom') {
+      if (section.heading) heading(section.heading);
+      if (section.body) drawText(section.body, { gapAfter: 2 });
+      continue;
+    }
+    await renderBuiltin(section);
+    if (emptyChart && section.id === emptyNoteAfter) {
+      heading(builtins.get('findings')!.heading);
+      drawText(t.noProblems);
     }
   }
 
-  // ---- Findings ----------------------------------------------------------
-  if (findingsTeeth.length > 0) {
-    heading('What we found');
-    findingsTeeth.forEach((tooth, i) => {
-      ensure(30);
-      const prefix = numbered ? `${i + 1}.  ` : '';
-      drawText(`${prefix}${tooth.layName}${tooth.extracted ? '  —  removed today' : ''}`, { font: bold, size: 10.5 });
-      drawText(tooth.notes.join('; '), { indent: numbered ? 16 : 10, color: muted, gapAfter: 4 });
-    });
-  }
-
-  if (model.alreadyMissing.length > 0) {
-    drawText(
-      `Already missing before this visit: ${model.alreadyMissing.join(', ')}.`,
-      { color: muted, gapAfter: 4 }
-    );
-  }
-
-  if (model.examNotes.length > 0) {
-    heading('Other exam notes');
-    for (const note of model.examNotes) {
-      drawText(`•  ${note.area}${note.comment ? `: ${note.comment}` : ' — abnormality noted'}`, { indent: 10 });
-    }
-  }
-
-  if (model.extracted.length === 0 && findingsTeeth.length === 0 && model.examNotes.length === 0) {
-    heading('What we found');
-    drawText('No dental problems were recorded on the chart for this visit — great news!');
-  }
-
-  // ---- Before & after ----------------------------------------------------
-  if (photos.length > 0) {
-    heading('Before & after');
-    const colW = (CONTENT_W - 16) / 2;
-    const befores = photos.filter((p) => p.role === 'before');
-    const afters = photos.filter((p) => p.role === 'after');
-    const rows = Math.max(befores.length, afters.length);
-    for (let i = 0; i < rows; i++) {
-      const pair = [befores[i], afters[i]];
-      // Tallest image in the row decides the row height.
-      const embedded = await Promise.all(
-        pair.map(async (photo) => (photo ? doc.embedJpg(photo.jpegBytes) : null))
-      );
-      const heights = embedded.map((img) => (img ? Math.min(180, (img.height / img.width) * colW) : 0));
-      const rowH = Math.max(...heights, 0);
-      ensure(rowH + 34);
-      pair.forEach((photo, col) => {
-        const img = embedded[col];
-        if (!photo || !img) return;
-        const x = MARGIN + col * (colW + 16);
-        const h = heights[col];
-        const w = Math.min(colW, (img.width / img.height) * h);
-        page.drawImage(img, { x, y: y - h, width: w, height: h });
-        const label = `${col === 0 ? 'Before' : 'After'}${photo.caption ? ` — ${photo.caption}` : ''}`;
-        const labelLine = wrap(label, regular, 8.5, colW)[0];
-        page.drawText(labelLine, { x, y: y - h - 12, size: 8.5, font: regular, color: muted });
-      });
-      y -= rowH + 26;
-    }
-  }
-
-  // ---- Team note + home care + recheck ------------------------------------
-  if (model.extraNotes) {
-    heading('A note from your veterinary team');
-    drawText(model.extraNotes);
-  }
-
-  if (model.homecareTips.length > 0) {
-    heading(`Caring for ${model.patientName || 'your pet'}’s teeth at home`);
-    for (const tip of model.homecareTips) {
-      drawText(`•  ${tip}`, { indent: 10 });
-    }
-  }
-
-  if (model.recallDate) {
-    y -= 6;
-    ensure(20);
-    drawText(`Recommended recheck: ${model.recallDate}`, { font: bold, size: 11, color: teal });
+  if (model.closingNote) {
+    y -= 8;
+    drawText(model.closingNote);
   }
 
   y -= 8;
-  drawText(
-    `Prepared by ${branding.doctorName || 'your veterinary team'}${branding.practiceName ? `, ${branding.practiceName}` : ''}.`,
-    { size: 8.5, color: muted }
-  );
+  drawText(t.preparedBy(branding.doctorName, branding.practiceName), { size: 8.5, color: muted });
+
+  // ---- Footer on every page ----------------------------------------------
+  if (model.footer) {
+    const size = 8;
+    const lines = wrap(pdfSafe(model.footer), regular, size, CONTENT_W).filter(Boolean).slice(0, 2);
+    for (const p of doc.getPages()) {
+      lines.forEach((line, i) => {
+        const lw = regular.widthOfTextAtSize(line, size);
+        p.drawText(line, {
+          x: MARGIN + (CONTENT_W - lw) / 2,
+          y: FOOTER_Y + (lines.length - 1 - i) * (size * 1.35),
+          size, font: regular, color: muted,
+        });
+      });
+    }
+  }
 
   return doc.save();
 }
