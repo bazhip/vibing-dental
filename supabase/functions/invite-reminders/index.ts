@@ -47,6 +47,9 @@ Deno.serve(async (req: Request) => {
       if (count >= SCHEDULE_DAYS.length) continue;
       const dueAt = Date.parse(u.invited_at) + SCHEDULE_DAYS[count] * DAY;
       if (now < dueAt) continue;
+      // Space reminders out even for old invites (both "due" at once).
+      const last = typeof meta.invite_reminded_at === 'string' ? Date.parse(meta.invite_reminded_at) : 0;
+      if (last && now - last < 3 * DAY) continue;
 
       // Which practice invited them (for the wording).
       const { data: mem } = await admin
