@@ -79,11 +79,18 @@ export function useHashRoute(): {
   const navigate = React.useCallback((hash: string, opts?: { replace?: boolean }) => {
     if (window.location.hash === hash) return;
     if (opts?.replace) {
-      window.history.replaceState(
-        null,
-        '',
-        window.location.pathname + window.location.search + hash
-      );
+      try {
+        window.history.replaceState(
+          null,
+          '',
+          window.location.pathname + window.location.search + hash
+        );
+      } catch (err) {
+        // Safari throws (SecurityError) past 100 replaceState calls per
+        // 10s. A canonical hash is cosmetic — never crash the app over it.
+        console.warn('Skipped a URL update', err);
+        return;
+      }
       // replaceState doesn't fire hashchange — broadcast it so every
       // useHashRoute instance (App, EntryGrid) stays in sync.
       window.dispatchEvent(new HashChangeEvent('hashchange'));

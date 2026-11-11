@@ -147,6 +147,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   React.useEffect(() => {
     if (route.view === 'chart' && route.section) setActiveSection(route.section);
   }, [route.view, route.section]);
+  // The ONE way the app changes section: state and hash move together.
+  // (Mirroring activeSection into the hash from an effect, next to the
+  // effect above mirroring the hash into activeSection, ping-ponged
+  // forever whenever one render carried a hash change AND a different
+  // section pick — each effect undid the other every render until Safari
+  // threw "replaceState() more than 100 times per 10 seconds".)
+  const hashBaseRef = React.useRef('');
+  hashBaseRef.current = cloud.enabled ? `#/chart/${chart.cloudChartId}` : '#/chart';
+  const routeViewRef = React.useRef(route.view);
+  routeViewRef.current = route.view;
+  const goToSection = React.useCallback((id: string) => {
+    setActiveSection(id);
+    if (routeViewRef.current === 'chart') navigate(`${hashBaseRef.current}/${id}`, { replace: true });
+  }, [navigate]);
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
@@ -243,7 +257,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     for (let i = actions.length - 1; i >= 0; i--) {
       const f = actionFocus(actions[i], activeSectionRef.current);
       if (!f) continue;
-      setActiveSection(f.section);
+      goToSection(f.section);
       if (typeof f.triadan === 'number') {
         setAiHighlightTriadan(f.triadan);
         window.clearTimeout(aiHighlightTimer.current);
@@ -251,7 +265,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       }
       break;
     }
-  }, []);
+  }, [goToSection]);
 
   // First-run walkthrough — auto-shown once per browser for real accounts,
   // and relaunchable from Settings.
@@ -309,15 +323,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep the hash naming the working chart and section (replace, not
-  // push — typing, section switches, and visit switches must not pollute
-  // the Back stack). Trial mode has no meaningful chart id, so its hash
-  // carries the section alone.
+  // Keep the hash naming the working chart (replace, not push — visit
+  // switches must not pollute the Back stack). Section changes write the
+  // hash themselves (goToSection), so this deliberately does NOT re-run
+  // on activeSection — see goToSection for the loop that caused. Trial
+  // mode has no meaningful chart id, so its hash carries the section alone.
   React.useEffect(() => {
     if (route.view !== 'chart') return;
-    const base = cloud.enabled ? `#/chart/${chart.cloudChartId}` : '#/chart';
-    navigate(`${base}/${activeSection}`, { replace: true });
-  }, [cloud.enabled, route.view, chart.cloudChartId, activeSection, navigate]);
+    navigate(`${hashBaseRef.current}/${activeSectionRef.current}`, { replace: true });
+  }, [cloud.enabled, route.view, chart.cloudChartId, navigate]);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
   // Recheck reminders are composed from a saved chart in My charts; this
@@ -348,7 +362,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (!cloud.enabled || readOnly) return;
     if (!chart.patientInfo.patientName.trim()) {
       setSaveHint('Add a patient name before saving — it’s how you’ll find this chart again.');
-      setActiveSection('patient');
+      goToSection('patient');
       return;
     }
     setSaveHint('');
@@ -460,7 +474,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       },
       goneTeeth: Array.from(gone),
     });
-    setActiveSection('patient');
+    goToSection('patient');
     const name = snap.patientInfo.patientName?.trim();
     toast(
       `New visit${name ? ` for ${name}` : ''} started${gone.size ? ` — ${gone.size} missing/extracted ${gone.size === 1 ? 'tooth' : 'teeth'} carried forward` : ''}.`,
@@ -1305,7 +1319,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <SidebarLayout
           sections={sections}
           activeId={activeSection}
-          onActiveChange={setActiveSection}
+          onActiveChange={goToSection}
         />
       </form>
 
@@ -1340,7 +1354,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               config: profile.ownerReportConfig,
               onEditWording: () => {
                 setPreviewOpen(false);
-                setActiveSection('owner-report');
+                goToSection('owner-report');
               },
             } : undefined}
           />
@@ -1351,7 +1365,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         open={walkthroughOpen}
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled && !trial}
-        onNavigate={setActiveSection}
+        onNavigate={goToSection}
       />
 
       <PracticeSettingsModal
