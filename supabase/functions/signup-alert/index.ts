@@ -1,7 +1,7 @@
 // Signup alert — called by a database trigger (pg_net) whenever a new
 // row lands in public.profiles. Sends an email via Resend.
 //
-// Deployed to the hiefwyyoyiqxmxaxyxmx project as `signup-alert`
+// Deployed to the ocjnngfzwyajhgqzicsf project as `signup-alert`
 // (verify_jwt off — pg_net calls it server-to-server). The payload is
 // only trusted as a POINTER: we accept a profile id, look the row up
 // with the service role, and only send for profiles created in the
