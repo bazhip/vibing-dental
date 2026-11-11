@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { friendlyError } from '../components/ui/dialogs';
 
 /**
  * Practice (multi-doctor) membership for the signed-in user. All calls
@@ -30,7 +31,9 @@ export interface TeamState {
 export interface UseTeamReturn extends TeamState {
   enabled: boolean;
   loaded: boolean;
+  /** Load failure for the team itself (not for an action) — '' when fine. */
   error: string;
+  /** Re-fetch the team (also the Retry after a failed load). */
   refresh: () => Promise<void>;
   createPractice: (name: string) => Promise<void>;
   /** 'invited' = new account emailed a set-password link (joins on
@@ -73,7 +76,7 @@ export function useTeam(open: boolean): UseTeamReturn {
       const data = await call<TeamState>({ action: 'get_team' });
       setState({ practice: data.practice, role: data.role, primaryOwnerId: data.primaryOwnerId ?? null, members: data.members ?? [] });
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load your team.');
+      setError(friendlyError(e, 'Could not load your team.'));
     } finally {
       setLoaded(true);
     }

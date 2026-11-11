@@ -1,0 +1,120 @@
+/* Account / admin surfaces: Practice settings, Account settings, Admin
+ * panel, Settings menu. Shared bits that aren't covered by the
+ * ai-settings / patient-form / login-* classes. */
+
+/* Password field with a Show/Hide toggle inside it. */
+.settings-password {
+  position: relative;
+  display: block;
+}
+.settings-password .patient-form__input {
+  width: 100%;
+  padding-right: 4.25rem;
+  box-sizing: border-box;
+}
+.settings-password__toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  transform: translateY(-50%);
+  min-height: 32px;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary, #0c6b63);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.settings-password__toggle:hover { background: var(--primary-tint, #eff6f5); }
+.settings-password__toggle:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 1px; }
+
+/* Inline section messages: left-aligned so they read as part of the
+ * section rather than a page-level banner. */
+.login-error.settings-msg,
+.login-notice.settings-msg {
+  margin-top: 0.6rem;
+  text-align: left;
+}
+.settings-msg--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.settings-msg__action {
+  flex: 0 0 auto;
+}
+
+.settings-hint--warn { color: var(--danger, #b23c2a); }
+
+/* Admin panel: search + dismissible result banner. */
+.admin-panel__search {
+  display: block;
+  margin: 0.6rem 0 0.4rem;
+}
+.admin-panel__search .patient-form__input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.admin-panel__banner .login-error,
+.admin-panel__banner .login-notice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+}
+.admin-panel__banner-dismiss {
+  flex: 0 0 auto;
+  min-width: 32px;
+  min-height: 32px;
+  margin: -0.35rem -0.35rem -0.35rem 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.admin-panel__banner-dismiss:hover { background: rgba(15, 23, 42, 0.06); }
+
+/* Settings menu: who's signed in. */
+.chart-menu__account {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+  font-size: 0.8rem;
+  color: var(--text-muted, #64748b);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chart-menu__account strong {
+  color: var(--text, #1f2937);
+  font-weight: 600;
+}
+.chart-menu__item:focus-visible {
+  outline: 2px solid var(--primary, #0c6b63);
+  outline-offset: -2px;
+  background: var(--surface-alt, #f8fafc);
+}
+
+/* Phones: 44px touch targets. */
+@media (max-width: 600px) {
+  .settings-password__toggle,
+  .admin-panel__banner-dismiss {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .admin-panel__search .patient-form__input,
+  .settings-password .patient-form__input {
+    min-height: 44px;
+    font-size: 16px; /* no iOS zoom */
+  }
+  .chart-menu__item { min-height: 44px; }
+}

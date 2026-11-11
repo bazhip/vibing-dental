@@ -7,6 +7,20 @@ import { PLAN_LIMITS } from '../hooks/useProfile';
 const PAID_STATUSES = ['active', 'trialing', 'comped', 'past_due'];
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
+import { confirmDialog, friendlyError, promptDialog } from './ui/dialogs';
+import './Login.css';
+import './AccountSurfaces.css';
+
+const MIN_PASSWORD = 8;
+
+/** Case-insensitive "does any of these contain the query". */
+const matches = (q: string, ...fields: Array<string | null | undefined>) =>
+  !q || fields.some((f) => !!f && f.toLowerCase().includes(q));
+
+/** "Primary owner" / "Owner" / "Member" — never the raw role key. */
+const roleLabel = (role: string, isPrimaryOwner: boolean) =>
+  isPrimaryOwner ? 'Primary owner' : role === 'owner' ? 'Owner' : 'Member';
 
 /**
  * Admin panel — visible only to the account whose app_metadata carries
@@ -177,6 +191,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [selectedPracticeId, setSelectedPracticeId] = React.useState<string | null>(null);
   const [practiceRename, setPracticeRename] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
+  const [query, setQuery] = React.useState('');
   const logoRef = React.useRef<HTMLInputElement>(null);
   const modalRef = useModalFocus(open);
 
@@ -195,7 +210,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       setUsers(u.users);
       setPractices(pr.practices);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load admin data.');
+      setError(friendlyError(e, 'Could not load admin data.'));
     }
   }, []);
 
@@ -204,6 +219,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       setSelectedId(null);
       setSelectedPracticeId(null);
       setNotice('');
+      setQuery('');
       refresh();
     }
   }, [open, refresh]);
@@ -217,12 +233,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  // Auto-dismiss the result banner so it reads as a transient toast.
+  // Success notices fade on their own; errors stay until dismissed (or
+  // the next action), so a failure can't vanish before it's read.
   React.useEffect(() => {
-    if (!notice && !error) return;
-    const t = setTimeout(() => { setNotice(''); setError(''); }, 4500);
+    if (!notice) return;
+    const t = setTimeout(() => setNotice(''), 4500);
     return () => clearTimeout(t);
-  }, [notice, error]);
+  }, [notice]);
+
+  const backdrop = useBackdropDismiss(onClose);
 
   const loadAi = React.useCallback(async () => {
     try {
@@ -236,7 +255,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       const bal = await adminCall<{ deepgram: string | null; note: string }>({ action: 'ai_balance' });
       setAiBalance(bal);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load AI settings.');
+      setError(friendlyError(e, 'Could not load AI settings.'));
     }
   }, []);
   React.useEffect(() => {
@@ -253,7 +272,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       setBillingMrr(o.mrrUsd ?? 0);
       setBillingComped(o.compedCount ?? 0);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load billing.');
+      setError(friendlyError(e, 'Could not load billing.'));
       setBillingRows([]);
     }
   }, []);
@@ -271,43 +290,61 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     setNotice('');
   };
 
-  const run = async (label: string, fn: () => Promise<void>) => {
+  /** Run an admin action; shows `label` on success (none when null). */
+  const run = async (label: string | null, fn: () => Promise<void>): Promise<boolean> => {
     setBusy(true);
     setError('');
     setNotice('');
     try {
       await fn();
-      setNotice(label);
+      if (label) setNotice(label);
+      return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'That did not work.');
+      setError(friendlyError(e, 'That didn’t work. Please try again.'));
+      return false;
     } finally {
       setBusy(false);
     }
   };
 
-  const handleSetPassword = () => {
+  const handleSetPassword = async () => {
     if (!selected) return;
-    const pw = window.prompt(`New password for ${selected.email} (min 6 characters):`, '');
+    const pw = await promptDialog({
+      title: `Set a new password for ${selected.email}`,
+      message: 'They’ll sign in with this password from now on. Share it with them securely.',
+      label: 'New password',
+      type: 'password',
+      placeholder: `At least ${MIN_PASSWORD} characters`,
+      confirmLabel: 'Set password',
+      validate: (v) => (v.length < MIN_PASSWORD ? `Use at least ${MIN_PASSWORD} characters.` : null),
+    });
     if (pw === null) return;
     run('Password updated.', async () => {
       await adminCall({ action: 'set_password', userId: selected.id, password: pw });
     });
   };
 
-  const handleResetLink = () => {
+  const handleResetLink = async () => {
     if (!selected) return;
-    run('Reset link copied to clipboard.', async () => {
-      const { link } = await adminCall<{ link: string }>({
+    let link = '';
+    const ok = await run(null, async () => {
+      const res = await adminCall<{ link: string }>({
         action: 'reset_link',
         email: selected.email,
       });
-      if (!link) throw new Error('No link returned.');
-      try {
-        await navigator.clipboard.writeText(link);
-      } catch {
-        window.prompt('Copy the reset link:', link);
-      }
+      if (!res.link) throw new Error('The server didn’t return a reset link.');
+      link = res.link;
     });
+    if (!ok) return;
+    const copied = await promptDialog({
+      title: 'Password reset link',
+      message: `Send this to ${selected.email}. It signs them in once so they can choose a new password.`,
+      label: 'Reset link',
+      defaultValue: link,
+      readOnly: true,
+      confirmLabel: 'Copy link',
+    });
+    if (copied !== null) setNotice('Reset link copied to the clipboard.');
   };
 
   const handleSaveNames = () => {
@@ -331,23 +368,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleRemoveLogo = () => {
+  const handleRemoveLogo = async () => {
     if (!selected) return;
-    if (!window.confirm(`Remove the uploaded logo for ${selected.email}?`)) return;
+    const ok = await confirmDialog({
+      title: `Remove the logo for ${selected.email}?`,
+      message: 'Their charts fall back to the template’s built-in mark.',
+      confirmLabel: 'Remove logo',
+      danger: true,
+    });
+    if (!ok) return;
     run('Logo removed.', async () => {
       await adminCall({ action: 'remove_logo', userId: selected.id });
       await refresh();
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!selected) return;
     const label = selected.practiceName.trim() || selected.email;
-    if (!window.confirm(
-      `Delete the account for ${label}? This permanently removes the account, ` +
-      `its ${selected.chartCount} chart${selected.chartCount === 1 ? '' : 's'}, templates, and logo.`
-    )) return;
-    if (!window.confirm('This cannot be undone. Delete permanently?')) return;
+    const ok = await confirmDialog({
+      title: `Permanently delete ${selected.email}?`,
+      message:
+        `This removes the user${label !== selected.email ? ` (${label})` : ''}, ` +
+        `their ${selected.chartCount} chart${selected.chartCount === 1 ? '' : 's'}, templates, and logo. ` +
+        'This cannot be undone.',
+      confirmLabel: 'Delete permanently',
+      danger: true,
+    });
+    if (!ok) return;
     run('Account deleted.', async () => {
       await adminCall({ action: 'delete_user', userId: selected.id });
       setSelectedId(null);
@@ -363,20 +411,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     setNotice('');
   };
 
-  const handleRenamePractice = () => {
-    if (!selectedPractice) return;
+  const handleRenamePractice = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!selectedPractice || busy) return;
     run('Practice renamed.', async () => {
       await adminCall({ action: 'rename_practice', practiceId: selectedPractice.id, name: practiceRename.trim() });
       await refresh();
     });
   };
 
-  const handleDeletePractice = () => {
+  const handleDeletePractice = async () => {
     if (!selectedPractice) return;
-    if (!window.confirm(
-      `Delete the practice "${selectedPractice.name || 'Untitled'}"? Its ${selectedPractice.chartCount} shared ` +
-      `chart${selectedPractice.chartCount === 1 ? '' : 's'} become private to their creators; accounts are not deleted.`
-    )) return;
+    const ok = await confirmDialog({
+      title: `Delete the practice “${selectedPractice.name || 'Untitled'}”?`,
+      message:
+        `Its ${selectedPractice.chartCount} shared chart${selectedPractice.chartCount === 1 ? '' : 's'} ` +
+        'become private to whoever created them. Users are not deleted.',
+      confirmLabel: 'Delete practice',
+      danger: true,
+    });
+    if (!ok) return;
     run('Practice deleted.', async () => {
       await adminCall({ action: 'delete_practice', practiceId: selectedPractice.id });
       setSelectedPracticeId(null);
@@ -384,8 +438,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleAddPracticeMember = () => {
-    if (!selectedPractice || !memberEmail.trim()) return;
+  const handleAddPracticeMember = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!selectedPractice || !memberEmail.trim() || busy) return;
     run('Member added.', async () => {
       await adminCall({ action: 'practice_add_member', practiceId: selectedPractice.id, email: memberEmail.trim() });
       setMemberEmail('');
@@ -393,9 +448,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleRemovePracticeMember = (userId: string, email: string) => {
+  const handleRemovePracticeMember = async (userId: string, email: string) => {
     if (!selectedPractice) return;
-    if (!window.confirm(`Remove ${email} from ${selectedPractice.name || 'this practice'}?`)) return;
+    const ok = await confirmDialog({
+      title: `Remove ${email} from ${selectedPractice.name || 'this practice'}?`,
+      message: 'They lose access to the practice’s shared charts but keep their own.',
+      confirmLabel: 'Remove',
+      danger: true,
+    });
+    if (!ok) return;
     run('Member removed.', async () => {
       await adminCall({ action: 'practice_remove_member', practiceId: selectedPractice.id, userId });
       await refresh();
@@ -444,10 +505,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleSetComped = (comped: boolean) => {
+  const handleSetComped = async (comped: boolean) => {
     if (!selectedPractice) return;
-    if (comped && !window.confirm(`Give ${selectedPractice.name || 'this practice'} complimentary access (no subscription required)?`)) return;
-    if (!comped && !window.confirm('Remove complimentary access? They will hit the plan chooser on next load.')) return;
+    const name = selectedPractice.name || 'this practice';
+    const ok = await confirmDialog(
+      comped
+        ? {
+            title: `Give ${name} complimentary access?`,
+            message: 'Full access with no subscription required.',
+            confirmLabel: 'Comp practice',
+          }
+        : {
+            title: `Remove complimentary access for ${name}?`,
+            message: 'They’ll be asked to pick a plan the next time they load the app.',
+            confirmLabel: 'Remove comp',
+            danger: true,
+          }
+    );
+    if (!ok) return;
     run(comped ? 'Comped — full access, no billing.' : 'Comp removed.', async () => {
       await adminCall({ action: 'set_billing', practiceId: selectedPractice.id, comped });
       await refresh();
@@ -488,9 +563,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleSetPracticeOwner = (userId: string, email: string) => {
+  const handleSetPracticeOwner = async (userId: string, email: string) => {
     if (!selectedPractice) return;
-    if (!window.confirm(`Make ${email} the primary owner of ${selectedPractice.name || 'this practice'}?`)) return;
+    const ok = await confirmDialog({
+      title: `Make ${email} the primary owner of ${selectedPractice.name || 'this practice'}?`,
+      message: 'The primary owner holds billing and the practice name.',
+      confirmLabel: 'Make primary owner',
+    });
+    if (!ok) return;
     run('Owner changed.', async () => {
       await adminCall({ action: 'set_practice_owner', practiceId: selectedPractice.id, userId });
       await refresh();
@@ -508,21 +588,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     });
   };
 
-  const handleRemovePracticeLogo = () => {
+  const handleRemovePracticeLogo = async () => {
     if (!selectedPractice) return;
-    if (!window.confirm('Remove this practice’s logo?')) return;
+    const ok = await confirmDialog({
+      title: 'Remove this practice’s logo?',
+      message: 'Their charts fall back to the template’s built-in mark.',
+      confirmLabel: 'Remove logo',
+      danger: true,
+    });
+    if (!ok) return;
     run('Logo removed.', async () => {
       await adminCall({ action: 'remove_practice_logo', practiceId: selectedPractice.id });
       await refresh();
     });
   };
 
+  const q = query.trim().toLowerCase();
+  const filteredUsers = (users ?? []).filter((u) =>
+    matches(q, u.email, u.practiceName, u.doctorName, u.teamPractice)
+  );
+  const filteredPractices = (practices ?? []).filter((p) =>
+    matches(q, p.name, p.ownerEmail, ...p.members.map((m) => m.email))
+  );
+
   const fmt = (iso: string | null) =>
     iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Admin panel">
-      <div className="ai-settings-modal chart-library-modal admin-panel" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
+    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Admin panel">
+      <div className="ai-settings-modal chart-library-modal admin-panel" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
           <h2>Admin panel</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
@@ -533,7 +627,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
         <div className="chart-library-modal__body">
           <p className="chart-library__sub">
             {stats
-              ? `${stats.users} practice account${stats.users === 1 ? '' : 's'} · ${stats.charts} charts · ${stats.templates} report templates`
+              ? `${stats.users} user${stats.users === 1 ? '' : 's'} · ${stats.charts} chart${stats.charts === 1 ? '' : 's'} · ${stats.templates} report template${stats.templates === 1 ? '' : 's'}`
               : 'Loading…'}
           </p>
 
@@ -578,13 +672,61 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
           {(error || notice) && (
             <div className="admin-panel__banner">
-              {error && <div className="login-error" role="alert">{error}</div>}
-              {notice && <div className="login-notice" role="status">{notice}</div>}
+              {error && (
+                <div className="login-error" role="alert">
+                  <span>{error}</span>
+                  <button type="button" className="admin-panel__banner-dismiss" onClick={() => setError('')} aria-label="Dismiss error">
+                    ×
+                  </button>
+                </div>
+              )}
+              {notice && (
+                <div className="login-notice" role="status">
+                  <span>{notice}</span>
+                  <button type="button" className="admin-panel__banner-dismiss" onClick={() => setNotice('')} aria-label="Dismiss">
+                    ×
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
-          {tab === 'accounts' && users !== null && users.length > 0 && (
-            <div className="chart-library__table" role="table" aria-label="Practice accounts">
+          {(tab === 'accounts' || tab === 'practices') && (
+            <div className="admin-panel__search">
+              <input
+                type="search"
+                className="patient-form__input"
+                aria-label={tab === 'accounts' ? 'Search users' : 'Search practices'}
+                placeholder={tab === 'accounts' ? 'Search users by email or name' : 'Search practices by name or email'}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+          )}
+
+          {tab === 'accounts' && users === null && (
+            <div className="chart-library__empty">
+              {error ? (
+                <>
+                  Couldn’t load users.{' '}
+                  <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
+                    Retry
+                  </button>
+                </>
+              ) : (
+                'Loading users…'
+              )}
+            </div>
+          )}
+          {tab === 'accounts' && users !== null && users.length === 0 && (
+            <div className="chart-library__empty">No users yet.</div>
+          )}
+          {tab === 'accounts' && users !== null && users.length > 0 && filteredUsers.length === 0 && (
+            <div className="chart-library__empty">No users match “{query.trim()}”.</div>
+          )}
+
+          {tab === 'accounts' && filteredUsers.length > 0 && (
+            <div className="chart-library__table" role="table" aria-label="Users">
               <div className="chart-library__head-row admin-panel__account-row" role="row">
                 <span role="columnheader">Email</span>
                 <span role="columnheader">Practice</span>
@@ -593,7 +735,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 <span role="columnheader">Flags</span>
               </div>
               <div className="chart-library__scroll">
-                {users.map((u) => (
+                {filteredUsers.map((u) => (
                   <div key={u.id} className="chart-library__row" role="row">
                     <button
                       type="button"
@@ -692,6 +834,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
             </section>
           )}
 
+          {tab === 'practices' && practices === null && (
+            <div className="chart-library__empty">
+              {error ? (
+                <>
+                  Couldn’t load practices.{' '}
+                  <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
+                    Retry
+                  </button>
+                </>
+              ) : (
+                'Loading practices…'
+              )}
+            </div>
+          )}
+
           {tab === 'practices' && practices !== null && (
             <div className="chart-library__table" role="table" aria-label="Practices">
               <div className="chart-library__head-row admin-panel__practice-row" role="row">
@@ -702,8 +859,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 <span role="columnheader">Billing</span>
               </div>
               <div className="chart-library__scroll">
-                {practices.length === 0 && <div className="chart-library__empty">No practices.</div>}
-                {practices.map((p) => (
+                {practices.length === 0 && <div className="chart-library__empty">No practices yet.</div>}
+                {practices.length > 0 && filteredPractices.length === 0 && (
+                  <div className="chart-library__empty">No practices match “{query.trim()}”.</div>
+                )}
+                {filteredPractices.map((p) => (
                   <div key={p.id} className="chart-library__row" role="row">
                     <button
                       type="button"
@@ -729,7 +889,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
           {tab === 'practices' && selectedPractice && (
             <section className="admin-panel__actions">
-              <div className="admin-panel__names">
+              <form className="admin-panel__names" onSubmit={handleRenamePractice}>
                 <label className="patient-form__label">
                   Practice name
                   <input
@@ -739,10 +899,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     onChange={(e) => setPracticeRename(e.target.value)}
                   />
                 </label>
-                <button type="button" className="diagram-view__action" onClick={handleRenamePractice} disabled={busy}>
+                <button type="submit" className="diagram-view__action" disabled={busy}>
                   Rename
                 </button>
-              </div>
+              </form>
 
               {/* What this account can actually do right now — resolved the
                   same way the app does (useProfile + PLAN_LIMITS). */}
@@ -902,7 +1062,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                   <li key={m.userId} className="team__member">
                     <span className="team__member-id"><strong>{m.email}</strong></span>
                     {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
-                    <span className="team__member-role">{m.isPrimaryOwner ? 'Primary owner' : m.role}</span>
+                    <span className="team__member-role">{roleLabel(m.role, m.isPrimaryOwner)}</span>
                     <span className="team__member-actions">
                       {m.pending && (
                         <button
@@ -914,7 +1074,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                           Resend invite
                         </button>
                       )}
-                      {!m.isPrimaryOwner && (
+                      {/* A pending invite can't own the practice yet. */}
+                      {!m.isPrimaryOwner && !m.pending && (
                         <button
                           type="button"
                           className="diagram-view__action"
@@ -939,18 +1100,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 ))}
               </ul>
 
-              <div className="practice-team__add">
+              <form className="practice-team__add" onSubmit={handleAddPracticeMember}>
                 <input
                   type="email"
                   className="patient-form__input"
                   placeholder="Add member by email"
+                  aria-label="Add member by email"
                   value={memberEmail}
                   onChange={(e) => setMemberEmail(e.target.value)}
                 />
-                <button type="button" className="diagram-view__action" onClick={handleAddPracticeMember} disabled={busy || !memberEmail.trim()}>
+                <button type="submit" className="diagram-view__action" disabled={busy || !memberEmail.trim()}>
                   Add
                 </button>
-              </div>
+              </form>
 
               <div className="admin-panel__buttons">
                 <button
