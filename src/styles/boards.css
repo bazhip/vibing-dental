@@ -969,6 +969,11 @@
 
 /* AI tab. */
 .admin-panel__ai { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 0.5rem; }
+/* The admin modal has a fixed height and clips overflow; Accounts and
+   Practices scroll inside their tables, but these tabs are one tall
+   block — scroll the section itself. */
+.admin-panel__ai,
+.admin-panel__billing { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .admin-panel__ai-block { display: flex; flex-direction: column; gap: 0.4rem; }
 .admin-panel__ai-total { margin: 0; font-size: 0.9rem; color: var(--text); }
 .admin-panel__usage-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
