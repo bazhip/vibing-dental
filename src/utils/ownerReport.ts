@@ -188,3 +188,9 @@ export function buildOwnerReportModel(snapshot: ChartSnapshot): OwnerReportModel
     examNotes,
   };
 }
+
+/** Teeth that get an entry (and a numbered pin on the diagram) in the
+ *  owner report, in report order. Shared so the numbers always match. */
+export function teethWithFindings(model: OwnerReportModel): OwnerReportTooth[] {
+  return model.teeth.filter((t) => t.notes.length > 0);
+}

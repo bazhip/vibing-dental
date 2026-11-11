@@ -38,11 +38,8 @@ import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
 // time a preview is requested, not with the charting screen.
-const PdfPreviewModal = lazyWithReload(() =>
-  import('./components/PdfPreviewModal').then((m) => ({ default: m.PdfPreviewModal }))
-);
-const OwnerReportModal = lazyWithReload(() =>
-  import('./components/OwnerReportModal').then((m) => ({ default: m.OwnerReportModal }))
+const DocumentsModal = lazyWithReload(() =>
+  import('./components/DocumentsModal').then((m) => ({ default: m.DocumentsModal }))
 );
 
 /**
@@ -451,7 +448,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const [previewSnapshot, setPreviewSnapshot] = React.useState<ChartSnapshot | null>(null);
   const [previewOpen, setPreviewOpen] = React.useState(false);
   // Owner report — the chart translated for the pet's owner.
-  const [ownerReportOpen, setOwnerReportOpen] = React.useState(false);
+  /** Which tab the Documents dialog opens on (undefined = last used). */
+  const [docsTab, setDocsTab] = React.useState<'chart' | 'owner' | undefined>(undefined);
 
   // ----- AI autofill plumbing -------------------------------------------
   // Snapshot of state Claude sees alongside the transcript.
@@ -555,6 +553,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   const handleOpenPreview = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    openDocuments();
+  };
+
+  /** Capture the chart (live diagram SVGs + state) and open the Documents
+   *  dialog, optionally on a given tab. */
+  const openDocuments = (tab?: 'chart' | 'owner') => {
+    setDocsTab(tab);
     try {
       const preHandle  = preDiagramRef.current;
       const postHandle = postDiagramRef.current;
@@ -783,7 +788,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               snapshot={chart.getSnapshot()}
               overrides={chart.ownerReport}
               onOverrideChange={chart.setOwnerReportOverride}
-              onPreview={() => setOwnerReportOpen(true)}
+              onPreview={() => openDocuments('owner')}
             />
           ),
         }]
@@ -1149,52 +1154,39 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       </form>
 
-      {ownerReportOn && (
-        <button
-          type="button"
-          className="fab-download fab-download--secondary"
-          onClick={() => setOwnerReportOpen(true)}
-          aria-haspopup="dialog"
-          aria-label="Preview and download the owner report"
-        >
-          <span aria-hidden="true">♥</span> Owner report
-        </button>
-      )}
-
       <button
         type="submit"
         form="chart-form"
         className="fab-download"
-        aria-label="Preview and download the chart PDF"
+        aria-haspopup="dialog"
+        aria-label={ownerReportOn ? 'Preview and download the clinical chart and owner report' : 'Preview and download the chart PDF'}
       >
-        <span aria-hidden="true">⤓</span> Preview PDF
+        <span aria-hidden="true">⤓</span> {ownerReportOn ? 'Documents' : 'Preview PDF'}
       </button>
-
-      {ownerReportOn && ownerReportOpen && (
-        <React.Suspense fallback={null}>
-          <OwnerReportModal
-            open
-            onClose={() => setOwnerReportOpen(false)}
-            snapshot={chart.getSnapshot()}
-            branding={{
-              practiceName: profile.practiceName,
-              doctorName: profile.doctorName,
-              logoUrl: profile.logoUrl,
-            }}
-            imageRoles={chart.imageRoles}
-            chartId={chart.cloudChartId}
-            practiceId={profile.practiceId}
-            cloudActive={cloud.enabled}
-          />
-        </React.Suspense>
-      )}
 
       {previewSnapshot && (
         <React.Suspense fallback={null}>
-          <PdfPreviewModal
+          <DocumentsModal
             open={previewOpen}
             onClose={() => setPreviewOpen(false)}
-            snapshot={previewSnapshot}
+            initialTab={docsTab}
+            chartSnapshot={previewSnapshot}
+            ownerReport={ownerReportOn ? {
+              snapshot: chart.getSnapshot(),
+              branding: {
+                practiceName: profile.practiceName,
+                doctorName: profile.doctorName,
+                logoUrl: profile.logoUrl,
+              },
+              imageRoles: chart.imageRoles,
+              chartId: chart.cloudChartId,
+              practiceId: profile.practiceId,
+              cloudActive: cloud.enabled,
+              onEditWording: () => {
+                setPreviewOpen(false);
+                setActiveSection('owner-report');
+              },
+            } : undefined}
           />
         </React.Suspense>
       )}

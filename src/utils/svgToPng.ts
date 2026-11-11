@@ -22,6 +22,37 @@ export interface CommentForExport {
   text: string;
 }
 
+/** A numbered marker drawn on a tooth (owner report: "1" = first finding). */
+export interface DiagramPin {
+  x: number;
+  y: number;
+  label: string;
+}
+
+function appendPinSvg(svg: SVGSVGElement, pin: DiagramPin): void {
+  const ns = 'http://www.w3.org/2000/svg';
+  const g = document.createElementNS(ns, 'g');
+  const circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', String(pin.x));
+  circle.setAttribute('cy', String(pin.y));
+  circle.setAttribute('r', '28');
+  circle.setAttribute('fill', '#0c6b63');
+  circle.setAttribute('stroke', '#ffffff');
+  circle.setAttribute('stroke-width', '4');
+  g.appendChild(circle);
+  const text = document.createElementNS(ns, 'text');
+  text.setAttribute('x', String(pin.x));
+  text.setAttribute('y', String(pin.y + 10));
+  text.setAttribute('text-anchor', 'middle');
+  text.setAttribute('font-family', 'sans-serif');
+  text.setAttribute('font-size', '28');
+  text.setAttribute('font-weight', '700');
+  text.setAttribute('fill', '#ffffff');
+  text.textContent = pin.label;
+  g.appendChild(text);
+  svg.appendChild(g);
+}
+
 export interface CommentColors {
   bg: string;
   border: string;
@@ -186,7 +217,9 @@ export async function diagramSvgToPng(
   comments: CommentForExport[] = [],
   outputScale = 2,
   commentColors: CommentColors = DEFAULT_COMMENT_COLORS,
-  crop: DiagramCropBounds = {}
+  crop: DiagramCropBounds = {},
+  /** Numbered markers on teeth, drawn above everything else. */
+  pins: DiagramPin[] = []
 ): Promise<Uint8Array> {
   const clone = svgEl.cloneNode(true) as SVGSVGElement;
 
@@ -200,6 +233,9 @@ export async function diagramSvgToPng(
   // groups here so the rasterized PNG carries them.
   for (const c of comments) {
     appendCommentSvg(clone, c, commentColors);
+  }
+  for (const p of pins) {
+    appendPinSvg(clone, p);
   }
 
   // The output viewBox is the diagram's content extent (optionally

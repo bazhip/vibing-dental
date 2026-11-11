@@ -964,6 +964,11 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               key={tooth.triadan}
               className="tooth-group"
               data-mark={mark || 'none'}
+              // Measured centre, for exports that place markers on teeth
+              // (the owner report's numbered pins).
+              data-triadan={tooth.triadan}
+              data-cx={bbox.cx}
+              data-cy={bbox.cy}
               // No hover tint while drawing — the crosshair + strokes are
               // the feedback there, and a tooth highlight is just noise.
               data-hovered={tool !== 'draw' && hoveredTriadan === tooth.triadan ? 'true' : 'false'}

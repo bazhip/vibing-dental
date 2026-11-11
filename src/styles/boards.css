@@ -1072,3 +1072,47 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---------- Documents dialog: clinical chart / owner report tabs ---------- */
+.documents-modal__subtitle { font-weight: 500; color: #64748b; }
+.documents-modal__tabs {
+  display: flex; gap: 0.25rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.documents-modal__tab {
+  position: relative;
+  padding: 0.75rem 1rem;
+  min-height: 44px;
+  background: none; border: none;
+  font: inherit; font-weight: 600; font-size: 0.95rem;
+  color: #64748b; cursor: pointer;
+}
+.documents-modal__tab:hover { color: #0f172a; }
+.documents-modal__tab--on { color: var(--primary, #0c6b63); }
+.documents-modal__tab--on::after {
+  content: ''; position: absolute; left: 0.75rem; right: 0.75rem; bottom: -1px;
+  height: 3px; border-radius: 3px 3px 0 0; background: var(--primary, #0c6b63);
+}
+.documents-modal__panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.documents-modal__panel[hidden] { display: none; }
+.documents-modal__panel > .pdf-preview-body { flex: 1; }
+.pdf-preview-styles .pdf-preview-notes {
+  flex: none; overflow: visible;
+  list-style: disc; margin: 0; padding: 0 0 0 1.1rem;
+  font-size: 0.85rem; line-height: 1.45; color: #475569;
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.pdf-preview-secondary {
+  margin-top: auto;
+  padding: 0.65rem 1rem;
+  background: white; color: var(--primary, #0c6b63);
+  border: 1px solid var(--primary, #0c6b63); border-radius: 10px;
+  font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+}
+.pdf-preview-secondary:hover { background: #f0fdfa; }
+@media (max-width: 800px) {
+  .documents-modal__tabs { padding: 0 0.5rem; }
+  .documents-modal__tab { flex: 1; }
+  .documents-modal__subtitle { display: none; }
+}

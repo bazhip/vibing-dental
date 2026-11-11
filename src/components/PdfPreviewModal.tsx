@@ -56,9 +56,12 @@ interface PdfPreviewModalProps {
   onClose: () => void;
   /** Returns the chart snapshot — captured fresh each time the modal opens. */
   snapshot: ChartSnapshot | null;
+  /** Render just the preview body (style rail + PDF) inside another
+   *  dialog — the Documents dialog supplies header, tabs and Escape. */
+  bare?: boolean;
 }
 
-export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot }) => {
+export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false }) => {
   // The document style is independent of the app UI. Start on the default
   // preset; a pick in the modal's sidebar sticks for the session.
   const [styleId, setStyleId] = React.useState<string>(DEFAULT_PDF_STYLE_ID);
@@ -74,17 +77,17 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // Move focus into the dialog on open so keyboard / screen-reader users
   // land inside it rather than back on the trigger.
   React.useEffect(() => {
-    if (open) closeButtonRef.current?.focus();
-  }, [open]);
+    if (open && !bare) closeButtonRef.current?.focus();
+  }, [open, bare]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || bare) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [open, onClose]);
+  }, [open, onClose, bare]);
 
   React.useEffect(() => {
     if (!open || !snapshot) {
@@ -183,7 +186,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     if (!pdfUrl || !snapshot) return;
     const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const { patientInfo } = snapshot;
-    const filename = `${sanitize(patientInfo.patientName) || 'chart'}_${sanitize(patientInfo.patientNumber) || 'pid'}_${patientInfo.date}.pdf`;
+    const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
     const a = document.createElement('a');
     a.href = pdfUrl;
     a.download = filename;
@@ -194,24 +197,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
 
   if (!open) return null;
 
-  return (
-    <div
-      className="pdf-preview-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="pdf-preview-title"
-    >
-      <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="pdf-preview-header">
-          <div>
-            <h2 id="pdf-preview-title">Preview &amp; Download</h2>
-            <p>Pick a style — the preview re-renders live.</p>
-          </div>
-          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
-            ×
-          </button>
-        </header>
+  const body = (
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
             <ul role="radiogroup" aria-label="PDF style">
@@ -255,12 +241,35 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
               <iframe
                 key={styleId}
                 src={pdfUrl}
-                title="PDF preview"
+                title="Clinical chart preview"
                 className="pdf-preview-iframe"
               />
             )}
           </div>
         </div>
+  );
+
+  if (bare) return body;
+
+  return (
+    <div
+      className="pdf-preview-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pdf-preview-title"
+    >
+      <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
+        <header className="pdf-preview-header">
+          <div>
+            <h2 id="pdf-preview-title">Clinical chart</h2>
+            <p>For your records and referrals. Pick a style — the preview updates live.</p>
+          </div>
+          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
+            ×
+          </button>
+        </header>
+        {body}
       </div>
     </div>
   );

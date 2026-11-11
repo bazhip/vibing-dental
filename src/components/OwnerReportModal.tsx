@@ -1,7 +1,9 @@
 import React from 'react';
-import { ChartSnapshot, ImageRole } from '../types';
+import { ChartSnapshot, ImageRole, Species } from '../types';
+import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
+import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useAttachments } from '../hooks/useAttachments';
-import { buildOwnerReportModel } from '../utils/ownerReport';
+import { buildOwnerReportModel, teethWithFindings } from '../utils/ownerReport';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
 
@@ -16,6 +18,14 @@ interface OwnerReportModalProps {
   chartId: string;
   practiceId: string;
   cloudActive: boolean;
+  /** Render just the preview body inside the Documents dialog. */
+  bare?: boolean;
+  /** Jump to the Owner report section to edit the wording. */
+  onEditWording?: () => void;
+  /** Live procedure-diagram SVG (missing + removed teeth) for the mouth
+   *  diagram; omitted → the report has no diagram. */
+  diagramSvg?: SVGSVGElement;
+  species?: Species;
 }
 
 /** Longest edge for photos embedded in the report — keeps a report with
@@ -36,6 +46,10 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   chartId,
   practiceId,
   cloudActive,
+  bare = false,
+  onEditWording,
+  diagramSvg,
+  species,
 }) => {
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
@@ -44,17 +58,17 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
-    if (open) closeButtonRef.current?.focus();
-  }, [open]);
+    if (open && !bare) closeButtonRef.current?.focus();
+  }, [open, bare]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || bare) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, bare]);
 
   React.useEffect(() => {
     if (!open || !attachments.loaded) return;
@@ -76,7 +90,30 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         }
         if (cancelled) return;
         const model = buildOwnerReportModel(snapshot);
-        const bytes = await buildOwnerReportPdfBytes(model, branding, photos);
+        // Mouth diagram: numbered pins on the teeth with findings, in the
+        // same order as the report's list. No clinical code cards.
+        let diagram: { png: Uint8Array } | undefined;
+        if (diagramSvg && species) {
+          try {
+            const diag = TOOTH_DIAGRAMS[species];
+            const pins: DiagramPin[] = [];
+            teethWithFindings(model).forEach((t, i) => {
+              // Measured centre from the live diagram; the shape table's
+              // hand-placed centre is only a fallback.
+              const el = diagramSvg.querySelector<SVGGElement>(`g.tooth-group[data-triadan="${t.triadan}"]`);
+              const cx = Number(el?.dataset.cx);
+              const cy = Number(el?.dataset.cy);
+              const tooth = diag.teeth.find((x) => x.triadan === t.triadan);
+              if (Number.isFinite(cx) && Number.isFinite(cy) && el) pins.push({ x: cx, y: cy, label: String(i + 1) });
+              else if (tooth) pins.push({ x: tooth.cx, y: tooth.cy, label: String(i + 1) });
+            });
+            diagram = { png: await diagramSvgToPng(diagramSvg, diag.width, diag.height, [], 2, undefined, diag.cropBounds, pins) };
+          } catch (err) {
+            console.warn('[OwnerReport] diagram render failed', err);
+          }
+        }
+        if (cancelled) return;
+        const bytes = await buildOwnerReportPdfBytes(model, branding, photos, diagram);
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
         createdUrl = URL.createObjectURL(blob);
@@ -97,7 +134,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     };
     // Attachment identity churns with signed-URL refreshes; key on load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, attachments.loaded, snapshot, imageRoles]);
+  }, [open, attachments.loaded, snapshot, imageRoles, diagramSvg, species]);
 
   const handleDownload = () => {
     if (!pdfUrl) return;
@@ -115,31 +152,24 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 
   const taggedCount = attachments.items.filter((item) => imageRoles[item.id]).length;
 
-  return (
-    <div
-      className="pdf-preview-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="owner-report-title"
-    >
-      <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="pdf-preview-header">
-          <div>
-            <h2 id="owner-report-title">Owner report</h2>
-            <p>
-              The chart in plain English, for the owner to take home.
-              {cloudActive && taggedCount === 0 && (
-                <> Tag photos as Before/After in the Images section to include them.</>
-              )}
-            </p>
-          </div>
-          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close owner report">
-            ×
-          </button>
-        </header>
+  const body = (
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
+            <ul className="pdf-preview-notes">
+              <li>Findings written in plain English — no codes or jargon.</li>
+              <li>
+                {!cloudActive
+                  ? 'Photos need a signed-in account.'
+                  : taggedCount > 0
+                    ? `${taggedCount} before/after ${taggedCount === 1 ? 'photo' : 'photos'} included.`
+                    : 'Tag photos Before/After in Images to include them.'}
+              </li>
+            </ul>
+            {onEditWording && (
+              <button type="button" className="pdf-preview-secondary" onClick={onEditWording}>
+                Edit the wording
+              </button>
+            )}
             <button
               type="button"
               className="pdf-preview-download"
@@ -159,6 +189,29 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             )}
           </div>
         </div>
+  );
+
+  if (bare) return body;
+
+  return (
+    <div
+      className="pdf-preview-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="owner-report-title"
+    >
+      <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
+        <header className="pdf-preview-header">
+          <div>
+            <h2 id="owner-report-title">Owner report</h2>
+            <p>The visit in plain English, for the owner to take home.</p>
+          </div>
+          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close owner report">
+            ×
+          </button>
+        </header>
+        {body}
       </div>
     </div>
   );

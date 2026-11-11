@@ -1,5 +1,5 @@
 import type { PDFFont, PDFPage } from 'pdf-lib';
-import { OwnerReportModel } from './ownerReport';
+import { OwnerReportModel, teethWithFindings } from './ownerReport';
 
 /**
  * Renders the owner report model as a friendly one-to-two page Letter
@@ -49,10 +49,18 @@ function wrap(text: string, font: PDFFont, size: number, maxWidth: number): stri
   return lines;
 }
 
+/** The mouth diagram for the owner: the procedure diagram (missing teeth
+ *  filled, teeth removed today crossed out) with a numbered pin on each
+ *  tooth that has a finding — numbers match "What we found". */
+export interface OwnerReportDiagram {
+  png: Uint8Array;
+}
+
 export async function buildOwnerReportPdfBytes(
   model: OwnerReportModel,
   branding: OwnerReportBranding,
-  photos: OwnerReportPhoto[]
+  photos: OwnerReportPhoto[],
+  diagram?: OwnerReportDiagram
 ): Promise<Uint8Array> {
   const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
   const doc = await PDFDocument.create();
@@ -156,15 +164,47 @@ export async function buildOwnerReportPdfBytes(
     y -= 4;
   }
 
+  // ---- Mouth diagram -----------------------------------------------------
+  const findingsTeeth = teethWithFindings(model);
+  const numbered = !!diagram && findingsTeeth.length > 0;
+  if (diagram) {
+    try {
+      const img = await doc.embedPng(diagram.png);
+      const maxW = CONTENT_W * 0.62;
+      const maxH = 270;
+      const scale = Math.min(maxW / img.width, maxH / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      heading(`${model.patientName ? `${model.patientName}’s` : 'Your pet’s'} mouth`);
+      ensure(h + 24);
+      page.drawImage(img, { x: MARGIN + (CONTENT_W - w) / 2, y: y - h, width: w, height: h });
+      y -= h + 6;
+      const legend = [
+        numbered ? 'Numbers match the findings below' : '',
+        model.alreadyMissing.length ? 'filled = missing before this visit' : '',
+        model.extracted.length ? 'red ✕ = removed today' : '',
+      ].filter(Boolean).join('   ·   ');
+      if (legend) {
+        // Helvetica can't encode ✕ — spell it for the PDF font.
+        const safe = legend.replace('✕', 'X');
+        const lw = regular.widthOfTextAtSize(safe, 8.5);
+        page.drawText(safe, { x: MARGIN + (CONTENT_W - lw) / 2, y: y - 9, size: 8.5, font: regular, color: muted });
+        y -= 16;
+      }
+    } catch {
+      // A diagram that won't embed shouldn't cost the owner their report.
+    }
+  }
+
   // ---- Findings ----------------------------------------------------------
-  const findingsTeeth = model.teeth.filter((t) => t.notes.length > 0);
   if (findingsTeeth.length > 0) {
     heading('What we found');
-    for (const tooth of findingsTeeth) {
+    findingsTeeth.forEach((tooth, i) => {
       ensure(30);
-      drawText(`${tooth.layName}${tooth.extracted ? '  —  removed today' : ''}`, { font: bold, size: 10.5 });
-      drawText(tooth.notes.join('; '), { indent: 10, color: muted, gapAfter: 4 });
-    }
+      const prefix = numbered ? `${i + 1}.  ` : '';
+      drawText(`${prefix}${tooth.layName}${tooth.extracted ? '  —  removed today' : ''}`, { font: bold, size: 10.5 });
+      drawText(tooth.notes.join('; '), { indent: numbered ? 16 : 10, color: muted, gapAfter: 4 });
+    });
   }
 
   if (model.alreadyMissing.length > 0) {
