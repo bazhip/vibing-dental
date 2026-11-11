@@ -39,6 +39,7 @@ import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
+import { shouldOpenLibraryOnArrival } from './utils/arrival';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -332,6 +333,25 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // working chart has no unsaved edits — a reload never prompts.
     const t = window.setTimeout(() => {
       cloud.openChart(id, { ifClean: true }).catch(() => { /* stale link — keep the working chart */ });
+    }, 0);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Opening plain toothops.app (no #/ route): reopen the last chart only
+  // if it's today's visit or has unsaved changes; otherwise start on My
+  // charts. Captured before the hash is canonicalized below; decided a
+  // tick later, once the chart restored from this device has landed.
+  const bareArrivalRef = React.useRef(!window.location.hash.startsWith('#/'));
+  const arrivalStateRef = React.useRef({ dirty: cloud.dirty, date: chart.patientInfo.date, name: chart.patientInfo.patientName });
+  arrivalStateRef.current = { dirty: cloud.dirty, date: chart.patientInfo.date, name: chart.patientInfo.patientName };
+  React.useEffect(() => {
+    if (!cloud.enabled || trial || !bareArrivalRef.current) return;
+    const t = window.setTimeout(() => {
+      const a = arrivalStateRef.current;
+      if (shouldOpenLibraryOnArrival({ bareArrival: true, chartDate: a.date, today: localDateISO(), patientName: a.name, dirty: a.dirty })) {
+        navigate('#/library', { replace: true });
+      }
     }, 0);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
