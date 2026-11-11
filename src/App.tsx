@@ -10,6 +10,7 @@ import { confirmDialog } from './components/ui/dialogs';
 import { AppLoading } from './components/AppLoading';
 import { JoinPracticeModal } from './components/JoinPracticeModal';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
+import { touchLastSeen } from './utils/lastSeen';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 
@@ -142,6 +143,7 @@ const App: React.FC = () => {
     supabase.auth.getSession().then(({ data }) => {
       setIsAuthenticated(!!data.session);
       if (data.session) {
+        touchLastSeen();
         lastUserIdRef.current = data.session.user.id;
         setLastEmail(data.session.user.email ?? '');
       }
@@ -161,6 +163,7 @@ const App: React.FC = () => {
         }
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
+        touchLastSeen();
         setSessionExpired(false);
         setIsAuthenticated(true);
         return;
@@ -193,6 +196,7 @@ const App: React.FC = () => {
     };
     const onVisible = () => {
       if (document.visibilityState === 'visible') {
+        if (isAuthedRef.current) touchLastSeen();
         client.auth.startAutoRefresh();
         lastNudge = 0;
         nudge();
