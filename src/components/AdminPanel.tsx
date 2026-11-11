@@ -35,6 +35,9 @@ interface AdminUser {
   email: string;
   createdAt: string;
   lastSignInAt: string | null;
+  /** Last time the app was opened while signed in (profiles.last_seen_at)
+   *  — absent/null before that's been recorded. */
+  lastSeenAt?: string | null;
   emailConfirmed: boolean;
   isAdmin: boolean;
   practiceName: string;
@@ -45,6 +48,55 @@ interface AdminUser {
    *  members have an empty profile practiceName). */
   teamPractice: string;
   teamRole: string;
+}
+
+/** When the account was last active: the later of opening the app and
+ *  signing in (sign-in alone goes stale for people who stay signed in). */
+export function lastActiveAt(u: Pick<AdminUser, 'lastSignInAt' | 'lastSeenAt'>): string | null {
+  const a = u.lastSeenAt ? Date.parse(u.lastSeenAt) : NaN;
+  const b = u.lastSignInAt ? Date.parse(u.lastSignInAt) : NaN;
+  if (Number.isNaN(a) && Number.isNaN(b)) return null;
+  if (Number.isNaN(a)) return u.lastSignInAt;
+  if (Number.isNaN(b)) return u.lastSeenAt ?? null;
+  return a >= b ? (u.lastSeenAt ?? null) : u.lastSignInAt;
+}
+
+type AccountSortKey = 'email' | 'practice' | 'charts' | 'active' | 'flags';
+
+const accountPractice = (u: AdminUser) => u.teamPractice || u.practiceName.trim();
+const accountFlags = (u: AdminUser) =>
+  [
+    u.isAdmin && 'admin',
+    // An unconfirmed team member is a pending invite, not a
+    // half-finished signup.
+    !u.emailConfirmed && (u.teamPractice ? 'pending invite' : 'unconfirmed'),
+    u.hasLogo && 'custom logo',
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
+/** Sort accounts by a column. Blanks (no practice, never active, no
+ *  flags) always sink to the bottom, whichever direction. */
+export function sortAccounts(users: AdminUser[], key: AccountSortKey, dir: 'asc' | 'desc'): AdminUser[] {
+  const value = (u: AdminUser): string | number | null => {
+    switch (key) {
+      case 'email': return u.email.toLowerCase();
+      case 'practice': return accountPractice(u).toLowerCase() || null;
+      case 'charts': return u.chartCount;
+      case 'active': { const t = lastActiveAt(u); return t ? Date.parse(t) : null; }
+      case 'flags': return accountFlags(u) || null;
+    }
+  };
+  const sign = dir === 'asc' ? 1 : -1;
+  return [...users].sort((x, y) => {
+    const a = value(x);
+    const b = value(y);
+    if (a === null && b === null) return x.email.localeCompare(y.email);
+    if (a === null) return 1;
+    if (b === null) return -1;
+    const c = typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b));
+    return c !== 0 ? c * sign : x.email.localeCompare(y.email);
+  });
 }
 
 interface AdminStats {
@@ -192,6 +244,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [practiceRename, setPracticeRename] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
   const [query, setQuery] = React.useState('');
+  // Accounts table sort — most recently active first by default.
+  const [accountSort, setAccountSort] = React.useState<{ key: AccountSortKey; dir: 'asc' | 'desc' }>({
+    key: 'active',
+    dir: 'desc',
+  });
+  const sortBy = (key: AccountSortKey) =>
+    setAccountSort((cur) =>
+      cur.key === key
+        ? { key, dir: cur.dir === 'asc' ? 'desc' : 'asc' }
+        // Numbers and dates read best biggest/newest first; text A→Z.
+        : { key, dir: key === 'charts' || key === 'active' ? 'desc' : 'asc' }
+    );
+  const accountHeader = (key: AccountSortKey, label: string) => (
+    <span
+      role="columnheader"
+      aria-sort={accountSort.key === key ? (accountSort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+    >
+      <button type="button" className="chart-library__sort" onClick={() => sortBy(key)}>
+        {label}
+        <span className="chart-library__sort-arrow" aria-hidden="true">
+          {accountSort.key === key ? (accountSort.dir === 'asc' ? '▲' : '▼') : ''}
+        </span>
+      </button>
+    </span>
+  );
   const logoRef = React.useRef<HTMLInputElement>(null);
   const modalRef = useModalFocus(open);
 
@@ -600,8 +677,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   };
 
   const q = query.trim().toLowerCase();
-  const filteredUsers = (users ?? []).filter((u) =>
-    matches(q, u.email, u.practiceName, u.doctorName, u.teamPractice)
+  const filteredUsers = sortAccounts(
+    (users ?? []).filter((u) => matches(q, u.email, u.practiceName, u.doctorName, u.teamPractice)),
+    accountSort.key,
+    accountSort.dir
   );
   const filteredPractices = (practices ?? []).filter((p) =>
     matches(q, p.name, p.ownerEmail, ...p.members.map((m) => m.email))
@@ -724,11 +803,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
           {tab === 'accounts' && filteredUsers.length > 0 && (
             <div className="chart-library__table" role="table" aria-label="Users">
               <div className="chart-library__head-row admin-panel__account-row" role="row">
-                <span role="columnheader">Email</span>
-                <span role="columnheader">Practice</span>
-                <span role="columnheader">Charts</span>
-                <span role="columnheader">Last sign-in</span>
-                <span role="columnheader">Flags</span>
+                {accountHeader('email', 'Email')}
+                {accountHeader('practice', 'Practice')}
+                {accountHeader('charts', 'Charts')}
+                {accountHeader('active', 'Last active')}
+                {accountHeader('flags', 'Flags')}
               </div>
               <div className="chart-library__scroll">
                 {filteredUsers.map((u) => (
@@ -745,20 +824,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     >
                       <span role="cell" className="chart-library__patient">{u.email}</span>
                       <span role="cell" className="chart-library__cell">
-                        {u.teamPractice || u.practiceName.trim() || '—'}
+                        {accountPractice(u) || '—'}
                       </span>
                       <span role="cell" className="chart-library__cell">{u.chartCount}</span>
-                      <span role="cell" className="chart-library__cell">{fmt(u.lastSignInAt)}</span>
+                      <span
+                        role="cell"
+                        className="chart-library__cell"
+                        title={`Last used the app: ${fmt(u.lastSeenAt ?? null)}\nLast signed in: ${fmt(u.lastSignInAt)}`}
+                      >
+                        {fmt(lastActiveAt(u))}
+                      </span>
                       <span role="cell" className="chart-library__cell">
-                        {[
-                          u.isAdmin && 'admin',
-                          // An unconfirmed team member is a pending invite,
-                          // not a half-finished signup.
-                          !u.emailConfirmed && (u.teamPractice ? 'pending invite' : 'unconfirmed'),
-                          u.hasLogo && 'custom logo',
-                        ]
-                          .filter(Boolean)
-                          .join(' · ') || '—'}
+                        {accountFlags(u) || '—'}
                       </span>
                     </button>
                   </div>

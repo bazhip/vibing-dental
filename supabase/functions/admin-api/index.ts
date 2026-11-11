@@ -75,6 +75,16 @@ async function chartCountRows(admin: any): Promise<ChartCountRow[]> {
   return Array.isArray(data) ? data : [];
 }
 
+/** Profiles for the account list, with last_seen_at when the column
+ *  exists (it ships via migration) — without it, fall back rather than
+ *  lose practice names for every row. Returns the usual { data } shape. */
+// deno-lint-ignore no-explicit-any
+async function profileRowsWithLastSeen(admin: any) {
+  const withSeen = await admin.from('profiles').select('id, practice_name, doctor_name, logo_path, last_seen_at');
+  if (!withSeen.error) return withSeen;
+  return admin.from('profiles').select('id, practice_name, doctor_name, logo_path');
+}
+
 // Browser calls come from the app's origins (github.io / vercel /
 // localhost dev) — auth is enforced by the JWT + role check, not CORS.
 const CORS = {
@@ -141,7 +151,7 @@ Deno.serve(async (req: Request) => {
           { data: pracNameRows },
         ] = await Promise.all([
           listAllUsers(admin),
-          admin.from('profiles').select('id, practice_name, doctor_name, logo_path'),
+          profileRowsWithLastSeen(admin),
           chartCountRows(admin),
           admin.from('practice_members').select('user_id, practice_id, role'),
           admin.from('practices').select('id, name'),
@@ -162,6 +172,9 @@ Deno.serve(async (req: Request) => {
             email: u.email ?? '',
             createdAt: u.created_at,
             lastSignInAt: u.last_sign_in_at ?? null,
+            // App activity (migration 20261114_last_seen); null until the
+            // user next opens the app, or if the column isn't there yet.
+            lastSeenAt: p?.last_seen_at ?? null,
             emailConfirmed: !!u.email_confirmed_at,
             isAdmin: u.app_metadata?.role === 'admin',
             practiceName: p?.practice_name ?? '',
