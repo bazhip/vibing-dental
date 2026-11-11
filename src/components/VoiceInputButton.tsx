@@ -16,12 +16,15 @@ import {
 } from '../utils/aiAutofill';
 
 /**
- * AI autofill: a topbar button that opens a "how it works" modal, then
- * (on Start) records and streams transcript chunks to Claude every ~22s.
- * While running, a right sidebar shows the live transcript and a log of
- * every change the AI applies; each applied action also focuses the
- * relevant section and highlights the tooth/field being edited (via
- * onActivity → EntryGrid).
+ * AI autofill: a topbar button plus a live panel (right sidebar on
+ * desktop, bottom sheet on phones) showing the transcript and every
+ * change the AI applies. Each utterance goes to Claude when the speaker
+ * pauses, scoped to the chart section on screen.
+ *
+ * One dictation per chart: Stop ends listening but keeps the transcript
+ * and activity log, and pressing the button again carries on from there.
+ * "New" in the panel starts over; opening a different chart does too.
+ * The how-it-works modal shows only the first time in a tab.
  */
 
 /** Where an applied action lives in the chart — drives section focus +
@@ -74,12 +77,16 @@ interface VoiceInputButtonProps {
   onActivity?: (actions: AiAction[]) => void;
   /** Chart section on screen — dictation fills this section. */
   activeSection?: string;
+  /** Identifies the open chart. When it changes, the dictation (transcript
+   *  + activity) starts over so nothing carries into another patient. */
+  sessionKey?: string;
 }
 
 interface ActivityEntry {
   id: string;
   description: string;
   at: Date;
+  skipped?: boolean;
 }
 
 /** Safety-net flush while recording, in case no pause is ever detected. */
@@ -90,14 +97,55 @@ const QUIET_FLUSH_MS = 1_200;
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
 
+const INTRO_SEEN_KEY = 'ai.introSeen';
+const COLLAPSED_KEY = 'ai.panelCollapsed';
+
+const session = {
+  get: (k: string) => { try { return window.sessionStorage.getItem(k); } catch { return null; } },
+  set: (k: string, v: string) => { try { window.sessionStorage.setItem(k, v); } catch { /* private mode */ } },
+};
+
+/** Phones: start the panel collapsed so the chart stays visible. */
+const isPhone = () =>
+  typeof window !== 'undefined' && !!window.matchMedia?.('(max-width: 700px)').matches;
+
+/** Keeps a scroll box pinned to the bottom as content grows — unless the
+ *  user has scrolled up to read, in which case it leaves them there. */
+function useStickToBottom<T extends HTMLElement>(dep: unknown) {
+  const ref = React.useRef<T | null>(null);
+  const stick = React.useRef(true);
+  const onScroll = React.useCallback(() => {
+    const el = ref.current;
+    if (el) stick.current = el.scrollTop + el.clientHeight >= el.scrollHeight - 24;
+  }, []);
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (el && stick.current) el.scrollTop = el.scrollHeight;
+  }, [dep]);
+  return { ref, onScroll };
+}
+
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, activeSection,
+  context, handlers, onActivity, activeSection, sessionKey,
 }) => {
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
   const [error, setError] = React.useState<string | null>(null);
-  const [introOpen, setIntroOpen] = React.useState(false);
-  const introRef = useModalFocus(introOpen);
+  /** 'start' = first-run intro with a Start button; 'info' = reopened
+   *  from the panel, just a Close button. */
+  const [intro, setIntro] = React.useState<null | 'start' | 'info'>(null);
+  const introRef = useModalFocus(intro !== null);
+  const [panelOpen, setPanelOpen] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(() => {
+    const saved = session.get(COLLAPSED_KEY);
+    return saved === null ? isPhone() : saved === '1';
+  });
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      session.set(COLLAPSED_KEY, c ? '0' : '1');
+      return !c;
+    });
+  };
 
   const contextRef = React.useRef(context);
   contextRef.current = context;
@@ -126,9 +174,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           id: `${now.getTime()}_s${i}`,
           description: `Not applied${home ? ` (belongs on ${sectionLabel(home)})` : ''}: ${describeAction(a)}`,
           at: now,
+          skipped: true,
         };
       }),
-    ].slice(-80));
+    ].slice(-200));
     if (actions.length) onActivityRef.current?.(actions);
   };
 
@@ -171,7 +220,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, []);
 
   const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
-  const onPause = React.useCallback(() => { processChunk(true).catch(console.error); }, [processChunk]);
   // Send each utterance as soon as the speaker pauses, rather than on a
   // fixed timer; cap the wait so continuous speech still flows.
   const onSegment = React.useCallback(() => {
@@ -186,7 +234,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     window.clearTimeout(quietTimerRef.current);
     window.clearTimeout(maxTimerRef.current);
   }, []);
-  const voice = useVoiceCapture({ onStop, onPause, onSegment });
+  const voice = useVoiceCapture({ onStop, onSegment });
   voiceRef.current = voice;
 
   React.useEffect(() => {
@@ -201,46 +249,80 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   React.useEffect(() => {
     const prev = prevSectionRef.current;
     prevSectionRef.current = activeSection;
-    if (prev !== activeSection && (voice.recording || voice.paused)) {
+    if (prev !== activeSection && voice.recording) {
       processChunk(false, prev).catch(console.error);
     }
-  }, [activeSection, voice.recording, voice.paused, processChunk]);
+  }, [activeSection, voice.recording, processChunk]);
 
   React.useEffect(() => { if (voice.error) setError(voice.error); }, [voice.error]);
   React.useEffect(() => {
     if (!error) return;
-    const id = setTimeout(() => setError(null), 6000);
+    const id = setTimeout(() => setError(null), 8000);
     return () => clearTimeout(id);
   }, [error]);
 
-  const beginRecording = () => {
+  const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
+  const hasSession = transcriptText.length > 0 || activity.length > 0;
+
+  // A different chart: start over so nothing carries across patients.
+  const prevKeyRef = React.useRef(sessionKey);
+  React.useEffect(() => {
+    if (prevKeyRef.current === sessionKey) return;
+    prevKeyRef.current = sessionKey;
+    if (voiceRef.current?.recording) voiceRef.current.stop();
+    voiceRef.current?.clear();
+    setActivity([]);
+    setPanelOpen(false);
+  }, [sessionKey]);
+
+  const listen = (fresh: boolean) => {
     if (!voice.supported) {
       setError('Voice input needs Chrome, Edge, or Safari.');
       return;
     }
-    setIntroOpen(false);
-    setActivity([]);
     setError(null);
-    voice.start();
+    setPanelOpen(true);
+    if (fresh) {
+      setActivity([]);
+      voice.start();
+    } else {
+      voice.resume();
+    }
     // Boot the edge function + write the prompt cache while the mic and
     // Deepgram connect, so the first utterance comes back fast.
     prewarmAutofill();
   };
 
-  const resumeDictation = () => {
-    voice.resume();
-    prewarmAutofill();
+  const beginFromIntro = () => {
+    session.set(INTRO_SEEN_KEY, '1');
+    setIntro(null);
+    listen(true);
   };
 
   const handleButton = () => {
-    if (voice.recording || voice.paused) voice.stop();
-    else if (voice.interrupted) resumeDictation();
-    else setIntroOpen(true);
+    if (voice.recording) {
+      voice.stop();
+      setPanelOpen(true);
+    } else if (hasSession) {
+      listen(false);
+    } else if (session.get(INTRO_SEEN_KEY) !== '1') {
+      setIntro('start');
+    } else {
+      listen(true);
+    }
   };
 
-  const closeSidebar = () => {
-    setActivity([]);
+  const closePanel = () => {
+    if (voice.recording) voice.stop();
     voice.dismissInterruption();
+    setPanelOpen(false);
+  };
+
+  const startOver = () => {
+    if (hasSession && !window.confirm('Start a new dictation? The transcript and activity log are cleared — entries already in the chart stay.')) return;
+    if (voice.recording) voice.stop();
+    voice.clear();
+    setActivity([]);
   };
 
   const handleDownloadTranscript = () => {
@@ -255,6 +337,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       const stamp = wallTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       lines.push(`[${stamp}] ${seg.text}`);
     }
+    if (activity.length) {
+      lines.push('', 'Activity', ''.padEnd(60, '─'));
+      for (const a of activity) {
+        lines.push(`[${a.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${a.description}`);
+      }
+    }
     const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -266,24 +354,44 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const label = voice.recording || voice.paused
-    ? 'Stop'
-    : activeChunkCount > 0
-      ? 'Finishing…'
-      : voice.interrupted
-        ? 'Resume'
-        : 'AI autofill';
-  const subLabel = voice.recording && activeChunkCount > 0
-    ? 'listening · sending…'
-    : voice.recording ? 'listening' : voice.paused ? 'paused' : null;
-  const pauseToggle = voice.recording
-    ? { text: 'Pause', title: 'Pause dictation — the transcript is kept', onClick: voice.pause }
-    : voice.paused
-      ? { text: 'Resume', title: 'Resume dictation', onClick: resumeDictation }
-      : null;
-  const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', activeChunkCount > 0 ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
-  const sidebarOpen = voice.recording || voice.paused || voice.interrupted || activity.length > 0;
-  const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
+  // Let the page scroll its last rows clear of the phone bottom sheet.
+  React.useEffect(() => {
+    if (!panelOpen) return;
+    const cls = collapsed ? 'ai-panel-open--collapsed' : 'ai-panel-open';
+    document.body.classList.add(cls);
+    return () => document.body.classList.remove(cls);
+  }, [panelOpen, collapsed]);
+
+  const transcriptScroll = useStickToBottom<HTMLDivElement>(transcriptText + voice.interim);
+  const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
+
+  const sending = activeChunkCount > 0;
+  const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'AI autofill';
+  const subLabel = voice.recording
+    ? (sending ? 'listening · sending…' : 'listening')
+    : sending ? 'finishing…' : null;
+  const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
+
+  const status = voice.recording
+    ? { text: 'Listening', cls: 'ai-sidebar__status--live' }
+    : voice.interrupted
+      ? { text: 'Interrupted', cls: 'ai-sidebar__status--warn' }
+      : sending
+        ? { text: 'Finishing…', cls: '' }
+        : { text: 'Stopped', cls: '' };
+
+  const lastActivity = activity[activity.length - 1];
+  // One-line summary for the collapsed panel: what's being heard right
+  // now, else the latest chart change, else a prompt.
+  const peek = voice.interim
+    ? { text: voice.interim, cls: 'ai-sidebar__peek--interim' }
+    : lastActivity
+      ? { text: lastActivity.description, cls: lastActivity.skipped ? 'ai-sidebar__peek--skipped' : '' }
+      : { text: voice.recording ? 'Start talking — findings appear as they’re charted.' : 'Press Resume to keep dictating.', cls: 'ai-sidebar__peek--empty' };
+
+  const primary = voice.recording
+    ? { text: 'Stop', onClick: () => voice.stop(), cls: 'ai-sidebar__primary--stop' }
+    : { text: hasSession ? 'Resume' : 'Start', onClick: () => listen(!hasSession), cls: '' };
 
   return (
     <div className="voice-input-wrap">
@@ -292,143 +400,140 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         className={className}
         onClick={handleButton}
         aria-pressed={voice.recording}
-        title="AI autofill — dictate to fill the chart"
+        title={voice.recording ? 'Stop listening (the transcript is kept)' : 'AI autofill — dictate to fill the chart'}
       >
         {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
       </button>
-      {pauseToggle && (
-        <button
-          type="button"
-          className={`voice-input voice-input--pause${voice.paused ? ' voice-input--paused' : ''}`}
-          onClick={pauseToggle.onClick}
-          aria-pressed={voice.paused}
-          title={pauseToggle.title}
-        >
-          <span className="voice-input__label">{pauseToggle.text}</span>
-        </button>
-      )}
 
-      {/* How-it-works modal, with Start inside. Portaled to <body> so it
-          isn't trapped by the topbar's backdrop-filter containing block
-          (which would clip a position:fixed overlay to the short topbar). */}
-      {introOpen && ReactDOM.createPortal(
-        <div className="ai-settings-overlay" onClick={() => setIntroOpen(false)} role="dialog" aria-modal="true" aria-label="AI autofill">
+      {/* How-it-works modal. Portaled to <body> so it isn't trapped by the
+          topbar's backdrop-filter containing block (which would clip a
+          position:fixed overlay to the short topbar). */}
+      {intro && ReactDOM.createPortal(
+        <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label="AI autofill">
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
               <h2>AI voice autofill</h2>
-              <button type="button" className="pdf-preview-close" onClick={() => setIntroOpen(false)} aria-label="Close">×</button>
+              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label="Close">×</button>
             </header>
             <div className="ai-settings-body">
               <p className="ai-intro__lead">Dictate your findings and the AI charts them for you — no typing, hands on the patient.</p>
               <ul className="ai-intro__list">
-                <li>Speak naturally: <em>“104 complicated crown fracture, 6 millimeter pocket distal.”</em></li>
-                <li>A <strong>transcript</strong> and a live <strong>activity log</strong> open on the right so you see exactly what’s being entered.</li>
-                <li>It fills <strong>the section you’re on</strong> — open Charting to dictate perio values, Exam for exam findings, and so on. On Charting, perio values fill the grid and diagnosis codes (T/FX, CCF…) go onto the Diagnosis diagram. Findings for another section are listed as “not applied”.</li>
-                <li>Each value is <strong>highlighted as it lands</strong>.</li>
+                <li>Speak naturally: <em>“104 GI 2, calc 1, T/FX/CCF. 105 missing.”</em></li>
+                <li>It fills <strong>the section you’re on</strong> — open Charting for perio values, Exam for exam findings, and so on. On Charting, diagnosis codes (T/FX, CCF…) also go onto the Diagnosis diagram.</li>
+                <li>A live panel shows the <strong>transcript</strong> and every <strong>change</strong> as it lands; each value is highlighted in the chart.</li>
+                <li><strong>Stop</strong> any time — press the button again to carry on with the same transcript. <strong>New</strong> in the panel starts over.</li>
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
-                <li>Need a moment? Press <strong>Pause</strong> — nothing is heard until you press <strong>Resume</strong>, and the transcript is kept.</li>
-                <li>Press <strong>Stop</strong> (same button) when you’re done.</li>
               </ul>
               <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 Medical, tuned for clinical terms + speaker labels' : 'your browser’s speech recognition'}.</p>
             </div>
             <footer className="ai-settings-footer">
-              <button type="button" className="diagram-view__action" onClick={() => setIntroOpen(false)}>Cancel</button>
-              <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={beginRecording}>
-                Start dictation
-              </button>
+              {intro === 'start' ? (
+                <>
+                  <button type="button" className="diagram-view__action" onClick={() => setIntro(null)}>Cancel</button>
+                  <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={beginFromIntro}>
+                    Start dictation
+                  </button>
+                </>
+              ) : (
+                <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={() => setIntro(null)}>
+                  Got it
+                </button>
+              )}
             </footer>
           </div>
         </div>,
         document.body
       )}
 
-      {/* Live sidebar: transcript (top) + activity log (bottom). Portaled to
-          <body> for the same containing-block reason as the modal above. */}
-      {sidebarOpen && ReactDOM.createPortal(
-        <aside className="ai-sidebar" aria-live="polite">
+      {/* Live panel. Portaled to <body> for the same containing-block
+          reason as the modal above. */}
+      {panelOpen && ReactDOM.createPortal(
+        <aside
+          className={`ai-sidebar${collapsed ? ' ai-sidebar--collapsed' : ''}${voice.recording ? ' ai-sidebar--live' : ''}`}
+          aria-label="AI autofill"
+        >
           <header className="ai-sidebar__head">
-            <span className={`ai-sidebar__status${voice.recording ? ' ai-sidebar__status--live' : ''}`}>
-              {voice.recording ? '● Listening' : voice.paused ? 'Paused' : voice.interrupted ? 'Interrupted' : 'Last session'}
-            </span>
-            <span className="voice-input__provider-badge">
-              {voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}
-            </span>
-            <div className="ai-sidebar__head-actions">
-              {transcriptText && (
-                <button type="button" className="voice-input__panel-clear" onClick={handleDownloadTranscript} title="Download transcript">⬇</button>
-              )}
-              {pauseToggle && (
-                <button type="button" className="voice-input__panel-clear" onClick={pauseToggle.onClick} title={pauseToggle.title}>
-                  {pauseToggle.text}
-                </button>
-              )}
-              {!voice.recording && !voice.paused && (
-                <button type="button" className="voice-input__panel-close" onClick={closeSidebar} aria-label="Close">×</button>
-              )}
-            </div>
+            <button
+              type="button"
+              className="ai-sidebar__toggle"
+              onClick={toggleCollapsed}
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? 'Expand panel' : 'Collapse panel'}
+            >
+              <span className={`ai-sidebar__status ${status.cls}`}>
+                {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
+                {status.text}
+              </span>
+              <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
+            </button>
+            <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick}>
+              {primary.text}
+            </button>
+            <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label="Close panel" title="Close (the transcript is kept)">
+              ×
+            </button>
           </header>
 
-          {voice.interrupted && !voice.recording && (
-            <div className="ai-sidebar__paused" role="alert">
-              <p>
-                Dictation stopped because the microphone was interrupted
-                (camera, phone call, or leaving the page). Everything heard
-                before that was kept.
-              </p>
-              <div className="ai-sidebar__paused-actions">
-                <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={resumeDictation}>
-                  Resume dictation
-                </button>
-                <button type="button" className="diagram-view__action" onClick={voice.dismissInterruption}>
-                  Done
-                </button>
+          {collapsed ? (
+            <button type="button" className={`ai-sidebar__peek ${peek.cls}`} onClick={toggleCollapsed} aria-live="polite">
+              {peek.text}
+            </button>
+          ) : (
+            <>
+              {voice.interrupted && !voice.recording && (
+                <div className="ai-sidebar__notice" role="alert">
+                  The microphone was interrupted (camera, phone call, or leaving the page). Everything heard before that was kept — press <strong>Resume</strong> to carry on.
+                </div>
+              )}
+
+              <div className="ai-sidebar__section-label">Transcript</div>
+              <div className="ai-sidebar__transcript" ref={transcriptScroll.ref} onScroll={transcriptScroll.onScroll} aria-live="polite">
+                {transcriptText || voice.interim ? (
+                  <>
+                    {transcriptText}
+                    {voice.interim && <span className="ai-sidebar__interim"> {voice.interim}</span>}
+                  </>
+                ) : (
+                  <span className="ai-sidebar__empty">
+                    {voice.recording ? 'Start talking — your words appear here.' : 'Press Start to dictate.'}
+                  </span>
+                )}
               </div>
-            </div>
+
+              <div className="ai-sidebar__section-label">
+                Activity
+                {sending && <span className="ai-sidebar__sending">sending…</span>}
+              </div>
+              <div className="ai-sidebar__activity" ref={activityScroll.ref} onScroll={activityScroll.onScroll}>
+                {activity.length === 0 ? (
+                  <div className="ai-sidebar__empty">Chart changes show here as the AI applies them.</div>
+                ) : (
+                  activity.map((entry) => (
+                    <div key={entry.id} className={`ai-sidebar__row${entry.skipped ? ' ai-sidebar__row--skipped' : ''}`}>
+                      <span className="ai-sidebar__row-time">{entry.at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</span>
+                      <span className="ai-sidebar__row-desc">{entry.description}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <footer className="ai-sidebar__foot">
+                <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>New</button>
+                <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>Download</button>
+                <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')}>How it works</button>
+                <span className="voice-input__provider-badge">{voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}</span>
+              </footer>
+            </>
           )}
 
-          <div className="ai-sidebar__section-label">Transcript</div>
-          <div className="ai-sidebar__transcript">
-            {transcriptText || voice.interim ? (
-              <>
-                {transcriptText}
-                {voice.interim && <span className="ai-sidebar__interim"> {voice.interim}</span>}
-              </>
-            ) : (
-              <span className="ai-sidebar__empty">
-                {voice.paused ? 'Paused — press Resume to keep dictating.' : 'Start talking — your words appear here.'}
-              </span>
-            )}
-          </div>
-
-          <div className="ai-sidebar__section-label">
-            Activity
-            {activity.length > 0 && !voice.recording && !voice.paused && (
-              <button type="button" className="voice-input__panel-clear" onClick={() => setActivity([])}>Clear</button>
-            )}
-          </div>
-          <div className="ai-sidebar__activity">
-            {activity.length === 0 ? (
-              <div className="ai-sidebar__empty">
-                {voice.recording || voice.paused ? 'Chart changes show here as the AI applies them.' : 'No changes applied.'}
-              </div>
-            ) : (
-              activity.map((entry) => (
-                <div key={entry.id} className="ai-sidebar__row">
-                  <span className="ai-sidebar__row-time">{entry.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                  <span className="ai-sidebar__row-desc">{entry.description}</span>
-                </div>
-              ))
-            )}
-          </div>
-
-          {error && <div className="voice-input__error" role="alert">{error}</div>}
+          {error && <div className="voice-input__error voice-input__error--inline" role="alert">{error}</div>}
         </aside>,
         document.body
       )}
 
-      {error && !sidebarOpen && <div className="voice-input__error" role="alert">{error}</div>}
+      {error && !panelOpen && <div className="voice-input__error" role="alert">{error}</div>}
     </div>
   );
 };

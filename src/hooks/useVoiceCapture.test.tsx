@@ -70,37 +70,32 @@ describe('useVoiceCapture interruptions', () => {
   });
 });
 
-describe('useVoiceCapture pause', () => {
-  it('pause keeps the transcript, flushes via onPause, and is not an interruption', () => {
-    const onPause = vi.fn();
+describe('useVoiceCapture stop / resume / clear', () => {
+  it('stop keeps the transcript and resume continues it', () => {
     const onStop = vi.fn();
-    const { result } = renderHook(() => useVoiceCapture({ onPause, onStop }));
+    const { result } = renderHook(() => useVoiceCapture({ onStop }));
     act(() => result.current.start());
     act(() => FakeRecognition.last!.say('first'));
-    act(() => result.current.pause());
-    expect(result.current.paused).toBe(true);
+    act(() => result.current.stop());
     expect(result.current.recording).toBe(false);
     expect(result.current.interrupted).toBe(false);
-    expect(onPause).toHaveBeenCalledTimes(1);
-    expect(onStop).not.toHaveBeenCalled();
+    expect(onStop).toHaveBeenCalledWith('first');
 
     act(() => result.current.resume());
-    expect(result.current.paused).toBe(false);
     expect(result.current.recording).toBe(true);
     act(() => FakeRecognition.last!.say('second'));
     expect(result.current.allSegments().map((s) => s.text)).toEqual(['first', 'second']);
   });
 
-  it('stop while paused ends the dictation', () => {
-    const onStop = vi.fn();
-    const { result } = renderHook(() => useVoiceCapture({ onStop }));
+  it('clear empties the transcript; start begins fresh', () => {
+    const { result } = renderHook(() => useVoiceCapture());
     act(() => result.current.start());
-    act(() => FakeRecognition.last!.say('104 fractured'));
-    act(() => result.current.pause());
+    act(() => FakeRecognition.last!.say('old'));
     act(() => result.current.stop());
-    expect(result.current.paused).toBe(false);
-    expect(result.current.recording).toBe(false);
-    expect(result.current.interrupted).toBe(false);
-    expect(onStop).toHaveBeenCalledWith('104 fractured');
+    act(() => result.current.clear());
+    expect(result.current.allSegments()).toEqual([]);
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('new'));
+    expect(result.current.allSegments().map((s) => s.text)).toEqual(['new']);
   });
 });

@@ -37,13 +37,10 @@ export interface DeepgramHandlers {
 }
 
 export interface DeepgramSession {
+  /** Release the mic now, then let Deepgram finish transcribing what it
+   *  already has (the last words before Stop) before the socket closes.
+   *  onClose fires once that's done. */
   stop: () => void;
-  /** Stop sending audio (socket stays open on keep-alives) and ask
-   *  Deepgram to finalize what it has. Resolves once that final result
-   *  arrives, or after a short timeout. */
-  pause: () => Promise<void>;
-  /** Start sending audio again. */
-  resume: () => void;
 }
 
 // nova-3-medical: Deepgram's clinical-domain model — tuned for medication,
@@ -84,7 +81,6 @@ interface DgChannel {
 interface DgResultsMessage {
   type: 'Results';
   is_final: boolean;
-  from_finalize?: boolean;
   channel: DgChannel;
 }
 
@@ -107,8 +103,8 @@ export interface DeepgramAuth {
  *  treated as interrupted. */
 const MUTE_GRACE_MS = 1500;
 
-/** How long pause() waits for Deepgram to return the finalized tail. */
-const FINALIZE_WAIT_MS = 1500;
+/** How long stop() waits for Deepgram to flush its last results. */
+const DRAIN_WAIT_MS = 2000;
 
 /** Cap on audio buffered while the socket handshakes (~10 s at 16 kHz). */
 const MAX_PENDING_BYTES = TARGET_SAMPLE_RATE * 2 * 10;
@@ -164,10 +160,10 @@ export async function startDeepgramSession(
   ws.binaryType = 'arraybuffer';
 
   let closed = false;
-  let paused = false;
+  let micReleased = false;
   let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
   let muteTimer: ReturnType<typeof setTimeout> | null = null;
-  let finalizeWaiter: (() => void) | null = null;
+  let drainTimer: ReturnType<typeof setTimeout> | null = null;
   // Audio captured while the socket is still handshaking.
   const pending: ArrayBuffer[] = [];
   let pendingBytes = 0;
@@ -176,20 +172,12 @@ export async function startDeepgramSession(
   let processor: AudioNode | null = null;
   let sink: GainNode | null = null;
 
-  const releaseFinalizeWaiter = () => {
-    const w = finalizeWaiter;
-    finalizeWaiter = null;
-    w?.();
-  };
-
-  const cleanup = () => {
-    if (closed) return;
-    closed = true;
-    if (keepAliveTimer) clearInterval(keepAliveTimer);
-    keepAliveTimer = null;
+  /** Stop capturing: mic off (the OS indicator goes away), graph torn down. */
+  const releaseMic = () => {
+    if (micReleased) return;
+    micReleased = true;
     if (muteTimer) clearTimeout(muteTimer);
     muteTimer = null;
-    releaseFinalizeWaiter();
     try { source?.disconnect(); } catch { /* ignore */ }
     try { processor?.disconnect(); } catch { /* ignore */ }
     try { sink?.disconnect(); } catch { /* ignore */ }
@@ -198,6 +186,17 @@ export async function startDeepgramSession(
     }
     stream.getTracks().forEach((t) => t.stop());
     ctx.close().catch(() => { /* ignore */ });
+  };
+
+  /** Immediate teardown — errors, interruptions, or the end of a drain. */
+  const cleanup = () => {
+    if (closed) return;
+    closed = true;
+    releaseMic();
+    if (keepAliveTimer) clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+    if (drainTimer) clearTimeout(drainTimer);
+    drainTimer = null;
     if (ws.readyState === WebSocket.OPEN) {
       try { ws.send(JSON.stringify({ type: 'CloseStream' })); } catch { /* ignore */ }
     }
@@ -205,8 +204,22 @@ export async function startDeepgramSession(
     handlers.onClose();
   };
 
+  /** User stop: mic off now, but keep the socket until Deepgram has sent
+   *  the transcript for audio it already received — it closes the socket
+   *  itself after CloseStream once it's flushed. Capped by a timeout. */
+  const stopGracefully = () => {
+    if (closed || drainTimer) return;
+    releaseMic();
+    if (ws.readyState !== WebSocket.OPEN) {
+      cleanup();
+      return;
+    }
+    try { ws.send(JSON.stringify({ type: 'CloseStream' })); } catch { cleanup(); return; }
+    drainTimer = setTimeout(cleanup, DRAIN_WAIT_MS);
+  };
+
   const onAudio = (frame: Float32Array) => {
-    if (closed || paused) return;
+    if (closed || micReleased) return;
     const pcm = resampler.process(frame);
     if (!pcm.byteLength) return;
     if (ws.readyState === WebSocket.OPEN) {
@@ -229,7 +242,7 @@ export async function startDeepgramSession(
     pendingBytes = 0;
 
     // Heartbeat. Deepgram closes a connection that gets no data for ~10s;
-    // this keeps it alive while paused. Sent unconditionally — Deepgram
+    // this keeps it alive through silences. Sent unconditionally — Deepgram
     // accepts KeepAlive interleaved with audio.
     keepAliveTimer = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) {
@@ -265,7 +278,6 @@ export async function startDeepgramSession(
         handlers.onFinal({ text, receivedAt: performance.now() });
       }
     }
-    if (result.from_finalize) releaseFinalizeWaiter();
   };
 
   ws.onerror = () => {
@@ -276,7 +288,8 @@ export async function startDeepgramSession(
   ws.onclose = (event) => {
     if (!closed) {
       // Most common cause of unsolicited close: bad token (1008/1011).
-      if (event.code === 1008 || event.code === 1011) {
+      // (A close during a graceful stop is Deepgram finishing normally.)
+      if (!drainTimer && (event.code === 1008 || event.code === 1011)) {
         handlers.onError('Deepgram rejected the connection — check the API key.');
       }
       cleanup();
@@ -318,30 +331,7 @@ export async function startDeepgramSession(
     });
   }
 
-  const pause = (): Promise<void> => {
-    if (closed || paused) return Promise.resolve();
-    paused = true;
-    resampler.reset();
-    if (ws.readyState !== WebSocket.OPEN) return Promise.resolve();
-    return new Promise<void>((resolve) => {
-      const timer = setTimeout(() => {
-        if (finalizeWaiter === done) finalizeWaiter = null;
-        resolve();
-      }, FINALIZE_WAIT_MS);
-      const done = () => { clearTimeout(timer); resolve(); };
-      releaseFinalizeWaiter();
-      finalizeWaiter = done;
-      try { ws.send(JSON.stringify({ type: 'Finalize' })); } catch { done(); }
-    });
-  };
-
-  const resume = () => {
-    if (closed) return;
-    paused = false;
-    ctx.resume().catch(() => { /* ignore */ });
-  };
-
-  return { stop: cleanup, pause, resume };
+  return { stop: stopGracefully };
 }
 
 /** AudioWorklet when available (off the main thread); ScriptProcessor
@@ -382,12 +372,6 @@ export class Resampler {
 
   constructor(inputRate: number, outputRate: number) {
     this.ratio = inputRate / outputRate;
-  }
-
-  reset(): void {
-    this.acc = 0;
-    this.count = 0;
-    this.pos = 0;
   }
 
   process(input: Float32Array): ArrayBuffer {
