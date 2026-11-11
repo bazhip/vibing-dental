@@ -40,7 +40,7 @@ export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: 
 /** Subscription statuses backed by a real Stripe subscription. Unlike
  *  the plan check, 'comped' is excluded — comped/grandfathered practices
  *  pay nothing, so paid-only extras (DICOM) stay off for them. Mirrored
- *  in public.user_has_billed_subscription(). */
+ *  in public.current_user_has_billed_subscription(). */
 export const BILLED_STATUSES = ['active', 'trialing', 'past_due'];
 
 export interface UseProfileReturn extends PracticeProfile {
