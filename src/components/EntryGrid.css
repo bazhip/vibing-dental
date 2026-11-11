@@ -191,6 +191,15 @@
    var(--primary). Recording state pulses red. */
 .voice-input-wrap {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+/* Paused: amber, steady (no pulse) so it reads as "on hold". */
+.voice-input--paused {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
 }
 .voice-input {
   display: inline-flex;

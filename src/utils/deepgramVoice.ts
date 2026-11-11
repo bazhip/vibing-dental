@@ -1,7 +1,7 @@
 /**
  * Deepgram Nova-3 Medical streaming transcription. Browser-side WebSocket
- * connection authenticated via the `token` sub-protocol so the API key
- * doesn't leak into the URL.
+ * connection authenticated via the `token`/`bearer` sub-protocol so the
+ * credential doesn't leak into the URL.
  *
  * Diarization is enabled — utterances come back tagged with a speaker
  * index ("Speaker 0", "Speaker 1", …) so a vet's findings aren't
@@ -9,10 +9,16 @@
  *
  * Pipeline:
  *   getUserMedia({audio:true})
- *     → MediaRecorder(audio/webm;codecs=opus, timeslice=250ms)
- *     → WebSocket(wss://api.deepgram.com/v1/listen?…, [token, KEY])
+ *     → AudioContext → AudioWorklet (ScriptProcessor fallback)
+ *     → resample to 16 kHz, Float32 → Int16 (linear16)
+ *     → WebSocket(wss://api.deepgram.com/v1/listen?encoding=linear16…)
  *     → on each `is_final:true` Results event, emit a finalized
  *       segment with the speaker prefix prepended ("Speaker 1: …").
+ *
+ * Raw PCM rather than MediaRecorder: MediaRecorder emits a WebM (Chrome,
+ * newer Safari) or MP4 (older Safari) container, and declaring the wrong
+ * `encoding` for it makes Deepgram decode silence — no error, just no
+ * words. linear16 is unambiguous and identical on every browser.
  */
 
 import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
@@ -32,12 +38,19 @@ export interface DeepgramHandlers {
 
 export interface DeepgramSession {
   stop: () => void;
+  /** Stop sending audio (socket stays open on keep-alives) and ask
+   *  Deepgram to finalize what it has. Resolves once that final result
+   *  arrives, or after a short timeout. */
+  pause: () => Promise<void>;
+  /** Start sending audio again. */
+  resume: () => void;
 }
 
 // nova-3-medical: Deepgram's clinical-domain model — tuned for medication,
 // diagnostic, and procedure vocabulary and noisy operatory audio. Keyterm
 // prompting (VOICE_KEYTERMS) biases it toward the veterinary-dental terms
 // the human medical model won't know (Triadan, AVDC codes, vet drugs).
+const TARGET_SAMPLE_RATE = 16000;
 const KEYTERM_QS = VOICE_KEYTERMS.map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
 const DG_URL =
   'wss://api.deepgram.com/v1/listen?model=nova-3-medical' +
@@ -49,8 +62,8 @@ const DG_URL =
   '&endpointing=400' +
   '&channels=1' +
   '&language=en' +
-  '&encoding=opus' +
-  '&sample_rate=48000' +
+  '&encoding=linear16' +
+  `&sample_rate=${TARGET_SAMPLE_RATE}` +
   KEYTERM_QS;
 
 interface DgWord {
@@ -71,6 +84,7 @@ interface DgChannel {
 interface DgResultsMessage {
   type: 'Results';
   is_final: boolean;
+  from_finalize?: boolean;
   channel: DgChannel;
 }
 
@@ -93,23 +107,80 @@ export interface DeepgramAuth {
  *  treated as interrupted. */
 const MUTE_GRACE_MS = 1500;
 
+/** How long pause() waits for Deepgram to return the finalized tail. */
+const FINALIZE_WAIT_MS = 1500;
+
+/** Cap on audio buffered while the socket handshakes (~10 s at 16 kHz). */
+const MAX_PENDING_BYTES = TARGET_SAMPLE_RATE * 2 * 10;
+
+type AudioContextCtor = typeof AudioContext;
+
+function getAudioContextCtor(): AudioContextCtor | null {
+  if (typeof window === 'undefined') return null;
+  const w = window as unknown as { AudioContext?: AudioContextCtor; webkitAudioContext?: AudioContextCtor };
+  return w.AudioContext ?? w.webkitAudioContext ?? null;
+}
+
+/** True when this browser can capture raw audio for Deepgram. */
+export function canCaptureRawAudio(): boolean {
+  return getAudioContextCtor() !== null && typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
+}
+
+/** Create the AudioContext for a session. Call this synchronously inside
+ *  the user's click handler: iOS Safari only lets a context start running
+ *  from a user gesture, and the session itself starts after an await. */
+export function createCaptureContext(): AudioContext | null {
+  const Ctor = getAudioContextCtor();
+  if (!Ctor) return null;
+  try {
+    const ctx = new Ctor();
+    ctx.resume().catch(() => { /* retried once the mic is attached */ });
+    return ctx;
+  } catch {
+    return null;
+  }
+}
+
 export async function startDeepgramSession(
   auth: DeepgramAuth,
-  handlers: DeepgramHandlers
+  handlers: DeepgramHandlers,
+  providedCtx?: AudioContext | null
 ): Promise<DeepgramSession> {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const ctx = providedCtx ?? createCaptureContext();
+  if (!ctx) throw new Error('This browser cannot capture microphone audio.');
 
-  // Must construct the WebSocket BEFORE the MediaRecorder so we can buffer
-  // audio chunks while the socket completes its handshake. Deepgram picks
-  // the auth scheme from the sub-protocol name.
+  let stream: MediaStream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+    });
+  } catch (err) {
+    ctx.close().catch(() => { /* ignore */ });
+    throw err;
+  }
+
+  // Deepgram picks the auth scheme from the sub-protocol name.
   const ws = new WebSocket(DG_URL, [auth.kind, auth.token]);
   ws.binaryType = 'arraybuffer';
 
   let closed = false;
-  let recorder: MediaRecorder | null = null;
+  let paused = false;
   let keepAliveTimer: ReturnType<typeof setInterval> | null = null;
   let muteTimer: ReturnType<typeof setTimeout> | null = null;
-  const audioBuffer: Blob[] = [];
+  let finalizeWaiter: (() => void) | null = null;
+  // Audio captured while the socket is still handshaking.
+  const pending: ArrayBuffer[] = [];
+  let pendingBytes = 0;
+  const resampler = new Resampler(ctx.sampleRate, TARGET_SAMPLE_RATE);
+  let source: MediaStreamAudioSourceNode | null = null;
+  let processor: AudioNode | null = null;
+  let sink: GainNode | null = null;
+
+  const releaseFinalizeWaiter = () => {
+    const w = finalizeWaiter;
+    finalizeWaiter = null;
+    w?.();
+  };
 
   const cleanup = () => {
     if (closed) return;
@@ -118,10 +189,15 @@ export async function startDeepgramSession(
     keepAliveTimer = null;
     if (muteTimer) clearTimeout(muteTimer);
     muteTimer = null;
-    if (recorder && recorder.state !== 'inactive') {
-      try { recorder.stop(); } catch { /* ignore */ }
+    releaseFinalizeWaiter();
+    try { source?.disconnect(); } catch { /* ignore */ }
+    try { processor?.disconnect(); } catch { /* ignore */ }
+    try { sink?.disconnect(); } catch { /* ignore */ }
+    if (processor && 'port' in processor) {
+      (processor as AudioWorkletNode).port.onmessage = null;
     }
     stream.getTracks().forEach((t) => t.stop());
+    ctx.close().catch(() => { /* ignore */ });
     if (ws.readyState === WebSocket.OPEN) {
       try { ws.send(JSON.stringify({ type: 'CloseStream' })); } catch { /* ignore */ }
     }
@@ -129,13 +205,32 @@ export async function startDeepgramSession(
     handlers.onClose();
   };
 
+  const onAudio = (frame: Float32Array) => {
+    if (closed || paused) return;
+    const pcm = resampler.process(frame);
+    if (!pcm.byteLength) return;
+    if (ws.readyState === WebSocket.OPEN) {
+      try { ws.send(pcm); } catch { /* ignore */ }
+    } else if (ws.readyState === WebSocket.CONNECTING) {
+      pending.push(pcm);
+      pendingBytes += pcm.byteLength;
+      while (pendingBytes > MAX_PENDING_BYTES && pending.length) {
+        pendingBytes -= pending.shift()!.byteLength;
+      }
+    }
+  };
+
   ws.onopen = () => {
     // Flush any audio that arrived before the socket was ready.
-    audioBuffer.forEach((blob) => sendBlob(ws, blob));
-    audioBuffer.length = 0;
+    for (const buf of pending) {
+      try { ws.send(buf); } catch { /* ignore */ }
+    }
+    pending.length = 0;
+    pendingBytes = 0;
 
-    // Heartbeat. Deepgram closes idle connections after ~10s; keep-alive
-    // every 5s avoids that during long pauses.
+    // Heartbeat. Deepgram closes a connection that gets no data for ~10s;
+    // this keeps it alive while paused. Sent unconditionally — Deepgram
+    // accepts KeepAlive interleaved with audio.
     keepAliveTimer = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) {
         try { ws.send(JSON.stringify({ type: 'KeepAlive' })); } catch { /* ignore */ }
@@ -159,17 +254,18 @@ export async function startDeepgramSession(
     const result = msg as DgResultsMessage;
     const alt = result.channel?.alternatives?.[0];
     const transcript = alt?.transcript ?? '';
-    if (!transcript) return;
-
-    if (!result.is_final) {
-      handlers.onInterim(transcript);
-      return;
+    if (transcript) {
+      if (!result.is_final) {
+        handlers.onInterim(transcript);
+      } else {
+        // Final segment — group consecutive words by speaker so the output
+        // reads as "Speaker 0: foo. Speaker 1: bar.".
+        const words = alt?.words ?? [];
+        const text = formatSpeakerLabeled(transcript, words);
+        handlers.onFinal({ text, receivedAt: performance.now() });
+      }
     }
-    // Final segment — group consecutive words by speaker so the output
-    // reads as "Speaker 0: foo. Speaker 1: bar.".
-    const words = alt?.words ?? [];
-    const text = formatSpeakerLabeled(transcript, words);
-    handlers.onFinal({ text, receivedAt: performance.now() });
+    if (result.from_finalize) releaseFinalizeWaiter();
   };
 
   ws.onerror = () => {
@@ -187,32 +283,27 @@ export async function startDeepgramSession(
     }
   };
 
-  // Start audio capture. opus@48kHz matches the URL parameters.
-  const mimeType = pickMimeType();
-  if (!mimeType) {
+  // Wire the audio graph. The sink is a muted gain to the destination:
+  // Safari only pulls audio through nodes connected to an output.
+  try {
+    source = ctx.createMediaStreamSource(stream);
+    processor = await createProcessor(ctx, onAudio);
+    sink = ctx.createGain();
+    sink.gain.value = 0;
+    source.connect(processor);
+    processor.connect(sink);
+    sink.connect(ctx.destination);
+    if (ctx.state !== 'running') await ctx.resume();
+  } catch (err) {
     cleanup();
-    throw new Error('Browser does not support a Deepgram-compatible audio recorder.');
+    throw err instanceof Error ? err : new Error('Could not start audio capture.');
   }
-  recorder = new MediaRecorder(stream, { mimeType });
-  recorder.ondataavailable = (e) => {
-    if (!e.data || e.data.size === 0) return;
-    if (ws.readyState === WebSocket.OPEN) {
-      sendBlob(ws, e.data);
-    } else if (ws.readyState === WebSocket.CONNECTING) {
-      audioBuffer.push(e.data);
-    }
-  };
-  recorder.onerror = (ev) => {
-    const err = (ev as ErrorEvent).error?.message ?? 'MediaRecorder error';
-    handlers.onError(err);
-    cleanup();
-  };
 
   // The OS can take the mic away mid-session (iOS camera, a phone call,
   // another app). The track then ends, or goes muted and stays muted —
-  // either way the recorder would keep "recording" silence. End the
-  // session so the caller sees it stop instead of losing speech silently.
-  // A brief mute (route change, AirPods connecting) is tolerated.
+  // either way we'd keep "recording" silence. End the session so the
+  // caller sees it stop instead of losing speech silently. A brief mute
+  // (route change, AirPods connecting) is tolerated.
   for (const track of stream.getAudioTracks()) {
     track.addEventListener('ended', cleanup);
     track.addEventListener('mute', () => {
@@ -227,31 +318,95 @@ export async function startDeepgramSession(
     });
   }
 
-  recorder.start(250);
+  const pause = (): Promise<void> => {
+    if (closed || paused) return Promise.resolve();
+    paused = true;
+    resampler.reset();
+    if (ws.readyState !== WebSocket.OPEN) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      const timer = setTimeout(() => {
+        if (finalizeWaiter === done) finalizeWaiter = null;
+        resolve();
+      }, FINALIZE_WAIT_MS);
+      const done = () => { clearTimeout(timer); resolve(); };
+      releaseFinalizeWaiter();
+      finalizeWaiter = done;
+      try { ws.send(JSON.stringify({ type: 'Finalize' })); } catch { done(); }
+    });
+  };
 
-  return { stop: cleanup };
+  const resume = () => {
+    if (closed) return;
+    paused = false;
+    ctx.resume().catch(() => { /* ignore */ });
+  };
+
+  return { stop: cleanup, pause, resume };
 }
 
-function sendBlob(ws: WebSocket, blob: Blob): void {
-  blob.arrayBuffer().then((buf) => {
-    if (ws.readyState === WebSocket.OPEN) {
-      try { ws.send(buf); } catch { /* ignore */ }
-    }
-  }).catch(() => { /* ignore */ });
-}
-
-function pickMimeType(): string | null {
-  const candidates = [
-    'audio/webm;codecs=opus',
-    'audio/webm',
-    'audio/ogg;codecs=opus',
-  ];
-  for (const c of candidates) {
-    if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(c)) {
-      return c;
+/** AudioWorklet when available (off the main thread); ScriptProcessor
+ *  otherwise. Both call `onAudio` with mono Float32 frames. */
+async function createProcessor(
+  ctx: AudioContext,
+  onAudio: (frame: Float32Array) => void
+): Promise<AudioNode> {
+  if (ctx.audioWorklet && typeof AudioWorkletNode !== 'undefined') {
+    try {
+      await ctx.audioWorklet.addModule(`${import.meta.env.BASE_URL}pcm-worklet.js`);
+      const node = new AudioWorkletNode(ctx, 'pcm-capture', {
+        numberOfInputs: 1,
+        numberOfOutputs: 1,
+        channelCount: 1,
+        channelCountMode: 'explicit',
+      });
+      node.port.onmessage = (e: MessageEvent<Float32Array>) => onAudio(e.data);
+      return node;
+    } catch {
+      // Fall through to ScriptProcessor.
     }
   }
-  return null;
+  const node = ctx.createScriptProcessor(4096, 1, 1);
+  node.onaudioprocess = (e) => onAudio(e.inputBuffer.getChannelData(0));
+  return node;
+}
+
+/** Streaming downsampler: box-averages input samples into each output
+ *  sample (a cheap low-pass that avoids aliasing at 48k/44.1k → 16k) and
+ *  converts to little-endian Int16. Keeps fractional position across
+ *  frames so chunk boundaries don't click. */
+export class Resampler {
+  private readonly ratio: number;
+  private acc = 0;
+  private count = 0;
+  private pos = 0;
+
+  constructor(inputRate: number, outputRate: number) {
+    this.ratio = inputRate / outputRate;
+  }
+
+  reset(): void {
+    this.acc = 0;
+    this.count = 0;
+    this.pos = 0;
+  }
+
+  process(input: Float32Array): ArrayBuffer {
+    const out = new Int16Array(Math.ceil(input.length / this.ratio) + 1);
+    let n = 0;
+    for (let i = 0; i < input.length; i++) {
+      this.acc += input[i];
+      this.count++;
+      this.pos += 1;
+      if (this.pos >= this.ratio) {
+        this.pos -= this.ratio;
+        const v = Math.max(-1, Math.min(1, this.acc / this.count));
+        out[n++] = v < 0 ? v * 0x8000 : v * 0x7fff;
+        this.acc = 0;
+        this.count = 0;
+      }
+    }
+    return out.buffer.slice(0, n * 2);
+  }
 }
 
 function formatSpeakerLabeled(transcript: string, words: DgWord[]): string {

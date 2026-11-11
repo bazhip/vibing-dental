@@ -130,7 +130,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, []);
 
   const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
-  const voice = useVoiceCapture({ onStop });
+  const onPause = React.useCallback(() => { processChunk(true).catch(console.error); }, [processChunk]);
+  const voice = useVoiceCapture({ onStop, onPause });
   voiceRef.current = voice;
 
   React.useEffect(() => {
@@ -158,7 +159,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const handleButton = () => {
-    if (voice.recording) voice.stop();
+    if (voice.recording || voice.paused) voice.stop();
     else if (voice.interrupted) voice.resume();
     else setIntroOpen(true);
   };
@@ -191,16 +192,23 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const label = voice.recording
+  const label = voice.recording || voice.paused
     ? 'Stop'
     : activeChunkCount > 0
       ? 'Finishing…'
       : voice.interrupted
         ? 'Resume'
         : 'AI autofill';
-  const subLabel = voice.recording && activeChunkCount > 0 ? 'listening · sending…' : voice.recording ? 'listening' : null;
+  const subLabel = voice.recording && activeChunkCount > 0
+    ? 'listening · sending…'
+    : voice.recording ? 'listening' : voice.paused ? 'paused' : null;
+  const pauseToggle = voice.recording
+    ? { text: 'Pause', title: 'Pause dictation — the transcript is kept', onClick: voice.pause }
+    : voice.paused
+      ? { text: 'Resume', title: 'Resume dictation', onClick: voice.resume }
+      : null;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', activeChunkCount > 0 ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
-  const sidebarOpen = voice.recording || voice.interrupted || activity.length > 0;
+  const sidebarOpen = voice.recording || voice.paused || voice.interrupted || activity.length > 0;
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
 
   return (
@@ -216,6 +224,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
       </button>
+      {pauseToggle && (
+        <button
+          type="button"
+          className={`voice-input voice-input--pause${voice.paused ? ' voice-input--paused' : ''}`}
+          onClick={pauseToggle.onClick}
+          aria-pressed={voice.paused}
+          title={pauseToggle.title}
+        >
+          <span className="voice-input__label">{pauseToggle.text}</span>
+        </button>
+      )}
 
       {/* How-it-works modal, with Start inside. Portaled to <body> so it
           isn't trapped by the topbar's backdrop-filter containing block
@@ -234,6 +253,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <li>A <strong>transcript</strong> and a live <strong>activity log</strong> open on the right so you see exactly what’s being entered.</li>
                 <li>As each value lands, the app <strong>jumps to that section and highlights the field</strong>.</li>
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
+                <li>Need a moment? Press <strong>Pause</strong> — nothing is heard until you press <strong>Resume</strong>, and the transcript is kept.</li>
                 <li>Press <strong>Stop</strong> (same button) when you’re done.</li>
               </ul>
               <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 Medical, tuned for clinical terms + speaker labels' : 'your browser’s speech recognition'}.</p>
@@ -255,7 +275,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         <aside className="ai-sidebar" aria-live="polite">
           <header className="ai-sidebar__head">
             <span className={`ai-sidebar__status${voice.recording ? ' ai-sidebar__status--live' : ''}`}>
-              {voice.recording ? '● Listening' : voice.interrupted ? 'Paused' : 'Last session'}
+              {voice.recording ? '● Listening' : voice.paused ? 'Paused' : voice.interrupted ? 'Interrupted' : 'Last session'}
             </span>
             <span className="voice-input__provider-badge">
               {voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}
@@ -264,7 +284,12 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               {transcriptText && (
                 <button type="button" className="voice-input__panel-clear" onClick={handleDownloadTranscript} title="Download transcript">⬇</button>
               )}
-              {!voice.recording && (
+              {pauseToggle && (
+                <button type="button" className="voice-input__panel-clear" onClick={pauseToggle.onClick} title={pauseToggle.title}>
+                  {pauseToggle.text}
+                </button>
+              )}
+              {!voice.recording && !voice.paused && (
                 <button type="button" className="voice-input__panel-close" onClick={closeSidebar} aria-label="Close">×</button>
               )}
             </div>
@@ -290,26 +315,28 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
           <div className="ai-sidebar__section-label">Transcript</div>
           <div className="ai-sidebar__transcript">
-            {transcriptText || voice.transcript ? (
+            {transcriptText || voice.interim ? (
               <>
                 {transcriptText}
-                {voice.transcript && <span className="ai-sidebar__interim"> {voice.transcript}</span>}
+                {voice.interim && <span className="ai-sidebar__interim"> {voice.interim}</span>}
               </>
             ) : (
-              <span className="ai-sidebar__empty">Start talking — your words appear here.</span>
+              <span className="ai-sidebar__empty">
+                {voice.paused ? 'Paused — press Resume to keep dictating.' : 'Start talking — your words appear here.'}
+              </span>
             )}
           </div>
 
           <div className="ai-sidebar__section-label">
             Activity
-            {activity.length > 0 && !voice.recording && (
+            {activity.length > 0 && !voice.recording && !voice.paused && (
               <button type="button" className="voice-input__panel-clear" onClick={() => setActivity([])}>Clear</button>
             )}
           </div>
           <div className="ai-sidebar__activity">
             {activity.length === 0 ? (
               <div className="ai-sidebar__empty">
-                {voice.recording ? 'Chart changes show here as the AI applies them.' : 'No changes applied.'}
+                {voice.recording || voice.paused ? 'Chart changes show here as the AI applies them.' : 'No changes applied.'}
               </div>
             ) : (
               activity.map((entry) => (

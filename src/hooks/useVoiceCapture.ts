@@ -1,6 +1,8 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
-import { startDeepgramSession, DeepgramSession } from '../utils/deepgramVoice';
+import {
+  startDeepgramSession, DeepgramSession, canCaptureRawAudio, createCaptureContext,
+} from '../utils/deepgramVoice';
 
 /**
  * Voice capture with two transports:
@@ -66,6 +68,14 @@ export interface VoiceCapture {
   recording: boolean;
   /** Concatenated final + interim transcript so far (live). */
   transcript: string;
+  /** Just the not-yet-final words currently being heard. */
+  interim: string;
+  /** True while the user has paused dictation. The session stays
+   *  resumable and the transcript is kept; `recording` is false. */
+  paused: boolean;
+  /** Pause dictation (stops listening, flushes what was heard via
+   *  onPause). Stable across renders. */
+  pause: () => void;
   /** Stable across renders. */
   start: () => void;
   /** Stable across renders — also fires onStop with the final transcript. */
@@ -91,7 +101,8 @@ export interface VoiceCapture {
    *  background on a phone, or the connection dropped. Whatever was
    *  heard before that is kept, and onStop still fires for it. */
   interrupted: boolean;
-  /** Start listening again after an interruption, keeping the transcript. */
+  /** Start listening again after a pause or interruption, keeping the
+   *  transcript. */
   resume: () => void;
   /** Clear the interrupted flag without resuming. */
   dismissInterruption: () => void;
@@ -106,15 +117,18 @@ function isTouchPrimary(): boolean {
 
 interface UseVoiceCaptureOptions {
   onStop?: (transcript: string) => void;
+  /** Fires once a pause has taken effect and the final words heard
+   *  before it have arrived — a good moment to flush them downstream. */
+  onPause?: () => void;
 }
 
-export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceCapture {
+export function useVoiceCapture({ onStop, onPause }: UseVoiceCaptureOptions = {}): VoiceCapture {
   const browserCtor = React.useMemo(getRecognitionCtor, []);
   // Deepgram (high accuracy + diarization) is preferred when the browser
   // can capture audio; its key is minted per-session by the backend, so
   // there's no BYOK. Web Speech is the fallback (and what a failed mint
   // or a non-Pro/trial account falls back to).
-  const canCaptureAudio = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices;
+  const canCaptureAudio = React.useMemo(canCaptureRawAudio, []);
   const [provider, setProvider] = React.useState<VoiceProvider>(
     canCaptureAudio ? 'deepgram' : 'browser'
   );
@@ -125,6 +139,8 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   const [error, setError] = React.useState<string | null>(null);
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
   const [interrupted, setInterrupted] = React.useState(false);
+  const [paused, setPaused] = React.useState(false);
+  const [interim, setInterimState] = React.useState('');
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
@@ -143,9 +159,22 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   // Mic permission refused: the session ends, but "resume" can't help.
   const fatalRef = React.useRef(false);
   const interimRef = React.useRef('');
+  // Set while a browser-STT session is being ended for a pause, so its
+  // onend isn't read as an interruption.
+  const pauseRequestedRef = React.useRef(false);
+  const pausedRef = React.useRef(false);
+  // True while a Deepgram session is being set up (token + handshake).
+  const connectingRef = React.useRef(false);
 
   const onStopRef = React.useRef(onStop);
   React.useEffect(() => { onStopRef.current = onStop; }, [onStop]);
+  const onPauseRef = React.useRef(onPause);
+  React.useEffect(() => { onPauseRef.current = onPause; }, [onPause]);
+
+  const setPausedBoth = React.useCallback((v: boolean) => {
+    pausedRef.current = v;
+    setPaused(v);
+  }, []);
 
   const recordSegment = React.useCallback((seg: FinalSegment) => {
     pendingSegmentsRef.current.push(seg);
@@ -161,17 +190,20 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
     }
     finalRef.current += seg.text + ' ';
     interimRef.current = '';
+    setInterimState('');
     setTranscript(finalRef.current);
   }, []);
 
   const setInterim = React.useCallback((interim: string) => {
     interimRef.current = interim;
+    setInterimState(interim);
     setTranscript(finalRef.current + interim);
   }, []);
 
   const resetSession = React.useCallback(() => {
     finalRef.current = '';
     interimRef.current = '';
+    setInterimState('');
     pendingSegmentsRef.current = [];
     recentSegmentsRef.current = [];
     allSegmentsRef.current = [];
@@ -182,13 +214,24 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const handleSessionEnd = React.useCallback(() => {
     const finalText = finalRef.current.trim();
-    if (sessionLiveRef.current && !stopRequestedRef.current && !fatalRef.current) {
-      setInterrupted(true);
-    }
+    const wasLive = sessionLiveRef.current;
+    interimRef.current = '';
+    setInterimState('');
     sessionLiveRef.current = false;
     setRecording(false);
+    if (pauseRequestedRef.current) {
+      // Browser STT ended because the user paused: not an interruption,
+      // and the dictation isn't over — flush, but don't "stop".
+      pauseRequestedRef.current = false;
+      onPauseRef.current?.();
+      return;
+    }
+    if (!stopRequestedRef.current && !fatalRef.current && wasLive) {
+      setInterrupted(true);
+    }
+    setPausedBoth(false);
     onStopRef.current?.(finalText);
-  }, []);
+  }, [setPausedBoth]);
 
   const startBrowser = React.useCallback(() => {
     if (!browserCtor) {
@@ -237,6 +280,10 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const startDeepgram = React.useCallback(async () => {
     setRecording(true);
+    // Created before the first await so it's still inside the user's tap —
+    // iOS won't start an AudioContext outside a gesture.
+    const audioCtx = createCaptureContext();
+    connectingRef.current = true;
     // Mint a short-lived Deepgram key from the backend (Pro-gated). If it
     // isn't available (not configured, or a non-Pro/trial caller), fall
     // back to browser speech recognition.
@@ -248,8 +295,13 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
       dgAuth = { token: data.token as string, kind: (data.kind as 'token' | 'bearer') || 'bearer' };
     } catch {
       // Silent fallback to the free browser transport.
+      audioCtx?.close().catch(() => { /* ignore */ });
+      connectingRef.current = false;
       setProvider('browser');
       setRecording(false);
+      // Paused or stopped while the token was being fetched: don't start
+      // listening behind the user's back. Resume will use browser STT.
+      if (pausedRef.current || stopRequestedRef.current) return;
       startBrowser();
       return;
     }
@@ -262,42 +314,98 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
           deepgramRef.current = null;
           handleSessionEnd();
         },
-      });
+      }, audioCtx);
       // If stop() fired during the handshake, tear the session straight
       // back down instead of storing a live (mic-open) session that the
       // UI now thinks is stopped.
       if (stopRequestedRef.current) {
+        connectingRef.current = false;
         session.stop();
         setRecording(false);
         return;
       }
+      // Paused during the handshake: keep the session but don't listen.
+      if (pausedRef.current) session.pause();
       deepgramRef.current = session;
       sessionLiveRef.current = true;
+      connectingRef.current = false;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
+      connectingRef.current = false;
+      const name = err instanceof Error ? err.name : '';
+      if (name === 'NotAllowedError' || name === 'SecurityError') {
+        setError('Microphone access was blocked. Allow it in your browser settings and try again.');
+      } else if (name === 'NotFoundError') {
+        setError('No microphone was found.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Couldn\'t start Deepgram session.');
+      }
       setRecording(false);
+      setPausedBoth(false);
     }
-  }, [recordSegment, setInterim, handleSessionEnd, startBrowser]);
+  }, [recordSegment, setInterim, handleSessionEnd, startBrowser, setPausedBoth]);
 
   const begin = React.useCallback(() => {
     stopRequestedRef.current = false;
+    pauseRequestedRef.current = false;
     fatalRef.current = false;
     setInterrupted(false);
+    setPausedBoth(false);
     if (provider === 'deepgram') startDeepgram();
     else startBrowser();
-  }, [provider, startBrowser, startDeepgram]);
+  }, [provider, startBrowser, startDeepgram, setPausedBoth]);
 
   const start = React.useCallback(() => {
-    if (browserRef.current || deepgramRef.current) return;
+    if (browserRef.current || deepgramRef.current || pausedRef.current) return;
     resetSession();
     begin();
   }, [resetSession, begin]);
 
   const resume = React.useCallback(() => {
-    if (browserRef.current || deepgramRef.current) return;
     setError(null);
+    // Paused Deepgram session: the socket is still open, just listen again.
+    if (pausedRef.current && deepgramRef.current) {
+      deepgramRef.current.resume();
+      setPausedBoth(false);
+      setRecording(true);
+      return;
+    }
+    // Paused before the Deepgram session finished connecting: it's still
+    // coming up, so just un-pause rather than starting a second one.
+    if (pausedRef.current && connectingRef.current) {
+      setPausedBoth(false);
+      setRecording(true);
+      return;
+    }
+    if (browserRef.current || deepgramRef.current) return;
     begin();
-  }, [begin]);
+  }, [begin, setPausedBoth]);
+
+  const pause = React.useCallback(() => {
+    if (pausedRef.current) return;
+    if (deepgramRef.current) {
+      setPausedBoth(true);
+      setRecording(false);
+      deepgramRef.current.pause().then(() => {
+        interimRef.current = '';
+        setInterimState('');
+        setTranscript(finalRef.current);
+        if (pausedRef.current) onPauseRef.current?.();
+      });
+      return;
+    }
+    if (browserRef.current) {
+      setPausedBoth(true);
+      pauseRequestedRef.current = true;
+      try { browserRef.current.stop(); } catch { /* ignore */ }
+      return;
+    }
+    // Deepgram handshake still in flight: remember it; the session pauses
+    // as soon as it's up.
+    if (recording) {
+      setPausedBoth(true);
+      setRecording(false);
+    }
+  }, [recording, setPausedBoth]);
 
   const dismissInterruption = React.useCallback(() => setInterrupted(false), []);
 
@@ -326,13 +434,18 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
 
   const stop = React.useCallback(() => {
     stopRequestedRef.current = true;
+    pauseRequestedRef.current = false;
     if (browserRef.current) {
       try { browserRef.current.stop(); } catch { /* ignore */ }
     }
     if (deepgramRef.current) {
       deepgramRef.current.stop();
+    } else if (pausedRef.current && !browserRef.current) {
+      // Paused browser STT has no live session to end — finish here.
+      setPausedBoth(false);
+      onStopRef.current?.(finalRef.current.trim());
     }
-  }, []);
+  }, [setPausedBoth]);
 
   const consumeFinalSegments = React.useCallback((): FinalSegment[] => {
     const out = pendingSegmentsRef.current;
@@ -362,7 +475,7 @@ export function useVoiceCapture({ onStop }: UseVoiceCaptureOptions = {}): VoiceC
   }, []);
 
   return {
-    supported, recording, transcript, start, stop, error,
+    supported, recording, transcript, interim, paused, pause, start, stop, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
     provider, interrupted, resume, dismissInterruption,
   };

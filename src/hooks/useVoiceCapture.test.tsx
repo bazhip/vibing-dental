@@ -69,3 +69,38 @@ describe('useVoiceCapture interruptions', () => {
     expect(result.current.error).toMatch(/not-allowed/);
   });
 });
+
+describe('useVoiceCapture pause', () => {
+  it('pause keeps the transcript, flushes via onPause, and is not an interruption', () => {
+    const onPause = vi.fn();
+    const onStop = vi.fn();
+    const { result } = renderHook(() => useVoiceCapture({ onPause, onStop }));
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('first'));
+    act(() => result.current.pause());
+    expect(result.current.paused).toBe(true);
+    expect(result.current.recording).toBe(false);
+    expect(result.current.interrupted).toBe(false);
+    expect(onPause).toHaveBeenCalledTimes(1);
+    expect(onStop).not.toHaveBeenCalled();
+
+    act(() => result.current.resume());
+    expect(result.current.paused).toBe(false);
+    expect(result.current.recording).toBe(true);
+    act(() => FakeRecognition.last!.say('second'));
+    expect(result.current.allSegments().map((s) => s.text)).toEqual(['first', 'second']);
+  });
+
+  it('stop while paused ends the dictation', () => {
+    const onStop = vi.fn();
+    const { result } = renderHook(() => useVoiceCapture({ onStop }));
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('104 fractured'));
+    act(() => result.current.pause());
+    act(() => result.current.stop());
+    expect(result.current.paused).toBe(false);
+    expect(result.current.recording).toBe(false);
+    expect(result.current.interrupted).toBe(false);
+    expect(onStop).toHaveBeenCalledWith('104 fractured');
+  });
+});
