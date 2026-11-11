@@ -87,7 +87,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
       <div className="pdf-preview-modal documents-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header documents-modal__header">
           <div>
-            <h2 id="documents-title">Documents{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
+            <h2 id="documents-title">Download PDFs{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
             <p>{current.who}</p>
           </div>
           <button ref={closeRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close documents">
