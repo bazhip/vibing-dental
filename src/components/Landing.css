@@ -1297,3 +1297,4 @@
   letter-spacing: 0.04em;
   vertical-align: middle;
 }
+.landing__footer-links { display: inline-flex; gap: 1rem; flex-wrap: wrap; }

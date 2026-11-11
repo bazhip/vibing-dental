@@ -501,6 +501,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 : 'New here? Create a practice account'}
             </button>
           )}
+
+          {cloudEnabled && (
+            <p className="login-legal">
+              {signup ? 'By creating an account you agree to the ' : 'By signing in you agree to the '}
+              <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and{' '}
+              <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+            </p>
+          )}
         </form>
       </div>
     </div>
