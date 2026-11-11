@@ -152,3 +152,21 @@ describe('dedupeActions — the 105/104 repeat from a real run', () => {
     ]);
   });
 });
+
+describe('real run 2 — Deepgram punctuation and homophones', () => {
+  const raw = 'Speaker 0: 101GI2, calc 2102GI2, calc 2. Mobility one. 103GI1, Calc 1. 104. Fracture. 105. GI2. Calc. 3T slash FX slash CCF106 missing';
+  it('rejoins a punctuated pause and turns spoken slashes into a code', () => {
+    const out = normalizeTranscript(raw);
+    expect(out).toContain('Calc 3 T/FX/CCF 106 missing');
+    expect(out).toContain('Mobility 1');
+  });
+  it('reads "1098T" as 109 AT', () => {
+    expect(normalizeTranscript('1098T. One ten enamel fracture.')).toContain('109 AT');
+  });
+});
+
+describe('score run into the next tooth number', () => {
+  it('splits "calc 2102GI2" into calc 2, tooth 102', () => {
+    expect(normalizeTranscript('101GI2, calc 2102GI2, calc 2.')).toContain('calc 2 102 GI 2');
+  });
+});

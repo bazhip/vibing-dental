@@ -354,7 +354,7 @@ const DIGIT_WORD_RE = new RegExp(
 // tooth 103 — not tooth 310.
 const SCORE_TERMS = 'GI|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis';
 const SCORE_WORD_RE = new RegExp(
-  `\\b(${SCORE_TERMS})([\\s,-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
+  `\\b(${SCORE_TERMS})([\\s,.-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
   'gi'
 );
 // A spoken number right before a unit is a measurement: "five millimeter".
@@ -371,6 +371,11 @@ export function normalizeTranscript(raw: string): string {
   // separate tokens. Code+digit pairs (PD3, M2) are re-joined below.
   text = text.replace(/(\d)(?=[A-Za-z])/g, '$1 ').replace(/([A-Za-z])(?=\d)/g, '$1 ');
 
+  // AVDC codes dictated as words: "T slash FX slash CCF" → "T/FX/CCF".
+  text = text.replace(/\s*\bslash\b\s*/gi, '/');
+  // "AT" (attrition) heard as "eight-T": "1098T" / "109 8T" → "109 AT".
+  text = text.replace(/\b([1-8][0-1]\d)\s*8\s*T\b/g, '$1 AT');
+
   // Spelled-out letters: "g I" → "GI", "P D" handled below.
   text = text.replace(/\bg[\s.-]*i\b/gi, 'GI');
   // STT spells the letter F as "f e" ("f e three" = F3, furcation 3).
@@ -380,6 +385,10 @@ export function normalizeTranscript(raw: string): string {
   // pass below can't swallow them ("calc two five millimeter" is calc 2,
   // 5 mm — not 25).
   text = text.replace(SCORE_WORD_RE, (_m, term, sep, word) => `${term}${sep}${DIGIT_WORDS[word.toLowerCase()]}`);
+  // A score run into the next tooth number: "calc 2102" → "calc 2 102".
+  text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\s+(\\d)([1-8][0-1]\\d)\\b`, 'gi'), '$1 $2 $3');
+  // A pause before the value gets punctuated ("Calc. 3"): rejoin it.
+  text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\.\\s+(?=\\d)`, 'gi'), '$1 ');
   text = text.replace(UNIT_WORD_RE, (word) => DIGIT_WORDS[word.toLowerCase()]);
 
   // "one oh four" / "two-o-nine" / "three zero one" → "104" / "209" / "301"
