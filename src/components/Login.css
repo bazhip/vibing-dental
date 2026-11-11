@@ -301,3 +301,36 @@
   background: var(--surface-alt, #f7f9fa);
   border-radius: 8px;
 }
+
+/* "Continue with Google" — Google's light button style. */
+.login-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: white;
+  color: #1f1f1f;
+  border: 1px solid #c7cdd4;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.login-google:hover { background: #f6f8fa; border-color: #9aa4ae; }
+.login-google:focus-visible { outline: 2px solid var(--primary, #0f766e); outline-offset: 2px; }
+.login-google:disabled { opacity: 0.6; cursor: default; }
+.login-google__logo { width: 18px; height: 18px; flex: none; }
+.login-or {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted, #64748b);
+  font-size: 0.8rem;
+  margin: 0.25rem 0;
+}
+.login-or::before,
+.login-or::after { content: ''; flex: 1; border-top: 1px solid var(--border, #e2e8f0); }

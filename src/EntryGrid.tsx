@@ -24,6 +24,7 @@ import { toast, friendlyError, confirmDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
+import { FinishSetupModal, useFinishSetup } from './components/FinishSetupModal';
 import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
 import { lazyWithReload } from './utils/lazyWithReload';
@@ -255,12 +256,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // First-run walkthrough — auto-shown once per browser for real accounts,
   // and relaunchable from Settings.
   const [walkthroughOpen, setWalkthroughOpen] = React.useState(false);
+  // New Google accounts name their practice/doctor first; the walkthrough
+  // waits until that's settled.
+  const setup = useFinishSetup(profile, cloud.enabled && !trial);
   React.useEffect(() => {
-    if (trial || !profile.loaded) return;
+    if (trial || !profile.loaded || !setup.checked || setup.need) return;
     if (readString('onboarding.seen', 1, '') === '1') return;
     writeString('onboarding.seen', 1, '1');
     setWalkthroughOpen(true);
-  }, [trial, profile.loaded]);
+  }, [trial, profile.loaded, setup.checked, setup.need]);
   // "My charts" dialog — a real route (#/library) so the Back button and
   // gesture-back close it instead of exiting the site, and a refresh
   // reopens it.
@@ -1366,6 +1370,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         onClose={() => setAccountOpen(false)}
         profile={profile}
       />
+
+      {setup.need && (
+        <FinishSetupModal need={setup.need} profile={profile} onDone={setup.done} />
+      )}
 
       {isAdmin && (
         <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
