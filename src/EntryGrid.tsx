@@ -235,7 +235,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   React.useEffect(() => {
     const id = initialChartLinkRef.current;
     if (!cloud.enabled || !id || id === chart.cloudChartId) return;
-    cloud.openChart(id).catch(() => { /* stale link — keep the working chart */ });
+    // Wait a tick so the chart restored from this device has landed (the
+    // grid restores in an effect); then open the link only if that
+    // working chart has no unsaved edits — a reload never prompts.
+    const t = window.setTimeout(() => {
+      cloud.openChart(id, { ifClean: true }).catch(() => { /* stale link — keep the working chart */ });
+    }, 0);
+    return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -73,7 +73,8 @@ export interface UseCloudSyncReturn {
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
   listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
-  openChart: (id: string) => Promise<void>;
+  /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
+  openChart: (id: string, opts?: { ifClean?: boolean }) => Promise<void>;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
   deleteChart: (id: string) => Promise<void>;
@@ -352,9 +353,13 @@ export function useCloudSync(
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
-  const openChart = React.useCallback(async (id: string): Promise<void> => {
+  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean } = {}): Promise<void> => {
     if (!supabase) return;
-    if (!confirmDiscardIfDirty('Open the other chart')) return;
+    // Deep links on page load never prompt: a working chart with edits
+    // simply stays put (the user just reloaded their own work).
+    if (opts.ifClean) {
+      if (dirtyRef.current) return;
+    } else if (!confirmDiscardIfDirty('Open the other chart')) return;
     const { data, error } = await supabase
       .from('charts')
       .select('id, data')
