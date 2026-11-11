@@ -30,25 +30,6 @@ const BillingGate = lazyWithReload(() =>
 const AUTH_KEY = 'auth';
 const AUTH_VERSION = 1;
 const TRIAL_KEY = 'trial';
-const TRIAL_NOTIFIED_KEY = 'trial.notified';
-
-/** Tell the practice owner someone started a trial — fire-and-forget,
- *  once per browser. No personal data leaves the page (there is none
- *  to send; trials are anonymous). */
-function notifyTrialStarted(): void {
-  const base = import.meta.env.VITE_SUPABASE_URL;
-  if (!base) return;
-  if (readString(TRIAL_NOTIFIED_KEY, 1, '') === '1') return;
-  writeString(TRIAL_NOTIFIED_KEY, 1, '1');
-  fetch(`${base}/functions/v1/signup-alert`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ trial: true }),
-  }).catch(() => {
-    // best-effort — never bother the trial user about it
-  });
-}
-
 /**
  * Root application component with authentication.
  *
@@ -113,7 +94,6 @@ const App: React.FC = () => {
   const startTrial = () => {
     writeString(TRIAL_KEY, 1, '1');
     setTrialMode(true);
-    notifyTrialStarted();
   };
 
   const endTrial = async (nextAuth: 'signup' | 'signin' | null) => {
