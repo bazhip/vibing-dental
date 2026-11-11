@@ -3302,3 +3302,233 @@ button.save-status--manual:hover {
 }
 /* Header actions (e.g. "Mark the rest normal") sit at the right edge. */
 .dental-grid__section-header > .diagram-view__action { margin-left: auto; }
+
+/* ---- Tooth numbers on the diagram (optional, screen only) ---- */
+.diagram-view__numbers {
+  background: white;
+  border: 1px solid var(--border);
+}
+.diagram-view__numbers.diagram-view__tool--active,
+.diagram-view__numbers.diagram-view__tool--active:hover { background: var(--primary); border-color: var(--primary); }
+.tooth-number {
+  fill: #2b6cb0;
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.tooth-number--selected { fill: var(--primary, #0c6b63); }
+
+/* ---- Charting view switch (Grid / By tooth) ---- */
+.charting-view-switch {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.charting-view-switch__btn {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.charting-view-switch__btn:hover { background: #edf2f7; }
+.charting-view-switch__btn--active,
+.charting-view-switch__btn--active:hover { background: var(--primary); color: white; }
+
+/* ---- By-tooth charting ---- */
+.tooth-chart__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .tooth-chart__layout { grid-template-columns: minmax(0, 1fr); }
+}
+.tooth-chart__diagram { min-width: 0; }
+
+.tooth-chart .tooth-group[data-charted='true'] .tooth-group__hover {
+  fill: rgba(56, 161, 105, 0.28);
+}
+.tooth-chart .tooth-group[data-planned='true'] .tooth-group__hover {
+  fill: rgba(214, 158, 46, 0.35);
+  stroke: #b7791f;
+  stroke-width: 3;
+  stroke-dasharray: 8 5;
+}
+.tooth-chart .tooth-group[data-hovered='true'] .tooth-group__hover {
+  fill: rgba(66, 153, 225, 0.4);
+}
+.tooth-chart .tooth-group[data-selected='true'] .tooth-group__hover {
+  fill: rgba(66, 153, 225, 0.45);
+  stroke: var(--primary, #0c6b63);
+  stroke-width: 5;
+  stroke-dasharray: none;
+}
+
+.tooth-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.tooth-chart__legend li { display: inline-flex; align-items: center; gap: 0.35rem; }
+.tooth-chart__swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1;
+}
+.tooth-chart__swatch--charted { background: rgba(56, 161, 105, 0.35); }
+.tooth-chart__swatch--planned { background: rgba(214, 158, 46, 0.4); border: 2px dashed #b7791f; }
+.tooth-chart__swatch--extracted { color: #c53030; font-weight: 800; border-color: transparent; }
+.tooth-chart__swatch--missing { background: #1a202c; }
+
+.tooth-chart__panel {
+  position: sticky;
+  top: calc(var(--topbar-height, 0px) + 0.75rem);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  scroll-margin-top: calc(var(--topbar-height, 0px) + 0.75rem);
+}
+@media (max-width: 900px) {
+  .tooth-chart__panel { position: static; }
+}
+.tooth-chart__empty p { margin: 0 0 0.5rem; }
+.tooth-chart__hint { font-size: 0.85rem; color: var(--text-muted); }
+
+.tooth-chart__nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tooth-chart__nav .diagram-view__action { padding: 0.4rem 0.6rem; white-space: nowrap; }
+.tooth-chart__heading { text-align: center; min-width: 0; }
+.tooth-chart__number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--primary, #0c6b63);
+  font-variant-numeric: tabular-nums;
+}
+.tooth-chart__name { font-size: 0.85rem; color: var(--text); }
+.tooth-chart__abbr { color: var(--text-muted); }
+
+.tooth-chart__fields {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.tooth-chart__group-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.tooth-chart__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.tooth-chart__check input { width: 1.05rem; height: 1.05rem; }
+.tooth-chart__findings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 0.75rem;
+}
+.tooth-chart__finding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+.tooth-chart__finding-input {
+  width: 4.2rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  text-align: center;
+}
+.tooth-chart__finding-input:disabled { background: #f1f3f5; }
+.tooth-chart__finding-input--bad { border-color: #c53030; background: #fff5f5; }
+.tooth-chart__note { display: flex; flex-direction: column; gap: 0.3rem; }
+.tooth-chart__note textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+.tooth-chart__extraction { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+
+.tooth-chart__plan {
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tooth-chart__plan-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tooth-chart__plan-chip {
+  border: 2px dashed #b7791f;
+  background: #fffaf0;
+  color: #744210;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tooth-chart__plan-chip--done { border-style: solid; border-color: #38a169; background: #f0fff4; color: #22543d; }
+.tooth-chart__plan-chip--selected { box-shadow: 0 0 0 2px var(--primary, #0c6b63); }
+.tooth-chart__plan-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

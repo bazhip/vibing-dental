@@ -89,6 +89,12 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   const [commentTextScale, setCommentTextScale] = usePersistedState<number>(
     'diagram.commentTextScale', 2, 1.0
   );
+  // Always-on Triadan numbers next to each tooth — optional, off by
+  // default (the hover tooltip still names a tooth). Per-browser, shared
+  // by both diagrams. Screen only; never printed on the PDF.
+  const [showNumbers, setShowNumbers] = usePersistedState<boolean>(
+    'diagram.showToothNumbers', 1, false
+  );
   const innerRef = React.useRef<ToothDiagramHandle>(null);
 
   // Each diagram has its own undo stack. The id (stable per instance via
@@ -209,6 +215,16 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 
           <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={addFreeComment}>
             + Free comment
+          </button>
+
+          <button
+            type="button"
+            className={`diagram-view__tool diagram-view__numbers ${showNumbers ? 'diagram-view__tool--active' : ''}`}
+            onClick={() => setShowNumbers(!showNumbers)}
+            aria-pressed={showNumbers}
+            title="Show each tooth's Triadan number on the diagram (not printed on the PDF)"
+          >
+            # Numbers
           </button>
 
           <div className="diagram-view__zoom" role="group" aria-label="Zoom">
@@ -335,6 +351,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           markMode={markMode}
           highlightTriadan={highlightTriadan}
           readOnly={readOnly}
+          showNumbers={showNumbers}
         />
         </div>
       </div>

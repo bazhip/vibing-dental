@@ -30,6 +30,7 @@ import { lazyWithReload } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
 import { OwnerReportSection } from './components/OwnerReportSection';
+import { ToothChartView } from './components/ToothChartView';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
@@ -191,6 +192,30 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // so turning mirroring off can never silently drop the grid data.
   const [pdfIncludeGrid, setPdfIncludeGrid] = usePersistedState<boolean>(
     'charting.pdfIncludeGrid', 1, true
+  );
+  // Charting view: the spreadsheet grid, or By tooth (click a numbered
+  // tooth on the diagram and chart it in a side panel). Both edit the
+  // same chart data. Per-browser preference.
+  const [chartingView, setChartingView] = usePersistedState<'grid' | 'tooth'>(
+    'charting.view', 1, 'grid'
+  );
+  const chartingViewSwitch = (
+    <div className="charting-view-switch" role="group" aria-label="Charting view">
+      {([['grid', 'Grid'], ['tooth', 'By tooth']] as const).map(([v, label]) => (
+        <button
+          key={v}
+          type="button"
+          className={`charting-view-switch__btn${chartingView === v ? ' charting-view-switch__btn--active' : ''}`}
+          aria-pressed={chartingView === v}
+          onClick={() => setChartingView(v)}
+          title={v === 'tooth'
+            ? 'Click a tooth on a numbered diagram and chart it — findings, notes, planned and confirmed extractions'
+            : 'Spreadsheet of every tooth\'s measurements'}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
   // per page. Per-browser preference, toggled from the Images section.
@@ -730,7 +755,28 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       // is exactly what starting a new visit from a saved chart does.
       content: (
         activeSection === 'charting' ? (
+          chartingView === 'tooth' ? (
+            <ToothChartView
+              readOnly={readOnly}
+              species={chart.species}
+              toothData={chart.toothData}
+              setToothData={chart.setToothDataDirectly}
+              preMarks={chart.preToothMarks}
+              onToggleMissing={toggleMissing}
+              effectivePostMarks={chart.effectivePostMarks}
+              setPostMarks={chart.setPostToothMarksDirect}
+              preComments={chart.preDiagramComments}
+              setPreComments={chart.setPreDiagramComments}
+              postComments={chart.postDiagramComments}
+              setPostComments={chart.setPostDiagramComments}
+              plannedExtractions={chart.plannedExtractions}
+              setPlannedExtraction={chart.setPlannedExtraction}
+              highlightTriadan={aiHighlightTriadan}
+              headerAccessory={chartingViewSwitch}
+            />
+          ) : (
           <DentalGrid
+            headerAccessory={chartingViewSwitch}
             readOnly={readOnly}
             toothData={chart.toothData}
             onToothDataChange={chart.setToothDataDirectly}
@@ -748,6 +794,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             pdfIncludeGrid={pdfIncludeGrid}
             onPdfIncludeGridChange={setPdfIncludeGrid}
           />
+          )
         ) : null
       ),
     },

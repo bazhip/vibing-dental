@@ -25,3 +25,9 @@ export const GRID_MIN_HEIGHT = 1000;
  * Total number of rows in the grid
  */
 export const GRID_ROW_COUNT = 43;
+
+/** Valid scales for numeric grid columns (mirrors the AI's checks). */
+export const COLUMN_RANGES: Record<string, [number, number]> = {
+  mobility: [0, 3], furcation: [0, 3], calculus: [0, 3], gingivitis: [0, 3], pdstate: [0, 4],
+  pocket: [0, 15], recession: [0, 15],
+};
