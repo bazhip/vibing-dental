@@ -37,6 +37,8 @@ import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
+import { localDateISO } from './utils/localDate';
+import { isCurrentVisit } from './utils/currentVisit';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -128,7 +130,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     } catch { /* private mode */ }
     setEditUnlockedState(v);
   };
-  const cloud = useCloudSync(chart, !trial, profile.practiceId, editUnlocked);
+  // The open patient's visits (newest first), for the topbar date
+  // switcher and the current-visit rule below. Loaded further down.
+  const [visits, setVisits] = React.useState<CloudChartMeta[]>([]);
+  // Today's visit isn't a "saved visit": reloading or reopening it
+  // mid-visit opens it editable with no banner (see isCurrentVisit).
+  // Latched per chart so changing the date mid-edit doesn't lock it.
+  const currentVisitRule = isCurrentVisit(chart.patientInfo.date, localDateISO(), visits, chart.cloudChartId);
+  const [currentVisitLatch, setCurrentVisitLatch] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (currentVisitRule) setCurrentVisitLatch(chart.cloudChartId);
+  }, [currentVisitRule, chart.cloudChartId]);
+  const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
+  const editable = editUnlocked || currentVisit;
+  const cloud = useCloudSync(chart, !trial, profile.practiceId, editable);
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
@@ -163,7 +178,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [navigate]);
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
-  const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
+  const readOnly = cloud.enabled && chart.openedExisting && !editable;
   // Has the chart changed since the user chose Edit chart? (Offers Revert.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
@@ -373,10 +388,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (chart.patientInfo.patientName.trim()) setSaveHint('');
   }, [chart.patientInfo.patientName]);
 
-  // The open patient's other visits, for the topbar date switcher. Loaded
-  // when the active chart changes (open / new visit / new patient) rather
-  // than on every keystroke.
-  const [visits, setVisits] = React.useState<CloudChartMeta[]>([]);
+  // Load the open patient's visits when the active chart changes (open /
+  // new visit / new patient) rather than on every keystroke.
   React.useEffect(() => {
     if (!cloud.enabled) { setVisits([]); return; }
     const num = chart.patientInfo.patientNumber.trim().toLowerCase();
@@ -1182,7 +1195,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {/* Saved-visit banner: opens view-only so history isn't changed by
           accident; Edit chart unlocks (changes then autosave), Revert
           restores the version that was opened, Done editing re-locks. */}
-      {cloud.enabled && chart.openedExisting && (
+      {cloud.enabled && chart.openedExisting && !currentVisit && (
         <div className={`chart-lock-banner${readOnly ? '' : ' chart-lock-banner--editing'}`} role="status">
           {readOnly ? (
             <>
