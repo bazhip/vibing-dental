@@ -124,6 +124,11 @@ export interface UseChartStateReturn {
   /** Include or leave out one image from the chart PDF. */
   setImageInPdf: (attachmentId: string, include: boolean) => void;
 
+  /** Teeth flagged "plan to extract" (By-tooth charting checklist). */
+  plannedExtractions: number[];
+  /** Flag or unflag one tooth as a planned extraction. */
+  setPlannedExtraction: (triadan: number, planned: boolean) => void;
+
   /** Hand-edited owner-report text blocks (absent = auto-generated). */
   ownerReport: OwnerReportOverrides;
   /** Set an owner-report block; null restores the generated text. */
@@ -329,6 +334,7 @@ export function useChartState(): UseChartStateReturn {
     // positions that don't exist on another species' chart either.
     const hasDiagramData =
       Object.keys(preToothMarks).length > 0 || Object.keys(postToothMarks).length > 0 ||
+      plannedExtractions.length > 0 ||
       preDiagramComments.length > 0 || postDiagramComments.length > 0 ||
       preDiagramStrokes.length > 0 || postDiagramStrokes.length > 0;
     const apply = () => {
@@ -338,6 +344,7 @@ export function useChartState(): UseChartStateReturn {
         setPreToothMarks({}); setPostToothMarksDirect({});
         setPreDiagramComments([]); setPostDiagramComments([]);
         setPreDiagramStrokes([]); setPostDiagramStrokes([]);
+        setPlannedExtractions([]);
       }
     };
     if (!hasGridData && !hasDiagramData) { apply(); return; }
@@ -392,6 +399,20 @@ export function useChartState(): UseChartStateReturn {
     setPdfExcludedImages((prev) => {
       const rest = prev.filter((id) => id !== attachmentId);
       return include ? rest : [...rest, attachmentId];
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Teeth flagged "plan to extract" from the By-tooth charting view.
+  // Part of the chart (saves, restores, clears with it), but not drawn
+  // on the PDF — the Procedure marks are the record of what was done.
+  const [plannedExtractions, setPlannedExtractions] = usePersistedState<number[]>(
+    'chart.plannedExtractions', 1, []
+  );
+  const setPlannedExtraction = React.useCallback((triadan: number, planned: boolean) => {
+    setPlannedExtractions((prev) => {
+      const rest = prev.filter((t) => t !== triadan);
+      return planned ? [...rest, triadan].sort((a, b) => a - b) : rest;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -470,6 +491,7 @@ export function useChartState(): UseChartStateReturn {
     setImageRoles({}); // image tags belong to the prior visit's images
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
+    setPlannedExtractions([]);
     setPatientInfo(blankPatientInfo(keep));
     if (identity) {
       setSpecies(sp);
@@ -502,6 +524,9 @@ export function useChartState(): UseChartStateReturn {
     imageRoles,
     pdfExcludedImages,
     ownerReport,
+    // Omitted when empty so charts that never use the plan keep the exact
+    // serialized shape (and saved hash) they had before the field existed.
+    ...(plannedExtractions.length ? { plannedExtractions } : {}),
     patientInfo,
     toothData,
     species,
@@ -513,7 +538,7 @@ export function useChartState(): UseChartStateReturn {
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
   }), [
-    imageRoles, pdfExcludedImages, ownerReport, patientInfo, toothData, species, logo,
+    imageRoles, pdfExcludedImages, ownerReport, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -528,6 +553,11 @@ export function useChartState(): UseChartStateReturn {
     setImageRoles(snapshot.imageRoles ?? {});
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
+    setPlannedExtractions(
+      Array.isArray(snapshot.plannedExtractions)
+        ? snapshot.plannedExtractions.filter((t): t is number => typeof t === 'number')
+        : []
+    );
     setPatientInfo(snapshot.patientInfo);
     setSpecies(snapshot.species);
     setLogo(snapshot.logo);
@@ -576,6 +606,7 @@ export function useChartState(): UseChartStateReturn {
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
+      setPlannedExtractions([]); // nor the extraction plan
       setPatientInfo(normalizeSnapshot({ patientInfo: parsed.patientInfo } as ChartSnapshot).patientInfo);
       setSpecies(parsed.species);
       setLogo(parsed.logo);
@@ -652,6 +683,9 @@ export function useChartState(): UseChartStateReturn {
 
     pdfExcludedImages,
     setImageInPdf,
+
+    plannedExtractions,
+    setPlannedExtraction,
 
     ownerReport,
     setOwnerReportOverride,

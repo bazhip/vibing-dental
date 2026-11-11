@@ -296,6 +296,10 @@ export interface ChartSnapshot {
   pdfExcludedImages?: string[];
   /** Hand-edited owner-report text blocks (absent fields = generated). */
   ownerReport?: OwnerReportOverrides;
+  /** Teeth flagged "plan to extract" while charting by tooth — a working
+   *  checklist confirmed against the Procedure marks at the end. Absent
+   *  on charts saved before the field existed (= none). */
+  plannedExtractions?: number[];
   patientInfo: PatientInfo;
   toothData: ToothData[];
   species: Species;

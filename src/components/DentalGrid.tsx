@@ -1,11 +1,7 @@
 import React, { useRef } from 'react';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
-/** Valid scales for numeric grid columns (mirrors the AI's checks). */
-const COLUMN_RANGES: Record<string, [number, number]> = {
-  mobility: [0, 3], furcation: [0, 3], calculus: [0, 3], gingivitis: [0, 3], pdstate: [0, 4],
-  pocket: [0, 15], recession: [0, 15],
-};
+import { COLUMN_RANGES } from '../constants/columnDefinitions';
 import {
   DataGrid,
   Column,
@@ -43,6 +39,9 @@ interface DentalGridProps {
    *  are mirrored, since the diagram then carries the same data. */
   pdfIncludeGrid?: boolean;
   onPdfIncludeGridChange?: (on: boolean) => void;
+  /** Rendered in the section header beside the title (the Grid / By
+   *  tooth view switch). */
+  headerAccessory?: React.ReactNode;
 }
 
 /**
@@ -204,6 +203,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   pdfIncludeGrid,
   onPdfIncludeGridChange,
   readOnly = false,
+  headerAccessory,
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
@@ -389,6 +389,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">Charting</h2>
+        {headerAccessory}
         {onMirrorToDiagnosisChange && (
           <div className="dental-grid__options">
             <label

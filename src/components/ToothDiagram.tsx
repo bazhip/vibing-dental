@@ -75,7 +75,82 @@ interface ToothDiagramProps {
   /** View-only (saved visit not unlocked): no marking, drawing or note edits;
    *  zoom and reading still work. */
   readOnly?: boolean;
+  /** Label every tooth with its Triadan number (screen only — stripped
+   *  from the PDF export). */
+  showNumbers?: boolean;
+  /** Select mode (By-tooth charting): a tooth click/Enter calls this
+   *  instead of marking or commenting. Works on read-only charts too, so
+   *  a locked chart can still be browsed tooth by tooth. */
+  onToothSelect?: (triadan: number) => void;
+  /** Tooth outlined as the current selection (select mode). */
+  selectedTriadan?: number | null;
+  /** Per-tooth status tints: `charted` (has findings or notes) and
+   *  `planned` (flagged for extraction, not yet done). */
+  toothFlags?: Record<number, { charted?: boolean; planned?: boolean }>;
 }
+
+/** Where a tooth's number label sits: just outside the tooth, pushed
+ *  away from the arch centre (the midline, at the diagram's centre x) so
+ *  numbers ring the outside of the arch instead of covering neighbours.
+ *  Exported for tests. */
+export function numberLabelPosition(
+  bbox: ToothBBox,
+  archCenter: { x: number; y: number },
+  gap: number
+): { x: number; y: number } {
+  const cx = (bbox.minX + bbox.maxX) / 2;
+  const cy = (bbox.minY + bbox.maxY) / 2;
+  let dx = cx - archCenter.x;
+  let dy = cy - archCenter.y;
+  const len = Math.hypot(dx, dy) || 1;
+  dx /= len;
+  dy /= len;
+  const halfW = (bbox.maxX - bbox.minX) / 2;
+  const halfH = (bbox.maxY - bbox.minY) / 2;
+  // Distance from the centre to the bbox edge along (dx, dy).
+  const toEdge = Math.min(
+    Math.abs(dx) > 1e-6 ? halfW / Math.abs(dx) : Infinity,
+    Math.abs(dy) > 1e-6 ? halfH / Math.abs(dy) : Infinity
+  );
+  return { x: cx + dx * (toEdge + gap), y: cy + dy * (toEdge + gap) };
+}
+
+/** Nudge overlapping labels apart (crowded incisors put 101/201 a few
+ *  px from each other). Each label is a w×h box centred on its point;
+ *  overlapping pairs are pushed apart along the axis that overlaps
+ *  least, a few relaxation passes. Pure; exported for tests. */
+export function spreadLabels(
+  points: Array<{ x: number; y: number; w: number; h: number }>,
+  iterations = 12
+): Array<{ x: number; y: number }> {
+  const out = points.map((p) => ({ ...p }));
+  for (let it = 0; it < iterations; it++) {
+    let moved = false;
+    for (let i = 0; i < out.length; i++) {
+      for (let j = i + 1; j < out.length; j++) {
+        const a = out[i];
+        const b = out[j];
+        const ox = (a.w + b.w) / 2 - Math.abs(a.x - b.x);
+        const oy = (a.h + b.h) / 2 - Math.abs(a.y - b.y);
+        if (ox <= 0 || oy <= 0) continue;
+        moved = true;
+        if (ox < oy) {
+          const push = (ox / 2 + 0.5) * (a.x <= b.x ? 1 : -1);
+          a.x -= push;
+          b.x += push;
+        } else {
+          const push = (oy / 2 + 0.5) * (a.y <= b.y ? 1 : -1);
+          a.y -= push;
+          b.y += push;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+  return out.map(({ x, y }) => ({ x, y }));
+}
+
+const NUMBER_FONT = 22;
 
 // Pure SVG-parser + comment-layout helpers live in `./toothDiagram/*` —
 // extraction makes them testable in isolation.
@@ -114,6 +189,10 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   highlightTriadan,
   markMode = 'all',
   readOnly = false,
+  showNumbers = false,
+  onToothSelect,
+  selectedTriadan = null,
+  toothFlags,
 }, ref) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
   // Wraps both the SVG and the HTML comment overlay; used by the
@@ -413,6 +492,26 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     );
   }, [comments, diagram, bboxByTriadan, liveCommentPatch]);
 
+  // Tooth-number label positions: outside each tooth, de-overlapped.
+  const numberLabels = React.useMemo(() => {
+    if (!parsed || !showNumbers) return null;
+    const archCenter = { x: diagram.width / 2, y: diagram.midlineY };
+    const seeds: Array<{ triadan: number; x: number; y: number; w: number; h: number }> = [];
+    for (const tooth of diagram.teeth) {
+      const info = renderInfoByTriadan.get(tooth.triadan);
+      if (!info) continue;
+      // Incisors sit too close for one row of numbers: tier them
+      // outward (I1 nearest, I3 farthest) so each tier holds just a
+      // left/right pair that the spread below can split across the midline.
+      const tier = tooth.type === 'incisor' ? (tooth.triadan % 100) - 1 : 0;
+      const pos = numberLabelPosition(info.bbox, archCenter, 16 + tier * (NUMBER_FONT + 4));
+      const w = String(tooth.triadan).length * NUMBER_FONT * 0.6 + 4;
+      seeds.push({ triadan: tooth.triadan, ...pos, w, h: NUMBER_FONT + 2 });
+    }
+    const spread = spreadLabels(seeds);
+    return seeds.map((s, i) => ({ triadan: s.triadan, ...spread[i] }));
+  }, [parsed, showNumbers, diagram, renderInfoByTriadan]);
+
   const sidePad = diagram.width * SIDE_PAD_RATIO;
   const topPad = diagram.height * TOP_PAD_RATIO;
   const bottomPad = diagram.height * BOTTOM_PAD_RATIO;
@@ -458,6 +557,11 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   );
 
   const handleToothClick = (triadan: number, e: React.SyntheticEvent) => {
+    if (onToothSelect) {
+      e.stopPropagation();
+      onToothSelect(triadan);
+      return;
+    }
     if (readOnly) return;
     if (tool === 'draw') return;
     e.stopPropagation();
@@ -881,7 +985,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       className="tooth-diagram"
       role="group"
       aria-label={
-        markMode === 'extracted-only'
+        onToothSelect
+          ? 'Tooth diagram — choose a tooth to chart it'
+          : markMode === 'extracted-only'
           ? 'Tooth diagram — Enter or Space on a tooth toggles extracted'
           : markMode === 'missing-only'
           ? 'Tooth diagram — Enter or Space on a tooth toggles missing'
@@ -964,11 +1070,16 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
             );
 
           const locked = lockedTriadans?.has(tooth.triadan) ?? false;
+          const flags = toothFlags?.[tooth.triadan];
+          const selected = selectedTriadan === tooth.triadan;
           return (
             <g
               key={tooth.triadan}
               className="tooth-group"
               data-mark={mark || 'none'}
+              data-selected={selected ? 'true' : undefined}
+              data-charted={flags?.charted ? 'true' : undefined}
+              data-planned={flags?.planned ? 'true' : undefined}
               // Measured centre, for exports that place markers on teeth
               // (the owner report's numbered pins).
               data-triadan={tooth.triadan}
@@ -983,9 +1094,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               // — pointer users see no difference.
               role="button"
               tabIndex={0}
-              aria-pressed={!!mark}
-              aria-disabled={locked || undefined}
-              aria-label={`Tooth ${tooth.triadan}${mark ? `, marked ${mark}` : ''}${locked ? ' (missing before this visit — locked)' : ''}`}
+              aria-pressed={onToothSelect ? selected : !!mark}
+              aria-disabled={(!onToothSelect && locked) || undefined}
+              aria-label={`Tooth ${tooth.triadan}${mark ? `, marked ${mark}` : ''}${flags?.planned ? ', planned extraction' : ''}${!onToothSelect && locked ? ' (missing before this visit — locked)' : ''}`}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -1022,6 +1133,31 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           );
         })}
 
+      {/* Always-on Triadan numbers (optional). Screen-only: the export
+          strips [data-export-skip] so PDFs keep the clean template look. */}
+      {numberLabels && (
+        <g className="tooth-numbers" data-export-skip="true" pointerEvents="none">
+          {numberLabels.map(({ triadan, x, y }) => {
+            const selected = selectedTriadan === triadan;
+            return (
+              <text
+                key={triadan}
+                x={x}
+                y={y}
+                fontSize={selected ? NUMBER_FONT * 1.2 : NUMBER_FONT}
+                fontWeight={selected ? 800 : 600}
+                fontFamily='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                textAnchor="middle"
+                dominantBaseline="central"
+                className={`tooth-number${selected ? ' tooth-number--selected' : ''}`}
+              >
+                {triadan}
+              </text>
+            );
+          })}
+        </g>
+      )}
+
       {/* Hover tooltip: floats just above the hovered tooth with its
           label + Triadan number (e.g. "C · 104"). Drawn in SVG coords so
           it scales with the diagram; flips below the tooth near the top
@@ -1045,7 +1181,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           Math.min(cx - w / 2, viewBoxX + viewBoxWidth - w - 2)
         );
         return (
-          <g className="tooth-tooltip" pointerEvents="none">
+          <g className="tooth-tooltip" data-export-skip="true" pointerEvents="none">
             <rect x={x} y={top} width={w} height={h} rx={6} className="tooth-tooltip__bg" />
             <text
               x={x + w / 2}

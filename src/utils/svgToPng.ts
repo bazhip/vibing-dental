@@ -222,6 +222,9 @@ export async function diagramSvgToPng(
   pins: DiagramPin[] = []
 ): Promise<Uint8Array> {
   const clone = svgEl.cloneNode(true) as SVGSVGElement;
+  // Screen-only overlays (tooth-number labels, the hover tooltip) stay
+  // out of the rasterized chart.
+  clone.querySelectorAll('[data-export-skip]').forEach((n) => n.remove());
 
   // Inject styles so paths render with the same fills the live app applies via
   // an external stylesheet.
