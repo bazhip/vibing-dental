@@ -142,7 +142,7 @@ const FEATURES: LandingFeature[] = [
       'New visits carry extracted and missing teeth forward automatically — marked “prev” so they read as history, not today’s finding.',
       'Last visit’s measurements show as hints while you probe, so trends jump out chairside.',
       'Every save is logged — who, when — in each chart’s history.',
-      'Saved charts open read-only until deliberately unlocked, so records don’t change by accident.',
+      'Past visits open read-only until deliberately unlocked, so records don’t change by accident — today’s visit stays ready to edit.',
     ],
   },
   {
