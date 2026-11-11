@@ -115,12 +115,71 @@ export function numberLabelPosition(
   return { x: cx + dx * (toEdge + gap), y: cy + dy * (toEdge + gap) };
 }
 
-/** Nudge overlapping labels apart (crowded incisors put 101/201 a few
- *  px from each other). Each label is a w×h box centred on its point;
- *  overlapping pairs are pushed apart along the axis that overlaps
- *  least, a few relaxation passes. Pure; exported for tests. */
+/**
+ * Front-teeth numbers on a clean arc. Incisors are too tightly packed
+ * for a number beside each one, so the front labels go in tooth order
+ * (104 103 102 101 | 201 202 203 204) evenly spaced along an arc just
+ * outside the row — bulging up for the maxilla, down for the mandible,
+ * following the shape of the arch. Pure; exported for tests.
+ *
+ * `teeth` are one jaw's front teeth (incisors + canines, any order); `outward` is -1 when the
+ * outside of the arch is up (maxilla), +1 when it's down (mandible).
+ * `obstacles` are tooth boxes no label may cover (default: `teeth`).
+ */
+export function arcLabelPositions(
+  teeth: Array<{ triadan: number; bbox: ToothBBox }>,
+  outward: 1 | -1,
+  label: { w: number; h: number; gap: number },
+  obstacles: ToothBBox[] = teeth.map((t) => t.bbox)
+): Map<number, { x: number; y: number }> {
+  const out = new Map<number, { x: number; y: number }>();
+  const n = teeth.length;
+  if (n === 0) return out;
+  const sorted = [...teeth].sort((a, b) => a.bbox.cx - b.bbox.cx);
+  const centerX = sorted.reduce((sum, t) => sum + t.bbox.cx, 0) / n;
+  // Apex sits just past the outermost incisor edge.
+  const edge = outward < 0
+    ? Math.min(...sorted.map((t) => t.bbox.minY))
+    : Math.max(...sorted.map((t) => t.bbox.maxY));
+  const apexY = edge + outward * (label.gap + label.h / 2);
+  // Neighbouring labels sit one label-width (plus padding) apart along
+  // the arc; the sweep widens with the label count (~100° for the eight
+  // front teeth) so the ends curve down alongside the canines.
+  const step = label.w + 6;
+  const sweep = 0.25 * (n - 1); // radians, end to end
+  const radius = n > 1 ? ((n - 1) * step) / sweep : 1;
+  const centerY = apexY - outward * radius;
+  const pts = sorted.map((t, i) => {
+    const theta = ((i - (n - 1) / 2) * step) / radius;
+    return {
+      triadan: t.triadan,
+      x: centerX + radius * Math.sin(theta),
+      y: centerY + outward * radius * Math.cos(theta),
+    };
+  });
+  // The arc dips toward the teeth at its ends — push the whole arc
+  // outward until no label overlaps (or crowds) a tooth it sits over.
+  let shift = 0;
+  for (const p of pts) {
+    for (const b of obstacles) {
+      if (p.x + label.w / 2 <= b.minX || p.x - label.w / 2 >= b.maxX) continue;
+      const need = outward < 0
+        ? p.y + label.h / 2 - (b.minY - label.gap)  // label bottom vs tooth top
+        : b.maxY + label.gap - (p.y - label.h / 2); // tooth bottom vs label top
+      shift = Math.max(shift, need);
+    }
+  }
+  for (const p of pts) out.set(p.triadan, { x: p.x, y: p.y + outward * shift });
+  return out;
+}
+
+/** Nudge overlapping labels apart. Each label is a w×h box centred on
+ *  its point; overlapping pairs are pushed apart along the axis that
+ *  overlaps least, a few relaxation passes. `fixed` labels (the incisor
+ *  arc) never move — anything overlapping one takes the whole push.
+ *  Pure; exported for tests. */
 export function spreadLabels(
-  points: Array<{ x: number; y: number; w: number; h: number }>,
+  points: Array<{ x: number; y: number; w: number; h: number; fixed?: boolean }>,
   iterations = 12
 ): Array<{ x: number; y: number }> {
   const out = points.map((p) => ({ ...p }));
@@ -133,15 +192,19 @@ export function spreadLabels(
         const ox = (a.w + b.w) / 2 - Math.abs(a.x - b.x);
         const oy = (a.h + b.h) / 2 - Math.abs(a.y - b.y);
         if (ox <= 0 || oy <= 0) continue;
+        if (a.fixed && b.fixed) continue;
         moved = true;
+        // Share of the push each label takes (all of it if the other is fixed).
+        const aShare = a.fixed ? 0 : b.fixed ? 1 : 0.5;
+        const bShare = 1 - aShare;
         if (ox < oy) {
-          const push = (ox / 2 + 0.5) * (a.x <= b.x ? 1 : -1);
-          a.x -= push;
-          b.x += push;
+          const dir = a.x <= b.x ? 1 : -1;
+          a.x -= (ox + 1) * aShare * dir;
+          b.x += (ox + 1) * bShare * dir;
         } else {
-          const push = (oy / 2 + 0.5) * (a.y <= b.y ? 1 : -1);
-          a.y -= push;
-          b.y += push;
+          const dir = a.y <= b.y ? 1 : -1;
+          a.y -= (oy + 1) * aShare * dir;
+          b.y += (oy + 1) * bShare * dir;
         }
       }
     }
@@ -496,17 +559,29 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   const numberLabels = React.useMemo(() => {
     if (!parsed || !showNumbers) return null;
     const archCenter = { x: diagram.width / 2, y: diagram.midlineY };
-    const seeds: Array<{ triadan: number; x: number; y: number; w: number; h: number }> = [];
+    const labelW = 3 * NUMBER_FONT * 0.6 + 4; // Triadan numbers are 3 digits
+    const labelH = NUMBER_FONT + 2;
+    // Front teeth: one arc per jaw. Everything else: beside its tooth.
+    const arcPos = new Map<number, { x: number; y: number }>();
+    for (const outward of [-1, 1] as const) {
+      const jaw = diagram.teeth
+        .filter((t) => (outward < 0 ? t.cy < diagram.midlineY : t.cy >= diagram.midlineY))
+        .map((t) => ({ triadan: t.triadan, type: t.type, bbox: renderInfoByTriadan.get(t.triadan)?.bbox }))
+        .filter((t): t is { triadan: number; type: typeof t.type; bbox: ToothBBox } => !!t.bbox);
+      // The front of the mouth — incisors and canines — reads as one arc
+      // (104 103 102 101 | 201 202 203 204); a canine label beside its
+      // tooth would collide with the ends of an incisor-only arc.
+      const front = jaw.filter((t) => t.type === 'incisor' || t.type === 'canine');
+      arcLabelPositions(front, outward, { w: labelW, h: labelH, gap: 12 })
+        .forEach((pos, triadan) => arcPos.set(triadan, pos));
+    }
+    const seeds: Array<{ triadan: number; x: number; y: number; w: number; h: number; fixed?: boolean }> = [];
     for (const tooth of diagram.teeth) {
       const info = renderInfoByTriadan.get(tooth.triadan);
       if (!info) continue;
-      // Incisors sit too close for one row of numbers: tier them
-      // outward (I1 nearest, I3 farthest) so each tier holds just a
-      // left/right pair that the spread below can split across the midline.
-      const tier = tooth.type === 'incisor' ? (tooth.triadan % 100) - 1 : 0;
-      const pos = numberLabelPosition(info.bbox, archCenter, 16 + tier * (NUMBER_FONT + 4));
-      const w = String(tooth.triadan).length * NUMBER_FONT * 0.6 + 4;
-      seeds.push({ triadan: tooth.triadan, ...pos, w, h: NUMBER_FONT + 2 });
+      const onArc = arcPos.get(tooth.triadan);
+      const pos = onArc ?? numberLabelPosition(info.bbox, archCenter, 16);
+      seeds.push({ triadan: tooth.triadan, ...pos, w: labelW, h: labelH, fixed: !!onArc });
     }
     const spread = spreadLabels(seeds);
     return seeds.map((s, i) => ({ triadan: s.triadan, ...spread[i] }));

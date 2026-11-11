@@ -1,5 +1,5 @@
 import { toothDisplayName, toothWalkOrder, setToothNote, findToothNote, hasFindings } from './toothChart';
-import { numberLabelPosition, spreadLabels } from '../components/ToothDiagram';
+import { numberLabelPosition, spreadLabels, arcLabelPositions } from '../components/ToothDiagram';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { DiagramComment } from '../types';
 
@@ -90,4 +90,61 @@ test('spreadLabels separates overlapping labels and leaves clear ones alone', ()
   const clearY = Math.abs(out[1].y - out[0].y) >= 20;
   expect(clearX || clearY).toBe(true);
   expect(out[2]).toEqual({ x: 400, y: 400 });
+});
+
+describe('arcLabelPositions', () => {
+  const box = (cx: number, cy: number) => ({ minX: cx - 6, maxX: cx + 6, minY: cy - 10, maxY: cy + 10, cx, cy });
+  // cat-like upper incisors: 103 102 101 | 201 202 203, tightly packed
+  const upper = [101, 102, 103, 201, 202, 203].map((t) => {
+    const side = t < 200 ? -1 : 1;
+    const pos = t % 100;
+    return { triadan: t, bbox: box(345 + side * (pos * 13 - 6), 60 + pos * 2) };
+  });
+  const label = { w: 44, h: 24, gap: 12 };
+  const overlapsAny = (pos: { x: number; y: number }, boxes: Array<{ minX: number; maxX: number; minY: number; maxY: number }>) =>
+    boxes.some((b) =>
+      pos.x + label.w / 2 > b.minX && pos.x - label.w / 2 < b.maxX &&
+      pos.y + label.h / 2 > b.minY && pos.y - label.h / 2 < b.maxY);
+
+  test('upper arc: tooth order left to right, evenly spaced, centre highest', () => {
+    const p = arcLabelPositions(upper, -1, label);
+    const order = [103, 102, 101, 201, 202, 203].map((t) => p.get(t)!);
+    for (let i = 1; i < order.length; i++) {
+      expect(order[i].x).toBeGreaterThan(order[i - 1].x);
+      const d = Math.hypot(order[i].x - order[i - 1].x, order[i].y - order[i - 1].y);
+      expect(d).toBeGreaterThanOrEqual(label.w); // never overlap
+    }
+    // symmetric arch, bulging up: the middle pair is highest, ends lowest
+    expect(p.get(101)!.y).toBeCloseTo(p.get(201)!.y);
+    expect(p.get(103)!.y).toBeCloseTo(p.get(203)!.y);
+    expect(p.get(101)!.y).toBeLessThan(p.get(102)!.y);
+    expect(p.get(102)!.y).toBeLessThan(p.get(103)!.y);
+    // no label covers an incisor
+    for (const pos of order) expect(overlapsAny(pos, upper.map((t) => t.bbox))).toBe(false);
+    // the apex hugs the row: the middle labels sit right above the I1s
+    expect(p.get(101)!.y + label.h / 2).toBeCloseTo(upper[0].bbox.minY - label.gap);
+  });
+
+  test('lower arc mirrors downward', () => {
+    const lower = upper.map((t) => ({ triadan: t.triadan + 200, bbox: box(t.bbox.cx, 900) }));
+    const p = arcLabelPositions(lower, 1, label);
+    expect(p.get(301)!.y).toBeGreaterThan(p.get(303)!.y);
+    for (const pos of p.values()) expect(overlapsAny(pos, lower.map((t) => t.bbox))).toBe(false);
+  });
+
+  test('arc ends clear obstacles such as the canines beside the incisors', () => {
+    const canines = [box(250, 70), box(440, 70)].map((b) => ({ ...b, minY: 10, maxY: 130, minX: b.cx - 30, maxX: b.cx + 30 }));
+    const p = arcLabelPositions(upper, -1, label, [...upper.map((t) => t.bbox), ...canines]);
+    for (const pos of p.values()) expect(overlapsAny(pos, canines)).toBe(false);
+  });
+});
+
+test('spreadLabels never moves fixed labels', () => {
+  const out = spreadLabels([
+    { x: 100, y: 50, w: 40, h: 20, fixed: true },
+    { x: 110, y: 55, w: 40, h: 20 },
+  ]);
+  expect(out[0]).toEqual({ x: 100, y: 50 });
+  const clear = Math.abs(out[1].x - 100) >= 40 || Math.abs(out[1].y - 50) >= 20;
+  expect(clear).toBe(true);
 });
