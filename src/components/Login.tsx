@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { GoogleSignInButton } from './GoogleSignInButton';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
@@ -263,6 +264,16 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
+          {cloudEnabled && (mode === 'signin' || signup) && (
+            <>
+              <GoogleSignInButton
+                label={signup ? 'Sign up with Google' : 'Continue with Google'}
+                disabled={busy}
+                onError={setError}
+              />
+              <div className="login-or">or {signup ? 'sign up' : 'sign in'} with email</div>
+            </>
+          )}
           {cloudEnabled && signup && (
             <>
               <label className="login-field">
