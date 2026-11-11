@@ -347,3 +347,13 @@
   padding: 4px;
   background: white;
 }
+
+/* "By signing in you agree to…" under the auth form. */
+.login-legal {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted, #64748b);
+  text-align: center;
+}
+.login-legal a { color: inherit; text-decoration: underline; }

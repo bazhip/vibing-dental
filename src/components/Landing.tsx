@@ -416,7 +416,11 @@ export const Landing: React.FC<LandingProps> = ({
 
       <footer className="landing__footer">
         <span>ToothOps Charting — built with veterinary dentists.</span>
-        <a href="mailto:bazhip@gmail.com">Contact</a>
+        <span className="landing__footer-links">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="mailto:bazhip@gmail.com">Contact</a>
+        </span>
       </footer>
 
       {auth && (
