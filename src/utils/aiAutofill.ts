@@ -360,7 +360,7 @@ const MEDICAL_KEYWORDS = [
   'lymph', 'buccal', 'extraoral', 'block', 'mL', 'bupivacaine', 'ropivacaine',
   'lidocaine', 'mepivacaine', 'cleaning', 'polish', 'scaling', 'suturing',
   'tooth', 'teeth', 'canine', 'incisor', 'molar', 'premolar', 'carnassial',
-  'PD', 'P D', 'class', 'stage', 'mm',
+  'PD', 'P D', 'class', 'stage', 'mm', 'millimeter',
 ];
 
 // Allow trailing digit so "PD3", "M2", "C1" still match when their root
@@ -371,10 +371,13 @@ const KEYWORD_RE = new RegExp(
   'i'
 );
 const TRIADAN_RE = /\b[1-4][0-1][0-9]\b/;
+// Normalized shorthand scores: M2, C1, F2, G1, PD3.
+const SHORTHAND_RE = /\b(?:PD|M|C|F|G)\d\b/;
 
 export function chunkLooksMedical(chunk: string): boolean {
-  if (chunk.length < 8) return false;
-  return KEYWORD_RE.test(chunk) || TRIADAN_RE.test(chunk);
+  // Chunks are sent per utterance, so a finding can be as short as "M2".
+  if (chunk.trim().length < 2) return false;
+  return KEYWORD_RE.test(chunk) || TRIADAN_RE.test(chunk) || SHORTHAND_RE.test(chunk);
 }
 
 // ----- Chart context summary ----------------------------------------------
@@ -491,6 +494,86 @@ export async function verifyApiKey(key: string): Promise<VerifyResult> {
   }
 }
 
+// ----- Section scoping -----------------------------------------------------
+// Dictation fills the section the vet is looking at. The tool list sent to
+// the model stays the same everywhere (it's part of the prompt-cache
+// prefix); instead the active section is named in the user message and
+// anything that doesn't belong to it is filtered out here.
+
+interface SectionScope {
+  label: string;
+  /** What the model may write on this page, in plain words. */
+  guidance: string;
+  allows: (a: AiAction) => boolean;
+}
+
+const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre');
+
+const SECTION_SCOPES: Record<string, SectionScope> = {
+  patient: {
+    label: 'Patient',
+    guidance: 'set_patient_field only.',
+    allows: (a) => a.name === 'set_patient_field',
+  },
+  exam: {
+    label: 'Exam',
+    guidance: 'set_exam_finding only.',
+    allows: (a) => a.name === 'set_exam_finding',
+  },
+  anesthesia: {
+    label: 'Anesthesia',
+    guidance: 'set_nerve_block and set_anesthetic_drug only.',
+    allows: (a) => a.name === 'set_nerve_block' || a.name === 'set_anesthetic_drug',
+  },
+  charting: {
+    label: 'Charting (per-tooth periodontal grid)',
+    guidance:
+      'set_tooth_field for every per-tooth finding (mobility, recession, pocket, furcation, hyperplasia, calculus, gingivitis, pdstate), ' +
+      'and set_tooth_mark/unset_tooth_mark with diagram=pre, mark=missing for missing teeth (the grid\'s Missing toggle). ' +
+      'Do NOT use add_comment here — put the finding in the matching grid field instead.',
+    allows: (a) =>
+      a.name === 'set_tooth_field' ||
+      ((a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark') &&
+        diagramOf(a) === 'pre' &&
+        (a.name === 'unset_tooth_mark' || a.input.mark === 'missing')),
+  },
+  diagnosis: {
+    label: 'Diagnosis diagram',
+    guidance: 'set_tooth_mark/unset_tooth_mark and add_comment with diagram=pre only.',
+    allows: (a) =>
+      (a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark' || a.name === 'add_comment') &&
+      diagramOf(a) === 'pre',
+  },
+  procedure: {
+    label: 'Procedure diagram',
+    guidance: 'set_tooth_mark/unset_tooth_mark and add_comment with diagram=post only.',
+    allows: (a) =>
+      (a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark' || a.name === 'add_comment') &&
+      diagramOf(a) === 'post',
+  },
+  treatment: {
+    label: 'Treatment Report',
+    guidance: 'append_treatment_report only.',
+    allows: (a) => a.name === 'append_treatment_report',
+  },
+};
+
+/** True when dictation on this section is limited to that section's
+ *  fields. Sections without a scope (Images, Owner report) leave every
+ *  tool available. */
+export function isScopedSection(section: string | undefined): boolean {
+  return !!section && section in SECTION_SCOPES;
+}
+
+export function sectionLabel(section: string): string {
+  return SECTION_SCOPES[section]?.label ?? section;
+}
+
+export function actionAllowedInSection(a: AiAction, section: string | undefined): boolean {
+  const scope = section ? SECTION_SCOPES[section] : undefined;
+  return scope ? scope.allows(a) : true;
+}
+
 // ----- Caller --------------------------------------------------------------
 
 export interface AiAction {
@@ -505,10 +588,15 @@ export interface ExtractInput {
    *  Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
+  /** Id of the chart section on screen; output is limited to it. */
+  section?: string;
 }
 
 export interface ExtractResult {
   actions: AiAction[];
+  /** Actions the model proposed that belong to a different section —
+   *  not applied, surfaced so the vet knows something was heard. */
+  skipped: AiAction[];
   /** True if the extractor ran (vs. skipped because the chunk had no
    *  medical content). */
   ran: boolean;
@@ -524,11 +612,12 @@ export interface ExtractResult {
 export async function extractChartActions(
   input: ExtractInput
 ): Promise<ExtractResult> {
-  const { delta, recentContext, context } = input;
+  const { delta, recentContext, context, section } = input;
   const normalizedDelta = normalizeTranscript(delta);
   if (!chunkLooksMedical(normalizedDelta)) {
-    return { actions: [], ran: false };
+    return { actions: [], skipped: [], ran: false };
   }
+  const scope = section ? SECTION_SCOPES[section] : undefined;
   if (!supabase) throw new Error('Cloud is not configured.');
   const normalizedContext = recentContext ? normalizeTranscript(recentContext) : '';
 
@@ -538,6 +627,10 @@ export async function extractChartActions(
       ? `Recent transcript context (already considered in previous chunks; here for resolving back-references):\n${normalizedContext}\n\n`
       : '') +
     `New transcript chunk to extract from:\n${normalizedDelta}\n\n` +
+    (scope
+      ? `ACTIVE SECTION: the vet is on the ${scope.label} page. Fill THIS page. Allowed: ${scope.guidance} ` +
+        `When a finding could go on this page or elsewhere, put it on this page. Findings that only fit another page get no tool call.\n\n`
+      : '') +
     `Emit tool calls only for new information from this chunk. If nothing in this chunk warrants a chart change, return no tool calls.`;
 
   const requestBody = {
@@ -575,12 +668,39 @@ export async function extractChartActions(
   }
 
   const actions: AiAction[] = [];
+  const skipped: AiAction[] = [];
   for (const block of content) {
     if (block.type === 'tool_use') {
-      actions.push({ name: block.name, input: block.input as Record<string, unknown> });
+      const action = { name: block.name, input: block.input as Record<string, unknown> };
+      (actionAllowedInSection(action, section) ? actions : skipped).push(action);
     }
   }
-  return { actions, ran: true };
+  return { actions, skipped, ran: true };
+}
+
+/**
+ * Warm the autofill path when dictation starts: boots the edge function
+ * and writes the prompt cache (tools + system prompt) with a
+ * `max_tokens: 0` request — prefill only, no output billed — so the first
+ * real chunk doesn't pay the cold-start + cache-miss latency.
+ * Best-effort; failures are ignored.
+ */
+export async function prewarmAutofill(): Promise<void> {
+  if (!supabase) return;
+  try {
+    await supabase.functions.invoke('ai-autofill', {
+      body: {
+        max_tokens: 0,
+        system: [
+          { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+        ],
+        tools,
+        messages: [{ role: 'user', content: [{ type: 'text', text: 'Warm-up. No transcript yet.' }] }],
+      },
+    });
+  } catch {
+    /* best-effort */
+  }
 }
 
 // ----- Apply actions to chart state ---------------------------------------

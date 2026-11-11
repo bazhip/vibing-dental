@@ -54,3 +54,12 @@ describe('chunkLooksMedical', () => {
     expect(chunkLooksMedical('')).toBe(false);
   });
 });
+
+describe('chunkLooksMedical — short utterances', () => {
+  it('keeps short per-utterance findings', () => {
+    expect(chunkLooksMedical('104 M2')).toBe(true);
+    expect(chunkLooksMedical('M2')).toBe(true);
+    expect(chunkLooksMedical('PD3')).toBe(true);
+    expect(chunkLooksMedical('ok')).toBe(false);
+  });
+});

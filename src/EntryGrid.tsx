@@ -176,11 +176,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     );
   }, [readOnly, mirrorToDiagnosis, chart.species, chart.toothData, chart.preToothMarks, setPreDiagramComments]);
 
+  const activeSectionRef = React.useRef(activeSection);
+  activeSectionRef.current = activeSection;
   const handleAiActivity = React.useCallback((actions: AiAction[]) => {
-    // Jump to the section of (and highlight the tooth from) the last
-    // action in the batch so the vet watches the chart fill in.
+    // Highlight the tooth from the last action in the batch. Dictation is
+    // scoped to the section on screen, so this stays put there; only on
+    // unscoped pages (Images, Owner report) does it jump to the section.
     for (let i = actions.length - 1; i >= 0; i--) {
-      const f = actionFocus(actions[i]);
+      const f = actionFocus(actions[i], activeSectionRef.current);
       if (!f) continue;
       setActiveSection(f.section);
       if (typeof f.triadan === 'number') {
@@ -944,6 +947,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
+              activeSection={activeSection}
             />
           )}
           <ChartMenu

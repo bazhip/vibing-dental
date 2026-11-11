@@ -120,9 +120,11 @@ interface UseVoiceCaptureOptions {
   /** Fires once a pause has taken effect and the final words heard
    *  before it have arrived — a good moment to flush them downstream. */
   onPause?: () => void;
+  /** Fires for every finalized segment as it arrives. */
+  onSegment?: (seg: FinalSegment) => void;
 }
 
-export function useVoiceCapture({ onStop, onPause }: UseVoiceCaptureOptions = {}): VoiceCapture {
+export function useVoiceCapture({ onStop, onPause, onSegment }: UseVoiceCaptureOptions = {}): VoiceCapture {
   const browserCtor = React.useMemo(getRecognitionCtor, []);
   // Deepgram (high accuracy + diarization) is preferred when the browser
   // can capture audio; its key is minted per-session by the backend, so
@@ -170,6 +172,8 @@ export function useVoiceCapture({ onStop, onPause }: UseVoiceCaptureOptions = {}
   React.useEffect(() => { onStopRef.current = onStop; }, [onStop]);
   const onPauseRef = React.useRef(onPause);
   React.useEffect(() => { onPauseRef.current = onPause; }, [onPause]);
+  const onSegmentRef = React.useRef(onSegment);
+  React.useEffect(() => { onSegmentRef.current = onSegment; }, [onSegment]);
 
   const setPausedBoth = React.useCallback((v: boolean) => {
     pausedRef.current = v;
@@ -192,6 +196,7 @@ export function useVoiceCapture({ onStop, onPause }: UseVoiceCaptureOptions = {}
     interimRef.current = '';
     setInterimState('');
     setTranscript(finalRef.current);
+    onSegmentRef.current?.(seg);
   }, []);
 
   const setInterim = React.useCallback((interim: string) => {

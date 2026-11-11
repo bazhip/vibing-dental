@@ -6,6 +6,10 @@ import {
   extractChartActions,
   applyAiActions,
   describeAction,
+  prewarmAutofill,
+  isScopedSection,
+  actionAllowedInSection,
+  sectionLabel,
   ChartContext,
   ChartHandlers,
   AiAction,
@@ -28,8 +32,17 @@ export interface AiFocus {
   field?: string;
 }
 
-export function actionFocus(a: AiAction): AiFocus | null {
+export function actionFocus(a: AiAction, activeSection?: string): AiFocus | null {
   const triadan = typeof a.input.triadan === 'number' ? a.input.triadan : undefined;
+  // Dictation is scoped to the page on screen: stay there (the grid's
+  // Missing toggle, say, lives on Charting even though it's a diagram mark).
+  if (activeSection && isScopedSection(activeSection) && actionAllowedInSection(a, activeSection)) {
+    return {
+      section: activeSection,
+      triadan,
+      field: typeof a.input.field === 'string' ? a.input.field : undefined,
+    };
+  }
   const diagram = a.input.diagram === 'post' ? 'procedure' : 'diagnosis';
   switch (a.name) {
     case 'set_tooth_mark':
@@ -59,6 +72,8 @@ interface VoiceInputButtonProps {
   /** Called with each batch of applied actions so the app can focus the
    *  section + highlight the fields the AI just edited. */
   onActivity?: (actions: AiAction[]) => void;
+  /** Chart section on screen — dictation fills this section. */
+  activeSection?: string;
 }
 
 interface ActivityEntry {
@@ -67,11 +82,16 @@ interface ActivityEntry {
   at: Date;
 }
 
-const CHUNK_INTERVAL_MS = 22_000;
+/** Safety-net flush while recording, in case no pause is ever detected. */
+const CHUNK_INTERVAL_MS = 15_000;
+/** Send once the speaker has been quiet this long after a final segment… */
+const QUIET_FLUSH_MS = 1_200;
+/** …or once speech has been pending this long, whichever comes first. */
+const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity,
+  context, handlers, onActivity, activeSection,
 }) => {
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -85,24 +105,45 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   handlersRef.current = handlers;
   const onActivityRef = React.useRef(onActivity);
   onActivityRef.current = onActivity;
+  const sectionRef = React.useRef(activeSection);
+  sectionRef.current = activeSection;
+  const quietTimerRef = React.useRef<number | undefined>(undefined);
+  const maxTimerRef = React.useRef<number | undefined>(undefined);
 
   const inFlightRef = React.useRef(false);
   const queuedFlushRef = React.useRef(false);
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
-  const appendActivity = (actions: AiAction[]) => {
-    if (!actions.length) return;
+  const appendActivity = (actions: AiAction[], skipped: AiAction[] = []) => {
+    if (!actions.length && !skipped.length) return;
     const now = new Date();
     setActivity((prev) => [
       ...prev,
       ...actions.map((a, i) => ({ id: `${now.getTime()}_${i}`, description: describeAction(a), at: now })),
+      ...skipped.map((a, i) => {
+        const home = actionFocus(a)?.section;
+        return {
+          id: `${now.getTime()}_s${i}`,
+          description: `Not applied${home ? ` (belongs on ${sectionLabel(home)})` : ''}: ${describeAction(a)}`,
+          at: now,
+        };
+      }),
     ].slice(-80));
-    onActivityRef.current?.(actions);
+    if (actions.length) onActivityRef.current?.(actions);
   };
 
-  const processChunk = React.useCallback(async (final = false): Promise<void> => {
+  const clearFlushTimers = () => {
+    window.clearTimeout(quietTimerRef.current);
+    window.clearTimeout(maxTimerRef.current);
+    quietTimerRef.current = undefined;
+    maxTimerRef.current = undefined;
+  };
+
+  const processChunk = React.useCallback(async (final = false, sectionOverride?: string): Promise<void> => {
     if (!voiceRef.current) return;
+    clearFlushTimers();
     if (inFlightRef.current) { queuedFlushRef.current = true; return; }
+    const section = sectionOverride ?? sectionRef.current;
     const segments: FinalSegment[] = voiceRef.current.consumeFinalSegments();
     if (segments.length === 0) return;
     const delta = segments.map((s) => s.text).join(' ').trim();
@@ -114,9 +155,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
-      const result = await extractChartActions({ delta, recentContext, context: contextRef.current });
+      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
       const applied = applyAiActions(result.actions, handlersRef.current);
-      appendActivity(applied);
+      appendActivity(applied, result.skipped);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
       setError(err instanceof Error ? err.message : 'Voice autofill failed');
@@ -131,7 +172,21 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
   const onPause = React.useCallback(() => { processChunk(true).catch(console.error); }, [processChunk]);
-  const voice = useVoiceCapture({ onStop, onPause });
+  // Send each utterance as soon as the speaker pauses, rather than on a
+  // fixed timer; cap the wait so continuous speech still flows.
+  const onSegment = React.useCallback(() => {
+    const flush = () => { processChunk(false).catch(console.error); };
+    window.clearTimeout(quietTimerRef.current);
+    quietTimerRef.current = window.setTimeout(flush, QUIET_FLUSH_MS);
+    if (maxTimerRef.current === undefined) {
+      maxTimerRef.current = window.setTimeout(flush, MAX_PENDING_MS);
+    }
+  }, [processChunk]);
+  React.useEffect(() => () => {
+    window.clearTimeout(quietTimerRef.current);
+    window.clearTimeout(maxTimerRef.current);
+  }, []);
+  const voice = useVoiceCapture({ onStop, onPause, onSegment });
   voiceRef.current = voice;
 
   React.useEffect(() => {
@@ -139,6 +194,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const id = setInterval(() => { processChunk(false).catch(console.error); }, CHUNK_INTERVAL_MS);
     return () => clearInterval(id);
   }, [voice.recording, processChunk]);
+
+  // Switching pages mid-dictation: whatever was said so far belongs to the
+  // page it was said on, so send it now, scoped to that page.
+  const prevSectionRef = React.useRef(activeSection);
+  React.useEffect(() => {
+    const prev = prevSectionRef.current;
+    prevSectionRef.current = activeSection;
+    if (prev !== activeSection && (voice.recording || voice.paused)) {
+      processChunk(false, prev).catch(console.error);
+    }
+  }, [activeSection, voice.recording, voice.paused, processChunk]);
 
   React.useEffect(() => { if (voice.error) setError(voice.error); }, [voice.error]);
   React.useEffect(() => {
@@ -156,11 +222,19 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setActivity([]);
     setError(null);
     voice.start();
+    // Boot the edge function + write the prompt cache while the mic and
+    // Deepgram connect, so the first utterance comes back fast.
+    prewarmAutofill();
+  };
+
+  const resumeDictation = () => {
+    voice.resume();
+    prewarmAutofill();
   };
 
   const handleButton = () => {
     if (voice.recording || voice.paused) voice.stop();
-    else if (voice.interrupted) voice.resume();
+    else if (voice.interrupted) resumeDictation();
     else setIntroOpen(true);
   };
 
@@ -205,7 +279,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const pauseToggle = voice.recording
     ? { text: 'Pause', title: 'Pause dictation — the transcript is kept', onClick: voice.pause }
     : voice.paused
-      ? { text: 'Resume', title: 'Resume dictation', onClick: voice.resume }
+      ? { text: 'Resume', title: 'Resume dictation', onClick: resumeDictation }
       : null;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', activeChunkCount > 0 ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
   const sidebarOpen = voice.recording || voice.paused || voice.interrupted || activity.length > 0;
@@ -251,7 +325,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               <ul className="ai-intro__list">
                 <li>Speak naturally: <em>“104 complicated crown fracture, 6 millimeter pocket distal.”</em></li>
                 <li>A <strong>transcript</strong> and a live <strong>activity log</strong> open on the right so you see exactly what’s being entered.</li>
-                <li>As each value lands, the app <strong>jumps to that section and highlights the field</strong>.</li>
+                <li>It fills <strong>the section you’re on</strong> — open Charting to dictate perio values, Exam for exam findings, and so on. Findings for another section are listed as “not applied”.</li>
+                <li>Each value is <strong>highlighted as it lands</strong>.</li>
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
                 <li>Need a moment? Press <strong>Pause</strong> — nothing is heard until you press <strong>Resume</strong>, and the transcript is kept.</li>
                 <li>Press <strong>Stop</strong> (same button) when you’re done.</li>
@@ -303,7 +378,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 before that was kept.
               </p>
               <div className="ai-sidebar__paused-actions">
-                <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={voice.resume}>
+                <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={resumeDictation}>
                   Resume dictation
                 </button>
                 <button type="button" className="diagram-view__action" onClick={voice.dismissInterruption}>
