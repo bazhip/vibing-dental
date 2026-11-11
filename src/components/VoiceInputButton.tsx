@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useWakeLock } from '../hooks/useWakeLock';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -519,6 +520,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, []);
   const voice = useVoiceCapture({ onStop, onSegment });
   voiceRef.current = voice;
+  // Keep the screen on while dictating: on a phone, the screen sleeping
+  // cuts the mic and ends the session.
+  useWakeLock(voice.recording);
   React.useEffect(() => {
     if (voice.interim) lastSpeechRef.current = performance.now();
   }, [voice.interim]);
