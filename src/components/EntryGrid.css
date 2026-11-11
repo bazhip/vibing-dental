@@ -525,6 +525,9 @@
   line-height: 1.45;
   color: var(--text);
   max-height: 28vh;
+  /* Never squeezed away when the review list is long. */
+  flex: 0 0 auto;
+  min-height: 3.2em;
   overflow-y: auto;
   overscroll-behavior: contain;
   white-space: pre-wrap;
@@ -560,6 +563,7 @@
 .ai-sidebar__foot {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.1rem;
   padding: 0.3rem 0.5rem;
   border-top: 1px solid var(--border, #e2e8f0);
@@ -3098,5 +3102,13 @@ button.save-status--manual:hover {
 .ai-sidebar__row-flag { font-weight: 700; color: #d97706; }
 @media (max-width: 700px) {
   .ai-review__opt { min-height: 44px; font-size: 0.92rem; }
-  .ai-review__list { max-height: 26dvh; }
+  .ai-review__list { max-height: 22dvh; }
+  .ai-review { flex: 0 0 auto; }
+  .ai-sidebar__transcript { max-height: 10dvh; }
+  .ai-sidebar__activity { min-height: 3rem; flex: 1 1 0; }
+  .ai-sidebar__foot { flex: none; }
+  /* Room for the review card without pushing the footer off. */
+  .ai-sidebar--has-review { max-height: 64dvh; }
+  .ai-sidebar__foot { flex-wrap: nowrap; padding: 0.15rem 0.35rem; }
+  .ai-sidebar__link { padding: 0 0.5rem; }
 }

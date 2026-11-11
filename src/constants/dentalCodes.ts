@@ -498,7 +498,16 @@ export function findCodesInText(text: string): DentalCode[] {
   // A "code char" is a letter, digit, slash, or asterisk — i.e. any
   // character that can appear inside a code like *SE or T/FX.
   const codeCharRe = /[A-Za-z0-9/*]/;
+  // One-letter codes (B, F, R, X) double as everyday abbreviations — "R
+  // maxillary" means right, not a restoration — so they only count when
+  // they stand alone as an entry: the whole note, or one item of a
+  // comma/semicolon/line-separated list.
+  const segments = new Set(text.split(/[\n,;]+/).map((seg) => seg.trim()));
   for (const c of DENTAL_CODES_BY_LENGTH) {
+    if (c.code.length === 1) {
+      if (segments.has(c.code)) found.add(c.code);
+      continue;
+    }
     const lc = text;
     let from = 0;
     while (from <= lc.length - c.code.length) {

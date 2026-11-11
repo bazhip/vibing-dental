@@ -1,6 +1,6 @@
 // Deepgram ephemeral key minter. The browser needs a key to open the
 // streaming WebSocket, but must never hold the master key — so this
-// function (verify_jwt on, Pro-gated) uses the baked-in master to create
+// function (verify_jwt on, any signed-in account) uses the baked-in master to create
 // a short-lived, usage-scoped key and returns just that.
 //
 // Requires the DEEPGRAM_API_KEY edge-function secret (dashboard).
@@ -27,14 +27,8 @@ Deno.serve(async (req: Request) => {
   const caller = callerData?.user;
   if (!caller) return json({ error: 'unauthorized' }, 401);
 
-  // Voice autofill is Pro-only.
-  const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', caller.id).maybeSingle();
-  let plan = 'basic';
-  if (prof?.practice_id) {
-    const { data: prac } = await admin.from('practices').select('plan').eq('id', prof.practice_id).maybeSingle();
-    plan = prac?.plan ?? 'basic';
-  }
-  if (plan !== 'pro') return json({ error: 'Voice autofill is a Pro-plan feature.' }, 403);
+  // Free beta: voice autofill is open to every signed-in account (no
+  // plan check). Signed-in only — anonymous trial users get no token.
 
   const master = Deno.env.get('DEEPGRAM_API_KEY');
   if (!master) return json({ error: 'Voice transcription is not configured yet.' }, 503);

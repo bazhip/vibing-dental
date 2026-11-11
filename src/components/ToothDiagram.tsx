@@ -683,16 +683,20 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     onCommentsChange(comments.filter((c) => c.id !== id));
   };
 
-  // Auto-focus the textarea of a freshly-added comment so the user can
-  // just start typing. The textareas live in the HTML overlay (sibling of
-  // the SVG, not inside it), so we search the wrapper element.
-  const knownCommentIdsRef = React.useRef<Set<string>>(new Set());
+  // Auto-focus the textarea of a comment the user just added (the comment
+  // tool creates it empty) so they can start typing. Comments that arrive
+  // with text — loaded with the chart, mirrored from the grid, added by
+  // voice autofill — must not grab focus: that stole the caret, scrolled
+  // the page to a hidden diagram, and left the focused card un-fitted.
+  // The textareas live in the HTML overlay (sibling of the SVG, not inside
+  // it), so we search the wrapper element.
+  const knownCommentIdsRef = React.useRef<Set<string>>(new Set(comments.map((c) => c.id)));
   React.useEffect(() => {
     const previous = knownCommentIdsRef.current;
     const current = new Set<string>();
     comments.forEach((c) => {
       current.add(c.id);
-      if (!previous.has(c.id)) {
+      if (!previous.has(c.id) && !c.text) {
         // Defer one frame so the new textarea is in the DOM before we
         // try to focus it.
         requestAnimationFrame(() => {

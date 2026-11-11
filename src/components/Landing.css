@@ -1284,3 +1284,16 @@
 @media (max-width: 560px) {
   .landing__pricing-grid { grid-template-columns: 1fr; }
 }
+
+.landing__beta-pill {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--primary, #0c6b63);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}

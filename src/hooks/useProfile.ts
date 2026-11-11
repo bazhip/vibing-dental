@@ -19,11 +19,13 @@ export type PracticePlan = 'free' | 'basic' | 'pro';
 
 /** Per-plan limits. Central so the whole app agrees; when a tenant needs
  *  a custom cap these become columns on `practices`. 'free' is the
- *  unpaid tier (single user, no image uploads) — any account without a
- *  live/comped subscription resolves to it. */
+ *  unpaid tier — any account without a live/comped subscription resolves
+ *  to it. During the free beta every account gets AI voice autofill
+ *  (usage is logged per user in ai_usage) and free accounts get 10
+ *  images per chart. */
 export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean }> = {
-  free: { maxImages: 0, aiAutofill: false },
-  basic: { maxImages: 30, aiAutofill: false },
+  free: { maxImages: 10, aiAutofill: true },
+  basic: { maxImages: 30, aiAutofill: true },
   pro: { maxImages: 100, aiAutofill: true },
 };
 

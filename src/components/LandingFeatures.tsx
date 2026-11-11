@@ -45,12 +45,12 @@ const FEATURES: LandingFeature[] = [
     ],
     image: '/screenshots/feat-grid.jpg',
     imageAlt:
-      'The charting grid with probing depths, furcation and mobility grades entered, and tooth 103 crossed out as missing',
+      'The charting grid with gingivitis, calculus, pocket, furcation and mobility values entered, and tooth 106 crossed out as missing',
   },
   {
     id: 'voice',
     title: 'AI voice autofill, built in',
-    tag: 'AI · Pro',
+    tag: 'AI · Free beta',
     blurb:
       'Say “104 complicated crown fracture” and it lands on the tooth — transcribed and charted while your hands stay on the patient.',
     lead:
@@ -60,7 +60,8 @@ const FEATURES: LandingFeature[] = [
       'Findings land as structured chart entries — grid values, tooth marks, anchored comments — not a wall of text.',
       'A live transcript sidebar shows every action as it happens; each one highlights the tooth it touched.',
       'Everything the AI writes goes through the same undo system as your own edits.',
-      'No API keys and no setup — it’s part of Pro.',
+      'Not sure it heard you right? It flags the finding and, after a pause, says “Check 109” in your ear — never over you.',
+      'No API keys and no setup — free during the beta.',
     ],
     voiceMock: true,
   },
@@ -81,7 +82,7 @@ const FEATURES: LandingFeature[] = [
     ],
     image: '/screenshots/feat-diagram.jpg',
     imageAlt:
-      'The Diagnosis diagram with missing teeth filled in and a comment anchored to premolar 105 reading “CCF — extract”',
+      'The Diagnosis diagram with missing teeth filled in and AVDC codes — T/FX, T/FX/CCF, TR, AB, AT — anchored to each tooth',
   },
   {
     id: 'avdc',

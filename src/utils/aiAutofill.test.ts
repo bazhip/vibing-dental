@@ -170,3 +170,12 @@ describe('score run into the next tooth number', () => {
     expect(normalizeTranscript('101GI2, calc 2102GI2, calc 2.')).toContain('calc 2 102 GI 2');
   });
 });
+
+import { findCodesInText } from '../constants/dentalCodes';
+describe('findCodesInText — one-letter codes', () => {
+  it('ignores R/L/B/X used as words, counts them standing alone', () => {
+    expect(findCodesInText('Mild ulceration R maxillary buccal mucosa').map((c) => c.code)).not.toContain('R');
+    expect(findCodesInText('R').map((c) => c.code)).toContain('R');
+    expect(findCodesInText('T/FX, X').map((c) => c.code)).toEqual(expect.arrayContaining(['T/FX', 'X']));
+  });
+});

@@ -302,8 +302,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
 
               {!PAID_SIGNUP && (
                 <span className="login-hint">
-                  Free plan: full charting, diagrams &amp; PDFs for a single user. Image
-                  uploads and team access come with paid plans, later.
+                  Free during the beta: full charting, diagrams &amp; PDFs, AI voice
+                  dictation, and up to 10 images per chart.
                 </span>
               )}
 

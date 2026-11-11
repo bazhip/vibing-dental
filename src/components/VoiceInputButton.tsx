@@ -179,6 +179,17 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
     const el = ref.current;
     if (el && stick.current) el.scrollTop = el.scrollHeight;
   }, [dep]);
+  // The box also changes height (a review card appears, the sheet
+  // expands): keep it pinned through that too.
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      if (stick.current) el.scrollTop = el.scrollHeight;
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
   return { ref, onScroll };
 }
 
@@ -682,7 +693,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           reason as the modal above. */}
       {panelOpen && ReactDOM.createPortal(
         <aside
-          className={`ai-sidebar${collapsed ? ' ai-sidebar--collapsed' : ''}${voice.recording ? ' ai-sidebar--live' : ''}`}
+          className={`ai-sidebar${collapsed ? ' ai-sidebar--collapsed' : ''}${voice.recording ? ' ai-sidebar--live' : ''}${reviews.length ? ' ai-sidebar--has-review' : ''}`}
           aria-label="AI autofill"
         >
           <header className="ai-sidebar__head">
@@ -788,7 +799,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               <footer className="ai-sidebar__foot">
                 <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>New</button>
                 <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>Download</button>
-                <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')}>How it works</button>
+                <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')} title="How it works">Help</button>
                 {speechAvailable() && (
                   <button
                     type="button"
@@ -797,7 +808,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                     aria-pressed={voicePrompts}
                     title="Short spoken prompts (e.g. “Check 109”) after a pause, for things worth checking"
                   >
-                    Voice prompts: {voicePrompts ? 'On' : 'Off'}
+                    Prompts: {voicePrompts ? 'On' : 'Off'}
                   </button>
                 )}
                 <span className="voice-input__provider-badge">{voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}</span>

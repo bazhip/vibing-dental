@@ -2,7 +2,7 @@
 // messages) and this function forwards it to Anthropic using the baked-in
 // server key, so no key ever ships to the client. verify_jwt on.
 //
-// Gated to Pro practices (server-side). The model is chosen site-wide in
+// Open to every signed-in account during the free beta. The model is chosen site-wide in
 // the admin panel (app_config.ai_model), not by the client. Every call's
 // token usage is logged to ai_usage for the admin dashboard.
 //
@@ -54,15 +54,10 @@ Deno.serve(async (req: Request) => {
   const caller = callerData?.user;
   if (!caller) return json({ error: 'unauthorized' }, 401);
 
-  // AI autofill is a Pro-plan feature — enforce server-side.
+  // Free beta: open to every signed-in account (no plan check). The
+  // practice is still looked up so usage is attributed in ai_usage.
   const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', caller.id).maybeSingle();
   const practiceId = prof?.practice_id ?? null;
-  let plan = 'basic';
-  if (practiceId) {
-    const { data: prac } = await admin.from('practices').select('plan').eq('id', practiceId).maybeSingle();
-    plan = prac?.plan ?? 'basic';
-  }
-  if (plan !== 'pro') return json({ error: 'AI autofill is a Pro-plan feature.' }, 403);
 
   const key = Deno.env.get('ANTHROPIC_API_KEY');
   if (!key) return json({ error: 'AI is not configured yet.' }, 503);

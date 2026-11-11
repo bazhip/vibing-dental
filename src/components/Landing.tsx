@@ -120,7 +120,10 @@ export const Landing: React.FC<LandingProps> = ({
         {/* ------------------------------------------------------- hero --- */}
         <section className="landing__hero">
           <div className="landing__hero-copy">
-            <p className="landing__eyebrow">AI-native veterinary dental charting</p>
+            <p className="landing__eyebrow">
+              AI-native veterinary dental charting
+              {!PAID_SIGNUP && <span className="landing__beta-pill">Free beta</span>}
+            </p>
             <h1 className="landing__headline">
               Just talk.
               <br />
@@ -151,8 +154,8 @@ export const Landing: React.FC<LandingProps> = ({
                   <span className="landing__cta-note">
                     {PAID_SIGNUP
                       ? (PRICING_PUBLIC ? `Plans from $20/mo · ${TRIAL_DAYS}-day free trial · cancel anytime` : `${TRIAL_DAYS}-day free trial · cancel anytime`)
-                      : 'Free plan · no card required'}
-                    {onTryFree ? ' · no-account trial PDFs are stamped TRIAL' : ''}
+                      : 'Free during the beta · AI dictation included · no card required'}
+                    {onTryFree ? ' · the no-account trial skips AI dictation and stamps PDFs TRIAL' : ''}
                   </span>
                 </>
               ) : (

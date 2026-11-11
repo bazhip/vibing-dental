@@ -973,10 +973,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               My charts
             </button>
           )}
-          {/* AI autofill is a Pro-plan feature; the keys live server-side
+          {/* AI autofill (every signed-in plan during the beta); the keys live server-side
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
-          {profile.aiEnabled && (
+          {profile.aiEnabled && !trial && (
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
@@ -1202,7 +1202,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       <WalkthroughModal
         open={walkthroughOpen}
         onClose={() => setWalkthroughOpen(false)}
-        aiEnabled={profile.aiEnabled}
+        aiEnabled={profile.aiEnabled && !trial}
         onNavigate={setActiveSection}
       />
 

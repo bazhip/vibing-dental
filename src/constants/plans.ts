@@ -38,7 +38,7 @@ export const TRIAL_DAYS = 14;
 export const PRICING_PUBLIC = false;
 
 /** Feature flag: paid signup. While false, new accounts land on the FREE
- *  plan (single user, no image uploads) — signup hides the plan pickers
+ *  plan (single user, AI dictation, 10 images per chart) — signup hides the plan pickers
  *  and the BillingGate lets never-subscribed accounts straight in. All
  *  the Stripe machinery (checkout, webhook, portal, freeze/purge) stays
  *  live for existing subscriptions; flip to true to resume selling. */
