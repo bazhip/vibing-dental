@@ -1,5 +1,10 @@
 import React from 'react';
 import { AI_MODEL_CHOICES } from '../constants/aiModels';
+import { FREE_BETA, FREE_BETA_SEATS } from '../constants/plans';
+import { PLAN_LIMITS } from '../hooks/useProfile';
+
+/** Subscription states that unlock the stored plan (matches useProfile). */
+const PAID_STATUSES = ['active', 'trialing', 'comped', 'past_due'];
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 
@@ -739,9 +744,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </div>
 
-              {/* Billing overrides. Tier + account type gate features and
-                  seats; Stripe-managed practices sync from the webhook, so
-                  hand-edits there are only for comps and corrections. */}
+              {/* What this account can actually do right now — resolved the
+                  same way the app does (useProfile + PLAN_LIMITS). */}
+              {(() => {
+                const paid = PAID_STATUSES.includes(selectedPractice.subscriptionStatus);
+                const tier = paid ? selectedPractice.plan : 'free';
+                const limits = PLAN_LIMITS[tier];
+                const seats = FREE_BETA ? FREE_BETA_SEATS : selectedPractice.accountType === 'practice' ? 5 : 1;
+                const ownerReport = FREE_BETA || !!selectedPractice.ownerReportEnabled;
+                return (
+                  <div className="admin-panel__access" aria-label="Effective access">
+                    <span className="patient-form__label" style={{ marginBottom: 0 }}>Access</span>
+                    <div className="admin-panel__access-body">
+                      <strong>
+                        {paid
+                          ? `${tier === 'pro' ? 'Pro' : 'Basic'} (${selectedPractice.subscriptionStatus})`
+                          : FREE_BETA ? 'Free beta' : 'Free'}
+                      </strong>
+                      <span>AI dictation {limits.aiAutofill ? '✓' : '✗'}</span>
+                      <span>{limits.maxImages} images / chart</span>
+                      <span>{seats} {seats === 1 ? 'seat' : 'seats'}</span>
+                      <span>Owner report {ownerReport ? '✓' : '✗'}</span>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Billing overrides. Tier + account type set images and
+                  seats once an account is billed or comped; Stripe-managed
+                  practices sync from the webhook, so hand-edits there are
+                  only for comps and corrections. */}
               <div className="admin-panel__plan">
                 <span className="patient-form__label" style={{ marginBottom: 0 }}>Plan</span>
                 <div className="admin-panel__plan-toggle" role="group" aria-label="Practice plan">
@@ -758,7 +790,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     </button>
                   ))}
                   <span className="admin-panel__plan-note">
-                    Pro adds AI autofill and more image storage.
+                    Applies once billed or comped: Basic {PLAN_LIMITS.basic.maxImages} images/chart, Pro {PLAN_LIMITS.pro.maxImages}.
+                    Unbilled accounts are on the free tier ({PLAN_LIMITS.free.maxImages} images). AI dictation is on for every plan.
                   </span>
                 </div>
               </div>
@@ -778,6 +811,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                       {at === 'practice' ? 'Practice (5 seats)' : 'Individual (1 seat)'}
                     </button>
                   ))}
+                  {FREE_BETA && (
+                    <span className="admin-panel__plan-note">
+                      Not enforced during the free beta — every account gets {FREE_BETA_SEATS} seats.
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -794,7 +832,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     Owner report: {selectedPractice.ownerReportEnabled ? 'on' : 'off'}
                   </button>
                   <span className="admin-panel__plan-note">
-                    Owner-facing take-home PDF (beta) — off by default for every practice.
+                    {FREE_BETA
+                      ? 'Owner-facing take-home PDF — on for everyone during the free beta; this switch takes over when the beta ends.'
+                      : 'Owner-facing take-home PDF (beta) — off by default for every practice.'}
                   </span>
                 </div>
               </div>

@@ -167,7 +167,7 @@ const FEATURES: LandingFeature[] = [
     lead:
       'The practice is the unit: one shared record set, individual logins, and the doctor on each visit recorded.',
     points: [
-      'Practice plans include five seats; every member gets their own login.',
+      'Up to five seats per practice (free during the beta); every member gets their own login.',
       'Charts, report templates, images, and the practice logo are shared automatically.',
       'Each visit records its author — filter the library by doctor.',
       'Owner-only controls for renaming the practice and managing the team.',

@@ -8,6 +8,9 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+/** Free beta — keep in step with FREE_BETA in src/constants/plans.ts. */
+const FREE_BETA = true;
+
 type Json = Record<string, unknown>;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -175,8 +178,10 @@ Deno.serve(async (req: Request) => {
         // Seat limits come from the subscription: Individual plans are
         // single-user, Practice plans include up to 5. (The admin panel
         // can bypass via admin-api for hand-arranged deals.)
+        // Free beta (mirrors FREE_BETA in src/constants/plans.ts): every
+        // account gets 5 seats regardless of type.
         const { data: prac } = await admin.from('practices').select('account_type').eq('id', m.practiceId).maybeSingle();
-        const seats = prac?.account_type === 'practice' ? 5 : 1;
+        const seats = FREE_BETA ? 5 : prac?.account_type === 'practice' ? 5 : 1;
         const { count } = await admin
           .from('practice_members')
           .select('user_id', { count: 'exact', head: true })

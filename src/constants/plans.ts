@@ -44,6 +44,13 @@ export const PRICING_PUBLIC = false;
  *  live for existing subscriptions; flip to true to resume selling. */
 export const PAID_SIGNUP = false;
 
+/** Free beta: while paid signup is off, every account gets AI dictation,
+ *  5 seats and the owner report, with 10 images per chart on the free
+ *  tier. The edge functions (team-api) mirror this with their own
+ *  FREE_BETA constant — keep them in step. */
+export const FREE_BETA = !PAID_SIGNUP;
+export const FREE_BETA_SEATS = 5;
+
 export const CONTACT_EMAIL = 'bazhip@gmail.com';
 
 export const PLANS: PlanDef[] = [

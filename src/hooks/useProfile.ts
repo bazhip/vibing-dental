@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { FREE_BETA } from '../constants/plans';
 
 /**
  * The signed-in user's practice profile (collected at signup, editable in
@@ -270,7 +271,8 @@ export function useProfile(): UseProfileReturn {
     plan,
     aiEnabled: PLAN_LIMITS[plan].aiAutofill,
     maxImages: PLAN_LIMITS[plan].maxImages,
-    ownerReportEnabled,
+    // Free beta: the owner report is on for everyone.
+    ownerReportEnabled: FREE_BETA || ownerReportEnabled,
     logoUrl,
     update,
     uploadLogo,

@@ -3112,3 +3112,12 @@ button.save-status--manual:hover {
   .ai-sidebar__foot { flex-wrap: nowrap; padding: 0.15rem 0.35rem; }
   .ai-sidebar__link { padding: 0 0.5rem; }
 }
+
+/* Admin panel: effective access summary for a practice. */
+.admin-panel__access { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.admin-panel__access-body {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; align-items: baseline;
+  padding: 0.45rem 0.75rem; border-radius: 8px;
+  background: var(--primary-tint, #eff6f5); color: var(--text); font-size: 0.9rem;
+}
+.admin-panel__access-body strong { color: var(--primary, #0c6b63); }
