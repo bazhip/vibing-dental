@@ -5,6 +5,8 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import {
   extractChartActions,
   applyAiActions,
+  dedupeActions,
+  normalizeTranscript,
   describeAction,
   prewarmAutofill,
   isScopedSection,
@@ -93,6 +95,11 @@ interface ActivityEntry {
 const CHUNK_INTERVAL_MS = 15_000;
 /** Send once the speaker has been quiet this long after a final segment… */
 const QUIET_FLUSH_MS = 1_200;
+/** …or longer when the segment stops mid-finding ("105 GI two calc"),
+ *  since the value is probably coming in the next breath. */
+const DANGLING_FLUSH_MS = 2_500;
+// Ends on a score word with no number yet, or on a bare tooth number.
+export const DANGLING_RE = /(?:\b(?:GI|G|calc|calculus|mobility|mob|pocket|furcation|F|PD|stage|grade|class|recession|and)|\b[1-8][0-1]\d)\s*[,.]?\s*$/i;
 /** …or once speech has been pending this long, whichever comes first. */
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
@@ -205,7 +212,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setActiveChunkCount((c) => c + 1);
     try {
       const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
-      const applied = applyAiActions(result.actions, handlersRef.current);
+      const fresh = dedupeActions(result.actions, contextRef.current);
+      const applied = applyAiActions(fresh, handlersRef.current);
       appendActivity(applied, result.skipped);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
@@ -222,10 +230,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
   // Send each utterance as soon as the speaker pauses, rather than on a
   // fixed timer; cap the wait so continuous speech still flows.
-  const onSegment = React.useCallback(() => {
+  const onSegment = React.useCallback((seg: FinalSegment) => {
     const flush = () => { processChunk(false).catch(console.error); };
+    const dangling = DANGLING_RE.test(normalizeTranscript(seg.text));
     window.clearTimeout(quietTimerRef.current);
-    quietTimerRef.current = window.setTimeout(flush, QUIET_FLUSH_MS);
+    quietTimerRef.current = window.setTimeout(flush, dangling ? DANGLING_FLUSH_MS : QUIET_FLUSH_MS);
     if (maxTimerRef.current === undefined) {
       maxTimerRef.current = window.setTimeout(flush, MAX_PENDING_MS);
     }

@@ -849,6 +849,63 @@ export function normalizeFieldValue(value: string): string {
     .trim();
 }
 
+/**
+ * True when applying `action` wouldn't change the chart: the value is
+ * already there, the mark already set, the note already on that tooth.
+ * The model sees recent transcript as context and sometimes re-emits a
+ * finding it already charted; filtering these keeps the activity log to
+ * real changes (and avoids touching state, undo history, autosave).
+ */
+export function isNoopAction(action: AiAction, c: ChartContext): boolean {
+  const { name, input } = action;
+  const str = (k: string) => String(input[k] ?? '').trim();
+  const t = Number(input.triadan);
+  const post = input.diagram === 'post';
+  switch (name) {
+    case 'set_tooth_field': {
+      const tooth = c.toothData.find((x) => x.triadan === t);
+      const cur = tooth ? String(tooth[str('field') as DentalField] ?? '').trim() : '';
+      return !!tooth && cur === normalizeFieldValue(str('value'));
+    }
+    case 'set_tooth_mark':
+      return (post ? c.postMarks : c.preMarks)[t] === str('mark');
+    case 'unset_tooth_mark':
+      return !(post ? c.postMarks : c.preMarks)[t];
+    case 'add_comment': {
+      const text = codeOnlyComment(str('text')).toUpperCase();
+      const anchor = input.triadan != null ? t : null;
+      return (post ? c.postComments : c.preComments).some(
+        (x) => (x.anchorTriadan ?? null) === anchor && x.text.toUpperCase().includes(text)
+      );
+    }
+    case 'set_exam_finding': {
+      const cur = c.patientInfo.exam?.[str('area') as keyof ExamFindings];
+      return !!cur && cur.status === str('status') && (!str('comment') || cur.comment === str('comment'));
+    }
+    case 'set_nerve_block':
+      return String(c.patientInfo.nerveBlocks?.[str('site') as keyof NerveBlocks] ?? '') === str('mL');
+    case 'set_anesthetic_drug':
+      return String((c.patientInfo.nerveBlocks as unknown as Record<string, string>)?.drug ?? '').toLowerCase() === str('drug').toLowerCase();
+    case 'set_patient_field':
+      return String(c.patientInfo[str('field') as keyof PatientInfo] ?? '').trim() === str('value');
+    case 'append_treatment_report':
+      return (c.patientInfo.treatmentReport ?? '').includes(str('text'));
+    default:
+      return false;
+  }
+}
+
+/** Drop no-op actions and exact repeats within one reply. */
+export function dedupeActions(actions: AiAction[], c: ChartContext): AiAction[] {
+  const seen = new Set<string>();
+  return actions.filter((a) => {
+    const key = `${a.name}:${JSON.stringify(a.input)}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return !isNoopAction(a, c);
+  });
+}
+
 const KNOWN_CODES = new Set(DENTAL_CODES.map((c) => c.code.toUpperCase()));
 
 /** Diagram notes should read as the AVDC code alone. If the model still

@@ -1,4 +1,4 @@
-import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText, codeOnlyComment } from './aiAutofill';
+import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText, codeOnlyComment, dedupeActions } from './aiAutofill';
 
 describe('normalizeTranscript', () => {
   it('collapses spelled-out triadan numbers', () => {
@@ -125,5 +125,30 @@ describe('codeOnlyComment', () => {
     expect(codeOnlyComment('T/FX/CCF')).toBe('T/FX/CCF');
     expect(codeOnlyComment('Draining tract (left)')).toBe('Draining tract (left)');
     expect(codeOnlyComment('Biopsy sent to lab')).toBe('Biopsy sent to lab');
+  });
+});
+
+describe('dedupeActions — the 105/104 repeat from a real run', () => {
+  const ctx = {
+    patientInfo: { exam: {}, nerveBlocks: {}, treatmentReport: '' },
+    species: 'canine', logo: 'none',
+    toothData: [{ tooth: 'P1', triadan: 105, gingivitis: '2' }, { tooth: 'C', triadan: 104 }],
+    preMarks: {}, postMarks: {},
+    preComments: [{ id: 'ai1', text: 'T/FX', anchorTriadan: 104 }],
+    postComments: [],
+  } as never;
+
+  it('drops values/notes already on the chart and keeps real changes', () => {
+    const out = dedupeActions([
+      { name: 'set_tooth_field', input: { triadan: 105, field: 'gingivitis', value: '2' } },   // already 2
+      { name: 'set_tooth_field', input: { triadan: 105, field: 'calculus', value: '3' } },     // new
+      { name: 'add_comment', input: { diagram: 'pre', triadan: 105, text: 'T/FX/CCF' } },     // new
+      { name: 'add_comment', input: { diagram: 'pre', triadan: 104, text: 'Fracture (T/FX)' } }, // already there
+      { name: 'set_tooth_field', input: { triadan: 105, field: 'calculus', value: '3' } },     // repeat in reply
+    ], ctx);
+    expect(out.map((a) => `${a.name}:${a.input.field ?? a.input.text}`)).toEqual([
+      'set_tooth_field:calculus',
+      'add_comment:T/FX/CCF',
+    ]);
   });
 });
