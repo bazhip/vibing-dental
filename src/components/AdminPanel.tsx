@@ -200,18 +200,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
   const refresh = React.useCallback(async () => {
     setError('');
-    try {
-      const [s, u, pr] = await Promise.all([
-        adminCall<AdminStats>({ action: 'stats' }),
-        adminCall<{ users: AdminUser[] }>({ action: 'list_users' }),
-        adminCall<{ practices: AdminPractice[] }>({ action: 'list_practices' }),
-      ]);
-      setStats(s);
-      setUsers(u.users);
-      setPractices(pr.practices);
-    } catch (e) {
-      setError(friendlyError(e, 'Could not load admin data.'));
-    }
+    // Each section renders as soon as its own data lands — the Accounts
+    // list used to wait on the (much slower) practices listing.
+    const fail = (e: unknown) => setError(friendlyError(e, 'Could not load admin data.'));
+    await Promise.all([
+      adminCall<AdminStats>({ action: 'stats' }).then(setStats, fail),
+      adminCall<{ users: AdminUser[] }>({ action: 'list_users' }).then((u) => setUsers(u.users), fail),
+      adminCall<{ practices: AdminPractice[] }>({ action: 'list_practices' }).then((pr) => setPractices(pr.practices), fail),
+    ]);
   }, []);
 
   React.useEffect(() => {
