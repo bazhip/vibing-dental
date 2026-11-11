@@ -80,23 +80,32 @@ Deno.serve(async (req: Request) => {
   // Invite-created accounts are not signups: team/admin invites — and
   // invite RESENDS, which delete + recreate the pending account — all
   // insert a fresh profiles row and land here. The owner initiated
-  // those and already knows. Real signups carry the form's
+  // those and already knows. Email signups carry the form's
   // practice_name metadata; invites carry none and have invited_at.
+  // Google (OAuth) signups also carry no practice_name — they skip the
+  // form and name the practice in-app afterwards — but invites are
+  // always email accounts, so an OAuth account is always a real signup.
   const user = userData?.user;
-  if (user?.invited_at || !user?.user_metadata?.practice_name) {
+  const provider = String(user?.app_metadata?.provider ?? 'email');
+  const viaOAuth = provider !== 'email';
+  if (user?.invited_at || (!viaOAuth && !user?.user_metadata?.practice_name)) {
     return new Response('invite — not a signup', { status: 200 });
   }
+  const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
+  const oauthName = String(meta.full_name ?? meta.name ?? '').trim();
+  const via = viaOAuth ? provider.charAt(0).toUpperCase() + provider.slice(1) : 'email';
 
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return new Response('Resend key unavailable', { status: 500 });
 
   return sendAlert(
     key,
-    `New ToothOps signup: ${profile.practice_name?.trim() || email}`,
+    `New ToothOps signup: ${profile.practice_name?.trim() || oauthName || email}${viaOAuth ? ` (via ${via})` : ''}`,
     [
-      `Practice: ${profile.practice_name?.trim() || '(none)'}`,
-      `Doctor: ${profile.doctor_name?.trim() || '(none)'}`,
+      `Practice: ${profile.practice_name?.trim() || (viaOAuth ? '(not set yet — asked in-app after sign-in)' : '(none)')}`,
+      `Doctor: ${profile.doctor_name?.trim() || oauthName || '(none)'}`,
       `Email: ${email}`,
+      `Signed up via: ${via}`,
       `Signed up: ${profile.created_at}`,
     ].join('\n')
   );
