@@ -90,6 +90,13 @@ describe('buildChunkRequest', () => {
   it('returns null for filler', () => {
     expect(buildChunkRequest({ delta: 'okay', recentContext: '', context: ctx })).toBeNull();
   });
+
+  it('treats the open page as a hint, not a limit', () => {
+    const t = text(buildChunkRequest({ delta: 'tongue normal', recentContext: '', context: ctx, section: 'charting' }));
+    expect(t).toContain('OPEN PAGE');
+    expect(t).toMatch(/doesn't limit anything/);
+    expect(t).not.toMatch(/get no tool call/);
+  });
 });
 
 describe('buildReviewRequest', () => {

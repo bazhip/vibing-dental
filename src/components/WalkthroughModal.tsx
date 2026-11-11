@@ -86,8 +86,8 @@ function buildSteps(aiEnabled?: boolean): Step[] {
     steps.push({
       target: '.voice-input',
       placement: 'bottom',
-      title: 'AI voice autofill',
-      body: 'Dictate and the AI charts it for you, showing every change in a live sidebar so you can undo anything.',
+      title: 'Dictate',
+      body: 'Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything.',
     });
   }
   steps.push(

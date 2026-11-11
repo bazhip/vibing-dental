@@ -4,6 +4,8 @@
  *
  *   npm run replay -- <transcript.txt> [--offline] [--model claude-opus-5-5] [--section charting]
  *
+ * --section sets the "open page" hint (a tie-break only; findings go anywhere).
+ *
  * Input: the "Download transcript" file from the voice panel, or any text
  * file with one utterance per line (a single paragraph is split into
  * sentences). Each line is treated as one live chunk — the app chunks on
@@ -29,7 +31,7 @@ import {
   buildChunkRequest,
   buildReviewRequest,
   parseAutofillContent,
-  actionAllowedInSection,
+  actionAllowedAnywhere,
   applyAiActions,
   dedupeActions,
   describeAction,
@@ -207,11 +209,11 @@ async function main() {
       section,
     });
     if (!req) continue;
-    const r = parseAutofillContent(await call(client, req), (a) => actionAllowedInSection(a, section));
+    const r = parseAutofillContent(await call(client, req), actionAllowedAnywhere);
     const applied = applyAiActions(dedupeActions(r.actions, live), liveHandlers);
     console.log(`  ${utterances[i]}`);
     for (const a of applied) console.log(`   + ${describeAction(a)}`);
-    for (const a of r.skipped) console.log(dim(`   - other page: ${describeAction(a)}`));
+    for (const a of r.skipped) console.log(dim(`   - rejected: ${describeAction(a)}`));
     if (r.flags.length) console.log(fmtFlags(r.flags));
   }
 
@@ -219,7 +221,7 @@ async function main() {
   const transcript = utterances.join('\n');
   const finalReq = buildReviewRequest({ transcript, context: live, rejected: [] });
   if (finalReq) {
-    const r = parseAutofillContent(await call(client, finalReq), (a) => actionAllowedInSection(a, section));
+    const r = parseAutofillContent(await call(client, finalReq), actionAllowedAnywhere);
     const applied = applyAiActions(dedupeActions(r.actions, live), liveHandlers);
     if (!applied.length && !r.flags.length) console.log('  nothing missed');
     for (const a of applied) console.log(`   + ${describeAction(a)}`);
@@ -231,7 +233,7 @@ async function main() {
   const oneReq = buildReviewRequest({ transcript, context: oneShot, rejected: [] });
   let oneShotActions: AiAction[] = [];
   if (oneReq) {
-    const r = parseAutofillContent(await call(client, oneReq), (a) => actionAllowedInSection(a, section));
+    const r = parseAutofillContent(await call(client, oneReq), actionAllowedAnywhere);
     oneShotActions = applyAiActions(dedupeActions(r.actions, oneShot), handlersFor(oneShot));
     for (const a of oneShotActions) console.log(`   + ${describeAction(a)}`);
     if (r.flags.length) console.log(fmtFlags(r.flags));

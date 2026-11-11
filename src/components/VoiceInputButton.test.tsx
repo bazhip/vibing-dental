@@ -49,7 +49,7 @@ describe('VoiceInputButton session flow', () => {
   it('shows the intro once; reopening resumes with the old transcript', () => {
     render(<VoiceInputButton {...props} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
     act(() => FakeRecognition.last!.say('104 GI 2'));
     expect(screen.getByText(/104 GI 2/)).toBeInTheDocument();
@@ -68,18 +68,18 @@ describe('VoiceInputButton session flow', () => {
 
   it('has no Pause button', () => {
     render(<VoiceInputButton {...props} />);
-    fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
     expect(screen.queryByRole('button', { name: /Pause/ })).not.toBeInTheDocument();
   });
 
   it('a different chart starts a new dictation', () => {
     const { rerender } = render(<VoiceInputButton {...props} />);
-    fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
     act(() => FakeRecognition.last!.say('old patient'));
     rerender(<VoiceInputButton {...props} sessionKey="chart-2" />);
-    expect(screen.getByRole('button', { name: /AI autofill/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Dictate/ })).toBeInTheDocument();
   });
 });
 
@@ -95,7 +95,7 @@ const realContext = {
 const gi = { name: 'set_tooth_field', input: { triadan: 104, field: 'gingivitis', value: '2' } };
 
 function startDictation() {
-  fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
   fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
 }
 

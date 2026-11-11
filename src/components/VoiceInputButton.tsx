@@ -26,7 +26,7 @@ import {
  * AI autofill: a topbar button plus a live panel (right sidebar on
  * desktop, bottom sheet on phones) showing the transcript and every
  * change the AI applies. Each utterance goes to Claude when the speaker
- * pauses, scoped to the chart section on screen.
+ * pauses; findings land wherever they belong, from any page.
  *
  * One dictation per chart: Stop ends listening but keeps the transcript
  * and activity log, and pressing the button again carries on from there.
@@ -124,6 +124,16 @@ function targetKey(a: AiAction): string {
     case 'set_patient_field': return `patient:${i.field}`;
     default: return a.name;
   }
+}
+
+/** The activity line for a change: prefixed with where it landed when
+ *  that isn't the page on screen ("→ Exam: tongue normal"), since the
+ *  app stays put rather than jumping there. */
+export function withDestination(a: AiAction, activeSection: string | undefined): string {
+  const home = actionFocus(a, activeSection)?.section;
+  const text = describeAction(a);
+  const label = sectionLabel(home ?? '').replace(/\s*\(.*\)$/, '');
+  return home && home !== activeSection ? `→ ${label}: ${text}` : text;
 }
 
 /** Quiet this long (no words being heard) before a prompt is spoken, so
@@ -248,8 +258,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const inFlightRef = React.useRef(false);
   const queuedFlushRef = React.useRef(false);
-  /** Pages dictated on this session — bounds what the final check may fill. */
-  const sectionsRef = React.useRef<Set<string | undefined>>(new Set());
   /** Changes the vet rejected in review; the final check won't re-add them. */
   const rejectedRef = React.useRef<AiAction[]>([]);
   /** Bumps when the dictation is thrown away (New, another chart): a
@@ -257,7 +265,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const sessionGenRef = React.useRef(0);
   const resetSessionMemory = () => {
     sessionGenRef.current++;
-    sectionsRef.current = new Set();
     rejectedRef.current = [];
   };
   const lockedRef = React.useRef(locked);
@@ -271,7 +278,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       ...prev,
       ...actions.map((a, i) => ({
         id: `${now.getTime()}_${i}`,
-        description: describeAction(a),
+        description: withDestination(a, sectionRef.current),
         at: now,
         uncertain: uncertain.has(a),
       })),
@@ -308,8 +315,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const sentSet = new Set(segments.map((s) => s.receivedAt));
     const contextSegments = voiceRef.current.recentSegments(RECENT_CONTEXT_MS).filter((s) => !sentSet.has(s.receivedAt));
     const recentContext = contextSegments.map((s) => s.text).join(' ').trim();
-
-    sectionsRef.current.add(section);
 
     const gen = sessionGenRef.current;
     inFlightRef.current = true;
@@ -411,7 +416,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         transcript,
         context: contextRef.current,
         rejected: rejectedRef.current,
-        sections: Array.from(sectionsRef.current),
       });
       if (!result.ran || gen !== sessionGenRef.current) return;
       const raised = applyResult(result);
@@ -724,7 +728,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
 
   const sending = activeChunkCount > 0;
-  const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'AI autofill';
+  const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'Dictate';
   const reviewLabel = reviews.length ? `${reviews.length} to review` : null;
   const subLabel = voice.recording
     ? (sending ? 'listening · sending…' : reviewLabel ?? 'listening')
@@ -761,9 +765,16 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         className={className}
         onClick={handleButton}
         aria-pressed={voice.recording}
-        title={voice.recording ? 'Stop listening (the transcript is kept)' : 'AI autofill — dictate to fill the chart'}
+        title={voice.recording ? 'Stop listening (the transcript is kept)' : 'Dictate — talk and the chart fills itself'}
       >
-        {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
+        {voice.recording ? (
+          <span className="voice-input__rec-dot" aria-hidden="true" />
+        ) : (
+          <svg className="voice-input__mic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+            <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
+            <path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        )}
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
         {reviews.length > 0 && (
@@ -775,23 +786,18 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           topbar's backdrop-filter containing block (which would clip a
           position:fixed overlay to the short topbar). */}
       {intro && ReactDOM.createPortal(
-        <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label="AI autofill">
+        <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label="Dictate">
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
-              <h2>AI voice autofill</h2>
+              <h2>Dictate your chart</h2>
               <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label="Close">×</button>
             </header>
             <div className="ai-settings-body">
-              <p className="ai-intro__lead">Dictate your findings and the AI charts them for you — no typing, hands on the patient.</p>
-              <ul className="ai-intro__list">
-                <li>Speak naturally: <em>“104 GI 2, calc 1, T/FX/CCF. 105 missing.”</em></li>
-                <li>It fills <strong>the section you’re on</strong> — open Charting for perio values, Exam for exam findings, and so on. On Charting, diagnosis codes (T/FX, CCF…) also go onto the Diagnosis diagram.</li>
-                <li>A live panel shows the <strong>transcript</strong> and every <strong>change</strong> as it lands; each value is highlighted in the chart.</li>
-                <li><strong>Stop</strong> any time — press the button again to carry on with the same transcript. <strong>New</strong> in the panel starts over.</li>
-                <li>When it isn’t sure it heard you right, it flags the finding. After a pause you’ll hear a short prompt like <em>“Check 109”</em> — just say the correction, or tap through <strong>Needs review</strong> later.</li>
-                <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
-              </ul>
-              <p className="ai-intro__foot">Uses {voice.provider === 'deepgram' ? 'Deepgram Nova-3 Medical, tuned for clinical terms + speaker labels' : 'your browser’s speech recognition'}.</p>
+              <ol className="ai-intro__list">
+                <li>Talk like you normally would: <em>“104 GI 2, calc 1. 105 missing. Tongue normal.”</em></li>
+                <li>Stay on any page. Each finding goes to the right place in the chart.</li>
+                <li>Tap <strong>Stop</strong> when you’re done. Anything it wasn’t sure about is listed under <strong>Needs review</strong>.</li>
+              </ol>
             </div>
             <footer className="ai-settings-footer">
               {intro === 'start' ? (
