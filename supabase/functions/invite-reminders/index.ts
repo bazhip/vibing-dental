@@ -35,21 +35,26 @@ Deno.serve(async (req: Request) => {
   const now = Date.now();
   const sent: string[] = [];
   const skipped: string[] = [];
+  // Why people weren't reminded — counts only, for the run log.
+  const why: Record<string, number> = {};
+  const note = (k: string) => { why[k] = (why[k] ?? 0) + 1; };
 
   for (let page = 1; page <= 20; page++) {
     const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
     if (error) return json({ error: error.message }, 500);
     const users = data.users;
     for (const u of users) {
-      if (!u.email || u.email_confirmed_at || !u.invited_at) continue;
+      if (!u.email) { note('no_email'); continue; }
+      if (u.email_confirmed_at) continue; // active account — the normal case
+      if (!u.invited_at) { note('unconfirmed_not_invited'); continue; }
       const meta = (u.app_metadata ?? {}) as Record<string, unknown>;
       const count = typeof meta.invite_reminders === 'number' ? meta.invite_reminders : 0;
-      if (count >= SCHEDULE_DAYS.length) continue;
+      if (count >= SCHEDULE_DAYS.length) { note('all_reminders_sent'); continue; }
       const dueAt = Date.parse(u.invited_at) + SCHEDULE_DAYS[count] * DAY;
-      if (now < dueAt) continue;
+      if (now < dueAt) { note('not_due_yet'); continue; }
       // Space reminders out even for old invites (both "due" at once).
       const last = typeof meta.invite_reminded_at === 'string' ? Date.parse(meta.invite_reminded_at) : 0;
-      if (last && now - last < 3 * DAY) continue;
+      if (last && now - last < 3 * DAY) { note('reminded_recently'); continue; }
 
       // Which practice invited them (for the wording).
       const { data: mem } = await admin
@@ -58,7 +63,7 @@ Deno.serve(async (req: Request) => {
         .eq('user_id', u.id)
         .limit(1);
       const practice = ((mem?.[0]?.practices as { name?: string } | undefined)?.name ?? '').trim();
-      if (!mem?.length) { skipped.push(u.email); continue; } // no longer on any team
+      if (!mem?.length) { note('not_on_a_team'); skipped.push(u.email); continue; } // no longer on any team
 
       // Fresh link: a recovery link verifies the email and lands on the
       // app's set-password screen (invite=1 shows the invite wording).
@@ -67,7 +72,7 @@ Deno.serve(async (req: Request) => {
         email: u.email,
         options: { redirectTo: `${APP_URL}?invite=1` },
       });
-      if (linkErr || !link?.properties?.action_link) { skipped.push(u.email); continue; }
+      if (linkErr || !link?.properties?.action_link) { note('link_failed'); skipped.push(u.email); continue; }
 
       const final = count === SCHEDULE_DAYS.length - 1;
       const who = practice || 'your practice';
@@ -86,7 +91,7 @@ Deno.serve(async (req: Request) => {
           ? `This is the last reminder we’ll send. If the link expires, ask ${who} to resend your invite.`
           : 'Not expecting this, or don’t want to join? Just ignore this email — we’ll send at most one more reminder.',
       });
-      if (!ok) { skipped.push(u.email); continue; }
+      if (!ok) { note('email_failed'); skipped.push(u.email); continue; }
 
       await admin.auth.admin.updateUserById(u.id, {
         app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
@@ -96,5 +101,5 @@ Deno.serve(async (req: Request) => {
     if (users.length < 1000) break;
   }
 
-  return json({ ok: true, sent: sent.length, skipped: skipped.length });
+  return json({ ok: true, sent: sent.length, skipped: skipped.length, why });
 });
