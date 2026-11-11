@@ -99,3 +99,18 @@ describe('isPerioOnlyText', () => {
     expect(isPerioOnlyText('GI 2, complicated crown fracture')).toBe(false);
   });
 });
+
+describe('run-together Deepgram output', () => {
+  it('splits "104GI2" into tooth + score and passes the medical gate', () => {
+    const out = normalizeTranscript('Speaker 0: 104GI2.');
+    expect(out).toContain('104 GI 2');
+    expect(chunkLooksMedical(out)).toBe(true);
+  });
+  it('passes spoken shorthand without a tooth number', () => {
+    expect(chunkLooksMedical(normalizeTranscript('Or GI two?'))).toBe(true);
+    expect(chunkLooksMedical(normalizeTranscript('calc one'))).toBe(true);
+  });
+  it('keeps codes joined to tooth numbers apart', () => {
+    expect(normalizeTranscript('calc 1T slash FX slash CCF105 missing')).toContain('CCF 105 missing');
+  });
+});

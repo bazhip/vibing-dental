@@ -360,6 +360,11 @@ const UNIT_WORD_RE = new RegExp(
 export function normalizeTranscript(raw: string): string {
   let text = raw;
 
+  // Deepgram's smart formatting runs findings together ("104GI2",
+  // "CCF105"); split digits from letters so tooth numbers and scores are
+  // separate tokens. Code+digit pairs (PD3, M2) are re-joined below.
+  text = text.replace(/(\d)(?=[A-Za-z])/g, '$1 ').replace(/([A-Za-z])(?=\d)/g, '$1 ');
+
   // Spelled-out letters: "g I" → "GI", "P D" handled below.
   text = text.replace(/\bg[\s.-]*i\b/gi, 'GI');
   // STT spells the letter F as "f e" ("f e three" = F3, furcation 3).
@@ -410,6 +415,9 @@ const MEDICAL_KEYWORDS = [
   'lidocaine', 'mepivacaine', 'cleaning', 'polish', 'scaling', 'suturing',
   'tooth', 'teeth', 'canine', 'incisor', 'molar', 'premolar', 'carnassial',
   'PD', 'P D', 'class', 'stage', 'mm', 'millimeter',
+  // Shorthand vets actually dictate.
+  'GI', 'calc', 'furc', 'mobile', 'perio', 'resorption', 'abrasion',
+  'CCF', 'UCF', 'FX', 'TR', 'AB',
 ];
 
 // Allow trailing digit so "PD3", "M2", "C1" still match when their root

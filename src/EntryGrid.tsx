@@ -966,7 +966,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               handlers={aiHandlers}
               onActivity={handleAiActivity}
               activeSection={activeSection}
-              sessionKey={chart.cloudChartId || 'local'}
+              sessionKey={String(chart.chartSession)}
             />
           )}
           <ChartMenu

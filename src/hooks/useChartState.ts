@@ -94,6 +94,8 @@ export interface UseChartStateReturn {
   /** Mint (and adopt) a fresh cloud id — used when a save is refused
    *  because the current row belongs to another account. */
   resetCloudChartId: () => string;
+  /** Changes whenever a different chart is opened (see openChartId). */
+  chartSession: number;
   /** Everything needed to restore this chart (same shape the PDF embeds). */
   getSnapshot: () => ChartSnapshot;
   /** Overwrite local state with a snapshot (e.g. a chart opened from the
@@ -327,6 +329,15 @@ export function useChartState(): UseChartStateReturn {
   const [cloudChartId, setCloudChartId] = usePersistedState<string>(
     'chart.cloudId', 1, () => generateChartId()
   );
+  // Bumps when a DIFFERENT chart is put on screen (new visit, opened
+  // from the library, loaded from a PDF) — not when the sync re-ids the
+  // same chart after a refused save. Per-chart UI state (the AI
+  // dictation) keys off this rather than the id.
+  const [chartSession, setChartSession] = React.useState(0);
+  const openChartId = (id: string) => {
+    setCloudChartId(id);
+    setChartSession((n) => n + 1);
+  };
 
   // Which attached images belong in the owner report's Before & After
   // section. Keyed by attachment id; part of the chart, so it saves,
@@ -425,7 +436,7 @@ export function useChartState(): UseChartStateReturn {
       ownerEmail: identity ? identity.ownerEmail : patientInfo.ownerEmail,
     };
     const sp = identity ? identity.species : species;
-    setCloudChartId(generateChartId());
+    openChartId(generateChartId());
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setImageRoles({}); // image tags belong to the prior visit's images
     setPdfExcludedImages([]);
@@ -499,7 +510,7 @@ export function useChartState(): UseChartStateReturn {
     setPostToothMarksDirect(snapshot.postMarks ?? {});
     setPostDiagramComments(snapshot.postComments ?? []);
     setPostDiagramStrokes(snapshot.postStrokes ?? []);
-    setCloudChartId(id);
+    openChartId(id);
   };
 
   // ----- Whole-chart actions -------------------------------------------
@@ -524,7 +535,7 @@ export function useChartState(): UseChartStateReturn {
       // A restored PDF is its own chart — give it a fresh cloud row so
       // saving can't overwrite whichever chart was open before. Treat it
       // as an opened existing chart (read-only until the user unlocks).
-      setCloudChartId(generateChartId());
+      openChartId(generateChartId());
       setOpenedExisting(true);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
       setPdfExcludedImages([]);
@@ -590,6 +601,7 @@ export function useChartState(): UseChartStateReturn {
 
     cloudChartId,
     resetCloudChartId,
+    chartSession,
     getSnapshot,
     applySnapshot,
 
