@@ -187,6 +187,10 @@ export function useCloudSync(
   dirtyRef.current = dirty;
   const resetIdRef = React.useRef(chart.resetCloudChartId);
   resetIdRef.current = chart.resetCloudChartId;
+  const openedExistingRef = React.useRef(chart.openedExisting);
+  openedExistingRef.current = chart.openedExisting;
+  const setOpenedExistingRef = React.useRef(chart.setOpenedExisting);
+  setOpenedExistingRef.current = chart.setOpenedExisting;
 
   // Opening a cloud chart replays its content into state — treat that
   // applied state as the saved baseline (not a dirty edit).
@@ -243,6 +247,14 @@ export function useCloudSync(
       const refused =
         error.code === '42501' ||
         /row-level security|permission denied|duplicate key/i.test(error.message);
+      // Only a chart created on this device may fork: its id collided
+      // with a row owned by someone else (stale storage after switching
+      // users). A chart opened from My charts must never be silently
+      // copied — that would leave the shared record unchanged while the
+      // user believes it saved.
+      if (refused && openedExistingRef.current) {
+        fail(new Error('You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.'));
+      }
       if (refused) {
         const freshId = resetIdRef.current();
         const { error: retryError } = await client.from('charts').upsert(row(freshId));
@@ -366,6 +378,10 @@ export function useCloudSync(
     if (opts.ifClean) {
       if (dirtyRef.current) return false;
     } else if (!(await confirmDiscardIfDirty('Open the other chart'))) return false;
+    // Already on screen with nothing unsaved: nothing to do. (Re-applying
+    // identical content would leave the "saved baseline" armed and the
+    // next edit wrongly treated as saved.)
+    if (id === latest.current.chartId && !dirtyRef.current) return true;
     const { data, error } = await supabase
       .from('charts')
       .select('id, data')
@@ -391,7 +407,15 @@ export function useCloudSync(
     if (!supabase) return;
     const { error } = await supabase.from('charts').delete().eq('id', id);
     if (error) throw new Error(error.message);
-  }, []);
+    // Deleted the chart that's open: it now exists only on this screen.
+    // Give it a fresh identity and mark it unsaved, so it neither looks
+    // saved nor silently re-creates the deleted record.
+    if (id === latest.current.chartId) {
+      resetIdRef.current();
+      setOpenedExistingRef.current(false);
+      setSavedHash('');
+    }
+  }, [setSavedHash]);
 
   const clearRecalls = React.useCallback(async (chartIds: string[]): Promise<void> => {
     if (!supabase || chartIds.length === 0) return;

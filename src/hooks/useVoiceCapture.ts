@@ -154,6 +154,9 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   // Stop (Deepgram flushing its last words) may end after the user has
   // already resumed — its end must not touch the new session's state.
   const sessionIdRef = React.useRef(0);
+  // Bumps on clear()/start(): words from an older dictation never land
+  // in a fresh one.
+  const generationRef = React.useRef(0);
   // Set when stop() is called — before or during a Deepgram handshake too,
   // so the resolving session is torn down instead of left live.
   const stopRequestedRef = React.useRef(false);
@@ -194,6 +197,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   }, []);
 
   const clear = React.useCallback(() => {
+    generationRef.current++;
     finalRef.current = '';
     interimRef.current = '';
     pendingSegmentsRef.current = [];
@@ -292,16 +296,24 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       startBrowser(id);
       return;
     }
+    // Holder rather than the const below: onClose can fire while
+    // startDeepgramSession is still awaiting (socket error during setup),
+    // before `session` exists.
+    const holder: { session: DeepgramSession | null } = { session: null };
+    const generation = generationRef.current;
     try {
       const session = await startDeepgramSession(dgAuth, {
         onInterim: (t) => { if (id === sessionIdRef.current) setInterim(t); },
-        onFinal: (seg) => recordSegment(seg),
+        // A stopped session's last words still count — unless the user
+        // has since cleared/started fresh.
+        onFinal: (seg) => { if (generation === generationRef.current) recordSegment(seg); },
         onError: (msg) => { if (id === sessionIdRef.current) setError(msg); },
         onClose: () => {
-          if (deepgramRef.current === session) deepgramRef.current = null;
+          if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
           handleSessionEnd(id);
         },
       }, audioCtx);
+      holder.session = session;
       // Stopped during the handshake: tear straight back down.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {
         session.stop();

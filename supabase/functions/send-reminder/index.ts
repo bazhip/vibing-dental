@@ -82,6 +82,13 @@ Deno.serve(async (req: Request) => {
   if (pname && pname.trim()) fromName = pname.trim();
   fromName = fromName.replace(/[\r\n]+/g, ' ').slice(0, 100);
 
+  // Abuse guard: cap reminder emails per account per day, and length.
+  if (subject.length > 200 || text.length > 10_000) return json({ error: 'That message is too long.' }, 400);
+  const { count: sentToday } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
+    .eq('user_id', caller.id).eq('model', 'reminder-email')
+    .gte('created_at', new Date(Date.now() - 86_400_000).toISOString());
+  if ((sentToday ?? 0) >= 100) return json({ error: 'Daily reminder limit reached (100). Try again tomorrow.' }, 429);
+
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return json({ error: 'Email is not configured.' }, 500);
 
@@ -97,6 +104,7 @@ Deno.serve(async (req: Request) => {
   });
   const respText = await resp.text();
   if (!resp.ok) return json({ error: `Email failed: ${respText}` }, 502);
+  await admin.from('ai_usage').insert({ user_id: caller.id, model: 'reminder-email', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});
 
   await admin.from('charts').update({ reminder_sent_at: new Date().toISOString() }).eq('id', chartId);
   return json({ ok: true, to });

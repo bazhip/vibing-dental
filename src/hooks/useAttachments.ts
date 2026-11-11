@@ -229,13 +229,21 @@ export function useAttachments(
   const itemsRef = React.useRef(items);
   itemsRef.current = items;
 
+  // The chart these items belong to — a slow response for a chart the
+  // user has since left must not land on the new one.
+  const chartIdRef = React.useRef(chartId);
+  chartIdRef.current = chartId;
   const load = React.useCallback(async () => {
-    const rows = await listChartAttachments(chartId);
+    const forChart = chartId;
+    const rows = await listChartAttachments(forChart);
+    if (chartIdRef.current !== forChart) return;
     if (rows) setItems(rows);
     setLoaded(true);
   }, [chartId]);
 
   React.useEffect(() => {
+    // Never show the previous chart's images while the new ones load.
+    setItems([]);
     setLoaded(!cloudEnabled);
     if (cloudEnabled) load();
   }, [load]);

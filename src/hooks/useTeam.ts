@@ -33,8 +33,10 @@ export interface UseTeamReturn extends TeamState {
   error: string;
   refresh: () => Promise<void>;
   createPractice: (name: string) => Promise<void>;
-  /** Returns true when a new account was invited (vs. an existing one added). */
-  addMember: (email: string) => Promise<boolean>;
+  /** 'invited' = new account emailed a set-password link (joins on
+   *  activation); 'pending' = existing account emailed a join link it
+   *  must accept. */
+  addMember: (email: string) => Promise<'invited' | 'pending'>;
   /** Re-send the activation email to a pending (never-activated) member. */
   resendInvite: (userId: string) => Promise<void>;
   removeMember: (userId: string) => Promise<void>;
@@ -89,12 +91,12 @@ export function useTeam(open: boolean): UseTeamReturn {
     await refresh();
   }, [refresh]);
 
-  const addMember = React.useCallback(async (email: string): Promise<boolean> => {
+  const addMember = React.useCallback(async (email: string): Promise<'invited' | 'pending'> => {
     // Invited accounts get an email link back to wherever the owner is.
     const redirectTo = window.location.origin + window.location.pathname;
-    const res = await call<{ invited?: boolean }>({ action: 'add_member', email, redirectTo });
+    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo });
     await refresh();
-    return !!res.invited;
+    return res.pending ? 'pending' : 'invited';
   }, [refresh]);
 
   const resendInvite = React.useCallback(async (userId: string) => {

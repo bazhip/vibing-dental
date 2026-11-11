@@ -1,5 +1,6 @@
 import React from 'react';
 import { toast, confirmDialog } from '../components/ui/dialogs';
+import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import {
   PatientInfo,
   Species,
@@ -547,15 +548,22 @@ export function useChartState(): UseChartStateReturn {
       ) {
         throw new Error('Stashed chart state has an unexpected shape');
       }
-      // A restored PDF is its own chart — give it a fresh cloud row so
-      // saving can't overwrite whichever chart was open before. Treat it
-      // as an opened existing chart (read-only until the user unlocks).
+      if (!(parsed.species in TOOTH_DIAGRAMS)) {
+        throw new Error(`Unknown species in PDF: ${String(parsed.species)}`);
+      }
+      // A restored PDF is a NEW chart: a fresh cloud row (so saving can't
+      // overwrite whichever chart was open before) that saves like any
+      // new chart — not a "saved chart" it never was.
       openChartId(generateChartId());
-      setOpenedExisting(true);
+      setOpenedExisting(false);
+      // Always start from blank diagrams, so nothing of the previous
+      // patient survives a PDF without diagram data.
+      setPreToothMarks({}); setPreDiagramComments([]); setPreDiagramStrokes([]);
+      setPostToothMarksDirect({}); setPostDiagramComments([]); setPostDiagramStrokes([]);
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
-      setPatientInfo(parsed.patientInfo);
+      setPatientInfo(normalizeSnapshot({ patientInfo: parsed.patientInfo } as ChartSnapshot).patientInfo);
       setSpecies(parsed.species);
       setLogo(parsed.logo);
       setToothDataDirectly(parsed.toothData);
@@ -577,6 +585,8 @@ export function useChartState(): UseChartStateReturn {
         setPostDiagramComments(parsed.postDiagram.comments);
         setPostDiagramStrokes(parsed.postDiagram.strokes);
       }
+      const name = parsed.patientInfo.patientName.trim();
+      toast(`Imported ${name || 'the chart'} from PDF as a new chart.`, { kind: 'success' });
     } catch (error) {
       toast('Couldn’t read that PDF. Use a chart PDF downloaded from ToothOps.', { kind: 'error' });
       console.error(error);

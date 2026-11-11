@@ -83,6 +83,20 @@ Deno.serve(async (req: Request) => {
 
     const practiceId = sub.metadata?.practice_id ?? '';
     const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? '';
+
+    // Stale-event guard: Stripe events can arrive late or be retried. If
+    // the practice already has a different, still-live subscription (it
+    // resubscribed), an event about an old one must not overwrite it —
+    // otherwise a late "deleted" freezes a paying practice.
+    {
+      let q = admin.from('practices').select('stripe_subscription_id, subscription_status');
+      q = practiceId ? q.eq('id', practiceId) : q.eq('stripe_customer_id', customerId);
+      const { data: current } = await q.maybeSingle();
+      const curSub = current?.stripe_subscription_id ?? '';
+      if (curSub && curSub !== sub.id && ['active', 'trialing', 'past_due'].includes(current?.subscription_status ?? '')) {
+        return;
+      }
+    }
     let matched = false;
     if (practiceId) {
       const { data } = await admin.from('practices').update(update).eq('id', practiceId).select('id');
@@ -122,7 +136,11 @@ Deno.serve(async (req: Request) => {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted': {
-        await apply(event.data.object as Stripe.Subscription);
+        // Use Stripe's current state, not the (possibly old) event body —
+        // out-of-order delivery would otherwise apply stale statuses.
+        const evSub = event.data.object as Stripe.Subscription;
+        const sub = await stripe.subscriptions.retrieve(evSub.id).catch(() => evSub);
+        await apply(sub);
         return json({ received: true });
       }
       default:

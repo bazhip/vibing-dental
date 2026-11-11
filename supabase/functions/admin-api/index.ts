@@ -222,11 +222,24 @@ Deno.serve(async (req: Request) => {
           await admin.from('profiles').update({ practice_id: null }).eq('practice_id', owned.id);
           await admin.storage.from('logos').remove([`${owned.id}/logo.png`]);
         }
+        // A member of someone else's practice: their charts are practice
+        // records, not theirs to take with them. Hand shared rows to the
+        // practice's primary owner so the FK cascade doesn't delete them.
+        if (!owned) {
+          const { data: mems } = await admin.from('practice_members').select('practice_id, practices(owner)').eq('user_id', userId);
+          for (const m of mems ?? []) {
+            const newOwner = (m.practices as { owner?: string } | null)?.owner;
+            if (!newOwner || newOwner === userId) continue;
+            for (const table of ['charts', 'report_templates', 'attachments']) {
+              await admin.from(table).update({ created_by: newOwner }).eq('created_by', userId).eq('practice_id', m.practice_id);
+            }
+          }
+        }
         // Storage objects aren't FK-cascaded — remove the logo first.
         await admin.storage.from('logos').remove([`${userId}/logo.png`]);
         const { error } = await admin.auth.admin.deleteUser(userId);
         if (error) throw error;
-        // profiles / charts / report_templates cascade via FK.
+        // profiles / personal (unshared) charts / templates cascade via FK.
         return json({ ok: true });
       }
 
@@ -531,6 +544,8 @@ Deno.serve(async (req: Request) => {
         const { data: rows } = await admin
           .from('ai_usage')
           .select('user_id, model, input_tokens, output_tokens, cache_read_tokens')
+          // Rate-limit bookkeeping rows aren't AI calls.
+          .not('model', 'in', '(deepgram-token,reminder-email)')
           .limit(100000);
         const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
         let totalCost = 0;

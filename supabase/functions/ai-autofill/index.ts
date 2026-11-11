@@ -62,12 +62,28 @@ Deno.serve(async (req: Request) => {
   const key = Deno.env.get('ANTHROPIC_API_KEY');
   if (!key) return json({ error: 'AI is not configured yet.' }, 503);
 
+  // Abuse guards — every signed-in account can use AI during the free
+  // beta, so cap request size, response size and per-user call rate
+  // (generous for dictation: one call per spoken phrase).
+  const raw = await req.text();
+  if (raw.length > 120_000) return json({ error: 'Request too large.' }, 413);
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    body = JSON.parse(raw);
   } catch {
     return json({ error: 'bad json' }, 400);
   }
+  const msgs = body.messages;
+  if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
+    return json({ error: 'Unsupported request.' }, 400);
+  }
+  const since = (ms: number) => new Date(Date.now() - ms).toISOString();
+  const [{ count: perMinute }, { count: perDay }] = await Promise.all([
+    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(60_000)),
+    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(86_400_000)),
+  ]);
+  if ((perMinute ?? 0) >= 40) return json({ error: 'Slow down a moment — too many AI requests in the last minute.' }, 429);
+  if ((perDay ?? 0) >= 2000) return json({ error: 'Daily AI limit reached. It resets within 24 hours.' }, 429);
 
   // The model is a site setting, not client-chosen.
   const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
@@ -75,7 +91,7 @@ Deno.serve(async (req: Request) => {
 
   const settings: ModelSettings = MODEL_SETTINGS[model] ?? { extra: {}, thinks: false, fallbacks: false };
   // max_tokens: 0 is a cache pre-warm (prefill only) — pass it through.
-  let maxTokens = typeof body.max_tokens === 'number' ? body.max_tokens : 1024;
+  let maxTokens = typeof body.max_tokens === 'number' ? Math.max(0, Math.min(4096, Math.floor(body.max_tokens))) : 1024;
   if (maxTokens > 0 && settings.thinks) maxTokens = Math.max(maxTokens, 4096);
 
   const payload: Record<string, unknown> = {

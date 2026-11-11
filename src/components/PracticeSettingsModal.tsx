@@ -326,11 +326,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                           setTeamNote('');
                           team
                             .addMember(email)
-                            .then((invited) => {
+                            .then((result) => {
                               setTeamNote(
-                                invited
+                                result === 'invited'
                                   ? `Invite emailed to ${email} — they set a password and they're in.`
-                                  : 'Colleague added.'
+                                  : `${email} already has a ToothOps account — we emailed them a link to accept. They'll appear here once they join.`
                               );
                               setMemberEmail('');
                             })

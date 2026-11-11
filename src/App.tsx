@@ -6,6 +6,7 @@ import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
 import { clearChartStorage } from './hooks/useChartState';
 import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
+import { JoinPracticeModal } from './components/JoinPracticeModal';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
@@ -133,6 +134,10 @@ const App: React.FC = () => {
         // inherit the previous patient's working chart (shared machines).
         if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
           clearChartStorage();
+          // The previous user's chart, profile and practice are still in
+          // memory — start clean so nothing of theirs is shown or saved.
+          window.location.reload();
+          return;
         }
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
@@ -216,7 +221,9 @@ const App: React.FC = () => {
             setIsAuthenticated(true);
           }}
           onTryFree={startTrial}
-          initialAuth={landingAuth}
+          // An invitation link opens sign-in straight away; the join
+          // dialog follows once they're signed in.
+          initialAuth={landingAuth ?? (route.view === 'join' ? 'signin' : null)}
         />
       </Suspense>
     );
@@ -230,6 +237,18 @@ const App: React.FC = () => {
         <BillingGate>
           <EntryGrid onGoHome={() => setShowHome(true)} />
         </BillingGate>
+        {/* Invitation link for an existing account (#/join/<token>). */}
+        {route.view === 'join' && route.joinToken && (
+          <JoinPracticeModal
+            token={route.joinToken}
+            onDone={(joined) => {
+              // Joining changes the practice everything is scoped to —
+              // reload so profile, team and charts load fresh.
+              window.location.replace(`${window.location.pathname}#/chart`);
+              if (joined) window.location.reload();
+            }}
+          />
+        )}
       </Suspense>
       {/* Session expired mid-work: the chart stays mounted (every edit is
           in localStorage) and this overlay re-authenticates in place. */}

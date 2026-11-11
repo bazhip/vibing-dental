@@ -83,9 +83,18 @@ Deno.serve(async (req: Request) => {
   const planKey = typeof body.plan === 'string' ? body.plan : '';
   // Where Stripe sends the browser back — the caller's app origin+path,
   // same pattern as team-api's redirectTo.
-  const returnUrl = typeof body.returnUrl === 'string' && /^https?:\/\//.test(body.returnUrl)
+  // Only send people back to our own app after Stripe (no open redirect).
+  const isOurUrl = (raw: string) => {
+    try {
+      const h = new URL(raw).hostname;
+      return h === 'toothops.app' || h === 'localhost' || h === '127.0.0.1' || /^vibing-dental[a-z0-9-]*\.vercel\.app$/.test(h);
+    } catch {
+      return false;
+    }
+  };
+  const returnUrl = typeof body.returnUrl === 'string' && isOurUrl(body.returnUrl)
     ? body.returnUrl
-    : (req.headers.get('Origin') ?? 'https://toothops.app');
+    : (isOurUrl(req.headers.get('Origin') ?? '') ? req.headers.get('Origin')! : 'https://toothops.app');
 
   const isAdmin = caller.app_metadata?.role === 'admin';
 

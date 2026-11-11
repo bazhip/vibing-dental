@@ -30,6 +30,12 @@ Deno.serve(async (req: Request) => {
   // Free beta: voice autofill is open to every signed-in account (no
   // plan check). Signed-in only — anonymous trial users get no token.
 
+  // Abuse guard: each dictation start mints one token; cap per user.
+  const { count: recent } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
+    .eq('user_id', caller.id).eq('model', 'deepgram-token')
+    .gte('created_at', new Date(Date.now() - 3_600_000).toISOString());
+  if ((recent ?? 0) >= 60) return json({ error: 'Too many dictation sessions started this hour — try again shortly.' }, 429);
+
   const master = Deno.env.get('DEEPGRAM_API_KEY');
   if (!master) return json({ error: 'Voice transcription is not configured yet.' }, 503);
 
@@ -50,6 +56,9 @@ Deno.serve(async (req: Request) => {
     return json({ error: 'Deepgram returned an unreadable response.' }, 502);
   }
   if (!grant.access_token) return json({ error: 'Deepgram did not return a token.' }, 502);
+
+  // Log the mint (rate limiting + admin visibility). Best-effort.
+  await admin.from('ai_usage').insert({ user_id: caller.id, model: 'deepgram-token', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});
 
   // `kind: bearer` tells the client which WebSocket sub-protocol to use.
   return json({ token: grant.access_token, kind: 'bearer', expiresInSeconds: grant.expires_in ?? TTL_SECONDS });

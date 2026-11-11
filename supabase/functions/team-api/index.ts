@@ -64,26 +64,97 @@ async function sharePersonalRecords(admin: any, practiceId: string, userId: stri
   await admin.from('attachments').update({ practice_id: practiceId }).eq('created_by', userId).is('practice_id', null);
 }
 
+// ---- Join invitations for EXISTING accounts --------------------------------
+// Adding an email that already has an account must never move that person
+// (or their records) into a practice without their consent. Instead they
+// get a signed link; nothing changes until they sign in and accept.
+
+const INVITE_TTL_MS = 14 * 24 * 60 * 60 * 1000;
+const b64url = (bytes: Uint8Array) =>
+  btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const fromB64url = (s: string) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+
+async function hmacKey(): Promise<CryptoKey> {
+  const secret = Deno.env.get('INVITE_SIGNING_SECRET') ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+}
+async function signInvite(practiceId: string, userId: string): Promise<string> {
+  const payload = b64url(new TextEncoder().encode(JSON.stringify({ p: practiceId, u: userId, e: Date.now() + INVITE_TTL_MS })));
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', await hmacKey(), new TextEncoder().encode(payload)));
+  return `${payload}.${b64url(sig)}`;
+}
+async function verifyInvite(token: string): Promise<{ p: string; u: string; e: number } | null> {
+  const [payload, sig] = token.split('.');
+  if (!payload || !sig) return null;
+  try {
+    const ok = await crypto.subtle.verify('HMAC', await hmacKey(), fromB64url(sig), new TextEncoder().encode(payload));
+    if (!ok) return null;
+    const data = JSON.parse(new TextDecoder().decode(fromB64url(payload)));
+    return typeof data?.p === 'string' && typeof data?.u === 'string' && typeof data?.e === 'number' ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Only send people back to our own app (no open redirects in emails). */
+function safeAppUrl(redirectTo?: string): string {
+  const fallback = 'https://toothops.app/';
+  if (!redirectTo) return fallback;
+  try {
+    const u = new URL(redirectTo);
+    const okHost = u.hostname === 'toothops.app' || u.hostname === 'localhost' || u.hostname === '127.0.0.1' ||
+      /^vibing-dental[a-z0-9-]*\.vercel\.app$/.test(u.hostname);
+    return okHost ? `${u.origin}${u.pathname}` : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// deno-lint-ignore no-explicit-any
+async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string) {
+  const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
+  if (!key) return;
+  const name = practiceName || 'a practice';
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: INVITE_FROM,
+      to: [email],
+      subject: `Join ${name} on ToothOps?`,
+      text:
+        `You've been invited to join ${name} on ToothOps.\n\n` +
+        `Sign in and accept here (the link works for 14 days):\n${link}\n\n` +
+        `Nothing changes until you accept. If you weren't expecting this, ignore this email.`,
+    }),
+  }).catch(() => {});
+}
+
 // deno-lint-ignore no-explicit-any
 async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo?: string) {
   const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   let target = list.users.find((u: { email?: string }) => (u.email ?? '').toLowerCase() === email);
   let invited = false;
-  if (!target) {
-    const inv = await inviteViaResend(admin, email, practiceName, redirectTo);
+  if (target) {
+    // Existing account: ask, don't add.
+    const { data: existing } = await admin.from('practice_members').select('user_id')
+      .eq('practice_id', practiceId).eq('user_id', target.id).maybeSingle();
+    if (existing) return { status: 400, body: { error: 'They’re already a member of this practice.' } };
+    const token = await signInvite(practiceId, target.id);
+    await sendJoinRequest(admin, email, practiceName, `${safeAppUrl(redirectTo)}#/join/${token}`);
+    return { status: 200, body: { ok: true, invited: false, pending: true } };
+  }
+  {
+    const inv = await inviteViaResend(admin, email, practiceName, safeAppUrl(redirectTo));
     if (inv.error || !inv.user) return { status: 502, body: { error: `Couldn't send the invite: ${inv.error ?? 'unknown error'}` } };
     target = inv.user;
     invited = true;
   }
+  // Brand-new account created by this invite: it has no records of its
+  // own yet, so joining directly is safe.
   await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: target.id, role: 'member' });
-  if (invited) {
-    await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
-    await admin.from('practices').delete().eq('owner', target.id).neq('id', practiceId);
-  } else {
-    const { data: prof } = await admin.from('profiles').select('practice_id').eq('id', target.id).maybeSingle();
-    if (!prof?.practice_id) await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
-  }
-  await sharePersonalRecords(admin, practiceId, target.id);
+  await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
+  await admin.from('practices').delete().eq('owner', target.id).neq('id', practiceId);
   return { status: 200, body: { ok: true, invited } };
 }
 
@@ -167,6 +238,25 @@ Deno.serve(async (req: Request) => {
         await admin.from('profiles').upsert({ id: caller.id, practice_id: prac.id });
         await sharePersonalRecords(admin, prac.id, caller.id);
         return json({ practice: prac });
+      }
+
+      // An existing account accepting a join link (see signInvite).
+      case 'accept_invite': {
+        const token = typeof body.token === 'string' ? body.token : '';
+        const inv = token ? await verifyInvite(token) : null;
+        if (!inv) return json({ error: 'This invite link isn’t valid. Ask the practice to send a new one.' }, 400);
+        if (inv.u !== caller.id) return json({ error: 'This invite was sent to a different account. Sign in with the invited email.' }, 403);
+        if (Date.now() > inv.e) return json({ error: 'This invite has expired. Ask the practice to send a new one.' }, 410);
+        const { data: prac } = await admin.from('practices').select('id, name').eq('id', inv.p).maybeSingle();
+        if (!prac) return json({ error: 'That practice no longer exists.' }, 404);
+        const { data: already } = await admin.from('practice_members').select('user_id')
+          .eq('practice_id', inv.p).eq('user_id', caller.id).maybeSingle();
+        if (body.preview === true) return json({ practiceName: prac.name ?? '', alreadyMember: !!already });
+        await admin.from('practice_members').upsert({ practice_id: inv.p, user_id: caller.id, role: 'member' });
+        await admin.from('profiles').upsert({ id: caller.id, practice_id: inv.p });
+        // Sharing their existing charts is a separate, explicit choice.
+        if (body.shareExisting === true) await sharePersonalRecords(admin, inv.p, caller.id);
+        return json({ ok: true, practiceName: prac.name ?? '' });
       }
 
       case 'add_member': {

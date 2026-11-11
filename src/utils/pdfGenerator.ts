@@ -1,4 +1,5 @@
 import { PDFDocument, PDFHexString } from 'pdf-lib';
+import { safeFont } from './pdf/safeFont';
 import download from 'downloadjs';
 import {
   ToothData,
@@ -136,8 +137,10 @@ export async function buildDentalChartPDFBytes(
   const form  = pdfDoc.getForm();
 
   const fontIds = FONT_MAP[ACTIVE.fontFamilyKey];
-  const regular = await pdfDoc.embedFont(fontIds.regular);
-  const bold    = await pdfDoc.embedFont(fontIds.bold);
+  // Safe fonts: unsupported characters (emoji, arrows…) are replaced or
+  // dropped instead of failing the whole PDF.
+  const regular = safeFont(await pdfDoc.embedFont(fontIds.regular));
+  const bold    = safeFont(await pdfDoc.embedFont(fontIds.bold));
 
   const generatedAt = formatGeneratedAt(new Date());
 

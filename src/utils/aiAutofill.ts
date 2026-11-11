@@ -1075,6 +1075,16 @@ export function codeOnlyComment(text: string): string {
   return text.trim();
 }
 
+// Whitelists mirroring the tool schemas: a hallucinated key must never
+// reach chart state (e.g. field "exam" would replace an object with a
+// string and corrupt the saved chart).
+const EXAM_AREAS = new Set(['extraoral', 'lymph', 'buccal', 'tongue', 'palate', 'pharynx']);
+const NERVE_SITES = new Set([
+  'infraorbitalRight', 'infraorbitalLeft', 'inferiorAlveolarRight', 'inferiorAlveolarLeft',
+  'mentalRight', 'mentalLeft', 'other',
+]);
+const PATIENT_FIELDS = new Set(['patientName', 'patientNumber', 'doctor', 'tech', 'complaint']);
+
 function applyOne(action: AiAction, h: ChartHandlers): boolean {
   const { name, input } = action;
   const s = (k: string): string => String(input[k] ?? '');
@@ -1116,6 +1126,7 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
       return true;
     }
     case 'set_exam_finding': {
+      if (!EXAM_AREAS.has(s('area')) || !['normal', 'abnormal'].includes(s('status'))) return false;
       h.setExamFinding(
         s('area') as keyof ExamFindings,
         s('status') as ExamFinding,
@@ -1124,6 +1135,7 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
       return true;
     }
     case 'set_nerve_block': {
+      if (!NERVE_SITES.has(s('site'))) return false;
       h.setNerveBlock(s('site') as keyof NerveBlocks, s('mL'));
       return true;
     }
@@ -1132,6 +1144,7 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
       return true;
     }
     case 'set_patient_field': {
+      if (!PATIENT_FIELDS.has(s('field'))) return false;
       h.setPatientField(s('field') as keyof PatientInfo, s('value'));
       return true;
     }

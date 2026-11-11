@@ -33,7 +33,9 @@ export const CHART_SECTION_IDS = [
 ] as const;
 
 export interface HashRoute {
-  view: 'chart' | 'library' | 'home';
+  view: 'chart' | 'library' | 'home' | 'join';
+  /** Present on #/join/:token (an invite to join a practice). */
+  joinToken?: string;
   /** Present on #/chart/:id links. */
   chartId?: string;
   /** Present when the hash names a chart section. */
@@ -48,6 +50,8 @@ function parse(): HashRoute {
   const h = window.location.hash;
   if (h === '#/library') return { view: 'library' };
   if (h === '#/home') return { view: 'home' };
+  const join = h.match(/^#\/join\/([A-Za-z0-9_.-]+)$/);
+  if (join) return { view: 'join', joinToken: join[1] };
   const m = h.match(/^#\/chart(?:\/([A-Za-z0-9-]+))?(?:\/([A-Za-z0-9-]+))?\/?$/);
   if (m) {
     const [, first, second] = m;
