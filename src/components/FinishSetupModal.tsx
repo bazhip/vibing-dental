@@ -10,7 +10,8 @@ import './AccountSurfaces.css';
 /**
  * Google sign-up skips the signup form, so a new Google account starts
  * with no practice or doctor name — both print on every chart. This asks
- * for them once (doctor name pre-filled from the Google profile).
+ * for them once (doctor name pre-filled from the Google profile), plus an
+ * optional logo — the same one email sign-up offers.
  *
  * Only for accounts signed in with Google that are missing a name; team
  * members get the practice name from their practice, so they're asked
@@ -64,6 +65,17 @@ export const FinishSetupModal: React.FC<{
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const modalRef = useModalFocus(true);
+  // Optional logo — offered alongside the practice name (a solo account's
+  // own logo), never to team members, whose logo belongs to the practice.
+  const offerLogo = need.practice && !profile.logoUrl;
+  const [logoFile, setLogoFile] = React.useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = React.useState('');
+  React.useEffect(() => {
+    if (!logoFile) { setLogoPreview(''); return; }
+    const url = URL.createObjectURL(logoFile);
+    setLogoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [logoFile]);
 
   const later = () => {
     writeString(`setup.dismissed.${need.userId}`, 1, '1');
@@ -83,6 +95,17 @@ export const FinishSetupModal: React.FC<{
         practiceName: need.practice ? practiceName.trim() : profile.practiceName,
         doctorName: need.doctor ? doctorName.trim() : profile.doctorName,
       });
+      // The names are saved either way; a logo that won't upload can be
+      // added later from Practice settings.
+      if (offerLogo && logoFile) {
+        try {
+          await profile.uploadLogo(logoFile);
+        } catch (err) {
+          toast(friendlyError(err, 'Your names are saved, but the logo couldn’t be uploaded — add it later in Practice settings.'), { kind: 'error' });
+          onDone();
+          return;
+        }
+      }
       toast('You’re all set.', { kind: 'success' });
       onDone();
     } catch (err) {
@@ -128,6 +151,22 @@ export const FinishSetupModal: React.FC<{
                 onChange={(e) => setDoctorName(e.target.value)}
               />
             </label>
+          )}
+          {offerLogo && (
+            <div className="finish-setup__logo">
+              {logoPreview && <img src={logoPreview} alt="" className="finish-setup__logo-preview" />}
+              <label className="login-logo-field">
+                <span>{logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}</span>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label="Practice logo (optional)"
+                  disabled={busy}
+                  onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+              <span className="patient-form__hint">Printed at the top of your charts. PNG, JPG or WebP.</span>
+            </div>
           )}
           {error && <div className="login-error settings-msg" role="alert">{error}</div>}
           <div className="practice-logo-actions" style={{ marginTop: '0.9rem' }}>
