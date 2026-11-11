@@ -1,5 +1,11 @@
 import React from 'react';
-import { localDateISO } from '../utils/localDate';
+import { localDateISO, parseLocalDate } from '../utils/localDate';
+
+/** "Nov 11, 2026" — the same style as the Updated column. */
+function formatChartDate(iso: string): string {
+  const d = parseLocalDate(iso);
+  return d ? d.toLocaleDateString(undefined, { dateStyle: 'medium' }) : iso;
+}
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -292,7 +298,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
 
   const handleDelete = async (c: CloudChartMeta) => {
     const name = c.patient_name.trim() || 'this chart';
-    const dateLabel = c.chart_date ? ` (${c.chart_date})` : '';
+    const dateLabel = c.chart_date ? ` (${formatChartDate(c.chart_date)})` : '';
     if (!(await confirmDialog({
       title: `Delete ${name}${dateLabel}?`,
       message: 'This visit is removed from the cloud for everyone in your practice. This can’t be undone.',
@@ -343,7 +349,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
             : 'chart-library__cell chart-library__cell--recall'
         }
       >
-        {recall}
+        {formatChartDate(recall)}
         {overdue ? ' · overdue' : due ? ' · today' : ''}
       </span>
     );
@@ -585,7 +591,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               title={`Open the ${v.chart_date || 'undated'} visit`}
                             >
                               <span role="cell" className="chart-library__visit-date">
-                                {v.chart_date || 'Undated visit'}
+                                {v.chart_date ? formatChartDate(v.chart_date) : 'Undated visit'}
                               </span>
                               <span role="cell" className="chart-library__cell">
                                 {showDoctors && doctorById.get(v.created_by) && (

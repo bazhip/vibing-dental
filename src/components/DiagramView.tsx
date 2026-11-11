@@ -1,4 +1,7 @@
 import React from 'react';
+
+/** Shortcut hints match the platform (⌘ on Apple devices, Ctrl elsewhere). */
+const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
 import { Species, ToothMarks, DiagramComment, DiagramStroke } from '../types';
 import { ToothDiagram, ToothDiagramHandle, DiagramTool, MarkMode, CommentExport } from './ToothDiagram';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -165,7 +168,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={() => setTool('comment')}
               aria-pressed={tool === 'comment'}
             >
-              💬 Comment
+              Comment
             </button>
             <button
               type="button"
@@ -173,7 +176,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={() => setTool('draw')}
               aria-pressed={tool === 'draw'}
             >
-              ✏️ Draw
+              Draw
             </button>
           </div>
 
@@ -188,7 +191,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={history.undo}
               disabled={!history.canUndo}
               aria-label="Undo"
-              title="Undo (⌘Z)"
+              title={`Undo (${IS_MAC ? "⌘Z" : "Ctrl+Z"})`}
             >
               ↶
             </button>
@@ -198,7 +201,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={history.redo}
               disabled={!history.canRedo}
               aria-label="Redo"
-              title="Redo (⌘⇧Z)"
+              title={`Redo (${IS_MAC ? "⌘⇧Z" : "Ctrl+Y"})`}
             >
               ↷
             </button>

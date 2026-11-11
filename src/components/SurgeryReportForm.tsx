@@ -54,7 +54,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   return (
     <div className="patient-form">
       <div className="patient-form__header surgery-report__header">
-        <h2 className="patient-form__section-title">Treatment &amp; Surgery Report</h2>
+        <h2 className="patient-form__section-title">Treatment report</h2>
         {templatesOn && (
           <div className="surgery-report__template-bar">
             <select
@@ -101,7 +101,8 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
       </div>
       <textarea
         className="patient-form__textarea surgery-report__textarea"
-        placeholder="Treatment and surgery details..."
+        aria-label="Treatment report"
+        placeholder="Treatment and surgery details…"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />

@@ -56,7 +56,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     return (
       <div className="patient-form">
         <div className="patient-form__header">
-          <h2 className="patient-form__section-title">Images &amp; Radiographs</h2>
+          <h2 className="patient-form__section-title">Images</h2>
         </div>
         <p className="practice-logo-empty">
           Sign in with a practice account to attach intraoral photos and
@@ -103,7 +103,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   return (
     <div className="patient-form">
       <div className="patient-form__header">
-        <h2 className="patient-form__section-title">Images &amp; Radiographs</h2>
+        <h2 className="patient-form__section-title">Images</h2>
         {store.loaded && store.maxImages > 0 && (
           <span className="patient-form__hint">
             {store.items.length} of {store.maxImages} images

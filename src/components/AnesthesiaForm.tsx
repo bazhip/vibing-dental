@@ -118,6 +118,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               <textarea
                 ref={otherRef}
                 className="patient-form__input anesthesia-table__other"
+                aria-label="Other nerve blocks"
                 rows={3}
                 value={nerveBlocks.other}
                 onChange={handleChange('other')}

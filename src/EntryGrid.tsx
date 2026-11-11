@@ -756,7 +756,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               key={`pre-${chart.chartSession}`}
               ref={preDiagramRef}
               readOnly={readOnly}
-              title="Diagnosis Diagram"
+              title="Diagnosis"
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -787,7 +787,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               key={`post-${chart.chartSession}`}
               ref={postDiagramRef}
               readOnly={readOnly}
-              title="Procedure Diagram"
+              title="Procedure"
               species={chart.species}
               toothMarks={chart.effectivePostMarks}
               onToothMarksChange={chart.handlePostMarksChange}
@@ -827,7 +827,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'treatment',
-      label: 'Treatment Report',
+      label: 'Treatment report',
       content: lock(
         <SurgeryReportForm
           value={chart.patientInfo.treatmentReport}
@@ -1044,10 +1044,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <button
               type="button"
               className="chart-menu__trigger topbar-library-btn"
+              data-tour="library"
+              aria-label="My charts"
               onClick={openLibrary}
               aria-haspopup="dialog"
             >
-              My charts
+              <span className="topbar-label-long">My charts</span>
+              <span className="topbar-label-short">Charts</span>
             </button>
           )}
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
@@ -1063,6 +1066,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               locked={readOnly}
             />
           )}
+          <span data-tour="settings" className="topbar-tour-anchor">
           <ChartMenu
             onOpenWalkthrough={() => setWalkthroughOpen(true)}
             onGoHome={onGoHome}
@@ -1082,6 +1086,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : undefined
             }
           />
+          </span>
         </div>
       </header>
 
@@ -1325,15 +1330,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       )}
 
+      {/* Compact feedback link — the email it opens pre-fills the useful
+          details (what happened, section, browser). */}
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
-          Found a bug or have an idea? Email{' '}
-          <a href={FEEDBACK_MAILTO}>bazhip@gmail.com</a>
-        </span>
-        <span className="entry-grid__footnote-hint">
-          Please include what you were doing, what you expected, what actually
-          happened, the species/tooth or section involved, and your browser —
-          a screenshot helps a lot. The email link pre-fills these prompts.
+          Found a bug or have an idea? <a href={FEEDBACK_MAILTO}>Send feedback</a>
         </span>
       </footer>
     </div>

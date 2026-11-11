@@ -1,4 +1,5 @@
 import React from 'react';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 interface WalkthroughModalProps {
   open: boolean;
@@ -75,7 +76,7 @@ function buildSteps(aiEnabled?: boolean): Step[] {
       body: 'Write the report, or insert a saved template from the dropdown — and save new ones to reuse.',
     },
     {
-      target: '.topbar-library-btn',
+      target: '[data-tour="library"]',
       placement: 'bottom',
       title: 'My charts',
       body: 'Reopen a patient’s past visits (read-only until you Edit), switch visits by date, start a new patient, or load a chart PDF.',
@@ -91,7 +92,7 @@ function buildSteps(aiEnabled?: boolean): Step[] {
   }
   steps.push(
     {
-      target: '.chart-menu__trigger',
+      target: '[data-tour="settings"] .chart-menu__trigger',
       placement: 'bottom',
       title: 'Settings',
       body: 'Practice name & logo, team, recheck-reminder templates, your account — and this tour.',
@@ -117,6 +118,14 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
 
   React.useEffect(() => { if (open) setI(0); }, [open]);
 
+  // Keyboard users land on the primary button each step (and Tab stays
+  // inside the tour via the shared focus trap).
+  const popRef = useModalFocus<HTMLDivElement>(open);
+  const nextRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    if (open) window.setTimeout(() => nextRef.current?.focus(), 0);
+  }, [open, i]);
+
   const step = steps[i];
 
   // Switch section, then measure the target (after it renders + scrolls in).
@@ -127,9 +136,14 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
     const measure = () => {
       if (!step.target) { setRect(null); return; }
       const el = document.querySelector(step.target) as HTMLElement | null;
-      if (!el) { setRect(null); return; }
+      // Missing or hidden target (e.g. the section rail on phones): show
+      // the step centred rather than spotlighting an empty corner.
+      if (!el || el.getClientRects().length === 0) { setRect(null); return; }
       el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' });
-      raf2 = requestAnimationFrame(() => setRect(el.getBoundingClientRect()));
+      raf2 = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        setRect(r.width > 0 && r.height > 0 ? r : null);
+      });
     };
     // Let the section switch/scroll settle before measuring.
     to = window.setTimeout(() => { raf1 = requestAnimationFrame(measure); }, step.section ? 90 : 0);
@@ -198,7 +212,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
         <div className="tour__dim" onClick={onClose} />
       )}
 
-      <div className="tour__pop" style={popStyle}>
+      <div className="tour__pop" style={popStyle} ref={popRef} tabIndex={-1}>
         <div className="tour__eyebrow">{i + 1} of {steps.length}</div>
         <h3 className="tour__title">{step.title}</h3>
         <p className="tour__body">{step.body}</p>
@@ -210,6 +224,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
             <button type="button" className="tour__skip" onClick={onClose}>Skip</button>
             {i > 0 && <button type="button" className="diagram-view__action" onClick={() => setI((n) => n - 1)}>Back</button>}
             <button
+              ref={nextRef}
               type="button"
               className="entry-grid__button entry-grid__button--topbar"
               onClick={() => (last ? onClose() : setI((n) => n + 1))}

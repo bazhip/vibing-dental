@@ -39,9 +39,24 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     if (activeId !== undefined) setInternal(activeId);
   }, [activeId]);
   const active = activeId ?? internal;
+  const mainRef = React.useRef<HTMLElement>(null);
   const choose = (id: string) => {
     setInternal(id);
     onActiveChange?.(id);
+    // A user-chosen section starts at its top with focus on its heading
+    // (not wherever the previous section was scrolled to).
+    window.requestAnimationFrame(() => {
+      const main = mainRef.current;
+      if (!main) return;
+      const panel = main.querySelector<HTMLElement>(`[data-section-id="${id}"]`);
+      const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height')) || 72) - 12;
+      if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top) });
+      const heading = panel?.querySelector<HTMLElement>('h2');
+      if (heading) {
+        if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+      }
+    });
   };
   return (
     <div className="sidebar-layout">
@@ -62,11 +77,12 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
           </button>
         ))}
       </nav>
-      <main className="sidebar-layout__main">
+      <main className="sidebar-layout__main" ref={mainRef}>
         {sections.map((s) => (
           <div
             key={s.id}
             className="sidebar-layout__panel"
+            data-section-id={s.id}
             style={s.id === active ? undefined : { display: 'none' }}
           >
             {/* Read-only locking happens per section in EntryGrid (each

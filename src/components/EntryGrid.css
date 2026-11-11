@@ -185,6 +185,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  /* Never overflow off-screen on phones — wrap to a second row instead. */
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 0.35rem;
+  min-width: 0;
+}
+.topbar-label-short { display: none; }
+@media (max-width: 600px) {
+  .topbar-label-long { display: none; }
+  .topbar-label-short { display: inline; }
 }
 
 /* Voice-input mic button + status. Lives in the topbar, theme-aware via
@@ -980,9 +990,12 @@
 /* Previous visit's value shown in an empty cell — visibly "not this
    visit's data": muted and italic, with the detail in the tooltip. */
 .dental-grid__prior-hint {
-  color: var(--text-muted, #55677a);
+  /* Readable (AA) but clearly a hint, not entered data: italic, muted,
+     with a dotted underline. */
+  color: #64748b;
   font-style: italic;
-  opacity: 0.65;
+  text-decoration: underline dotted rgba(100, 116, 139, 0.6);
+  text-underline-offset: 3px;
 }
 
 /* "prev" chip beside the Missing checkbox — this tooth was already gone
@@ -3155,3 +3168,40 @@ button.save-status--manual:hover {
 .diagram-view__toolbar--readonly .diagram-view__history,
 .diagram-view__toolbar--readonly .diagram-view__free-comment,
 .diagram-view__toolbar--readonly .diagram-view__draw-controls { display: none; }
+
+/* Tour anchor around the Settings menu — layout-neutral. */
+.topbar-tour-anchor { display: inline-flex; }
+
+/* Cards mirrored from the Charting grid: regenerated from the grid, so
+   they read as read-only rather than inviting edits that get replaced. */
+.diagram-comment--mirrored { border-style: dashed; }
+.diagram-comment--mirrored textarea { pointer-events: none; }
+.diagram-comment--mirrored .diagram-comment__delete,
+.diagram-comment--mirrored .diagram-comment__resize { display: none; }
+.diagram-comment__badge {
+  margin-left: 0.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--surface-sunken, #eef2f6);
+  color: var(--text-muted, #64748b);
+  font-size: 0.68em;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* Bigger ⋯ "set all" target for fingers. */
+@media (pointer: coarse) {
+  .dental-grid__set-all { width: 28px; height: 28px; font-size: 0.9rem; }
+}
+
+@media (max-width: 600px) {
+  /* Phones: identity gets its own full-width row; actions sit below it,
+     so the patient's name is never squeezed out by buttons. */
+  .entry-grid__topbar { flex-wrap: wrap; row-gap: 0.4rem; }
+  .entry-grid__topbar-lead { flex: 1 1 100%; }
+  .entry-grid__topbar-actions { flex: 1 1 100%; justify-content: flex-end; }
+  /* The exam table scrolls sideways rather than overflowing the card. */
+  .exam-table { display: block; overflow-x: auto; }
+}
+/* Header actions (e.g. "Mark the rest normal") sit at the right edge. */
+.dental-grid__section-header > .diagram-view__action { margin-left: auto; }

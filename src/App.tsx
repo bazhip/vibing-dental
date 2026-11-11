@@ -7,6 +7,7 @@ import { supabase, cloudEnabled } from './utils/supabaseClient';
 import { clearChartStorage } from './hooks/useChartState';
 import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
 import { confirmDialog } from './components/ui/dialogs';
+import { AppLoading } from './components/AppLoading';
 import { JoinPracticeModal } from './components/JoinPracticeModal';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { useHashRoute } from './hooks/useHashRoute';
@@ -234,12 +235,12 @@ const App: React.FC = () => {
   }, [isAuthenticated]);
 
   if (!sessionChecked) {
-    return null;
+    return <AppLoading />;
   }
 
   if (recovering || invited) {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<AppLoading />}>
         <ResetPassword
           mode={invited ? 'invite' : 'recovery'}
           onDone={() => {
@@ -253,7 +254,7 @@ const App: React.FC = () => {
 
   if (showHome && (isAuthenticated || trialMode)) {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<AppLoading />}>
         <Landing
           onAuthenticate={() => {
             removeKey(TRIAL_KEY, 1);
@@ -270,7 +271,7 @@ const App: React.FC = () => {
   if (!isAuthenticated && trialMode) {
     return (
       <div className="App">
-        <Suspense fallback={null}>
+        <Suspense fallback={<AppLoading />}>
           <EntryGrid
             trial
             onRequestAccount={(mode) => endTrial(mode)}
@@ -283,7 +284,7 @@ const App: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<AppLoading />}>
         <Landing
           onAuthenticate={() => {
             removeKey(TRIAL_KEY, 1);
@@ -301,7 +302,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Suspense fallback={null}>
+      <Suspense fallback={<AppLoading />}>
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
         <BillingGate>

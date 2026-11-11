@@ -98,7 +98,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">
-          {kind ? `${TITLES[kind]} Reference` : 'Code Reference'}
+          {kind ? `${kind === 'diagnosis' ? 'Diagnosis' : 'Procedure'} codes` : 'Codes'}
         </h2>
       </div>
 
@@ -106,6 +106,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
         <input
           type="text"
           className="code-ref__search"
+          aria-label="Search codes or definitions"
           placeholder="Search codes or definitions…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

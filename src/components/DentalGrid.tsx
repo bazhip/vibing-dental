@@ -347,6 +347,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       name,
       width: index === CODE_COLUMNS.length - 1 ? lastColumnWidth : px(share),
       renderEditCell: readOnly ? undefined : CodeCellEditor,
+      // Teeth marked missing have nothing to measure.
+      editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
       renderCell: ({ row }) => {
         const value = typeof row[key] === 'string' ? (row[key] as string) : '';
         const prior = priorToothData?.[row.triadan]?.[key];
@@ -386,7 +388,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Dental Chart</h2>
+        <h2 className="dental-grid__title">Charting</h2>
         {onMirrorToDiagnosisChange && (
           <div className="dental-grid__options">
             <label

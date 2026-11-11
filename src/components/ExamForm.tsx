@@ -12,10 +12,21 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   onStatusChange,
   onCommentChange,
 }) => {
+  const unanswered = EXAM_ITEMS.filter(({ key }) => !exam[key].status);
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Oral Exam &mdash; Normal / Abnormal</h2>
+        <h2 className="dental-grid__title">Exam</h2>
+        {unanswered.length > 0 && (
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={() => unanswered.forEach(({ key }) => onStatusChange(key, 'normal'))}
+            title="Mark every area you haven't answered as normal"
+          >
+            Mark {unanswered.length === EXAM_ITEMS.length ? 'all' : 'the rest'} normal
+          </button>
+        )}
       </div>
 
       <table className="exam-table">
@@ -24,7 +35,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
             <th></th>
             <th>Normal</th>
             <th>Abnormal</th>
-            <th className="exam-table__comment-col">Comment (if abnormal)</th>
+            <th className="exam-table__comment-col">Comment</th>
           </tr>
         </thead>
         <tbody>
@@ -47,6 +58,8 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       name={groupName}
                       checked={item.status === 'normal'}
                       onChange={() => onStatusChange(key, 'normal')}
+                      // Tapping the selected answer again clears it.
+                      onClick={() => { if (item.status === 'normal') onStatusChange(key, ''); }}
                       aria-label={`${label}: normal`}
                     />
                   </label>
@@ -58,6 +71,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       name={groupName}
                       checked={item.status === 'abnormal'}
                       onChange={() => onStatusChange(key, 'abnormal')}
+                      onClick={() => { if (item.status === 'abnormal') onStatusChange(key, ''); }}
                       aria-label={`${label}: abnormal`}
                     />
                   </label>
@@ -67,6 +81,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                     <input
                       type="text"
                       className="patient-form__input exam-table__comment"
+                      aria-label={`${label}: comment`}
                       placeholder={`Describe abnormal ${label.toLowerCase()}…`}
                       value={item.comment}
                       onChange={(e) => onCommentChange(key, e.target.value)}

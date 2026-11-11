@@ -1115,7 +1115,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       {positionedComments.map(({ comment, x, y, w, h, anchor }) => (
         <div
           key={comment.id}
-          className={`diagram-comment${anchor ? '' : ' diagram-comment--unanchored'}`}
+          className={`diagram-comment${anchor ? '' : ' diagram-comment--unanchored'}${isGridComment(comment) ? ' diagram-comment--mirrored' : ''}`}
+          title={isGridComment(comment) ? 'From the Charting grid — edit the grid to change this' : undefined}
           data-comment-id={comment.id}
           style={toOverlayPct(x, y, w, h)}
           // For free comments (no header), the whole shell acts as the
@@ -1148,6 +1149,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
             >
               <span className="diagram-comment__label">{anchor.label}</span>
+              {isGridComment(comment) && <span className="diagram-comment__badge">Charting</span>}
               <button
                 type="button"
                 className="diagram-comment__delete"
@@ -1175,6 +1177,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
             className="diagram-comment__text"
             placeholder="Notes..."
             value={comment.text}
+            readOnly={readOnly || isGridComment(comment)}
             onChange={(text) => handleCommentEdit(comment.id, text)}
             data-comment-id={comment.id}
           />

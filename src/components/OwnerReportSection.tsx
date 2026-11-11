@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from './ui/dialogs';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
@@ -67,7 +68,20 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
       <span className="owner-report__block-head">
         {label}
         {onReset && edited && (
-          <button type="button" className="diagram-view__action owner-report__reset" onClick={onReset}>
+          <button
+            type="button"
+            className="diagram-view__action owner-report__reset"
+            onClick={() => {
+              // Undoable rather than a blocking confirm: reset, then offer
+              // the wording back for a few seconds.
+              const previous = value;
+              onReset();
+              toast(`${label} reset to the generated text.`, {
+                kind: 'success',
+                action: { label: 'Undo', onClick: () => onChange(previous) },
+              });
+            }}
+          >
             Reset to generated
           </button>
         )}
