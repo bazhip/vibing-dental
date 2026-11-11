@@ -85,7 +85,11 @@ export interface PositionedComment {
 export function layoutComments(
   comments: DiagramComment[],
   diagram: SpeciesDiagram,
-  bboxByTriadan: Map<number, ToothBBox>
+  bboxByTriadan: Map<number, ToothBBox>,
+  /** Use each comment's width/height as-is (the PDF export, which has
+   *  already fitted them to its font) instead of growing heights by the
+   *  on-screen estimate. */
+  opts: { exactSizes?: boolean } = {}
 ): PositionedComment[] {
   const placed: PositionedComment[] = [];
   const leftStack: PositionedComment[] = [];
@@ -113,7 +117,9 @@ export function layoutComments(
     // or undersized values written by older versions) still win when
     // LARGER, but a box that would hide its own text grows to fit —
     // on screen and in the PDF export, which reads these same boxes.
-    const h = Math.max(c.height ?? 0, autoCommentHeight(c.text, w, !!anchor));
+    const h = opts.exactSizes && c.height != null
+      ? c.height
+      : Math.max(c.height ?? 0, autoCommentHeight(c.text, w, !!anchor));
 
     if (typeof c.x === 'number' && typeof c.y === 'number') {
       // User-positioned (free comments always have x/y; anchored comments

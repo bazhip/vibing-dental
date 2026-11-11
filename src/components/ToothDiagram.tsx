@@ -17,6 +17,7 @@ import {
   COMMENT_H,
   type ToothBBox,
 } from './toothDiagram/layoutComments';
+import { fitCommentForExport } from '../utils/svgToPng';
 import {
   loadParsedDiagram,
   type ParsedDiagram,
@@ -420,8 +421,19 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     ref,
     () => ({
       getSvgElement: () => svgRef.current,
-      getCommentExports: () =>
-        positionedComments.map((p) => ({
+      getCommentExports: () => {
+        // Re-fit every card to the PDF's font (on-screen sizes come from
+        // the browser font at the current zoom), then lay them out again
+        // so the gutter stacks pack and align around the PDF sizes.
+        // Hand-dragged cards keep their position.
+        const gutterMax = sidePad - 2 * 6;
+        const fitted = comments.map((c) => {
+          const tooth = c.anchorTriadan != null ? diagram.teeth.find((t) => t.triadan === c.anchorTriadan) : undefined;
+          const label = tooth ? `${tooth.label} (${tooth.triadan})` : '';
+          const { w, h } = fitCommentForExport(c.text, label, tooth ? gutterMax : Math.max(gutterMax, c.width ?? COMMENT_W));
+          return { ...c, width: w, height: h };
+        });
+        return layoutComments(fitted, diagram, bboxByTriadan, { exactSizes: true }).map((p) => ({
           id: p.comment.id,
           x: p.x,
           y: p.y,
@@ -429,7 +441,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           h: p.h,
           label: p.anchor ? p.anchor.label : '',
           text: p.comment.text,
-        })),
+        }));
+      },
       getViewBox: () => ({
         x: viewBoxX,
         y: viewBoxY,
@@ -437,7 +450,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
         h: viewBoxHeight,
       }),
     }),
-    [positionedComments, viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight]
+    [positionedComments, comments, diagram, bboxByTriadan, sidePad, viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight]
   );
 
   const handleToothClick = (triadan: number, e: React.SyntheticEvent) => {

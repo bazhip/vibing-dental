@@ -41,8 +41,23 @@ const COMMENT_LINE_HEIGHT = 22;
 const COMMENT_PADDING = 8;
 const COMMENT_LABEL_HEIGHT = 22;
 
-function approxTextWidth(text: string, fontSize: number): number {
-  // Rough average: ~0.55em per char for sans-serif. Good enough for wrapping.
+let measureCtx: CanvasRenderingContext2D | null | undefined;
+/** Width of `text` in the export's font, in diagram units (the export
+ *  draws at 1 unit = 1 px of font). Uses canvas text metrics so wrapping
+ *  and box sizing agree with what the rasterizer draws; falls back to a
+ *  ~0.55em/char estimate where canvas isn't available (tests). */
+function textWidth(text: string, fontSize: number, weight: 400 | 600 = 400): number {
+  if (measureCtx === undefined) {
+    try {
+      measureCtx = typeof document !== 'undefined' ? document.createElement('canvas').getContext('2d') : null;
+    } catch {
+      measureCtx = null;
+    }
+  }
+  if (measureCtx) {
+    measureCtx.font = `${weight} ${fontSize}px sans-serif`;
+    return measureCtx.measureText(text).width;
+  }
   return text.length * fontSize * 0.55;
 }
 
@@ -54,7 +69,7 @@ function wrapText(text: string, maxWidth: number, fontSize: number): string[] {
     let current = '';
     for (const word of words) {
       const candidate = current ? `${current} ${word}` : word;
-      if (approxTextWidth(candidate, fontSize) > maxWidth && current) {
+      if (textWidth(candidate, fontSize) > maxWidth && current) {
         lines.push(current);
         current = word;
       } else {
@@ -64,6 +79,29 @@ function wrapText(text: string, maxWidth: number, fontSize: number): string[] {
     if (current) lines.push(current);
   }
   return lines;
+}
+
+/**
+ * Box that fits a comment card in the exported PDF: as narrow as its
+ * longest line (and its tooth label) allow, capped at `maxW`, and tall
+ * enough for every wrapped line. Computed with the export's own font —
+ * on screen the cards are fitted to the browser's font at the current
+ * zoom, which doesn't carry over to the PDF.
+ */
+export function fitCommentForExport(
+  text: string,
+  label: string,
+  maxW: number,
+  minW = 70
+): { w: number; h: number } {
+  const pad = COMMENT_PADDING * 2;
+  const labelW = label ? textWidth(label, COMMENT_FONT_SIZE, 600) + 28 : 0; // room for the ✕ on screen
+  let longest = 0;
+  for (const line of (text || '').split('\n')) longest = Math.max(longest, textWidth(line, COMMENT_FONT_SIZE));
+  const w = Math.min(maxW, Math.max(minW, Math.ceil(Math.max(longest, labelW) + pad + 2)));
+  const lines = text.trim() ? wrapText(text, w - pad, COMMENT_FONT_SIZE).length : 1;
+  const h = pad + (label ? COMMENT_LABEL_HEIGHT : 0) + lines * COMMENT_LINE_HEIGHT + 2;
+  return { w, h };
 }
 
 function appendCommentSvg(svg: SVGSVGElement, c: CommentForExport, colors: CommentColors): void {

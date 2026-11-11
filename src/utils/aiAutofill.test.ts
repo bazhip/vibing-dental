@@ -1,4 +1,4 @@
-import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText } from './aiAutofill';
+import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText, codeOnlyComment } from './aiAutofill';
 
 describe('normalizeTranscript', () => {
   it('collapses spelled-out triadan numbers', () => {
@@ -112,5 +112,18 @@ describe('run-together Deepgram output', () => {
   });
   it('keeps codes joined to tooth numbers apart', () => {
     expect(normalizeTranscript('calc 1T slash FX slash CCF105 missing')).toContain('CCF 105 missing');
+  });
+});
+
+describe('codeOnlyComment', () => {
+  it('reduces "Word (CODE)" and "CODE — words" to the code', () => {
+    expect(codeOnlyComment('Fracture (T/FX)')).toBe('T/FX');
+    expect(codeOnlyComment('Tooth resorption (TR).')).toBe('TR');
+    expect(codeOnlyComment('T/FX — tooth fracture')).toBe('T/FX');
+  });
+  it('leaves codes, unknown parentheticals and plain notes alone', () => {
+    expect(codeOnlyComment('T/FX/CCF')).toBe('T/FX/CCF');
+    expect(codeOnlyComment('Draining tract (left)')).toBe('Draining tract (left)');
+    expect(codeOnlyComment('Biopsy sent to lab')).toBe('Biopsy sent to lab');
   });
 });

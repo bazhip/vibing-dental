@@ -139,7 +139,8 @@ const tools: Anthropic.Messages.Tool[] = [
   {
     name: 'add_comment',
     description:
-      'Add a note on a diagram, optionally anchored to a tooth. Use it for diagnosis/procedure findings that are NOT grid values: AVDC codes (T/FX, CCF, UCF, TR, AB, etc.), fractures, resorption, draining tract, biopsy taken. ' +
+      'Add a note on a diagram, optionally anchored to a tooth. Use it for diagnosis/procedure findings that are NOT grid values (fractures, resorption, abrasion, biopsy…). ' +
+      'Write the AVDC abbreviation ONLY when one exists — text "T/FX", never "Fracture (T/FX)" or "Tooth fracture". Several findings: "T/FX/CCF", or codes joined with ", ". Plain words only for a finding with no code. ' +
       'Never use it for periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) — those go in set_tooth_field only.',
     input_schema: {
       type: 'object',
@@ -256,7 +257,8 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → set_nerve_block(site=mentalLeft, mL=0.4)
 
 [EX 10] "401 has a fractured slab, took a biopsy"
-→ add_comment(diagram=pre, triadan=401, text="Fractured slab; biopsy taken.")
+→ add_comment(diagram=pre, triadan=401, text="T/FX")
+→ add_comment(diagram=post, triadan=401, text="B")
 
 [EX 11] "completed full mouth cleaning, polish, all four quadrants"
 → append_treatment_report(text="Completed full mouth cleaning with polish, all four quadrants.")
@@ -271,8 +273,11 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 [EX 14] "this canine looks pretty bad" (no Triadan number stated)
 → NO TOOL CALL — don't guess teeth. Skip and let the vet name it.
 
-[EX 15] "AB on 304" (AB = abrasion)
-→ add_comment(diagram=pre, triadan=304, text="Abrasion (AB)")
+[EX 15] "AB on 304" / "304 abrasion"
+→ add_comment(diagram=pre, triadan=304, text="AB")
+
+[EX 15b] "105 fracture" / "105 is fractured"
+→ add_comment(diagram=pre, triadan=105, text="T/FX")   (the code alone — not "Fracture (T/FX)")
 
 [EX 16] "I want to redo what I said about 209, that's actually fine"
 → unset_tooth_mark(diagram=post, triadan=209)
@@ -314,6 +319,7 @@ function buildStaticSystemPrompt(): string {
     '7. SPEAKER LABELS: Some chunks include speaker labels like "Speaker 0:" or "Speaker 1:" — these come from a diarizing transcription model. Treat the speaker who states medical findings as the vet. Treat other speakers as the tech/assistant; their statements are CONTEXT, not findings, unless they\'re reading back numbers the vet asked for. Don\'t emit tool calls for the tech\'s acknowledgements ("got it", "suctioning now") or tooth callouts directed at the vet. If only one speaker label appears, treat them as the vet.',
     '8. Dictation often runs through several teeth in one breath. Each Triadan number starts a new tooth; every value after it belongs to that tooth until the next number. Emit a call for EVERY value of EVERY tooth in the chunk — never stop after the first tooth.',
     '9. Periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) go ONLY in set_tooth_field, never in add_comment — the app mirrors the grid onto the diagram itself when the vet wants that.',
+    '10. Diagram notes are AVDC codes, not words: "T/FX", "TR", "AB", "T/FX/CCF". Use plain words only when no code exists for the finding.',
     '',
     'FIELD SEMANTICS:',
     '- "pre" diagram = Diagnosis (findings observed at exam, before procedure). Teeth already missing, periodontal disease grades, fractures.',
@@ -843,6 +849,20 @@ export function normalizeFieldValue(value: string): string {
     .trim();
 }
 
+const KNOWN_CODES = new Set(DENTAL_CODES.map((c) => c.code.toUpperCase()));
+
+/** Diagram notes should read as the AVDC code alone. If the model still
+ *  writes "Fracture (T/FX)" or "T/FX — tooth fracture", keep just the
+ *  code; anything else is left as written. */
+export function codeOnlyComment(text: string): string {
+  const t = text.trim().replace(/\.$/, '');
+  const paren = t.match(/^[^()]*\(\s*([A-Za-z][A-Za-z0-9/]*)\s*\)$/);
+  if (paren && KNOWN_CODES.has(paren[1].toUpperCase())) return paren[1].toUpperCase();
+  const lead = t.match(/^([A-Za-z][A-Za-z0-9/]*)\s*[-–—:]\s+.+$/);
+  if (lead && KNOWN_CODES.has(lead[1].toUpperCase())) return lead[1].toUpperCase();
+  return text.trim();
+}
+
 function applyOne(action: AiAction, h: ChartHandlers): boolean {
   const { name, input } = action;
   const s = (k: string): string => String(input[k] ?? '');
@@ -880,7 +900,7 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
       // unanchored comment rather than dropping the text entirely.
       const triadan =
         input.triadan != null && validTriadan(n('triadan')) ? n('triadan') : null;
-      h.addComment(diagram, triadan, s('text'));
+      h.addComment(diagram, triadan, codeOnlyComment(s('text')));
       return true;
     }
     case 'set_exam_finding': {
