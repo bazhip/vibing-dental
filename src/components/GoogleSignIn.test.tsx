@@ -15,7 +15,7 @@ import { DialogHost } from './ui/dialogs';
 import type { UseProfileReturn } from '../hooks/useProfile';
 
 const makeProfile = (over: Partial<UseProfileReturn> = {}) =>
-  ({ loaded: true, practiceName: '', doctorName: '', practiceId: '', update: vi.fn().mockResolvedValue(undefined), ...over }) as unknown as UseProfileReturn;
+  ({ loaded: true, practiceName: '', doctorName: '', practiceId: '', logoUrl: '', update: vi.fn().mockResolvedValue(undefined), uploadLogo: vi.fn().mockResolvedValue(undefined), ...over }) as unknown as UseProfileReturn;
 
 const googleUser = (meta: Record<string, unknown> = { full_name: 'Jane Smith' }, providers = ['google']) => ({
   data: { user: { id: 'u1', app_metadata: { provider: providers[0], providers }, user_metadata: meta } },
@@ -80,6 +80,46 @@ describe('finish setup', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() => expect(profile.update).toHaveBeenCalledWith({ practiceName: 'Coastal Vet', doctorName: 'Jane Smith' }));
     await waitFor(() => expect(screen.queryByText('Finish setting up')).toBeNull());
+  });
+
+  it('uploads an optional logo after saving the names', async () => {
+    URL.createObjectURL = URL.createObjectURL ?? (() => 'blob:preview');
+    URL.revokeObjectURL = URL.revokeObjectURL ?? (() => {});
+    auth.getUser.mockResolvedValue(googleUser());
+    const profile = makeProfile();
+    render(<Harness profile={profile} />);
+    await userEvent.type(await screen.findByLabelText('Practice name'), 'Coastal Vet');
+    const file = new File(['png'], 'logo.png', { type: 'image/png' });
+    await userEvent.upload(screen.getByLabelText('Practice logo (optional)'), file);
+    expect(screen.getByText('Logo: logo.png')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(profile.uploadLogo).toHaveBeenCalledWith(file));
+    expect(profile.update).toHaveBeenCalled();
+    await waitFor(() => expect(screen.queryByText('Finish setting up')).toBeNull());
+  });
+
+  it('a failed logo upload still keeps the names and closes', async () => {
+    URL.createObjectURL = URL.createObjectURL ?? (() => 'blob:preview');
+    URL.revokeObjectURL = URL.revokeObjectURL ?? (() => {});
+    auth.getUser.mockResolvedValue(googleUser());
+    const profile = makeProfile({ uploadLogo: vi.fn().mockRejectedValue(new Error('too big')) } as Partial<UseProfileReturn>);
+    render(<Harness profile={profile} />);
+    await userEvent.type(await screen.findByLabelText('Practice name'), 'Coastal Vet');
+    await userEvent.upload(screen.getByLabelText('Practice logo (optional)'), new File(['x'], 'l.png', { type: 'image/png' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(screen.queryByText('Finish setting up')).toBeNull());
+    expect(profile.update).toHaveBeenCalled();
+  });
+
+  it('no logo option without a practice-name question, or when a logo exists', async () => {
+    auth.getUser.mockResolvedValue(googleUser({}));
+    const { unmount } = render(<Harness profile={makeProfile({ practiceId: 'p1', practiceName: 'Team Vet' })} />);
+    await screen.findByLabelText('Doctor name');
+    expect(screen.queryByLabelText('Practice logo (optional)')).toBeNull();
+    unmount();
+    render(<Harness profile={makeProfile({ logoUrl: 'https://x/logo.png' })} />);
+    await screen.findByLabelText('Practice name');
+    expect(screen.queryByLabelText('Practice logo (optional)')).toBeNull();
   });
 
   it('team members (practice name comes from the practice) are only asked for a doctor name', async () => {
