@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { confirmDialog } from './ui/dialogs';
+import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import {
@@ -85,6 +85,8 @@ interface VoiceInputButtonProps {
   /** Identifies the open chart. When it changes, the dictation (transcript
    *  + activity) starts over so nothing carries into another patient. */
   sessionKey?: string;
+  /** The chart is view-only (saved visit not unlocked): no dictation. */
+  locked?: boolean;
 }
 
 interface ActivityEntry {
@@ -195,7 +197,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, activeSection, sessionKey,
+  context, handlers, onActivity, activeSection, sessionKey, locked = false,
 }) => {
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
@@ -482,6 +484,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
   const hasSession = transcriptText.length > 0 || activity.length > 0 || reviews.length > 0;
 
+  // Locked mid-dictation (Done editing): stop listening.
+  React.useEffect(() => {
+    if (locked && voiceRef.current?.recording) voiceRef.current.stop();
+  }, [locked]);
+
   // A different chart: start over so nothing carries across patients.
   const prevKeyRef = React.useRef(sessionKey);
   React.useEffect(() => {
@@ -535,6 +542,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const handleButton = () => {
+    if (locked && !voice.recording) {
+      toast('This visit is view-only — choose Edit chart to dictate into it.', { kind: 'info' });
+      return;
+    }
     if (voice.recording) {
       stopListening();
       setPanelOpen(true);

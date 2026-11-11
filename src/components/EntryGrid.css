@@ -2697,16 +2697,26 @@
   background: var(--danger-tint);
 }
 
+.save-status--manual {
+  color: #92400e;
+  background: #fef3c7;
+}
+.save-status--muted {
+  color: var(--text-muted);
+  background: var(--surface-sunken);
+}
+
 @media (max-width: 600px) {
-  /* Phones: drop the transient chips to save topbar room, but a failed
-     save is the one state that must never be invisible — keep the retry
-     button, compact. */
-  .save-status--saving,
-  .save-status--saved { display: none; }
-  .save-status--error {
-    font-size: 0.72rem;
-    padding: 0.25rem 0.5rem;
+  /* Phones: compact but never hidden — the save state is the one thing
+     a user must always be able to see. Details stay in the tooltip. */
+  .save-status {
+    font-size: 0.7rem;
+    padding: 0.22rem 0.5rem;
+    max-width: 9.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+  .save-status__detail { display: none; }
 }
 
 /* The error chip is a real button (tap to retry). */
@@ -2795,6 +2805,12 @@ button.save-status--error {
 /* Saved-chart lock notice, below the topbar. Neutral while viewing;
    amber while editing (a reminder that saving overwrites history). */
 .chart-lock-banner {
+  /* Stays in view under the topbar while scrolling a long chart, so the
+     view-only state (and the way out of it) is never hidden. */
+  position: sticky;
+  top: calc(var(--topbar-height, 0px) + 0.4rem);
+  z-index: 25;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -3121,3 +3137,21 @@ button.save-status--manual:hover {
   background: var(--primary-tint, #eff6f5); color: var(--text); font-size: 0.9rem;
 }
 .admin-panel__access-body strong { color: var(--primary, #0c6b63); }
+
+.chart-lock-banner__text { flex: 1 1 18rem; }
+
+/* Diagram view-only (saved visit not unlocked): read and zoom, no edits. */
+.tooth-diagram-wrapper--readonly .tooth-group { cursor: default !important; }
+.tooth-diagram-wrapper--readonly .tooth-group__hover { fill: transparent !important; }
+.tooth-diagram-wrapper--readonly .diagram-comment__delete,
+.tooth-diagram-wrapper--readonly .diagram-comment__resize { display: none; }
+.tooth-diagram-wrapper--readonly .diagram-comment__header { cursor: default; pointer-events: none; }
+.tooth-diagram-wrapper--readonly .diagram-comment textarea { pointer-events: none; }
+.tooth-diagram-wrapper--readonly .tooth-diagram { touch-action: auto !important; }
+
+/* Locked form sections: a hint on hover instead of silently dead clicks. */
+.lock-wrap--locked { cursor: not-allowed; }
+.diagram-view__toolbar--readonly .diagram-view__tool-group,
+.diagram-view__toolbar--readonly .diagram-view__history,
+.diagram-view__toolbar--readonly .diagram-view__free-comment,
+.diagram-view__toolbar--readonly .diagram-view__draw-controls { display: none; }

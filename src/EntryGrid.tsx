@@ -20,7 +20,7 @@ import { useProfile } from './hooks/useProfile';
 import { usePersistedState } from './hooks/usePersistedState';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
-import { toast, friendlyError } from './components/ui/dialogs';
+import { toast, friendlyError, confirmDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -39,6 +39,17 @@ import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
 // time a preview is requested, not with the charting screen.
+/** "2:41 pm" today, "Nov 9, 2:41 pm" otherwise. */
+function formatSavedAt(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const today = new Date();
+  return d.toDateString() === today.toDateString()
+    ? time
+    : `${d.toLocaleDateString([], { month: 'short', day: 'numeric' })}, ${time}`;
+}
+
 const DocumentsModal = lazyWithReload(() =>
   import('./components/DocumentsModal').then((m) => ({ default: m.DocumentsModal }))
 );
@@ -98,7 +109,24 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 }) => {
   const chart = useChartState();
   const profile = useProfile();
-  const cloud = useCloudSync(chart, !trial, profile.practiceId);
+  // Saved charts open read-only; the user unlocks to edit them (then
+  // changes autosave). Remembered per chart for this browser session, so
+  // a refresh mid-edit doesn't re-lock and hide pending edits.
+  const unlockKey = `chart.unlocked.${chart.cloudChartId}`;
+  const [editUnlocked, setEditUnlockedState] = React.useState<boolean>(() => {
+    try { return window.sessionStorage.getItem(unlockKey) === '1'; } catch { return false; }
+  });
+  React.useEffect(() => {
+    try { setEditUnlockedState(window.sessionStorage.getItem(unlockKey) === '1'); } catch { setEditUnlockedState(false); }
+  }, [unlockKey]);
+  const setEditUnlocked = (v: boolean) => {
+    try {
+      if (v) window.sessionStorage.setItem(unlockKey, '1');
+      else window.sessionStorage.removeItem(unlockKey);
+    } catch { /* private mode */ }
+    setEditUnlockedState(v);
+  };
+  const cloud = useCloudSync(chart, !trial, profile.practiceId, editUnlocked);
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
@@ -119,12 +147,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [route.view, route.section]);
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
-  // Saved charts open read-only; the user unlocks to edit them, and each
-  // save then overwrites the original deliberately. Reset whenever the
-  // active chart changes.
-  const [editUnlocked, setEditUnlocked] = React.useState(false);
-  React.useEffect(() => { setEditUnlocked(false); }, [chart.cloudChartId]);
   const readOnly = cloud.enabled && chart.openedExisting && !editUnlocked;
+  // Has the chart changed since the user chose Edit chart? (Offers Revert.)
+  const unlockSnapshotChanged = React.useMemo(() => {
+    if (!editUnlocked || !chart.openedExisting) return false;
+    try {
+      const raw = window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`);
+      return !!raw && raw !== JSON.stringify(chart.getSnapshot());
+    } catch {
+      return false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editUnlocked, chart.openedExisting, chart.cloudChartId, chart.getSnapshot()]);
 
   // AI autofill focus: the tooth the AI most recently edited, flashed in
   // the diagrams/grid. Cleared a few seconds after the last edit.
@@ -632,9 +666,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // saved chart is locked. Styling + pointer blocking come from
   // .sidebar-layout__fieldset:disabled.
   const lock = (node: React.ReactNode) => (
-    <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
-      {node}
-    </fieldset>
+    <div
+      className={readOnly ? 'lock-wrap lock-wrap--locked' : 'lock-wrap'}
+      title={readOnly ? 'View only — choose Edit chart to make changes' : undefined}
+    >
+      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
+        {node}
+      </fieldset>
+    </div>
   );
 
   // Section list — rendered by whichever layout the active board picks.
@@ -682,9 +721,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       // effects that can storm ("Maximum update depth exceeded") when
       // the whole row set is swapped inside a display:none panel, which
       // is exactly what starting a new visit from a saved chart does.
-      content: lock(
+      content: (
         activeSection === 'charting' ? (
           <DentalGrid
+            readOnly={readOnly}
             toothData={chart.toothData}
             onToothDataChange={chart.setToothDataDirectly}
             highlightTriadan={aiHighlightTriadan}
@@ -710,8 +750,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
-            {lock(
-            <DiagramView
+                        <DiagramView
               // Remount per chart: undo history must not carry another
               // patient's marks into this one.
               key={`pre-${chart.chartSession}`}
@@ -729,7 +768,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               defaultTool="comment"
               highlightTriadan={aiHighlightTriadan}
             />
-            )}
           </div>
           {/* Reference only — deliberately outside the lock so codes stay
               browsable on read-only charts. */}
@@ -745,8 +783,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
-            {lock(
-            <DiagramView
+                        <DiagramView
               key={`post-${chart.chartSession}`}
               ref={postDiagramRef}
               readOnly={readOnly}
@@ -762,7 +799,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               markMode="extracted-only"
               highlightTriadan={aiHighlightTriadan}
             />
-            )}
           </div>
           <aside className="diagram-with-codes__codes">
             <CodeReferencePanel kind="procedure" />
@@ -773,8 +809,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     {
       id: 'imaging',
       label: 'Images',
-      content: lock(
+      content: (
         <ImagingSection
+          readOnly={readOnly}
           chartId={chart.cloudChartId}
           cloudActive={cloud.enabled}
           practiceId={profile.practiceId}
@@ -805,8 +842,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       ? [{
           id: 'owner-report',
           label: 'Owner Report',
-          content: lock(
+          content: (
             <OwnerReportSection
+              readOnly={readOnly}
               snapshot={chart.getSnapshot()}
               overrides={chart.ownerReport}
               onOverrideChange={chart.setOwnerReportOverride}
@@ -947,50 +985,61 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {/* Manual save only — no autosave. The save state is always
-              visible so the model is learnable: amber button while dirty,
-              Saving…, then a quiet Saved chip. localStorage keeps the
-              working copy across reloads regardless. ⌘S / Ctrl+S saves. */}
-          {cloud.enabled && cloud.status === 'saving' && (
-            <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>
-          )}
-          {cloud.enabled && cloud.status === 'error' && (
-            <span className="save-status-error-wrap">
-              <button
-                type="button"
-                className="save-status save-status--error"
-                onClick={attemptSave}
-                title={cloud.saveError || 'Retry saving this chart'}
-              >
-                Not saved — retry
-              </button>
-              {cloud.saveError && (
-                <span className="save-status__detail">{cloud.saveError}</span>
-              )}
+          {/* One save-status pill, always telling the truth: what's
+              happening now, or when this chart last reached the cloud.
+              ⌘S / Ctrl+S saves immediately. */}
+          {cloud.enabled ? (() => {
+            if (cloud.status === 'saving') {
+              return <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>;
+            }
+            if (cloud.status === 'error') {
+              return (
+                <span className="save-status-error-wrap">
+                  <button
+                    type="button"
+                    className="save-status save-status--error"
+                    onClick={attemptSave}
+                    title={cloud.saveError || 'Retry saving this chart'}
+                  >
+                    Not saved — retry
+                  </button>
+                  {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
+                </span>
+              );
+            }
+            if (saveHint) {
+              return (
+                <span className="save-status-error-wrap" role="alert">
+                  <span className="save-status save-status--error">Not saved</span>
+                  <span className="save-status__detail">{saveHint}</span>
+                </span>
+              );
+            }
+            if (readOnly) {
+              return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
+            }
+            if (cloud.dirty && !cloud.online) {
+              return <span className="save-status save-status--manual" title="Changes are kept on this device and save when you're back online">Offline — saved on this device</span>;
+            }
+            if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
+              return <span className="save-status save-status--manual" title="Charts save once the patient has a name">Add a patient name to save</span>;
+            }
+            if (cloud.dirty) {
+              return <span className="save-status save-status--manual" title="Saving automatically…">Unsaved changes</span>;
+            }
+            if (cloud.lastSavedAt) {
+              return (
+                <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
+                  Saved · {formatSavedAt(cloud.lastSavedAt)}
+                </span>
+              );
+            }
+            return null;
+          })() : trial ? (
+            <span className="save-status save-status--muted" title="Trial charts stay in this browser. Create a free account to save to the cloud.">
+              On this device only
             </span>
-          )}
-          {cloud.enabled && saveHint && cloud.status !== 'error' && (
-            <span className="save-status-error-wrap" role="alert">
-              <span className="save-status save-status--error">Not saved</span>
-              <span className="save-status__detail">{saveHint}</span>
-            </span>
-          )}
-          {/* New charts autosave — show a quiet "Saved" once there's a
-              name and nothing pending, or a nudge to add a name. Opened
-              (existing) charts are driven by the banner below, not here. */}
-          {cloud.enabled && !chart.openedExisting && cloud.status !== 'saving' && cloud.status !== 'error' && (
-            chart.patientInfo.patientName.trim() === '' && cloud.dirty ? (
-              <span className="save-status save-status--manual" title="Autosaves once the patient has a name">
-                Add a patient name to save
-              </span>
-            ) : cloud.status === 'saved' ? (
-              // Transient — useCloudSync flips 'saved' back to 'idle' after
-              // ~2.5s, so this chip fades on its own.
-              <span className="save-status save-status--saved" aria-hidden="true" title="Autosaved to the cloud">
-                ✓ Saved
-              </span>
-            ) : null
-          )}
+          ) : null}
           {cloud.enabled && (
             <button
               type="button"
@@ -1011,6 +1060,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onActivity={handleAiActivity}
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
+              locked={readOnly}
             />
           )}
           <ChartMenu
@@ -1051,19 +1101,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       )}
 
-      {/* Opened-from-saved notice: view is locked until the user chooses
-          to edit, and saving then overwrites the original — a deliberate
-          act, so historical charts aren't changed by accident. */}
+      {/* Saved-visit banner: opens view-only so history isn't changed by
+          accident; Edit chart unlocks (changes then autosave), Revert
+          restores the version that was opened, Done editing re-locks. */}
       {cloud.enabled && chart.openedExisting && (
         <div className={`chart-lock-banner${readOnly ? '' : ' chart-lock-banner--editing'}`} role="status">
           {readOnly ? (
             <>
               <span className="chart-lock-banner__text">
-                You're viewing a saved chart. Editing is locked so it isn't changed by accident.
+                <strong>Viewing a saved visit</strong>{chart.patientInfo.date ? ` from ${chart.patientInfo.date}` : ''} — it’s view-only so it isn’t changed by accident.
               </span>
               <button
                 type="button"
-                className="chart-menu__trigger topbar-library-btn"
+                className="diagram-view__action"
                 onClick={() => {
                   // Carry forward from the patient's LATEST visit — this
                   // banner also shows when viewing an older one.
@@ -1079,7 +1129,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <button
                 type="button"
                 className="entry-grid__button entry-grid__button--topbar"
-                onClick={() => setEditUnlocked(true)}
+                onClick={() => {
+                  try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
+                  setEditUnlocked(true);
+                }}
               >
                 Edit chart
               </button>
@@ -1087,26 +1140,42 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           ) : (
             <>
               <span className="chart-lock-banner__text">
-                Editing a saved chart — saving <strong>overwrites</strong> it.
-                {cloud.status === 'saving' ? ' Saving…' : cloud.status === 'saved' || !cloud.dirty ? ' All changes saved.' : ' Unsaved changes.'}
+                <strong>Editing a saved visit</strong> — changes save automatically.
               </span>
-              {/* Only offer the save while there's something to save — a
-                  permanently visible (if disabled) button read as a nag. */}
-              {(cloud.dirty || cloud.status === 'saving') && (
+              {unlockSnapshotChanged && (
                 <button
                   type="button"
-                  className="entry-grid__button entry-grid__button--topbar"
-                  onClick={attemptSave}
-                  disabled={!cloud.dirty || cloud.status === 'saving'}
-                  title="Overwrite the saved chart (⌘S)"
+                  className="diagram-view__action"
+                  onClick={async () => {
+                    const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
+                    if (!raw) return;
+                    if (!(await confirmDialog({
+                      title: 'Revert your changes?',
+                      message: 'This chart goes back to how it was when you chose Edit chart, and that version is saved.',
+                      confirmLabel: 'Revert changes',
+                      danger: true,
+                    }))) return;
+                    chart.applySnapshot(JSON.parse(raw), chart.cloudChartId);
+                    toast('Changes reverted.', { kind: 'success' });
+                  }}
                 >
-                  {cloud.status === 'saving' ? 'Saving…' : 'Save changes'}
+                  Revert my changes
                 </button>
               )}
+              <button
+                type="button"
+                className="entry-grid__button entry-grid__button--topbar"
+                onClick={async () => {
+                  if (cloud.dirty) {
+                    try { await cloud.saveNow(); } catch { return; /* the status pill shows the error */ }
+                  }
+                  try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
+                  setEditUnlocked(false);
+                }}
+              >
+                Done editing
+              </button>
             </>
-          )}
-          {cloud.status === 'error' && cloud.saveError && (
-            <span className="save-status__detail">{cloud.saveError}</span>
           )}
         </div>
       )}

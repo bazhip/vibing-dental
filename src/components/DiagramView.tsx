@@ -138,7 +138,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
         // zoom so comment text grows with the teeth.
         style={{ ['--diagram-comment-font-size' as string]: `${0.95 * commentTextScale * zoom}rem` }}
       >
-        <div className="diagram-view__toolbar">
+        <div className={`diagram-view__toolbar${readOnly ? ' diagram-view__toolbar--readonly' : ''}`}>
           <div
             className="diagram-view__tool-group"
             role="group"
@@ -204,7 +204,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          <button type="button" className="diagram-view__action" onClick={addFreeComment}>
+          <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={addFreeComment}>
             + Free comment
           </button>
 
@@ -331,6 +331,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           lockedTriadans={lockedTriadans}
           markMode={markMode}
           highlightTriadan={highlightTriadan}
+          readOnly={readOnly}
         />
         </div>
       </div>

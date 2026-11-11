@@ -20,6 +20,8 @@ interface OwnerReportSectionProps {
   /** Practice templates + branding for placeholders. Omitted = the
    *  built-in report. */
   context?: OwnerReportContext;
+  /** View-only (saved visit not unlocked): Preview works, edits don't. */
+  readOnly?: boolean;
 }
 
 /**
@@ -34,6 +36,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   overrides,
   onOverrideChange,
   onPreview,
+  readOnly = false,
   context,
 }) => {
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
@@ -96,6 +99,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         include them.
       </p>
 
+      <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
       {templates.length > 1 && (
         <label className="patient-form__label owner-report__block">
           Report template
@@ -184,6 +188,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           </p>
         )}
       </div>
+      </fieldset>
     </div>
   );
 };

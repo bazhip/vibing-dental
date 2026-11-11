@@ -56,6 +56,30 @@ function notifyTrialStarted(): void {
  * to the login screen. Without Supabase (local dev / tests), the legacy
  * shared-password flag in localStorage keeps standalone mode working.
  */
+/** True only when the session is genuinely gone (refresh token rejected),
+ *  not merely when a refresh attempt failed for a transient reason. */
+async function confirmSessionLost(): Promise<boolean> {
+  if (!supabase) return true;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    // Offline: wait for the connection instead of declaring expiry.
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      await new Promise<void>((resolve) => window.addEventListener('online', () => resolve(), { once: true }));
+    }
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (data.session) return false;
+      // An auth error (revoked / expired refresh token) is a real end.
+      const status = (error as { status?: number } | null)?.status ?? 0;
+      if (error && status >= 400 && status < 500) return true;
+    } catch {
+      /* network hiccup — retry */
+    }
+    await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+  }
+  const { data } = await supabase.auth.getSession();
+  return !data.session;
+}
+
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !cloudEnabled && readString(AUTH_KEY, AUTH_VERSION, '') === '1'
@@ -161,10 +185,46 @@ const App: React.FC = () => {
         setSessionExpired(false);
         setIsAuthenticated(false);
       } else {
-        setSessionExpired(true);
+        // Don't take "no session" at face value: a background token
+        // refresh that failed (laptop asleep, flaky clinic Wi-Fi) reports
+        // the same thing. Retry the refresh, wait out an offline spell,
+        // and only show the sign-in overlay if the session is really gone.
+        void confirmSessionLost().then((lost) => { if (lost) setSessionExpired(true); });
       }
     });
-    return () => sub.subscription.unsubscribe();
+
+    // Keep the session fresh around real use: coming back to the tab,
+    // reconnecting, or interacting after a while all renew it, so an
+    // active user is never bounced. (supabase-js refreshes on a timer
+    // too, but timers stall while a laptop sleeps.)
+    const client = supabase;
+    let lastNudge = 0;
+    const nudge = () => {
+      const now = Date.now();
+      if (now - lastNudge < 5 * 60_000) return;
+      lastNudge = now;
+      void client.auth.getSession(); // refreshes the token if it's near expiry
+    };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') {
+        client.auth.startAutoRefresh();
+        lastNudge = 0;
+        nudge();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('online', onVisible);
+    window.addEventListener('focus', onVisible);
+    window.addEventListener('pointerdown', nudge, { passive: true });
+    window.addEventListener('keydown', nudge);
+    return () => {
+      sub.subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('online', onVisible);
+      window.removeEventListener('focus', onVisible);
+      window.removeEventListener('pointerdown', nudge);
+      window.removeEventListener('keydown', nudge);
+    };
   }, []);
 
   useEffect(() => {

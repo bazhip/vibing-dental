@@ -22,6 +22,8 @@ interface ImagingSectionProps {
   /** Image ids unticked for the PDF; everything else goes in. */
   pdfExcludedImages?: string[];
   onImageInPdfChange?: (attachmentId: string, include: boolean) => void;
+  /** View-only (saved visit not unlocked): images open, nothing changes. */
+  readOnly?: boolean;
 }
 
 /**
@@ -41,6 +43,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onIncludeInPdfChange,
   pdfExcludedImages = [],
   onImageInPdfChange,
+  readOnly = false,
 }) => {
   const store = useAttachments(chartId, practiceId, maxImages);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
@@ -115,6 +118,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         >
           <input
             type="checkbox"
+            disabled={readOnly}
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
           />
@@ -136,7 +140,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         </p>
       )}
 
-      {store.maxImages > 0 && (
+      {store.maxImages > 0 && !readOnly && (
       <div className="imaging__uploader">
         <div className="imaging__kind" role="radiogroup" aria-label="Image type">
           <label className={kind === 'photo' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
@@ -198,6 +202,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
               </a>
               <div className="imaging__meta">
                 <select
+                  disabled={readOnly}
                   className="imaging__kind-select"
                   value={a.kind}
                   onChange={(e) => {
@@ -215,6 +220,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   <label className="imaging__in-pdf" title="Include this image on the PDF's image pages">
                     <input
                       type="checkbox"
+            disabled={readOnly}
                       checked={!pdfExcludedImages.includes(a.id)}
                       onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
                     />
@@ -223,6 +229,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 )}
                 {onImageRoleChange && (
                   <select
+                  disabled={readOnly}
                     className="imaging__role"
                     value={imageRoles[a.id] ?? ''}
                     onChange={(e) =>
@@ -241,6 +248,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   className="patient-form__input imaging__caption"
                   placeholder="Label for the PDF…"
                   defaultValue={a.caption}
+                  readOnly={readOnly}
                   aria-label="Caption"
                   onBlur={(e) => {
                     const input = e.target;
@@ -254,14 +262,14 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     }
                   }}
                 />
-                <button
+                {!readOnly && <button
                   type="button"
                   className="diagram-view__action diagram-view__action--danger imaging__delete"
                   onClick={() => onDelete(a.id, a.caption)}
                   disabled={busy}
                 >
                   Remove
-                </button>
+                </button>}
               </div>
             </li>
           ))}

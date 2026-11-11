@@ -16,6 +16,9 @@ import 'react-data-grid/lib/styles.css';
 import { ToothData, ToothMarks } from '../types';
 
 interface DentalGridProps {
+  /** View-only (saved visit not unlocked): cells, Missing and set-all are
+   *  locked, but the grid still scrolls and can be read/copied. */
+  readOnly?: boolean;
   toothData: ToothData[];
   onToothDataChange: (rows: ToothData[]) => void;
   /** Diagnosis-diagram marks — rows whose tooth is marked `missing` render
@@ -200,6 +203,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   onMirrorToDiagnosisChange,
   pdfIncludeGrid,
   onPdfIncludeGridChange,
+  readOnly = false,
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
@@ -309,6 +313,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               type="checkbox"
               className="dental-grid__missing-check"
               checked={isMissing}
+              disabled={readOnly}
               onChange={() => onToggleMissing(row.triadan)}
               aria-label={`Tooth ${row.triadan} missing${carried ? ' (carried from the previous visit)' : ''}`}
               title={
@@ -341,7 +346,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key,
       name,
       width: index === CODE_COLUMNS.length - 1 ? lastColumnWidth : px(share),
-      renderEditCell: CodeCellEditor,
+      renderEditCell: readOnly ? undefined : CodeCellEditor,
       renderCell: ({ row }) => {
         const value = typeof row[key] === 'string' ? (row[key] as string) : '';
         const prior = priorToothData?.[row.triadan]?.[key];
@@ -365,6 +370,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           <button
             type="button"
             className="dental-grid__set-all"
+            hidden={readOnly}
             onClick={() => setAllForColumn(key, name)}
             title={`Set ${name} for every tooth at once`}
             aria-label={`Set ${name} for every tooth at once`}
@@ -375,7 +381,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       ),
     })),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly]);
 
   return (
     <div className="dental-grid-section">

@@ -79,7 +79,11 @@ export interface UseCloudSyncReturn {
   confirmDiscardIfDirty: (verb: string) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
   /** Resolves true when the chart was opened, false when the user cancelled. */
-  openChart: (id: string, opts?: { ifClean?: boolean }) => Promise<boolean>;
+  openChart: (id: string, opts?: { ifClean?: boolean; verb?: string; force?: boolean }) => Promise<boolean>;
+  /** ISO time this chart last reached the cloud ('' = never). */
+  lastSavedAt: string;
+  /** Browser connectivity. */
+  online: boolean;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
   deleteChart: (id: string) => Promise<void>;
@@ -153,7 +157,9 @@ function hashStr(s: string): string {
 export function useCloudSync(
   chart: UseChartStateReturn,
   active = true,
-  practiceId = ''
+  practiceId = '',
+  /** A saved chart the user has unlocked for editing autosaves too. */
+  editingUnlocked = false
 ): UseCloudSyncReturn {
   // Trial/standalone: no account to save to — the hook is inert.
   const on = cloudEnabled && active;
@@ -165,6 +171,17 @@ export function useCloudSync(
   // Hash of the snapshot last written to the cloud (persisted so unsaved
   // changes are still flagged after a reload).
   const [savedHash, setSavedHash] = usePersistedState<string>('chart.savedHash', 1, '');
+  // When this chart last reached the cloud (for "Saved · 2:41 pm").
+  const [lastSaved, setLastSaved] = usePersistedState<{ chartId: string; at: string }>('chart.lastSaved', 1, { chartId: '', at: '' });
+  const lastSavedAt = lastSaved.chartId === chart.cloudChartId ? lastSaved.at : '';
+  const [online, setOnline] = React.useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
+  React.useEffect(() => {
+    const up = () => setOnline(true);
+    const down = () => setOnline(false);
+    window.addEventListener('online', up);
+    window.addEventListener('offline', down);
+    return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down); };
+  }, []);
 
   // "Saved" is a moment — show briefly, then clear.
   React.useEffect(() => {
@@ -239,6 +256,7 @@ export function useCloudSync(
       const { error } = await client.from('charts').upsert(row(id));
       if (!error) {
         setSavedHash(hashStr(json));
+        setLastSaved({ chartId: latest.current.chartId, at: new Date().toISOString() });
         setStatus('saved');
         return;
       }
@@ -261,6 +279,7 @@ export function useCloudSync(
         const { error: retryError } = await client.from('charts').upsert(row(freshId));
         if (retryError) fail(retryError);
         setSavedHash(hashStr(json));
+        setLastSaved({ chartId: latest.current.chartId, at: new Date().toISOString() });
         setStatus('saved');
         return;
       }
@@ -290,14 +309,17 @@ export function useCloudSync(
   // patient name is required first (that's how charts are found again).
   const saveNowRef = React.useRef(saveNow);
   saveNowRef.current = saveNow;
+  // Saved charts autosave once the user has unlocked them (unlocking is
+  // the deliberate step); while locked nothing can change anyway.
+  // Offline: wait, and retry as soon as the connection is back.
   React.useEffect(() => {
-    if (!on || chart.openedExisting) return;
-    if (!dirty) return;
+    if (!on || (chart.openedExisting && !editingUnlocked)) return;
+    if (!dirty || !online) return;
     if (!snapshot.patientInfo.patientName.trim()) return;
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, dirty, serialized]);
+  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (verb: string): Promise<boolean> => {
@@ -372,25 +394,26 @@ export function useCloudSync(
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
-  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean } = {}): Promise<boolean> => {
+  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; verb?: string; force?: boolean } = {}): Promise<boolean> => {
     if (!supabase) return false;
     // Deep links on page load never prompt: a working chart with edits
     // simply stays put (the user just reloaded their own work).
     if (opts.ifClean) {
       if (dirtyRef.current) return false;
-    } else if (!(await confirmDiscardIfDirty('Open the other chart'))) return false;
+    } else if (!(await confirmDiscardIfDirty(opts.verb ?? 'Open the other chart'))) return false;
     // Already on screen with nothing unsaved: nothing to do. (Re-applying
     // identical content would leave the "saved baseline" armed and the
     // next edit wrongly treated as saved.)
-    if (id === latest.current.chartId && !dirtyRef.current) return true;
+    if (id === latest.current.chartId && !dirtyRef.current && !opts.force) return true;
     const { data, error } = await supabase
       .from('charts')
-      .select('id, data')
+      .select('id, data, updated_at')
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
     baselineNext.current = true; // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
+    setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
     setStatus('idle');
     setSaveError('');
     return true;
@@ -461,6 +484,8 @@ export function useCloudSync(
     saveError,
     dirty,
     confirmDiscardIfDirty,
+    lastSavedAt,
+    online,
     saveNow,
     listCharts,
     listPatientVisits,

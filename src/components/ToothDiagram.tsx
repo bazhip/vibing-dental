@@ -72,6 +72,9 @@ interface ToothDiagramProps {
   markMode?: MarkMode;
   /** Tooth to flash briefly (AI autofill just edited it). */
   highlightTriadan?: number | null;
+  /** View-only (saved visit not unlocked): no marking, drawing or note edits;
+   *  zoom and reading still work. */
+  readOnly?: boolean;
 }
 
 // Pure SVG-parser + comment-layout helpers live in `./toothDiagram/*` —
@@ -110,6 +113,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   lockedTriadans,
   highlightTriadan,
   markMode = 'all',
+  readOnly = false,
 }, ref) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
   // Wraps both the SVG and the HTML comment overlay; used by the
@@ -454,6 +458,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   );
 
   const handleToothClick = (triadan: number, e: React.SyntheticEvent) => {
+    if (readOnly) return;
     if (tool === 'draw') return;
     e.stopPropagation();
     if (tool === 'mark') {
@@ -835,7 +840,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   };
 
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (tool !== 'draw') return;
+    if (tool !== 'draw' || readOnly) return;
     const p = getSvgPoint(e);
     if (!p) return;
     e.preventDefault();
@@ -869,7 +874,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   });
 
   return (
-    <div className="tooth-diagram-wrapper" ref={wrapperRef}>
+    <div className={`tooth-diagram-wrapper${readOnly ? ' tooth-diagram-wrapper--readonly' : ''}`} ref={wrapperRef}>
     <svg
       ref={svgRef}
       viewBox={`${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`}
