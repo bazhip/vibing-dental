@@ -46,6 +46,24 @@ async function inviteViaResend(admin: any, email: string, practiceName: string, 
   return { user: link.user, error: null };
 }
 
+/** Every auth user, paged (listUsers caps a page at 1000). One sweep
+ *  replaces per-user getUserById calls, which ran sequentially and made
+ *  the admin panel take seconds per practice. */
+// deno-lint-ignore no-explicit-any
+async function listAllUsers(admin: any) {
+  const PER_PAGE = 1000;
+  // deno-lint-ignore no-explicit-any
+  const all: any[] = [];
+  for (let page = 1; ; page++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage: PER_PAGE });
+    if (error) throw error;
+    const batch = data?.users ?? [];
+    all.push(...batch);
+    if (batch.length < PER_PAGE) break;
+  }
+  return all;
+}
+
 // Browser calls come from the app's origins (github.io / vercel /
 // localhost dev) — auth is enforced by the JWT + role check, not CORS.
 const CORS = {
@@ -100,23 +118,23 @@ Deno.serve(async (req: Request) => {
       }
 
       case 'list_users': {
-        const { data: usersData, error: usersError } = await admin.auth.admin.listUsers({
-          page: 1,
-          perPage: 500,
-        });
-        if (usersError) throw usersError;
-        const { data: profileRows } = await admin
-          .from('profiles')
-          .select('id, practice_name, doctor_name, logo_path');
-        const { data: chartRows } = await admin
-          .from('charts')
-          .select('created_by')
-          .limit(10000);
+        // Independent reads — run them together, not one after another.
         // Team membership is the authoritative practice tie — invited
         // members have an empty profiles.practice_name, so the panel
         // needs the practice_members → practices resolution.
-        const { data: memRows } = await admin.from('practice_members').select('user_id, practice_id, role');
-        const { data: pracNameRows } = await admin.from('practices').select('id, name');
+        const [
+          authUsers,
+          { data: profileRows },
+          { data: chartRows },
+          { data: memRows },
+          { data: pracNameRows },
+        ] = await Promise.all([
+          listAllUsers(admin),
+          admin.from('profiles').select('id, practice_name, doctor_name, logo_path'),
+          admin.from('charts').select('created_by').limit(10000),
+          admin.from('practice_members').select('user_id, practice_id, role'),
+          admin.from('practices').select('id, name'),
+        ]);
         const pracNameById = new Map((pracNameRows ?? []).map((p) => [p.id, p.name ?? '']));
         const memByUser = new Map((memRows ?? []).map((m) => [m.user_id, m]));
         const chartCounts = new Map<string, number>();
@@ -124,7 +142,8 @@ Deno.serve(async (req: Request) => {
           chartCounts.set(r.created_by, (chartCounts.get(r.created_by) ?? 0) + 1);
         }
         const profilesById = new Map((profileRows ?? []).map((p) => [p.id, p]));
-        const users = usersData.users.map((u) => {
+        // deno-lint-ignore no-explicit-any
+        const users = authUsers.map((u: any) => {
           const p = profilesById.get(u.id);
           const mem = memByUser.get(u.id);
           return {
@@ -248,17 +267,35 @@ Deno.serve(async (req: Request) => {
         // been applied, retry without it rather than silently listing no
         // practices; any other error surfaces in the panel.
         const BASE_COLS = 'id, name, owner, logo_path, created_at, plan, account_type, subscription_status, billing_period_end, stripe_subscription_id, frozen_at';
+        // Members, charts and auth users don't depend on the practice
+        // rows — start them now and await after.
+        const sidePromise = Promise.all([
+          admin.from('practice_members').select('practice_id, user_id, role'),
+          admin.from('charts').select('practice_id, created_by').limit(20000),
+          listAllUsers(admin),
+        ]);
         let pracRes = await admin.from('practices').select(`${BASE_COLS}, owner_report_enabled`).order('created_at', { ascending: true });
         if (pracRes.error && /owner_report_enabled/.test(pracRes.error.message)) {
           pracRes = await admin.from('practices').select(BASE_COLS).order('created_at', { ascending: true });
         }
         if (pracRes.error) throw new Error(`Could not list practices: ${pracRes.error.message}`);
         const pracs = pracRes.data as Array<Record<string, any>>;
-        const { data: mems } = await admin.from('practice_members').select('practice_id, user_id, role');
+        const [{ data: mems }, { data: chartRows }, authUsers] = await sidePromise;
+        // deno-lint-ignore no-explicit-any
+        const userById = new Map(authUsers.map((u: any) => [u.id, u]));
+        // The logos bucket is private — hand the panel short-lived signed
+        // URLs (service role bypasses storage RLS), all in one request.
+        const logoPaths = (pracs ?? []).map((p) => p.logo_path).filter((x): x is string => !!x);
+        const logoUrlByPath = new Map<string, string>();
+        if (logoPaths.length) {
+          const { data: signedList } = await admin.storage.from('logos').createSignedUrls(logoPaths, 3600);
+          for (const s of signedList ?? []) {
+            if (s.path && s.signedUrl) logoUrlByPath.set(s.path, s.signedUrl);
+          }
+        }
         // A practice's chart count = charts shared to it PLUS members'
         // personal charts (practice_id NULL — e.g. rows predating team
         // sharing), so the tab matches the per-user counts in Accounts.
-        const { data: chartRows } = await admin.from('charts').select('practice_id, created_by').limit(20000);
         const memberCount = new Map<string, number>();
         for (const m of mems ?? []) memberCount.set(m.practice_id, (memberCount.get(m.practice_id) ?? 0) + 1);
         const practiceByUser = new Map((mems ?? []).map((m) => [m.user_id, m.practice_id]));
@@ -269,29 +306,25 @@ Deno.serve(async (req: Request) => {
         }
         const practices = [];
         for (const p of pracs ?? []) {
-          const { data: ownerUser } = await admin.auth.admin.getUserById(p.owner);
-          // The logos bucket is private — hand the panel a short-lived
-          // signed URL (service role bypasses storage RLS).
-          let logoUrl = '';
-          if (p.logo_path) {
-            const { data: signed } = await admin.storage.from('logos').createSignedUrl(p.logo_path, 3600);
-            logoUrl = signed?.signedUrl ?? '';
-          }
+          // deno-lint-ignore no-explicit-any
+          const ownerUser: any = userById.get(p.owner);
+          const logoUrl = p.logo_path ? (logoUrlByPath.get(p.logo_path) ?? '') : '';
           const memberDetails = [];
           for (const m of (mems ?? []).filter((x) => x.practice_id === p.id)) {
-            const { data: u } = await admin.auth.admin.getUserById(m.user_id);
+            // deno-lint-ignore no-explicit-any
+            const u: any = userById.get(m.user_id);
             memberDetails.push({
               userId: m.user_id,
-              email: u?.user?.email ?? '',
+              email: u?.email ?? '',
               role: m.role,
-              pending: !u?.user?.email_confirmed_at,
+              pending: !u?.email_confirmed_at,
               isPrimaryOwner: m.user_id === p.owner,
             });
           }
           practices.push({
             id: p.id,
             name: p.name ?? '',
-            ownerEmail: ownerUser?.user?.email ?? '',
+            ownerEmail: ownerUser?.email ?? '',
             logoUrl,
             memberCount: memberCount.get(p.id) ?? 0,
             chartCount: chartCount.get(p.id) ?? 0,
@@ -396,8 +429,8 @@ Deno.serve(async (req: Request) => {
         const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
         if (!practiceId || !email) return json({ error: 'missing practiceId or email' }, 400);
         const { data: pracRow } = await admin.from('practices').select('name').eq('id', practiceId).maybeSingle();
-        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-        let target = list.users.find((u) => (u.email ?? '').toLowerCase() === email);
+        // deno-lint-ignore no-explicit-any
+        let target = (await listAllUsers(admin)).find((u: any) => (u.email ?? '').toLowerCase() === email);
         let invited = false;
         if (!target) {
           const inv = await inviteViaResend(admin, email, pracRow?.name ?? '', redirectTo);
@@ -564,8 +597,8 @@ Deno.serve(async (req: Request) => {
           totalCost += cost;
           byUser.set(r.user_id, cur);
         }
-        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-        const emailById = new Map(list.users.map((u) => [u.id, u.email ?? '']));
+        // deno-lint-ignore no-explicit-any
+        const emailById = new Map((await listAllUsers(admin)).map((u: any) => [u.id, u.email ?? '']));
         const users = Array.from(byUser.entries())
           .map(([userId, v]) => ({
             userId,
