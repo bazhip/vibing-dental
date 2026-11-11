@@ -1330,7 +1330,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         aria-haspopup="dialog"
         aria-label={ownerReportOn ? 'Preview and download the clinical chart and owner report' : 'Preview and download the chart PDF'}
       >
-        <span aria-hidden="true">⤓</span> {ownerReportOn ? 'Documents' : 'Preview PDF'}
+        <span aria-hidden="true">⤓</span> {ownerReportOn ? 'Download PDFs' : 'Preview PDF'}
       </button>
 
       {previewSnapshot && (
