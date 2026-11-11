@@ -5,6 +5,8 @@ import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import {
   extractChartActions,
+  reviewFullTranscript,
+  ExtractResult,
   applyAiActions,
   dedupeActions,
   normalizeTranscript,
@@ -246,6 +248,20 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const inFlightRef = React.useRef(false);
   const queuedFlushRef = React.useRef(false);
+  /** Pages dictated on this session — bounds what the final check may fill. */
+  const sectionsRef = React.useRef<Set<string | undefined>>(new Set());
+  /** Changes the vet rejected in review; the final check won't re-add them. */
+  const rejectedRef = React.useRef<AiAction[]>([]);
+  /** Bumps when the dictation is thrown away (New, another chart): a
+   *  result that comes back afterwards must not land on that chart. */
+  const sessionGenRef = React.useRef(0);
+  const resetSessionMemory = () => {
+    sessionGenRef.current++;
+    sectionsRef.current = new Set();
+    rejectedRef.current = [];
+  };
+  const lockedRef = React.useRef(locked);
+  lockedRef.current = locked;
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
   const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
@@ -293,10 +309,29 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const contextSegments = voiceRef.current.recentSegments(RECENT_CONTEXT_MS).filter((s) => !sentSet.has(s.receivedAt));
     const recentContext = contextSegments.map((s) => s.text).join(' ').trim();
 
+    sectionsRef.current.add(section);
+
+    const gen = sessionGenRef.current;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
       const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
+      if (gen === sessionGenRef.current) applyResult(result);
+    } catch (err) {
+      console.error('[VoiceInputButton] chunk extraction failed', err);
+      setError(err instanceof Error ? err.message : 'Voice autofill failed');
+    } finally {
+      inFlightRef.current = false;
+      setActiveChunkCount((c) => c - 1);
+      const wasQueued = queuedFlushRef.current;
+      queuedFlushRef.current = false;
+      if (wasQueued || final) setTimeout(() => { processChunk(final).catch(console.error); }, 0);
+    }
+  }, []);
+
+  /** Apply an extraction result: chart changes, review items, activity.
+   *  Returns how many new review items it raised. */
+  function applyResult(result: ExtractResult): number {
       const before = contextRef.current;
       const fresh = dedupeActions(result.actions, before);
       // Undo info has to be captured from the chart BEFORE applying.
@@ -333,17 +368,80 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         });
       }
       appendActivity(applied, result.skipped, flaggedActions);
+      return newItems.length;
+  }
+
+  const waitIdle = async () => {
+    while (inFlightRef.current) await new Promise((r) => setTimeout(r, 100));
+  };
+
+  /** Send everything still pending and wait for every result to land —
+   *  stopping never cuts off speech that hasn't been charted yet. */
+  const drain = async () => {
+    for (let i = 0; i < 10; i++) {
+      await waitIdle();
+      await processChunk(false);
+      // Let a flush queued behind that request start.
+      await new Promise((r) => setTimeout(r, 0));
+      if (!inFlightRef.current) break;
+    }
+    await waitIdle();
+  };
+
+  /**
+   * After dictation stops: one pass over the whole transcript against the
+   * chart, catching what per-utterance extraction missed (findings split
+   * across chunks, corrections, things said fast). Its changes all go to
+   * Needs review.
+   */
+  const runFinalCheck = async () => {
+    await drain();
+    if (lockedRef.current) return; // view-only now: change nothing
+    const segments = voiceRef.current?.allSegments() ?? [];
+    const transcript = segments.map((s) => s.annotated ?? s.text).join('\n').trim();
+    if (!transcript) return;
+    // Let React commit the last chunk's chart changes into contextRef.
+    await new Promise((r) => setTimeout(r, 150));
+    if (inFlightRef.current) await waitIdle();
+    const gen = sessionGenRef.current;
+    inFlightRef.current = true;
+    setActiveChunkCount((c) => c + 1);
+    try {
+      const result = await reviewFullTranscript({
+        transcript,
+        context: contextRef.current,
+        rejected: rejectedRef.current,
+        sections: Array.from(sectionsRef.current),
+      });
+      if (!result.ran || gen !== sessionGenRef.current) return;
+      const raised = applyResult(result);
+      const now = new Date();
+      setActivity((prev) => [...prev, {
+        id: `${now.getTime()}_final`,
+        description: raised
+          ? `Final check: ${raised} ${raised === 1 ? 'item' : 'items'} added to review`
+          : 'Final check: nothing missed',
+        at: now,
+      }].slice(-200));
+      if (raised) {
+        setPanelOpen(true);
+        setCollapsed(false);
+        if (voicePromptsRef.current && !voiceRef.current?.recording) {
+          speak(raised === 1 ? 'Final check found one item to review.' : `Final check found ${raised} items to review.`);
+        }
+      }
     } catch (err) {
-      console.error('[VoiceInputButton] chunk extraction failed', err);
-      setError(err instanceof Error ? err.message : 'Voice autofill failed');
+      console.error('[VoiceInputButton] final check failed', err);
+      setError(err instanceof Error ? `Final check failed: ${err.message}` : 'Final check failed');
     } finally {
       inFlightRef.current = false;
       setActiveChunkCount((c) => c - 1);
-      const wasQueued = queuedFlushRef.current;
-      queuedFlushRef.current = false;
-      if (wasQueued || final) setTimeout(() => { processChunk(final).catch(console.error); }, 0);
+      if (queuedFlushRef.current) {
+        queuedFlushRef.current = false;
+        processChunk(false).catch(console.error);
+      }
     }
-  }, []);
+  };
 
   /** How to take back `a` if the vet rejects it, from the chart as it was
    *  just before. Undefined when there's no clean undo. */
@@ -378,6 +476,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setReviews((prev) => prev.filter((r) => r.id !== id));
     const now = new Date();
     if (choice === 'keep') return;
+    if (item.flag.applied) rejectedRef.current.push(item.flag.applied);
     item.revert?.();
     if (choice === 'remove') {
       if (item.flag.applied) {
@@ -394,7 +493,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (a) onActivityRef.current?.([a]);
   };
 
-  const onStop = React.useCallback(async (_t: string) => { await processChunk(true); }, [processChunk]);
+  const onStop = React.useCallback(async (_t: string) => {
+    await runFinalCheck(); // drains every pending chunk first
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processChunk]);
   // Send each utterance as soon as the speaker pauses, rather than on a
   // fixed timer; cap the wait so continuous speech still flows.
   const onSegment = React.useCallback((seg: FinalSegment) => {
@@ -420,6 +522,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // ---- Earpiece prompts --------------------------------------------------
   // Spoken only after a stretch of silence, never over the vet. The mic is
   // muted while the app speaks so it doesn't transcribe itself.
+  const voicePromptsRef = React.useRef(voicePrompts);
+  voicePromptsRef.current = voicePrompts;
   const speakingRef = React.useRef(false);
   const speak = React.useCallback((text: string, onDone?: () => void) => {
     if (!text || !speechAvailable()) return;
@@ -496,6 +600,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     prevKeyRef.current = sessionKey;
     if (voiceRef.current?.recording) voiceRef.current.stop();
     voiceRef.current?.clear();
+    resetSessionMemory();
     setActivity([]);
     setReviews([]);
     setPanelOpen(false);
@@ -513,6 +618,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       try { window.speechSynthesis.speak(new SpeechSynthesisUtterance('')); } catch { /* ignore */ }
     }
     if (fresh) {
+      resetSessionMemory();
       setActivity([]);
       setReviews([]);
       voice.start();
@@ -572,6 +678,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }))) return;
     if (voice.recording) voice.stop();
     voice.clear();
+    resetSessionMemory();
     setActivity([]);
     setReviews([]);
   };
