@@ -26,11 +26,22 @@ export type PracticePlan = 'free' | 'basic' | 'pro';
  *  to it. During the free beta every account gets AI voice autofill
  *  (usage is logged per user in ai_usage) and free accounts get 10
  *  images per chart. */
-export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean }> = {
-  free: { maxImages: 10, aiAutofill: true },
-  basic: { maxImages: 30, aiAutofill: true },
-  pro: { maxImages: 100, aiAutofill: true },
+export const PLAN_LIMITS: Record<PracticePlan, { maxImages: number; aiAutofill: boolean; dicom: boolean }> = {
+  // DICOM radiographs (original .dcm kept alongside a rendered preview)
+  // are for PAYING subscribers only: off on the free tier, never part of
+  // the free beta, and also off for comped practices (see
+  // BILLED_STATUSES). The database enforces the same rule (migration
+  // 20261112_dicom_attachments).
+  free: { maxImages: 10, aiAutofill: true, dicom: false },
+  basic: { maxImages: 30, aiAutofill: true, dicom: true },
+  pro: { maxImages: 100, aiAutofill: true, dicom: true },
 };
+
+/** Subscription statuses backed by a real Stripe subscription. Unlike
+ *  the plan check, 'comped' is excluded — comped/grandfathered practices
+ *  pay nothing, so paid-only extras (DICOM) stay off for them. Mirrored
+ *  in public.user_has_billed_subscription(). */
+export const BILLED_STATUSES = ['active', 'trialing', 'past_due'];
 
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
@@ -42,6 +53,8 @@ export interface UseProfileReturn extends PracticeProfile {
   aiEnabled: boolean;
   /** Max images per chart on the current plan. */
   maxImages: number;
+  /** Whether DICOM radiograph uploads are included (paid plans only). */
+  dicomEnabled: boolean;
   /** Owner-report feature flag — per practice, admin-controlled, off by
    *  default (practices.owner_report_enabled). */
   ownerReportEnabled: boolean;
@@ -156,6 +169,8 @@ export function useProfile(): UseProfileReturn {
   const [logoUrl, setLogoUrl] = React.useState('');
   const [practiceId, setPracticeId] = React.useState('');
   const [plan, setPlan] = React.useState<PracticePlan>('basic');
+  // Off until the profile proves a real subscription (no flash of DICOM).
+  const [billed, setBilled] = React.useState(false);
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
   const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
@@ -185,6 +200,7 @@ export function useProfile(): UseProfileReturn {
       // get basic/pro features while their subscription is alive (or
       // comped/grandfathered) — a lapsed or never-started one is free.
       let practicePlan: PracticePlan = 'free';
+      let billedSub = false;
       let ownerReportOn = false;
       let reportConfig: OwnerReportConfig | null = null;
       if (pid) {
@@ -197,6 +213,7 @@ export function useProfile(): UseProfileReturn {
         if (prac?.name?.trim()) effectivePracticeName = prac.name.trim();
         const paidStatus = ['active', 'trialing', 'comped', 'past_due'].includes(prac?.subscription_status ?? '');
         if (paidStatus) practicePlan = prac?.plan === 'pro' ? 'pro' : 'basic';
+        billedSub = BILLED_STATUSES.includes(prac?.subscription_status ?? '');
         // Separate query so a database that predates the column (it ships
         // via migration) degrades to flag-off instead of breaking the
         // whole profile load.
@@ -228,6 +245,7 @@ export function useProfile(): UseProfileReturn {
           setLogoUrl(signedUrl);
           setPracticeId(pid);
           setPlan(practicePlan);
+          setBilled(billedSub);
           setOwnerReportEnabled(ownerReportOn);
           if (reportConfig) setOwnerReportConfig(reportConfig);
         }
@@ -299,6 +317,7 @@ export function useProfile(): UseProfileReturn {
     plan,
     aiEnabled: PLAN_LIMITS[plan].aiAutofill,
     maxImages: PLAN_LIMITS[plan].maxImages,
+    dicomEnabled: PLAN_LIMITS[plan].dicom && billed,
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
     ownerReportConfig,

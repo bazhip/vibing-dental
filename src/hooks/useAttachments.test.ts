@@ -34,11 +34,33 @@ describe('encodeUnderLimit', () => {
   });
 });
 
-import { thumbPathFor } from './useAttachments';
+import { thumbPathFor, isDicomFile } from './useAttachments';
 
 describe('thumbPathFor', () => {
   it('sits next to the original with a .thumb.jpg suffix', () => {
     expect(thumbPathFor('u1/c1/abc.png')).toBe('u1/c1/abc.thumb.jpg');
     expect(thumbPathFor('u1/c1/abc.jpg')).toBe('u1/c1/abc.thumb.jpg');
+  });
+});
+
+describe('isDicomFile', () => {
+  const dicomBytes = () => {
+    const b = new Uint8Array(200);
+    b.set([0x44, 0x49, 0x43, 0x4d], 128); // "DICM"
+    return b;
+  };
+
+  it('accepts .dcm by name and application/dicom by type', async () => {
+    expect(await isDicomFile(new File([new Uint8Array(10)], 'IMG.DCM'))).toBe(true);
+    expect(await isDicomFile(new File([new Uint8Array(10)], 'x', { type: 'application/dicom' }))).toBe(true);
+  });
+
+  it('sniffs extensionless sensor exports by the DICM magic', async () => {
+    expect(await isDicomFile(new File([dicomBytes()], 'IM000001'))).toBe(true);
+    expect(await isDicomFile(new File([new Uint8Array(200)], 'IM000001'))).toBe(false);
+  });
+
+  it('never treats a typed image as DICOM', async () => {
+    expect(await isDicomFile(new File([dicomBytes()], 'photo.jpg', { type: 'image/jpeg' }))).toBe(false);
   });
 });

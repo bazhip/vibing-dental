@@ -9,6 +9,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.4.3",
     "@vercel/analytics": "^2.0.1",
+    "dicom-parser": "^1.8.21",
     "downloadjs": "^1.4.7",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.7",

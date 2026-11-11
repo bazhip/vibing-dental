@@ -3050,6 +3050,20 @@ button.save-status--error {
   cursor: pointer;
 }
 .imaging__caption { font-size: 0.85rem; }
+/* Original DICOM kept alongside the preview — badge doubles as download. */
+.imaging__dicom {
+  align-self: flex-start;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  text-decoration: none;
+}
+a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
+.imaging__formats { margin: 0.35rem 0 0; }
 .imaging__delete { align-self: flex-start; }
 
 /* Team panel */

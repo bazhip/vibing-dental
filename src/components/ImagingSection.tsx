@@ -12,6 +12,8 @@ interface ImagingSectionProps {
   practiceId?: string;
   /** Per-plan cap on images for this chart. */
   maxImages?: number;
+  /** Paid plans: accept DICOM radiographs (original kept for download). */
+  dicomEnabled?: boolean;
   /** Owner-report before/after tags (attachment id → role). */
   imageRoles?: Record<string, ImageRole>;
   /** Tag (or untag, with null) an image for the owner report. */
@@ -37,6 +39,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   cloudActive,
   practiceId = '',
   maxImages,
+  dicomEnabled = false,
   imageRoles = {},
   onImageRoleChange,
   includeInPdf = true,
@@ -45,7 +48,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageInPdfChange,
   readOnly = false,
 }) => {
-  const store = useAttachments(chartId, practiceId, maxImages);
+  const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [description, setDescription] = React.useState('');
   const [busy, setBusy] = React.useState(false);
@@ -172,11 +175,23 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         <input
           ref={fileRef}
           type="file"
-          accept="image/png,image/jpeg,image/webp"
+          accept={
+            store.dicomEnabled
+              ? 'image/png,image/jpeg,image/webp,.dcm,.dicom,application/dicom'
+              : 'image/png,image/jpeg,image/webp'
+          }
           onChange={onPick}
           style={{ display: 'none' }}
         />
       </div>
+      )}
+
+      {store.maxImages > 0 && !readOnly && (
+        <p className="patient-form__hint imaging__formats">
+          {store.dicomEnabled
+            ? 'PNG, JPEG, WEBP or DICOM (.dcm). DICOM originals are kept and can be downloaded.'
+            : 'PNG, JPEG or WEBP. DICOM (.dcm) uploads are included on paid plans.'}
+        </p>
       )}
 
       {error && <div className="login-error" role="alert">{error}</div>}
@@ -216,6 +231,21 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   <option value="photo">Photo</option>
                   <option value="xray">Radiograph</option>
                 </select>
+                {a.originalPath && (
+                  a.originalUrl ? (
+                    <a
+                      href={a.originalUrl}
+                      className="imaging__dicom"
+                      title="Download the original DICOM file"
+                    >
+                      DICOM ↓
+                    </a>
+                  ) : (
+                    <span className="imaging__dicom" title="Original DICOM file stored with this image">
+                      DICOM
+                    </span>
+                  )
+                )}
                 {onImageInPdfChange && includeInPdf && (
                   <label className="imaging__in-pdf" title="Include this image on the PDF's image pages">
                     <input

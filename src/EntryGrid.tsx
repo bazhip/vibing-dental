@@ -823,6 +823,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           cloudActive={cloud.enabled}
           practiceId={profile.practiceId}
           maxImages={profile.maxImages}
+          dicomEnabled={profile.dicomEnabled}
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}

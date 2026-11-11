@@ -178,7 +178,7 @@ create policy "users update own attachments"  on public.attachments for update t
 create policy "users delete own attachments"  on public.attachments for delete to authenticated using (created_by = auth.uid());
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('attachments', 'attachments', false, 20971520, array['image/png','image/jpeg','image/webp'])
+values ('attachments', 'attachments', false, 41943040, array['image/png','image/jpeg','image/webp','application/dicom'])
 on conflict (id) do update
   set file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
 create policy "users manage own attachments storage"
@@ -212,6 +212,9 @@ alter table public.profiles           add column if not exists practice_id uuid 
 alter table public.charts             add column if not exists practice_id uuid;
 alter table public.report_templates   add column if not exists practice_id uuid;
 alter table public.attachments        add column if not exists practice_id uuid;
+-- DICOM originals (paid plans): `path` is the rendered preview, this is
+-- the untouched .dcm. Gated + frozen — see migration 20261112_dicom_attachments.
+alter table public.attachments        add column if not exists original_path text;
 -- SECURITY DEFINER membership checks used in row policies (see migrations
 -- team_access / team_access_row_policies for the full policy definitions):
 --   is_member_of(pid), is_owner_of(pid)

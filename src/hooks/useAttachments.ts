@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
 
 /**
  * Photos and radiographs pinned to the active chart. Files live in the
@@ -7,6 +8,11 @@ import { supabase, cloudEnabled } from '../utils/supabaseClient';
  * lists/uploads/updates/deletes the rows and hands back short-lived
  * signed URLs for display. Cloud-only — trial/standalone charts have no
  * account to scope storage to, so the Imaging section hides itself.
+ *
+ * DICOM radiographs (paid plans only): the original .dcm is stored
+ * untouched at `original_path`, and `path` holds a rendered PNG/JPEG
+ * preview — so the grid, PDF and owner report never need to know the
+ * image came from DICOM.
  */
 
 export type AttachmentKind = 'photo' | 'xray';
@@ -24,6 +30,10 @@ export interface Attachment {
   /** Signed URL of the small grid thumbnail. Falls back to `url` for
    *  images uploaded before thumbnails existed. */
   thumbUrl: string;
+  /** Storage path of the original DICOM file, when uploaded as DICOM. */
+  originalPath: string | null;
+  /** Signed download URL of the original DICOM file ('' if none). */
+  originalUrl: string;
 }
 
 export interface UseAttachmentsReturn {
@@ -32,6 +42,8 @@ export interface UseAttachmentsReturn {
   items: Attachment[];
   /** Max images allowed on one chart (UI shows the count against it). */
   maxImages: number;
+  /** Whether DICOM uploads are allowed on the current plan. */
+  dicomEnabled: boolean;
   upload: (file: File, kind: AttachmentKind, caption: string) => Promise<void>;
   updateCaption: (id: string, caption: string) => Promise<void>;
   /** Relabel an image as a photo or a radiograph. */
@@ -44,7 +56,9 @@ export interface UseAttachmentsReturn {
 // admin panel and read here via practiceId. For now they're sensible
 // fixed defaults.
 const ATTACHMENT_LIMITS = {
-  /** Absolute reject ceiling for the ORIGINAL file (before shrinking). */
+  /** Absolute reject ceiling for the ORIGINAL file (before shrinking).
+   *  Also the cap on stored DICOM originals, which are never shrunk —
+   *  keep the bucket's file_size_limit at least this large. */
   hardMaxBytes: 40 * 1024 * 1024,
   /** Nothing larger than this is ever uploaded — keeps storage and
    *  egress inside the Supabase free tier as long as possible. */
@@ -99,6 +113,32 @@ export async function encodeUnderLimit(
  *  inherits the same storage access rules and needs no extra column. */
 export function thumbPathFor(path: string): string {
   return path.replace(/\.[^./]+$/, '') + '.thumb.jpg';
+}
+
+/** Whether a picked file is DICOM: by name/MIME, or — for the
+ *  extensionless files sensor software often exports — by the "DICM"
+ *  magic. Only sniffs files the browser doesn't already type as images. */
+export async function isDicomFile(file: File): Promise<boolean> {
+  if (looksLikeDicomName(file)) return true;
+  if (ALLOWED.includes(file.type) || file.size < 132) return false;
+  const head = new Uint8Array(await file.slice(0, 132).arrayBuffer());
+  return hasDicomMagic(head);
+}
+
+/** Render a DICOM file to a PNG preview File for the normal pipeline.
+ *  The decoder (and dicom-parser) load only when needed. */
+async function dicomPreview(file: File): Promise<File> {
+  const { renderDicomPreview } = await import('../utils/dicom');
+  let blob: Blob;
+  try {
+    blob = await renderDicomPreview(new Uint8Array(await file.arrayBuffer()));
+  } catch (err) {
+    if (err instanceof DicomError) throw err;
+    throw new Error("Couldn't read that DICOM file.");
+  }
+  const base = file.name.replace(/\.[^.]+$/, '') || 'radiograph';
+  const ext = blob.type === 'image/jpeg' ? 'jpg' : 'png';
+  return new File([blob], `${base}.${ext}`, { type: blob.type });
 }
 
 function decodeImage(file: File): Promise<HTMLImageElement | null> {
@@ -172,12 +212,26 @@ async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | nu
   return { main: new File([blob], `${base}.jpg`, { type: 'image/jpeg' }), thumb };
 }
 
-/** Sign a batch of storage paths for display. */
-async function signAll(rows: { path: string }[]): Promise<Map<string, string>> {
+interface AttachmentRow {
+  id: string;
+  chart_id: string;
+  path: string;
+  caption: string | null;
+  kind: string | null;
+  tooth_triadan: number | null;
+  created_at: string;
+  original_path?: string | null;
+}
+
+/** Sign a batch of storage paths for display (or download). */
+async function signAll(
+  rows: { path: string }[],
+  options?: { download: boolean }
+): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   if (!supabase || rows.length === 0) return map;
   const paths = rows.map((r) => r.path);
-  const { data } = await supabase.storage.from('attachments').createSignedUrls(paths, SIGN_TTL);
+  const { data } = await supabase.storage.from('attachments').createSignedUrls(paths, SIGN_TTL, options);
   for (const entry of data ?? []) {
     if (entry.path && entry.signedUrl) map.set(entry.path, entry.signedUrl);
   }
@@ -190,19 +244,27 @@ async function signAll(rows: { path: string }[]): Promise<Map<string, string>> {
  *  list each time it opens. */
 export async function listChartAttachments(chartId: string): Promise<Attachment[] | null> {
   if (!supabase || !chartId) return null;
-  const { data, error } = await supabase
-    .from('attachments')
-    .select('id, chart_id, path, caption, kind, tooth_triadan, created_at')
-    .eq('chart_id', chartId)
-    .order('created_at', { ascending: true });
+  const query = (cols: string) =>
+    supabase!
+      .from('attachments')
+      .select(cols)
+      .eq('chart_id', chartId)
+      .order('created_at', { ascending: true });
+  const base = 'id, chart_id, path, caption, kind, tooth_triadan, created_at';
+  // original_path ships via migration; a database without it degrades to
+  // "no DICOM originals" rather than losing every image.
+  let { data, error } = await query(`${base}, original_path`);
+  if (error) ({ data, error } = await query(base));
   if (error) return null;
-  const rows = data ?? [];
+  const rows = (data ?? []) as unknown as AttachmentRow[];
+  const originals = rows.filter((r) => r.original_path).map((r) => ({ path: r.original_path as string }));
   // Separate signing call for thumbnails: older images have none, and a
   // missing thumbnail must never cost the full image its URL.
   const [signed, signedThumbs] = await Promise.all([
     signAll(rows),
     signAll(rows.map((r) => ({ path: thumbPathFor(r.path) }))).catch(() => new Map<string, string>()),
   ]);
+  const signedOriginals = await signAll(originals, { download: true }).catch(() => new Map<string, string>());
   return rows.map((r) => ({
     id: r.id,
     chartId: r.chart_id,
@@ -213,13 +275,16 @@ export async function listChartAttachments(chartId: string): Promise<Attachment[
     createdAt: r.created_at,
     url: signed.get(r.path) ?? '',
     thumbUrl: signedThumbs.get(thumbPathFor(r.path)) ?? signed.get(r.path) ?? '',
+    originalPath: r.original_path ?? null,
+    originalUrl: r.original_path ? signedOriginals.get(r.original_path) ?? '' : '',
   }));
 }
 
 export function useAttachments(
   chartId: string,
   practiceId = '',
-  maxImagesOverride?: number
+  maxImagesOverride?: number,
+  dicomEnabled = false
 ): UseAttachmentsReturn {
   const maxImages = maxImagesOverride ?? ATTACHMENT_LIMITS.maxPerChart;
   const [items, setItems] = React.useState<Attachment[]>([]);
@@ -251,8 +316,16 @@ export function useAttachments(
   const upload = React.useCallback(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
       if (!supabase) throw new Error('Cloud is not configured.');
-      if (!ALLOWED.includes(file.type)) {
-        throw new Error('Use a PNG, JPEG, or WEBP image.');
+      const dicom = await isDicomFile(file);
+      if (dicom && !dicomEnabled) {
+        throw new Error(
+          'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.'
+        );
+      }
+      if (!dicom && !ALLOWED.includes(file.type)) {
+        throw new Error(
+          dicomEnabled ? 'Use a PNG, JPEG, WEBP or DICOM image.' : 'Use a PNG, JPEG, or WEBP image.'
+        );
       }
       if (itemsRef.current.length >= maxImages) {
         throw new Error(
@@ -264,17 +337,29 @@ export function useAttachments(
           `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`
         );
       }
+      // DICOM: render a preview for display; the original is kept as-is.
+      const source = dicom ? await dicomPreview(file) : file;
       // Fit to the size/dimension caps and make the grid thumbnail.
-      const { main: toUpload, thumb } = await prepareUpload(file);
+      const { main: toUpload, thumb } = await prepareUpload(source);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
       if (!uid) throw new Error('Sign in to add images.');
       const id = crypto.randomUUID();
       const path = `${uid}/${chartId}/${id}.${extFor(toUpload.type)}`;
+      const originalPath = dicom ? `${uid}/${chartId}/${id}.dcm` : null;
       const { error: upErr } = await supabase.storage
         .from('attachments')
         .upload(path, toUpload, { contentType: toUpload.type, upsert: false });
       if (upErr) throw new Error(upErr.message);
+      if (originalPath) {
+        const { error: origErr } = await supabase.storage
+          .from('attachments')
+          .upload(originalPath, file, { contentType: DICOM_MIME, upsert: false });
+        if (origErr) {
+          await supabase.storage.from('attachments').remove([path]).catch(() => undefined);
+          throw new Error(`Couldn't store the original DICOM file: ${origErr.message}`);
+        }
+      }
       if (thumb) {
         // Best-effort: without it the grid just shows the full image.
         await supabase.storage
@@ -289,11 +374,12 @@ export function useAttachments(
         kind,
         caption: caption.trim(),
         practice_id: practiceIdRef.current || null,
+        ...(originalPath ? { original_path: originalPath } : {}),
       });
       if (rowErr) throw new Error(rowErr.message);
       await load();
     },
-    [chartId, load, maxImages]
+    [chartId, load, maxImages, dicomEnabled]
   );
 
   const updateCaption = React.useCallback(async (id: string, caption: string): Promise<void> => {
@@ -315,7 +401,9 @@ export function useAttachments(
       if (!supabase) return;
       const target = items.find((it) => it.id === id);
       if (target) {
-        await supabase.storage.from('attachments').remove([target.path, thumbPathFor(target.path)]);
+        await supabase.storage
+          .from('attachments')
+          .remove([target.path, thumbPathFor(target.path), ...(target.originalPath ? [target.originalPath] : [])]);
       }
       const { error } = await supabase.from('attachments').delete().eq('id', id);
       if (error) throw new Error(error.message);
@@ -329,6 +417,7 @@ export function useAttachments(
     loaded,
     items,
     maxImages,
+    dicomEnabled,
     upload,
     updateCaption,
     updateKind,
