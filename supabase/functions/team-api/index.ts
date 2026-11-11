@@ -342,6 +342,29 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true });
       }
 
+      case 'set_owner_report_config': {
+        // Owner report templates (src/utils/ownerReportConfig.ts). The
+        // client normalizes on read, so here we only bound the payload:
+        // a plain JSON object (or null to reset to the built-in report)
+        // under ~50 KB.
+        const m = await requireOwner();
+        if (!m) return json({ error: 'Only a practice owner can change the owner report templates.' }, 403);
+        const config = body.config;
+        if (config !== null && (typeof config !== 'object' || Array.isArray(config))) {
+          return json({ error: 'Owner report settings must be an object.' }, 400);
+        }
+        if (config !== null && !Array.isArray((config as Json).templates)) {
+          return json({ error: 'Owner report settings need a templates list.' }, 400);
+        }
+        const size = new TextEncoder().encode(JSON.stringify(config)).length;
+        if (size > 50 * 1024) {
+          return json({ error: 'Those owner report settings are too large (50 KB max) — shorten some text or remove a template.' }, 413);
+        }
+        const { error } = await admin.from('practices').update({ owner_report_config: config }).eq('id', m.practiceId);
+        if (error) throw error;
+        return json({ ok: true });
+      }
+
       default:
         return json({ error: `unknown action: ${action}` }, 400);
     }

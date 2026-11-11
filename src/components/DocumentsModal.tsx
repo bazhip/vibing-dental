@@ -3,6 +3,7 @@ import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPre
 import { OwnerReportModal } from './OwnerReportModal';
 import type { ChartSnapshot, ImageRole } from '../types';
 import type { OwnerReportBranding } from '../utils/ownerReportPdf';
+import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 
 export type DocumentTab = 'chart' | 'owner';
 
@@ -24,6 +25,8 @@ interface DocumentsModalProps {
     practiceId: string;
     cloudActive: boolean;
     onEditWording: () => void;
+    /** Practice owner report templates (omitted = built-in report). */
+    config?: OwnerReportConfig;
   };
 }
 
@@ -142,6 +145,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
                 onEditWording={ownerReport.onEditWording}
                 diagramSvg={chartSnapshot?.postSvg}
                 species={chartSnapshot?.species}
+                config={ownerReport.config}
               />
             )}
           </div>

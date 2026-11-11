@@ -1,3 +1,6 @@
+-- Run AFTER 20260719_owner_report_flag.sql and 20261111_owner_report_config.sql
+-- (the trigger references their columns).
+--
 -- Practice owners may update their practice row from the browser (name,
 -- logo). They must NOT be able to change billing state, ownership or
 -- feature flags that way — e.g. setting subscription_status = 'comped'
@@ -21,6 +24,7 @@ begin
   or new.frozen_at             is distinct from old.frozen_at
   or new.owner                 is distinct from old.owner
   or new.owner_report_enabled  is distinct from old.owner_report_enabled
+  or new.owner_report_config   is distinct from old.owner_report_config
   then
     raise exception 'Billing, ownership and feature settings can only be changed by ToothOps.'
       using errcode = '42501';

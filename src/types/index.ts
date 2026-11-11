@@ -207,6 +207,9 @@ export interface OwnerReportOverrides {
   homecare?: string;
   /** Optional extra note from the team, printed as its own section. */
   extraNotes?: string;
+  /** Practice owner-report template chosen for this chart (absent = the
+   *  practice default). Unknown ids fall back to the default too. */
+  templateId?: string;
 }
 
 export interface ChartSnapshot {

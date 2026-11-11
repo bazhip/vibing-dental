@@ -2,9 +2,13 @@ import React from 'react';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
-  generatedIntro,
-  DEFAULT_HOMECARE_TIPS,
+  placeholderValuesFor,
+  templateForSnapshot,
+  templateHomecareTips,
+  templateIntro,
 } from '../utils/ownerReport';
+import type { OwnerReportContext } from '../utils/ownerReportConfig';
+import { LOCALE_LABELS } from '../utils/ownerReportI18n';
 
 interface OwnerReportSectionProps {
   /** Live chart snapshot — the generated report content derives from it. */
@@ -13,6 +17,9 @@ interface OwnerReportSectionProps {
   onOverrideChange: (field: keyof OwnerReportOverrides, value: string | null) => void;
   /** Open the report preview modal. */
   onPreview: () => void;
+  /** Practice templates + branding for placeholders. Omitted = the
+   *  built-in report. */
+  context?: OwnerReportContext;
 }
 
 /**
@@ -27,10 +34,17 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   overrides,
   onOverrideChange,
   onPreview,
+  context,
 }) => {
-  const model = React.useMemo(() => buildOwnerReportModel(snapshot), [snapshot]);
-  const introDefault = generatedIntro(snapshot.patientInfo.patientName);
-  const homecareDefault = DEFAULT_HOMECARE_TIPS.join('\n');
+  const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
+  // Prefills follow the chosen template (its intro / tips / language).
+  const template = templateForSnapshot(snapshot, context);
+  const values = placeholderValuesFor(snapshot, context, template);
+  const introDefault = templateIntro(snapshot, template, values);
+  const homecareDefault = templateHomecareTips(template, values).join('\n');
+  const templates = context?.config?.templates ?? [];
+  const defaultTemplateId = context?.config?.defaultTemplateId;
+  const chosenKnown = !!overrides.templateId && templates.some((t) => t.id === overrides.templateId);
 
   // '' is a deliberate customization ("print nothing here"), so edited
   // state is tracked by presence, not truthiness.
@@ -81,6 +95,31 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         printing. Tag photos as Before/After in the Images section to
         include them.
       </p>
+
+      {templates.length > 1 && (
+        <label className="patient-form__label owner-report__block">
+          Report template
+          <select
+            className="patient-form__input"
+            value={chosenKnown ? overrides.templateId : ''}
+            onChange={(e) => onOverrideChange('templateId', e.target.value || null)}
+          >
+            <option value="">
+              Practice default ({templates.find((t) => t.id === defaultTemplateId)?.name ?? templates[0].name})
+            </option>
+            {templates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+                {t.language !== 'en' ? ` · ${LOCALE_LABELS[t.language]}` : ''}
+              </option>
+            ))}
+          </select>
+          <span className="patient-form__hint">
+            Sets the layout, language, and default wording. Practice owners
+            manage templates in Practice settings.
+          </span>
+        </label>
+      )}
 
       {block(
         'Opening summary',

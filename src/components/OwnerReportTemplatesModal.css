@@ -1,0 +1,326 @@
+/* Owner report templates editor (opened from Practice settings).
+   Reuses the ai-settings modal chrome and the patient-form inputs;
+   this file only adds the two-column layout, the template list,
+   the section/tip editors, and the placeholder chips. */
+
+/* Widen the shared modal and lay it out as list | editor. */
+.ai-settings-modal.report-templates {
+  max-width: 62rem;
+}
+
+.report-templates__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  overflow: hidden; /* each column scrolls on its own */
+}
+
+/* ---- Template list (left) ------------------------------------------- */
+.report-templates__list {
+  overflow-y: auto;
+  padding: 0.85rem 0.75rem;
+  border-right: 1px solid var(--border, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.report-templates__list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.report-templates__item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text, #0f172a);
+}
+
+.report-templates__item:hover {
+  background: var(--surface-alt, #f1f5f9);
+}
+
+.report-templates__item--on {
+  background: var(--surface-alt, #f1f5f9);
+  border-color: var(--accent, #94a3b8);
+  font-weight: 600;
+}
+
+.report-templates__item-name {
+  overflow-wrap: anywhere;
+}
+
+.report-templates__item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.report-templates__badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary, #2563eb);
+}
+
+.report-templates__lang {
+  font-size: 0.7rem;
+  color: var(--text-muted, #64748b);
+}
+
+.report-templates__list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+
+/* ---- Editor (right) --------------------------------------------------- */
+.report-templates__editor {
+  overflow-y: auto;
+  padding: 0.85rem 1rem;
+}
+
+.report-templates__fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.report-templates__fieldset:disabled {
+  opacity: 0.85; /* read-only, still legible */
+}
+
+.report-templates__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.report-templates__row .patient-form__label {
+  min-width: 0; /* let long practice names shrink, not blow out the grid */
+}
+
+.report-templates__check {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.3rem 0;
+  cursor: pointer;
+}
+
+.report-templates__check--inline {
+  margin: 0;
+}
+
+.report-templates__check input {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.report-templates__textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+  line-height: 1.45;
+}
+
+/* Placeholder chips ({pet}, {owner}, …). */
+.report-templates__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.report-templates__chip {
+  border: 1px solid var(--accent, #94a3b8);
+  background: var(--surface-alt, #f1f5f9);
+  color: var(--text, #0f172a);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.report-templates__chip:hover {
+  background: var(--surface, white);
+}
+
+/* Section editor rows. */
+.report-templates__sections {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.report-templates__section {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background: var(--surface, white);
+}
+
+.report-templates__section--off {
+  opacity: 0.55;
+}
+
+.report-templates__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 34px;
+}
+
+.report-templates__section-name {
+  font-weight: 600;
+}
+
+.report-templates__section-actions {
+  display: flex;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+}
+
+.report-templates__icon {
+  min-width: 34px;
+}
+
+/* Standard-tips preview + custom tips editor. */
+.report-templates__default-tips {
+  margin: 0.35rem 0;
+  padding-left: 1.1rem;
+  color: var(--text-muted, #64748b);
+}
+
+.report-templates__tips {
+  list-style: none;
+  margin: 0.35rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.report-templates__tip {
+  display: flex;
+  gap: 0.4rem;
+  align-items: stretch;
+}
+
+.report-templates__tip .patient-form__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.report-templates__tip .diagram-view__action {
+  flex: 0 0 auto;
+}
+
+.report-templates__inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Footer sits above the shared .ai-settings-footer rules. */
+.report-templates__footer {
+  justify-content: flex-end;
+}
+
+.report-templates__footer .diagram-view__action,
+.report-templates__footer .entry-grid__button--topbar {
+  min-height: 44px;
+}
+
+.report-templates__error {
+  margin: 0 1.25rem 0.5rem;
+}
+
+/* Sample-visit preview shares the pdf-preview modal; make it taller so
+   a full report page is visible at once. */
+.report-templates__preview .pdf-preview-modal {
+  width: min(760px, 96vw);
+}
+
+.report-templates__preview .pdf-preview-iframe-wrap,
+.report-templates__preview .pdf-preview-iframe {
+  height: min(78vh, 860px);
+}
+
+/* ---- Small screens: single column, 44px touch targets ----------------- */
+@media (max-width: 700px) {
+  .report-templates__body {
+    grid-template-columns: 1fr;
+    overflow-y: auto; /* scroll the whole body, not each column */
+  }
+
+  .report-templates__list {
+    border-right: none;
+    border-bottom: 1px solid var(--border, #e2e8f0);
+    overflow-y: visible;
+    max-height: none;
+    order: -1;
+  }
+
+  .report-templates__list ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .report-templates__item {
+    width: auto;
+    border-color: var(--border, #e2e8f0);
+  }
+
+  .report-templates__row {
+    grid-template-columns: 1fr;
+  }
+
+  .report-templates__section-head {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .report-templates .diagram-view__action,
+  .report-templates .patient-form__input,
+  .report-templates .report-templates__chip {
+    min-height: 44px;
+  }
+
+  /* Icon buttons are square-ish; both dimensions clear 44px. */
+  .report-templates .report-templates__icon {
+    min-width: 44px;
+  }
+
+  .report-templates__list-actions .diagram-view__action {
+    flex: 1 1 30%;
+  }
+}

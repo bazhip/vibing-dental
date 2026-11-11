@@ -3,7 +3,8 @@ import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useAttachments } from '../hooks/useAttachments';
-import { buildOwnerReportModel, teethWithFindings } from '../utils/ownerReport';
+import { buildOwnerReportModel, hasSection, teethWithFindings } from '../utils/ownerReport';
+import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
 
@@ -26,6 +27,9 @@ interface OwnerReportModalProps {
    *  diagram; omitted → the report has no diagram. */
   diagramSvg?: SVGSVGElement;
   species?: Species;
+  /** Practice owner report templates; the chart's chosen (or the
+   *  default) template drives the layout. Omitted = built-in report. */
+  config?: OwnerReportConfig;
 }
 
 /** Longest edge for photos embedded in the report — keeps a report with
@@ -50,6 +54,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   onEditWording,
   diagramSvg,
   species,
+  config,
 }) => {
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
@@ -89,15 +94,21 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
           if (jpegBytes) photos.push({ role, caption: item.caption, jpegBytes });
         }
         if (cancelled) return;
-        const model = buildOwnerReportModel(snapshot);
+        const model = buildOwnerReportModel(snapshot, {
+          config,
+          practiceName: branding.practiceName,
+          doctorName: branding.doctorName,
+        });
         // Mouth diagram: numbered pins on the teeth with findings, in the
         // same order as the report's list. No clinical code cards.
         let diagram: { png: Uint8Array } | undefined;
-        if (diagramSvg && species) {
+        if (diagramSvg && species && hasSection(model, 'diagram')) {
           try {
             const diag = TOOTH_DIAGRAMS[species];
             const pins: DiagramPin[] = [];
-            teethWithFindings(model).forEach((t, i) => {
+            // No findings list printed → no numbers to match, so no pins.
+            const pinned = hasSection(model, 'findings') ? teethWithFindings(model) : [];
+            pinned.forEach((t, i) => {
               // Measured centre from the live diagram; the shape table's
               // hand-placed centre is only a fallback.
               const el = diagramSvg.querySelector<SVGGElement>(`g.tooth-group[data-triadan="${t.triadan}"]`);
@@ -134,7 +145,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     };
     // Attachment identity churns with signed-URL refreshes; key on load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, attachments.loaded, snapshot, imageRoles, diagramSvg, species]);
+  }, [open, attachments.loaded, snapshot, imageRoles, diagramSvg, species, config]);
 
   const handleDownload = () => {
     if (!pdfUrl) return;

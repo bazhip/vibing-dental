@@ -811,6 +811,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               overrides={chart.ownerReport}
               onOverrideChange={chart.setOwnerReportOverride}
               onPreview={() => openDocuments('owner')}
+              context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
             />
           ),
         }]
@@ -1203,6 +1204,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               chartId: chart.cloudChartId,
               practiceId: profile.practiceId,
               cloudActive: cloud.enabled,
+              config: profile.ownerReportConfig,
               onEditWording: () => {
                 setPreviewOpen(false);
                 setActiveSection('owner-report');
