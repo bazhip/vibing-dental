@@ -13,8 +13,9 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
  * no project attached.
  */
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// `?.`: scripts/replay-transcript.ts imports this outside Vite (no import.meta.env).
+const url = import.meta.env?.VITE_SUPABASE_URL;
+const anonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY;
 
 export const supabase: SupabaseClient | null =
   url && anonKey ? createClient(url, anonKey) : null;

@@ -383,7 +383,7 @@ function buildStaticSystemPrompt(): string {
     '2. Don\'t restate findings already in the chart state. Each chunk should produce only new or corrective information.',
     '3. Don\'t guess Triadan numbers. If a tooth is referred to as "this one" or "the canine" without a number, skip it — the vet will fill it in.',
     '4. Side conversation, instructions to staff ("hand me the scaler", "more suction"), and pleasantries get NO tool calls. Silence is fine.',
-    '5. Numbers in the transcript may be lightly garbled by speech-to-text. "One oh four" / "1 oh 4" / "1-0-4" all mean 104. Common shorthand spacings ("P D 2", "M 2", "C 1") collapse to PD2, M2, C1.',
+    '5. Numbers in the transcript may be lightly garbled by speech-to-text. "One oh four" / "1 oh 4" / "1-0-4" all mean 104. Common shorthand spacings ("P D 2", "M 2", "C 1") collapse to PD2, M2, C1. You may get the text twice: AS TRANSCRIBED (what speech-to-text produced) and AUTO-CLEANED (a regex pass that turns number words into digits and joins shorthand). The cleanup can be wrong — when the two disagree, reason from the as-transcribed words.',
     '6. When the vet says they "redid" or "corrected" a previous statement, use unset_tooth_mark or update via setter accordingly.',
     '7. SPEAKER LABELS: Some chunks include speaker labels like "Speaker 0:" or "Speaker 1:" — these come from a diarizing transcription model. Treat the speaker who states medical findings as the vet. Treat other speakers as the tech/assistant; their statements are CONTEXT, not findings, unless they\'re reading back numbers the vet asked for. Don\'t emit tool calls for the tech\'s acknowledgements ("got it", "suctioning now") or tooth callouts directed at the vet. If only one speaker label appears, treat them as the vet.',
     '8. Dictation often runs through several teeth in one breath. Each Triadan number starts a new tooth; every value after it belongs to that tooth until the next number. Emit a call for EVERY value of EVERY tooth in the chunk — never stop after the first tooth.',
@@ -494,38 +494,23 @@ export function normalizeTranscript(raw: string): string {
 }
 
 // ----- Heuristic: is this chunk worth sending? -----------------------------
-// Avoid burning tokens on chunks that are obviously not findings (small
-// talk, silence). Cheap regex check — if no Triadan-shaped number AND no
-// medical keyword AND no obvious instruction, skip.
+// Only pure filler is skipped. An earlier keyword gate dropped real
+// findings before the model ever saw them ("504 fractured", "and two on
+// that one", deciduous teeth) — a missed finding costs far more than a
+// call on small talk, and the model already ignores small talk.
 
-const MEDICAL_KEYWORDS = [
-  'normal', 'abnormal', 'mobility', 'recession', 'pocket', 'furcation',
-  'calculus', 'gingivitis', 'periodontal', 'extract', 'extracted', 'missing',
-  'fracture', 'biopsy', 'lesion', 'mass', 'tongue', 'palate', 'pharynx',
-  'lymph', 'buccal', 'extraoral', 'block', 'mL', 'bupivacaine', 'ropivacaine',
-  'lidocaine', 'mepivacaine', 'cleaning', 'polish', 'scaling', 'suturing',
-  'tooth', 'teeth', 'canine', 'incisor', 'molar', 'premolar', 'carnassial',
-  'PD', 'P D', 'class', 'stage', 'mm', 'millimeter',
-  // Shorthand vets actually dictate.
-  'GI', 'calc', 'furc', 'mobile', 'perio', 'resorption', 'abrasion',
-  'CCF', 'UCF', 'FX', 'TR', 'AB',
-];
+const FILLER_WORDS = new Set([
+  'ok', 'okay', 'k', 'yeah', 'yep', 'yes', 'no', 'nope', 'um', 'uh', 'umm', 'uhh', 'hmm', 'mm', 'mhm',
+  'thanks', 'thank', 'you', 'got', 'it', 'alright', 'all', 'right', 'cool', 'sure', 'great', 'good',
+  'perfect', 'nice', 'so', 'and', 'oh',
+]);
 
-// Allow trailing digit so "PD3", "M2", "C1" still match when their root
-// is in the keyword list — without requiring every numeric variant to
-// be explicitly listed.
-const KEYWORD_RE = new RegExp(
-  `\\b(${MEDICAL_KEYWORDS.join('|')})(?=\\d|\\W|$)`,
-  'i'
-);
-const TRIADAN_RE = /\b[1-4][0-1][0-9]\b/;
-// Normalized shorthand scores: M2, C1, F2, G1, PD3.
-const SHORTHAND_RE = /\b(?:PD|M|C|F|G)\d\b/;
-
-export function chunkLooksMedical(chunk: string): boolean {
-  // Chunks are sent per utterance, so a finding can be as short as "M2".
-  if (chunk.trim().length < 2) return false;
-  return KEYWORD_RE.test(chunk) || TRIADAN_RE.test(chunk) || SHORTHAND_RE.test(chunk);
+export function chunkWorthSending(chunk: string): boolean {
+  const text = chunk.replace(/\bSpeaker \d+:\s*/gi, '').trim();
+  if (text.length < 2) return /\d/.test(text);
+  if (/\d/.test(text)) return true;
+  const words = text.toLowerCase().replace(/\[\?([^\]]*)\]/g, '$1').match(/[a-z\/]+/g) ?? [];
+  return words.some((w) => !FILLER_WORDS.has(w));
 }
 
 // ----- Chart context summary ----------------------------------------------
@@ -541,7 +526,7 @@ export interface ChartContext {
   postComments: DiagramComment[];
 }
 
-function summarizeChart(c: ChartContext): string {
+export function summarizeChart(c: ChartContext): string {
   const lines = [
     `species: ${c.species}`,
     `patient: ${c.patientInfo.patientName || '(unset)'} #${c.patientInfo.patientNumber || '(unset)'}`,
@@ -749,8 +734,8 @@ export interface AiAction {
 export interface ExtractInput {
   /** New transcript text since the last extraction. */
   delta: string;
-  /** Recent transcript context (last ~60s) for resolving "this one" references.
-   *  Empty string is fine on the first chunk. */
+  /** Earlier transcript (last ~90s) for back-references and findings that
+   *  straddle chunks. Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
   /** Id of the chart section on screen; output is limited to it. */
@@ -774,43 +759,43 @@ export interface ExtractResult {
   skipped: AiAction[];
   /** Uncertain guesses (also in `actions`) and unclear findings. */
   flags: ReviewFlag[];
-  /** True if the extractor ran (vs. skipped because the chunk had no
-   *  medical content). */
+  /** True if the extractor ran (vs. skipped because the chunk was pure
+   *  filler). */
   ran: boolean;
 }
 
-/**
- * Extract tool calls from a chunk of transcript. The request is built
- * here but SENT through the `ai-autofill` edge function, which holds the
- * Anthropic key server-side, enforces the Pro plan, picks the model, and
- * logs usage. Static prompt keeps `cache_control` so Anthropic prompt-
- * caches it. One retry on transient errors.
- */
-export async function extractChartActions(
-  input: ExtractInput
-): Promise<ExtractResult> {
+/** Both transcript forms for the prompt: as transcribed, plus the regex
+ *  cleanup when it changed anything. */
+function transcriptBlock(heading: string, raw: string): string {
+  const cleaned = normalizeTranscript(raw);
+  const trimmed = raw.replace(/\s+/g, ' ').trim();
+  return cleaned === trimmed
+    ? `${heading}:\n${trimmed}\n\n`
+    : `${heading} — AS TRANSCRIBED:\n${trimmed}\n${heading} — AUTO-CLEANED:\n${cleaned}\n\n`;
+}
+
+/** The request body for one live chunk, or null when the chunk is pure
+ *  filler. Pure — shared by the app and scripts/replay-transcript.ts. */
+export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
   const { delta, recentContext, context, section } = input;
-  const normalizedDelta = normalizeTranscript(delta);
-  if (!chunkLooksMedical(normalizedDelta)) {
-    return { actions: [], skipped: [], flags: [], ran: false };
-  }
+  if (!chunkWorthSending(delta)) return null;
   const scope = section ? SECTION_SCOPES[section] : undefined;
-  if (!supabase) throw new Error('Cloud is not configured.');
-  const normalizedContext = recentContext ? normalizeTranscript(recentContext) : '';
 
   const userText =
     `Current chart state:\n${summarizeChart(context)}\n\n` +
-    (normalizedContext
-      ? `Recent transcript context (already considered in previous chunks; here for resolving back-references):\n${normalizedContext}\n\n`
+    (recentContext.trim()
+      ? `Earlier transcript (already processed — what it established is in the chart state above). Use it to resolve back-references. ` +
+        `If the new chunk completes, continues or corrects a finding that started here (e.g. a tooth number here, its values in the new chunk), emit the complete finding:\n` +
+        `${recentContext.replace(/\s+/g, ' ').trim()}\n\n`
       : '') +
-    `New transcript chunk to extract from:\n${normalizedDelta}\n\n` +
+    transcriptBlock('New transcript chunk to extract from', delta) +
     (scope
       ? `ACTIVE SECTION: the vet is on the ${scope.label} page. Fill THIS page. Allowed: ${scope.guidance} ` +
         `When a finding could go on this page or elsewhere, put it on this page. Findings that only fit another page get no tool call.\n\n`
       : '') +
     `Emit tool calls only for new information from this chunk. If nothing in this chunk warrants a chart change, return no tool calls.`;
 
-  const requestBody = {
+  return {
     max_tokens: 1024,
     system: [
       { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
@@ -818,7 +803,73 @@ export async function extractChartActions(
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
   };
+}
 
+export interface AutofillRequest {
+  max_tokens: number;
+  /** 'review' = the end-of-dictation check: the edge function gives the
+   *  model more thinking and output room for it. */
+  mode?: 'review';
+  system: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
+  tools: Anthropic.Messages.Tool[];
+  messages: Array<{ role: 'user'; content: Array<{ type: 'text'; text: string }> }>;
+}
+
+/** Longest transcript sent to the final check. ~1.5 h of steady
+ *  dictation; the edge function's size cap leaves room above it. */
+export const REVIEW_TRANSCRIPT_MAX_CHARS = 200_000;
+
+export interface ReviewInput {
+  /** The whole session's transcript, one utterance per line. */
+  transcript: string;
+  context: ChartContext;
+  /** Chart changes the vet rejected in review — never re-add them. */
+  rejected: AiAction[];
+}
+
+/**
+ * The end-of-dictation check: the whole transcript against the chart as it
+ * stands, emitting only what live chunking missed or got wrong. This is the
+ * same view a person gets reading the transcript top to bottom.
+ */
+export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
+  let transcript = input.transcript.trim();
+  if (!transcript || !chunkWorthSending(transcript)) return null;
+  let truncatedNote = '';
+  if (transcript.length > REVIEW_TRANSCRIPT_MAX_CHARS) {
+    transcript = transcript.slice(-REVIEW_TRANSCRIPT_MAX_CHARS);
+    transcript = transcript.slice(transcript.indexOf('\n') + 1);
+    truncatedNote = 'The transcript was too long to send whole; it starts partway through the session. Only check what it covers.\n\n';
+  }
+  const rejected = input.rejected.map(describeAction);
+
+  const userText =
+    `FINAL CHECK — dictation has stopped.\n\n` +
+    `Live extraction ran on short chunks as the vet spoke, so it may have missed findings (split across chunks, misheard, said quickly) ` +
+    `or applied a value the vet later corrected. Read the whole transcript, compare it with the chart, and emit tool calls ONLY for:\n` +
+    `- findings stated in the transcript that are missing from the chart;\n` +
+    `- chart values that contradict what the vet finally said (the last correction wins).\n` +
+    `Do NOT re-emit anything the chart already has right. If the chart has something the transcript never mentions, leave it alone — the vet may have entered it by hand. ` +
+    `Speculative or planned work ("might extract 209") still gets no call. Mark anything you are unsure of with uncertain=true, or use flag_unclear, as usual. ` +
+    `Most sessions need few or no calls here.\n\n` +
+    `Current chart state:\n${summarizeChart(input.context)}\n\n` +
+    (rejected.length ? `Rejected by the vet in review — never re-add these:\n${rejected.map((r) => `- ${r}`).join('\n')}\n\n` : '') +
+    truncatedNote +
+    `Full transcript (as transcribed; one utterance per line):\n${transcript}`;
+
+  return {
+    max_tokens: 8192,
+    mode: 'review',
+    system: [
+      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+    ],
+    tools,
+    messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
+  };
+}
+
+async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
+  if (!supabase) throw new Error('Cloud is not configured.');
   const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
     const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });
     if (error) {
@@ -832,26 +883,31 @@ export async function extractChartActions(
     if (data && (data as { error?: string }).error) throw new Error((data as { error: string }).error);
     return ((data as { content?: Array<Anthropic.ContentBlock> })?.content) ?? [];
   };
-
-  let content: Array<Anthropic.ContentBlock>;
   try {
-    content = await send();
+    return await send();
   } catch (err) {
     const retryable =
       err instanceof Error && /rate|timeout|network|503|502|429/i.test(err.message);
     if (!retryable) throw err;
     await new Promise((r) => setTimeout(r, 800));
-    content = await send();
+    return send();
   }
+}
 
+/** Turn the model's tool calls into actions, skips and review flags.
+ *  `allowed` decides which actions may land (section scoping). */
+export function parseAutofillContent(
+  content: Array<{ type: string; name?: string; input?: unknown }>,
+  allowed: (a: AiAction) => boolean,
+): Omit<ExtractResult, 'ran'> {
   const actions: AiAction[] = [];
   const skipped: AiAction[] = [];
   const flags: ReviewFlag[] = [];
   for (const block of content) {
-    if (block.type !== 'tool_use') continue;
-    const input = block.input as Record<string, unknown>;
+    if (block.type !== 'tool_use' || !block.name) continue;
+    const input = (block.input ?? {}) as Record<string, unknown>;
     if (block.name === 'flag_unclear') {
-      const options = parseAlternatives(input.options).filter((o) => actionAllowedInSection(o.action, section));
+      const options = parseAlternatives(input.options).filter((o) => allowed(o.action));
       flags.push({
         heard: String(input.heard ?? ''),
         reason: String(input.reason ?? 'Unclear'),
@@ -861,7 +917,7 @@ export async function extractChartActions(
       continue;
     }
     const action = { name: block.name, input };
-    if (!actionAllowedInSection(action, section)) {
+    if (!allowed(action)) {
       skipped.push(action);
       continue;
     }
@@ -874,11 +930,61 @@ export async function extractChartActions(
         reason: invalid ?? String(input.reason ?? 'Not sure this was heard right'),
         triadan: typeof input.triadan === 'number' ? input.triadan : undefined,
         applied: action,
-        options: parseAlternatives(input.alternatives).filter((o) => actionAllowedInSection(o.action, section)),
+        options: parseAlternatives(input.alternatives).filter((o) => allowed(o.action)),
       });
     }
   }
-  return { actions, skipped, flags, ran: true };
+  return { actions, skipped, flags };
+}
+
+/**
+ * Extract tool calls from a chunk of transcript. The request is built
+ * here but SENT through the `ai-autofill` edge function, which holds the
+ * Anthropic key server-side, picks the model, and logs usage. Static
+ * prompt keeps `cache_control` so Anthropic prompt-caches it. One retry
+ * on transient errors.
+ */
+export async function extractChartActions(
+  input: ExtractInput
+): Promise<ExtractResult> {
+  const requestBody = buildChunkRequest(input);
+  if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
+  const content = await sendAutofill(requestBody);
+  return { ...parseAutofillContent(content, (a) => actionAllowedInSection(a, input.section)), ran: true };
+}
+
+/**
+ * The end-of-dictation check (see buildReviewRequest). Every change it
+ * makes is flagged for review, since it lands after the vet stopped
+ * watching the live feed. `sections` are the pages dictated on this
+ * session; actions are limited to what those pages allow.
+ */
+export async function reviewFullTranscript(
+  input: ReviewInput & { sections: Array<string | undefined> }
+): Promise<ExtractResult> {
+  const requestBody = buildReviewRequest(input);
+  if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
+  const content = await sendAutofill(requestBody);
+  const sections = input.sections.length ? input.sections : [undefined];
+  const result = parseAutofillContent(content, (a) => sections.some((s) => actionAllowedInSection(a, s)));
+  return { ...result, flags: markFinalCheck(result), ran: true };
+}
+
+/** Every applied action from the final check becomes a review flag. */
+export function markFinalCheck(r: Omit<ExtractResult, 'ran'>): ReviewFlag[] {
+  const flagged = new Set(r.flags.map((f) => f.applied).filter(Boolean));
+  return [
+    ...r.flags.map((f) => (f.applied ? { ...f, reason: `Final check: ${f.reason}` } : f)),
+    ...r.actions
+      .filter((a) => !flagged.has(a))
+      .map((a) => ({
+        heard: describeAction(a),
+        reason: 'Added in the final check — missed live',
+        triadan: typeof a.input.triadan === 'number' ? a.input.triadan : undefined,
+        applied: a,
+        options: [],
+      })),
+  ];
 }
 
 function parseAlternatives(raw: unknown): { label: string; action: AiAction }[] {

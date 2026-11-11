@@ -44,6 +44,19 @@ const MODEL_SETTINGS: Record<string, ModelSettings> = {
 };
 const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
 
+// The end-of-dictation check (body.mode === 'review') reads the whole
+// transcript once, off the live path — accuracy over latency, so every
+// model thinks at medium effort (Sonnet 5.5 runs adaptive thinking when
+// no `thinking` is sent).
+const REVIEW_SETTINGS: Record<string, ModelSettings> = {
+  'claude-opus-5-5':   { extra: { output_config: { effort: 'medium' } }, thinks: true, fallbacks: true },
+  'claude-sonnet-5-5': { extra: { output_config: { effort: 'medium' } }, thinks: true, fallbacks: true },
+  'claude-haiku-5-5':  { extra: { output_config: { effort: 'medium' } }, thinks: true, fallbacks: false },
+  'claude-opus-4-8':   { extra: { thinking: { type: 'adaptive' }, output_config: { effort: 'medium' } }, thinks: true, fallbacks: false },
+};
+const LIVE_MAX_CHARS = 120_000;
+const REVIEW_MAX_CHARS = 400_000;
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405);
@@ -66,13 +79,15 @@ Deno.serve(async (req: Request) => {
   // beta, so cap request size, response size and per-user call rate
   // (generous for dictation: one call per spoken phrase).
   const raw = await req.text();
-  if (raw.length > 120_000) return json({ error: 'Request too large.' }, 413);
+  if (raw.length > REVIEW_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
   let body: Record<string, unknown>;
   try {
     body = JSON.parse(raw);
   } catch {
     return json({ error: 'bad json' }, 400);
   }
+  const review = body.mode === 'review';
+  if (!review && raw.length > LIVE_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
     return json({ error: 'Unsupported request.' }, 400);
@@ -89,10 +104,12 @@ Deno.serve(async (req: Request) => {
   const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
   const model = cfg?.ai_model || DEFAULT_MODEL;
 
-  const settings: ModelSettings = MODEL_SETTINGS[model] ?? { extra: {}, thinks: false, fallbacks: false };
+  const settings: ModelSettings =
+    (review ? REVIEW_SETTINGS[model] : MODEL_SETTINGS[model]) ?? { extra: {}, thinks: false, fallbacks: false };
   // max_tokens: 0 is a cache pre-warm (prefill only) — pass it through.
-  let maxTokens = typeof body.max_tokens === 'number' ? Math.max(0, Math.min(4096, Math.floor(body.max_tokens))) : 1024;
-  if (maxTokens > 0 && settings.thinks) maxTokens = Math.max(maxTokens, 4096);
+  const cap = review ? 16_000 : 4096;
+  let maxTokens = typeof body.max_tokens === 'number' ? Math.max(0, Math.min(cap, Math.floor(body.max_tokens))) : 1024;
+  if (maxTokens > 0 && settings.thinks) maxTokens = Math.max(maxTokens, review ? 16_000 : 4096);
 
   const payload: Record<string, unknown> = {
     model,

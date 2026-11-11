@@ -1,4 +1,5 @@
-import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText, codeOnlyComment, dedupeActions } from './aiAutofill';
+import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
+import { normalizeTranscript, chunkWorthSending, buildChunkRequest, buildReviewRequest, markFinalCheck, normalizeFieldValue, isPerioOnlyText, codeOnlyComment, dedupeActions } from './aiAutofill';
 
 describe('normalizeTranscript', () => {
   it('collapses spelled-out triadan numbers', () => {
@@ -34,33 +35,103 @@ describe('normalizeTranscript', () => {
   });
 });
 
-describe('chunkLooksMedical', () => {
-  it('detects Triadan numbers', () => {
-    expect(chunkLooksMedical('209 extracted')).toBe(true);
-    expect(chunkLooksMedical('check 104 next')).toBe(true);
+describe('chunkWorthSending', () => {
+  it('sends findings, including ones the old keyword gate dropped', () => {
+    expect(chunkWorthSending('209 extracted')).toBe(true);
+    expect(chunkWorthSending('tongue normal palate normal')).toBe(true);
+    expect(chunkWorthSending('104 M2')).toBe(true);
+    expect(chunkWorthSending('M2')).toBe(true);
+    expect(chunkWorthSending('504 fractured')).toBe(true); // deciduous + "fractured"
+    expect(chunkWorthSending('that one is fractured')).toBe(true);
+    expect(chunkWorthSending('and two on that one')).toBe(true); // continuation
+    expect(chunkWorthSending('Speaker 0: resorbed')).toBe(true);
+    expect(chunkWorthSending('2')).toBe(true);
   });
 
-  it('detects medical keywords', () => {
-    expect(chunkLooksMedical('tongue normal palate normal')).toBe(true);
-    expect(chunkLooksMedical('give 0.3 mL bupivacaine')).toBe(true);
-    expect(chunkLooksMedical('completed full mouth cleaning')).toBe(true);
-    expect(chunkLooksMedical('PD3 distally')).toBe(true);
-  });
-
-  it('rejects small talk', () => {
-    expect(chunkLooksMedical('hand me the suction')).toBe(false);
-    expect(chunkLooksMedical('how was your weekend')).toBe(false);
-    expect(chunkLooksMedical('thanks')).toBe(false);
-    expect(chunkLooksMedical('')).toBe(false);
+  it('skips pure filler', () => {
+    expect(chunkWorthSending('')).toBe(false);
+    expect(chunkWorthSending('ok')).toBe(false);
+    expect(chunkWorthSending('thanks')).toBe(false);
+    expect(chunkWorthSending('Okay, got it.')).toBe(false);
+    expect(chunkWorthSending('Speaker 1: yeah thank you')).toBe(false);
   });
 });
 
-describe('chunkLooksMedical — short utterances', () => {
-  it('keeps short per-utterance findings', () => {
-    expect(chunkLooksMedical('104 M2')).toBe(true);
-    expect(chunkLooksMedical('M2')).toBe(true);
-    expect(chunkLooksMedical('PD3')).toBe(true);
-    expect(chunkLooksMedical('ok')).toBe(false);
+describe('buildChunkRequest', () => {
+  const ctx = {
+    patientInfo: {
+      patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+      date: '', complaint: '', treatmentReport: '', recallDate: '',
+      nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+    },
+    species: 'canine' as const, logo: 'socal' as const, toothData: [],
+    preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+  };
+  const text = (r: ReturnType<typeof buildChunkRequest>) => r!.messages[0].content[0].text;
+
+  it('sends the raw transcript alongside the cleaned one when they differ', () => {
+    const t = text(buildChunkRequest({ delta: 'one oh four GI two', recentContext: '', context: ctx }));
+    expect(t).toContain('AS TRANSCRIBED:\none oh four GI two');
+    expect(t).toContain('AUTO-CLEANED:\n104 GI 2');
+  });
+
+  it('sends one copy when cleanup changes nothing', () => {
+    const t = text(buildChunkRequest({ delta: '104 extracted', recentContext: '', context: ctx }));
+    expect(t).not.toContain('AS TRANSCRIBED');
+    expect(t).toContain('104 extracted');
+  });
+
+  it('lets earlier context complete a finding split across chunks', () => {
+    const t = text(buildChunkRequest({ delta: 'GI 2 calc 1', recentContext: '105', context: ctx }));
+    expect(t).toMatch(/completes, continues or corrects a finding/);
+    expect(t).not.toMatch(/already considered/);
+  });
+
+  it('returns null for filler', () => {
+    expect(buildChunkRequest({ delta: 'okay', recentContext: '', context: ctx })).toBeNull();
+  });
+});
+
+describe('buildReviewRequest', () => {
+  const ctx = {
+    patientInfo: {
+      patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+      date: '', complaint: '', treatmentReport: '', recallDate: '',
+      nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+    },
+    species: 'canine' as const, logo: 'socal' as const, toothData: [],
+    preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+  };
+
+  it('sends the whole transcript, the chart and rejected items in review mode', () => {
+    const r = buildReviewRequest({
+      transcript: '104 GI 2\n105 missing',
+      context: ctx,
+      rejected: [{ name: 'set_tooth_mark', input: { diagram: 'pre', triadan: 105, mark: 'missing' } }],
+    })!;
+    expect(r.mode).toBe('review');
+    const t = r.messages[0].content[0].text;
+    expect(t).toContain('104 GI 2\n105 missing');
+    expect(t).toContain('Rejected by the vet');
+    expect(t).toContain('Current chart state');
+  });
+
+  it('keeps the end of an over-long transcript and says so', () => {
+    const line = 'x'.repeat(99) + '\n';
+    const r = buildReviewRequest({ transcript: line.repeat(3000) + 'LAST LINE', context: ctx, rejected: [] })!;
+    const t = r.messages[0].content[0].text;
+    expect(t).toContain('LAST LINE');
+    expect(t).toContain('starts partway through');
+  });
+});
+
+describe('markFinalCheck', () => {
+  it('turns every final-check change into a review flag', () => {
+    const a = { name: 'set_tooth_field', input: { triadan: 104, field: 'gingivitis', value: '2' } };
+    const flags = markFinalCheck({ actions: [a], skipped: [], flags: [] });
+    expect(flags).toHaveLength(1);
+    expect(flags[0].applied).toBe(a);
+    expect(flags[0].reason).toMatch(/final check/i);
   });
 });
 
@@ -104,11 +175,11 @@ describe('run-together Deepgram output', () => {
   it('splits "104GI2" into tooth + score and passes the medical gate', () => {
     const out = normalizeTranscript('Speaker 0: 104GI2.');
     expect(out).toContain('104 GI 2');
-    expect(chunkLooksMedical(out)).toBe(true);
+    expect(chunkWorthSending(out)).toBe(true);
   });
   it('passes spoken shorthand without a tooth number', () => {
-    expect(chunkLooksMedical(normalizeTranscript('Or GI two?'))).toBe(true);
-    expect(chunkLooksMedical(normalizeTranscript('calc one'))).toBe(true);
+    expect(chunkWorthSending(normalizeTranscript('Or GI two?'))).toBe(true);
+    expect(chunkWorthSending(normalizeTranscript('calc one'))).toBe(true);
   });
   it('keeps codes joined to tooth numbers apart', () => {
     expect(normalizeTranscript('calc 1T slash FX slash CCF105 missing')).toContain('CCF 105 missing');

@@ -6,11 +6,14 @@ vi.mock('../utils/aiAutofill', async (orig) => {
   return {
     ...actual,
     prewarmAutofill: vi.fn(async () => {}),
-    extractChartActions: vi.fn(async () => ({ actions: [], skipped: [], ran: true })),
+    extractChartActions: vi.fn(async () => ({ actions: [], skipped: [], flags: [], ran: true })),
+    reviewFullTranscript: vi.fn(async () => ({ actions: [], skipped: [], flags: [], ran: true })),
   };
 });
 
 import { VoiceInputButton } from './VoiceInputButton';
+import { extractChartActions, reviewFullTranscript } from '../utils/aiAutofill';
+import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 
 class FakeRecognition {
   static last: FakeRecognition | null = null;
@@ -31,6 +34,8 @@ class FakeRecognition {
 beforeEach(() => {
   (window as unknown as { webkitSpeechRecognition: unknown }).webkitSpeechRecognition = FakeRecognition;
   window.sessionStorage.clear();
+  vi.mocked(extractChartActions).mockClear();
+  vi.mocked(reviewFullTranscript).mockClear();
 });
 
 const props = {
@@ -75,6 +80,79 @@ describe('VoiceInputButton session flow', () => {
     act(() => FakeRecognition.last!.say('old patient'));
     rerender(<VoiceInputButton {...props} sessionKey="chart-2" />);
     expect(screen.getByRole('button', { name: /AI autofill/ })).toBeInTheDocument();
+  });
+});
+
+const realContext = {
+  patientInfo: {
+    patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+    date: '', complaint: '', treatmentReport: '', recallDate: '',
+    nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+  },
+  species: 'canine' as const, logo: 'socal' as const, toothData: [],
+  preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+};
+const gi = { name: 'set_tooth_field', input: { triadan: 104, field: 'gingivitis', value: '2' } };
+
+function startDictation() {
+  fireEvent.click(screen.getByRole('button', { name: /AI autofill/ }));
+  fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+}
+
+describe('VoiceInputButton — stopping', () => {
+  // Earlier tests stop dictations whose final checks finish asynchronously.
+  beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+    vi.mocked(extractChartActions).mockClear();
+    vi.mocked(reviewFullTranscript).mockClear();
+  });
+
+  it('Stop mid-request still charts everything said, then runs the final check', async () => {
+    let release!: () => void;
+    vi.mocked(extractChartActions).mockImplementationOnce(
+      () => new Promise((r) => { release = () => r({ actions: [], skipped: [], flags: [], ran: true }); }),
+    );
+    render(<VoiceInputButton {...props} context={realContext} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    await act(async () => { await new Promise((r) => setTimeout(r, 1300)); }); // quiet flush → in flight
+    expect(extractChartActions).toHaveBeenCalledTimes(1);
+    act(() => FakeRecognition.last!.say('105 missing'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    expect(reviewFullTranscript).not.toHaveBeenCalled(); // waits for the live request
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 600)); });
+
+    const deltas = vi.mocked(extractChartActions).mock.calls.map((c) => c[0].delta);
+    expect(deltas).toEqual(['104 GI 2', '105 missing']);
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(reviewFullTranscript).mock.calls[0][0].transcript).toBe('104 GI 2\n105 missing');
+  });
+
+  it('a result that returns after switching charts is dropped', async () => {
+    let release!: () => void;
+    vi.mocked(extractChartActions).mockImplementationOnce(
+      () => new Promise((r) => { release = () => r({ actions: [gi], skipped: [], flags: [], ran: true }); }),
+    );
+    const setToothField = vi.fn();
+    const handlers = { setToothField } as never;
+    const { rerender } = render(<VoiceInputButton {...props} context={realContext} handlers={handlers} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    await act(async () => { await new Promise((r) => setTimeout(r, 1300)); });
+    rerender(<VoiceInputButton {...props} context={realContext} handlers={handlers} sessionKey="chart-2" />);
+    await act(async () => { release(); await new Promise((r) => setTimeout(r, 400)); });
+    expect(setToothField).not.toHaveBeenCalled();
+    expect(reviewFullTranscript).not.toHaveBeenCalled();
+  });
+
+  it('no final check once the chart is view-only', async () => {
+    const { rerender } = render(<VoiceInputButton {...props} context={realContext} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    rerender(<VoiceInputButton {...props} context={realContext} locked />);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(extractChartActions).toHaveBeenCalledTimes(1); // what was said still charted
+    expect(reviewFullTranscript).not.toHaveBeenCalled();
   });
 });
 
