@@ -174,6 +174,11 @@ export function useCloudSync(
   // When this chart last reached the cloud (for "Saved · 2:41 pm").
   const [lastSaved, setLastSaved] = usePersistedState<{ chartId: string; at: string }>('chart.lastSaved', 1, { chartId: '', at: '' });
   const lastSavedAt = lastSaved.chartId === chart.cloudChartId ? lastSaved.at : '';
+  const lastSavedRef = React.useRef(lastSaved);
+  lastSavedRef.current = lastSaved;
+  // Per-chart answer to an edit conflict: force = user chose "Replace with
+  // mine"; blocked = "Keep theirs" (no more saves until reopened).
+  const conflictRef = React.useRef<{ chartId: string; mode: 'none' | 'force' | 'blocked' }>({ chartId: '', mode: 'none' });
   const [online, setOnline] = React.useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
   React.useEffect(() => {
     const up = () => setOnline(true);
@@ -251,12 +256,42 @@ export function useCloudSync(
         practice_id: practiceIdRef.current || null,
         data: snap,
       });
+      // Edit conflict: a shared chart opened here may have been saved by
+      // someone else since. Compare server timestamps (never the local
+      // clock) and ask rather than silently overwrite their work.
+      if (openedExistingRef.current && conflictRef.current.chartId !== id) {
+        conflictRef.current = { chartId: '', mode: 'none' };
+      }
+      if (conflictRef.current.chartId === id && conflictRef.current.mode === 'blocked') {
+        fail(new Error('This chart was changed by someone else — reopen it from My charts to see their version.'));
+      }
+      const known = lastSavedRef.current;
+      if (openedExistingRef.current && known.chartId === id && known.at && conflictRef.current.mode !== 'force') {
+        const { data: remote } = await client.from('charts').select('updated_at').eq('id', id).maybeSingle();
+        const remoteAt = Date.parse((remote as { updated_at?: string } | null)?.updated_at ?? '');
+        if (Number.isFinite(remoteAt) && remoteAt - Date.parse(known.at) > 1000) {
+          const when = new Date(remoteAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+          const replace = await confirmDialog({
+            title: 'This chart changed somewhere else',
+            message: `It was saved at ${when} — by a teammate or on another device — after you opened it here. Saving now replaces those changes with yours.`,
+            confirmLabel: 'Replace with mine',
+            cancelLabel: 'Keep theirs',
+            danger: true,
+          });
+          conflictRef.current = { chartId: id, mode: replace ? 'force' : 'blocked' };
+          if (!replace) fail(new Error('Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
+        }
+      }
       setStatus('saving');
       setSaveError('');
-      const { error } = await client.from('charts').upsert(row(id));
+      const { data: savedRow, error } = await client.from('charts').upsert(row(id)).select('updated_at').maybeSingle();
       if (!error) {
         setSavedHash(hashStr(json));
-        setLastSaved({ chartId: latest.current.chartId, at: new Date().toISOString() });
+        // Server time, so later conflict checks compare like with like.
+        setLastSaved({
+          chartId: latest.current.chartId,
+          at: (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString(),
+        });
         setStatus('saved');
         return;
       }
@@ -414,6 +449,7 @@ export function useCloudSync(
     baselineNext.current = true; // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
     setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
+    conflictRef.current = { chartId: '', mode: 'none' };
     setStatus('idle');
     setSaveError('');
     return true;
