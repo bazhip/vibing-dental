@@ -1,6 +1,9 @@
-// Invite reminders — run once a day (GitHub Actions, see
-// .github/workflows/invite-reminders.yml). Finds team invitees who never
-// activated their account and sends at most two polite reminders:
+// Invite & signup reminders — run once a day (GitHub Actions, see
+// .github/workflows/invite-reminders.yml). Finds accounts that were never
+// activated — team invitees (branded "join your practice" email with a
+// fresh set-password link) and self-signups who never confirmed their
+// email (Supabase's confirm-signup email re-sent) — and sends at most
+// two polite reminders:
 //   1st: 24h+ after the invite   ·   2nd (final): 5 days+ after the invite
 // then stops — the invite stays "pending" in Practice settings, where the
 // owner can resend or remove it.
@@ -46,24 +49,39 @@ Deno.serve(async (req: Request) => {
     for (const u of users) {
       if (!u.email) { note('no_email'); continue; }
       if (u.email_confirmed_at) continue; // active account — the normal case
-      if (!u.invited_at) { note('unconfirmed_not_invited'); continue; }
+      // invited_at isn't set by generateLink-style invites, so it can't be
+      // the test; use when the account was created/invited instead.
+      const startedAt = u.invited_at ?? u.created_at;
       const meta = (u.app_metadata ?? {}) as Record<string, unknown>;
       const count = typeof meta.invite_reminders === 'number' ? meta.invite_reminders : 0;
       if (count >= SCHEDULE_DAYS.length) { note('all_reminders_sent'); continue; }
-      const dueAt = Date.parse(u.invited_at) + SCHEDULE_DAYS[count] * DAY;
+      const dueAt = Date.parse(startedAt) + SCHEDULE_DAYS[count] * DAY;
       if (now < dueAt) { note('not_due_yet'); continue; }
       // Space reminders out even for old invites (both "due" at once).
       const last = typeof meta.invite_reminded_at === 'string' ? Date.parse(meta.invite_reminded_at) : 0;
       if (last && now - last < 3 * DAY) { note('reminded_recently'); continue; }
 
-      // Which practice invited them (for the wording).
-      const { data: mem } = await admin
+      // Invitee (on someone else's practice) or a self-signup who never
+      // confirmed (owns their own practice, or none)?
+      const { data: mems } = await admin
         .from('practice_members')
-        .select('practices(name)')
-        .eq('user_id', u.id)
-        .limit(1);
-      const practice = ((mem?.[0]?.practices as { name?: string } | undefined)?.name ?? '').trim();
-      if (!mem?.length) { note('not_on_a_team'); skipped.push(u.email); continue; } // no longer on any team
+        .select('practice_id, practices(name, owner)')
+        .eq('user_id', u.id);
+      const invitedTo = (mems ?? []).find((m) => (m.practices as { owner?: string } | null)?.owner !== u.id);
+
+      if (!invitedTo) {
+        // Self-signup: re-send Supabase's confirm-signup email (the branded
+        // template, delivered through Resend SMTP).
+        const { error: resendErr } = await admin.auth.resend({ type: 'signup', email: u.email, options: { emailRedirectTo: APP_URL } });
+        if (resendErr) { note('signup_resend_failed'); skipped.push(u.email); continue; }
+        await admin.auth.admin.updateUserById(u.id, {
+          app_metadata: { ...meta, invite_reminders: count + 1, invite_reminded_at: new Date().toISOString() },
+        });
+        note('signup_confirmation_resent');
+        sent.push(u.email);
+        continue;
+      }
+      const practice = ((invitedTo.practices as { name?: string } | null)?.name ?? '').trim();
 
       // Fresh link: a recovery link verifies the email and lands on the
       // app's set-password screen (invite=1 shows the invite wording).
