@@ -14,9 +14,14 @@ export function useDentalData(initialSpecies: Species = 'feline') {
   /**
    * Sets tooth data directly (for react-data-grid v7 onRowsChange)
    */
-  const setToothDataDirectly = useCallback((rows: ToothData[]) => {
-    setToothData(rows);
-  }, []);
+  /** Accepts rows or an updater — AI autofill applies several field
+   *  edits in one batch, and each must build on the previous one. */
+  const setToothDataDirectly = useCallback(
+    (rows: ToothData[] | ((prev: ToothData[]) => ToothData[])) => {
+      setToothData(rows);
+    },
+    []
+  );
 
   /**
    * Switch species and reset tooth data

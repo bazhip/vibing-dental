@@ -40,7 +40,7 @@ export interface UseChartStateReturn {
 
   // ----- Tooth grid ----------------------------------------------------
   toothData: ToothData[];
-  setToothDataDirectly: (rows: ToothData[]) => void;
+  setToothDataDirectly: (rows: ToothData[] | ((prev: ToothData[]) => ToothData[])) => void;
 
   // ----- Pre-surgery diagram ------------------------------------------
   preToothMarks: ToothMarks;

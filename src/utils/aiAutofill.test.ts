@@ -1,9 +1,9 @@
-import { normalizeTranscript, chunkLooksMedical } from './aiAutofill';
+import { normalizeTranscript, chunkLooksMedical, normalizeFieldValue, isPerioOnlyText } from './aiAutofill';
 
 describe('normalizeTranscript', () => {
   it('collapses spelled-out triadan numbers', () => {
     expect(normalizeTranscript('one oh four mobility class two'))
-      .toBe('104 mobility class two');
+      .toBe('104 mobility class 2');
     expect(normalizeTranscript('two oh nine extracted'))
       .toBe('209 extracted');
     expect(normalizeTranscript('three zero one missing on exam'))
@@ -61,5 +61,41 @@ describe('chunkLooksMedical — short utterances', () => {
     expect(chunkLooksMedical('M2')).toBe(true);
     expect(chunkLooksMedical('PD3')).toBe(true);
     expect(chunkLooksMedical('ok')).toBe(false);
+  });
+});
+
+describe('normalizeTranscript — multi-tooth perio runs', () => {
+  it('keeps scores separate from tooth numbers (real dictation)', () => {
+    const raw =
+      'To the service one. One zero one g I two, calc two, f e three One zero two g I two, calc two, mobility three one zero three g I two calc two five millimeter pocket';
+    const out = normalizeTranscript(raw);
+    expect(out).toContain('101 GI 2, calc 2');
+    expect(out).toContain('F3 102 GI 2, calc 2, mobility 3 103 GI 2 calc 2 5 millimeter pocket');
+  });
+
+  it('still joins plain tooth numbers', () => {
+    expect(normalizeTranscript('one oh four missing, two zero nine extracted')).toBe('104 missing, 209 extracted');
+  });
+});
+
+describe('normalizeFieldValue', () => {
+  it('strips prefixes and units to the bare grid number', () => {
+    expect(normalizeFieldValue('G2')).toBe('2');
+    expect(normalizeFieldValue('GI 2')).toBe('2');
+    expect(normalizeFieldValue('C1')).toBe('1');
+    expect(normalizeFieldValue('M3')).toBe('3');
+    expect(normalizeFieldValue('PD3')).toBe('3');
+    expect(normalizeFieldValue('5mm')).toBe('5');
+    expect(normalizeFieldValue('4 5 4')).toBe('4 5 4');
+    expect(normalizeFieldValue('2')).toBe('2');
+  });
+});
+
+describe('isPerioOnlyText', () => {
+  it('flags comments that only repeat grid scores', () => {
+    expect(isPerioOnlyText('GI 2, calc 1')).toBe(true);
+    expect(isPerioOnlyText('M3, 5 mm pocket')).toBe(true);
+    expect(isPerioOnlyText('T/FX/CCF')).toBe(false);
+    expect(isPerioOnlyText('GI 2, complicated crown fracture')).toBe(false);
   });
 });

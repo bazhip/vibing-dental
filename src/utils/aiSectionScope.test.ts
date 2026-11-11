@@ -8,10 +8,12 @@ const postExtracted = { name: 'set_tooth_mark', input: { diagram: 'post', triada
 const exam = { name: 'set_exam_finding', input: { area: 'tongue', status: 'normal' } };
 
 describe('section scoping', () => {
-  it('charting accepts grid fields and missing marks only', () => {
+  it('charting accepts grid fields, missing marks and diagnosis notes', () => {
     expect(actionAllowedInSection(field, 'charting')).toBe(true);
     expect(actionAllowedInSection(preMissing, 'charting')).toBe(true);
-    expect(actionAllowedInSection(preComment, 'charting')).toBe(false);
+    expect(actionAllowedInSection(preComment, 'charting')).toBe(true);
+    const perioComment = { name: 'add_comment', input: { diagram: 'pre', triadan: 104, text: 'GI 2, calc 1' } };
+    expect(actionAllowedInSection(perioComment, 'charting')).toBe(false);
     expect(actionAllowedInSection(postExtracted, 'charting')).toBe(false);
     expect(actionAllowedInSection(exam, 'charting')).toBe(false);
   });
@@ -32,5 +34,6 @@ describe('section scoping', () => {
     expect(actionFocus(preMissing, 'charting')?.section).toBe('charting');
     expect(actionFocus(preMissing)?.section).toBe('diagnosis');
     expect(actionFocus(preComment, 'imaging')?.section).toBe('diagnosis');
+    expect(actionFocus(preComment, 'charting')?.section).toBe('charting');
   });
 });

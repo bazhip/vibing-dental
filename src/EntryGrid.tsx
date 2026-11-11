@@ -479,19 +479,23 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       else next[triadan] = mark;
       return next;
     }),
+    // Every handler below uses a functional update: one AI reply can carry
+    // several edits, and building each from this render's snapshot would
+    // make every edit overwrite the one before it.
     setPostMark: (triadan, mark) => {
-      // Route through handlePostMarksChange so the pre-missing-strip
-      // invariant the manual UI enforces is preserved for AI edits too.
-      const next = { ...chart.postToothMarks };
-      if (mark === null) delete next[triadan];
-      else next[triadan] = mark;
-      chart.handlePostMarksChange(next);
+      // Keep the manual UI's invariant: pre-missing teeth aren't post marks.
+      if (mark !== null && chart.preToothMarks[triadan] === 'missing') return;
+      chart.setPostToothMarksDirect((m: ToothMarks) => {
+        const next = { ...m };
+        if (mark === null) delete next[triadan];
+        else next[triadan] = mark;
+        return next;
+      });
     },
     setToothField: (triadan: number, field: DentalField, value: string) => {
-      const next = chart.toothData.map((t: ToothData) =>
-        t.triadan === triadan ? { ...t, [field]: value } : t
+      chart.setToothDataDirectly((rows: ToothData[]) =>
+        rows.map((t) => (t.triadan === triadan ? { ...t, [field]: value } : t))
       );
-      chart.setToothDataDirectly(next);
     },
     addComment: (diagram, triadan, text) => {
       const id = `ai${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -513,9 +517,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       chart.handlePatientInfoChange(field as keyof PatientInfo, value);
     },
     appendTreatmentReport: (text) => {
-      const existing = chart.patientInfo.treatmentReport ?? '';
-      const joined = existing ? `${existing}\n${text}` : text;
-      chart.handlePatientInfoChange('treatmentReport', joined);
+      chart.setPatientInfo((prev: PatientInfo) => {
+        const existing = prev.treatmentReport ?? '';
+        return { ...prev, treatmentReport: existing ? `${existing}\n${text}` : text };
+      });
     },
   };
 

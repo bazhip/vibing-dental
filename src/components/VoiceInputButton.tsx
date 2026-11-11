@@ -325,7 +325,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               <ul className="ai-intro__list">
                 <li>Speak naturally: <em>“104 complicated crown fracture, 6 millimeter pocket distal.”</em></li>
                 <li>A <strong>transcript</strong> and a live <strong>activity log</strong> open on the right so you see exactly what’s being entered.</li>
-                <li>It fills <strong>the section you’re on</strong> — open Charting to dictate perio values, Exam for exam findings, and so on. Findings for another section are listed as “not applied”.</li>
+                <li>It fills <strong>the section you’re on</strong> — open Charting to dictate perio values, Exam for exam findings, and so on. On Charting, perio values fill the grid and diagnosis codes (T/FX, CCF…) go onto the Diagnosis diagram. Findings for another section are listed as “not applied”.</li>
                 <li>Each value is <strong>highlighted as it lands</strong>.</li>
                 <li>Something wrong? Press <kbd>⌘Z</kbd> in a diagram, or just say the correction.</li>
                 <li>Need a moment? Press <strong>Pause</strong> — nothing is heard until you press <strong>Resume</strong>, and the transcript is kept.</li>

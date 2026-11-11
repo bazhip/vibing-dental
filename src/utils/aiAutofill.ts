@@ -116,7 +116,10 @@ const tools: Anthropic.Messages.Tool[] = [
   {
     name: 'set_tooth_field',
     description:
-      'Set a periodontal measurement on a tooth in the data grid. Examples: mobility "M2", recession "3mm", pocket "4 5 4", furcation "F2", calculus "C1", gingivitis "G1", pdstate "PD2".',
+      'Set a periodontal value on a tooth in the Charting grid. The value is the BARE NUMBER the grid shows — no letter prefix, no units: ' +
+      'gingivitis "2" (spoken "GI 2", "G2", "gingivitis two"), calculus "2" ("calc 2", "C2"), mobility "3" ("mobility 3", "M3"), ' +
+      'furcation "3" ("F3", "furcation 3"), pocket "5" (mm; "5 millimeter pocket"; several sites "4 5 4"), recession "2" (mm), ' +
+      'pdstate "2" ("PD2", "stage 2"), hyperplasia = gingival enlargement in mm.',
     input_schema: {
       type: 'object',
       properties: {
@@ -136,7 +139,8 @@ const tools: Anthropic.Messages.Tool[] = [
   {
     name: 'add_comment',
     description:
-      'Add a free-form note on the diagram, optionally anchored to a tooth. Use this for findings that don\'t fit the structured fields (e.g. "fractured slab", "draining tract", "biopsy taken").',
+      'Add a note on a diagram, optionally anchored to a tooth. Use it for diagnosis/procedure findings that are NOT grid values: AVDC codes (T/FX, CCF, UCF, TR, AB, etc.), fractures, resorption, draining tract, biopsy taken. ' +
+      'Never use it for periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) — those go in set_tooth_field only.',
     input_schema: {
       type: 'object',
       properties: {
@@ -221,8 +225,8 @@ const tools: Anthropic.Messages.Tool[] = [
 const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these patterns.
 
 [EX 1] "104 mobility class two, calculus stage one"
-→ set_tooth_field(triadan=104, field=mobility, value=M2)
-→ set_tooth_field(triadan=104, field=calculus, value=C1)
+→ set_tooth_field(triadan=104, field=mobility, value=2)
+→ set_tooth_field(triadan=104, field=calculus, value=1)
 
 [EX 2] "209 is going to come out today" / "we might have to extract 209"
 → NO TOOL CALL — speculative. Wait for definitive language ("extracted", "removing now", etc.).
@@ -258,7 +262,7 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → append_treatment_report(text="Completed full mouth cleaning with polish, all four quadrants.")
 
 [EX 12] "108 stage three periodontal disease, four millimeter pocket distally"
-→ set_tooth_field(triadan=108, field=pdstate, value=PD3)
+→ set_tooth_field(triadan=108, field=pdstate, value=3)
 → set_tooth_field(triadan=108, field=pocket, value=4)
 
 [EX 13] "patient looks great" / "doing well today" / "hand me the scaler"
@@ -272,6 +276,24 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 
 [EX 16] "I want to redo what I said about 209, that's actually fine"
 → unset_tooth_mark(diagram=post, triadan=209)
+
+[EX 17] "101 GI 2, calc 2, F3. 102 GI 2, calc 2, mobility 3. 103 GI 2, calc 2, 5 millimeter pocket"
+(several teeth in one breath — every value belongs to the most recent tooth number; cover ALL of them)
+→ set_tooth_field(triadan=101, field=gingivitis, value=2)
+→ set_tooth_field(triadan=101, field=calculus, value=2)
+→ set_tooth_field(triadan=101, field=furcation, value=3)
+→ set_tooth_field(triadan=102, field=gingivitis, value=2)
+→ set_tooth_field(triadan=102, field=calculus, value=2)
+→ set_tooth_field(triadan=102, field=mobility, value=3)
+→ set_tooth_field(triadan=103, field=gingivitis, value=2)
+→ set_tooth_field(triadan=103, field=calculus, value=2)
+→ set_tooth_field(triadan=103, field=pocket, value=5)
+
+[EX 18] "104 GI2, calc 1, T/FX/CCF. 105 missing."
+→ set_tooth_field(triadan=104, field=gingivitis, value=2)
+→ set_tooth_field(triadan=104, field=calculus, value=1)
+→ add_comment(diagram=pre, triadan=104, text="T/FX/CCF")
+→ set_tooth_mark(diagram=pre, triadan=105, mark=missing)
 `;
 
 function buildStaticSystemPrompt(): string {
@@ -290,11 +312,13 @@ function buildStaticSystemPrompt(): string {
     '5. Numbers in the transcript may be lightly garbled by speech-to-text. "One oh four" / "1 oh 4" / "1-0-4" all mean 104. Common shorthand spacings ("P D 2", "M 2", "C 1") collapse to PD2, M2, C1.',
     '6. When the vet says they "redid" or "corrected" a previous statement, use unset_tooth_mark or update via setter accordingly.',
     '7. SPEAKER LABELS: Some chunks include speaker labels like "Speaker 0:" or "Speaker 1:" — these come from a diarizing transcription model. Treat the speaker who states medical findings as the vet. Treat other speakers as the tech/assistant; their statements are CONTEXT, not findings, unless they\'re reading back numbers the vet asked for. Don\'t emit tool calls for the tech\'s acknowledgements ("got it", "suctioning now") or tooth callouts directed at the vet. If only one speaker label appears, treat them as the vet.',
+    '8. Dictation often runs through several teeth in one breath. Each Triadan number starts a new tooth; every value after it belongs to that tooth until the next number. Emit a call for EVERY value of EVERY tooth in the chunk — never stop after the first tooth.',
+    '9. Periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) go ONLY in set_tooth_field, never in add_comment — the app mirrors the grid onto the diagram itself when the vet wants that.',
     '',
     'FIELD SEMANTICS:',
     '- "pre" diagram = Diagnosis (findings observed at exam, before procedure). Teeth already missing, periodontal disease grades, fractures.',
     '- "post" diagram = Procedure (work performed today). Teeth extracted during this visit.',
-    '- mobility/recession/pocket/furcation/hyperplasia/calculus/gingivitis/pdstate go into the per-tooth grid using shorthand codes where natural (M2, C1, F2, PD3, etc.).',
+    '- mobility/recession/pocket/furcation/hyperplasia/calculus/gingivitis/pdstate go into the per-tooth grid as bare numbers ("GI 2" → gingivitis 2, "calc 1" → calculus 1, "M3" → mobility 3, "5 mm pocket" → pocket 5).',
     '- add_comment for findings that don\'t fit a structured field (biopsy, draining tract, photo taken, fracture details).',
     '- append_treatment_report for narrative description of WORK DONE (scaling, polish, suturing, extractions performed).',
     '',
@@ -319,8 +343,33 @@ const DIGIT_WORD_RE = new RegExp(
   'gi'
 );
 
+// Words after which a single spoken number is a score/measurement, not
+// part of a tooth number: "mobility three one zero three" is mobility 3,
+// tooth 103 — not tooth 310.
+const SCORE_TERMS = 'GI|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis';
+const SCORE_WORD_RE = new RegExp(
+  `\\b(${SCORE_TERMS})([\\s,-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
+  'gi'
+);
+// A spoken number right before a unit is a measurement: "five millimeter".
+const UNIT_WORD_RE = new RegExp(
+  `\\b(${Object.keys(DIGIT_WORDS).join('|')})(?=[\\s-]*(?:mm|millimet(?:er|re)s?)\\b)`,
+  'gi'
+);
+
 export function normalizeTranscript(raw: string): string {
   let text = raw;
+
+  // Spelled-out letters: "g I" → "GI", "P D" handled below.
+  text = text.replace(/\bg[\s.-]*i\b/gi, 'GI');
+  // STT spells the letter F as "f e" ("f e three" = F3, furcation 3).
+  text = text.replace(/\bf[\s.]+e\b/gi, 'F');
+
+  // Scores and measurements first, one word each, so the tooth-number
+  // pass below can't swallow them ("calc two five millimeter" is calc 2,
+  // 5 mm — not 25).
+  text = text.replace(SCORE_WORD_RE, (_m, term, sep, word) => `${term}${sep}${DIGIT_WORDS[word.toLowerCase()]}`);
+  text = text.replace(UNIT_WORD_RE, (word) => DIGIT_WORDS[word.toLowerCase()]);
 
   // "one oh four" / "two-o-nine" / "three zero one" → "104" / "209" / "301"
   text = text.replace(DIGIT_WORD_RE, (match, a, b, c) => {
@@ -509,6 +558,17 @@ interface SectionScope {
 
 const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre');
 
+/** True when a comment holds nothing but periodontal scores ("GI 2, calc
+ *  1, M3") — grid values the Charting page's mirror option already puts
+ *  on the diagram, so a comment would duplicate them. */
+export function isPerioOnlyText(text: string): boolean {
+  const rest = text
+    .replace(/\b(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class|gingivitis|pocket|recession)\s*[-:=]?\s*\d+(?:\s*mm)?\b/gi, '')
+    .replace(/\b\d+\s*(?:mm|millimet(?:er|re)s?)\s*(?:pocket|recession)?\b/gi, '')
+    .replace(/[\s,.;/]+/g, '');
+  return text.trim().length > 0 && rest.length === 0;
+}
+
 const SECTION_SCOPES: Record<string, SectionScope> = {
   patient: {
     label: 'Patient',
@@ -528,14 +588,16 @@ const SECTION_SCOPES: Record<string, SectionScope> = {
   charting: {
     label: 'Charting (per-tooth periodontal grid)',
     guidance:
-      'set_tooth_field for every per-tooth finding (mobility, recession, pocket, furcation, hyperplasia, calculus, gingivitis, pdstate), ' +
-      'and set_tooth_mark/unset_tooth_mark with diagram=pre, mark=missing for missing teeth (the grid\'s Missing toggle). ' +
-      'Do NOT use add_comment here — put the finding in the matching grid field instead.',
+      'set_tooth_field for every periodontal value (gingivitis, calculus, mobility, pocket, furcation, recession, enlargement, PD stage); ' +
+      'set_tooth_mark/unset_tooth_mark with diagram=pre, mark=missing for missing teeth; ' +
+      'and add_comment with diagram=pre for DIAGNOSIS findings that are not grid values (AVDC codes like T/FX, CCF, TR; fractures; resorption) — those go on the Diagnosis diagram. ' +
+      'Never put periodontal values in a comment.',
     allows: (a) =>
       a.name === 'set_tooth_field' ||
       ((a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark') &&
         diagramOf(a) === 'pre' &&
-        (a.name === 'unset_tooth_mark' || a.input.mark === 'missing')),
+        (a.name === 'unset_tooth_mark' || a.input.mark === 'missing')) ||
+      (a.name === 'add_comment' && diagramOf(a) === 'pre' && !isPerioOnlyText(String(a.input.text ?? ''))),
   },
   diagnosis: {
     label: 'Diagnosis diagram',
@@ -725,10 +787,10 @@ export function describeAction(action: AiAction): string {
   const { name, input } = action;
   const get = (k: string): string => String(input[k] ?? '');
   switch (name) {
-    case 'set_tooth_mark':       return `${get('diagram')}.${get('triadan')} → ${get('mark')}`;
+    case 'set_tooth_mark':       return `${get('triadan')} → ${get('mark')}`;
     case 'unset_tooth_mark':     return `cleared ${get('diagram')}.${get('triadan')}`;
     case 'set_tooth_field':      return `${get('triadan')} ${get('field')} = ${get('value')}`;
-    case 'add_comment':          return `comment ${input.triadan ? `@${get('triadan')}` : ''} (${get('diagram')}): "${get('text').slice(0, 60)}"`;
+    case 'add_comment':          return `${get('diagram') === 'post' ? 'Procedure' : 'Diagnosis'} note${input.triadan ? ` @${get('triadan')}` : ''}: "${get('text').slice(0, 60)}"`;
     case 'set_exam_finding':     return `${get('area')} ${get('status')}${input.comment ? ` — ${get('comment')}` : ''}`;
     case 'set_nerve_block':      return `block ${get('site')} = ${get('mL')} mL`;
     case 'set_anesthetic_drug':  return `anesthetic = ${get('drug')}`;
@@ -762,6 +824,17 @@ const DENTAL_FIELD_SET = new Set<DentalField>([
   'hyperplasia', 'calculus', 'gingivitis', 'pdstate',
 ]);
 
+/** Grid cells hold bare numbers. Strip a letter prefix or unit the model
+ *  may still add ("G2" → "2", "PD3" → "3", "5mm" → "5"). Free text that
+ *  isn't a prefixed number is left alone. */
+export function normalizeFieldValue(value: string): string {
+  return value
+    .trim()
+    .replace(/^(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class)\s*[-:]?\s*(?=\d)/i, '')
+    .replace(/\s*(?:mm|millimet(?:er|re)s?)\.?$/i, '')
+    .trim();
+}
+
 function applyOne(action: AiAction, h: ChartHandlers): boolean {
   const { name, input } = action;
   const s = (k: string): string => String(input[k] ?? '');
@@ -790,7 +863,7 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
       const triadan = n('triadan');
       const field = s('field') as DentalField;
       if (!validTriadan(triadan) || !DENTAL_FIELD_SET.has(field)) return false;
-      h.setToothField(triadan, field, s('value'));
+      h.setToothField(triadan, field, normalizeFieldValue(s('value')));
       return true;
     }
     case 'add_comment': {
