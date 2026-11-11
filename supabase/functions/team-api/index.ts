@@ -7,6 +7,7 @@
 // billing/deletion anchor) and can be transferred.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { sendBrandedEmail } from '../_shared/email.ts';
 
 /** Free beta — keep in step with FREE_BETA in src/constants/plans.ts. */
 const FREE_BETA = true;
@@ -20,7 +21,6 @@ const CORS = {
 const json = (b: Json, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { 'Content-Type': 'application/json', ...CORS } });
 
-const INVITE_FROM = 'ToothOps <noreply@toothops.app>';
 
 /** Create the account + email a set-password link via Resend (verified
  *  domain → delivers to anyone; not rate-limited like the built-in
@@ -37,19 +37,17 @@ async function inviteViaResend(admin: any, email: string, practiceName: string, 
   }
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (key) {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: INVITE_FROM,
-        to: [email],
-        subject: `You've been added to ${practiceName || 'a practice'} on ToothOps`,
-        text:
-          `You've been added to ${practiceName || 'a practice'} on ToothOps — chairside veterinary dental charting.\n\n` +
-          `Set your password to activate your account:\n${link.properties.action_link}\n\n` +
-          `If you weren't expecting this, you can ignore this email.`,
-      }),
-    }).catch(() => {});
+    const who = practiceName || 'A practice';
+    await sendBrandedEmail(key, email, `${who} invited you to ToothOps`, {
+      preheader: `Set your password to join ${practiceName || 'the practice'} on ToothOps.`,
+      title: `You’re invited to join ${practiceName || 'a practice'}`,
+      paragraphs: [
+        `${who} added you to their team on ToothOps — chairside veterinary dental charting.`,
+        'Set your password to activate your account and see the practice’s charts.',
+      ],
+      button: { label: 'Set your password & join', url: link.properties.action_link },
+      footnote: 'If you weren’t expecting this, you can ignore this email.',
+    });
   }
   return { user: link.user, error: null };
 }
@@ -115,19 +113,16 @@ async function sendJoinRequest(admin: any, email: string, practiceName: string, 
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return;
   const name = practiceName || 'a practice';
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: INVITE_FROM,
-      to: [email],
-      subject: `Join ${name} on ToothOps?`,
-      text:
-        `You've been invited to join ${name} on ToothOps.\n\n` +
-        `Sign in and accept here (the link works for 14 days):\n${link}\n\n` +
-        `Nothing changes until you accept. If you weren't expecting this, ignore this email.`,
-    }),
-  }).catch(() => {});
+  await sendBrandedEmail(key, email, `Join ${name} on ToothOps?`, {
+    preheader: `${name} invited you to their team on ToothOps.`,
+    title: `Join ${name}?`,
+    paragraphs: [
+      `${name} invited you to join their team on ToothOps. Sign in with your existing account to accept.`,
+      'Nothing changes until you accept — and sharing your existing charts with the practice is a separate choice you make when joining.',
+    ],
+    button: { label: 'Review invitation', url: link },
+    footnote: 'The link works for 14 days. If you weren’t expecting this, ignore this email.',
+  });
 }
 
 // deno-lint-ignore no-explicit-any

@@ -94,7 +94,12 @@ const App: React.FC = () => {
   // establishes a session but no password is set yet). Captured from the
   // URL hash before supabase-js consumes it. Both land on ResetPassword.
   const [invited, setInvited] = useState<boolean>(
-    () => /[#&]type=(invite|signup)\b/.test(window.location.hash)
+    () =>
+      /[#&]type=(invite|signup)\b/.test(window.location.hash) ||
+      // Invite reminder emails use a password link tagged ?invite=1 —
+      // show the invite wording, but only alongside a real recovery link.
+      (new URLSearchParams(window.location.search).get('invite') === '1' &&
+        /[#&]type=recovery\b/.test(window.location.hash))
   );
   // No-account trial (persisted so a refresh mid-trial doesn't bounce
   // back to the landing page). Signing in/up ends it.
@@ -246,6 +251,10 @@ const App: React.FC = () => {
           onDone={() => {
             setRecovering(false);
             setInvited(false);
+            // Drop the ?invite=1 tag so a reload doesn't reopen this screen.
+            if (window.location.search) {
+              window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+            }
           }}
         />
       </Suspense>
