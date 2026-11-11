@@ -208,6 +208,17 @@ function generateChartId(): string {
   }
 }
 
+/**
+ * Reload onto the fresh chart's Patient page. The address has to change
+ * first: reloading as-is keeps whatever was showing — "+ New patient" is
+ * pressed from My charts (#/library), so the reload landed back there.
+ * (A bare address won't do either: a blank chart there opens My charts.)
+ */
+export function reloadIntoNewChart(reload: () => void = () => window.location.reload()): void {
+  window.history.replaceState(window.history.state, '', '#/chart/patient');
+  reload();
+}
+
 export function useChartState(): UseChartStateReturn {
   const [patientInfo, setPatientInfo] = usePersistedState<PatientInfo>(
     'chart.patientInfo', 1,
@@ -639,7 +650,7 @@ export function useChartState(): UseChartStateReturn {
 
   const resetChart = () => {
     clearChartStorage();
-    window.location.reload();
+    reloadIntoNewChart();
   };
 
   return {
