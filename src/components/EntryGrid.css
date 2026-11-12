@@ -3611,3 +3611,15 @@ button.save-status--manual:hover {
 
 /* Charting header: Grid / By tooth switch + Customize (Chart settings). */
 .charting-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+/* Per-root pocket slots shown in the grid cell (not only while editing). */
+.dental-grid__slots { display: flex; height: 100%; align-items: center; gap: 3px; }
+.dental-grid__slot {
+  flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 2px;
+  height: 70%; padding: 0 3px; border-radius: 4px;
+  border: 1px solid var(--border, #e2e8f0); background: var(--surface, #fff);
+}
+.dental-grid__slot--empty { border-style: dashed; background: transparent; }
+.dental-grid__slot-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted, #64748b); }
+.dental-grid__slot-value { font-variant-numeric: tabular-nums; }
+.dental-grid__unsplit { font-size: 0.7rem; color: var(--text-muted, #64748b); }
