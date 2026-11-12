@@ -10,6 +10,8 @@ interface PatientFormProps {
   onSpeciesChange: (species: Species) => void;
   /** Personal chart setting: leave out the Recheck due field. */
   hideRecheck?: boolean;
+  /** Open this page's settings. */
+  onCustomize?: () => void;
 }
 
 /**
@@ -22,6 +24,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   onPatientInfoChange,
   onSpeciesChange,
   hideRecheck = false,
+  onCustomize,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -44,6 +47,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     <div className="patient-form">
       <div className="patient-form__header">
         <h2 className="patient-form__section-title">Patient Information</h2>
+        {onCustomize && (
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Fields shown on this page">
+            Customize
+          </button>
+        )}
       </div>
 
       {/* SoCal carries Patient Name + Number; VCA carries Doctor + Tech.
