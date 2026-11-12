@@ -119,3 +119,30 @@ test('per-root pockets: a plain value that can\'t be split keeps the plain edito
   fireEvent.click(row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement);
   expect((row.querySelector('.rdg-editor-container input') as HTMLInputElement).value).toBe('5');
 });
+
+test('per-root pockets: every multi-rooted tooth shows its root slots before any typing', () => {
+  const toothData = getInitialToothData('canine').map((t) => (t.triadan === 106 ? { ...t, pocket: 'M3 D5' } : t));
+  renderGrid({ pocketMode: 'root', species: 'canine', toothData });
+  expect(screen.getByRole('columnheader', { name: /^Pocket \(per root\)/ })).toBeInTheDocument();
+  const row108 = rowFor(108);
+  const slots108 = Array.from(row108.querySelectorAll('.dental-grid__slot')).map((s) => s.textContent);
+  expect(slots108).toEqual(['MB', 'MP', 'D']); // empty, labelled
+  const slots106 = Array.from(rowFor(106).querySelectorAll('.dental-grid__slot')).map((s) => s.textContent);
+  expect(slots106).toEqual(['M3', 'D5']);
+  expect(rowFor(104).querySelectorAll('.dental-grid__slot')).toHaveLength(0); // single root
+});
+
+test('per-root pockets: clicking a root slot opens the editor on that root', () => {
+  renderGrid({ pocketMode: 'root', species: 'canine' });
+  const row = rowFor(108);
+  const slot = row.querySelectorAll('.dental-grid__slot')[2] as HTMLElement; // D
+  fireEvent.mouseDown(slot);
+  fireEvent.click(slot);
+  expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Tooth 108 pocket, D root' }));
+});
+
+test('per-root pockets: an old single value on a multi-rooted tooth is labelled as covering all roots', () => {
+  const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, pocket: '5' } : t));
+  renderGrid({ pocketMode: 'root', species: 'canine', toothData });
+  expect(rowFor(108).textContent).toContain('all roots');
+});

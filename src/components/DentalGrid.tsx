@@ -81,6 +81,8 @@ interface EditorWiring {
   /** Index of the last editable column (depends on hidden columns). */
   lastEditableRef: React.MutableRefObject<number>;
   speciesRef: React.MutableRefObject<Species>;
+  /** Which root slot was clicked, so the per-root editor opens on it. */
+  focusRootRef: React.MutableRefObject<number>;
 }
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
@@ -188,6 +190,9 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
   const initial = React.useMemo(() => rootBoxes(labels, row.pocket), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [depths, setDepths] = React.useState<Record<string, string>>(initial.depths);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
+  // Open on the root slot that was clicked (keyboard entry: the first).
+  const [startIndex] = React.useState(() => Math.min(Math.max(wiring?.focusRootRef.current ?? 0, 0), labels.length - 1));
+  React.useEffect(() => { if (wiring) wiring.focusRootRef.current = 0; }, [wiring]);
   const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
   const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
 
@@ -237,7 +242,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
           <span className="dental-grid__root-label">{l}</span>
           <input
             ref={(el) => { inputs.current[i] = el; }}
-            autoFocus={i === 0}
+            autoFocus={i === startIndex}
             inputMode="decimal"
             value={depths[l] ?? ''}
             aria-label={`Tooth ${row.triadan} pocket, ${l} root`}
@@ -315,7 +320,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   lastEditableRef.current = FIRST_EDITABLE + visibleColumns.length - 1;
   const speciesRef = useRef<Species>(species);
   speciesRef.current = species;
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef }), []);
+  const focusRootRef = useRef(0);
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't
@@ -466,6 +472,39 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         const value = typeof row[key] === 'string' ? (row[key] as string) : '';
         const prior = priorToothData?.[row.triadan]?.[key];
         const priorValue = typeof prior === 'string' ? prior.trim() : '';
+        // Per-root pockets: always show a labelled slot per root, so the
+        // expected input is visible before anything is typed. Clicking a
+        // slot opens the editor on that root.
+        if (key === 'pocket' && pocketMode === 'root' && toothMarks[row.triadan] !== 'missing') {
+          const labels = rootLabels(species, row.triadan);
+          const boxes = labels.length ? rootBoxes(labels, value) : null;
+          if (boxes && !boxes.unplaced) {
+            const priorBoxes = priorValue ? rootBoxes(labels, priorValue).depths : {};
+            return (
+              <span className="dental-grid__slots">
+                {labels.map((l, i) => {
+                  const d = boxes.depths[l];
+                  const hint = priorBoxes[l];
+                  return (
+                    <span
+                      key={l}
+                      className={`dental-grid__slot${d ? '' : ' dental-grid__slot--empty'}`}
+                      onMouseDown={() => { focusRootRef.current = i; }}
+                      title={hint ? `${l} root — last visit ${hint}` : `${l} root`}
+                    >
+                      <span className="dental-grid__slot-label">{l}</span>
+                      <span className={`dental-grid__slot-value${!d && hint ? ' dental-grid__prior-hint' : ''}`}>{d || hint || ''}</span>
+                    </span>
+                  );
+                })}
+              </span>
+            );
+          }
+          if (boxes?.unplaced) {
+            // Old single value on a multi-rooted tooth: say it isn't split.
+            return <span title="Not split by root — click to edit (clear it to get a box per root)">{value} <span className="dental-grid__unsplit">all roots</span></span>;
+          }
+        }
         if (value) {
           // Entered — surface the previous visit's value for comparison
           // when it differs (probing-depth trends at a glance).
@@ -481,7 +520,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       },
       renderHeaderCell: () => (
         <span className="dental-grid__head">
-          {name}
+          {key === 'pocket' && pocketMode === 'root' ? `${name} (per root)` : name}
           <button
             type="button"
             className="dental-grid__set-all"
@@ -496,7 +535,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       ),
     })),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species]);
 
   return (
     <div className="dental-grid-section">
