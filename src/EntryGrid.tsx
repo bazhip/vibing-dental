@@ -130,7 +130,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
   const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
-  const [historyOpen, setHistoryOpen] = React.useState(false);
+  // Chart history: which chart (the open one, or a visit picked in My charts).
+  const [historyFor, setHistoryFor] = React.useState<{ id: string; label?: string; fromLibrary?: boolean } | null>(null);
   // Saved charts open read-only; the user unlocks to edit them (then
   // changes autosave). Remembered per chart for this browser session, so
   // a refresh mid-edit doesn't re-lock and hide pending edits.
@@ -1279,7 +1280,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             onOpenChartSettings={() => setChartSettingsOpen('all')}
             onOpenWhatsNew={() => setWhatsNewOpen(true)}
-            onOpenHistory={cloud.enabled && !trial ? () => setHistoryOpen(true) : undefined}
             cloud={
               cloud.enabled
                 ? {
@@ -1343,7 +1343,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <button
                 type="button"
                 className="diagram-view__action"
-                onClick={() => setHistoryOpen(true)}
+                onClick={() => setHistoryFor({ id: chart.cloudChartId })}
                 title="Every saved version of this chart — who saved it and when"
               >
                 History
@@ -1412,13 +1412,28 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
 
-      {historyOpen && (
-        <ChartHistoryModal
-          chartId={chart.cloudChartId}
-          onClose={() => setHistoryOpen(false)}
-          onRestore={readOnly ? undefined : (snap) => cloud.restoreRevision(chart.cloudChartId, snap)}
-        />
-      )}
+      {historyFor && (() => {
+        // Restore only on the open, editable chart; from My charts it's
+        // view-only with a shortcut to open the visit.
+        const isOpenChart = historyFor.id === chart.cloudChartId;
+        const canRestore = isOpenChart && !readOnly;
+        return (
+          <ChartHistoryModal
+            chartId={historyFor.id}
+            label={historyFor.label}
+            onClose={() => setHistoryFor(null)}
+            onRestore={canRestore ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
+            restoreHint={isOpenChart ? undefined : 'Open this visit to restore an earlier version.'}
+            onOpenChart={historyFor.fromLibrary && !isOpenChart ? () => {
+              const id = historyFor.id;
+              setHistoryFor(null);
+              cloud.openChart(id).then((ok) => { if (ok) closeLibrary(); }).catch((err) => {
+                toast(`Couldn’t open that visit. ${friendlyError(err)}`, { kind: 'error' });
+              });
+            } : undefined}
+          />
+        );
+      })()}
 
       {chartSettingsOpen && (
         <ChartSettingsModal
@@ -1452,6 +1467,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}
+          onOpenHistory={(id, label) => setHistoryFor({ id, label, fromLibrary: true })}
           onClearRecalls={async (chartIds) => {
             await cloud.clearRecalls(chartIds);
             // If the working chart is one of them, mirror the clear

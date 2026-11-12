@@ -3696,3 +3696,4 @@ button.save-status--manual:hover {
   .chart-history__body { grid-template-columns: 1fr; grid-template-rows: minmax(8rem, 35%) 1fr; }
   .chart-history__list { border-right: 0; border-bottom: 1px solid var(--border, #e2e8f0); }
 }
+.chart-history__bar { flex: none; display: flex; justify-content: flex-end; padding: 0.4rem 1rem; border-bottom: 1px solid var(--border, #e2e8f0); }

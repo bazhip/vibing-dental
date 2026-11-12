@@ -21,6 +21,12 @@ export interface ChartHistoryModalProps {
   /** Restore (save) a version; resolves false when cancelled. Absent =
    *  view-only (the chart can't be edited right now). */
   onRestore?: (snapshot: ChartSnapshot) => Promise<boolean>;
+  /** Which chart, e.g. "Bella · Nov 12, 2026". */
+  label?: string;
+  /** Shown instead of Restore when restoring isn't possible here. */
+  restoreHint?: string;
+  /** From My charts: open this visit (where it can be restored). */
+  onOpenChart?: () => void;
 }
 
 const fmt = (iso: string) =>
@@ -35,7 +41,7 @@ export function revisionWhen(r: Pick<ChartRevision, 'startedAt' | 'savedAt'>): s
   return a.toDateString() === b.toDateString() ? `${fmt(r.startedAt)} – ${fmtTime(r.savedAt)}` : `${fmt(r.startedAt)} – ${fmt(r.savedAt)}`;
 }
 
-export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore }) => {
+export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore, label, restoreHint, onOpenChart }) => {
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(onClose);
   const { revisions, error, loadData } = useChartHistory(chartId, true);
@@ -94,9 +100,14 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart history">
       <div className="ai-settings-modal chart-history" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>Chart history</h2>
+          <h2>{label ? `History — ${label}` : 'Chart history'}</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
         </header>
+        {onOpenChart && (
+          <div className="chart-history__bar">
+            <button type="button" className="diagram-view__action" onClick={onOpenChart}>Open this visit</button>
+          </div>
+        )}
         <div className="chart-history__body">
           <div className="chart-history__list">
             {revisions === null ? (
@@ -143,7 +154,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
                         {restoring ? 'Restoring…' : 'Restore this version'}
                       </button>
                     ) : (
-                      <span className="chart-history__hint">Choose Edit chart to restore an earlier version.</span>
+                      <span className="chart-history__hint">{restoreHint ?? 'Choose Edit chart to restore an earlier version.'}</span>
                     )
                   )}
                 </div>

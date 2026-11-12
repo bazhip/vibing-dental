@@ -18,6 +18,8 @@ interface ChartLibraryProps {
   /** Start a fresh visit for a patient, carrying identity + gone teeth
    *  from their most recent visit (by chart id). */
   onNewVisit: (latestChartId: string) => void;
+  /** Open a visit's history (who saved each version, and when). */
+  onOpenHistory?: (chartId: string, label: string) => void;
   /** Open the recheck-reminder composer prefilled from a saved chart. */
   onSendReminder: (chart: CloudChartMeta) => void;
   /** Clear the recheck reminders on these charts (recheck happened, or
@@ -123,6 +125,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onOpen,
   onDelete,
   onNewVisit,
+  onOpenHistory,
   onSendReminder,
   onClearRecalls,
   onNewPatient,
@@ -566,6 +569,16 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           >
                             + Visit
                           </button>
+                          {!multi && onOpenHistory && (
+                            <button
+                              type="button"
+                              className="chart-library__delete chart-library__history"
+                              onClick={() => onOpenHistory(only.id, `${g.name}${only.chart_date ? ` · ${formatChartDate(only.chart_date)}` : ''}`)}
+                              title={`Who saved ${g.name}'s chart, and when`}
+                            >
+                              History
+                            </button>
+                          )}
                           {!multi && (
                             <button
                               type="button"
@@ -601,6 +614,16 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               </span>
                             </button>
                             <span className="chart-library__row-actions">
+                              {onOpenHistory && (
+                                <button
+                                  type="button"
+                                  className="chart-library__delete chart-library__history"
+                                  onClick={() => onOpenHistory(v.id, `${g.name} · ${v.chart_date ? formatChartDate(v.chart_date) : 'Undated visit'}`)}
+                                  title="Who saved this visit, and when"
+                                >
+                                  History
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 className="chart-library__delete"
