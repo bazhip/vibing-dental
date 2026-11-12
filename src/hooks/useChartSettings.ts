@@ -36,6 +36,9 @@ export interface UseChartSettingsReturn {
   update: (patch: Partial<ChartPrefs>) => Promise<void>;
   /** Saved to the account (vs. only this browser). */
   followsAccount: boolean;
+  /** The account's settings have been read (or there's no account) —
+   *  wait for this before acting on a setting, e.g. "What's new". */
+  loaded: boolean;
 }
 
 export function useChartSettings(profileLoaded: boolean): UseChartSettingsReturn {
@@ -45,22 +48,27 @@ export function useChartSettings(profileLoaded: boolean): UseChartSettingsReturn
   const prefsRef = React.useRef(prefs);
   prefsRef.current = prefs;
   const [userId, setUserId] = React.useState<string | null>(null);
+  const [loaded, setLoaded] = React.useState(!supabase);
 
   React.useEffect(() => {
     if (!supabase || !profileLoaded) return;
     let cancelled = false;
     (async () => {
-      const { data: s } = await supabase!.auth.getSession();
-      const uid = s.session?.user.id ?? null;
-      if (cancelled || !uid) return;
-      setUserId(uid);
-      const { data, error } = await supabase!.from('profiles').select('chart_prefs').eq('id', uid).maybeSingle();
-      if (cancelled || error) return;
-      const stored = (data as { chart_prefs?: unknown } | null)?.chart_prefs;
-      if (stored == null) return; // nothing on the account yet: keep this browser's
-      const next = normalizeChartPrefs(stored, prefsRef.current);
-      setPrefs(next);
-      writeJson(LOCAL_KEY, 1, next);
+      try {
+        const { data: s } = await supabase!.auth.getSession();
+        const uid = s.session?.user.id ?? null;
+        if (cancelled || !uid) return;
+        setUserId(uid);
+        const { data, error } = await supabase!.from('profiles').select('chart_prefs').eq('id', uid).maybeSingle();
+        if (cancelled || error) return;
+        const stored = (data as { chart_prefs?: unknown } | null)?.chart_prefs;
+        if (stored == null) return; // nothing on the account yet: keep this browser's
+        const next = normalizeChartPrefs(stored, prefsRef.current);
+        setPrefs(next);
+        writeJson(LOCAL_KEY, 1, next);
+      } finally {
+        if (!cancelled) setLoaded(true);
+      }
     })();
     return () => { cancelled = true; };
   }, [profileLoaded]);
@@ -76,5 +84,5 @@ export function useChartSettings(profileLoaded: boolean): UseChartSettingsReturn
     }
   }, [userId]);
 
-  return { prefs, update, followsAccount: !!supabase && !!userId };
+  return { prefs, update, followsAccount: !!supabase && !!userId, loaded };
 }

@@ -26,6 +26,8 @@ interface ChartMenuProps {
   onOpenFeedback?: () => void;
   /** Chart settings (pockets per root, grid columns, beside-teeth values…). */
   onOpenChartSettings?: () => void;
+  /** Reopen the "What's new" announcement. */
+  onOpenWhatsNew?: () => void;
   /** Cloud account actions — present only when Supabase is configured. */
   cloud?: ChartMenuCloud;
   /** Signed-in email for the menu header. Optional — when omitted (and
@@ -59,7 +61,7 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, cloud, email }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -216,6 +218,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
             <header className="chart-menu__section-head">App</header>
             {onOpenChartSettings && item('Chart settings', 'Pockets per root, grid columns, what shows beside the teeth.', onOpenChartSettings)}
             {onOpenFeedback && item('Send feedback', 'Report a problem or suggest an idea — it comes straight to us.', onOpenFeedback)}
+            {onOpenWhatsNew && item('What’s new', 'The latest features and improvements.', onOpenWhatsNew)}
             {item('Getting started', 'Replay the walkthrough of every part of the app.', onOpenWalkthrough)}
             {onGoHome && item('Homepage', 'View the product page — your chart stays right here.', onGoHome)}
             {cloud && item('Sign out', 'End your session and return to the homepage.', cloud.onSignOut)}

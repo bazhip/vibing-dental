@@ -56,6 +56,8 @@ export interface ChartPrefs {
   /** The person's usual anesthetic — offered as one tap on a chart with
    *  no anesthetic set. null = none. */
   usualDrug: { name: string; concentration: string } | null;
+  /** Id of the last "What's new" the person has seen ('' = none). */
+  whatsNewSeen: string;
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -70,6 +72,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   spaceMovesDown: true,
   hiddenBlocks: [],
   usualDrug: null,
+  whatsNewSeen: '',
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -103,5 +106,6 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
       ? (r.hiddenBlocks.filter((b) => typeof b === 'string' && BLOCK_IDS.has(b)) as BlockRowId[])
       : fallback.hiddenBlocks,
     usualDrug: usualDrugOf(r.usualDrug, fallback.usualDrug),
+    whatsNewSeen: typeof r.whatsNewSeen === 'string' ? r.whatsNewSeen.slice(0, 40) : fallback.whatsNewSeen,
   };
 }
