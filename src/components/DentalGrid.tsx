@@ -48,6 +48,8 @@ interface DentalGridProps {
   pocketMode?: 'tooth' | 'root';
   /** Needed for per-root pockets (root counts differ by species). */
   species?: Species;
+  /** Space moves down to the next tooth (default) vs. typing a space. */
+  spaceMovesDown?: boolean;
 }
 
 /**
@@ -83,6 +85,7 @@ interface EditorWiring {
   speciesRef: React.MutableRefObject<Species>;
   /** Which root slot was clicked, so the per-root editor opens on it. */
   focusRootRef: React.MutableRefObject<number>;
+  spaceMovesDownRef: React.MutableRefObject<boolean>;
 }
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
@@ -136,11 +139,11 @@ function CodeCellEditor({
       }
       return;
     }
-    if (e.key === 'Enter' || e.key === ' ') {
-      // Commit, then move down a row in the same column — Enter and
-      // Space both, so a run of probing depths can be entered exactly
-      // as it's called out ("3 [space] 2 [space] 4 …"). These cells
-      // hold short grades/codes; a literal space is never content.
+    if (e.key === 'Enter' || (e.key === ' ' && (wiring?.spaceMovesDownRef.current ?? true))) {
+      // Commit, then move down a row in the same column — Enter, and
+      // Space too unless the person's chart settings say Space types a
+      // space, so a run of probing depths can be entered exactly as it's
+      // called out ("3 [space] 2 [space] 4 …").
       // Enter is also blocked from bubbling to the form (which would
       // submit).
       e.preventDefault();
@@ -304,6 +307,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   hiddenColumns,
   pocketMode = 'tooth',
   species = 'canine',
+  spaceMovesDown = true,
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
@@ -321,7 +325,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const speciesRef = useRef<Species>(species);
   speciesRef.current = species;
   const focusRootRef = useRef(0);
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef }), []);
+  const spaceMovesDownRef = useRef(spaceMovesDown);
+  spaceMovesDownRef.current = spaceMovesDown;
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef, spaceMovesDownRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't
@@ -400,6 +406,57 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   }, // eslint-disable-next-line react-hooks/exhaustive-deps
   [onToothDataChange]);
 
+  // Several teeth at once: click Tooth/Triadan cells to select teeth
+  // (Shift-click for a range), then set one value on all of them.
+  const [selected, setSelected] = React.useState<Set<number>>(() => new Set());
+  const anchorRef = useRef<number | null>(null);
+  const [bulkKey, setBulkKey] = React.useState<keyof ToothData>('gingivitis');
+  const [bulkValue, setBulkValue] = React.useState('');
+  // A different chart (new rows) or view-only: drop the selection.
+  React.useEffect(() => { setSelected(new Set()); anchorRef.current = null; }, [readOnly, toothData.length]);
+  const toggleSelect = (triadan: number, range: boolean) => {
+    // Read the anchor now: the state updater runs later, after the anchor
+    // has moved to this click.
+    const anchor = anchorRef.current;
+    const order = toothDataRef.current.map((t) => t.triadan);
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (range && anchor != null && order.includes(anchor)) {
+        const [a, b] = [order.indexOf(anchor), order.indexOf(triadan)].sort((x, y) => x - y);
+        for (const t of order.slice(a, b + 1)) next.add(t);
+      } else if (next.has(triadan)) {
+        next.delete(triadan);
+      } else {
+        next.add(triadan);
+      }
+      return next;
+    });
+    anchorRef.current = triadan;
+  };
+  const bulkColumn = visibleColumns.find((c) => c.key === bulkKey) ?? visibleColumns[0];
+  const bulkRange = bulkColumn ? COLUMN_RANGES[bulkColumn.key as string] : undefined;
+  const bulkError = (() => {
+    const t = bulkValue.trim();
+    if (!t || !bulkRange) return '';
+    const ok = t.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= bulkRange[0] && Number(n) <= bulkRange[1]);
+    return ok ? '' : `Use ${bulkRange[0]}–${bulkRange[1]}`;
+  })();
+  const applyToSelected = () => {
+    if (!bulkColumn || !bulkValue.trim() || bulkError) return;
+    const key = bulkColumn.key;
+    const value = bulkValue.trim();
+    const before = toothDataRef.current;
+    const targets = before.filter((t) => selected.has(t.triadan) && toothMarksRef.current[t.triadan] !== 'missing');
+    if (targets.length === 0) return;
+    const ids = new Set(targets.map((t) => t.triadan));
+    onToothDataChange(before.map((t) => (ids.has(t.triadan) ? { ...t, [key]: value } : t)));
+    toast(`${bulkColumn.name} set to ${value} on ${targets.length} ${targets.length === 1 ? 'tooth' : 'teeth'}.`, {
+      kind: 'success',
+      action: { label: 'Undo', onClick: () => onToothDataChange(before) },
+    });
+    setBulkValue('');
+  };
+
   // Gloved fingers on tablets need taller touch targets than a mouse.
   const coarsePointer = React.useMemo(
     () => window.matchMedia?.('(pointer: coarse)').matches ?? false,
@@ -458,9 +515,22 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       width: px(0.07),
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
-      renderCell: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
+      renderCell: ({ row }) => (
+        <span className="dental-grid__pick" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
+          {(row.tooth ?? '').toUpperCase()}
+        </span>
+      ),
     },
-    { key: 'triadan', name: 'Triadan', width: px(0.08) },
+    {
+      key: 'triadan',
+      name: 'Triadan',
+      width: px(0.08),
+      renderCell: ({ row }) => (
+        <span className="dental-grid__pick" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
+          {row.triadan}
+        </span>
+      ),
+    },
     ...visibleColumns.map(({ key, name, share }, index): Column<ToothData> => ({
       key,
       name,
@@ -576,6 +646,38 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           </div>
         )}
       </div>
+      {!readOnly && (selected.size > 0 ? (
+        <div className="dental-grid__bulk" role="region" aria-label="Set a value on the selected teeth">
+          <strong>{selected.size} {selected.size === 1 ? 'tooth' : 'teeth'} selected</strong>
+          <label className="dental-grid__bulk-field">
+            Set
+            <select value={bulkColumn?.key as string} onChange={(e) => setBulkKey(e.target.value as keyof ToothData)} aria-label="Column to set">
+              {visibleColumns.map((c) => <option key={c.key as string} value={c.key as string}>{c.name}</option>)}
+            </select>
+          </label>
+          <label className="dental-grid__bulk-field">
+            to
+            <input
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyToSelected(); } }}
+              inputMode="decimal"
+              placeholder={bulkRange ? `${bulkRange[0]}–${bulkRange[1]}` : ''}
+              aria-label="Value"
+              aria-invalid={bulkError ? true : undefined}
+            />
+          </label>
+          <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={applyToSelected} disabled={!bulkValue.trim() || !!bulkError}>
+            Apply
+          </button>
+          <button type="button" className="diagram-view__action" onClick={() => { setSelected(new Set()); anchorRef.current = null; }}>
+            Clear selection
+          </button>
+          {bulkError && <span className="dental-grid__bulk-error">{bulkError}</span>}
+        </div>
+      ) : (
+        <p className="dental-grid__bulk-hint">Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.</p>
+      ))}
       <div className="dental-grid" ref={wrapperRef}>
         <EditorWiringContext.Provider value={wiring}>
           <DataGrid
@@ -593,7 +695,14 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             // one tap per measurement chairside, no double-click dance.
             // Non-editable columns just select (setActivePosition(true)
             // is a plain focus when the column has no editor).
-            onCellClick={(args) => args.setActivePosition(true)}
+            onCellClick={(args, event) => {
+              // Tooth / Triadan cells select teeth for "set on several".
+              if (!readOnly && (args.column.key === 'tooth' || args.column.key === 'triadan')) {
+                toggleSelect(args.row.triadan, event.shiftKey);
+                return;
+              }
+              args.setActivePosition(true);
+            }}
             // 42 rows at most — the page scrolls, the grid doesn't, so
             // virtualization would only fight the sticky-header layout.
             enableVirtualization={false}
@@ -601,6 +710,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               [
                 toothMarks[row.triadan] === 'missing' ? 'dental-grid__row--missing' : '',
                 row.triadan === highlightTriadan ? 'dental-grid__row--ai' : '',
+                selected.has(row.triadan) ? 'dental-grid__row--selected' : '',
               ].filter(Boolean).join(' ') || undefined
             }
           />

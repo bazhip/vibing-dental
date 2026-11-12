@@ -31,6 +31,7 @@ import {
   drawExamSection,
   drawToothGrid,
   drawNerveBlockTable,
+  treatmentCardText,
   drawTreatmentReportField,
   drawDiagramAt,
   drawFooter,
@@ -296,7 +297,7 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentReportField(page2, patientInfo.treatmentReport, regular, bold);
+  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings), regular, bold);
   drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------

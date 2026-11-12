@@ -95,7 +95,7 @@ export function collectUsedCodesByPage({
     .map((v) => v.comment);
   return {
     page1: codesIn(patientInfo.complaint, ...toothFields, ...preCommentTexts, ...examComments),
-    page2: codesIn(patientInfo.treatmentReport, ...postCommentTexts),
+    page2: codesIn(patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", ...postCommentTexts),
   };
 }
 
@@ -800,6 +800,16 @@ export function drawToothGrid(
 
 // ------------------------------------------------------- Treatment Report --
 
+/** The treatment card's text: radiographic findings (when present) as a
+ *  labelled first block, then the report — the card keeps its size and
+ *  place, so charts without findings print exactly as before. */
+export function treatmentCardText(treatmentReport: string, radiographicFindings?: string): string {
+  const rads = (radiographicFindings ?? '').trim();
+  if (!rads) return treatmentReport;
+  const report = treatmentReport.trim();
+  return `RADIOGRAPHIC FINDINGS\n${rads}${report ? `\n\nTREATMENT\n${report}` : ''}`;
+}
+
 export function drawTreatmentReportField(
   page: PDFPage,
   value: string,
@@ -874,8 +884,12 @@ export function drawNerveBlockTable(
 
   type LR = { kind: 'lr'; label: string; right: string; left: string };
   type Free = { kind: 'free'; label: string; value: string };
+  // Caudal maxillary prints only when used, so charts without it keep
+  // the original page-2 layout.
+  const caudal = { right: nerveBlocks.caudalMaxillaryRight || '', left: nerveBlocks.caudalMaxillaryLeft || '' };
   const rows: Array<LR | Free> = [
     { kind: 'lr',   label: 'Infraorbital',      right: nerveBlocks.infraorbitalRight     || '', left: nerveBlocks.infraorbitalLeft     || '' },
+    ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: 'Caudal Maxillary', ...caudal }] : []),
     { kind: 'lr',   label: 'Inferior Alveolar', right: nerveBlocks.inferiorAlveolarRight || '', left: nerveBlocks.inferiorAlveolarLeft || '' },
     { kind: 'lr',   label: 'Mental',            right: nerveBlocks.mentalRight           || '', left: nerveBlocks.mentalLeft           || '' },
     { kind: 'free', label: 'Other',             value: nerveBlocks.other                 || '' },

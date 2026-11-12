@@ -59,3 +59,19 @@ describe('nerve-block anesthetics', () => {
     expect(many).toBeGreaterThan(three);
   });
 });
+
+describe('caudal maxillary block', () => {
+  it('keeps the original table height when unused, adds a row when used', async () => {
+    const base = await tableBottom({ ...EMPTY_NERVE_BLOCKS });
+    const used = await tableBottom({ ...EMPTY_NERVE_BLOCKS, caudalMaxillaryRight: '0.3' });
+    expect(used).toBeGreaterThan(base);
+    expect(await tableBottom({ ...EMPTY_NERVE_BLOCKS, caudalMaxillaryRight: '', caudalMaxillaryLeft: '' })).toBe(base);
+  });
+
+  it('old charts load with the new sites blank', () => {
+    const nb = normalizeNerveBlocks({ infraorbitalRight: '0.2' });
+    expect(nb.caudalMaxillaryRight).toBe('');
+    expect(nb.caudalMaxillaryLeft).toBe('');
+    expect(nb.infraorbitalRight).toBe('0.2');
+  });
+});

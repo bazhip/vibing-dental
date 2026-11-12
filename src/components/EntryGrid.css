@@ -3623,3 +3623,24 @@ button.save-status--manual:hover {
 .dental-grid__slot-label { font-size: 0.68rem; font-weight: 700; color: var(--text-muted, #64748b); }
 .dental-grid__slot-value { font-variant-numeric: tabular-nums; }
 .dental-grid__unsplit { font-size: 0.7rem; color: var(--text-muted, #64748b); }
+
+/* Grid: select several teeth (Tooth / Triadan cells) and set one value. */
+.dental-grid__pick { cursor: pointer; text-decoration: underline dotted transparent; }
+.rdg-row:hover .dental-grid__pick { text-decoration-color: var(--text-muted, #94a3b8); }
+.rdg-row.dental-grid__row--selected { background: color-mix(in srgb, var(--primary, #0c6b63) 12%, white); }
+.rdg-row.dental-grid__row--selected .dental-grid__pick { font-weight: 700; color: var(--primary, #0c6b63); }
+.dental-grid__bulk {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem;
+  margin: 0 0 0.5rem; padding: 0.5rem 0.75rem; border-radius: 10px;
+  background: color-mix(in srgb, var(--primary, #0c6b63) 8%, white);
+  border: 1px solid color-mix(in srgb, var(--primary, #0c6b63) 25%, white);
+  font-size: 0.9rem;
+}
+.dental-grid__bulk-field { display: flex; align-items: center; gap: 0.35rem; }
+.dental-grid__bulk-field select, .dental-grid__bulk-field input {
+  font: inherit; padding: 0.3rem 0.45rem; border: 1px solid var(--border-strong, #cbd5e1); border-radius: 6px; background: #fff;
+}
+.dental-grid__bulk-field input { width: 4.5rem; }
+.dental-grid__bulk-field input[aria-invalid='true'] { border-color: #dc2626; }
+.dental-grid__bulk-error { color: #b91c1c; font-size: 0.85rem; }
+.dental-grid__bulk-hint { margin: 0 0 0.4rem; font-size: 0.82rem; color: var(--text-muted, #64748b); }

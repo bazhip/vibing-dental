@@ -80,6 +80,18 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
             </fieldset>
 
             <fieldset className="chart-settings__field">
+              <legend>Space key in the grid</legend>
+              <label className="chart-settings__choice">
+                <input type="radio" name="spaceKey" checked={prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: true })} />
+                Moves down to the next tooth <span className="chart-settings__hint">fast for calling out a run of depths</span>
+              </label>
+              <label className="chart-settings__choice">
+                <input type="radio" name="spaceKey" checked={!prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: false })} />
+                Types a space
+              </label>
+            </fieldset>
+
+            <fieldset className="chart-settings__field">
               <legend>Columns</legend>
               <div className="chart-settings__grid">
                 {PERIO_FIELDS.map((f) => {

@@ -32,6 +32,7 @@ interface BlockRow {
 // special-case it inside the BLOCK_ROWS map.
 const BLOCK_ROWS: BlockRow[] = [
   { label: 'Infraorbital',      rightKey: 'infraorbitalRight',     leftKey: 'infraorbitalLeft' },
+  { label: 'Caudal Maxillary',  rightKey: 'caudalMaxillaryRight',  leftKey: 'caudalMaxillaryLeft' },
   { label: 'Inferior Alveolar', rightKey: 'inferiorAlveolarRight', leftKey: 'inferiorAlveolarLeft' },
   { label: 'Mental',            rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
 ];

@@ -23,6 +23,8 @@ import {
 const BLOCK_LABELS: Record<NerveBlockSite, string> = {
   infraorbitalRight: 'Infraorbital R',
   infraorbitalLeft: 'Infraorbital L',
+  caudalMaxillaryRight: 'Caudal maxillary R',
+  caudalMaxillaryLeft: 'Caudal maxillary L',
   inferiorAlveolarRight: 'Inferior alveolar R',
   inferiorAlveolarLeft: 'Inferior alveolar L',
   mentalRight: 'Mental R',
@@ -218,6 +220,13 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
           </div>
         )}
       </section>
+
+      {p.radiographicFindings?.trim() && (
+        <section>
+          <h3 className="ai-settings-subhead">Radiographic findings</h3>
+          <p className="admin-chart-viewer__report">{p.radiographicFindings}</p>
+        </section>
+      )}
 
       <section>
         <h3 className="ai-settings-subhead">Treatment report</h3>

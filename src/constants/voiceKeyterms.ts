@@ -103,7 +103,7 @@ export const VOICE_KEYTERMS: string[] = [
   'infraorbital block',
   'mental nerve block',
   'inferior alveolar nerve block',
-  'maxillary nerve block',
+  'caudal maxillary nerve block',
   'bupivacaine',
   'lidocaine',
   'mepivacaine',

@@ -146,3 +146,63 @@ test('per-root pockets: an old single value on a multi-rooted tooth is labelled 
   renderGrid({ pocketMode: 'root', species: 'canine', toothData });
   expect(rowFor(108).textContent).toContain('all roots');
 });
+
+function toothCell(triadan: number): HTMLElement {
+  return rowFor(triadan).querySelectorAll('[role="gridcell"]')[2] as HTMLElement; // Triadan
+}
+
+test('select several teeth and set one value on all of them (missing teeth skipped)', () => {
+  const { props } = renderGrid({ toothMarks: { 103: 'missing' } });
+  expect(screen.getByText(/click tooth numbers to select several teeth/)).toBeInTheDocument();
+  fireEvent.click(toothCell(101));
+  fireEvent.click(toothCell(104), { shiftKey: true }); // range 101–104
+  expect(screen.getByText('4 teeth selected')).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox', { name: 'Column to set' }), { target: { value: 'gingivitis' } });
+  fireEvent.change(screen.getByRole('textbox', { name: 'Value' }), { target: { value: '2' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  const gi = (t: number) => last.find((r) => r.triadan === t)?.gingivitis;
+  expect([gi(101), gi(102), gi(104)]).toEqual(['2', '2', '2']);
+  expect(gi(103)).toBeUndefined(); // missing
+  expect(gi(105)).toBeUndefined(); // not selected
+});
+
+test('clicking a selected tooth again deselects it; values out of range are refused', () => {
+  renderGrid();
+  fireEvent.click(toothCell(101));
+  fireEvent.click(toothCell(102));
+  fireEvent.click(toothCell(101));
+  expect(screen.getByText('1 tooth selected')).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox', { name: 'Column to set' }), { target: { value: 'gingivitis' } });
+  fireEvent.change(screen.getByRole('textbox', { name: 'Value' }), { target: { value: '9' } });
+  expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Clear selection' }));
+  expect(screen.queryByText(/selected$/)).not.toBeInTheDocument();
+});
+
+test('no selection on a view-only chart', () => {
+  renderGrid({ readOnly: true });
+  fireEvent.click(toothCell(101));
+  expect(screen.queryByText(/selected/)).not.toBeInTheDocument();
+});
+
+test('Space types a space when the person turns that on', () => {
+  const { props } = renderGrid({ spaceMovesDown: false });
+  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement; // Pocket
+  fireEvent.click(cell);
+  const editor = rowFor(101).querySelector('.rdg-editor-container input') as HTMLInputElement;
+  const notPrevented = fireEvent.keyDown(editor, { key: ' ' });
+  expect(notPrevented).toBe(true); // left to the input: a space is typed
+  fireEvent.change(editor, { target: { value: '4 5 4' } });
+  fireEvent.blur(editor);
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 101)?.pocket).toBe('4 5 4');
+});
+
+test('Space moves down by default (unchanged)', () => {
+  renderGrid();
+  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement;
+  fireEvent.click(cell);
+  const editor = rowFor(101).querySelector('.rdg-editor-container input') as HTMLInputElement;
+  expect(fireEvent.keyDown(editor, { key: ' ' })).toBe(false); // handled: commit + move down
+});

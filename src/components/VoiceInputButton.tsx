@@ -72,6 +72,8 @@ export function actionFocus(a: AiAction, activeSection?: string): AiFocus | null
       return { section: 'patient', field: typeof a.input.field === 'string' ? a.input.field : undefined };
     case 'append_treatment_report':
       return { section: 'treatment' };
+    case 'append_radiographic_findings':
+      return { section: 'imaging' };
     default:
       return null;
   }

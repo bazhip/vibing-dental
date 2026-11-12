@@ -182,6 +182,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       ...s.patientInfo,
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
+      radiographicFindings: s.patientInfo.radiographicFindings ?? '',
       recallDate: s.patientInfo.recallDate ?? '',
       ownerName: s.patientInfo.ownerName ?? '',
       ownerPhone: s.patientInfo.ownerPhone ?? '',
