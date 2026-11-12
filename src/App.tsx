@@ -11,6 +11,7 @@ import { AppLoading } from './components/AppLoading';
 import { JoinPracticeModal } from './components/JoinPracticeModal';
 import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { touchLastSeen } from './utils/lastSeen';
+import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 
@@ -144,6 +145,9 @@ const App: React.FC = () => {
       setIsAuthenticated(!!data.session);
       if (data.session) {
         touchLastSeen();
+        // Returning from Google sign-in: record the terms notice they
+        // signed in next to.
+        flushPendingTerms(data.session.user.id);
         lastUserIdRef.current = data.session.user.id;
         setLastEmail(data.session.user.email ?? '');
       }
@@ -164,6 +168,7 @@ const App: React.FC = () => {
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
         touchLastSeen();
+        flushPendingTerms(session.user.id);
         setSessionExpired(false);
         setIsAuthenticated(true);
         return;
