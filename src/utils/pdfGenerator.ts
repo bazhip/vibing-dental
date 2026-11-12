@@ -285,7 +285,7 @@ export async function buildDentalChartPDFBytes(
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? []);
+  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia);
   const baseSlot = DIAGRAM_SLOTS[species][1];
   const minTopIn = nbBottomIn + 0.15;
   const postSlot =

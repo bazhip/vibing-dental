@@ -183,6 +183,32 @@ export const EXAM_ITEMS: { key: keyof ExamFindings; label: string; pdfName: stri
  * fields are kept on the object so a user can toggle templates without
  * losing the values they typed.
  */
+/** A custom nerve block's doses on a chart (mL, right/left). */
+export interface CustomBlockValue {
+  id: string;
+  label: string;
+  right: string;
+  left: string;
+}
+
+export type CustomFieldType = 'text' | 'number' | 'checkbox' | 'select';
+
+/** A custom anesthesia field's value on a chart, with its definition
+ *  (label, type, unit) captured so it reads correctly on its own. */
+export interface CustomFieldValue {
+  id: string;
+  label: string;
+  type: CustomFieldType;
+  unit?: string;
+  /** Text/number/select: the value. Checkbox: 'yes' or ''. */
+  value: string;
+}
+
+export interface CustomAnesthesia {
+  blocks: CustomBlockValue[];
+  fields: CustomFieldValue[];
+}
+
 export interface PatientInfo {
   patientName: string;
   patientNumber: string;
@@ -199,6 +225,10 @@ export interface PatientInfo {
   /** Radiographic findings (free text). Optional: absent on charts saved
    *  before the field existed. */
   radiographicFindings?: string;
+  /** Custom anesthesia entries (see utils/customAnesthesia). Each value
+   *  carries its own label/type so the chart reads correctly for anyone,
+   *  whatever fields they've defined. Optional: absent on older charts. */
+  customAnesthesia?: CustomAnesthesia;
   /** Next dental recheck due (yyyy-mm-dd), '' when none. Surfaced in the
    *  chart library as a recall reminder. */
   recallDate: string;

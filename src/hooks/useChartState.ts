@@ -1,4 +1,5 @@
 import React from 'react';
+import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { localDateISO } from '../utils/localDate';
 import { toast, confirmDialog } from '../components/ui/dialogs';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -183,6 +184,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       complaint: s.patientInfo.complaint ?? '',
       treatmentReport: s.patientInfo.treatmentReport ?? '',
       radiographicFindings: s.patientInfo.radiographicFindings ?? '',
+      ...(s.patientInfo.customAnesthesia ? { customAnesthesia: normalizeCustomAnesthesia(s.patientInfo.customAnesthesia) } : {}),
       recallDate: s.patientInfo.recallDate ?? '',
       ownerName: s.patientInfo.ownerName ?? '',
       ownerPhone: s.patientInfo.ownerPhone ?? '',
