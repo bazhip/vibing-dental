@@ -8,6 +8,8 @@ interface PatientFormProps {
   species: Species;
   onPatientInfoChange: (field: keyof PatientInfo, value: string) => void;
   onSpeciesChange: (species: Species) => void;
+  /** Personal chart setting: leave out the Recheck due field. */
+  hideRecheck?: boolean;
 }
 
 /**
@@ -19,6 +21,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   species,
   onPatientInfoChange,
   onSpeciesChange,
+  hideRecheck = false,
 }) => {
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -114,7 +117,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <input
             type="email"
             className="patient-form__input"
-            placeholder="For recheck reminders"
+            placeholder={hideRecheck ? 'Optional' : 'For recheck reminders'}
             autoComplete="off"
             value={patientInfo.ownerEmail ?? ''}
             onChange={handleInputChange('ownerEmail')}
@@ -137,6 +140,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           />
         </label>
 
+        {!hideRecheck && (
         <label className="patient-form__label">
           Recheck due
           <span className="patient-form__recall">
@@ -171,6 +175,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             </select>
           </span>
         </label>
+        )}
       </div>
 
       <div className="patient-form__row">

@@ -76,3 +76,46 @@ test('a single click opens the editor and typing commits the value', () => {
   const lastCall = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
   expect(lastCall.find((t) => t.triadan === 101)?.mobility).toBe('M2');
 });
+
+function rowFor(triadan: number): HTMLElement {
+  return screen.getAllByRole('row').find((r) =>
+    Array.from(r.querySelectorAll('[role="gridcell"]')).some((c) => c.textContent === String(triadan)),
+  ) as HTMLElement;
+}
+
+test('chart settings can hide columns; the rest still edit', () => {
+  renderGrid({ hiddenColumns: ['recession', 'hyperplasia'] });
+  expect(screen.queryByRole('columnheader', { name: /^Recession/ })).not.toBeInTheDocument();
+  expect(screen.queryByRole('columnheader', { name: /^Enlargement/ })).not.toBeInTheDocument();
+  expect(screen.getByRole('columnheader', { name: /^Pocket/ })).toBeInTheDocument();
+});
+
+test('per-root pockets: a multi-rooted tooth gets one box per root, saved as "MB4 MP5 D6"', () => {
+  const { props } = renderGrid({ pocketMode: 'root', species: 'canine' });
+  const row = rowFor(108);
+  const pocketCell = row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement; // Missing, Tooth, Triadan, Mobility, Recession, Pocket
+  fireEvent.click(pocketCell);
+  const boxes = ['MB', 'MP', 'D'].map((l) => screen.getByRole('textbox', { name: `Tooth 108 pocket, ${l} root` }));
+  fireEvent.change(boxes[0], { target: { value: '4' } });
+  fireEvent.change(boxes[1], { target: { value: '5' } });
+  fireEvent.change(boxes[2], { target: { value: '6' } });
+  fireEvent.keyDown(boxes[2], { key: 'Enter' }); // commit, move down
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 108)?.pocket).toBe('MB4 MP5 D6');
+});
+
+test('per-root pockets: single-rooted teeth keep the plain box', () => {
+  renderGrid({ pocketMode: 'root', species: 'canine' });
+  const row = rowFor(104);
+  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement);
+  expect(row.querySelector('.rdg-editor-container input')).not.toBeNull();
+  expect(screen.queryByRole('textbox', { name: /Tooth 104 pocket, M root/ })).not.toBeInTheDocument();
+});
+
+test('per-root pockets: a plain value that can\'t be split keeps the plain editor (nothing lost)', () => {
+  const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, pocket: '5' } : t));
+  renderGrid({ pocketMode: 'root', species: 'canine', toothData });
+  const row = rowFor(108);
+  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement);
+  expect((row.querySelector('.rdg-editor-container input') as HTMLInputElement).value).toBe('5');
+});

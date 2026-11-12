@@ -1,4 +1,5 @@
 import { ChartSnapshot, DentalField, EXAM_ITEMS } from '../types';
+import { parseRootPockets, deepestPocket } from './pocket';
 import {
   BuiltInSectionId,
   DEFAULT_TEMPLATE,
@@ -187,7 +188,9 @@ export function buildOwnerReportModel(
     const notes: string[] = [];
     for (const field of FIELD_ORDER) {
       const raw = tooth[field];
-      const value = typeof raw === 'string' ? raw.trim() : '';
+      let value = typeof raw === 'string' ? raw.trim() : '';
+      // Per-root pockets ("M4 D6") read as the deepest one for owners.
+      if (field === 'pocket' && parseRootPockets(value)) value = String(deepestPocket(value) ?? value);
       if (value) notes.push(template.showGrades ? t.fieldPhrases[field](value) : t.fieldPlain[field]);
     }
     for (const text of commentsByTooth.get(tooth.triadan) ?? []) notes.push(text);

@@ -32,13 +32,16 @@ const valueOf = (t: ToothData, key: keyof ToothData) => {
  *  whole-mouth calculus score doesn't repeat on 40 cards. */
 export function gridCommentTexts(
   toothData: ToothData[],
-  marks: ToothMarks
+  marks: ToothMarks,
+  /** Which grid values to write (chart settings); all by default. */
+  fields?: readonly string[],
 ): { perTooth: Map<number, string>; wholeMouth: string } {
+  const columns = fields ? FINDING_COLUMNS.filter((c) => fields.includes(c.key)) : FINDING_COLUMNS;
   const present = toothData.filter((t) => marks[t.triadan] !== 'missing');
   const uniform = new Set<keyof ToothData>();
   const wholeParts: string[] = [];
   if (present.length > 1) {
-    for (const col of FINDING_COLUMNS) {
+    for (const col of columns) {
       const first = valueOf(present[0], col.key);
       if (first && present.every((t) => valueOf(t, col.key) === first)) {
         uniform.add(col.key);
@@ -48,7 +51,7 @@ export function gridCommentTexts(
   }
   const perTooth = new Map<number, string>();
   for (const t of present) {
-    const parts = FINDING_COLUMNS
+    const parts = columns
       .filter((col) => !uniform.has(col.key) && valueOf(t, col.key))
       .map((col) => `${col.name} ${valueOf(t, col.key)}`);
     if (parts.length) perTooth.set(t.triadan, parts.join(' · '));
@@ -76,12 +79,13 @@ export function syncGridComments(
   toothData: ToothData[],
   marks: ToothMarks,
   enabled: boolean,
-  wholeMouthSeat: { x: number; y: number }
+  wholeMouthSeat: { x: number; y: number },
+  fields?: readonly string[],
 ): DiagramComment[] {
   const existing = new Map(comments.filter(isGridComment).map((c) => [c.id, c]));
   const desired: DiagramComment[] = [];
   if (enabled) {
-    const { perTooth, wholeMouth } = gridCommentTexts(toothData, marks);
+    const { perTooth, wholeMouth } = gridCommentTexts(toothData, marks, fields);
     if (wholeMouth) {
       const prev = existing.get(WHOLE_MOUTH_ID);
       desired.push(prev
