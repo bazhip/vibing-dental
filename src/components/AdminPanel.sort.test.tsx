@@ -43,6 +43,16 @@ describe('sortAccounts', () => {
     expect(emails(sortAccounts(users, 'charts', 'asc'))).toEqual(['alice', 'carol', 'bob']);
   });
 
+  it('sorts by signup date', () => {
+    const list = [
+      u('mid@x.vet', { createdAt: '2026-06-01T00:00:00Z' }),
+      u('new@x.vet', { createdAt: '2026-11-01T00:00:00Z' }),
+      u('old@x.vet', { createdAt: '2026-01-01T00:00:00Z' }),
+    ];
+    expect(emails(sortAccounts(list, 'signedUp', 'desc'))).toEqual(['new', 'mid', 'old']);
+    expect(emails(sortAccounts(list, 'signedUp', 'asc'))).toEqual(['old', 'mid', 'new']);
+  });
+
   it('keeps blanks at the bottom in either direction', () => {
     // alice has no practice; bob was never active; only bob has flags.
     expect(emails(sortAccounts(users, 'practice', 'asc'))).toEqual(['bob', 'carol', 'alice']);

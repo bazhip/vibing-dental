@@ -64,7 +64,7 @@ export function lastActiveAt(u: Pick<AdminUser, 'lastSignInAt' | 'lastSeenAt'>):
   return a >= b ? (u.lastSeenAt ?? null) : u.lastSignInAt;
 }
 
-type AccountSortKey = 'email' | 'practice' | 'charts' | 'active' | 'flags';
+type AccountSortKey = 'email' | 'practice' | 'charts' | 'signedUp' | 'active' | 'flags';
 
 const accountPractice = (u: AdminUser) => u.teamPractice || u.practiceName.trim();
 const accountFlags = (u: AdminUser) =>
@@ -89,6 +89,7 @@ export function sortAccounts(users: AdminUser[], key: AccountSortKey, dir: 'asc'
         case 'email': return u.email.toLowerCase();
         case 'practice': return accountPractice(u).toLowerCase() || null;
         case 'charts': return u.chartCount;
+        case 'signedUp': return dateValue(u.createdAt);
         case 'active': return dateValue(lastActiveAt(u));
         case 'flags': return accountFlags(u) || null;
       }
@@ -276,7 +277,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       cur.key === key
         ? { key, dir: cur.dir === 'asc' ? 'desc' : 'asc' }
         // Numbers and dates read best biggest/newest first; text A→Z.
-        : { key, dir: key === 'charts' || key === 'active' ? 'desc' : 'asc' }
+        : { key, dir: key === 'charts' || key === 'active' || key === 'signedUp' ? 'desc' : 'asc' }
     );
   const accountHeader = (key: AccountSortKey, label: string) => (
     <span
@@ -888,6 +889,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 {accountHeader('email', 'Email')}
                 {accountHeader('practice', 'Practice')}
                 {accountHeader('charts', 'Charts')}
+                {accountHeader('signedUp', 'Signed up')}
                 {accountHeader('active', 'Last active')}
                 {accountHeader('flags', 'Flags')}
               </div>
@@ -909,6 +911,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                         {accountPractice(u) || '—'}
                       </span>
                       <span role="cell" className="chart-library__cell">{u.chartCount}</span>
+                      <span role="cell" className="chart-library__cell" title={fmt(u.createdAt)}>
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '—'}
+                      </span>
                       <span
                         role="cell"
                         className="chart-library__cell"
