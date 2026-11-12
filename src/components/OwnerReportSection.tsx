@@ -1,5 +1,6 @@
 import React from 'react';
-import { toast } from './ui/dialogs';
+import { toast, confirmDialog } from './ui/dialogs';
+import { draftOwnerReport } from '../utils/ownerReportAi';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
@@ -23,6 +24,10 @@ interface OwnerReportSectionProps {
   context?: OwnerReportContext;
   /** View-only (saved visit not unlocked): Preview works, edits don't. */
   readOnly?: boolean;
+  /** Offer "Write with AI" (signed-in accounts with AI). */
+  aiEnabled?: boolean;
+  /** Open the report templates editor ("Customize"). */
+  onCustomize?: () => void;
 }
 
 /**
@@ -39,6 +44,8 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   onPreview,
   readOnly = false,
   context,
+  aiEnabled = false,
+  onCustomize,
 }) => {
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
   // Prefills follow the chosen template (its intro / tips / language).
@@ -54,6 +61,40 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   // state is tracked by presence, not truthiness.
   const introEdited = overrides.intro !== undefined;
   const homecareEdited = overrides.homecare !== undefined;
+
+  // "Write with AI": drafts the summary and home-care tips from the chart
+  // into the same editable fields. Hand edits are only replaced after a
+  // confirm, and the toast offers the previous text back.
+  const [drafting, setDrafting] = React.useState(false);
+  const writeWithAi = async () => {
+    if (drafting) return;
+    if ((introEdited || homecareEdited) && !(await confirmDialog({
+      title: 'Replace your edited text?',
+      message: 'The AI draft replaces the opening summary and home care advice you edited. You can undo right after.',
+      confirmLabel: 'Write with AI',
+    }))) return;
+    setDrafting(true);
+    try {
+      const draft = await draftOwnerReport(snapshot, context);
+      const before = { intro: overrides.intro ?? null, homecare: overrides.homecare ?? null };
+      if (draft.intro) onOverrideChange('intro', draft.intro);
+      if (draft.homecare) onOverrideChange('homecare', draft.homecare);
+      toast('Draft written — please read it over before printing.', {
+        kind: 'success',
+        action: {
+          label: 'Undo',
+          onClick: () => {
+            onOverrideChange('intro', before.intro);
+            onOverrideChange('homecare', before.homecare);
+          },
+        },
+      });
+    } catch (err) {
+      toast(`Couldn’t write the draft. ${err instanceof Error ? err.message : ''}`.trim(), { kind: 'error' });
+    } finally {
+      setDrafting(false);
+    }
+  };
 
   const block = (
     label: string,
@@ -100,9 +141,27 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
     <div className="patient-form">
       <div className="patient-form__header">
         <h2 className="patient-form__section-title">Owner Report</h2>
-        <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onPreview}>
-          Preview owner report
-        </button>
+        <div className="owner-report__actions">
+          {onCustomize && (
+            <button type="button" className="diagram-view__action" onClick={onCustomize} title="Change the report's layout, wording, language and sections">
+              Customize
+            </button>
+          )}
+          {aiEnabled && !readOnly && (
+            <button
+              type="button"
+              className="diagram-view__action owner-report__ai"
+              onClick={writeWithAi}
+              disabled={drafting}
+              title="Draft the opening summary and home care advice from this chart — you review before printing"
+            >
+              {drafting ? 'Writing…' : '✨ Write with AI'}
+            </button>
+          )}
+          <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onPreview}>
+            Preview owner report
+          </button>
+        </div>
       </div>
 
       <p className="patient-form__hint">
