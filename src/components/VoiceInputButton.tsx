@@ -167,7 +167,7 @@ const QUIET_FLUSH_MS = 1_200;
  *  since the value is probably coming in the next breath. */
 const DANGLING_FLUSH_MS = 2_500;
 // Ends on a score word with no number yet, or on a bare tooth number.
-export const DANGLING_RE = /(?:\b(?:GI|G|calc|calculus|mobility|mob|pocket|furcation|F|PD|stage|grade|class|recession|and)|\b[1-8][0-1]\d)\s*[,.]?\s*$/i;
+export const DANGLING_RE = /(?:\b(?:GI|GE|G|enlargement|calc|calculus|mobility|mob|pocket|furcation|F|PD|stage|grade|class|recession|and)|\b[1-8][0-1]\d)\s*[,.]?\s*$/i;
 /** …or once speech has been pending this long, whichever comes first. */
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;

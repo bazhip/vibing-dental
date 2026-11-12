@@ -144,7 +144,8 @@ const chartTools: Anthropic.Messages.Tool[] = [
       'Set a periodontal value on a tooth in the Charting grid. The value is the BARE NUMBER the grid shows — no letter prefix, no units: ' +
       'gingivitis "2" (spoken "GI 2", "G2", "gingivitis two"), calculus "2" ("calc 2", "C2"), mobility "3" ("mobility 3", "M3"), ' +
       'furcation "3" ("F3", "furcation 3"), pocket "5" (mm; "5 millimeter pocket"; several sites "4 5 4"), recession "2" (mm), ' +
-      'pdstate "2" ("PD2", "stage 2"), hyperplasia = gingival enlargement in mm.',
+      'pdstate "2" ("PD2", "stage 2"), hyperplasia "3" = the Enlargement column, gingival enlargement in mm ("GE 3", "GE3", "G E 3", "enlargement 3"). ' +
+      'GE is enlargement (hyperplasia), never gingivitis — gingivitis is GI.',
     input_schema: {
       type: 'object',
       properties: {
@@ -326,6 +327,11 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → set_tooth_field(triadan=108, field=pdstate, value=3)
 → set_tooth_field(triadan=108, field=pocket, value=4)
 
+[EX 12b] "106 GI 2, GE3, calc 1" (GE = gingival enlargement — the Enlargement column; GI = gingivitis)
+→ set_tooth_field(triadan=106, field=gingivitis, value=2)
+→ set_tooth_field(triadan=106, field=hyperplasia, value=3)
+→ set_tooth_field(triadan=106, field=calculus, value=1)
+
 [EX 13] "patient looks great" / "doing well today" / "hand me the scaler"
 → NO TOOL CALL — small talk / instructions to staff / vague.
 
@@ -400,7 +406,7 @@ function buildStaticSystemPrompt(): string {
     'FIELD SEMANTICS:',
     '- "pre" diagram = Diagnosis (findings observed at exam, before procedure). Teeth already missing, periodontal disease grades, fractures.',
     '- "post" diagram = Procedure (work performed today). Teeth extracted during this visit.',
-    '- mobility/recession/pocket/furcation/hyperplasia/calculus/gingivitis/pdstate go into the per-tooth grid as bare numbers ("GI 2" → gingivitis 2, "calc 1" → calculus 1, "M3" → mobility 3, "5 mm pocket" → pocket 5).',
+    '- mobility/recession/pocket/furcation/hyperplasia/calculus/gingivitis/pdstate go into the per-tooth grid as bare numbers ("GI 2" → gingivitis 2, "GE 3" → hyperplasia 3 (the Enlargement column), "calc 1" → calculus 1, "M3" → mobility 3, "5 mm pocket" → pocket 5).',
     '- add_comment for findings that don\'t fit a structured field (biopsy, draining tract, photo taken, fracture details).',
     '- append_treatment_report for narrative description of WORK DONE (scaling, polish, suturing, extractions performed).',
     '',
@@ -428,7 +434,7 @@ const DIGIT_WORD_RE = new RegExp(
 // Words after which a single spoken number is a score/measurement, not
 // part of a tooth number: "mobility three one zero three" is mobility 3,
 // tooth 103 — not tooth 310.
-const SCORE_TERMS = 'GI|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis';
+const SCORE_TERMS = 'GI|GE|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis|enlargement|hyperplasia';
 const SCORE_WORD_RE = new RegExp(
   `\\b(${SCORE_TERMS})([\\s,.-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
   'gi'
@@ -452,8 +458,10 @@ export function normalizeTranscript(raw: string): string {
   // "AT" (attrition) heard as "eight-T": "1098T" / "109 8T" → "109 AT".
   text = text.replace(/\b([1-8][0-1]\d)\s*8\s*T\b/g, '$1 AT');
 
-  // Spelled-out letters: "g I" → "GI", "P D" handled below.
+  // Spelled-out letters: "g I" → "GI", "g e" → "GE" (gingival
+  // enlargement), "P D" handled below.
   text = text.replace(/\bg[\s.-]*i\b/gi, 'GI');
+  text = text.replace(/\bg[\s.-]+e\b/gi, 'GE');
   // STT spells the letter F as "f e" ("f e three" = F3, furcation 3).
   text = text.replace(/\bf[\s.]+e\b/gi, 'F');
 
