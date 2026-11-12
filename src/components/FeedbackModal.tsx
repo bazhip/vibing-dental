@@ -4,6 +4,7 @@ import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { toast } from './ui/dialogs';
+import posthog, { posthogEnabled, posthogLogger } from '../posthog';
 
 /**
  * "Send feedback" — a short web form that emails the ToothOps owner (the
@@ -86,6 +87,17 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
     setError('');
     try {
       await sendFeedback({ kind, message: message.trim(), transcript: attach ? transcript : undefined, section });
+      const includesTranscript = Boolean(attach && transcript?.trim());
+      if (posthogEnabled) {
+        posthog.capture('feedback_submitted', {
+          feedback_kind: kind,
+          includes_transcript: includesTranscript,
+        });
+      }
+      posthogLogger.info('feedback submitted', {
+        feedback_kind: kind,
+        includes_transcript: includesTranscript,
+      });
       toast('Thanks! Your feedback was sent.', { kind: 'success' });
       onClose();
     } catch (err) {

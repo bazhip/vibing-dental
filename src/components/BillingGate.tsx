@@ -9,6 +9,7 @@ import {
   startCheckout,
   openBillingPortal,
 } from '../hooks/useBilling';
+import posthog, { posthogEnabled } from '../posthog';
 import './BillingGate.css';
 
 interface BillingGateProps {
@@ -222,7 +223,9 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     setBusy(true);
     setError('');
     try {
-      await startCheckout(selected); // navigates away on success
+      const checkoutUrl = await startCheckout(selected);
+      if (posthogEnabled) posthog.capture('subscription_checkout_started', { plan_key: selected });
+      window.location.assign(checkoutUrl);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not start checkout.');
       setBusy(false);

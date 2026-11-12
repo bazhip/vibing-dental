@@ -68,11 +68,11 @@ export async function fetchBilling(): Promise<BillingInfo> {
   return call<BillingInfo>({ action: 'get_billing' });
 }
 
-/** Start Stripe Checkout for a plan — navigates away on success. */
-export async function startCheckout(plan: PlanKey): Promise<void> {
+/** Create a Stripe Checkout session for a plan. */
+export async function startCheckout(plan: PlanKey): Promise<string> {
   const { url } = await call<{ url: string }>({ action: 'checkout', plan, returnUrl: returnUrl() });
   if (!url) throw new Error('Stripe did not return a checkout link.');
-  window.location.assign(url);
+  return url;
 }
 
 /** Open the Stripe billing portal (card, invoices, cancel). */

@@ -4,6 +4,7 @@ import { UseProfileReturn } from '../hooks/useProfile';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { readString, writeString } from '../utils/storage';
 import { friendlyError, toast } from './ui/dialogs';
+import posthog, { posthogEnabled } from '../posthog';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -95,6 +96,13 @@ export const FinishSetupModal: React.FC<{
         practiceName: need.practice ? practiceName.trim() : profile.practiceName,
         doctorName: need.doctor ? doctorName.trim() : profile.doctorName,
       });
+      if (posthogEnabled) {
+        posthog.capture('onboarding_completed', {
+          completed_practice_setup: need.practice,
+          completed_doctor_setup: need.doctor,
+          uploaded_logo: Boolean(offerLogo && logoFile),
+        });
+      }
       // The names are saved either way; a logo that won't upload can be
       // added later from Practice settings.
       if (offerLogo && logoFile) {

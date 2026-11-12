@@ -12,6 +12,8 @@
     "dicom-parser": "^1.8.21",
     "downloadjs": "^1.4.7",
     "pdf-lib": "^1.17.1",
+    "posthog-js": "^1.447.15",
+    "posthog-node": "^5.71.0",
     "react": "^19.2.7",
     "react-data-grid": "^7.0.0-beta.61",
     "react-dom": "^19.2.7"
