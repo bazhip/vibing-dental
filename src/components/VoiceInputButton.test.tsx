@@ -12,7 +12,7 @@ vi.mock('../utils/aiAutofill', async (orig) => {
 });
 
 import { VoiceInputButton } from './VoiceInputButton';
-import { extractChartActions, reviewFullTranscript } from '../utils/aiAutofill';
+import { extractChartActions, reviewFullTranscript, prewarmAutofill } from '../utils/aiAutofill';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 
 class FakeRecognition {
@@ -27,6 +27,10 @@ class FakeRecognition {
   abort() {}
   say(text: string) {
     const result = Object.assign([{ transcript: text }], { isFinal: true });
+    this.onresult?.({ resultIndex: 0, results: [result] });
+  }
+  hear(text: string) {
+    const result = Object.assign([{ transcript: text }], { isFinal: false });
     this.onresult?.({ resultIndex: 0, results: [result] });
   }
 }
@@ -168,5 +172,65 @@ describe('DANGLING_RE — wait for the value before sending', () => {
   it('sends complete findings promptly', () => {
     expect(DANGLING_RE.test(normalizeTranscript('105 GI 2 calc 3, T/FX/CCF.'))).toBe(false);
     expect(DANGLING_RE.test(normalizeTranscript('106 missing.'))).toBe(false);
+  });
+});
+
+describe('VoiceInputButton — final check only when something new was said', () => {
+  beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+    vi.mocked(extractChartActions).mockClear();
+    vi.mocked(reviewFullTranscript).mockClear();
+  });
+
+  it('Stop → Resume → Stop with nothing new said runs the final check once', async () => {
+    render(<VoiceInputButton {...props} context={realContext} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(1); // nothing new: skipped
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+    act(() => FakeRecognition.last!.say('105 missing'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(2); // new speech: checked again
+  });
+});
+
+describe('VoiceInputButton — cache warm-up', () => {
+  beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+    vi.mocked(prewarmAutofill).mockClear();
+  });
+
+  it('opening Dictate does not warm up; the first words do, once per listen', () => {
+    render(<VoiceInputButton {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+    expect(prewarmAutofill).not.toHaveBeenCalled();
+    act(() => FakeRecognition.last!.hear('one oh'));
+    expect(prewarmAutofill).toHaveBeenCalledTimes(1);
+    act(() => FakeRecognition.last!.hear('one oh four GI'));
+    expect(prewarmAutofill).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('VoiceInputButton — when to start talking', () => {
+  it('says Go ahead once the mic is live, then Listening after the first words', () => {
+    render(<VoiceInputButton {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+    // The browser fallback is live as soon as it starts.
+    expect(screen.getByText('Ready — start talking')).toBeInTheDocument();
+    expect(screen.getAllByText(/Go ahead — start talking/).length).toBeGreaterThan(0);
+    act(() => FakeRecognition.last!.hear('one oh four'));
+    expect(screen.getByText('Listening')).toBeInTheDocument();
+    expect(screen.queryByText('Ready — start talking')).not.toBeInTheDocument();
   });
 });

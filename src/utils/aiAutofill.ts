@@ -989,6 +989,7 @@ export async function extractChartActions(
 ): Promise<ExtractResult> {
   const requestBody = buildChunkRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
+  markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
   return { ...parseAutofillContent(content, actionAllowedAnywhere), ran: true };
 }
@@ -1001,6 +1002,7 @@ export async function extractChartActions(
 export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractResult> {
   const requestBody = buildReviewRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
+  markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
   const result = parseAutofillContent(content, actionAllowedAnywhere);
   return { ...result, flags: markFinalCheck(result), ran: true };
@@ -1069,8 +1071,24 @@ export function invalidReason(action: AiAction): string | null {
  * real chunk doesn't pay the cold-start + cache-miss latency.
  * Best-effort; failures are ignored.
  */
+/** When the dictation prompt was last sent (chunk, final check or
+ *  warm-up) — the prompt cache lives 5 minutes from its last use. */
+let lastDictationPromptAt = 0;
+const CACHE_STILL_WARM_MS = 4 * 60_000;
+export function markDictationPromptUsed(at: number = Date.now()): void {
+  lastDictationPromptAt = at;
+}
+/** True when a warm-up would only re-read a cache that's already warm. */
+export function dictationCacheWarm(now: number = Date.now()): boolean {
+  return now - lastDictationPromptAt < CACHE_STILL_WARM_MS;
+}
+
 export async function prewarmAutofill(): Promise<void> {
   if (!supabase) return;
+  // Each cold warm-up writes the ~17.5k-token prompt into the cache (the
+  // biggest single line on the bill) — skip it while the cache is warm.
+  if (dictationCacheWarm()) return;
+  markDictationPromptUsed();
   try {
     await supabase.functions.invoke('ai-autofill', {
       body: {
