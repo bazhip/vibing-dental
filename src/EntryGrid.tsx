@@ -35,7 +35,7 @@ import { AccountModal } from './components/AccountModal';
 import { FinishSetupModal, useFinishSetup } from './components/FinishSetupModal';
 import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
-import { lazyWithReload } from './utils/lazyWithReload';
+import { lazyWithReload, whenIdle } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ChartLibrary } from './components/ChartLibrary';
 import { OwnerReportSection } from './components/OwnerReportSection';
@@ -785,6 +785,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   /** Capture the chart (live diagram SVGs + state) and open the Documents
    *  dialog, optionally on a given tab. */
+  // Fetch the PDF / owner-report dialog's code once the chart is up. Opened
+  // lazily, a deploy while this tab was open left it asking for renamed
+  // files: the recovery reload flashed the screen and swallowed the click
+  // (open the owner report → flash → nothing → click again).
+  React.useEffect(() => whenIdle(() => DocumentsModal.preload()), []);
+
   const openDocuments = (tab?: 'chart' | 'owner') => {
     setDocsTab(tab);
     try {
