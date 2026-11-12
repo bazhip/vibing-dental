@@ -535,9 +535,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // Keep the screen on while dictating: on a phone, the screen sleeping
   // cuts the mic and ends the session.
   useWakeLock(voice.recording);
+  // First words of a listen: warm the prompt cache now — the warm-up
+  // races the first utterance's pause (~1–2 s), so the first chunk still
+  // comes back fast. Skipped when the cache is still warm.
+  const warmedThisListenRef = React.useRef(false);
   React.useEffect(() => {
     if (voice.interim) lastSpeechRef.current = performance.now();
-  }, [voice.interim]);
+    if (voice.interim && voice.recording && !warmedThisListenRef.current) {
+      warmedThisListenRef.current = true;
+      prewarmAutofill();
+    }
+  }, [voice.interim, voice.recording]);
 
   // ---- Earpiece prompts --------------------------------------------------
   // Spoken only after a stretch of silence, never over the vet. The mic is
@@ -645,9 +653,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     } else {
       voice.resume();
     }
-    // Boot the edge function + write the prompt cache while the mic and
-    // Deepgram connect, so the first utterance comes back fast.
-    prewarmAutofill();
+    // The prompt cache is warmed when speech actually starts (see the
+    // interim effect), not here: opening Dictate without speaking used to
+    // pay a full cache write every time.
+    warmedThisListenRef.current = false;
   };
 
   const beginFromIntro = () => {

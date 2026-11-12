@@ -293,3 +293,15 @@ describe('GE = gingival enlargement (the Enlargement column)', () => {
     expect(tool.description).toMatch(/GE is enlargement \(hyperplasia\), never gingivitis/);
   });
 });
+
+import { dictationCacheWarm, markDictationPromptUsed } from './aiAutofill';
+
+describe('dictation prompt cache warmth', () => {
+  it('is warm for a few minutes after the prompt was used, then cold', () => {
+    const t0 = 1_000_000_000;
+    markDictationPromptUsed(t0);
+    expect(dictationCacheWarm(t0 + 60_000)).toBe(true);
+    expect(dictationCacheWarm(t0 + 3.9 * 60_000)).toBe(true);
+    expect(dictationCacheWarm(t0 + 4.1 * 60_000)).toBe(false); // the 5-minute cache may be gone: warm again
+  });
+});
