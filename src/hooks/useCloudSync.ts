@@ -86,6 +86,9 @@ export interface UseCloudSyncReturn {
   online: boolean;
   /** Fetch a chart's full snapshot (for "new visit from this patient"). */
   fetchChart: (id: string) => Promise<ChartSnapshot>;
+  /** Chart history: save an earlier version as the current one (recorded
+   *  as a new revision by you), then reload it. False if cancelled. */
+  restoreRevision: (id: string, snapshot: ChartSnapshot) => Promise<boolean>;
   deleteChart: (id: string) => Promise<void>;
   /** Clear recheck reminders on these charts — for rechecks that happened
    *  without producing a new chart (the patient would otherwise sit in
@@ -460,6 +463,24 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const restoreRevision = React.useCallback(async (id: string, snapshot: ChartSnapshot): Promise<boolean> => {
+    if (!supabase) return false;
+    // Unsaved edits here would be replaced — ask, as opening a chart does.
+    if (!(await confirmDiscardIfDirty('Restore this version'))) return false;
+    // A deliberate restore: don't stop at the "changed elsewhere" check.
+    conflictRef.current = { chartId: id, mode: 'force' };
+    await upsertChart(JSON.stringify(snapshot), id);
+    const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
+    if (error) throw new Error(error.message);
+    baselineNext.current = true; // the restored content is the saved baseline
+    applyRef.current(data.data as ChartSnapshot, data.id);
+    setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
+    conflictRef.current = { chartId: '', mode: 'none' };
+    setStatus('saved');
+    return true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upsertChart]);
+
   const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
     if (!supabase) throw new Error('Cloud is not configured.');
     const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
@@ -531,6 +552,7 @@ export function useCloudSync(
     listPatientVisits,
     openChart,
     fetchChart,
+    restoreRevision,
     deleteChart,
     clearRecalls,
     signOut,

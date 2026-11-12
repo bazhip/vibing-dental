@@ -18,6 +18,7 @@ import { FeedbackModal } from './components/FeedbackModal';
 import { CodeField } from './components/CodeField';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
 import { WhatsNewModal } from './components/WhatsNewModal';
+import { ChartHistoryModal } from './components/ChartHistoryModal';
 import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
@@ -129,6 +130,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
   const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
+  const [historyOpen, setHistoryOpen] = React.useState(false);
   // Saved charts open read-only; the user unlocks to edit them (then
   // changes autosave). Remembered per chart for this browser session, so
   // a refresh mid-edit doesn't re-lock and hide pending edits.
@@ -1277,6 +1279,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             onOpenChartSettings={() => setChartSettingsOpen('all')}
             onOpenWhatsNew={() => setWhatsNewOpen(true)}
+            onOpenHistory={cloud.enabled && !trial ? () => setHistoryOpen(true) : undefined}
             cloud={
               cloud.enabled
                 ? {
@@ -1336,6 +1339,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
               >
                 + New visit
+              </button>
+              <button
+                type="button"
+                className="diagram-view__action"
+                onClick={() => setHistoryOpen(true)}
+                title="Every saved version of this chart — who saved it and when"
+              >
+                History
               </button>
               <button
                 type="button"
@@ -1400,6 +1411,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       )}
 
       {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
+
+      {historyOpen && (
+        <ChartHistoryModal
+          chartId={chart.cloudChartId}
+          onClose={() => setHistoryOpen(false)}
+          onRestore={readOnly ? undefined : (snap) => cloud.restoreRevision(chart.cloudChartId, snap)}
+        />
+      )}
 
       {chartSettingsOpen && (
         <ChartSettingsModal

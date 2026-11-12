@@ -114,6 +114,13 @@ function Row({ label, value }: { label: string; value?: string }) {
   );
 }
 
+/** Read-only chart contents (also used by Chart history). */
+export function ChartReadOnlyView({ data }: { data: unknown }) {
+  const snap = React.useMemo(() => (isChartSnapshot(data) ? normalizeSnapshot(data) : null), [data]);
+  if (!snap) return <p className="login-error" role="alert">This version’s data is damaged and can’t be shown.</p>;
+  return <ChartBody snap={snap} />;
+}
+
 function ChartBody({ snap }: { snap: ChartSnapshot }) {
   const p = snap.patientInfo;
   const exam = EXAM_ITEMS.filter((i) => p.exam[i.key]?.status);
