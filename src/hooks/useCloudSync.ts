@@ -71,6 +71,13 @@ export interface UseCloudSyncReturn {
   dirty: boolean;
   /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
+  /** A chart that has never reached the cloud and holds only patient/owner
+   *  details: autosave waits for clinical content, so the UI offers a
+   *  manual Save. False once the chart has been saved (by either route). */
+  awaitingClinical: boolean;
+  /** Skip the same-day duplicate question for the next new chart's first
+   *  save (the user already answered it, e.g. when starting a new visit). */
+  skipNextDuplicateCheck: () => void;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
@@ -79,7 +86,7 @@ export interface UseCloudSyncReturn {
   confirmDiscardIfDirty: (verb: string) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
   /** Resolves true when the chart was opened, false when the user cancelled. */
-  openChart: (id: string, opts?: { ifClean?: boolean; verb?: string; force?: boolean }) => Promise<boolean>;
+  openChart: (id: string, opts?: { ifClean?: boolean; verb?: string; force?: boolean; skipConfirm?: boolean }) => Promise<boolean>;
   /** ISO time this chart last reached the cloud ('' = never). */
   lastSavedAt: string;
   /** Browser connectivity. */
@@ -117,6 +124,18 @@ function hasContent(s: ChartSnapshot): boolean {
   if ((s.preComments ?? []).length || (s.postComments ?? []).length) return true;
   if ((s.preStrokes ?? []).length || (s.postStrokes ?? []).length) return true;
   return false;
+}
+
+/** Clinical content: anything charted beyond who the patient is. Patient
+ *  and owner details (and the presenting complaint) are what gets filled
+ *  in ahead of a visit, so they don't start autosave on their own — a
+ *  chart reaches the cloud by itself once charting begins, or when the
+ *  user presses Save. */
+export function hasClinicalContent(s: ChartSnapshot): boolean {
+  if (!hasContent(s)) return false;
+  const p = s.patientInfo;
+  const identityOnly = { ...s, patientInfo: { ...p, patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', complaint: '' } };
+  return hasContent(identityOnly as ChartSnapshot);
 }
 
 /** Turn a raw Supabase/network failure into something a vet can act on.
@@ -210,6 +229,10 @@ export function useCloudSync(
   const currentHash = React.useMemo(() => hashStr(serialized), [serialized]);
   const contentful = React.useMemo(() => hasContent(snapshot), [snapshot]);
   const dirty = on && contentful && currentHash !== savedHash;
+  const clinical = React.useMemo(() => hasClinicalContent(snapshot), [snapshot]);
+  // Reached the cloud before (or is a saved chart opened from My charts).
+  const everSaved = chart.openedExisting || lastSaved.chartId === chartId;
+  const awaitingClinical = dirty && !everSaved && !clinical;
 
   const latest = React.useRef({ serialized, chartId });
   latest.current = { serialized, chartId };
@@ -339,10 +362,70 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Same-day duplicate guard. Before a brand-new chart's FIRST save, look
+  // for another visit of the same patient on the same visit date (people
+  // re-starting a patient instead of reopening this morning's chart left
+  // many same-day duplicates). Asked once per chart.
+  const listPatientVisitsRef = React.useRef<(n: string, name: string) => Promise<CloudChartMeta[]>>(async () => []);
+  const dupAnsweredRef = React.useRef('');
+  const skipDupOnceRef = React.useRef(false);
+  const dupCheckingRef = React.useRef(false);
+  const skipNextDuplicateCheck = React.useCallback(() => { skipDupOnceRef.current = true; }, []);
+  const openChartRef = React.useRef<(id: string, opts?: { force?: boolean; skipConfirm?: boolean }) => Promise<boolean>>(async () => false);
+  /** True = go ahead and save; false = don't (the user opened the other visit). */
+  const passDuplicateCheck = async (snap: ChartSnapshot, id: string): Promise<boolean> => {
+    if (!supabase || openedExistingRef.current || lastSavedRef.current.chartId === id || dupAnsweredRef.current === id) return true;
+    if (skipDupOnceRef.current) {
+      skipDupOnceRef.current = false;
+      dupAnsweredRef.current = id;
+      return true;
+    }
+    const p = snap.patientInfo;
+    let visits: CloudChartMeta[] = [];
+    try {
+      visits = await listPatientVisitsRef.current(p.patientNumber ?? '', p.patientName ?? '');
+    } catch {
+      return true; // can't check (offline etc.) — never block a save on it
+    }
+    const speciesBase = snap.species.startsWith('canine') ? 'canine' : 'feline';
+    const same = visits.find((v) => v.id !== id && v.chart_date === p.date && v.species === speciesBase);
+    dupAnsweredRef.current = id;
+    if (!same) return true;
+    const name = (p.patientName ?? '').trim() || 'This patient';
+    const day = same.chart_date === todayIso()
+      ? 'today'
+      : `on ${new Date(`${same.chart_date}T00:00:00`).toLocaleDateString(undefined, { dateStyle: 'medium' })}`;
+    const openIt = await confirmDialog({
+      title: `${name} already has a visit ${day}`,
+      message: 'This new chart would be a second visit on the same day. Open the existing visit instead, or keep both? Opening it discards what you’ve entered in this new chart.',
+      confirmLabel: 'Open existing visit',
+      cancelLabel: 'Keep both',
+      danger: true,
+    });
+    if (!openIt) return true;
+    await openChartRef.current(same.id, { force: true, skipConfirm: true });
+    return false;
+  };
+
   const saveNow = React.useCallback(async (): Promise<void> => {
     const { serialized: json, chartId: id } = latest.current;
-    if (!hasContent(JSON.parse(json))) return;
-    await upsertChart(json, id);
+    const snap = JSON.parse(json) as ChartSnapshot;
+    if (!hasContent(snap)) return;
+    // One question at a time: an autosave tick while the dialog is open
+    // must not stack a second one (or save before it's answered).
+    if (dupCheckingRef.current) return;
+    dupCheckingRef.current = true;
+    let proceed: boolean;
+    try {
+      proceed = await passDuplicateCheck(snap, id);
+    } finally {
+      dupCheckingRef.current = false;
+    }
+    if (!proceed) return;
+    // The chart may have changed while the question was open — save the
+    // latest content.
+    await upsertChart(latest.current.serialized, latest.current.chartId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
 
   // Autosave — for NEW charts only. Charts opened from a saved one
@@ -358,10 +441,13 @@ export function useCloudSync(
     if (!on || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
     if (!snapshot.patientInfo.patientName.trim()) return;
+    // Filled in ahead of time (patient/owner details only): wait for
+    // charting to start, or for an explicit Save.
+    if (awaitingClinical) return;
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online]);
+  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, awaitingClinical]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (verb: string): Promise<boolean> => {
@@ -433,14 +519,18 @@ export function useCloudSync(
     return (data ?? []) as CloudChartMeta[];
   }, []);
 
+  listPatientVisitsRef.current = listPatientVisits;
+
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
-  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; verb?: string; force?: boolean } = {}): Promise<boolean> => {
+  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; verb?: string; force?: boolean; skipConfirm?: boolean } = {}): Promise<boolean> => {
     if (!supabase) return false;
     // Deep links on page load never prompt: a working chart with edits
     // simply stays put (the user just reloaded their own work).
-    if (opts.ifClean) {
+    if (opts.skipConfirm) {
+      // The caller already asked (e.g. the same-day duplicate question).
+    } else if (opts.ifClean) {
       if (dirtyRef.current) return false;
     } else if (!(await confirmDiscardIfDirty(opts.verb ?? 'Open the other chart'))) return false;
     // Already on screen with nothing unsaved: nothing to do. (Re-applying
@@ -462,6 +552,8 @@ export function useCloudSync(
     return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  openChartRef.current = openChart;
 
   const restoreRevision = React.useCallback(async (id: string, snapshot: ChartSnapshot): Promise<boolean> => {
     if (!supabase) return false;
@@ -548,6 +640,8 @@ export function useCloudSync(
     lastSavedAt,
     online,
     saveNow,
+    awaitingClinical,
+    skipNextDuplicateCheck,
     listCharts,
     listPatientVisits,
     openChart,
