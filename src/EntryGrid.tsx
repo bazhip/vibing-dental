@@ -15,6 +15,7 @@ import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
+import { CodeField } from './components/CodeField';
 import { ChartSettingsModal } from './components/ChartSettingsModal';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
@@ -712,6 +713,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         return { ...prev, treatmentReport: existing ? `${existing}\n${text}` : text };
       });
     },
+    appendRadiographicFindings: (text) => {
+      chart.setPatientInfo((prev: PatientInfo) => {
+        const existing = prev.radiographicFindings ?? '';
+        return { ...prev, radiographicFindings: existing ? `${existing}\n${text}` : text };
+      });
+    },
   };
 
   const handleOpenPreview = (event: React.FormEvent<HTMLFormElement>) => {
@@ -875,6 +882,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             hiddenColumns={prefs.hiddenColumns}
             pocketMode={prefs.pocketMode}
             species={chart.species}
+            spaceMovesDown={prefs.spaceMovesDown}
           />
           )
         ) : null
@@ -946,6 +954,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       id: 'imaging',
       label: 'Images',
       content: (
+        <>
+        {lock(
+          <div className="patient-form radiographic-findings">
+            <label className="patient-form__label">
+              <span className="patient-form__section-title radiographic-findings__title">Radiographic findings</span>
+              <CodeField
+                multiline
+                className="patient-form__textarea radiographic-findings__text"
+                placeholder="e.g. 108: vertical bone loss distal root, furcation exposure. 307: type 2 tooth resorption."
+                value={chart.patientInfo.radiographicFindings ?? ''}
+                onChange={(value) => chart.handlePatientInfoChange('radiographicFindings', value)}
+              />
+              <span className="patient-form__hint">Prints in the PDF above the treatment report.</span>
+            </label>
+          </div>
+        )}
         <ImagingSection
           readOnly={readOnly}
           chartId={chart.cloudChartId}
@@ -960,6 +984,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
+        </>
       ),
     },
     {

@@ -81,6 +81,7 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
     model.examNotes.length
       ? `Oral exam — abnormal areas: ${model.examNotes.map((n) => `${n.area}${n.comment ? ` (${n.comment})` : ''}`).join('; ')}`
       : 'Oral exam: nothing abnormal recorded',
+    info.radiographicFindings?.trim() ? `Radiographic findings (written by the vet):\n${info.radiographicFindings.trim()}` : '',
     info.treatmentReport?.trim() ? `Treatment report (written by the vet):\n${info.treatmentReport.trim()}` : '',
     model.recallDate ? `Recommended recheck: ${model.recallDate}` : 'Recommended recheck: none set',
     model.extraNotes ? `Note from the veterinary team (already printed separately): ${model.extraNotes}` : '',

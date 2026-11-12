@@ -32,6 +32,8 @@ export interface AnestheticDrug {
 export interface NerveBlocks {
   infraorbitalRight: string;
   infraorbitalLeft: string;
+  caudalMaxillaryRight: string;
+  caudalMaxillaryLeft: string;
   inferiorAlveolarRight: string;
   inferiorAlveolarLeft: string;
   mentalRight: string;
@@ -51,6 +53,8 @@ export type NerveBlockSite = Exclude<keyof NerveBlocks, 'drugs'>;
 export const EMPTY_NERVE_BLOCKS: NerveBlocks = {
   infraorbitalRight: '',
   infraorbitalLeft: '',
+  caudalMaxillaryRight: '',
+  caudalMaxillaryLeft: '',
   inferiorAlveolarRight: '',
   inferiorAlveolarLeft: '',
   mentalRight: '',
@@ -192,6 +196,9 @@ export interface PatientInfo {
   date: string;
   complaint: string;
   treatmentReport: string;
+  /** Radiographic findings (free text). Optional: absent on charts saved
+   *  before the field existed. */
+  radiographicFindings?: string;
   /** Next dental recheck due (yyyy-mm-dd), '' when none. Surfaced in the
    *  chart library as a recall reminder. */
   recallDate: string;

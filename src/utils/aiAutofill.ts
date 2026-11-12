@@ -204,6 +204,7 @@ const chartTools: Anthropic.Messages.Tool[] = [
           type: 'string',
           enum: [
             'infraorbitalRight', 'infraorbitalLeft',
+            'caudalMaxillaryRight', 'caudalMaxillaryLeft',
             'inferiorAlveolarRight', 'inferiorAlveolarLeft',
             'mentalRight', 'mentalLeft',
             'other',
@@ -245,6 +246,16 @@ const chartTools: Anthropic.Messages.Tool[] = [
     name: 'append_treatment_report',
     description:
       'Append a paragraph to the running treatment report. Use for narrative descriptions of work performed during the procedure (cleanings, extractions performed, suturing, etc.).',
+    input_schema: {
+      type: 'object',
+      properties: { text: { type: 'string' } },
+      required: ['text'],
+    },
+  },
+  {
+    name: 'append_radiographic_findings',
+    description:
+      'Append to the radiographic findings: what the dental radiographs show (bone loss, root fractures, tooth resorption, periapical lucency, retained roots, unerupted teeth…). Only for findings the vet attributes to radiographs/x-rays/rads. Start with the tooth number when one is given, e.g. "108: vertical bone loss, distal root."',
     input_schema: {
       type: 'object',
       properties: { text: { type: 'string' } },
@@ -416,6 +427,7 @@ function buildStaticSystemPrompt(): string {
     '- mobility/recession/pocket/furcation/hyperplasia/calculus/gingivitis/pdstate go into the per-tooth grid as bare numbers ("GI 2" → gingivitis 2, "GE 3" → hyperplasia 3 (the Enlargement column), "calc 1" → calculus 1, "M3" → mobility 3, "5 mm pocket" → pocket 5).',
     '- add_comment for findings that don\'t fit a structured field (biopsy, draining tract, photo taken, fracture details).',
     '- append_treatment_report for narrative description of WORK DONE (scaling, polish, suturing, extractions performed).',
+    '- append_radiographic_findings for what the radiographs show ("on rads", "radiographically", "x-rays show") — not exam findings, not work done.',
     '',
     FEW_SHOT_EXAMPLES,
     '',
@@ -552,6 +564,7 @@ export function summarizeChart(c: ChartContext): string {
     `pre.comments: ${commentList(c.preComments)}`,
     `post.comments: ${commentList(c.postComments)}`,
     `treatmentReport: ${(c.patientInfo.treatmentReport || '').slice(0, 200)}`,
+    `radiographicFindings: ${(c.patientInfo.radiographicFindings || '').slice(0, 200)}`,
   ];
   const exam = Object.entries(c.patientInfo.exam)
     .filter(([, v]) => v.status)
@@ -1086,6 +1099,8 @@ export interface ChartHandlers {
   setAnestheticDrug: (drug: string, concentration?: string) => void;
   setPatientField: (field: keyof PatientInfo, value: string) => void;
   appendTreatmentReport: (text: string) => void;
+  /** Optional so older callers (tests, harness) needn't provide it. */
+  appendRadiographicFindings?: (text: string) => void;
 }
 
 /**
@@ -1105,6 +1120,7 @@ export function describeAction(action: AiAction): string {
     case 'set_anesthetic_drug':  return `anesthetic + ${input.concentration ? `${get('concentration')}% ` : ''}${get('drug')}`;
     case 'set_patient_field':    return `${get('field')} = ${get('value')}`;
     case 'append_treatment_report': return `report += "${get('text').slice(0, 60)}…"`;
+    case 'append_radiographic_findings': return `radiographic findings += "${get('text').slice(0, 60)}…"`;
     default:                     return name;
   }
 }
@@ -1190,6 +1206,8 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
       return String(c.patientInfo[str('field') as keyof PatientInfo] ?? '').trim() === str('value');
     case 'append_treatment_report':
       return (c.patientInfo.treatmentReport ?? '').includes(str('text'));
+    case 'append_radiographic_findings':
+      return (c.patientInfo.radiographicFindings ?? '').includes(str('text'));
     default:
       return false;
   }
@@ -1225,7 +1243,8 @@ export function codeOnlyComment(text: string): string {
 // string and corrupt the saved chart).
 const EXAM_AREAS = new Set(['extraoral', 'lymph', 'buccal', 'tongue', 'palate', 'pharynx']);
 const NERVE_SITES = new Set([
-  'infraorbitalRight', 'infraorbitalLeft', 'inferiorAlveolarRight', 'inferiorAlveolarLeft',
+  'infraorbitalRight', 'infraorbitalLeft', 'caudalMaxillaryRight', 'caudalMaxillaryLeft',
+  'inferiorAlveolarRight', 'inferiorAlveolarLeft',
   'mentalRight', 'mentalLeft', 'other',
 ]);
 const PATIENT_FIELDS = new Set(['patientName', 'patientNumber', 'doctor', 'tech', 'complaint']);
@@ -1296,6 +1315,11 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     }
     case 'append_treatment_report': {
       h.appendTreatmentReport(s('text'));
+      return true;
+    }
+    case 'append_radiographic_findings': {
+      if (!h.appendRadiographicFindings) return false;
+      h.appendRadiographicFindings(s('text'));
       return true;
     }
     default:

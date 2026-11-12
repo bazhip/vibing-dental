@@ -36,6 +36,9 @@ export interface ChartPrefs {
   pdfIncludeImages: boolean;
   /** Leave out the Recheck due field on the Patient page. */
   hideRecheck: boolean;
+  /** Space in a grid cell moves down to the next tooth (for calling out
+   *  a run of depths) instead of typing a space. */
+  spaceMovesDown: boolean;
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -47,6 +50,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeGrid: true,
   pdfIncludeImages: true,
   hideRecheck: false,
+  spaceMovesDown: true,
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -67,5 +71,6 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeGrid: bool(r.pdfIncludeGrid, fallback.pdfIncludeGrid),
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
+    spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
   };
 }
