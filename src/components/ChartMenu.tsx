@@ -22,6 +22,8 @@ interface ChartMenuProps {
   onGoHome?: () => void;
   /** Admin panel — present only for the admin account. */
   onOpenAdmin?: () => void;
+  /** Send feedback — present for signed-in accounts. */
+  onOpenFeedback?: () => void;
   /** Cloud account actions — present only when Supabase is configured. */
   cloud?: ChartMenuCloud;
   /** Signed-in email for the menu header. Optional — when omitted (and
@@ -55,7 +57,7 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, cloud, email }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, cloud, email }) => {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -210,6 +212,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
 
           <section className="chart-menu__section">
             <header className="chart-menu__section-head">App</header>
+            {onOpenFeedback && item('Send feedback', 'Report a problem or suggest an idea — it comes straight to us.', onOpenFeedback)}
             {item('Getting started', 'Replay the walkthrough of every part of the app.', onOpenWalkthrough)}
             {onGoHome && item('Homepage', 'View the product page — your chart stays right here.', onGoHome)}
             {cloud && item('Sign out', 'End your session and return to the homepage.', cloud.onSignOut)}

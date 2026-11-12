@@ -3564,3 +3564,16 @@ button.save-status--manual:hover {
   body.ai-panel-open .entry-grid-container { padding-bottom: 7.5rem; }
   body.ai-panel-open { overflow: hidden; }
 }
+
+/* ---- Send feedback --------------------------------------------------- */
+.ai-settings-modal.feedback-modal { max-width: 32rem; }
+.feedback-modal__kinds { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.feedback-modal__kind {
+  min-height: 36px; padding: 0.35rem 0.8rem; border-radius: 999px;
+  border: 1px solid var(--border-strong, #cbd5e1); background: var(--surface, #fff);
+  font: inherit; font-size: 0.88rem; color: var(--text); cursor: pointer;
+}
+.feedback-modal__kind--on { background: var(--primary, #0c6b63); border-color: var(--primary, #0c6b63); color: #fff; }
+.feedback-modal__message { width: 100%; min-height: 8rem; resize: vertical; font: inherit; font-size: 16px; /* no iOS zoom */ }
+.feedback-modal__attach { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.feedback-modal__note { margin: 0; font-size: 0.82rem; color: var(--text-muted, #64748b); }

@@ -637,7 +637,7 @@ Deno.serve(async (req: Request) => {
           .from('ai_usage')
           .select('user_id, model, input_tokens, output_tokens, cache_read_tokens')
           // Rate-limit bookkeeping rows aren't AI calls.
-          .not('model', 'in', '(deepgram-token,reminder-email)')
+          .not('model', 'in', '(deepgram-token,reminder-email,feedback)')
           .limit(100000);
         const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
         let totalCost = 0;
