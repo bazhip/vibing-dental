@@ -10,6 +10,8 @@ import { usePersistedState } from '../hooks/usePersistedState';
 
 interface DiagramViewProps {
   title: string;
+  /** Open this page's settings (Customize in the header). */
+  onCustomize?: () => void;
   species: Species;
   toothMarks: ToothMarks;
   onToothMarksChange: (marks: ToothMarks) => void;
@@ -54,6 +56,7 @@ const TEXT_SIZES: Array<{ value: number; label: string }> = [
 
 export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>(({
   title,
+      onCustomize,
   species,
   toothMarks,
   onToothMarksChange,
@@ -137,6 +140,11 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
     <div className="diagram-section" ref={rootRef}>
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">{title}</h2>
+        {onCustomize && (
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Findings shown beside the teeth">
+            Customize
+          </button>
+        )}
       </div>
 
       <div

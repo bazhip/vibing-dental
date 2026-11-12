@@ -16,7 +16,7 @@ import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
 import { CodeField } from './components/CodeField';
-import { ChartSettingsModal } from './components/ChartSettingsModal';
+import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import type { ChartPrefs } from './utils/chartSettings';
@@ -124,7 +124,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
-  const [chartSettingsOpen, setChartSettingsOpen] = React.useState(false);
+  // Chart settings dialog: closed, everything, or one section only.
+  const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
   const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
   // Saved charts open read-only; the user unlocks to edit them (then
   // changes autosave). Remembered per chart for this browser session, so
@@ -264,7 +265,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       <button
         type="button"
         className="diagram-view__action"
-        onClick={() => setChartSettingsOpen(true)}
+        onClick={() => setChartSettingsOpen('charting')}
         title="Pockets per root, columns, what shows beside the teeth, PDF options"
       >
         Customize
@@ -274,7 +275,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Append the chart's photos/radiographs to the PDF as extra pages, four
   // per page. Per-browser preference, toggled from the Images section.
   const pdfIncludeImages = prefs.pdfIncludeImages;
-  const setPdfIncludeImages = (v: boolean) => setPref({ pdfIncludeImages: v });
   // Values written beside the teeth: the person's choice, minus any
   // column they hide.
   const besideTeeth = React.useMemo(
@@ -807,6 +807,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
           hideRecheck={prefs.hideRecheck}
+          onCustomize={() => setChartSettingsOpen('patient')}
         />
       ),
     },
@@ -832,7 +833,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           logo={chart.logo}
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
-          onCustomize={() => setChartSettingsOpen(true)}
+          onCustomize={() => setChartSettingsOpen('anesthesia')}
         />
       ),
     },
@@ -905,6 +906,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ref={preDiagramRef}
               readOnly={readOnly}
               title="Diagnosis"
+              onCustomize={() => setChartSettingsOpen('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -984,7 +986,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}
-          onIncludeInPdfChange={setPdfIncludeImages}
+          onCustomize={() => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
@@ -1241,7 +1243,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
-            onOpenChartSettings={() => setChartSettingsOpen(true)}
+            onOpenChartSettings={() => setChartSettingsOpen('all')}
             cloud={
               cloud.enabled
                 ? {
@@ -1367,6 +1369,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {chartSettingsOpen && (
         <ChartSettingsModal
           onClose={() => setChartSettingsOpen(false)}
+          section={chartSettingsOpen && chartSettingsOpen !== 'all' ? chartSettingsOpen : undefined}
           prefs={prefs}
           followsAccount={chartSettings.followsAccount}
           onChange={setPref}

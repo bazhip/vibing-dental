@@ -17,12 +17,36 @@ export interface ChartSettingsModalProps {
   /** Saved to the account (vs. only this browser, without one). */
   followsAccount: boolean;
   onChange: (patch: Partial<ChartPrefs>) => void;
+  /** Open on one page's settings only (that page's Customize button);
+   *  "All chart settings" switches to everything. */
+  section?: SettingsSection;
 }
+
+export type SettingsSection = 'patient' | 'anesthesia' | 'charting' | 'diagnosis' | 'images';
+
+const SECTION_TITLES: Record<SettingsSection, string> = {
+  patient: 'Patient page settings',
+  anesthesia: 'Anesthesia settings',
+  charting: 'Charting settings',
+  diagnosis: 'Diagnosis settings',
+  images: 'Images settings',
+};
 
 const toggle = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
   on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
 
-export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange }) => {
+export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+  const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
+  const showAll = only === null;
+  // Which groups a page's Customize shows (everything from the menu).
+  const show = {
+    charting: showAll || only === 'charting',
+    beside: showAll || only === 'charting' || only === 'diagnosis',
+    anesthesia: showAll || only === 'anesthesia',
+    patient: showAll || only === 'patient',
+    pdfGrid: showAll || only === 'charting',
+    pdfImages: showAll || only === 'images',
+  };
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(onClose);
 
@@ -54,7 +78,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart settings">
       <div className="ai-settings-modal chart-settings" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>Chart settings</h2>
+          <h2>{only ? SECTION_TITLES[only] : 'Chart settings'}</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
         </header>
 
@@ -64,7 +88,13 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               ? 'Just for you — these follow your account on every device. Changes save right away.'
               : 'Saved in this browser. Changes apply right away.'}
           </p>
+          {!showAll && (
+            <button type="button" className="diagram-view__action chart-settings__all" onClick={() => setOnly(null)}>
+              All chart settings
+            </button>
+          )}
 
+          {show.charting && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">Charting</h3>
             <fieldset className="chart-settings__field">
@@ -124,7 +154,9 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               </div>
             </fieldset>
           </section>
+          )}
 
+          {show.beside && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">Beside the teeth</h3>
             <label className="chart-settings__choice">
@@ -147,7 +179,9 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               </div>
             </fieldset>
           </section>
+          )}
 
+          {show.anesthesia && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">Anesthesia</h3>
             <fieldset className="chart-settings__field">
@@ -199,7 +233,9 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               </div>
             </fieldset>
           </section>
+          )}
 
+          {show.patient && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">Patient page</h3>
             <label className="chart-settings__choice">
@@ -207,9 +243,12 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               Hide the Recheck due field
             </label>
           </section>
+          )}
 
+          {(show.pdfGrid || show.pdfImages) && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">PDF</h3>
+            {show.pdfGrid && (
             <label className="chart-settings__choice">
               <input
                 type="checkbox"
@@ -219,11 +258,15 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               />
               Include the charting grid <span className="chart-settings__hint">(optional while findings are on the diagram)</span>
             </label>
+            )}
+            {show.pdfImages && (
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.pdfIncludeImages} onChange={(e) => onChange({ pdfIncludeImages: e.target.checked })} />
-              Include images
+              Include images <span className="chart-settings__hint">(4 per page, after the chart)</span>
             </label>
+            )}
           </section>
+          )}
         </div>
       </div>
     </div>,

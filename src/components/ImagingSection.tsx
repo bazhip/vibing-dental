@@ -26,6 +26,8 @@ interface ImagingSectionProps {
   onImageInPdfChange?: (attachmentId: string, include: boolean) => void;
   /** View-only (saved visit not unlocked): images open, nothing changes. */
   readOnly?: boolean;
+  /** Open this page's settings (e.g. images in the PDF). */
+  onCustomize?: () => void;
 }
 
 /**
@@ -44,6 +46,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageRoleChange,
   includeInPdf = true,
   onIncludeInPdfChange,
+  onCustomize,
   pdfExcludedImages = [],
   onImageInPdfChange,
   readOnly = false,
@@ -111,6 +114,11 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           <span className="patient-form__hint">
             {store.items.length} of {store.maxImages} images
           </span>
+        )}
+        {onCustomize && (
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Images in the PDF">
+            Customize
+          </button>
         )}
       </div>
 
