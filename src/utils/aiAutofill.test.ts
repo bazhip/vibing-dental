@@ -257,3 +257,39 @@ describe('findCodesInText — one-letter codes', () => {
     expect(findCodesInText('T/FX, X').map((c) => c.code)).toEqual(expect.arrayContaining(['T/FX', 'X']));
   });
 });
+
+describe('GE = gingival enlargement (the Enlargement column)', () => {
+  it('normalizes the ways GE gets transcribed', () => {
+    expect(normalizeTranscript('106 GE3')).toBe('106 GE 3');
+    expect(normalizeTranscript('106 GE three')).toBe('106 GE 3');
+    expect(normalizeTranscript('106 G E three')).toBe('106 GE 3');
+    expect(normalizeTranscript('104GE3, calc 1')).toBe('104 GE 3, calc 1');
+    expect(normalizeTranscript('enlargement three')).toBe('enlargement 3');
+  });
+
+  it('splits a GE score run into the next tooth', () => {
+    expect(normalizeTranscript('105 GE 3102 GI 1')).toBe('105 GE 3 102 GI 1');
+  });
+
+  it('keeps GE distinct from GI and leaves ordinary words alone', () => {
+    expect(normalizeTranscript('106 GI two, GE three')).toBe('106 GI 2, GE 3');
+    expect(normalizeTranscript('the gauge is good')).toBe('the gauge is good');
+  });
+
+  it('the prompt maps GE to hyperplasia, not gingivitis', () => {
+    const ctx = {
+      patientInfo: {
+        patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+        date: '', complaint: '', treatmentReport: '', recallDate: '',
+        nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+      },
+      species: 'canine' as const, logo: 'socal' as const, toothData: [],
+      preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+    };
+    const req = buildChunkRequest({ delta: '106 GE3', recentContext: '', context: ctx })!;
+    expect(req.system[0].text).toMatch(/"GE 3" → hyperplasia 3/);
+    expect(req.system[0].text).toMatch(/field=hyperplasia, value=3/);
+    const tool = req.tools.find((t) => t.name === 'set_tooth_field')!;
+    expect(tool.description).toMatch(/GE is enlargement \(hyperplasia\), never gingivitis/);
+  });
+});

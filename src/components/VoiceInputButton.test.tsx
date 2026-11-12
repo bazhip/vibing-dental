@@ -163,6 +163,7 @@ describe('DANGLING_RE — wait for the value before sending', () => {
   it('waits when a segment stops mid-finding', () => {
     expect(DANGLING_RE.test(normalizeTranscript('one zero five GI two calc'))).toBe(true);
     expect(DANGLING_RE.test(normalizeTranscript('104 GI 2, calc 1, 105'))).toBe(true);
+    expect(DANGLING_RE.test(normalizeTranscript('106 GI 2, GE'))).toBe(true);
   });
   it('sends complete findings promptly', () => {
     expect(DANGLING_RE.test(normalizeTranscript('105 GI 2 calc 3, T/FX/CCF.'))).toBe(false);
