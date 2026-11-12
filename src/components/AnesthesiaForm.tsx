@@ -7,7 +7,9 @@ import {
   DEFAULT_NERVE_BLOCK_DRUG,
   DEFAULT_NERVE_BLOCK_CONCENTRATION,
   usualConcentration,
+  formatAnestheticDrug,
 } from '../types';
+import type { BlockRowId } from '../utils/chartSettings';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
@@ -16,12 +18,19 @@ interface AnesthesiaFormProps {
   onDrugsChange: (update: (prev: AnestheticDrug[]) => AnestheticDrug[]) => void;
   /** Used to populate the drug-name placeholder with the template default. */
   logo: Logo;
+  /** Chart settings: rows to hide (still shown when they hold a dose). */
+  hiddenBlocks?: BlockRowId[];
+  /** Chart settings: the person's usual anesthetic, offered in one tap. */
+  usualDrug?: { name: string; concentration: string } | null;
+  /** Open Chart settings. */
+  onCustomize?: () => void;
 }
 
 const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 const BLANK_DRUG: AnestheticDrug = { name: '', concentration: '' };
 
 interface BlockRow {
+  id: BlockRowId;
   label: string;
   rightKey: NerveBlockSite;
   leftKey: NerveBlockSite;
@@ -31,10 +40,10 @@ interface BlockRow {
 // L/R rows — defined separately so the table layout doesn't have to
 // special-case it inside the BLOCK_ROWS map.
 const BLOCK_ROWS: BlockRow[] = [
-  { label: 'Infraorbital',      rightKey: 'infraorbitalRight',     leftKey: 'infraorbitalLeft' },
-  { label: 'Caudal Maxillary',  rightKey: 'caudalMaxillaryRight',  leftKey: 'caudalMaxillaryLeft' },
-  { label: 'Inferior Alveolar', rightKey: 'inferiorAlveolarRight', leftKey: 'inferiorAlveolarLeft' },
-  { label: 'Mental',            rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
+  { id: 'infraorbital',     label: 'Infraorbital',      rightKey: 'infraorbitalRight',     leftKey: 'infraorbitalLeft' },
+  { id: 'caudalMaxillary',  label: 'Caudal Maxillary',  rightKey: 'caudalMaxillaryRight',  leftKey: 'caudalMaxillaryLeft' },
+  { id: 'inferiorAlveolar', label: 'Inferior Alveolar', rightKey: 'inferiorAlveolarRight', leftKey: 'inferiorAlveolarLeft' },
+  { id: 'mental',           label: 'Mental',            rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
 ];
 
 export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
@@ -42,7 +51,14 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   onNerveBlockChange,
   onDrugsChange,
   logo,
+  hiddenBlocks = [],
+  usualDrug = null,
+  onCustomize,
 }) => {
+  // A hidden row still shows when it holds a dose — settings never hide data.
+  const rowShown = (r: BlockRow) =>
+    !hiddenBlocks.includes(r.id) || !!(nerveBlocks[r.rightKey] || '').trim() || !!(nerveBlocks[r.leftKey] || '').trim();
+  const otherShown = !hiddenBlocks.includes('other') || !!(nerveBlocks.other || '').trim();
   const handleChange = (key: NerveBlockSite) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -112,6 +128,11 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">Anesthesia &mdash; Nerve Blocks</h2>
+        {onCustomize && (
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Choose which nerve blocks show and your usual anesthetic">
+            Customize
+          </button>
+        )}
       </div>
 
       <div className="anesthesia-drug">
@@ -167,6 +188,15 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
             <span aria-hidden="true">+</span> Add anesthetic
           </button>
+          {usingDefault && usualDrug && (
+            <button
+              type="button"
+              className="anesthesia-drug__add anesthesia-drug__usual"
+              onClick={() => onDrugsChange(() => [{ name: usualDrug.name, concentration: usualDrug.concentration }])}
+            >
+              Use my usual: {formatAnestheticDrug(usualDrug)}
+            </button>
+          )}
         </div>
         {/* The grey placeholder alone reads ambiguously — is the drug set
             or not? Say what blank means. */}
@@ -186,7 +216,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           </tr>
         </thead>
         <tbody>
-          {BLOCK_ROWS.map(({ label, rightKey, leftKey }) => (
+          {BLOCK_ROWS.filter(rowShown).map(({ label, rightKey, leftKey }) => (
             <tr key={label}>
               <td className="anesthesia-table__label">{label}</td>
               {([rightKey, leftKey] as const).map((key) => (
@@ -206,6 +236,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               ))}
             </tr>
           ))}
+          {otherShown && (
           <tr>
             <td className="anesthesia-table__label">Other</td>
             <td colSpan={2}>
@@ -219,6 +250,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               />
             </td>
           </tr>
+          )}
         </tbody>
       </table>
     </div>

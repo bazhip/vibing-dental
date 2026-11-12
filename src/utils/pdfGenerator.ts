@@ -109,6 +109,9 @@ export interface PdfLayoutOptions {
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
   images?: PdfImage[];
+  /** Nerve block rows the person hides (chart settings) — left out of
+   *  the table when empty. */
+  hiddenBlocks?: readonly string[];
 }
 
 /** Build the PDF as raw bytes — the entry point for both the download
@@ -282,7 +285,7 @@ export async function buildDentalChartPDFBytes(
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca');
+  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? []);
   const baseSlot = DIAGRAM_SLOTS[species][1];
   const minTopIn = nbBottomIn + 0.15;
   const postSlot =

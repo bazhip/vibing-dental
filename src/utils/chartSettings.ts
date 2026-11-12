@@ -19,6 +19,17 @@ export const PERIO_FIELDS: { key: DentalField; label: string }[] = [
 ];
 const FIELD_KEYS = new Set<string>(PERIO_FIELDS.map((f) => f.key));
 
+/** Nerve block rows on the Anesthesia page (each R/L pair, plus Other). */
+export const BLOCK_ROW_OPTIONS = [
+  { id: 'infraorbital', label: 'Infraorbital' },
+  { id: 'caudalMaxillary', label: 'Caudal maxillary' },
+  { id: 'inferiorAlveolar', label: 'Inferior alveolar' },
+  { id: 'mental', label: 'Mental' },
+  { id: 'other', label: 'Other' },
+] as const;
+export type BlockRowId = (typeof BLOCK_ROW_OPTIONS)[number]['id'];
+const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));
+
 export interface ChartPrefs {
   /** 'tooth' = one pocket box per tooth; 'root' = one per root. */
   pocketMode: 'tooth' | 'root';
@@ -39,6 +50,12 @@ export interface ChartPrefs {
   /** Space in a grid cell moves down to the next tooth (for calling out
    *  a run of depths) instead of typing a space. */
   spaceMovesDown: boolean;
+  /** Nerve block rows hidden on the Anesthesia page (shown anyway when
+   *  they hold a dose). */
+  hiddenBlocks: BlockRowId[];
+  /** The person's usual anesthetic — offered as one tap on a chart with
+   *  no anesthetic set. null = none. */
+  usualDrug: { name: string; concentration: string } | null;
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -51,11 +68,21 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeImages: true,
   hideRecheck: false,
   spaceMovesDown: true,
+  hiddenBlocks: [],
+  usualDrug: null,
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
   Array.isArray(v) ? (v.filter((k) => typeof k === 'string' && FIELD_KEYS.has(k)) as DentalField[]) : fallback;
 const bool = (v: unknown, fallback: boolean) => (typeof v === 'boolean' ? v : fallback);
+function usualDrugOf(v: unknown, fallback: ChartPrefs['usualDrug']): ChartPrefs['usualDrug'] {
+  if (v === null) return null;
+  if (!v || typeof v !== 'object') return fallback;
+  const d = v as { name?: unknown; concentration?: unknown };
+  const name = typeof d.name === 'string' ? d.name.trim().slice(0, 60) : '';
+  if (!name) return null;
+  return { name, concentration: typeof d.concentration === 'string' ? d.concentration.replace(/%/g, '').trim().slice(0, 10) : '' };
+}
 
 /** Tolerant read of stored preferences; anything missing or invalid takes
  *  the value from `fallback` (the defaults, or this browser's old
@@ -72,5 +99,9 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
+    hiddenBlocks: Array.isArray(r.hiddenBlocks)
+      ? (r.hiddenBlocks.filter((b) => typeof b === 'string' && BLOCK_IDS.has(b)) as BlockRowId[])
+      : fallback.hiddenBlocks,
+    usualDrug: usualDrugOf(r.usualDrug, fallback.usualDrug),
   };
 }

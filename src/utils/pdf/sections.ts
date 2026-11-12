@@ -869,7 +869,9 @@ export function drawNerveBlockTable(
   nerveBlocks: NerveBlocks,
   bold: PDFFont,
   regular: PDFFont,
-  isVca: boolean
+  isVca: boolean,
+  /** Rows the person hides (chart settings) — left out when empty. */
+  hiddenRows: readonly string[] = []
 ): number {
   const { height: pageHeight } = page.getSize();
   const x = NERVE_BLOCK_BOX.xIn * PT_PER_IN;
@@ -887,11 +889,15 @@ export function drawNerveBlockTable(
   // Caudal maxillary prints only when used, so charts without it keep
   // the original page-2 layout.
   const caudal = { right: nerveBlocks.caudalMaxillaryRight || '', left: nerveBlocks.caudalMaxillaryLeft || '' };
+  // A row the person hides is left out only while it's empty.
+  const keep = (id: string, r: { right: string; left: string }) => !hiddenRows.includes(id) || !!(r.right || r.left);
+  const lr = (id: string, label: string, right: string, left: string): LR[] =>
+    keep(id, { right, left }) ? [{ kind: 'lr', label, right, left }] : [];
   const rows: Array<LR | Free> = [
-    { kind: 'lr',   label: 'Infraorbital',      right: nerveBlocks.infraorbitalRight     || '', left: nerveBlocks.infraorbitalLeft     || '' },
+    ...lr('infraorbital', 'Infraorbital', nerveBlocks.infraorbitalRight || '', nerveBlocks.infraorbitalLeft || ''),
     ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: 'Caudal Maxillary', ...caudal }] : []),
-    { kind: 'lr',   label: 'Inferior Alveolar', right: nerveBlocks.inferiorAlveolarRight || '', left: nerveBlocks.inferiorAlveolarLeft || '' },
-    { kind: 'lr',   label: 'Mental',            right: nerveBlocks.mentalRight           || '', left: nerveBlocks.mentalLeft           || '' },
+    ...lr('inferiorAlveolar', 'Inferior Alveolar', nerveBlocks.inferiorAlveolarRight || '', nerveBlocks.inferiorAlveolarLeft || ''),
+    ...lr('mental', 'Mental', nerveBlocks.mentalRight || '', nerveBlocks.mentalLeft || ''),
     { kind: 'free', label: 'Other',             value: nerveBlocks.other                 || '' },
   ];
 

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { DentalField } from '../types';
-import { ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { BLOCK_ROW_OPTIONS, BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 
 /**
  * Chart settings — per person: they follow your account to every device.
@@ -37,6 +37,18 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
   }, [onClose]);
 
   const shownColumns = PERIO_FIELDS.filter((f) => !prefs.hiddenColumns.includes(f.key));
+
+  // Usual anesthetic: typed locally, saved when a field loses focus (not
+  // on every keystroke).
+  const [drugName, setDrugName] = React.useState(prefs.usualDrug?.name ?? '');
+  const [drugStrength, setDrugStrength] = React.useState(prefs.usualDrug?.concentration ?? '');
+  const saveUsualDrug = () => {
+    const name = drugName.trim();
+    const next = name ? { name, concentration: drugStrength.replace(/%/g, '').trim() } : null;
+    if (JSON.stringify(next) !== JSON.stringify(prefs.usualDrug)) onChange({ usualDrug: next });
+  };
+  const toggleBlock = (id: BlockRowId, shown: boolean) =>
+    onChange({ hiddenBlocks: shown ? prefs.hiddenBlocks.filter((b) => b !== id) : Array.from(new Set([...prefs.hiddenBlocks, id])) });
 
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart settings">
@@ -132,6 +144,58 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                     {f.label}
                   </label>
                 ))}
+              </div>
+            </fieldset>
+          </section>
+
+          <section className="chart-settings__group">
+            <h3 className="ai-settings-subhead">Anesthesia</h3>
+            <fieldset className="chart-settings__field">
+              <legend>Nerve blocks shown</legend>
+              <p className="chart-settings__note">A hidden block still shows on a chart where it has a dose.</p>
+              <div className="chart-settings__grid">
+                {BLOCK_ROW_OPTIONS.map((b) => (
+                  <label key={b.id} className="chart-settings__choice">
+                    <input
+                      type="checkbox"
+                      checked={!prefs.hiddenBlocks.includes(b.id)}
+                      onChange={(e) => toggleBlock(b.id, e.target.checked)}
+                    />
+                    {b.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="chart-settings__field">
+              <legend>Your usual anesthetic</legend>
+              <p className="chart-settings__note">Offered as one tap on a chart with no anesthetic set.</p>
+              <div className="chart-settings__drug">
+                <input
+                  type="text"
+                  list="chart-settings-drugs"
+                  className="patient-form__input"
+                  placeholder="e.g. Bupivacaine"
+                  aria-label="Usual anesthetic"
+                  value={drugName}
+                  onChange={(e) => setDrugName(e.target.value)}
+                  onBlur={saveUsualDrug}
+                />
+                <span className="anesthesia-unit">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="patient-form__input"
+                    placeholder="0.5"
+                    aria-label="Usual anesthetic strength (%)"
+                    value={drugStrength}
+                    onChange={(e) => setDrugStrength(e.target.value.replace(/%/g, ''))}
+                    onBlur={saveUsualDrug}
+                  />
+                  <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
+                </span>
+                <datalist id="chart-settings-drugs">
+                  {['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'].map((d) => <option key={d} value={d} />)}
+                </datalist>
               </div>
             </fieldset>
           </section>
