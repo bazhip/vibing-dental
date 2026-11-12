@@ -220,3 +220,17 @@ describe('VoiceInputButton — cache warm-up', () => {
     expect(prewarmAutofill).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('VoiceInputButton — when to start talking', () => {
+  it('says Go ahead once the mic is live, then Listening after the first words', () => {
+    render(<VoiceInputButton {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+    // The browser fallback is live as soon as it starts.
+    expect(screen.getByText('Ready — start talking')).toBeInTheDocument();
+    expect(screen.getAllByText(/Go ahead — start talking/).length).toBeGreaterThan(0);
+    act(() => FakeRecognition.last!.hear('one oh four'));
+    expect(screen.getByText('Listening')).toBeInTheDocument();
+    expect(screen.queryByText('Ready — start talking')).not.toBeInTheDocument();
+  });
+});

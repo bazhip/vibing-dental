@@ -150,6 +150,28 @@ function speechAvailable(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 }
 
+/** A soft rising two-note chime: "the mic is live, start talking". */
+function playReadyChime(ctx: AudioContext | null): void {
+  if (!ctx) return;
+  try {
+    void ctx.resume();
+    const t = ctx.currentTime + 0.02;
+    [660, 990].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const start = t + i * 0.13;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.12, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.14);
+    });
+  } catch { /* audio unavailable — the on-screen cue still shows */ }
+}
+
 /** "Check 109", "Check 109 and 204", "Check 109, 204 and 308". */
 function promptFor(items: ReviewItem[]): string {
   const teeth = Array.from(new Set(items.map((r) => r.flag.triadan).filter((t): t is number => typeof t === 'number')));
@@ -539,13 +561,30 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // races the first utterance's pause (~1–2 s), so the first chunk still
   // comes back fast. Skipped when the cache is still warm.
   const warmedThisListenRef = React.useRef(false);
+  // Has anything been heard since this listen started? Until then the
+  // panel says "Go ahead — start talking".
+  const [heardSinceStart, setHeardSinceStart] = React.useState(false);
   React.useEffect(() => {
     if (voice.interim) lastSpeechRef.current = performance.now();
+    if (voice.interim && !heardSinceStart) setHeardSinceStart(true);
     if (voice.interim && voice.recording && !warmedThisListenRef.current) {
       warmedThisListenRef.current = true;
       prewarmAutofill();
     }
-  }, [voice.interim, voice.recording]);
+  }, [voice.interim, voice.recording, heardSinceStart]);
+
+  // The moment the mic is really live: a soft two-note chime (with spoken
+  // prompts on) and a short buzz on phones that support it, so a vet
+  // looking at the mouth, not the screen, knows to start talking.
+  const chimeCtxRef = React.useRef<AudioContext | null>(null);
+  const wasReadyRef = React.useRef(false);
+  React.useEffect(() => {
+    const becameReady = voice.ready && !wasReadyRef.current;
+    wasReadyRef.current = voice.ready;
+    if (!becameReady || !voice.recording) return;
+    if (voicePromptsRef.current) playReadyChime(chimeCtxRef.current);
+    try { navigator.vibrate?.(60); } catch { /* not supported */ }
+  }, [voice.ready, voice.recording]);
 
   // ---- Earpiece prompts --------------------------------------------------
   // Spoken only after a stretch of silence, never over the vet. The mic is
@@ -657,6 +696,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     // interim effect), not here: opening Dictate without speaking used to
     // pay a full cache write every time.
     warmedThisListenRef.current = false;
+    setHeardSinceStart(false);
+    // Created inside the tap: iOS only lets a page play audio it started
+    // from a gesture. Used for the "ready" chime.
+    if (voicePrompts && !chimeCtxRef.current) {
+      try {
+        const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        chimeCtxRef.current = Ctor ? new Ctor() : null;
+      } catch { chimeCtxRef.current = null; }
+    }
   };
 
   const beginFromIntro = () => {
@@ -764,12 +812,24 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const sending = activeChunkCount > 0;
   const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'Dictate';
   const reviewLabel = reviews.length ? `${reviews.length} to review` : null;
-  const subLabel = voice.recording
+  // Recording but the mic isn't live yet: say so, so nobody talks into
+  // the gap. Live but nothing heard yet: invite them to start.
+  const connecting = voice.recording && !voice.ready;
+  const goAhead = voice.recording && voice.ready && !heardSinceStart;
+  const subLabel = connecting
+    ? 'getting mic ready…'
+    : goAhead
+    ? 'go ahead — talk'
+    : voice.recording
     ? (sending ? 'listening · sending…' : reviewLabel ?? 'listening')
     : sending ? 'finishing…' : reviewLabel;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
 
-  const status = voice.recording
+  const status = connecting
+    ? { text: 'Connecting…', cls: 'ai-sidebar__status--connecting' }
+    : goAhead
+    ? { text: 'Ready — start talking', cls: 'ai-sidebar__status--live' }
+    : voice.recording
     ? { text: 'Listening', cls: 'ai-sidebar__status--live' }
     : voice.interrupted
       ? { text: 'Interrupted', cls: 'ai-sidebar__status--warn' }
@@ -786,6 +846,10 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       ? { text: `⚠ ${reviews.length} to review — tap to check`, cls: 'ai-sidebar__peek--review' }
     : lastActivity
       ? { text: lastActivity.description, cls: lastActivity.skipped ? 'ai-sidebar__peek--skipped' : '' }
+      : connecting
+      ? { text: 'Getting the microphone ready — one moment…', cls: 'ai-sidebar__peek--empty' }
+      : goAhead
+      ? { text: '🎙 Go ahead — start talking. Findings appear as they’re charted.', cls: 'ai-sidebar__peek--go' }
       : { text: voice.recording ? 'Start talking — findings appear as they’re charted.' : 'Press Resume to keep dictating.', cls: 'ai-sidebar__peek--empty' };
 
   const primary = voice.recording
@@ -802,7 +866,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         title={voice.recording ? 'Stop listening (the transcript is kept)' : 'Dictate — talk and the chart fills itself'}
       >
         {voice.recording ? (
-          <span className="voice-input__rec-dot" aria-hidden="true" />
+          <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />
         ) : (
           <svg className="voice-input__mic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
@@ -868,7 +932,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               aria-label={collapsed ? 'Expand panel' : 'Collapse panel'}
             >
               <span className={`ai-sidebar__status ${status.cls}`}>
-                {voice.recording && <span className="voice-input__rec-dot" aria-hidden="true" />}
+                {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
                 {status.text}
               </span>
               <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
@@ -937,7 +1001,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                   </>
                 ) : (
                   <span className="ai-sidebar__empty">
-                    {voice.recording ? 'Start talking — your words appear here.' : 'Press Start to dictate.'}
+                    {connecting
+                      ? 'Getting the microphone ready — one moment…'
+                      : voice.recording
+                      ? '🎙 Go ahead — start talking. Your words appear here.'
+                      : 'Press Start to dictate.'}
                   </span>
                 )}
               </div>

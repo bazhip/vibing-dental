@@ -68,6 +68,9 @@ export interface FinalSegment {
 export interface VoiceCapture {
   supported: boolean;
   recording: boolean;
+  /** Audio is actually being captured — safe to start talking. False
+   *  while the key, microphone and connection are still being set up. */
+  ready: boolean;
   /** Concatenated final + interim transcript so far (live). */
   transcript: string;
   /** Just the not-yet-final words currently being heard. */
@@ -136,6 +139,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   const supported = canCaptureAudio || browserCtor !== null;
 
   const [recording, setRecording] = React.useState(false);
+  const [ready, setReady] = React.useState(false);
   const [transcript, setTranscript] = React.useState('');
   const [interim, setInterimState] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
@@ -217,6 +221,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     if (id === sessionIdRef.current) {
       const wasLive = sessionLiveRef.current;
       sessionLiveRef.current = false;
+      setReady(false);
       interimRef.current = '';
       setInterimState('');
       setRecording(false);
@@ -264,6 +269,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     try {
       rec.start();
       sessionLiveRef.current = true;
+      setReady(true);
     } catch (err) {
       setError(`Couldn't start microphone: ${(err as Error).message}`);
       browserRef.current = null;
@@ -322,6 +328,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       }
       deepgramRef.current = session;
       sessionLiveRef.current = true;
+      setReady(true);
     } catch (err) {
       if (id !== sessionIdRef.current) return;
       const name = err instanceof Error ? err.name : '';
@@ -372,6 +379,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     // Show "stopped" right away; the session finishes flushing in the
     // background and fires onStop when its last words are in.
     setRecording(false);
+    setReady(false);
     interimRef.current = '';
     setInterimState('');
     const rec = browserRef.current;
@@ -436,7 +444,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   }, []);
 
   return {
-    supported, recording, transcript, interim, start, clear, stop, setMuted, error,
+    supported, recording, ready, transcript, interim, start, clear, stop, setMuted, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
     provider, interrupted, resume, dismissInterruption,
   };
