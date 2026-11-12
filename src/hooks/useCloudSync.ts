@@ -340,6 +340,18 @@ export function useCloudSync(
         fail(new Error('You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.'));
       }
       if (refused) {
+        // Only fork when the row really belongs to another account — RLS
+        // then hides it entirely. If we can still read it, it's ours (or
+        // our practice's): the save failed for some other reason, and
+        // forking would silently copy the chart into a duplicate record
+        // every time it happened (production showed chains of same-day
+        // copies, each created the moment the previous one stopped saving).
+        // Surface the real error instead.
+        const { data: existing } = await client.from('charts').select('id').eq('id', id).maybeSingle();
+        if (existing) {
+          console.error('Chart save refused for a chart this account can read', { code: error.code, message: error.message });
+          fail(error);
+        }
         const freshId = resetIdRef.current();
         const { error: retryError } = await client.from('charts').upsert(row(freshId));
         if (retryError) fail(retryError);
