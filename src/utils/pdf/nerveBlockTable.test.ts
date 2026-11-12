@@ -92,3 +92,26 @@ describe('nerve block rows hidden in chart settings', () => {
     expect(withDose).toBeGreaterThan(fewer); // mental comes back
   });
 });
+
+describe('custom nerve blocks and fields in the PDF', () => {
+  async function bottomWithCustom(custom: Parameters<typeof drawNerveBlockTable>[6]): Promise<number> {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([612, 792]);
+    const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+    const regular = await doc.embedFont(StandardFonts.Helvetica);
+    return drawNerveBlockTable(page, { ...EMPTY_NERVE_BLOCKS }, bold, regular, false, [], custom);
+  }
+  it('unchanged without custom values; filled blocks add rows and fields add lines', async () => {
+    const base = await bottomWithCustom(undefined);
+    expect(await bottomWithCustom({ blocks: [{ id: 'b', label: 'Empty', right: '', left: '' }], fields: [] })).toBe(base);
+    const withBlock = await bottomWithCustom({ blocks: [{ id: 'b', label: 'Major palatine', right: '0.2', left: '' }], fields: [] });
+    expect(withBlock).toBeGreaterThan(base);
+    const withFields = await bottomWithCustom({ blocks: [], fields: [
+      { id: 'a', label: 'Premedication', type: 'text', value: 'Dexmedetomidine' },
+      { id: 'b', label: 'ET tube', type: 'number', unit: 'mm', value: '7' },
+      { id: 'c', label: 'Fluids', type: 'text', value: 'LRS' },
+      { id: 'd', label: 'IV catheter', type: 'checkbox', value: 'yes' },
+    ] });
+    expect(withFields).toBeGreaterThan(base);
+  });
+});

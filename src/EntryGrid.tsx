@@ -862,6 +862,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
           onCustomize={() => setChartSettingsOpen('anesthesia')}
+          customBlockDefs={prefs.customBlocks}
+          customFieldDefs={prefs.customFields}
+          customValues={chart.patientInfo.customAnesthesia}
+          onCustomValuesChange={(next) => chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customAnesthesia: next }))}
         />
       ),
     },

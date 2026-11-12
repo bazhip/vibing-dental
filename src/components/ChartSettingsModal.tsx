@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
+import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { DentalField } from '../types';
 import { BLOCK_ROW_OPTIONS, BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 
@@ -200,6 +201,12 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                 ))}
               </div>
             </fieldset>
+            <AnesthesiaCustomEditor
+              blocks={prefs.customBlocks}
+              fields={prefs.customFields}
+              onBlocksChange={(customBlocks) => onChange({ customBlocks })}
+              onFieldsChange={(customFields) => onChange({ customFields })}
+            />
             <fieldset className="chart-settings__field">
               <legend>Your usual anesthetic</legend>
               <p className="chart-settings__note">Offered as one tap on a chart with no anesthetic set.</p>

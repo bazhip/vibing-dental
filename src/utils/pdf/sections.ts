@@ -1,5 +1,7 @@
 import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
+import { filledBlocks, fieldLines } from '../customAnesthesia';
+import type { CustomAnesthesia } from '../../types';
 import { DENTAL_CODES, DentalCode, findCodesInText } from '../../constants/dentalCodes';
 import {
   PatientInfo,
@@ -871,7 +873,10 @@ export function drawNerveBlockTable(
   regular: PDFFont,
   isVca: boolean,
   /** Rows the person hides (chart settings) — left out when empty. */
-  hiddenRows: readonly string[] = []
+  hiddenRows: readonly string[] = [],
+  /** The chart's custom blocks (extra rows) and fields (lines at the top
+   *  of the "Other" row) — printed only when filled. */
+  custom?: CustomAnesthesia
 ): number {
   const { height: pageHeight } = page.getSize();
   const x = NERVE_BLOCK_BOX.xIn * PT_PER_IN;
@@ -898,7 +903,8 @@ export function drawNerveBlockTable(
     ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: 'Caudal Maxillary', ...caudal }] : []),
     ...lr('inferiorAlveolar', 'Inferior Alveolar', nerveBlocks.inferiorAlveolarRight || '', nerveBlocks.inferiorAlveolarLeft || ''),
     ...lr('mental', 'Mental', nerveBlocks.mentalRight || '', nerveBlocks.mentalLeft || ''),
-    { kind: 'free', label: 'Other',             value: nerveBlocks.other                 || '' },
+    ...filledBlocks(custom).map((b): LR => ({ kind: 'lr', label: b.label || 'Custom block', right: b.right, left: b.left })),
+    { kind: 'free', label: 'Other', value: [...fieldLines(custom), (nerveBlocks.other || '').trim()].filter(Boolean).join('\n') },
   ];
 
   // The free-text "Other" row (always last) grows to fit wrapped content

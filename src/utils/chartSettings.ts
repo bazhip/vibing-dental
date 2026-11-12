@@ -1,4 +1,5 @@
 import { DentalField } from '../types';
+import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
@@ -58,6 +59,10 @@ export interface ChartPrefs {
   usualDrug: { name: string; concentration: string } | null;
   /** Id of the last "What's new" the person has seen ('' = none). */
   whatsNewSeen: string;
+  /** The person's own nerve blocks (extra Right/Left mL rows). */
+  customBlocks: CustomBlockDef[];
+  /** The person's own anesthesia fields (text, number, yes/no, pick-list). */
+  customFields: CustomFieldDef[];
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -73,6 +78,8 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   hiddenBlocks: [],
   usualDrug: null,
   whatsNewSeen: '',
+  customBlocks: [],
+  customFields: [],
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -107,5 +114,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
       : fallback.hiddenBlocks,
     usualDrug: usualDrugOf(r.usualDrug, fallback.usualDrug),
     whatsNewSeen: typeof r.whatsNewSeen === 'string' ? r.whatsNewSeen.slice(0, 40) : fallback.whatsNewSeen,
+    customBlocks: Array.isArray(r.customBlocks) ? normalizeBlockDefs(r.customBlocks) : fallback.customBlocks,
+    customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
   };
 }

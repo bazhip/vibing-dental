@@ -10,6 +10,15 @@ import {
   formatAnestheticDrug,
 } from '../types';
 import type { BlockRowId } from '../utils/chartSettings';
+import type { CustomAnesthesia, CustomBlockValue, CustomFieldValue } from '../types';
+import {
+  CustomBlockDef,
+  CustomFieldDef,
+  blocksForForm,
+  fieldsForForm,
+  setBlockValue,
+  setFieldValue,
+} from '../utils/customAnesthesia';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
@@ -24,6 +33,12 @@ interface AnesthesiaFormProps {
   usualDrug?: { name: string; concentration: string } | null;
   /** Open Chart settings. */
   onCustomize?: () => void;
+  /** The person's custom nerve blocks and fields (chart settings). */
+  customBlockDefs?: CustomBlockDef[];
+  customFieldDefs?: CustomFieldDef[];
+  /** This chart's custom values, and how to change them. */
+  customValues?: CustomAnesthesia;
+  onCustomValuesChange?: (next: CustomAnesthesia) => void;
 }
 
 const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
@@ -54,7 +69,15 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   hiddenBlocks = [],
   usualDrug = null,
   onCustomize,
+  customBlockDefs = [],
+  customFieldDefs = [],
+  customValues,
+  onCustomValuesChange,
 }) => {
+  const customBlocks = blocksForForm(customBlockDefs, customValues);
+  const customFields = fieldsForForm(customFieldDefs, customValues);
+  const setCustomBlock = (row: CustomBlockValue) => onCustomValuesChange?.(setBlockValue(customValues, row));
+  const setCustomField = (f: CustomFieldValue) => onCustomValuesChange?.(setFieldValue(customValues, f));
   // A hidden row still shows when it holds a dose — settings never hide data.
   const rowShown = (r: BlockRow) =>
     !hiddenBlocks.includes(r.id) || !!(nerveBlocks[r.rightKey] || '').trim() || !!(nerveBlocks[r.leftKey] || '').trim();
@@ -236,6 +259,26 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               ))}
             </tr>
           ))}
+          {customBlocks.map((b) => (
+            <tr key={b.id} className="anesthesia-table__custom">
+              <td className="anesthesia-table__label">{b.label}</td>
+              {(['right', 'left'] as const).map((side) => (
+                <td key={side}>
+                  <span className="anesthesia-unit">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      className="patient-form__input"
+                      value={b[side]}
+                      onChange={(e) => setCustomBlock({ ...b, [side]: e.target.value })}
+                      aria-label={`${b.label} ${side} (mL)`}
+                    />
+                    <span className="anesthesia-unit__suffix" aria-hidden="true">mL</span>
+                  </span>
+                </td>
+              ))}
+            </tr>
+          ))}
           {otherShown && (
           <tr>
             <td className="anesthesia-table__label">Other</td>
@@ -253,6 +296,51 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           )}
         </tbody>
       </table>
+
+      {customFields.length > 0 && (
+        <div className="anesthesia-custom">
+          <h3 className="ai-settings-subhead">Anesthesia record</h3>
+          <div className="anesthesia-custom__grid">
+            {customFields.map(({ value: f, def }) => {
+              const update = (value: string) => setCustomField({ ...f, value });
+              return (
+                <label key={f.id} className={`patient-form__label anesthesia-custom__field anesthesia-custom__field--${f.type}`}>
+                  {f.type === 'checkbox' ? (
+                    <span className="anesthesia-custom__check">
+                      <input type="checkbox" checked={f.value === 'yes'} onChange={(e) => update(e.target.checked ? 'yes' : '')} />
+                      {f.label}
+                    </span>
+                  ) : (
+                    <>
+                      <span>{f.label}</span>
+                      {f.type === 'select' && def?.options?.length ? (
+                        <select className="patient-form__input" value={f.value} onChange={(e) => update(e.target.value)}>
+                          <option value="">—</option>
+                          {def.options.map((o) => <option key={o} value={o}>{o}</option>)}
+                          {f.value && !def.options.includes(f.value) && <option value={f.value}>{f.value}</option>}
+                        </select>
+                      ) : f.type === 'number' ? (
+                        <span className="anesthesia-unit">
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            className="patient-form__input"
+                            value={f.value}
+                            onChange={(e) => update(e.target.value)}
+                          />
+                          {f.unit && <span className="anesthesia-unit__suffix" aria-hidden="true">{f.unit}</span>}
+                        </span>
+                      ) : (
+                        <input type="text" className="patient-form__input" value={f.value} onChange={(e) => update(e.target.value)} />
+                      )}
+                    </>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

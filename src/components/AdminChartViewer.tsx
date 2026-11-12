@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { ToothDiagram } from './ToothDiagram';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
+import { filledBlocks, fieldLines } from '../utils/customAnesthesia';
 import {
   ChartSnapshot,
   EXAM_ITEMS,
@@ -151,10 +152,17 @@ function ChartBody({ snap }: { snap: ChartSnapshot }) {
 
       <section>
         <h3 className="ai-settings-subhead">Anesthesia</h3>
-        {blocks.length === 0 && drugs.length === 0 ? <p className="admin-chart-viewer__empty">Not recorded</p> : (
+        {blocks.length === 0 && drugs.length === 0 && filledBlocks(p.customAnesthesia).length === 0 && fieldLines(p.customAnesthesia).length === 0 ? <p className="admin-chart-viewer__empty">Not recorded</p> : (
           <dl className="admin-chart-viewer__list">
             <Row label="Drugs" value={drugs.map(formatAnestheticDrug).join(' + ')} />
             {blocks.map((k) => <Row key={k} label={BLOCK_LABELS[k]} value={k === 'other' ? p.nerveBlocks[k] : `${p.nerveBlocks[k]} mL`} />)}
+            {filledBlocks(p.customAnesthesia).map((b) => (
+              <Row key={b.id} label={b.label || 'Custom block'} value={[b.right && `R ${b.right} mL`, b.left && `L ${b.left} mL`].filter(Boolean).join(' · ')} />
+            ))}
+            {fieldLines(p.customAnesthesia).map((line, i) => {
+              const at = line.indexOf(': ');
+              return <Row key={`f${i}`} label={line.slice(0, at)} value={line.slice(at + 2)} />;
+            })}
           </dl>
         )}
       </section>
