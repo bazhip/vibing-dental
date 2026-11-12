@@ -234,3 +234,20 @@ describe('VoiceInputButton — when to start talking', () => {
     expect(screen.queryByText('Ready — start talking')).not.toBeInTheDocument();
   });
 });
+
+describe('VoiceInputButton — never touches audio output while capturing', () => {
+  it('starting dictation creates no extra AudioContext (it corrupted the captured audio)', () => {
+    const created = vi.fn();
+    const Orig = (window as unknown as { AudioContext?: unknown }).AudioContext;
+    (window as unknown as { AudioContext: unknown }).AudioContext = class { constructor() { created(); } };
+    try {
+      render(<VoiceInputButton {...props} />);
+      fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+      act(() => FakeRecognition.last!.hear('one oh four'));
+      expect(created).not.toHaveBeenCalled();
+    } finally {
+      (window as unknown as { AudioContext: unknown }).AudioContext = Orig;
+    }
+  });
+});
