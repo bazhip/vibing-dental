@@ -22,3 +22,11 @@ describe('Resampler', () => {
     expect(Array.from(out)).toEqual([32767, -32768]);
   });
 });
+
+import { DG_URL } from './deepgramVoice';
+
+describe('Deepgram connection', () => {
+  it('opts out of Deepgram model training (no audio kept after the response)', () => {
+    expect(new URL(DG_URL).searchParams.get('mip_opt_out')).toBe('true');
+  });
+});
