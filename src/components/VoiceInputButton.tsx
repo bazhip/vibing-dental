@@ -90,6 +90,8 @@ interface VoiceInputButtonProps {
   sessionKey?: string;
   /** The chart is view-only (saved visit not unlocked): no dictation. */
   locked?: boolean;
+  /** Open the feedback form, offering this session's transcript. */
+  onOpenFeedback?: (transcript: string) => void;
 }
 
 interface ActivityEntry {
@@ -210,8 +212,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
-  context, handlers, onActivity, activeSection, sessionKey, locked = false,
-}) => {
+  context, handlers, onActivity, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
   const [error, setError] = React.useState<string | null>(null);
@@ -691,9 +692,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setReviews([]);
   };
 
-  const handleDownloadTranscript = () => {
+  /** The session as text: timestamped transcript plus the activity log
+   *  (what Download saves, and what feedback can attach). */
+  const buildTranscriptText = (): string => {
     const segments = voice.allSegments();
-    if (segments.length === 0) return;
+    if (segments.length === 0) return '';
     const start = voice.startedAt ?? new Date();
     const startedPerf = segments[0]?.receivedAt ?? performance.now();
     const startedTs = start.getTime() - (performance.now() - startedPerf);
@@ -709,7 +712,14 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         lines.push(`[${a.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${a.description}`);
       }
     }
-    const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/plain;charset=utf-8' });
+    return lines.join('\n') + '\n';
+  };
+
+  const handleDownloadTranscript = () => {
+    const text = buildTranscriptText();
+    if (!text) return;
+    const start = voice.startedAt ?? new Date();
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -932,6 +942,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               <footer className="ai-sidebar__foot">
                 <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>New</button>
                 <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>Download</button>
+                {onOpenFeedback && (
+                  <button type="button" className="ai-sidebar__link" onClick={() => onOpenFeedback(buildTranscriptText())} title="Tell us what went wrong — your transcript can be attached">
+                    Feedback
+                  </button>
+                )}
                 <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')} title="How it works">Help</button>
                 {speechAvailable() && (
                   <button

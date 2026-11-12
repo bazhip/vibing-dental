@@ -14,6 +14,7 @@ import { SidebarLayout, ChartSection } from './components/Layouts';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
+import { FeedbackModal } from './components/FeedbackModal';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
@@ -368,6 +369,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [cloud.enabled, route.view, chart.cloudChartId, navigate]);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
+  // Feedback form; `transcript` is offered when opened from the voice panel.
+  const [feedback, setFeedback] = React.useState<{ transcript?: string } | null>(null);
+  const canFeedback = cloud.enabled && !trial;
   // Recheck reminders are composed from a saved chart in My charts; this
   // holds the target chart while the composer is open.
   const [reminderTarget, setReminderTarget] = React.useState<CloudChartMeta | null>(null);
@@ -1169,6 +1173,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               activeSection={activeSection}
               sessionKey={String(chart.chartSession)}
               locked={readOnly}
+              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
             />
           )}
           <span data-tour="settings" className="topbar-tour-anchor">
@@ -1176,6 +1181,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenWalkthrough={() => setWalkthroughOpen(true)}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
+            onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             cloud={
               cloud.enabled
                 ? {
@@ -1289,6 +1295,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           )}
         </div>
       )}
+      {feedback && (
+        <FeedbackModal
+          onClose={() => setFeedback(null)}
+          section={activeSection}
+          transcript={feedback.transcript}
+        />
+      )}
+
       {libraryOpen && (
         <ChartLibrary
           listCharts={cloud.listCharts}
