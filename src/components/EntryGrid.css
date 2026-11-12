@@ -3604,3 +3604,10 @@ button.save-status--manual:hover {
 .tooth-chart__roots { display: flex; gap: 0.35rem; }
 .tooth-chart__root { display: flex; flex-direction: column; gap: 2px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted, #64748b); min-width: 0; flex: 1 1 0; }
 .tooth-chart__root .tooth-chart__finding-input { width: 100%; }
+
+/* Owner report header: Customize · Write with AI · Preview. */
+.owner-report__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: flex-end; }
+.owner-report__ai { font-weight: 600; }
+
+/* Charting header: Grid / By tooth switch + Customize (Chart settings). */
+.charting-header-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }

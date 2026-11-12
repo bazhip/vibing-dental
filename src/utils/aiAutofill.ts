@@ -891,7 +891,7 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
   };
 }
 
-async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
+export async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
   if (!supabase) throw new Error('Cloud is not configured.');
   const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
     const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });

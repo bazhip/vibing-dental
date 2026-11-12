@@ -16,6 +16,7 @@ import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
 import { ChartSettingsModal } from './components/ChartSettingsModal';
+import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
@@ -123,6 +124,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState(false);
+  const [reportCustomizeOpen, setReportCustomizeOpen] = React.useState(false);
   // Saved charts open read-only; the user unlocks to edit them (then
   // changes autosave). Remembered per chart for this browser session, so
   // a refresh mid-edit doesn't re-lock and hide pending edits.
@@ -225,12 +227,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // preference, toggled from the Charting section. Read-only charts are
   // left as saved — the sync catches up once the user unlocks to edit.
   const mirrorToDiagnosis = prefs.mirrorToDiagnosis;
-  const setMirrorToDiagnosis = (v: boolean) => setPref({ mirrorToDiagnosis: v });
   // Companion switch: leave the arch grids off the PDF since the diagram
   // now carries the same findings. Only honored while mirroring is on,
   // so turning mirroring off can never silently drop the grid data.
   const pdfIncludeGrid = prefs.pdfIncludeGrid;
-  const setPdfIncludeGrid = (v: boolean) => setPref({ pdfIncludeGrid: v });
   // Charting view: the spreadsheet grid, or By tooth (click a numbered
   // tooth on the diagram and chart it in a side panel). Both edit the
   // same chart data. Per-browser preference.
@@ -252,6 +252,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           {label}
         </button>
       ))}
+    </div>
+  );
+  // Charting header: the view switch plus Customize, which opens Chart
+  // settings — every charting option lives there, not split between the
+  // menu and checkboxes above the chart.
+  const chartingHeaderAccessory = (
+    <div className="charting-header-actions">
+      {chartingViewSwitch}
+      <button
+        type="button"
+        className="diagram-view__action"
+        onClick={() => setChartSettingsOpen(true)}
+        title="Pockets per root, columns, what shows beside the teeth, PDF options"
+      >
+        Customize
+      </button>
     </div>
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
@@ -837,13 +853,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               plannedExtractions={chart.plannedExtractions}
               setPlannedExtraction={chart.setPlannedExtraction}
               highlightTriadan={aiHighlightTriadan}
-              headerAccessory={chartingViewSwitch}
+              headerAccessory={chartingHeaderAccessory}
               hiddenColumns={prefs.hiddenColumns}
               pocketMode={prefs.pocketMode}
             />
           ) : (
           <DentalGrid
-            headerAccessory={chartingViewSwitch}
+            headerAccessory={chartingHeaderAccessory}
             readOnly={readOnly}
             toothData={chart.toothData}
             onToothDataChange={chart.setToothDataDirectly}
@@ -856,10 +872,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onToggleMissing={toggleMissing}
             priorToothData={priorTooth}
             priorGoneTeeth={priorGone}
-            mirrorToDiagnosis={mirrorToDiagnosis}
-            onMirrorToDiagnosisChange={setMirrorToDiagnosis}
-            pdfIncludeGrid={pdfIncludeGrid}
-            onPdfIncludeGridChange={setPdfIncludeGrid}
             hiddenColumns={prefs.hiddenColumns}
             pocketMode={prefs.pocketMode}
             species={chart.species}
@@ -975,6 +987,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onOverrideChange={chart.setOwnerReportOverride}
               onPreview={() => openDocuments('owner')}
               context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
+              aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
+              onCustomize={cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined}
             />
           ),
         }]
@@ -1312,6 +1326,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           )}
         </div>
       )}
+      {reportCustomizeOpen && (
+        <OwnerReportCustomize
+          onClose={() => setReportCustomizeOpen(false)}
+          config={profile.ownerReportConfig}
+          onSave={profile.saveOwnerReportConfig}
+          branding={{ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }}
+        />
+      )}
+
       {chartSettingsOpen && (
         <ChartSettingsModal
           onClose={() => setChartSettingsOpen(false)}
