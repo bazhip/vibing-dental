@@ -7,6 +7,41 @@ interface ExamFormProps {
   onCommentChange: (key: keyof ExamFindings, value: string) => void;
 }
 
+/** One-line-looking comment box that grows to show everything typed (or
+ *  dictated) — a plain input cut long findings off, especially on phones.
+ *  Enter doesn't add a newline: findings stay one line on the PDF. */
+const CommentBox: React.FC<{
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}> = ({ label, value, onChange }) => {
+  const ref = React.useRef<HTMLTextAreaElement>(null);
+  const fit = React.useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight + 2}px`;
+  }, []);
+  React.useLayoutEffect(fit, [value, fit]);
+  // Width changes (rotation, sidebar) change how many lines it needs.
+  React.useEffect(() => {
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [fit]);
+  return (
+    <textarea
+      ref={ref}
+      rows={1}
+      className="patient-form__input exam-table__comment"
+      aria-label={`${label}: comment`}
+      placeholder={`Describe abnormal ${label.toLowerCase()}…`}
+      value={value}
+      onChange={(e) => onChange(e.target.value.replace(/\r?\n/g, ' '))}
+      onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  );
+};
+
 export const ExamForm: React.FC<ExamFormProps> = ({
   exam,
   onStatusChange,
@@ -78,13 +113,10 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                 </td>
                 <td className="exam-table__comment-col">
                   {showComment && (
-                    <input
-                      type="text"
-                      className="patient-form__input exam-table__comment"
-                      aria-label={`${label}: comment`}
-                      placeholder={`Describe abnormal ${label.toLowerCase()}…`}
+                    <CommentBox
+                      label={label}
                       value={item.comment}
-                      onChange={(e) => onCommentChange(key, e.target.value)}
+                      onChange={(v) => onCommentChange(key, v)}
                     />
                   )}
                 </td>

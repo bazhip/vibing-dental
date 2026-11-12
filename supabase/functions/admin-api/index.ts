@@ -408,6 +408,23 @@ Deno.serve(async (req: Request) => {
         return json({ charts: data ?? [] });
       }
 
+      case 'list_user_charts': {
+        // One account's charts (the ones they created — the same rows the
+        // Accounts tab's chart count tallies), for the admin chart viewer.
+        // Metadata only; opening one still goes through view_chart (logged).
+        const userId = typeof body.userId === 'string' ? body.userId : '';
+        if (!userId) return json({ error: 'missing userId' }, 400);
+        const { data, error } = await admin
+          .from('charts')
+          .select('id, patient_name, patient_number, species, chart_date, updated_at')
+          .eq('created_by', userId)
+          .order('chart_date', { ascending: false })
+          .order('updated_at', { ascending: false })
+          .limit(500);
+        if (error) throw error;
+        return json({ charts: data ?? [] });
+      }
+
       case 'view_chart': {
         // Read one chart from any practice, read-only. Every view is
         // written to admin_chart_views first — no audit row, no chart.

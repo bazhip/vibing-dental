@@ -91,12 +91,18 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   // Auto-grow the free-text "Other" field to fit its content (typed or
   // AI-filled) so nothing is hidden. Re-runs whenever the value changes.
   const otherRef = React.useRef<HTMLTextAreaElement>(null);
-  React.useEffect(() => {
+  const fitOther = React.useCallback(() => {
     const el = otherRef.current;
     if (!el) return;
     el.style.height = 'auto';
     el.style.height = `${el.scrollHeight}px`;
-  }, [nerveBlocks.other]);
+  }, []);
+  React.useEffect(fitOther, [nerveBlocks.other, fitOther]);
+  // A width change (rotation) changes how many lines it needs.
+  React.useEffect(() => {
+    window.addEventListener('resize', fitOther);
+    return () => window.removeEventListener('resize', fitOther);
+  }, [fitOther]);
 
   const defaultDrug = DEFAULT_NERVE_BLOCK_DRUG[logo];
   const drugList = COMMON_DRUGS.includes(defaultDrug)
@@ -279,23 +285,24 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               ))}
             </tr>
           ))}
-          {otherShown && (
-          <tr>
-            <td className="anesthesia-table__label">Other</td>
-            <td colSpan={2}>
-              <textarea
-                ref={otherRef}
-                className="patient-form__input anesthesia-table__other"
-                aria-label="Other nerve blocks"
-                rows={3}
-                value={nerveBlocks.other}
-                onChange={handleChange('other')}
-              />
-            </td>
-          </tr>
-          )}
         </tbody>
       </table>
+
+      {/* Free text gets the full card width (label above) — squeezed into
+          the two dose columns it was a narrow strip on phones. */}
+      {otherShown && (
+        <label className="anesthesia-other">
+          <span className="anesthesia-other__label">Other</span>
+          <textarea
+            ref={otherRef}
+            className="patient-form__input anesthesia-table__other"
+            aria-label="Other nerve blocks"
+            rows={3}
+            value={nerveBlocks.other}
+            onChange={handleChange('other')}
+          />
+        </label>
+      )}
 
       {customFields.length > 0 && (
         <div className="anesthesia-custom">

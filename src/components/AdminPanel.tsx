@@ -1,5 +1,7 @@
 import React from 'react';
 import { AdminChartViewer } from './AdminChartViewer';
+import { AdminChartList, type AdminChartMeta } from './AdminChartList';
+import { SortButton, dateValue, sortRows, useTableSort, type SortState } from '../utils/tableSort';
 import { AI_MODEL_CHOICES } from '../constants/aiModels';
 import { FREE_BETA, FREE_BETA_SEATS } from '../constants/plans';
 import { PLAN_LIMITS } from '../hooks/useProfile';
@@ -79,26 +81,44 @@ const accountFlags = (u: AdminUser) =>
 /** Sort accounts by a column. Blanks (no practice, never active, no
  *  flags) always sink to the bottom, whichever direction. */
 export function sortAccounts(users: AdminUser[], key: AccountSortKey, dir: 'asc' | 'desc'): AdminUser[] {
-  const value = (u: AdminUser): string | number | null => {
-    switch (key) {
-      case 'email': return u.email.toLowerCase();
-      case 'practice': return accountPractice(u).toLowerCase() || null;
-      case 'charts': return u.chartCount;
-      case 'active': { const t = lastActiveAt(u); return t ? Date.parse(t) : null; }
-      case 'flags': return accountFlags(u) || null;
-    }
-  };
-  const sign = dir === 'asc' ? 1 : -1;
-  return [...users].sort((x, y) => {
-    const a = value(x);
-    const b = value(y);
-    if (a === null && b === null) return x.email.localeCompare(y.email);
-    if (a === null) return 1;
-    if (b === null) return -1;
-    const c = typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b));
-    return c !== 0 ? c * sign : x.email.localeCompare(y.email);
-  });
+  return sortRows(
+    users,
+    { key, dir },
+    (u, k) => {
+      switch (k) {
+        case 'email': return u.email.toLowerCase();
+        case 'practice': return accountPractice(u).toLowerCase() || null;
+        case 'charts': return u.chartCount;
+        case 'active': return dateValue(lastActiveAt(u));
+        case 'flags': return accountFlags(u) || null;
+      }
+    },
+    (x, y) => x.email.localeCompare(y.email),
+  );
 }
+
+type PracticeSortKey = 'name' | 'owner' | 'members' | 'charts' | 'billing';
+
+/** Sort practices by a column (blanks last); ties fall back to name. */
+export function sortPractices(list: AdminPractice[], sort: SortState<PracticeSortKey>): AdminPractice[] {
+  return sortRows(
+    list,
+    sort,
+    (p, k) => {
+      switch (k) {
+        case 'name': return p.name.trim().toLowerCase() || null;
+        case 'owner': return p.ownerEmail.toLowerCase() || null;
+        case 'members': return p.memberCount;
+        case 'charts': return p.chartCount;
+        case 'billing': return p.subscriptionStatus || null;
+      }
+    },
+    (a, b) => a.name.localeCompare(b.name),
+  );
+}
+
+type BillingSortKey = 'practice' | 'plan' | 'status' | 'amount' | 'renews';
+type AiSortKey = 'user' | 'calls' | 'input' | 'output' | 'cache' | 'cost';
 
 interface AdminStats {
   users: number;
@@ -112,15 +132,6 @@ interface AdminPracticeMember {
   role: string;
   pending: boolean;
   isPrimaryOwner: boolean;
-}
-
-interface AdminChartMeta {
-  id: string;
-  patient_name: string;
-  patient_number: string;
-  species: string;
-  chart_date: string;
-  updated_at: string;
 }
 
 interface AdminPractice {
@@ -271,12 +282,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
       role="columnheader"
       aria-sort={accountSort.key === key ? (accountSort.dir === 'asc' ? 'ascending' : 'descending') : 'none'}
     >
-      <button type="button" className="chart-library__sort" onClick={() => sortBy(key)}>
-        {label}
-        <span className="chart-library__sort-arrow" aria-hidden="true">
-          {accountSort.key === key ? (accountSort.dir === 'asc' ? '▲' : '▼') : ''}
-        </span>
-      </button>
+      <SortButton label={label} active={accountSort.key === key} dir={accountSort.dir} onClick={() => sortBy(key)} />
+    </span>
+  );
+  const practiceHeader = (key: PracticeSortKey, label: string) => (
+    <span role="columnheader" aria-sort={practiceSort.ariaSort(key)}>
+      <SortButton label={label} active={practiceSort.sort.key === key} dir={practiceSort.sort.dir} onClick={() => practiceSort.toggle(key)} />
     </span>
   );
   const logoRef = React.useRef<HTMLInputElement>(null);
@@ -285,22 +296,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const selected = users?.find((u) => u.id === selectedId) ?? null;
   const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
 
-  // Admin chart viewer: a practice's charts (loaded on demand) and the one
-  // being viewed. view_chart logs every open server-side.
-  const [practiceCharts, setPracticeCharts] = React.useState<{ practiceId: string; rows: AdminChartMeta[] } | null>(null);
+  // Admin chart viewer: a practice's or an account's charts (loaded on
+  // demand) and the one being viewed. view_chart logs every open
+  // server-side. `subject` is "practice:<id>" or "user:<id>" so switching
+  // selection never shows the previous subject's list.
+  const [chartList, setChartList] = React.useState<{ subject: string; rows: AdminChartMeta[] } | null>(null);
   const [chartsLoading, setChartsLoading] = React.useState(false);
   const [viewingChart, setViewingChart] = React.useState<{ data: unknown; practiceName: string } | null>(null);
-  const loadPracticeCharts = async (practiceId: string) => {
+  const loadCharts = async (subject: string, body: { action: 'list_practice_charts'; practiceId: string } | { action: 'list_user_charts'; userId: string }) => {
     setChartsLoading(true);
     try {
-      const r = await adminCall<{ charts: AdminChartMeta[] }>({ action: 'list_practice_charts', practiceId });
-      setPracticeCharts({ practiceId, rows: r.charts });
+      const r = await adminCall<{ charts: AdminChartMeta[] }>(body);
+      setChartList({ subject, rows: r.charts ?? [] });
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(friendlyError(err, 'Could not load charts.'));
     } finally {
       setChartsLoading(false);
     }
   };
+  const chartRowsFor = (subject: string) => (chartList?.subject === subject ? chartList.rows : null);
+
+  // Table sorts (Accounts lives above; these are the other tabs).
+  const practiceSort = useTableSort<PracticeSortKey>({ key: 'name', dir: 'asc' }, ['members', 'charts']);
+  const billingSort = useTableSort<BillingSortKey>({ key: 'practice', dir: 'asc' }, ['amount']);
+  const aiSort = useTableSort<AiSortKey>({ key: 'cost', dir: 'desc' }, ['calls', 'input', 'output', 'cache', 'cost']);
+  /** A sortable <th> for the plain HTML tables (billing, AI usage). */
+  const th = <K extends string>(s: ReturnType<typeof useTableSort<K>>, key: K, label: string) => (
+    <th key={key} aria-sort={s.ariaSort(key)}>
+      <SortButton className="admin-panel__th-sort" label={label} active={s.sort.key === key} dir={s.sort.dir} onClick={() => s.toggle(key)} />
+    </th>
+  );
   const openChart = async (chartId: string, practiceName: string) => {
     try {
       const r = await adminCall<{ chart: { data: unknown } }>({ action: 'view_chart', chartId });
@@ -717,9 +742,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     accountSort.key,
     accountSort.dir
   );
-  const filteredPractices = (practices ?? []).filter((p) =>
-    matches(q, p.name, p.ownerEmail, ...p.members.map((m) => m.email))
+  const filteredPractices = sortPractices(
+    (practices ?? []).filter((p) => matches(q, p.name, p.ownerEmail, ...p.members.map((m) => m.email))),
+    practiceSort.sort
   );
+  const sortedBilling = sortRows(billingRows ?? [], billingSort.sort, (r, k) => {
+    switch (k) {
+      case 'practice': return r.practiceName.toLowerCase() || null;
+      case 'plan': return r.planKey || null;
+      case 'status': return r.status || null;
+      case 'amount': return r.amountUsd;
+      case 'renews': return dateValue(r.periodEnd);
+    }
+  });
+  const sortedAi = sortRows(aiUsage ?? [], aiSort.sort, (u, k) => {
+    switch (k) {
+      case 'user': return u.email.toLowerCase() || null;
+      case 'calls': return u.calls;
+      case 'input': return u.inputTokens;
+      case 'output': return u.outputTokens;
+      case 'cache': return u.cacheReadTokens;
+      case 'cost': return u.estCostUsd;
+    }
+  }, (a, b) => a.email.localeCompare(b.email));
 
   const fmt = (iso: string | null) =>
     iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
@@ -911,6 +956,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                   Save names
                 </button>
               </div>
+              <AdminChartList
+                key={`user:${selected.id}`}
+                label={`Charts created by ${selected.email}`}
+                rows={chartRowsFor(`user:${selected.id}`)}
+                loading={chartsLoading}
+                onLoad={() => loadCharts(`user:${selected.id}`, { action: 'list_user_charts', userId: selected.id })}
+                onOpen={(id) => openChart(id, accountPractice(selected) || selected.email)}
+                emptyText="This account hasn’t created any charts."
+              />
               <div className="admin-panel__buttons">
                 <button type="button" className="diagram-view__action" onClick={handleSetPassword} disabled={busy}>
                   Set password…
@@ -960,11 +1014,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
           {tab === 'practices' && practices !== null && (
             <div className="chart-library__table" role="table" aria-label="Practices">
               <div className="chart-library__head-row admin-panel__practice-row" role="row">
-                <span role="columnheader">Practice</span>
-                <span role="columnheader">Owner</span>
-                <span role="columnheader">Members</span>
-                <span role="columnheader">Charts</span>
-                <span role="columnheader">Billing</span>
+                {practiceHeader('name', 'Practice')}
+                {practiceHeader('owner', 'Owner')}
+                {practiceHeader('members', 'Members')}
+                {practiceHeader('charts', 'Charts')}
+                {practiceHeader('billing', 'Billing')}
               </div>
               <div className="chart-library__scroll">
                 {practices.length === 0 && <div className="chart-library__empty">No practices yet.</div>}
@@ -1222,42 +1276,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </form>
 
-              <div className="admin-panel__charts">
-                <div className="admin-panel__charts-head">
-                  <h3 className="ai-settings-subhead">Charts</h3>
-                  {practiceCharts?.practiceId !== selectedPractice.id && (
-                    <button
-                      type="button"
-                      className="diagram-view__action"
-                      onClick={() => loadPracticeCharts(selectedPractice.id)}
-                      disabled={chartsLoading}
-                    >
-                      {chartsLoading ? 'Loading…' : 'Show charts'}
-                    </button>
-                  )}
-                </div>
-                {practiceCharts?.practiceId === selectedPractice.id && (
-                  practiceCharts.rows.length === 0 ? (
-                    <p className="admin-panel__plan-note">No charts in this practice.</p>
-                  ) : (
-                    <ul className="admin-panel__chart-list">
-                      {practiceCharts.rows.map((c) => (
-                        <li key={c.id}>
-                          <button
-                            type="button"
-                            className="admin-panel__chart-row"
-                            onClick={() => openChart(c.id, selectedPractice.name || 'Untitled practice')}
-                          >
-                            <span>{c.patient_name || 'Unnamed patient'}{c.patient_number ? ` #${c.patient_number}` : ''}</span>
-                            <span className="admin-panel__chart-meta">{[c.species, c.chart_date].filter(Boolean).join(' · ')}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )
-                )}
-                <p className="admin-panel__plan-note">Read-only. Every chart you open is logged.</p>
-              </div>
+              <AdminChartList
+                key={`practice:${selectedPractice.id}`}
+                label={`Charts in ${selectedPractice.name || 'this practice'}`}
+                rows={chartRowsFor(`practice:${selectedPractice.id}`)}
+                loading={chartsLoading}
+                onLoad={() => loadCharts(`practice:${selectedPractice.id}`, { action: 'list_practice_charts', practiceId: selectedPractice.id })}
+                onOpen={(id) => openChart(id, selectedPractice.name || 'Untitled practice')}
+                emptyText="No charts in this practice."
+              />
 
               <div className="admin-panel__buttons">
                 <button
@@ -1305,11 +1332,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                   <table className="admin-panel__usage-table">
                     <thead>
                       <tr>
-                        <th>Practice</th><th>Plan</th><th>Status</th><th>$/mo</th><th>Renews</th>
+                        {th(billingSort, 'practice', 'Practice')}
+                        {th(billingSort, 'plan', 'Plan')}
+                        {th(billingSort, 'status', 'Status')}
+                        {th(billingSort, 'amount', '$/mo')}
+                        {th(billingSort, 'renews', 'Renews')}
                       </tr>
                     </thead>
                     <tbody>
-                      {billingRows.map((r, i) => (
+                      {sortedBilling.map((r, i) => (
                         <tr key={i}>
                           <td>{r.practiceName}</td>
                           <td>{r.planKey.replace(/_/g, ' ') || '—'}</td>
@@ -1390,11 +1421,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                   <table className="admin-panel__usage-table">
                     <thead>
                       <tr>
-                        <th>User</th><th>Calls</th><th>Input</th><th>Output</th><th>Cache</th><th>Est. cost</th>
+                        {th(aiSort, 'user', 'User')}
+                        {th(aiSort, 'calls', 'Calls')}
+                        {th(aiSort, 'input', 'Input')}
+                        {th(aiSort, 'output', 'Output')}
+                        {th(aiSort, 'cache', 'Cache')}
+                        {th(aiSort, 'cost', 'Est. cost')}
                       </tr>
                     </thead>
                     <tbody>
-                      {aiUsage.map((u) => (
+                      {sortedAi.map((u) => (
                         <tr key={u.userId}>
                           <td>{u.email}</td>
                           <td>{u.calls.toLocaleString()}</td>

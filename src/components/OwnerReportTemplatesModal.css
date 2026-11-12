@@ -272,6 +272,7 @@
 .report-templates__preview .pdf-preview-iframe-wrap,
 .report-templates__preview .pdf-preview-iframe {
   height: min(78vh, 860px);
+  height: min(78dvh, 860px);
 }
 
 /* ---- Small screens: single column, 44px touch targets ----------------- */

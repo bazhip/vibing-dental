@@ -77,3 +77,53 @@ describe('Accounts table', () => {
     expect(within(table).getByRole('columnheader', { name: /Charts/ })).toHaveAttribute('aria-sort', 'ascending');
   });
 });
+
+describe('Practices table, account charts, and usage tables', () => {
+  const practice = (name: string, chartCount: number, memberCount: number) => ({
+    id: name, name, plan: 'basic', accountType: 'practice', subscriptionStatus: '', periodEnd: null, frozenAt: null,
+    hasStripe: false, ownerEmail: `${name.toLowerCase()}@x.vet`, logoUrl: '', memberCount, chartCount, members: [],
+  });
+  const charts = [
+    { id: 'c1', patient_name: 'Rex', patient_number: '9', species: 'canine', chart_date: '2026-11-01', updated_at: '2026-11-01T00:00:00Z' },
+    { id: 'c2', patient_name: 'Milo', patient_number: '10', species: 'feline', chart_date: '2026-11-10', updated_at: '2026-11-10T00:00:00Z' },
+  ];
+  const setup = () => {
+    invoke.mockImplementation(async (_fn: string, { body }: { body: { action: string } }) => {
+      if (body.action === 'stats') return { data: { users: 1, charts: 2, templates: 0 }, error: null };
+      if (body.action === 'list_users') return { data: { users: [u('vet@x.vet', { chartCount: 2 })] }, error: null };
+      if (body.action === 'list_practices') return { data: { practices: [practice('Bravo', 3, 1), practice('Alpha', 9, 4)] }, error: null };
+      if (body.action === 'list_user_charts') return { data: { charts }, error: null };
+      if (body.action === 'view_chart') return { data: { chart: { data: null } }, error: null };
+      return { data: { ok: true }, error: null };
+    });
+    render(<><AdminPanel open onClose={vi.fn()} /><DialogHost /></>);
+  };
+
+  it('sorts practices by any column', async () => {
+    setup();
+    await userEvent.click(await screen.findByRole('tab', { name: /Practices/ }));
+    const table = await screen.findByRole('table', { name: 'Practices' });
+    const order = () => within(table).getAllByRole('row').slice(1).map((r) => r.querySelector('.chart-library__patient')?.textContent);
+    await screen.findByText('Bravo');
+    expect(order()).toEqual(['Alpha', 'Bravo']); // name A→Z by default
+    await userEvent.click(within(table).getByRole('button', { name: /Practice/ }));
+    expect(order()).toEqual(['Bravo', 'Alpha']);
+    await userEvent.click(within(table).getByRole('button', { name: /Members/ }));
+    expect(order()).toEqual(['Alpha', 'Bravo']); // most members first
+    expect(within(table).getByRole('columnheader', { name: /Members/ })).toHaveAttribute('aria-sort', 'descending');
+  });
+
+  it("lists an account's charts, sorts them, and opens one through the logged viewer", async () => {
+    setup();
+    await userEvent.click(await screen.findByRole('button', { name: /vet@x\.vet/ }));
+    await userEvent.click(screen.getByRole('button', { name: 'Show charts' }));
+    expect(invoke).toHaveBeenCalledWith('admin-api', expect.objectContaining({ body: { action: 'list_user_charts', userId: 'vet@x.vet' } }));
+    const table = await screen.findByRole('table', { name: /Charts created by vet@x\.vet/ });
+    const names = () => within(table).getAllByRole('row').slice(1).map((r) => (r as HTMLTableRowElement).cells[0].textContent);
+    expect(names()).toEqual(['Milo', 'Rex']); // newest visit first
+    await userEvent.click(within(table).getByRole('button', { name: /Patient #/ }));
+    expect(names()).toEqual(['Rex', 'Milo']); // numeric, not "10" < "9"
+    await userEvent.click(within(table).getByRole('button', { name: /Open chart: Rex/ }));
+    expect(invoke).toHaveBeenCalledWith('admin-api', expect.objectContaining({ body: { action: 'view_chart', chartId: 'c1' } }));
+  });
+});
