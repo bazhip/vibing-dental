@@ -3697,3 +3697,9 @@ button.save-status--manual:hover {
   .chart-history__list { border-right: 0; border-bottom: 1px solid var(--border, #e2e8f0); }
 }
 .chart-history__bar { flex: none; display: flex; justify-content: flex-end; padding: 0.4rem 1rem; border-bottom: 1px solid var(--border, #e2e8f0); }
+
+/* Dictation readiness: grey while the mic connects, then the red dot and
+   a clear "go ahead". */
+.voice-input__rec-dot--connecting { background: #94a3b8; animation-duration: 1.8s; }
+.ai-sidebar__status--connecting { color: var(--text-muted, #64748b); }
+.ai-sidebar__peek--go { color: var(--primary, #0c6b63); font-weight: 600; }
