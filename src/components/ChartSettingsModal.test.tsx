@@ -42,3 +42,16 @@ describe('ChartSettingsModal', () => {
     expect(screen.getAllByRole('checkbox', { name: 'Pocket' })[1]).toBeDisabled();
   });
 });
+
+describe('ChartSettingsModal — anesthesia', () => {
+  it('toggles nerve blocks and saves the usual anesthetic on blur', () => {
+    const { onChange } = setup();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Caudal maxillary' }));
+    expect(onChange).toHaveBeenLastCalledWith({ hiddenBlocks: ['caudalMaxillary'] });
+    const name = screen.getByRole('combobox', { name: 'Usual anesthetic' });
+    fireEvent.change(name, { target: { value: 'Bupivacaine' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'Usual anesthetic strength (%)' }), { target: { value: '0.5%' } });
+    fireEvent.blur(name);
+    expect(onChange).toHaveBeenLastCalledWith({ usualDrug: { name: 'Bupivacaine', concentration: '0.5' } });
+  });
+});

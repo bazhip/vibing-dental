@@ -75,3 +75,20 @@ describe('caudal maxillary block', () => {
     expect(nb.infraorbitalRight).toBe('0.2');
   });
 });
+
+describe('nerve block rows hidden in chart settings', () => {
+  async function bottomWith(nb: NerveBlocks, hidden: string[]): Promise<number> {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([612, 792]);
+    const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+    const regular = await doc.embedFont(StandardFonts.Helvetica);
+    return drawNerveBlockTable(page, nb, bold, regular, false, hidden);
+  }
+  it('drops a hidden row only while it is empty', async () => {
+    const all = await bottomWith({ ...EMPTY_NERVE_BLOCKS }, []);
+    const fewer = await bottomWith({ ...EMPTY_NERVE_BLOCKS }, ['mental', 'inferiorAlveolar']);
+    expect(fewer).toBeLessThan(all);
+    const withDose = await bottomWith({ ...EMPTY_NERVE_BLOCKS, mentalRight: '0.2' }, ['mental', 'inferiorAlveolar']);
+    expect(withDose).toBeGreaterThan(fewer); // mental comes back
+  });
+});

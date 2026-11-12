@@ -22,3 +22,14 @@ describe('chart settings (per person)', () => {
     expect(normalizeChartPrefs({ hideRecheck: true }, fallback)).toMatchObject({ mirrorToDiagnosis: true, chartingView: 'tooth', hideRecheck: true });
   });
 });
+
+describe('anesthesia settings', () => {
+  it('defaults: every block shown, no usual anesthetic', () => {
+    expect(normalizeChartPrefs({})).toMatchObject({ hiddenBlocks: [], usualDrug: null });
+  });
+  it('keeps valid values and drops junk', () => {
+    expect(normalizeChartPrefs({ hiddenBlocks: ['mental', 'bogus'], usualDrug: { name: ' Lidocaine ', concentration: '2%' } }))
+      .toMatchObject({ hiddenBlocks: ['mental'], usualDrug: { name: 'Lidocaine', concentration: '2' } });
+    expect(normalizeChartPrefs({ usualDrug: { name: '  ' } }).usualDrug).toBeNull();
+  });
+});

@@ -3644,3 +3644,9 @@ button.save-status--manual:hover {
 .dental-grid__bulk-field input[aria-invalid='true'] { border-color: #dc2626; }
 .dental-grid__bulk-error { color: #b91c1c; font-size: 0.85rem; }
 .dental-grid__bulk-hint { margin: 0 0 0.4rem; font-size: 0.82rem; color: var(--text-muted, #64748b); }
+
+/* Chart settings: usual anesthetic row; Anesthesia page "use my usual". */
+.chart-settings__drug { display: flex; gap: 0.5rem; align-items: center; }
+.chart-settings__drug > input { flex: 1 1 auto; min-width: 0; }
+.chart-settings__drug .anesthesia-unit { flex: 0 0 6rem; }
+.anesthesia-drug__usual { font-weight: 600; }

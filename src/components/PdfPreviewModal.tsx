@@ -40,6 +40,8 @@ export interface ChartSnapshot {
   branding?: PdfBranding;
   /** False drops the arch grids from page 1 (diagram-first layout). */
   includeGrid?: boolean;
+  /** Nerve block rows hidden in the person's chart settings. */
+  hiddenBlocks?: readonly string[];
   /** Cloud chart id whose images get appended as extra pages (4 per
    *  page). Absent/empty → no image pages. */
   imagesChartId?: string;
@@ -160,7 +162,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.postState, png: postPng },
           styleId,
           snapshot.branding ?? {},
-          { includeGrid: snapshot.includeGrid, images }
+          { includeGrid: snapshot.includeGrid, images, hiddenBlocks: snapshot.hiddenBlocks }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
