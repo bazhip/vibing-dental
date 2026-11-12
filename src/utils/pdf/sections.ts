@@ -1,4 +1,5 @@
 import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
+import { parseRootPockets } from '../pocket';
 import { DENTAL_CODES, DentalCode, findCodesInText } from '../../constants/dentalCodes';
 import {
   PatientInfo,
@@ -665,6 +666,23 @@ export function drawExamSection(
 
 // ------------------------------------------------------------ Tooth grid --
 
+/** Fit a grid value in a tooth column. Short values print as-is. Per-root
+ *  pockets ("MB4 MP5 D6") shrink to fit, and when even the smallest size
+ *  is too wide they print as depths in root order ("4/5/6"). */
+export function fitCellText(value: string, width: number, font: PDFFont, size: number): { text: string; size: number } {
+  const MIN = 4.5;
+  if (font.widthOfTextAtSize(value, size) <= width) return { text: value, size };
+  const shrunk = Math.max(MIN, (size * width) / font.widthOfTextAtSize(value, size));
+  if (font.widthOfTextAtSize(value, shrunk) <= width) return { text: value, size: shrunk };
+  const roots = parseRootPockets(value);
+  if (roots) {
+    const compact = Object.values(roots).join('/');
+    const s2 = Math.max(MIN, Math.min(size, (size * width) / font.widthOfTextAtSize(compact, size)));
+    return { text: compact, size: s2 };
+  }
+  return { text: value, size: shrunk };
+}
+
 const SUFFIX_TO_FIELD: Record<string, DentalField> = {
   mob: 'mobility', rec: 'recession', poc: 'pocket', fur: 'furcation',
   hyp: 'hyperplasia', cal: 'calculus', gin: 'gingivitis', pds: 'pdstate',
@@ -772,7 +790,8 @@ export function drawToothGrid(
       if (!value) continue;
       const cellLeft = x + labelW + i * toothW;
       const cellRight = cellLeft + toothW;
-      drawCenteredText(page, value, cellLeft, cellRight, baselineForRow(rowIdx, cellFontSize), cellFontSize, font, PALETTE.ink);
+      const fit = fitCellText(value, toothW - 2, font, cellFontSize);
+      drawCenteredText(page, fit.text, cellLeft, cellRight, baselineForRow(rowIdx, fit.size), fit.size, font, PALETTE.ink);
     }
   }
 

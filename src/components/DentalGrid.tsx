@@ -9,7 +9,8 @@ import {
   DataGridHandle,
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
-import { ToothData, ToothMarks } from '../types';
+import { DentalField, Species, ToothData, ToothMarks } from '../types';
+import { rootLabels, rootBoxes, formatRootPockets } from '../utils/pocket';
 
 interface DentalGridProps {
   /** View-only (saved visit not unlocked): cells, Missing and set-all are
@@ -42,6 +43,11 @@ interface DentalGridProps {
   /** Rendered in the section header beside the title (the Grid / By
    *  tooth view switch). */
   headerAccessory?: React.ReactNode;
+  /** Chart settings: columns to leave out, and one pocket box per root. */
+  hiddenColumns?: DentalField[];
+  pocketMode?: 'tooth' | 'root';
+  /** Needed for per-root pockets (root counts differ by species). */
+  species?: Species;
 }
 
 /**
@@ -65,7 +71,6 @@ interface DentalGridProps {
 // back to the previous row's last editable column. Off-page edges
 // are no-ops so focus stays in the grid.
 const FIRST_EDITABLE = 3;
-const LAST_EDITABLE = 10;
 
 /** The bits of grid state the module-scope editor needs — refs only, so
  *  the editor component's identity never changes (recreating it per
@@ -73,6 +78,9 @@ const LAST_EDITABLE = 10;
 interface EditorWiring {
   gridRef: React.RefObject<DataGridHandle | null>;
   rowCountRef: React.MutableRefObject<number>;
+  /** Index of the last editable column (depends on hidden columns). */
+  lastEditableRef: React.MutableRefObject<number>;
+  speciesRef: React.MutableRefObject<Species>;
 }
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
@@ -92,6 +100,7 @@ function CodeCellEditor({
   const current = row[key];
   const value = typeof current === 'string' ? current : '';
   const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
+  const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
 
   const advance = (nextRow: number, nextIdx: number, enableEditor: boolean) => {
     if (nextRow < 0 || nextRow > lastRowIdx) return;
@@ -168,6 +177,89 @@ function CodeCellEditor({
   );
 }
 
+/** Per-root pocket editor: one small box per root ("M", "D" / "MB",
+ *  "MP", "D"). Space or Tab steps to the next root; past the last root it
+ *  moves on like the plain editor (Tab → next column, Enter → next row).
+ *  Saves the labelled form ("M4 D6"). */
+function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
+  const { row, rowIdx, column, onRowChange, onClose } = props;
+  const wiring = React.useContext(EditorWiringContext);
+  const labels = rootLabels(wiring?.speciesRef.current ?? 'canine', row.triadan);
+  const initial = React.useMemo(() => rootBoxes(labels, row.pocket), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const [depths, setDepths] = React.useState<Record<string, string>>(initial.depths);
+  const inputs = useRef<Array<HTMLInputElement | null>>([]);
+  const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
+  const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
+
+  const write = (next: Record<string, string>) => {
+    setDepths(next);
+    onRowChange({ ...row, pocket: formatRootPockets(labels, next) });
+  };
+  const go = (nextRow: number, nextIdx: number) => {
+    if (nextRow < 0 || nextRow > lastRowIdx) return;
+    queueMicrotask(() => {
+      wiring?.gridRef.current?.setActivePosition({ rowIdx: nextRow, idx: nextIdx }, { enableEditor: false, shouldFocus: true });
+    });
+  };
+  const leave = (dir: 'next' | 'prev' | 'down') => {
+    onClose(true);
+    if (dir === 'down') go(rowIdx + 1, column.idx);
+    else if (dir === 'prev') {
+      if (column.idx > FIRST_EDITABLE) go(rowIdx, column.idx - 1);
+      else if (rowIdx > 0) go(rowIdx - 1, LAST_EDITABLE);
+    } else if (column.idx < LAST_EDITABLE) go(rowIdx, column.idx + 1);
+    else if (rowIdx < lastRowIdx) go(rowIdx + 1, FIRST_EDITABLE);
+  };
+  const onKey = (i: number) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      const step = e.shiftKey ? -1 : 1;
+      const target = inputs.current[i + step];
+      if (target) target.focus();
+      else leave(e.shiftKey ? 'prev' : 'next');
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      leave('down');
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose(false);
+    }
+  };
+  return (
+    <div
+      className="dental-grid__roots"
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) onClose(true); }}
+    >
+      {labels.map((l, i) => (
+        <label key={l} className="dental-grid__root">
+          <span className="dental-grid__root-label">{l}</span>
+          <input
+            ref={(el) => { inputs.current[i] = el; }}
+            autoFocus={i === 0}
+            inputMode="decimal"
+            value={depths[l] ?? ''}
+            aria-label={`Tooth ${row.triadan} pocket, ${l} root`}
+            onChange={(e) => write({ ...depths, [l]: e.target.value.replace(/[^\d.]/g, '') })}
+            onKeyDown={onKey(i)}
+          />
+        </label>
+      ))}
+    </div>
+  );
+}
+
+/** Pocket cells: per-root boxes on multi-rooted teeth when the practice
+ *  charts per root. A plain value that can't be placed on roots keeps
+ *  the plain editor, so nothing is lost — clear it to get the boxes. */
+function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
+  const wiring = React.useContext(EditorWiringContext);
+  const labels = rootLabels(wiring?.speciesRef.current ?? 'canine', props.row.triadan);
+  if (labels.length === 0 || rootBoxes(labels, props.row.pocket).unplaced) return <CodeCellEditor {...props} />;
+  return <PocketRootsEditor {...props} />;
+}
+
 // Column shares of the grid width. Resolved to NUMERIC pixel widths
 // before they reach react-data-grid: the library re-measures string
 // widths ('8%') in a layout effect that can feed back into itself
@@ -204,11 +296,26 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   onPdfIncludeGridChange,
   readOnly = false,
   headerAccessory,
+  hiddenColumns,
+  pocketMode = 'tooth',
+  species = 'canine',
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef }), []);
+  // Columns shown (chart settings may hide some). Leading columns:
+  // Missing, Tooth, Triadan — so the editable ones start at index 3.
+  const visibleColumns = React.useMemo(() => {
+    const hidden = new Set(hiddenColumns ?? []);
+    const shown = CODE_COLUMNS.filter((c) => !hidden.has(c.key as DentalField));
+    // Per-root pockets need room for up to three small boxes.
+    return shown.map((c) => (c.key === 'pocket' && pocketMode === 'root' ? { ...c, share: 0.17 } : c));
+  }, [hiddenColumns, pocketMode]);
+  const lastEditableRef = useRef(FIRST_EDITABLE + visibleColumns.length - 1);
+  lastEditableRef.current = FIRST_EDITABLE + visibleColumns.length - 1;
+  const speciesRef = useRef<Species>(species);
+  speciesRef.current = species;
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't
@@ -295,9 +402,15 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
 
   const columns = React.useMemo((): readonly Column<ToothData>[] => {
     const px = (share: number) => Math.floor(layoutWidth * share);
+    // Shown columns split the width the full set would have used, so
+    // hiding some widens the rest instead of leaving a gap.
+    const fullShare = CODE_COLUMNS.reduce((sum, c) => sum + c.share, 0);
+    const shownShare = visibleColumns.reduce((sum, c) => sum + c.share, 0) || 1;
+    const scale = fullShare / shownShare;
+    const colWidth = (share: number) => px(share * scale);
     const fixedTotal =
       px(0.06) + px(0.07) + px(0.08) +
-      CODE_COLUMNS.slice(0, -1).reduce((sum, column) => sum + px(column.share), 0);
+      visibleColumns.slice(0, -1).reduce((sum, column) => sum + colWidth(column.share), 0);
     const lastColumnWidth = Math.max(layoutWidth - fixedTotal, 60);
     return [
     {
@@ -342,11 +455,11 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       renderCell: ({ row }) => <>{(row.tooth ?? '').toUpperCase()}</>,
     },
     { key: 'triadan', name: 'Triadan', width: px(0.08) },
-    ...CODE_COLUMNS.map(({ key, name, share }, index): Column<ToothData> => ({
+    ...visibleColumns.map(({ key, name, share }, index): Column<ToothData> => ({
       key,
       name,
-      width: index === CODE_COLUMNS.length - 1 ? lastColumnWidth : px(share),
-      renderEditCell: readOnly ? undefined : CodeCellEditor,
+      width: index === visibleColumns.length - 1 ? lastColumnWidth : colWidth(share),
+      renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode === 'root' ? PocketCellEditor : CodeCellEditor,
       // Teeth marked missing have nothing to measure.
       editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
       renderCell: ({ row }) => {
@@ -383,7 +496,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       ),
     })),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode]);
 
   return (
     <div className="dental-grid-section">

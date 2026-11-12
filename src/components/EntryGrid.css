@@ -3577,3 +3577,30 @@ button.save-status--manual:hover {
 .feedback-modal__message { width: 100%; min-height: 8rem; resize: vertical; font: inherit; font-size: 16px; /* no iOS zoom */ }
 .feedback-modal__attach { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
 .feedback-modal__note { margin: 0; font-size: 0.82rem; color: var(--text-muted, #64748b); }
+
+/* ---- Chart settings ---------------------------------------------------- */
+.ai-settings-modal.chart-settings { max-width: 34rem; }
+.chart-settings__body { overflow-y: auto; min-height: 0; flex: 1 1 auto; gap: 1.25rem; }
+.chart-settings__group { display: flex; flex-direction: column; gap: 0.6rem; }
+.chart-settings__group + .chart-settings__group { border-top: 1px solid var(--border, #e2e8f0); padding-top: 1rem; }
+.chart-settings__field { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.chart-settings__field legend { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; padding: 0; }
+.chart-settings__field:disabled { opacity: 0.6; }
+.chart-settings__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.3rem 0.75rem; }
+.chart-settings__choice { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; min-height: 32px; }
+.chart-settings__hint { color: var(--text-muted, #64748b); font-size: 0.8rem; }
+.chart-settings__note { margin: 0; font-size: 0.85rem; color: var(--text-muted, #64748b); }
+.chart-settings__actions { display: flex; gap: 0.5rem; align-items: center; }
+
+/* Per-root pocket boxes: grid cell editor and By tooth panel. */
+.dental-grid__roots { display: flex; height: 100%; align-items: stretch; background: #fff; }
+.dental-grid__root { flex: 1 1 0; display: flex; align-items: center; gap: 2px; padding: 0 3px; min-width: 0; }
+.dental-grid__root + .dental-grid__root { border-left: 1px solid var(--border, #e2e8f0); }
+.dental-grid__root-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted, #64748b); }
+.dental-grid__root input { width: 100%; min-width: 0; border: 0; outline: none; font: inherit; background: transparent; color: var(--text, #0f172a); }
+.dental-grid__root input:focus { background: color-mix(in srgb, var(--primary, #0c6b63) 10%, white); }
+.tooth-chart__finding--roots { border: 0; margin: 0; padding: 0; }
+.tooth-chart__finding--roots legend { padding: 0; font-size: inherit; }
+.tooth-chart__roots { display: flex; gap: 0.35rem; }
+.tooth-chart__root { display: flex; flex-direction: column; gap: 2px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted, #64748b); min-width: 0; flex: 1 1 0; }
+.tooth-chart__root .tooth-chart__finding-input { width: 100%; }

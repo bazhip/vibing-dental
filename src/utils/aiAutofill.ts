@@ -1,6 +1,7 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import { supabase } from './supabaseClient';
 import { DENTAL_CODES } from '../constants/dentalCodes';
+import { pocketDepths } from './pocket';
 import {
   PatientInfo,
   Species,
@@ -144,6 +145,8 @@ const chartTools: Anthropic.Messages.Tool[] = [
       'Set a periodontal value on a tooth in the Charting grid. The value is the BARE NUMBER the grid shows — no letter prefix, no units: ' +
       'gingivitis "2" (spoken "GI 2", "G2", "gingivitis two"), calculus "2" ("calc 2", "C2"), mobility "3" ("mobility 3", "M3"), ' +
       'furcation "3" ("F3", "furcation 3"), pocket "5" (mm; "5 millimeter pocket"; several sites "4 5 4"), recession "2" (mm), ' +
+      'pocket PER ROOT when the vet names roots — labelled tokens in root order: "M4 D6" ("mesial 4, distal 6"), "MB4 MP5 D6" (upper P4: mesiobuccal, mesiopalatal, distal), "MB3 DB4 P5" (upper M1/M2: palatal root). ' +
+      'When adding one root to a tooth that already has per-root depths in the chart state, send the full set ("M4" already charted + "distal 6" → "M4 D6"). ' +
       'pdstate "2" ("PD2", "stage 2"), hyperplasia "3" = the Enlargement column, gingival enlargement in mm ("GE 3", "GE3", "G E 3", "enlargement 3"). ' +
       'GE is enlargement (hyperplasia), never gingivitis — gingivitis is GI.',
     input_schema: {
@@ -332,6 +335,10 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → set_tooth_field(triadan=106, field=hyperplasia, value=3)
 → set_tooth_field(triadan=106, field=calculus, value=1)
 
+[EX 12c] "108 pockets mesiobuccal 4, mesiopalatal 5, distal 6" / "308 mesial 3 distal 5"
+→ set_tooth_field(triadan=108, field=pocket, value="MB4 MP5 D6")
+→ set_tooth_field(triadan=308, field=pocket, value="M3 D5")
+
 [EX 13] "patient looks great" / "doing well today" / "hand me the scaler"
 → NO TOOL CALL — small talk / instructions to staff / vague.
 
@@ -434,7 +441,7 @@ const DIGIT_WORD_RE = new RegExp(
 // Words after which a single spoken number is a score/measurement, not
 // part of a tooth number: "mobility three one zero three" is mobility 3,
 // tooth 103 — not tooth 310.
-const SCORE_TERMS = 'GI|GE|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis|enlargement|hyperplasia';
+const SCORE_TERMS = 'GI|GE|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis|enlargement|hyperplasia|mesial|distal|mesiobuccal|mesiopalatal|distobuccal|palatal';
 const SCORE_WORD_RE = new RegExp(
   `\\b(${SCORE_TERMS})([\\s,.-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
   'gi'
@@ -1028,7 +1035,9 @@ export function invalidReason(action: AiAction): string | null {
     const field = String(action.input.field) as DentalField;
     const range = FIELD_RANGES[field];
     if (!range) return null;
-    const nums = normalizeFieldValue(String(action.input.value ?? '')).split(/\s+/).filter(Boolean).map(Number);
+    const normalized = normalizeFieldValue(String(action.input.value ?? ''));
+    // Pockets may be per root ("M4 D6"): check the depths themselves.
+    const nums = field === 'pocket' ? pocketDepths(normalized) : normalized.split(/\s+/).filter(Boolean).map(Number);
     if (nums.some((n) => Number.isNaN(n) || n < range[0] || n > range[1])) {
       return `${field} ${action.input.value} is outside ${range[0]}–${range[1]}`;
     }

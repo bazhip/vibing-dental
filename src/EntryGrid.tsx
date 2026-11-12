@@ -15,10 +15,12 @@ import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
+import { ChartSettingsModal } from './components/ChartSettingsModal';
+import { useChartSettings } from './hooks/useChartSettings';
+import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
-import { usePersistedState } from './hooks/usePersistedState';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
 import { toast, friendlyError, confirmDialog } from './components/ui/dialogs';
@@ -115,6 +117,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 }) => {
   const chart = useChartState();
   const profile = useProfile();
+  const chartSettings = useChartSettings(profile.loaded);
+  const prefs = chartSettings.prefs;
+  const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
+    chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
+  }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [chartSettingsOpen, setChartSettingsOpen] = React.useState(false);
   // Saved charts open read-only; the user unlocks to edit them (then
   // changes autosave). Remembered per chart for this browser session, so
   // a refresh mid-edit doesn't re-lock and hide pending edits.
@@ -216,21 +224,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // mouth picture far better than the spreadsheet). A per-browser
   // preference, toggled from the Charting section. Read-only charts are
   // left as saved — the sync catches up once the user unlocks to edit.
-  const [mirrorToDiagnosis, setMirrorToDiagnosis] = usePersistedState<boolean>(
-    'charting.mirrorToDiagnosis', 1, false
-  );
+  const mirrorToDiagnosis = prefs.mirrorToDiagnosis;
+  const setMirrorToDiagnosis = (v: boolean) => setPref({ mirrorToDiagnosis: v });
   // Companion switch: leave the arch grids off the PDF since the diagram
   // now carries the same findings. Only honored while mirroring is on,
   // so turning mirroring off can never silently drop the grid data.
-  const [pdfIncludeGrid, setPdfIncludeGrid] = usePersistedState<boolean>(
-    'charting.pdfIncludeGrid', 1, true
-  );
+  const pdfIncludeGrid = prefs.pdfIncludeGrid;
+  const setPdfIncludeGrid = (v: boolean) => setPref({ pdfIncludeGrid: v });
   // Charting view: the spreadsheet grid, or By tooth (click a numbered
   // tooth on the diagram and chart it in a side panel). Both edit the
   // same chart data. Per-browser preference.
-  const [chartingView, setChartingView] = usePersistedState<'grid' | 'tooth'>(
-    'charting.view', 1, 'grid'
-  );
+  const chartingView = prefs.chartingView;
+  const setChartingView = (v: 'grid' | 'tooth') => setPref({ chartingView: v });
   const chartingViewSwitch = (
     <div className="charting-view-switch" role="group" aria-label="Charting view">
       {([['grid', 'Grid'], ['tooth', 'By tooth']] as const).map(([v, label]) => (
@@ -251,8 +256,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
   // per page. Per-browser preference, toggled from the Images section.
-  const [pdfIncludeImages, setPdfIncludeImages] = usePersistedState<boolean>(
-    'imaging.pdfIncludeImages', 1, true
+  const pdfIncludeImages = prefs.pdfIncludeImages;
+  const setPdfIncludeImages = (v: boolean) => setPref({ pdfIncludeImages: v });
+  // Values written beside the teeth: the person's choice, minus any
+  // column they hide.
+  const besideTeeth = React.useMemo(
+    () => prefs.besideTeeth.filter((f) => !prefs.hiddenColumns.includes(f)),
+    [prefs.besideTeeth, prefs.hiddenColumns],
   );
   const { setPreDiagramComments } = chart;
   React.useEffect(() => {
@@ -261,9 +271,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // Same seat as the diagram's "add comment" button.
     const seat = { x: diag.width / 2 - 65, y: diag.midlineY + 20 };
     setPreDiagramComments((prev) =>
-      syncGridComments(prev, chart.toothData, chart.preToothMarks, mirrorToDiagnosis, seat)
+      syncGridComments(prev, chart.toothData, chart.preToothMarks, mirrorToDiagnosis, seat, besideTeeth)
     );
-  }, [readOnly, mirrorToDiagnosis, chart.species, chart.toothData, chart.preToothMarks, setPreDiagramComments]);
+  }, [readOnly, mirrorToDiagnosis, chart.species, chart.toothData, chart.preToothMarks, setPreDiagramComments, besideTeeth]);
 
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
@@ -772,6 +782,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           species={chart.species}
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
+          hideRecheck={prefs.hideRecheck}
         />
       ),
     },
@@ -827,6 +838,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               setPlannedExtraction={chart.setPlannedExtraction}
               highlightTriadan={aiHighlightTriadan}
               headerAccessory={chartingViewSwitch}
+              hiddenColumns={prefs.hiddenColumns}
+              pocketMode={prefs.pocketMode}
             />
           ) : (
           <DentalGrid
@@ -847,6 +860,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onMirrorToDiagnosisChange={setMirrorToDiagnosis}
             pdfIncludeGrid={pdfIncludeGrid}
             onPdfIncludeGridChange={setPdfIncludeGrid}
+            hiddenColumns={prefs.hiddenColumns}
+            pocketMode={prefs.pocketMode}
+            species={chart.species}
           />
           )
         ) : null
@@ -1182,6 +1198,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
+            onOpenChartSettings={() => setChartSettingsOpen(true)}
             cloud={
               cloud.enabled
                 ? {
@@ -1295,6 +1312,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           )}
         </div>
       )}
+      {chartSettingsOpen && (
+        <ChartSettingsModal
+          onClose={() => setChartSettingsOpen(false)}
+          prefs={prefs}
+          followsAccount={chartSettings.followsAccount}
+          onChange={setPref}
+        />
+      )}
+
       {feedback && (
         <FeedbackModal
           onClose={() => setFeedback(null)}

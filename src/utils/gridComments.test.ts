@@ -72,3 +72,13 @@ test('re-texting a mirrored card drops its fitted size so it refits', () => {
   const [out] = syncGridComments([fitted], data, {}, true, SEAT);
   expect(out).toEqual({ id: 'grid-104', text: 'Pocket 6', anchorTriadan: 104 });
 });
+
+it('writes only the chosen values beside the teeth', () => {
+  const data = [
+    { tooth: '108', triadan: 108, pocket: 'M4 D6', furcation: '2', gingivitis: '1' },
+    { tooth: '109', triadan: 109, gingivitis: '2' },
+  ];
+  const { perTooth } = gridCommentTexts(data, {}, ['pocket', 'furcation']);
+  expect(perTooth.get(108)).toBe('Pocket M4 D6 · Furcation 2');
+  expect(perTooth.has(109)).toBe(false); // only gingivitis, which isn't chosen
+});

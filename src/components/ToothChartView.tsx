@@ -1,5 +1,6 @@
 import React from 'react';
-import { DiagramComment, Species, ToothData, ToothMarks } from '../types';
+import { rootLabels, rootBoxes, formatRootPockets, pocketDepths } from '../utils/pocket';
+import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { COLUMN_RANGES } from '../constants/columnDefinitions';
 import { ToothDiagram } from './ToothDiagram';
@@ -43,6 +44,9 @@ export interface ToothChartViewProps {
   highlightTriadan?: number | null;
   /** Rendered in the section header (the Grid / By tooth switch). */
   headerAccessory?: React.ReactNode;
+  /** Chart settings: measurements to leave out, one pocket box per root. */
+  hiddenColumns?: DentalField[];
+  pocketMode?: 'tooth' | 'root';
 }
 
 const noop = () => {};
@@ -63,7 +67,9 @@ function outOfRange(key: string, value: string): string | null {
   const range = COLUMN_RANGES[key];
   const t = value.trim();
   if (!range || !t) return null;
-  const ok = t.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= range[0] && Number(n) <= range[1]);
+  // Pockets may be per root ("M4 D6"); check the depths themselves.
+  const nums = key === 'pocket' ? pocketDepths(t) : t.split(/\s+/).map((n) => (/^\d+(\.\d+)?$/.test(n) ? Number(n) : NaN));
+  const ok = nums.every((n) => Number.isFinite(n) && n >= range[0] && n <= range[1]);
   return ok ? null : `${range[0]}–${range[1]}`;
 }
 
@@ -84,6 +90,8 @@ export function ToothChartView({
   readOnly = false,
   highlightTriadan,
   headerAccessory,
+  hiddenColumns,
+  pocketMode = 'tooth',
 }: ToothChartViewProps) {
   const diagram = TOOTH_DIAGRAMS[species];
   const [selected, setSelected] = React.useState<number | null>(null);
@@ -253,11 +261,38 @@ export function ToothChartView({
 
                 <div className="tooth-chart__group-title">Findings</div>
                 <div className="tooth-chart__findings">
-                  {FINDING_COLUMNS.map((col) => {
+                  {FINDING_COLUMNS.filter((col) => !hiddenColumns?.includes(col.key as DentalField)).map((col) => {
                     const v = row?.[col.key];
                     const value = typeof v === 'string' ? v : '';
                     const bad = outOfRange(col.key, value);
                     const id = `tooth-chart-${col.key}`;
+                    const roots = col.key === 'pocket' && pocketMode === 'root' && selected != null ? rootLabels(species, selected) : [];
+                    const boxes = roots.length ? rootBoxes(roots, value) : null;
+                    if (boxes && !boxes.unplaced) {
+                      // One box per root; saved as "M4 D6".
+                      return (
+                        <fieldset key={col.key} className="tooth-chart__finding tooth-chart__finding--roots">
+                          <legend>{col.name}</legend>
+                          <div className="tooth-chart__roots">
+                            {roots.map((l) => (
+                              <label key={l} className="tooth-chart__root">
+                                <span>{l}</span>
+                                <input
+                                  className={`tooth-chart__finding-input${bad ? ' tooth-chart__finding-input--bad' : ''}`}
+                                  value={boxes.depths[l] ?? ''}
+                                  inputMode="decimal"
+                                  autoComplete="off"
+                                  disabled={isMissing}
+                                  aria-label={`Pocket, ${l} root`}
+                                  onChange={(e) => setField('pocket', formatRootPockets(roots, { ...boxes.depths, [l]: e.target.value.replace(/[^\d.]/g, '') }))}
+                                  onKeyDown={blockEnter}
+                                />
+                              </label>
+                            ))}
+                          </div>
+                        </fieldset>
+                      );
+                    }
                     return (
                       <label key={col.key} className="tooth-chart__finding" htmlFor={id}>
                         <span>{col.name}</span>
