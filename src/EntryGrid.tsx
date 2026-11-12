@@ -554,6 +554,32 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // Starting a visit replaces the open chart — never silently.
     if (!(await cloud.confirmDiscardIfDirty('Start a new visit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
+    // Already seen today? Offer that visit rather than a second one —
+    // same-day restarts were the main source of duplicate records.
+    try {
+      const sp = snap.species.startsWith('canine') ? 'canine' : 'feline';
+      const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
+      const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
+      if (todays) {
+        const who = snap.patientInfo.patientName?.trim() || 'This patient';
+        const openIt = await confirmDialog({
+          title: `${who} already has a visit today`,
+          message: 'Open today’s visit instead of starting a second one?',
+          confirmLabel: 'Open today’s visit',
+          cancelLabel: 'Start a second visit',
+        });
+        if (openIt) {
+          // Unsaved changes were already confirmed above.
+          await cloud.openChart(todays.id, { skipConfirm: true });
+          goToSection('patient');
+          return true;
+        }
+      }
+      // Answered here — don't ask again on the new visit's first save.
+      cloud.skipNextDuplicateCheck();
+    } catch {
+      /* couldn't check — the first-save check will ask instead */
+    }
     const gone = new Set<number>();
     for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
     for (const [k, v] of Object.entries(snap.postMarks ?? {})) if (v === 'extracted') gone.add(Number(k));
@@ -1228,6 +1254,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
             if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
               return <span className="save-status save-status--manual" title="Charts save once the patient has a name">Add a patient name to save</span>;
+            }
+            if (cloud.awaitingClinical) {
+              // Filled in ahead of time: autosave starts with charting;
+              // Save puts it in the cloud now (e.g. to open elsewhere).
+              return (
+                <button
+                  type="button"
+                  className="save-status save-status--manual"
+                  onClick={attemptSave}
+                  title="Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device."
+                >
+                  Save
+                </button>
+              );
             }
             if (cloud.dirty) {
               return <span className="save-status save-status--manual" title="Saving automatically…">Unsaved changes</span>;
