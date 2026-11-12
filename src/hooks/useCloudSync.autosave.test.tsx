@@ -7,6 +7,10 @@ const db = vi.hoisted(() => ({
   visits: [] as Array<Record<string, string>>,
   upserts: [] as Array<Record<string, unknown>>,
   opened: [] as string[],
+  /** Error the next N chart upserts return (then they succeed). */
+  refuseUpserts: 0,
+  /** Whether a refused chart's row is still readable by this account. */
+  rowVisible: true,
 }));
 vi.mock('../utils/supabaseClient', () => {
   const builder = () => {
@@ -14,11 +18,20 @@ vi.mock('../utils/supabaseClient', () => {
     let singleId = '';
     const chain = () => q;
     Object.assign(q, {
-      select: chain, order: chain, limit: chain, ilike: chain,
+      select: (cols?: string) => { if (cols === 'id') q.__existCheck = true; return q; },
+      order: chain, limit: chain, ilike: chain,
       eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
-      maybeSingle: async () => ({ data: { updated_at: '2026-11-12T10:00:00Z' }, error: null }),
+      maybeSingle: async () => {
+        if (q.__refused) return { data: null, error: { code: '42501', message: 'new row violates row-level security policy' } };
+        if (q.__existCheck && !db.rowVisible) return { data: null, error: null };
+        return { data: { id: 'x', updated_at: '2026-11-12T10:00:00Z' }, error: null };
+      },
       single: async () => { db.opened.push(singleId); return { data: { id: singleId, data: snap({}), updated_at: '2026-11-12T09:00:00Z' }, error: null }; },
-      upsert: (row: Record<string, unknown>) => { db.upserts.push(row); return q; },
+      upsert: (row: Record<string, unknown>) => {
+        db.upserts.push(row);
+        if (db.refuseUpserts > 0) { db.refuseUpserts--; q.__refused = true; }
+        return q;
+      },
       then: (resolve: (v: unknown) => void) => resolve({ data: db.visits, error: null }),
     });
     return q;
@@ -69,7 +82,7 @@ const fakeChart = (s: ChartSnapshot, id = 'chart-1') => ({
 
 beforeEach(() => {
   store.clear();
-  db.visits = []; db.upserts = []; db.opened = [];
+  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true;
   confirm.mockReset(); confirm.mockResolvedValue(false);
   vi.useFakeTimers();
 });
@@ -139,5 +152,23 @@ describe('same-day duplicate guard', () => {
     await act(async () => { await result.current.saveNow(); });
     expect(confirm).not.toHaveBeenCalled();
     expect(db.upserts).toHaveLength(1);
+  });
+});
+
+describe('refused saves', () => {
+  it("never copies the user's own chart into a new record", async () => {
+    db.refuseUpserts = 1; // the row is readable → it's ours
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await flush();
+    expect(db.upserts.map((r) => r.id)).toEqual(['chart-1']); // no fork
+    expect(result.current.status).toBe('error');
+  });
+
+  it("forks only when the row belongs to another account (hidden by RLS)", async () => {
+    db.refuseUpserts = 1;
+    db.rowVisible = false;
+    renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await flush();
+    expect(db.upserts.map((r) => r.id)).toEqual(['chart-1', 'forked']);
   });
 });
