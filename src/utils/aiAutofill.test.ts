@@ -294,6 +294,23 @@ describe('GE = gingival enlargement (the Enlargement column)', () => {
   });
 });
 
+import { buildReviewRequest as _brr } from './aiAutofill';
+describe('call type is labelled for usage logging', () => {
+  it('live chunks and final checks carry their kind', () => {
+    const ctx = {
+      patientInfo: {
+        patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+        date: '', complaint: '', treatmentReport: '', recallDate: '',
+        nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+      },
+      species: 'canine' as const, logo: 'socal' as const, toothData: [],
+      preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+    };
+    expect(buildChunkRequest({ delta: '104 GI 2', recentContext: '', context: ctx })!.kind).toBe('live');
+    expect(_brr({ transcript: '104 GI 2', context: ctx, rejected: [] })!.kind).toBe('review');
+  });
+});
+
 import { dictationCacheWarm, markDictationPromptUsed } from './aiAutofill';
 
 describe('dictation prompt cache warmth', () => {

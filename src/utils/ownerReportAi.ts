@@ -105,6 +105,7 @@ export function buildOwnerReportAiRequest(snapshot: ChartSnapshot, context?: Own
   ].join('\n');
   return {
     max_tokens: 2048,
+    kind: 'owner_report',
     system: [{ type: 'text', text: SYSTEM }],
     tools: [WRITE_TOOL],
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
