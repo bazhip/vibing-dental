@@ -175,6 +175,33 @@ describe('DANGLING_RE — wait for the value before sending', () => {
   });
 });
 
+describe('VoiceInputButton — final check only when something new was said', () => {
+  beforeEach(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+    vi.mocked(extractChartActions).mockClear();
+    vi.mocked(reviewFullTranscript).mockClear();
+  });
+
+  it('Stop → Resume → Stop with nothing new said runs the final check once', async () => {
+    render(<VoiceInputButton {...props} context={realContext} />);
+    startDictation();
+    act(() => FakeRecognition.last!.say('104 GI 2'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(1); // nothing new: skipped
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Resume/ })[0]);
+    act(() => FakeRecognition.last!.say('105 missing'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Stop' })[0]);
+    await act(async () => { await new Promise((r) => setTimeout(r, 600)); });
+    expect(reviewFullTranscript).toHaveBeenCalledTimes(2); // new speech: checked again
+  });
+});
 
 describe('VoiceInputButton — cache warm-up', () => {
   beforeEach(async () => {

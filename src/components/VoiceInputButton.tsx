@@ -267,8 +267,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   /** Bumps when the dictation is thrown away (New, another chart): a
    *  result that comes back afterwards must not land on that chart. */
   const sessionGenRef = React.useRef(0);
+  /** Segments the last final check covered — Stop again with nothing new
+   *  said (Stop → Resume → Stop) doesn't pay for another whole-transcript
+   *  pass. */
+  const finalCheckedSegmentsRef = React.useRef(0);
   const resetSessionMemory = () => {
     sessionGenRef.current++;
+    finalCheckedSegmentsRef.current = 0;
     rejectedRef.current = [];
   };
   const lockedRef = React.useRef(locked);
@@ -409,6 +414,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const segments = voiceRef.current?.allSegments() ?? [];
     const transcript = segments.map((s) => s.annotated ?? s.text).join('\n').trim();
     if (!transcript) return;
+    // Nothing new since the last final check: it would re-read the same
+    // transcript against a chart it already checked.
+    if (segments.length <= finalCheckedSegmentsRef.current) return;
     // Let React commit the last chunk's chart changes into contextRef.
     await new Promise((r) => setTimeout(r, 150));
     if (inFlightRef.current) await waitIdle();
@@ -422,6 +430,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         rejected: rejectedRef.current,
       });
       if (!result.ran || gen !== sessionGenRef.current) return;
+      finalCheckedSegmentsRef.current = segments.length;
       const raised = applyResult(result);
       const now = new Date();
       setActivity((prev) => [...prev, {
