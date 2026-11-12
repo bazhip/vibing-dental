@@ -13,6 +13,7 @@ import { SessionExpiredOverlay } from './components/SessionExpiredOverlay';
 import { touchLastSeen } from './utils/lastSeen';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
+import posthog, { posthogEnabled } from './posthog';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -137,12 +138,37 @@ const App: React.FC = () => {
   // once, so it can't read the state directly without going stale).
   const isAuthedRef = useRef(isAuthenticated);
   useEffect(() => { isAuthedRef.current = isAuthenticated; }, [isAuthenticated]);
+  // Supabase's UUID is stable across email and profile changes. Keep this
+  // separate from the display state so token-refresh auth events do not
+  // repeatedly identify the same person.
+  const identifiedUserIdRef = useRef('');
+  const identifySessionUser = (user: {
+    id: string;
+    email?: string;
+    user_metadata?: Record<string, unknown>;
+  }) => {
+    if (!posthogEnabled || identifiedUserIdRef.current === user.id) return;
+    if (identifiedUserIdRef.current) posthog.reset();
+
+    const properties: Record<string, string> = {};
+    if (user.email) properties.email = user.email;
+    const doctorName = user.user_metadata?.doctor_name;
+    if (typeof doctorName === 'string' && doctorName) properties.name = doctorName;
+    posthog.identify(user.id, properties);
+    identifiedUserIdRef.current = user.id;
+  };
+  const resetIdentifiedUser = () => {
+    if (!posthogEnabled || !identifiedUserIdRef.current) return;
+    posthog.reset();
+    identifiedUserIdRef.current = '';
+  };
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
     supabase.auth.getSession().then(({ data }) => {
       setIsAuthenticated(!!data.session);
       if (data.session) {
+        identifySessionUser(data.session.user);
         touchLastSeen();
         lastUserIdRef.current = data.session.user.id;
         setLastEmail(data.session.user.email ?? '');
@@ -155,12 +181,14 @@ const App: React.FC = () => {
         // A different account signing in over an expired session must not
         // inherit the previous patient's working chart (shared machines).
         if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
+          resetIdentifiedUser();
           clearChartStorage();
           // The previous user's chart, profile and practice are still in
           // memory — start clean so nothing of theirs is shown or saved.
           window.location.reload();
           return;
         }
+        identifySessionUser(session.user);
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
         touchLastSeen();
@@ -168,7 +196,10 @@ const App: React.FC = () => {
         setIsAuthenticated(true);
         return;
       }
-      // No session. Deliberate sign-outs go to the landing page; anything
+      // No session. Clear the persisted analytics identity before the next
+      // visitor can use this shared clinic device.
+      resetIdentifiedUser();
+      // Deliberate sign-outs go to the landing page; anything
       // else while signed in is an expiry — keep the chart mounted.
       if (consumeExplicitSignOut() || !isAuthedRef.current) {
         setSessionExpired(false);

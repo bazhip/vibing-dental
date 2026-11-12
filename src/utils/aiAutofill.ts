@@ -1,4 +1,5 @@
 import type Anthropic from '@anthropic-ai/sdk';
+import posthog, { posthogEnabled } from '../posthog';
 import { supabase } from './supabaseClient';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
@@ -625,6 +626,31 @@ export interface VerifyResult {
  * of a cent and surfaces auth / network errors before the user is mid-
  * procedure with the mic on.
  */
+function captureApiKeyVerification(
+  traceId: string,
+  startedAt: number,
+  result?: { content: unknown; usage?: { input_tokens?: number; output_tokens?: number } },
+  error?: unknown,
+) {
+  if (!posthogEnabled) return;
+  posthog.capture('$ai_generation', {
+    $ai_trace_id: traceId,
+    $ai_session_id: posthog.get_session_id() ?? null,
+    $ai_span_id: crypto.randomUUID(),
+    $ai_span_name: 'anthropic_api_key_verification',
+    $ai_model: 'claude-haiku-4-5-20251001',
+    $ai_provider: 'anthropic',
+    $ai_input: [{ role: 'user', content: 'ok' }],
+    $ai_input_tokens: result?.usage?.input_tokens,
+    $ai_output_choices: result ? [{ role: 'assistant', content: result.content }] : undefined,
+    $ai_output_tokens: result?.usage?.output_tokens,
+    $ai_latency: (performance.now() - startedAt) / 1000,
+    $ai_max_tokens: 1,
+    $ai_is_error: Boolean(error),
+    $ai_error: error instanceof Error ? error.name : undefined,
+  });
+}
+
 export async function verifyApiKey(key: string): Promise<VerifyResult> {
   const trimmed = key.trim();
   if (!trimmed) {
@@ -636,15 +662,19 @@ export async function verifyApiKey(key: string): Promise<VerifyResult> {
       message: 'Doesn\'t look like an Anthropic key — should start with "sk-ant-".',
     };
   }
+  const traceId = crypto.randomUUID();
+  const startedAt = performance.now();
   try {
     const client = await createClient(trimmed);
-    await client.messages.create({
+    const result = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1,
       messages: [{ role: 'user', content: 'ok' }],
     });
+    captureApiKeyVerification(traceId, startedAt, result);
     return { ok: true };
   } catch (err) {
+    captureApiKeyVerification(traceId, startedAt, undefined, err);
     const msg = err instanceof Error ? err.message : String(err);
     if (/401|invalid.*api.?key|authentication/i.test(msg)) {
       return { ok: false, message: 'Anthropic rejected the key (401). Check it on console.anthropic.com.' };
@@ -773,6 +803,8 @@ export interface ExtractInput {
    *  straddle chunks. Empty string is fine on the first chunk. */
   recentContext: string;
   context: ChartContext;
+  /** Groups every generation for the open chart in one AI session. */
+  aiSessionId?: string;
   /** Id of the chart section on screen — a tie-break hint only; findings
    *  go wherever they belong. */
   section?: string;
@@ -841,6 +873,11 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
   };
 }
 
+interface AiObservabilityRequest {
+  session_id?: string;
+  trace_id: string;
+}
+
 export interface AutofillRequest {
   max_tokens: number;
   /** 'review' = the end-of-dictation check: the edge function gives the
@@ -849,6 +886,7 @@ export interface AutofillRequest {
   system: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
   tools: Anthropic.Messages.Tool[];
   messages: Array<{ role: 'user'; content: Array<{ type: 'text'; text: string }> }>;
+  ai_observability?: AiObservabilityRequest;
 }
 
 /** Longest transcript sent to the final check. ~1.5 h of steady
@@ -859,6 +897,8 @@ export interface ReviewInput {
   /** The whole session's transcript, one utterance per line. */
   transcript: string;
   context: ChartContext;
+  /** Groups the final check with the same chart-level AI session as live dictation. */
+  aiSessionId?: string;
   /** Chart changes the vet rejected in review — never re-add them. */
   rejected: AiAction[];
 }
@@ -904,10 +944,21 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
   };
 }
 
-export async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
+function withAiObservability(requestBody: AutofillRequest, aiSessionId?: string): AutofillRequest {
+  return {
+    ...requestBody,
+    ai_observability: { session_id: aiSessionId, trace_id: crypto.randomUUID() },
+  };
+}
+
+export async function sendAutofill(
+  requestBody: AutofillRequest,
+  aiSessionId?: string,
+): Promise<Array<Anthropic.ContentBlock>> {
   if (!supabase) throw new Error('Cloud is not configured.');
+  const body = withAiObservability(requestBody, aiSessionId);
   const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
-    const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });
+    const { data, error } = await supabase!.functions.invoke('ai-autofill', { body });
     if (error) {
       let msg = error.message;
       try {
@@ -985,7 +1036,7 @@ export async function extractChartActions(
 ): Promise<ExtractResult> {
   const requestBody = buildChunkRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
-  const content = await sendAutofill(requestBody);
+  const content = await sendAutofill(requestBody, input.aiSessionId);
   return { ...parseAutofillContent(content, actionAllowedAnywhere), ran: true };
 }
 
@@ -997,7 +1048,7 @@ export async function extractChartActions(
 export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractResult> {
   const requestBody = buildReviewRequest(input);
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
-  const content = await sendAutofill(requestBody);
+  const content = await sendAutofill(requestBody, input.aiSessionId);
   const result = parseAutofillContent(content, actionAllowedAnywhere);
   return { ...result, flags: markFinalCheck(result), ran: true };
 }
@@ -1065,18 +1116,18 @@ export function invalidReason(action: AiAction): string | null {
  * real chunk doesn't pay the cold-start + cache-miss latency.
  * Best-effort; failures are ignored.
  */
-export async function prewarmAutofill(): Promise<void> {
+export async function prewarmAutofill(aiSessionId?: string): Promise<void> {
   if (!supabase) return;
   try {
     await supabase.functions.invoke('ai-autofill', {
-      body: {
+      body: withAiObservability({
         max_tokens: 0,
         system: [
           { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
         ],
         tools,
         messages: [{ role: 'user', content: [{ type: 'text', text: 'Warm-up. No transcript yet.' }] }],
-      },
+      }, aiSessionId),
     });
   } catch {
     /* best-effort */

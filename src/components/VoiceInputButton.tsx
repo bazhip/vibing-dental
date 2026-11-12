@@ -4,6 +4,7 @@ import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useWakeLock } from '../hooks/useWakeLock';
+import posthog, { posthogEnabled } from '../posthog';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -324,7 +325,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
-      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
+      const result = await extractChartActions({
+        delta,
+        recentContext,
+        context: contextRef.current,
+        aiSessionId: sessionKey,
+        section,
+      });
       if (gen === sessionGenRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
@@ -419,6 +426,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       const result = await reviewFullTranscript({
         transcript,
         context: contextRef.current,
+        aiSessionId: sessionKey,
         rejected: rejectedRef.current,
       });
       if (!result.ran || gen !== sessionGenRef.current) return;
@@ -636,9 +644,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     } else {
       voice.resume();
     }
+    if (posthogEnabled) {
+      posthog.capture('dictation_started', {
+        dictation_mode: fresh ? 'new' : 'resume',
+        transcription_provider: voice.provider === 'deepgram' ? 'deepgram' : 'browser',
+      });
+    }
     // Boot the edge function + write the prompt cache while the mic and
     // Deepgram connect, so the first utterance comes back fast.
-    prewarmAutofill();
+    prewarmAutofill(sessionKey);
   };
 
   const beginFromIntro = () => {

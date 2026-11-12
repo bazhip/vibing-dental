@@ -9,6 +9,28 @@
 // Requires the ANTHROPIC_API_KEY edge-function secret (dashboard).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { PostHog } from 'npm:posthog-node';
+
+const posthogKey = Deno.env.get('POSTHOG_API_KEY')?.trim();
+const posthogHost = Deno.env.get('POSTHOG_HOST')?.trim();
+const posthog = posthogKey && posthogHost
+  ? new PostHog(posthogKey, {
+    host: posthogHost,
+    privacyMode: false,
+    enableExceptionAutocapture: false,
+    flushAt: 1,
+    flushInterval: 0,
+    requestTimeout: 2000,
+    fetchRetryCount: 0,
+  })
+  : undefined;
+
+if (!posthog && Deno.env.get('ENV') !== 'production') {
+  const missingVariable = posthogKey ? 'POSTHOG_HOST' : 'POSTHOG_API_KEY';
+  console.warn(
+    `${missingVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingVariable} is configured`,
+  );
+}
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -56,6 +78,79 @@ const REVIEW_SETTINGS: Record<string, ModelSettings> = {
 };
 const LIVE_MAX_CHARS = 120_000;
 const REVIEW_MAX_CHARS = 400_000;
+const AI_ID_CHARS = /[^A-Za-z0-9\-_~.@()!'|:]/g;
+
+interface AnthropicUsage {
+  input_tokens?: number;
+  output_tokens?: number;
+  cache_read_input_tokens?: number;
+  cache_creation_input_tokens?: number;
+}
+
+interface AiObservabilityContext {
+  session_id?: unknown;
+  trace_id?: unknown;
+}
+
+const aiIdentifier = (value: unknown, fallback: string) => {
+  const normalized = typeof value === 'string' ? value.replace(AI_ID_CHARS, '-').slice(0, 200) : '';
+  return normalized || fallback;
+};
+
+function captureAiGeneration(
+  callerId: string,
+  sessionId: string,
+  traceId: string,
+  payload: Record<string, unknown>,
+  model: string,
+  attempt: { latency: number; status?: number; output?: unknown; usage?: AnthropicUsage; error?: string },
+) {
+  if (!posthog) return;
+  try {
+    posthog.capture({
+      distinctId: callerId,
+      event: '$ai_generation',
+      properties: {
+        $ai_trace_id: traceId,
+        $ai_session_id: sessionId,
+        $ai_span_id: crypto.randomUUID(),
+        $ai_parent_id: traceId,
+        $ai_span_name: 'anthropic_messages_create',
+        $ai_model: model,
+        $ai_provider: 'anthropic',
+        $ai_input: [
+          ...(Array.isArray(payload.system) ? payload.system.map((content) => ({ role: 'system', content })) : []),
+          ...(Array.isArray(payload.messages) ? payload.messages : []),
+        ],
+        $ai_input_tokens: attempt.usage?.input_tokens,
+        $ai_output_choices: attempt.output === undefined ? undefined : [{ role: 'assistant', content: attempt.output }],
+        $ai_output_tokens: attempt.usage?.output_tokens,
+        $ai_cache_read_input_tokens: attempt.usage?.cache_read_input_tokens,
+        $ai_cache_creation_input_tokens: attempt.usage?.cache_creation_input_tokens,
+        $ai_latency: attempt.latency,
+        $ai_http_status: attempt.status,
+        $ai_max_tokens: payload.max_tokens,
+        $ai_tools: payload.tools,
+        $ai_is_error: Boolean(attempt.error),
+        $ai_error: attempt.error,
+      },
+    });
+  } catch {
+    // Observability must not interrupt an otherwise successful LLM call.
+  }
+}
+
+async function flushAiEvents() {
+  if (!posthog) return;
+  try {
+    await Promise.race([
+      posthog.flush(),
+      new Promise<void>((resolve) => setTimeout(resolve, 500)),
+    ]);
+  } catch {
+    // The edge function must still return the Anthropic result on telemetry failure.
+  }
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
@@ -88,6 +183,9 @@ Deno.serve(async (req: Request) => {
   }
   const review = body.mode === 'review';
   if (!review && raw.length > LIVE_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
+  const observability = (body.ai_observability ?? {}) as AiObservabilityContext;
+  const traceId = aiIdentifier(observability.trace_id, crypto.randomUUID());
+  const sessionId = aiIdentifier(observability.session_id, `dictation-${caller.id}`);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
     return json({ error: 'Unsupported request.' }, 400);
@@ -129,37 +227,70 @@ Deno.serve(async (req: Request) => {
     headers['anthropic-beta'] = FALLBACK_BETA;
   }
 
-  const send = () => fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload),
-  });
-  let resp = await send();
+  const send = async () => {
+    const startedAt = performance.now();
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      });
+      return { resp, text: await resp.text(), latency: (performance.now() - startedAt) / 1000 };
+    } catch (error) {
+      captureAiGeneration(caller.id, sessionId, traceId, payload, model, {
+        latency: (performance.now() - startedAt) / 1000,
+        error: error instanceof Error ? error.name : 'Anthropic network error',
+      });
+      await flushAiEvents();
+      throw error;
+    }
+  };
+  let attempt = await send();
   // If the fallback option itself is rejected (beta changes, unsupported
   // combination), don't break autofill over it — retry once without.
-  if (resp.status === 400 && settings.fallbacks) {
+  if (attempt.resp.status === 400 && settings.fallbacks) {
+    captureAiGeneration(caller.id, sessionId, traceId, payload, model, {
+      latency: attempt.latency,
+      status: attempt.resp.status,
+      error: 'Anthropic rejected the fallback option',
+    });
     delete payload.fallbacks;
     delete headers['anthropic-beta'];
-    resp = await send();
+    attempt = await send();
   }
-  const text = await resp.text();
-  if (!resp.ok) return json({ error: `AI request failed: ${text}` }, 502);
+  if (!attempt.resp.ok) {
+    captureAiGeneration(caller.id, sessionId, traceId, payload, model, {
+      latency: attempt.latency,
+      status: attempt.resp.status,
+      error: `Anthropic request failed with status ${attempt.resp.status}`,
+    });
+    await flushAiEvents();
+    return json({ error: `AI request failed: ${attempt.text}` }, 502);
+  }
 
   let data: {
     content?: unknown;
     model?: string;
-    usage?: {
-      input_tokens?: number;
-      output_tokens?: number;
-      cache_read_input_tokens?: number;
-      cache_creation_input_tokens?: number;
-    };
+    usage?: AnthropicUsage;
   };
   try {
-    data = JSON.parse(text);
+    data = JSON.parse(attempt.text);
   } catch {
+    captureAiGeneration(caller.id, sessionId, traceId, payload, model, {
+      latency: attempt.latency,
+      status: attempt.resp.status,
+      error: 'Anthropic returned an unreadable response',
+    });
+    await flushAiEvents();
     return json({ error: 'AI returned an unreadable response.' }, 502);
   }
+
+  captureAiGeneration(caller.id, sessionId, traceId, payload, data.model ?? model, {
+    latency: attempt.latency,
+    status: attempt.resp.status,
+    output: data.content ?? [],
+    usage: data.usage,
+  });
 
   // Log usage (best-effort — never fail the call over telemetry).
   const u = data.usage ?? {};
@@ -178,5 +309,6 @@ Deno.serve(async (req: Request) => {
     .then(() => {})
     .catch(() => {});
 
+  await flushAiEvents();
   return json({ content: data.content ?? [], usage: data.usage ?? {}, model: data.model ?? model });
 });

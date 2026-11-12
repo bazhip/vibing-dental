@@ -25,3 +25,4 @@ yarn-error.log*
 
 # Claude Code local worktrees/agent state
 .claude/
+.env

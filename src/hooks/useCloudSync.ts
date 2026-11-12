@@ -6,6 +6,7 @@ import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
 import { markExplicitSignOut } from '../utils/signOutIntent';
+import posthog, { posthogEnabled, posthogLogger } from '../posthog';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -297,6 +298,18 @@ export function useCloudSync(
           at: (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString(),
         });
         setStatus('saved');
+        if (posthogEnabled) {
+          posthog.capture('chart_saved', {
+            species: speciesBase,
+            dentition,
+            saved_existing_chart: openedExistingRef.current,
+          });
+        }
+        posthogLogger.info('cloud chart persisted', {
+          species: speciesBase,
+          dentition,
+          saved_existing_chart: openedExistingRef.current,
+        });
         return;
       }
       // A refused save usually means the row id belongs to another account
@@ -320,6 +333,18 @@ export function useCloudSync(
         setSavedHash(hashStr(json));
         setLastSaved({ chartId: latest.current.chartId, at: new Date().toISOString() });
         setStatus('saved');
+        if (posthogEnabled) {
+          posthog.capture('chart_saved', {
+            species: speciesBase,
+            dentition,
+            saved_existing_chart: false,
+          });
+        }
+        posthogLogger.info('cloud chart persisted', {
+          species: speciesBase,
+          dentition,
+          saved_existing_chart: false,
+        });
         return;
       }
       fail(error);
@@ -471,6 +496,7 @@ export function useCloudSync(
     if (!supabase) return;
     const { error } = await supabase.from('charts').delete().eq('id', id);
     if (error) throw new Error(error.message);
+    if (posthogEnabled) posthog.capture('chart_deleted');
     // Deleted the chart that's open: it now exists only on this screen.
     // Give it a fresh identity and mark it unsaved, so it neither looks
     // saved nor silently re-creates the deleted record.

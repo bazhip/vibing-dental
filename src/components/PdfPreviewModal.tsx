@@ -19,6 +19,7 @@ import {
   DiagramComment,
   DiagramStroke,
 } from '../types';
+import posthog, { posthogEnabled, posthogLogger } from '../posthog';
 
 /**
  * One snapshot of the chart that's enough to (re-)build a PDF in any
@@ -195,6 +196,17 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    const includesImages = Boolean(images?.length);
+    if (posthogEnabled) {
+      posthog.capture('pdf_downloaded', {
+        pdf_style: styleId,
+        includes_images: includesImages,
+      });
+    }
+    posthogLogger.info('chart PDF downloaded', {
+      pdf_style: styleId,
+      includes_images: includesImages,
+    });
   };
 
   if (!open) return null;
