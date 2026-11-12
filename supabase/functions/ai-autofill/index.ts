@@ -87,6 +87,10 @@ Deno.serve(async (req: Request) => {
     return json({ error: 'bad json' }, 400);
   }
   const review = body.mode === 'review';
+  // Which feature this call is for — logged with usage so cost can be
+  // split by feature. Unknown values are dropped.
+  const KINDS = ['live', 'review', 'owner_report', 'warmup'];
+  const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
   if (!review && raw.length > LIVE_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
@@ -163,20 +167,23 @@ Deno.serve(async (req: Request) => {
 
   // Log usage (best-effort — never fail the call over telemetry).
   const u = data.usage ?? {};
+  const baseRow = {
+    user_id: caller.id,
+    practice_id: practiceId,
+    // The model that actually served it (differs after a fallback).
+    model: data.model ?? model,
+    // Cache writes are billed like input (×1.25) — count them as input.
+    input_tokens: (u.input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0),
+    output_tokens: u.output_tokens ?? 0,
+    cache_read_tokens: u.cache_read_input_tokens ?? 0,
+  };
+  // kind / cache_write_tokens come from a later migration: if they aren't
+  // there yet, log the row without them rather than losing it.
   admin
     .from('ai_usage')
-    .insert({
-      user_id: caller.id,
-      practice_id: practiceId,
-      // The model that actually served it (differs after a fallback).
-      model: data.model ?? model,
-      // Cache writes are billed like input (×1.25) — count them as input.
-      input_tokens: (u.input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0),
-      output_tokens: u.output_tokens ?? 0,
-      cache_read_tokens: u.cache_read_input_tokens ?? 0,
-    })
-    .then(() => {})
-    .catch(() => {});
+    .insert({ ...baseRow, kind, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
+    .then(({ error }) => (error ? admin.from('ai_usage').insert(baseRow) : null))
+    .then(() => {}, () => {});
 
   return json({ content: data.content ?? [], usage: data.usage ?? {}, model: data.model ?? model });
 });

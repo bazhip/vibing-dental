@@ -833,6 +833,7 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
 
   return {
     max_tokens: 1024,
+    kind: 'live',
     system: [
       { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
     ],
@@ -846,6 +847,8 @@ export interface AutofillRequest {
   /** 'review' = the end-of-dictation check: the edge function gives the
    *  model more thinking and output room for it. */
   mode?: 'review';
+  /** Which feature the call is for — logged with usage (ai_usage.kind). */
+  kind?: 'live' | 'review' | 'owner_report' | 'warmup';
   system: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
   tools: Anthropic.Messages.Tool[];
   messages: Array<{ role: 'user'; content: Array<{ type: 'text'; text: string }> }>;
@@ -896,6 +899,7 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
   return {
     max_tokens: 8192,
     mode: 'review',
+    kind: 'review',
     system: [
       { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
     ],
@@ -1071,6 +1075,7 @@ export async function prewarmAutofill(): Promise<void> {
     await supabase.functions.invoke('ai-autofill', {
       body: {
         max_tokens: 0,
+        kind: 'warmup',
         system: [
           { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
         ],
