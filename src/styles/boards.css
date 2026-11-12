@@ -163,6 +163,7 @@
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
   max-height: 70vh;
+  max-height: 70dvh;
   overflow-y: auto;
   display: flex; flex-direction: column; gap: 2px;
 }
@@ -267,6 +268,7 @@
   display: flex;
   flex-direction: column;
   max-height: min(620px, calc(100vh - 6rem));
+  max-height: min(620px, calc(100dvh - 6rem));
 }
 
 .chart-menu__section {
@@ -459,6 +461,7 @@
   position: relative;
   background: #475569;
   min-height: 60vh;
+  min-height: 60dvh;
   display: flex; flex-direction: column;
 }
 .pdf-preview-iframe {
@@ -475,7 +478,7 @@
 
 @media (max-width: 800px) {
   .pdf-preview-body { grid-template-columns: 1fr; }
-  .pdf-preview-styles { border-right: none; border-bottom: 1px solid #e2e8f0; max-height: 40vh; }
+  .pdf-preview-styles { border-right: none; border-bottom: 1px solid #e2e8f0; max-height: 40vh; max-height: 40dvh; }
 }
 
 /* ---------- Chart menu: cloud chart browser ------------------------------ */
@@ -562,6 +565,7 @@
      of stylesheet load order. */
   max-width: 62rem;
   height: min(80vh, 46rem);
+  height: min(80dvh, 46rem);
   /* Six columns matching the grouped table: Patient · Patient # ·
      Species · Visits · Updated · Recall. Header row and each row's
      open-button share this via --lib-cols so they stay aligned. */
@@ -782,6 +786,7 @@
     --lib-cols: minmax(6.5rem, 1.6fr) minmax(3.5rem, 0.7fr)
       minmax(3.5rem, 0.7fr) minmax(6rem, 1fr);
     height: min(88vh, 46rem);
+    height: min(88dvh, 46rem);
   }
   .chart-library__cell--species,
   .chart-library__cell--recall,
@@ -1142,7 +1147,7 @@
 
 /* Above the admin panel (same overlay layer, later in the DOM). */
 .admin-chart-viewer__overlay { z-index: 1150; }
-.ai-settings-modal.admin-chart-viewer { max-width: 60rem; height: min(90vh, 60rem); }
+.ai-settings-modal.admin-chart-viewer { max-width: 60rem; height: min(90vh, 60rem); height: min(90dvh, 60rem); }
 .admin-chart-viewer__notice {
   flex: none; padding: 0.45rem 1.25rem; font-size: 0.82rem; font-weight: 600;
   background: #fdf3e7; color: #7a4a12; border-bottom: 1px solid var(--border);
@@ -1162,3 +1167,110 @@
 
 /* My charts: History (a visit's audit trail) — quiet, like Delete. */
 .chart-library__history:hover { color: var(--primary); }
+
+/* Admin: sortable headers on the plain tables (billing, AI usage, charts)
+   — muted header text on white, unlike the green library header. */
+.admin-panel__th-sort {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+.admin-panel__th-sort:hover { color: var(--text); text-decoration: underline; }
+.admin-panel__th-sort:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 2px; }
+
+/* Admin: chart list (a practice's or an account's) as a sortable table. */
+.admin-panel__chart-wrap {
+  max-height: 18rem;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.admin-panel__chart-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface, #fff);
+}
+.admin-panel__chart-table td,
+.admin-panel__chart-table th { white-space: nowrap; }
+.admin-panel__chart-table th,
+.admin-panel__chart-table td { text-align: left; }
+.admin-panel__chart-open {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--primary, #0c6b63);
+  text-align: left;
+  cursor: pointer;
+}
+.admin-panel__chart-open:hover { text-decoration: underline; }
+.admin-panel__chart-open:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 2px; }
+
+/* Phones: the admin modal scrolls as one page instead of splitting a
+   fixed height between the table and the detail pane (which left the
+   detail clipped), and wide tables scroll sideways inside their frame
+   rather than being cut off at the card edge. */
+@media (max-width: 700px) {
+  .ai-settings-modal.admin-panel,
+  .ai-settings-modal.chart-library-modal.admin-panel {
+    height: auto;
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+  .admin-panel .chart-library-modal__body {
+    overflow-y: auto;
+    padding: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-panel .chart-library__table {
+    flex: none;
+    min-height: 0;
+    max-height: 55vh;
+    max-height: 55dvh;
+    overflow-x: auto;
+  }
+  .admin-panel .chart-library__head-row,
+  .admin-panel .chart-library__scroll { min-width: 40rem; }
+  .admin-panel__actions { flex: none; overflow: visible; }
+  .admin-panel__ai,
+  .admin-panel__billing { flex: none; overflow: visible; }
+  .admin-panel__tabs { overflow-x: auto; flex: none; }
+  .admin-panel__tab { white-space: nowrap; min-height: 44px; }
+  .admin-panel__usage-table:not(.admin-panel__chart-table) {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .admin-panel__chart-wrap { max-height: 50vh; max-height: 50dvh; }
+  .admin-panel__names { flex-direction: column; align-items: stretch; }
+  .admin-panel__names .patient-form__label { flex: none; }
+  .admin-panel .team__member { flex-wrap: wrap; }
+  .admin-chart-viewer__body { padding: 0.75rem; }
+  .admin-chart-viewer__list { grid-template-columns: minmax(0, max-content) minmax(0, 1fr); overflow-wrap: anywhere; }
+}
+
+/* Phones: the PDF preview scrolls as one page — style list, Download,
+   then the preview — instead of a fixed 40/60 split that clipped the
+   preview's bottom and hid all but the first style. */
+@media (max-width: 800px) {
+  .pdf-preview-modal {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pdf-preview-body,
+  .documents-modal__panel,
+  .documents-modal__panel > .pdf-preview-body { flex: none; }
+  .pdf-preview-styles,
+  .pdf-preview-styles ul { max-height: none; overflow: visible; flex: none; }
+  .pdf-preview-iframe-wrap { min-height: 75vh; min-height: 75dvh; }
+}
