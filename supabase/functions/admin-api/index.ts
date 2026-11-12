@@ -392,6 +392,41 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true });
       }
 
+      case 'list_practice_charts': {
+        // A practice's charts for the admin chart viewer — metadata only,
+        // newest visit first. Viewing one goes through view_chart (logged).
+        const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
+        if (!practiceId) return json({ error: 'missing practiceId' }, 400);
+        const { data, error } = await admin
+          .from('charts')
+          .select('id, patient_name, patient_number, species, chart_date, updated_at')
+          .eq('practice_id', practiceId)
+          .order('chart_date', { ascending: false })
+          .order('updated_at', { ascending: false })
+          .limit(500);
+        if (error) throw error;
+        return json({ charts: data ?? [] });
+      }
+
+      case 'view_chart': {
+        // Read one chart from any practice, read-only. Every view is
+        // written to admin_chart_views first — no audit row, no chart.
+        const chartId = typeof body.chartId === 'string' ? body.chartId : '';
+        if (!chartId) return json({ error: 'missing chartId' }, 400);
+        const { data: row, error } = await admin
+          .from('charts')
+          .select('id, practice_id, data, updated_at')
+          .eq('id', chartId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!row) return json({ error: 'chart not found' }, 404);
+        const { error: logError } = await admin
+          .from('admin_chart_views')
+          .insert({ admin_id: caller.id, chart_id: row.id, practice_id: row.practice_id });
+        if (logError) throw logError;
+        return json({ chart: { id: row.id, data: row.data, updatedAt: row.updated_at } });
+      }
+
       case 'delete_practice': {
         const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);

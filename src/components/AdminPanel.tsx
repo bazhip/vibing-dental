@@ -1,4 +1,5 @@
 import React from 'react';
+import { AdminChartViewer } from './AdminChartViewer';
 import { AI_MODEL_CHOICES } from '../constants/aiModels';
 import { FREE_BETA, FREE_BETA_SEATS } from '../constants/plans';
 import { PLAN_LIMITS } from '../hooks/useProfile';
@@ -111,6 +112,15 @@ interface AdminPracticeMember {
   role: string;
   pending: boolean;
   isPrimaryOwner: boolean;
+}
+
+interface AdminChartMeta {
+  id: string;
+  patient_name: string;
+  patient_number: string;
+  species: string;
+  chart_date: string;
+  updated_at: string;
 }
 
 interface AdminPractice {
@@ -274,6 +284,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
   const selected = users?.find((u) => u.id === selectedId) ?? null;
   const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
+
+  // Admin chart viewer: a practice's charts (loaded on demand) and the one
+  // being viewed. view_chart logs every open server-side.
+  const [practiceCharts, setPracticeCharts] = React.useState<{ practiceId: string; rows: AdminChartMeta[] } | null>(null);
+  const [chartsLoading, setChartsLoading] = React.useState(false);
+  const [viewingChart, setViewingChart] = React.useState<{ data: unknown; practiceName: string } | null>(null);
+  const loadPracticeCharts = async (practiceId: string) => {
+    setChartsLoading(true);
+    try {
+      const r = await adminCall<{ charts: AdminChartMeta[] }>({ action: 'list_practice_charts', practiceId });
+      setPracticeCharts({ practiceId, rows: r.charts });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setChartsLoading(false);
+    }
+  };
+  const openChart = async (chartId: string, practiceName: string) => {
+    try {
+      const r = await adminCall<{ chart: { data: unknown } }>({ action: 'view_chart', chartId });
+      setViewingChart({ data: r.chart.data, practiceName });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
 
   const refresh = React.useCallback(async () => {
     setError('');
@@ -1187,6 +1222,43 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                 </button>
               </form>
 
+              <div className="admin-panel__charts">
+                <div className="admin-panel__charts-head">
+                  <h3 className="ai-settings-subhead">Charts</h3>
+                  {practiceCharts?.practiceId !== selectedPractice.id && (
+                    <button
+                      type="button"
+                      className="diagram-view__action"
+                      onClick={() => loadPracticeCharts(selectedPractice.id)}
+                      disabled={chartsLoading}
+                    >
+                      {chartsLoading ? 'Loading…' : 'Show charts'}
+                    </button>
+                  )}
+                </div>
+                {practiceCharts?.practiceId === selectedPractice.id && (
+                  practiceCharts.rows.length === 0 ? (
+                    <p className="admin-panel__plan-note">No charts in this practice.</p>
+                  ) : (
+                    <ul className="admin-panel__chart-list">
+                      {practiceCharts.rows.map((c) => (
+                        <li key={c.id}>
+                          <button
+                            type="button"
+                            className="admin-panel__chart-row"
+                            onClick={() => openChart(c.id, selectedPractice.name || 'Untitled practice')}
+                          >
+                            <span>{c.patient_name || 'Unnamed patient'}{c.patient_number ? ` #${c.patient_number}` : ''}</span>
+                            <span className="admin-panel__chart-meta">{[c.species, c.chart_date].filter(Boolean).join(' · ')}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                )}
+                <p className="admin-panel__plan-note">Read-only. Every chart you open is logged.</p>
+              </div>
+
               <div className="admin-panel__buttons">
                 <button
                   type="button"
@@ -1340,6 +1412,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
           )}
         </div>
       </div>
+      {viewingChart && (
+        <AdminChartViewer
+          data={viewingChart.data}
+          practiceName={viewingChart.practiceName}
+          onClose={() => setViewingChart(null)}
+        />
+      )}
     </div>
   );
 };

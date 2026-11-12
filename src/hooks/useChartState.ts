@@ -175,7 +175,7 @@ export function isChartSnapshot(s: unknown): s is ChartSnapshot {
 
 /** Fill any holes a snapshot from an older schema might have, so
  *  downstream code can dereference nested fields without guards. */
-function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
+export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
   return {
     ...s,
     patientInfo: {
