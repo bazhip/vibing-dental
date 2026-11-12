@@ -58,7 +58,7 @@ const LOW_CONFIDENCE = 0.6;
 // the human medical model won't know (Triadan, AVDC codes, vet drugs).
 const TARGET_SAMPLE_RATE = 16000;
 const KEYTERM_QS = VOICE_KEYTERMS.map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
-const DG_URL =
+export const DG_URL =
   'wss://api.deepgram.com/v1/listen?model=nova-3-medical' +
   '&punctuate=true' +
   '&smart_format=true' +
@@ -69,6 +69,11 @@ const DG_URL =
   '&channels=1' +
   '&language=en' +
   '&encoding=linear16' +
+  // Opt out of Deepgram's Model Improvement Program: by default Deepgram
+  // keeps request audio + transcripts to train its models (possibly
+  // outside the region). Opted out, it doesn't store them after the
+  // response — this is clinical dictation that can include names.
+  '&mip_opt_out=true' +
   `&sample_rate=${TARGET_SAMPLE_RATE}` +
   KEYTERM_QS;
 
