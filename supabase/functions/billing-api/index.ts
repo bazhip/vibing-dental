@@ -33,6 +33,15 @@ const PLANS: Record<string, { name: string; amount: number; tier: 'basic' | 'pro
 };
 const TRIAL_DAYS = 14;
 
+/** Stripe Tax: calculate VAT/GST/sales tax at checkout. Off until the
+ *  STRIPE_TAX_ENABLED secret is "true" — Stripe rejects automatic_tax
+ *  until Tax is activated in the Dashboard (origin address + default tax
+ *  behavior set), and a rejected session would break every checkout.
+ *  Billing address and VAT/tax ID collection are on regardless: they cost
+ *  nothing, and a business's VAT number is what lets EU/UK sales go out
+ *  as reverse charge once tax is on. */
+const STRIPE_TAX = Deno.env.get('STRIPE_TAX_ENABLED') === 'true';
+
 /** Statuses under which the Stripe subscription is still alive — no new
  *  checkout allowed; fix it via the billing portal instead. */
 const LIVE_SUB_STATUSES = ['active', 'trialing', 'past_due'];
@@ -225,6 +234,13 @@ Deno.serve(async (req: Request) => {
           },
           metadata: { practice_id: practice.id, plan_key: planKey },
           allow_promotion_codes: true,
+          billing_address_collection: 'required',
+          tax_id_collection: { enabled: true },
+          // Save the address/name/tax ID entered at checkout onto the
+          // existing customer (required for tax ID collection, and it's
+          // what Stripe Tax locates the customer by on renewals).
+          customer_update: { address: 'auto', name: 'auto' },
+          ...(STRIPE_TAX ? { automatic_tax: { enabled: true } } : {}),
           success_url: `${returnUrl}${returnUrl.includes('?') ? '&' : '?'}billing=success`,
           cancel_url: `${returnUrl}${returnUrl.includes('?') ? '&' : '?'}billing=canceled`,
         });
@@ -252,7 +268,7 @@ Deno.serve(async (req: Request) => {
             features: {
               invoice_history: { enabled: true },
               payment_method_update: { enabled: true },
-              customer_update: { enabled: true, allowed_updates: ['email', 'address'] },
+              customer_update: { enabled: true, allowed_updates: ['email', 'address', 'tax_id'] },
               subscription_cancel: { enabled: true, mode: 'at_period_end' },
             },
           });
@@ -348,7 +364,7 @@ Deno.serve(async (req: Request) => {
           });
         }
         const compedCount = (pracs ?? []).filter((p) => p.subscription_status === 'comped').length;
-        return json({ subscriptions: rows, mrrUsd: mrrCents / 100, compedCount });
+        return json({ subscriptions: rows, mrrUsd: mrrCents / 100, compedCount, taxEnabled: STRIPE_TAX });
       }
 
       default:
