@@ -150,28 +150,6 @@ function speechAvailable(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 }
 
-/** A soft rising two-note chime: "the mic is live, start talking". */
-function playReadyChime(ctx: AudioContext | null): void {
-  if (!ctx) return;
-  try {
-    void ctx.resume();
-    const t = ctx.currentTime + 0.02;
-    [660, 990].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const start = t + i * 0.13;
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.12, start + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.12);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + 0.14);
-    });
-  } catch { /* audio unavailable — the on-screen cue still shows */ }
-}
-
 /** "Check 109", "Check 109 and 204", "Check 109, 204 and 308". */
 function promptFor(items: ReviewItem[]): string {
   const teeth = Array.from(new Set(items.map((r) => r.flag.triadan).filter((t): t is number => typeof t === 'number')));
@@ -573,16 +551,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     }
   }, [voice.interim, voice.recording, heardSinceStart]);
 
-  // The moment the mic is really live: a soft two-note chime (with spoken
-  // prompts on) and a short buzz on phones that support it, so a vet
-  // looking at the mouth, not the screen, knows to start talking.
-  const chimeCtxRef = React.useRef<AudioContext | null>(null);
+  // The moment the mic is really live: a short buzz on phones that support
+  // it. (No chime: playing audio through a second AudioContext while the
+  // mic captures switched the device's audio session / sample rate and
+  // corrupted the audio sent to Deepgram — the transcript went empty.)
   const wasReadyRef = React.useRef(false);
   React.useEffect(() => {
     const becameReady = voice.ready && !wasReadyRef.current;
     wasReadyRef.current = voice.ready;
     if (!becameReady || !voice.recording) return;
-    if (voicePromptsRef.current) playReadyChime(chimeCtxRef.current);
     try { navigator.vibrate?.(60); } catch { /* not supported */ }
   }, [voice.ready, voice.recording]);
 
@@ -697,14 +674,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     // pay a full cache write every time.
     warmedThisListenRef.current = false;
     setHeardSinceStart(false);
-    // Created inside the tap: iOS only lets a page play audio it started
-    // from a gesture. Used for the "ready" chime.
-    if (voicePrompts && !chimeCtxRef.current) {
-      try {
-        const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-        chimeCtxRef.current = Ctor ? new Ctor() : null;
-      } catch { chimeCtxRef.current = null; }
-    }
   };
 
   const beginFromIntro = () => {
