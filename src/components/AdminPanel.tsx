@@ -252,6 +252,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const [billingRows, setBillingRows] = React.useState<BillingOverviewRow[] | null>(null);
   const [billingMrr, setBillingMrr] = React.useState(0);
   const [billingComped, setBillingComped] = React.useState(0);
+  const [billingTax, setBillingTax] = React.useState<boolean | null>(null);
   const [setupNote, setSetupNote] = React.useState('');
   // AI tab state.
   const [aiModel, setAiModel] = React.useState('');
@@ -397,13 +398,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
 
   const loadBilling = React.useCallback(async () => {
     try {
-      const o = await adminCall<{ subscriptions: BillingOverviewRow[]; mrrUsd: number; compedCount: number }>(
+      const o = await adminCall<{ subscriptions: BillingOverviewRow[]; mrrUsd: number; compedCount: number; taxEnabled?: boolean }>(
         { action: 'admin_overview' },
         'billing-api'
       );
       setBillingRows(o.subscriptions ?? []);
       setBillingMrr(o.mrrUsd ?? 0);
       setBillingComped(o.compedCount ?? 0);
+      setBillingTax(typeof o.taxEnabled === 'boolean' ? o.taxEnabled : null);
     } catch (e) {
       setError(friendlyError(e, 'Could not load billing.'));
       setBillingRows([]);
@@ -1315,6 +1317,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
                     Refresh
                   </button>
                 </div>
+                {billingTax !== null && (
+                  <p className="admin-panel__ai-total">
+                    Stripe Tax: <strong>{billingTax ? 'on' : 'off'}</strong>
+                    {!billingTax && (
+                      <span className="patient-form__hint">
+                        Checkout collects billing addresses and VAT/tax IDs but adds no tax. To turn it on, activate
+                        Stripe Tax in the Stripe Dashboard, then set the STRIPE_TAX_ENABLED=true function secret.
+                      </span>
+                    )}
+                  </p>
+                )}
                 {setupNote && <p className="patient-form__hint">{setupNote}</p>}
                 <p className="patient-form__hint">
                   Setup is idempotent: it creates the four plan prices (by lookup key) and the webhook endpoint in

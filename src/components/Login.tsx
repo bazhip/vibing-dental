@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { LegalNotice } from './LegalNotice';
+import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
@@ -152,6 +154,9 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             // While paid signup is off, accounts land on the free tier.
             plan: PAID_SIGNUP ? plan : 'free',
             account_type: PAID_SIGNUP ? accountType : 'individual',
+            // Agreed by the notice beside "Create account" — the new-user
+            // trigger copies it onto the profile with the server's time.
+            terms_version: TERMS_VERSION,
           },
         },
       });
@@ -192,6 +197,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     }
 
     setBusy(true);
+    markTermsPending();
     const { error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
@@ -270,7 +276,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 label={signup ? 'Sign up with Google' : 'Continue with Google'}
                 disabled={busy}
                 onError={setError}
+                onStart={markTermsPending}
               />
+              {/* The notice sits by both buttons: the email form's submit
+                  is far below on the long signup form. */}
+              <LegalNotice action={signup ? 'signing up' : 'continuing'} className="login-legal--google" />
               <div className="login-or">or {signup ? 'sign up' : 'sign in'} with email</div>
             </>
           )}
@@ -463,6 +473,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               ? 'Continue'
               : 'Sign in'}
           </button>
+          {cloudEnabled && <LegalNotice action={signup ? 'creating an account' : 'signing in'} />}
 
           {cloudEnabled && !signup && (
             <button
@@ -502,13 +513,6 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             </button>
           )}
 
-          {cloudEnabled && (
-            <p className="login-legal">
-              {signup ? 'By creating an account you agree to the ' : 'By signing in you agree to the '}
-              <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and{' '}
-              <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.
-            </p>
-          )}
         </form>
       </div>
     </div>

@@ -17,12 +17,15 @@ export const GoogleSignInButton: React.FC<{
   label?: string;
   disabled?: boolean;
   onError?: (message: string) => void;
-}> = ({ label = 'Continue with Google', disabled, onError }) => {
+  /** Runs just before leaving for Google (e.g. to note the terms notice). */
+  onStart?: () => void;
+}> = ({ label = 'Continue with Google', disabled, onError, onStart }) => {
   const [busy, setBusy] = React.useState(false);
   if (!supabase) return null;
   const client = supabase;
   const start = async () => {
     setBusy(true);
+    onStart?.();
     const { error } = await client.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: returnUrl() },

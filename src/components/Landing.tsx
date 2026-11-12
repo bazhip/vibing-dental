@@ -419,6 +419,7 @@ export const Landing: React.FC<LandingProps> = ({
         <span className="landing__footer-links">
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
+          <a href="/dpa">DPA</a>
           <a href="mailto:bazhip@gmail.com">Contact</a>
         </span>
       </footer>

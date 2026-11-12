@@ -358,3 +358,5 @@
   text-align: center;
 }
 .login-legal a { color: inherit; text-decoration: underline; }
+/* Notice under the Google button, before the "or" divider. */
+.login-legal--google { margin: -0.15rem 0 0.25rem; }

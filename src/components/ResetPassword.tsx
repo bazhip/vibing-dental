@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { markExplicitSignOut } from '../utils/signOutIntent';
 import { friendlyError } from './ui/dialogs';
+import { LegalNotice } from './LegalNotice';
+import { recordTermsAcceptance } from '../utils/terms';
 import './Login.css';
 
 interface ResetPasswordProps {
@@ -62,6 +64,11 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
     if (updateError) {
       setError(friendlyError(updateError, 'Could not set the password. Please try again.'));
       return;
+    }
+    // Activating sits beside the terms notice — record it.
+    if (mode === 'invite') {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) void recordTermsAcceptance(data.user.id);
     }
     onDone();
   };
@@ -147,6 +154,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
           <button type="submit" className="login-button" disabled={busy}>
             {busy ? 'Saving…' : mode === 'invite' ? 'Activate account' : 'Set password'}
           </button>
+          {mode === 'invite' && <LegalNotice action="activating your account" />}
           <button type="button" className="login-switch" onClick={backToSignIn} disabled={busy}>
             Back to sign in
           </button>
