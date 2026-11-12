@@ -17,6 +17,8 @@ import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
 import { FeedbackModal } from './components/FeedbackModal';
 import { CodeField } from './components/CodeField';
 import { ChartSettingsModal, type SettingsSection } from './components/ChartSettingsModal';
+import { WhatsNewModal } from './components/WhatsNewModal';
+import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import type { ChartPrefs } from './utils/chartSettings';
@@ -316,12 +318,38 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // New Google accounts name their practice/doctor first; the walkthrough
   // waits until that's settled.
   const setup = useFinishSetup(profile, cloud.enabled && !trial);
+  // Captured before the walkthrough effect marks it: a device that has
+  // never seen the walkthrough gets that instead of "What's new".
+  const onboardedRef = React.useRef(readString('onboarding.seen', 1, '') === '1');
   React.useEffect(() => {
     if (trial || !profile.loaded || !setup.checked || setup.need) return;
     if (readString('onboarding.seen', 1, '') === '1') return;
     writeString('onboarding.seen', 1, '1');
     setWalkthroughOpen(true);
-  }, [trial, profile.loaded, setup.checked, setup.need]);
+    // The walkthrough covers everything; don't follow it with "What's new".
+    setPref({ whatsNewSeen: WHATS_NEW.id });
+  }, [trial, profile.loaded, setup.checked, setup.need]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // "What's new": once per account (the seen id is in chart settings),
+  // after the account's settings load. Reopenable from the menu.
+  const [whatsNewOpen, setWhatsNewOpen] = React.useState(false);
+  const whatsNewShownRef = React.useRef(false);
+  React.useEffect(() => {
+    if (whatsNewShownRef.current) return;
+    if (!shouldShowWhatsNew({
+      signedIn: !trial && cloud.enabled,
+      settingsLoaded: chartSettings.loaded,
+      seenId: prefs.whatsNewSeen,
+      onboardedDevice: onboardedRef.current,
+      walkthroughOpen,
+    })) return;
+    whatsNewShownRef.current = true;
+    setWhatsNewOpen(true);
+  }, [trial, cloud.enabled, chartSettings.loaded, prefs.whatsNewSeen, walkthroughOpen]);
+  const closeWhatsNew = () => {
+    setWhatsNewOpen(false);
+    if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
+  };
   // "My charts" dialog — a real route (#/library) so the Back button and
   // gesture-back close it instead of exiting the site, and a refresh
   // reopens it.
@@ -1244,6 +1272,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             onOpenChartSettings={() => setChartSettingsOpen('all')}
+            onOpenWhatsNew={() => setWhatsNewOpen(true)}
             cloud={
               cloud.enabled
                 ? {
@@ -1365,6 +1394,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           branding={{ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }}
         />
       )}
+
+      {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
 
       {chartSettingsOpen && (
         <ChartSettingsModal
