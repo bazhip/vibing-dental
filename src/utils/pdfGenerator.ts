@@ -1,6 +1,6 @@
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { safeFont } from './pdf/safeFont';
-import { saveFile } from '../native/saveFile';
+import { saveChartPdf } from '../native/saveFile';
 import {
   ToothData,
   PatientInfo,
@@ -361,5 +361,5 @@ export async function generateDentalChartPDF(
   );
   const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   const filename = `${sanitize(patientInfo.patientName)}_${sanitize(patientInfo.patientNumber)}_${patientInfo.date}.pdf`;
-  await saveFile(pdfBytes, filename, 'application/pdf');
+  await saveChartPdf(pdfBytes, filename);
 }

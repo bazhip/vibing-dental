@@ -1,5 +1,5 @@
 import React from 'react';
-import { saveFile } from '../native/saveFile';
+import { saveChartPdf } from '../native/saveFile';
 import { toast } from './ui/dialogs';
 import {
   buildDentalChartPDFBytes,
@@ -194,7 +194,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     const { patientInfo } = snapshot;
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
     const blob = pdfBlobRef.current;
-    if (blob) void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
+    if (blob) void saveChartPdf(blob, filename).catch(() => toast("Couldn't save the file."));
   };
 
   if (!open) return null;

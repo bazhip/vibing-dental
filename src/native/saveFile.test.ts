@@ -10,13 +10,16 @@ vi.mock('@capacitor/filesystem', () => ({
   Directory: { Cache: 'CACHE' },
 }));
 vi.mock('@capacitor/share', () => ({ Share: { share: (...a: unknown[]) => share(...a) } }));
+const hapticSuccess = vi.fn();
+vi.mock('./haptics', () => ({ hapticSuccess: () => hapticSuccess() }));
 
-import { saveFile } from './saveFile';
+import { saveFile, saveChartPdf } from './saveFile';
 
 describe('saveFile', () => {
   beforeEach(() => {
     writeFile.mockReset();
     share.mockReset();
+    hapticSuccess.mockReset();
     native = false;
     (URL as any).createObjectURL = vi.fn(() => 'blob:x');
     (URL as any).revokeObjectURL = vi.fn();
@@ -37,7 +40,7 @@ describe('saveFile', () => {
     native = true;
     writeFile.mockResolvedValue({ uri: 'file:///cache/a.pdf' });
     share.mockResolvedValue({});
-    await saveFile(new Uint8Array([104, 105]), 'a.pdf', 'application/pdf');
+    await expect(saveFile(new Uint8Array([104, 105]), 'a.pdf', 'application/pdf')).resolves.toBe(true);
     expect(writeFile).toHaveBeenCalledWith({ path: 'a.pdf', data: 'aGk=', directory: 'CACHE' });
     expect(share).toHaveBeenCalledWith({ files: ['file:///cache/a.pdf'], title: 'a.pdf' });
   });
@@ -54,7 +57,7 @@ describe('saveFile', () => {
     native = true;
     writeFile.mockResolvedValue({ uri: 'file:///c/a.pdf' });
     share.mockRejectedValue(new Error('Share canceled'));
-    await expect(saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf')).resolves.toBeUndefined();
+    await expect(saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf')).resolves.toBe(false);
   });
 
   it('native: other share errors throw', async () => {
@@ -62,5 +65,33 @@ describe('saveFile', () => {
     writeFile.mockResolvedValue({ uri: 'file:///c/a.pdf' });
     share.mockRejectedValue(new Error('boom'));
     await expect(saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf')).rejects.toThrow('boom');
+  });
+});
+
+describe('saveChartPdf', () => {
+  beforeEach(() => {
+    writeFile.mockReset().mockResolvedValue({ uri: 'file:///c/a.pdf' });
+    share.mockReset();
+    hapticSuccess.mockReset();
+    native = true;
+  });
+
+  it('buzzes after the PDF is saved', async () => {
+    share.mockResolvedValue({});
+    await saveChartPdf(new Uint8Array([1]), 'a.pdf');
+    expect(share).toHaveBeenCalledTimes(1);
+    expect(hapticSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it('no buzz when the share sheet is dismissed', async () => {
+    share.mockRejectedValue(new Error('Share canceled'));
+    await saveChartPdf(new Uint8Array([1]), 'a.pdf');
+    expect(hapticSuccess).not.toHaveBeenCalled();
+  });
+
+  it('no buzz when saving fails', async () => {
+    share.mockRejectedValue(new Error('boom'));
+    await expect(saveChartPdf(new Uint8Array([1]), 'a.pdf')).rejects.toThrow('boom');
+    expect(hapticSuccess).not.toHaveBeenCalled();
   });
 });
