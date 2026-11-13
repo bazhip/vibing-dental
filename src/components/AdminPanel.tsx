@@ -9,6 +9,7 @@ import { PLAN_LIMITS } from '../hooks/useProfile';
 /** Subscription states that unlock the stored plan (matches useProfile). */
 const PAID_STATUSES = ['active', 'trialing', 'comped', 'past_due'];
 import { supabase } from '../utils/supabaseClient';
+import { emailLinkOrigin } from '../native/authReturn';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { confirmDialog, friendlyError, promptDialog } from './ui/dialogs';
@@ -606,7 +607,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
         action: 'practice_resend_invite',
         practiceId: selectedPractice.id,
         userId,
-        redirectTo: window.location.origin + window.location.pathname,
+        redirectTo: emailLinkOrigin(),
       });
       await refresh();
     });

@@ -82,6 +82,14 @@ describe('finish setup', () => {
     await waitFor(() => expect(screen.queryByText('Finish setting up')).toBeNull());
   });
 
+  it('asks a new Apple account for its names too', async () => {
+    auth.getUser.mockResolvedValue(googleUser({ full_name: 'Jane Smith' }, ['apple']));
+    render(<Harness profile={makeProfile()} />);
+    expect(await screen.findByText('Finish setting up')).toBeInTheDocument();
+    expect(screen.getByLabelText('Doctor name')).toHaveValue('Jane Smith');
+    expect(screen.getByLabelText('Practice name')).toBeInTheDocument();
+  });
+
   it('uploads an optional logo after saving the names', async () => {
     URL.createObjectURL = URL.createObjectURL ?? (() => 'blob:preview');
     URL.revokeObjectURL = URL.revokeObjectURL ?? (() => {});

@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { emailLinkOrigin } from '../native/authReturn';
 import { friendlyError } from '../components/ui/dialogs';
 
 /**
@@ -95,15 +96,16 @@ export function useTeam(open: boolean): UseTeamReturn {
   }, [refresh]);
 
   const addMember = React.useCallback(async (email: string): Promise<'invited' | 'pending'> => {
-    // Invited accounts get an email link back to wherever the owner is.
-    const redirectTo = window.location.origin + window.location.pathname;
+    // Invited accounts get an email link back to wherever the owner is
+    // (the website when the owner is in the app).
+    const redirectTo = emailLinkOrigin();
     const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo });
     await refresh();
     return res.pending ? 'pending' : 'invited';
   }, [refresh]);
 
   const resendInvite = React.useCallback(async (userId: string) => {
-    const redirectTo = window.location.origin + window.location.pathname;
+    const redirectTo = emailLinkOrigin();
     await call({ action: 'resend_invite', userId, redirectTo });
     await refresh();
   }, [refresh]);

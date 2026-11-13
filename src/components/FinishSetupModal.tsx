@@ -8,12 +8,12 @@ import './Login.css';
 import './AccountSurfaces.css';
 
 /**
- * Google sign-up skips the signup form, so a new Google account starts
+ * Google/Apple sign-up skips the signup form, so a new account starts
  * with no practice or doctor name — both print on every chart. This asks
- * for them once (doctor name pre-filled from the Google profile), plus an
+ * for them once (doctor name pre-filled from the Google/Apple profile), plus an
  * optional logo — the same one email sign-up offers.
  *
- * Only for accounts signed in with Google that are missing a name; team
+ * Only for accounts signed in with Google or Apple that are missing a name; team
  * members get the practice name from their practice, so they're asked
  * for their doctor name at most. "Later" hides it on this browser.
  */
@@ -34,11 +34,12 @@ export function useFinishSetup(profile: UseProfileReturn, enabled: boolean) {
       if (cancelled) return;
       const user = data.user;
       const providers = (user?.app_metadata?.providers as string[] | undefined) ?? [user?.app_metadata?.provider];
-      const viaGoogle = providers.includes('google');
+      // Apple sign-ups skip the signup form just like Google ones.
+      const viaOAuth = providers.includes('google') || providers.includes('apple');
       const practice = !profile.practiceId && !profile.practiceName.trim();
       const doctor = !profile.doctorName.trim();
       const dismissed = user ? readString(`setup.dismissed.${user.id}`, 1, '') === '1' : true;
-      if (user && viaGoogle && (practice || doctor) && !dismissed) {
+      if (user && viaOAuth && (practice || doctor) && !dismissed) {
         const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
         const full = String(meta.full_name ?? meta.name ?? '').trim();
         setNeed({ practice, doctor, suggestedDoctor: full, userId: user.id });
