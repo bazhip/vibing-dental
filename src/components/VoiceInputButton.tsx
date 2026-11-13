@@ -1,4 +1,5 @@
 import React from 'react';
+import { saveFile } from '../native/saveFile';
 import ReactDOM from 'react-dom';
 import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
@@ -757,14 +758,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (!text) return;
     const start = voice.startedAt ?? new Date();
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `transcript_${start.toISOString().replace(/[:T]/g, '-').slice(0, 16)}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const filename = `transcript_${start.toISOString().replace(/[:T]/g, '-').slice(0, 16)}.txt`;
+    void saveFile(blob, filename, 'text/plain;charset=utf-8').catch(() => toast("Couldn't save the file."));
   };
 
   // Let the page scroll its last rows clear of the phone bottom sheet.
