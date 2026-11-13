@@ -3,7 +3,10 @@ import { supabase } from '../utils/supabaseClient';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { readString, writeString } from '../utils/storage';
-import { friendlyError, toast } from './ui/dialogs';
+import { chooseDialog, friendlyError, toast } from './ui/dialogs';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -65,7 +68,9 @@ export const FinishSetupModal: React.FC<{
   const [doctorName, setDoctorName] = React.useState(profile.doctorName || need.suggestedDoctor);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
-  const modalRef = useModalFocus(true);
+  const native = isNativeApp();
+  const { t } = useTranslation();
+  const modalRef = useModalFocus(!native);
   // Optional logo — offered alongside the practice name (a solo account's
   // own logo), never to team members, whose logo belongs to the practice.
   const offerLogo = need.practice && !profile.logoUrl;
@@ -83,8 +88,8 @@ export const FinishSetupModal: React.FC<{
     onDone();
   };
 
-  const save = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const save = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if ((need.practice && !practiceName.trim()) || (need.doctor && !doctorName.trim())) {
       setError('Both names are needed — they appear on your charts.');
       return;
@@ -116,6 +121,86 @@ export const FinishSetupModal: React.FC<{
     }
   };
 
+  const blurb =
+    need.practice && need.doctor
+      ? 'Your practice and doctor name appear on every chart you print.'
+      : need.practice
+        ? 'Your practice name appears on every chart you print.'
+        : 'Your doctor name appears on every chart you print.';
+
+  if (native) {
+    // A sheet: Later (or swiping it away) hides it on this device, Save saves.
+    const dirty =
+      practiceName !== profile.practiceName || doctorName !== (profile.doctorName || need.suggestedDoctor) || !!logoFile;
+    return (
+      <Sheet
+        open
+        onClose={later}
+        title="Finish setting up"
+        cancelLabel="Later"
+        doneLabel={busy ? t('ios.sheets.savingBusy') : t('actions.save')}
+        onDone={() => void save()}
+        doneDisabled={busy}
+        confirmDismiss={async () =>
+          !busy &&
+          (!dirty ||
+            (await chooseDialog({
+              title: t('ios.sheets.discard.title'),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep'),
+            })) === 'discard')
+        }
+      >
+        <form className="ios-form" onSubmit={save}>
+          <p className="ios-form-text">{blurb}</p>
+          <div className="ios-form-group">
+            {need.practice && (
+              <label className="ios-field">
+                <span className="ios-field__label">Practice name</span>
+                <input
+                  className="ios-field__input"
+                  value={practiceName}
+                  autoComplete="organization"
+                  onChange={(e) => setPracticeName(e.target.value)}
+                />
+              </label>
+            )}
+            {need.doctor && (
+              <label className="ios-field">
+                <span className="ios-field__label">Doctor name</span>
+                <input
+                  className="ios-field__input"
+                  value={doctorName}
+                  autoComplete="name"
+                  placeholder="e.g. Dr. Jane Smith"
+                  onChange={(e) => setDoctorName(e.target.value)}
+                />
+              </label>
+            )}
+            {offerLogo && (
+              <label className="ios-field ios-field--file">
+                {logoPreview && <img src={logoPreview} alt="" className="ios-field__thumb" />}
+                <span className="ios-field__label">{logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}</span>
+                <input
+                  type="file"
+                  className="ios-field__file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label="Practice logo (optional)"
+                  disabled={busy}
+                  onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            )}
+          </div>
+          {offerLogo && <p className="ios-form-footer">Printed at the top of your charts. PNG, JPG or WebP.</p>}
+          {error && <p className="ios-form-error" role="alert">{error}</p>}
+          {/* Return on the keyboard saves, like Save in the bar. */}
+          <button type="submit" hidden tabIndex={-1} />
+        </form>
+      </Sheet>
+    );
+  }
+
   return (
     <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label="Finish setting up">
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
@@ -123,13 +208,7 @@ export const FinishSetupModal: React.FC<{
           <h2>Finish setting up</h2>
         </header>
         <form className="ai-settings-body" onSubmit={save}>
-          <p className="ai-settings-blurb">
-            {need.practice && need.doctor
-              ? 'Your practice and doctor name appear on every chart you print.'
-              : need.practice
-                ? 'Your practice name appears on every chart you print.'
-                : 'Your doctor name appears on every chart you print.'}
-          </p>
+          <p className="ai-settings-blurb">{blurb}</p>
           {need.practice && (
             <label className="patient-form__label">
               Practice name

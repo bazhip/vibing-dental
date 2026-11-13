@@ -5,6 +5,7 @@ import { Icon, type IconName } from './icons';
 import { Stack, useStack } from './Stack';
 import { TabBar } from './TabBar';
 import { ScrollContainerContext } from './scrollContainer';
+import { isSheetOpen } from './Sheet';
 
 /**
  * The app's top level: four tabs (Chart, Patients, Rechecks, Settings).
@@ -175,6 +176,37 @@ export function AppShell({
   const setCollapsed = setCollapsedPref;
   const sidebarShown = sidebar && !collapsed;
   const sidebarId = React.useId();
+  const overlayOpen = overlay && sidebarShown;
+  const asideRef = React.useRef<HTMLElement>(null);
+  const reopenRef = React.useRef<HTMLButtonElement>(null);
+
+  // The overlay sidebar is modal (iPadOS): focus moves into it, the content
+  // behind is inert, Escape closes it, and focus comes back to the button.
+  const wasOverlayOpen = React.useRef(false);
+  React.useEffect(() => {
+    if (overlayOpen) {
+      const aside = asideRef.current;
+      aside?.querySelector<HTMLElement>('.ios-appshell__item--selected, button')?.focus({ preventScroll: true });
+    } else if (wasOverlayOpen.current) {
+      const active = document.activeElement;
+      if (!active || active === document.body || asideRef.current?.contains(active)) {
+        reopenRef.current?.focus({ preventScroll: true });
+      }
+    }
+    wasOverlayOpen.current = overlayOpen;
+  }, [overlayOpen]);
+  React.useEffect(() => {
+    if (!overlayOpen) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      // An open sheet (above everything) takes Escape first, whichever
+      // listener was registered first.
+      if (e.key !== 'Escape' || e.defaultPrevented || isSheetOpen()) return;
+      e.preventDefault();
+      setCollapsedPref(true);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [overlayOpen]);
 
   const handles = React.useRef<Partial<Record<AppTab, TabHandle>>>({});
   const [depths, setDepths] = React.useState<Partial<Record<AppTab, number>>>({});
@@ -269,11 +301,11 @@ export function AppShell({
         )}
         {sidebar && (
           <aside
+            ref={asideRef}
             id={sidebarId}
             className="ios-appshell__sidebar"
             aria-hidden={sidebarShown ? undefined : true}
             inert={sidebarShown ? undefined : true}
-            onKeyDown={overlay ? (e) => { if (e.key === 'Escape') setCollapsed(true); } : undefined}
           >
             <div className="ios-appshell__sidebar-head">
               <button
@@ -333,7 +365,7 @@ export function AppShell({
             </nav>
           </aside>
         )}
-        <div className="ios-appshell__content">
+        <div className="ios-appshell__content" inert={overlayOpen ? true : undefined}>
           {APP_TABS.map((tab) => {
             const shown = tab === activeTab;
             return (
@@ -361,6 +393,7 @@ export function AppShell({
             screens' bars leave room (pushed screens show Back there). */}
         {sidebar && collapsed && !(depths[activeTab] ?? 0) && (
           <button
+            ref={reopenRef}
             type="button"
             className="ios-glass-button ios-glass-button--icon ios-appshell__sidebar-reopen"
             aria-label={t('ios.shell.showSidebar')}

@@ -3,6 +3,7 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Sheet } from './Sheet';
 import { ContextMenu } from './ContextMenu';
+import { ScrollContainerContext } from './scrollContainer';
 
 /** Drag with pointer events from (y0) to (y1) on `el`, in a few steps. */
 function drag(el: Element, y0: number, y1: number) {
@@ -34,6 +35,12 @@ describe('Sheet', () => {
     render(<Sheet open onClose={onClose} title="What’s new"><p>Body</p></Sheet>);
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     return waitFor(() => expect(onClose).toHaveBeenCalled());
+  });
+
+  it('with Done but no Cancel, Done is the only bar button (no extra close control)', () => {
+    render(<Sheet open onClose={() => {}} title="Style" doneLabel="Done"><p>Body</p></Sheet>);
+    expect(screen.queryByRole('button', { name: 'Close' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
   });
 
   it('Done calls onDone; a disabled Done does nothing', () => {
@@ -95,6 +102,17 @@ describe('Sheet', () => {
     expect(closeA).not.toHaveBeenCalled();
     rerender(<Two b />);
     expect(closeA).toHaveBeenCalledTimes(1);
+  });
+
+  it('gives its body as the scroll container to what it contains', () => {
+    let seen: HTMLElement | null | undefined;
+    function Probe() {
+      const ref = React.useContext(ScrollContainerContext);
+      React.useEffect(() => { seen = ref?.current; });
+      return null;
+    }
+    render(<Sheet open onClose={() => {}} title="T"><Probe /></Sheet>);
+    expect(seen).toBe(body());
   });
 
   it('a drag that starts in a scrolled body scrolls the content, not the sheet', async () => {

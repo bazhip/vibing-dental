@@ -3,6 +3,7 @@ import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AppShell, useAppShell, type AppTab, type AppShellHandle, REGULAR_WIDTH_QUERY, DOCKED_SIDEBAR_QUERY } from './AppShell';
 import { useStack } from './Stack';
+import { Sheet } from './Sheet';
 
 vi.mock('../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi.fn(), hapticImpact: vi.fn(), hapticSuccess: vi.fn() }));
 
@@ -264,6 +265,48 @@ describe('AppShell (iPad portrait: overlay sidebar)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
     fireEvent.click(document.querySelector('.ios-appshell__scrim')!);
     expect(shell).toHaveClass('ios-appshell--sidebar-collapsed');
+  });
+});
+
+describe('AppShell (iPad portrait: overlay sidebar is modal)', () => {
+  it('moves focus into the sidebar when shown; content behind is inert until it closes', () => {
+    mockWidth('portrait');
+    render(<Harness />);
+    const content = document.querySelector('.ios-appshell__content')!;
+    expect(content).not.toHaveAttribute('inert');
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    const aside = document.querySelector('.ios-appshell__sidebar')!;
+    expect(aside.contains(document.activeElement)).toBe(true);
+    expect(content).toHaveAttribute('inert');
+    fireEvent.click(document.querySelector('.ios-appshell__scrim')!);
+    expect(content).not.toHaveAttribute('inert');
+  });
+
+  it('Escape closes it from anywhere and returns focus to the sidebar button', () => {
+    mockWidth('portrait');
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    (document.activeElement as HTMLElement).blur();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(document.querySelector('.ios-appshell')).toHaveClass('ios-appshell--sidebar-collapsed');
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Show sidebar' }));
+  });
+
+  it('an open sheet takes Escape before the overlay sidebar', async () => {
+    mockWidth('portrait');
+    const onClose = vi.fn();
+    const { rerender } = render(<><Harness /><Sheet open={false} onClose={onClose} title="S"><p>s</p></Sheet></>);
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    rerender(<><Harness /><Sheet open onClose={onClose} title="S"><p>s</p></Sheet></>);
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+    expect(document.querySelector('.ios-appshell')).not.toHaveClass('ios-appshell--sidebar-collapsed');
+  });
+
+  it('the docked sidebar never makes the content inert', () => {
+    mockWidth('landscape');
+    render(<Harness />);
+    expect(document.querySelector('.ios-appshell__content')).not.toHaveAttribute('inert');
   });
 });
 

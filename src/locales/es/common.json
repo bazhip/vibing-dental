@@ -58,6 +58,27 @@
       "signIn": "Iniciar sesión",
       "createAccount": "Crear una cuenta gratuita",
       "signOutTitle": "¿Cerrar sesión en ToothOps?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documentos",
+        "share": "Compartir PDF"
+      },
+      "reminder": {
+        "send": "Enviar"
+      },
+      "discard": {
+        "title": "¿Descartar los cambios?",
+        "discard": "Descartar cambios",
+        "keep": "Seguir editando"
+      },
+      "join": {
+        "join": "Unirse"
+      },
+      "customColor": "Color personalizado…",
+      "savingBusy": "Guardando…",
+      "sendingBusy": "Enviando…",
+      "joiningBusy": "Uniéndose…"
     }
   }
 }

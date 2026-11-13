@@ -3,11 +3,14 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppLock } from '../native/appLock';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
+import { Icon, type IconName } from '../ios/icons';
+
+const APP_ICON: IconName = 'tooth';
 
 const coverStyle: React.CSSProperties = {
   position: 'fixed', inset: 0, zIndex: 100000, display: 'flex', flexDirection: 'column',
   alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24, textAlign: 'center',
-  background: 'var(--bg, #fff)', color: 'var(--text, #111)',
+  background: 'var(--ios-bg, #fff)', color: 'var(--ios-label, #111)',
 };
 
 /** While the cover is up, everything else on the page is inert: no taps,
@@ -44,25 +47,32 @@ export const AppLockOverlay: React.FC<{ lockOnLaunch?: boolean }> = ({ lockOnLau
     return createPortal(<div ref={ref} data-testid="privacy-cover" aria-hidden="true" style={coverStyle} />, document.body);
   }
   return createPortal(
-    <div ref={ref} role="dialog" aria-modal="true" aria-label={t('lock.title')} style={coverStyle}>
-      <h2>{t('lock.title')}</h2>
+    <div ref={ref} role="dialog" aria-modal="true" aria-label={t('lock.title')} className="ios-auth-screen ios-lock" style={coverStyle}>
+      <span className="login-app-icon" aria-hidden="true">
+        <Icon name={APP_ICON} size={34} />
+      </span>
+      <h2 className="ios-lock__title">{t('lock.title')}</h2>
       {unavailable ? (
         // No automatic re-prompt: it can only fail again. "Try again" is
         // for after they've set a passcode in Settings.
-        <p>{t('lock.unavailable')}</p>
+        <p className="ios-lock__text">{t('lock.unavailable')}</p>
       ) : (
-        <p>{t('lock.prompt')}</p>
+        <p className="ios-lock__text">{t('lock.prompt')}</p>
       )}
-      <button type="button" onClick={() => void unlock()}>{t('common:actions.tryAgain')}</button>
-      <button
-        type="button"
-        // No unsaved-changes prompt here: the lock screen hides the chart,
-        // and signing out from it must still clear patient data.
-        onClick={() => void signOutAndSweep()}
-        style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
-      >
-        {t('common:actions.signOut')}
-      </button>
+      <div className="ios-lock__actions">
+        <button type="button" className="ios-button ios-button--filled" onClick={() => void unlock()}>
+          {t('common:actions.tryAgain')}
+        </button>
+        <button
+          type="button"
+          className="ios-button ios-button--plain"
+          // No unsaved-changes prompt here: the lock screen hides the chart,
+          // and signing out from it must still clear patient data.
+          onClick={() => void signOutAndSweep()}
+        >
+          {t('common:actions.signOut')}
+        </button>
+      </div>
     </div>,
     document.body
   );

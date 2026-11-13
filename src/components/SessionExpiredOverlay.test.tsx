@@ -40,4 +40,26 @@ describe('SessionExpiredOverlay', () => {
     expect(screen.getByRole('button', { name: 'Continue with Apple' })).toBeInTheDocument();
     expect(screen.getByText(HINT)).toBeInTheDocument();
   });
+
+  it('web: the centred modal, as before', () => {
+    render(<SessionExpiredOverlay email="me@vet.com" onSignOut={vi.fn()} />);
+    expect(document.querySelector('.ai-settings-overlay .session-expired-modal')).not.toBeNull();
+    expect(screen.getByLabelText(/^Email/).closest('.login-field')).not.toBeNull();
+    expect(document.querySelector('.ios-form-group')).toBeNull();
+  });
+
+  it('app: a full-screen iOS sign-in (no way to dismiss), grouped fields and iOS buttons', () => {
+    cap.native = true;
+    render(<SessionExpiredOverlay email="me@vet.com" onSignOut={vi.fn()} />);
+    const screenEl = screen.getByRole('dialog', { name: 'Session expired — sign in to continue' });
+    expect(screenEl).toHaveClass('ios-auth-screen');
+    expect(document.querySelector('.ai-settings-overlay')).toBeNull();
+    const group = screenEl.querySelector('.ios-form-group')!;
+    expect(group.contains(screen.getByLabelText(/^Email/))).toBe(true);
+    expect(group.contains(screen.getByLabelText(/^Password/))).toBe(true);
+    expect(screen.getByRole('button', { name: 'Sign in and continue charting' })).toHaveClass('ios-button--filled');
+    expect(screen.getByRole('button', { name: 'Sign out instead — leave this chart' })).toHaveClass('ios-button--plain');
+    expect(screen.queryByRole('button', { name: /Close|Cancel/ })).toBeNull();
+  });
 });
+

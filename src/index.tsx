@@ -6,6 +6,7 @@ import './index.css';
 import './styles/native-ios.css';
 import './ios/tokens.css';
 import './ios/ios.css';
+import './ios/sheets.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DialogHost } from './components/ui/dialogs';
@@ -22,6 +23,13 @@ import { isIosPreview } from './ios/preview';
 const IosGallery =
   import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosGallery') === '1'
     ? React.lazy(() => import('./ios/Gallery'))
+    : null;
+
+// DEV-only: `?iosPreview=1&iosFixture=<name>` renders one sheet or sign-in
+// surface with sample data (src/ios/SheetFixtures.tsx), for screenshots.
+const IosFixture =
+  import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosFixture')
+    ? React.lazy(() => import('./ios/SheetFixtures'))
     : null;
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
@@ -67,6 +75,10 @@ root.render(
       {IosGallery ? (
         <React.Suspense fallback={null}>
           <IosGallery />
+        </React.Suspense>
+      ) : IosFixture ? (
+        <React.Suspense fallback={null}>
+          <IosFixture />
         </React.Suspense>
       ) : (
         <App />

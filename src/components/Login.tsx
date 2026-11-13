@@ -10,6 +10,7 @@ import { uploadPracticeLogo } from '../hooks/useProfile';
 import { authRedirectUrl } from '../native/authReturn';
 import { WEB_ORIGIN } from '../native/platform';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
+import { Icon } from '../ios/icons';
 import './Login.css';
 
 interface LoginProps {
@@ -224,6 +225,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     onAuthenticate();
   };
 
+  // iOS app (sign-in only): system styling — inset-grouped fields, filled
+  // and plain iOS buttons. The website form keeps its own classes.
+  const app = appMode;
+  const fieldClass = app ? 'ios-field' : 'login-field';
+  const fieldLabelClass = app ? 'ios-field__label' : 'login-field__label';
+  const inputClass = app ? 'ios-field__input' : 'login-input';
+  const linkButtonClass = app ? 'ios-button ios-button--plain' : 'login-switch';
+
   if (mode === 'check-email') {
     return (
       <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
@@ -262,10 +271,55 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     );
   }
 
+  const emailField = cloudEnabled && (
+    <label className={fieldClass}>
+      <span className={fieldLabelClass}>Email</span>
+      <input
+        type="email"
+        className={inputClass}
+        placeholder="you@yourpractice.com"
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        autoFocus={!signup && !app}
+      />
+    </label>
+  );
+  const passwordField = (
+    <label className={fieldClass}>
+      <span className={fieldLabelClass}>Password</span>
+      <span className={app ? 'ios-field__control' : 'login-password'}>
+        <input
+          type={showPassword ? 'text' : 'password'}
+          className={inputClass}
+          autoComplete={signup ? 'new-password' : 'current-password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoFocus={!cloudEnabled && !app}
+          minLength={signup ? MIN_PASSWORD : undefined}
+        />
+        <button
+          type="button"
+          className={app ? 'ios-field__accessory' : 'login-password__toggle'}
+          onClick={() => setShowPassword((v) => !v)}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+          aria-pressed={showPassword}
+        >
+          {showPassword ? 'Hide' : 'Show'}
+        </button>
+      </span>
+    </label>
+  );
+
   return (
-    <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
+    <div className={embedded ? 'login-container login-container--embedded' : app ? 'login-container login-container--app' : 'login-container'}>
       <div className="login-box">
         <div className="login-header">
+          {app && (
+            <span className="login-app-icon" aria-hidden="true">
+              <Icon name="tooth" size={34} />
+            </span>
+          )}
           <h1>ToothOps Charting</h1>
           <p>
             {!cloudEnabled
@@ -414,44 +468,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             </>
           )}
 
-          {cloudEnabled && (
-            <label className="login-field">
-              <span className="login-field__label">Email</span>
-              <input
-                type="email"
-                className="login-input"
-                placeholder="you@yourpractice.com"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoFocus={!signup}
-              />
-            </label>
+          {app ? (
+            <div className="ios-form-group">
+              {emailField}
+              {passwordField}
+            </div>
+          ) : (
+            <>
+              {emailField}
+              {passwordField}
+            </>
           )}
-
-          <label className="login-field">
-            <span className="login-field__label">Password</span>
-            <span className="login-password">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                className="login-input"
-                autoComplete={signup ? 'new-password' : 'current-password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus={!cloudEnabled}
-                minLength={signup ? MIN_PASSWORD : undefined}
-              />
-              <button
-                type="button"
-                className="login-password__toggle"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                aria-pressed={showPassword}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
-            </span>
-          </label>
           {cloudEnabled && signup && (
             <span className={`login-hint${password && password.length < MIN_PASSWORD ? ' login-hint--warn' : ''}`}>
               At least {MIN_PASSWORD} characters{password ? ` · ${password.length}/${MIN_PASSWORD}` : ''}.
@@ -480,7 +507,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           )}
           {notice && <div className="login-notice" role="status">{notice}</div>}
 
-          <button type="submit" className="login-button" disabled={busy}>
+          <button type="submit" className={app ? 'ios-button ios-button--filled' : 'login-button'} disabled={busy}>
             {busy
               ? signup
                 ? 'Creating account…'
@@ -496,7 +523,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           {cloudEnabled && !signup && (
             <button
               type="button"
-              className="login-switch"
+              className={linkButtonClass}
               onClick={async () => {
                 if (!supabase) return;
                 const target = email.trim();
@@ -522,7 +549,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           {cloudEnabled && appMode && (
             <a
               href={WEB_ORIGIN}
-              className="login-switch login-signup-link"
+              className={app ? 'ios-button ios-button--plain login-signup-link' : 'login-switch login-signup-link'}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => {

@@ -2,6 +2,10 @@ import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { friendlyError } from './ui/dialogs';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
+import { List, ListSection, SwitchRow } from '../ios/List';
 
 interface JoinPracticeModalProps {
   token: string;
@@ -31,7 +35,9 @@ async function callTeamApi<T>(body: Record<string, unknown>): Promise<T> {
  * separate, explicit choice.
  */
 export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onDone }) => {
-  const ref = useModalFocus<HTMLDivElement>(true);
+  const native = isNativeApp();
+  const { t } = useTranslation();
+  const ref = useModalFocus<HTMLDivElement>(!native);
   const [practiceName, setPracticeName] = React.useState<string | null>(null);
   const [alreadyMember, setAlreadyMember] = React.useState(false);
   const [shareExisting, setShareExisting] = React.useState(false);
@@ -61,6 +67,49 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
       setBusy(false);
     }
   };
+
+  if (native) {
+    // A sheet: Not now (or swiping it away) declines, Join accepts.
+    const canJoin = !!practiceName && !alreadyMember && !error;
+    return (
+      <Sheet
+        open
+        onClose={() => onDone(false)}
+        title={practiceName ? `Join ${practiceName}?` : 'Practice invitation'}
+        cancelLabel={alreadyMember || error ? t('actions.close') : 'Not now'}
+        doneLabel={canJoin ? (busy ? t('ios.sheets.joiningBusy') : t('ios.sheets.join.join')) : undefined}
+        onDone={canJoin ? () => void accept() : undefined}
+        doneDisabled={busy}
+        confirmDismiss={() => !busy}
+        detents={['medium', 'large']}
+      >
+        <div className="ios-form">
+          {!practiceName && !error && <p className="ios-form-text">Checking your invitation…</p>}
+          {practiceName && alreadyMember && <p className="ios-form-text">You’re already a member of {practiceName}.</p>}
+          {canJoin && (
+            <p className="ios-form-text">
+              You’ve been invited to join <strong>{practiceName}</strong> on ToothOps. Members share the
+              practice’s charts, report templates and recheck list, and new charts you save are shared
+              with the team.
+            </p>
+          )}
+          {error && <p className="ios-form-error" role="alert">{error}</p>}
+        </div>
+        {canJoin && (
+          <List>
+            <ListSection>
+              <SwitchRow
+                title="Also share the charts I’ve already made"
+                checked={shareExisting}
+                onChange={setShareExisting}
+                disabled={busy}
+              />
+            </ListSection>
+          </List>
+        )}
+      </Sheet>
+    );
+  }
 
   return (
     <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-labelledby="join-title">

@@ -7,7 +7,8 @@
     "cameraFailed": "Die Kamera konnte nicht geöffnet werden.",
     "cameraNoPhoto": "Die Kamera hat kein Foto geliefert.",
     "cameraReadFailed": "Das Foto konnte nicht gelesen werden ({{status}}).",
-    "limitReached": "Diese Karte hat ihr Limit von {{max}} Bildern erreicht.",
+    "limitReached_one": "Diese Karte hat ihr Limit von {{count}} Bild erreicht.",
+    "limitReached_other": "Diese Karte hat ihr Limit von {{count}} Bildern erreicht.",
     "uploadsUnavailable": "Foto-Uploads sind für dieses Konto nicht verfügbar.",
     "formatsApp": "PNG, JPEG oder WEBP.",
     "dicomUnavailable": "DICOM-Uploads sind für dieses Konto nicht verfügbar. Exportieren Sie die Röntgenaufnahme als JPEG oder PNG, um sie hinzuzufügen."

@@ -11,13 +11,14 @@ import {
   useMediaQuery,
   VelocityTracker,
 } from './gesture';
+import { ScrollContainerContext } from './scrollContainer';
 
 /**
  * iOS modal sheet.
  *
  * - Grabber; Cancel on the leading edge and Done on the trailing edge
- *   (HIG). Without a Cancel button there is an xmark close control, so
- *   there is always a visible way out.
+ *   (HIG). With neither there is an xmark close control, so there is
+ *   always a visible way out.
  * - Swipe down to dismiss from the grabber/header anywhere, or from the
  *   body when its content is scrolled to the top. A drag that starts in
  *   scrolled content scrolls the content. Release decides by distance and
@@ -28,6 +29,8 @@ import {
  * - Detents: `['medium', 'large']` opens at medium; drag (or scroll the
  *   body) up to expand. Default is large only.
  * - Only one sheet at a time: opening a sheet closes the one already open.
+ * - The body is the scroll container (ScrollContainerContext) for what it
+ *   contains, so a NavBar inside follows the sheet, not the screen below.
  * - Regular-width iPad (≥ 768 × 600) shows a centred form sheet.
  * - Focus moves into the sheet, Tab is trapped inside, and focus returns
  *   to where it was on close.
@@ -61,6 +64,11 @@ const CLOSE_ICON: IconName = 'xmark';
 
 /** The sheet currently open (HIG: one at a time). */
 let activeSheet: { close: () => void } | null = null;
+
+/** True while a sheet is open (other Escape handlers defer to it). */
+export function isSheetOpen(): boolean {
+  return activeSheet !== null;
+}
 
 const EXIT_MS = 380;
 
@@ -397,7 +405,7 @@ function SheetPanel({
           <div className="ios-sheet__grabber" aria-hidden="true" />
           <div className="ios-sheet__bar">
             <div className="ios-sheet__bar-leading">
-              {showCancel ? (
+              {showDone && !showCancel ? null : showCancel ? (
                 <button type="button" className="ios-glass-button" onClick={() => void requestDismiss()}>
                   {cancelLabel ?? t('actions.cancel')}
                 </button>
@@ -442,7 +450,7 @@ function SheetPanel({
             }
           }}
         >
-          {children}
+          <ScrollContainerContext.Provider value={bodyRef}>{children}</ScrollContainerContext.Provider>
         </div>
       </div>
     </div>

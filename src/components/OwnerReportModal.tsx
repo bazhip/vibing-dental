@@ -5,6 +5,7 @@ import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
 import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
@@ -206,7 +207,14 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
               onClick={handleDownload}
               disabled={!pdfUrl || generating}
             >
-              Download PDF
+              {isNativeApp() ? (
+                <>
+                  <Icon name="square-and-arrow-up" size={17} />
+                  {i18n.t('common:ios.sheets.documents.share')}
+                </>
+              ) : (
+                'Download PDF'
+              )}
             </button>
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />

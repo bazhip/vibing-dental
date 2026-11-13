@@ -112,7 +112,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   const atLimit = store.items.length >= store.maxImages;
   // The web keeps its wording; the app states the limit as a plain fact.
   const limitMessage = isNativeApp()
-    ? t('imaging.limitReached', { max: store.maxImages })
+    ? t('imaging.limitReached', { count: store.maxImages })
     : `Limit of ${store.maxImages} images reached`;
 
   const onDelete = async (id: string, caption: string) => {

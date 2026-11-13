@@ -102,7 +102,10 @@ html.native-ios .ios-appshell--tabbar ~ .fab-download {
   bottom: calc(78px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)));
 }
 
-/* ---------- Full-screen sheets clear the status bar / home indicator ----- */
+/* ---------- Full-screen web modals clear the status bar / home indicator --
+ * (Documents, chart history, reminder, join practice, finish setup and the
+ * session-expired screen are kit sheets / screens in the app now; the
+ * report-template preview still uses .pdf-preview-overlay.) */
 html.native-ios .pdf-preview-overlay,
 html.native-ios .ai-settings-overlay {
   padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));

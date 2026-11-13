@@ -2,7 +2,8 @@ import React from 'react';
 import { Trans } from 'react-i18next';
 import { isNativeApp } from './platform';
 import { readString, writeString } from '../utils/storage';
-import { confirmDialog } from '../components/ui/dialogs';
+import { presentSheet } from '../components/ui/dialogs';
+import { Sheet, type SheetDetent } from '../ios/Sheet';
 import i18n from '../i18n';
 
 /**
@@ -16,6 +17,7 @@ import i18n from '../i18n';
 
 const KEY = 'toothops.aiConsent';
 const VERSION = 1;
+const DETENTS: SheetDetent[] = ['medium', 'large'];
 
 /** True when the next AI action must ask first (app, not yet allowed). */
 export function needsAiConsent(): boolean {
@@ -26,25 +28,36 @@ export function needsAiConsent(): boolean {
 export async function ensureAiConsent(): Promise<boolean> {
   if (!needsAiConsent()) return true;
   const t = i18n.getFixedT(null, 'chart', 'aiConsent');
-  const ok = await confirmDialog({
-    title: t('title'),
-    message: (
-      <>
-        <p>{t('intro')}</p>
-        <ul>
-          <li>
-            <Trans t={t} i18nKey="deepgram" components={{ strong: <strong /> }} />
-          </li>
-          <li>
-            <Trans t={t} i18nKey="anthropic" components={{ strong: <strong /> }} />
-          </li>
-        </ul>
-        <p>{t('nothingSent')}</p>
-      </>
+  // A sheet (HIG: a consent explanation, not a short alert): Not now on the
+  // leading edge, Allow on the trailing edge; swiping it away is Not now.
+  const ok = await presentSheet<boolean>(
+    ({ open, finish }) => (
+      <Sheet
+        open={open}
+        onClose={() => finish(false)}
+        title={t('title')}
+        cancelLabel={t('notNow')}
+        doneLabel={t('allow')}
+        onDone={() => finish(true)}
+        detents={DETENTS}
+        className="ai-consent-sheet"
+      >
+        <div className="ios-form ai-consent">
+          <p className="ios-form-text">{t('intro')}</p>
+          <ul className="ai-consent__list">
+            <li>
+              <Trans t={t} i18nKey="deepgram" components={{ strong: <strong /> }} />
+            </li>
+            <li>
+              <Trans t={t} i18nKey="anthropic" components={{ strong: <strong /> }} />
+            </li>
+          </ul>
+          <p className="ios-form-footer">{t('nothingSent')}</p>
+        </div>
+      </Sheet>
     ),
-    confirmLabel: t('allow'),
-    cancelLabel: t('notNow'),
-  });
+    false
+  );
   if (ok) writeString(KEY, VERSION, 'allowed');
   return ok;
 }

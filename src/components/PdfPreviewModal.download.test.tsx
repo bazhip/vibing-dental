@@ -33,9 +33,9 @@ beforeEach(() => {
   URL.revokeObjectURL = vi.fn();
 });
 
-async function clickDownload() {
+async function clickDownload(name = 'Download PDF') {
   render(<PdfPreviewModal open onClose={() => {}} snapshot={snapshot} />);
-  const button = screen.getByRole('button', { name: 'Download PDF' });
+  const button = screen.getByRole('button', { name });
   await waitFor(() => expect(button).not.toBeDisabled());
   fireEvent.click(button);
 }
@@ -48,9 +48,9 @@ test('web: Download PDF uses the browser save flow (savePdf), with its hint', as
   expect(screen.getByRole('note')).toHaveTextContent('HINT');
 });
 
-test('iOS app: Download PDF goes to the native share sheet, no browser hint', async () => {
+test('iOS app: Share PDF goes to the native share sheet, no browser hint', async () => {
   env.native = true;
-  await clickDownload();
+  await clickDownload('Share PDF');
   expect(saveChartPdf).toHaveBeenCalledTimes(1);
   expect(saveChartPdf.mock.calls[0][1]).toBe('fluffy_7_dental_chart_2026-11-13.pdf');
   expect(savePdf).not.toHaveBeenCalled();

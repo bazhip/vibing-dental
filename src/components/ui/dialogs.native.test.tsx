@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../native/platform', () => ({ isNativeApp: () => true, WEB_ORIGIN: 'https://toothops.app/' }));
 
-import { chooseDialog, confirmDialog, DialogHost, promptDialog, toast } from './dialogs';
+import { chooseDialog, confirmDialog, DialogHost, presentSheet, promptDialog, toast } from './dialogs';
+import { Sheet } from '../../ios/Sheet';
 
 describe('DialogHost in the iOS app', () => {
   it('confirmDialog renders an iOS alert; the destructive button is red and Cancel gets focus', async () => {
@@ -151,6 +152,22 @@ describe('iOS action sheet on iPad', () => {
     expect(document.activeElement).toHaveAccessibleName('Cancel');
   });
 
+  it('an element anchor is re-measured on resize / rotation', () => {
+    regularWidth();
+    render(<DialogHost />);
+    const el = document.createElement('button');
+    document.body.appendChild(el);
+    let rect = { left: 600, top: 100, width: 44, height: 44, right: 644, bottom: 144, x: 600, y: 100, toJSON: () => ({}) } as DOMRect;
+    el.getBoundingClientRect = () => rect;
+    act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }], anchor: el }); });
+    const sheet = screen.getByRole('alertdialog', { name: 'Export' });
+    expect(sheet.style.top).toBe('154px');
+    rect = { ...rect, top: 300, bottom: 344, y: 300 } as DOMRect;
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(sheet.style.top).toBe('354px');
+    el.remove();
+  });
+
   it('without an anchor, renders as a centred card', () => {
     regularWidth();
     render(<DialogHost />);
@@ -162,5 +179,41 @@ describe('iOS action sheet on iPad', () => {
     render(<DialogHost />);
     act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }], anchor: document.body }); });
     expect(screen.getByRole('alertdialog', { name: 'Export' })).toHaveClass('ios-action-sheet--sheet');
+  });
+});
+
+describe('presentSheet', () => {
+  it('renders a sheet through the host and resolves with its result', async () => {
+    render(<DialogHost />);
+    let result: Promise<string> = Promise.resolve('');
+    act(() => {
+      result = presentSheet<string>(
+        ({ open, finish }) => (
+          <Sheet open={open} onClose={() => finish('dismissed')} title="Consent" onDone={() => finish('ok')}>
+            <p>Body</p>
+          </Sheet>
+        ),
+        'none'
+      );
+    });
+    expect(screen.getByRole('dialog', { name: 'Consent' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+    await expect(result).resolves.toBe('ok');
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Consent' })).toBeNull());
+  });
+
+  it('Escape reaches the sheet (dismissal result), not the host', async () => {
+    render(<DialogHost />);
+    let result: Promise<string> = Promise.resolve('');
+    act(() => {
+      result = presentSheet<string>(
+        ({ open, finish }) => (
+          <Sheet open={open} onClose={() => finish('dismissed')} title="Consent"><p>Body</p></Sheet>
+        ),
+        'none'
+      );
+    });
+    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+    await expect(result).resolves.toBe('dismissed');
   });
 });
