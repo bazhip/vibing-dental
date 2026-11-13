@@ -1,5 +1,5 @@
 import React from 'react';
-import { supabase } from '../utils/supabaseClient';
+import { SignOutLink } from './SignOutLink';
 import './BillingGate.css';
 
 /**
@@ -13,9 +13,7 @@ export const InactivePlan: React.FC = () => (
     <div className="billing-gate__panel billing-gate__panel--narrow">
       <h1>Your plan isn't active</h1>
       <p className="billing-gate__sub">Manage it at toothops.app.</p>
-      <button type="button" className="billing-gate__signout" onClick={() => supabase?.auth.signOut()}>
-        Sign out
-      </button>
+      <SignOutLink />
     </div>
   </div>
 );

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import type { BillingInfo } from '../hooks/useBilling';
@@ -9,8 +9,10 @@ const auth = vi.hoisted(() => ({
   signOut: vi.fn(),
 }));
 const fetchBilling = vi.hoisted(() => vi.fn());
+const signOutAndSweep = vi.hoisted(() => vi.fn(async () => undefined));
 
 vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIGIN: 'https://toothops.app/' }));
+vi.mock('../utils/signOutAndSweep', () => ({ signOutAndSweep }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: true }));
 vi.mock('../hooks/useBilling', async (orig) => ({
   ...(await orig<typeof import('../hooks/useBilling')>()),
@@ -172,6 +174,25 @@ describe('BillingGate in the app', () => {
     renderGate();
     expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
     expectNoBillingUi();
+  });
+});
+
+describe('BillingGate sign out', () => {
+  it('the inactive-plan screen signs out through signOutAndSweep', async () => {
+    fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
+    renderGate();
+    fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
+    expect(signOutAndSweep).toHaveBeenCalledTimes(1);
+    expect(auth.signOut).not.toHaveBeenCalled();
+  });
+
+  it('the could-not-check screen signs out through signOutAndSweep', async () => {
+    fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
+    renderGate();
+    await screen.findByText("Couldn't check your subscription");
+    fireEvent.click(screen.getByRole('button', { name: 'Sign out' }));
+    expect(signOutAndSweep).toHaveBeenCalledTimes(1);
+    expect(auth.signOut).not.toHaveBeenCalled();
   });
 });
 

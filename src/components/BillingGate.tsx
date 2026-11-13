@@ -12,6 +12,7 @@ import {
 import { isNativeApp } from '../native/platform';
 import { readBillingCache, saveBillingCache } from '../native/billingCache';
 import { InactivePlan } from './InactivePlan';
+import { SignOutLink } from './SignOutLink';
 import './BillingGate.css';
 
 interface BillingGateProps {
@@ -310,13 +311,3 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     </div>
   );
 };
-
-const SignOutLink: React.FC = () => (
-  <button
-    type="button"
-    className="billing-gate__signout"
-    onClick={() => supabase?.auth.signOut()}
-  >
-    Sign out
-  </button>
-);
