@@ -20,11 +20,12 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run i18n:check && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "replay": "tsx scripts/replay-transcript.ts"
+    "replay": "tsx scripts/replay-transcript.ts",
+    "i18n:check": "tsx scripts/i18n/check.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
