@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { hapticTap } from '../native/haptics';
 import { createPortal } from 'react-dom';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
@@ -664,7 +665,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               className="dental-grid__missing-check"
               checked={isMissing}
               disabled={readOnly}
-              onChange={() => onToggleMissing(row.triadan)}
+              onChange={() => { hapticTap(); onToggleMissing(row.triadan); }}
               aria-label={`Tooth ${row.triadan} missing${carried ? ' (carried from the previous visit)' : ''}`}
               title={
                 carried

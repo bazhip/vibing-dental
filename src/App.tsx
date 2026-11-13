@@ -16,6 +16,7 @@ import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { isNativeApp } from './native/platform';
 import { clearBillingCache } from './native/billingCache';
+import { AppLockOverlay } from './components/AppLockOverlay';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -320,6 +321,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <AppLockOverlay />
       <Suspense fallback={<AppLoading />}>
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
