@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { confirmDialog } from './ui/dialogs';
+import { errorText } from '../utils/apiErrors';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
 import { isNativeApp } from '../native/platform';
@@ -87,7 +88,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       await store.upload(file, kind, description);
       setDescription('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('imaging.addFailed'));
+      setError(errorText(err, t('imaging.addFailed')));
     } finally {
       setBusy(false);
     }
@@ -131,7 +132,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     try {
       await store.remove(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('imaging.removeFailed'));
+      setError(errorText(err, t('imaging.removeFailed')));
     } finally {
       setBusy(false);
     }
@@ -278,7 +279,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   value={a.kind}
                   onChange={(e) => {
                     store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
-                      setError(err instanceof Error ? err.message : t('imaging.kindFailed'))
+                      setError(errorText(err, t('imaging.kindFailed')))
                     );
                   }}
                   aria-label={t('imaging.typeAria')}

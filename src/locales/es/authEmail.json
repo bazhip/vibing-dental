@@ -1,0 +1,30 @@
+{
+  "common": {
+    "fallback": "Si el botón no funciona, copie este enlace en su navegador:",
+    "tagline": "Odontograma veterinario"
+  },
+  "confirmSignup": {
+    "subject": "Confirme su cuenta de ToothOps",
+    "title": "Confirme su correo electrónico",
+    "preheader": "Confirme su correo electrónico para activar su cuenta de ToothOps.",
+    "body": "Bienvenido a ToothOps. Confirme <strong>{{email}}</strong> para activar la cuenta de su clínica; iniciará sesión de inmediato.",
+    "button": "Confirmar correo e iniciar sesión",
+    "ignore": "¿No se registró en ToothOps? Puede ignorar este correo: la cuenta permanece inactiva a menos que se use este enlace."
+  },
+  "resetPassword": {
+    "subject": "Restablezca su contraseña de ToothOps",
+    "title": "Restablezca su contraseña",
+    "preheader": "Restablezca la contraseña de su cuenta de ToothOps.",
+    "body": "Hemos recibido una solicitud para restablecer la contraseña de <strong>{{email}}</strong>. El enlace es válido durante una hora.",
+    "button": "Elegir una contraseña nueva",
+    "ignore": "¿No lo solicitó usted? Ignore este correo: su contraseña no cambiará."
+  },
+  "changeEmail": {
+    "subject": "Confirme su nuevo correo electrónico para ToothOps",
+    "title": "Confirme su nuevo correo electrónico",
+    "preheader": "Confirme la nueva dirección de correo electrónico de su cuenta de ToothOps.",
+    "body": "Confirme que <strong>{{newEmail}}</strong> debe sustituir a <strong>{{email}}</strong> como correo de inicio de sesión de su cuenta de ToothOps.",
+    "button": "Confirmar nuevo correo",
+    "ignore": "¿No solicitó este cambio? Ignore este correo: su correo de inicio de sesión no cambiará."
+  }
+}

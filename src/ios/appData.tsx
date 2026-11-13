@@ -128,6 +128,7 @@ export function useAppLibrary(): AppLibrary | null {
 
 export function useAppSettings(): AppSettings {
   const s = React.useContext(SettingsContext);
+  // eslint-disable-next-line no-restricted-syntax -- dev-only: a programming error (hook used outside its provider)
   if (!s) throw new Error('useAppSettings() must be used inside <AppDataProvider>');
   return s;
 }

@@ -67,6 +67,7 @@ function SplashHandoff() {
 }
 
 const container = document.getElementById('root');
+// eslint-disable-next-line no-restricted-syntax -- dev-only: broken index.html; no UI exists yet
 if (!container) throw new Error('Failed to find the root element');
 
 const root = createRoot(container);

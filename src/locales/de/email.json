@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Passwort festlegen und beitreten"
+  },
+  "invite": {
+    "body1": "{{who}} hat Sie zum Team auf ToothOps hinzugefügt – dem Zahnschema für die Tiermedizin, direkt am Behandlungstisch.",
+    "body2": "Legen Sie Ihr Passwort fest, um Ihr Konto zu aktivieren und die Akten der Praxis zu sehen.",
+    "fallback": {
+      "preheader": "der Praxis",
+      "title": "einer Praxis",
+      "who": "Eine Praxis"
+    },
+    "footnote": "Wenn Sie diese E-Mail nicht erwartet haben, können Sie sie ignorieren.",
+    "preheader": "Legen Sie Ihr Passwort fest, um {{practice}} auf ToothOps beizutreten.",
+    "subject": "{{who}} hat Sie zu ToothOps eingeladen",
+    "title": "Einladung zu {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} hat Sie eingeladen, dem Team auf ToothOps beizutreten. Melden Sie sich mit Ihrem bestehenden Konto an, um die Einladung anzunehmen.",
+    "body2": "Bis Sie annehmen, ändert sich nichts – und ob Sie Ihre bestehenden Akten mit der Praxis teilen, entscheiden Sie beim Beitritt separat.",
+    "button": "Einladung ansehen",
+    "fallback": "Eine Praxis",
+    "footnote": "Der Link ist 14 Tage gültig. Wenn Sie diese E-Mail nicht erwartet haben, ignorieren Sie sie.",
+    "preheader": "{{name}} hat Sie in das Team auf ToothOps eingeladen.",
+    "subject": "{{name}} lädt Sie zu ToothOps ein",
+    "title": "{{name}} lädt Sie ein"
+  },
+  "layout": {
+    "linkFallback": "Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:",
+    "tagline": "Zahnschema für die Tiermedizin"
+  },
+  "reminder": {
+    "body1": "{{who}} hat Sie zu ToothOps eingeladen, dem Zahnschema-Programm für die Tiermedizin. Ihr Konto ist bereit, wann immer Sie es sind – legen Sie einfach ein Passwort fest, um loszulegen.",
+    "body2": "Der Link unten ist 24 Stunden gültig.",
+    "fallback": "Ihre Praxis",
+    "footnote": "Sie haben das nicht erwartet oder möchten nicht beitreten? Ignorieren Sie diese E-Mail einfach – wir senden höchstens noch eine weitere Erinnerung.",
+    "footnoteFinal": "Dies ist unsere letzte Erinnerung. Wenn Sie bis zum {{date}} nicht beigetreten sind, läuft diese Einladung ab und das ausstehende Konto wird entfernt – {{who}} kann Sie jederzeit erneut einladen.",
+    "preheader": "{{who}} wartet auf Sie bei ToothOps – legen Sie Ihr Passwort fest, um beizutreten.",
+    "subject": "Erinnerung: {{who}} hat Sie zu ToothOps eingeladen",
+    "subjectFinal": "Letzte Erinnerung: {{who}} wartet auf Sie bei ToothOps",
+    "title": "{{who}} hat Sie eingeladen",
+    "titleFinal": "Ihre Einladung wartet noch auf Sie"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Hi {{owner}},\n\nThis is a friendly reminder that {{patient}} is due for a dental recheck. Please give us a call to schedule an appointment.\n\nThank you,\n{{practice}}",
+    "fallback": {
+      "owner": "there",
+      "pet": "your pet",
+      "practice": "your veterinary practice"
+    },
+    "subject": "Time for {{patient}}'s dental recheck"
+  },
+  "sample": {
+    "buccalComment": "Mild redness along the left cheek",
+    "extraNotes": "Soft food for the next 10 days while the extraction site heals.",
+    "postComment": "Small chip on the tip — smooth, no treatment needed"
+  }
+}

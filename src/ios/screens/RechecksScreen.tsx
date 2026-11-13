@@ -4,7 +4,7 @@ import { NavBar } from '../NavBar';
 import { List, ListRow, ListSection } from '../List';
 import { type SwipeAction } from '../SwipeRow';
 import { useAppLibrary } from '../appData';
-import { friendlyError } from '../../components/ui/dialogs';
+import { friendlyDetail } from '../../components/ui/dialogs';
 import { duePatients, type PatientGroup } from '../../components/chartLibraryData';
 import type { CloudChartMeta } from '../../hooks/useCloudSync';
 import { PatientRow, formatChartDate, patientActions, todayIso, usePushPatient, useTabReload } from './patientShared';
@@ -89,7 +89,7 @@ export function RechecksScreen() {
   } else if (rows && !Array.isArray(rows)) {
     body = (
       <>
-        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyError(rows.error) })}</p>
+        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyDetail(rows.error) })}</p>
         <ListSection>
           <ListRow title={t('retry')} onClick={() => setRetry((n) => n + 1)} />
         </ListSection>

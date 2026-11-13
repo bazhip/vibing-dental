@@ -1172,6 +1172,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -1246,6 +1250,10 @@
     },
     "auth:legal.dpa": {
       "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.englishGoverns": {
+      "hash": "c3900a9554ee",
       "status": "machine"
     },
     "auth:legal.notice.activating": {
@@ -1532,6 +1540,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -1682,6 +1770,10 @@
     },
     "billing:gate.settingUpTitle": {
       "hash": "eba6bcdb8b0c",
+      "status": "machine"
+    },
+    "billing:gate.signOut": {
+      "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "billing:gate.slowConfirm": {
@@ -2978,6 +3070,38 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
       "status": "machine"
     },
     "codes:AB": {
@@ -4540,6 +4664,294 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -4562,6 +4974,10 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:ios.back": {
@@ -4702,6 +5118,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -7012,6 +7548,206 @@
       "hash": "a89934bccef7",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -8656,6 +9392,10 @@
       "hash": "c7c7161ee1e4",
       "status": "machine"
     },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
+      "status": "machine"
+    },
     "settings:logoErrors.reportTooLarge": {
       "hash": "8df7726148b9",
       "status": "machine"
@@ -8670,6 +9410,18 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {
@@ -10926,6 +11678,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -11000,6 +11756,10 @@
     },
     "auth:legal.dpa": {
       "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.englishGoverns": {
+      "hash": "c3900a9554ee",
       "status": "machine"
     },
     "auth:legal.notice.activating": {
@@ -11286,6 +12046,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -11452,6 +12292,10 @@
     },
     "billing:gate.settingUpTitle": {
       "hash": "eba6bcdb8b0c",
+      "status": "machine"
+    },
+    "billing:gate.signOut": {
+      "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "billing:gate.slowConfirm": {
@@ -12768,6 +13612,38 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
       "status": "machine"
     },
     "codes:AB": {
@@ -14330,6 +15206,306 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -14352,6 +15528,10 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:ios.back": {
@@ -14492,6 +15672,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -16814,6 +18114,206 @@
       "hash": "a89934bccef7",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -18462,6 +19962,10 @@
       "hash": "c7c7161ee1e4",
       "status": "machine"
     },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
+      "status": "machine"
+    },
     "settings:logoErrors.reportTooLarge": {
       "hash": "8df7726148b9",
       "status": "machine"
@@ -18476,6 +19980,18 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {
@@ -20756,6 +22272,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -20830,6 +22350,10 @@
     },
     "auth:legal.dpa": {
       "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.englishGoverns": {
+      "hash": "c3900a9554ee",
       "status": "machine"
     },
     "auth:legal.notice.activating": {
@@ -21116,6 +22640,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -21282,6 +22886,10 @@
     },
     "billing:gate.settingUpTitle": {
       "hash": "eba6bcdb8b0c",
+      "status": "machine"
+    },
+    "billing:gate.signOut": {
+      "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "billing:gate.slowConfirm": {
@@ -22598,6 +24206,38 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
       "status": "machine"
     },
     "codes:AB": {
@@ -24160,6 +25800,306 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -24182,6 +26122,10 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:ios.back": {
@@ -24322,6 +26266,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -26644,6 +28708,206 @@
       "hash": "a89934bccef7",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -28292,6 +30556,10 @@
       "hash": "c7c7161ee1e4",
       "status": "machine"
     },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
+      "status": "machine"
+    },
     "settings:logoErrors.reportTooLarge": {
       "hash": "8df7726148b9",
       "status": "machine"
@@ -28306,6 +30574,18 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {
@@ -30586,6 +32866,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -30660,6 +32944,10 @@
     },
     "auth:legal.dpa": {
       "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.englishGoverns": {
+      "hash": "c3900a9554ee",
       "status": "machine"
     },
     "auth:legal.notice.activating": {
@@ -30946,6 +33234,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -31112,6 +33480,10 @@
     },
     "billing:gate.settingUpTitle": {
       "hash": "eba6bcdb8b0c",
+      "status": "machine"
+    },
+    "billing:gate.signOut": {
+      "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "billing:gate.slowConfirm": {
@@ -32428,6 +34800,38 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
       "status": "machine"
     },
     "codes:AB": {
@@ -33990,6 +36394,306 @@
       "hash": "d8b8392e2c54",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -34012,6 +36716,10 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:ios.back": {
@@ -34152,6 +36860,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -36474,6 +39302,206 @@
       "hash": "a89934bccef7",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -38122,6 +41150,10 @@
       "hash": "c7c7161ee1e4",
       "status": "machine"
     },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
+      "status": "machine"
+    },
     "settings:logoErrors.reportTooLarge": {
       "hash": "8df7726148b9",
       "status": "machine"
@@ -38136,6 +41168,18 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {
@@ -39232,6 +42276,38 @@
     }
   },
   "pt": {
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"

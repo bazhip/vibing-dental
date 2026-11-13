@@ -7,7 +7,7 @@ import { MenuPopover, type MenuAnchor, type MenuItem } from '../ContextMenu';
 import { SearchField } from '../SearchField';
 import { Icon, type IconName } from '../icons';
 import { useAppLibrary, type AppLibrary } from '../appData';
-import { friendlyError, toast } from '../../components/ui/dialogs';
+import { friendlyDetail, toast } from '../../components/ui/dialogs';
 import { defaultSortDir, useChartLibraryList, type PatientGroup, type SortDir, type SortKey } from '../../components/chartLibraryData';
 import {
   PatientRow,
@@ -185,7 +185,7 @@ function PatientsList({ library }: { library: AppLibrary }) {
   const { error, setError } = list;
   React.useEffect(() => {
     if (!error || error.kind === 'load') return;
-    toast(t(`errors.${error.kind}`, { error: friendlyError(error.cause) }), { kind: 'error' });
+    toast(t(`errors.${error.kind}`, { error: friendlyDetail(error.cause) }), { kind: 'error' });
     setError(null);
   }, [error, setError, t]);
 
@@ -199,7 +199,7 @@ function PatientsList({ library }: { library: AppLibrary }) {
   if (list.error?.kind === 'load') {
     body = (
       <>
-        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyError(list.error.cause) })}</p>
+        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyDetail(list.error.cause) })}</p>
         <ListSection>
           <ListRow title={t('retry')} onClick={() => void list.refresh()} />
         </ListSection>

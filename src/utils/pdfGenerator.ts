@@ -1,6 +1,10 @@
 import { PDFDocument, PDFHexString } from 'pdf-lib';
 import { safeFont } from './pdf/safeFont';
+import download from 'downloadjs';
+import i18n, { loadLanguage } from '../i18n';
+import { isAppLanguage, type AppLanguage } from '../i18n/config';
 import { saveChartPdf } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
 import {
   ToothData,
   PatientInfo,
@@ -113,6 +117,9 @@ export interface PdfLayoutOptions {
   /** Nerve block rows the person hides (chart settings) — left out of
    *  the table when empty. */
   hiddenBlocks?: readonly string[];
+  /** Language the document's labels print in (headings, legends, column
+   *  headers, code definitions). Typed text prints as stored. Default 'en'. */
+  lng?: AppLanguage;
 }
 
 /** Build the PDF as raw bytes — the entry point for both the download
@@ -130,6 +137,11 @@ export async function buildDentalChartPDFBytes(
   layoutOptions: PdfLayoutOptions = {}
 ): Promise<Uint8Array> {
   const includeGrid = layoutOptions.includeGrid ?? true;
+  const lng: AppLanguage = layoutOptions.lng ?? 'en';
+  // English is bundled; other catalogs load on first use. If that fails
+  // (offline), labels fall back to English rather than failing the PDF.
+  if (lng !== 'en') await loadLanguage(lng);
+  const t = i18n.getFixedT(lng, 'pdf');
   const images = layoutOptions.images ?? [];
   const imagePageCount = Math.ceil(images.length / IMAGES_PER_PAGE);
   const totalPages = 2 + imagePageCount;
@@ -153,7 +165,7 @@ export async function buildDentalChartPDFBytes(
   // a page separated from the chart must stay attributable.
   const identityLine = [
     patientInfo.patientName,
-    patientInfo.patientNumber && `PID ${patientInfo.patientNumber}`,
+    patientInfo.patientNumber && t('footer.pid', { id: patientInfo.patientNumber }),
     patientInfo.date,
   ]
     .filter(Boolean)
@@ -190,7 +202,7 @@ export async function buildDentalChartPDFBytes(
 
   const headerBottomIn = await drawLogoAndHeader(
     pdfDoc, page1, logo, species, doctorLine, techLine, regular, bold,
-    branding.logoUrl, branding.practiceName
+    branding.logoUrl, branding.practiceName, lng
   );
 
   // Page 1's right column is a chain: the patient card grows with the
@@ -214,7 +226,7 @@ export async function buildDentalChartPDFBytes(
       ((patientBottomMaxIn - PATIENT_INFO_BOX.yTopIn + 0.20 - bandIn - fixedPatientRowsIn) * 72 - 10) / 11.5
     )
   );
-  const patientBottomIn = drawPatientInfoBox(page1, patientInfo, regular, bold, complaintMaxLines);
+  const patientBottomIn = drawPatientInfoBox(page1, patientInfo, regular, bold, complaintMaxLines, lng);
   // The diagram slot is wide enough to pass under the patient card
   // (card left edge 3.65in < slot right edge ~5in), and a tall uploaded
   // logo can push the header block below the slot's default top — start
@@ -229,7 +241,7 @@ export async function buildDentalChartPDFBytes(
 
   if (includeGrid) {
     const examBodyTopIn = Math.max(EXAM_TABLE_YTOP_IN, patientBottomIn + 0.07 + bandIn);
-    const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold, examBodyTopIn);
+    const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold, examBodyTopIn, undefined, lng);
 
     // The arch grids fill the column below the exam card dynamically:
     // whatever height the exam takes, the remaining space is split into
@@ -250,13 +262,13 @@ export async function buildDentalChartPDFBytes(
         .filter(([, mark]) => mark === 'missing')
         .map(([triadan]) => Number(triadan))
     );
-    drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, 'Maxillary Arch',  missingTriadans);
-    drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, 'Mandibular Arch', missingTriadans);
+    drawToothGrid(page1, { ...grids.maxilla,  yTopIn: maxillaTopIn },  toothData, regular, bold, t('grid.maxilla'),  missingTriadans, lng);
+    drawToothGrid(page1, { ...grids.mandible, yTopIn: mandibleTopIn }, toothData, regular, bold, t('grid.mandible'), missingTriadans, lng);
     await drawDiagramAt(
       pdfDoc, { ...baseSlot1, yTopIn: minTop1In }, preDiagram.png,
       diagramBottomIn(0, usedByPage.page1)
     );
-    drawCodesLegend(page1, legendBox(0, usedByPage.page1), usedByPage.page1, bold, regular);
+    drawCodesLegend(page1, legendBox(0, usedByPage.page1), usedByPage.page1, bold, regular, 3, lng);
   } else {
     // No grids: the diagram is the page. Exam card + codes legend stack
     // in a narrow right column; the diagram fills everything left of it
@@ -266,12 +278,12 @@ export async function buildDentalChartPDFBytes(
     const examGeo = compactExamGeometry(colXIn, colWIn);
     // Card top lines up with the diagram's top.
     const examBodyTopIn = minTop1In + bandIn;
-    const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold, examBodyTopIn, examGeo);
+    const examBottomIn = drawExamSection(page1, patientInfo.exam, regular, bold, examBodyTopIn, examGeo, lng);
     const codes = usedByPage.page1;
     if (codes.length > 0) {
       const topIn = examBottomIn + 0.15;
       const heightIn = Math.min(bottomLimitIn - topIn, codesLegendHeightIn(codes.length, 1));
-      drawCodesLegend(page1, { xIn: colXIn, yTopIn: topIn, widthIn: colWIn, heightIn }, codes, bold, regular, 1);
+      drawCodesLegend(page1, { xIn: colXIn, yTopIn: topIn, widthIn: colWIn, heightIn }, codes, bold, regular, 1, lng);
     }
     await drawDiagramAt(
       pdfDoc,
@@ -280,13 +292,13 @@ export async function buildDentalChartPDFBytes(
       8.0
     );
   }
-  drawFooter(page1, regular, bold, 1, totalPages, generatedAt, identityLine);
+  drawFooter(page1, regular, bold, 1, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page 2 ------------------------------------------------------------
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia);
+  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia, lng);
   const baseSlot = DIAGRAM_SLOTS[species][1];
   const minTopIn = nbBottomIn + 0.15;
   const postSlot =
@@ -301,20 +313,20 @@ export async function buildDentalChartPDFBytes(
     pdfDoc, postSlot, postDiagram.png,
     diagramBottomIn(1, usedByPage.page2)
   );
-  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings), regular, bold);
-  drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine);
+  drawTreatmentReportField(page2, treatmentCardText(patientInfo.treatmentReport, patientInfo.radiographicFindings, lng), regular, bold, lng);
+  drawFooter(page2, regular, bold, 2, totalPages, generatedAt, identityLine, lng);
 
   // ---- Page-2 codes-used legend (page 1 drew its own above) ------------
-  drawCodesLegend(page2, legendBox(1, usedByPage.page2), usedByPage.page2, bold, regular);
+  drawCodesLegend(page2, legendBox(1, usedByPage.page2), usedByPage.page2, bold, regular, 3, lng);
 
   // ---- Image pages (optional) ------------------------------------------
   for (let p = 0; p < imagePageCount; p++) {
     const page = pdfDoc.addPage([PAGE_WIDTH_PT, PAGE_HEIGHT_PT]);
     const start = p * IMAGES_PER_PAGE;
     await drawImagePage(
-      pdfDoc, page, images.slice(start, start + IMAGES_PER_PAGE), start, images.length, regular, bold
+      pdfDoc, page, images.slice(start, start + IMAGES_PER_PAGE), start, images.length, regular, bold, lng
     );
-    drawFooter(page, regular, bold, 3 + p, totalPages, generatedAt, identityLine);
+    drawFooter(page, regular, bold, 3 + p, totalPages, generatedAt, identityLine, lng);
   }
 
   // ---- Hidden round-trip stash -------------------------------------------
@@ -357,10 +369,13 @@ export async function generateDentalChartPDF(
   branding: PdfBranding = {},
   layoutOptions: PdfLayoutOptions = {}
 ): Promise<void> {
+  const lng = isAppLanguage(i18n.language) ? i18n.language : 'en';
   const pdfBytes = await buildDentalChartPDFBytes(
-    patientInfo, toothData, species, logo, preDiagram, postDiagram, styleId, branding, layoutOptions
+    patientInfo, toothData, species, logo, preDiagram, postDiagram, styleId, branding, { lng, ...layoutOptions }
   );
   const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   const filename = `${sanitize(patientInfo.patientName)}_${sanitize(patientInfo.patientNumber)}_${patientInfo.date}.pdf`;
-  await saveChartPdf(pdfBytes, filename);
+  // The website downloads as it always has; the iOS app opens the share sheet.
+  if (isNativeApp()) await saveChartPdf(pdfBytes, filename);
+  else download(pdfBytes, filename, 'application/pdf');
 }

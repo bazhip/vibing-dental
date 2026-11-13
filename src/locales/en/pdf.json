@@ -1,0 +1,76 @@
+{
+  "header": {
+    "title": {
+      "canine": "Canine Dental Chart",
+      "canineDeciduous": "Canine (Deciduous) Dental Chart",
+      "feline": "Feline Dental Chart",
+      "felineDeciduous": "Feline (Deciduous) Dental Chart"
+    },
+    "subtitle": "Periodontal Assessment & Treatment Plan",
+    "tech": "Tech: {{name}}"
+  },
+  "patient": {
+    "title": "Patient Information",
+    "date": "Date",
+    "patient": "Patient",
+    "pid": "PID",
+    "complaint": "Chief Complaint"
+  },
+  "exam": {
+    "title": "Oral Exam Findings",
+    "normal": "NORMAL",
+    "abnormal": "ABNORMAL",
+    "comment": "COMMENT",
+    "items": {
+      "extraoral": "Extraoral/facial",
+      "lymph": "Lymph nodes",
+      "buccal": "Buccal mucosa",
+      "tongue": "Tongue",
+      "palate": "Palate",
+      "pharynx": "Pharynx/Tonsils"
+    }
+  },
+  "grid": {
+    "maxilla": "Maxillary Arch",
+    "mandible": "Mandibular Arch"
+  },
+  "codes": {
+    "title": "Codes Used",
+    "more": "+{{n}} more"
+  },
+  "treatment": {
+    "title": "Treatment & Surgery Report",
+    "findingsHeading": "RADIOGRAPHIC FINDINGS",
+    "treatmentHeading": "TREATMENT",
+    "continued": "… continued — full report is embedded in this file (load it back into the app)."
+  },
+  "anesthesia": {
+    "title": "Anesthesia · Nerve Blocks",
+    "nerveBlock": "Nerve Block",
+    "nerveBlockWith": "Nerve Block {{drug}}",
+    "anesthetic": "Anesthetic",
+    "anesthetics": "Anesthetics",
+    "right": "RIGHT",
+    "left": "LEFT",
+    "dose": "{{value}} mL",
+    "other": "Other",
+    "blocks": {
+      "infraorbital": "Infraorbital",
+      "caudalMaxillary": "Caudal Maxillary",
+      "inferiorAlveolar": "Inferior Alveolar",
+      "mental": "Mental"
+    }
+  },
+  "footer": {
+    "generated": "Generated {{at}}",
+    "pid": "PID {{id}}",
+    "pageOf": "Page {{n}} of {{total}}"
+  },
+  "images": {
+    "title": "Images & Radiographs",
+    "titleRange": "Images & Radiographs ({{range}} of {{total}})",
+    "failed": "Image could not be loaded",
+    "photo": "Photo",
+    "radiograph": "Radiograph"
+  }
+}

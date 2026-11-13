@@ -875,6 +875,10 @@
 }
 
 .landing__footer a { color: var(--primary); }
+/* The English-governs note (non-English only) takes its own row; English
+   keeps the single-row footer. */
+.landing__footer:has(.landing__footer-note) { flex-wrap: wrap; }
+.landing__footer .landing__footer-note { flex-basis: 100%; margin: 0; text-align: left; font-size: 0.75rem; }
 
 /* ---------- auth overlay ------------------------------------------------------ */
 .landing__auth-overlay {

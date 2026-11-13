@@ -10,6 +10,7 @@ import { ChartLibrary } from './ChartLibrary';
 import { ChartHistoryModal, revisionWhen } from './ChartHistoryModal';
 import { RemindersModal } from './RemindersModal';
 import { ReminderModal } from './ReminderModal';
+import { defaultReminder, fillTemplate } from '../hooks/useReminderTemplate';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
 import type { UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
@@ -60,12 +61,6 @@ const ALLOW: (string | RegExp)[] = [
   /^\d{4}-\d{2}-\d{2}$/,
   /^(Bella|Max|Ann Lee|Dr Kaser) · (Dr Kaser|Tim)$/,
 ];
-// The stored default reminder text is practice data (still English until plan 3): allow exactly it.
-const DEFAULT_REMINDER_TEXT: (string | RegExp)[] = [
-  "Time for Bella's dental recheck",
-  /^Hi Ann Lee,\s+This is a friendly reminder that Bella is due for a dental recheck\. Please give us a call to schedule an appointment\.\s+Thank you,\s+Elm Vet$/,
-];
-
 const today = localDateISO();
 const meta = (id: string, name: string, number: string, date: string, over: Partial<CloudChartMeta> = {}): CloudChartMeta => ({
   id, patient_name: name, patient_number: number, owner_name: '', owner_phone: '', owner_email: '',
@@ -209,7 +204,7 @@ describe('RemindersModal', () => {
   it('owner view, with unsaved edits, as a member and while the practice is set up', async () => {
     const { container, rerender } = render(<RemindersModal open onClose={() => {}} />);
     await waitFor(() => expect(screen.getByLabelText('⟦Subject⟧')).toBeInTheDocument());
-    expect(findUntranslated(container, [...ALLOW, ...DEFAULT_REMINDER_TEXT, '{{patient}}', '{{owner}}', '{{practice}}', '{{recheck_date}}', /^Hi \{\{owner\}\}/, /^Time for \{\{patient\}\}/])).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, '{{patient}}', '{{owner}}', '{{practice}}', '{{recheck_date}}', /^Hi \{\{owner\}\}/, /^Time for \{\{patient\}\}/])).toEqual([]);
     fireEvent.change(screen.getByLabelText('⟦Subject⟧'), { target: { value: 'Quarterly note' } });
     expect(screen.getByRole('button', { name: '⟦Save⟧' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '⟦Cancel⟧' })).toBeInTheDocument();
@@ -245,7 +240,11 @@ describe('ReminderModal', () => {
     const { container, rerender } = render(<ReminderModal {...props} />);
     await screen.findByText('⟦Send reminder⟧');
     await waitFor(() => expect(screen.getByLabelText('⟦Subject⟧')).toBeInTheDocument());
-    expect(findUntranslated(container, [...ALLOW, ...DEFAULT_REMINDER_TEXT])).toEqual([]);
+    // The composer's text is owner-facing (practice language, here the standard English reminder from the
+    // `client` catalog), so the pseudo-locale doesn't wrap it.
+    const vars = { patient: 'Bella', owner: 'Ann Lee', practice: 'Elm Vet', recheckDate: '2026-12-01' };
+    const standard = [defaultReminder('en').subject, defaultReminder('en').body].map((x) => fillTemplate(x, vars, 'en'));
+    expect(findUntranslated(container, [...ALLOW, ...standard])).toEqual([]);
     rerender(<ReminderModal {...props} open={false} />);
     expect(container.textContent).toBe('');
   });

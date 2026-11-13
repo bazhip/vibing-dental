@@ -14,6 +14,12 @@
 //      cancelLabel / placeholder in the options object of confirmDialog /
 //      promptDialog.
 //   4. No `t(...) + x` / `x + t(...)` concatenation (no-restricted-syntax).
+//   5. Thrown error text: a string or template containing a letter passed to
+//      `new Error(...)` or any `new XxxError(...)` except LocalizedError /
+//      ApiError / DicomError (which carry already-translated text). Such
+//      errors often reach the UI via friendlyError / err.message. Errors only
+//      a developer will ever see carry an
+//      `// eslint-disable-next-line no-restricted-syntax -- dev-only: <reason>`.
 // NOT caught: any other non-JSX string, e.g. a const or a ternary of literals
 // that is rendered or passed on later. Those need human review.
 const tseslint = require('typescript-eslint');
@@ -30,6 +36,10 @@ const MESSAGE = 'User-facing text must come from t()';
 const restrict = (selector) => ({ selector, message: MESSAGE });
 const T_CALL = "CallExpression[callee.name='t']";
 const T_METHOD = "CallExpression[callee.property.name='t']";
+const NEW_ERROR =
+  "NewExpression[callee.name=/Error$/]:not([callee.name=/^(LocalizedError|ApiError|DicomError)$/])";
+const ERROR_MESSAGE =
+  'User-visible error text must come from t(); for developer-only errors add `// eslint-disable-next-line no-restricted-syntax -- dev-only: <reason>`';
 
 // Source files carry `// eslint-disable-next-line react-hooks/exhaustive-deps`
 // from before this project had a linter. The plugin isn't installed (and its
@@ -87,6 +97,7 @@ module.exports = [
           selector: `BinaryExpression[operator='+'] > ${call}`,
           message: 'Don’t concatenate translated text; use one key with {{placeholders}}',
         })),
+        ...[LITERAL, TEMPLATE].map((text) => ({ selector: `${NEW_ERROR} > ${text}`, message: ERROR_MESSAGE })),
       ],
     },
   },

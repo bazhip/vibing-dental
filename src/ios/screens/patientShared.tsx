@@ -9,7 +9,7 @@ import { Icon, type IconName } from '../icons';
 import { useStack, useStackScreenOptions } from '../Stack';
 import { useAppShell, type AppTab } from '../AppShell';
 import { useAppLibrary, type AppLibrary } from '../appData';
-import { confirmDialog, friendlyError, toast } from '../../components/ui/dialogs';
+import { confirmDialog, friendlyDetail, toast } from '../../components/ui/dialogs';
 import { groupByPatient, recallStatus, todayIso, type PatientGroup } from '../../components/chartLibraryData';
 import type { CloudChartMeta, ChartListQuery } from '../../hooks/useCloudSync';
 import { parseLocalDate } from '../../utils/localDate';
@@ -115,7 +115,7 @@ export async function clearPatientRecheck(
     await clearRecalls(ids);
     return true;
   } catch (e) {
-    toast(t('errors.clear', { error: friendlyError(e) }), { kind: 'error' });
+    toast(t('errors.clear', { error: friendlyDetail(e) }), { kind: 'error' });
     return false;
   } finally {
     onBusy?.(false);
@@ -253,7 +253,7 @@ export function PatientVisitsScreen({ initial, filters, tab }: { initial: Patien
     try {
       await library.deleteChart(v.id);
     } catch (e) {
-      toast(t('errors.delete', { error: friendlyError(e) }), { kind: 'error' });
+      toast(t('errors.delete', { error: friendlyDetail(e) }), { kind: 'error' });
     }
   };
 

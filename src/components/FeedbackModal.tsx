@@ -9,6 +9,7 @@ import { chooseDialog, toast } from './ui/dialogs';
 import { useStackScreenOptions } from '../ios/Stack';
 import { Sheet } from '../ios/Sheet';
 import { isNativeApp } from '../native/platform';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * "Send feedback" — a short web form that emails the ToothOps owner (the
@@ -41,7 +42,7 @@ export async function sendFeedback(payload: {
   transcript?: string;
   section?: string;
 }): Promise<void> {
-  if (!supabase) throw new Error(i18n.t('feedback.needsAccount', { ns: 'settings' }));
+  if (!supabase) throw new LocalizedError(i18n.t('feedback.needsAccount', { ns: 'settings' }));
   const { data, error } = await supabase.functions.invoke('send-feedback', {
     body: {
       kind: payload.kind,

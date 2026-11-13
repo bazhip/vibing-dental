@@ -1,0 +1,30 @@
+{
+  "common": {
+    "fallback": "Se il pulsante non funziona, copi questo link nel Suo browser:",
+    "tagline": "Odontogramma veterinario"
+  },
+  "confirmSignup": {
+    "subject": "Confermi il Suo account ToothOps",
+    "title": "Confermi il Suo indirizzo e-mail",
+    "preheader": "Confermi il Suo indirizzo e-mail per attivare l’account ToothOps.",
+    "body": "Benvenuto in ToothOps. Confermi <strong>{{email}}</strong> per attivare l’account del Suo studio: verrà connesso subito.",
+    "button": "Conferma e-mail e accedi",
+    "ignore": "Non si è registrato su ToothOps? Può ignorare questa e-mail: l’account resta inattivo finché questo link non viene utilizzato."
+  },
+  "resetPassword": {
+    "subject": "Reimposti la Sua password di ToothOps",
+    "title": "Reimposti la Sua password",
+    "preheader": "Reimposti la password del Suo account ToothOps.",
+    "body": "Abbiamo ricevuto una richiesta di reimpostazione della password per <strong>{{email}}</strong>. Il link è valido per un’ora.",
+    "button": "Scegli una nuova password",
+    "ignore": "Non ha fatto Lei questa richiesta? Ignori questa e-mail: la Sua password rimane invariata."
+  },
+  "changeEmail": {
+    "subject": "Confermi il Suo nuovo indirizzo e-mail per ToothOps",
+    "title": "Confermi il Suo nuovo indirizzo e-mail",
+    "preheader": "Confermi il nuovo indirizzo e-mail del Suo account ToothOps.",
+    "body": "Confermi che <strong>{{newEmail}}</strong> deve sostituire <strong>{{email}}</strong> come indirizzo e-mail di accesso del Suo account ToothOps.",
+    "button": "Conferma il nuovo indirizzo",
+    "ignore": "Non ha richiesto Lei questa modifica? Ignori questa e-mail: il Suo indirizzo di accesso rimane invariato."
+  }
+}

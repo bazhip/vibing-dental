@@ -23,6 +23,7 @@
 
 import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
 import i18n from '../i18n';
+import { LocalizedError } from './apiErrors';
 
 export interface DeepgramSegment {
   text: string;
@@ -159,7 +160,7 @@ export async function startDeepgramSession(
   providedCtx?: AudioContext | null
 ): Promise<DeepgramSession> {
   const ctx = providedCtx ?? createCaptureContext();
-  if (!ctx) throw new Error(i18n.t('errors.noCapture', { ns: 'voice' }));
+  if (!ctx) throw new LocalizedError(i18n.t('errors.noCapture', { ns: 'voice' }));
 
   let stream: MediaStream;
   try {
@@ -330,7 +331,7 @@ export async function startDeepgramSession(
     if (ctx.state !== 'running') await ctx.resume();
   } catch (err) {
     cleanup();
-    throw err instanceof Error ? err : new Error(i18n.t('errors.captureStart', { ns: 'voice' }));
+    throw err instanceof Error ? err : new LocalizedError(i18n.t('errors.captureStart', { ns: 'voice' }));
   }
 
   // The OS can take the mic away mid-session (iOS camera, a phone call,

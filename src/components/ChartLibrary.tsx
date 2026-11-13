@@ -7,7 +7,7 @@ import { formatDate, formatDateTime } from '../i18n/format';
 function formatChartDate(iso: string): string {
   return formatDate(iso, 'medium');
 }
-import { confirmDialog, friendlyError } from './ui/dialogs';
+import { confirmDialog, friendlyDetail } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
@@ -89,7 +89,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     busyId, setBusyId,
     deleteVisit, clearRecheck,
   } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient') });
-  const error = libraryError ? t(ERROR_KEYS[libraryError.kind], { error: friendlyError(libraryError.cause) }) : '';
+  const error = libraryError ? t(ERROR_KEYS[libraryError.kind], { error: friendlyDetail(libraryError.cause) }) : '';
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   // Mounted only while open, so the trap is always on.
   const modalRef = useModalFocus(true);

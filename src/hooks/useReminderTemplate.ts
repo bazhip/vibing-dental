@@ -1,6 +1,10 @@
 import React from 'react';
 import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
+import type { ReportLocale } from '../utils/ownerReportI18n';
+import { standardReminderText } from '../utils/reminderDefaults';
+import { usePracticeLanguage } from './usePracticeLanguage';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * The practice's recheck-reminder email template (subject + body with
@@ -18,39 +22,44 @@ export interface ReminderTemplate {
   leadDays: number;
 }
 
-export const DEFAULT_REMINDER: ReminderTemplate = {
-  subject: "Time for {{patient}}'s dental recheck",
-  body:
-    'Hi {{owner}},\n\n' +
-    'This is a friendly reminder that {{patient}} is due for a dental recheck. ' +
-    'Please give us a call to schedule an appointment.\n\n' +
-    'Thank you,\n{{practice}}',
-  auto: false,
-  leadDays: 0,
-};
+/** The standard reminder, in the practice's client language. */
+export function defaultReminder(lng: ReportLocale): ReminderTemplate {
+  return { ...standardReminderText(lng), auto: false, leadDays: 0 };
+}
 
-/** Substitute the placeholders. */
+/** Substitute the placeholders; blanks fall back to wording in `lng`. */
 export function fillTemplate(
   text: string,
-  vars: { patient?: string; owner?: string; practice?: string; recheckDate?: string }
+  vars: { patient?: string; owner?: string; practice?: string; recheckDate?: string },
+  lng: ReportLocale,
 ): string {
+  const t = i18n.getFixedT(lng, 'client');
   return text
-    .replace(/\{\{patient\}\}/g, vars.patient || 'your pet')
-    .replace(/\{\{owner\}\}/g, vars.owner || 'there')
-    .replace(/\{\{practice\}\}/g, vars.practice || 'your veterinary practice')
-    .replace(/\{\{recheck_date\}\}/g, vars.recheckDate || '');
+    .replace(/\{\{patient\}\}/g, () => vars.patient || t('reminder.fallback.pet'))
+    .replace(/\{\{owner\}\}/g, () => vars.owner || t('reminder.fallback.owner'))
+    .replace(/\{\{practice\}\}/g, () => vars.practice || t('reminder.fallback.practice'))
+    .replace(/\{\{recheck_date\}\}/g, () => vars.recheckDate || '');
+}
+
+interface StoredReminder {
+  subject: string;
+  body: string;
+  auto: boolean;
+  leadDays: number;
 }
 
 export function useReminderTemplate(practiceId: string, open: boolean) {
-  const [template, setTemplate] = React.useState<ReminderTemplate>(DEFAULT_REMINDER);
-  const [loaded, setLoaded] = React.useState(false);
+  const { language, loaded: languageLoaded } = usePracticeLanguage(practiceId || null, open);
+  // What the database holds; empty text means "use the standard reminder".
+  const [stored, setStored] = React.useState<StoredReminder | null>(null);
+  const [rowLoaded, setRowLoaded] = React.useState(false);
 
   React.useEffect(() => {
     if (!open) return;
     let cancelled = false;
     (async () => {
       if (!supabase || !practiceId) {
-        if (!cancelled) setLoaded(true);
+        if (!cancelled) setRowLoaded(true);
         return;
       }
       const { data } = await supabase
@@ -60,14 +69,14 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
         .maybeSingle();
       if (!cancelled) {
         if (data) {
-          setTemplate({
-            subject: data.reminder_subject || DEFAULT_REMINDER.subject,
-            body: data.reminder_body || DEFAULT_REMINDER.body,
+          setStored({
+            subject: data.reminder_subject || '',
+            body: data.reminder_body || '',
             auto: !!data.reminder_auto,
             leadDays: data.reminder_lead_days ?? 0,
           });
         }
-        setLoaded(true);
+        setRowLoaded(true);
       }
     })();
     return () => {
@@ -75,20 +84,42 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
     };
   }, [practiceId, open]);
 
+  const loaded = rowLoaded && languageLoaded;
+  const template = React.useMemo<ReminderTemplate>(() => {
+    const d = defaultReminder(language);
+    return stored
+      ? { subject: stored.subject || d.subject, body: stored.body || d.body, auto: stored.auto, leadDays: stored.leadDays }
+      : d;
+  }, [stored, language]);
+
   const save = React.useCallback(async (next: ReminderTemplate): Promise<void> => {
-    if (!supabase || !practiceId) throw new Error(i18n.t('settings.noPractice', { ns: 'reminders' }));
+    if (!supabase || !practiceId) throw new LocalizedError(i18n.t('settings.noPractice', { ns: 'reminders' }));
+    // Untouched standard text stays empty in the database (it follows the practice
+    // language) — unless auto-send is on: the scheduled job only reads these columns,
+    // so the text as shown must be stored for it to send.
+    const d = defaultReminder(language);
+    const field = (text: string, standard: string) => {
+      const v = text.trim() ? text : standard;
+      return v === standard && !next.auto ? '' : v;
+    };
+    const row: StoredReminder = {
+      subject: field(next.subject, d.subject),
+      body: field(next.body, d.body),
+      auto: next.auto,
+      leadDays: next.leadDays,
+    };
     const { error } = await supabase
       .from('practices')
       .update({
-        reminder_subject: next.subject,
-        reminder_body: next.body,
-        reminder_auto: next.auto,
-        reminder_lead_days: next.leadDays,
+        reminder_subject: row.subject,
+        reminder_body: row.body,
+        reminder_auto: row.auto,
+        reminder_lead_days: row.leadDays,
       })
       .eq('id', practiceId);
     if (error) throw new Error(error.message);
-    setTemplate(next);
-  }, [practiceId]);
+    setStored(row);
+  }, [practiceId, language]);
 
-  return { template, loaded, save };
+  return { template, loaded, save, language };
 }

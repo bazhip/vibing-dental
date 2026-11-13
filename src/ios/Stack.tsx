@@ -48,6 +48,7 @@ const StackContext = React.createContext<StackApi | null>(null);
 
 export function useStack(): StackApi {
   const api = React.useContext(StackContext);
+  // eslint-disable-next-line no-restricted-syntax -- dev-only: a programming error (hook used outside its provider)
   if (!api) throw new Error('useStack() must be used inside <Stack>');
   return api;
 }

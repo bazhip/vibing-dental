@@ -23,6 +23,7 @@ import {
   sectionLabel,
 } from '../utils/ownerReportConfig';
 import { REPORT_LOCALES, ReportLocale, appReportLocale, reportStrings } from '../utils/ownerReportI18n';
+import { errorText } from '../utils/apiErrors';
 import { buildOwnerReportModel } from '../utils/ownerReport';
 import { buildOwnerReportPdfBytes, OwnerReportBranding } from '../utils/ownerReportPdf';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
@@ -41,6 +42,8 @@ interface OwnerReportTemplatesModalProps {
    *  only the built-in default, so saving is blocked (it would replace
    *  the real templates). */
   loadFailed?: boolean;
+  /** Language new templates start in (the practice's client language); default: the app language. */
+  clientLanguage?: ReportLocale;
   branding: OwnerReportBranding;
   /** In the iOS app — 'screen': the editor only, as a pushed screen (Save
    *  in the navigation bar; Back asks before discarding); 'sheet': the
@@ -71,6 +74,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   canEdit,
   roleKnown,
   loadFailed = false,
+  clientLanguage,
   branding,
   presentation = 'modal',
 }) => {
@@ -205,7 +209,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (draft.templates.length >= MAX_TEMPLATES) return;
     const fresh = base
       ? { ...clone(base), id: newId('tpl-'), name: t('templates.copyName', { name: base.name }) }
-      : { ...defaultTemplate(appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
+      : { ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
     setDraft((d) => ({ ...d, templates: [...d.templates, fresh] }));
     setSelectedId(fresh.id);
   };
@@ -258,7 +262,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
       await onSave(cleaned);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('templates.saveFailed'));
+      setError(errorText(e, t('templates.saveFailed')));
     } finally {
       setBusy(false);
     }
@@ -270,7 +274,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     setPreviewBusy(true);
     setError('');
     try {
-      const model = buildOwnerReportModel(sampleOwnerReportSnapshot(), {
+      const model = buildOwnerReportModel(sampleOwnerReportSnapshot(selected.language), {
         template: selected,
         practiceName: branding.practiceName,
         doctorName: branding.doctorName,

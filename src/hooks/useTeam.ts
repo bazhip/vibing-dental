@@ -1,6 +1,8 @@
 import React from 'react';
 import i18n from '../i18n';
-import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { cloudEnabled } from '../utils/supabaseClient';
+import { invokeFunction } from '../utils/edgeFunctions';
+import { ApiError, LocalizedError } from '../utils/apiErrors';
 import { emailLinkOrigin } from '../native/authReturn';
 import { isNativeApp } from '../native/platform';
 import { friendlyError } from '../components/ui/dialogs';
@@ -51,25 +53,12 @@ export interface UseTeamReturn extends TeamState {
 }
 
 export async function call<T = Record<string, unknown>>(body: object): Promise<T> {
-  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
-  const { data, error } = await supabase.functions.invoke('team-api', { body });
-  if (error) {
-    try {
-      const detail = await (error as { context?: Response }).context?.json();
-      if (detail?.error) throw new Error(detail.error);
-    } catch (inner) {
-      if (inner instanceof Error && inner.message) throw inner;
-    }
-    throw new Error(error.message);
-  }
-  if (data && typeof data === 'object' && 'error' in data && (data as { error?: string }).error) {
-    throw new Error((data as { error: string }).error);
-  }
-  return data as T;
+  return invokeFunction<T>('team-api', body);
 }
 
-/** team-api's seat-limit refusals, word for word (the `add_member` case
- *  in supabase/functions/team-api/index.ts — keep the two in step). */
+/** team-api's seat-limit refusals (error codes; the bare English messages
+ *  are what older function deployments sent). */
+const SEAT_LIMIT_CODES = new Set(['seat_limit', 'seat_limit_individual']);
 const SEAT_LIMIT_MESSAGES = new Set([
   'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.',
   'Practice plans include up to 5 team members — contact us about a larger plan.',
@@ -82,9 +71,10 @@ const SEAT_LIMIT_MESSAGES = new Set([
  * message. Other errors pass through untouched.
  */
 export function appSafeTeamError(err: unknown, native: boolean = isNativeApp()): unknown {
-  if (native && err instanceof Error && SEAT_LIMIT_MESSAGES.has(err.message.trim())) {
-    return new Error(i18n.t('account:team.seatLimit'));
-  }
+  const seatLimit =
+    (err instanceof ApiError && SEAT_LIMIT_CODES.has(err.code)) ||
+    (err instanceof Error && SEAT_LIMIT_MESSAGES.has(err.message.trim()));
+  if (native && seatLimit) return new LocalizedError(i18n.t('account:team.seatLimit'));
   return err;
 }
 
@@ -121,7 +111,8 @@ export function useTeam(open: boolean): UseTeamReturn {
     // Invited accounts get an email link back to wherever the owner is
     // (the website when the owner is in the app).
     const redirectTo = emailLinkOrigin();
-    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo }).catch(
+    // lang: the invite email's language when the invitee has none saved.
+    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo, lang: i18n.language }).catch(
       (err: unknown) => {
         throw appSafeTeamError(err);
       }
@@ -132,7 +123,7 @@ export function useTeam(open: boolean): UseTeamReturn {
 
   const resendInvite = React.useCallback(async (userId: string) => {
     const redirectTo = emailLinkOrigin();
-    await call({ action: 'resend_invite', userId, redirectTo });
+    await call({ action: 'resend_invite', userId, redirectTo, lang: i18n.language });
     await refresh();
   }, [refresh]);
 

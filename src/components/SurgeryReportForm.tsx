@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { promptDialog, toast, friendlyError } from './ui/dialogs';
+import { promptDialog, toast, friendlyDetail } from './ui/dialogs';
 import { useReportTemplates } from '../hooks/useReportTemplates';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
 
@@ -49,7 +49,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
       await store.create(name.trim(), value);
       toast(t('report.saved', { name: name.trim() }), { kind: 'success' });
     } catch (e) {
-      toast(t('report.saveFailed', { error: friendlyError(e) }), { kind: 'error' });
+      toast(t('report.saveFailed', { error: friendlyDetail(e) }), { kind: 'error' });
     }
   };
 

@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Bonjour {{owner}},\n\nNous vous rappelons que {{patient}} doit passer son contrôle dentaire. Merci de nous appeler pour fixer un rendez-vous.\n\nCordialement,\n{{practice}}",
+    "fallback": {
+      "owner": "Madame, Monsieur",
+      "pet": "votre animal",
+      "practice": "votre cabinet vétérinaire"
+    },
+    "subject": "C'est le moment du contrôle dentaire de {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Légère rougeur le long de la joue gauche",
+    "extraNotes": "Alimentation molle pendant les 10 prochains jours, le temps que le site d'extraction cicatrise.",
+    "postComment": "Petit éclat à la pointe — lisse, aucun traitement nécessaire"
+  }
+}

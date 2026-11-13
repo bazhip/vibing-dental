@@ -7,6 +7,7 @@ import {
   normalizeConfig,
   resolveTemplate,
 } from './ownerReportConfig';
+import { reportStrings } from './ownerReportI18n';
 
 describe('DEFAULT_TEMPLATE', () => {
   test('has every built-in section, enabled, in the original order', () => {
@@ -110,5 +111,21 @@ describe('fillPlaceholders', () => {
   });
   test('unknown tokens and missing values', () => {
     expect(fillPlaceholders('{weight} {pet}', {})).toBe('{weight} ');
+  });
+});
+
+describe('defaultConfig language', () => {
+  test('seeds the default template in the given language', () => {
+    const t = defaultConfig('es').templates[0];
+    expect(t.language).toBe('es');
+    expect(t.title).toBe(reportStrings('es').defaultTitle);
+  });
+  test('no argument is unchanged (English)', () => {
+    const t = defaultConfig().templates[0];
+    expect(t.language).toBe('en');
+    expect(t.title).toBe('Dental Visit Report');
+  });
+  test('normalizeConfig seeds a missing config in the given language', () => {
+    expect(normalizeConfig(null, 'de').templates[0].language).toBe('de');
   });
 });

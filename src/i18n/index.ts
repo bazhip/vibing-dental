@@ -6,15 +6,15 @@ type Catalog = Record<string, unknown>;
 const parse = (path: string) => path.match(/\/locales\/([^/]+)\/([^/]+)\.json$/)?.slice(1) as [string, string] | undefined;
 
 // Catalogs live at src/locales/<lng>/<ns>.json. English is bundled, and so is
-// every language's `report` namespace: owner reports are rendered in any report
-// language synchronously (getFixedT in ownerReportI18n), and they are small.
-const bundled = import.meta.glob(['../locales/en/*.json', '../locales/*/report.json'], {
+// every language's `report` and `client` namespaces: owner reports and owner-facing
+// defaults are rendered in any report language synchronously (getFixedT), and they are small.
+const bundled = import.meta.glob(['../locales/en/*.json', '../locales/*/report.json', '../locales/*/client.json'], {
   eager: true,
   import: 'default',
 }) as Record<string, Catalog>;
 
 // Everything else is fetched as its own chunk the first time a language is used.
-const lazy = import.meta.glob(['../locales/*/*.json', '!../locales/en/*.json', '!../locales/*/report.json'], {
+const lazy = import.meta.glob(['../locales/*/*.json', '!../locales/en/*.json', '!../locales/*/report.json', '!../locales/*/client.json'], {
   import: 'default',
 }) as Record<string, () => Promise<Catalog>>;
 /** Lazy catalog loaders keyed `lng/ns`. Exported so tests can stub a failing or slow chunk. */

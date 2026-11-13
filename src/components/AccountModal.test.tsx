@@ -126,4 +126,15 @@ describe('AccountModal', () => {
     await user.selectOptions(select, 'Français');
     expect(onLanguageChange).toHaveBeenCalledWith('fr');
   });
+
+  it('records the language on the account so auth emails follow it, and ignores failures', async () => {
+    langFlag.on = true;
+    const user = userEvent.setup();
+    const onLanguageChange = vi.fn();
+    auth.updateUser.mockRejectedValueOnce(new Error('offline'));
+    renderModal(vi.fn(), { language: 'en', onLanguageChange });
+    await user.selectOptions(screen.getByRole('combobox', { name: /language/i }), 'Deutsch');
+    expect(auth.updateUser).toHaveBeenCalledWith({ data: { language: 'de' } });
+    expect(onLanguageChange).toHaveBeenCalledWith('de');
+  });
 });

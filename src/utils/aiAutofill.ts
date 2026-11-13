@@ -1,6 +1,8 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import { supabase } from './supabaseClient';
 import i18n from '../i18n';
+import { invokeFunction } from './edgeFunctions';
+import { ApiError, LocalizedError } from './apiErrors';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
 import {
@@ -922,25 +924,17 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
 }
 
 export async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
-  if (!supabase) throw new Error(i18n.t('errors.noCloud', { ns: 'voice' }));
+  if (!supabase) throw new LocalizedError(i18n.t('errors.noCloud', { ns: 'voice' }));
   const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
-    const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });
-    if (error) {
-      let msg = error.message;
-      try {
-        const detail = await (error as { context?: Response }).context?.json();
-        if (detail?.error) msg = detail.error;
-      } catch { /* keep msg */ }
-      throw new Error(msg);
-    }
-    if (data && (data as { error?: string }).error) throw new Error((data as { error: string }).error);
-    return ((data as { content?: Array<Anthropic.ContentBlock> })?.content) ?? [];
+    const data = await invokeFunction<{ content?: Array<Anthropic.ContentBlock> }>('ai-autofill', requestBody);
+    return data?.content ?? [];
   };
   try {
     return await send();
   } catch (err) {
-    const retryable =
-      err instanceof Error && /rate|timeout|network|503|502|429/i.test(err.message);
+    // Matched on the server's English text: coded errors carry it as serverMessage.
+    const text = err instanceof ApiError ? err.serverMessage : err instanceof Error ? err.message : '';
+    const retryable = err instanceof Error && /rate|timeout|network|503|502|429/i.test(text);
     if (!retryable) throw err;
     await new Promise((r) => setTimeout(r, 800));
     return send();

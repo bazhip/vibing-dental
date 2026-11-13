@@ -1,0 +1,30 @@
+{
+  "common": {
+    "fallback": "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
+    "tagline": "Schéma dentaire vétérinaire"
+  },
+  "confirmSignup": {
+    "subject": "Confirmez votre compte ToothOps",
+    "title": "Confirmez votre adresse e-mail",
+    "preheader": "Confirmez votre adresse e-mail pour activer votre compte ToothOps.",
+    "body": "Bienvenue sur ToothOps. Confirmez <strong>{{email}}</strong> pour activer le compte de votre clinique — vous serez connecté immédiatement.",
+    "button": "Confirmer l’e-mail et se connecter",
+    "ignore": "Vous ne vous êtes pas inscrit sur ToothOps ? Vous pouvez ignorer cet e-mail — le compte reste inactif tant que ce lien n’est pas utilisé."
+  },
+  "resetPassword": {
+    "subject": "Réinitialisez votre mot de passe ToothOps",
+    "title": "Réinitialisez votre mot de passe",
+    "preheader": "Réinitialisez le mot de passe de votre compte ToothOps.",
+    "body": "Nous avons reçu une demande de réinitialisation du mot de passe de <strong>{{email}}</strong>. Le lien est valable une heure.",
+    "button": "Choisir un nouveau mot de passe",
+    "ignore": "Vous n’êtes pas à l’origine de cette demande ? Ignorez cet e-mail — votre mot de passe reste inchangé."
+  },
+  "changeEmail": {
+    "subject": "Confirmez votre nouvelle adresse e-mail pour ToothOps",
+    "title": "Confirmez votre nouvelle adresse e-mail",
+    "preheader": "Confirmez la nouvelle adresse e-mail de votre compte ToothOps.",
+    "body": "Confirmez que <strong>{{newEmail}}</strong> doit remplacer <strong>{{email}}</strong> comme adresse e-mail de connexion de votre compte ToothOps.",
+    "button": "Confirmer la nouvelle adresse",
+    "ignore": "Vous n’avez pas demandé ce changement ? Ignorez cet e-mail — votre adresse de connexion reste inchangée."
+  }
+}

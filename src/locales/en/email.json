@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Set your password & join"
+  },
+  "invite": {
+    "body1": "{{who}} added you to their team on ToothOps — chairside veterinary dental charting.",
+    "body2": "Set your password to activate your account and see the practice’s charts.",
+    "fallback": {
+      "preheader": "the practice",
+      "title": "a practice",
+      "who": "A practice"
+    },
+    "footnote": "If you weren’t expecting this, you can ignore this email.",
+    "preheader": "Set your password to join {{practice}} on ToothOps.",
+    "subject": "{{who}} invited you to ToothOps",
+    "title": "You’re invited to join {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} invited you to join their team on ToothOps. Sign in with your existing account to accept.",
+    "body2": "Nothing changes until you accept — and sharing your existing charts with the practice is a separate choice you make when joining.",
+    "button": "Review invitation",
+    "fallback": "a practice",
+    "footnote": "The link works for 14 days. If you weren’t expecting this, ignore this email.",
+    "preheader": "{{name}} invited you to their team on ToothOps.",
+    "subject": "Join {{name}} on ToothOps?",
+    "title": "Join {{name}}?"
+  },
+  "layout": {
+    "linkFallback": "If the button doesn’t work, copy this link into your browser:",
+    "tagline": "Veterinary dental charting"
+  },
+  "reminder": {
+    "body1": "{{who}} invited you to ToothOps, their veterinary dental charting app. Your account is ready whenever you are — just set a password to get started.",
+    "body2": "The link below works for 24 hours.",
+    "fallback": "your practice",
+    "footnote": "Not expecting this, or don’t want to join? Just ignore this email — we’ll send at most one more reminder.",
+    "footnoteFinal": "This is the last reminder we’ll send. If you haven’t joined by {{date}}, this invite expires and the pending account is removed — {{who}} can invite you again anytime.",
+    "preheader": "{{who}} is waiting for you on ToothOps — set your password to join.",
+    "subject": "Reminder: {{who}} invited you to ToothOps",
+    "subjectFinal": "Last reminder: join {{who}} on ToothOps",
+    "title": "You’re invited to join {{who}}",
+    "titleFinal": "Your invitation is still waiting"
+  }
+}

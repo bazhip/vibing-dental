@@ -20,6 +20,8 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { sendBrandedEmail } from '../_shared/email.ts';
+import { inviteReminderEmail } from '../_shared/inviteEmails.ts';
+import { emailLanguage } from '../_shared/emailStrings.ts';
 
 const APP_URL = 'https://toothops.app/';
 const DAY = 24 * 60 * 60 * 1000;
@@ -163,25 +165,10 @@ Deno.serve(async (req: Request) => {
       });
       if (linkErr || !link?.properties?.action_link) { note('link_failed'); skipped.push(u.email); continue; }
 
-      const who = practice || 'your practice';
-      const expiryDate = expiresAt
-        ? expiresAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
-        : '';
-      const subject = final
-        ? `Last reminder: join ${who} on ToothOps`
-        : `Reminder: ${who} invited you to ToothOps`;
-      const ok = await sendBrandedEmail(key, u.email, subject, {
-        preheader: `${who} is waiting for you on ToothOps — set your password to join.`,
-        title: final ? 'Your invitation is still waiting' : `You’re invited to join ${who}`,
-        paragraphs: [
-          `${who} invited you to ToothOps, their veterinary dental charting app. Your account is ready whenever you are — just set a password to get started.`,
-          'The link below works for 24 hours.',
-        ],
-        button: { label: 'Set your password & join', url: link.properties.action_link },
-        footnote: final
-          ? `This is the last reminder we’ll send. If you haven’t joined by ${expiryDate}, this invite expires and the pending account is removed — ${who} can invite you again anytime.`
-          : 'Not expecting this, or don’t want to join? Just ignore this email — we’ll send at most one more reminder.',
-      });
+      // The language team-api stored on the invite (English for older invites).
+      const lang = emailLanguage((u.user_metadata as Record<string, unknown> | undefined)?.language);
+      const m = inviteReminderEmail(lang, { practice, final, expiresAt, url: link.properties.action_link });
+      const ok = await sendBrandedEmail(key, u.email, m.subject, m.email, lang);
       if (!ok) { note('email_failed'); skipped.push(u.email); continue; }
       note('invite_reminder_sent');
       sent.push(u.email);

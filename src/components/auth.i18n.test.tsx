@@ -146,6 +146,27 @@ describe('Login', () => {
     expect(untranslated(container)).toEqual([]);
   });
 
+  it('maps the common Supabase auth codes, and wraps anything raw', async () => {
+    const cases: [{ code?: string; message: string; status?: number }, string][] = [
+      [{ code: 'weak_password', message: 'Password should be at least 6 characters.' }, '⟦Choose a stronger password — at least 8 characters.⟧'],
+      [{ code: 'email_address_invalid', message: 'Email address is invalid' }, '⟦Enter a valid email address.⟧'],
+      [{ code: 'user_already_exists', message: 'User already registered' }, '⟦An account with this email already exists.⟧'],
+      [{ code: 'over_email_send_rate_limit', message: 'email rate limit exceeded' }, '⟦Too many attempts. Wait a minute and try again.⟧'],
+      [{ code: 'same_password', message: 'New password should be different from the old password.' }, '⟦Choose a new password that’s different from your current one.⟧'],
+      [{ message: 'Database error querying schema' }, '⟦Something went wrong (details: Database error querying schema)⟧'],
+    ];
+    for (const [error, shown] of cases) {
+      auth.signInWithPassword.mockResolvedValue({ error });
+      const { container, unmount } = render(<Login onAuthenticate={vi.fn()} />);
+      fill(/^⟦Email⟧/, 'jane@vets.com');
+      fill(/^⟦Password⟧/, 'longenough');
+      fireEvent.click(screen.getByRole('button', { name: '⟦Sign in⟧' }));
+      await screen.findByText(shown);
+      expect(untranslated(container)).toEqual([]);
+      unmount();
+    }
+  });
+
   it('translates the unconfirmed-email and reset-link notices', async () => {
     auth.signInWithPassword.mockResolvedValue({ error: { code: 'email_not_confirmed', message: 'Email not confirmed' } });
     auth.resetPasswordForEmail.mockResolvedValue({ error: null });
@@ -260,6 +281,14 @@ describe('SessionExpiredOverlay', () => {
     await screen.findByText('⟦Incorrect email or password.⟧');
     expect(untranslated(document.body)).toEqual([]);
   });
+
+  it('wraps raw auth text instead of showing it bare', async () => {
+    auth.signInWithPassword.mockResolvedValue({ error: { message: 'Database error querying schema' } });
+    render(<SessionExpiredOverlay email="jane@vets.com" onSignOut={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText('⟦Password⟧'), { target: { value: 'pw' } });
+    fireEvent.click(screen.getByRole('button', { name: '⟦Sign in and continue charting⟧' }));
+    await screen.findByText('⟦Something went wrong (details: Database error querying schema)⟧');
+  });
 });
 
 describe('AppLoading and ErrorBoundary', () => {
@@ -297,5 +326,24 @@ describe('in French', () => {
     render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
     expect(screen.getByText(/Vous seul\(e\)\. À partir de 20\s\$\/mois\./)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Créer le compte' })).toBeInTheDocument();
+  });
+
+  it('shows the English-governs notice once on sign-in, and on the landing footer, but not in English', async () => {
+    await act(restoreLocale);
+    const fr = 'Ces documents sont rédigés en anglais ; la version anglaise fait foi.';
+    await loadLanguage('fr');
+    await act(() => i18n.changeLanguage('fr'));
+    const login = render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    expect(screen.getAllByText(fr)).toHaveLength(1);
+    login.unmount();
+    render(<Landing onAuthenticate={vi.fn()} onTryFree={vi.fn()} />);
+    expect(screen.getAllByText(fr)).toHaveLength(1);
+  });
+
+  it('shows no English-governs notice in English', async () => {
+    await act(restoreLocale);
+    await act(() => i18n.changeLanguage('en'));
+    render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    expect(screen.queryByText(/English version governs/)).toBeNull();
   });
 });

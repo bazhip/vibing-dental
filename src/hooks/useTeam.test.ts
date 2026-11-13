@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
 
 import { appSafeTeamError } from './useTeam';
+import { ApiError, LocalizedError } from '../utils/apiErrors';
 
 const individual = 'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.';
 const practice = 'Practice plans include up to 5 team members — contact us about a larger plan.';
@@ -15,7 +16,15 @@ describe('appSafeTeamError', () => {
 
   it('app: seat-limit upsells become a plain fact', () => {
     for (const msg of [individual, practice]) {
-      expect(appSafeTeamError(new Error(msg), true)).toEqual(new Error('This practice has reached its team member limit.'));
+      expect(appSafeTeamError(new Error(msg), true)).toEqual(new LocalizedError('This practice has reached its team member limit.'));
+    }
+  });
+
+  it('app: coded seat-limit errors become the plain fact too; the web keeps them', () => {
+    for (const code of ['seat_limit', 'seat_limit_individual']) {
+      const err = new ApiError('Translated upsell', code, 'upsell');
+      expect(appSafeTeamError(err, true)).toEqual(new LocalizedError('This practice has reached its team member limit.'));
+      expect(appSafeTeamError(err, false)).toBe(err);
     }
   });
 

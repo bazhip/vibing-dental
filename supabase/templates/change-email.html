@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang="en">
+{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = printf "%v" . }}{{ end }}{{ end }}<!doctype html>
+<html lang="{{ if eq $lang "fr" }}fr{{ else if eq $lang "de" }}de{{ else if eq $lang "it" }}it{{ else if eq $lang "es" }}es{{ else }}en{{ end }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Confirm your new email</title>
+<title>{{ if eq $lang "fr" }}Confirmez votre nouvelle adresse e-mail{{ else if eq $lang "de" }}Bestätigen Sie Ihre neue E-Mail-Adresse{{ else if eq $lang "it" }}Confermi il Suo nuovo indirizzo e-mail{{ else if eq $lang "es" }}Confirme su nuevo correo electrónico{{ else }}Confirm your new email{{ end }}</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f6f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17232e;">
-<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Confirm the new email address for your ToothOps account.</span>
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ if eq $lang "fr" }}Confirmez la nouvelle adresse e-mail de votre compte ToothOps.{{ else if eq $lang "de" }}Bestätigen Sie die neue E-Mail-Adresse für Ihr ToothOps-Konto.{{ else if eq $lang "it" }}Confermi il nuovo indirizzo e-mail del Suo account ToothOps.{{ else if eq $lang "es" }}Confirme la nueva dirección de correo electrónico de su cuenta de ToothOps.{{ else }}Confirm the new email address for your ToothOps account.{{ end }}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f7;padding:32px 12px;">
   <tr><td align="center">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;">
@@ -14,19 +14,19 @@
         <div style="font-size:20px;font-weight:700;color:#0c6b63;letter-spacing:-0.01em;">ToothOps</div>
       </td></tr>
       <tr><td style="padding:8px 32px 0;">
-        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#17232e;">Confirm your new email</h1>
-        <p style="margin:0;font-size:16px;line-height:1.55;">Confirm that <strong>{{ .NewEmail }}</strong> should replace <strong>{{ .Email }}</strong> as the sign-in email for your ToothOps account.</p>
+        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#17232e;">{{ if eq $lang "fr" }}Confirmez votre nouvelle adresse e-mail{{ else if eq $lang "de" }}Bestätigen Sie Ihre neue E-Mail-Adresse{{ else if eq $lang "it" }}Confermi il Suo nuovo indirizzo e-mail{{ else if eq $lang "es" }}Confirme su nuevo correo electrónico{{ else }}Confirm your new email{{ end }}</h1>
+        <p style="margin:0;font-size:16px;line-height:1.55;">{{ if eq $lang "fr" }}Confirmez que <strong>{{ .NewEmail }}</strong> doit remplacer <strong>{{ .Email }}</strong> comme adresse e-mail de connexion de votre compte ToothOps.{{ else if eq $lang "de" }}Bestätigen Sie, dass <strong>{{ .NewEmail }}</strong> die Adresse <strong>{{ .Email }}</strong> als Anmelde-E-Mail Ihres ToothOps-Kontos ersetzen soll.{{ else if eq $lang "it" }}Confermi che <strong>{{ .NewEmail }}</strong> deve sostituire <strong>{{ .Email }}</strong> come indirizzo e-mail di accesso del Suo account ToothOps.{{ else if eq $lang "es" }}Confirme que <strong>{{ .NewEmail }}</strong> debe sustituir a <strong>{{ .Email }}</strong> como correo de inicio de sesión de su cuenta de ToothOps.{{ else }}Confirm that <strong>{{ .NewEmail }}</strong> should replace <strong>{{ .Email }}</strong> as the sign-in email for your ToothOps account.{{ end }}</p>
       </td></tr>
       <tr><td style="padding:20px 32px 8px;">
-        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">Confirm new email</a>
+        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">{{ if eq $lang "fr" }}Confirmer la nouvelle adresse{{ else if eq $lang "de" }}Neue E-Mail-Adresse bestätigen{{ else if eq $lang "it" }}Conferma il nuovo indirizzo{{ else if eq $lang "es" }}Confirmar nuevo correo{{ else }}Confirm new email{{ end }}</a>
       </td></tr>
       <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
-        If the button doesn’t work, copy this link into your browser:<br>
+        {{ if eq $lang "fr" }}Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :{{ else if eq $lang "de" }}Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:{{ else if eq $lang "it" }}Se il pulsante non funziona, copi questo link nel Suo browser:{{ else if eq $lang "es" }}Si el botón no funciona, copie este enlace en su navegador:{{ else }}If the button doesn’t work, copy this link into your browser:{{ end }}<br>
         <a href="{{ .ConfirmationURL }}" style="color:#0c6b63;word-break:break-all;">{{ .ConfirmationURL }}</a>
-        <p style="margin:16px 0 0;">Didn’t request this change? Ignore this email and your sign-in email stays the same.</p>
+        <p style="margin:16px 0 0;">{{ if eq $lang "fr" }}Vous n’avez pas demandé ce changement ? Ignorez cet e-mail — votre adresse de connexion reste inchangée.{{ else if eq $lang "de" }}Sie haben diese Änderung nicht veranlasst? Ignorieren Sie diese E-Mail – Ihre Anmelde-E-Mail-Adresse bleibt unverändert.{{ else if eq $lang "it" }}Non ha richiesto Lei questa modifica? Ignori questa e-mail: il Suo indirizzo di accesso rimane invariato.{{ else if eq $lang "es" }}¿No solicitó este cambio? Ignore este correo: su correo de inicio de sesión no cambiará.{{ else }}Didn’t request this change? Ignore this email and your sign-in email stays the same.{{ end }}</p>
       </td></tr>
     </table>
-    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · Veterinary dental charting · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · {{ if eq $lang "fr" }}Schéma dentaire vétérinaire{{ else if eq $lang "de" }}Zahnschema für die Tiermedizin{{ else if eq $lang "it" }}Odontogramma veterinario{{ else if eq $lang "es" }}Odontograma veterinario{{ else }}Veterinary dental charting{{ end }} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
   </td></tr>
 </table>
 </body>

@@ -179,8 +179,9 @@ export function defaultTemplate(language: ReportLocale = 'en'): OwnerReportTempl
   };
 }
 
-export function defaultConfig(): OwnerReportConfig {
-  return { templates: [defaultTemplate()], defaultTemplateId: DEFAULT_TEMPLATE_ID };
+/** `language` seeds the default template (the practice's client language). */
+export function defaultConfig(language?: ReportLocale): OwnerReportConfig {
+  return { templates: [defaultTemplate(language)], defaultTemplateId: DEFAULT_TEMPLATE_ID };
 }
 
 const str = (v: unknown, fallback = ''): string => (typeof v === 'string' ? v : fallback);
@@ -251,8 +252,8 @@ export function normalizeTemplate(raw: unknown, fallbackId?: string): OwnerRepor
 
 /** Tolerates null, garbage, and older/partial shapes; always returns a
  *  config with at least one template and a valid default id. */
-export function normalizeConfig(raw: unknown): OwnerReportConfig {
-  if (!isObj(raw)) return defaultConfig();
+export function normalizeConfig(raw: unknown, language?: ReportLocale): OwnerReportConfig {
+  if (!isObj(raw)) return defaultConfig(language);
   const templates: OwnerReportTemplate[] = [];
   const ids = new Set<string>();
   if (Array.isArray(raw.templates)) {
@@ -264,7 +265,7 @@ export function normalizeConfig(raw: unknown): OwnerReportConfig {
       templates.push(tpl);
     }
   }
-  if (templates.length === 0) templates.push(defaultTemplate());
+  if (templates.length === 0) templates.push(defaultTemplate(language));
   const wanted = str(raw.defaultTemplateId);
   return {
     templates,

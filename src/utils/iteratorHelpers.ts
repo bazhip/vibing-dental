@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- dev-only: spec-mandated TypeError/RangeError texts of a polyfill, never shown in the UI */
 /**
  * Polyfill for the ES2025 iterator helpers (`Iterator.prototype.map`,
  * `.toArray`, …).

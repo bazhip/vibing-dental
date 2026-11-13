@@ -9,6 +9,7 @@ export type GlossaryTerm = {
   de: string;
   it: string;
   es: string;
+  pt: string;
   note?: string;
 };
 

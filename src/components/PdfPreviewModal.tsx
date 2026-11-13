@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
+import { isAppLanguage } from '../i18n/config';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
@@ -76,7 +77,10 @@ interface PdfPreviewModalProps {
 }
 
 export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false }) => {
-  const { t } = useTranslation('pdfui');
+  const { t, i18n: i18nInstance } = useTranslation('pdfui');
+  // The document's labels print in the app language; the preview rebuilds
+  // when it changes.
+  const lng = isAppLanguage(i18nInstance.language) ? i18nInstance.language : 'en';
   // The document style is independent of the app UI. The last pick
   // (preset or custom color) is remembered on this device.
   const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
@@ -186,7 +190,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           { state: snapshot.postState, png: postPng },
           styleId,
           snapshot.branding ?? {},
-          { includeGrid: snapshot.includeGrid, images, hiddenBlocks: snapshot.hiddenBlocks }
+          { includeGrid: snapshot.includeGrid, images, hiddenBlocks: snapshot.hiddenBlocks, lng }
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
@@ -207,7 +211,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       cancelled = true;
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
-  }, [open, snapshot, styleId, images]);
+  }, [open, snapshot, styleId, images, lng]);
 
   const handleDownload = () => {
     if (!pdfUrl || !snapshot) return;

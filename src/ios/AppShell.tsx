@@ -94,6 +94,7 @@ const AppShellContext = React.createContext<AppShellApi | null>(null);
 
 export function useAppShell(): AppShellApi {
   const api = React.useContext(AppShellContext);
+  // eslint-disable-next-line no-restricted-syntax -- dev-only: a programming error (hook used outside its provider)
   if (!api) throw new Error('useAppShell() must be used inside <AppShell>');
   return api;
 }

@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Imposta la password e unisciti"
+  },
+  "invite": {
+    "body1": "{{who}} La invita a far parte del proprio team su ToothOps, l’odontogramma veterinario da usare alla poltrona.",
+    "body2": "Imposti la password per attivare il Suo account e vedere le cartelle dello studio.",
+    "fallback": {
+      "preheader": "Lo studio",
+      "title": "uno studio",
+      "who": "Uno studio"
+    },
+    "footnote": "Se non si aspettava questa email, può ignorarla.",
+    "preheader": "{{practice}} La aspetta su ToothOps: imposti la password per unirsi al team.",
+    "subject": "{{who}} La invita su ToothOps",
+    "title": "Invito a unirsi a {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} La invita a far parte del proprio team su ToothOps. Acceda con il Suo account esistente per accettare.",
+    "body2": "Non cambia nulla finché non accetta — e la condivisione delle Sue cartelle esistenti con lo studio è una scelta separata, che farà al momento dell’adesione.",
+    "button": "Vedi invito",
+    "fallback": "uno studio",
+    "footnote": "Il link è valido per 14 giorni. Se non si aspettava questa email, la ignori.",
+    "preheader": "{{name}} La invita a far parte del proprio team su ToothOps.",
+    "subject": "Unirsi a {{name}} su ToothOps?",
+    "title": "Unirsi a {{name}}?"
+  },
+  "layout": {
+    "linkFallback": "Se il pulsante non funziona, copi questo link nel Suo browser:",
+    "tagline": "Odontogramma veterinario"
+  },
+  "reminder": {
+    "body1": "{{who}} La invita su ToothOps, la propria app per l’odontogramma veterinario. Il Suo account è pronto quando vuole: basta impostare una password per iniziare.",
+    "body2": "Il link qui sotto è valido per 24 ore.",
+    "fallback": "il Suo studio",
+    "footnote": "Non se lo aspettava o non desidera unirsi? Ignori semplicemente questa email: invieremo al massimo un altro promemoria.",
+    "footnoteFinal": "Questo è l’ultimo promemoria che invieremo. Se non avrà aderito entro il {{date}}, l’invito scadrà e l’account in sospeso verrà rimosso — {{who}} potrà invitarLa di nuovo in qualsiasi momento.",
+    "preheader": "{{who}} La aspetta su ToothOps — imposti la password per unirsi.",
+    "subject": "Promemoria: {{who}} La invita su ToothOps",
+    "subjectFinal": "Ultimo promemoria: {{who}} La aspetta su ToothOps",
+    "title": "{{who}} La invita a unirsi",
+    "titleFinal": "Il Suo invito La sta ancora aspettando"
+  }
+}
