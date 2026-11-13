@@ -27,7 +27,7 @@ import { OwnerReportSection } from './OwnerReportSection';
 import { OwnerReportCustomize } from './OwnerReportCustomize';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { defaultConfig, defaultTemplate, defaultSectionTitle, BUILT_IN_SECTION_IDS, type OwnerReportConfig } from '../utils/ownerReportConfig';
-import { reportStrings, type ReportLocale } from '../utils/ownerReportI18n';
+import { appReportLocale, reportStrings, type ReportLocale } from '../utils/ownerReportI18n';
 import { buildOwnerReportModel } from '../utils/ownerReport';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
 
@@ -126,10 +126,27 @@ describe('OwnerReportTemplatesModal', () => {
     expect(saved.templates[0].language).toBe('en');
   });
 
-  it('a template created in an app language reports do not cover starts in English', () => {
-    render(<OwnerReportTemplatesModal {...props} config={defaultConfig()} />);
+  it('a template created in an app language reports do not cover (pseudo-locale) is saved as English', async () => {
+    const onSave = vi.fn(async () => {});
+    render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
     fireEvent.click(screen.getByRole('button', { name: '⟦New⟧' }));
-    expect(screen.getAllByRole('button', { name: /⟦New template⟧/ })).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Save templates⟧' }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
+    expect(saved.templates).toHaveLength(2);
+    expect(saved.templates[1]).toMatchObject({ language: 'en', title: reportStrings('en').defaultTitle });
+  });
+});
+
+describe('appReportLocale', () => {
+  it('follows the app language when reports cover it, else English', async () => {
+    await i18n.changeLanguage('ja');
+    expect(appReportLocale()).toBe('en');
+    await i18n.changeLanguage('xx');
+    expect(appReportLocale()).toBe('en');
+    await loadLanguage('it');
+    await i18n.changeLanguage('it');
+    expect(appReportLocale()).toBe('it');
   });
 });
 
