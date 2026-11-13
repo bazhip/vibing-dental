@@ -1,0 +1,97 @@
+{
+  "title": "Patienten",
+  "search": {
+    "placeholder": "Suchen",
+    "label": "Patienten nach Name, Nummer oder Besitzer suchen",
+    "clear": "Suche löschen"
+  },
+  "signIn": "Melden Sie sich an, um Ihre gespeicherten Zahnschemata zu sehen.",
+  "loading": "Wird geladen …",
+  "unnamed": "Patient ohne Namen",
+  "empty": "Noch keine gespeicherten Zahnschemata. Sie werden beim Erfassen automatisch gespeichert.",
+  "noMatch": {
+    "search": "Keine Patienten entsprechen dieser Suche.",
+    "due": "Bei keinem Patienten ist eine Kontrolle fällig.",
+    "filters": "Keine Zahnschemata entsprechen diesen Filtern."
+  },
+  "retry": "Erneut versuchen",
+  "loadMore": "Mehr laden",
+  "errors": {
+    "load": "Ihre Zahnschemata konnten nicht geladen werden. {{error}}",
+    "more": "Weitere Zahnschemata konnten nicht geladen werden. {{error}}",
+    "open": "Dieses Zahnschema konnte nicht geöffnet werden. {{error}}",
+    "delete": "Dieser Besuch konnte nicht gelöscht werden. {{error}}",
+    "clear": "Diese Kontrolle konnte nicht entfernt werden. {{error}}"
+  },
+  "filter": {
+    "button": "Filtern und sortieren",
+    "sortBy": "Sortieren nach",
+    "sortPatient": "Name",
+    "sortUpdated": "Zuletzt geändert",
+    "sortRecall": "Kontrolldatum",
+    "order": "Reihenfolge",
+    "patientAsc": "A bis Z",
+    "patientDesc": "Z bis A",
+    "updatedDesc": "Neueste zuerst",
+    "updatedAsc": "Älteste zuerst",
+    "recallAsc": "Nächste zuerst",
+    "recallDesc": "Späteste zuerst",
+    "species": "Tierart",
+    "allSpecies": "Alle Tierarten",
+    "canine": "Hund",
+    "feline": "Katze",
+    "doctor": "Tierarzt",
+    "allDoctors": "Alle Tierärzte",
+    "due": "Kontrolle fällig",
+    "dueCount": "Kontrolle fällig ({{count}})"
+  },
+  "add": {
+    "button": "Hinzufügen",
+    "newPatient": "Neuer Patient",
+    "importPdf": "Zahnschema-PDF importieren"
+  },
+  "row": {
+    "number": "Nr. {{number}}",
+    "visits_one": "{{count}} Besuch",
+    "visits_other": "{{count}} Besuche",
+    "updated": "Geändert am {{date}}"
+  },
+  "recall": {
+    "overdue": "Überfällig · {{date}}",
+    "today": "Heute fällig",
+    "upcoming": "Kontrolle am {{date}}"
+  },
+  "actions": {
+    "sendReminder": "Erinnerung senden",
+    "clearRecheck": "Kontrolle entfernen",
+    "history": "Verlauf",
+    "open": "Öffnen",
+    "delete": "Löschen",
+    "newVisit": "Neuer Besuch"
+  },
+  "confirmClear": {
+    "title": "Kontrolle für {{name}} entfernen?",
+    "message": "Verwenden Sie dies, wenn die Kontrolle ohne neues Zahnschema stattgefunden hat oder nicht mehr nötig ist. Der Patient verschwindet dann aus der Liste der fälligen Kontrollen.",
+    "confirm": "Kontrolle entfernen"
+  },
+  "confirmDelete": {
+    "title": "{{name}} löschen?",
+    "titleDated": "{{name}} ({{date}}) löschen?",
+    "message": "Dieser Besuch wird für alle in Ihrer Praxis aus der Cloud entfernt. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Besuch löschen"
+  },
+  "visits": {
+    "undated": "Besuch ohne Datum",
+    "byDoctor": "{{doctor}} · Geändert am {{date}}",
+    "updated": "Geändert am {{date}}",
+    "empty": "Keine Besuche.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Kontrollen",
+    "overdue": "Überfällig",
+    "today": "Heute fällig",
+    "empty": "Keine Kontrollen fällig",
+    "emptyHint": "Patienten erscheinen hier an dem Tag, an dem ihre Kontrolle fällig ist."
+  }
+}

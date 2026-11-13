@@ -23,5 +23,7 @@
   "src/ios/appData.tsx",
   "src/ios/screens/PatientsScreen.tsx",
   "src/ios/screens/RechecksScreen.tsx",
-  "src/ios/screens/SettingsScreen.tsx"
+  "src/ios/screens/SettingsScreen.tsx",
+  "src/ios/SearchField.tsx",
+  "src/ios/screens/patientShared.tsx"
 ]

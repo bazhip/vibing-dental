@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ContextMenu } from './ContextMenu';
+import { ContextMenu, MenuPopover } from './ContextMenu';
 
 const ev = { pointerId: 9, pointerType: 'touch', isPrimary: true, clientX: 50, clientY: 50 };
 
@@ -67,5 +67,38 @@ describe('ContextMenu', () => {
     fireEvent.click(del);
     expect(onDelete).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('menu')).toBeNull();
+  });
+});
+
+describe('MenuPopover sections', () => {
+  it('groups items under section titles, with radio and checkbox items in one menu', () => {
+    const onDue = vi.fn();
+    render(
+      <MenuPopover
+        anchor={{ left: 0, top: 0, width: 10, height: 10 }}
+        onClose={() => {}}
+        items={[
+          { label: 'Name', section: 'Sort by', type: 'radio', checked: true, onSelect: () => {} },
+          { label: 'Updated', type: 'radio', checked: false, onSelect: () => {} },
+          { label: 'Due', section: true, checked: false, onSelect: onDue },
+          { label: 'Plain', onSelect: () => {} },
+        ]}
+      />
+    );
+    const groups = screen.getAllByRole('group');
+    expect(groups).toHaveLength(2);
+    expect(groups[0]).toHaveAccessibleName('Sort by');
+    expect(screen.getByText('Sort by')).toHaveClass('ios-menu__section-title');
+    expect(screen.getByRole('menuitemradio', { name: 'Name' })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemradio', { name: 'Updated' })).toHaveAttribute('aria-checked', 'false');
+    fireEvent.click(screen.getByRole('menuitemcheckbox', { name: 'Due' }));
+    expect(onDue).toHaveBeenCalled();
+    expect(screen.getByRole('menuitem', { name: 'Plain' })).toBeInTheDocument();
+  });
+
+  it('menus without sections keep their flat structure', () => {
+    render(<MenuPopover anchor={{ left: 0, top: 0, width: 0, height: 0 }} onClose={() => {}} items={[{ label: 'A', onSelect: () => {} }]} />);
+    expect(screen.queryByRole('group')).toBeNull();
+    expect(screen.getByRole('menuitem', { name: 'A' })).toBeInTheDocument();
   });
 });
