@@ -206,3 +206,34 @@ test('Space moves down by default (unchanged)', () => {
   const editor = rowFor(101).querySelector('.rdg-editor-container input') as HTMLInputElement;
   expect(fireEvent.keyDown(editor, { key: ' ' })).toBe(false); // handled: commit + move down
 });
+
+test('short-scale columns: tapping a score saves the bare number and opens the next tooth', async () => {
+  const { props } = renderGrid();
+  const mobility101 = rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement;
+  fireEvent.click(mobility101);
+  const group = screen.getByRole('group', { name: 'Tooth 101 Mobility score' });
+  const chips = Array.from(group.querySelectorAll('button')).map((b) => b.textContent);
+  expect(chips).toEqual(['–', 'M0', 'M1', 'M2', 'M3']);
+  fireEvent.click(screen.getByRole('button', { name: 'M2' }));
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 101)?.mobility).toBe('2');
+  // The next tooth down opens with its own scores, ready for the next tap.
+  expect(await screen.findByRole('group', { name: 'Tooth 102 Mobility score' })).toBeInTheDocument();
+});
+
+test('short-scale columns: furcation reads F1–F3, and "–" clears a score', () => {
+  const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, furcation: '2' } : t));
+  const { props } = renderGrid({ toothData });
+  fireEvent.click(rowFor(108).querySelectorAll('[role="gridcell"]')[6] as HTMLElement); // …, Pocket, Furcation
+  expect(screen.getByRole('button', { name: 'F2' })).toHaveAttribute('aria-pressed', 'true');
+  fireEvent.click(screen.getByRole('button', { name: 'Clear Tooth 108 Furcation' }));
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 108)?.furcation).toBe('');
+});
+
+test('millimetre columns keep typing (number pad), with no score chips', () => {
+  renderGrid();
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement); // Pocket
+  expect(screen.queryByRole('group', { name: /score/ })).not.toBeInTheDocument();
+  expect(rowFor(101).querySelector('.rdg-editor-container input')).toHaveAttribute('inputmode', 'decimal');
+});

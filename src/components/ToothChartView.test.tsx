@@ -108,3 +108,16 @@ test('read-only charts can be browsed but not edited', () => {
   fireEvent.click(screen.getByRole('button', { name: /next tooth/i }));
   expect(screen.getByText('109')).toBeInTheDocument();
 });
+
+test('short-scale findings can be tapped: F2 sets furcation, tapping it again clears', () => {
+  render(<Harness />);
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  const furcation = screen.getByRole('group', { name: 'Furcation score' });
+  expect(Array.from(furcation.querySelectorAll('button')).map((b) => b.textContent)).toEqual(['F0', 'F1', 'F2', 'F3']);
+  fireEvent.click(screen.getByRole('button', { name: 'F2' }));
+  expect(state().row.furcation).toBe('2');
+  expect(screen.getByRole('button', { name: 'F2' })).toHaveAttribute('aria-pressed', 'true');
+  fireEvent.click(screen.getByRole('button', { name: 'F2' }));
+  expect(state().row.furcation).toBe('');
+  expect(screen.queryByRole('group', { name: 'Pocket score' })).toBeNull();
+});

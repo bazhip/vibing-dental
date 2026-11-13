@@ -3800,3 +3800,51 @@ button.save-status--manual:hover {
   /* Confirm / prompt dialogs never run off a short screen. */
   .ui-dialog { max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto; }
 }
+
+/* Tap-to-chart scores (M0–M3, F1–F3, …): grid popover + By-tooth rows. */
+.score-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.score-chips__chip {
+  min-width: 2.6rem;
+  min-height: 2.2rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text, #0f172a);
+  font: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation; /* no double-tap zoom delay */
+  -webkit-tap-highlight-color: transparent;
+}
+.score-chips__chip:hover:not(:disabled) { border-color: var(--primary, #0c6b63); }
+.score-chips__chip[aria-pressed='true'] {
+  background: var(--primary, #0c6b63);
+  border-color: var(--primary, #0c6b63);
+  color: #fff;
+}
+.score-chips__chip--clear { color: var(--text-muted, #64748b); }
+.score-chips__chip:disabled { opacity: 0.5; cursor: default; }
+@media (pointer: coarse) {
+  .score-chips__chip { min-width: 3rem; min-height: 2.75rem; }
+}
+.dental-grid__score-pop {
+  position: fixed;
+  z-index: 50;
+  padding: 0.35rem;
+  background: #fff;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
+}
+.dental-grid__score-pop .score-chips { flex-wrap: nowrap; }
+.dental-grid__score-pop--above { transform: translateY(-100%); }
+.tooth-chart__score {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.tooth-chart__score .score-chips { flex-wrap: nowrap; }
+.tooth-chart__score .score-chips__chip { flex: 1 1 0; min-width: 0; }
