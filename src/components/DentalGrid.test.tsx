@@ -64,7 +64,7 @@ test('a single click opens the editor and typing commits the value', () => {
   const rows = screen.getAllByRole('row');
   const firstDataRow = rows[1];
   const cells = firstDataRow.querySelectorAll('[role="gridcell"]');
-  const mobilityCell = cells[3] as HTMLElement;
+  const mobilityCell = cells[2] as HTMLElement;
   fireEvent.click(mobilityCell);
   // Entering edit mode swaps the cell element for an editor container —
   // re-query the row rather than trusting the stale cell node.
@@ -79,7 +79,7 @@ test('a single click opens the editor and typing commits the value', () => {
 
 function rowFor(triadan: number): HTMLElement {
   return screen.getAllByRole('row').find((r) =>
-    Array.from(r.querySelectorAll('[role="gridcell"]')).some((c) => c.textContent === String(triadan)),
+    r.querySelector('.dental-grid__tid-num')?.textContent === String(triadan),
   ) as HTMLElement;
 }
 
@@ -93,7 +93,7 @@ test('chart settings can hide columns; the rest still edit', () => {
 test('per-root pockets: a multi-rooted tooth gets one box per root, saved as "MB4 MP5 D6"', () => {
   const { props } = renderGrid({ pocketMode: 'root', species: 'canine' });
   const row = rowFor(108);
-  const pocketCell = row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement; // Missing, Tooth, Triadan, Mobility, Recession, Pocket
+  const pocketCell = row.querySelectorAll('[role="gridcell"]')[4] as HTMLElement; // Missing, Tooth (101 – I1), Mobility, Recession, Pocket
   fireEvent.click(pocketCell);
   const boxes = ['MB', 'MP', 'D'].map((l) => screen.getByRole('textbox', { name: `Tooth 108 pocket, ${l} root` }));
   fireEvent.change(boxes[0], { target: { value: '4' } });
@@ -107,7 +107,7 @@ test('per-root pockets: a multi-rooted tooth gets one box per root, saved as "MB
 test('per-root pockets: single-rooted teeth keep the plain box', () => {
   renderGrid({ pocketMode: 'root', species: 'canine' });
   const row = rowFor(104);
-  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement);
+  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[4] as HTMLElement);
   expect(row.querySelector('.rdg-editor-container input')).not.toBeNull();
   expect(screen.queryByRole('textbox', { name: /Tooth 104 pocket, M root/ })).not.toBeInTheDocument();
 });
@@ -116,7 +116,7 @@ test('per-root pockets: a plain value that can\'t be split keeps the plain edito
   const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, pocket: '5' } : t));
   renderGrid({ pocketMode: 'root', species: 'canine', toothData });
   const row = rowFor(108);
-  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[5] as HTMLElement);
+  fireEvent.click(row.querySelectorAll('[role="gridcell"]')[4] as HTMLElement);
   expect((row.querySelector('.rdg-editor-container input') as HTMLInputElement).value).toBe('5');
 });
 
@@ -148,7 +148,7 @@ test('per-root pockets: an old single value on a multi-rooted tooth is labelled 
 });
 
 function toothCell(triadan: number): HTMLElement {
-  return rowFor(triadan).querySelectorAll('[role="gridcell"]')[2] as HTMLElement; // Triadan
+  return rowFor(triadan).querySelectorAll('[role="gridcell"]')[1] as HTMLElement; // Tooth (101 – I1)
 }
 
 test('select several teeth and set one value on all of them (missing teeth skipped)', () => {
@@ -188,7 +188,7 @@ test('no selection on a view-only chart', () => {
 
 test('Space types a space when the person turns that on', () => {
   const { props } = renderGrid({ spaceMovesDown: false });
-  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement; // Pocket
+  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[4] as HTMLElement; // Pocket
   fireEvent.click(cell);
   const editor = rowFor(101).querySelector('.rdg-editor-container input') as HTMLInputElement;
   const notPrevented = fireEvent.keyDown(editor, { key: ' ' });
@@ -201,7 +201,7 @@ test('Space types a space when the person turns that on', () => {
 
 test('Space moves down by default (unchanged)', () => {
   renderGrid();
-  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement;
+  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[4] as HTMLElement;
   fireEvent.click(cell);
   const editor = rowFor(101).querySelector('.rdg-editor-container input') as HTMLInputElement;
   expect(fireEvent.keyDown(editor, { key: ' ' })).toBe(false); // handled: commit + move down
@@ -209,7 +209,7 @@ test('Space moves down by default (unchanged)', () => {
 
 test('short-scale columns: tapping a score saves the bare number and opens the same tooth\'s next finding', async () => {
   const { props } = renderGrid();
-  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement); // Mobility
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement); // Mobility
   fireEvent.click(screen.getByRole('button', { name: 'M2' }));
   const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
   expect(last.find((t) => t.triadan === 101)?.mobility).toBe('2');
@@ -220,14 +220,14 @@ test('short-scale columns: tapping a score saves the bare number and opens the s
 
 test('short-scale columns: the last finding wraps to the next tooth\'s first', async () => {
   renderGrid();
-  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[10] as HTMLElement); // PD State
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[9] as HTMLElement); // PD State
   fireEvent.click(screen.getByRole('button', { name: 'PD1' }));
   expect(await screen.findByRole('group', { name: 'Tooth 102 Mobility score' })).toBeInTheDocument();
 });
 
 test('short-scale columns: "stay put" saves without moving', async () => {
   const { props } = renderGrid({ scoreTapMoves: 'stay' });
-  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement);
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement);
   fireEvent.click(screen.getByRole('button', { name: 'M3' }));
   const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
   expect(last.find((t) => t.triadan === 101)?.mobility).toBe('3');
@@ -238,7 +238,7 @@ test('short-scale columns: "stay put" saves without moving', async () => {
 
 test('short-scale columns: "next tooth" sweeps down the column', async () => {
   const { props } = renderGrid({ scoreTapMoves: 'tooth' });
-  const mobility101 = rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement;
+  const mobility101 = rowFor(101).querySelectorAll('[role="gridcell"]')[2] as HTMLElement;
   fireEvent.click(mobility101);
   const group = screen.getByRole('group', { name: 'Tooth 101 Mobility score' });
   const chips = Array.from(group.querySelectorAll('button')).map((b) => b.textContent);
@@ -253,7 +253,7 @@ test('short-scale columns: "next tooth" sweeps down the column', async () => {
 test('short-scale columns: furcation reads F1–F3, and "–" clears a score', () => {
   const toothData = getInitialToothData('canine').map((t) => (t.triadan === 108 ? { ...t, furcation: '2' } : t));
   const { props } = renderGrid({ toothData });
-  fireEvent.click(rowFor(108).querySelectorAll('[role="gridcell"]')[6] as HTMLElement); // …, Pocket, Furcation
+  fireEvent.click(rowFor(108).querySelectorAll('[role="gridcell"]')[5] as HTMLElement); // …, Pocket, Furcation
   expect(screen.getByRole('button', { name: 'F2' })).toHaveAttribute('aria-pressed', 'true');
   fireEvent.click(screen.getByRole('button', { name: 'Clear Tooth 108 Furcation' }));
   const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
@@ -262,7 +262,7 @@ test('short-scale columns: furcation reads F1–F3, and "–" clears a score', (
 
 test('millimetre columns keep typing (number pad), with no score chips', () => {
   renderGrid();
-  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[5] as HTMLElement); // Pocket
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[4] as HTMLElement); // Pocket
   expect(screen.queryByRole('group', { name: /score/ })).not.toBeInTheDocument();
   expect(rowFor(101).querySelector('.rdg-editor-container input')).toHaveAttribute('inputmode', 'decimal');
 });
@@ -280,8 +280,16 @@ test('phones: short column titles (full name kept for screen readers) and the to
     const mob = screen.getByRole('columnheader', { name: /^Mobility/ });
     expect(mob).toHaveTextContent(/^Mob/);
     expect(mob).not.toHaveTextContent(/Mobility/);
-    expect(screen.getByRole('columnheader', { name: 'Tooth' })).toHaveClass('dental-grid__pin');
+    expect(screen.getByRole('columnheader', { name: 'Triadan · Tooth' })).toHaveClass('dental-grid__pin');
   } finally {
     window.matchMedia = original;
   }
+});
+
+test('compact lead columns: a red ✕ titles Missing (still read as "Missing"), and one column shows "101 – I1"', () => {
+  renderGrid();
+  expect(screen.getByRole('columnheader', { name: 'Missing' }).querySelector('.dental-grid__missing-badge')).not.toBeNull();
+  expect(screen.queryByRole('columnheader', { name: 'Tooth' })).not.toBeInTheDocument(); // merged
+  const cell = rowFor(101).querySelectorAll('[role="gridcell"]')[1] as HTMLElement;
+  expect(cell.textContent).toBe('101–I1');
 });
