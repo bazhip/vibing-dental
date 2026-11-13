@@ -4021,3 +4021,32 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   white-space: nowrap;
   overflow: hidden;
 }
+
+/* "MISSING" fits its compact column with slightly tighter side padding. */
+.dental-grid .rdg-header-row .dental-grid__head--missing,
+.dental-grid__float-cell.dental-grid__head--missing {
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Undo changes (editing a saved visit): a real, clearly tappable action —
+   the muted grey secondary style read as disabled. */
+.topbar-editing__undo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid #d9a521;
+  border-radius: 8px;
+  background: #fff;
+  color: #7a4a12;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.topbar-editing__undo:hover { background: #fff3d1; border-color: #b7791f; }
+@media (pointer: coarse) { .topbar-editing__undo { min-height: 44px; } }

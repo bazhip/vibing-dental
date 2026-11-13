@@ -387,9 +387,11 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; s
 
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
  *  the tooth stays in view while the findings scroll sideways. */
-// Missing keeps a full 44px touch target; Tooth is just wide enough for
-// "M3" / "P4" (its title spans Tooth + Triadan).
-const NARROW_LEAD = [44, 36, 46] as const;
+// Missing is wide enough to say "MISSING" (a bare ✕ didn't read as
+// missing — and in dental charting ✕ suggests extracted); Tooth is just
+// wide enough for "M3" / "P4" (its title spans Tooth + Triadan).
+const MISSING_MIN = 62;
+const NARROW_LEAD = [MISSING_MIN, 36, 46] as const;
 /** Matches the CSS breakpoint where the grid becomes its own scroller. */
 const NARROW_QUERY = '(max-width: 1000px)';
 
@@ -659,7 +661,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const fullShare = CODE_COLUMNS.reduce((sum, c) => sum + c.share, 0);
     const shownShare = visibleColumns.reduce((sum, c) => sum + c.share, 0) || 1;
     const scale = fullShare / shownShare;
-    const lead = narrow ? NARROW_LEAD : [px(0.06), px(0.07), px(0.08)];
+    // Desktop headers use wider letter-spacing, so "MISSING" needs a little more.
+    const lead = narrow ? NARROW_LEAD : [Math.max(px(0.06), MISSING_MIN + 8), px(0.07), px(0.08)];
     const colWidth = (c: (typeof visibleColumns)[number]) => (narrow ? narrowWidth(c) : px(c.share * scale));
     const fixedTotal =
       lead[0] + lead[1] + lead[2] +
@@ -676,12 +679,12 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'missing',
       name: 'Missing',
       width: lead[0],
-      minWidth: lead[0], // the grid's default 50px floor would widen the compact columns
+      minWidth: lead[0], // the grid's default 50px floor would change the compact widths
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
-      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
-      renderHeaderCell: () => (fits('Missing', lead[0], false) ? 'Missing' : <span title="Missing" aria-label="Missing">✕</span>),
+      headerCellClass: `dental-grid__head--missing${narrow ? ' dental-grid__pin dental-grid__pin--0' : ''}`,
+      renderHeaderCell: () => 'Missing',
       renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         const carried = isMissing && !!priorGoneTeeth?.has(row.triadan);
@@ -906,7 +909,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         // real one stays in the grid for screen readers).
         <div ref={floatRef} className="dental-grid__float-head" aria-hidden="true" style={{ display: 'none' }}>
           <div className="dental-grid__float-pinned">
-            <div className="dental-grid__float-cell" style={{ width: NARROW_LEAD[0] }}>✕</div>
+            <div className="dental-grid__float-cell dental-grid__head--missing" style={{ width: NARROW_LEAD[0] }}>Missing</div>
             <div className="dental-grid__float-cell" style={{ width: NARROW_LEAD[1] + NARROW_LEAD[2] }}>Tooth</div>
           </div>
           <div className="dental-grid__float-viewport">

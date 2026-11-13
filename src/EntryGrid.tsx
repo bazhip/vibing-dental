@@ -198,7 +198,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && chart.openedExisting && !editable;
-  // Has the chart changed since the user chose Edit chart? (Offers Revert.)
+  // Has the chart changed since the user chose Edit chart? (Offers Undo changes.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
     try {
@@ -1095,7 +1095,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   ];
 
   // Editing a saved visit (unlocked): the topbar's action row turns
-  // amber and carries the way out — Revert (back to the version that was
+  // amber and carries the way out — Undo changes (back to the version that was
   // opened) and Done editing (save, then re-lock).
   const editingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && !readOnly;
   const revertUnlockedChanges = async () => {
@@ -1378,11 +1378,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               {unlockSnapshotChanged && (
                 <button
                   type="button"
-                  className="diagram-view__action topbar-editing__revert"
+                  className="topbar-editing__undo"
                   onClick={revertUnlockedChanges}
                   title="Put this chart back the way it was when you chose Edit chart"
                 >
-                  Revert
+                  <span aria-hidden="true">↺</span> Undo changes
                 </button>
               )}
               <button
@@ -1414,7 +1414,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       )}
 
       {/* Saved-visit banner: opens view-only so history isn't changed by
-          accident; Edit chart unlocks (changes then autosave), Revert
+          accident; Edit chart unlocks (changes then autosave), Undo changes
           restores the version that was opened, Done editing re-locks. */}
       {cloud.enabled && chart.openedExisting && !currentVisit && readOnly && (
         <div className="chart-lock-banner" role="status">
