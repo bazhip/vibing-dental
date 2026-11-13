@@ -1,4 +1,6 @@
 import React from 'react';
+import { savePdf, IN_APP_BROWSER_MESSAGE, downloadHint } from '../utils/savePdf';
+import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -58,6 +60,9 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 }) => {
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
+  // The bytes behind pdfUrl — the share sheet needs the file itself,
+  // in hand when the button is tapped.
+  const pdfBlobRef = React.useRef<Blob | null>(null);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -128,6 +133,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
         createdUrl = URL.createObjectURL(blob);
+        pdfBlobRef.current = blob;
         setPdfUrl(createdUrl);
       } catch (err) {
         if (!cancelled) {
@@ -151,12 +157,10 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     if (!pdfUrl) return;
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const filename = `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
-    const a = document.createElement('a');
-    a.href = pdfUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (!pdfBlobRef.current) return;
+    savePdf(pdfBlobRef.current, filename).then((outcome) => {
+      if (outcome === 'unsupported') toast(IN_APP_BROWSER_MESSAGE, { kind: 'error' });
+    });
   };
 
   if (!open) return null;
@@ -189,6 +193,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             >
               Download PDF
             </button>
+            {downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
           </aside>
           <div className="pdf-preview-iframe-wrap">
             {generating && <div className="pdf-preview-status">Generating the owner report…</div>}
