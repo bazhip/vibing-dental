@@ -387,7 +387,9 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; s
 
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
  *  the tooth stays in view while the findings scroll sideways. */
-const NARROW_LEAD = [34, 40, 46] as const;
+// Missing keeps a full 44px touch target; Tooth is just wide enough for
+// "M3" / "P4" (its title spans Tooth + Triadan).
+const NARROW_LEAD = [44, 36, 46] as const;
 /** Matches the CSS breakpoint where the grid becomes its own scroller. */
 const NARROW_QUERY = '(max-width: 1000px)';
 
@@ -495,17 +497,27 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       const r = el.getBoundingClientRect();
       const topbar = parseFloat(getComputedStyle(el).getPropertyValue('--topbar-height')) || 0;
       const head = (el.querySelector('.rdg-header-row .rdg-cell') as HTMLElement | null)?.offsetHeight ?? 40;
-      const shift = Math.round(Math.min(Math.max(topbar - r.top, 0), Math.max(r.height - head * 2, 0)));
+      // With the on-screen keyboard up, iOS pans the visible area down
+      // the page (the sticky topbar goes off screen with it): pin to the
+      // top of what's actually visible, not to the hidden topbar.
+      const vv = window.visualViewport;
+      const visibleTop = vv ? vv.offsetTop : 0;
+      const target = Math.max(topbar, visibleTop);
+      const shift = Math.round(Math.min(Math.max(target - r.top, 0), Math.max(r.height - head * 2, 0)));
       el.style.setProperty('--head-shift', `${shift}px`);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     place();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
+    window.visualViewport?.addEventListener('scroll', schedule);
+    window.visualViewport?.addEventListener('resize', schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
+      window.visualViewport?.removeEventListener('scroll', schedule);
+      window.visualViewport?.removeEventListener('resize', schedule);
       el.style.removeProperty('--head-shift');
     };
   }, [narrow]);
@@ -687,9 +699,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'tooth',
       name: 'Tooth',
       width: lead[1],
-      // Narrow: one "Tooth" title over both Tooth and Triadan, so neither
-      // column has to be wide enough for a title of its own.
-      colSpan: narrow ? (args) => (args.type === 'HEADER' ? 2 : undefined) : undefined,
+      // Narrow (or "Tooth" doesn't fit): one title over both Tooth and
+      // Triadan, so neither column needs room for a title of its own.
+      colSpan: narrow || !fits('Tooth', lead[1], false) ? (args) => (args.type === 'HEADER' ? 2 : undefined) : undefined,
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
