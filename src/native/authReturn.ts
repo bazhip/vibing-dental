@@ -2,6 +2,7 @@ import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { supabase } from '../utils/supabaseClient';
 import { isNativeApp, WEB_ORIGIN } from './platform';
+import { toastWhenReady } from '../components/ui/dialogs';
 
 /** Where auth flows started in the app come back to (the `toothops` URL
  *  scheme in Info.plist). Must be on Supabase's Redirect URLs allow-list. */
@@ -64,12 +65,29 @@ export async function handleAuthUrl(url: string): Promise<boolean> {
   await Browser.close().catch(() => undefined);
   if (!supabase) return true;
   const parsed = new URL(url);
+  // The provider or Supabase reports failures as error/error_description,
+  // in the query (PKCE) or the hash. Say so — never fail silently.
+  const hash = new URLSearchParams(parsed.hash.replace(/^#/, ''));
+  const failed = ['error', 'error_description'].some((k) => parsed.searchParams.has(k) || hash.has(k));
+  if (failed) {
+    signInFailed();
+    return true;
+  }
   const code = parsed.searchParams.get('code');
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) console.warn('Sign-in link could not be completed:', error.message);
+    if (error) {
+      console.warn('Sign-in link could not be completed:', error.message);
+      signInFailed();
+    }
   }
   return true;
+}
+
+function signInFailed(): void {
+  // Held until the toast host mounts: a cold-start link is handled before
+  // React's first commit.
+  toastWhenReady("Sign-in didn't complete. Please try again.", { kind: 'error' });
 }
 
 /** Listens for auth returns: `appUrlOpen` while running, and the launch

@@ -63,6 +63,8 @@ interface Host {
 
 let host: Host | null = null;
 let nextId = 1;
+/** Toasts from toastWhenReady raised before <DialogHost /> mounted. */
+let pendingToasts: ToastItem[] = [];
 
 export function confirmDialog(opts: ConfirmOptions): Promise<boolean> {
   if (!host) {
@@ -84,6 +86,15 @@ export function promptDialog(opts: PromptOptions): Promise<string | null> {
 
 export function toast(message: string, opts: ToastOptions = {}): void {
   host?.pushToast({ id: nextId++, message, opts });
+}
+
+/** Like toast(), but when no host is mounted yet (e.g. something that
+ *  happens during app start-up, before React's first commit) the toast is
+ *  held and shown as soon as <DialogHost /> mounts instead of dropped. */
+export function toastWhenReady(message: string, opts: ToastOptions = {}): void {
+  const item = { id: nextId++, message, opts };
+  if (host) host.pushToast(item);
+  else pendingToasts.push(item);
 }
 
 /** Turn an unknown error into a sentence a user can act on. */
@@ -219,6 +230,11 @@ export function DialogHost() {
       },
       pushToast: (t) => setToasts((list) => [...list.slice(-3), t]),
     };
+    if (pendingToasts.length) {
+      const held = pendingToasts;
+      pendingToasts = [];
+      held.forEach((t) => host?.pushToast(t));
+    }
     return () => { host = null; };
   }, []);
 

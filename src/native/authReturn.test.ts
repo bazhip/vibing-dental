@@ -14,7 +14,10 @@ const app = vi.hoisted(() => ({
   getLaunchUrl: vi.fn(async () => undefined as undefined | { url: string }),
 }));
 
+const dialogs = vi.hoisted(() => ({ toastWhenReady: vi.fn() }));
+
 function mockNative(native: boolean) {
+  vi.doMock('../components/ui/dialogs', () => dialogs);
   vi.doMock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => native } }));
   vi.doMock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: true }));
   vi.doMock('@capacitor/browser', () => ({ Browser: browser }));
@@ -72,6 +75,48 @@ describe('startOAuth', () => {
     const { startOAuth } = await load();
     await expect(startOAuth('google')).rejects.toThrow('provider is not enabled');
     expect(browser.open).not.toHaveBeenCalled();
+  });
+});
+
+describe('handleAuthUrl failures are shown', () => {
+  const failed = "Sign-in didn't complete. Please try again.";
+
+  it('?error= from the provider: tells the user and exchanges nothing', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback?error=access_denied&error_description=User%20cancelled');
+    expect(auth.exchangeCodeForSession).not.toHaveBeenCalled();
+    expect(dialogs.toastWhenReady).toHaveBeenCalledWith(failed, { kind: 'error' });
+  });
+
+  it('error_description alone also counts as a failure', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback?error_description=Email%20link%20is%20invalid');
+    expect(dialogs.toastWhenReady).toHaveBeenCalledWith(failed, { kind: 'error' });
+  });
+
+  it('errors in the hash (implicit-style returns) are shown too', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback#error=server_error&error_description=x');
+    expect(dialogs.toastWhenReady).toHaveBeenCalledWith(failed, { kind: 'error' });
+  });
+
+  it('a failed code exchange: tells the user', async () => {
+    mockNative(true);
+    auth.exchangeCodeForSession.mockResolvedValueOnce({ data: {}, error: new Error('PKCE code verifier not found') } as never);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback?code=bad');
+    expect(dialogs.toastWhenReady).toHaveBeenCalledWith(failed, { kind: 'error' });
+  });
+
+  it('a successful exchange: no message', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback?code=good');
+    expect(auth.exchangeCodeForSession).toHaveBeenCalledWith('good');
+    expect(dialogs.toastWhenReady).not.toHaveBeenCalled();
   });
 });
 
