@@ -341,7 +341,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   };
 
   const recallCell = (recall: string) => {
-    if (!recall) return <span className="chart-library__cell chart-library__cell--recall">—</span>;
+    if (!recall) return <span className="chart-library__cell chart-library__cell--recall chart-library__cell--empty">—</span>;
     const overdue = recall < today;
     const due = recall <= today;
     return (
@@ -525,7 +525,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                               })()}
                             </span>
                           </span>
-                          <span role="cell" className="chart-library__cell">{g.number || '—'}</span>
+                          <span role="cell" className={`chart-library__cell chart-library__cell--number${g.number ? '' : ' chart-library__cell--empty'}`}>{g.number || '—'}</span>
                           <span role="cell" className="chart-library__cell chart-library__cell--species">
                             {(SPECIES_LABELS[g.species] ?? g.species ?? '—')}
                             {g.dentition === 'deciduous' ? ' · Deciduous' : ''}

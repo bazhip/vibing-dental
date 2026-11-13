@@ -207,8 +207,37 @@ test('Space moves down by default (unchanged)', () => {
   expect(fireEvent.keyDown(editor, { key: ' ' })).toBe(false); // handled: commit + move down
 });
 
-test('short-scale columns: tapping a score saves the bare number and opens the next tooth', async () => {
+test('short-scale columns: tapping a score saves the bare number and opens the same tooth\'s next finding', async () => {
   const { props } = renderGrid();
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement); // Mobility
+  fireEvent.click(screen.getByRole('button', { name: 'M2' }));
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 101)?.mobility).toBe('2');
+  // Exams go tooth by tooth: Recession on 101 opens next, number pad up.
+  const recession = await screen.findByRole('textbox', { name: 'Tooth 101 Recession' });
+  expect(recession).toHaveAttribute('inputmode', 'decimal');
+});
+
+test('short-scale columns: the last finding wraps to the next tooth\'s first', async () => {
+  renderGrid();
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[10] as HTMLElement); // PD State
+  fireEvent.click(screen.getByRole('button', { name: 'PD1' }));
+  expect(await screen.findByRole('group', { name: 'Tooth 102 Mobility score' })).toBeInTheDocument();
+});
+
+test('short-scale columns: "stay put" saves without moving', async () => {
+  const { props } = renderGrid({ scoreTapMoves: 'stay' });
+  fireEvent.click(rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement);
+  fireEvent.click(screen.getByRole('button', { name: 'M3' }));
+  const last = (props.onToothDataChange as Mock).mock.calls.at(-1)![0] as ToothData[];
+  expect(last.find((t) => t.triadan === 101)?.mobility).toBe('3');
+  await new Promise((r) => setTimeout(r, 0));
+  expect(screen.queryByRole('group', { name: /score/ })).not.toBeInTheDocument();
+  expect(screen.queryByRole('textbox', { name: 'Tooth 101 Recession' })).not.toBeInTheDocument();
+});
+
+test('short-scale columns: "next tooth" sweeps down the column', async () => {
+  const { props } = renderGrid({ scoreTapMoves: 'tooth' });
   const mobility101 = rowFor(101).querySelectorAll('[role="gridcell"]')[3] as HTMLElement;
   fireEvent.click(mobility101);
   const group = screen.getByRole('group', { name: 'Tooth 101 Mobility score' });

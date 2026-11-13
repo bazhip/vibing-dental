@@ -12,6 +12,7 @@ import {
 } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { DentalField, Species, ToothData, ToothMarks } from '../types';
+import type { ScoreTapMove } from '../utils/chartSettings';
 import { rootLabels, rootBoxes, formatRootPockets } from '../utils/pocket';
 
 interface DentalGridProps {
@@ -52,6 +53,9 @@ interface DentalGridProps {
   species?: Species;
   /** Space moves down to the next tooth (default) vs. typing a space. */
   spaceMovesDown?: boolean;
+  /** Where a tapped score moves to: next finding (default), next tooth,
+   *  or stay on the cell. */
+  scoreTapMoves?: ScoreTapMove;
 }
 
 /**
@@ -88,6 +92,7 @@ interface EditorWiring {
   /** Which root slot was clicked, so the per-root editor opens on it. */
   focusRootRef: React.MutableRefObject<number>;
   spaceMovesDownRef: React.MutableRefObject<boolean>;
+  scoreTapMovesRef: React.MutableRefObject<ScoreTapMove>;
 }
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
@@ -202,8 +207,14 @@ function CodeCellEditor({
 
   const pickScore = (score: string) => {
     onRowChange({ ...row, [key]: score }, true);
-    // Straight into the next tooth's editor, scores showing.
-    advance(rowIdx + 1, column.idx, true);
+    // Open the next cell's editor straight away (scores or number pad
+    // showing), so the next tap is the next value.
+    const move = wiring?.scoreTapMovesRef.current ?? 'finding';
+    if (move === 'tooth') advance(rowIdx + 1, column.idx, true);
+    else if (move === 'finding') {
+      if (column.idx < LAST_EDITABLE) advance(rowIdx, column.idx + 1, true);
+      else advance(rowIdx + 1, FIRST_EDITABLE, true);
+    }
   };
 
   return (
@@ -380,6 +391,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   pocketMode = 'tooth',
   species = 'canine',
   spaceMovesDown = true,
+  scoreTapMoves = 'finding',
 }) => {
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
@@ -399,7 +411,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const focusRootRef = useRef(0);
   const spaceMovesDownRef = useRef(spaceMovesDown);
   spaceMovesDownRef.current = spaceMovesDown;
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef, spaceMovesDownRef }), []);
+  const scoreTapMovesRef = useRef<ScoreTapMove>(scoreTapMoves);
+  scoreTapMovesRef.current = scoreTapMoves;
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef, spaceMovesDownRef, scoreTapMovesRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't

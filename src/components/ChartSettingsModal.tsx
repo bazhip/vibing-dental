@@ -135,6 +135,22 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
             </fieldset>
 
             <fieldset className="chart-settings__field">
+              <legend>After tapping a score in the grid</legend>
+              <label className="chart-settings__choice">
+                <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'finding'} onChange={() => onChange({ scoreTapMoves: 'finding' })} />
+                Go to the next finding on the same tooth <span className="chart-settings__hint">mobility → recession → … for tooth-by-tooth exams</span>
+              </label>
+              <label className="chart-settings__choice">
+                <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'tooth'} onChange={() => onChange({ scoreTapMoves: 'tooth' })} />
+                Go down to the next tooth <span className="chart-settings__hint">for scoring one finding across the mouth</span>
+              </label>
+              <label className="chart-settings__choice">
+                <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'stay'} onChange={() => onChange({ scoreTapMoves: 'stay' })} />
+                Stay put
+              </label>
+            </fieldset>
+
+            <fieldset className="chart-settings__field">
               <legend>Columns</legend>
               <div className="chart-settings__grid">
                 {PERIO_FIELDS.map((f) => {

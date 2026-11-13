@@ -37,6 +37,15 @@ describe('ChartSettingsModal', () => {
     expect(onChange).toHaveBeenLastCalledWith({ chartingView: 'tooth' });
   });
 
+  it('chooses where a tapped score moves to (next finding by default)', () => {
+    const { onChange } = setup();
+    expect(screen.getByRole('radio', { name: /next finding on the same tooth/ })).toBeChecked();
+    fireEvent.click(screen.getByRole('radio', { name: /Go down to the next tooth/ }));
+    expect(onChange).toHaveBeenLastCalledWith({ scoreTapMoves: 'tooth' });
+    fireEvent.click(screen.getByRole('radio', { name: 'Stay put' }));
+    expect(onChange).toHaveBeenLastCalledWith({ scoreTapMoves: 'stay' });
+  });
+
   it('beside-the-teeth choices unlock once findings are shown on the diagram', () => {
     setup({ ...DEFAULT_CHART_PREFS, mirrorToDiagnosis: false });
     expect(screen.getAllByRole('checkbox', { name: 'Pocket' })[1]).toBeDisabled();

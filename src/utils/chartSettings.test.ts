@@ -17,6 +17,13 @@ describe('chart settings (per person)', () => {
     expect(normalizeChartPrefs({ pocketMode: 'weird', hideRecheck: 'yes' })).toMatchObject({ pocketMode: 'tooth', hideRecheck: false });
   });
 
+  it('score taps go to the next finding by default; junk falls back', () => {
+    expect(DEFAULT_CHART_PREFS.scoreTapMoves).toBe('finding');
+    expect(normalizeChartPrefs({ scoreTapMoves: 'tooth' }).scoreTapMoves).toBe('tooth');
+    expect(normalizeChartPrefs({ scoreTapMoves: 'stay' }).scoreTapMoves).toBe('stay');
+    expect(normalizeChartPrefs({ scoreTapMoves: 'sideways' }).scoreTapMoves).toBe('finding');
+  });
+
   it("fills gaps from a fallback (this browser's old choices)", () => {
     const fallback = { ...DEFAULT_CHART_PREFS, mirrorToDiagnosis: true, chartingView: 'tooth' as const };
     expect(normalizeChartPrefs({ hideRecheck: true }, fallback)).toMatchObject({ mirrorToDiagnosis: true, chartingView: 'tooth', hideRecheck: true });

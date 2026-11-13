@@ -1274,3 +1274,74 @@
   .pdf-preview-styles ul { max-height: none; overflow: visible; flex: none; }
   .pdf-preview-iframe-wrap { min-height: 75vh; min-height: 75dvh; }
 }
+
+/* My charts on phones: a fixed-width actions column plus four data
+   columns can't fit, so each patient becomes a small card — name on top,
+   a wrapping line of details ("#366 · 1 visit · Updated Nov 12"), then
+   the action buttons. (The admin panel keeps its scrolling table.) */
+@media (max-width: 700px) {
+  .chart-library-modal:not(.admin-panel) {
+    --lib-actions: auto;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__row-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.75rem;
+    padding: 0.7rem 0.75rem 0.4rem;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__patient {
+    flex: 1 0 100%;
+    white-space: normal;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--species,
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--recall {
+    display: inline;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--empty {
+    display: none;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--number::before { content: '#'; }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--date::before { content: 'Updated '; }
+  .chart-library-modal:not(.admin-panel) .chart-library__cell--recall::before { content: 'Recheck '; }
+  .chart-library-modal:not(.admin-panel) .chart-library__row-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding: 0 0.75rem 0.65rem;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__act,
+  .chart-library-modal:not(.admin-panel) .chart-library__delete {
+    min-height: 2.25rem;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__delete { padding: 0.4rem 0.6rem; }
+  /* Header: just the sort buttons (Patient · Updated · Recheck) + Due. */
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__head-main {
+    display: flex;
+    gap: 1rem;
+    padding: 0 0.75rem;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(2),
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(4) {
+    display: none;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
+    display: inline;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row .chart-library__row-actions {
+    padding: 0 0.75rem 0 0;
+  }
+  /* Expanded visits under a patient. */
+  .chart-library-modal:not(.admin-panel) .chart-library__visit-main {
+    padding-left: 1.5rem;
+  }
+  .chart-library-modal:not(.admin-panel) .chart-library__visit-date {
+    flex: 1 0 100%;
+  }
+}
