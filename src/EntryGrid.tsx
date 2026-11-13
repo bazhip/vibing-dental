@@ -22,6 +22,7 @@ import { ChartHistoryModal } from './components/ChartHistoryModal';
 import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
+import { useAppLanguage } from './i18n/useAppLanguage';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -124,6 +125,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
+  const language = useAppLanguage(prefs.language);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -1644,6 +1646,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         open={accountOpen}
         onClose={() => setAccountOpen(false)}
         profile={profile}
+        language={language}
+        onLanguageChange={(lng) => setPref({ language: lng })}
       />
 
       {setup.need && (

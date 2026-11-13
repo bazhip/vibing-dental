@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "delete": "Elimina",
+    "duplicate": "Duplica",
+    "edit": "Modifica",
+    "save": "Salva"
+  },
+  "errors": {
+    "generic": "Qualcosa è andato storto. Riprovi.",
+    "network": "Impossibile raggiungere ToothOps: controlli la connessione e riprovi.",
+    "notFound": "Cartella non trovata: potrebbe essere stata eliminata.",
+    "permission": "Non ha accesso a questo elemento.",
+    "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi."
+  }
+}

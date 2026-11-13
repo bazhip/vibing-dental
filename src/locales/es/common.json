@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "delete": "Eliminar",
+    "duplicate": "Duplicar",
+    "edit": "Editar",
+    "save": "Guardar"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Inténtelo de nuevo.",
+    "network": "No se puede conectar con ToothOps: revise su conexión e inténtelo de nuevo.",
+    "notFound": "No se encontró esa ficha; puede que se haya eliminado.",
+    "permission": "No tiene acceso a eso.",
+    "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo."
+  }
+}

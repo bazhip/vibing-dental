@@ -1,0 +1,92 @@
+{
+  "delete": {
+    "blurb": "Supprime définitivement votre compte, vos dossiers privés et leurs images. Les dossiers que vous avez partagés avec un cabinet restent au cabinet.",
+    "button": "Supprimer le compte…",
+    "heading": "Supprimer le compte"
+  },
+  "deletion": {
+    "account": {
+      "confirmButton": "Supprimer mon compte",
+      "confirmMessage": "Cette action supprime définitivement votre compte, vos dossiers privés ainsi que leurs photos et radiographies. Les dossiers que vous avez partagés avec un cabinet restent au cabinet. Si vous êtes la seule personne de votre cabinet, le cabinet et tous ses dossiers sont également supprimés, et tout abonnement est résilié. Cette action est irréversible.",
+      "confirmTitle": "Supprimer votre compte ?",
+      "continue": "Continuer",
+      "done": "Votre compte a été supprimé.",
+      "emailLabel": "E-mail",
+      "failed": "Impossible de supprimer votre compte.",
+      "mismatch": "Saisissez votre e-mail exactement.",
+      "promptMessage": "Saisissez votre e-mail ({{email}}) pour supprimer définitivement votre compte.",
+      "promptTitle": "Confirmer la suppression du compte"
+    },
+    "practice": {
+      "confirmButton": "Supprimer le cabinet",
+      "confirmMessage": "Cette action supprime définitivement le cabinet et tous les dossiers partagés avec lui, y compris ceux créés par les membres de votre équipe, ainsi que leurs photos et radiographies. Tout abonnement est résilié immédiatement. Les membres de l’équipe conservent leur compte et leurs dossiers privés. Cette action est irréversible.",
+      "confirmTitle": "Supprimer « {{name}} » ?",
+      "confirmTitleUnnamed": "Supprimer ce cabinet ?",
+      "confirmationLabel": "Confirmation",
+      "continue": "Continuer",
+      "done": "Le cabinet a été supprimé.",
+      "failed": "Impossible de supprimer le cabinet.",
+      "mismatch": "Saisissez le nom du cabinet exactement.",
+      "mismatchUnnamed": "Saisissez DELETE.",
+      "nameLabel": "Nom du cabinet",
+      "promptMessage": "Saisissez le nom du cabinet ({{name}}) pour le supprimer définitivement.",
+      "promptMessageUnnamed": "Saisissez DELETE pour supprimer définitivement ce cabinet.",
+      "promptTitle": "Confirmer la suppression du cabinet"
+    }
+  },
+  "doctor": {
+    "blurb": "Imprimé sous le logo sur chaque dossier que vous créez.",
+    "heading": "Nom du vétérinaire",
+    "placeholder": "p. ex. Dr Jeanne Martin, DMV, DAVDC",
+    "save": "Enregistrer le nom du vétérinaire",
+    "saveFailed": "Impossible d’enregistrer le nom du vétérinaire.",
+    "saved": "Nom du vétérinaire enregistré.",
+    "saving": "Enregistrement…"
+  },
+  "done": "Terminé",
+  "email": {
+    "change": "Modifier l’e-mail",
+    "changeFailed": "Impossible de modifier l’e-mail.",
+    "heading": "E-mail",
+    "invalid": "Saisissez une adresse e-mail valide.",
+    "label": "E-mail de connexion",
+    "pending": "Consultez votre boîte de réception : confirmez la modification depuis {{current}} et depuis {{requested}} pour la finaliser. D’ici là, continuez à vous connecter avec {{current}}.",
+    "sending": "Envoi…",
+    "sent": "E-mails de confirmation envoyés."
+  },
+  "language": {
+    "heading": "Langue"
+  },
+  "password": {
+    "confirmLabel": "Confirmer le nouveau mot de passe",
+    "heading": "Mot de passe",
+    "hide": "Masquer",
+    "hideAll": "Masquer les mots de passe",
+    "hintMismatch": "Les deux mots de passe ne correspondent pas encore.",
+    "hintShort": "Au moins {{min}} caractères · {{current}}/{{min}}",
+    "mismatch": "Les deux mots de passe ne correspondent pas.",
+    "newLabel": "Nouveau mot de passe",
+    "placeholder": "Au moins {{min}} caractères",
+    "show": "Afficher",
+    "showAll": "Afficher les mots de passe",
+    "tooShort": "Utilisez au moins {{min}} caractères.",
+    "update": "Mettre à jour le mot de passe",
+    "updateFailed": "Impossible de mettre à jour le mot de passe.",
+    "updated": "Mot de passe mis à jour.",
+    "updating": "Mise à jour…"
+  },
+  "title": "Paramètres du compte",
+  "unsaved": {
+    "cancel": "Continuer à modifier",
+    "confirm": "Abandonner",
+    "field": {
+      "doctor": "nom du vétérinaire",
+      "email": "e-mail",
+      "password": "mot de passe"
+    },
+    "message_many": "Vos modifications ({{list}}) n’ont pas été enregistrées.",
+    "message_one": "Votre modification ({{list}}) n’a pas été enregistrée.",
+    "message_other": "Vos modifications ({{list}}) n’ont pas été enregistrées.",
+    "title": "Abandonner les modifications non enregistrées ?"
+  }
+}

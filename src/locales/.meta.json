@@ -1,0 +1,2784 @@
+{
+  "de": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
+    "common:actions.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "common:actions.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "common:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
+    "common:actions.edit": {
+      "hash": "464c4ffd019e",
+      "status": "machine"
+    },
+    "common:actions.save": {
+      "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  },
+  "es": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
+    "common:actions.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "common:actions.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "common:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
+    "common:actions.edit": {
+      "hash": "464c4ffd019e",
+      "status": "machine"
+    },
+    "common:actions.save": {
+      "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  },
+  "fr": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
+    "common:actions.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "common:actions.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "common:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
+    "common:actions.edit": {
+      "hash": "464c4ffd019e",
+      "status": "machine"
+    },
+    "common:actions.save": {
+      "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  },
+  "it": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
+    "common:actions.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "common:actions.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "common:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
+    "common:actions.edit": {
+      "hash": "464c4ffd019e",
+      "status": "machine"
+    },
+    "common:actions.save": {
+      "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  },
+  "pt": {
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  }
+}

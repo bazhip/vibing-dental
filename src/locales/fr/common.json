@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "duplicate": "Dupliquer",
+    "edit": "Modifier",
+    "save": "Enregistrer"
+  },
+  "errors": {
+    "generic": "Une erreur s’est produite. Veuillez réessayer.",
+    "network": "Impossible de joindre ToothOps — vérifiez votre connexion et réessayez.",
+    "notFound": "Ce dossier est introuvable — il a peut-être été supprimé.",
+    "permission": "Vous n’y avez pas accès.",
+    "rateLimit": "Trop de tentatives. Patientez une minute et réessayez."
+  }
+}
