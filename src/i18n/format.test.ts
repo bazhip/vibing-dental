@@ -24,3 +24,6 @@ test('unparseable dates are returned unchanged', () => {
 test('formats a date and time', () => {
   expect(formatDateTime(new Date(2026, 6, 19, 14, 5), 'de')).toMatch(/19\.07\.26.*14:05/);
 });
+test('real languages are never wrapped', () => {
+  expect(formatList(['a', 'b'], 'fr')).toBe('a et b');
+});

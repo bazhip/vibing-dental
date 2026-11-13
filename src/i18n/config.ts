@@ -13,6 +13,9 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
 // Append new namespaces here (and in i18next.d.ts).
 export const NAMESPACES = ['common', 'report', 'account'] as const;
 
+/** Test-only language whose strings read ⟦like this⟧ (see i18n/testing/pseudo.ts). */
+export const PSEUDO_LOCALE = 'xx';
+
 // Flip to expose a language switcher in the UI.
 export const LANGUAGE_SWITCHING_ENABLED = false;
 

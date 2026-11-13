@@ -17,10 +17,11 @@ const bundled = import.meta.glob(['../locales/en/*.json', '../locales/*/report.j
 const lazy = import.meta.glob(['../locales/*/*.json', '!../locales/en/*.json', '!../locales/*/report.json'], {
   import: 'default',
 }) as Record<string, () => Promise<Catalog>>;
-const lazyByLngNs: Record<string, () => Promise<Catalog>> = {};
+/** Lazy catalog loaders keyed `lng/ns`. Exported so tests can stub a failing or slow chunk. */
+export const catalogLoaders: Record<string, () => Promise<Catalog>> = {};
 for (const [path, load] of Object.entries(lazy)) {
   const m = parse(path);
-  if (m) lazyByLngNs[`${m[0]}/${m[1]}`] = load;
+  if (m) catalogLoaders[`${m[0]}/${m[1]}`] = load;
 }
 
 const resources: Record<string, Record<string, Catalog>> = {};
@@ -33,7 +34,7 @@ const lazyCatalogs: BackendModule = {
   type: 'backend',
   init() {},
   read(lng, ns, callback) {
-    const load = lazyByLngNs[`${lng}/${ns}`];
+    const load = catalogLoaders[`${lng}/${ns}`];
     // Unknown language/namespace pairs (e.g. the pseudo-locale) resolve empty.
     if (!load) return callback(null, {});
     load().then(
@@ -65,10 +66,19 @@ i18n
     },
   });
 
-/** Fetches every namespace of `lng` (a no-op once loaded). Await before changeLanguage
- *  so the switch happens in one render, with no English fallback in between. */
-export function loadLanguage(lng: string): Promise<void> {
-  return new Promise((resolve) => void i18n.loadLanguages(lng, () => resolve()));
+/** Fetches the namespaces of `lng` not yet loaded and resolves whether all are now
+ *  present. Await it before changeLanguage so the switch happens in one render; on
+ *  `false` (e.g. offline) keep the current language. Uses reloadResources because
+ *  i18next does not re-queue a pair that failed, so a later call really refetches. */
+export async function loadLanguage(lng: string): Promise<boolean> {
+  const missing = () =>
+    Object.keys(catalogLoaders)
+      .filter((k) => k.startsWith(`${lng}/`))
+      .map((k) => k.slice(lng.length + 1))
+      .filter((ns) => !i18n.hasResourceBundle(lng, ns));
+  const todo = missing();
+  if (todo.length) await new Promise<void>((resolve) => void i18n.reloadResources(lng, todo, () => resolve()));
+  return missing().length === 0;
 }
 
 export default i18n;

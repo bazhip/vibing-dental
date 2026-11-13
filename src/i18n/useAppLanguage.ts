@@ -20,8 +20,10 @@ export function useAppLanguage(saved: AppLanguage | null, loaded: boolean): AppL
 
   useEffect(() => {
     let current = true;
-    void loadLanguage(lng).then(async () => {
-      if (!current) return;
+    // If the catalog can't be fetched (offline), stay on the language in effect;
+    // the next change of `lng` retries.
+    void loadLanguage(lng).then(async (ok) => {
+      if (!current || !ok) return;
       if (i18n.language !== lng) await i18n.changeLanguage(lng);
       if (current) document.documentElement.lang = lng;
     });
