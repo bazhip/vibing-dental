@@ -5,6 +5,7 @@ import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useWakeLock } from '../hooks/useWakeLock';
+import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -651,7 +652,19 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setPanelOpen(false);
   }, [sessionKey]);
 
+  // App only: the first dictation asks before any audio goes to Deepgram
+  // or text to Anthropic (App Store 5.1.2(i)); "Not now" starts nothing.
+  // Once allowed (and always on the web) it starts synchronously, inside
+  // the tap, as iOS audio needs.
   const listen = (fresh: boolean) => {
+    if (needsAiConsent()) {
+      void ensureAiConsent().then((ok) => { if (ok) startListening(fresh); });
+      return;
+    }
+    startListening(fresh);
+  };
+
+  const startListening = (fresh: boolean) => {
     if (!voice.supported) {
       setError('Voice input needs Chrome, Edge, or Safari.');
       return;

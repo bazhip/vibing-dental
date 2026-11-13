@@ -1,6 +1,7 @@
 import React from 'react';
 import { toast, confirmDialog } from './ui/dialogs';
 import { draftOwnerReport } from '../utils/ownerReportAi';
+import { ensureAiConsent } from '../native/aiConsent';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
@@ -73,6 +74,8 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
       message: 'The AI draft replaces the opening summary and home care advice you edited. You can undo right after.',
       confirmLabel: 'Write with AI',
     }))) return;
+    // App only: one-time consent before chart text first goes to Anthropic.
+    if (!(await ensureAiConsent())) return;
     setDrafting(true);
     try {
       const draft = await draftOwnerReport(snapshot, context);
