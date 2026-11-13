@@ -1,0 +1,5 @@
+/* Permission prompts (English: Info.plist). Formal address. */
+"NSCameraUsageDescription" = "Scattare foto e radiografie per la cartella di un paziente.";
+"NSPhotoLibraryUsageDescription" = "Allegare foto e radiografie alla cartella di un paziente.";
+"NSMicrophoneUsageDescription" = "Dettare i reperti nella cartella.";
+"NSFaceIDUsageDescription" = "Sbloccare ToothOps per proteggere le cartelle dei pazienti.";
