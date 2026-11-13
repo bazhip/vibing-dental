@@ -1,0 +1,87 @@
+/* =============================================================================
+ * iOS app feel. Everything here is scoped under html.native-ios (added by
+ * initNativeShell() inside the Capacitor shell), so the website is
+ * untouched.
+ * =============================================================================
+ */
+
+/* No grey flash on tap. */
+html.native-ios,
+html.native-ios * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The page doesn't rubber-band, so the pinned grid header and sticky
+   topbar don't get dragged around at the ends of the scroll. */
+html.native-ios,
+html.native-ios body {
+  overscroll-behavior: none;
+}
+
+/* Controls don't select text or pop the long-press callout. Inputs,
+   selects and textareas are left alone so typing and editing work. */
+html.native-ios button,
+html.native-ios [role='button'],
+html.native-ios .score-chips__chip,
+html.native-ios .sidebar-layout__nav-item,
+html.native-ios .mobile-section-menu__item,
+html.native-ios .tooth-diagram {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 16px or larger, or iOS zooms the page when a field gets focus. */
+html.native-ios input,
+html.native-ios select,
+html.native-ios textarea {
+  font-size: max(16px, 1em);
+}
+
+/* ---------- Safe areas (viewport-fit=cover) -------------------------------
+ * Topbar: clears the status bar / Dynamic Island, and the notch side in
+ * landscape. The container carries the side insets, so the section rail
+ * and panel inside it stay clear too; the topbar's full-bleed margins grow
+ * by the same amount so it still reaches the edges. */
+html.native-ios .entry-grid-container {
+  padding-left: calc(var(--page-pad, 1.5rem) + env(safe-area-inset-left, 0px));
+  padding-right: calc(var(--page-pad, 1.5rem) + env(safe-area-inset-right, 0px));
+}
+html.native-ios .entry-grid__topbar {
+  margin-left: calc(-1 * (var(--page-pad, 1.5rem) + env(safe-area-inset-left, 0px)));
+  margin-right: calc(-1 * (var(--page-pad, 1.5rem) + env(safe-area-inset-right, 0px)));
+  padding-top: calc(0.85rem + env(safe-area-inset-top, 0px));
+  padding-left: calc(var(--page-pad, 1.5rem) + env(safe-area-inset-left, 0px));
+  padding-right: calc(var(--page-pad, 1.5rem) + env(safe-area-inset-right, 0px));
+}
+@media (max-width: 900px) {
+  html.native-ios .entry-grid__topbar {
+    padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+/* Section rail: sticky under the topbar, whose measured height
+   (--topbar-height) already includes the top inset. On phones the
+   section menu's list can run long; keep its end clear of the home bar. */
+html.native-ios .mobile-section-menu__list {
+  max-height: calc(70dvh - env(safe-area-inset-bottom, 0px));
+}
+
+/* Bottom sheets and floating controls above 600px (the phone rules in
+   EntryGrid.css already add the bottom inset): iPads with Face ID have a
+   home indicator too. */
+@media (min-width: 601px) {
+  html.native-ios .fab-download {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  }
+  html.native-ios .fab-download.fab-download--secondary {
+    bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (min-width: 701px) {
+  html.native-ios .ai-sidebar {
+    right: calc(0.75rem + env(safe-area-inset-right, 0px));
+    max-height: calc(100dvh - var(--topbar-height, 64px) - 1.5rem - env(safe-area-inset-bottom, 0px));
+  }
+}

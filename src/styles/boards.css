@@ -115,6 +115,74 @@
   .sidebar-layout__main { padding: 1.25rem; }
 }
 
+/* ---------- Wide screens: section + companion side by side ---------------
+ * iPad landscape and desktop. While Charting (grid view) is open, the
+ * Diagnosis diagram sits beside the grid (SidebarLayout `companions`).
+ * The grid lays out at 760px or wider above 1000px (DentalGrid.tsx), so
+ * pairing starts where 760px of grid plus a usable diagram fit: 1280px,
+ * with the rail narrowed to section numbers. Below that the companion
+ * stays hidden and the layout is unchanged. */
+.sidebar-layout__panel--companion { display: none; }
+
+@media (min-width: 1280px) {
+  .sidebar-layout--paired {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .sidebar-layout--paired .sidebar-layout__nav-item {
+    justify-content: center;
+    padding: 0.6rem 0;
+  }
+  .sidebar-layout--paired .sidebar-layout__nav-num {
+    font-size: 0.8rem;
+    opacity: 1;
+  }
+  /* Labels stay for screen readers; the buttons carry a title on hover. */
+  .sidebar-layout--paired .sidebar-layout__nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  /* The grid keeps its 760px floor; the diagram takes ~36% of the panel
+     and never less than 320px. */
+  .sidebar-layout--paired .sidebar-layout__main {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+  .sidebar-layout--paired .sidebar-layout__panel {
+    flex: 1 1 0;
+    min-width: 760px;
+  }
+  /* The diagram rides along while the grid scrolls, so the lower arch
+     is in view when charting the mandible. */
+  .sidebar-layout--paired .sidebar-layout__panel--companion {
+    display: block;
+    flex: 0 1 36%;
+    min-width: 320px;
+    position: sticky;
+    top: calc(var(--topbar-height, 64px) + 0.75rem);
+    max-height: calc(100vh - var(--topbar-height, 64px) - 1.5rem);
+    max-height: calc(100dvh - var(--topbar-height, 64px) - 1.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--border);
+  }
+  /* No room for the codes reference beside a side-by-side diagram; it's
+     a tap away in the Diagnosis section. */
+  .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes__codes {
+    display: none;
+  }
+}
+
 /* ---------- Mobile section menu ------------------------------------------
  * Hidden by default; shown only on phones, where it replaces the section
  * rail (the ≤600px block below hides .sidebar-layout__nav).

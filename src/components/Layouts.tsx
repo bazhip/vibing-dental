@@ -24,6 +24,10 @@ interface LayoutProps {
    *  (so it can jump the user to a section, e.g. on a blocked save). */
   activeId?: string;
   onActiveChange?: (id: string) => void;
+  /** Wide screens (≥1280px, boards.css): while the key section is active,
+   *  its companion section shows beside it, e.g. the Diagnosis diagram
+   *  next to the Charting grid. Narrower screens hide the companion. */
+  companions?: Record<string, string>;
 }
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
@@ -31,6 +35,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   defaultActiveId,
   activeId,
   onActiveChange,
+  companions,
 }) => {
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
@@ -39,6 +44,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     if (activeId !== undefined) setInternal(activeId);
   }, [activeId]);
   const active = activeId ?? internal;
+  const companion = companions?.[active];
   const mainRef = React.useRef<HTMLElement>(null);
   const choose = (id: string) => {
     setInternal(id);
@@ -59,7 +65,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     });
   };
   return (
-    <div className="sidebar-layout">
+    <div className={companion ? 'sidebar-layout sidebar-layout--paired' : 'sidebar-layout'}>
       <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
       {/* Plain navigation, not an ARIA tablist — the buttons have no
           arrow-key contract, and sections read better as nav anyway. */}
@@ -71,6 +77,8 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
             aria-current={s.id === active ? 'true' : undefined}
             className={`sidebar-layout__nav-item${s.id === active ? ' sidebar-layout__nav-item--active' : ''}`}
             onClick={() => choose(s.id)}
+            // The paired layout narrows the rail to numbers only.
+            title={companion ? s.label : undefined}
           >
             <span className="sidebar-layout__nav-num">{String(i + 1).padStart(2, '0')}</span>
             <span className="sidebar-layout__nav-label">{s.label}</span>
@@ -81,9 +89,11 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
         {sections.map((s) => (
           <div
             key={s.id}
-            className="sidebar-layout__panel"
+            className={s.id === companion ? 'sidebar-layout__panel sidebar-layout__panel--companion' : 'sidebar-layout__panel'}
             data-section-id={s.id}
-            style={s.id === active ? undefined : { display: 'none' }}
+            // The companion's visibility is left to CSS (shown only where
+            // there's room for both).
+            style={s.id === active || s.id === companion ? undefined : { display: 'none' }}
           >
             {/* Read-only locking happens per section in EntryGrid (each
                 lockable block sits in its own disabled fieldset), so
