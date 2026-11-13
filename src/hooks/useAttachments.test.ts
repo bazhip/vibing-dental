@@ -64,3 +64,27 @@ describe('isDicomFile', () => {
     expect(await isDicomFile(new File([dicomBytes()], 'photo.jpg', { type: 'image/jpeg' }))).toBe(false);
   });
 });
+
+import { uploadRejection } from './useAttachments';
+
+describe('uploadRejection', () => {
+  const ok = { dicom: false, type: 'image/png', size: 1000, count: 0, maxImages: 10, dicomEnabled: false, native: false };
+
+  it('accepts a valid image', () => {
+    expect(uploadRejection(ok)).toBeNull();
+  });
+
+  it('states the image limit as a plain fact on both platforms', () => {
+    expect(uploadRejection({ ...ok, count: 10 })).toBe('This chart has reached its 10-image limit.');
+    expect(uploadRejection({ ...ok, count: 10, native: true })).toBe('This chart has reached its 10-image limit.');
+  });
+
+  it('DICOM without access: plan wording on the web, a neutral fact in the app', () => {
+    expect(uploadRejection({ ...ok, dicom: true })).toBe(
+      'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.'
+    );
+    const app = uploadRejection({ ...ok, dicom: true, native: true });
+    expect(app).toBe("DICOM uploads aren't available on this account. Export the radiograph as a JPEG or PNG to add it.");
+    expect(app).not.toMatch(/plan/i);
+  });
+});

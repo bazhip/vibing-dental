@@ -166,10 +166,13 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
       {/* Zero-image plans (the free tier) get a plain explanation instead
           of a dead uploader. Existing images (e.g. from a lapsed paid
-          plan) still render below. */}
+          plan) still render below. The app states the fact without plan
+          wording (it sells nothing). */}
       {store.maxImages === 0 && (
         <p className="patient-form__hint">
-          Photo &amp; radiograph uploads aren't included in the free plan.
+          {isNativeApp()
+            ? "Photo uploads aren't available on this account."
+            : "Photo & radiograph uploads aren't included in the free plan."}
         </p>
       )}
 
@@ -231,6 +234,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         <p className="patient-form__hint imaging__formats">
           {store.dicomEnabled
             ? 'PNG, JPEG, WEBP or DICOM (.dcm). DICOM originals are kept and can be downloaded.'
+            : isNativeApp()
+            ? 'PNG, JPEG or WEBP.'
             : 'PNG, JPEG or WEBP. DICOM (.dcm) uploads are included on paid plans.'}
         </p>
       )}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
+import { isNativeApp } from '../native/platform';
 
 /**
  * Photos and radiographs pinned to the active chart. Files live in the
@@ -75,6 +76,36 @@ const ATTACHMENT_LIMITS = {
 export const MAX_UPLOAD_BYTES = ATTACHMENT_LIMITS.maxUploadBytes;
 
 const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
+
+/**
+ * Why an upload can't go ahead, or null when it can. In the iOS app the
+ * DICOM message states the fact without plan wording (the app sells
+ * nothing); the web keeps its free/paid-plan explanation.
+ */
+export function uploadRejection(u: {
+  dicom: boolean;
+  type: string;
+  size: number;
+  count: number;
+  maxImages: number;
+  dicomEnabled: boolean;
+  native: boolean;
+}): string | null {
+  if (u.dicom && !u.dicomEnabled) {
+    return u.native
+      ? "DICOM uploads aren't available on this account. Export the radiograph as a JPEG or PNG to add it."
+      : 'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.';
+  }
+  if (!u.dicom && !ALLOWED.includes(u.type)) {
+    return u.dicomEnabled ? 'Use a PNG, JPEG, WEBP or DICOM image.' : 'Use a PNG, JPEG, or WEBP image.';
+  }
+  if (u.count >= u.maxImages) return `This chart has reached its ${u.maxImages}-image limit.`;
+  if (u.size > ATTACHMENT_LIMITS.hardMaxBytes) {
+    return `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`;
+  }
+  return null;
+}
+
 const SIGN_TTL = 60 * 60; // 1 hour
 
 function extFor(type: string): string {
@@ -317,26 +348,16 @@ export function useAttachments(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
       if (!supabase) throw new Error('Cloud is not configured.');
       const dicom = await isDicomFile(file);
-      if (dicom && !dicomEnabled) {
-        throw new Error(
-          'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.'
-        );
-      }
-      if (!dicom && !ALLOWED.includes(file.type)) {
-        throw new Error(
-          dicomEnabled ? 'Use a PNG, JPEG, WEBP or DICOM image.' : 'Use a PNG, JPEG, or WEBP image.'
-        );
-      }
-      if (itemsRef.current.length >= maxImages) {
-        throw new Error(
-          `This chart already has the maximum of ${maxImages} images. Delete one to add another.`
-        );
-      }
-      if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
-        throw new Error(
-          `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`
-        );
-      }
+      const rejection = uploadRejection({
+        dicom,
+        type: file.type,
+        size: file.size,
+        count: itemsRef.current.length,
+        maxImages,
+        dicomEnabled,
+        native: isNativeApp(),
+      });
+      if (rejection) throw new Error(rejection);
       // DICOM: render a preview for display; the original is kept as-is.
       const source = dicom ? await dicomPreview(file) : file;
       // Fit to the size/dimension caps and make the grid thumbnail.

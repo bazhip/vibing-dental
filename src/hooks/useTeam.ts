@@ -1,6 +1,7 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { emailLinkOrigin } from '../native/authReturn';
+import { isNativeApp } from '../native/platform';
 import { friendlyError } from '../components/ui/dialogs';
 
 /**
@@ -66,6 +67,19 @@ export async function call<T = Record<string, unknown>>(body: object): Promise<T
   return data as T;
 }
 
+/**
+ * team-api's seat-limit refusals point at other plans ("switch to a
+ * Practice plan", "contact us about a larger plan"). The app sells
+ * nothing, so there they become a plain fact; the web keeps the server
+ * message. Other errors pass through untouched.
+ */
+export function appSafeTeamError(err: unknown, native: boolean = isNativeApp()): unknown {
+  if (native && err instanceof Error && /\bplans?\b/i.test(err.message)) {
+    return new Error('This practice has reached its team member limit.');
+  }
+  return err;
+}
+
 export function useTeam(open: boolean): UseTeamReturn {
   const [state, setState] = React.useState<TeamState>({ practice: null, role: null, primaryOwnerId: null, members: [] });
   const [loaded, setLoaded] = React.useState(false);
@@ -99,7 +113,11 @@ export function useTeam(open: boolean): UseTeamReturn {
     // Invited accounts get an email link back to wherever the owner is
     // (the website when the owner is in the app).
     const redirectTo = emailLinkOrigin();
-    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo });
+    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo }).catch(
+      (err: unknown) => {
+        throw appSafeTeamError(err);
+      }
+    );
     await refresh();
     return res.pending ? 'pending' : 'invited';
   }, [refresh]);

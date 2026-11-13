@@ -48,3 +48,35 @@ describe('ImagingSection camera button', () => {
     expect(screen.getByRole('button', { name: 'Add image' })).toHaveAttribute('title', 'This chart has reached its 2-image limit.');
   });
 });
+
+describe('ImagingSection plan wording', () => {
+  beforeEach(() => {
+    native = false;
+    store.items = [];
+    store.maxImages = 2;
+    store.dicomEnabled = false;
+  });
+
+  it('no-upload accounts: neutral fact in the app, free-plan note on the web', () => {
+    store.maxImages = 0;
+    native = true;
+    const { unmount } = renderIt();
+    expect(screen.getByText("Photo uploads aren't available on this account.")).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/plan/i);
+    unmount();
+    native = false;
+    renderIt();
+    expect(screen.getByText("Photo & radiograph uploads aren't included in the free plan.")).toBeInTheDocument();
+  });
+
+  it('DICOM off: formats only in the app, paid-plans note on the web', () => {
+    native = true;
+    const { unmount } = renderIt();
+    expect(screen.getByText('PNG, JPEG or WEBP.')).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/plan/i);
+    unmount();
+    native = false;
+    renderIt();
+    expect(screen.getByText('PNG, JPEG or WEBP. DICOM (.dcm) uploads are included on paid plans.')).toBeInTheDocument();
+  });
+});
