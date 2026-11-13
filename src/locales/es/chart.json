@@ -300,14 +300,14 @@
   },
   "ios": {
     "newChart": "Nuevo historial",
-    "shareChart": "Previsualizar y descargar el PDF del odontograma",
-    "shareBoth": "Previsualizar y descargar el odontograma clínico y el informe para el propietario",
+    "shareChart": "Vista previa y descarga del PDF del historial",
+    "shareBoth": "Vista previa y descarga del historial clínico y del informe para el propietario",
     "more": "Más",
     "menu": {
       "newChart": "Nuevo historial",
       "newVisit": "Nueva visita",
-      "history": "Historial del odontograma",
-      "editChart": "Editar odontograma",
+      "history": "Versiones del historial",
+      "editChart": "Editar historial",
       "undoChanges": "Deshacer cambios",
       "saveNow": "Guardar ahora",
       "retrySave": "Reintentar guardado",
@@ -329,13 +329,13 @@
       "onDevice": "Solo en este dispositivo"
     },
     "live": {
-      "saved": "Odontograma guardado",
-      "notSaved": "Odontograma no guardado"
+      "saved": "Historial guardado",
+      "notSaved": "Historial no guardado"
     },
     "notice": {
-      "otherTab": "Este odontograma está abierto en otra ventana. Ambas editan la misma copia de trabajo — cierre una para no sobrescribir sus cambios.",
+      "otherTab": "Este historial está abierto en otra ventana. Ambas editan la misma copia de trabajo — cierre una para no sobrescribir sus cambios.",
       "gotIt": "Entendido",
-      "notSaved": "Este odontograma no está guardado."
+      "notSaved": "Este historial no está guardado."
     },
     "form": {
       "patient": "Paciente",

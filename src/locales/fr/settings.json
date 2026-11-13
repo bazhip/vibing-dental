@@ -210,7 +210,7 @@
     "mirrorHint": "Et dans le PDF",
     "include": "Inclure",
     "blocksShown": "Blocs nerveux affichés",
-    "blocksNote": "Un bloc masqué reste visible sur un schéma où il a une dose.",
+    "blocksNote": "Un bloc masqué reste visible sur un dossier où une dose est saisie.",
     "block": {
       "infraorbital": "Infra-orbitaire",
       "caudalMaxillary": "Maxillaire caudal",
@@ -219,7 +219,7 @@
       "other": "Autre"
     },
     "usualDrug": "Votre anesthésique habituel",
-    "usualDrugNote": "Proposé en un geste sur un schéma sans anesthésique défini.",
+    "usualDrugNote": "Proposé en un geste sur un dossier sans anesthésique renseigné.",
     "drugName": "Produit",
     "drugStrength": "Concentration",
     "drugPlaceholder": "p. ex. Bupivacaine",
@@ -230,7 +230,7 @@
     "pdfGrid": "Inclure la grille du schéma",
     "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
     "pdfImages": "Inclure les images",
-    "pdfImagesHint": "4 par page, après le schéma"
+    "pdfImagesHint": "4 par page, après le dossier"
   },
   "feedback": {
     "title": "Envoyer un commentaire",
@@ -257,8 +257,8 @@
   },
   "gettingStarted": {
     "takeTour": "Faire la visite guidée",
-    "tourFooter": "Une courte visite pour savoir où tout se trouve dans le schéma.",
-    "chartParts": "Parties du schéma"
+    "tourFooter": "Une courte visite pour savoir où tout se trouve dans le dossier.",
+    "chartParts": "Parties du dossier"
   },
   "tour": {
     "steps": {
@@ -268,7 +268,7 @@
       },
       "sections": {
         "title": "Les huit sections",
-        "body": "Un schéma dentaire, de haut en bas. Touchez le titre du schéma pour passer d’une section à l’autre — tout est enregistré automatiquement."
+        "body": "Un dossier dentaire, de haut en bas. Touchez le titre du dossier pour passer d’une section à l’autre — tout est enregistré automatiquement."
       },
       "patient": {
         "title": "Patient et propriétaire",
@@ -308,7 +308,7 @@
       },
       "share": {
         "title": "Partager le PDF",
-        "body": "Générez le PDF du schéma prêt pour le client avec votre logo, puis partagez-le ou enregistrez-le quand vous le souhaitez."
+        "body": "Générez le PDF du dossier prêt pour le client avec votre logo, puis partagez-le ou enregistrez-le quand vous le souhaitez."
       }
     }
   },

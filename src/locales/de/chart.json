@@ -295,14 +295,14 @@
   },
   "ios": {
     "newChart": "Neue Akte",
-    "shareChart": "PDF des Zahnschemas ansehen und herunterladen",
-    "shareBoth": "Klinisches Zahnschema und Besitzerbericht ansehen und herunterladen",
+    "shareChart": "Vorschau und Download des Akten-PDFs",
+    "shareBoth": "Vorschau und Download der klinischen Akte und des Besitzerberichts",
     "more": "Mehr",
     "menu": {
       "newChart": "Neue Akte",
       "newVisit": "Neuer Besuch",
-      "history": "Verlauf des Zahnschemas",
-      "editChart": "Zahnschema bearbeiten",
+      "history": "Aktenverlauf",
+      "editChart": "Akte bearbeiten",
       "undoChanges": "Änderungen verwerfen",
       "saveNow": "Jetzt speichern",
       "retrySave": "Speichern erneut versuchen",
@@ -324,13 +324,13 @@
       "onDevice": "Nur auf diesem Gerät"
     },
     "live": {
-      "saved": "Zahnschema gespeichert",
-      "notSaved": "Zahnschema nicht gespeichert"
+      "saved": "Akte gespeichert",
+      "notSaved": "Akte nicht gespeichert"
     },
     "notice": {
-      "otherTab": "Dieses Zahnschema ist in einem anderen Fenster geöffnet. Beide bearbeiten dieselbe Arbeitskopie — schließen Sie eines, damit Ihre Änderungen nicht überschrieben werden.",
+      "otherTab": "Diese Akte ist in einem anderen Fenster geöffnet. Beide bearbeiten dieselbe Arbeitskopie — schließen Sie eines, damit Ihre Änderungen nicht überschrieben werden.",
       "gotIt": "Verstanden",
-      "notSaved": "Dieses Zahnschema ist nicht gespeichert."
+      "notSaved": "Diese Akte ist nicht gespeichert."
     },
     "form": {
       "patient": "Patient",

@@ -5,21 +5,21 @@
     "label": "Rechercher des patients par nom, numéro ou propriétaire",
     "clear": "Effacer la recherche"
   },
-  "signIn": "Connectez-vous pour voir vos schémas enregistrés.",
+  "signIn": "Connectez-vous pour voir vos dossiers enregistrés.",
   "loading": "Chargement…",
   "unnamed": "Patient sans nom",
-  "empty": "Aucun schéma enregistré pour le moment. Ils sont enregistrés automatiquement pendant que vous saisissez.",
+  "empty": "Aucun dossier enregistré pour le moment. Ils sont enregistrés automatiquement pendant que vous saisissez.",
   "noMatch": {
     "search": "Aucun patient ne correspond à cette recherche.",
     "due": "Aucun patient n’a de contrôle à prévoir.",
-    "filters": "Aucun schéma ne correspond à ces filtres."
+    "filters": "Aucun dossier ne correspond à ces filtres."
   },
   "retry": "Réessayer",
   "loadMore": "Afficher plus",
   "errors": {
-    "load": "Impossible de charger vos schémas. {{error}}",
-    "more": "Impossible de charger plus de schémas. {{error}}",
-    "open": "Impossible d’ouvrir ce schéma. {{error}}",
+    "load": "Impossible de charger vos dossiers. {{error}}",
+    "more": "Impossible de charger d’autres dossiers. {{error}}",
+    "open": "Impossible d’ouvrir ce dossier. {{error}}",
     "delete": "Impossible de supprimer cette visite. {{error}}",
     "clear": "Impossible d’effacer ce contrôle. {{error}}"
   },
@@ -48,7 +48,7 @@
   "add": {
     "button": "Ajouter",
     "newPatient": "Nouveau patient",
-    "importPdf": "Importer un schéma PDF"
+    "importPdf": "Importer un PDF de dossier"
   },
   "row": {
     "number": "n° {{number}}",
@@ -72,7 +72,7 @@
   },
   "confirmClear": {
     "title": "Effacer le contrôle de {{name}} ?",
-    "message": "Utilisez cette option si le contrôle a eu lieu sans nouveau schéma, ou s’il n’est plus nécessaire. Le patient disparaîtra de la liste des contrôles à prévoir.",
+    "message": "À utiliser lorsque le contrôle a eu lieu sans nouveau dossier, ou n’est plus nécessaire. Le patient disparaîtra de la liste « À faire ».",
     "confirm": "Effacer le contrôle"
   },
   "confirmDelete": {

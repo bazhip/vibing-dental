@@ -210,7 +210,7 @@
     "mirrorHint": "E nel PDF",
     "include": "Includi",
     "blocksShown": "Blocchi nervosi mostrati",
-    "blocksNote": "Un blocco nascosto resta visibile in un odontogramma in cui ha una dose.",
+    "blocksNote": "Un blocco nascosto compare comunque in una cartella in cui è indicata una dose.",
     "block": {
       "infraorbital": "Infraorbitario",
       "caudalMaxillary": "Mascellare caudale",
@@ -219,7 +219,7 @@
       "other": "Altro"
     },
     "usualDrug": "Il Suo anestetico abituale",
-    "usualDrugNote": "Proposto con un tocco in un odontogramma senza anestetico impostato.",
+    "usualDrugNote": "Proposto con un tocco in una cartella senza anestetico impostato.",
     "drugName": "Farmaco",
     "drugStrength": "Concentrazione",
     "drugPlaceholder": "ad es. Bupivacaina",
@@ -230,7 +230,7 @@
     "pdfGrid": "Includi la griglia dell’odontogramma",
     "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
     "pdfImages": "Includi le immagini",
-    "pdfImagesHint": "4 per pagina, dopo l’odontogramma"
+    "pdfImagesHint": "4 per pagina, dopo la cartella"
   },
   "feedback": {
     "title": "Invia feedback",
@@ -257,8 +257,8 @@
   },
   "gettingStarted": {
     "takeTour": "Fai il tour",
-    "tourFooter": "Un breve tour per sapere dove si trova tutto nell’odontogramma.",
-    "chartParts": "Parti dell’odontogramma"
+    "tourFooter": "Un breve tour per sapere dove si trova tutto nella cartella.",
+    "chartParts": "Parti della cartella"
   },
   "tour": {
     "steps": {
@@ -268,7 +268,7 @@
       },
       "sections": {
         "title": "Le otto sezioni",
-        "body": "Un odontogramma, dall’alto in basso. Tocchi il titolo dell’odontogramma per passare da una sezione all’altra — tutto si salva automaticamente."
+        "body": "Una cartella dentale, dall’alto in basso. Tocchi il titolo della cartella per passare da una sezione all’altra — tutto si salva automaticamente."
       },
       "patient": {
         "title": "Paziente e proprietario",
@@ -308,7 +308,7 @@
       },
       "share": {
         "title": "Condividi il PDF",
-        "body": "Crei il PDF dell’odontogramma pronto per il cliente con il Suo logo, poi lo condivida o lo salvi quando è pronto."
+        "body": "Crei il PDF della cartella pronto per il cliente con il Suo logo, poi lo condivida o lo salvi quando è pronto."
       }
     }
   },

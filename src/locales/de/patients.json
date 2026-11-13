@@ -5,21 +5,21 @@
     "label": "Patienten nach Name, Nummer oder Besitzer suchen",
     "clear": "Suche löschen"
   },
-  "signIn": "Melden Sie sich an, um Ihre gespeicherten Zahnschemata zu sehen.",
+  "signIn": "Melden Sie sich an, um Ihre gespeicherten Akten zu sehen.",
   "loading": "Wird geladen …",
   "unnamed": "Patient ohne Namen",
-  "empty": "Noch keine gespeicherten Zahnschemata. Sie werden beim Erfassen automatisch gespeichert.",
+  "empty": "Noch keine gespeicherten Akten. Sie werden beim Erfassen automatisch gespeichert.",
   "noMatch": {
     "search": "Keine Patienten entsprechen dieser Suche.",
     "due": "Bei keinem Patienten ist eine Kontrolle fällig.",
-    "filters": "Keine Zahnschemata entsprechen diesen Filtern."
+    "filters": "Keine Akte passt zu diesen Filtern."
   },
   "retry": "Erneut versuchen",
   "loadMore": "Mehr laden",
   "errors": {
-    "load": "Ihre Zahnschemata konnten nicht geladen werden. {{error}}",
-    "more": "Weitere Zahnschemata konnten nicht geladen werden. {{error}}",
-    "open": "Dieses Zahnschema konnte nicht geöffnet werden. {{error}}",
+    "load": "Ihre Akten konnten nicht geladen werden. {{error}}",
+    "more": "Weitere Akten konnten nicht geladen werden. {{error}}",
+    "open": "Diese Akte konnte nicht geöffnet werden. {{error}}",
     "delete": "Dieser Besuch konnte nicht gelöscht werden. {{error}}",
     "clear": "Diese Kontrolle konnte nicht entfernt werden. {{error}}"
   },
@@ -48,7 +48,7 @@
   "add": {
     "button": "Hinzufügen",
     "newPatient": "Neuer Patient",
-    "importPdf": "Zahnschema-PDF importieren"
+    "importPdf": "Akten-PDF importieren"
   },
   "row": {
     "number": "Nr. {{number}}",
@@ -71,7 +71,7 @@
   },
   "confirmClear": {
     "title": "Kontrolle für {{name}} entfernen?",
-    "message": "Verwenden Sie dies, wenn die Kontrolle ohne neues Zahnschema stattgefunden hat oder nicht mehr nötig ist. Der Patient verschwindet dann aus der Liste der fälligen Kontrollen.",
+    "message": "Nutzen Sie dies, wenn die Nachkontrolle ohne neue Akte stattgefunden hat oder nicht mehr nötig ist. Der Patient verschwindet dann aus der Liste „Fällig“.",
     "confirm": "Kontrolle entfernen"
   },
   "confirmDelete": {

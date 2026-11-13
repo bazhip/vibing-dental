@@ -210,7 +210,7 @@
     "mirrorHint": "Und im PDF",
     "include": "Einbeziehen",
     "blocksShown": "Angezeigte Nervenblockaden",
-    "blocksNote": "Eine ausgeblendete Blockade bleibt in einem Zahnschema sichtbar, in dem sie eine Dosis hat.",
+    "blocksNote": "Eine ausgeblendete Blockade wird in einer Akte weiterhin angezeigt, wenn dort eine Dosis eingetragen ist.",
     "block": {
       "infraorbital": "Infraorbital",
       "caudalMaxillary": "Kaudal maxillär",
@@ -219,7 +219,7 @@
       "other": "Andere"
     },
     "usualDrug": "Ihr übliches Lokalanästhetikum",
-    "usualDrugNote": "Wird in einem Zahnschema ohne festgelegtes Lokalanästhetikum mit einem Tippen angeboten.",
+    "usualDrugNote": "Wird mit einem Tipp angeboten, wenn in der Akte kein Anästhetikum eingetragen ist.",
     "drugName": "Wirkstoff",
     "drugStrength": "Konzentration",
     "drugPlaceholder": "z. B. Bupivacain",
@@ -230,7 +230,7 @@
     "pdfGrid": "Befundraster einbeziehen",
     "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
     "pdfImages": "Bilder einbeziehen",
-    "pdfImagesHint": "4 pro Seite, nach dem Zahnschema"
+    "pdfImagesHint": "4 pro Seite, nach der Akte"
   },
   "feedback": {
     "title": "Feedback senden",
@@ -257,8 +257,8 @@
   },
   "gettingStarted": {
     "takeTour": "Rundgang starten",
-    "tourFooter": "Ein kurzer Rundgang, wo im Zahnschema was zu finden ist.",
-    "chartParts": "Teile des Zahnschemas"
+    "tourFooter": "Ein kurzer Rundgang, wo in der Akte was zu finden ist.",
+    "chartParts": "Teile der Akte"
   },
   "tour": {
     "steps": {
@@ -268,7 +268,7 @@
       },
       "sections": {
         "title": "Die acht Abschnitte",
-        "body": "Ein Zahnschema von oben nach unten. Tippen Sie auf den Titel des Zahnschemas, um zwischen den Abschnitten zu wechseln — alles wird automatisch gespeichert."
+        "body": "Eine zahnärztliche Akte von oben nach unten. Tippen Sie auf den Titel der Akte, um zwischen den Abschnitten zu wechseln — alles wird automatisch gespeichert."
       },
       "patient": {
         "title": "Patient & Besitzer",
@@ -308,7 +308,7 @@
       },
       "share": {
         "title": "PDF teilen",
-        "body": "Erstellen Sie das kundenfertige PDF des Zahnschemas mit Ihrem Logo und teilen oder sichern Sie es, wann immer Sie bereit sind."
+        "body": "Erstellen Sie das kundenfertige PDF der Akte mit Ihrem Logo und teilen oder sichern Sie es, wann immer Sie bereit sind."
       }
     }
   },

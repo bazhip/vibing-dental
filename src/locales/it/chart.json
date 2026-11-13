@@ -300,14 +300,14 @@
   },
   "ios": {
     "newChart": "Nuova cartella",
-    "shareChart": "Anteprima e download del PDF dell’odontogramma",
-    "shareBoth": "Anteprima e download dell’odontogramma clinico e del referto per il proprietario",
+    "shareChart": "Anteprima e download del PDF della cartella",
+    "shareBoth": "Anteprima e download della cartella clinica e del referto per il proprietario",
     "more": "Altro",
     "menu": {
       "newChart": "Nuova cartella",
       "newVisit": "Nuova visita",
-      "history": "Cronologia dell’odontogramma",
-      "editChart": "Modifica odontogramma",
+      "history": "Cronologia della cartella",
+      "editChart": "Modifica cartella",
       "undoChanges": "Annulla modifiche",
       "saveNow": "Salva ora",
       "retrySave": "Riprova a salvare",
@@ -329,13 +329,13 @@
       "onDevice": "Solo su questo dispositivo"
     },
     "live": {
-      "saved": "Odontogramma salvato",
-      "notSaved": "Odontogramma non salvato"
+      "saved": "Cartella salvata",
+      "notSaved": "Cartella non salvata"
     },
     "notice": {
-      "otherTab": "Questo odontogramma è aperto in un’altra finestra. Entrambe modificano la stessa copia di lavoro — ne chiuda una per non sovrascrivere le modifiche.",
+      "otherTab": "Questa cartella è aperta in un’altra finestra. Entrambe modificano la stessa copia di lavoro — ne chiuda una per non sovrascrivere le Sue modifiche.",
       "gotIt": "Ho capito",
-      "notSaved": "Questo odontogramma non è salvato."
+      "notSaved": "Questa cartella non è salvata."
     },
     "form": {
       "patient": "Paziente",

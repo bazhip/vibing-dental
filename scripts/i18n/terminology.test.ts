@@ -79,3 +79,36 @@ test('Italian capitalises the courtesy possessive (Suo, Sua, Suoi, Sue)', () => 
   }
   expect(lower).toEqual([]);
 });
+
+// The iOS app's strings (ios.* keys, the patients namespace, the app tour and
+// Getting started) were written before chart_record existed and used the
+// dental-chart word for the record. Where English means the record, the
+// translation must not use the dental_chart term (schéma dentaire / Zahnschema /
+// odontogramma / odontograma).
+const DENTAL_CHART: Record<(typeof LANGS)[number], RegExp> = {
+  fr: /sch[ée]ma/i,
+  de: /Zahnschema/,
+  it: /odontogramm/i,
+  es: /odontograma/i,
+};
+// The Chart tab names the dental chart itself (where you chart teeth).
+const APP_DENTAL = new Set(['common:ios.tabs.chart']);
+const isAppKey = (ns: string, key: string) =>
+  key.startsWith('ios.') || ns === 'patients' || (ns === 'settings' && /^(tour|gettingStarted)\./.test(key));
+
+test('the app\'s strings about a chart use the chart_record term, not the dental-chart word', () => {
+  const wrong: string[] = [];
+  for (const file of globSync('src/locales/en/*.json').filter((f) => !f.endsWith('.meta.json'))) {
+    const ns = path.basename(file, '.json');
+    const en = flat(load('en', ns));
+    for (const lng of LANGS) {
+      const tr = new Map(flat(load(lng, ns)));
+      for (const [key, text] of en) {
+        if (!isAppKey(ns, key) || !RECORD.test(text) || /dental chart/i.test(text) || APP_DENTAL.has(`${ns}:${key}`)) continue;
+        const t = tr.get(key) ?? '';
+        if (DENTAL_CHART[lng].test(t)) wrong.push(`${lng}:${ns}:${key}: ${t}`);
+      }
+    }
+  }
+  expect(wrong).toEqual([]);
+});

@@ -5,21 +5,21 @@
     "label": "Buscar pacientes por nombre, número o propietario",
     "clear": "Borrar búsqueda"
   },
-  "signIn": "Inicie sesión para ver sus odontogramas guardados.",
+  "signIn": "Inicie sesión para ver sus historiales guardados.",
   "loading": "Cargando…",
   "unnamed": "Paciente sin nombre",
-  "empty": "Todavía no hay odontogramas guardados. Se guardan automáticamente mientras registra.",
+  "empty": "Todavía no hay historiales guardados. Se guardan automáticamente mientras registra.",
   "noMatch": {
     "search": "Ningún paciente coincide con esa búsqueda.",
     "due": "Ningún paciente tiene un control pendiente.",
-    "filters": "Ningún odontograma coincide con esos filtros."
+    "filters": "Ningún historial coincide con esos filtros."
   },
   "retry": "Reintentar",
   "loadMore": "Cargar más",
   "errors": {
-    "load": "No se han podido cargar sus odontogramas. {{error}}",
-    "more": "No se han podido cargar más odontogramas. {{error}}",
-    "open": "No se ha podido abrir ese odontograma. {{error}}",
+    "load": "No se pudieron cargar sus historiales. {{error}}",
+    "more": "No se pudieron cargar más historiales. {{error}}",
+    "open": "No se pudo abrir ese historial. {{error}}",
     "delete": "No se ha podido eliminar esa visita. {{error}}",
     "clear": "No se ha podido quitar ese control. {{error}}"
   },
@@ -48,7 +48,7 @@
   "add": {
     "button": "Añadir",
     "newPatient": "Nuevo paciente",
-    "importPdf": "Importar PDF de odontograma"
+    "importPdf": "Importar PDF de historial"
   },
   "row": {
     "number": "N.º {{number}}",
@@ -72,7 +72,7 @@
   },
   "confirmClear": {
     "title": "¿Quitar el control de {{name}}?",
-    "message": "Use esta opción cuando el control se haya hecho sin un nuevo odontograma o ya no sea necesario. El paciente saldrá de la lista de controles pendientes.",
+    "message": "Úselo cuando la revisión se haya hecho sin un historial nuevo o ya no sea necesaria. El paciente saldrá de la lista de pendientes.",
     "confirm": "Quitar control"
   },
   "confirmDelete": {

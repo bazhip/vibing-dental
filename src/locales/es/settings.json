@@ -210,7 +210,7 @@
     "mirrorHint": "Y en el PDF",
     "include": "Incluir",
     "blocksShown": "Bloqueos nerviosos visibles",
-    "blocksNote": "Un bloqueo oculto sigue visible en un odontograma donde tiene una dosis.",
+    "blocksNote": "Un bloqueo oculto sigue apareciendo en un historial en el que tiene una dosis.",
     "block": {
       "infraorbital": "Infraorbitario",
       "caudalMaxillary": "Maxilar caudal",
@@ -219,7 +219,7 @@
       "other": "Otro"
     },
     "usualDrug": "Su anestésico habitual",
-    "usualDrugNote": "Se ofrece con un toque en un odontograma sin anestésico definido.",
+    "usualDrugNote": "Se ofrece con un toque en un historial sin anestésico indicado.",
     "drugName": "Fármaco",
     "drugStrength": "Concentración",
     "drugPlaceholder": "p. ej., Bupivacaína",
@@ -230,7 +230,7 @@
     "pdfGrid": "Incluir la cuadrícula del odontograma",
     "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
     "pdfImages": "Incluir imágenes",
-    "pdfImagesHint": "4 por página, después del odontograma"
+    "pdfImagesHint": "4 por página, después del historial"
   },
   "feedback": {
     "title": "Enviar comentarios",
@@ -257,8 +257,8 @@
   },
   "gettingStarted": {
     "takeTour": "Hacer el recorrido",
-    "tourFooter": "Un breve recorrido por dónde está todo en el odontograma.",
-    "chartParts": "Partes del odontograma"
+    "tourFooter": "Un breve recorrido por dónde está todo en el historial.",
+    "chartParts": "Partes del historial"
   },
   "tour": {
     "steps": {
@@ -268,7 +268,7 @@
       },
       "sections": {
         "title": "Las ocho secciones",
-        "body": "Un odontograma, de arriba abajo. Toque el título del odontograma para pasar de una sección a otra — todo se guarda automáticamente."
+        "body": "Un historial dental, de arriba abajo. Toque el título del historial para pasar de una sección a otra — todo se guarda automáticamente."
       },
       "patient": {
         "title": "Paciente y propietario",
@@ -308,7 +308,7 @@
       },
       "share": {
         "title": "Compartir el PDF",
-        "body": "Genere el PDF del odontograma listo para el cliente con su logotipo y compártalo o guárdelo cuando quiera."
+        "body": "Genere el PDF del historial listo para el cliente con su logotipo y compártalo o guárdelo cuando quiera."
       }
     }
   },

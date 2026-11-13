@@ -300,14 +300,14 @@
   },
   "ios": {
     "newChart": "Nouveau dossier",
-    "shareChart": "Prévisualiser et télécharger le PDF du schéma",
-    "shareBoth": "Prévisualiser et télécharger le schéma clinique et le rapport pour le propriétaire",
+    "shareChart": "Aperçu et téléchargement du PDF du dossier",
+    "shareBoth": "Aperçu et téléchargement du dossier clinique et du compte rendu pour le propriétaire",
     "more": "Plus",
     "menu": {
       "newChart": "Nouveau dossier",
       "newVisit": "Nouvelle visite",
-      "history": "Historique du schéma",
-      "editChart": "Modifier le schéma",
+      "history": "Historique du dossier",
+      "editChart": "Modifier le dossier",
       "undoChanges": "Annuler les modifications",
       "saveNow": "Enregistrer maintenant",
       "retrySave": "Réessayer l’enregistrement",
@@ -329,13 +329,13 @@
       "onDevice": "Sur cet appareil uniquement"
     },
     "live": {
-      "saved": "Schéma enregistré",
-      "notSaved": "Schéma non enregistré"
+      "saved": "Dossier enregistré",
+      "notSaved": "Dossier non enregistré"
     },
     "notice": {
-      "otherTab": "Ce schéma est ouvert dans une autre fenêtre. Les deux modifient la même copie de travail — fermez-en une pour ne pas écraser vos modifications.",
+      "otherTab": "Ce dossier est ouvert dans une autre fenêtre. Les deux modifient la même copie de travail — fermez-en une pour ne pas écraser vos modifications.",
       "gotIt": "Compris",
-      "notSaved": "Ce schéma n’est pas enregistré."
+      "notSaved": "Ce dossier n’est pas enregistré."
     },
     "form": {
       "patient": "Patient",
