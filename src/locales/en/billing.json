@@ -64,7 +64,6 @@
     "pickPlan": "Pick a plan above",
     "checkoutFailed": "Could not start checkout.",
     "larger": "More than 5 team members, or a multi-location group? <a>Contact us</a> for custom pricing.",
-    "signOut": "Sign out",
     "slowConfirm": "Payment went through but the confirmation is taking longer than usual — reload in a minute, or contact us if this persists."
   },
   "settings": {

@@ -298,43 +298,6 @@
     "allow": "Consenti",
     "notNow": "Non ora"
   },
-  "pdfStyle": {
-    "label": "Stile PDF",
-    "custom": "Personalizzato",
-    "customColor": "Colore personalizzato",
-    "customDescription": "Qualsiasi colore, con il layout {{base}}.",
-    "customDescriptionCurrent": "Qualsiasi colore, con il layout attuale.",
-    "chooseColor": "Scegli un colore personalizzato",
-    "styles": {
-      "clinic": {
-        "name": "Verde acqua clinico",
-        "description": "Coordinato con l’app: intestazioni verde acqua, anomalie segnalate in rosso, riquadri arrotondati."
-      },
-      "classic-blue": {
-        "name": "Blu classico",
-        "description": "Il blu tradizionale delle cartelle cliniche, con intestazioni di sezione piene."
-      },
-      "slate": {
-        "name": "Ardesia",
-        "description": "Grafite neutra: si stampa nitida in bianco e nero."
-      },
-      "iris": {
-        "name": "Iris",
-        "description": "Discreti accenti indaco con intestazioni compatte in maiuscolo."
-      },
-      "journal": {
-        "name": "Rivista",
-        "description": "Classico da stampa con caratteri graziati: accenti rosso scuro su carta calda."
-      }
-    }
-  },
-  "library": {
-    "openVisitFailed": "Impossibile aprire questa visita. {{error}}",
-    "newVisitFailed": "Impossibile iniziare una nuova visita. {{error}}",
-    "signOutFailed": "Impossibile uscire. {{error}}",
-    "verbNewPatient": "Iniziare un nuovo paziente",
-    "verbImportPdf": "Importare questo PDF"
-  },
   "ios": {
     "newChart": "Nuovo odontogramma",
     "shareChart": "Anteprima e download del PDF dell’odontogramma",
@@ -366,7 +329,6 @@
       "onDevice": "Solo su questo dispositivo"
     },
     "live": {
-      "saving": "Salvataggio dell’odontogramma",
       "saved": "Odontogramma salvato",
       "notSaved": "Odontogramma non salvato"
     },

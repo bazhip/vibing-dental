@@ -293,43 +293,6 @@
     "allow": "Allow",
     "notNow": "Not now"
   },
-  "pdfStyle": {
-    "label": "PDF style",
-    "custom": "Custom",
-    "customColor": "Custom color",
-    "customDescription": "Any color you like, on the {{base}} layout.",
-    "customDescriptionCurrent": "Any color you like, on the current layout.",
-    "chooseColor": "Choose custom color",
-    "styles": {
-      "clinic": {
-        "name": "Clinic Teal",
-        "description": "Matches the app — teal headers, red abnormal flags, rounded cards."
-      },
-      "classic-blue": {
-        "name": "Classic Blue",
-        "description": "Traditional medical-records blue with solid section headers."
-      },
-      "slate": {
-        "name": "Slate",
-        "description": "Neutral graphite — prints crisply in black and white."
-      },
-      "iris": {
-        "name": "Iris",
-        "description": "Quiet indigo accents with compact uppercase headers."
-      },
-      "journal": {
-        "name": "Journal",
-        "description": "Serif print classic — deep red accents on warm paper."
-      }
-    }
-  },
-  "library": {
-    "openVisitFailed": "Couldn’t open that visit. {{error}}",
-    "newVisitFailed": "Couldn’t start a new visit. {{error}}",
-    "signOutFailed": "Couldn’t sign out. {{error}}",
-    "verbNewPatient": "Start a new patient",
-    "verbImportPdf": "Import this PDF"
-  },
   "ios": {
     "newChart": "New chart",
     "shareChart": "Preview and download the chart PDF",
@@ -361,7 +324,6 @@
       "onDevice": "On this device only"
     },
     "live": {
-      "saving": "Saving chart",
       "saved": "Chart saved",
       "notSaved": "Chart not saved"
     },

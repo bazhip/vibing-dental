@@ -298,43 +298,6 @@
     "allow": "Permitir",
     "notNow": "Ahora no"
   },
-  "pdfStyle": {
-    "label": "Estilo del PDF",
-    "custom": "Personalizado",
-    "customColor": "Color personalizado",
-    "customDescription": "El color que quiera, con el diseño {{base}}.",
-    "customDescriptionCurrent": "El color que quiera, con el diseño actual.",
-    "chooseColor": "Elegir un color personalizado",
-    "styles": {
-      "clinic": {
-        "name": "Verde azulado clínico",
-        "description": "Como la app: encabezados verde azulado, anomalías marcadas en rojo, tarjetas redondeadas."
-      },
-      "classic-blue": {
-        "name": "Azul clásico",
-        "description": "El azul tradicional de los historiales médicos, con encabezados de sección sólidos."
-      },
-      "slate": {
-        "name": "Pizarra",
-        "description": "Grafito neutro: se imprime con nitidez en blanco y negro."
-      },
-      "iris": {
-        "name": "Iris",
-        "description": "Discretos acentos índigo con encabezados compactos en mayúsculas."
-      },
-      "journal": {
-        "name": "Revista",
-        "description": "Clásico impreso con serifa: acentos rojo oscuro sobre papel cálido."
-      }
-    }
-  },
-  "library": {
-    "openVisitFailed": "No se ha podido abrir esta visita. {{error}}",
-    "newVisitFailed": "No se ha podido iniciar una nueva visita. {{error}}",
-    "signOutFailed": "No se ha podido cerrar la sesión. {{error}}",
-    "verbNewPatient": "Iniciar un nuevo paciente",
-    "verbImportPdf": "Importar este PDF"
-  },
   "ios": {
     "newChart": "Nuevo odontograma",
     "shareChart": "Previsualizar y descargar el PDF del odontograma",
@@ -366,7 +329,6 @@
       "onDevice": "Solo en este dispositivo"
     },
     "live": {
-      "saving": "Guardando el odontograma",
       "saved": "Odontograma guardado",
       "notSaved": "Odontograma no guardado"
     },

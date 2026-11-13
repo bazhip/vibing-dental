@@ -108,7 +108,7 @@
   },
   "lock": {
     "title": "ToothOps está bloqueado",
-    "prompt": "Desbloquee la app para proteger las fichas de los pacientes.",
+    "prompt": "Desbloquee la app para proteger los historiales de los pacientes.",
     "unavailable": "Face ID y el código del dispositivo no están disponibles en este dispositivo. Para desbloquear ToothOps, configure un código en la app Ajustes y toque Reintentar, o cierre sesión.",
     "reason": "Desbloquear ToothOps"
   },

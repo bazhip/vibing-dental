@@ -224,14 +224,7 @@
     "pdfGrid": "Inclure la grille du schéma",
     "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
     "pdfImages": "Inclure les images",
-    "pdfImagesHint": "4 par page, après le schéma",
-    "sectionTitle": {
-      "patient": "Réglages de la page Patient",
-      "anesthesia": "Réglages de l’anesthésie",
-      "charting": "Réglages du schéma",
-      "diagnosis": "Réglages du diagnostic",
-      "images": "Réglages des images"
-    }
+    "pdfImagesHint": "4 par page, après le schéma"
   },
   "feedback": {
     "title": "Envoyer un commentaire",
@@ -262,11 +255,6 @@
     "chartParts": "Parties du schéma"
   },
   "tour": {
-    "skip": "Passer",
-    "back": "Retour",
-    "next": "Suivant",
-    "finish": "Commencer",
-    "progress": "{{n}} sur {{total}}",
     "steps": {
       "welcome": {
         "title": "Bienvenue dans ToothOps",

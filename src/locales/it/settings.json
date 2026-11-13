@@ -224,14 +224,7 @@
     "pdfGrid": "Includi la griglia dell’odontogramma",
     "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
     "pdfImages": "Includi le immagini",
-    "pdfImagesHint": "4 per pagina, dopo l’odontogramma",
-    "sectionTitle": {
-      "patient": "Impostazioni della pagina Paziente",
-      "anesthesia": "Impostazioni dell’anestesia",
-      "charting": "Impostazioni dell’odontogramma",
-      "diagnosis": "Impostazioni della diagnosi",
-      "images": "Impostazioni delle immagini"
-    }
+    "pdfImagesHint": "4 per pagina, dopo l’odontogramma"
   },
   "feedback": {
     "title": "Invia feedback",
@@ -262,11 +255,6 @@
     "chartParts": "Parti dell’odontogramma"
   },
   "tour": {
-    "skip": "Salta",
-    "back": "Indietro",
-    "next": "Avanti",
-    "finish": "Inizia",
-    "progress": "{{n}} di {{total}}",
     "steps": {
       "welcome": {
         "title": "Benvenuto in ToothOps",

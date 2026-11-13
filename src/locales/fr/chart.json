@@ -298,43 +298,6 @@
     "allow": "Autoriser",
     "notNow": "Pas maintenant"
   },
-  "pdfStyle": {
-    "label": "Style du PDF",
-    "custom": "Personnalisé",
-    "customColor": "Couleur personnalisée",
-    "customDescription": "La couleur de votre choix, avec la mise en page {{base}}.",
-    "customDescriptionCurrent": "La couleur de votre choix, avec la mise en page actuelle.",
-    "chooseColor": "Choisir une couleur personnalisée",
-    "styles": {
-      "clinic": {
-        "name": "Turquoise clinique",
-        "description": "Assorti à l’app — en-têtes turquoise, anomalies signalées en rouge, encadrés arrondis."
-      },
-      "classic-blue": {
-        "name": "Bleu classique",
-        "description": "Le bleu traditionnel des dossiers médicaux, avec des en-têtes de section pleins."
-      },
-      "slate": {
-        "name": "Ardoise",
-        "description": "Graphite neutre — s’imprime nettement en noir et blanc."
-      },
-      "iris": {
-        "name": "Iris",
-        "description": "Discrets accents indigo et en-têtes compacts en majuscules."
-      },
-      "journal": {
-        "name": "Journal",
-        "description": "Classique de l’imprimé à empattements — accents rouge foncé sur papier chaud."
-      }
-    }
-  },
-  "library": {
-    "openVisitFailed": "Impossible d’ouvrir cette visite. {{error}}",
-    "newVisitFailed": "Impossible de commencer une nouvelle visite. {{error}}",
-    "signOutFailed": "Impossible de se déconnecter. {{error}}",
-    "verbNewPatient": "Commencer un nouveau patient",
-    "verbImportPdf": "Importer ce PDF"
-  },
   "ios": {
     "newChart": "Nouveau schéma",
     "shareChart": "Prévisualiser et télécharger le PDF du schéma",
@@ -366,7 +329,6 @@
       "onDevice": "Sur cet appareil uniquement"
     },
     "live": {
-      "saving": "Enregistrement du schéma",
       "saved": "Schéma enregistré",
       "notSaved": "Schéma non enregistré"
     },

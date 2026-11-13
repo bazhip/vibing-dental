@@ -224,14 +224,7 @@
     "pdfGrid": "Incluir la cuadrícula del odontograma",
     "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
     "pdfImages": "Incluir imágenes",
-    "pdfImagesHint": "4 por página, después del odontograma",
-    "sectionTitle": {
-      "patient": "Ajustes de la página Paciente",
-      "anesthesia": "Ajustes de anestesia",
-      "charting": "Ajustes del odontograma",
-      "diagnosis": "Ajustes de diagnóstico",
-      "images": "Ajustes de imágenes"
-    }
+    "pdfImagesHint": "4 por página, después del odontograma"
   },
   "feedback": {
     "title": "Enviar comentarios",
@@ -262,11 +255,6 @@
     "chartParts": "Partes del odontograma"
   },
   "tour": {
-    "skip": "Omitir",
-    "back": "Atrás",
-    "next": "Siguiente",
-    "finish": "Empezar",
-    "progress": "{{n}} de {{total}}",
     "steps": {
       "welcome": {
         "title": "Bienvenido a ToothOps",

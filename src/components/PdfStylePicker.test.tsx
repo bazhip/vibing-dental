@@ -7,7 +7,7 @@ vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIG
 
 import { PdfStylePicker } from './PdfStylePicker';
 import { PDF_STYLES } from '../utils/pdf/styles';
-import chartEn from '../locales/en/chart.json';
+import pdfuiEn from '../locales/en/pdfui.json';
 
 beforeEach(() => { flags.native = false; });
 
@@ -72,8 +72,8 @@ describe('PdfStylePicker', () => {
     expect(onChange).toHaveBeenLastCalledWith('custom:clinic:#ff0000');
   });
 
-  it('every preset has a translated name and description in the chart catalog', () => {
-    const styles = chartEn.pdfStyle.styles as Record<string, { name?: string; description?: string }>;
+  it('every preset has a translated name and description in the pdfui catalog', () => {
+    const styles = pdfuiEn.presets as Record<string, { name?: string; description?: string }>;
     for (const s of PDF_STYLES) {
       expect(styles[s.id]?.name, s.id).toBeTruthy();
       expect(styles[s.id]?.description, s.id).toBeTruthy();

@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 import { localDateISO } from '../utils/localDate';
 import type { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 
@@ -44,7 +45,7 @@ export function todayIso(): string {
 
 /** Group charts by patient: patient number if present, else name.
  *  `unnamed` names patients with no name (the caller's language). */
-export function groupByPatient(charts: CloudChartMeta[], unnamed = 'Unnamed patient'): PatientGroup[] {
+export function groupByPatient(charts: CloudChartMeta[], unnamed = i18n.t('unnamedPatient', { ns: 'library' })): PatientGroup[] {
   const groups = new Map<string, PatientGroup>();
   for (const c of charts) {
     const num = c.patient_number.trim().toLowerCase();

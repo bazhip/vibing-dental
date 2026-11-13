@@ -293,43 +293,6 @@
     "allow": "Erlauben",
     "notNow": "Nicht jetzt"
   },
-  "pdfStyle": {
-    "label": "PDF-Stil",
-    "custom": "Benutzerdefiniert",
-    "customColor": "Eigene Farbe",
-    "customDescription": "Eine beliebige Farbe im Layout {{base}}.",
-    "customDescriptionCurrent": "Eine beliebige Farbe im aktuellen Layout.",
-    "chooseColor": "Eigene Farbe wählen",
-    "styles": {
-      "clinic": {
-        "name": "Klinik-Petrol",
-        "description": "Passend zur App – Überschriften in Petrol, rote Markierungen für Auffälligkeiten, abgerundete Kästen."
-      },
-      "classic-blue": {
-        "name": "Klassisches Blau",
-        "description": "Traditionelles Blau medizinischer Akten mit vollflächigen Abschnittsüberschriften."
-      },
-      "slate": {
-        "name": "Schiefer",
-        "description": "Neutrales Graphit – druckt gestochen scharf in Schwarzweiß."
-      },
-      "iris": {
-        "name": "Iris",
-        "description": "Dezente Indigo-Akzente mit kompakten Überschriften in Großbuchstaben."
-      },
-      "journal": {
-        "name": "Journal",
-        "description": "Klassischer Druck mit Serifenschrift – tiefrote Akzente auf warmem Papier."
-      }
-    }
-  },
-  "library": {
-    "openVisitFailed": "Dieser Besuch konnte nicht geöffnet werden. {{error}}",
-    "newVisitFailed": "Ein neuer Besuch konnte nicht begonnen werden. {{error}}",
-    "signOutFailed": "Abmelden fehlgeschlagen. {{error}}",
-    "verbNewPatient": "Neuen Patienten beginnen",
-    "verbImportPdf": "Dieses PDF importieren"
-  },
   "ios": {
     "newChart": "Neues Zahnschema",
     "shareChart": "PDF des Zahnschemas ansehen und herunterladen",
@@ -361,7 +324,6 @@
       "onDevice": "Nur auf diesem Gerät"
     },
     "live": {
-      "saving": "Zahnschema wird gespeichert",
       "saved": "Zahnschema gespeichert",
       "notSaved": "Zahnschema nicht gespeichert"
     },

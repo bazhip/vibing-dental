@@ -224,14 +224,7 @@
     "pdfGrid": "Befundraster einbeziehen",
     "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
     "pdfImages": "Bilder einbeziehen",
-    "pdfImagesHint": "4 pro Seite, nach dem Zahnschema",
-    "sectionTitle": {
-      "patient": "Einstellungen der Seite „Patient“",
-      "anesthesia": "Narkose-Einstellungen",
-      "charting": "Befund-Einstellungen",
-      "diagnosis": "Diagnose-Einstellungen",
-      "images": "Bild-Einstellungen"
-    }
+    "pdfImagesHint": "4 pro Seite, nach dem Zahnschema"
   },
   "feedback": {
     "title": "Feedback senden",
@@ -262,11 +255,6 @@
     "chartParts": "Teile des Zahnschemas"
   },
   "tour": {
-    "skip": "Überspringen",
-    "back": "Zurück",
-    "next": "Weiter",
-    "finish": "Loslegen",
-    "progress": "{{n}} von {{total}}",
     "steps": {
       "welcome": {
         "title": "Willkommen bei ToothOps",

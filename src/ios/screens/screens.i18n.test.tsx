@@ -238,3 +238,16 @@ test('the Chart tab\'s navigation bar and notices are translated', async () => {
   await act(async () => { fireEvent.click(screen.getByRole('button', { name: /More/ })); });
   expect(findUntranslated(document.body, ALLOW)).toEqual([]);
 });
+
+test('Settings → Account offers the account language picker, and a pick saves to the account', async () => {
+  const setLanguage = vi.fn();
+  render(
+    <AppDataProvider library={null} settings={settings({ setLanguage })}>
+      <Stack root={<AccountSettingsScreen />} />
+    </AppDataProvider>,
+  );
+  await settle();
+  const picker = screen.getByDisplayValue(LANGUAGE_NAMES.en);
+  fireEvent.change(picker, { target: { value: 'fr' } });
+  expect(setLanguage).toHaveBeenCalledWith('fr');
+});

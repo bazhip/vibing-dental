@@ -68,7 +68,6 @@
     "pickPlan": "Choisissez une formule ci-dessus",
     "checkoutFailed": "Impossible de lancer le paiement.",
     "larger": "Plus de 5 membres d’équipe, ou un groupe multisite ? <a>Contactez-nous</a> pour un tarif sur mesure.",
-    "signOut": "Se déconnecter",
     "slowConfirm": "Le paiement a abouti, mais la confirmation prend plus de temps que d’habitude — rechargez la page dans une minute, ou contactez-nous si le problème persiste."
   },
   "settings": {

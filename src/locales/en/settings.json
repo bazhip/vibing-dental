@@ -224,14 +224,7 @@
     "pdfGrid": "Include the charting grid",
     "pdfGridHint": "Optional while findings are on the diagram",
     "pdfImages": "Include images",
-    "pdfImagesHint": "4 per page, after the chart",
-    "sectionTitle": {
-      "patient": "Patient page settings",
-      "anesthesia": "Anesthesia settings",
-      "charting": "Charting settings",
-      "diagnosis": "Diagnosis settings",
-      "images": "Images settings"
-    }
+    "pdfImagesHint": "4 per page, after the chart"
   },
   "feedback": {
     "title": "Send feedback",
@@ -262,11 +255,6 @@
     "chartParts": "Parts of the chart"
   },
   "tour": {
-    "skip": "Skip",
-    "back": "Back",
-    "next": "Next",
-    "finish": "Get charting",
-    "progress": "{{n}} of {{total}}",
     "steps": {
       "welcome": {
         "title": "Welcome to ToothOps",
