@@ -5032,6 +5032,430 @@
       "hash": "60366bdda79b",
       "status": "machine"
     },
+    "library:actions.clearRecall": {
+      "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallTitle": {
+      "hash": "083e81ca64bb",
+      "status": "machine"
+    },
+    "library:actions.deleteChart": {
+      "hash": "6679a23a41f9",
+      "status": "machine"
+    },
+    "library:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "library:actions.historyChartTitle": {
+      "hash": "862799866cb8",
+      "status": "machine"
+    },
+    "library:actions.historyVisitTitle": {
+      "hash": "17c1e633a526",
+      "status": "machine"
+    },
+    "library:actions.loadMore": {
+      "hash": "5605642de7ee",
+      "status": "machine"
+    },
+    "library:actions.newVisit": {
+      "hash": "5ed4e2b7f59c",
+      "status": "machine"
+    },
+    "library:actions.newVisitTitle": {
+      "hash": "e0be1e8ffcf4",
+      "status": "machine"
+    },
+    "library:actions.reminder": {
+      "hash": "31757bbfa17e",
+      "status": "machine"
+    },
+    "library:actions.reminderTitle": {
+      "hash": "be00423107dc",
+      "status": "machine"
+    },
+    "library:clearDialog.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "library:clearDialog.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "library:clearDialog.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "library:deciduousSuffix": {
+      "hash": "95d2a9a3738d",
+      "status": "machine"
+    },
+    "library:deleteDialog.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "library:deleteDialog.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "library:deleteDialog.title": {
+      "hash": "c980fcc041fd",
+      "status": "machine"
+    },
+    "library:deleteDialog.titleUnnamed": {
+      "hash": "b28a2a333867",
+      "status": "machine"
+    },
+    "library:due": {
+      "hash": "9071738f1459",
+      "status": "machine"
+    },
+    "library:dueCount": {
+      "hash": "a9682087cdc9",
+      "status": "machine"
+    },
+    "library:dueTitle": {
+      "hash": "c238aedfc093",
+      "status": "machine"
+    },
+    "library:empty": {
+      "hash": "0e012c7743f4",
+      "status": "machine"
+    },
+    "library:errors.clearRecall": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "library:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "library:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "library:errors.loadMore": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "library:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "library:filters.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "library:filters.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "library:filters.doctorAria": {
+      "hash": "1d53213e3f9d",
+      "status": "machine"
+    },
+    "library:filters.speciesAria": {
+      "hash": "2478e573910e",
+      "status": "machine"
+    },
+    "library:history.aria": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.automatic": {
+      "hash": "6d3e9ef52ffa",
+      "status": "machine"
+    },
+    "library:history.baseline": {
+      "hash": "aa9c0f049994",
+      "status": "machine"
+    },
+    "library:history.confirmButton": {
+      "hash": "a76e13b98392",
+      "status": "machine"
+    },
+    "library:history.confirmMessage": {
+      "hash": "78a891affd9d",
+      "status": "machine"
+    },
+    "library:history.confirmTitle": {
+      "hash": "2bfce226cd8d",
+      "status": "machine"
+    },
+    "library:history.current": {
+      "hash": "e0d1b68224bf",
+      "status": "machine"
+    },
+    "library:history.empty": {
+      "hash": "90b47342380b",
+      "status": "machine"
+    },
+    "library:history.loadFailed": {
+      "hash": "75670bc90476",
+      "status": "machine"
+    },
+    "library:history.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:history.loadingVersion": {
+      "hash": "ed9f138ea569",
+      "status": "machine"
+    },
+    "library:history.openVisit": {
+      "hash": "89edac709e6f",
+      "status": "machine"
+    },
+    "library:history.outside": {
+      "hash": "b96c2469eb3b",
+      "status": "machine"
+    },
+    "library:history.pick": {
+      "hash": "e1c51b2a79cf",
+      "status": "machine"
+    },
+    "library:history.range": {
+      "hash": "e3997f8da6a0",
+      "status": "machine"
+    },
+    "library:history.restore": {
+      "hash": "0570daa12fe5",
+      "status": "machine"
+    },
+    "library:history.restoreFailed": {
+      "hash": "71a535cf0adc",
+      "status": "machine"
+    },
+    "library:history.restoreHint": {
+      "hash": "42401e0bf483",
+      "status": "machine"
+    },
+    "library:history.restored": {
+      "hash": "9346cbc4408b",
+      "status": "machine"
+    },
+    "library:history.restoring": {
+      "hash": "5a4918e0201c",
+      "status": "machine"
+    },
+    "library:history.title": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.titleWith": {
+      "hash": "1bfe61d5c7b1",
+      "status": "machine"
+    },
+    "library:importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "library:importPdfTitle": {
+      "hash": "bb3e44a98835",
+      "status": "machine"
+    },
+    "library:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:newPatient": {
+      "hash": "2b8e250d7b15",
+      "status": "machine"
+    },
+    "library:newPatientTitle": {
+      "hash": "99f4caf8857b",
+      "status": "machine"
+    },
+    "library:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "library:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "library:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "library:openPatient": {
+      "hash": "e0f8c156c3df",
+      "status": "machine"
+    },
+    "library:recall.overdue": {
+      "hash": "38d729f2e3cc",
+      "status": "machine"
+    },
+    "library:recall.today": {
+      "hash": "1bb000751799",
+      "status": "machine"
+    },
+    "library:search.aria": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "library:search.placeholder": {
+      "hash": "5269d6f516f8",
+      "status": "machine"
+    },
+    "library:table.aria": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.number": {
+      "hash": "a5cf136e8150",
+      "status": "machine"
+    },
+    "library:table.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "library:table.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "library:table.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "library:table.updated": {
+      "hash": "3a5ecca188c0",
+      "status": "machine"
+    },
+    "library:table.visits": {
+      "hash": "f514c310bd9e",
+      "status": "machine"
+    },
+    "library:templates.aria": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.bodyLabel": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "library:templates.bodyPlaceholder": {
+      "hash": "7ff0dda9db4b",
+      "status": "machine"
+    },
+    "library:templates.cloudOff": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "library:templates.deleteConfirm": {
+      "hash": "da9a9b350675",
+      "status": "machine"
+    },
+    "library:templates.deleteFailed": {
+      "hash": "ed1c82423d1c",
+      "status": "machine"
+    },
+    "library:templates.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.deleteTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "library:templates.empty": {
+      "hash": "637be0b25a94",
+      "status": "machine"
+    },
+    "library:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "library:templates.namePlaceholder": {
+      "hash": "62cd9debaf45",
+      "status": "machine"
+    },
+    "library:templates.nameRequired": {
+      "hash": "8dea07197bf9",
+      "status": "machine"
+    },
+    "library:templates.new": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "library:templates.saveChanges": {
+      "hash": "dd0ae7a5cbcf",
+      "status": "machine"
+    },
+    "library:templates.saveFailed": {
+      "hash": "267370b457c2",
+      "status": "machine"
+    },
+    "library:templates.saveTemplate": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "library:templates.saved": {
+      "hash": "dbc22a8bd388",
+      "status": "machine"
+    },
+    "library:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "library:templates.title": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
+    "library:title": {
+      "hash": "ff4314efd66b",
+      "status": "machine"
+    },
+    "library:unnamedPatient": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "library:visit.deleteDated": {
+      "hash": "2ba6224c4d07",
+      "status": "machine"
+    },
+    "library:visit.deleteUndated": {
+      "hash": "e160e00c449e",
+      "status": "machine"
+    },
+    "library:visit.openDated": {
+      "hash": "ccf1996d6425",
+      "status": "machine"
+    },
+    "library:visit.openUndated": {
+      "hash": "401891b2e638",
+      "status": "machine"
+    },
+    "library:visit.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "library:visit.updated": {
+      "hash": "3f334e45c465",
+      "status": "machine"
+    },
+    "library:visitsExpand_one": {
+      "hash": "0909108cbecf",
+      "status": "machine"
+    },
+    "library:visitsExpand_other": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "library:visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
     "media:dicom.noDimensions": {
       "hash": "82f81d287638",
       "status": "machine"
@@ -5314,6 +5738,154 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "reminders:composer.aria": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:composer.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:composer.send": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "reminders:composer.sendFailed": {
+      "hash": "4ee4e67b9b7b",
+      "status": "machine"
+    },
+    "reminders:composer.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "reminders:composer.sent": {
+      "hash": "06978e2daff9",
+      "status": "machine"
+    },
+    "reminders:composer.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:composer.title": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.to": {
+      "hash": "f4b06ef6d3c8",
+      "status": "machine"
+    },
+    "reminders:composer.toHint": {
+      "hash": "4f9c39943e6e",
+      "status": "machine"
+    },
+    "reminders:composer.toTitle": {
+      "hash": "9e6a6c838592",
+      "status": "machine"
+    },
+    "reminders:settings.aria": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "reminders:settings.auto": {
+      "hash": "3b52b813cd78",
+      "status": "machine"
+    },
+    "reminders:settings.blurb": {
+      "hash": "4447bfd5ab04",
+      "status": "machine"
+    },
+    "reminders:settings.blurbTail": {
+      "hash": "f65c4e0788cc",
+      "status": "machine"
+    },
+    "reminders:settings.discard.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "reminders:settings.discard.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "reminders:settings.discard.message": {
+      "hash": "f2eb166fbc7e",
+      "status": "machine"
+    },
+    "reminders:settings.discard.title": {
+      "hash": "fc55eec39bd2",
+      "status": "machine"
+    },
+    "reminders:settings.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "reminders:settings.lead.days3": {
+      "hash": "87cc8fe2d171",
+      "status": "machine"
+    },
+    "reminders:settings.lead.month1": {
+      "hash": "20ac1d4fcbd5",
+      "status": "machine"
+    },
+    "reminders:settings.lead.onDate": {
+      "hash": "900e0404b73e",
+      "status": "machine"
+    },
+    "reminders:settings.lead.week1": {
+      "hash": "279bd5df1850",
+      "status": "machine"
+    },
+    "reminders:settings.lead.weeks2": {
+      "hash": "7b5af5bbdc0a",
+      "status": "machine"
+    },
+    "reminders:settings.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:settings.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:settings.noPractice": {
+      "hash": "cb7053bf1d1e",
+      "status": "machine"
+    },
+    "reminders:settings.notSetUp": {
+      "hash": "a1a7135bb021",
+      "status": "machine"
+    },
+    "reminders:settings.ownerOnly": {
+      "hash": "7e8604901bb1",
+      "status": "machine"
+    },
+    "reminders:settings.saveFailed": {
+      "hash": "ff20f0a67266",
+      "status": "machine"
+    },
+    "reminders:settings.saved": {
+      "hash": "1a7f6fddd992",
+      "status": "machine"
+    },
+    "reminders:settings.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reminders:settings.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "reminders:settings.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:settings.title": {
+      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -10834,6 +11406,438 @@
       "hash": "60366bdda79b",
       "status": "machine"
     },
+    "library:actions.clearRecall": {
+      "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallTitle": {
+      "hash": "083e81ca64bb",
+      "status": "machine"
+    },
+    "library:actions.deleteChart": {
+      "hash": "6679a23a41f9",
+      "status": "machine"
+    },
+    "library:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "library:actions.historyChartTitle": {
+      "hash": "862799866cb8",
+      "status": "machine"
+    },
+    "library:actions.historyVisitTitle": {
+      "hash": "17c1e633a526",
+      "status": "machine"
+    },
+    "library:actions.loadMore": {
+      "hash": "5605642de7ee",
+      "status": "machine"
+    },
+    "library:actions.newVisit": {
+      "hash": "5ed4e2b7f59c",
+      "status": "machine"
+    },
+    "library:actions.newVisitTitle": {
+      "hash": "e0be1e8ffcf4",
+      "status": "machine"
+    },
+    "library:actions.reminder": {
+      "hash": "31757bbfa17e",
+      "status": "machine"
+    },
+    "library:actions.reminderTitle": {
+      "hash": "be00423107dc",
+      "status": "machine"
+    },
+    "library:clearDialog.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "library:clearDialog.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "library:clearDialog.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "library:deciduousSuffix": {
+      "hash": "95d2a9a3738d",
+      "status": "machine"
+    },
+    "library:deleteDialog.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "library:deleteDialog.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "library:deleteDialog.title": {
+      "hash": "c980fcc041fd",
+      "status": "machine"
+    },
+    "library:deleteDialog.titleUnnamed": {
+      "hash": "b28a2a333867",
+      "status": "machine"
+    },
+    "library:due": {
+      "hash": "9071738f1459",
+      "status": "machine"
+    },
+    "library:dueCount": {
+      "hash": "a9682087cdc9",
+      "status": "machine"
+    },
+    "library:dueTitle": {
+      "hash": "c238aedfc093",
+      "status": "machine"
+    },
+    "library:empty": {
+      "hash": "0e012c7743f4",
+      "status": "machine"
+    },
+    "library:errors.clearRecall": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "library:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "library:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "library:errors.loadMore": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "library:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "library:filters.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "library:filters.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "library:filters.doctorAria": {
+      "hash": "1d53213e3f9d",
+      "status": "machine"
+    },
+    "library:filters.speciesAria": {
+      "hash": "2478e573910e",
+      "status": "machine"
+    },
+    "library:history.aria": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.automatic": {
+      "hash": "6d3e9ef52ffa",
+      "status": "machine"
+    },
+    "library:history.baseline": {
+      "hash": "aa9c0f049994",
+      "status": "machine"
+    },
+    "library:history.confirmButton": {
+      "hash": "a76e13b98392",
+      "status": "machine"
+    },
+    "library:history.confirmMessage": {
+      "hash": "78a891affd9d",
+      "status": "machine"
+    },
+    "library:history.confirmTitle": {
+      "hash": "2bfce226cd8d",
+      "status": "machine"
+    },
+    "library:history.current": {
+      "hash": "e0d1b68224bf",
+      "status": "machine"
+    },
+    "library:history.empty": {
+      "hash": "90b47342380b",
+      "status": "machine"
+    },
+    "library:history.loadFailed": {
+      "hash": "75670bc90476",
+      "status": "machine"
+    },
+    "library:history.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:history.loadingVersion": {
+      "hash": "ed9f138ea569",
+      "status": "machine"
+    },
+    "library:history.openVisit": {
+      "hash": "89edac709e6f",
+      "status": "machine"
+    },
+    "library:history.outside": {
+      "hash": "b96c2469eb3b",
+      "status": "machine"
+    },
+    "library:history.pick": {
+      "hash": "e1c51b2a79cf",
+      "status": "machine"
+    },
+    "library:history.range": {
+      "hash": "e3997f8da6a0",
+      "status": "machine"
+    },
+    "library:history.restore": {
+      "hash": "0570daa12fe5",
+      "status": "machine"
+    },
+    "library:history.restoreFailed": {
+      "hash": "71a535cf0adc",
+      "status": "machine"
+    },
+    "library:history.restoreHint": {
+      "hash": "42401e0bf483",
+      "status": "machine"
+    },
+    "library:history.restored": {
+      "hash": "9346cbc4408b",
+      "status": "machine"
+    },
+    "library:history.restoring": {
+      "hash": "5a4918e0201c",
+      "status": "machine"
+    },
+    "library:history.title": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.titleWith": {
+      "hash": "1bfe61d5c7b1",
+      "status": "machine"
+    },
+    "library:importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "library:importPdfTitle": {
+      "hash": "bb3e44a98835",
+      "status": "machine"
+    },
+    "library:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:newPatient": {
+      "hash": "2b8e250d7b15",
+      "status": "machine"
+    },
+    "library:newPatientTitle": {
+      "hash": "99f4caf8857b",
+      "status": "machine"
+    },
+    "library:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "library:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "library:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "library:openPatient": {
+      "hash": "e0f8c156c3df",
+      "status": "machine"
+    },
+    "library:recall.overdue": {
+      "hash": "38d729f2e3cc",
+      "status": "machine"
+    },
+    "library:recall.today": {
+      "hash": "1bb000751799",
+      "status": "machine"
+    },
+    "library:search.aria": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "library:search.placeholder": {
+      "hash": "5269d6f516f8",
+      "status": "machine"
+    },
+    "library:table.aria": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.number": {
+      "hash": "a5cf136e8150",
+      "status": "machine"
+    },
+    "library:table.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "library:table.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "library:table.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "library:table.updated": {
+      "hash": "3a5ecca188c0",
+      "status": "machine"
+    },
+    "library:table.visits": {
+      "hash": "f514c310bd9e",
+      "status": "machine"
+    },
+    "library:templates.aria": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.bodyLabel": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "library:templates.bodyPlaceholder": {
+      "hash": "7ff0dda9db4b",
+      "status": "machine"
+    },
+    "library:templates.cloudOff": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "library:templates.deleteConfirm": {
+      "hash": "da9a9b350675",
+      "status": "machine"
+    },
+    "library:templates.deleteFailed": {
+      "hash": "ed1c82423d1c",
+      "status": "machine"
+    },
+    "library:templates.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.deleteTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "library:templates.empty": {
+      "hash": "637be0b25a94",
+      "status": "machine"
+    },
+    "library:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "library:templates.namePlaceholder": {
+      "hash": "62cd9debaf45",
+      "status": "machine"
+    },
+    "library:templates.nameRequired": {
+      "hash": "8dea07197bf9",
+      "status": "machine"
+    },
+    "library:templates.new": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "library:templates.saveChanges": {
+      "hash": "dd0ae7a5cbcf",
+      "status": "machine"
+    },
+    "library:templates.saveFailed": {
+      "hash": "267370b457c2",
+      "status": "machine"
+    },
+    "library:templates.saveTemplate": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "library:templates.saved": {
+      "hash": "dbc22a8bd388",
+      "status": "machine"
+    },
+    "library:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "library:templates.title": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
+    "library:title": {
+      "hash": "ff4314efd66b",
+      "status": "machine"
+    },
+    "library:unnamedPatient": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "library:visit.deleteDated": {
+      "hash": "2ba6224c4d07",
+      "status": "machine"
+    },
+    "library:visit.deleteUndated": {
+      "hash": "e160e00c449e",
+      "status": "machine"
+    },
+    "library:visit.openDated": {
+      "hash": "ccf1996d6425",
+      "status": "machine"
+    },
+    "library:visit.openUndated": {
+      "hash": "401891b2e638",
+      "status": "machine"
+    },
+    "library:visit.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "library:visit.updated": {
+      "hash": "3f334e45c465",
+      "status": "machine"
+    },
+    "library:visitsExpand_many": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visitsExpand_one": {
+      "hash": "0909108cbecf",
+      "status": "machine"
+    },
+    "library:visitsExpand_other": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "library:visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "library:visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
     "media:dicom.noDimensions": {
       "hash": "82f81d287638",
       "status": "machine"
@@ -11116,6 +12120,154 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "reminders:composer.aria": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:composer.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:composer.send": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "reminders:composer.sendFailed": {
+      "hash": "4ee4e67b9b7b",
+      "status": "machine"
+    },
+    "reminders:composer.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "reminders:composer.sent": {
+      "hash": "06978e2daff9",
+      "status": "machine"
+    },
+    "reminders:composer.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:composer.title": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.to": {
+      "hash": "f4b06ef6d3c8",
+      "status": "machine"
+    },
+    "reminders:composer.toHint": {
+      "hash": "4f9c39943e6e",
+      "status": "machine"
+    },
+    "reminders:composer.toTitle": {
+      "hash": "9e6a6c838592",
+      "status": "machine"
+    },
+    "reminders:settings.aria": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "reminders:settings.auto": {
+      "hash": "3b52b813cd78",
+      "status": "machine"
+    },
+    "reminders:settings.blurb": {
+      "hash": "4447bfd5ab04",
+      "status": "machine"
+    },
+    "reminders:settings.blurbTail": {
+      "hash": "f65c4e0788cc",
+      "status": "machine"
+    },
+    "reminders:settings.discard.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "reminders:settings.discard.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "reminders:settings.discard.message": {
+      "hash": "f2eb166fbc7e",
+      "status": "machine"
+    },
+    "reminders:settings.discard.title": {
+      "hash": "fc55eec39bd2",
+      "status": "machine"
+    },
+    "reminders:settings.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "reminders:settings.lead.days3": {
+      "hash": "87cc8fe2d171",
+      "status": "machine"
+    },
+    "reminders:settings.lead.month1": {
+      "hash": "20ac1d4fcbd5",
+      "status": "machine"
+    },
+    "reminders:settings.lead.onDate": {
+      "hash": "900e0404b73e",
+      "status": "machine"
+    },
+    "reminders:settings.lead.week1": {
+      "hash": "279bd5df1850",
+      "status": "machine"
+    },
+    "reminders:settings.lead.weeks2": {
+      "hash": "7b5af5bbdc0a",
+      "status": "machine"
+    },
+    "reminders:settings.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:settings.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:settings.noPractice": {
+      "hash": "cb7053bf1d1e",
+      "status": "machine"
+    },
+    "reminders:settings.notSetUp": {
+      "hash": "a1a7135bb021",
+      "status": "machine"
+    },
+    "reminders:settings.ownerOnly": {
+      "hash": "7e8604901bb1",
+      "status": "machine"
+    },
+    "reminders:settings.saveFailed": {
+      "hash": "ff20f0a67266",
+      "status": "machine"
+    },
+    "reminders:settings.saved": {
+      "hash": "1a7f6fddd992",
+      "status": "machine"
+    },
+    "reminders:settings.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reminders:settings.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "reminders:settings.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:settings.title": {
+      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -16636,6 +17788,438 @@
       "hash": "60366bdda79b",
       "status": "machine"
     },
+    "library:actions.clearRecall": {
+      "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallTitle": {
+      "hash": "083e81ca64bb",
+      "status": "machine"
+    },
+    "library:actions.deleteChart": {
+      "hash": "6679a23a41f9",
+      "status": "machine"
+    },
+    "library:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "library:actions.historyChartTitle": {
+      "hash": "862799866cb8",
+      "status": "machine"
+    },
+    "library:actions.historyVisitTitle": {
+      "hash": "17c1e633a526",
+      "status": "machine"
+    },
+    "library:actions.loadMore": {
+      "hash": "5605642de7ee",
+      "status": "machine"
+    },
+    "library:actions.newVisit": {
+      "hash": "5ed4e2b7f59c",
+      "status": "machine"
+    },
+    "library:actions.newVisitTitle": {
+      "hash": "e0be1e8ffcf4",
+      "status": "machine"
+    },
+    "library:actions.reminder": {
+      "hash": "31757bbfa17e",
+      "status": "machine"
+    },
+    "library:actions.reminderTitle": {
+      "hash": "be00423107dc",
+      "status": "machine"
+    },
+    "library:clearDialog.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "library:clearDialog.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "library:clearDialog.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "library:deciduousSuffix": {
+      "hash": "95d2a9a3738d",
+      "status": "machine"
+    },
+    "library:deleteDialog.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "library:deleteDialog.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "library:deleteDialog.title": {
+      "hash": "c980fcc041fd",
+      "status": "machine"
+    },
+    "library:deleteDialog.titleUnnamed": {
+      "hash": "b28a2a333867",
+      "status": "machine"
+    },
+    "library:due": {
+      "hash": "9071738f1459",
+      "status": "machine"
+    },
+    "library:dueCount": {
+      "hash": "a9682087cdc9",
+      "status": "machine"
+    },
+    "library:dueTitle": {
+      "hash": "c238aedfc093",
+      "status": "machine"
+    },
+    "library:empty": {
+      "hash": "0e012c7743f4",
+      "status": "machine"
+    },
+    "library:errors.clearRecall": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "library:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "library:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "library:errors.loadMore": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "library:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "library:filters.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "library:filters.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "library:filters.doctorAria": {
+      "hash": "1d53213e3f9d",
+      "status": "machine"
+    },
+    "library:filters.speciesAria": {
+      "hash": "2478e573910e",
+      "status": "machine"
+    },
+    "library:history.aria": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.automatic": {
+      "hash": "6d3e9ef52ffa",
+      "status": "machine"
+    },
+    "library:history.baseline": {
+      "hash": "aa9c0f049994",
+      "status": "machine"
+    },
+    "library:history.confirmButton": {
+      "hash": "a76e13b98392",
+      "status": "machine"
+    },
+    "library:history.confirmMessage": {
+      "hash": "78a891affd9d",
+      "status": "machine"
+    },
+    "library:history.confirmTitle": {
+      "hash": "2bfce226cd8d",
+      "status": "machine"
+    },
+    "library:history.current": {
+      "hash": "e0d1b68224bf",
+      "status": "machine"
+    },
+    "library:history.empty": {
+      "hash": "90b47342380b",
+      "status": "machine"
+    },
+    "library:history.loadFailed": {
+      "hash": "75670bc90476",
+      "status": "machine"
+    },
+    "library:history.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:history.loadingVersion": {
+      "hash": "ed9f138ea569",
+      "status": "machine"
+    },
+    "library:history.openVisit": {
+      "hash": "89edac709e6f",
+      "status": "machine"
+    },
+    "library:history.outside": {
+      "hash": "b96c2469eb3b",
+      "status": "machine"
+    },
+    "library:history.pick": {
+      "hash": "e1c51b2a79cf",
+      "status": "machine"
+    },
+    "library:history.range": {
+      "hash": "e3997f8da6a0",
+      "status": "machine"
+    },
+    "library:history.restore": {
+      "hash": "0570daa12fe5",
+      "status": "machine"
+    },
+    "library:history.restoreFailed": {
+      "hash": "71a535cf0adc",
+      "status": "machine"
+    },
+    "library:history.restoreHint": {
+      "hash": "42401e0bf483",
+      "status": "machine"
+    },
+    "library:history.restored": {
+      "hash": "9346cbc4408b",
+      "status": "machine"
+    },
+    "library:history.restoring": {
+      "hash": "5a4918e0201c",
+      "status": "machine"
+    },
+    "library:history.title": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.titleWith": {
+      "hash": "1bfe61d5c7b1",
+      "status": "machine"
+    },
+    "library:importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "library:importPdfTitle": {
+      "hash": "bb3e44a98835",
+      "status": "machine"
+    },
+    "library:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:newPatient": {
+      "hash": "2b8e250d7b15",
+      "status": "machine"
+    },
+    "library:newPatientTitle": {
+      "hash": "99f4caf8857b",
+      "status": "machine"
+    },
+    "library:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "library:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "library:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "library:openPatient": {
+      "hash": "e0f8c156c3df",
+      "status": "machine"
+    },
+    "library:recall.overdue": {
+      "hash": "38d729f2e3cc",
+      "status": "machine"
+    },
+    "library:recall.today": {
+      "hash": "1bb000751799",
+      "status": "machine"
+    },
+    "library:search.aria": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "library:search.placeholder": {
+      "hash": "5269d6f516f8",
+      "status": "machine"
+    },
+    "library:table.aria": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.number": {
+      "hash": "a5cf136e8150",
+      "status": "machine"
+    },
+    "library:table.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "library:table.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "library:table.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "library:table.updated": {
+      "hash": "3a5ecca188c0",
+      "status": "machine"
+    },
+    "library:table.visits": {
+      "hash": "f514c310bd9e",
+      "status": "machine"
+    },
+    "library:templates.aria": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.bodyLabel": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "library:templates.bodyPlaceholder": {
+      "hash": "7ff0dda9db4b",
+      "status": "machine"
+    },
+    "library:templates.cloudOff": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "library:templates.deleteConfirm": {
+      "hash": "da9a9b350675",
+      "status": "machine"
+    },
+    "library:templates.deleteFailed": {
+      "hash": "ed1c82423d1c",
+      "status": "machine"
+    },
+    "library:templates.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.deleteTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "library:templates.empty": {
+      "hash": "637be0b25a94",
+      "status": "machine"
+    },
+    "library:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "library:templates.namePlaceholder": {
+      "hash": "62cd9debaf45",
+      "status": "machine"
+    },
+    "library:templates.nameRequired": {
+      "hash": "8dea07197bf9",
+      "status": "machine"
+    },
+    "library:templates.new": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "library:templates.saveChanges": {
+      "hash": "dd0ae7a5cbcf",
+      "status": "machine"
+    },
+    "library:templates.saveFailed": {
+      "hash": "267370b457c2",
+      "status": "machine"
+    },
+    "library:templates.saveTemplate": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "library:templates.saved": {
+      "hash": "dbc22a8bd388",
+      "status": "machine"
+    },
+    "library:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "library:templates.title": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
+    "library:title": {
+      "hash": "ff4314efd66b",
+      "status": "machine"
+    },
+    "library:unnamedPatient": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "library:visit.deleteDated": {
+      "hash": "2ba6224c4d07",
+      "status": "machine"
+    },
+    "library:visit.deleteUndated": {
+      "hash": "e160e00c449e",
+      "status": "machine"
+    },
+    "library:visit.openDated": {
+      "hash": "ccf1996d6425",
+      "status": "machine"
+    },
+    "library:visit.openUndated": {
+      "hash": "401891b2e638",
+      "status": "machine"
+    },
+    "library:visit.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "library:visit.updated": {
+      "hash": "3f334e45c465",
+      "status": "machine"
+    },
+    "library:visitsExpand_many": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visitsExpand_one": {
+      "hash": "0909108cbecf",
+      "status": "machine"
+    },
+    "library:visitsExpand_other": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "library:visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "library:visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
     "media:dicom.noDimensions": {
       "hash": "82f81d287638",
       "status": "machine"
@@ -16918,6 +18502,154 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "reminders:composer.aria": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:composer.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:composer.send": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "reminders:composer.sendFailed": {
+      "hash": "4ee4e67b9b7b",
+      "status": "machine"
+    },
+    "reminders:composer.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "reminders:composer.sent": {
+      "hash": "06978e2daff9",
+      "status": "machine"
+    },
+    "reminders:composer.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:composer.title": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.to": {
+      "hash": "f4b06ef6d3c8",
+      "status": "machine"
+    },
+    "reminders:composer.toHint": {
+      "hash": "4f9c39943e6e",
+      "status": "machine"
+    },
+    "reminders:composer.toTitle": {
+      "hash": "9e6a6c838592",
+      "status": "machine"
+    },
+    "reminders:settings.aria": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "reminders:settings.auto": {
+      "hash": "3b52b813cd78",
+      "status": "machine"
+    },
+    "reminders:settings.blurb": {
+      "hash": "4447bfd5ab04",
+      "status": "machine"
+    },
+    "reminders:settings.blurbTail": {
+      "hash": "f65c4e0788cc",
+      "status": "machine"
+    },
+    "reminders:settings.discard.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "reminders:settings.discard.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "reminders:settings.discard.message": {
+      "hash": "f2eb166fbc7e",
+      "status": "machine"
+    },
+    "reminders:settings.discard.title": {
+      "hash": "fc55eec39bd2",
+      "status": "machine"
+    },
+    "reminders:settings.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "reminders:settings.lead.days3": {
+      "hash": "87cc8fe2d171",
+      "status": "machine"
+    },
+    "reminders:settings.lead.month1": {
+      "hash": "20ac1d4fcbd5",
+      "status": "machine"
+    },
+    "reminders:settings.lead.onDate": {
+      "hash": "900e0404b73e",
+      "status": "machine"
+    },
+    "reminders:settings.lead.week1": {
+      "hash": "279bd5df1850",
+      "status": "machine"
+    },
+    "reminders:settings.lead.weeks2": {
+      "hash": "7b5af5bbdc0a",
+      "status": "machine"
+    },
+    "reminders:settings.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:settings.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:settings.noPractice": {
+      "hash": "cb7053bf1d1e",
+      "status": "machine"
+    },
+    "reminders:settings.notSetUp": {
+      "hash": "a1a7135bb021",
+      "status": "machine"
+    },
+    "reminders:settings.ownerOnly": {
+      "hash": "7e8604901bb1",
+      "status": "machine"
+    },
+    "reminders:settings.saveFailed": {
+      "hash": "ff20f0a67266",
+      "status": "machine"
+    },
+    "reminders:settings.saved": {
+      "hash": "1a7f6fddd992",
+      "status": "machine"
+    },
+    "reminders:settings.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reminders:settings.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "reminders:settings.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:settings.title": {
+      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -22438,6 +24170,438 @@
       "hash": "60366bdda79b",
       "status": "machine"
     },
+    "library:actions.clearRecall": {
+      "hash": "7aecda9be32e",
+      "status": "machine"
+    },
+    "library:actions.clearRecallTitle": {
+      "hash": "083e81ca64bb",
+      "status": "machine"
+    },
+    "library:actions.deleteChart": {
+      "hash": "6679a23a41f9",
+      "status": "machine"
+    },
+    "library:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "library:actions.historyChartTitle": {
+      "hash": "862799866cb8",
+      "status": "machine"
+    },
+    "library:actions.historyVisitTitle": {
+      "hash": "17c1e633a526",
+      "status": "machine"
+    },
+    "library:actions.loadMore": {
+      "hash": "5605642de7ee",
+      "status": "machine"
+    },
+    "library:actions.newVisit": {
+      "hash": "5ed4e2b7f59c",
+      "status": "machine"
+    },
+    "library:actions.newVisitTitle": {
+      "hash": "e0be1e8ffcf4",
+      "status": "machine"
+    },
+    "library:actions.reminder": {
+      "hash": "31757bbfa17e",
+      "status": "machine"
+    },
+    "library:actions.reminderTitle": {
+      "hash": "be00423107dc",
+      "status": "machine"
+    },
+    "library:clearDialog.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "library:clearDialog.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "library:clearDialog.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "library:deciduousSuffix": {
+      "hash": "95d2a9a3738d",
+      "status": "machine"
+    },
+    "library:deleteDialog.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "library:deleteDialog.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "library:deleteDialog.title": {
+      "hash": "c980fcc041fd",
+      "status": "machine"
+    },
+    "library:deleteDialog.titleUnnamed": {
+      "hash": "b28a2a333867",
+      "status": "machine"
+    },
+    "library:due": {
+      "hash": "9071738f1459",
+      "status": "machine"
+    },
+    "library:dueCount": {
+      "hash": "a9682087cdc9",
+      "status": "machine"
+    },
+    "library:dueTitle": {
+      "hash": "c238aedfc093",
+      "status": "machine"
+    },
+    "library:empty": {
+      "hash": "0e012c7743f4",
+      "status": "machine"
+    },
+    "library:errors.clearRecall": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "library:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "library:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "library:errors.loadMore": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "library:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "library:filters.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "library:filters.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "library:filters.doctorAria": {
+      "hash": "1d53213e3f9d",
+      "status": "machine"
+    },
+    "library:filters.speciesAria": {
+      "hash": "2478e573910e",
+      "status": "machine"
+    },
+    "library:history.aria": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.automatic": {
+      "hash": "6d3e9ef52ffa",
+      "status": "machine"
+    },
+    "library:history.baseline": {
+      "hash": "aa9c0f049994",
+      "status": "machine"
+    },
+    "library:history.confirmButton": {
+      "hash": "a76e13b98392",
+      "status": "machine"
+    },
+    "library:history.confirmMessage": {
+      "hash": "78a891affd9d",
+      "status": "machine"
+    },
+    "library:history.confirmTitle": {
+      "hash": "2bfce226cd8d",
+      "status": "machine"
+    },
+    "library:history.current": {
+      "hash": "e0d1b68224bf",
+      "status": "machine"
+    },
+    "library:history.empty": {
+      "hash": "90b47342380b",
+      "status": "machine"
+    },
+    "library:history.loadFailed": {
+      "hash": "75670bc90476",
+      "status": "machine"
+    },
+    "library:history.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:history.loadingVersion": {
+      "hash": "ed9f138ea569",
+      "status": "machine"
+    },
+    "library:history.openVisit": {
+      "hash": "89edac709e6f",
+      "status": "machine"
+    },
+    "library:history.outside": {
+      "hash": "b96c2469eb3b",
+      "status": "machine"
+    },
+    "library:history.pick": {
+      "hash": "e1c51b2a79cf",
+      "status": "machine"
+    },
+    "library:history.range": {
+      "hash": "e3997f8da6a0",
+      "status": "machine"
+    },
+    "library:history.restore": {
+      "hash": "0570daa12fe5",
+      "status": "machine"
+    },
+    "library:history.restoreFailed": {
+      "hash": "71a535cf0adc",
+      "status": "machine"
+    },
+    "library:history.restoreHint": {
+      "hash": "42401e0bf483",
+      "status": "machine"
+    },
+    "library:history.restored": {
+      "hash": "9346cbc4408b",
+      "status": "machine"
+    },
+    "library:history.restoring": {
+      "hash": "5a4918e0201c",
+      "status": "machine"
+    },
+    "library:history.title": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "library:history.titleWith": {
+      "hash": "1bfe61d5c7b1",
+      "status": "machine"
+    },
+    "library:importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "library:importPdfTitle": {
+      "hash": "bb3e44a98835",
+      "status": "machine"
+    },
+    "library:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "library:newPatient": {
+      "hash": "2b8e250d7b15",
+      "status": "machine"
+    },
+    "library:newPatientTitle": {
+      "hash": "99f4caf8857b",
+      "status": "machine"
+    },
+    "library:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "library:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "library:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "library:openPatient": {
+      "hash": "e0f8c156c3df",
+      "status": "machine"
+    },
+    "library:recall.overdue": {
+      "hash": "38d729f2e3cc",
+      "status": "machine"
+    },
+    "library:recall.today": {
+      "hash": "1bb000751799",
+      "status": "machine"
+    },
+    "library:search.aria": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "library:search.placeholder": {
+      "hash": "5269d6f516f8",
+      "status": "machine"
+    },
+    "library:table.aria": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "library:table.number": {
+      "hash": "a5cf136e8150",
+      "status": "machine"
+    },
+    "library:table.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "library:table.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "library:table.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "library:table.updated": {
+      "hash": "3a5ecca188c0",
+      "status": "machine"
+    },
+    "library:table.visits": {
+      "hash": "f514c310bd9e",
+      "status": "machine"
+    },
+    "library:templates.aria": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.bodyLabel": {
+      "hash": "0cd7bbefe7b8",
+      "status": "machine"
+    },
+    "library:templates.bodyPlaceholder": {
+      "hash": "7ff0dda9db4b",
+      "status": "machine"
+    },
+    "library:templates.cloudOff": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "library:templates.deleteConfirm": {
+      "hash": "da9a9b350675",
+      "status": "machine"
+    },
+    "library:templates.deleteFailed": {
+      "hash": "ed1c82423d1c",
+      "status": "machine"
+    },
+    "library:templates.deleteMessage": {
+      "hash": "767c792a08c5",
+      "status": "machine"
+    },
+    "library:templates.deleteTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "library:templates.empty": {
+      "hash": "637be0b25a94",
+      "status": "machine"
+    },
+    "library:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "library:templates.namePlaceholder": {
+      "hash": "62cd9debaf45",
+      "status": "machine"
+    },
+    "library:templates.nameRequired": {
+      "hash": "8dea07197bf9",
+      "status": "machine"
+    },
+    "library:templates.new": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "library:templates.saveChanges": {
+      "hash": "dd0ae7a5cbcf",
+      "status": "machine"
+    },
+    "library:templates.saveFailed": {
+      "hash": "267370b457c2",
+      "status": "machine"
+    },
+    "library:templates.saveTemplate": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "library:templates.saved": {
+      "hash": "dbc22a8bd388",
+      "status": "machine"
+    },
+    "library:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "library:templates.title": {
+      "hash": "13aa27bdcce3",
+      "status": "machine"
+    },
+    "library:templates.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
+    "library:title": {
+      "hash": "ff4314efd66b",
+      "status": "machine"
+    },
+    "library:unnamedPatient": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "library:visit.deleteDated": {
+      "hash": "2ba6224c4d07",
+      "status": "machine"
+    },
+    "library:visit.deleteUndated": {
+      "hash": "e160e00c449e",
+      "status": "machine"
+    },
+    "library:visit.openDated": {
+      "hash": "ccf1996d6425",
+      "status": "machine"
+    },
+    "library:visit.openUndated": {
+      "hash": "401891b2e638",
+      "status": "machine"
+    },
+    "library:visit.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "library:visit.updated": {
+      "hash": "3f334e45c465",
+      "status": "machine"
+    },
+    "library:visitsExpand_many": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visitsExpand_one": {
+      "hash": "0909108cbecf",
+      "status": "machine"
+    },
+    "library:visitsExpand_other": {
+      "hash": "2b034f8b1366",
+      "status": "machine"
+    },
+    "library:visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "library:visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "library:visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
     "media:dicom.noDimensions": {
       "hash": "82f81d287638",
       "status": "machine"
@@ -22720,6 +24884,154 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "reminders:composer.aria": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:composer.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:composer.send": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "reminders:composer.sendFailed": {
+      "hash": "4ee4e67b9b7b",
+      "status": "machine"
+    },
+    "reminders:composer.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "reminders:composer.sent": {
+      "hash": "06978e2daff9",
+      "status": "machine"
+    },
+    "reminders:composer.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:composer.title": {
+      "hash": "e2d7c7b08a15",
+      "status": "machine"
+    },
+    "reminders:composer.to": {
+      "hash": "f4b06ef6d3c8",
+      "status": "machine"
+    },
+    "reminders:composer.toHint": {
+      "hash": "4f9c39943e6e",
+      "status": "machine"
+    },
+    "reminders:composer.toTitle": {
+      "hash": "9e6a6c838592",
+      "status": "machine"
+    },
+    "reminders:settings.aria": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "reminders:settings.auto": {
+      "hash": "3b52b813cd78",
+      "status": "machine"
+    },
+    "reminders:settings.blurb": {
+      "hash": "4447bfd5ab04",
+      "status": "machine"
+    },
+    "reminders:settings.blurbTail": {
+      "hash": "f65c4e0788cc",
+      "status": "machine"
+    },
+    "reminders:settings.discard.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "reminders:settings.discard.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "reminders:settings.discard.message": {
+      "hash": "f2eb166fbc7e",
+      "status": "machine"
+    },
+    "reminders:settings.discard.title": {
+      "hash": "fc55eec39bd2",
+      "status": "machine"
+    },
+    "reminders:settings.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "reminders:settings.lead.days3": {
+      "hash": "87cc8fe2d171",
+      "status": "machine"
+    },
+    "reminders:settings.lead.month1": {
+      "hash": "20ac1d4fcbd5",
+      "status": "machine"
+    },
+    "reminders:settings.lead.onDate": {
+      "hash": "900e0404b73e",
+      "status": "machine"
+    },
+    "reminders:settings.lead.week1": {
+      "hash": "279bd5df1850",
+      "status": "machine"
+    },
+    "reminders:settings.lead.weeks2": {
+      "hash": "7b5af5bbdc0a",
+      "status": "machine"
+    },
+    "reminders:settings.loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "reminders:settings.message": {
+      "hash": "2f77668a9dfb",
+      "status": "machine"
+    },
+    "reminders:settings.noPractice": {
+      "hash": "cb7053bf1d1e",
+      "status": "machine"
+    },
+    "reminders:settings.notSetUp": {
+      "hash": "a1a7135bb021",
+      "status": "machine"
+    },
+    "reminders:settings.ownerOnly": {
+      "hash": "7e8604901bb1",
+      "status": "machine"
+    },
+    "reminders:settings.saveFailed": {
+      "hash": "ff20f0a67266",
+      "status": "machine"
+    },
+    "reminders:settings.saved": {
+      "hash": "1a7f6fddd992",
+      "status": "machine"
+    },
+    "reminders:settings.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reminders:settings.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "reminders:settings.subject": {
+      "hash": "68971283841a",
+      "status": "machine"
+    },
+    "reminders:settings.title": {
+      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "report:abnormalityNoted": {

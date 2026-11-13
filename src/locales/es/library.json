@@ -1,0 +1,134 @@
+{
+  "title": "Mis historiales",
+  "unnamedPatient": "Paciente sin nombre",
+  "search": {
+    "placeholder": "Buscar por nombre o número de paciente…",
+    "aria": "Buscar historiales"
+  },
+  "filters": {
+    "speciesAria": "Filtrar por especie",
+    "allSpecies": "Todas las especies",
+    "doctorAria": "Filtrar por veterinario",
+    "allDoctors": "Todos los veterinarios"
+  },
+  "importPdf": "Importar PDF de historial",
+  "importPdfTitle": "Abra un PDF de historial creado con esta aplicación para seguir editándolo",
+  "newPatient": "+ Nuevo paciente",
+  "newPatientTitle": "Borrar el historial en curso y empezar un paciente completamente nuevo",
+  "loading": "Cargando…",
+  "empty": "Aún no hay historiales guardados: se guardan automáticamente mientras los registra.",
+  "noMatch": {
+    "search": "Ningún paciente coincide con esa búsqueda.",
+    "due": "Ningún paciente tiene una revisión pendiente.",
+    "filters": "Ningún historial coincide con esos filtros."
+  },
+  "table": {
+    "aria": "Pacientes",
+    "patient": "Paciente",
+    "number": "N.º de paciente",
+    "species": "Especie",
+    "visits": "Visitas",
+    "updated": "Actualizado",
+    "recheck": "Revisión"
+  },
+  "due": "Pendientes",
+  "dueCount": "Pendientes ({{n}})",
+  "dueTitle": "Mostrar solo los pacientes con revisión pendiente o vencida",
+  "recall": {
+    "overdue": "{{date}} · vencida",
+    "today": "{{date}} · hoy"
+  },
+  "deciduousSuffix": "{{species}} · Dientes deciduos",
+  "visits_one": "{{count}} visita",
+  "visits_many": "{{count}} visitas",
+  "visits_other": "{{count}} visitas",
+  "visitsExpand_one": "{{count}} visita — desplegar",
+  "visitsExpand_many": "{{count}} visitas — desplegar",
+  "visitsExpand_other": "{{count}} visitas — desplegar",
+  "openPatient": "Abrir {{name}}",
+  "visit": {
+    "undated": "Visita sin fecha",
+    "openDated": "Abrir la visita del {{date}}",
+    "openUndated": "Abrir la visita sin fecha",
+    "deleteDated": "Eliminar la visita del {{date}} de {{name}}",
+    "deleteUndated": "Eliminar la visita sin fecha de {{name}}",
+    "updated": "Actualizado {{when}}"
+  },
+  "actions": {
+    "reminder": "Recordatorio",
+    "reminderTitle": "Enviar un recordatorio de revisión a {{who}}",
+    "clearRecall": "Borrar el recordatorio de revisión de {{name}}",
+    "clearRecallTitle": "Borrar el recordatorio de revisión de {{name}} — por ejemplo, tras una revisión que no generó un historial nuevo",
+    "newVisit": "+ Visita",
+    "newVisitTitle": "Iniciar una nueva visita para {{name}}",
+    "history": "Versiones",
+    "historyChartTitle": "Quién guardó el historial de {{name}} y cuándo",
+    "historyVisitTitle": "Quién guardó esta visita y cuándo",
+    "deleteChart": "Eliminar el historial de {{name}}",
+    "loadMore": "Cargar más historiales"
+  },
+  "errors": {
+    "load": "No se pudieron cargar sus historiales. {{error}}",
+    "loadMore": "No se pudieron cargar más historiales. {{error}}",
+    "open": "No se pudo abrir ese historial. {{error}}",
+    "delete": "No se pudo eliminar esa visita. {{error}}",
+    "clearRecall": "No se pudo borrar esa revisión. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "¿Eliminar {{name}}{{when}}?",
+    "titleUnnamed": "¿Eliminar este historial{{when}}?",
+    "message": "Esta visita se elimina de la nube para todos los miembros de su clínica. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar visita"
+  },
+  "clearDialog": {
+    "title": "¿Borrar la revisión de {{name}}?",
+    "message": "Úselo cuando la revisión se haya hecho sin un historial nuevo o ya no sea necesaria. El paciente saldrá de la lista de pendientes.",
+    "confirm": "Borrar revisión"
+  },
+  "history": {
+    "aria": "Versiones del historial",
+    "title": "Versiones del historial",
+    "titleWith": "Versiones — {{label}}",
+    "openVisit": "Abrir esta visita",
+    "loading": "Cargando…",
+    "empty": "Aún no hay versiones guardadas: el registro empieza con el primer guardado.",
+    "pick": "Elija una versión para verla.",
+    "loadingVersion": "Cargando esta versión…",
+    "current": "Actual",
+    "outside": "Alguien ajeno a su clínica",
+    "automatic": "ToothOps (automático)",
+    "baseline": "Antes de que empezara el registro · último guardado {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Restaurar esta versión",
+    "restoring": "Restaurando…",
+    "restoreHint": "Elija «Editar historial» para restaurar una versión anterior.",
+    "loadFailed": "No se pudo cargar esa versión. {{error}}",
+    "restoreFailed": "No se pudo restaurar. {{error}}",
+    "restored": "Versión restaurada.",
+    "confirmTitle": "¿Restaurar esta versión?",
+    "confirmMessage": "El historial vuelve a como se guardó {{when}}. La versión de hoy permanece en el registro, así que podrá volver a ella.",
+    "confirmButton": "Restaurar"
+  },
+  "templates": {
+    "aria": "Plantillas de informe",
+    "title": "Plantillas de informe",
+    "saved": "Plantillas guardadas",
+    "new": "Nueva plantilla",
+    "empty": "Aún no hay plantillas: escriba una abajo y guárdela, o use «Guardar como plantilla» en la sección Informe del tratamiento.",
+    "untitled": "Sin título",
+    "nameLabel": "Nombre de la plantilla",
+    "namePlaceholder": "p. ej. Limpieza de rutina (felino)",
+    "bodyLabel": "Texto del informe",
+    "bodyPlaceholder": "El texto del informe que se inserta en Informe del tratamiento y de la cirugía…",
+    "nameRequired": "Póngale un nombre a la plantilla: sirve para identificarla en el menú de inserción.",
+    "saveFailed": "No se pudo guardar la plantilla.",
+    "deleteFailed": "No se pudo eliminar la plantilla.",
+    "cloudOff": "La nube no está configurada.",
+    "deleteTitle": "¿Eliminar «{{name}}»?",
+    "deleteMessage": "Esta plantilla se elimina para todos los miembros de su clínica. Esta acción no se puede deshacer.",
+    "deleteConfirm": "Eliminar plantilla",
+    "saving": "Guardando…",
+    "saveChanges": "Guardar cambios",
+    "saveTemplate": "Guardar plantilla"
+  }
+}

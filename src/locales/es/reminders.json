@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Recordatorios de revisión",
+    "title": "Recordatorios de revisión",
+    "blurb": "Envíe un correo al propietario cuando toque una revisión. Marcadores:",
+    "blurbTail": "Para enviar un recordatorio de un solo paciente, use <strong>Mis historiales</strong>.",
+    "loading": "Cargando…",
+    "notSetUp": "Su clínica se está configurando: vuelva a cargar la página en un momento.",
+    "ownerOnly": "Solo un propietario de la clínica puede cambiar la plantilla del recordatorio.",
+    "auto": "Enviar automáticamente un correo a los propietarios",
+    "send": "Envío",
+    "lead": {
+      "onDate": "El día de la revisión",
+      "days3": "3 días antes",
+      "week1": "1 semana antes",
+      "weeks2": "2 semanas antes",
+      "month1": "1 mes antes"
+    },
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "done": "Listo",
+    "saving": "Guardando…",
+    "saved": "Ajustes de recordatorio guardados.",
+    "saveFailed": "No se pudieron guardar los ajustes de recordatorio.",
+    "noPractice": "No hay ninguna clínica en la que guardar.",
+    "discard": {
+      "title": "¿Descartar los cambios del recordatorio?",
+      "message": "Sus cambios en los ajustes de recordatorio no se han guardado.",
+      "confirm": "Descartar",
+      "cancel": "Seguir editando"
+    }
+  },
+  "composer": {
+    "aria": "Enviar recordatorio de revisión",
+    "title": "Enviar recordatorio de revisión",
+    "loading": "Cargando…",
+    "to": "Para",
+    "toTitle": "Los recordatorios se envían al correo del propietario guardado en este historial. Edítelo en el historial para cambiarlo.",
+    "toHint": "Se envía al correo del propietario que figura en este historial. Para cambiarlo, edite el correo del propietario en el historial.",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "sent": "Recordatorio enviado.",
+    "sendFailed": "No se pudo enviar el recordatorio.",
+    "send": "Enviar recordatorio",
+    "sending": "Enviando…"
+  }
+}

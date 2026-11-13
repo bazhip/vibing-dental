@@ -11,6 +11,8 @@ import type auth from '../locales/en/auth.json';
 import type app from '../locales/en/app.json';
 import type forms from '../locales/en/forms.json';
 import type media from '../locales/en/media.json';
+import type library from '../locales/en/library.json';
+import type reminders from '../locales/en/reminders.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -29,6 +31,8 @@ declare module 'i18next' {
       app: typeof app;
       forms: typeof forms;
       media: typeof media;
+      library: typeof library;
+      reminders: typeof reminders;
     };
   }
 }

@@ -1,0 +1,132 @@
+{
+  "title": "Meine Akten",
+  "unnamedPatient": "Patient ohne Namen",
+  "search": {
+    "placeholder": "Nach Patientenname oder -nummer suchen …",
+    "aria": "Akten durchsuchen"
+  },
+  "filters": {
+    "speciesAria": "Nach Tierart filtern",
+    "allSpecies": "Alle Tierarten",
+    "doctorAria": "Nach Tierarzt filtern",
+    "allDoctors": "Alle Tierärzte"
+  },
+  "importPdf": "Akten-PDF importieren",
+  "importPdfTitle": "Eine mit dieser App erstellte Akten-PDF öffnen, um sie weiter zu bearbeiten",
+  "newPatient": "+ Neuer Patient",
+  "newPatientTitle": "Die aktuelle Akte leeren und einen ganz neuen Patienten beginnen",
+  "loading": "Wird geladen …",
+  "empty": "Noch keine gespeicherten Akten — sie werden beim Erfassen automatisch gespeichert.",
+  "noMatch": {
+    "search": "Kein Patient passt zu dieser Suche.",
+    "due": "Bei keinem Patienten ist eine Nachkontrolle fällig.",
+    "filters": "Keine Akte passt zu diesen Filtern."
+  },
+  "table": {
+    "aria": "Patienten",
+    "patient": "Patient",
+    "number": "Patienten-Nr.",
+    "species": "Tierart",
+    "visits": "Besuche",
+    "updated": "Geändert",
+    "recheck": "Nachkontrolle"
+  },
+  "due": "Fällig",
+  "dueCount": "Fällig ({{n}})",
+  "dueTitle": "Nur Patienten mit fälliger oder überfälliger Nachkontrolle anzeigen",
+  "recall": {
+    "overdue": "{{date}} · überfällig",
+    "today": "{{date}} · heute"
+  },
+  "deciduousSuffix": "{{species}} · Milchzähne",
+  "visits_one": "{{count}} Besuch",
+  "visits_other": "{{count}} Besuche",
+  "visitsExpand_one": "{{count}} Besuch — aufklappen",
+  "visitsExpand_other": "{{count}} Besuche — aufklappen",
+  "openPatient": "{{name}} öffnen",
+  "visit": {
+    "undated": "Besuch ohne Datum",
+    "openDated": "Besuch vom {{date}} öffnen",
+    "openUndated": "Besuch ohne Datum öffnen",
+    "deleteDated": "Besuch vom {{date}} für {{name}} löschen",
+    "deleteUndated": "Besuch ohne Datum für {{name}} löschen",
+    "updated": "Geändert {{when}}"
+  },
+  "actions": {
+    "reminder": "Erinnerung",
+    "reminderTitle": "Eine Nachkontroll-Erinnerung an {{who}} senden",
+    "clearRecall": "Nachkontroll-Erinnerung für {{name}} entfernen",
+    "clearRecallTitle": "Nachkontroll-Erinnerung für {{name}} entfernen — z. B. nach einer Nachkontrolle, bei der keine neue Akte entstanden ist",
+    "newVisit": "+ Besuch",
+    "newVisitTitle": "Einen neuen Besuch für {{name}} beginnen",
+    "history": "Verlauf",
+    "historyChartTitle": "Wer die Akte von {{name}} gespeichert hat und wann",
+    "historyVisitTitle": "Wer diesen Besuch gespeichert hat und wann",
+    "deleteChart": "Akte von {{name}} löschen",
+    "loadMore": "Weitere Akten laden"
+  },
+  "errors": {
+    "load": "Ihre Akten konnten nicht geladen werden. {{error}}",
+    "loadMore": "Weitere Akten konnten nicht geladen werden. {{error}}",
+    "open": "Diese Akte konnte nicht geöffnet werden. {{error}}",
+    "delete": "Dieser Besuch konnte nicht gelöscht werden. {{error}}",
+    "clearRecall": "Diese Nachkontrolle konnte nicht entfernt werden. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "{{name}}{{when}} löschen?",
+    "titleUnnamed": "Diese Akte{{when}} löschen?",
+    "message": "Dieser Besuch wird für alle in Ihrer Praxis aus der Cloud entfernt. Das lässt sich nicht rückgängig machen.",
+    "confirm": "Besuch löschen"
+  },
+  "clearDialog": {
+    "title": "Nachkontrolle von {{name}} entfernen?",
+    "message": "Nutzen Sie dies, wenn die Nachkontrolle ohne neue Akte stattgefunden hat oder nicht mehr nötig ist. Der Patient verschwindet dann aus der Liste „Fällig“.",
+    "confirm": "Nachkontrolle entfernen"
+  },
+  "history": {
+    "aria": "Aktenverlauf",
+    "title": "Aktenverlauf",
+    "titleWith": "Verlauf — {{label}}",
+    "openVisit": "Diesen Besuch öffnen",
+    "loading": "Wird geladen …",
+    "empty": "Noch keine gespeicherten Versionen — der Verlauf beginnt mit dem ersten Speichern.",
+    "pick": "Wählen Sie eine Version aus, um sie anzusehen.",
+    "loadingVersion": "Diese Version wird geladen …",
+    "current": "Aktuell",
+    "outside": "Jemand außerhalb Ihrer Praxis",
+    "automatic": "ToothOps (automatisch)",
+    "baseline": "Vor Beginn des Verlaufs · zuletzt gespeichert {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Diese Version wiederherstellen",
+    "restoring": "Wird wiederhergestellt …",
+    "restoreHint": "Wählen Sie „Akte bearbeiten“, um eine frühere Version wiederherzustellen.",
+    "loadFailed": "Diese Version konnte nicht geladen werden. {{error}}",
+    "restoreFailed": "Wiederherstellung fehlgeschlagen. {{error}}",
+    "restored": "Version wiederhergestellt.",
+    "confirmTitle": "Diese Version wiederherstellen?",
+    "confirmMessage": "Die Akte wird auf den Stand von {{when}} zurückgesetzt. Die heutige Version bleibt im Verlauf erhalten, sodass Sie zurückwechseln können.",
+    "confirmButton": "Wiederherstellen"
+  },
+  "templates": {
+    "aria": "Berichtsvorlagen",
+    "title": "Berichtsvorlagen",
+    "saved": "Gespeicherte Vorlagen",
+    "new": "Neue Vorlage",
+    "empty": "Noch keine Vorlagen — schreiben Sie unten eine und speichern Sie sie, oder verwenden Sie „Als Vorlage speichern“ im Abschnitt Behandlungsbericht.",
+    "untitled": "Ohne Titel",
+    "nameLabel": "Name der Vorlage",
+    "namePlaceholder": "z. B. Routinereinigung (Katze)",
+    "bodyLabel": "Berichtstext",
+    "bodyPlaceholder": "Der Berichtstext, der in den Behandlungs- und Operationsbericht eingefügt wird …",
+    "nameRequired": "Geben Sie der Vorlage einen Namen — er kennzeichnet sie im Einfügemenü.",
+    "saveFailed": "Die Vorlage konnte nicht gespeichert werden.",
+    "deleteFailed": "Die Vorlage konnte nicht gelöscht werden.",
+    "cloudOff": "Die Cloud ist nicht eingerichtet.",
+    "deleteTitle": "„{{name}}“ löschen?",
+    "deleteMessage": "Diese Vorlage wird für alle in Ihrer Praxis entfernt. Das lässt sich nicht rückgängig machen.",
+    "deleteConfirm": "Vorlage löschen",
+    "saving": "Wird gespeichert …",
+    "saveChanges": "Änderungen speichern",
+    "saveTemplate": "Vorlage speichern"
+  }
+}

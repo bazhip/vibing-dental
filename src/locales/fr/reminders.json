@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Rappels de contrôle",
+    "title": "Rappels de contrôle",
+    "blurb": "Envoyez un e-mail au propriétaire lorsqu’un contrôle est à effectuer. Variables :",
+    "blurbTail": "Envoyez un rappel pour un seul patient depuis <strong>Mes dossiers</strong>.",
+    "loading": "Chargement…",
+    "notSetUp": "Votre cabinet est en cours de configuration — rechargez la page dans un instant.",
+    "ownerOnly": "Seul un propriétaire du cabinet peut modifier le modèle de rappel.",
+    "auto": "Envoyer automatiquement un e-mail aux propriétaires",
+    "send": "Envoi",
+    "lead": {
+      "onDate": "À la date du contrôle",
+      "days3": "3 jours avant",
+      "week1": "1 semaine avant",
+      "weeks2": "2 semaines avant",
+      "month1": "1 mois avant"
+    },
+    "subject": "Objet",
+    "message": "Message",
+    "done": "Terminé",
+    "saving": "Enregistrement…",
+    "saved": "Paramètres de rappel enregistrés.",
+    "saveFailed": "Impossible d’enregistrer les paramètres de rappel.",
+    "noPractice": "Aucun cabinet dans lequel enregistrer.",
+    "discard": {
+      "title": "Abandonner les modifications du rappel ?",
+      "message": "Vos modifications des paramètres de rappel n’ont pas été enregistrées.",
+      "confirm": "Abandonner",
+      "cancel": "Continuer la modification"
+    }
+  },
+  "composer": {
+    "aria": "Envoyer un rappel de contrôle",
+    "title": "Envoyer un rappel de contrôle",
+    "loading": "Chargement…",
+    "to": "À",
+    "toTitle": "Les rappels sont envoyés à l’adresse e-mail du propriétaire enregistrée sur ce dossier. Modifiez-la dans le dossier pour la changer.",
+    "toHint": "Envoyé à l’adresse e-mail du propriétaire figurant sur ce dossier. Pour la changer, modifiez l’e-mail du propriétaire dans le dossier.",
+    "subject": "Objet",
+    "message": "Message",
+    "sent": "Rappel envoyé.",
+    "sendFailed": "Impossible d’envoyer le rappel.",
+    "send": "Envoyer le rappel",
+    "sending": "Envoi…"
+  }
+}

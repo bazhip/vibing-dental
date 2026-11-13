@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Recheck reminders",
+    "title": "Recheck reminders",
+    "blurb": "Email the pet owner when a recheck is due. Placeholders:",
+    "blurbTail": "Send a reminder for one patient from <strong>My charts</strong>.",
+    "loading": "Loading…",
+    "notSetUp": "Your practice is being set up — reload in a moment.",
+    "ownerOnly": "Only a practice owner can change the reminder template.",
+    "auto": "Automatically email owners",
+    "send": "Send",
+    "lead": {
+      "onDate": "On the recheck date",
+      "days3": "3 days before",
+      "week1": "1 week before",
+      "weeks2": "2 weeks before",
+      "month1": "1 month before"
+    },
+    "subject": "Subject",
+    "message": "Message",
+    "done": "Done",
+    "saving": "Saving…",
+    "saved": "Reminder settings saved.",
+    "saveFailed": "Could not save the reminder settings.",
+    "noPractice": "No practice to save to.",
+    "discard": {
+      "title": "Discard reminder changes?",
+      "message": "Your edits to the reminder settings haven’t been saved.",
+      "confirm": "Discard",
+      "cancel": "Keep editing"
+    }
+  },
+  "composer": {
+    "aria": "Send recheck reminder",
+    "title": "Send recheck reminder",
+    "loading": "Loading…",
+    "to": "To",
+    "toTitle": "Reminders go to the owner email saved on this chart. Edit it on the chart to change it.",
+    "toHint": "Goes to the owner email on this chart. To change it, edit the chart's owner email.",
+    "subject": "Subject",
+    "message": "Message",
+    "sent": "Reminder sent.",
+    "sendFailed": "Could not send the reminder.",
+    "send": "Send reminder",
+    "sending": "Sending…"
+  }
+}
