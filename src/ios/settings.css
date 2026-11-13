@@ -15,7 +15,8 @@ html.native-ios .ios-settings__avatar {
   border-radius: 50%;
   background: var(--ios-tint);
   color: var(--ios-on-tint);
-  font: 600 var(--ios-text-subheadline) / 1 var(--ios-font);
+  /* Fixed 40pt circle: the initials stop growing at 17px so they stay inside. */
+  font: 600 min(var(--ios-text-subheadline), 17px) / 1 var(--ios-font);
   letter-spacing: 0.02em;
 }
 html.native-ios .ios-row--with-icon:has(.ios-settings__avatar) .ios-row__icon { width: 40px; }

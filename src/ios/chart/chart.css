@@ -317,7 +317,14 @@ html.native-ios .ios-chart-screen .dental-grid {
 }
 html.native-ios .ios-chart-screen .dental-grid .rdg {
   font-family: var(--ios-font);
+  /* The grid's rows and columns have fixed sizes, so its text follows
+     Dynamic Type only up to 18px (about xxLarge); past that a tooth number
+     or a column heading would be clipped by its cell. */
+  font-size: min(0.875rem, 18px);
   --rdg-border-color: var(--ios-separator);
+}
+html.native-ios .ios-chart-screen .dental-grid :is(.rdg-header-row, .rdg-header-row .rdg-cell, .dental-grid__root-label) {
+  font-size: min(0.7rem, 14px);
 }
 
 /* ---- Diagram toolbar: a grouped card with iOS controls ------------------ */
@@ -445,5 +452,13 @@ html.native-ios .ios-chart-screen .diagram-view__numbers.diagram-view__tool--act
   background: var(--ios-tint);
   color: var(--ios-on-tint);
 }
-html.native-ios .ios-chart-screen :is(.dental-grid__title, .patient-form__section-title) { flex: 1 1 0; min-width: 0; }
+/* The heading takes its own width, so at large text sizes the row wraps
+   and the actions (Grid / By tooth, Mark all normal) drop under it instead
+   of running over it. */
+html.native-ios .ios-chart-screen :is(.dental-grid__title, .patient-form__section-title) {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 html.native-ios .ios-chart-screen .radiographic-findings__title { font: 600 var(--ios-text-headline) / 1.3 var(--ios-font); }

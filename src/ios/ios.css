@@ -507,7 +507,11 @@
   color: var(--ios-tint);
 }
 :where(html.native-ios) .ios-row__text {
-  flex: 1 1 10em;
+  /* A value wraps under the text when both don't fit, but the basis never
+     takes the whole row: at accessibility sizes a chevron, checkmark or
+     switch (up to 51pt + gap) stays trailing instead of dropping to a line
+     of its own. */
+  flex: 1 1 min(10em, calc(100% - 64px));
   min-width: 0;
   display: flex;
   flex-direction: column;
