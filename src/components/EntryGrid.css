@@ -1760,6 +1760,105 @@
   box-shadow: 0 1px 2px rgba(23, 35, 46, 0.05);
 }
 
+/* Wide screens: the "⋯" wrapper is invisible to layout — its controls sit
+   inline in the toolbar as always — and the ⋯ button isn't shown. */
+.diagram-view__more-wrap,
+.diagram-view__extras { display: contents; }
+.diagram-view__more { display: none; }
+.diagram-view__short { display: none; }
+
+/* Compact: one slim line — mode · undo/redo · ⋯ — with the rest
+   in a pop-over anchored under the toolbar (the GoodNotes / Apple Markup
+   pattern). It closes on an outside tap or Esc. Rules are scoped under the
+   toolbar so they win over the base styles further down this file.
+   Keyed to the diagram's own width (a container query), not the screen:
+   whenever the full set of controls wouldn't fit on one line — phones,
+   tablets, and the ~800px diagram card on desktop — it goes compact. */
+.diagram-view { container: diagram / inline-size; }
+/* Narrow toolbars: "Mark missing" / "Mark extracted" become "Mark". */
+@container diagram (max-width: 560px) {
+  .diagram-view__toolbar .diagram-view__long { display: none; }
+  .diagram-view__toolbar .diagram-view__short { display: inline; }
+}
+@container diagram (max-width: 1100px) {
+  div.diagram-view__toolbar {
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+    padding: 0.25rem;
+  }
+  .diagram-view__toolbar .diagram-view__tool-group,
+  .diagram-view__toolbar .diagram-view__history { padding: 2px; gap: 2px; }
+  .diagram-view__toolbar .diagram-view__tool-group { flex: 0 1 auto; min-width: 0; }
+  /* Buttons size to their labels; they only shrink when space is tight. */
+  .diagram-view__toolbar .diagram-view__tool-group .diagram-view__tool {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 0 0.45rem;
+    font-size: 0.875rem;
+    justify-content: center;
+  }
+  .diagram-view__toolbar .diagram-view__history { flex: none; }
+  .diagram-view__toolbar .diagram-view__history .diagram-view__action { min-width: 40px; padding: 0 0.3rem; border: 0; font-size: 1.05rem; }
+  .diagram-view__toolbar .diagram-view__more-wrap { display: block; flex: none; margin-left: auto; }
+  .diagram-view__toolbar .diagram-view__more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 0 0.6rem;
+  }
+  .diagram-view__toolbar .diagram-view__more--open { background: var(--primary-tint, #eff6f5); border-color: var(--primary, #0c6b63); color: var(--primary, #0c6b63); }
+
+  .diagram-view__toolbar .diagram-view__extras { display: none; }
+  .diagram-view__toolbar .diagram-view__extras--open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 0.6rem;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: min(22rem, calc(100vw - 1.5rem));
+    padding: 0.85rem;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+    z-index: 35;
+  }
+  /* Row 1: Free comment | Numbers. Then labelled rows, controls right. */
+  .diagram-view__toolbar .diagram-view__extras--open > .diagram-view__free-comment,
+  .diagram-view__toolbar .diagram-view__extras--open > .diagram-view__numbers { width: 100%; margin: 0; justify-content: center; }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__zoom,
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__textsize,
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__draw-controls {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.6rem 0 0;
+    border: 0;
+    border-top: 1px solid var(--border, #e2e8f0);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__zoom::before,
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__textsize::before,
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__draw-controls::before {
+    margin-right: auto;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+  }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__zoom::before { content: 'Zoom'; }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__textsize::before { content: 'Text size'; }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__draw-controls::before { content: 'Pen'; flex-basis: 100%; }
+  .diagram-view__toolbar .diagram-view__extras--open .diagram-view__textsize-label { display: none; }
+}
+
 .diagram-view__tool-group {
   display: flex;
   gap: 0.25rem;
