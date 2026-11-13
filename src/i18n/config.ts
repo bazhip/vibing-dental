@@ -1,0 +1,12 @@
+export const APP_LANGUAGES = ['en', 'fr', 'de', 'it', 'es'] as const;
+export type AppLanguage = (typeof APP_LANGUAGES)[number];
+
+// Append new namespaces here (and in i18next.d.ts).
+export const NAMESPACES = ['common', 'report'] as const;
+
+// Flip to expose a language switcher in the UI.
+export const LANGUAGE_SWITCHING_ENABLED = false;
+
+export function isAppLanguage(v: unknown): v is AppLanguage {
+  return typeof v === 'string' && (APP_LANGUAGES as readonly string[]).includes(v);
+}

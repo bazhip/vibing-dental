@@ -11,10 +11,12 @@
     "@vercel/analytics": "^2.0.1",
     "dicom-parser": "^1.8.21",
     "downloadjs": "^1.4.7",
+    "i18next": "^27.1.1",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.7",
     "react-data-grid": "^7.0.0-beta.61",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-i18next": "^18.0.1"
   },
   "scripts": {
     "start": "vite",
