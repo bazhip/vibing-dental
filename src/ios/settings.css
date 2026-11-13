@@ -320,3 +320,34 @@ html.native-ios .report-templates--screen .report-templates__fieldset {
   min-width: 0;
 }
 
+/* ---- Product tour (Getting started → Take the tour) ---------------------- */
+/* The popover is an iOS callout: elevated material, large corner radius,
+   system type, capsule buttons (plain Skip, grey Back, filled Next). */
+html.native-ios .tour__pop {
+  max-width: calc(100vw - 24px);
+  padding: 18px 18px 14px;
+  border-radius: 26px;
+  background: var(--ios-bg-elevated);
+  color: var(--ios-label);
+  font-family: var(--ios-font);
+}
+html.native-ios .tour__eyebrow {
+  font: 600 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  letter-spacing: 0;
+  color: var(--ios-label-muted);
+}
+html.native-ios .tour__title { font: 600 var(--ios-text-headline) / 1.3 var(--ios-font); color: var(--ios-label); }
+html.native-ios .tour__body { font: 400 var(--ios-text-subheadline) / 1.4 var(--ios-font); color: var(--ios-label-muted); }
+html.native-ios .tour__nav { gap: 8px; }
+html.native-ios .tour__nav button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
+  font: 400 min(var(--ios-text-body), 23px) / 1.2 var(--ios-font);
+}
+html.native-ios .tour__nav .tour__skip { padding: 0 8px; background: transparent; color: var(--ios-tint); }
+html.native-ios .tour__nav .diagram-view__action { background: var(--ios-fill); color: var(--ios-label); }
+html.native-ios .tour__nav .entry-grid__button { background: var(--ios-tint); color: var(--ios-on-tint); font-weight: 600; }
+html.native-ios .tour__spotlight { border-radius: 16px; box-shadow: 0 0 0 9999px var(--ios-scrim), 0 0 0 2px var(--ios-tint); }

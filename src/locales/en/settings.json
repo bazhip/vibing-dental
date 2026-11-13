@@ -74,5 +74,67 @@
     "takeTour": "Take the tour",
     "tourFooter": "A short tour of where everything lives in the chart.",
     "chartParts": "Parts of the chart"
+  },
+  "tour": {
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Get charting",
+    "progress": "{{n}} of {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to ToothOps",
+        "body": "A 60-second tour of where everything lives. You can replay it any time from Settings → Getting started."
+      },
+      "sections": {
+        "title": "The eight sections",
+        "body": "A dental record, top to bottom. Tap the chart’s title to jump between sections — everything autosaves."
+      },
+      "patient": {
+        "title": "Patient & owner",
+        "body": "Name, owner contact, and the recheck date. Only the patient name is required to save."
+      },
+      "species": {
+        "title": "Species & dentition",
+        "body": "Pick Feline or Canine, then Permanent or Deciduous — the tooth layout follows."
+      },
+      "grid": {
+        "title": "The charting grid",
+        "body": "Per-tooth measurements. Tap a cell and type, or tap a score — chart without looking up."
+      },
+      "diagrams": {
+        "title": "Diagrams",
+        "body": "Tap a tooth to mark it; switch between Comment and Draw, add free notes. Undo and Redo are in the diagram’s toolbar."
+      },
+      "codes": {
+        "title": "Code reference",
+        "body": "Search the full AVDC code set here, right with the diagram."
+      },
+      "treatment": {
+        "title": "Treatment report & templates",
+        "body": "Write the report, or insert a saved template — and save new ones to reuse."
+      },
+      "patients": {
+        "title": "Patients",
+        "body": "Every patient’s visits. Saved visits open read-only until you tap Edit. Rechecks lists the patients due for a recheck."
+      },
+      "dictate": {
+        "title": "Dictate",
+        "body": "Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything."
+      },
+      "settings": {
+        "title": "Settings",
+        "body": "Practice name & logo, team, recheck-reminder templates, your account — and this tour."
+      },
+      "share": {
+        "title": "Share the PDF",
+        "body": "Build the client-ready chart PDF with your logo, then share or save it whenever you’re ready."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tap tooth numbers in the grid to select several, then set one score on all of them.",
+    "customize": "Every page has Customize in its More menu: hide columns, choose what shows beside the teeth, and more. Settings follow your account to every device.",
+    "leftOff": "Opening ToothOps fresh shows Patients — unless today’s visit is still open — and today’s visit opens ready to edit."
   }
 }

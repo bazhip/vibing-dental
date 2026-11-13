@@ -328,6 +328,7 @@ export function AppShell({
                     <button
                       type="button"
                       className={`ios-appshell__item${selected ? ' ios-appshell__item--selected' : ''}`}
+                      data-tab={tab}
                       aria-current={selected ? 'page' : undefined}
                       aria-label={badge && badge > 0 ? `${labels[tab]}, ${badge > 99 ? '99+' : badge}` : undefined}
                       onClick={() => {

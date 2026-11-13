@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
+import { useTranslation } from 'react-i18next';
 import { WHATS_NEW } from '../constants/whatsNew';
+import { isNativeApp } from '../native/platform';
 
 /** The one-time "What's new" announcement (also reopenable from the
  *  Settings menu). Content lives in constants/whatsNew.ts.
@@ -10,6 +12,8 @@ import { WHATS_NEW } from '../constants/whatsNew';
  *  app's Settings tab. */
 export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'modal' | 'screen' }> = ({ onClose, presentation = 'modal' }) => {
   const asScreen = presentation === 'screen';
+  const { t } = useTranslation('settings');
+  const app = isNativeApp();
   const modalRef = useModalFocus<HTMLDivElement>(!asScreen);
   const backdrop = useBackdropDismiss(onClose);
   React.useEffect(() => {
@@ -32,7 +36,7 @@ export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'moda
           <ul className="whats-new__list">
             {g.items.map((it) => (
               <li key={it.title}>
-                <strong>{it.title}.</strong> {it.body}
+                <strong>{it.title}.</strong> {app && it.appBody ? t(`whatsNew.${it.appBody}`) : it.body}
               </li>
             ))}
           </ul>

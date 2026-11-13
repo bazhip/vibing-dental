@@ -7,6 +7,9 @@
 export interface WhatsNewItem {
   title: string;
   body: string;
+  /** In the iOS app, the body from `settings:whatsNew.<appBody>` instead —
+   *  for items that speak mouse and keyboard or name web-only places. */
+  appBody?: 'severalTeeth' | 'customize' | 'leftOff';
 }
 
 export interface WhatsNewGroup {
@@ -32,8 +35,8 @@ export const WHATS_NEW: { id: string; title: string; intro: string; groups: What
       heading: 'Charting',
       items: [
         { title: 'Pocket depth per root', body: 'Charting → Customize → One per root. Multi-rooted teeth get a labelled box per root (M / D, or MB / MP / D).' },
-        { title: 'Set several teeth at once', body: 'Click tooth numbers in the grid (Shift-click for a range), then set one score on all of them.' },
-        { title: 'Make it yours', body: 'Every page has a Customize button: hide columns, choose what shows beside the teeth, what the Space key does, and more. Settings follow your account to every device.' },
+        { title: 'Set several teeth at once', body: 'Click tooth numbers in the grid (Shift-click for a range), then set one score on all of them.', appBody: 'severalTeeth' },
+        { title: 'Make it yours', body: 'Every page has a Customize button: hide columns, choose what shows beside the teeth, what the Space key does, and more. Settings follow your account to every device.', appBody: 'customize' },
       ],
     },
     {
@@ -54,7 +57,7 @@ export const WHATS_NEW: { id: string; title: string; intro: string; groups: What
     {
       heading: 'Everyday',
       items: [
-        { title: 'Starts where you left off', body: 'Opening ToothOps fresh shows My charts — unless today’s visit is still open — and today’s visit opens ready to edit.' },
+        { title: 'Starts where you left off', body: 'Opening ToothOps fresh shows My charts — unless today’s visit is still open — and today’s visit opens ready to edit.', appBody: 'leftOff' },
         { title: 'Send feedback in two taps', body: 'Settings → Send feedback, or Feedback in the dictation panel (it can attach your transcript). It comes straight to us.' },
       ],
     },

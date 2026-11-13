@@ -74,5 +74,67 @@
     "takeTour": "Rundgang starten",
     "tourFooter": "Ein kurzer Rundgang, wo im Zahnschema was zu finden ist.",
     "chartParts": "Teile des Zahnschemas"
+  },
+  "tour": {
+    "skip": "Überspringen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Loslegen",
+    "progress": "{{n}} von {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Willkommen bei ToothOps",
+        "body": "Eine 60-Sekunden-Tour, wo alles zu finden ist. Sie können sie jederzeit unter Einstellungen → Erste Schritte erneut starten."
+      },
+      "sections": {
+        "title": "Die acht Abschnitte",
+        "body": "Ein Zahnschema von oben nach unten. Tippen Sie auf den Titel des Zahnschemas, um zwischen den Abschnitten zu wechseln — alles wird automatisch gespeichert."
+      },
+      "patient": {
+        "title": "Patient & Besitzer",
+        "body": "Name, Kontakt des Besitzers und das Kontrolldatum. Zum Speichern ist nur der Patientenname erforderlich."
+      },
+      "species": {
+        "title": "Tierart & Gebiss",
+        "body": "Wählen Sie Katze oder Hund, dann bleibendes Gebiss oder Milchgebiss — die Zahnanordnung passt sich an."
+      },
+      "grid": {
+        "title": "Das Befundraster",
+        "body": "Messwerte pro Zahn. Tippen Sie auf eine Zelle und geben Sie den Wert ein, oder tippen Sie auf einen Score — befunden, ohne aufzusehen."
+      },
+      "diagrams": {
+        "title": "Diagramme",
+        "body": "Tippen Sie auf einen Zahn, um ihn zu markieren; wechseln Sie zwischen Kommentar und Zeichnen, fügen Sie freie Notizen hinzu. Widerrufen und Wiederholen finden Sie in der Symbolleiste des Diagramms."
+      },
+      "codes": {
+        "title": "Code-Referenz",
+        "body": "Durchsuchen Sie hier den vollständigen AVDC-Codesatz, direkt beim Diagramm."
+      },
+      "treatment": {
+        "title": "Behandlungsbericht & Vorlagen",
+        "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage ein — und speichern Sie neue zur Wiederverwendung."
+      },
+      "patients": {
+        "title": "Patienten",
+        "body": "Alle Besuche jedes Patienten. Gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten tippen. Kontrollen listet die Patienten auf, deren Kontrolle fällig ist."
+      },
+      "dictate": {
+        "title": "Diktieren",
+        "body": "Tippen Sie auf Diktieren und sprechen Sie Ihre Befunde — von jeder Seite aus. Jeder landet an der richtigen Stelle, und ein Live-Bereich zeigt jede Änderung, sodass Sie alles rückgängig machen können."
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "body": "Praxisname & Logo, Team, Vorlagen für Kontrollerinnerungen, Ihr Konto — und diese Tour."
+      },
+      "share": {
+        "title": "PDF teilen",
+        "body": "Erstellen Sie das kundenfertige PDF des Zahnschemas mit Ihrem Logo und teilen oder sichern Sie es, wann immer Sie bereit sind."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tippen Sie im Raster auf Zahnnummern, um mehrere auszuwählen, und vergeben Sie dann einen Score für alle.",
+    "customize": "Jede Seite hat Anpassen in ihrem Menü „Mehr“: Spalten ausblenden, festlegen, was neben den Zähnen angezeigt wird, und mehr. Die Einstellungen folgen Ihrem Konto auf jedes Gerät.",
+    "leftOff": "Beim Öffnen zeigt ToothOps die Patienten — es sei denn, der heutige Besuch ist noch geöffnet — und der heutige Besuch öffnet sich bereit zum Bearbeiten."
   }
 }

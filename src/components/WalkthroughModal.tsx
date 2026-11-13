@@ -1,5 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { isNativeApp } from '../native/platform';
+import { buildAppSteps } from '../ios/tourSteps';
 
 interface WalkthroughModalProps {
   open: boolean;
@@ -112,7 +115,10 @@ const GAP = 12; // px between the spotlight and the popover
 const POP_W = 320;
 
 export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, onNavigate }) => {
-  const steps = React.useMemo(() => buildSteps(aiEnabled), [aiEnabled]);
+  const { t } = useTranslation('settings');
+  // The app's tour points at the app's chrome and speaks touch.
+  const app = isNativeApp();
+  const steps = React.useMemo(() => (app ? buildAppSteps(t, aiEnabled) : buildSteps(aiEnabled)), [app, t, aiEnabled]);
   const [i, setI] = React.useState(0);
   const [rect, setRect] = React.useState<DOMRect | null>(null);
   const [tick, setTick] = React.useState(0); // forces re-measure
@@ -214,7 +220,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
       )}
 
       <div className="tour__pop" style={popStyle} ref={popRef} tabIndex={-1}>
-        <div className="tour__eyebrow">{i + 1} of {steps.length}</div>
+        <div className="tour__eyebrow">{app ? t('tour.progress', { n: i + 1, total: steps.length }) : <>{i + 1} of {steps.length}</>}</div>
         <h3 className="tour__title">{step.title}</h3>
         <p className="tour__body">{step.body}</p>
         <div className="tour__foot">
@@ -222,15 +228,15 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
             {steps.map((_, n) => <span key={n} className={`tour__dot${n === i ? ' tour__dot--on' : ''}`} />)}
           </div>
           <div className="tour__nav">
-            <button type="button" className="tour__skip" onClick={onClose}>Skip</button>
-            {i > 0 && <button type="button" className="diagram-view__action" onClick={() => setI((n) => n - 1)}>Back</button>}
+            <button type="button" className="tour__skip" onClick={onClose}>{app ? t('tour.skip') : 'Skip'}</button>
+            {i > 0 && <button type="button" className="diagram-view__action" onClick={() => setI((n) => n - 1)}>{app ? t('tour.back') : 'Back'}</button>}
             <button
               ref={nextRef}
               type="button"
               className="entry-grid__button entry-grid__button--topbar"
               onClick={() => (last ? onClose() : setI((n) => n + 1))}
             >
-              {last ? 'Get charting' : 'Next'}
+              {app ? (last ? t('tour.finish') : t('tour.next')) : last ? 'Get charting' : 'Next'}
             </button>
           </div>
         </div>

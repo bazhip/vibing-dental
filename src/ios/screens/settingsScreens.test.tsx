@@ -251,6 +251,13 @@ describe('Settings tab screens', () => {
     expect(s.goToSection).toHaveBeenCalledWith('patient');
   });
 
+  it('Getting started speaks touch: no click, ⌘ or keyboard keys', () => {
+    pushScreen(<GettingStartedScreen />, makeSettings());
+    const text = document.querySelector('.ios-settings')?.textContent ?? '';
+    expect(text).toContain('Tap a tooth to mark it');
+    expect(text).not.toMatch(/click|⌘|\bTab moves|\bEnter moves|dropdown/i);
+  });
+
   it('Admin panel: the panel body in a pushed screen', async () => {
     invoke.mockResolvedValue({ data: null, error: new Error('offline') });
     pushScreen(<AdminScreen />);

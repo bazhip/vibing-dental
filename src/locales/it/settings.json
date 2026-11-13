@@ -74,5 +74,67 @@
     "takeTour": "Fai il tour",
     "tourFooter": "Un breve tour per sapere dove si trova tutto nell’odontogramma.",
     "chartParts": "Parti dell’odontogramma"
+  },
+  "tour": {
+    "skip": "Salta",
+    "back": "Indietro",
+    "next": "Avanti",
+    "finish": "Inizia",
+    "progress": "{{n}} di {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Benvenuto in ToothOps",
+        "body": "Un tour di 60 secondi per sapere dove si trova tutto. Può ripeterlo in qualsiasi momento da Impostazioni → Per iniziare."
+      },
+      "sections": {
+        "title": "Le otto sezioni",
+        "body": "Un odontogramma, dall’alto in basso. Tocchi il titolo dell’odontogramma per passare da una sezione all’altra — tutto si salva automaticamente."
+      },
+      "patient": {
+        "title": "Paziente e proprietario",
+        "body": "Nome, contatti del proprietario e data del controllo. Per salvare è richiesto solo il nome del paziente."
+      },
+      "species": {
+        "title": "Specie e dentizione",
+        "body": "Scelga Felino o Canino, poi Permanente o Decidua — la disposizione dei denti si adegua."
+      },
+      "grid": {
+        "title": "La griglia di registrazione",
+        "body": "Misure dente per dente. Tocchi una cella e scriva, oppure tocchi un punteggio — registri senza alzare lo sguardo."
+      },
+      "diagrams": {
+        "title": "Diagrammi",
+        "body": "Tocchi un dente per contrassegnarlo; passi da Commento a Disegno, aggiunga note libere. Annulla e Ripristina sono nella barra degli strumenti del diagramma."
+      },
+      "codes": {
+        "title": "Riferimento codici",
+        "body": "Cerchi qui l’intero set di codici AVDC, proprio accanto al diagramma."
+      },
+      "treatment": {
+        "title": "Referto e modelli",
+        "body": "Scriva il referto o inserisca un modello salvato — e ne salvi di nuovi da riutilizzare."
+      },
+      "patients": {
+        "title": "Pazienti",
+        "body": "Tutte le visite di ogni paziente. Le visite salvate si aprono in sola lettura finché non tocca Modifica. Controlli elenca i pazienti con un controllo in scadenza."
+      },
+      "dictate": {
+        "title": "Detta",
+        "body": "Tocchi Detta e descriva i suoi reperti — da qualsiasi pagina. Ognuno finisce al posto giusto e un pannello in tempo reale mostra ogni modifica, così può annullare qualsiasi cosa."
+      },
+      "settings": {
+        "title": "Impostazioni",
+        "body": "Nome e logo della struttura, team, modelli di promemoria dei controlli, il suo account — e questo tour."
+      },
+      "share": {
+        "title": "Condividi il PDF",
+        "body": "Crei il PDF dell’odontogramma pronto per il cliente con il suo logo, poi lo condivida o lo salvi quando è pronto."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tocchi i numeri dei denti nella griglia per selezionarne più di uno, poi assegni un unico punteggio a tutti.",
+    "customize": "Ogni pagina ha Personalizza nel suo menu Altro: nasconda colonne, scelga cosa mostrare accanto ai denti e altro ancora. Le impostazioni seguono il suo account su ogni dispositivo.",
+    "leftOff": "All’apertura ToothOps mostra Pazienti — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
   }
 }

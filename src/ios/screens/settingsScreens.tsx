@@ -8,7 +8,7 @@ import { PracticeSettingsModal } from '../../components/PracticeSettingsModal';
 import { OwnerReportTemplatesModal } from '../../components/OwnerReportTemplatesModal';
 import { RemindersModal } from '../../components/RemindersModal';
 import { ChartSettingsList } from '../../components/ChartSettingsList';
-import { buildSteps } from '../../components/WalkthroughModal';
+import { buildAppSteps } from '../tourSteps';
 import { WhatsNewModal } from '../../components/WhatsNewModal';
 import { FeedbackModal } from '../../components/FeedbackModal';
 import { AdminPanel } from '../../components/AdminPanel';
@@ -79,7 +79,7 @@ export function RemindersSettingsScreen() {
 export function GettingStartedScreen() {
   const { t } = useTranslation('settings');
   const s = useAppSettings();
-  const steps = React.useMemo(() => buildSteps(s.aiEnabled).filter((step) => step.section), [s.aiEnabled]);
+  const steps = React.useMemo(() => buildAppSteps(t, s.aiEnabled).filter((step) => step.section), [t, s.aiEnabled]);
   return (
     <List className="ios-settings">
       <ListSection footer={t('gettingStarted.tourFooter')}>

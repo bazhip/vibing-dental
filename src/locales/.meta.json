@@ -1691,6 +1691,134 @@
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
       "status": "machine"
+    },
+    "settings:tour.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "settings:tour.finish": {
+      "hash": "d495498a03a1",
+      "status": "machine"
+    },
+    "settings:tour.next": {
+      "hash": "1ff57a29d7c9",
+      "status": "machine"
+    },
+    "settings:tour.progress": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "settings:tour.skip": {
+      "hash": "28d03596d24e",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.body": {
+      "hash": "4cddcfe468c0",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.title": {
+      "hash": "7ac8671549b6",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.body": {
+      "hash": "5654c9d37aa0",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.title": {
+      "hash": "2831192c95cb",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.body": {
+      "hash": "7e8aa6d8d174",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.title": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.body": {
+      "hash": "4530364843b3",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.title": {
+      "hash": "16619eaefdac",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.body": {
+      "hash": "7234711f1905",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.title": {
+      "hash": "61c4d4815cc2",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.body": {
+      "hash": "254fdd35b395",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.body": {
+      "hash": "b042caed92d8",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.title": {
+      "hash": "3d2b9b585532",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.body": {
+      "hash": "492796b8f920",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.title": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.body": {
+      "hash": "a6483470e698",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.title": {
+      "hash": "7f064fa77520",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.body": {
+      "hash": "378848c7c4e8",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.title": {
+      "hash": "5d476211b8d6",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.body": {
+      "hash": "5cd9b1dee6d3",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.title": {
+      "hash": "d69264e50431",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.body": {
+      "hash": "cebdbaab22cd",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.title": {
+      "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "settings:whatsNew.customize": {
+      "hash": "09aaddafd7d3",
+      "status": "machine"
+    },
+    "settings:whatsNew.leftOff": {
+      "hash": "643c95f02b1e",
+      "status": "machine"
+    },
+    "settings:whatsNew.severalTeeth": {
+      "hash": "b458f98c7ca4",
+      "status": "machine"
     }
   },
   "es": {
@@ -3396,6 +3524,134 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:tour.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "settings:tour.finish": {
+      "hash": "d495498a03a1",
+      "status": "machine"
+    },
+    "settings:tour.next": {
+      "hash": "1ff57a29d7c9",
+      "status": "machine"
+    },
+    "settings:tour.progress": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "settings:tour.skip": {
+      "hash": "28d03596d24e",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.body": {
+      "hash": "4cddcfe468c0",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.title": {
+      "hash": "7ac8671549b6",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.body": {
+      "hash": "5654c9d37aa0",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.title": {
+      "hash": "2831192c95cb",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.body": {
+      "hash": "7e8aa6d8d174",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.title": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.body": {
+      "hash": "4530364843b3",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.title": {
+      "hash": "16619eaefdac",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.body": {
+      "hash": "7234711f1905",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.title": {
+      "hash": "61c4d4815cc2",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.body": {
+      "hash": "254fdd35b395",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.body": {
+      "hash": "b042caed92d8",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.title": {
+      "hash": "3d2b9b585532",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.body": {
+      "hash": "492796b8f920",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.title": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.body": {
+      "hash": "a6483470e698",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.title": {
+      "hash": "7f064fa77520",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.body": {
+      "hash": "378848c7c4e8",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.title": {
+      "hash": "5d476211b8d6",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.body": {
+      "hash": "5cd9b1dee6d3",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.title": {
+      "hash": "d69264e50431",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.body": {
+      "hash": "cebdbaab22cd",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.title": {
+      "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "settings:whatsNew.customize": {
+      "hash": "09aaddafd7d3",
+      "status": "machine"
+    },
+    "settings:whatsNew.leftOff": {
+      "hash": "643c95f02b1e",
+      "status": "machine"
+    },
+    "settings:whatsNew.severalTeeth": {
+      "hash": "b458f98c7ca4",
       "status": "machine"
     }
   },
@@ -5103,6 +5359,134 @@
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
       "status": "machine"
+    },
+    "settings:tour.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "settings:tour.finish": {
+      "hash": "d495498a03a1",
+      "status": "machine"
+    },
+    "settings:tour.next": {
+      "hash": "1ff57a29d7c9",
+      "status": "machine"
+    },
+    "settings:tour.progress": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "settings:tour.skip": {
+      "hash": "28d03596d24e",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.body": {
+      "hash": "4cddcfe468c0",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.title": {
+      "hash": "7ac8671549b6",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.body": {
+      "hash": "5654c9d37aa0",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.title": {
+      "hash": "2831192c95cb",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.body": {
+      "hash": "7e8aa6d8d174",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.title": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.body": {
+      "hash": "4530364843b3",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.title": {
+      "hash": "16619eaefdac",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.body": {
+      "hash": "7234711f1905",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.title": {
+      "hash": "61c4d4815cc2",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.body": {
+      "hash": "254fdd35b395",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.body": {
+      "hash": "b042caed92d8",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.title": {
+      "hash": "3d2b9b585532",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.body": {
+      "hash": "492796b8f920",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.title": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.body": {
+      "hash": "a6483470e698",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.title": {
+      "hash": "7f064fa77520",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.body": {
+      "hash": "378848c7c4e8",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.title": {
+      "hash": "5d476211b8d6",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.body": {
+      "hash": "5cd9b1dee6d3",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.title": {
+      "hash": "d69264e50431",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.body": {
+      "hash": "cebdbaab22cd",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.title": {
+      "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "settings:whatsNew.customize": {
+      "hash": "09aaddafd7d3",
+      "status": "machine"
+    },
+    "settings:whatsNew.leftOff": {
+      "hash": "643c95f02b1e",
+      "status": "machine"
+    },
+    "settings:whatsNew.severalTeeth": {
+      "hash": "b458f98c7ca4",
+      "status": "machine"
     }
   },
   "it": {
@@ -6808,6 +7192,134 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:tour.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "settings:tour.finish": {
+      "hash": "d495498a03a1",
+      "status": "machine"
+    },
+    "settings:tour.next": {
+      "hash": "1ff57a29d7c9",
+      "status": "machine"
+    },
+    "settings:tour.progress": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "settings:tour.skip": {
+      "hash": "28d03596d24e",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.body": {
+      "hash": "4cddcfe468c0",
+      "status": "machine"
+    },
+    "settings:tour.steps.codes.title": {
+      "hash": "7ac8671549b6",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.body": {
+      "hash": "5654c9d37aa0",
+      "status": "machine"
+    },
+    "settings:tour.steps.diagrams.title": {
+      "hash": "2831192c95cb",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.body": {
+      "hash": "7e8aa6d8d174",
+      "status": "machine"
+    },
+    "settings:tour.steps.dictate.title": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.body": {
+      "hash": "4530364843b3",
+      "status": "machine"
+    },
+    "settings:tour.steps.grid.title": {
+      "hash": "16619eaefdac",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.body": {
+      "hash": "7234711f1905",
+      "status": "machine"
+    },
+    "settings:tour.steps.patient.title": {
+      "hash": "61c4d4815cc2",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.body": {
+      "hash": "254fdd35b395",
+      "status": "machine"
+    },
+    "settings:tour.steps.patients.title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.body": {
+      "hash": "b042caed92d8",
+      "status": "machine"
+    },
+    "settings:tour.steps.sections.title": {
+      "hash": "3d2b9b585532",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.body": {
+      "hash": "492796b8f920",
+      "status": "machine"
+    },
+    "settings:tour.steps.settings.title": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.body": {
+      "hash": "a6483470e698",
+      "status": "machine"
+    },
+    "settings:tour.steps.share.title": {
+      "hash": "7f064fa77520",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.body": {
+      "hash": "378848c7c4e8",
+      "status": "machine"
+    },
+    "settings:tour.steps.species.title": {
+      "hash": "5d476211b8d6",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.body": {
+      "hash": "5cd9b1dee6d3",
+      "status": "machine"
+    },
+    "settings:tour.steps.treatment.title": {
+      "hash": "d69264e50431",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.body": {
+      "hash": "cebdbaab22cd",
+      "status": "machine"
+    },
+    "settings:tour.steps.welcome.title": {
+      "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "settings:whatsNew.customize": {
+      "hash": "09aaddafd7d3",
+      "status": "machine"
+    },
+    "settings:whatsNew.leftOff": {
+      "hash": "643c95f02b1e",
+      "status": "machine"
+    },
+    "settings:whatsNew.severalTeeth": {
+      "hash": "b458f98c7ca4",
       "status": "machine"
     }
   },

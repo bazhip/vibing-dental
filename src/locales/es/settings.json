@@ -74,5 +74,67 @@
     "takeTour": "Hacer el recorrido",
     "tourFooter": "Un breve recorrido por dónde está todo en el odontograma.",
     "chartParts": "Partes del odontograma"
+  },
+  "tour": {
+    "skip": "Omitir",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "finish": "Empezar",
+    "progress": "{{n}} de {{total}}",
+    "steps": {
+      "welcome": {
+        "title": "Bienvenido a ToothOps",
+        "body": "Un recorrido de 60 segundos por dónde está todo. Puede repetirlo en cualquier momento desde Ajustes → Primeros pasos."
+      },
+      "sections": {
+        "title": "Las ocho secciones",
+        "body": "Un odontograma, de arriba abajo. Toque el título del odontograma para pasar de una sección a otra — todo se guarda automáticamente."
+      },
+      "patient": {
+        "title": "Paciente y propietario",
+        "body": "Nombre, contacto del propietario y fecha de control. Solo se requiere el nombre del paciente para guardar."
+      },
+      "species": {
+        "title": "Especie y dentición",
+        "body": "Elija Felino o Canino, luego Permanente o Decidua — la disposición de los dientes se adapta."
+      },
+      "grid": {
+        "title": "La cuadrícula de registro",
+        "body": "Medidas por diente. Toque una celda y escriba, o toque una puntuación — registre sin levantar la vista."
+      },
+      "diagrams": {
+        "title": "Diagramas",
+        "body": "Toque un diente para marcarlo; cambie entre Comentario y Dibujo, añada notas libres. Deshacer y Rehacer están en la barra de herramientas del diagrama."
+      },
+      "codes": {
+        "title": "Referencia de códigos",
+        "body": "Busque aquí el conjunto completo de códigos AVDC, junto al diagrama."
+      },
+      "treatment": {
+        "title": "Informe de tratamiento y plantillas",
+        "body": "Redacte el informe o inserte una plantilla guardada — y guarde otras nuevas para reutilizarlas."
+      },
+      "patients": {
+        "title": "Pacientes",
+        "body": "Todas las visitas de cada paciente. Las visitas guardadas se abren en solo lectura hasta que toque Editar. Controles muestra los pacientes con un control pendiente."
+      },
+      "dictate": {
+        "title": "Dictar",
+        "body": "Toque Dictar y describa sus hallazgos — desde cualquier página. Cada uno llega al lugar correcto, y un panel en directo muestra cada cambio para que pueda deshacer cualquier cosa."
+      },
+      "settings": {
+        "title": "Ajustes",
+        "body": "Nombre y logotipo de la clínica, equipo, plantillas de recordatorio de control, su cuenta — y este recorrido."
+      },
+      "share": {
+        "title": "Compartir el PDF",
+        "body": "Genere el PDF del odontograma listo para el cliente con su logotipo y compártalo o guárdelo cuando quiera."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Toque los números de dientes en la cuadrícula para seleccionar varios y asigne una misma puntuación a todos.",
+    "customize": "Cada página tiene Personalizar en su menú Más: oculte columnas, elija qué se muestra junto a los dientes y mucho más. Los ajustes siguen a su cuenta en todos sus dispositivos.",
+    "leftOff": "Al abrirse, ToothOps muestra Pacientes — salvo que la visita de hoy siga abierta — y la visita de hoy se abre lista para editar."
   }
 }

@@ -57,6 +57,7 @@ export function TabBar({ tabs, active, onChange, label }: TabBarProps) {
               ref={(el) => { refs.current[i] = el; }}
               type="button"
               role="tab"
+              data-tab={tab.id}
               aria-selected={selected}
               aria-label={badge ? `${tab.label}, ${badge}` : undefined}
               tabIndex={selected ? 0 : -1}
