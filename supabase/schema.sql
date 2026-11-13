@@ -186,6 +186,19 @@ create policy "users manage own attachments storage"
   using (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'attachments' and (storage.foldername(name))[1] = auth.uid()::text);
 
+-- ---------------------------------------------------------- pdf exports
+-- One PDF per user at {user_id}/download.pdf, overwritten on each use:
+-- signed download links for in-app browsers that can't save in-page PDFs.
+-- (migration 20261120_pdf_exports)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('exports', 'exports', false, 26214400, array['application/pdf'])
+on conflict (id) do update
+  set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+create policy "users manage own exports"
+  on storage.objects for all to authenticated
+  using (bucket_id = 'exports' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'exports' and (storage.foldername(name))[1] = auth.uid()::text);
+
 -- Recall reminder column (also mirrored in PatientInfo.recallDate inside data jsonb).
 alter table public.charts add column if not exists recall_date text not null default '';
 
