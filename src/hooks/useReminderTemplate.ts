@@ -3,7 +3,8 @@ import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import type { ReportLocale } from '../utils/ownerReportI18n';
 import { standardReminderText } from '../utils/reminderDefaults';
-import { usePracticeLanguage } from './usePracticeLanguage';
+import { appReportLocale } from '../utils/ownerReportI18n';
+import { clientLanguageOf, usePracticeLanguage } from './usePracticeLanguage';
 import { LocalizedError } from '../utils/apiErrors';
 
 /**
@@ -48,7 +49,11 @@ interface StoredReminder {
   leadDays: number;
 }
 
-export function useReminderTemplate(practiceId: string, open: boolean) {
+/**
+ * `isOwner`: only owners may update the practice, so only they persist the localized
+ * default for empty stored text when auto-send is on (the scheduled job reads the columns).
+ */
+export function useReminderTemplate(practiceId: string, open: boolean, isOwner = false) {
   const { language, loaded: languageLoaded } = usePracticeLanguage(practiceId || null, open);
   // What the database holds; empty text means "use the standard reminder".
   const [stored, setStored] = React.useState<StoredReminder | null>(null);
@@ -64,17 +69,34 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
       }
       const { data } = await supabase
         .from('practices')
-        .select('reminder_subject, reminder_body, reminder_auto, reminder_lead_days')
+        .select('client_language, reminder_subject, reminder_body, reminder_auto, reminder_lead_days')
         .eq('id', practiceId)
         .maybeSingle();
       if (!cancelled) {
         if (data) {
-          setStored({
+          const row: StoredReminder = {
             subject: data.reminder_subject || '',
             body: data.reminder_body || '',
             auto: !!data.reminder_auto,
             leadDays: data.reminder_lead_days ?? 0,
-          });
+          };
+          if (isOwner && row.auto && (!row.subject || !row.body)) {
+            const std = standardReminderText(clientLanguageOf(data, appReportLocale()));
+            const patch: Record<string, string> = {};
+            if (!row.subject) patch.reminder_subject = std.subject;
+            if (!row.body) patch.reminder_body = std.body;
+            // Best effort, once per load: a failure leaves the job on its fallback.
+            try {
+              const { error } = await supabase.from('practices').update(patch).eq('id', practiceId);
+              if (!error) {
+                row.subject = row.subject || std.subject;
+                row.body = row.body || std.body;
+              }
+            } catch {
+              // Ignored: the modal still loads and shows the localized default.
+            }
+          }
+          if (!cancelled) setStored(row);
         }
         setRowLoaded(true);
       }
@@ -82,7 +104,7 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
     return () => {
       cancelled = true;
     };
-  }, [practiceId, open]);
+  }, [practiceId, open, isOwner]);
 
   const loaded = rowLoaded && languageLoaded;
   const template = React.useMemo<ReminderTemplate>(() => {

@@ -22,7 +22,7 @@ interface RemindersModalProps {
 export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose }) => {
   const { t } = useTranslation('reminders');
   const team = useTeam(open);
-  const reminder = useReminderTemplate(team.practice?.id ?? '', open);
+  const reminder = useReminderTemplate(team.practice?.id ?? '', open, team.role === 'owner');
 
   const [subject, setSubject] = React.useState('');
   const [body, setBody] = React.useState('');
