@@ -3948,6 +3948,510 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "forms:anesthesia.add": {
+      "hash": "58a85a149b26",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "forms:anesthesia.anestheticN": {
+      "hash": "5dfa7f0707d0",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "forms:anesthesia.concentrationAria": {
+      "hash": "a85f41a67e70",
+      "status": "machine"
+    },
+    "forms:anesthesia.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:anesthesia.customizeTitle": {
+      "hash": "b0a3d0d65a13",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseLeft": {
+      "hash": "aa94bcdb5851",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseRight": {
+      "hash": "5b5bd2e279f7",
+      "status": "machine"
+    },
+    "forms:anesthesia.drugPlaceholder": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintDefault": {
+      "hash": "5d3edd293ef3",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintMixed": {
+      "hash": "6ce4961c968b",
+      "status": "machine"
+    },
+    "forms:anesthesia.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "forms:anesthesia.nameAria": {
+      "hash": "15c858146e68",
+      "status": "machine"
+    },
+    "forms:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:anesthesia.otherAria": {
+      "hash": "0b011386678b",
+      "status": "machine"
+    },
+    "forms:anesthesia.record": {
+      "hash": "b3591ab024ad",
+      "status": "machine"
+    },
+    "forms:anesthesia.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeNamed": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:anesthesia.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.title": {
+      "hash": "04da3ed6443c",
+      "status": "machine"
+    },
+    "forms:anesthesia.useUsual": {
+      "hash": "061fe49e86fd",
+      "status": "machine"
+    },
+    "forms:customEditor.addBlock": {
+      "hash": "b411505b685a",
+      "status": "machine"
+    },
+    "forms:customEditor.addField": {
+      "hash": "5f42d901b61b",
+      "status": "machine"
+    },
+    "forms:customEditor.blockName": {
+      "hash": "8816b2415f3a",
+      "status": "machine"
+    },
+    "forms:customEditor.blockNameAria": {
+      "hash": "3d30df458f51",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksLegend": {
+      "hash": "cfde9e561790",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksNote": {
+      "hash": "2fc3491fd25e",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackBlock": {
+      "hash": "feb82dc2995c",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackField": {
+      "hash": "c0d2856b74d0",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldName": {
+      "hash": "2f5574bc5e68",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldNameAria": {
+      "hash": "354249d71cb9",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldTypeAria": {
+      "hash": "f511f4807937",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsLegend": {
+      "hash": "8410b0d7e9d6",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsNote": {
+      "hash": "75ad5ba9dbac",
+      "status": "machine"
+    },
+    "forms:customEditor.options": {
+      "hash": "6b791ae025dd",
+      "status": "machine"
+    },
+    "forms:customEditor.optionsAria": {
+      "hash": "f5a08f9f53fe",
+      "status": "machine"
+    },
+    "forms:customEditor.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:customEditor.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:customEditor.removeNote": {
+      "hash": "a22cd3316071",
+      "status": "machine"
+    },
+    "forms:customEditor.types.checkbox": {
+      "hash": "4fd68e1d9814",
+      "status": "machine"
+    },
+    "forms:customEditor.types.number": {
+      "hash": "bd82cf16699b",
+      "status": "machine"
+    },
+    "forms:customEditor.types.select": {
+      "hash": "0e5ecc97121f",
+      "status": "machine"
+    },
+    "forms:customEditor.types.text": {
+      "hash": "71988c4d8e08",
+      "status": "machine"
+    },
+    "forms:customEditor.unit": {
+      "hash": "4e545960f1bf",
+      "status": "machine"
+    },
+    "forms:customEditor.unitAria": {
+      "hash": "cabe5c8f2157",
+      "status": "machine"
+    },
+    "forms:exam.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "forms:exam.ariaAbnormal": {
+      "hash": "7207d6d6e665",
+      "status": "machine"
+    },
+    "forms:exam.ariaComment": {
+      "hash": "884ff809af30",
+      "status": "machine"
+    },
+    "forms:exam.ariaNormal": {
+      "hash": "21a923504ceb",
+      "status": "machine"
+    },
+    "forms:exam.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "forms:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "forms:exam.items.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "forms:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "forms:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "forms:exam.items.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "forms:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.buccal": {
+      "hash": "0f24f8310e90",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.extraoral": {
+      "hash": "34d0ae98c367",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.lymph": {
+      "hash": "dcd47eb8f533",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.palate": {
+      "hash": "137e09267207",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.pharynx": {
+      "hash": "8b1bf4d57830",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.tongue": {
+      "hash": "b2715212d939",
+      "status": "machine"
+    },
+    "forms:exam.markAllNormal": {
+      "hash": "bd1fe411f294",
+      "status": "machine"
+    },
+    "forms:exam.markRestNormal": {
+      "hash": "dd45225b5257",
+      "status": "machine"
+    },
+    "forms:exam.markTitle": {
+      "hash": "df7fcca5cd55",
+      "status": "machine"
+    },
+    "forms:exam.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "forms:exam.placeholder": {
+      "hash": "c1da513652f4",
+      "status": "machine"
+    },
+    "forms:exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "forms:patient.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "forms:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "forms:patient.complaintPlaceholder": {
+      "hash": "97c949f2f979",
+      "status": "machine"
+    },
+    "forms:patient.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:patient.customizeTitle": {
+      "hash": "70a275aeab85",
+      "status": "machine"
+    },
+    "forms:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "forms:patient.deciduous": {
+      "hash": "abd4f044e2ae",
+      "status": "machine"
+    },
+    "forms:patient.dentition": {
+      "hash": "bf631ac9f474",
+      "status": "machine"
+    },
+    "forms:patient.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "forms:patient.intervalPlaceholder": {
+      "hash": "07faeb78fa1b",
+      "status": "machine"
+    },
+    "forms:patient.intervals.month1": {
+      "hash": "cd8c117e6dd5",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months3": {
+      "hash": "bfd45132a8c6",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months6": {
+      "hash": "8ed94b4cf82d",
+      "status": "machine"
+    },
+    "forms:patient.intervals.week1": {
+      "hash": "c8cc522340b9",
+      "status": "machine"
+    },
+    "forms:patient.intervals.weeks2": {
+      "hash": "fc5230276475",
+      "status": "machine"
+    },
+    "forms:patient.intervals.year1": {
+      "hash": "91647badc37b",
+      "status": "machine"
+    },
+    "forms:patient.name": {
+      "hash": "dfc06f22ff07",
+      "status": "machine"
+    },
+    "forms:patient.namePlaceholder": {
+      "hash": "100d9eb8c1c9",
+      "status": "machine"
+    },
+    "forms:patient.number": {
+      "hash": "57699829a25f",
+      "status": "machine"
+    },
+    "forms:patient.numberPlaceholder": {
+      "hash": "4b8d9760dcc7",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmail": {
+      "hash": "cbc7ec6db0bb",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailOptional": {
+      "hash": "59be71333c96",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailReminders": {
+      "hash": "04e29ff2528f",
+      "status": "machine"
+    },
+    "forms:patient.ownerName": {
+      "hash": "0c19629c3116",
+      "status": "machine"
+    },
+    "forms:patient.ownerNamePlaceholder": {
+      "hash": "d823646cfbb2",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhone": {
+      "hash": "d00cc96d9e94",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhonePlaceholder": {
+      "hash": "2c6a40482cfb",
+      "status": "machine"
+    },
+    "forms:patient.permanent": {
+      "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.recheck": {
+      "hash": "14ca550e2a16",
+      "status": "machine"
+    },
+    "forms:patient.recheckQuick": {
+      "hash": "2f968890948b",
+      "status": "machine"
+    },
+    "forms:patient.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "forms:patient.tech": {
+      "hash": "d0da7ab8bc92",
+      "status": "machine"
+    },
+    "forms:patient.techPlaceholder": {
+      "hash": "95287a1d0e39",
+      "status": "machine"
+    },
+    "forms:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "forms:report.dialog.confirm": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "forms:report.dialog.label": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "forms:report.dialog.message": {
+      "hash": "42794b4639d2",
+      "status": "machine"
+    },
+    "forms:report.dialog.nameRequired": {
+      "hash": "e4eabf990282",
+      "status": "machine"
+    },
+    "forms:report.dialog.placeholder": {
+      "hash": "df67c3a8dfa1",
+      "status": "machine"
+    },
+    "forms:report.dialog.title": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.edit": {
+      "hash": "557f7676f08c",
+      "status": "machine"
+    },
+    "forms:report.insert": {
+      "hash": "108aadb8bb0b",
+      "status": "machine"
+    },
+    "forms:report.insertAria": {
+      "hash": "7700a6e75577",
+      "status": "machine"
+    },
+    "forms:report.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "forms:report.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "forms:report.placeholder": {
+      "hash": "b3ab94c384cd",
+      "status": "machine"
+    },
+    "forms:report.save": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.saveFailed": {
+      "hash": "3ef21a424b95",
+      "status": "machine"
+    },
+    "forms:report.saveTitle": {
+      "hash": "21100aee3e0b",
+      "status": "machine"
+    },
+    "forms:report.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "forms:report.textareaAria": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.title": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "landing:closer.title": {
       "hash": "c9ef94e44e1a",
       "status": "machine"
@@ -4526,6 +5030,290 @@
     },
     "landing:wordmark": {
       "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "media:dicom.noDimensions": {
+      "hash": "82f81d287638",
+      "status": "machine"
+    },
+    "media:dicom.noImage": {
+      "hash": "6497657791b3",
+      "status": "machine"
+    },
+    "media:dicom.render": {
+      "hash": "4018cd511939",
+      "status": "machine"
+    },
+    "media:dicom.truncated": {
+      "hash": "e72387801dba",
+      "status": "machine"
+    },
+    "media:dicom.unreadable": {
+      "hash": "34a6e01ac753",
+      "status": "machine"
+    },
+    "media:dicom.unsupported": {
+      "hash": "aadef53806f5",
+      "status": "machine"
+    },
+    "media:documents.chartTab": {
+      "hash": "126f03d7f2b0",
+      "status": "machine"
+    },
+    "media:documents.chartWho": {
+      "hash": "27fcc02bb098",
+      "status": "machine"
+    },
+    "media:documents.close": {
+      "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.ownerTab": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "media:documents.ownerWho": {
+      "hash": "63cb628eceb0",
+      "status": "machine"
+    },
+    "media:documents.tablist": {
+      "hash": "d6bd8c0aeee8",
+      "status": "machine"
+    },
+    "media:documents.title": {
+      "hash": "bef72e37aee3",
+      "status": "machine"
+    },
+    "media:imaging.add": {
+      "hash": "04136060b40f",
+      "status": "machine"
+    },
+    "media:imaging.addFailed": {
+      "hash": "f731b3c5c6c2",
+      "status": "machine"
+    },
+    "media:imaging.after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "media:imaging.altPhoto": {
+      "hash": "3b60b2625638",
+      "status": "machine"
+    },
+    "media:imaging.altXray": {
+      "hash": "c54f57a73dc1",
+      "status": "machine"
+    },
+    "media:imaging.before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "media:imaging.captionAria": {
+      "hash": "87d296ec9489",
+      "status": "machine"
+    },
+    "media:imaging.captionFailed": {
+      "hash": "f318a52eb84f",
+      "status": "machine"
+    },
+    "media:imaging.captionPlaceholder": {
+      "hash": "73fde0ea4ccb",
+      "status": "machine"
+    },
+    "media:imaging.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "media:imaging.customizeTitle": {
+      "hash": "0a1e8e00ee69",
+      "status": "machine"
+    },
+    "media:imaging.deleteConfirm": {
+      "hash": "fbbc98ee63a5",
+      "status": "machine"
+    },
+    "media:imaging.deleteMessage": {
+      "hash": "152dcf727da1",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitle": {
+      "hash": "cff0049e9e8d",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitleNamed": {
+      "hash": "571ea63206d9",
+      "status": "machine"
+    },
+    "media:imaging.descriptionAria": {
+      "hash": "28d46a0fadc6",
+      "status": "machine"
+    },
+    "media:imaging.descriptionPlaceholder": {
+      "hash": "f6cbe2f0c1f8",
+      "status": "machine"
+    },
+    "media:imaging.dicom": {
+      "hash": "ad5ef5ed99ca",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownload": {
+      "hash": "4ee0fe3b6008",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownloadTitle": {
+      "hash": "1445e43cd43a",
+      "status": "machine"
+    },
+    "media:imaging.dicomStoredTitle": {
+      "hash": "28e33d8579ed",
+      "status": "machine"
+    },
+    "media:imaging.empty": {
+      "hash": "dc9d70506f60",
+      "status": "machine"
+    },
+    "media:imaging.formatsDicom": {
+      "hash": "115fc9639266",
+      "status": "machine"
+    },
+    "media:imaging.formatsPlain": {
+      "hash": "8b35497d6d3b",
+      "status": "machine"
+    },
+    "media:imaging.freePlan": {
+      "hash": "18e0f6d90cb0",
+      "status": "machine"
+    },
+    "media:imaging.inPdf": {
+      "hash": "b42b6ea9844d",
+      "status": "machine"
+    },
+    "media:imaging.inPdfTitle": {
+      "hash": "0d892b7c0f18",
+      "status": "machine"
+    },
+    "media:imaging.kindFailed": {
+      "hash": "4a3a65b6af07",
+      "status": "machine"
+    },
+    "media:imaging.kindTitle": {
+      "hash": "5a50382dac8e",
+      "status": "machine"
+    },
+    "media:imaging.limitReached": {
+      "hash": "a46738f807ac",
+      "status": "machine"
+    },
+    "media:imaging.loading": {
+      "hash": "746e71d496ff",
+      "status": "machine"
+    },
+    "media:imaging.missing": {
+      "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.pdfOption": {
+      "hash": "33120395aaf6",
+      "status": "machine"
+    },
+    "media:imaging.pdfOptionTitle": {
+      "hash": "8fdcdf17497c",
+      "status": "machine"
+    },
+    "media:imaging.pdfSelected": {
+      "hash": "4e7d6cc72fa3",
+      "status": "machine"
+    },
+    "media:imaging.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "media:imaging.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "media:imaging.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "media:imaging.removeFailed": {
+      "hash": "1a0a7a9a91e1",
+      "status": "machine"
+    },
+    "media:imaging.roleAria": {
+      "hash": "ad2b3c97dbfc",
+      "status": "machine"
+    },
+    "media:imaging.roleNone": {
+      "hash": "6a70d2a1b8f1",
+      "status": "machine"
+    },
+    "media:imaging.roleTitle": {
+      "hash": "5ddf416358fd",
+      "status": "machine"
+    },
+    "media:imaging.signedOut": {
+      "hash": "6852f911bc1a",
+      "status": "machine"
+    },
+    "media:imaging.title": {
+      "hash": "be7e2f201293",
+      "status": "machine"
+    },
+    "media:imaging.typeAria": {
+      "hash": "a77e1c4782f4",
+      "status": "machine"
+    },
+    "media:imaging.uploading": {
+      "hash": "5ce44dd77dae",
+      "status": "machine"
+    },
+    "media:imaging.usage": {
+      "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:upload.cantRead": {
+      "hash": "481303711abc",
+      "status": "machine"
+    },
+    "media:upload.cantShrink": {
+      "hash": "d260e0731d7c",
+      "status": "machine"
+    },
+    "media:upload.dicomPaid": {
+      "hash": "2a0cecddb2aa",
+      "status": "machine"
+    },
+    "media:upload.maxImages": {
+      "hash": "b0250d90fa22",
+      "status": "machine"
+    },
+    "media:upload.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "media:upload.originalFailed": {
+      "hash": "4aa208dfdcd1",
+      "status": "machine"
+    },
+    "media:upload.readDicom": {
+      "hash": "c35b51f46189",
+      "status": "machine"
+    },
+    "media:upload.signIn": {
+      "hash": "9d89b55a694d",
+      "status": "machine"
+    },
+    "media:upload.tooLarge": {
+      "hash": "98f691b1618c",
+      "status": "machine"
+    },
+    "media:upload.typeDicom": {
+      "hash": "50ce3832053f",
+      "status": "machine"
+    },
+    "media:upload.typePlain": {
+      "hash": "6a8d6452d8f6",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -8962,6 +9750,510 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "forms:anesthesia.add": {
+      "hash": "58a85a149b26",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "forms:anesthesia.anestheticN": {
+      "hash": "5dfa7f0707d0",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "forms:anesthesia.concentrationAria": {
+      "hash": "a85f41a67e70",
+      "status": "machine"
+    },
+    "forms:anesthesia.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:anesthesia.customizeTitle": {
+      "hash": "b0a3d0d65a13",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseLeft": {
+      "hash": "aa94bcdb5851",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseRight": {
+      "hash": "5b5bd2e279f7",
+      "status": "machine"
+    },
+    "forms:anesthesia.drugPlaceholder": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintDefault": {
+      "hash": "5d3edd293ef3",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintMixed": {
+      "hash": "6ce4961c968b",
+      "status": "machine"
+    },
+    "forms:anesthesia.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "forms:anesthesia.nameAria": {
+      "hash": "15c858146e68",
+      "status": "machine"
+    },
+    "forms:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:anesthesia.otherAria": {
+      "hash": "0b011386678b",
+      "status": "machine"
+    },
+    "forms:anesthesia.record": {
+      "hash": "b3591ab024ad",
+      "status": "machine"
+    },
+    "forms:anesthesia.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeNamed": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:anesthesia.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.title": {
+      "hash": "04da3ed6443c",
+      "status": "machine"
+    },
+    "forms:anesthesia.useUsual": {
+      "hash": "061fe49e86fd",
+      "status": "machine"
+    },
+    "forms:customEditor.addBlock": {
+      "hash": "b411505b685a",
+      "status": "machine"
+    },
+    "forms:customEditor.addField": {
+      "hash": "5f42d901b61b",
+      "status": "machine"
+    },
+    "forms:customEditor.blockName": {
+      "hash": "8816b2415f3a",
+      "status": "machine"
+    },
+    "forms:customEditor.blockNameAria": {
+      "hash": "3d30df458f51",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksLegend": {
+      "hash": "cfde9e561790",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksNote": {
+      "hash": "2fc3491fd25e",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackBlock": {
+      "hash": "feb82dc2995c",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackField": {
+      "hash": "c0d2856b74d0",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldName": {
+      "hash": "2f5574bc5e68",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldNameAria": {
+      "hash": "354249d71cb9",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldTypeAria": {
+      "hash": "f511f4807937",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsLegend": {
+      "hash": "8410b0d7e9d6",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsNote": {
+      "hash": "75ad5ba9dbac",
+      "status": "machine"
+    },
+    "forms:customEditor.options": {
+      "hash": "6b791ae025dd",
+      "status": "machine"
+    },
+    "forms:customEditor.optionsAria": {
+      "hash": "f5a08f9f53fe",
+      "status": "machine"
+    },
+    "forms:customEditor.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:customEditor.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:customEditor.removeNote": {
+      "hash": "a22cd3316071",
+      "status": "machine"
+    },
+    "forms:customEditor.types.checkbox": {
+      "hash": "4fd68e1d9814",
+      "status": "machine"
+    },
+    "forms:customEditor.types.number": {
+      "hash": "bd82cf16699b",
+      "status": "machine"
+    },
+    "forms:customEditor.types.select": {
+      "hash": "0e5ecc97121f",
+      "status": "machine"
+    },
+    "forms:customEditor.types.text": {
+      "hash": "71988c4d8e08",
+      "status": "machine"
+    },
+    "forms:customEditor.unit": {
+      "hash": "4e545960f1bf",
+      "status": "machine"
+    },
+    "forms:customEditor.unitAria": {
+      "hash": "cabe5c8f2157",
+      "status": "machine"
+    },
+    "forms:exam.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "forms:exam.ariaAbnormal": {
+      "hash": "7207d6d6e665",
+      "status": "machine"
+    },
+    "forms:exam.ariaComment": {
+      "hash": "884ff809af30",
+      "status": "machine"
+    },
+    "forms:exam.ariaNormal": {
+      "hash": "21a923504ceb",
+      "status": "machine"
+    },
+    "forms:exam.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "forms:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "forms:exam.items.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "forms:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "forms:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "forms:exam.items.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "forms:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.buccal": {
+      "hash": "0f24f8310e90",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.extraoral": {
+      "hash": "34d0ae98c367",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.lymph": {
+      "hash": "dcd47eb8f533",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.palate": {
+      "hash": "137e09267207",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.pharynx": {
+      "hash": "8b1bf4d57830",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.tongue": {
+      "hash": "b2715212d939",
+      "status": "machine"
+    },
+    "forms:exam.markAllNormal": {
+      "hash": "bd1fe411f294",
+      "status": "machine"
+    },
+    "forms:exam.markRestNormal": {
+      "hash": "dd45225b5257",
+      "status": "machine"
+    },
+    "forms:exam.markTitle": {
+      "hash": "df7fcca5cd55",
+      "status": "machine"
+    },
+    "forms:exam.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "forms:exam.placeholder": {
+      "hash": "c1da513652f4",
+      "status": "machine"
+    },
+    "forms:exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "forms:patient.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "forms:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "forms:patient.complaintPlaceholder": {
+      "hash": "97c949f2f979",
+      "status": "machine"
+    },
+    "forms:patient.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:patient.customizeTitle": {
+      "hash": "70a275aeab85",
+      "status": "machine"
+    },
+    "forms:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "forms:patient.deciduous": {
+      "hash": "abd4f044e2ae",
+      "status": "machine"
+    },
+    "forms:patient.dentition": {
+      "hash": "bf631ac9f474",
+      "status": "machine"
+    },
+    "forms:patient.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "forms:patient.intervalPlaceholder": {
+      "hash": "07faeb78fa1b",
+      "status": "machine"
+    },
+    "forms:patient.intervals.month1": {
+      "hash": "cd8c117e6dd5",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months3": {
+      "hash": "bfd45132a8c6",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months6": {
+      "hash": "8ed94b4cf82d",
+      "status": "machine"
+    },
+    "forms:patient.intervals.week1": {
+      "hash": "c8cc522340b9",
+      "status": "machine"
+    },
+    "forms:patient.intervals.weeks2": {
+      "hash": "fc5230276475",
+      "status": "machine"
+    },
+    "forms:patient.intervals.year1": {
+      "hash": "91647badc37b",
+      "status": "machine"
+    },
+    "forms:patient.name": {
+      "hash": "dfc06f22ff07",
+      "status": "machine"
+    },
+    "forms:patient.namePlaceholder": {
+      "hash": "100d9eb8c1c9",
+      "status": "machine"
+    },
+    "forms:patient.number": {
+      "hash": "57699829a25f",
+      "status": "machine"
+    },
+    "forms:patient.numberPlaceholder": {
+      "hash": "4b8d9760dcc7",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmail": {
+      "hash": "cbc7ec6db0bb",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailOptional": {
+      "hash": "59be71333c96",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailReminders": {
+      "hash": "04e29ff2528f",
+      "status": "machine"
+    },
+    "forms:patient.ownerName": {
+      "hash": "0c19629c3116",
+      "status": "machine"
+    },
+    "forms:patient.ownerNamePlaceholder": {
+      "hash": "d823646cfbb2",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhone": {
+      "hash": "d00cc96d9e94",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhonePlaceholder": {
+      "hash": "2c6a40482cfb",
+      "status": "machine"
+    },
+    "forms:patient.permanent": {
+      "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.recheck": {
+      "hash": "14ca550e2a16",
+      "status": "machine"
+    },
+    "forms:patient.recheckQuick": {
+      "hash": "2f968890948b",
+      "status": "machine"
+    },
+    "forms:patient.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "forms:patient.tech": {
+      "hash": "d0da7ab8bc92",
+      "status": "machine"
+    },
+    "forms:patient.techPlaceholder": {
+      "hash": "95287a1d0e39",
+      "status": "machine"
+    },
+    "forms:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "forms:report.dialog.confirm": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "forms:report.dialog.label": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "forms:report.dialog.message": {
+      "hash": "42794b4639d2",
+      "status": "machine"
+    },
+    "forms:report.dialog.nameRequired": {
+      "hash": "e4eabf990282",
+      "status": "machine"
+    },
+    "forms:report.dialog.placeholder": {
+      "hash": "df67c3a8dfa1",
+      "status": "machine"
+    },
+    "forms:report.dialog.title": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.edit": {
+      "hash": "557f7676f08c",
+      "status": "machine"
+    },
+    "forms:report.insert": {
+      "hash": "108aadb8bb0b",
+      "status": "machine"
+    },
+    "forms:report.insertAria": {
+      "hash": "7700a6e75577",
+      "status": "machine"
+    },
+    "forms:report.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "forms:report.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "forms:report.placeholder": {
+      "hash": "b3ab94c384cd",
+      "status": "machine"
+    },
+    "forms:report.save": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.saveFailed": {
+      "hash": "3ef21a424b95",
+      "status": "machine"
+    },
+    "forms:report.saveTitle": {
+      "hash": "21100aee3e0b",
+      "status": "machine"
+    },
+    "forms:report.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "forms:report.textareaAria": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.title": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "landing:closer.title": {
       "hash": "c9ef94e44e1a",
       "status": "machine"
@@ -9540,6 +10832,290 @@
     },
     "landing:wordmark": {
       "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "media:dicom.noDimensions": {
+      "hash": "82f81d287638",
+      "status": "machine"
+    },
+    "media:dicom.noImage": {
+      "hash": "6497657791b3",
+      "status": "machine"
+    },
+    "media:dicom.render": {
+      "hash": "4018cd511939",
+      "status": "machine"
+    },
+    "media:dicom.truncated": {
+      "hash": "e72387801dba",
+      "status": "machine"
+    },
+    "media:dicom.unreadable": {
+      "hash": "34a6e01ac753",
+      "status": "machine"
+    },
+    "media:dicom.unsupported": {
+      "hash": "aadef53806f5",
+      "status": "machine"
+    },
+    "media:documents.chartTab": {
+      "hash": "126f03d7f2b0",
+      "status": "machine"
+    },
+    "media:documents.chartWho": {
+      "hash": "27fcc02bb098",
+      "status": "machine"
+    },
+    "media:documents.close": {
+      "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.ownerTab": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "media:documents.ownerWho": {
+      "hash": "63cb628eceb0",
+      "status": "machine"
+    },
+    "media:documents.tablist": {
+      "hash": "d6bd8c0aeee8",
+      "status": "machine"
+    },
+    "media:documents.title": {
+      "hash": "bef72e37aee3",
+      "status": "machine"
+    },
+    "media:imaging.add": {
+      "hash": "04136060b40f",
+      "status": "machine"
+    },
+    "media:imaging.addFailed": {
+      "hash": "f731b3c5c6c2",
+      "status": "machine"
+    },
+    "media:imaging.after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "media:imaging.altPhoto": {
+      "hash": "3b60b2625638",
+      "status": "machine"
+    },
+    "media:imaging.altXray": {
+      "hash": "c54f57a73dc1",
+      "status": "machine"
+    },
+    "media:imaging.before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "media:imaging.captionAria": {
+      "hash": "87d296ec9489",
+      "status": "machine"
+    },
+    "media:imaging.captionFailed": {
+      "hash": "f318a52eb84f",
+      "status": "machine"
+    },
+    "media:imaging.captionPlaceholder": {
+      "hash": "73fde0ea4ccb",
+      "status": "machine"
+    },
+    "media:imaging.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "media:imaging.customizeTitle": {
+      "hash": "0a1e8e00ee69",
+      "status": "machine"
+    },
+    "media:imaging.deleteConfirm": {
+      "hash": "fbbc98ee63a5",
+      "status": "machine"
+    },
+    "media:imaging.deleteMessage": {
+      "hash": "152dcf727da1",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitle": {
+      "hash": "cff0049e9e8d",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitleNamed": {
+      "hash": "571ea63206d9",
+      "status": "machine"
+    },
+    "media:imaging.descriptionAria": {
+      "hash": "28d46a0fadc6",
+      "status": "machine"
+    },
+    "media:imaging.descriptionPlaceholder": {
+      "hash": "f6cbe2f0c1f8",
+      "status": "machine"
+    },
+    "media:imaging.dicom": {
+      "hash": "ad5ef5ed99ca",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownload": {
+      "hash": "4ee0fe3b6008",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownloadTitle": {
+      "hash": "1445e43cd43a",
+      "status": "machine"
+    },
+    "media:imaging.dicomStoredTitle": {
+      "hash": "28e33d8579ed",
+      "status": "machine"
+    },
+    "media:imaging.empty": {
+      "hash": "dc9d70506f60",
+      "status": "machine"
+    },
+    "media:imaging.formatsDicom": {
+      "hash": "115fc9639266",
+      "status": "machine"
+    },
+    "media:imaging.formatsPlain": {
+      "hash": "8b35497d6d3b",
+      "status": "machine"
+    },
+    "media:imaging.freePlan": {
+      "hash": "18e0f6d90cb0",
+      "status": "machine"
+    },
+    "media:imaging.inPdf": {
+      "hash": "b42b6ea9844d",
+      "status": "machine"
+    },
+    "media:imaging.inPdfTitle": {
+      "hash": "0d892b7c0f18",
+      "status": "machine"
+    },
+    "media:imaging.kindFailed": {
+      "hash": "4a3a65b6af07",
+      "status": "machine"
+    },
+    "media:imaging.kindTitle": {
+      "hash": "5a50382dac8e",
+      "status": "machine"
+    },
+    "media:imaging.limitReached": {
+      "hash": "a46738f807ac",
+      "status": "machine"
+    },
+    "media:imaging.loading": {
+      "hash": "746e71d496ff",
+      "status": "machine"
+    },
+    "media:imaging.missing": {
+      "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.pdfOption": {
+      "hash": "33120395aaf6",
+      "status": "machine"
+    },
+    "media:imaging.pdfOptionTitle": {
+      "hash": "8fdcdf17497c",
+      "status": "machine"
+    },
+    "media:imaging.pdfSelected": {
+      "hash": "4e7d6cc72fa3",
+      "status": "machine"
+    },
+    "media:imaging.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "media:imaging.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "media:imaging.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "media:imaging.removeFailed": {
+      "hash": "1a0a7a9a91e1",
+      "status": "machine"
+    },
+    "media:imaging.roleAria": {
+      "hash": "ad2b3c97dbfc",
+      "status": "machine"
+    },
+    "media:imaging.roleNone": {
+      "hash": "6a70d2a1b8f1",
+      "status": "machine"
+    },
+    "media:imaging.roleTitle": {
+      "hash": "5ddf416358fd",
+      "status": "machine"
+    },
+    "media:imaging.signedOut": {
+      "hash": "6852f911bc1a",
+      "status": "machine"
+    },
+    "media:imaging.title": {
+      "hash": "be7e2f201293",
+      "status": "machine"
+    },
+    "media:imaging.typeAria": {
+      "hash": "a77e1c4782f4",
+      "status": "machine"
+    },
+    "media:imaging.uploading": {
+      "hash": "5ce44dd77dae",
+      "status": "machine"
+    },
+    "media:imaging.usage": {
+      "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:upload.cantRead": {
+      "hash": "481303711abc",
+      "status": "machine"
+    },
+    "media:upload.cantShrink": {
+      "hash": "d260e0731d7c",
+      "status": "machine"
+    },
+    "media:upload.dicomPaid": {
+      "hash": "2a0cecddb2aa",
+      "status": "machine"
+    },
+    "media:upload.maxImages": {
+      "hash": "b0250d90fa22",
+      "status": "machine"
+    },
+    "media:upload.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "media:upload.originalFailed": {
+      "hash": "4aa208dfdcd1",
+      "status": "machine"
+    },
+    "media:upload.readDicom": {
+      "hash": "c35b51f46189",
+      "status": "machine"
+    },
+    "media:upload.signIn": {
+      "hash": "9d89b55a694d",
+      "status": "machine"
+    },
+    "media:upload.tooLarge": {
+      "hash": "98f691b1618c",
+      "status": "machine"
+    },
+    "media:upload.typeDicom": {
+      "hash": "50ce3832053f",
+      "status": "machine"
+    },
+    "media:upload.typePlain": {
+      "hash": "6a8d6452d8f6",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -13976,6 +15552,510 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "forms:anesthesia.add": {
+      "hash": "58a85a149b26",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "forms:anesthesia.anestheticN": {
+      "hash": "5dfa7f0707d0",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "forms:anesthesia.concentrationAria": {
+      "hash": "a85f41a67e70",
+      "status": "machine"
+    },
+    "forms:anesthesia.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:anesthesia.customizeTitle": {
+      "hash": "b0a3d0d65a13",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseLeft": {
+      "hash": "aa94bcdb5851",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseRight": {
+      "hash": "5b5bd2e279f7",
+      "status": "machine"
+    },
+    "forms:anesthesia.drugPlaceholder": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintDefault": {
+      "hash": "5d3edd293ef3",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintMixed": {
+      "hash": "6ce4961c968b",
+      "status": "machine"
+    },
+    "forms:anesthesia.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "forms:anesthesia.nameAria": {
+      "hash": "15c858146e68",
+      "status": "machine"
+    },
+    "forms:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:anesthesia.otherAria": {
+      "hash": "0b011386678b",
+      "status": "machine"
+    },
+    "forms:anesthesia.record": {
+      "hash": "b3591ab024ad",
+      "status": "machine"
+    },
+    "forms:anesthesia.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeNamed": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:anesthesia.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.title": {
+      "hash": "04da3ed6443c",
+      "status": "machine"
+    },
+    "forms:anesthesia.useUsual": {
+      "hash": "061fe49e86fd",
+      "status": "machine"
+    },
+    "forms:customEditor.addBlock": {
+      "hash": "b411505b685a",
+      "status": "machine"
+    },
+    "forms:customEditor.addField": {
+      "hash": "5f42d901b61b",
+      "status": "machine"
+    },
+    "forms:customEditor.blockName": {
+      "hash": "8816b2415f3a",
+      "status": "machine"
+    },
+    "forms:customEditor.blockNameAria": {
+      "hash": "3d30df458f51",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksLegend": {
+      "hash": "cfde9e561790",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksNote": {
+      "hash": "2fc3491fd25e",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackBlock": {
+      "hash": "feb82dc2995c",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackField": {
+      "hash": "c0d2856b74d0",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldName": {
+      "hash": "2f5574bc5e68",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldNameAria": {
+      "hash": "354249d71cb9",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldTypeAria": {
+      "hash": "f511f4807937",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsLegend": {
+      "hash": "8410b0d7e9d6",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsNote": {
+      "hash": "75ad5ba9dbac",
+      "status": "machine"
+    },
+    "forms:customEditor.options": {
+      "hash": "6b791ae025dd",
+      "status": "machine"
+    },
+    "forms:customEditor.optionsAria": {
+      "hash": "f5a08f9f53fe",
+      "status": "machine"
+    },
+    "forms:customEditor.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:customEditor.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:customEditor.removeNote": {
+      "hash": "a22cd3316071",
+      "status": "machine"
+    },
+    "forms:customEditor.types.checkbox": {
+      "hash": "4fd68e1d9814",
+      "status": "machine"
+    },
+    "forms:customEditor.types.number": {
+      "hash": "bd82cf16699b",
+      "status": "machine"
+    },
+    "forms:customEditor.types.select": {
+      "hash": "0e5ecc97121f",
+      "status": "machine"
+    },
+    "forms:customEditor.types.text": {
+      "hash": "71988c4d8e08",
+      "status": "machine"
+    },
+    "forms:customEditor.unit": {
+      "hash": "4e545960f1bf",
+      "status": "machine"
+    },
+    "forms:customEditor.unitAria": {
+      "hash": "cabe5c8f2157",
+      "status": "machine"
+    },
+    "forms:exam.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "forms:exam.ariaAbnormal": {
+      "hash": "7207d6d6e665",
+      "status": "machine"
+    },
+    "forms:exam.ariaComment": {
+      "hash": "884ff809af30",
+      "status": "machine"
+    },
+    "forms:exam.ariaNormal": {
+      "hash": "21a923504ceb",
+      "status": "machine"
+    },
+    "forms:exam.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "forms:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "forms:exam.items.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "forms:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "forms:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "forms:exam.items.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "forms:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.buccal": {
+      "hash": "0f24f8310e90",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.extraoral": {
+      "hash": "34d0ae98c367",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.lymph": {
+      "hash": "dcd47eb8f533",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.palate": {
+      "hash": "137e09267207",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.pharynx": {
+      "hash": "8b1bf4d57830",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.tongue": {
+      "hash": "b2715212d939",
+      "status": "machine"
+    },
+    "forms:exam.markAllNormal": {
+      "hash": "bd1fe411f294",
+      "status": "machine"
+    },
+    "forms:exam.markRestNormal": {
+      "hash": "dd45225b5257",
+      "status": "machine"
+    },
+    "forms:exam.markTitle": {
+      "hash": "df7fcca5cd55",
+      "status": "machine"
+    },
+    "forms:exam.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "forms:exam.placeholder": {
+      "hash": "c1da513652f4",
+      "status": "machine"
+    },
+    "forms:exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "forms:patient.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "forms:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "forms:patient.complaintPlaceholder": {
+      "hash": "97c949f2f979",
+      "status": "machine"
+    },
+    "forms:patient.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:patient.customizeTitle": {
+      "hash": "70a275aeab85",
+      "status": "machine"
+    },
+    "forms:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "forms:patient.deciduous": {
+      "hash": "abd4f044e2ae",
+      "status": "machine"
+    },
+    "forms:patient.dentition": {
+      "hash": "bf631ac9f474",
+      "status": "machine"
+    },
+    "forms:patient.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "forms:patient.intervalPlaceholder": {
+      "hash": "07faeb78fa1b",
+      "status": "machine"
+    },
+    "forms:patient.intervals.month1": {
+      "hash": "cd8c117e6dd5",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months3": {
+      "hash": "bfd45132a8c6",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months6": {
+      "hash": "8ed94b4cf82d",
+      "status": "machine"
+    },
+    "forms:patient.intervals.week1": {
+      "hash": "c8cc522340b9",
+      "status": "machine"
+    },
+    "forms:patient.intervals.weeks2": {
+      "hash": "fc5230276475",
+      "status": "machine"
+    },
+    "forms:patient.intervals.year1": {
+      "hash": "91647badc37b",
+      "status": "machine"
+    },
+    "forms:patient.name": {
+      "hash": "dfc06f22ff07",
+      "status": "machine"
+    },
+    "forms:patient.namePlaceholder": {
+      "hash": "100d9eb8c1c9",
+      "status": "machine"
+    },
+    "forms:patient.number": {
+      "hash": "57699829a25f",
+      "status": "machine"
+    },
+    "forms:patient.numberPlaceholder": {
+      "hash": "4b8d9760dcc7",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmail": {
+      "hash": "cbc7ec6db0bb",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailOptional": {
+      "hash": "59be71333c96",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailReminders": {
+      "hash": "04e29ff2528f",
+      "status": "machine"
+    },
+    "forms:patient.ownerName": {
+      "hash": "0c19629c3116",
+      "status": "machine"
+    },
+    "forms:patient.ownerNamePlaceholder": {
+      "hash": "d823646cfbb2",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhone": {
+      "hash": "d00cc96d9e94",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhonePlaceholder": {
+      "hash": "2c6a40482cfb",
+      "status": "machine"
+    },
+    "forms:patient.permanent": {
+      "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.recheck": {
+      "hash": "14ca550e2a16",
+      "status": "machine"
+    },
+    "forms:patient.recheckQuick": {
+      "hash": "2f968890948b",
+      "status": "machine"
+    },
+    "forms:patient.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "forms:patient.tech": {
+      "hash": "d0da7ab8bc92",
+      "status": "machine"
+    },
+    "forms:patient.techPlaceholder": {
+      "hash": "95287a1d0e39",
+      "status": "machine"
+    },
+    "forms:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "forms:report.dialog.confirm": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "forms:report.dialog.label": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "forms:report.dialog.message": {
+      "hash": "42794b4639d2",
+      "status": "machine"
+    },
+    "forms:report.dialog.nameRequired": {
+      "hash": "e4eabf990282",
+      "status": "machine"
+    },
+    "forms:report.dialog.placeholder": {
+      "hash": "df67c3a8dfa1",
+      "status": "machine"
+    },
+    "forms:report.dialog.title": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.edit": {
+      "hash": "557f7676f08c",
+      "status": "machine"
+    },
+    "forms:report.insert": {
+      "hash": "108aadb8bb0b",
+      "status": "machine"
+    },
+    "forms:report.insertAria": {
+      "hash": "7700a6e75577",
+      "status": "machine"
+    },
+    "forms:report.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "forms:report.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "forms:report.placeholder": {
+      "hash": "b3ab94c384cd",
+      "status": "machine"
+    },
+    "forms:report.save": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.saveFailed": {
+      "hash": "3ef21a424b95",
+      "status": "machine"
+    },
+    "forms:report.saveTitle": {
+      "hash": "21100aee3e0b",
+      "status": "machine"
+    },
+    "forms:report.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "forms:report.textareaAria": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.title": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "landing:closer.title": {
       "hash": "c9ef94e44e1a",
       "status": "machine"
@@ -14554,6 +16634,290 @@
     },
     "landing:wordmark": {
       "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "media:dicom.noDimensions": {
+      "hash": "82f81d287638",
+      "status": "machine"
+    },
+    "media:dicom.noImage": {
+      "hash": "6497657791b3",
+      "status": "machine"
+    },
+    "media:dicom.render": {
+      "hash": "4018cd511939",
+      "status": "machine"
+    },
+    "media:dicom.truncated": {
+      "hash": "e72387801dba",
+      "status": "machine"
+    },
+    "media:dicom.unreadable": {
+      "hash": "34a6e01ac753",
+      "status": "machine"
+    },
+    "media:dicom.unsupported": {
+      "hash": "aadef53806f5",
+      "status": "machine"
+    },
+    "media:documents.chartTab": {
+      "hash": "126f03d7f2b0",
+      "status": "machine"
+    },
+    "media:documents.chartWho": {
+      "hash": "27fcc02bb098",
+      "status": "machine"
+    },
+    "media:documents.close": {
+      "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.ownerTab": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "media:documents.ownerWho": {
+      "hash": "63cb628eceb0",
+      "status": "machine"
+    },
+    "media:documents.tablist": {
+      "hash": "d6bd8c0aeee8",
+      "status": "machine"
+    },
+    "media:documents.title": {
+      "hash": "bef72e37aee3",
+      "status": "machine"
+    },
+    "media:imaging.add": {
+      "hash": "04136060b40f",
+      "status": "machine"
+    },
+    "media:imaging.addFailed": {
+      "hash": "f731b3c5c6c2",
+      "status": "machine"
+    },
+    "media:imaging.after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "media:imaging.altPhoto": {
+      "hash": "3b60b2625638",
+      "status": "machine"
+    },
+    "media:imaging.altXray": {
+      "hash": "c54f57a73dc1",
+      "status": "machine"
+    },
+    "media:imaging.before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "media:imaging.captionAria": {
+      "hash": "87d296ec9489",
+      "status": "machine"
+    },
+    "media:imaging.captionFailed": {
+      "hash": "f318a52eb84f",
+      "status": "machine"
+    },
+    "media:imaging.captionPlaceholder": {
+      "hash": "73fde0ea4ccb",
+      "status": "machine"
+    },
+    "media:imaging.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "media:imaging.customizeTitle": {
+      "hash": "0a1e8e00ee69",
+      "status": "machine"
+    },
+    "media:imaging.deleteConfirm": {
+      "hash": "fbbc98ee63a5",
+      "status": "machine"
+    },
+    "media:imaging.deleteMessage": {
+      "hash": "152dcf727da1",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitle": {
+      "hash": "cff0049e9e8d",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitleNamed": {
+      "hash": "571ea63206d9",
+      "status": "machine"
+    },
+    "media:imaging.descriptionAria": {
+      "hash": "28d46a0fadc6",
+      "status": "machine"
+    },
+    "media:imaging.descriptionPlaceholder": {
+      "hash": "f6cbe2f0c1f8",
+      "status": "machine"
+    },
+    "media:imaging.dicom": {
+      "hash": "ad5ef5ed99ca",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownload": {
+      "hash": "4ee0fe3b6008",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownloadTitle": {
+      "hash": "1445e43cd43a",
+      "status": "machine"
+    },
+    "media:imaging.dicomStoredTitle": {
+      "hash": "28e33d8579ed",
+      "status": "machine"
+    },
+    "media:imaging.empty": {
+      "hash": "dc9d70506f60",
+      "status": "machine"
+    },
+    "media:imaging.formatsDicom": {
+      "hash": "115fc9639266",
+      "status": "machine"
+    },
+    "media:imaging.formatsPlain": {
+      "hash": "8b35497d6d3b",
+      "status": "machine"
+    },
+    "media:imaging.freePlan": {
+      "hash": "18e0f6d90cb0",
+      "status": "machine"
+    },
+    "media:imaging.inPdf": {
+      "hash": "b42b6ea9844d",
+      "status": "machine"
+    },
+    "media:imaging.inPdfTitle": {
+      "hash": "0d892b7c0f18",
+      "status": "machine"
+    },
+    "media:imaging.kindFailed": {
+      "hash": "4a3a65b6af07",
+      "status": "machine"
+    },
+    "media:imaging.kindTitle": {
+      "hash": "5a50382dac8e",
+      "status": "machine"
+    },
+    "media:imaging.limitReached": {
+      "hash": "a46738f807ac",
+      "status": "machine"
+    },
+    "media:imaging.loading": {
+      "hash": "746e71d496ff",
+      "status": "machine"
+    },
+    "media:imaging.missing": {
+      "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.pdfOption": {
+      "hash": "33120395aaf6",
+      "status": "machine"
+    },
+    "media:imaging.pdfOptionTitle": {
+      "hash": "8fdcdf17497c",
+      "status": "machine"
+    },
+    "media:imaging.pdfSelected": {
+      "hash": "4e7d6cc72fa3",
+      "status": "machine"
+    },
+    "media:imaging.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "media:imaging.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "media:imaging.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "media:imaging.removeFailed": {
+      "hash": "1a0a7a9a91e1",
+      "status": "machine"
+    },
+    "media:imaging.roleAria": {
+      "hash": "ad2b3c97dbfc",
+      "status": "machine"
+    },
+    "media:imaging.roleNone": {
+      "hash": "6a70d2a1b8f1",
+      "status": "machine"
+    },
+    "media:imaging.roleTitle": {
+      "hash": "5ddf416358fd",
+      "status": "machine"
+    },
+    "media:imaging.signedOut": {
+      "hash": "6852f911bc1a",
+      "status": "machine"
+    },
+    "media:imaging.title": {
+      "hash": "be7e2f201293",
+      "status": "machine"
+    },
+    "media:imaging.typeAria": {
+      "hash": "a77e1c4782f4",
+      "status": "machine"
+    },
+    "media:imaging.uploading": {
+      "hash": "5ce44dd77dae",
+      "status": "machine"
+    },
+    "media:imaging.usage": {
+      "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:upload.cantRead": {
+      "hash": "481303711abc",
+      "status": "machine"
+    },
+    "media:upload.cantShrink": {
+      "hash": "d260e0731d7c",
+      "status": "machine"
+    },
+    "media:upload.dicomPaid": {
+      "hash": "2a0cecddb2aa",
+      "status": "machine"
+    },
+    "media:upload.maxImages": {
+      "hash": "b0250d90fa22",
+      "status": "machine"
+    },
+    "media:upload.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "media:upload.originalFailed": {
+      "hash": "4aa208dfdcd1",
+      "status": "machine"
+    },
+    "media:upload.readDicom": {
+      "hash": "c35b51f46189",
+      "status": "machine"
+    },
+    "media:upload.signIn": {
+      "hash": "9d89b55a694d",
+      "status": "machine"
+    },
+    "media:upload.tooLarge": {
+      "hash": "98f691b1618c",
+      "status": "machine"
+    },
+    "media:upload.typeDicom": {
+      "hash": "50ce3832053f",
+      "status": "machine"
+    },
+    "media:upload.typePlain": {
+      "hash": "6a8d6452d8f6",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -18990,6 +21354,510 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "forms:anesthesia.add": {
+      "hash": "58a85a149b26",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "forms:anesthesia.anestheticN": {
+      "hash": "5dfa7f0707d0",
+      "status": "machine"
+    },
+    "forms:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "forms:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "forms:anesthesia.concentrationAria": {
+      "hash": "a85f41a67e70",
+      "status": "machine"
+    },
+    "forms:anesthesia.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:anesthesia.customizeTitle": {
+      "hash": "b0a3d0d65a13",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseLeft": {
+      "hash": "aa94bcdb5851",
+      "status": "machine"
+    },
+    "forms:anesthesia.doseRight": {
+      "hash": "5b5bd2e279f7",
+      "status": "machine"
+    },
+    "forms:anesthesia.drugPlaceholder": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintDefault": {
+      "hash": "5d3edd293ef3",
+      "status": "machine"
+    },
+    "forms:anesthesia.hintMixed": {
+      "hash": "6ce4961c968b",
+      "status": "machine"
+    },
+    "forms:anesthesia.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "forms:anesthesia.nameAria": {
+      "hash": "15c858146e68",
+      "status": "machine"
+    },
+    "forms:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "forms:anesthesia.otherAria": {
+      "hash": "0b011386678b",
+      "status": "machine"
+    },
+    "forms:anesthesia.record": {
+      "hash": "b3591ab024ad",
+      "status": "machine"
+    },
+    "forms:anesthesia.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:anesthesia.removeNamed": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:anesthesia.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "forms:anesthesia.title": {
+      "hash": "04da3ed6443c",
+      "status": "machine"
+    },
+    "forms:anesthesia.useUsual": {
+      "hash": "061fe49e86fd",
+      "status": "machine"
+    },
+    "forms:customEditor.addBlock": {
+      "hash": "b411505b685a",
+      "status": "machine"
+    },
+    "forms:customEditor.addField": {
+      "hash": "5f42d901b61b",
+      "status": "machine"
+    },
+    "forms:customEditor.blockName": {
+      "hash": "8816b2415f3a",
+      "status": "machine"
+    },
+    "forms:customEditor.blockNameAria": {
+      "hash": "3d30df458f51",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksLegend": {
+      "hash": "cfde9e561790",
+      "status": "machine"
+    },
+    "forms:customEditor.blocksNote": {
+      "hash": "2fc3491fd25e",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackBlock": {
+      "hash": "feb82dc2995c",
+      "status": "machine"
+    },
+    "forms:customEditor.fallbackField": {
+      "hash": "c0d2856b74d0",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldName": {
+      "hash": "2f5574bc5e68",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldNameAria": {
+      "hash": "354249d71cb9",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldTypeAria": {
+      "hash": "f511f4807937",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsLegend": {
+      "hash": "8410b0d7e9d6",
+      "status": "machine"
+    },
+    "forms:customEditor.fieldsNote": {
+      "hash": "75ad5ba9dbac",
+      "status": "machine"
+    },
+    "forms:customEditor.options": {
+      "hash": "6b791ae025dd",
+      "status": "machine"
+    },
+    "forms:customEditor.optionsAria": {
+      "hash": "f5a08f9f53fe",
+      "status": "machine"
+    },
+    "forms:customEditor.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "forms:customEditor.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "forms:customEditor.removeNote": {
+      "hash": "a22cd3316071",
+      "status": "machine"
+    },
+    "forms:customEditor.types.checkbox": {
+      "hash": "4fd68e1d9814",
+      "status": "machine"
+    },
+    "forms:customEditor.types.number": {
+      "hash": "bd82cf16699b",
+      "status": "machine"
+    },
+    "forms:customEditor.types.select": {
+      "hash": "0e5ecc97121f",
+      "status": "machine"
+    },
+    "forms:customEditor.types.text": {
+      "hash": "71988c4d8e08",
+      "status": "machine"
+    },
+    "forms:customEditor.unit": {
+      "hash": "4e545960f1bf",
+      "status": "machine"
+    },
+    "forms:customEditor.unitAria": {
+      "hash": "cabe5c8f2157",
+      "status": "machine"
+    },
+    "forms:exam.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "forms:exam.ariaAbnormal": {
+      "hash": "7207d6d6e665",
+      "status": "machine"
+    },
+    "forms:exam.ariaComment": {
+      "hash": "884ff809af30",
+      "status": "machine"
+    },
+    "forms:exam.ariaNormal": {
+      "hash": "21a923504ceb",
+      "status": "machine"
+    },
+    "forms:exam.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "forms:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "forms:exam.items.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "forms:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "forms:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "forms:exam.items.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "forms:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.buccal": {
+      "hash": "0f24f8310e90",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.extraoral": {
+      "hash": "34d0ae98c367",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.lymph": {
+      "hash": "dcd47eb8f533",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.palate": {
+      "hash": "137e09267207",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.pharynx": {
+      "hash": "8b1bf4d57830",
+      "status": "machine"
+    },
+    "forms:exam.itemsInline.tongue": {
+      "hash": "b2715212d939",
+      "status": "machine"
+    },
+    "forms:exam.markAllNormal": {
+      "hash": "bd1fe411f294",
+      "status": "machine"
+    },
+    "forms:exam.markRestNormal": {
+      "hash": "dd45225b5257",
+      "status": "machine"
+    },
+    "forms:exam.markTitle": {
+      "hash": "df7fcca5cd55",
+      "status": "machine"
+    },
+    "forms:exam.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "forms:exam.placeholder": {
+      "hash": "c1da513652f4",
+      "status": "machine"
+    },
+    "forms:exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "forms:patient.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "forms:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "forms:patient.complaintPlaceholder": {
+      "hash": "97c949f2f979",
+      "status": "machine"
+    },
+    "forms:patient.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "forms:patient.customizeTitle": {
+      "hash": "70a275aeab85",
+      "status": "machine"
+    },
+    "forms:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "forms:patient.deciduous": {
+      "hash": "abd4f044e2ae",
+      "status": "machine"
+    },
+    "forms:patient.dentition": {
+      "hash": "bf631ac9f474",
+      "status": "machine"
+    },
+    "forms:patient.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "forms:patient.intervalPlaceholder": {
+      "hash": "07faeb78fa1b",
+      "status": "machine"
+    },
+    "forms:patient.intervals.month1": {
+      "hash": "cd8c117e6dd5",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months3": {
+      "hash": "bfd45132a8c6",
+      "status": "machine"
+    },
+    "forms:patient.intervals.months6": {
+      "hash": "8ed94b4cf82d",
+      "status": "machine"
+    },
+    "forms:patient.intervals.week1": {
+      "hash": "c8cc522340b9",
+      "status": "machine"
+    },
+    "forms:patient.intervals.weeks2": {
+      "hash": "fc5230276475",
+      "status": "machine"
+    },
+    "forms:patient.intervals.year1": {
+      "hash": "91647badc37b",
+      "status": "machine"
+    },
+    "forms:patient.name": {
+      "hash": "dfc06f22ff07",
+      "status": "machine"
+    },
+    "forms:patient.namePlaceholder": {
+      "hash": "100d9eb8c1c9",
+      "status": "machine"
+    },
+    "forms:patient.number": {
+      "hash": "57699829a25f",
+      "status": "machine"
+    },
+    "forms:patient.numberPlaceholder": {
+      "hash": "4b8d9760dcc7",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmail": {
+      "hash": "cbc7ec6db0bb",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailOptional": {
+      "hash": "59be71333c96",
+      "status": "machine"
+    },
+    "forms:patient.ownerEmailReminders": {
+      "hash": "04e29ff2528f",
+      "status": "machine"
+    },
+    "forms:patient.ownerName": {
+      "hash": "0c19629c3116",
+      "status": "machine"
+    },
+    "forms:patient.ownerNamePlaceholder": {
+      "hash": "d823646cfbb2",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhone": {
+      "hash": "d00cc96d9e94",
+      "status": "machine"
+    },
+    "forms:patient.ownerPhonePlaceholder": {
+      "hash": "2c6a40482cfb",
+      "status": "machine"
+    },
+    "forms:patient.permanent": {
+      "hash": "455a95491f40",
+      "status": "machine"
+    },
+    "forms:patient.recheck": {
+      "hash": "14ca550e2a16",
+      "status": "machine"
+    },
+    "forms:patient.recheckQuick": {
+      "hash": "2f968890948b",
+      "status": "machine"
+    },
+    "forms:patient.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "forms:patient.tech": {
+      "hash": "d0da7ab8bc92",
+      "status": "machine"
+    },
+    "forms:patient.techPlaceholder": {
+      "hash": "95287a1d0e39",
+      "status": "machine"
+    },
+    "forms:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "forms:report.dialog.confirm": {
+      "hash": "47f72a2f3e91",
+      "status": "machine"
+    },
+    "forms:report.dialog.label": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "forms:report.dialog.message": {
+      "hash": "42794b4639d2",
+      "status": "machine"
+    },
+    "forms:report.dialog.nameRequired": {
+      "hash": "e4eabf990282",
+      "status": "machine"
+    },
+    "forms:report.dialog.placeholder": {
+      "hash": "df67c3a8dfa1",
+      "status": "machine"
+    },
+    "forms:report.dialog.title": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.edit": {
+      "hash": "557f7676f08c",
+      "status": "machine"
+    },
+    "forms:report.insert": {
+      "hash": "108aadb8bb0b",
+      "status": "machine"
+    },
+    "forms:report.insertAria": {
+      "hash": "7700a6e75577",
+      "status": "machine"
+    },
+    "forms:report.loading": {
+      "hash": "3800ee7191b1",
+      "status": "machine"
+    },
+    "forms:report.none": {
+      "hash": "2d1ae3be976e",
+      "status": "machine"
+    },
+    "forms:report.placeholder": {
+      "hash": "b3ab94c384cd",
+      "status": "machine"
+    },
+    "forms:report.save": {
+      "hash": "c4fcbe6866f5",
+      "status": "machine"
+    },
+    "forms:report.saveFailed": {
+      "hash": "3ef21a424b95",
+      "status": "machine"
+    },
+    "forms:report.saveTitle": {
+      "hash": "21100aee3e0b",
+      "status": "machine"
+    },
+    "forms:report.saved": {
+      "hash": "fdd6e6c06fcf",
+      "status": "machine"
+    },
+    "forms:report.textareaAria": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.title": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "forms:report.untitled": {
+      "hash": "f59ab8d1331b",
+      "status": "machine"
+    },
     "landing:closer.title": {
       "hash": "c9ef94e44e1a",
       "status": "machine"
@@ -19568,6 +22436,290 @@
     },
     "landing:wordmark": {
       "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "media:dicom.noDimensions": {
+      "hash": "82f81d287638",
+      "status": "machine"
+    },
+    "media:dicom.noImage": {
+      "hash": "6497657791b3",
+      "status": "machine"
+    },
+    "media:dicom.render": {
+      "hash": "4018cd511939",
+      "status": "machine"
+    },
+    "media:dicom.truncated": {
+      "hash": "e72387801dba",
+      "status": "machine"
+    },
+    "media:dicom.unreadable": {
+      "hash": "34a6e01ac753",
+      "status": "machine"
+    },
+    "media:dicom.unsupported": {
+      "hash": "aadef53806f5",
+      "status": "machine"
+    },
+    "media:documents.chartTab": {
+      "hash": "126f03d7f2b0",
+      "status": "machine"
+    },
+    "media:documents.chartWho": {
+      "hash": "27fcc02bb098",
+      "status": "machine"
+    },
+    "media:documents.close": {
+      "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.ownerTab": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "media:documents.ownerWho": {
+      "hash": "63cb628eceb0",
+      "status": "machine"
+    },
+    "media:documents.tablist": {
+      "hash": "d6bd8c0aeee8",
+      "status": "machine"
+    },
+    "media:documents.title": {
+      "hash": "bef72e37aee3",
+      "status": "machine"
+    },
+    "media:imaging.add": {
+      "hash": "04136060b40f",
+      "status": "machine"
+    },
+    "media:imaging.addFailed": {
+      "hash": "f731b3c5c6c2",
+      "status": "machine"
+    },
+    "media:imaging.after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "media:imaging.altPhoto": {
+      "hash": "3b60b2625638",
+      "status": "machine"
+    },
+    "media:imaging.altXray": {
+      "hash": "c54f57a73dc1",
+      "status": "machine"
+    },
+    "media:imaging.before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "media:imaging.captionAria": {
+      "hash": "87d296ec9489",
+      "status": "machine"
+    },
+    "media:imaging.captionFailed": {
+      "hash": "f318a52eb84f",
+      "status": "machine"
+    },
+    "media:imaging.captionPlaceholder": {
+      "hash": "73fde0ea4ccb",
+      "status": "machine"
+    },
+    "media:imaging.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "media:imaging.customizeTitle": {
+      "hash": "0a1e8e00ee69",
+      "status": "machine"
+    },
+    "media:imaging.deleteConfirm": {
+      "hash": "fbbc98ee63a5",
+      "status": "machine"
+    },
+    "media:imaging.deleteMessage": {
+      "hash": "152dcf727da1",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitle": {
+      "hash": "cff0049e9e8d",
+      "status": "machine"
+    },
+    "media:imaging.deleteTitleNamed": {
+      "hash": "571ea63206d9",
+      "status": "machine"
+    },
+    "media:imaging.descriptionAria": {
+      "hash": "28d46a0fadc6",
+      "status": "machine"
+    },
+    "media:imaging.descriptionPlaceholder": {
+      "hash": "f6cbe2f0c1f8",
+      "status": "machine"
+    },
+    "media:imaging.dicom": {
+      "hash": "ad5ef5ed99ca",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownload": {
+      "hash": "4ee0fe3b6008",
+      "status": "machine"
+    },
+    "media:imaging.dicomDownloadTitle": {
+      "hash": "1445e43cd43a",
+      "status": "machine"
+    },
+    "media:imaging.dicomStoredTitle": {
+      "hash": "28e33d8579ed",
+      "status": "machine"
+    },
+    "media:imaging.empty": {
+      "hash": "dc9d70506f60",
+      "status": "machine"
+    },
+    "media:imaging.formatsDicom": {
+      "hash": "115fc9639266",
+      "status": "machine"
+    },
+    "media:imaging.formatsPlain": {
+      "hash": "8b35497d6d3b",
+      "status": "machine"
+    },
+    "media:imaging.freePlan": {
+      "hash": "18e0f6d90cb0",
+      "status": "machine"
+    },
+    "media:imaging.inPdf": {
+      "hash": "b42b6ea9844d",
+      "status": "machine"
+    },
+    "media:imaging.inPdfTitle": {
+      "hash": "0d892b7c0f18",
+      "status": "machine"
+    },
+    "media:imaging.kindFailed": {
+      "hash": "4a3a65b6af07",
+      "status": "machine"
+    },
+    "media:imaging.kindTitle": {
+      "hash": "5a50382dac8e",
+      "status": "machine"
+    },
+    "media:imaging.limitReached": {
+      "hash": "a46738f807ac",
+      "status": "machine"
+    },
+    "media:imaging.loading": {
+      "hash": "746e71d496ff",
+      "status": "machine"
+    },
+    "media:imaging.missing": {
+      "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.pdfOption": {
+      "hash": "33120395aaf6",
+      "status": "machine"
+    },
+    "media:imaging.pdfOptionTitle": {
+      "hash": "8fdcdf17497c",
+      "status": "machine"
+    },
+    "media:imaging.pdfSelected": {
+      "hash": "4e7d6cc72fa3",
+      "status": "machine"
+    },
+    "media:imaging.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "media:imaging.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "media:imaging.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "media:imaging.removeFailed": {
+      "hash": "1a0a7a9a91e1",
+      "status": "machine"
+    },
+    "media:imaging.roleAria": {
+      "hash": "ad2b3c97dbfc",
+      "status": "machine"
+    },
+    "media:imaging.roleNone": {
+      "hash": "6a70d2a1b8f1",
+      "status": "machine"
+    },
+    "media:imaging.roleTitle": {
+      "hash": "5ddf416358fd",
+      "status": "machine"
+    },
+    "media:imaging.signedOut": {
+      "hash": "6852f911bc1a",
+      "status": "machine"
+    },
+    "media:imaging.title": {
+      "hash": "be7e2f201293",
+      "status": "machine"
+    },
+    "media:imaging.typeAria": {
+      "hash": "a77e1c4782f4",
+      "status": "machine"
+    },
+    "media:imaging.uploading": {
+      "hash": "5ce44dd77dae",
+      "status": "machine"
+    },
+    "media:imaging.usage": {
+      "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:upload.cantRead": {
+      "hash": "481303711abc",
+      "status": "machine"
+    },
+    "media:upload.cantShrink": {
+      "hash": "d260e0731d7c",
+      "status": "machine"
+    },
+    "media:upload.dicomPaid": {
+      "hash": "2a0cecddb2aa",
+      "status": "machine"
+    },
+    "media:upload.maxImages": {
+      "hash": "b0250d90fa22",
+      "status": "machine"
+    },
+    "media:upload.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "media:upload.originalFailed": {
+      "hash": "4aa208dfdcd1",
+      "status": "machine"
+    },
+    "media:upload.readDicom": {
+      "hash": "c35b51f46189",
+      "status": "machine"
+    },
+    "media:upload.signIn": {
+      "hash": "9d89b55a694d",
+      "status": "machine"
+    },
+    "media:upload.tooLarge": {
+      "hash": "98f691b1618c",
+      "status": "machine"
+    },
+    "media:upload.typeDicom": {
+      "hash": "50ce3832053f",
+      "status": "machine"
+    },
+    "media:upload.typePlain": {
+      "hash": "6a8d6452d8f6",
       "status": "machine"
     },
     "report:abnormalityNoted": {

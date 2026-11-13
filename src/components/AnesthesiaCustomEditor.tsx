@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { CustomFieldType } from '../types';
 import {
   CustomBlockDef,
@@ -16,12 +17,7 @@ import {
  * never touches charts: charted values carry their own label.
  */
 
-const TYPE_LABELS: Record<CustomFieldType, string> = {
-  text: 'Text',
-  number: 'Number',
-  checkbox: 'Yes / no',
-  select: 'Pick-list',
-};
+const FIELD_TYPES: CustomFieldType[] = ['text', 'number', 'checkbox', 'select'];
 
 export const AnesthesiaCustomEditor: React.FC<{
   blocks: CustomBlockDef[];
@@ -29,6 +25,7 @@ export const AnesthesiaCustomEditor: React.FC<{
   onBlocksChange: (next: CustomBlockDef[]) => void;
   onFieldsChange: (next: CustomFieldDef[]) => void;
 }> = ({ blocks, fields, onBlocksChange, onFieldsChange }) => {
+  const { t } = useTranslation('forms');
   const [b, setB] = React.useState(blocks);
   const [f, setF] = React.useState(fields);
   // Options typed as comma-separated text, per field id.
@@ -50,15 +47,15 @@ export const AnesthesiaCustomEditor: React.FC<{
   return (
     <>
       <fieldset className="chart-settings__field">
-        <legend>Your nerve blocks</legend>
-        <p className="chart-settings__note">Extra Right / Left rows (mL), e.g. Major palatine.</p>
+        <legend>{t('customEditor.blocksLegend')}</legend>
+        <p className="chart-settings__note">{t('customEditor.blocksNote')}</p>
         {b.map((x, i) => (
           <div key={x.id} className="custom-def">
             <input
               type="text"
               className="patient-form__input custom-def__label"
-              placeholder="Block name"
-              aria-label={`Nerve block ${i + 1} name`}
+              placeholder={t('customEditor.blockName')}
+              aria-label={t('customEditor.blockNameAria', { n: i + 1 })}
               value={x.label}
               maxLength={40}
               onChange={(e) => setB(b.map((y) => (y.id === x.id ? { ...y, label: e.target.value } : y)))}
@@ -67,30 +64,30 @@ export const AnesthesiaCustomEditor: React.FC<{
             <button
               type="button"
               className="diagram-view__action custom-def__remove"
-              aria-label={`Remove ${x.label || 'nerve block'}`}
+              aria-label={t('customEditor.removeAria', { name: x.label || t('customEditor.fallbackBlock') })}
               onClick={() => { const next = b.filter((y) => y.id !== x.id); setB(next); saveBlocks(next); }}
             >
-              Remove
+              {t('customEditor.remove')}
             </button>
           </div>
         ))}
         {b.length < MAX_CUSTOM_BLOCKS && (
           <button type="button" className="anesthesia-drug__add" onClick={() => setB([...b, { id: newCustomId(), label: '' }])}>
-            <span aria-hidden="true">+</span> Add nerve block
+            <span aria-hidden="true">+</span> {t('customEditor.addBlock')}
           </button>
         )}
       </fieldset>
 
       <fieldset className="chart-settings__field">
-        <legend>Your fields</legend>
-        <p className="chart-settings__note">Shown under “Anesthesia record”, e.g. Premedication, ET tube, Fluids.</p>
+        <legend>{t('customEditor.fieldsLegend')}</legend>
+        <p className="chart-settings__note">{t('customEditor.fieldsNote')}</p>
         {f.map((x, i) => (
           <div key={x.id} className="custom-def custom-def--field">
             <input
               type="text"
               className="patient-form__input custom-def__label"
-              placeholder="Field name"
-              aria-label={`Field ${i + 1} name`}
+              placeholder={t('customEditor.fieldName')}
+              aria-label={t('customEditor.fieldNameAria', { n: i + 1 })}
               value={x.label}
               maxLength={40}
               onChange={(e) => setF(f.map((y) => (y.id === x.id ? { ...y, label: e.target.value } : y)))}
@@ -98,7 +95,7 @@ export const AnesthesiaCustomEditor: React.FC<{
             />
             <select
               className="patient-form__input custom-def__type"
-              aria-label={`Field ${i + 1} type`}
+              aria-label={t('customEditor.fieldTypeAria', { n: i + 1 })}
               value={x.type}
               onChange={(e) => {
                 const type = e.target.value as CustomFieldType;
@@ -107,14 +104,14 @@ export const AnesthesiaCustomEditor: React.FC<{
                 saveFields(next);
               }}
             >
-              {(Object.keys(TYPE_LABELS) as CustomFieldType[]).map((t) => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
+              {FIELD_TYPES.map((ft) => <option key={ft} value={ft}>{t(`customEditor.types.${ft}`)}</option>)}
             </select>
             {x.type === 'number' && (
               <input
                 type="text"
                 className="patient-form__input custom-def__unit"
-                placeholder="Unit"
-                aria-label={`Field ${i + 1} unit`}
+                placeholder={t('customEditor.unit')}
+                aria-label={t('customEditor.unitAria', { n: i + 1 })}
                 value={x.unit ?? ''}
                 maxLength={12}
                 onChange={(e) => setF(f.map((y) => (y.id === x.id ? { ...y, unit: e.target.value } : y)))}
@@ -125,8 +122,8 @@ export const AnesthesiaCustomEditor: React.FC<{
               <input
                 type="text"
                 className="patient-form__input custom-def__options"
-                placeholder="Options, comma-separated"
-                aria-label={`Field ${i + 1} options`}
+                placeholder={t('customEditor.options')}
+                aria-label={t('customEditor.optionsAria', { n: i + 1 })}
                 value={optText[x.id] ?? ''}
                 onChange={(e) => {
                   setOptText({ ...optText, [x.id]: e.target.value });
@@ -138,19 +135,19 @@ export const AnesthesiaCustomEditor: React.FC<{
             <button
               type="button"
               className="diagram-view__action custom-def__remove"
-              aria-label={`Remove ${x.label || 'field'}`}
+              aria-label={t('customEditor.removeAria', { name: x.label || t('customEditor.fallbackField') })}
               onClick={() => { const next = f.filter((y) => y.id !== x.id); setF(next); saveFields(next); }}
             >
-              Remove
+              {t('customEditor.remove')}
             </button>
           </div>
         ))}
         {f.length < MAX_CUSTOM_FIELDS && (
           <button type="button" className="anesthesia-drug__add" onClick={() => setF([...f, { id: newCustomId(), label: '', type: 'text' }])}>
-            <span aria-hidden="true">+</span> Add field
+            <span aria-hidden="true">+</span> {t('customEditor.addField')}
           </button>
         )}
-        <p className="chart-settings__note">Removing a block or field here never removes what’s already charted.</p>
+        <p className="chart-settings__note">{t('customEditor.removeNote')}</p>
       </fieldset>
     </>
   );

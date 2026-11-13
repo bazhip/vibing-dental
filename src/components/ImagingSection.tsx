@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { confirmDialog } from './ui/dialogs';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
@@ -30,6 +31,9 @@ interface ImagingSectionProps {
   onCustomize?: () => void;
 }
 
+const KINDS: AttachmentKind[] = ['photo', 'xray'];
+const ROLES: ImageRole[] = ['before', 'after'];
+
 /**
  * Photos & radiographs for the chart. Upload intraoral photos or dental
  * rads, caption them, and optionally anchor each to a tooth (Triadan).
@@ -51,6 +55,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageInPdfChange,
   readOnly = false,
 }) => {
+  const { t } = useTranslation('media');
   const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [description, setDescription] = React.useState('');
@@ -62,11 +67,10 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     return (
       <div className="patient-form">
         <div className="patient-form__header">
-          <h2 className="patient-form__section-title">Images</h2>
+          <h2 className="patient-form__section-title">{t('imaging.title')}</h2>
         </div>
         <p className="practice-logo-empty">
-          Sign in with a practice account to attach intraoral photos and
-          dental radiographs — they're stored privately alongside the chart.
+          {t('imaging.signedOut')}
         </p>
       </div>
     );
@@ -82,7 +86,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       await store.upload(file, kind, description);
       setDescription('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not add that image.');
+      setError(err instanceof Error ? err.message : t('imaging.addFailed'));
     } finally {
       setBusy(false);
     }
@@ -90,9 +94,9 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   const onDelete = async (id: string, caption: string) => {
     if (!(await confirmDialog({
-      title: `Delete ${caption.trim() ? `“${caption.trim()}”` : 'this image'}?`,
-      message: 'The image is removed from this chart and its PDF. This can’t be undone.',
-      confirmLabel: 'Delete image',
+      title: caption.trim() ? t('imaging.deleteTitleNamed', { caption: caption.trim() }) : t('imaging.deleteTitle'),
+      message: t('imaging.deleteMessage'),
+      confirmLabel: t('imaging.deleteConfirm'),
       danger: true,
     }))) return;
     setBusy(true);
@@ -100,7 +104,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     try {
       await store.remove(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not remove that image.');
+      setError(err instanceof Error ? err.message : t('imaging.removeFailed'));
     } finally {
       setBusy(false);
     }
@@ -109,15 +113,15 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   return (
     <div className="patient-form">
       <div className="patient-form__header">
-        <h2 className="patient-form__section-title">Images</h2>
+        <h2 className="patient-form__section-title">{t('imaging.title')}</h2>
         {store.loaded && store.maxImages > 0 && (
           <span className="patient-form__hint">
-            {store.items.length} of {store.maxImages} images
+            {t('imaging.usage', { used: store.items.length, max: store.maxImages })}
           </span>
         )}
         {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Images in the PDF">
-            Customize
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('imaging.customizeTitle')}>
+            {t('imaging.customize')}
           </button>
         )}
       </div>
@@ -125,7 +129,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
           className="dental-grid__option imaging__pdf-option"
-          title="Adds the chart's images on extra pages at the end of the PDF, four per page, with their captions."
+          title={t('imaging.pdfOptionTitle')}
         >
           <input
             type="checkbox"
@@ -133,10 +137,10 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
           />
-          Add images to the PDF (4 per page)
+          {t('imaging.pdfOption')}
           {includeInPdf && store.items.length > 0 && (
             <span className="patient-form__hint">
-              {store.items.filter((a) => !pdfExcludedImages.includes(a.id)).length} of {store.items.length} selected
+              {t('imaging.pdfSelected', { selected: store.items.filter((a) => !pdfExcludedImages.includes(a.id)).length, total: store.items.length })}
             </span>
           )}
         </label>
@@ -147,27 +151,27 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           plan) still render below. */}
       {store.maxImages === 0 && (
         <p className="patient-form__hint">
-          Photo &amp; radiograph uploads aren't included in the free plan.
+          {t('imaging.freePlan')}
         </p>
       )}
 
       {store.maxImages > 0 && !readOnly && (
       <div className="imaging__uploader">
-        <div className="imaging__kind" role="radiogroup" aria-label="Image type">
+        <div className="imaging__kind" role="radiogroup" aria-label={t('imaging.typeAria')}>
           <label className={kind === 'photo' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
             <input type="radio" name="img-kind" checked={kind === 'photo'} onChange={() => setKind('photo')} />
-            Photo
+            {t('imaging.photo')}
           </label>
           <label className={kind === 'xray' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
             <input type="radio" name="img-kind" checked={kind === 'xray'} onChange={() => setKind('xray')} />
-            Radiograph
+            {t('imaging.radiograph')}
           </label>
         </div>
         <input
           type="text"
           className="patient-form__input imaging__desc"
-          placeholder="Description (optional)"
-          aria-label="Image description (optional)"
+          placeholder={t('imaging.descriptionPlaceholder')}
+          aria-label={t('imaging.descriptionAria')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -176,9 +180,9 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           className="diagram-view__action"
           onClick={() => fileRef.current?.click()}
           disabled={busy || store.items.length >= store.maxImages}
-          title={store.items.length >= store.maxImages ? `Limit of ${store.maxImages} images reached` : undefined}
+          title={store.items.length >= store.maxImages ? t('imaging.limitReached', { max: store.maxImages }) : undefined}
         >
-          {busy ? 'Uploading…' : 'Add image'}
+          {busy ? t('imaging.uploading') : t('imaging.add')}
         </button>
         <input
           ref={fileRef}
@@ -197,19 +201,19 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       {store.maxImages > 0 && !readOnly && (
         <p className="patient-form__hint imaging__formats">
           {store.dicomEnabled
-            ? 'PNG, JPEG, WEBP or DICOM (.dcm). DICOM originals are kept and can be downloaded.'
-            : 'PNG, JPEG or WEBP. DICOM (.dcm) uploads are included on paid plans.'}
+            ? t('imaging.formatsDicom')
+            : t('imaging.formatsPlain')}
         </p>
       )}
 
       {error && <div className="login-error" role="alert">{error}</div>}
 
       {!store.loaded ? (
-        <p className="practice-logo-empty">Loading images…</p>
+        <p className="practice-logo-empty">{t('imaging.loading')}</p>
       ) : store.items.length === 0 ? (
         store.maxImages > 0 ? (
           <p className="practice-logo-empty">
-            No images yet. Add intraoral photos or dental radiographs above.
+            {t('imaging.empty')}
           </p>
         ) : null
       ) : (
@@ -218,9 +222,9 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
             <li key={a.id} className="imaging__card">
               <a href={a.url} target="_blank" rel="noreferrer" className="imaging__thumb-link">
                 {a.url ? (
-                  <img src={a.thumbUrl || a.url} alt={a.caption || `${a.kind} image`} className="imaging__thumb" loading="lazy" />
+                  <img src={a.thumbUrl || a.url} alt={a.caption || (a.kind === 'xray' ? t('imaging.altXray') : t('imaging.altPhoto'))} className="imaging__thumb" loading="lazy" />
                 ) : (
-                  <span className="imaging__thumb imaging__thumb--missing">image</span>
+                  <span className="imaging__thumb imaging__thumb--missing">{t('imaging.missing')}</span>
                 )}
               </a>
               <div className="imaging__meta">
@@ -230,39 +234,38 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   value={a.kind}
                   onChange={(e) => {
                     store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
-                      setError(err instanceof Error ? err.message : 'Could not change the image type.')
+                      setError(err instanceof Error ? err.message : t('imaging.kindFailed'))
                     );
                   }}
-                  aria-label="Image type"
-                  title="Shown on the PDF label"
+                  aria-label={t('imaging.typeAria')}
+                  title={t('imaging.kindTitle')}
                 >
-                  <option value="photo">Photo</option>
-                  <option value="xray">Radiograph</option>
+                  {KINDS.map((k) => <option key={k} value={k}>{t(`imaging.${k === 'photo' ? 'photo' : 'radiograph'}`)}</option>)}
                 </select>
                 {a.originalPath && (
                   a.originalUrl ? (
                     <a
                       href={a.originalUrl}
                       className="imaging__dicom"
-                      title="Download the original DICOM file"
+                      title={t('imaging.dicomDownloadTitle')}
                     >
-                      DICOM ↓
+                      {t('imaging.dicomDownload')}
                     </a>
                   ) : (
-                    <span className="imaging__dicom" title="Original DICOM file stored with this image">
-                      DICOM
+                    <span className="imaging__dicom" title={t('imaging.dicomStoredTitle')}>
+                      {t('imaging.dicom')}
                     </span>
                   )
                 )}
                 {onImageInPdfChange && includeInPdf && (
-                  <label className="imaging__in-pdf" title="Include this image on the PDF's image pages">
+                  <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
                     <input
                       type="checkbox"
             disabled={readOnly}
                       checked={!pdfExcludedImages.includes(a.id)}
                       onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
                     />
-                    In PDF
+                    {t('imaging.inPdf')}
                   </label>
                 )}
                 {onImageRoleChange && (
@@ -273,21 +276,20 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     onChange={(e) =>
                       onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)
                     }
-                    aria-label="Owner-report tag for this image"
-                    title="Tag this image for the owner report's Before & After section"
+                    aria-label={t('imaging.roleAria')}
+                    title={t('imaging.roleTitle')}
                   >
-                    <option value="">Not in report</option>
-                    <option value="before">Before</option>
-                    <option value="after">After</option>
+                    <option value="">{t('imaging.roleNone')}</option>
+                    {ROLES.map((r) => <option key={r} value={r}>{t(`imaging.${r}`)}</option>)}
                   </select>
                 )}
                 <input
                   type="text"
                   className="patient-form__input imaging__caption"
-                  placeholder="Label for the PDF…"
+                  placeholder={t('imaging.captionPlaceholder')}
                   defaultValue={a.caption}
                   readOnly={readOnly}
-                  aria-label="Caption"
+                  aria-label={t('imaging.captionAria')}
                   onBlur={(e) => {
                     const input = e.target;
                     if (input.value !== a.caption) {
@@ -295,7 +297,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                         // Put the saved caption back so the field never
                         // shows text that isn't actually stored.
                         input.value = a.caption;
-                        setError('Couldn’t save that caption — check your connection and try again.');
+                        setError(t('imaging.captionFailed'));
                       });
                     }
                   }}
@@ -306,7 +308,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   onClick={() => onDelete(a.id, a.caption)}
                   disabled={busy}
                 >
-                  Remove
+                  {t('imaging.remove')}
                 </button>}
               </div>
             </li>

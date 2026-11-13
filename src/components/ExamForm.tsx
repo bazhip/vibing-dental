@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ExamFindings, ExamFinding, EXAM_ITEMS } from '../types';
 
 interface ExamFormProps {
@@ -12,9 +13,12 @@ interface ExamFormProps {
  *  Enter doesn't add a newline: findings stay one line on the PDF. */
 const CommentBox: React.FC<{
   label: string;
+  /** The area name in running text (lower-case in English). */
+  inline: string;
   value: string;
   onChange: (value: string) => void;
-}> = ({ label, value, onChange }) => {
+}> = ({ label, inline, value, onChange }) => {
+  const { t } = useTranslation('forms');
   const ref = React.useRef<HTMLTextAreaElement>(null);
   const fit = React.useCallback(() => {
     const el = ref.current;
@@ -33,8 +37,8 @@ const CommentBox: React.FC<{
       ref={ref}
       rows={1}
       className="patient-form__input exam-table__comment"
-      aria-label={`${label}: comment`}
-      placeholder={`Describe abnormal ${label.toLowerCase()}…`}
+      aria-label={t('exam.ariaComment', { label })}
+      placeholder={t('exam.placeholder', { label: inline })}
       value={value}
       onChange={(e) => onChange(e.target.value.replace(/\r?\n/g, ' '))}
       onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
@@ -47,19 +51,20 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   onStatusChange,
   onCommentChange,
 }) => {
+  const { t } = useTranslation('forms');
   const unanswered = EXAM_ITEMS.filter(({ key }) => !exam[key].status);
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Exam</h2>
+        <h2 className="dental-grid__title">{t('exam.title')}</h2>
         {unanswered.length > 0 && (
           <button
             type="button"
             className="diagram-view__action"
             onClick={() => unanswered.forEach(({ key }) => onStatusChange(key, 'normal'))}
-            title="Mark every area you haven't answered as normal"
+            title={t('exam.markTitle')}
           >
-            Mark {unanswered.length === EXAM_ITEMS.length ? 'all' : 'the rest'} normal
+            {unanswered.length === EXAM_ITEMS.length ? t('exam.markAllNormal') : t('exam.markRestNormal')}
           </button>
         )}
       </div>
@@ -68,13 +73,14 @@ export const ExamForm: React.FC<ExamFormProps> = ({
         <thead>
           <tr>
             <th></th>
-            <th>Normal</th>
-            <th>Abnormal</th>
-            <th className="exam-table__comment-col">Comment</th>
+            <th>{t('exam.normal')}</th>
+            <th>{t('exam.abnormal')}</th>
+            <th className="exam-table__comment-col">{t('exam.comment')}</th>
           </tr>
         </thead>
         <tbody>
-          {EXAM_ITEMS.map(({ key, label }) => {
+          {EXAM_ITEMS.map(({ key }) => {
+            const label = t(`exam.items.${key}`);
             const item = exam[key];
             const groupName = `exam-${key}`;
             const showComment = item.status === 'abnormal';
@@ -95,7 +101,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       onChange={() => onStatusChange(key, 'normal')}
                       // Tapping the selected answer again clears it.
                       onClick={() => { if (item.status === 'normal') onStatusChange(key, ''); }}
-                      aria-label={`${label}: normal`}
+                      aria-label={t('exam.ariaNormal', { label })}
                     />
                   </label>
                 </td>
@@ -107,7 +113,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       checked={item.status === 'abnormal'}
                       onChange={() => onStatusChange(key, 'abnormal')}
                       onClick={() => { if (item.status === 'abnormal') onStatusChange(key, ''); }}
-                      aria-label={`${label}: abnormal`}
+                      aria-label={t('exam.ariaAbnormal', { label })}
                     />
                   </label>
                 </td>
@@ -115,6 +121,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                   {showComment && (
                     <CommentBox
                       label={label}
+                      inline={t(`exam.itemsInline.${key}`)}
                       value={item.comment}
                       onChange={(v) => onCommentChange(key, v)}
                     />

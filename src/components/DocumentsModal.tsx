@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
 import type { ChartSnapshot, ImageRole } from '../types';
@@ -30,10 +31,7 @@ interface DocumentsModalProps {
   };
 }
 
-const TABS: { id: DocumentTab; label: string; who: string }[] = [
-  { id: 'chart', label: 'Clinical chart', who: 'For your records and referrals — the full chart with codes.' },
-  { id: 'owner', label: 'Owner report', who: 'For the owner to take home — the visit in plain English.' },
-];
+const TABS: DocumentTab[] = ['chart', 'owner'];
 
 /**
  * One place for the documents a visit produces. Each tab is a full
@@ -44,6 +42,7 @@ const TABS: { id: DocumentTab; label: string; who: string }[] = [
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   open, onClose, initialTab, chartSnapshot, ownerReport,
 }) => {
+  const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
     try { return window.sessionStorage.getItem(TAB_KEY) === 'owner' ? 'owner' : 'chart'; } catch { return 'chart'; }
   };
@@ -71,44 +70,45 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   if (!open) return null;
 
-  const tabs = ownerReport ? TABS : TABS.filter((t) => t.id === 'chart');
+  const tabs = ownerReport ? TABS : TABS.filter((id) => id === 'chart');
   const active = ownerReport ? tab : 'chart';
   const select = (id: DocumentTab) => {
     setTab(id);
     setVisited((v) => new Set(v).add(id));
     try { window.sessionStorage.setItem(TAB_KEY, id); } catch { /* ignore */ }
   };
+  const chartVisited = visited.has('chart');
+  const ownerVisited = visited.has('owner');
   const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo;
   const subtitle = [patient?.patientName, patient?.date].filter(Boolean).join(' · ');
-  const current = tabs.find((t) => t.id === active)!;
-
+  
   return (
     <div className="pdf-preview-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="documents-title">
       <div className="pdf-preview-modal documents-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header documents-modal__header">
           <div>
-            <h2 id="documents-title">Download PDFs{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
-            <p>{current.who}</p>
+            <h2 id="documents-title">{t('documents.title')}{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
+            <p>{t(active === 'chart' ? 'documents.chartWho' : 'documents.ownerWho')}</p>
           </div>
-          <button ref={closeRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close documents">
+          <button ref={closeRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('documents.close')}>
             ×
           </button>
         </header>
 
         {tabs.length > 1 && (
-          <div className="documents-modal__tabs" role="tablist" aria-label="Document">
-            {tabs.map((t) => (
+          <div className="documents-modal__tabs" role="tablist" aria-label={t('documents.tablist')}>
+            {tabs.map((id) => (
               <button
-                key={t.id}
+                key={id}
                 type="button"
                 role="tab"
-                id={`documents-tab-${t.id}`}
-                aria-selected={active === t.id}
-                aria-controls={`documents-panel-${t.id}`}
-                className={`documents-modal__tab${active === t.id ? ' documents-modal__tab--on' : ''}`}
-                onClick={() => select(t.id)}
+                id={`documents-tab-${id}`}
+                aria-selected={active === id}
+                aria-controls={`documents-panel-${id}`}
+                className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
+                onClick={() => select(id)}
               >
-                {t.label}
+                {t(id === 'chart' ? 'documents.chartTab' : 'documents.ownerTab')}
               </button>
             ))}
           </div>
@@ -121,7 +121,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           aria-labelledby="documents-tab-chart"
           hidden={active !== 'chart'}
         >
-          {visited.has('chart') && <PdfPreviewModal open bare onClose={onClose} snapshot={chartSnapshot} />}
+          {chartVisited && <PdfPreviewModal open bare onClose={onClose} snapshot={chartSnapshot} />}
         </div>
         {ownerReport && (
           <div
@@ -131,7 +131,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
             aria-labelledby="documents-tab-owner"
             hidden={active !== 'owner'}
           >
-            {visited.has('owner') && (
+            {ownerVisited && (
               <OwnerReportModal
                 open
                 bare
