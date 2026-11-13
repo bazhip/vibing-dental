@@ -11,7 +11,7 @@ Dashboard → Authentication → Emails → Templates, next to its body (see REA
 Paste into the Subject heading field:
 
 ```
-{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Confirmez votre compte ToothOps{{ else if eq $lang "de" }}Bestätigen Sie Ihr ToothOps-Konto{{ else if eq $lang "it" }}Confermi il Suo account ToothOps{{ else if eq $lang "es" }}Confirme su cuenta de ToothOps{{ else }}Confirm your ToothOps account{{ end }}
+{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = printf "%v" . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Confirmez votre compte ToothOps{{ else if eq $lang "de" }}Bestätigen Sie Ihr ToothOps-Konto{{ else if eq $lang "it" }}Confermi il Suo account ToothOps{{ else if eq $lang "es" }}Confirme su cuenta de ToothOps{{ else }}Confirm your ToothOps account{{ end }}
 ```
 
 | Language | Subject |
@@ -27,7 +27,7 @@ Paste into the Subject heading field:
 Paste into the Subject heading field:
 
 ```
-{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Réinitialisez votre mot de passe ToothOps{{ else if eq $lang "de" }}Setzen Sie Ihr ToothOps-Passwort zurück{{ else if eq $lang "it" }}Reimposti la Sua password di ToothOps{{ else if eq $lang "es" }}Restablezca su contraseña de ToothOps{{ else }}Reset your ToothOps password{{ end }}
+{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = printf "%v" . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Réinitialisez votre mot de passe ToothOps{{ else if eq $lang "de" }}Setzen Sie Ihr ToothOps-Passwort zurück{{ else if eq $lang "it" }}Reimposti la Sua password di ToothOps{{ else if eq $lang "es" }}Restablezca su contraseña de ToothOps{{ else }}Reset your ToothOps password{{ end }}
 ```
 
 | Language | Subject |
@@ -43,7 +43,7 @@ Paste into the Subject heading field:
 Paste into the Subject heading field:
 
 ```
-{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Confirmez votre nouvelle adresse e-mail pour ToothOps{{ else if eq $lang "de" }}Bestätigen Sie Ihre neue E-Mail-Adresse für ToothOps{{ else if eq $lang "it" }}Confermi il Suo nuovo indirizzo e-mail per ToothOps{{ else if eq $lang "es" }}Confirme su nuevo correo electrónico para ToothOps{{ else }}Confirm your new email for ToothOps{{ end }}
+{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = printf "%v" . }}{{ end }}{{ end }}{{ if eq $lang "fr" }}Confirmez votre nouvelle adresse e-mail pour ToothOps{{ else if eq $lang "de" }}Bestätigen Sie Ihre neue E-Mail-Adresse für ToothOps{{ else if eq $lang "it" }}Confermi il Suo nuovo indirizzo e-mail per ToothOps{{ else if eq $lang "es" }}Confirme su nuevo correo electrónico para ToothOps{{ else }}Confirm your new email for ToothOps{{ end }}
 ```
 
 | Language | Subject |

@@ -6,6 +6,6 @@ import { useAppLanguage } from './useAppLanguage';
  *  Stripe return and failed-check screens. */
 export function AccountLanguage(): null {
   const settings = useChartSettings(true);
-  useAppLanguage(settings.prefs.language, settings.loaded);
+  useAppLanguage(settings.prefs.language, settings.loaded, true);
   return null;
 }

@@ -31,6 +31,10 @@ describe('generated Supabase auth templates', () => {
     expect(authTemplatesProblems(catalogs)).toEqual([]);
   });
 
+  test('the prelude is nil-safe and coerces non-string metadata', () => {
+    expect(LANG_PRELUDE).toContain('printf "%v" .');
+  });
+
   test.each(FILES)('%s: the English branch equals today’s template', (f) => {
     expect(normalize(render(read(f), 'en'))).toBe(normalize(original(f)));
   });

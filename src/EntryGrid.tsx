@@ -137,7 +137,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
-  const language = useAppLanguage(prefs.language, chartSettings.loaded);
+  const language = useAppLanguage(prefs.language, chartSettings.loaded, true);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     // Looked up when it fails, in the language in effect then.
     chartSettings.update(patch).catch((err) =>

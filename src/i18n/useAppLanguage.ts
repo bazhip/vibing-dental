@@ -2,13 +2,16 @@ import { useEffect } from 'react';
 import { applyLanguage } from './applyLanguage';
 import { AppLanguage, LANGUAGE_SWITCHING_ENABLED } from './config';
 import { resolveLanguage } from './resolveLanguage';
+import { syncAuthLanguage } from './syncAuthLanguage';
 import { readStoredLanguage, writeStoredLanguage } from './storedLanguage';
 
 /** Resolves the language in effect and applies it to i18next and <html lang>.
  *  Until account preferences have loaded, the language last picked on this device
  *  (localStorage `app.language`) is used, so nobody who chose one sees a
- *  browser-language flash. Once loaded, the account's choice wins. */
-export function useAppLanguage(saved: AppLanguage | null, loaded: boolean): AppLanguage {
+ *  browser-language flash. Once loaded, the account's choice wins.
+ *  `syncAccount` (signed-in shells) also mirrors the language into the account's
+ *  auth metadata once per session, so the auth emails match. */
+export function useAppLanguage(saved: AppLanguage | null, loaded: boolean, syncAccount = false): AppLanguage {
   const stored = readStoredLanguage();
   const choice = loaded ? (saved ?? stored) : stored;
   const lng = resolveLanguage(choice, navigator.languages ?? [], LANGUAGE_SWITCHING_ENABLED);
@@ -23,6 +26,12 @@ export function useAppLanguage(saved: AppLanguage | null, loaded: boolean): AppL
   useEffect(() => {
     void applyLanguage(lng);
   }, [lng]);
+
+  // Signed-in shells only: keep the language the auth emails use (user
+  // metadata) equal to the one in effect, for accounts that never picked one.
+  useEffect(() => {
+    if (syncAccount && loaded) syncAuthLanguage(lng);
+  }, [syncAccount, loaded, lng]);
   return lng;
 }
 

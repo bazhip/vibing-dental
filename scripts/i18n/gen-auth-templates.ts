@@ -15,8 +15,8 @@ const NS = 'authEmail';
 const DIR = 'supabase/templates';
 export const SUBJECTS_FILE = `${DIR}/subjects.md`;
 
-/** Defines $lang from the user's metadata ('' when absent) — guards `eq` against a missing key. */
-export const LANG_PRELUDE = '{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = . }}{{ end }}{{ end }}';
+/** Defines $lang from the user's metadata ('' when absent) — guards `eq` against a missing key or a non-string value. */
+export const LANG_PRELUDE = '{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = printf "%v" . }}{{ end }}{{ end }}';
 
 type Template = { id: string; file: string; title: string; subject: string; hasNewEmail: boolean };
 const TEMPLATES: Template[] = [
