@@ -13,23 +13,52 @@ export const EMAIL_FROM = 'ToothOps <noreply@toothops.app>';
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** A paragraph already rendered by the caller: trusted HTML plus its plain-text form. */
+export interface RichParagraph {
+  html: string;
+  text: string;
+}
+
 export interface BrandedEmail {
   /** Hidden preview line most inboxes show beside the subject. */
   preheader: string;
   title: string;
-  /** Plain paragraphs (escaped; no HTML). */
-  paragraphs: string[];
-  button: { label: string; url: string };
+  /** Plain paragraphs (escaped; no HTML), or prebuilt RichParagraphs. */
+  paragraphs: (string | RichParagraph)[];
+  /** A one-time code shown large under the paragraphs (escaped). */
+  code?: string;
+  /** Omitted for emails with nothing to click (codes, security notices). */
+  button?: { label: string; url: string };
   /** Small print under the button (escaped). */
   footnote?: string;
 }
 
 export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string; text: string } {
   const lang = emailLanguage(lng);
-  const url = esc(e.button.url);
   const paras = e.paragraphs
-    .map((p) => `<p style="margin:0 0 12px;font-size:16px;line-height:1.55;color:#17232e;">${esc(p)}</p>`)
+    .map((p) => `<p style="margin:0 0 12px;font-size:16px;line-height:1.55;color:#17232e;">${typeof p === 'string' ? esc(p) : p.html}</p>`)
     .join('');
+  const code = e.code
+    ? `
+      <tr><td style="padding:4px 32px 8px;">
+        <div style="display:inline-block;font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:28px;font-weight:700;letter-spacing:0.2em;color:#17232e;background:#f4f6f7;border:1px solid #e2e8f0;border-radius:8px;padding:10px 18px;">${esc(e.code)}</div>
+      </td></tr>`
+    : '';
+  const url = e.button ? esc(e.button.url) : '';
+  const action = e.button
+    ? `
+      <tr><td style="padding:12px 32px 8px;">
+        <a href="${url}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">${esc(e.button.label)}</a>
+      </td></tr>
+      <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
+        ${esc(emailT(lang, 'layout.linkFallback'))}<br>
+        <a href="${url}" style="color:#0c6b63;word-break:break-all;">${url}</a>
+        ${e.footnote ? `<p style="margin:16px 0 0;">${esc(e.footnote)}</p>` : ''}
+      </td></tr>`
+    : `
+      <tr><td style="padding:4px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
+        ${e.footnote ? `<p style="margin:0;">${esc(e.footnote)}</p>` : ''}
+      </td></tr>`;
   const html = `<!doctype html>
 <html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(e.title)}</title></head>
 <body style="margin:0;padding:0;background:#f4f6f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17232e;">
@@ -43,15 +72,7 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
       <tr><td style="padding:8px 32px 0;">
         <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#17232e;">${esc(e.title)}</h1>
         ${paras}
-      </td></tr>
-      <tr><td style="padding:12px 32px 8px;">
-        <a href="${url}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">${esc(e.button.label)}</a>
-      </td></tr>
-      <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
-        ${esc(emailT(lang, 'layout.linkFallback'))}<br>
-        <a href="${url}" style="color:#0c6b63;word-break:break-all;">${url}</a>
-        ${e.footnote ? `<p style="margin:16px 0 0;">${esc(e.footnote)}</p>` : ''}
-      </td></tr>
+      </td></tr>${code}${action}
     </table>
     <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · ${esc(emailT(lang, 'layout.tagline'))} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
   </td></tr>
@@ -60,9 +81,9 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
   const text = [
     e.title,
     '',
-    ...e.paragraphs.flatMap((p) => [p, '']),
-    `${e.button.label}: ${e.button.url}`,
-    '',
+    ...e.paragraphs.flatMap((p) => [typeof p === 'string' ? p : p.text, '']),
+    ...(e.code ? [e.code, ''] : []),
+    ...(e.button ? [`${e.button.label}: ${e.button.url}`, ''] : []),
     ...(e.footnote ? [e.footnote, ''] : []),
     '— ToothOps · toothops.app',
   ].join('\n');
@@ -70,8 +91,13 @@ export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string;
 }
 
 /** Send a branded email through Resend. Returns true on success. */
-export async function sendBrandedEmail(apiKey: string, to: string, subject: string, e: BrandedEmail, lng = 'en'): Promise<boolean> {
-  const { html, text } = renderBrandedEmail(e, lng);
+export function sendBrandedEmail(apiKey: string, to: string, subject: string, e: BrandedEmail, lng = 'en'): Promise<boolean> {
+  return sendEmail(apiKey, { to, subject, ...renderBrandedEmail(e, lng) });
+}
+
+/** Send an already-rendered email through Resend. Returns true on success. */
+export async function sendEmail(apiKey: string, m: { to: string; subject: string; html: string; text: string }): Promise<boolean> {
+  const { to, subject, html, text } = m;
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },

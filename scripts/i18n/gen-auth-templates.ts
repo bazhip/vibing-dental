@@ -4,6 +4,10 @@
 // `.Data`, so every text run is a `{{ if eq $lang "fr" }}…{{ else }}English{{ end }}`
 // chain around one shared layout. A user without `language` metadata gets the
 // English branch (`{{ else }}`). Pasting them into the dashboard is manual.
+// They are the fallback for when the send-auth-email hook is disabled. The
+// dashboard Subject field is capped at 255 characters, too short for five
+// languages, so subjects.md gives English subjects to paste (the hook
+// localizes subjects).
 // `npm run i18n:check` fails when they are stale.
 //   npm run i18n:emails
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -105,11 +109,11 @@ export function generateAuthTemplates(catalogs: Catalogs): Record<string, string
   }
 
   const sections = TEMPLATES.map((tpl) => {
-    const subjectField = LANG_PRELUDE + chain((lng) => toText(str(lng, tpl.subject)));
+    const subjectField = toText(str('en', tpl.subject));
     const rows = APP_LANGUAGES.map((lng) => `| ${lng} | ${toText(str(lng, tpl.subject))} |`).join('\n');
     return `## ${tpl.title} (\`${tpl.file}\`)
 
-Paste into the Subject heading field:
+Paste into the Subject heading field (English only):
 
 \`\`\`
 ${subjectField}
@@ -123,10 +127,17 @@ ${rows}
   out[SUBJECTS_FILE] = `<!-- Generated — run npm run i18n:emails. Do not edit by hand. -->
 # Auth email subjects
 
-Source: \`src/locales/<lng>/authEmail.json\`. Supabase's Subject heading field accepts
-Go templates, so each subject below picks the user's language from their
-\`language\` metadata and falls back to English. Paste each block into
-Dashboard → Authentication → Emails → Templates, next to its body (see README.md).
+Source: \`src/locales/<lng>/authEmail.json\`.
+
+The primary path is the \`send-auth-email\` Send Email Hook, which sends every
+auth email with a subject in the user's language; these dashboard templates
+are only the fallback for when the hook is disabled (see README.md).
+
+The dashboard Subject heading field holds **English only**: it is capped at 255
+characters, too short for a five-language Go-template chain. So with the hook
+off, bodies are localized (the \`.html\` files) but subjects are English. Paste
+each block into Dashboard → Authentication → Emails → Templates, next to its
+body. The tables list each language's subject as the hook sends it.
 
 ${sections.join('\n')}`;
   return out;

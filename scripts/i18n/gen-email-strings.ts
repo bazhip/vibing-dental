@@ -1,5 +1,5 @@
-// Writes supabase/functions/_shared/emailStrings.ts from src/locales/<lng>/email.json.
-// Edge functions are deployed from supabase/functions alone and can't import
+// Writes supabase/functions/_shared/emailStrings.ts from src/locales/<lng>/email.json
+// and authEmail.json (the latter for the send-auth-email hook). Edge functions are deployed from supabase/functions alone and can't import
 // src/, so their email text is copied there as a plain TS module (no imports:
 // Deno and vitest both load it). `npm run i18n:check` fails when it is stale.
 //   npm run i18n:emails
@@ -10,17 +10,25 @@ import type { Catalogs } from './catalog';
 
 export const EMAIL_STRINGS_FILE = 'supabase/functions/_shared/emailStrings.ts';
 const NS = 'email';
+const AUTH_NS = 'authEmail';
 
-export function generateEmailStrings(catalogs: Catalogs): string {
-  const en = catalogs.en?.[NS] ?? {};
+/** Sorted keys of `ns` and a per-language `"key": "text",` table body. */
+function tableFor(catalogs: Catalogs, ns: string) {
+  const en = catalogs.en?.[ns] ?? {};
   const keys = Object.keys(en).sort();
   const table = (lng: string) => {
-    const tr = catalogs[lng]?.[NS] ?? {};
+    const tr = catalogs[lng]?.[ns] ?? {};
     // A missing translation falls back to English (i18n:check reports it anyway).
     return keys.map((k) => `    ${JSON.stringify(k)}: ${JSON.stringify(tr[k] ?? en[k])},`).join('\n');
   };
+  return { keys, table };
+}
+
+export function generateEmailStrings(catalogs: Catalogs): string {
+  const { keys, table } = tableFor(catalogs, NS);
+  const auth = tableFor(catalogs, AUTH_NS);
   return `// Generated — run npm run i18n:emails. Do not edit by hand.
-// Source: src/locales/<lng>/email.json (edge functions can't import src/).
+// Source: src/locales/<lng>/email.json and authEmail.json (edge functions can't import src/).
 
 export const EMAIL_LANGUAGES = [${APP_LANGUAGES.map((l) => `'${l}'`).join(', ')}] as const;
 export type EmailLanguage = (typeof EMAIL_LANGUAGES)[number];
@@ -50,6 +58,21 @@ export function emailT(lng: string, key: EmailKey, vars: Record<string, string> 
     name in vars ? vars[name] : m,
   );
 }
+
+// Supabase Auth emails sent by the send-auth-email hook (src/locales/<lng>/authEmail.json).
+// Values may contain <strong>…</strong> and {{var}} placeholders; _shared/authEmails.ts renders them.
+
+export type AuthEmailKey =
+${auth.keys.map((k) => `  | ${JSON.stringify(k)}`).join('\n')};
+
+export const AUTH_EMAIL_STRINGS: Record<EmailLanguage, Record<AuthEmailKey, string>> = {
+${APP_LANGUAGES.map((lng) => `  ${lng}: {\n${auth.table(lng)}\n  },`).join('\n')}
+};
+
+/** The raw \`key\` string in \`lng\` (placeholders and <strong> left in). */
+export function authEmailRaw(lng: string, key: AuthEmailKey): string {
+  return AUTH_EMAIL_STRINGS[emailLanguage(lng)][key];
+}
 `;
 }
 
@@ -63,7 +86,7 @@ export function emailStringsProblem(catalogs: Catalogs, file = EMAIL_STRINGS_FIL
   }
   return current === generateEmailStrings(catalogs)
     ? null
-    : `${file} is out of date with src/locales/*/email.json — run \`npm run i18n:emails\``;
+    : `${file} is out of date with src/locales/*/email.json or authEmail.json — run \`npm run i18n:emails\``;
 }
 
 // Run only as a CLI, not when imported by tests.

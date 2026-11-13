@@ -16,5 +16,7 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts',
     // Agent worktrees live under .claude/ — never run their copies.
     exclude: [...configDefaults.exclude, '.claude/**'],
+    // Edge functions import Standard Webhooks from esm.sh (Deno); tests use the npm copy.
+    alias: { 'https://esm.sh/standardwebhooks@1.0.0': 'standardwebhooks' },
   },
 });
