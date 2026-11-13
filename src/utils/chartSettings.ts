@@ -1,5 +1,6 @@
 import { DentalField } from '../types';
 import { AppLanguage, isAppLanguage } from '../i18n/config';
+import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 
 /**
@@ -9,15 +10,22 @@ import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs 
  * settings existed, so an empty or missing object changes nothing.
  */
 
-export const PERIO_FIELDS: { key: DentalField; label: string }[] = [
-  { key: 'mobility', label: 'Mobility' },
-  { key: 'recession', label: 'Recession' },
-  { key: 'pocket', label: 'Pocket' },
-  { key: 'furcation', label: 'Furcation' },
-  { key: 'hyperplasia', label: 'Enlargement' },
-  { key: 'calculus', label: 'Calculus' },
-  { key: 'gingivitis', label: 'Gingivitis' },
-  { key: 'pdstate', label: 'PD Stage' },
+// `label` is read through columnLabel each time, so it follows the language.
+const perioField = (key: DentalField & ColumnKey): { key: DentalField; readonly label: string } => ({
+  key,
+  get label() {
+    return columnLabel(key);
+  },
+});
+export const PERIO_FIELDS: { key: DentalField; readonly label: string }[] = [
+  perioField('mobility'),
+  perioField('recession'),
+  perioField('pocket'),
+  perioField('furcation'),
+  perioField('hyperplasia'),
+  perioField('calculus'),
+  perioField('gingivitis'),
+  perioField('pdstate'),
 ];
 const FIELD_KEYS = new Set<string>(PERIO_FIELDS.map((f) => f.key));
 

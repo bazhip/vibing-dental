@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
-import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
+import { COLUMN_RANGES, ColumnKey, columnLabel, scoreChoices } from '../constants/columnDefinitions';
 import { ScoreChips } from './ScoreChips';
 import {
   DataGrid,
@@ -141,6 +142,7 @@ function CodeCellEditor({
   onRowChange,
   onClose,
 }: RenderEditCellProps<ToothData>) {
+  const { t } = useTranslation('chart');
   const wiring = React.useContext(EditorWiringContext);
   const key = column.key as keyof ToothData;
   const current = row[key];
@@ -235,7 +237,7 @@ function CodeCellEditor({
       value={value}
       inputMode={choices && coarse ? 'none' : 'decimal'}
       autoComplete="off"
-      aria-label={`Tooth ${row.triadan} ${String(column.name)}`}
+      aria-label={t('grid.cellAria', { triadan: row.triadan, column: String(column.name) })}
       onChange={(e) => onRowChange({ ...row, [key]: e.target.value })}
       onKeyDown={handleKeyDown}
       onBlur={() => onClose(true)}
@@ -262,7 +264,7 @@ function CodeCellEditor({
         style={{ top: popover.top }}
       >
         <ScoreChips
-          name={`Tooth ${row.triadan} ${String(column.name)}`}
+          name={t('grid.cellAria', { triadan: row.triadan, column: String(column.name) })}
           choices={choices}
           value={value}
           onPick={pickScore}
@@ -282,6 +284,7 @@ function CodeCellEditor({
  *  Saves the labelled form ("M4 D6"). */
 function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
   const { row, rowIdx, column, onRowChange, onClose } = props;
+  const { t } = useTranslation('chart');
   const wiring = React.useContext(EditorWiringContext);
   const labels = rootLabels(wiring?.speciesRef.current ?? 'canine', row.triadan);
   const initial = React.useMemo(() => rootBoxes(labels, row.pocket), []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -342,7 +345,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
             autoFocus={i === startIndex}
             inputMode="decimal"
             value={depths[l] ?? ''}
-            aria-label={`Tooth ${row.triadan} pocket, ${l} root`}
+            aria-label={t('grid.rootAria', { triadan: row.triadan, root: l })}
             onChange={(e) => write({ ...depths, [l]: e.target.value.replace(/[^\d.]/g, '') })}
             onKeyDown={onKey(i)}
           />
@@ -365,8 +368,9 @@ function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
 /** Missing column title: a red ✕ in a white disc — compact, and the same
  *  mark a missing tooth's checkbox shows when ticked. */
 function MissingBadge() {
+  const { t } = useTranslation('chart');
   return (
-    <span className="dental-grid__missing-badge" role="img" aria-label="Missing" title="Missing">
+    <span className="dental-grid__missing-badge" role="img" aria-label={t('grid.missing')} title={t('grid.missing')}>
       <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
         <path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
       </svg>
@@ -383,19 +387,20 @@ function MissingBadge() {
 // scroll instead of crushing columns.
 const MIN_LAYOUT_WIDTH = 760;
 
-// `short`: the title used when full ones would be cut off ("MOBILIT",
-// "RECESSIO") — phones, small tablets and narrow windows.
-const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; short: string }> = [
-  { key: 'mobility',    name: 'Mobility',    share: 0.08, short: 'Mob', },
-  { key: 'recession',   name: 'Recession',   share: 0.09, short: 'Rec', },
-  { key: 'pocket',      name: 'Pocket',      share: 0.08, short: 'Pocket' },
-  { key: 'furcation',   name: 'Furcation',   share: 0.10, short: 'Furc', },
-  { key: 'hyperplasia', name: 'Enlargement', share: 0.12, short: 'Enl', },
-  { key: 'calculus',    name: 'Calculus',    share: 0.09, short: 'Calc', },
-  { key: 'gingivitis',  name: 'Gingivitis',  share: 0.11, short: 'Ging', },
+// Titles come from the chart catalog (see `visibleColumns`): the full name is
+// columnLabel(key) and `short` is the title used when full ones would be cut
+// off ("MOBILIT", "RECESSIO") — phones, small tablets and narrow windows.
+const CODE_COLUMNS: Array<{ key: keyof ToothData & Exclude<ColumnKey, 'tooth' | 'triadan'>; share: number }> = [
+  { key: 'mobility',    share: 0.08 },
+  { key: 'recession',   share: 0.09 },
+  { key: 'pocket',      share: 0.08 },
+  { key: 'furcation',   share: 0.10 },
+  { key: 'hyperplasia', share: 0.12 },
+  { key: 'calculus',    share: 0.09 },
+  { key: 'gingivitis',  share: 0.11 },
   // pdstate's share is nominal — as the last column it takes whatever
   // slack is left so the columns always total the container exactly.
-  { key: 'pdstate',     name: 'PD State',    share: 0.12, short: 'Stage', },
+  { key: 'pdstate',     share: 0.12 },
 ];
 
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
@@ -467,6 +472,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   spaceMovesDown = true,
   scoreTapMoves = 'finding',
 }) => {
+  const { t, i18n } = useTranslation('chart');
+  const language = i18n.language;
+  const triadanLabel = columnLabel('triadan');
+  const toothLabel = columnLabel('tooth');
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
@@ -475,9 +484,16 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const visibleColumns = React.useMemo(() => {
     const hidden = new Set(hiddenColumns ?? []);
     const shown = CODE_COLUMNS.filter((c) => !hidden.has(c.key as DentalField));
-    // Per-root pockets need room for up to three small boxes.
-    return shown.map((c) => (c.key === 'pocket' && pocketMode === 'root' ? { ...c, share: 0.17 } : c));
-  }, [hiddenColumns, pocketMode]);
+    // Per-root pockets need room for up to three small boxes. The grid keeps
+    // its historical "PD State" title; every other title is the shared column label.
+    return shown.map((c) => ({
+      key: c.key,
+      name: c.key === 'pdstate' ? t('grid.pdstateTitle') : columnLabel(c.key),
+      short: t(`grid.short.${c.key}`),
+      share: c.key === 'pocket' && pocketMode === 'root' ? 0.17 : c.share,
+    }));
+    // `language` re-reads the labels, which come from the active catalog.
+  }, [hiddenColumns, pocketMode, t, language]);
   const narrow = useMediaQuery(NARROW_QUERY);
   const coarse = useMediaQuery('(pointer: coarse)');
   const headOpts = { button: !readOnly, narrow, coarse };
@@ -581,16 +597,18 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const setAllForColumn = React.useCallback(async (key: keyof ToothData, name: string) => {
     const range = COLUMN_RANGES[key as string];
     const input = await promptDialog({
-      title: `Set ${name} for every tooth`,
-      message: `Applies to every tooth not marked missing.${range ? ` Use a number from ${range[0]} to ${range[1]}.` : ''} Leave it empty to clear the column.`,
+      title: t('grid.setAll.title', { name }),
+      message: range
+        ? t('grid.setAll.messageRange', { min: range[0], max: range[1] })
+        : t('grid.setAll.message'),
       label: name,
       placeholder: range ? `${range[0]}–${range[1]}` : '',
-      confirmLabel: 'Apply to all',
+      confirmLabel: t('grid.setAll.confirm'),
       validate: (v) => {
-        const t = v.trim();
-        if (!t) return null; // empty = clear (confirmed next)
-        if (range && !t.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= range[0] && Number(n) <= range[1])) {
-          return `${name} must be a number from ${range[0]} to ${range[1]}.`;
+        const text = v.trim();
+        if (!text) return null; // empty = clear (confirmed next)
+        if (range && !text.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= range[0] && Number(n) <= range[1])) {
+          return t('grid.setAll.invalid', { name, min: range[0], max: range[1] });
         }
         return null;
       },
@@ -599,7 +617,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     if (!input.trim()) { await clearColumn(key, name); return; }
     applyColumn(key, name, input.trim());
   }, // eslint-disable-next-line react-hooks/exhaustive-deps
-  [onToothDataChange]);
+  [onToothDataChange, t]);
 
   /** Write one value to a column for every present tooth, with Undo. */
   const applyColumn = (key: keyof ToothData, name: string, value: string) => {
@@ -607,9 +625,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     onToothDataChange(
       before.map((t) => (toothMarksRef.current[t.triadan] === 'missing' ? t : { ...t, [key]: value }))
     );
-    toast(value ? `${name} set to ${value} on every tooth.` : `${name} cleared on every tooth.`, {
+    toast(value ? t('grid.setAll.applied', { name, value }) : t('grid.setAll.cleared', { name }), {
       kind: 'success',
-      action: { label: 'Undo', onClick: () => onToothDataChange(before) },
+      action: { label: t('grid.undo'), onClick: () => onToothDataChange(before) },
     });
   };
 
@@ -617,14 +635,14 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const filled = toothDataRef.current.filter((t) => String(t[key] ?? '').trim()).length;
     if (filled === 0) return;
     if (!(await confirmDialog({
-      title: `Clear ${name} for every tooth?`,
-      message: `Removes ${filled} ${filled === 1 ? 'value' : 'values'} from the ${name} column.`,
-      confirmLabel: 'Clear column',
+      title: t('grid.clear.title', { name }),
+      message: t('grid.clear.message', { count: filled, name }),
+      confirmLabel: t('grid.clear.confirm'),
       danger: true,
     }))) return;
     applyColumn(key, name, '');
   }, // eslint-disable-next-line react-hooks/exhaustive-deps
-  [onToothDataChange]);
+  [onToothDataChange, t]);
 
   // Several teeth at once: click Tooth/Triadan cells to select teeth
   // (Shift-click for a range), then set one value on all of them.
@@ -656,10 +674,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const bulkColumn = visibleColumns.find((c) => c.key === bulkKey) ?? visibleColumns[0];
   const bulkRange = bulkColumn ? COLUMN_RANGES[bulkColumn.key as string] : undefined;
   const bulkError = (() => {
-    const t = bulkValue.trim();
-    if (!t || !bulkRange) return '';
-    const ok = t.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= bulkRange[0] && Number(n) <= bulkRange[1]);
-    return ok ? '' : `Use ${bulkRange[0]}–${bulkRange[1]}`;
+    const text = bulkValue.trim();
+    if (!text || !bulkRange) return '';
+    const ok = text.split(/\s+/).every((n) => /^\d+(\.\d+)?$/.test(n) && Number(n) >= bulkRange[0] && Number(n) <= bulkRange[1]);
+    return ok ? '' : t('grid.bulk.range', { min: bulkRange[0], max: bulkRange[1] });
   })();
   const applyToSelected = () => {
     if (!bulkColumn || !bulkValue.trim() || bulkError) return;
@@ -670,9 +688,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     if (targets.length === 0) return;
     const ids = new Set(targets.map((t) => t.triadan));
     onToothDataChange(before.map((t) => (ids.has(t.triadan) ? { ...t, [key]: value } : t)));
-    toast(`${bulkColumn.name} set to ${value} on ${targets.length} ${targets.length === 1 ? 'tooth' : 'teeth'}.`, {
+    toast(t('grid.bulk.toast', { name: bulkColumn.name, value, count: targets.length }), {
       kind: 'success',
-      action: { label: 'Undo', onClick: () => onToothDataChange(before) },
+      action: { label: t('grid.undo'), onClick: () => onToothDataChange(before) },
     });
     setBulkValue('');
   };
@@ -695,7 +713,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     // upgrades as many as possible to the full title (cheapest first);
     // anything left over is shared out by the usual proportions. If even
     // short titles don't fit, fall back to plain proportions.
-    const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? `${c.name} (per root)` : c.name);
+    const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? t('grid.perRoot', { name: c.name }) : c.name);
     const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? 132 : 60);
     const desktopWidths = (() => {
       const opts = { ...headOpts, button: !readOnly };
@@ -723,7 +741,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     return [
     {
       key: 'missing',
-      name: 'Missing',
+      name: t('grid.missing'),
       width: lead[0],
       minWidth: lead[0], // the grid's default 50px floor would change the compact widths
       // Pinned left on narrow screens (our own sticky CSS — the grid's
@@ -742,18 +760,18 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               checked={isMissing}
               disabled={readOnly}
               onChange={() => onToggleMissing(row.triadan)}
-              aria-label={`Tooth ${row.triadan} missing${carried ? ' (carried from the previous visit)' : ''}`}
+              aria-label={t(carried ? 'grid.missingCheck.labelCarried' : 'grid.missingCheck.label', { triadan: row.triadan })}
               title={
                 carried
-                  ? `Tooth ${row.triadan} was already missing or extracted at the previous visit — carried forward automatically`
+                  ? t('grid.missingCheck.titleCarried', { triadan: row.triadan })
                   : isMissing
-                  ? `Unmark tooth ${row.triadan} as missing`
-                  : `Mark tooth ${row.triadan} as missing — crosses out this row and fills the tooth on the Diagnosis diagram`
+                  ? t('grid.missingCheck.titleUnmark', { triadan: row.triadan })
+                  : t('grid.missingCheck.titleMark', { triadan: row.triadan })
               }
             />
             {carried && (
               <span className="dental-grid__prior-chip" aria-hidden="true">
-                prev
+                {t('grid.missingCheck.prev')}
               </span>
             )}
           </label>
@@ -763,7 +781,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       // One column: "101 – I1" (Triadan number, then the tooth's name).
       key: 'triadan',
-      name: 'Triadan · Tooth',
+      name: t('grid.triadanTooth'),
       width: lead[1],
       minWidth: lead[1], // the grid's default 50px floor would change the compact width
       // Pinned left on narrow screens (our own sticky CSS — the grid's
@@ -771,13 +789,13 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
       headerCellClass: `dental-grid__head--tooth${narrow ? ' dental-grid__pin dental-grid__pin--1' : ''}`,
       // One line when it fits, else stacked.
-      renderHeaderCell: () => (fits('Triadan · Tooth', lead[1], false)
-        ? 'Triadan · Tooth'
-        : <span className="dental-grid__head-stack" aria-label="Triadan · Tooth"><span>Triadan</span><span>Tooth</span></span>),
+      renderHeaderCell: () => (fits(t('grid.triadanTooth'), lead[1], false)
+        ? t('grid.triadanTooth')
+        : <span className="dental-grid__head-stack" aria-label={t('grid.triadanTooth')}><span>{triadanLabel}</span><span>{toothLabel}</span></span>),
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => (
-        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
+        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : t('grid.tooth.title')}>
           <strong className="dental-grid__tid-num">{row.triadan}</strong>
           <span className="dental-grid__tid-sep" aria-hidden="true">–</span>
           <span className="dental-grid__tid-name">{(row.tooth ?? '').toUpperCase()}</span>
@@ -786,7 +804,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     },
     ...visibleColumns.map(({ key, name, short }, index): Column<ToothData> => {
       const width = widthOf(index);
-      const fullTitle = key === 'pocket' && pocketMode === 'root' ? `${name} (per root)` : name;
+      const fullTitle = key === 'pocket' && pocketMode === 'root' ? t('grid.perRoot', { name }) : name;
       // Short titles whenever full ones would be cut off (phones, small
       // tablets, narrow windows).
       const title = fits(fullTitle, width) ? fullTitle : fits(name, width) ? name : short;
@@ -819,7 +837,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
                       key={l}
                       className={`dental-grid__slot${d ? '' : ' dental-grid__slot--empty'}`}
                       onMouseDown={() => { focusRootRef.current = i; }}
-                      title={hint ? `${l} root — last visit ${hint}` : `${l} root`}
+                      title={hint ? t('grid.slot.rootLast', { root: l, value: hint }) : t('grid.slot.root', { root: l })}
                     >
                       <span className="dental-grid__slot-label">{l}</span>
                       <span className={`dental-grid__slot-value${!d && hint ? ' dental-grid__prior-hint' : ''}`}>{d || hint || ''}</span>
@@ -831,18 +849,18 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           }
           if (boxes?.unplaced) {
             // Old single value on a multi-rooted tooth: say it isn't split.
-            return <span title="Not split by root — click to edit (clear it to get a box per root)">{value} <span className="dental-grid__unsplit">all roots</span></span>;
+            return <span title={t('grid.unsplit.title')}>{value} <span className="dental-grid__unsplit">{t('grid.unsplit.chip')}</span></span>;
           }
         }
         if (value) {
           // Entered — surface the previous visit's value for comparison
           // when it differs (probing-depth trends at a glance).
           return priorValue && priorValue !== value
-            ? <span title={`Last visit: ${priorValue}`}>{value}</span>
+            ? <span title={t('grid.lastVisit', { value: priorValue })}>{value}</span>
             : <>{value}</>;
         }
         return priorValue ? (
-          <span className="dental-grid__prior-hint" title={`Last visit: ${priorValue} — shown for reference, not carried forward`}>
+          <span className="dental-grid__prior-hint" title={t('grid.lastVisitRef', { value: priorValue })}>
             {priorValue}
           </span>
         ) : null;
@@ -855,8 +873,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             className="dental-grid__set-all"
             hidden={readOnly}
             onClick={() => setAllForColumn(key, name)}
-            title={`Set ${name} for every tooth at once`}
-            aria-label={`Set ${name} for every tooth at once`}
+            title={t('grid.setAllHint', { name })}
+            aria-label={t('grid.setAllHint', { name })}
           >
             ⋯
           </button>
@@ -865,33 +883,33 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       };
     }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, t, triadanLabel, toothLabel]);
 
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Charting</h2>
+        <h2 className="dental-grid__title">{t('grid.title')}</h2>
         {headerAccessory}
         {onMirrorToDiagnosisChange && (
           <div className="dental-grid__options">
             <label
               className="dental-grid__option"
-              title="Adds a comment on each charted tooth in the Diagnosis diagram and keeps it updated as you chart. Your own comments are left alone."
+              title={t('grid.options.mirrorTitle')}
             >
               <input
                 type="checkbox"
                 checked={!!mirrorToDiagnosis}
                 onChange={(e) => onMirrorToDiagnosisChange(e.target.checked)}
               />
-              Show findings on Diagnosis diagram
+              {t('grid.options.mirror')}
             </label>
             {onPdfIncludeGridChange && (
               <label
                 className={`dental-grid__option${mirrorToDiagnosis ? '' : ' dental-grid__option--disabled'}`}
                 title={
                   mirrorToDiagnosis
-                    ? 'Untick to leave the arch grids off the PDF — the Diagnosis diagram already shows these findings, and gets the extra room.'
-                    : 'Available when findings are shown on the Diagnosis diagram.'
+                    ? t('grid.options.pdfTitleOn')
+                    : t('grid.options.pdfTitleOff')
                 }
               >
                 <input
@@ -900,43 +918,43 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
                   disabled={!mirrorToDiagnosis}
                   onChange={(e) => onPdfIncludeGridChange(e.target.checked)}
                 />
-                Include grid in PDF
+                {t('grid.options.pdf')}
               </label>
             )}
           </div>
         )}
       </div>
       {!readOnly && (selected.size > 0 ? (
-        <div className="dental-grid__bulk" role="region" aria-label="Set a value on the selected teeth">
-          <strong>{selected.size} {selected.size === 1 ? 'tooth' : 'teeth'} selected</strong>
+        <div className="dental-grid__bulk" role="region" aria-label={t('grid.bulk.region')}>
+          <strong>{t('grid.bulk.selected', { count: selected.size })}</strong>
           <label className="dental-grid__bulk-field">
-            Set
-            <select value={bulkColumn?.key as string} onChange={(e) => setBulkKey(e.target.value as keyof ToothData)} aria-label="Column to set">
+            {t('grid.bulk.set')}
+            <select value={bulkColumn?.key as string} onChange={(e) => setBulkKey(e.target.value as keyof ToothData)} aria-label={t('grid.bulk.column')}>
               {visibleColumns.map((c) => <option key={c.key as string} value={c.key as string}>{c.name}</option>)}
             </select>
           </label>
           <label className="dental-grid__bulk-field">
-            to
+            {t('grid.bulk.to')}
             <input
               value={bulkValue}
               onChange={(e) => setBulkValue(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyToSelected(); } }}
               inputMode="decimal"
               placeholder={bulkRange ? `${bulkRange[0]}–${bulkRange[1]}` : ''}
-              aria-label="Value"
+              aria-label={t('grid.bulk.value')}
               aria-invalid={bulkError ? true : undefined}
             />
           </label>
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={applyToSelected} disabled={!bulkValue.trim() || !!bulkError}>
-            Apply
+            {t('grid.bulk.apply')}
           </button>
           <button type="button" className="diagram-view__action" onClick={() => { setSelected(new Set()); anchorRef.current = null; }}>
-            Clear selection
+            {t('grid.bulk.clearSelection')}
           </button>
           {bulkError && <span className="dental-grid__bulk-error">{bulkError}</span>}
         </div>
       ) : (
-        <p className="dental-grid__bulk-hint">Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.</p>
+        <p className="dental-grid__bulk-hint">{t('grid.bulk.tip')}</p>
       ))}
       {narrow && createPortal(
         // Visual stand-in for the header while it's scrolled away (the
@@ -945,7 +963,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           <div className="dental-grid__float-pinned">
             <div className="dental-grid__float-cell dental-grid__head--missing" style={{ width: NARROW_LEAD[0] }}><MissingBadge /></div>
             <div className="dental-grid__float-cell dental-grid__head--tooth" style={{ width: NARROW_LEAD[1] }}>
-              <span className="dental-grid__head-stack"><span>Triadan</span><span>Tooth</span></span>
+              <span className="dental-grid__head-stack"><span>{triadanLabel}</span><span>{toothLabel}</span></span>
             </div>
           </div>
           <div className="dental-grid__float-viewport">

@@ -20,12 +20,10 @@ interface CodeReferencePanelProps {
   kind?: 'diagnosis' | 'procedure';
 }
 
-const TITLES = { diagnosis: 'Diagnoses', procedure: 'Procedures' } as const;
-
 export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
   // Definitions and group names follow the active language.
-  const { i18n } = useTranslation('codes');
+  const { t, i18n } = useTranslation('chart');
   const cardRef = React.useRef<HTMLDivElement>(null);
 
   // Sidebar mode only (the card is position:sticky there): keep the top
@@ -94,7 +92,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">
-          {kind ? `${kind === 'diagnosis' ? 'Diagnosis' : 'Procedure'} codes` : 'Codes'}
+          {kind ? t(kind === 'diagnosis' ? 'codeRef.diagnosisTitle' : 'codeRef.procedureTitle') : t('codeRef.all')}
         </h2>
       </div>
 
@@ -102,22 +100,22 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
         <input
           type="text"
           className="code-ref__search"
-          aria-label="Search codes or definitions"
-          placeholder="Search codes or definitions…"
+          aria-label={t('codeRef.searchLabel')}
+          placeholder={t('codeRef.searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <div className="code-ref__columns">
           {kind ? (
-            <CodeRefColumn title={TITLES[kind]} groups={filteredGroups} />
+            <CodeRefColumn title={t(kind === 'diagnosis' ? 'codeRef.diagnoses' : 'codeRef.procedures')} groups={filteredGroups} />
           ) : (
             <>
               <CodeRefColumn
-                title="Diagnoses"
+                title={t('codeRef.diagnoses')}
                 groups={filteredGroups.filter((g) => g.kind === 'diagnosis')}
               />
               <CodeRefColumn
-                title="Procedures"
+                title={t('codeRef.procedures')}
                 groups={filteredGroups.filter((g) => g.kind === 'procedure')}
               />
             </>
@@ -134,6 +132,7 @@ interface CodeRefColumnProps {
 }
 
 const CodeRefColumn: React.FC<CodeRefColumnProps> = ({ title, groups }) => {
+  const { t } = useTranslation('chart');
   const total = groups.reduce((n, g) => n + g.codes.length, 0);
   return (
     <div className="code-ref__column">
@@ -141,7 +140,7 @@ const CodeRefColumn: React.FC<CodeRefColumnProps> = ({ title, groups }) => {
         {title} <span className="code-ref__count">({total})</span>
       </h3>
       {total === 0 ? (
-        <div className="code-ref__empty">No matches.</div>
+        <div className="code-ref__empty">{t('codeRef.noMatches')}</div>
       ) : (
         <div className="code-ref__list">
           {groups.map((g) => (

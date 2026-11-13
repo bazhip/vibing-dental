@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { codeDefinition, codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
 
 /**
@@ -31,6 +32,8 @@ export const CodeField: React.FC<CodeFieldProps> = ({
   multiline,
   ...rest
 }) => {
+  // Subscribe to language changes so an open popup re-renders its definitions.
+  useTranslation('codes');
   const inputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [suggestions, setSuggestions] = React.useState<DentalCode[]>([]);

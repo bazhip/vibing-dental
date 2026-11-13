@@ -1632,6 +1632,38 @@
       "hash": "caa32123418e",
       "status": "machine"
     },
+    "chart:codeRef.all": {
+      "hash": "e0d1d308a679",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnoses": {
+      "hash": "fe85a9339ee5",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnosisTitle": {
+      "hash": "56985f175fa1",
+      "status": "machine"
+    },
+    "chart:codeRef.noMatches": {
+      "hash": "d6572bd2e773",
+      "status": "machine"
+    },
+    "chart:codeRef.procedureTitle": {
+      "hash": "2b4e80946890",
+      "status": "machine"
+    },
+    "chart:codeRef.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "chart:codeRef.searchLabel": {
+      "hash": "07b0cd577edb",
+      "status": "machine"
+    },
+    "chart:codeRef.searchPlaceholder": {
+      "hash": "ce486aa3f7e2",
+      "status": "machine"
+    },
     "chart:columns.calculus": {
       "hash": "a946456fce85",
       "status": "machine"
@@ -1682,6 +1714,666 @@
     },
     "chart:customAnesthesia.yes": {
       "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.default": {
+      "hash": "650576d3b5d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.extracted": {
+      "hash": "d5c95a3c32b7",
+      "status": "machine"
+    },
+    "chart:diagram.aria.missing": {
+      "hash": "5bd55d67e1a1",
+      "status": "machine"
+    },
+    "chart:diagram.aria.select": {
+      "hash": "1fd9bab5fbd8",
+      "status": "machine"
+    },
+    "chart:diagram.comment.delete": {
+      "hash": "e43811a17028",
+      "status": "machine"
+    },
+    "chart:diagram.comment.fromGrid": {
+      "hash": "962087074868",
+      "status": "machine"
+    },
+    "chart:diagram.comment.placeholder": {
+      "hash": "6d08c3c2e4e6",
+      "status": "machine"
+    },
+    "chart:diagram.comment.resize": {
+      "hash": "95d7504f344d",
+      "status": "machine"
+    },
+    "chart:diagram.label.left": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagram.label.mandible": {
+      "hash": "7a850ff504f5",
+      "status": "machine"
+    },
+    "chart:diagram.label.maxilla": {
+      "hash": "02920ea49d35",
+      "status": "machine"
+    },
+    "chart:diagram.label.right": {
+      "hash": "8c2574892063",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.label": {
+      "hash": "45a9ee49f42d",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.locked": {
+      "hash": "6f312a0594e2",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedExtracted": {
+      "hash": "5e084ecb2583",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedMissing": {
+      "hash": "aeb494d86658",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.planned": {
+      "hash": "153cf4b0f473",
+      "status": "machine"
+    },
+    "chart:diagramView.clearStrokes": {
+      "hash": "a683a1adcfd5",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.amber": {
+      "hash": "b1601f694b9d",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.blue": {
+      "hash": "16477688c0e0",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.charcoal": {
+      "hash": "a5b3f5001e39",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.green": {
+      "hash": "ba4788b226aa",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.red": {
+      "hash": "b1f51a511f1d",
+      "status": "machine"
+    },
+    "chart:diagramView.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "chart:diagramView.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "chart:diagramView.customizeTitle": {
+      "hash": "ad6746a49ded",
+      "status": "machine"
+    },
+    "chart:diagramView.draw": {
+      "hash": "61517c08b3bf",
+      "status": "machine"
+    },
+    "chart:diagramView.drawSettings": {
+      "hash": "6ea4e9e4b3b8",
+      "status": "machine"
+    },
+    "chart:diagramView.freeComment": {
+      "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.historyGroup": {
+      "hash": "49c1588ef595",
+      "status": "machine"
+    },
+    "chart:diagramView.mark": {
+      "hash": "d7cda0ca2c85",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtracted": {
+      "hash": "c723523a4bbc",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtractedTitle": {
+      "hash": "b4147a10a197",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissing": {
+      "hash": "969fe7a2e30d",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissingTitle": {
+      "hash": "a7286b6fba8e",
+      "status": "machine"
+    },
+    "chart:diagramView.markTitle": {
+      "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.numbers": {
+      "hash": "83cb12cff5bf",
+      "status": "machine"
+    },
+    "chart:diagramView.numbersTitle": {
+      "hash": "152f8316b354",
+      "status": "machine"
+    },
+    "chart:diagramView.redo": {
+      "hash": "74273989b096",
+      "status": "machine"
+    },
+    "chart:diagramView.redoTitle": {
+      "hash": "41017ba36c39",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColor": {
+      "hash": "2bee95b97363",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColorAria": {
+      "hash": "6d0096bbc73f",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidth": {
+      "hash": "facec2691082",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidthValue": {
+      "hash": "674e0f30a077",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.aria": {
+      "hash": "d3a69257b8f6",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.glyph": {
+      "hash": "559aead08264",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.group": {
+      "hash": "4484daa3c302",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.l": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.m": {
+      "hash": "08f271887ce9",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.s": {
+      "hash": "8de0b3c47f11",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.title": {
+      "hash": "e6c606bdaef0",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.xl": {
+      "hash": "f365705bb061",
+      "status": "machine"
+    },
+    "chart:diagramView.toolGroup": {
+      "hash": "b0efc2f0dcd3",
+      "status": "machine"
+    },
+    "chart:diagramView.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:diagramView.undoTitle": {
+      "hash": "dd14b83d4e6a",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomGroup": {
+      "hash": "509c517ede79",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomLevel": {
+      "hash": "a52406ba21e8",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomOut": {
+      "hash": "bc7b631a689b",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomReset": {
+      "hash": "6c0e7501ffef",
+      "status": "machine"
+    },
+    "chart:grid.bulk.apply": {
+      "hash": "31e392d1c037",
+      "status": "machine"
+    },
+    "chart:grid.bulk.clearSelection": {
+      "hash": "cea4d2e010b8",
+      "status": "machine"
+    },
+    "chart:grid.bulk.column": {
+      "hash": "12df2c21b238",
+      "status": "machine"
+    },
+    "chart:grid.bulk.range": {
+      "hash": "f01579d0e543",
+      "status": "machine"
+    },
+    "chart:grid.bulk.region": {
+      "hash": "6a799340345e",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_one": {
+      "hash": "12b73f8cb7d7",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_other": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.set": {
+      "hash": "b6f6f3ad07b3",
+      "status": "machine"
+    },
+    "chart:grid.bulk.tip": {
+      "hash": "a051bf3115be",
+      "status": "machine"
+    },
+    "chart:grid.bulk.to": {
+      "hash": "663ea1bfffe5",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_one": {
+      "hash": "4c3085d4d28d",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_other": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.value": {
+      "hash": "8e37953d23da",
+      "status": "machine"
+    },
+    "chart:grid.cellAria": {
+      "hash": "a1fd0bcd411e",
+      "status": "machine"
+    },
+    "chart:grid.clear.confirm": {
+      "hash": "996cbf377fb2",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_one": {
+      "hash": "3a44ebb56db4",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_other": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.title": {
+      "hash": "6e9813d00dbe",
+      "status": "machine"
+    },
+    "chart:grid.lastVisit": {
+      "hash": "9ca4703ab884",
+      "status": "machine"
+    },
+    "chart:grid.lastVisitRef": {
+      "hash": "20ec74fae1d9",
+      "status": "machine"
+    },
+    "chart:grid.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.label": {
+      "hash": "aaac4f9689e5",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.labelCarried": {
+      "hash": "cbcf6aef2521",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.prev": {
+      "hash": "84fd9bac333a",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleCarried": {
+      "hash": "f26b4a2c3d9e",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleMark": {
+      "hash": "edc3f3d579c8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleUnmark": {
+      "hash": "70a2a62b38c3",
+      "status": "machine"
+    },
+    "chart:grid.options.mirror": {
+      "hash": "c599787633d9",
+      "status": "machine"
+    },
+    "chart:grid.options.mirrorTitle": {
+      "hash": "aa1690e3410a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdf": {
+      "hash": "9d1dd79efee8",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOff": {
+      "hash": "534eea65c05a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOn": {
+      "hash": "52cf173603fe",
+      "status": "machine"
+    },
+    "chart:grid.pdstateTitle": {
+      "hash": "fb590f97098a",
+      "status": "machine"
+    },
+    "chart:grid.perRoot": {
+      "hash": "5b98701e1f8c",
+      "status": "machine"
+    },
+    "chart:grid.rootAria": {
+      "hash": "812bd1e56f2b",
+      "status": "machine"
+    },
+    "chart:grid.setAll.applied": {
+      "hash": "76cc7150cd73",
+      "status": "machine"
+    },
+    "chart:grid.setAll.cleared": {
+      "hash": "f29f0c375403",
+      "status": "machine"
+    },
+    "chart:grid.setAll.confirm": {
+      "hash": "64158bae6499",
+      "status": "machine"
+    },
+    "chart:grid.setAll.invalid": {
+      "hash": "5d4f081c62f0",
+      "status": "machine"
+    },
+    "chart:grid.setAll.message": {
+      "hash": "b71d6e9159e2",
+      "status": "machine"
+    },
+    "chart:grid.setAll.messageRange": {
+      "hash": "94de49c9973e",
+      "status": "machine"
+    },
+    "chart:grid.setAll.title": {
+      "hash": "0195b43eea00",
+      "status": "machine"
+    },
+    "chart:grid.setAllHint": {
+      "hash": "8b7ff18a7109",
+      "status": "machine"
+    },
+    "chart:grid.short.calculus": {
+      "hash": "8083e23efcb0",
+      "status": "machine"
+    },
+    "chart:grid.short.furcation": {
+      "hash": "8d251878c09e",
+      "status": "machine"
+    },
+    "chart:grid.short.gingivitis": {
+      "hash": "5a32c7399d89",
+      "status": "machine"
+    },
+    "chart:grid.short.hyperplasia": {
+      "hash": "b4c7f1f3ba2d",
+      "status": "machine"
+    },
+    "chart:grid.short.mobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "chart:grid.short.pdstate": {
+      "hash": "de838855e4a6",
+      "status": "machine"
+    },
+    "chart:grid.short.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:grid.short.recession": {
+      "hash": "a29ea413d311",
+      "status": "machine"
+    },
+    "chart:grid.slot.root": {
+      "hash": "b35308714f01",
+      "status": "machine"
+    },
+    "chart:grid.slot.rootLast": {
+      "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.title": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "chart:grid.tooth.title": {
+      "hash": "6e12c4cef2e5",
+      "status": "machine"
+    },
+    "chart:grid.triadanTooth": {
+      "hash": "b204fe548c57",
+      "status": "machine"
+    },
+    "chart:grid.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.chip": {
+      "hash": "254496c45ebd",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.title": {
+      "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:scoreChips.clear": {
+      "hash": "d12fb7026312",
+      "status": "machine"
+    },
+    "chart:scoreChips.group": {
+      "hash": "4d37f0c79296",
+      "status": "machine"
+    },
+    "chart:toothChart.allConfirmed": {
+      "hash": "30c7a18956b5",
+      "status": "machine"
+    },
+    "chart:toothChart.chipDone": {
+      "hash": "d45257d82904",
+      "status": "machine"
+    },
+    "chart:toothChart.chipPending": {
+      "hash": "e8bdf974b7f7",
+      "status": "machine"
+    },
+    "chart:toothChart.clickTooth": {
+      "hash": "b2e069c90cf2",
+      "status": "machine"
+    },
+    "chart:toothChart.confirmed": {
+      "hash": "4e14dde4c851",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisNote": {
+      "hash": "7ccd1005e146",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisPlaceholder": {
+      "hash": "87584fc1ed5c",
+      "status": "machine"
+    },
+    "chart:toothChart.expected": {
+      "hash": "6470529f3829",
+      "status": "machine"
+    },
+    "chart:toothChart.extraction": {
+      "hash": "3ded2af71d1e",
+      "status": "machine"
+    },
+    "chart:toothChart.findings": {
+      "hash": "e171c2ff25b5",
+      "status": "machine"
+    },
+    "chart:toothChart.hint": {
+      "hash": "510be3f11ce9",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.charted": {
+      "hash": "7e610af7416a",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.extracted": {
+      "hash": "00a659675af3",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.label": {
+      "hash": "c54bf0ccbc29",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.planned": {
+      "hash": "165037455bdb",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_one": {
+      "hash": "6601b620e572",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_other": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.missingBefore": {
+      "hash": "1afac0f3e05e",
+      "status": "machine"
+    },
+    "chart:toothChart.next": {
+      "hash": "60ecaa29da0b",
+      "status": "machine"
+    },
+    "chart:toothChart.nextAria": {
+      "hash": "365e25363a5d",
+      "status": "machine"
+    },
+    "chart:toothChart.plan": {
+      "hash": "925557b83f1e",
+      "status": "machine"
+    },
+    "chart:toothChart.planExtract": {
+      "hash": "9f8569d10d8e",
+      "status": "machine"
+    },
+    "chart:toothChart.prev": {
+      "hash": "b844e6fad706",
+      "status": "machine"
+    },
+    "chart:toothChart.prevAria": {
+      "hash": "8a2d7b2e3a7f",
+      "status": "machine"
+    },
+    "chart:toothChart.procedureNote": {
+      "hash": "9894e4f27812",
+      "status": "machine"
+    },
+    "chart:toothChart.procedurePlaceholder": {
+      "hash": "261321a78419",
+      "status": "machine"
+    },
+    "chart:toothChart.rootAria": {
+      "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.start": {
+      "hash": "c5fe493a757d",
+      "status": "machine"
+    },
+    "chart:toothName.deciduous": {
+      "hash": "8647d6ecc146",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.mandibular": {
+      "hash": "b09078756b29",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.maxillary": {
+      "hash": "1953a7ce6916",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.1": {
+      "hash": "e01ddf6594a4",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.2": {
+      "hash": "c21365c7ea5b",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.3": {
+      "hash": "c0d751710cfb",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.4": {
+      "hash": "136ef4431c42",
+      "status": "machine"
+    },
+    "chart:toothName.ordinalTooth": {
+      "hash": "3429188567d4",
+      "status": "machine"
+    },
+    "chart:toothName.permanent": {
+      "hash": "341d4278ac59",
+      "status": "machine"
+    },
+    "chart:toothName.side.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "chart:toothName.side.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "chart:toothName.type.canine": {
+      "hash": "6691980f7ccd",
+      "status": "machine"
+    },
+    "chart:toothName.type.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "chart:toothName.type.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "chart:toothName.type.premolar": {
+      "hash": "81e9512353d9",
       "status": "machine"
     },
     "codes:AB": {
@@ -5938,6 +6630,38 @@
       "hash": "caa32123418e",
       "status": "machine"
     },
+    "chart:codeRef.all": {
+      "hash": "e0d1d308a679",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnoses": {
+      "hash": "fe85a9339ee5",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnosisTitle": {
+      "hash": "56985f175fa1",
+      "status": "machine"
+    },
+    "chart:codeRef.noMatches": {
+      "hash": "d6572bd2e773",
+      "status": "machine"
+    },
+    "chart:codeRef.procedureTitle": {
+      "hash": "2b4e80946890",
+      "status": "machine"
+    },
+    "chart:codeRef.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "chart:codeRef.searchLabel": {
+      "hash": "07b0cd577edb",
+      "status": "machine"
+    },
+    "chart:codeRef.searchPlaceholder": {
+      "hash": "ce486aa3f7e2",
+      "status": "machine"
+    },
     "chart:columns.calculus": {
       "hash": "a946456fce85",
       "status": "machine"
@@ -5988,6 +6712,682 @@
     },
     "chart:customAnesthesia.yes": {
       "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.default": {
+      "hash": "650576d3b5d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.extracted": {
+      "hash": "d5c95a3c32b7",
+      "status": "machine"
+    },
+    "chart:diagram.aria.missing": {
+      "hash": "5bd55d67e1a1",
+      "status": "machine"
+    },
+    "chart:diagram.aria.select": {
+      "hash": "1fd9bab5fbd8",
+      "status": "machine"
+    },
+    "chart:diagram.comment.delete": {
+      "hash": "e43811a17028",
+      "status": "machine"
+    },
+    "chart:diagram.comment.fromGrid": {
+      "hash": "962087074868",
+      "status": "machine"
+    },
+    "chart:diagram.comment.placeholder": {
+      "hash": "6d08c3c2e4e6",
+      "status": "machine"
+    },
+    "chart:diagram.comment.resize": {
+      "hash": "95d7504f344d",
+      "status": "machine"
+    },
+    "chart:diagram.label.left": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagram.label.mandible": {
+      "hash": "7a850ff504f5",
+      "status": "machine"
+    },
+    "chart:diagram.label.maxilla": {
+      "hash": "02920ea49d35",
+      "status": "machine"
+    },
+    "chart:diagram.label.right": {
+      "hash": "8c2574892063",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.label": {
+      "hash": "45a9ee49f42d",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.locked": {
+      "hash": "6f312a0594e2",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedExtracted": {
+      "hash": "5e084ecb2583",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedMissing": {
+      "hash": "aeb494d86658",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.planned": {
+      "hash": "153cf4b0f473",
+      "status": "machine"
+    },
+    "chart:diagramView.clearStrokes": {
+      "hash": "a683a1adcfd5",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.amber": {
+      "hash": "b1601f694b9d",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.blue": {
+      "hash": "16477688c0e0",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.charcoal": {
+      "hash": "a5b3f5001e39",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.green": {
+      "hash": "ba4788b226aa",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.red": {
+      "hash": "b1f51a511f1d",
+      "status": "machine"
+    },
+    "chart:diagramView.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "chart:diagramView.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "chart:diagramView.customizeTitle": {
+      "hash": "ad6746a49ded",
+      "status": "machine"
+    },
+    "chart:diagramView.draw": {
+      "hash": "61517c08b3bf",
+      "status": "machine"
+    },
+    "chart:diagramView.drawSettings": {
+      "hash": "6ea4e9e4b3b8",
+      "status": "machine"
+    },
+    "chart:diagramView.freeComment": {
+      "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.historyGroup": {
+      "hash": "49c1588ef595",
+      "status": "machine"
+    },
+    "chart:diagramView.mark": {
+      "hash": "d7cda0ca2c85",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtracted": {
+      "hash": "c723523a4bbc",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtractedTitle": {
+      "hash": "b4147a10a197",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissing": {
+      "hash": "969fe7a2e30d",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissingTitle": {
+      "hash": "a7286b6fba8e",
+      "status": "machine"
+    },
+    "chart:diagramView.markTitle": {
+      "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.numbers": {
+      "hash": "83cb12cff5bf",
+      "status": "machine"
+    },
+    "chart:diagramView.numbersTitle": {
+      "hash": "152f8316b354",
+      "status": "machine"
+    },
+    "chart:diagramView.redo": {
+      "hash": "74273989b096",
+      "status": "machine"
+    },
+    "chart:diagramView.redoTitle": {
+      "hash": "41017ba36c39",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColor": {
+      "hash": "2bee95b97363",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColorAria": {
+      "hash": "6d0096bbc73f",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidth": {
+      "hash": "facec2691082",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidthValue": {
+      "hash": "674e0f30a077",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.aria": {
+      "hash": "d3a69257b8f6",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.glyph": {
+      "hash": "559aead08264",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.group": {
+      "hash": "4484daa3c302",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.l": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.m": {
+      "hash": "08f271887ce9",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.s": {
+      "hash": "8de0b3c47f11",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.title": {
+      "hash": "e6c606bdaef0",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.xl": {
+      "hash": "f365705bb061",
+      "status": "machine"
+    },
+    "chart:diagramView.toolGroup": {
+      "hash": "b0efc2f0dcd3",
+      "status": "machine"
+    },
+    "chart:diagramView.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:diagramView.undoTitle": {
+      "hash": "dd14b83d4e6a",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomGroup": {
+      "hash": "509c517ede79",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomLevel": {
+      "hash": "a52406ba21e8",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomOut": {
+      "hash": "bc7b631a689b",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomReset": {
+      "hash": "6c0e7501ffef",
+      "status": "machine"
+    },
+    "chart:grid.bulk.apply": {
+      "hash": "31e392d1c037",
+      "status": "machine"
+    },
+    "chart:grid.bulk.clearSelection": {
+      "hash": "cea4d2e010b8",
+      "status": "machine"
+    },
+    "chart:grid.bulk.column": {
+      "hash": "12df2c21b238",
+      "status": "machine"
+    },
+    "chart:grid.bulk.range": {
+      "hash": "f01579d0e543",
+      "status": "machine"
+    },
+    "chart:grid.bulk.region": {
+      "hash": "6a799340345e",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_many": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_one": {
+      "hash": "12b73f8cb7d7",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_other": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.set": {
+      "hash": "b6f6f3ad07b3",
+      "status": "machine"
+    },
+    "chart:grid.bulk.tip": {
+      "hash": "a051bf3115be",
+      "status": "machine"
+    },
+    "chart:grid.bulk.to": {
+      "hash": "663ea1bfffe5",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_many": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_one": {
+      "hash": "4c3085d4d28d",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_other": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.value": {
+      "hash": "8e37953d23da",
+      "status": "machine"
+    },
+    "chart:grid.cellAria": {
+      "hash": "a1fd0bcd411e",
+      "status": "machine"
+    },
+    "chart:grid.clear.confirm": {
+      "hash": "996cbf377fb2",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_many": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_one": {
+      "hash": "3a44ebb56db4",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_other": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.title": {
+      "hash": "6e9813d00dbe",
+      "status": "machine"
+    },
+    "chart:grid.lastVisit": {
+      "hash": "9ca4703ab884",
+      "status": "machine"
+    },
+    "chart:grid.lastVisitRef": {
+      "hash": "20ec74fae1d9",
+      "status": "machine"
+    },
+    "chart:grid.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.label": {
+      "hash": "aaac4f9689e5",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.labelCarried": {
+      "hash": "cbcf6aef2521",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.prev": {
+      "hash": "84fd9bac333a",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleCarried": {
+      "hash": "f26b4a2c3d9e",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleMark": {
+      "hash": "edc3f3d579c8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleUnmark": {
+      "hash": "70a2a62b38c3",
+      "status": "machine"
+    },
+    "chart:grid.options.mirror": {
+      "hash": "c599787633d9",
+      "status": "machine"
+    },
+    "chart:grid.options.mirrorTitle": {
+      "hash": "aa1690e3410a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdf": {
+      "hash": "9d1dd79efee8",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOff": {
+      "hash": "534eea65c05a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOn": {
+      "hash": "52cf173603fe",
+      "status": "machine"
+    },
+    "chart:grid.pdstateTitle": {
+      "hash": "fb590f97098a",
+      "status": "machine"
+    },
+    "chart:grid.perRoot": {
+      "hash": "5b98701e1f8c",
+      "status": "machine"
+    },
+    "chart:grid.rootAria": {
+      "hash": "812bd1e56f2b",
+      "status": "machine"
+    },
+    "chart:grid.setAll.applied": {
+      "hash": "76cc7150cd73",
+      "status": "machine"
+    },
+    "chart:grid.setAll.cleared": {
+      "hash": "f29f0c375403",
+      "status": "machine"
+    },
+    "chart:grid.setAll.confirm": {
+      "hash": "64158bae6499",
+      "status": "machine"
+    },
+    "chart:grid.setAll.invalid": {
+      "hash": "5d4f081c62f0",
+      "status": "machine"
+    },
+    "chart:grid.setAll.message": {
+      "hash": "b71d6e9159e2",
+      "status": "machine"
+    },
+    "chart:grid.setAll.messageRange": {
+      "hash": "94de49c9973e",
+      "status": "machine"
+    },
+    "chart:grid.setAll.title": {
+      "hash": "0195b43eea00",
+      "status": "machine"
+    },
+    "chart:grid.setAllHint": {
+      "hash": "8b7ff18a7109",
+      "status": "machine"
+    },
+    "chart:grid.short.calculus": {
+      "hash": "8083e23efcb0",
+      "status": "machine"
+    },
+    "chart:grid.short.furcation": {
+      "hash": "8d251878c09e",
+      "status": "machine"
+    },
+    "chart:grid.short.gingivitis": {
+      "hash": "5a32c7399d89",
+      "status": "machine"
+    },
+    "chart:grid.short.hyperplasia": {
+      "hash": "b4c7f1f3ba2d",
+      "status": "machine"
+    },
+    "chart:grid.short.mobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "chart:grid.short.pdstate": {
+      "hash": "de838855e4a6",
+      "status": "machine"
+    },
+    "chart:grid.short.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:grid.short.recession": {
+      "hash": "a29ea413d311",
+      "status": "machine"
+    },
+    "chart:grid.slot.root": {
+      "hash": "b35308714f01",
+      "status": "machine"
+    },
+    "chart:grid.slot.rootLast": {
+      "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.title": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "chart:grid.tooth.title": {
+      "hash": "6e12c4cef2e5",
+      "status": "machine"
+    },
+    "chart:grid.triadanTooth": {
+      "hash": "b204fe548c57",
+      "status": "machine"
+    },
+    "chart:grid.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.chip": {
+      "hash": "254496c45ebd",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.title": {
+      "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:scoreChips.clear": {
+      "hash": "d12fb7026312",
+      "status": "machine"
+    },
+    "chart:scoreChips.group": {
+      "hash": "4d37f0c79296",
+      "status": "machine"
+    },
+    "chart:toothChart.allConfirmed": {
+      "hash": "30c7a18956b5",
+      "status": "machine"
+    },
+    "chart:toothChart.chipDone": {
+      "hash": "d45257d82904",
+      "status": "machine"
+    },
+    "chart:toothChart.chipPending": {
+      "hash": "e8bdf974b7f7",
+      "status": "machine"
+    },
+    "chart:toothChart.clickTooth": {
+      "hash": "b2e069c90cf2",
+      "status": "machine"
+    },
+    "chart:toothChart.confirmed": {
+      "hash": "4e14dde4c851",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisNote": {
+      "hash": "7ccd1005e146",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisPlaceholder": {
+      "hash": "87584fc1ed5c",
+      "status": "machine"
+    },
+    "chart:toothChart.expected": {
+      "hash": "6470529f3829",
+      "status": "machine"
+    },
+    "chart:toothChart.extraction": {
+      "hash": "3ded2af71d1e",
+      "status": "machine"
+    },
+    "chart:toothChart.findings": {
+      "hash": "e171c2ff25b5",
+      "status": "machine"
+    },
+    "chart:toothChart.hint": {
+      "hash": "510be3f11ce9",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.charted": {
+      "hash": "7e610af7416a",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.extracted": {
+      "hash": "00a659675af3",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.label": {
+      "hash": "c54bf0ccbc29",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.planned": {
+      "hash": "165037455bdb",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_many": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_one": {
+      "hash": "6601b620e572",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_other": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.missingBefore": {
+      "hash": "1afac0f3e05e",
+      "status": "machine"
+    },
+    "chart:toothChart.next": {
+      "hash": "60ecaa29da0b",
+      "status": "machine"
+    },
+    "chart:toothChart.nextAria": {
+      "hash": "365e25363a5d",
+      "status": "machine"
+    },
+    "chart:toothChart.plan": {
+      "hash": "925557b83f1e",
+      "status": "machine"
+    },
+    "chart:toothChart.planExtract": {
+      "hash": "9f8569d10d8e",
+      "status": "machine"
+    },
+    "chart:toothChart.prev": {
+      "hash": "b844e6fad706",
+      "status": "machine"
+    },
+    "chart:toothChart.prevAria": {
+      "hash": "8a2d7b2e3a7f",
+      "status": "machine"
+    },
+    "chart:toothChart.procedureNote": {
+      "hash": "9894e4f27812",
+      "status": "machine"
+    },
+    "chart:toothChart.procedurePlaceholder": {
+      "hash": "261321a78419",
+      "status": "machine"
+    },
+    "chart:toothChart.rootAria": {
+      "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.start": {
+      "hash": "c5fe493a757d",
+      "status": "machine"
+    },
+    "chart:toothName.deciduous": {
+      "hash": "8647d6ecc146",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.mandibular": {
+      "hash": "b09078756b29",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.maxillary": {
+      "hash": "1953a7ce6916",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.1": {
+      "hash": "e01ddf6594a4",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.2": {
+      "hash": "c21365c7ea5b",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.3": {
+      "hash": "c0d751710cfb",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.4": {
+      "hash": "136ef4431c42",
+      "status": "machine"
+    },
+    "chart:toothName.ordinalTooth": {
+      "hash": "3429188567d4",
+      "status": "machine"
+    },
+    "chart:toothName.permanent": {
+      "hash": "341d4278ac59",
+      "status": "machine"
+    },
+    "chart:toothName.side.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "chart:toothName.side.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "chart:toothName.type.canine": {
+      "hash": "6691980f7ccd",
+      "status": "machine"
+    },
+    "chart:toothName.type.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "chart:toothName.type.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "chart:toothName.type.premolar": {
+      "hash": "81e9512353d9",
       "status": "machine"
     },
     "codes:AB": {
@@ -10244,6 +11644,38 @@
       "hash": "caa32123418e",
       "status": "machine"
     },
+    "chart:codeRef.all": {
+      "hash": "e0d1d308a679",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnoses": {
+      "hash": "fe85a9339ee5",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnosisTitle": {
+      "hash": "56985f175fa1",
+      "status": "machine"
+    },
+    "chart:codeRef.noMatches": {
+      "hash": "d6572bd2e773",
+      "status": "machine"
+    },
+    "chart:codeRef.procedureTitle": {
+      "hash": "2b4e80946890",
+      "status": "machine"
+    },
+    "chart:codeRef.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "chart:codeRef.searchLabel": {
+      "hash": "07b0cd577edb",
+      "status": "machine"
+    },
+    "chart:codeRef.searchPlaceholder": {
+      "hash": "ce486aa3f7e2",
+      "status": "machine"
+    },
     "chart:columns.calculus": {
       "hash": "a946456fce85",
       "status": "machine"
@@ -10294,6 +11726,682 @@
     },
     "chart:customAnesthesia.yes": {
       "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.default": {
+      "hash": "650576d3b5d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.extracted": {
+      "hash": "d5c95a3c32b7",
+      "status": "machine"
+    },
+    "chart:diagram.aria.missing": {
+      "hash": "5bd55d67e1a1",
+      "status": "machine"
+    },
+    "chart:diagram.aria.select": {
+      "hash": "1fd9bab5fbd8",
+      "status": "machine"
+    },
+    "chart:diagram.comment.delete": {
+      "hash": "e43811a17028",
+      "status": "machine"
+    },
+    "chart:diagram.comment.fromGrid": {
+      "hash": "962087074868",
+      "status": "machine"
+    },
+    "chart:diagram.comment.placeholder": {
+      "hash": "6d08c3c2e4e6",
+      "status": "machine"
+    },
+    "chart:diagram.comment.resize": {
+      "hash": "95d7504f344d",
+      "status": "machine"
+    },
+    "chart:diagram.label.left": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagram.label.mandible": {
+      "hash": "7a850ff504f5",
+      "status": "machine"
+    },
+    "chart:diagram.label.maxilla": {
+      "hash": "02920ea49d35",
+      "status": "machine"
+    },
+    "chart:diagram.label.right": {
+      "hash": "8c2574892063",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.label": {
+      "hash": "45a9ee49f42d",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.locked": {
+      "hash": "6f312a0594e2",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedExtracted": {
+      "hash": "5e084ecb2583",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedMissing": {
+      "hash": "aeb494d86658",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.planned": {
+      "hash": "153cf4b0f473",
+      "status": "machine"
+    },
+    "chart:diagramView.clearStrokes": {
+      "hash": "a683a1adcfd5",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.amber": {
+      "hash": "b1601f694b9d",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.blue": {
+      "hash": "16477688c0e0",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.charcoal": {
+      "hash": "a5b3f5001e39",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.green": {
+      "hash": "ba4788b226aa",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.red": {
+      "hash": "b1f51a511f1d",
+      "status": "machine"
+    },
+    "chart:diagramView.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "chart:diagramView.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "chart:diagramView.customizeTitle": {
+      "hash": "ad6746a49ded",
+      "status": "machine"
+    },
+    "chart:diagramView.draw": {
+      "hash": "61517c08b3bf",
+      "status": "machine"
+    },
+    "chart:diagramView.drawSettings": {
+      "hash": "6ea4e9e4b3b8",
+      "status": "machine"
+    },
+    "chart:diagramView.freeComment": {
+      "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.historyGroup": {
+      "hash": "49c1588ef595",
+      "status": "machine"
+    },
+    "chart:diagramView.mark": {
+      "hash": "d7cda0ca2c85",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtracted": {
+      "hash": "c723523a4bbc",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtractedTitle": {
+      "hash": "b4147a10a197",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissing": {
+      "hash": "969fe7a2e30d",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissingTitle": {
+      "hash": "a7286b6fba8e",
+      "status": "machine"
+    },
+    "chart:diagramView.markTitle": {
+      "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.numbers": {
+      "hash": "83cb12cff5bf",
+      "status": "machine"
+    },
+    "chart:diagramView.numbersTitle": {
+      "hash": "152f8316b354",
+      "status": "machine"
+    },
+    "chart:diagramView.redo": {
+      "hash": "74273989b096",
+      "status": "machine"
+    },
+    "chart:diagramView.redoTitle": {
+      "hash": "41017ba36c39",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColor": {
+      "hash": "2bee95b97363",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColorAria": {
+      "hash": "6d0096bbc73f",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidth": {
+      "hash": "facec2691082",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidthValue": {
+      "hash": "674e0f30a077",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.aria": {
+      "hash": "d3a69257b8f6",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.glyph": {
+      "hash": "559aead08264",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.group": {
+      "hash": "4484daa3c302",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.l": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.m": {
+      "hash": "08f271887ce9",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.s": {
+      "hash": "8de0b3c47f11",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.title": {
+      "hash": "e6c606bdaef0",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.xl": {
+      "hash": "f365705bb061",
+      "status": "machine"
+    },
+    "chart:diagramView.toolGroup": {
+      "hash": "b0efc2f0dcd3",
+      "status": "machine"
+    },
+    "chart:diagramView.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:diagramView.undoTitle": {
+      "hash": "dd14b83d4e6a",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomGroup": {
+      "hash": "509c517ede79",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomLevel": {
+      "hash": "a52406ba21e8",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomOut": {
+      "hash": "bc7b631a689b",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomReset": {
+      "hash": "6c0e7501ffef",
+      "status": "machine"
+    },
+    "chart:grid.bulk.apply": {
+      "hash": "31e392d1c037",
+      "status": "machine"
+    },
+    "chart:grid.bulk.clearSelection": {
+      "hash": "cea4d2e010b8",
+      "status": "machine"
+    },
+    "chart:grid.bulk.column": {
+      "hash": "12df2c21b238",
+      "status": "machine"
+    },
+    "chart:grid.bulk.range": {
+      "hash": "f01579d0e543",
+      "status": "machine"
+    },
+    "chart:grid.bulk.region": {
+      "hash": "6a799340345e",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_many": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_one": {
+      "hash": "12b73f8cb7d7",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_other": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.set": {
+      "hash": "b6f6f3ad07b3",
+      "status": "machine"
+    },
+    "chart:grid.bulk.tip": {
+      "hash": "a051bf3115be",
+      "status": "machine"
+    },
+    "chart:grid.bulk.to": {
+      "hash": "663ea1bfffe5",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_many": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_one": {
+      "hash": "4c3085d4d28d",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_other": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.value": {
+      "hash": "8e37953d23da",
+      "status": "machine"
+    },
+    "chart:grid.cellAria": {
+      "hash": "a1fd0bcd411e",
+      "status": "machine"
+    },
+    "chart:grid.clear.confirm": {
+      "hash": "996cbf377fb2",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_many": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_one": {
+      "hash": "3a44ebb56db4",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_other": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.title": {
+      "hash": "6e9813d00dbe",
+      "status": "machine"
+    },
+    "chart:grid.lastVisit": {
+      "hash": "9ca4703ab884",
+      "status": "machine"
+    },
+    "chart:grid.lastVisitRef": {
+      "hash": "20ec74fae1d9",
+      "status": "machine"
+    },
+    "chart:grid.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.label": {
+      "hash": "aaac4f9689e5",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.labelCarried": {
+      "hash": "cbcf6aef2521",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.prev": {
+      "hash": "84fd9bac333a",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleCarried": {
+      "hash": "f26b4a2c3d9e",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleMark": {
+      "hash": "edc3f3d579c8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleUnmark": {
+      "hash": "70a2a62b38c3",
+      "status": "machine"
+    },
+    "chart:grid.options.mirror": {
+      "hash": "c599787633d9",
+      "status": "machine"
+    },
+    "chart:grid.options.mirrorTitle": {
+      "hash": "aa1690e3410a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdf": {
+      "hash": "9d1dd79efee8",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOff": {
+      "hash": "534eea65c05a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOn": {
+      "hash": "52cf173603fe",
+      "status": "machine"
+    },
+    "chart:grid.pdstateTitle": {
+      "hash": "fb590f97098a",
+      "status": "machine"
+    },
+    "chart:grid.perRoot": {
+      "hash": "5b98701e1f8c",
+      "status": "machine"
+    },
+    "chart:grid.rootAria": {
+      "hash": "812bd1e56f2b",
+      "status": "machine"
+    },
+    "chart:grid.setAll.applied": {
+      "hash": "76cc7150cd73",
+      "status": "machine"
+    },
+    "chart:grid.setAll.cleared": {
+      "hash": "f29f0c375403",
+      "status": "machine"
+    },
+    "chart:grid.setAll.confirm": {
+      "hash": "64158bae6499",
+      "status": "machine"
+    },
+    "chart:grid.setAll.invalid": {
+      "hash": "5d4f081c62f0",
+      "status": "machine"
+    },
+    "chart:grid.setAll.message": {
+      "hash": "b71d6e9159e2",
+      "status": "machine"
+    },
+    "chart:grid.setAll.messageRange": {
+      "hash": "94de49c9973e",
+      "status": "machine"
+    },
+    "chart:grid.setAll.title": {
+      "hash": "0195b43eea00",
+      "status": "machine"
+    },
+    "chart:grid.setAllHint": {
+      "hash": "8b7ff18a7109",
+      "status": "machine"
+    },
+    "chart:grid.short.calculus": {
+      "hash": "8083e23efcb0",
+      "status": "machine"
+    },
+    "chart:grid.short.furcation": {
+      "hash": "8d251878c09e",
+      "status": "machine"
+    },
+    "chart:grid.short.gingivitis": {
+      "hash": "5a32c7399d89",
+      "status": "machine"
+    },
+    "chart:grid.short.hyperplasia": {
+      "hash": "b4c7f1f3ba2d",
+      "status": "machine"
+    },
+    "chart:grid.short.mobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "chart:grid.short.pdstate": {
+      "hash": "de838855e4a6",
+      "status": "machine"
+    },
+    "chart:grid.short.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:grid.short.recession": {
+      "hash": "a29ea413d311",
+      "status": "machine"
+    },
+    "chart:grid.slot.root": {
+      "hash": "b35308714f01",
+      "status": "machine"
+    },
+    "chart:grid.slot.rootLast": {
+      "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.title": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "chart:grid.tooth.title": {
+      "hash": "6e12c4cef2e5",
+      "status": "machine"
+    },
+    "chart:grid.triadanTooth": {
+      "hash": "b204fe548c57",
+      "status": "machine"
+    },
+    "chart:grid.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.chip": {
+      "hash": "254496c45ebd",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.title": {
+      "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:scoreChips.clear": {
+      "hash": "d12fb7026312",
+      "status": "machine"
+    },
+    "chart:scoreChips.group": {
+      "hash": "4d37f0c79296",
+      "status": "machine"
+    },
+    "chart:toothChart.allConfirmed": {
+      "hash": "30c7a18956b5",
+      "status": "machine"
+    },
+    "chart:toothChart.chipDone": {
+      "hash": "d45257d82904",
+      "status": "machine"
+    },
+    "chart:toothChart.chipPending": {
+      "hash": "e8bdf974b7f7",
+      "status": "machine"
+    },
+    "chart:toothChart.clickTooth": {
+      "hash": "b2e069c90cf2",
+      "status": "machine"
+    },
+    "chart:toothChart.confirmed": {
+      "hash": "4e14dde4c851",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisNote": {
+      "hash": "7ccd1005e146",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisPlaceholder": {
+      "hash": "87584fc1ed5c",
+      "status": "machine"
+    },
+    "chart:toothChart.expected": {
+      "hash": "6470529f3829",
+      "status": "machine"
+    },
+    "chart:toothChart.extraction": {
+      "hash": "3ded2af71d1e",
+      "status": "machine"
+    },
+    "chart:toothChart.findings": {
+      "hash": "e171c2ff25b5",
+      "status": "machine"
+    },
+    "chart:toothChart.hint": {
+      "hash": "510be3f11ce9",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.charted": {
+      "hash": "7e610af7416a",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.extracted": {
+      "hash": "00a659675af3",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.label": {
+      "hash": "c54bf0ccbc29",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.planned": {
+      "hash": "165037455bdb",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_many": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_one": {
+      "hash": "6601b620e572",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_other": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.missingBefore": {
+      "hash": "1afac0f3e05e",
+      "status": "machine"
+    },
+    "chart:toothChart.next": {
+      "hash": "60ecaa29da0b",
+      "status": "machine"
+    },
+    "chart:toothChart.nextAria": {
+      "hash": "365e25363a5d",
+      "status": "machine"
+    },
+    "chart:toothChart.plan": {
+      "hash": "925557b83f1e",
+      "status": "machine"
+    },
+    "chart:toothChart.planExtract": {
+      "hash": "9f8569d10d8e",
+      "status": "machine"
+    },
+    "chart:toothChart.prev": {
+      "hash": "b844e6fad706",
+      "status": "machine"
+    },
+    "chart:toothChart.prevAria": {
+      "hash": "8a2d7b2e3a7f",
+      "status": "machine"
+    },
+    "chart:toothChart.procedureNote": {
+      "hash": "9894e4f27812",
+      "status": "machine"
+    },
+    "chart:toothChart.procedurePlaceholder": {
+      "hash": "261321a78419",
+      "status": "machine"
+    },
+    "chart:toothChart.rootAria": {
+      "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.start": {
+      "hash": "c5fe493a757d",
+      "status": "machine"
+    },
+    "chart:toothName.deciduous": {
+      "hash": "8647d6ecc146",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.mandibular": {
+      "hash": "b09078756b29",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.maxillary": {
+      "hash": "1953a7ce6916",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.1": {
+      "hash": "e01ddf6594a4",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.2": {
+      "hash": "c21365c7ea5b",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.3": {
+      "hash": "c0d751710cfb",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.4": {
+      "hash": "136ef4431c42",
+      "status": "machine"
+    },
+    "chart:toothName.ordinalTooth": {
+      "hash": "3429188567d4",
+      "status": "machine"
+    },
+    "chart:toothName.permanent": {
+      "hash": "341d4278ac59",
+      "status": "machine"
+    },
+    "chart:toothName.side.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "chart:toothName.side.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "chart:toothName.type.canine": {
+      "hash": "6691980f7ccd",
+      "status": "machine"
+    },
+    "chart:toothName.type.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "chart:toothName.type.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "chart:toothName.type.premolar": {
+      "hash": "81e9512353d9",
       "status": "machine"
     },
     "codes:AB": {
@@ -14550,6 +16658,38 @@
       "hash": "caa32123418e",
       "status": "machine"
     },
+    "chart:codeRef.all": {
+      "hash": "e0d1d308a679",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnoses": {
+      "hash": "fe85a9339ee5",
+      "status": "machine"
+    },
+    "chart:codeRef.diagnosisTitle": {
+      "hash": "56985f175fa1",
+      "status": "machine"
+    },
+    "chart:codeRef.noMatches": {
+      "hash": "d6572bd2e773",
+      "status": "machine"
+    },
+    "chart:codeRef.procedureTitle": {
+      "hash": "2b4e80946890",
+      "status": "machine"
+    },
+    "chart:codeRef.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "chart:codeRef.searchLabel": {
+      "hash": "07b0cd577edb",
+      "status": "machine"
+    },
+    "chart:codeRef.searchPlaceholder": {
+      "hash": "ce486aa3f7e2",
+      "status": "machine"
+    },
     "chart:columns.calculus": {
       "hash": "a946456fce85",
       "status": "machine"
@@ -14600,6 +16740,682 @@
     },
     "chart:customAnesthesia.yes": {
       "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.default": {
+      "hash": "650576d3b5d6",
+      "status": "machine"
+    },
+    "chart:diagram.aria.extracted": {
+      "hash": "d5c95a3c32b7",
+      "status": "machine"
+    },
+    "chart:diagram.aria.missing": {
+      "hash": "5bd55d67e1a1",
+      "status": "machine"
+    },
+    "chart:diagram.aria.select": {
+      "hash": "1fd9bab5fbd8",
+      "status": "machine"
+    },
+    "chart:diagram.comment.delete": {
+      "hash": "e43811a17028",
+      "status": "machine"
+    },
+    "chart:diagram.comment.fromGrid": {
+      "hash": "962087074868",
+      "status": "machine"
+    },
+    "chart:diagram.comment.placeholder": {
+      "hash": "6d08c3c2e4e6",
+      "status": "machine"
+    },
+    "chart:diagram.comment.resize": {
+      "hash": "95d7504f344d",
+      "status": "machine"
+    },
+    "chart:diagram.label.left": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagram.label.mandible": {
+      "hash": "7a850ff504f5",
+      "status": "machine"
+    },
+    "chart:diagram.label.maxilla": {
+      "hash": "02920ea49d35",
+      "status": "machine"
+    },
+    "chart:diagram.label.right": {
+      "hash": "8c2574892063",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.label": {
+      "hash": "45a9ee49f42d",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.locked": {
+      "hash": "6f312a0594e2",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedExtracted": {
+      "hash": "5e084ecb2583",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.markedMissing": {
+      "hash": "aeb494d86658",
+      "status": "machine"
+    },
+    "chart:diagram.tooth.planned": {
+      "hash": "153cf4b0f473",
+      "status": "machine"
+    },
+    "chart:diagramView.clearStrokes": {
+      "hash": "a683a1adcfd5",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.amber": {
+      "hash": "b1601f694b9d",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.blue": {
+      "hash": "16477688c0e0",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.charcoal": {
+      "hash": "a5b3f5001e39",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.green": {
+      "hash": "ba4788b226aa",
+      "status": "machine"
+    },
+    "chart:diagramView.colors.red": {
+      "hash": "b1f51a511f1d",
+      "status": "machine"
+    },
+    "chart:diagramView.comment": {
+      "hash": "44f5e3fbec57",
+      "status": "machine"
+    },
+    "chart:diagramView.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "chart:diagramView.customizeTitle": {
+      "hash": "ad6746a49ded",
+      "status": "machine"
+    },
+    "chart:diagramView.draw": {
+      "hash": "61517c08b3bf",
+      "status": "machine"
+    },
+    "chart:diagramView.drawSettings": {
+      "hash": "6ea4e9e4b3b8",
+      "status": "machine"
+    },
+    "chart:diagramView.freeComment": {
+      "hash": "a60563d39b0e",
+      "status": "machine"
+    },
+    "chart:diagramView.historyGroup": {
+      "hash": "49c1588ef595",
+      "status": "machine"
+    },
+    "chart:diagramView.mark": {
+      "hash": "d7cda0ca2c85",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtracted": {
+      "hash": "c723523a4bbc",
+      "status": "machine"
+    },
+    "chart:diagramView.markExtractedTitle": {
+      "hash": "b4147a10a197",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissing": {
+      "hash": "969fe7a2e30d",
+      "status": "machine"
+    },
+    "chart:diagramView.markMissingTitle": {
+      "hash": "a7286b6fba8e",
+      "status": "machine"
+    },
+    "chart:diagramView.markTitle": {
+      "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.numbers": {
+      "hash": "83cb12cff5bf",
+      "status": "machine"
+    },
+    "chart:diagramView.numbersTitle": {
+      "hash": "152f8316b354",
+      "status": "machine"
+    },
+    "chart:diagramView.redo": {
+      "hash": "74273989b096",
+      "status": "machine"
+    },
+    "chart:diagramView.redoTitle": {
+      "hash": "41017ba36c39",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColor": {
+      "hash": "2bee95b97363",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeColorAria": {
+      "hash": "6d0096bbc73f",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidth": {
+      "hash": "facec2691082",
+      "status": "machine"
+    },
+    "chart:diagramView.strokeWidthValue": {
+      "hash": "674e0f30a077",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.aria": {
+      "hash": "d3a69257b8f6",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.glyph": {
+      "hash": "559aead08264",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.group": {
+      "hash": "4484daa3c302",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.l": {
+      "hash": "72dfcfb0c470",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.m": {
+      "hash": "08f271887ce9",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.s": {
+      "hash": "8de0b3c47f11",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.title": {
+      "hash": "e6c606bdaef0",
+      "status": "machine"
+    },
+    "chart:diagramView.textSize.xl": {
+      "hash": "f365705bb061",
+      "status": "machine"
+    },
+    "chart:diagramView.toolGroup": {
+      "hash": "b0efc2f0dcd3",
+      "status": "machine"
+    },
+    "chart:diagramView.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:diagramView.undoTitle": {
+      "hash": "dd14b83d4e6a",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomGroup": {
+      "hash": "509c517ede79",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomLevel": {
+      "hash": "a52406ba21e8",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomOut": {
+      "hash": "bc7b631a689b",
+      "status": "machine"
+    },
+    "chart:diagramView.zoomReset": {
+      "hash": "6c0e7501ffef",
+      "status": "machine"
+    },
+    "chart:grid.bulk.apply": {
+      "hash": "31e392d1c037",
+      "status": "machine"
+    },
+    "chart:grid.bulk.clearSelection": {
+      "hash": "cea4d2e010b8",
+      "status": "machine"
+    },
+    "chart:grid.bulk.column": {
+      "hash": "12df2c21b238",
+      "status": "machine"
+    },
+    "chart:grid.bulk.range": {
+      "hash": "f01579d0e543",
+      "status": "machine"
+    },
+    "chart:grid.bulk.region": {
+      "hash": "6a799340345e",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_many": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_one": {
+      "hash": "12b73f8cb7d7",
+      "status": "machine"
+    },
+    "chart:grid.bulk.selected_other": {
+      "hash": "46b1eb186605",
+      "status": "machine"
+    },
+    "chart:grid.bulk.set": {
+      "hash": "b6f6f3ad07b3",
+      "status": "machine"
+    },
+    "chart:grid.bulk.tip": {
+      "hash": "a051bf3115be",
+      "status": "machine"
+    },
+    "chart:grid.bulk.to": {
+      "hash": "663ea1bfffe5",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_many": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_one": {
+      "hash": "4c3085d4d28d",
+      "status": "machine"
+    },
+    "chart:grid.bulk.toast_other": {
+      "hash": "43148c274557",
+      "status": "machine"
+    },
+    "chart:grid.bulk.value": {
+      "hash": "8e37953d23da",
+      "status": "machine"
+    },
+    "chart:grid.cellAria": {
+      "hash": "a1fd0bcd411e",
+      "status": "machine"
+    },
+    "chart:grid.clear.confirm": {
+      "hash": "996cbf377fb2",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_many": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_one": {
+      "hash": "3a44ebb56db4",
+      "status": "machine"
+    },
+    "chart:grid.clear.message_other": {
+      "hash": "bfe7c3cd3521",
+      "status": "machine"
+    },
+    "chart:grid.clear.title": {
+      "hash": "6e9813d00dbe",
+      "status": "machine"
+    },
+    "chart:grid.lastVisit": {
+      "hash": "9ca4703ab884",
+      "status": "machine"
+    },
+    "chart:grid.lastVisitRef": {
+      "hash": "20ec74fae1d9",
+      "status": "machine"
+    },
+    "chart:grid.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.label": {
+      "hash": "aaac4f9689e5",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.labelCarried": {
+      "hash": "cbcf6aef2521",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.prev": {
+      "hash": "84fd9bac333a",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleCarried": {
+      "hash": "f26b4a2c3d9e",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleMark": {
+      "hash": "edc3f3d579c8",
+      "status": "machine"
+    },
+    "chart:grid.missingCheck.titleUnmark": {
+      "hash": "70a2a62b38c3",
+      "status": "machine"
+    },
+    "chart:grid.options.mirror": {
+      "hash": "c599787633d9",
+      "status": "machine"
+    },
+    "chart:grid.options.mirrorTitle": {
+      "hash": "aa1690e3410a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdf": {
+      "hash": "9d1dd79efee8",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOff": {
+      "hash": "534eea65c05a",
+      "status": "machine"
+    },
+    "chart:grid.options.pdfTitleOn": {
+      "hash": "52cf173603fe",
+      "status": "machine"
+    },
+    "chart:grid.pdstateTitle": {
+      "hash": "fb590f97098a",
+      "status": "machine"
+    },
+    "chart:grid.perRoot": {
+      "hash": "5b98701e1f8c",
+      "status": "machine"
+    },
+    "chart:grid.rootAria": {
+      "hash": "812bd1e56f2b",
+      "status": "machine"
+    },
+    "chart:grid.setAll.applied": {
+      "hash": "76cc7150cd73",
+      "status": "machine"
+    },
+    "chart:grid.setAll.cleared": {
+      "hash": "f29f0c375403",
+      "status": "machine"
+    },
+    "chart:grid.setAll.confirm": {
+      "hash": "64158bae6499",
+      "status": "machine"
+    },
+    "chart:grid.setAll.invalid": {
+      "hash": "5d4f081c62f0",
+      "status": "machine"
+    },
+    "chart:grid.setAll.message": {
+      "hash": "b71d6e9159e2",
+      "status": "machine"
+    },
+    "chart:grid.setAll.messageRange": {
+      "hash": "94de49c9973e",
+      "status": "machine"
+    },
+    "chart:grid.setAll.title": {
+      "hash": "0195b43eea00",
+      "status": "machine"
+    },
+    "chart:grid.setAllHint": {
+      "hash": "8b7ff18a7109",
+      "status": "machine"
+    },
+    "chart:grid.short.calculus": {
+      "hash": "8083e23efcb0",
+      "status": "machine"
+    },
+    "chart:grid.short.furcation": {
+      "hash": "8d251878c09e",
+      "status": "machine"
+    },
+    "chart:grid.short.gingivitis": {
+      "hash": "5a32c7399d89",
+      "status": "machine"
+    },
+    "chart:grid.short.hyperplasia": {
+      "hash": "b4c7f1f3ba2d",
+      "status": "machine"
+    },
+    "chart:grid.short.mobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "chart:grid.short.pdstate": {
+      "hash": "de838855e4a6",
+      "status": "machine"
+    },
+    "chart:grid.short.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:grid.short.recession": {
+      "hash": "a29ea413d311",
+      "status": "machine"
+    },
+    "chart:grid.slot.root": {
+      "hash": "b35308714f01",
+      "status": "machine"
+    },
+    "chart:grid.slot.rootLast": {
+      "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.title": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "chart:grid.tooth.title": {
+      "hash": "6e12c4cef2e5",
+      "status": "machine"
+    },
+    "chart:grid.triadanTooth": {
+      "hash": "b204fe548c57",
+      "status": "machine"
+    },
+    "chart:grid.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.chip": {
+      "hash": "254496c45ebd",
+      "status": "machine"
+    },
+    "chart:grid.unsplit.title": {
+      "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:scoreChips.clear": {
+      "hash": "d12fb7026312",
+      "status": "machine"
+    },
+    "chart:scoreChips.group": {
+      "hash": "4d37f0c79296",
+      "status": "machine"
+    },
+    "chart:toothChart.allConfirmed": {
+      "hash": "30c7a18956b5",
+      "status": "machine"
+    },
+    "chart:toothChart.chipDone": {
+      "hash": "d45257d82904",
+      "status": "machine"
+    },
+    "chart:toothChart.chipPending": {
+      "hash": "e8bdf974b7f7",
+      "status": "machine"
+    },
+    "chart:toothChart.clickTooth": {
+      "hash": "b2e069c90cf2",
+      "status": "machine"
+    },
+    "chart:toothChart.confirmed": {
+      "hash": "4e14dde4c851",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisNote": {
+      "hash": "7ccd1005e146",
+      "status": "machine"
+    },
+    "chart:toothChart.diagnosisPlaceholder": {
+      "hash": "87584fc1ed5c",
+      "status": "machine"
+    },
+    "chart:toothChart.expected": {
+      "hash": "6470529f3829",
+      "status": "machine"
+    },
+    "chart:toothChart.extraction": {
+      "hash": "3ded2af71d1e",
+      "status": "machine"
+    },
+    "chart:toothChart.findings": {
+      "hash": "e171c2ff25b5",
+      "status": "machine"
+    },
+    "chart:toothChart.hint": {
+      "hash": "510be3f11ce9",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.charted": {
+      "hash": "7e610af7416a",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.extracted": {
+      "hash": "00a659675af3",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.label": {
+      "hash": "c54bf0ccbc29",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.missing": {
+      "hash": "6be36ca49ee8",
+      "status": "machine"
+    },
+    "chart:toothChart.legend.planned": {
+      "hash": "165037455bdb",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_many": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_one": {
+      "hash": "6601b620e572",
+      "status": "machine"
+    },
+    "chart:toothChart.markExtracted_other": {
+      "hash": "424e544d6e6c",
+      "status": "machine"
+    },
+    "chart:toothChart.missingBefore": {
+      "hash": "1afac0f3e05e",
+      "status": "machine"
+    },
+    "chart:toothChart.next": {
+      "hash": "60ecaa29da0b",
+      "status": "machine"
+    },
+    "chart:toothChart.nextAria": {
+      "hash": "365e25363a5d",
+      "status": "machine"
+    },
+    "chart:toothChart.plan": {
+      "hash": "925557b83f1e",
+      "status": "machine"
+    },
+    "chart:toothChart.planExtract": {
+      "hash": "9f8569d10d8e",
+      "status": "machine"
+    },
+    "chart:toothChart.prev": {
+      "hash": "b844e6fad706",
+      "status": "machine"
+    },
+    "chart:toothChart.prevAria": {
+      "hash": "8a2d7b2e3a7f",
+      "status": "machine"
+    },
+    "chart:toothChart.procedureNote": {
+      "hash": "9894e4f27812",
+      "status": "machine"
+    },
+    "chart:toothChart.procedurePlaceholder": {
+      "hash": "261321a78419",
+      "status": "machine"
+    },
+    "chart:toothChart.rootAria": {
+      "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.start": {
+      "hash": "c5fe493a757d",
+      "status": "machine"
+    },
+    "chart:toothName.deciduous": {
+      "hash": "8647d6ecc146",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.mandibular": {
+      "hash": "b09078756b29",
+      "status": "machine"
+    },
+    "chart:toothName.jaw.maxillary": {
+      "hash": "1953a7ce6916",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.1": {
+      "hash": "e01ddf6594a4",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.2": {
+      "hash": "c21365c7ea5b",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.3": {
+      "hash": "c0d751710cfb",
+      "status": "machine"
+    },
+    "chart:toothName.ordinal.4": {
+      "hash": "136ef4431c42",
+      "status": "machine"
+    },
+    "chart:toothName.ordinalTooth": {
+      "hash": "3429188567d4",
+      "status": "machine"
+    },
+    "chart:toothName.permanent": {
+      "hash": "341d4278ac59",
+      "status": "machine"
+    },
+    "chart:toothName.side.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "chart:toothName.side.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "chart:toothName.type.canine": {
+      "hash": "6691980f7ccd",
+      "status": "machine"
+    },
+    "chart:toothName.type.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "chart:toothName.type.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "chart:toothName.type.premolar": {
+      "hash": "81e9512353d9",
       "status": "machine"
     },
     "codes:AB": {

@@ -40,5 +40,232 @@
     "block": "Custom block",
     "field": "Custom field",
     "yes": "Yes"
+  },
+  "grid": {
+    "title": "Charting",
+    "short": {
+      "mobility": "Mob",
+      "recession": "Rec",
+      "pocket": "Pocket",
+      "furcation": "Furc",
+      "hyperplasia": "Enl",
+      "calculus": "Calc",
+      "gingivitis": "Ging",
+      "pdstate": "Stage"
+    },
+    "pdstateTitle": "PD State",
+    "perRoot": "{{name}} (per root)",
+    "missing": "Missing",
+    "triadanTooth": "Triadan · Tooth",
+    "cellAria": "Tooth {{triadan}} {{column}}",
+    "rootAria": "Tooth {{triadan}} pocket, {{root}} root",
+    "setAll": {
+      "title": "Set {{name}} for every tooth",
+      "message": "Applies to every tooth not marked missing. Leave it empty to clear the column.",
+      "messageRange": "Applies to every tooth not marked missing. Use a number from {{min}} to {{max}}. Leave it empty to clear the column.",
+      "confirm": "Apply to all",
+      "invalid": "{{name}} must be a number from {{min}} to {{max}}.",
+      "applied": "{{name}} set to {{value}} on every tooth.",
+      "cleared": "{{name}} cleared on every tooth."
+    },
+    "undo": "Undo",
+    "clear": {
+      "title": "Clear {{name}} for every tooth?",
+      "message_one": "Removes {{count}} value from the {{name}} column.",
+      "message_other": "Removes {{count}} values from the {{name}} column.",
+      "confirm": "Clear column"
+    },
+    "bulk": {
+      "toast_one": "{{name}} set to {{value}} on {{count}} tooth.",
+      "toast_other": "{{name}} set to {{value}} on {{count}} teeth.",
+      "range": "Use {{min}}–{{max}}",
+      "region": "Set a value on the selected teeth",
+      "selected_one": "{{count}} tooth selected",
+      "selected_other": "{{count}} teeth selected",
+      "set": "Set",
+      "column": "Column to set",
+      "to": "to",
+      "value": "Value",
+      "apply": "Apply",
+      "clearSelection": "Clear selection",
+      "tip": "Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them."
+    },
+    "missingCheck": {
+      "label": "Tooth {{triadan}} missing",
+      "labelCarried": "Tooth {{triadan}} missing (carried from the previous visit)",
+      "titleCarried": "Tooth {{triadan}} was already missing or extracted at the previous visit — carried forward automatically",
+      "titleUnmark": "Unmark tooth {{triadan}} as missing",
+      "titleMark": "Mark tooth {{triadan}} as missing — crosses out this row and fills the tooth on the Diagnosis diagram",
+      "prev": "prev"
+    },
+    "tooth": {
+      "title": "Click to select this tooth (Shift-click for a range) and set a value on several at once"
+    },
+    "slot": {
+      "root": "{{root}} root",
+      "rootLast": "{{root}} root — last visit {{value}}"
+    },
+    "unsplit": {
+      "title": "Not split by root — click to edit (clear it to get a box per root)",
+      "chip": "all roots"
+    },
+    "lastVisit": "Last visit: {{value}}",
+    "lastVisitRef": "Last visit: {{value}} — shown for reference, not carried forward",
+    "setAllHint": "Set {{name}} for every tooth at once",
+    "options": {
+      "mirror": "Show findings on Diagnosis diagram",
+      "mirrorTitle": "Adds a comment on each charted tooth in the Diagnosis diagram and keeps it updated as you chart. Your own comments are left alone.",
+      "pdf": "Include grid in PDF",
+      "pdfTitleOn": "Untick to leave the arch grids off the PDF — the Diagnosis diagram already shows these findings, and gets the extra room.",
+      "pdfTitleOff": "Available when findings are shown on the Diagnosis diagram."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Diagram key",
+      "charted": "Charted",
+      "planned": "Planned extraction",
+      "extracted": "Extracted",
+      "missing": "Missing"
+    },
+    "clickTooth": "<strong>Click a tooth</strong> on the diagram to chart it.",
+    "hint": "Everything you enter here also fills the Charting grid and the Diagnosis / Procedure diagrams.",
+    "start": "Start at {{triadan}} →",
+    "prev": "Previous tooth",
+    "prevAria": "Previous tooth ({{triadan}})",
+    "next": "Next tooth",
+    "nextAria": "Next tooth ({{triadan}})",
+    "missingBefore": "Missing (before this visit)",
+    "findings": "Findings",
+    "rootAria": "Pocket, {{root}} root",
+    "expected": "Expected {{range}}",
+    "diagnosisNote": "Diagnosis note",
+    "diagnosisPlaceholder": "e.g. Fractured crown, pulp exposure",
+    "extraction": "Extraction",
+    "planExtract": "Plan to extract",
+    "procedureNote": "Procedure note",
+    "procedurePlaceholder": "e.g. Surgical extraction, flap closed with 5-0",
+    "plan": "Extraction plan",
+    "chipDone": "{{triadan}} — extracted",
+    "chipPending": "{{triadan}} — not yet marked extracted",
+    "allConfirmed": "All planned extractions confirmed.",
+    "confirmed": "{{done}} of {{total}} confirmed extracted.",
+    "markExtracted_one": "Mark it extracted",
+    "markExtracted_other": "Mark all {{count}} extracted"
+  },
+  "toothName": {
+    "side": {
+      "right": "Right",
+      "left": "Left"
+    },
+    "jaw": {
+      "maxillary": "maxillary",
+      "mandibular": "mandibular"
+    },
+    "type": {
+      "incisor": "incisor",
+      "canine": "canine",
+      "premolar": "premolar",
+      "molar": "molar"
+    },
+    "ordinal": {
+      "1": "1st",
+      "2": "2nd",
+      "3": "3rd",
+      "4": "4th"
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{side}} {{jaw}} {{tooth}}",
+    "deciduous": "{{side}} {{jaw}} deciduous {{tooth}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Maxilla",
+      "mandible": "Mandible",
+      "right": "R",
+      "left": "L"
+    },
+    "aria": {
+      "select": "Tooth diagram — choose a tooth to chart it",
+      "extracted": "Tooth diagram — Enter or Space on a tooth toggles extracted",
+      "missing": "Tooth diagram — Enter or Space on a tooth toggles missing",
+      "default": "Tooth diagram"
+    },
+    "tooth": {
+      "label": "Tooth {{triadan}}{{details}}",
+      "markedMissing": ", marked missing",
+      "markedExtracted": ", marked extracted",
+      "planned": ", planned extraction",
+      "locked": " (missing before this visit — locked)"
+    },
+    "comment": {
+      "fromGrid": "From the Charting grid — edit the grid to change this",
+      "delete": "Delete comment",
+      "placeholder": "Notes...",
+      "resize": "Resize comment"
+    }
+  },
+  "diagramView": {
+    "customize": "Customize",
+    "customizeTitle": "Findings shown beside the teeth",
+    "toolGroup": "Diagram tool",
+    "markMissingTitle": "Tap a tooth to mark it missing (tap again to clear)",
+    "markExtractedTitle": "Tap a tooth to mark it extracted (tap again to clear)",
+    "markTitle": "Tap a tooth to mark it missing or extracted",
+    "markMissing": "Mark missing",
+    "markExtracted": "Mark extracted",
+    "mark": "Mark",
+    "comment": "Comment",
+    "draw": "Draw",
+    "historyGroup": "Undo / Redo",
+    "undo": "Undo",
+    "redo": "Redo",
+    "undoTitle": "Undo ({{shortcut}})",
+    "redoTitle": "Redo ({{shortcut}})",
+    "freeComment": "+ Free comment",
+    "numbers": "# Numbers",
+    "numbersTitle": "Show each tooth’s Triadan number on the diagram (not printed on the PDF)",
+    "zoomGroup": "Zoom",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in",
+    "zoomReset": "Reset zoom to fit",
+    "zoomLevel": "Zoom {{percent}} percent — reset to fit",
+    "textSize": {
+      "group": "Comment text size",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Comment text size {{size}}",
+      "title": "Comment text size: {{size}}"
+    },
+    "drawSettings": "Draw settings",
+    "strokeColor": "Stroke color",
+    "colors": {
+      "red": "red",
+      "blue": "blue",
+      "green": "green",
+      "amber": "amber",
+      "charcoal": "charcoal"
+    },
+    "strokeColorAria": "Stroke color {{color}}",
+    "strokeWidth": "Stroke width",
+    "strokeWidthValue": "{{width}} pixels",
+    "clearStrokes": "Clear strokes"
+  },
+  "codeRef": {
+    "all": "Codes",
+    "diagnosisTitle": "Diagnosis codes",
+    "procedureTitle": "Procedure codes",
+    "searchLabel": "Search codes or definitions",
+    "searchPlaceholder": "Search codes or definitions…",
+    "diagnoses": "Diagnoses",
+    "procedures": "Procedures",
+    "noMatches": "No matches."
+  },
+  "scoreChips": {
+    "group": "{{name}} score",
+    "clear": "Clear {{name}}"
   }
 }

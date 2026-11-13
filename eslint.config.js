@@ -73,7 +73,7 @@ module.exports = [
               // Component props that carry a mode or a callback, never text. A literal
               // inside a handler still can't reach the user unnoticed: toast, friendlyError
               // and the dialog helpers are checked by no-restricted-syntax below.
-              /^on[A-Z]/, 'cloud', 'kind', 'markMode', 'defaultTool', 'mode', 'initialAuth',
+              /^on[A-Z]/, 'cloud', 'kind', 'markMode', 'defaultTool', 'mode', 'initialAuth', 'tool', 'rowClass',
             ],
           },
           // Only strings that contain a letter count as text.
