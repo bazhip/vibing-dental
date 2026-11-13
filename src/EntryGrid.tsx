@@ -1247,6 +1247,78 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 No patient yet — add one in the Patient section
               </span>
             )}
+                {/* Save status sits with the chart it describes (as in Docs/Notion).
+                One save-status pill, always telling the truth: what's
+                    happening now, or when this chart last reached the cloud.
+                    ⌘S / Ctrl+S saves immediately. */}
+                {cloud.enabled ? (() => {
+                  if (cloud.status === 'saving') {
+                    return <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>;
+                  }
+                  if (cloud.status === 'error') {
+                    return (
+                      <span className="save-status-error-wrap">
+                        <button
+                          type="button"
+                          className="save-status save-status--error"
+                          onClick={attemptSave}
+                          title={cloud.saveError || 'Retry saving this chart'}
+                        >
+                          Not saved — retry
+                        </button>
+                        {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
+                      </span>
+                    );
+                  }
+                  if (saveHint) {
+                    return (
+                      <span className="save-status-error-wrap" role="alert">
+                        <span className="save-status save-status--error">Not saved</span>
+                        <span className="save-status__detail">{saveHint}</span>
+                      </span>
+                    );
+                  }
+                  if (readOnly) {
+                    // The viewing bar already says so.
+                    if (viewingSavedVisit) return null;
+                    return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
+                  }
+                  if (cloud.dirty && !cloud.online) {
+                    return <span className="save-status save-status--manual" title="Changes are kept on this device and save when you're back online">Offline — saved on this device</span>;
+                  }
+                  if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
+                    return <span className="save-status save-status--manual" title="Charts save once the patient has a name">Add a patient name to save</span>;
+                  }
+                  if (cloud.awaitingClinical) {
+                    // Filled in ahead of time: autosave starts with charting;
+                    // Save puts it in the cloud now (e.g. to open elsewhere).
+                    return (
+                      <button
+                        type="button"
+                        className="save-status save-status--manual"
+                        onClick={attemptSave}
+                        title="Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device."
+                      >
+                        Save
+                      </button>
+                    );
+                  }
+                  if (cloud.dirty) {
+                    return <span className="save-status save-status--manual" title="Saving automatically…">Unsaved changes</span>;
+                  }
+                  if (cloud.lastSavedAt) {
+                    return (
+                      <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
+                        <span className="save-status__word">Saved · </span>{formatSavedAt(cloud.lastSavedAt)}
+                      </span>
+                    );
+                  }
+                  return null;
+                })() : trial ? (
+                  <span className="save-status save-status--muted" title="Trial charts stay in this browser. Create a free account to save to the cloud.">
+                    On this device only
+                  </span>
+                ) : null}
           </div>
           </div>
         </div>
@@ -1289,77 +1361,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {/* One save-status pill, always telling the truth: what's
-              happening now, or when this chart last reached the cloud.
-              ⌘S / Ctrl+S saves immediately. */}
-          {cloud.enabled ? (() => {
-            if (cloud.status === 'saving') {
-              return <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>;
-            }
-            if (cloud.status === 'error') {
-              return (
-                <span className="save-status-error-wrap">
-                  <button
-                    type="button"
-                    className="save-status save-status--error"
-                    onClick={attemptSave}
-                    title={cloud.saveError || 'Retry saving this chart'}
-                  >
-                    Not saved — retry
-                  </button>
-                  {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
-                </span>
-              );
-            }
-            if (saveHint) {
-              return (
-                <span className="save-status-error-wrap" role="alert">
-                  <span className="save-status save-status--error">Not saved</span>
-                  <span className="save-status__detail">{saveHint}</span>
-                </span>
-              );
-            }
-            if (readOnly) {
-              // The viewing bar already says so.
-              if (viewingSavedVisit) return null;
-              return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
-            }
-            if (cloud.dirty && !cloud.online) {
-              return <span className="save-status save-status--manual" title="Changes are kept on this device and save when you're back online">Offline — saved on this device</span>;
-            }
-            if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
-              return <span className="save-status save-status--manual" title="Charts save once the patient has a name">Add a patient name to save</span>;
-            }
-            if (cloud.awaitingClinical) {
-              // Filled in ahead of time: autosave starts with charting;
-              // Save puts it in the cloud now (e.g. to open elsewhere).
-              return (
-                <button
-                  type="button"
-                  className="save-status save-status--manual"
-                  onClick={attemptSave}
-                  title="Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device."
-                >
-                  Save
-                </button>
-              );
-            }
-            if (cloud.dirty) {
-              return <span className="save-status save-status--manual" title="Saving automatically…">Unsaved changes</span>;
-            }
-            if (cloud.lastSavedAt) {
-              return (
-                <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
-                  <span className="save-status__word">Saved · </span>{formatSavedAt(cloud.lastSavedAt)}
-                </span>
-              );
-            }
-            return null;
-          })() : trial ? (
-            <span className="save-status save-status--muted" title="Trial charts stay in this browser. Create a free account to save to the cloud.">
-              On this device only
-            </span>
-          ) : null}
           {cloud.enabled && (
             <ChartsMenu
               onOpenLibrary={openLibrary}
