@@ -116,7 +116,8 @@
     "saveFailed": "No se pudieron guardar las plantillas.",
     "previewFailed": "No se pudo crear la vista previa. Vuelva a intentarlo en un momento.",
     "setDefaultShort": "Predeterminada",
-    "previewShort": "Vista previa"
+    "previewShort": "Vista previa",
+    "loadFailed": "No se pudieron cargar sus plantillas guardadas, por lo que ve la plantilla predeterminada. Guardar está desactivado para no reemplazarlas: recargue la página para volver a intentarlo."
   },
   "sections": {
     "diagram": "Diagrama de la boca",

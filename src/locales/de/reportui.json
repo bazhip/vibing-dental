@@ -115,7 +115,8 @@
     "saveFailed": "Die Vorlagen konnten nicht gespeichert werden.",
     "previewFailed": "Die Vorschau konnte nicht erstellt werden. Versuchen Sie es gleich noch einmal.",
     "setDefaultShort": "Als Standard",
-    "previewShort": "Vorschau"
+    "previewShort": "Vorschau",
+    "loadFailed": "Ihre gespeicherten Vorlagen konnten nicht geladen werden, daher sehen Sie die Standardvorlage. Speichern ist deaktiviert, damit sie nicht überschrieben werden – laden Sie die Seite neu, um es erneut zu versuchen."
   },
   "sections": {
     "diagram": "Gebissschema",

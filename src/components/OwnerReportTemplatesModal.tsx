@@ -330,7 +330,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             <div className="report-templates__editor">
               {loadFailed && (
                 <p className="login-error" role="alert">
-                  Your saved templates didn’t load, so you’re seeing the built-in default. Saving is turned off so it can’t replace them — reload the page to try again.
+                  {t('templates.loadFailed')}
                 </p>
               )}
               {roleKnown && !canEdit && (

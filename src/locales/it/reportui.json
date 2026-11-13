@@ -116,7 +116,8 @@
     "saveFailed": "Impossibile salvare i modelli.",
     "previewFailed": "Impossibile creare l’anteprima. Riprovi tra un istante.",
     "setDefaultShort": "Predefinito",
-    "previewShort": "Anteprima"
+    "previewShort": "Anteprima",
+    "loadFailed": "Non è stato possibile caricare i Suoi modelli salvati, quindi vede il modello predefinito. Il salvataggio è disattivato per non sostituirli: ricarichi la pagina per riprovare."
   },
   "sections": {
     "diagram": "Schema della bocca",

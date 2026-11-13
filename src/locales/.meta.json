@@ -7248,6 +7248,10 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "reportui:templates.loadFailed": {
+      "hash": "ad670886bcb6",
+      "status": "machine"
+    },
     "reportui:templates.moveDown": {
       "hash": "40bb50da160c",
       "status": "machine"
@@ -15968,6 +15972,10 @@
     },
     "reportui:templates.listLabel": {
       "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.loadFailed": {
+      "hash": "ad670886bcb6",
       "status": "machine"
     },
     "reportui:templates.moveDown": {
@@ -24716,6 +24724,10 @@
       "hash": "56b564b75c7f",
       "status": "machine"
     },
+    "reportui:templates.loadFailed": {
+      "hash": "ad670886bcb6",
+      "status": "machine"
+    },
     "reportui:templates.moveDown": {
       "hash": "40bb50da160c",
       "status": "machine"
@@ -33460,6 +33472,10 @@
     },
     "reportui:templates.listLabel": {
       "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.loadFailed": {
+      "hash": "ad670886bcb6",
       "status": "machine"
     },
     "reportui:templates.moveDown": {

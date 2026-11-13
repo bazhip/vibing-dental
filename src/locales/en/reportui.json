@@ -115,7 +115,8 @@
     "saveFailed": "Could not save the templates.",
     "previewFailed": "Couldn't build the preview. Try again in a moment.",
     "setDefaultShort": "Set default",
-    "previewShort": "Preview"
+    "previewShort": "Preview",
+    "loadFailed": "Your saved templates didn’t load, so you’re seeing the built-in default. Saving is turned off so it can’t replace them — reload the page to try again."
   },
   "sections": {
     "diagram": "Mouth diagram",

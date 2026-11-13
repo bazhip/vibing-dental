@@ -116,7 +116,8 @@
     "saveFailed": "Impossible d’enregistrer les modèles.",
     "previewFailed": "Impossible de créer l’aperçu. Réessayez dans un instant.",
     "setDefaultShort": "Par défaut",
-    "previewShort": "Aperçu"
+    "previewShort": "Aperçu",
+    "loadFailed": "Vos modèles enregistrés n’ont pas pu être chargés : vous voyez le modèle par défaut. L’enregistrement est désactivé pour ne pas les remplacer — rechargez la page pour réessayer."
   },
   "sections": {
     "diagram": "Schéma de la bouche",
