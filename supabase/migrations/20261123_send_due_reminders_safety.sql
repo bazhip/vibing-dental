@@ -6,8 +6,8 @@
 --   select prosecdef, proconfig, pg_get_function_result(oid)
 --     from pg_proc where proname = 'send_due_reminders';
 --   select pg_get_functiondef('public.send_due_reminders'::regproc);
--- The header below assumes `security definer set search_path = public` and
--- `returns void`. If prosecdef is false, delete the `security definer` line.
+-- The header below matches the live function (checked 2026-11-13): `security definer`, `search_path = public, extensions`,
+-- `returns void`. On another project: if prosecdef is false, delete the `security definer` line.
 -- If proconfig shows a different search_path (e.g. `public, extensions`), copy
 -- it exactly into the `set search_path` line. Diff the full function body from
 -- pg_get_functiondef against this file before applying.
