@@ -206,8 +206,12 @@ export function useCloudSync(
   // mine"; blocked = "Keep theirs" (no more saves until reopened).
   const conflictRef = React.useRef<{ chartId: string; mode: 'none' | 'force' | 'blocked' }>({ chartId: '', mode: 'none' });
   const [online, setOnline] = React.useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
+  // Bumped on every 'online' event, even when we never saw 'offline' (a
+  // save can fail on a flaky connection while navigator.onLine stays
+  // true) — it re-runs autosave so a failed save is retried.
+  const [reconnects, setReconnects] = React.useState(0);
   React.useEffect(() => {
-    const up = () => setOnline(true);
+    const up = () => { setOnline(true); setReconnects((n) => n + 1); };
     const down = () => setOnline(false);
     window.addEventListener('online', up);
     window.addEventListener('offline', down);
@@ -448,7 +452,8 @@ export function useCloudSync(
   saveNowRef.current = saveNow;
   // Saved charts autosave once the user has unlocked them (unlocking is
   // the deliberate step); while locked nothing can change anyway.
-  // Offline: wait, and retry as soon as the connection is back.
+  // Offline, or a save failed: wait, and retry as soon as the connection
+  // is back ('online' event).
   React.useEffect(() => {
     if (!on || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
@@ -459,7 +464,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, awaitingClinical]);
+  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (verb: string): Promise<boolean> => {
