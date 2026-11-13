@@ -1261,6 +1261,83 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 {t('topbar.patientEmpty')}
               </span>
             )}
+                {/* Save status sits with the chart it describes (as in Docs/Notion).
+              {/* One save-status pill, always telling the truth: what's
+                  happening now, or when this chart last reached the cloud.
+                  ⌘S / Ctrl+S saves immediately. */}
+              {cloud.enabled ? (() => {
+                if (cloud.status === 'saving') {
+                  return <span className="save-status save-status--saving" aria-hidden="true">{t('status.saving')}</span>;
+                }
+                if (cloud.status === 'error') {
+                  return (
+                    <span className="save-status-error-wrap">
+                      <button
+                        type="button"
+                        className="save-status save-status--error"
+                        onClick={attemptSave}
+                        title={cloud.saveError || t('status.retryTitle')}
+                      >
+                        {t('status.notSavedRetry')}
+                      </button>
+                      {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
+                    </span>
+                  );
+                }
+                if (saveHint) {
+                  return (
+                    <span className="save-status-error-wrap" role="alert">
+                      <span className="save-status save-status--error">{t('status.notSaved')}</span>
+                      <span className="save-status__detail">{saveHint}</span>
+                    </span>
+                  );
+                }
+                if (readOnly) {
+                  // The viewing bar already says so.
+                  if (viewingSavedVisit) return null;
+                  return <span className="save-status save-status--muted" title={t('status.viewOnlyTitle')}>{t('status.viewOnly')}</span>;
+                }
+                if (cloud.dirty && !cloud.online) {
+                  return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
+                }
+                if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
+                  return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
+                }
+                if (cloud.awaitingClinical) {
+                  // Filled in ahead of time: autosave starts with charting;
+                  // Save puts it in the cloud now (e.g. to open elsewhere).
+                  return (
+                    <button
+                      type="button"
+                      className="save-status save-status--manual"
+                      onClick={attemptSave}
+                      title={t('status.saveTitle')}
+                    >
+                      {t('actions.save', { ns: 'common' })}
+                    </button>
+                  );
+                }
+                if (cloud.dirty) {
+                  return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
+                }
+                if (cloud.lastSavedAt) {
+                  return (
+                    <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
+                      <Trans
+                        t={t}
+                        i18nKey="status.savedRich"
+                        values={{ when: formatSavedAt(cloud.lastSavedAt) }}
+                        components={{ word: <span className="save-status__word" /> }}
+                      />
+                    </span>
+                  );
+                }
+                return null;
+              })() : trial ? (
+                <span className="save-status save-status--muted" title={t('status.localTitle')}>
+                  {t('status.local')}
+                </span>
+              ) : null}
           </div>
           </div>
         </div>
@@ -1303,82 +1380,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {/* One save-status pill, always telling the truth: what's
-              happening now, or when this chart last reached the cloud.
-              ⌘S / Ctrl+S saves immediately. */}
-          {cloud.enabled ? (() => {
-            if (cloud.status === 'saving') {
-              return <span className="save-status save-status--saving" aria-hidden="true">{t('status.saving')}</span>;
-            }
-            if (cloud.status === 'error') {
-              return (
-                <span className="save-status-error-wrap">
-                  <button
-                    type="button"
-                    className="save-status save-status--error"
-                    onClick={attemptSave}
-                    title={cloud.saveError || t('status.retryTitle')}
-                  >
-                    {t('status.notSavedRetry')}
-                  </button>
-                  {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
-                </span>
-              );
-            }
-            if (saveHint) {
-              return (
-                <span className="save-status-error-wrap" role="alert">
-                  <span className="save-status save-status--error">{t('status.notSaved')}</span>
-                  <span className="save-status__detail">{saveHint}</span>
-                </span>
-              );
-            }
-            if (readOnly) {
-              // The viewing bar already says so.
-              if (viewingSavedVisit) return null;
-              return <span className="save-status save-status--muted" title={t('status.viewOnlyTitle')}>{t('status.viewOnly')}</span>;
-            }
-            if (cloud.dirty && !cloud.online) {
-              return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
-            }
-            if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
-              return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
-            }
-            if (cloud.awaitingClinical) {
-              // Filled in ahead of time: autosave starts with charting;
-              // Save puts it in the cloud now (e.g. to open elsewhere).
-              return (
-                <button
-                  type="button"
-                  className="save-status save-status--manual"
-                  onClick={attemptSave}
-                  title={t('status.saveTitle')}
-                >
-                  {t('actions.save', { ns: 'common' })}
-                </button>
-              );
-            }
-            if (cloud.dirty) {
-              return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
-            }
-            if (cloud.lastSavedAt) {
-              return (
-                <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
-                  <Trans
-                    t={t}
-                    i18nKey="status.savedRich"
-                    values={{ when: formatSavedAt(cloud.lastSavedAt) }}
-                    components={{ word: <span className="save-status__word" /> }}
-                  />
-                </span>
-              );
-            }
-            return null;
-          })() : trial ? (
-            <span className="save-status save-status--muted" title={t('status.localTitle')}>
-              {t('status.local')}
-            </span>
-          ) : null}
           {cloud.enabled && (
             <ChartsMenu
               onOpenLibrary={openLibrary}

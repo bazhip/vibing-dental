@@ -203,11 +203,7 @@
   margin-left: auto;
   white-space: nowrap;
 }
-.topbar-label-short { display: none; }
-@media (max-width: 600px) {
-  .topbar-label-long { display: none; }
-  .topbar-label-short { display: inline; }
-}
+.topbar-label-short { display: none; } /* switched in RESPONSIVE HEADER below */
 
 /* Voice-input mic button + status. Lives in the topbar, theme-aware via
    var(--primary). Recording state pulses red. */
@@ -4202,58 +4198,79 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 .topbar-plus { flex: none; }
 
 /* =============================================================================
- * PHONE HEADER — compact and always tidy:
- *  row 1  patient … state chip (Editing / View only)
- *  row 2  one row of buttons; Dictate, Settings and Undo become 44px icon
- *         buttons (accessible names kept); New patient / Edit / Done short.
- * The section selector pins right under it so it's always reachable.
+ * RESPONSIVE HEADER — one considered layout per size, never ad-hoc wrapping:
+ *   ≥1281px   full labels, one line.
+ *   901–1280  compact, still one line: Dictate / Settings / Undo become
+ *             icon buttons (accessible names kept); short labels
+ *             (Charts ▾, + New, Edit, Done).
+ *   ≥1025px   never wraps: the patient block shrinks and its details flow
+ *             onto a second line inside it, so buttons can't fall onto a
+ *             stray row whatever the names' lengths.
+ *   ≤1024px   two deliberate rows — the patient row (save status at its
+ *             end), then a full-width toolbar. The section nav pins under
+ *             the header below 900px (tabs on tablets, a menu on phones).
+ * Save status always sits in the patient row, beside the chart it
+ * describes (as Docs / Notion do).
  * ========================================================================== */
-@media (max-width: 600px) {
-  /* Row 1: patient … state chip; the save time sits at the row's right
-     end (lifted out of the toolbar). */
-  .topbar-state-chip { margin-left: 0.15rem; }
-  .entry-grid__topbar-actions--app > .save-status--saved,
-  .entry-grid__topbar-actions--app > .save-status--saving {
-    position: absolute;
-    top: 0.7rem;
-    right: var(--page-pad, 0.5rem);
-    width: auto;
+.entry-grid__patient .save-status,
+.entry-grid__patient .save-status-error-wrap { margin-left: 0.15rem; align-self: center; }
+
+@media (max-width: 1280px) {
+  .topbar-label-long { display: none; }
+  .topbar-label-short { display: inline; }
+  .topbar-icon { display: inline-block; }
+  .chart-menu__trigger-label,
+  .topbar-icon-label,
+  .entry-grid__topbar .voice-input__label {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
-  /* Longer save messages (not saved, offline, add a name…) take their
-     own full line above the buttons rather than squeezing them. */
-  .entry-grid__topbar-actions--app > .save-status:not(.save-status--saved):not(.save-status--saving),
-  .entry-grid__topbar-actions--app > .save-status-error-wrap {
-    flex: 1 0 100%;
-    order: -1;
+  .entry-grid__topbar .chart-menu__trigger,
+  .entry-grid__topbar .voice-input,
+  .topbar-editing__undo {
+    min-width: 44px;
     justify-content: center;
   }
-  .entry-grid__topbar-lead { padding-right: 5.5rem; } /* room for the save time */
+  .entry-grid__topbar .voice-input,
+  .topbar-tour-anchor .chart-menu__trigger,
+  .topbar-editing__undo { padding-left: 0.65rem; padding-right: 0.65rem; }
+}
 
-  /* Row 2: the toolbar spans the width as equal buttons — a deliberate
-     toolbar, not a right-aligned leftover row. */
-  .entry-grid__topbar-actions--app {
+@media (min-width: 1025px) {
+  .entry-grid__topbar { flex-wrap: nowrap; }
+  .entry-grid__topbar-lead { min-width: 0; }
+  .entry-grid__topbar-actions { flex: none; }
+}
+
+@media (max-width: 1024px) {
+  /* Row 1: patient … chip … save status pushed to the row's end. */
+  .entry-grid__topbar-lead { flex: 1 1 100%; }
+  .entry-grid__patient .save-status,
+  .entry-grid__patient .save-status-error-wrap { margin-left: auto; }
+
+  /* Row 2: a full-width toolbar — text buttons share the width, icon
+     buttons are a fixed 48px. */
+  .entry-grid__topbar-actions {
+    flex: 1 1 100%;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.4rem;
-    width: 100%;
   }
-  .entry-grid__topbar-actions--app > * { flex: 1 1 0; }
-  /* Icon buttons keep a fixed 48px; the text buttons share the rest. */
-  .entry-grid__topbar-actions--app > .voice-input-wrap,
-  .entry-grid__topbar-actions--app > .topbar-tour-anchor,
-  .entry-grid__topbar-actions--app > .topbar-editing__undo { flex: 0 0 48px; }
-  .entry-grid__topbar-actions--app > *,
-  .entry-grid__topbar-actions--app .chart-menu,
-  .entry-grid__topbar-actions--app .voice-input-wrap,
-  .entry-grid__topbar-actions--app .chart-menu__trigger,
-  .entry-grid__topbar-actions--app .voice-input,
-  .entry-grid__topbar-actions--app .entry-grid__button,
-  .entry-grid__topbar-actions--app .topbar-editing__undo {
+  .entry-grid__topbar-actions > * { flex: 1 1 0; min-width: 0; }
+  .entry-grid__topbar-actions > .voice-input-wrap,
+  .entry-grid__topbar-actions > .topbar-tour-anchor,
+  .entry-grid__topbar-actions > .topbar-editing__undo { flex: 0 0 48px; }
+  .entry-grid__topbar-actions .chart-menu,
+  .entry-grid__topbar-actions .voice-input-wrap,
+  .entry-grid__topbar-actions .chart-menu__trigger,
+  .entry-grid__topbar-actions .voice-input,
+  .entry-grid__topbar-actions .entry-grid__button,
+  .entry-grid__topbar-actions .topbar-editing__undo {
     width: 100%;
     min-width: 0;
   }
-  .entry-grid__topbar-actions--app .chart-menu__trigger,
-  .entry-grid__topbar-actions--app .entry-grid__button {
+  .entry-grid__topbar-actions .chart-menu__trigger,
+  .entry-grid__topbar-actions .entry-grid__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -4262,26 +4279,22 @@ a, button, input, select, textarea, label, summary, [role='button'] {
     white-space: nowrap;
   }
 
-  .entry-grid__topbar-actions { gap: 0.35rem; }
-  .topbar-icon { display: inline-block; }
-  .chart-menu__trigger-label,
-  .topbar-icon-label,
-  .entry-grid__topbar .voice-input__label {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-  .save-status__word { display: none; }
-  .chart-menu__trigger,
-  .entry-grid__topbar .voice-input,
-  .topbar-editing__undo {
-    min-width: 44px;
-    min-height: 44px;
-    justify-content: center;
-    padding: 0 0.65rem;
-  }
+}
 
-  /* Section selector: pinned under the header, on the page background so
-     content scrolling beneath it doesn't show through the gaps. */
+@media (max-width: 900px) {
+  /* Things that pin under the header sit below the pinned section nav. */
+  .diagram-view__toolbar { top: calc(var(--topbar-height, 0px) + var(--section-menu-h, 0px) + 0.25rem); }
+  .chart-lock-banner { top: calc(var(--topbar-height, 0px) + var(--section-menu-h, 0px) + 0.25rem); }
+}
+
+@media (max-width: 600px) {
+  .save-status__word { display: none; }
+  .entry-grid__topbar .chart-menu__trigger,
+  .entry-grid__topbar .voice-input,
+  .topbar-editing__undo { min-height: 44px; }
+
+  /* Phones: the section menu pins under the header, on the page
+     background so content scrolling beneath doesn't show through. */
   .entry-grid-container { --section-menu-h: 3.4rem; }
   .mobile-section-menu {
     position: sticky;
@@ -4290,11 +4303,14 @@ a, button, input, select, textarea, label, summary, [role='button'] {
     margin: -0.35rem 0 0.15rem;
     background: var(--bg-page, #eef1f3);
   }
-  /* Other things that pin under the header sit below the selector. */
-  .diagram-view__toolbar { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
-  .chart-lock-banner { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
 }
 
 /* Topbar menus (My charts, Settings): the action row is nowrap, so its
    dropdowns must opt back into wrapping or long descriptions get cut. */
 .entry-grid__topbar .chart-menu__panel { white-space: normal; }
+
+/* Tablets: the pinned section tab strip's height, for things that pin
+   below it. */
+@media (min-width: 601px) and (max-width: 900px) {
+  .entry-grid-container { --section-menu-h: 3.5rem; }
+}
