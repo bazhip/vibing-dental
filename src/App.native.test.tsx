@@ -24,6 +24,13 @@ vi.mock('./EntryGrid', () => ({
   },
 }));
 vi.mock('./components/BillingGate', () => ({ BillingGate: ({ children }: { children: React.ReactNode }) => <>{children}</> }));
+const lockProps = vi.hoisted(() => ({ current: null as null | { lockOnLaunch?: boolean } }));
+vi.mock('./components/AppLockOverlay', () => ({
+  AppLockOverlay: (props: { lockOnLaunch?: boolean }) => {
+    lockProps.current = props;
+    return null;
+  },
+}));
 vi.mock('./utils/lastSeen', () => ({ touchLastSeen: vi.fn() }));
 vi.mock('./utils/terms', () => ({ flushPendingTerms: vi.fn() }));
 
@@ -80,6 +87,35 @@ describe('App routing in the iOS app', () => {
     expect(await screen.findByText('CHART')).toBeInTheDocument();
     expect(screen.queryByText('LANDING PAGE')).toBeNull();
     expect(entryGridProps.current?.onGoHome).toBeUndefined();
+  });
+});
+
+describe('app lock on launch', () => {
+  it('opened with a session from a previous run: asks the lock to check on launch', async () => {
+    flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(lockProps.current?.lockOnLaunch).toBe(true);
+  });
+
+  it('signing in during this run: no launch lock', async () => {
+    render(<App />);
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    act(() => authCallback()('SIGNED_IN', { user: { id: 'u1', email: 'me@vet.com' } }));
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(lockProps.current?.lockOnLaunch).toBe(false);
+  });
+
+  it('signing out and back in during this run: no launch lock', async () => {
+    flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    markExplicitSignOut();
+    act(() => authCallback()('SIGNED_OUT', null));
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    act(() => authCallback()('SIGNED_IN', { user: { id: 'u1', email: 'me@vet.com' } }));
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(lockProps.current?.lockOnLaunch).toBe(false);
   });
 });
 

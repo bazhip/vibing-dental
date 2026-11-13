@@ -21,6 +21,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
+    // Privacy cover: iOS snapshots the screen for the app switcher right
+    // after the app enters the background. Cover the web view natively
+    // (the web layer's own cover, added on Capacitor's `pause`, may not
+    // have painted by then) so no patient chart shows in the switcher.
+    // Removed on the way back; the web layer then decides whether to show
+    // its Face ID lock screen.
+    private var privacyCover: UIView?
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        guard let window = window, privacyCover == nil else { return }
+        let cover = UIImageView(frame: window.bounds)
+        cover.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        cover.backgroundColor = .systemBackground
+        cover.image = UIImage(named: "Splash")
+        cover.contentMode = .scaleAspectFill
+        window.addSubview(cover)
+        privacyCover = cover
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        privacyCover?.removeFromSuperview()
+        privacyCover = nil
+    }
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         forward(URLContexts)
     }

@@ -82,6 +82,13 @@ const App: React.FC = () => {
   // With Supabase, wait for the initial session check before rendering
   // either screen — avoids a login flash for signed-in users.
   const [sessionChecked, setSessionChecked] = useState<boolean>(!cloudEnabled);
+  // The app opened with a session left from a previous run (vs. signing in
+  // now): the app lock checks how long it's been since it was backgrounded,
+  // since iOS may have killed it in the background.
+  const [launchedSignedIn, setLaunchedSignedIn] = useState(false);
+  useEffect(() => {
+    if (!isAuthenticated) setLaunchedSignedIn(false);
+  }, [isAuthenticated]);
   // True when the user arrived via a password-recovery email link.
   const [recovering, setRecovering] = useState(false);
   // True when the user arrived via a team-invite link (Supabase invite
@@ -157,6 +164,7 @@ const App: React.FC = () => {
     // good — stay signed in (see native/offlineSession).
     void getSessionTolerant(supabase).then(({ session }) => {
       setIsAuthenticated(!!session);
+      setLaunchedSignedIn(!!session);
       if (session) {
         touchLastSeen();
         // Returning from Google sign-in: record the terms notice they
@@ -325,7 +333,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <AppLockOverlay />
+      <AppLockOverlay lockOnLaunch={launchedSignedIn} />
       <Suspense fallback={<AppLoading />}>
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
