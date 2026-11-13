@@ -188,6 +188,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         onClose={() => setTemplatesOpen(false)}
         config={profile.ownerReportConfig}
         onSave={profile.saveOwnerReportConfig}
+        loadFailed={profile.ownerReportConfigLoadFailed}
         canEdit={team.loaded && team.role === 'owner'}
         roleKnown={team.loaded}
         branding={{

@@ -1493,6 +1493,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onClose={() => setReportCustomizeOpen(false)}
           config={profile.ownerReportConfig}
           onSave={profile.saveOwnerReportConfig}
+          loadFailed={profile.ownerReportConfigLoadFailed}
           branding={{ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }}
         />
       )}

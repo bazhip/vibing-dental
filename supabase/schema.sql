@@ -199,6 +199,10 @@ create policy "users manage own exports"
   using (bucket_id = 'exports' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'exports' and (storage.foldername(name))[1] = auth.uid()::text);
 
+-- Version of owner_report_config for team-api's compare-and-swap saves
+-- (migration 20261121_owner_report_config_rev).
+alter table public.practices add column if not exists owner_report_config_rev integer not null default 0;
+
 -- Recall reminder column (also mirrored in PatientInfo.recallDate inside data jsonb).
 alter table public.charts add column if not exists recall_date text not null default '';
 

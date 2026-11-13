@@ -33,6 +33,10 @@ interface OwnerReportTemplatesModalProps {
   canEdit: boolean;
   /** Role still loading — suppress the read-only note until known. */
   roleKnown: boolean;
+  /** The practice's saved templates couldn't be loaded — what's shown is
+   *  only the built-in default, so saving is blocked (it would replace
+   *  the real templates). */
+  loadFailed?: boolean;
   branding: OwnerReportBranding;
 }
 
@@ -57,6 +61,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   onSave,
   canEdit,
   roleKnown,
+  loadFailed = false,
   branding,
 }) => {
   const { t } = useTranslation('reportui');
@@ -323,6 +328,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
             {/* ---- Editor ---------------------------------------------------- */}
             <div className="report-templates__editor">
+              {loadFailed && (
+                <p className="login-error" role="alert">
+                  Your saved templates didn’t load, so you’re seeing the built-in default. Saving is turned off so it can’t replace them — reload the page to try again.
+                </p>
+              )}
               {roleKnown && !canEdit && (
                 <p className="login-notice" role="status">
                   {t('templates.readOnly')}
@@ -658,7 +668,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                   type="button"
                   className="entry-grid__button entry-grid__button--topbar"
                   onClick={handleSave}
-                  disabled={busy || !dirty}
+                  disabled={busy || !dirty || loadFailed}
                 >
                   {busy ? t('templates.saving') : t('templates.save')}
                 </button>
