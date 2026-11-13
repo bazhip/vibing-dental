@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { AppleSignInButton, APPLE_HINT } from './AppleSignInButton';
 import { confirmDialog } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -75,9 +76,12 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
             resume cloud saving and pick up where you left off.
           </p>
           <form onSubmit={handleSubmit} className="login-form">
-            {/* Google redirects away and back — the chart is kept in this
-                device's storage, so it's still here on return. */}
+            {/* Google (and Apple on the web) redirect away and back — the
+                chart is kept in this device's storage, so it's still here
+                on return. */}
             <GoogleSignInButton disabled={busy} onError={setError} />
+            <AppleSignInButton disabled={busy} onError={setError} />
+            <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
             <div className="login-or">or sign in with email</div>
             <label className="login-field">
               <span className="login-field__label">Email</span>

@@ -1,0 +1,85 @@
+import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
+import { supabase } from '../utils/supabaseClient';
+import { isNativeApp, WEB_ORIGIN } from './platform';
+
+/** Where auth flows started in the app come back to (the `toothops` URL
+ *  scheme in Info.plist). Must be on Supabase's Redirect URLs allow-list. */
+export const AUTH_CALLBACK_URL = 'toothops://auth-callback';
+
+const thisPage = () => window.location.origin + window.location.pathname;
+
+/** Where OAuth, confirmation and reset links land: the app itself when
+ *  native, this page on the web. */
+export function authRedirectUrl(): string {
+  return isNativeApp() ? AUTH_CALLBACK_URL : thisPage();
+}
+
+/** Base URL for links in emails sent on someone else's behalf (team
+ *  invites): the recipient opens them in a browser, so in the app this is
+ *  the website — never the app's internal capacitor:// origin. */
+export function emailLinkOrigin(): string {
+  return isNativeApp() ? WEB_ORIGIN : thisPage();
+}
+
+/**
+ * Starts Google/Apple OAuth. Web: Supabase navigates this page away and
+ * back. App: Google blocks embedded web views, so the provider page opens
+ * in the system browser and comes back through `toothops://auth-callback`
+ * (see `handleAuthUrl`). Throws when Supabase refuses to start.
+ */
+export async function startOAuth(provider: 'google' | 'apple'): Promise<void> {
+  if (!supabase) return;
+  if (!isNativeApp()) {
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: authRedirectUrl() } });
+    if (error) throw error;
+    return;
+  }
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: authRedirectUrl(), skipBrowserRedirect: true },
+  });
+  if (error) throw error;
+  if (data?.url) await Browser.open({ url: data.url });
+}
+
+const handled = new Set<string>();
+
+/**
+ * Finishes an auth flow that came back into the app. Returns false for
+ * URLs that aren't ours. Only PKCE codes are accepted: the app's client
+ * is PKCE-only, so every flow it starts returns `?code=`, and a code only
+ * exchanges with the verifier this device stored when it started the
+ * flow. Tokens in the hash are ignored on purpose — any page or app can
+ * open this URL, and accepting them would let a stranger's link swap the
+ * signed-in account (login CSRF).
+ */
+export async function handleAuthUrl(url: string): Promise<boolean> {
+  if (!url.startsWith(AUTH_CALLBACK_URL)) return false;
+  // A cold start can report the same URL as both the launch URL and an
+  // appUrlOpen event; a code can only be exchanged once.
+  if (handled.has(url)) return true;
+  handled.add(url);
+  // The in-app browser may already be gone (magic links open from Mail).
+  await Browser.close().catch(() => undefined);
+  if (!supabase) return true;
+  const parsed = new URL(url);
+  const code = parsed.searchParams.get('code');
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) console.warn('Sign-in link could not be completed:', error.message);
+  }
+  return true;
+}
+
+/** Listens for auth returns: `appUrlOpen` while running, and the launch
+ *  URL when the link cold-started the app. No-op on the web. */
+export function initAuthReturn(): void {
+  if (!isNativeApp()) return;
+  void App.addListener('appUrlOpen', ({ url }) => {
+    void handleAuthUrl(url);
+  });
+  void App.getLaunchUrl()
+    .then((launch) => (launch?.url ? handleAuthUrl(launch.url) : false))
+    .catch(() => undefined);
+}

@@ -9,6 +9,9 @@ import {
   startCheckout,
   openBillingPortal,
 } from '../hooks/useBilling';
+import { isNativeApp } from '../native/platform';
+import { readBillingCache, saveBillingCache } from '../native/billingCache';
+import { InactivePlan } from './InactivePlan';
 import './BillingGate.css';
 
 interface BillingGateProps {
@@ -26,6 +29,11 @@ interface BillingGateProps {
  * Handles the round-trip back from Checkout too: ?billing=success polls
  * until the webhook lands, ?billing=canceled just clears the flag.
  * Admins and standalone mode bypass the gate entirely.
+ *
+ * In the iOS app nothing is sold: every no-access outcome shows the
+ * neutral InactivePlan screen instead of checkout/portal/member screens,
+ * and the last successful check is cached so the app opens offline for
+ * up to 7 days (see native/billingCache).
  */
 export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   const params = new URLSearchParams(window.location.search);
@@ -47,17 +55,30 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     if (!cloudEnabled || !supabase) return;
     let cancelled = false;
     if (new URLSearchParams(window.location.search).get('billing') === 'canceled') clearBillingParam();
-    supabase.auth.getSession().then(({ data }) => {
+    // The session is local (no network), so it's there offline too; its
+    // user id keys the app's billing cache.
+    const userId = supabase.auth.getSession().then(({ data }) => {
       if (!cancelled) setIsAdmin(data.session?.user.app_metadata?.role === 'admin');
+      return data.session?.user.id ?? '';
     });
     fetchBilling()
       .then((b) => {
         if (cancelled) return;
+        if (isNativeApp()) void userId.then((id) => saveBillingCache(b, Date.now(), id));
         setInfo(b);
         setSelected(b.intendedPlan ?? null);
       })
-      .catch((e) => {
-        if (!cancelled) setLoadError(e instanceof Error ? e.message : 'Could not check your subscription.');
+      .catch(async (e) => {
+        if (cancelled) return;
+        // App offline: go on this user's last known status if it's recent
+        // enough.
+        const cached = isNativeApp() ? readBillingCache(Date.now(), await userId) : null;
+        if (cancelled) return;
+        if (cached) {
+          setInfo(cached);
+          return;
+        }
+        setLoadError(e instanceof Error ? e.message : 'Could not check your subscription.');
       });
     return () => {
       cancelled = true;
@@ -144,6 +165,9 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   if (!PAID_SIGNUP && info.status === 'none') {
     return <>{children}</>;
   }
+
+  // The app sells nothing and links to no billing — one neutral screen.
+  if (isNativeApp()) return <InactivePlan />;
 
   // Frozen or never-subscribed from here on. Data survives 30 days from
   // the freeze; say so wherever we block someone.

@@ -16,6 +16,8 @@ vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: {} }, cloudEnabled
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
 vi.mock('../hooks/useBilling', () => billingMock);
 vi.mock('./OwnerReportTemplatesModal', () => ({ OwnerReportTemplatesModal: () => null }));
+const native = vi.hoisted(() => ({ value: false }));
+vi.mock('../native/platform', () => ({ isNativeApp: () => native.value, WEB_ORIGIN: 'https://toothops.app/' }));
 
 import { PracticeSettingsModal } from './PracticeSettingsModal';
 import { DialogHost } from './ui/dialogs';
@@ -91,12 +93,24 @@ const renderModal = (onClose = vi.fn()) => {
 };
 
 beforeEach(() => {
+  native.value = false;
+  billingMock.fetchBilling.mockClear();
   teamState.current = makeTeam();
   billingMock.fetchBilling.mockResolvedValue(billing());
   (profile.update as ReturnType<typeof vi.fn>).mockClear();
 });
 
 describe('PracticeSettingsModal', () => {
+  it('in the app: no billing section, and billing is never fetched', async () => {
+    native.value = true;
+    billingMock.fetchBilling.mockResolvedValue(billing({ status: 'active', hasStripe: true }));
+    renderModal();
+    expect(screen.getByLabelText('Practice name')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Billing' })).toBeNull();
+    expect(screen.queryByText(/Manage billing|Free beta|Loading billing|\$\d/)).toBeNull();
+    expect(billingMock.fetchBilling).not.toHaveBeenCalled();
+  });
+
   it('shows a team load error with Retry, and locks the practice name', async () => {
     const refresh = vi.fn().mockResolvedValue(undefined);
     teamState.current = makeTeam({ error: 'Can’t reach ToothOps.', practice: null, role: null, members: [], refresh });

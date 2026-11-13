@@ -1,17 +1,17 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { isNativeApp } from '../native/platform';
+import { startOAuth } from '../native/authReturn';
 import { friendlyError } from './ui/dialogs';
-
-/** Where Google sends the user back: this page (Supabase's Redirect URLs
- *  allow-list must include it, or Supabase falls back to the Site URL). */
-const returnUrl = () => window.location.origin + window.location.pathname;
 
 /**
  * "Continue with Google" — Supabase OAuth. The browser leaves for Google
- * and comes back signed in; the Supabase client picks the session up from
- * the URL on load. Google only returns verified addresses, so the account
- * counts as email-confirmed, and an existing account with the same email
- * is linked rather than duplicated.
+ * and comes back signed in (to `authRedirectUrl()`, which must be on
+ * Supabase's Redirect URLs allow-list); the Supabase client picks the
+ * session up from the URL on load. In the app Google opens in the system
+ * browser and returns through the app's URL scheme. Google only returns
+ * verified addresses, so the account counts as email-confirmed, and an
+ * existing account with the same email is linked rather than duplicated.
  */
 export const GoogleSignInButton: React.FC<{
   label?: string;
@@ -22,16 +22,15 @@ export const GoogleSignInButton: React.FC<{
 }> = ({ label = 'Continue with Google', disabled, onError, onStart }) => {
   const [busy, setBusy] = React.useState(false);
   if (!supabase) return null;
-  const client = supabase;
   const start = async () => {
     setBusy(true);
     onStart?.();
-    const { error } = await client.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: returnUrl() },
-    });
-    // On success the page is already navigating away.
-    if (error) {
+    try {
+      await startOAuth('google');
+      // Web: the page is already navigating away. App: the system browser
+      // is open over us and may be closed without finishing.
+      if (isNativeApp()) setBusy(false);
+    } catch (error) {
       setBusy(false);
       onError?.(friendlyError(error, 'Couldn’t start Google sign-in.'));
     }

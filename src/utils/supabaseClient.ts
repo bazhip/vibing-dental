@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { isNativeApp } from '../native/platform';
 
 /**
  * Shared Supabase client. Configured via build-time env vars:
@@ -17,8 +18,16 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const url = import.meta.env?.VITE_SUPABASE_URL;
 const anonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY;
 
+// In the app, auth flows finish in the system browser and come back
+// through `toothops://auth-callback` (src/native/authReturn.ts), which
+// exchanges a PKCE code — there's no auth data in the app's own URL.
+// The web client is configured exactly as before.
 export const supabase: SupabaseClient | null =
-  url && anonKey ? createClient(url, anonKey) : null;
+  url && anonKey
+    ? isNativeApp()
+      ? createClient(url, anonKey, { auth: { flowType: 'pkce', detectSessionInUrl: false } })
+      : createClient(url, anonKey)
+    : null;
 
 /** True when the app is wired to a Supabase project. */
 export const cloudEnabled = supabase !== null;

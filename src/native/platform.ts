@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core';
+import { initAuthReturn } from './authReturn';
 
 /** Website origin for links that leave the app or go into emails. */
 export const WEB_ORIGIN = 'https://toothops.app/';
@@ -12,4 +13,5 @@ export function isNativeApp(): boolean {
 export function initNativeShell(): void {
   if (!isNativeApp()) return;
   document.documentElement.classList.add('native-ios');
+  initAuthReturn();
 }

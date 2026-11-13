@@ -4,6 +4,7 @@ import { useTeam, TeamMember } from '../hooks/useTeam';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { cloudEnabled } from '../utils/supabaseClient';
+import { isNativeApp } from '../native/platform';
 import { BillingInfo, fetchBilling, openBillingPortal, changePlan } from '../hooks/useBilling';
 import {
   PLANS,
@@ -82,8 +83,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [billingNote, setBillingNote] = React.useState('');
   const [billingLoadKey, setBillingLoadKey] = React.useState(0);
 
+  // The iOS app shows no billing at all (App Store 3.1.1).
+  const showBilling = cloudEnabled && !isNativeApp();
+
   React.useEffect(() => {
-    if (!open || !cloudEnabled) return;
+    if (!open || !showBilling) return;
     let cancelled = false;
     setBilling(null);
     setBillingError('');
@@ -98,7 +102,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [open, billingLoadKey]);
+  }, [open, billingLoadKey, showBilling]);
 
   React.useEffect(() => {
     if (open) {
@@ -601,8 +605,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             </section>
           )}
 
-          {/* ---- Billing ------------------------------------------------- */}
-          {cloudEnabled && (
+          {/* ---- Billing (web only) -------------------------------------- */}
+          {showBilling && (
             <section className="ai-settings-section">
               <h3 className="ai-settings-subhead">Billing</h3>
               {!billing ? (

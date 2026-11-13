@@ -325,6 +325,30 @@
 .login-google:focus-visible { outline: 2px solid var(--primary, #0f766e); outline-offset: 2px; }
 .login-google:disabled { opacity: 0.6; cursor: default; }
 .login-google__logo { width: 18px; height: 18px; flex: none; }
+/* "Continue with Apple" — Apple's black button style. */
+.login-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.login-apple:hover { background: #1f1f1f; }
+.login-apple:focus-visible { outline: 2px solid var(--primary, #0f766e); outline-offset: 2px; }
+.login-apple:disabled { opacity: 0.6; cursor: default; }
+.login-apple__logo { width: 16px; height: 19px; flex: none; margin-top: -2px; }
+.login-apple-hint { margin-top: -0.35rem; text-align: center; }
+.login-signup-link { text-align: center; }
 .login-or {
   display: flex;
   align-items: center;

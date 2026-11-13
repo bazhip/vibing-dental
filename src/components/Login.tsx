@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { Browser } from '@capacitor/browser';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { AppleSignInButton, APPLE_HINT } from './AppleSignInButton';
 import { LegalNotice } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
+import { authRedirectUrl } from '../native/authReturn';
+import { WEB_ORIGIN } from '../native/platform';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
 import './Login.css';
 
@@ -15,6 +19,9 @@ interface LoginProps {
   embedded?: boolean;
   /** Plan preselected from the pricing page's card CTAs. */
   initialPlan?: PlanKey;
+  /** Inside the iOS app: sign-in only — no sign-up form or plans; new
+   *  users are pointed to the website instead. */
+  appMode?: boolean;
 }
 
 type Mode = 'signin' | 'signup' | 'check-email';
@@ -39,8 +46,6 @@ function friendlyAuthError(e: AuthErr): string {
 
 const MIN_PASSWORD = 8;
 const RESEND_COOLDOWN_S = 60;
-/** Where confirmation / reset links land: back on this site. */
-const authRedirect = () => window.location.origin + window.location.pathname;
 
 /**
  * Sign-in / sign-up screen.
@@ -55,8 +60,8 @@ const authRedirect = () => window.location.origin + window.location.pathname;
  * Without Supabase (local dev, tests): the legacy shared practice
  * password, so the app keeps working standalone.
  */
-export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan }) => {
-  const [mode, setMode] = useState<Mode>(initialMode);
+export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan, appMode = false }) => {
+  const [mode, setMode] = useState<Mode>(appMode ? 'signin' : initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [practiceName, setPracticeName] = useState('');
@@ -92,7 +97,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     const { error: resendError } = await supabase.auth.resend({
       type: 'signup',
       email: target,
-      options: { emailRedirectTo: authRedirect() },
+      options: { emailRedirectTo: authRedirectUrl() },
     });
     setBusy(false);
     if (resendError) {
@@ -147,7 +152,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: authRedirect(),
+          emailRedirectTo: authRedirectUrl(),
           data: {
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
@@ -278,6 +283,13 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 onError={setError}
                 onStart={markTermsPending}
               />
+              <AppleSignInButton
+                label={signup ? 'Sign up with Apple' : 'Continue with Apple'}
+                disabled={busy}
+                onError={setError}
+                onStart={markTermsPending}
+              />
+              <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
               <LegalNotice action={signup ? 'signing up' : 'continuing'} className="login-legal--google" />
@@ -490,7 +502,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 setError('');
                 setNotice('');
                 const { error: resetError } = await supabase.auth.resetPasswordForEmail(target, {
-                  redirectTo: authRedirect(),
+                  redirectTo: authRedirectUrl(),
                 });
                 setBusy(false);
                 if (resetError) setError(friendlyAuthError(resetError));
@@ -501,7 +513,22 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             </button>
           )}
 
-          {cloudEnabled && (
+          {cloudEnabled && appMode && (
+            <a
+              href={WEB_ORIGIN}
+              className="login-switch login-signup-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                void Browser.open({ url: WEB_ORIGIN });
+              }}
+            >
+              New to ToothOps? Sign up at toothops.app
+            </a>
+          )}
+
+          {cloudEnabled && !appMode && (
             <button
               type="button"
               className="login-switch"

@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { isNativeApp } from '../native/platform';
 import './AccountSurfaces.css';
 
 interface ChartMenuCloud {
@@ -195,7 +196,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
           {cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">Practice</header>
-              {item('Practice settings', 'Name, logo, team, and billing.', cloud.onPracticeSettings)}
+              {item('Practice settings', isNativeApp() ? 'Name, logo, and team.' : 'Name, logo, team, and billing.', cloud.onPracticeSettings)}
               {item('Recheck reminders', 'Owner email template and auto-send schedule.', cloud.onOpenReminders)}
             </section>
           )}
