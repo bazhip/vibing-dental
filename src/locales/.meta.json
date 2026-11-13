@@ -6848,6 +6848,526 @@
       "hash": "3a0360fce6e0",
       "status": "machine"
     },
+    "reportui:languages.de": {
+      "hash": "cd0a5a7df7be",
+      "status": "machine"
+    },
+    "reportui:languages.en": {
+      "hash": "ba118bf7fc9c",
+      "status": "machine"
+    },
+    "reportui:languages.es": {
+      "hash": "b785e11e822c",
+      "status": "machine"
+    },
+    "reportui:languages.fr": {
+      "hash": "51d624360ae7",
+      "status": "machine"
+    },
+    "reportui:languages.it": {
+      "hash": "0090dc269d25",
+      "status": "machine"
+    },
+    "reportui:languages.pt": {
+      "hash": "b74330ed801a",
+      "status": "machine"
+    },
+    "reportui:modal.buildFailed": {
+      "hash": "24b268675921",
+      "status": "machine"
+    },
+    "reportui:modal.close": {
+      "hash": "067228604a6a",
+      "status": "machine"
+    },
+    "reportui:modal.download": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "reportui:modal.editWording": {
+      "hash": "347a28e31726",
+      "status": "machine"
+    },
+    "reportui:modal.generating": {
+      "hash": "2e6d9ef0f924",
+      "status": "machine"
+    },
+    "reportui:modal.noteFindings": {
+      "hash": "e8baec5641a6",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_one": {
+      "hash": "0b5fca8285b8",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_other": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosNeedAccount": {
+      "hash": "66241fbce7b9",
+      "status": "machine"
+    },
+    "reportui:modal.photosTag": {
+      "hash": "44b7c354e3ad",
+      "status": "machine"
+    },
+    "reportui:modal.previewTitle": {
+      "hash": "7b9102cda555",
+      "status": "machine"
+    },
+    "reportui:modal.subtitle": {
+      "hash": "7a6409318067",
+      "status": "machine"
+    },
+    "reportui:modal.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "reportui:placeholders.date": {
+      "hash": "24acee6a8c27",
+      "status": "machine"
+    },
+    "reportui:placeholders.doctor": {
+      "hash": "ae4a32f2a6f8",
+      "status": "machine"
+    },
+    "reportui:placeholders.owner": {
+      "hash": "10a15405d740",
+      "status": "machine"
+    },
+    "reportui:placeholders.pet": {
+      "hash": "4237f6b371ae",
+      "status": "machine"
+    },
+    "reportui:placeholders.practice": {
+      "hash": "c60c7039dfc6",
+      "status": "machine"
+    },
+    "reportui:placeholders.species": {
+      "hash": "200d2aa8ba13",
+      "status": "machine"
+    },
+    "reportui:section.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "reportui:section.customizeTitle": {
+      "hash": "7e5c2995d103",
+      "status": "machine"
+    },
+    "reportui:section.draftFailed": {
+      "hash": "340c637e236e",
+      "status": "machine"
+    },
+    "reportui:section.drafted": {
+      "hash": "2da923b63960",
+      "status": "machine"
+    },
+    "reportui:section.examNotes": {
+      "hash": "baf6b3b5552a",
+      "status": "machine"
+    },
+    "reportui:section.homecareHint": {
+      "hash": "b752c66f2580",
+      "status": "machine"
+    },
+    "reportui:section.homecareLabel": {
+      "hash": "08a91b19315a",
+      "status": "machine"
+    },
+    "reportui:section.intro": {
+      "hash": "baccffa6b2f6",
+      "status": "machine"
+    },
+    "reportui:section.noFindings": {
+      "hash": "406602438b6b",
+      "status": "machine"
+    },
+    "reportui:section.noteHint": {
+      "hash": "0c5801790cd2",
+      "status": "machine"
+    },
+    "reportui:section.noteLabel": {
+      "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.practiceDefault": {
+      "hash": "73d2c116a167",
+      "status": "machine"
+    },
+    "reportui:section.previewButton": {
+      "hash": "996a423d26b3",
+      "status": "machine"
+    },
+    "reportui:section.printTitle": {
+      "hash": "e4c5638a0b75",
+      "status": "machine"
+    },
+    "reportui:section.recheck": {
+      "hash": "a062848bf56c",
+      "status": "machine"
+    },
+    "reportui:section.removedThisVisit": {
+      "hash": "5b8cb70c9a53",
+      "status": "machine"
+    },
+    "reportui:section.removedToday": {
+      "hash": "890e921decb9",
+      "status": "machine"
+    },
+    "reportui:section.replaceMessage": {
+      "hash": "aea76a714b94",
+      "status": "machine"
+    },
+    "reportui:section.replaceTitle": {
+      "hash": "5d2a5e32818b",
+      "status": "machine"
+    },
+    "reportui:section.reset": {
+      "hash": "1e1e18b482fc",
+      "status": "machine"
+    },
+    "reportui:section.resetToast": {
+      "hash": "9c0f78b38bcc",
+      "status": "machine"
+    },
+    "reportui:section.summaryHint": {
+      "hash": "f0ca2d3c887b",
+      "status": "machine"
+    },
+    "reportui:section.summaryLabel": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:section.templateHint": {
+      "hash": "8fcb0bc38ce4",
+      "status": "machine"
+    },
+    "reportui:section.templateLabel": {
+      "hash": "48403185e675",
+      "status": "machine"
+    },
+    "reportui:section.templateOption": {
+      "hash": "b46bf56525a6",
+      "status": "machine"
+    },
+    "reportui:section.title": {
+      "hash": "c432093840cc",
+      "status": "machine"
+    },
+    "reportui:section.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "reportui:section.writeTitle": {
+      "hash": "be9015c95765",
+      "status": "machine"
+    },
+    "reportui:section.writeWithAi": {
+      "hash": "596b070336ea",
+      "status": "machine"
+    },
+    "reportui:section.writing": {
+      "hash": "e52fe93bbbf3",
+      "status": "machine"
+    },
+    "reportui:sections.alreadyMissing": {
+      "hash": "d28bfaed2f3f",
+      "status": "machine"
+    },
+    "reportui:sections.diagram": {
+      "hash": "24f606c2e3f4",
+      "status": "machine"
+    },
+    "reportui:sections.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "reportui:sections.extractions": {
+      "hash": "4c5513fa9e79",
+      "status": "machine"
+    },
+    "reportui:sections.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "reportui:sections.homecare": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:sections.photos": {
+      "hash": "74d0b97285db",
+      "status": "machine"
+    },
+    "reportui:sections.recheck": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "reportui:sections.teamNote": {
+      "hash": "4c130e4b4cdc",
+      "status": "machine"
+    },
+    "reportui:templates.addCustom": {
+      "hash": "e2c136ee7499",
+      "status": "machine"
+    },
+    "reportui:templates.badgeDefault": {
+      "hash": "21b111cbfe6e",
+      "status": "machine"
+    },
+    "reportui:templates.basics": {
+      "hash": "8fdd2ee8475e",
+      "status": "machine"
+    },
+    "reportui:templates.closingLabel": {
+      "hash": "965d7aa086a4",
+      "status": "machine"
+    },
+    "reportui:templates.closingPlaceholder": {
+      "hash": "9b96ee0e48b9",
+      "status": "machine"
+    },
+    "reportui:templates.closingTitle": {
+      "hash": "fed3dad44529",
+      "status": "machine"
+    },
+    "reportui:templates.copyName": {
+      "hash": "0596322a2732",
+      "status": "machine"
+    },
+    "reportui:templates.customHeadingAria": {
+      "hash": "483feb3e2f63",
+      "status": "machine"
+    },
+    "reportui:templates.customText": {
+      "hash": "2b816a05ccc3",
+      "status": "machine"
+    },
+    "reportui:templates.datesIso": {
+      "hash": "78315d324f47",
+      "status": "machine"
+    },
+    "reportui:templates.datesLabel": {
+      "hash": "78963905f399",
+      "status": "machine"
+    },
+    "reportui:templates.datesLong": {
+      "hash": "25434f9ecfa7",
+      "status": "machine"
+    },
+    "reportui:templates.deleteConfirm": {
+      "hash": "fc571c2d6f22",
+      "status": "machine"
+    },
+    "reportui:templates.discardConfirm": {
+      "hash": "eaf9f8d89ea6",
+      "status": "machine"
+    },
+    "reportui:templates.footerHint": {
+      "hash": "08db119e2296",
+      "status": "machine"
+    },
+    "reportui:templates.footerLabel": {
+      "hash": "26c87bb51e69",
+      "status": "machine"
+    },
+    "reportui:templates.footerPlaceholder": {
+      "hash": "a334b825a3cb",
+      "status": "machine"
+    },
+    "reportui:templates.gradesExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.headingAria": {
+      "hash": "f3f5d19a631b",
+      "status": "machine"
+    },
+    "reportui:templates.headingPlaceholder": {
+      "hash": "7e9cec094149",
+      "status": "machine"
+    },
+    "reportui:templates.insertHelp": {
+      "hash": "f9341112a129",
+      "status": "machine"
+    },
+    "reportui:templates.insertLabel": {
+      "hash": "d4b0ea4400f6",
+      "status": "machine"
+    },
+    "reportui:templates.languageHint": {
+      "hash": "c3505f8a7417",
+      "status": "machine"
+    },
+    "reportui:templates.languageLabel": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "reportui:templates.listLabel": {
+      "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.moveDown": {
+      "hash": "40bb50da160c",
+      "status": "machine"
+    },
+    "reportui:templates.moveUp": {
+      "hash": "c66feb5eb8f2",
+      "status": "machine"
+    },
+    "reportui:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "reportui:templates.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "reportui:templates.newName": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "reportui:templates.previewBuilding": {
+      "hash": "737b7eba89d8",
+      "status": "machine"
+    },
+    "reportui:templates.previewClose": {
+      "hash": "7d8ab368210c",
+      "status": "machine"
+    },
+    "reportui:templates.previewFailed": {
+      "hash": "42698b52fe15",
+      "status": "machine"
+    },
+    "reportui:templates.previewFrame": {
+      "hash": "1525046925e0",
+      "status": "machine"
+    },
+    "reportui:templates.previewHeading": {
+      "hash": "8e53face03b0",
+      "status": "machine"
+    },
+    "reportui:templates.previewSample": {
+      "hash": "196ad5430081",
+      "status": "machine"
+    },
+    "reportui:templates.previewSubtitle": {
+      "hash": "dc8d83007267",
+      "status": "machine"
+    },
+    "reportui:templates.readOnly": {
+      "hash": "16707f74bd1a",
+      "status": "machine"
+    },
+    "reportui:templates.save": {
+      "hash": "5e9b0dde6c6f",
+      "status": "machine"
+    },
+    "reportui:templates.saveFailed": {
+      "hash": "902463cd291d",
+      "status": "machine"
+    },
+    "reportui:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextAria": {
+      "hash": "fdf5c04366f2",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextPlaceholder": {
+      "hash": "20730810e0a1",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsHint": {
+      "hash": "ea87b03f2e64",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsTitle": {
+      "hash": "9bae918add9a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefault": {
+      "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.showGrades": {
+      "hash": "b882d806dcd5",
+      "status": "machine"
+    },
+    "reportui:templates.showToothNumbers": {
+      "hash": "662900d9cc91",
+      "status": "machine"
+    },
+    "reportui:templates.summaryAria": {
+      "hash": "f6b957c7b456",
+      "status": "machine"
+    },
+    "reportui:templates.summaryEmpty": {
+      "hash": "a56a0e048b03",
+      "status": "machine"
+    },
+    "reportui:templates.summaryTitle": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:templates.tipAdd": {
+      "hash": "a32929a76899",
+      "status": "machine"
+    },
+    "reportui:templates.tipAria": {
+      "hash": "339913ad6c77",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemoveAria": {
+      "hash": "91e42817b4bd",
+      "status": "machine"
+    },
+    "reportui:templates.tipsCustomize": {
+      "hash": "c89d7e3497bc",
+      "status": "machine"
+    },
+    "reportui:templates.tipsPerChart": {
+      "hash": "2a503a73e630",
+      "status": "machine"
+    },
+    "reportui:templates.tipsStandard": {
+      "hash": "9605eb39b27a",
+      "status": "machine"
+    },
+    "reportui:templates.tipsTitle": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:templates.tipsUseStandard": {
+      "hash": "67d33617e0a3",
+      "status": "machine"
+    },
+    "reportui:templates.title": {
+      "hash": "b4775cccc4b3",
+      "status": "machine"
+    },
+    "reportui:templates.titleLabel": {
+      "hash": "2a95a3037931",
+      "status": "machine"
+    },
+    "reportui:templates.titlePlaceholder": {
+      "hash": "30a3b02cbee4",
+      "status": "machine"
+    },
+    "reportui:templates.toothNumbersExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "settings:chart.all": {
       "hash": "f8aea4c05e07",
       "status": "machine"
@@ -14508,6 +15028,530 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:languages.de": {
+      "hash": "cd0a5a7df7be",
+      "status": "machine"
+    },
+    "reportui:languages.en": {
+      "hash": "ba118bf7fc9c",
+      "status": "machine"
+    },
+    "reportui:languages.es": {
+      "hash": "b785e11e822c",
+      "status": "machine"
+    },
+    "reportui:languages.fr": {
+      "hash": "51d624360ae7",
+      "status": "machine"
+    },
+    "reportui:languages.it": {
+      "hash": "0090dc269d25",
+      "status": "machine"
+    },
+    "reportui:languages.pt": {
+      "hash": "b74330ed801a",
+      "status": "machine"
+    },
+    "reportui:modal.buildFailed": {
+      "hash": "24b268675921",
+      "status": "machine"
+    },
+    "reportui:modal.close": {
+      "hash": "067228604a6a",
+      "status": "machine"
+    },
+    "reportui:modal.download": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "reportui:modal.editWording": {
+      "hash": "347a28e31726",
+      "status": "machine"
+    },
+    "reportui:modal.generating": {
+      "hash": "2e6d9ef0f924",
+      "status": "machine"
+    },
+    "reportui:modal.noteFindings": {
+      "hash": "e8baec5641a6",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_many": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_one": {
+      "hash": "0b5fca8285b8",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_other": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosNeedAccount": {
+      "hash": "66241fbce7b9",
+      "status": "machine"
+    },
+    "reportui:modal.photosTag": {
+      "hash": "44b7c354e3ad",
+      "status": "machine"
+    },
+    "reportui:modal.previewTitle": {
+      "hash": "7b9102cda555",
+      "status": "machine"
+    },
+    "reportui:modal.subtitle": {
+      "hash": "7a6409318067",
+      "status": "machine"
+    },
+    "reportui:modal.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "reportui:placeholders.date": {
+      "hash": "24acee6a8c27",
+      "status": "machine"
+    },
+    "reportui:placeholders.doctor": {
+      "hash": "ae4a32f2a6f8",
+      "status": "machine"
+    },
+    "reportui:placeholders.owner": {
+      "hash": "10a15405d740",
+      "status": "machine"
+    },
+    "reportui:placeholders.pet": {
+      "hash": "4237f6b371ae",
+      "status": "machine"
+    },
+    "reportui:placeholders.practice": {
+      "hash": "c60c7039dfc6",
+      "status": "machine"
+    },
+    "reportui:placeholders.species": {
+      "hash": "200d2aa8ba13",
+      "status": "machine"
+    },
+    "reportui:section.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "reportui:section.customizeTitle": {
+      "hash": "7e5c2995d103",
+      "status": "machine"
+    },
+    "reportui:section.draftFailed": {
+      "hash": "340c637e236e",
+      "status": "machine"
+    },
+    "reportui:section.drafted": {
+      "hash": "2da923b63960",
+      "status": "machine"
+    },
+    "reportui:section.examNotes": {
+      "hash": "baf6b3b5552a",
+      "status": "machine"
+    },
+    "reportui:section.homecareHint": {
+      "hash": "b752c66f2580",
+      "status": "machine"
+    },
+    "reportui:section.homecareLabel": {
+      "hash": "08a91b19315a",
+      "status": "machine"
+    },
+    "reportui:section.intro": {
+      "hash": "baccffa6b2f6",
+      "status": "machine"
+    },
+    "reportui:section.noFindings": {
+      "hash": "406602438b6b",
+      "status": "machine"
+    },
+    "reportui:section.noteHint": {
+      "hash": "0c5801790cd2",
+      "status": "machine"
+    },
+    "reportui:section.noteLabel": {
+      "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.practiceDefault": {
+      "hash": "73d2c116a167",
+      "status": "machine"
+    },
+    "reportui:section.previewButton": {
+      "hash": "996a423d26b3",
+      "status": "machine"
+    },
+    "reportui:section.printTitle": {
+      "hash": "e4c5638a0b75",
+      "status": "machine"
+    },
+    "reportui:section.recheck": {
+      "hash": "a062848bf56c",
+      "status": "machine"
+    },
+    "reportui:section.removedThisVisit": {
+      "hash": "5b8cb70c9a53",
+      "status": "machine"
+    },
+    "reportui:section.removedToday": {
+      "hash": "890e921decb9",
+      "status": "machine"
+    },
+    "reportui:section.replaceMessage": {
+      "hash": "aea76a714b94",
+      "status": "machine"
+    },
+    "reportui:section.replaceTitle": {
+      "hash": "5d2a5e32818b",
+      "status": "machine"
+    },
+    "reportui:section.reset": {
+      "hash": "1e1e18b482fc",
+      "status": "machine"
+    },
+    "reportui:section.resetToast": {
+      "hash": "9c0f78b38bcc",
+      "status": "machine"
+    },
+    "reportui:section.summaryHint": {
+      "hash": "f0ca2d3c887b",
+      "status": "machine"
+    },
+    "reportui:section.summaryLabel": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:section.templateHint": {
+      "hash": "8fcb0bc38ce4",
+      "status": "machine"
+    },
+    "reportui:section.templateLabel": {
+      "hash": "48403185e675",
+      "status": "machine"
+    },
+    "reportui:section.templateOption": {
+      "hash": "b46bf56525a6",
+      "status": "machine"
+    },
+    "reportui:section.title": {
+      "hash": "c432093840cc",
+      "status": "machine"
+    },
+    "reportui:section.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "reportui:section.writeTitle": {
+      "hash": "be9015c95765",
+      "status": "machine"
+    },
+    "reportui:section.writeWithAi": {
+      "hash": "596b070336ea",
+      "status": "machine"
+    },
+    "reportui:section.writing": {
+      "hash": "e52fe93bbbf3",
+      "status": "machine"
+    },
+    "reportui:sections.alreadyMissing": {
+      "hash": "d28bfaed2f3f",
+      "status": "machine"
+    },
+    "reportui:sections.diagram": {
+      "hash": "24f606c2e3f4",
+      "status": "machine"
+    },
+    "reportui:sections.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "reportui:sections.extractions": {
+      "hash": "4c5513fa9e79",
+      "status": "machine"
+    },
+    "reportui:sections.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "reportui:sections.homecare": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:sections.photos": {
+      "hash": "74d0b97285db",
+      "status": "machine"
+    },
+    "reportui:sections.recheck": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "reportui:sections.teamNote": {
+      "hash": "4c130e4b4cdc",
+      "status": "machine"
+    },
+    "reportui:templates.addCustom": {
+      "hash": "e2c136ee7499",
+      "status": "machine"
+    },
+    "reportui:templates.badgeDefault": {
+      "hash": "21b111cbfe6e",
+      "status": "machine"
+    },
+    "reportui:templates.basics": {
+      "hash": "8fdd2ee8475e",
+      "status": "machine"
+    },
+    "reportui:templates.closingLabel": {
+      "hash": "965d7aa086a4",
+      "status": "machine"
+    },
+    "reportui:templates.closingPlaceholder": {
+      "hash": "9b96ee0e48b9",
+      "status": "machine"
+    },
+    "reportui:templates.closingTitle": {
+      "hash": "fed3dad44529",
+      "status": "machine"
+    },
+    "reportui:templates.copyName": {
+      "hash": "0596322a2732",
+      "status": "machine"
+    },
+    "reportui:templates.customHeadingAria": {
+      "hash": "483feb3e2f63",
+      "status": "machine"
+    },
+    "reportui:templates.customText": {
+      "hash": "2b816a05ccc3",
+      "status": "machine"
+    },
+    "reportui:templates.datesIso": {
+      "hash": "78315d324f47",
+      "status": "machine"
+    },
+    "reportui:templates.datesLabel": {
+      "hash": "78963905f399",
+      "status": "machine"
+    },
+    "reportui:templates.datesLong": {
+      "hash": "25434f9ecfa7",
+      "status": "machine"
+    },
+    "reportui:templates.deleteConfirm": {
+      "hash": "fc571c2d6f22",
+      "status": "machine"
+    },
+    "reportui:templates.discardConfirm": {
+      "hash": "eaf9f8d89ea6",
+      "status": "machine"
+    },
+    "reportui:templates.footerHint": {
+      "hash": "08db119e2296",
+      "status": "machine"
+    },
+    "reportui:templates.footerLabel": {
+      "hash": "26c87bb51e69",
+      "status": "machine"
+    },
+    "reportui:templates.footerPlaceholder": {
+      "hash": "a334b825a3cb",
+      "status": "machine"
+    },
+    "reportui:templates.gradesExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.headingAria": {
+      "hash": "f3f5d19a631b",
+      "status": "machine"
+    },
+    "reportui:templates.headingPlaceholder": {
+      "hash": "7e9cec094149",
+      "status": "machine"
+    },
+    "reportui:templates.insertHelp": {
+      "hash": "f9341112a129",
+      "status": "machine"
+    },
+    "reportui:templates.insertLabel": {
+      "hash": "d4b0ea4400f6",
+      "status": "machine"
+    },
+    "reportui:templates.languageHint": {
+      "hash": "c3505f8a7417",
+      "status": "machine"
+    },
+    "reportui:templates.languageLabel": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "reportui:templates.listLabel": {
+      "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.moveDown": {
+      "hash": "40bb50da160c",
+      "status": "machine"
+    },
+    "reportui:templates.moveUp": {
+      "hash": "c66feb5eb8f2",
+      "status": "machine"
+    },
+    "reportui:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "reportui:templates.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "reportui:templates.newName": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "reportui:templates.previewBuilding": {
+      "hash": "737b7eba89d8",
+      "status": "machine"
+    },
+    "reportui:templates.previewClose": {
+      "hash": "7d8ab368210c",
+      "status": "machine"
+    },
+    "reportui:templates.previewFailed": {
+      "hash": "42698b52fe15",
+      "status": "machine"
+    },
+    "reportui:templates.previewFrame": {
+      "hash": "1525046925e0",
+      "status": "machine"
+    },
+    "reportui:templates.previewHeading": {
+      "hash": "8e53face03b0",
+      "status": "machine"
+    },
+    "reportui:templates.previewSample": {
+      "hash": "196ad5430081",
+      "status": "machine"
+    },
+    "reportui:templates.previewSubtitle": {
+      "hash": "dc8d83007267",
+      "status": "machine"
+    },
+    "reportui:templates.readOnly": {
+      "hash": "16707f74bd1a",
+      "status": "machine"
+    },
+    "reportui:templates.save": {
+      "hash": "5e9b0dde6c6f",
+      "status": "machine"
+    },
+    "reportui:templates.saveFailed": {
+      "hash": "902463cd291d",
+      "status": "machine"
+    },
+    "reportui:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextAria": {
+      "hash": "fdf5c04366f2",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextPlaceholder": {
+      "hash": "20730810e0a1",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsHint": {
+      "hash": "ea87b03f2e64",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsTitle": {
+      "hash": "9bae918add9a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefault": {
+      "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.showGrades": {
+      "hash": "b882d806dcd5",
+      "status": "machine"
+    },
+    "reportui:templates.showToothNumbers": {
+      "hash": "662900d9cc91",
+      "status": "machine"
+    },
+    "reportui:templates.summaryAria": {
+      "hash": "f6b957c7b456",
+      "status": "machine"
+    },
+    "reportui:templates.summaryEmpty": {
+      "hash": "a56a0e048b03",
+      "status": "machine"
+    },
+    "reportui:templates.summaryTitle": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:templates.tipAdd": {
+      "hash": "a32929a76899",
+      "status": "machine"
+    },
+    "reportui:templates.tipAria": {
+      "hash": "339913ad6c77",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemoveAria": {
+      "hash": "91e42817b4bd",
+      "status": "machine"
+    },
+    "reportui:templates.tipsCustomize": {
+      "hash": "c89d7e3497bc",
+      "status": "machine"
+    },
+    "reportui:templates.tipsPerChart": {
+      "hash": "2a503a73e630",
+      "status": "machine"
+    },
+    "reportui:templates.tipsStandard": {
+      "hash": "9605eb39b27a",
+      "status": "machine"
+    },
+    "reportui:templates.tipsTitle": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:templates.tipsUseStandard": {
+      "hash": "67d33617e0a3",
+      "status": "machine"
+    },
+    "reportui:templates.title": {
+      "hash": "b4775cccc4b3",
+      "status": "machine"
+    },
+    "reportui:templates.titleLabel": {
+      "hash": "2a95a3037931",
+      "status": "machine"
+    },
+    "reportui:templates.titlePlaceholder": {
+      "hash": "30a3b02cbee4",
+      "status": "machine"
+    },
+    "reportui:templates.toothNumbersExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.untitled": {
+      "hash": "1be215111c62",
       "status": "machine"
     },
     "settings:chart.all": {
@@ -22172,6 +23216,530 @@
       "hash": "3a0360fce6e0",
       "status": "machine"
     },
+    "reportui:languages.de": {
+      "hash": "cd0a5a7df7be",
+      "status": "machine"
+    },
+    "reportui:languages.en": {
+      "hash": "ba118bf7fc9c",
+      "status": "machine"
+    },
+    "reportui:languages.es": {
+      "hash": "b785e11e822c",
+      "status": "machine"
+    },
+    "reportui:languages.fr": {
+      "hash": "51d624360ae7",
+      "status": "machine"
+    },
+    "reportui:languages.it": {
+      "hash": "0090dc269d25",
+      "status": "machine"
+    },
+    "reportui:languages.pt": {
+      "hash": "b74330ed801a",
+      "status": "machine"
+    },
+    "reportui:modal.buildFailed": {
+      "hash": "24b268675921",
+      "status": "machine"
+    },
+    "reportui:modal.close": {
+      "hash": "067228604a6a",
+      "status": "machine"
+    },
+    "reportui:modal.download": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "reportui:modal.editWording": {
+      "hash": "347a28e31726",
+      "status": "machine"
+    },
+    "reportui:modal.generating": {
+      "hash": "2e6d9ef0f924",
+      "status": "machine"
+    },
+    "reportui:modal.noteFindings": {
+      "hash": "e8baec5641a6",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_many": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_one": {
+      "hash": "0b5fca8285b8",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_other": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosNeedAccount": {
+      "hash": "66241fbce7b9",
+      "status": "machine"
+    },
+    "reportui:modal.photosTag": {
+      "hash": "44b7c354e3ad",
+      "status": "machine"
+    },
+    "reportui:modal.previewTitle": {
+      "hash": "7b9102cda555",
+      "status": "machine"
+    },
+    "reportui:modal.subtitle": {
+      "hash": "7a6409318067",
+      "status": "machine"
+    },
+    "reportui:modal.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "reportui:placeholders.date": {
+      "hash": "24acee6a8c27",
+      "status": "machine"
+    },
+    "reportui:placeholders.doctor": {
+      "hash": "ae4a32f2a6f8",
+      "status": "machine"
+    },
+    "reportui:placeholders.owner": {
+      "hash": "10a15405d740",
+      "status": "machine"
+    },
+    "reportui:placeholders.pet": {
+      "hash": "4237f6b371ae",
+      "status": "machine"
+    },
+    "reportui:placeholders.practice": {
+      "hash": "c60c7039dfc6",
+      "status": "machine"
+    },
+    "reportui:placeholders.species": {
+      "hash": "200d2aa8ba13",
+      "status": "machine"
+    },
+    "reportui:section.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "reportui:section.customizeTitle": {
+      "hash": "7e5c2995d103",
+      "status": "machine"
+    },
+    "reportui:section.draftFailed": {
+      "hash": "340c637e236e",
+      "status": "machine"
+    },
+    "reportui:section.drafted": {
+      "hash": "2da923b63960",
+      "status": "machine"
+    },
+    "reportui:section.examNotes": {
+      "hash": "baf6b3b5552a",
+      "status": "machine"
+    },
+    "reportui:section.homecareHint": {
+      "hash": "b752c66f2580",
+      "status": "machine"
+    },
+    "reportui:section.homecareLabel": {
+      "hash": "08a91b19315a",
+      "status": "machine"
+    },
+    "reportui:section.intro": {
+      "hash": "baccffa6b2f6",
+      "status": "machine"
+    },
+    "reportui:section.noFindings": {
+      "hash": "406602438b6b",
+      "status": "machine"
+    },
+    "reportui:section.noteHint": {
+      "hash": "0c5801790cd2",
+      "status": "machine"
+    },
+    "reportui:section.noteLabel": {
+      "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.practiceDefault": {
+      "hash": "73d2c116a167",
+      "status": "machine"
+    },
+    "reportui:section.previewButton": {
+      "hash": "996a423d26b3",
+      "status": "machine"
+    },
+    "reportui:section.printTitle": {
+      "hash": "e4c5638a0b75",
+      "status": "machine"
+    },
+    "reportui:section.recheck": {
+      "hash": "a062848bf56c",
+      "status": "machine"
+    },
+    "reportui:section.removedThisVisit": {
+      "hash": "5b8cb70c9a53",
+      "status": "machine"
+    },
+    "reportui:section.removedToday": {
+      "hash": "890e921decb9",
+      "status": "machine"
+    },
+    "reportui:section.replaceMessage": {
+      "hash": "aea76a714b94",
+      "status": "machine"
+    },
+    "reportui:section.replaceTitle": {
+      "hash": "5d2a5e32818b",
+      "status": "machine"
+    },
+    "reportui:section.reset": {
+      "hash": "1e1e18b482fc",
+      "status": "machine"
+    },
+    "reportui:section.resetToast": {
+      "hash": "9c0f78b38bcc",
+      "status": "machine"
+    },
+    "reportui:section.summaryHint": {
+      "hash": "f0ca2d3c887b",
+      "status": "machine"
+    },
+    "reportui:section.summaryLabel": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:section.templateHint": {
+      "hash": "8fcb0bc38ce4",
+      "status": "machine"
+    },
+    "reportui:section.templateLabel": {
+      "hash": "48403185e675",
+      "status": "machine"
+    },
+    "reportui:section.templateOption": {
+      "hash": "b46bf56525a6",
+      "status": "machine"
+    },
+    "reportui:section.title": {
+      "hash": "c432093840cc",
+      "status": "machine"
+    },
+    "reportui:section.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "reportui:section.writeTitle": {
+      "hash": "be9015c95765",
+      "status": "machine"
+    },
+    "reportui:section.writeWithAi": {
+      "hash": "596b070336ea",
+      "status": "machine"
+    },
+    "reportui:section.writing": {
+      "hash": "e52fe93bbbf3",
+      "status": "machine"
+    },
+    "reportui:sections.alreadyMissing": {
+      "hash": "d28bfaed2f3f",
+      "status": "machine"
+    },
+    "reportui:sections.diagram": {
+      "hash": "24f606c2e3f4",
+      "status": "machine"
+    },
+    "reportui:sections.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "reportui:sections.extractions": {
+      "hash": "4c5513fa9e79",
+      "status": "machine"
+    },
+    "reportui:sections.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "reportui:sections.homecare": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:sections.photos": {
+      "hash": "74d0b97285db",
+      "status": "machine"
+    },
+    "reportui:sections.recheck": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "reportui:sections.teamNote": {
+      "hash": "4c130e4b4cdc",
+      "status": "machine"
+    },
+    "reportui:templates.addCustom": {
+      "hash": "e2c136ee7499",
+      "status": "machine"
+    },
+    "reportui:templates.badgeDefault": {
+      "hash": "21b111cbfe6e",
+      "status": "machine"
+    },
+    "reportui:templates.basics": {
+      "hash": "8fdd2ee8475e",
+      "status": "machine"
+    },
+    "reportui:templates.closingLabel": {
+      "hash": "965d7aa086a4",
+      "status": "machine"
+    },
+    "reportui:templates.closingPlaceholder": {
+      "hash": "9b96ee0e48b9",
+      "status": "machine"
+    },
+    "reportui:templates.closingTitle": {
+      "hash": "fed3dad44529",
+      "status": "machine"
+    },
+    "reportui:templates.copyName": {
+      "hash": "0596322a2732",
+      "status": "machine"
+    },
+    "reportui:templates.customHeadingAria": {
+      "hash": "483feb3e2f63",
+      "status": "machine"
+    },
+    "reportui:templates.customText": {
+      "hash": "2b816a05ccc3",
+      "status": "machine"
+    },
+    "reportui:templates.datesIso": {
+      "hash": "78315d324f47",
+      "status": "machine"
+    },
+    "reportui:templates.datesLabel": {
+      "hash": "78963905f399",
+      "status": "machine"
+    },
+    "reportui:templates.datesLong": {
+      "hash": "25434f9ecfa7",
+      "status": "machine"
+    },
+    "reportui:templates.deleteConfirm": {
+      "hash": "fc571c2d6f22",
+      "status": "machine"
+    },
+    "reportui:templates.discardConfirm": {
+      "hash": "eaf9f8d89ea6",
+      "status": "machine"
+    },
+    "reportui:templates.footerHint": {
+      "hash": "08db119e2296",
+      "status": "machine"
+    },
+    "reportui:templates.footerLabel": {
+      "hash": "26c87bb51e69",
+      "status": "machine"
+    },
+    "reportui:templates.footerPlaceholder": {
+      "hash": "a334b825a3cb",
+      "status": "machine"
+    },
+    "reportui:templates.gradesExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.headingAria": {
+      "hash": "f3f5d19a631b",
+      "status": "machine"
+    },
+    "reportui:templates.headingPlaceholder": {
+      "hash": "7e9cec094149",
+      "status": "machine"
+    },
+    "reportui:templates.insertHelp": {
+      "hash": "f9341112a129",
+      "status": "machine"
+    },
+    "reportui:templates.insertLabel": {
+      "hash": "d4b0ea4400f6",
+      "status": "machine"
+    },
+    "reportui:templates.languageHint": {
+      "hash": "c3505f8a7417",
+      "status": "machine"
+    },
+    "reportui:templates.languageLabel": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "reportui:templates.listLabel": {
+      "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.moveDown": {
+      "hash": "40bb50da160c",
+      "status": "machine"
+    },
+    "reportui:templates.moveUp": {
+      "hash": "c66feb5eb8f2",
+      "status": "machine"
+    },
+    "reportui:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "reportui:templates.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "reportui:templates.newName": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "reportui:templates.previewBuilding": {
+      "hash": "737b7eba89d8",
+      "status": "machine"
+    },
+    "reportui:templates.previewClose": {
+      "hash": "7d8ab368210c",
+      "status": "machine"
+    },
+    "reportui:templates.previewFailed": {
+      "hash": "42698b52fe15",
+      "status": "machine"
+    },
+    "reportui:templates.previewFrame": {
+      "hash": "1525046925e0",
+      "status": "machine"
+    },
+    "reportui:templates.previewHeading": {
+      "hash": "8e53face03b0",
+      "status": "machine"
+    },
+    "reportui:templates.previewSample": {
+      "hash": "196ad5430081",
+      "status": "machine"
+    },
+    "reportui:templates.previewSubtitle": {
+      "hash": "dc8d83007267",
+      "status": "machine"
+    },
+    "reportui:templates.readOnly": {
+      "hash": "16707f74bd1a",
+      "status": "machine"
+    },
+    "reportui:templates.save": {
+      "hash": "5e9b0dde6c6f",
+      "status": "machine"
+    },
+    "reportui:templates.saveFailed": {
+      "hash": "902463cd291d",
+      "status": "machine"
+    },
+    "reportui:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextAria": {
+      "hash": "fdf5c04366f2",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextPlaceholder": {
+      "hash": "20730810e0a1",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsHint": {
+      "hash": "ea87b03f2e64",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsTitle": {
+      "hash": "9bae918add9a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefault": {
+      "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.showGrades": {
+      "hash": "b882d806dcd5",
+      "status": "machine"
+    },
+    "reportui:templates.showToothNumbers": {
+      "hash": "662900d9cc91",
+      "status": "machine"
+    },
+    "reportui:templates.summaryAria": {
+      "hash": "f6b957c7b456",
+      "status": "machine"
+    },
+    "reportui:templates.summaryEmpty": {
+      "hash": "a56a0e048b03",
+      "status": "machine"
+    },
+    "reportui:templates.summaryTitle": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:templates.tipAdd": {
+      "hash": "a32929a76899",
+      "status": "machine"
+    },
+    "reportui:templates.tipAria": {
+      "hash": "339913ad6c77",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemoveAria": {
+      "hash": "91e42817b4bd",
+      "status": "machine"
+    },
+    "reportui:templates.tipsCustomize": {
+      "hash": "c89d7e3497bc",
+      "status": "machine"
+    },
+    "reportui:templates.tipsPerChart": {
+      "hash": "2a503a73e630",
+      "status": "machine"
+    },
+    "reportui:templates.tipsStandard": {
+      "hash": "9605eb39b27a",
+      "status": "machine"
+    },
+    "reportui:templates.tipsTitle": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:templates.tipsUseStandard": {
+      "hash": "67d33617e0a3",
+      "status": "machine"
+    },
+    "reportui:templates.title": {
+      "hash": "b4775cccc4b3",
+      "status": "machine"
+    },
+    "reportui:templates.titleLabel": {
+      "hash": "2a95a3037931",
+      "status": "machine"
+    },
+    "reportui:templates.titlePlaceholder": {
+      "hash": "30a3b02cbee4",
+      "status": "machine"
+    },
+    "reportui:templates.toothNumbersExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.untitled": {
+      "hash": "1be215111c62",
+      "status": "machine"
+    },
     "settings:chart.all": {
       "hash": "f8aea4c05e07",
       "status": "machine"
@@ -29832,6 +31400,530 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:languages.de": {
+      "hash": "cd0a5a7df7be",
+      "status": "machine"
+    },
+    "reportui:languages.en": {
+      "hash": "ba118bf7fc9c",
+      "status": "machine"
+    },
+    "reportui:languages.es": {
+      "hash": "b785e11e822c",
+      "status": "machine"
+    },
+    "reportui:languages.fr": {
+      "hash": "51d624360ae7",
+      "status": "machine"
+    },
+    "reportui:languages.it": {
+      "hash": "0090dc269d25",
+      "status": "machine"
+    },
+    "reportui:languages.pt": {
+      "hash": "b74330ed801a",
+      "status": "machine"
+    },
+    "reportui:modal.buildFailed": {
+      "hash": "24b268675921",
+      "status": "machine"
+    },
+    "reportui:modal.close": {
+      "hash": "067228604a6a",
+      "status": "machine"
+    },
+    "reportui:modal.download": {
+      "hash": "6183be0883d2",
+      "status": "machine"
+    },
+    "reportui:modal.editWording": {
+      "hash": "347a28e31726",
+      "status": "machine"
+    },
+    "reportui:modal.generating": {
+      "hash": "2e6d9ef0f924",
+      "status": "machine"
+    },
+    "reportui:modal.noteFindings": {
+      "hash": "e8baec5641a6",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_many": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_one": {
+      "hash": "0b5fca8285b8",
+      "status": "machine"
+    },
+    "reportui:modal.photosIncluded_other": {
+      "hash": "1fe717be6fc7",
+      "status": "machine"
+    },
+    "reportui:modal.photosNeedAccount": {
+      "hash": "66241fbce7b9",
+      "status": "machine"
+    },
+    "reportui:modal.photosTag": {
+      "hash": "44b7c354e3ad",
+      "status": "machine"
+    },
+    "reportui:modal.previewTitle": {
+      "hash": "7b9102cda555",
+      "status": "machine"
+    },
+    "reportui:modal.subtitle": {
+      "hash": "7a6409318067",
+      "status": "machine"
+    },
+    "reportui:modal.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "reportui:placeholders.date": {
+      "hash": "24acee6a8c27",
+      "status": "machine"
+    },
+    "reportui:placeholders.doctor": {
+      "hash": "ae4a32f2a6f8",
+      "status": "machine"
+    },
+    "reportui:placeholders.owner": {
+      "hash": "10a15405d740",
+      "status": "machine"
+    },
+    "reportui:placeholders.pet": {
+      "hash": "4237f6b371ae",
+      "status": "machine"
+    },
+    "reportui:placeholders.practice": {
+      "hash": "c60c7039dfc6",
+      "status": "machine"
+    },
+    "reportui:placeholders.species": {
+      "hash": "200d2aa8ba13",
+      "status": "machine"
+    },
+    "reportui:section.customize": {
+      "hash": "c5276e27afba",
+      "status": "machine"
+    },
+    "reportui:section.customizeTitle": {
+      "hash": "7e5c2995d103",
+      "status": "machine"
+    },
+    "reportui:section.draftFailed": {
+      "hash": "340c637e236e",
+      "status": "machine"
+    },
+    "reportui:section.drafted": {
+      "hash": "2da923b63960",
+      "status": "machine"
+    },
+    "reportui:section.examNotes": {
+      "hash": "baf6b3b5552a",
+      "status": "machine"
+    },
+    "reportui:section.homecareHint": {
+      "hash": "b752c66f2580",
+      "status": "machine"
+    },
+    "reportui:section.homecareLabel": {
+      "hash": "08a91b19315a",
+      "status": "machine"
+    },
+    "reportui:section.intro": {
+      "hash": "baccffa6b2f6",
+      "status": "machine"
+    },
+    "reportui:section.noFindings": {
+      "hash": "406602438b6b",
+      "status": "machine"
+    },
+    "reportui:section.noteHint": {
+      "hash": "0c5801790cd2",
+      "status": "machine"
+    },
+    "reportui:section.noteLabel": {
+      "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.practiceDefault": {
+      "hash": "73d2c116a167",
+      "status": "machine"
+    },
+    "reportui:section.previewButton": {
+      "hash": "996a423d26b3",
+      "status": "machine"
+    },
+    "reportui:section.printTitle": {
+      "hash": "e4c5638a0b75",
+      "status": "machine"
+    },
+    "reportui:section.recheck": {
+      "hash": "a062848bf56c",
+      "status": "machine"
+    },
+    "reportui:section.removedThisVisit": {
+      "hash": "5b8cb70c9a53",
+      "status": "machine"
+    },
+    "reportui:section.removedToday": {
+      "hash": "890e921decb9",
+      "status": "machine"
+    },
+    "reportui:section.replaceMessage": {
+      "hash": "aea76a714b94",
+      "status": "machine"
+    },
+    "reportui:section.replaceTitle": {
+      "hash": "5d2a5e32818b",
+      "status": "machine"
+    },
+    "reportui:section.reset": {
+      "hash": "1e1e18b482fc",
+      "status": "machine"
+    },
+    "reportui:section.resetToast": {
+      "hash": "9c0f78b38bcc",
+      "status": "machine"
+    },
+    "reportui:section.summaryHint": {
+      "hash": "f0ca2d3c887b",
+      "status": "machine"
+    },
+    "reportui:section.summaryLabel": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:section.templateHint": {
+      "hash": "8fcb0bc38ce4",
+      "status": "machine"
+    },
+    "reportui:section.templateLabel": {
+      "hash": "48403185e675",
+      "status": "machine"
+    },
+    "reportui:section.templateOption": {
+      "hash": "b46bf56525a6",
+      "status": "machine"
+    },
+    "reportui:section.title": {
+      "hash": "c432093840cc",
+      "status": "machine"
+    },
+    "reportui:section.undo": {
+      "hash": "a8283ade3185",
+      "status": "machine"
+    },
+    "reportui:section.writeTitle": {
+      "hash": "be9015c95765",
+      "status": "machine"
+    },
+    "reportui:section.writeWithAi": {
+      "hash": "596b070336ea",
+      "status": "machine"
+    },
+    "reportui:section.writing": {
+      "hash": "e52fe93bbbf3",
+      "status": "machine"
+    },
+    "reportui:sections.alreadyMissing": {
+      "hash": "d28bfaed2f3f",
+      "status": "machine"
+    },
+    "reportui:sections.diagram": {
+      "hash": "24f606c2e3f4",
+      "status": "machine"
+    },
+    "reportui:sections.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "reportui:sections.extractions": {
+      "hash": "4c5513fa9e79",
+      "status": "machine"
+    },
+    "reportui:sections.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "reportui:sections.homecare": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:sections.photos": {
+      "hash": "74d0b97285db",
+      "status": "machine"
+    },
+    "reportui:sections.recheck": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "reportui:sections.teamNote": {
+      "hash": "4c130e4b4cdc",
+      "status": "machine"
+    },
+    "reportui:templates.addCustom": {
+      "hash": "e2c136ee7499",
+      "status": "machine"
+    },
+    "reportui:templates.badgeDefault": {
+      "hash": "21b111cbfe6e",
+      "status": "machine"
+    },
+    "reportui:templates.basics": {
+      "hash": "8fdd2ee8475e",
+      "status": "machine"
+    },
+    "reportui:templates.closingLabel": {
+      "hash": "965d7aa086a4",
+      "status": "machine"
+    },
+    "reportui:templates.closingPlaceholder": {
+      "hash": "9b96ee0e48b9",
+      "status": "machine"
+    },
+    "reportui:templates.closingTitle": {
+      "hash": "fed3dad44529",
+      "status": "machine"
+    },
+    "reportui:templates.copyName": {
+      "hash": "0596322a2732",
+      "status": "machine"
+    },
+    "reportui:templates.customHeadingAria": {
+      "hash": "483feb3e2f63",
+      "status": "machine"
+    },
+    "reportui:templates.customText": {
+      "hash": "2b816a05ccc3",
+      "status": "machine"
+    },
+    "reportui:templates.datesIso": {
+      "hash": "78315d324f47",
+      "status": "machine"
+    },
+    "reportui:templates.datesLabel": {
+      "hash": "78963905f399",
+      "status": "machine"
+    },
+    "reportui:templates.datesLong": {
+      "hash": "25434f9ecfa7",
+      "status": "machine"
+    },
+    "reportui:templates.deleteConfirm": {
+      "hash": "fc571c2d6f22",
+      "status": "machine"
+    },
+    "reportui:templates.discardConfirm": {
+      "hash": "eaf9f8d89ea6",
+      "status": "machine"
+    },
+    "reportui:templates.footerHint": {
+      "hash": "08db119e2296",
+      "status": "machine"
+    },
+    "reportui:templates.footerLabel": {
+      "hash": "26c87bb51e69",
+      "status": "machine"
+    },
+    "reportui:templates.footerPlaceholder": {
+      "hash": "a334b825a3cb",
+      "status": "machine"
+    },
+    "reportui:templates.gradesExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.headingAria": {
+      "hash": "f3f5d19a631b",
+      "status": "machine"
+    },
+    "reportui:templates.headingPlaceholder": {
+      "hash": "7e9cec094149",
+      "status": "machine"
+    },
+    "reportui:templates.insertHelp": {
+      "hash": "f9341112a129",
+      "status": "machine"
+    },
+    "reportui:templates.insertLabel": {
+      "hash": "d4b0ea4400f6",
+      "status": "machine"
+    },
+    "reportui:templates.languageHint": {
+      "hash": "c3505f8a7417",
+      "status": "machine"
+    },
+    "reportui:templates.languageLabel": {
+      "hash": "dbbe995b3445",
+      "status": "machine"
+    },
+    "reportui:templates.listLabel": {
+      "hash": "56b564b75c7f",
+      "status": "machine"
+    },
+    "reportui:templates.moveDown": {
+      "hash": "40bb50da160c",
+      "status": "machine"
+    },
+    "reportui:templates.moveUp": {
+      "hash": "c66feb5eb8f2",
+      "status": "machine"
+    },
+    "reportui:templates.nameLabel": {
+      "hash": "7b905ed0eaf2",
+      "status": "machine"
+    },
+    "reportui:templates.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "reportui:templates.newName": {
+      "hash": "30d87ec45259",
+      "status": "machine"
+    },
+    "reportui:templates.previewBuilding": {
+      "hash": "737b7eba89d8",
+      "status": "machine"
+    },
+    "reportui:templates.previewClose": {
+      "hash": "7d8ab368210c",
+      "status": "machine"
+    },
+    "reportui:templates.previewFailed": {
+      "hash": "42698b52fe15",
+      "status": "machine"
+    },
+    "reportui:templates.previewFrame": {
+      "hash": "1525046925e0",
+      "status": "machine"
+    },
+    "reportui:templates.previewHeading": {
+      "hash": "8e53face03b0",
+      "status": "machine"
+    },
+    "reportui:templates.previewSample": {
+      "hash": "196ad5430081",
+      "status": "machine"
+    },
+    "reportui:templates.previewSubtitle": {
+      "hash": "dc8d83007267",
+      "status": "machine"
+    },
+    "reportui:templates.readOnly": {
+      "hash": "16707f74bd1a",
+      "status": "machine"
+    },
+    "reportui:templates.save": {
+      "hash": "5e9b0dde6c6f",
+      "status": "machine"
+    },
+    "reportui:templates.saveFailed": {
+      "hash": "902463cd291d",
+      "status": "machine"
+    },
+    "reportui:templates.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextAria": {
+      "hash": "fdf5c04366f2",
+      "status": "machine"
+    },
+    "reportui:templates.sectionTextPlaceholder": {
+      "hash": "20730810e0a1",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsHint": {
+      "hash": "ea87b03f2e64",
+      "status": "machine"
+    },
+    "reportui:templates.sectionsTitle": {
+      "hash": "9bae918add9a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefault": {
+      "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.showGrades": {
+      "hash": "b882d806dcd5",
+      "status": "machine"
+    },
+    "reportui:templates.showToothNumbers": {
+      "hash": "662900d9cc91",
+      "status": "machine"
+    },
+    "reportui:templates.summaryAria": {
+      "hash": "f6b957c7b456",
+      "status": "machine"
+    },
+    "reportui:templates.summaryEmpty": {
+      "hash": "a56a0e048b03",
+      "status": "machine"
+    },
+    "reportui:templates.summaryTitle": {
+      "hash": "cf0537cec041",
+      "status": "machine"
+    },
+    "reportui:templates.tipAdd": {
+      "hash": "a32929a76899",
+      "status": "machine"
+    },
+    "reportui:templates.tipAria": {
+      "hash": "339913ad6c77",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "reportui:templates.tipRemoveAria": {
+      "hash": "91e42817b4bd",
+      "status": "machine"
+    },
+    "reportui:templates.tipsCustomize": {
+      "hash": "c89d7e3497bc",
+      "status": "machine"
+    },
+    "reportui:templates.tipsPerChart": {
+      "hash": "2a503a73e630",
+      "status": "machine"
+    },
+    "reportui:templates.tipsStandard": {
+      "hash": "9605eb39b27a",
+      "status": "machine"
+    },
+    "reportui:templates.tipsTitle": {
+      "hash": "c4851e72a301",
+      "status": "machine"
+    },
+    "reportui:templates.tipsUseStandard": {
+      "hash": "67d33617e0a3",
+      "status": "machine"
+    },
+    "reportui:templates.title": {
+      "hash": "b4775cccc4b3",
+      "status": "machine"
+    },
+    "reportui:templates.titleLabel": {
+      "hash": "2a95a3037931",
+      "status": "machine"
+    },
+    "reportui:templates.titlePlaceholder": {
+      "hash": "30a3b02cbee4",
+      "status": "machine"
+    },
+    "reportui:templates.toothNumbersExample": {
+      "hash": "a6fb1d46a37f",
+      "status": "machine"
+    },
+    "reportui:templates.untitled": {
+      "hash": "1be215111c62",
       "status": "machine"
     },
     "settings:chart.all": {

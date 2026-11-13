@@ -1,3 +1,4 @@
+import i18n from '../i18n';
 import { ReportLocale, isReportLocale, reportStrings } from './ownerReportI18n';
 
 /**
@@ -85,31 +86,29 @@ export interface OwnerReportContext {
 export const DEFAULT_TEMPLATE_ID = 'default';
 export const DEFAULT_REPORT_TITLE = 'Dental Visit Report';
 
-/** Human labels for the built-in sections (editor list). */
-export const SECTION_LABELS: Record<BuiltInSectionId, string> = {
-  diagram: 'Mouth diagram',
-  extractions: 'Teeth removed',
-  findings: 'What we found',
-  alreadyMissing: 'Already missing',
-  examNotes: 'Other exam notes',
-  photos: 'Before & after photos',
-  teamNote: 'Note from the team',
-  homecare: 'Home care tips',
-  recheck: 'Recheck date',
+/** Human labels for the built-in sections (editor list), in the app language. */
+export function sectionLabel(id: BuiltInSectionId): string {
+  return i18n.t(`sections.${id}`, { ns: 'reportui' });
+}
+
+/** Which placeholder token each pet-dependent heading shows in the editor. */
+const HEADING_PET_TOKEN: Partial<Record<BuiltInSectionId, string>> = {
+  diagram: '{Pet}',
+  homecare: '{pet}',
 };
 
-/** Default headings ({pet} / {Pet} are filled at render time). */
-export const DEFAULT_SECTION_TITLES: Record<BuiltInSectionId, string> = {
-  diagram: '{Pet}’s mouth',
-  extractions: 'Teeth removed during this visit',
-  findings: 'What we found',
-  alreadyMissing: 'Already missing before this visit',
-  examNotes: 'Other exam notes',
-  photos: 'Before & after',
-  teamNote: 'A note from your veterinary team',
-  homecare: 'Caring for {pet}’s teeth at home',
-  recheck: 'Recommended recheck',
-};
+/** Default English headings ({pet} / {Pet} are filled at render time).
+ *  This is report content (from the `report` catalog), not editor chrome. */
+export function defaultSectionTitle(id: BuiltInSectionId): string {
+  const t = i18n.getFixedT('en', 'report');
+  const pet = HEADING_PET_TOKEN[id];
+  return pet ? t(`headings.${id as 'diagram' | 'homecare'}_named`, { pet }) : t(`headings.${id as Exclude<BuiltInSectionId, 'diagram' | 'homecare'>}`);
+}
+
+/** Tooltip for a placeholder chip ("Insert pet name"), in the app language. */
+export function placeholderTitle(key: PlaceholderKey): string {
+  return i18n.t(`placeholders.${key}`, { ns: 'reportui' });
+}
 
 /** Today's fixed order (extractions print before the diagram). */
 const DEFAULT_SECTION_ORDER: BuiltInSectionId[] = [
@@ -167,8 +166,17 @@ export const DEFAULT_TEMPLATE: OwnerReportTemplate = Object.freeze({
   dateFormat: 'iso',
 }) as OwnerReportTemplate;
 
-export function defaultTemplate(): OwnerReportTemplate {
-  return { ...DEFAULT_TEMPLATE, sections: defaultSections(), homecareTips: [] };
+/** `language` defaults to English; a new template made in the editor passes
+ *  the user's app language (see appReportLocale) and gets that language's
+ *  default title along with it. */
+export function defaultTemplate(language: ReportLocale = 'en'): OwnerReportTemplate {
+  return {
+    ...DEFAULT_TEMPLATE,
+    title: language === 'en' ? DEFAULT_TEMPLATE.title : reportStrings(language).defaultTitle,
+    language,
+    sections: defaultSections(),
+    homecareTips: [],
+  };
 }
 
 export function defaultConfig(): OwnerReportConfig {

@@ -16,6 +16,7 @@ import type reminders from '../locales/en/reminders.json';
 import type settings from '../locales/en/settings.json';
 import type onboarding from '../locales/en/onboarding.json';
 import type pdfui from '../locales/en/pdfui.json';
+import type reportui from '../locales/en/reportui.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -39,6 +40,7 @@ declare module 'i18next' {
       settings: typeof settings;
       onboarding: typeof onboarding;
       pdfui: typeof pdfui;
+      reportui: typeof reportui;
     };
   }
 }
