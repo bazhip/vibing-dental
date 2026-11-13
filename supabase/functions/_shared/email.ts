@@ -95,12 +95,22 @@ export function sendBrandedEmail(apiKey: string, to: string, subject: string, e:
   return sendEmail(apiKey, { to, subject, ...renderBrandedEmail(e, lng) });
 }
 
-/** Send an already-rendered email through Resend. Returns true on success. */
-export async function sendEmail(apiKey: string, m: { to: string; subject: string; html: string; text: string }): Promise<boolean> {
+/**
+ * Send an already-rendered email through Resend. Returns true on success.
+ * `idempotencyKey` makes Resend drop a repeat of the same send (e.g. a retried webhook).
+ */
+export async function sendEmail(
+  apiKey: string,
+  m: { to: string; subject: string; html: string; text: string },
+  opts: { idempotencyKey?: string } = {},
+): Promise<boolean> {
   const { to, subject, html, text } = m;
+  const headers: Record<string, string> = { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
+  if (opts.idempotencyKey) headers['Idempotency-Key'] = opts.idempotencyKey;
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    headers,
+    signal: AbortSignal.timeout(4000),
     body: JSON.stringify({ from: EMAIL_FROM, to: [to], subject, html, text }),
   }).catch(() => null);
   return !!resp?.ok;

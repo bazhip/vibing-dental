@@ -4,7 +4,7 @@
 // emailStrings.ts (source: src/locales/<lng>/authEmail.json); the layout is
 // renderBrandedEmail, the same one as the dashboard templates.
 
-import { renderBrandedEmail, type BrandedEmail, type RichParagraph } from './email.ts';
+import { renderBrandedEmail, sendEmail, type BrandedEmail, type RichParagraph } from './email.ts';
 import { authEmailRaw, emailLanguage, type AuthEmailKey, type EmailLanguage } from './emailStrings.ts';
 
 /** The parts of the hook payload we use (supabase.com/docs/guides/auth/auth-hooks/send-email-hook). */
@@ -86,6 +86,23 @@ const str = (s: unknown): string => (typeof s === 'string' ? s : '');
 const own = <T>(table: Record<string, T>, key: string): T | undefined =>
   Object.prototype.hasOwnProperty.call(table, key) ? table[key] : undefined;
 
+/** True for an email_action_type we have copy for (anything else gets the generic notice). */
+export function isKnownAuthEmailType(type: string): boolean {
+  return own(LINK_TEMPLATES, type) !== undefined || own(NOTICES, type) !== undefined || type === 'reauthentication';
+}
+
+/**
+ * Sends the built emails through Resend concurrently. Each carries the
+ * Idempotency-Key `${webhookId}:${index}`, so a retried hook call doesn't
+ * re-send what already went out. True only if every send succeeded.
+ */
+export async function sendAuthEmails(apiKey: string, emails: AuthEmail[], webhookId: string): Promise<boolean> {
+  const results = await Promise.all(
+    emails.map((m, i) => sendEmail(apiKey, m, webhookId ? { idempotencyKey: `${webhookId}:${i}` } : {})),
+  );
+  return results.every(Boolean);
+}
+
 /**
  * The email(s) Supabase asked us to send. One for most action types; two for
  * a secure email change (one to each address). Never throws: an unknown
@@ -129,8 +146,8 @@ function build(payload: AuthHookPayload, supabaseUrl: string): AuthEmail[] {
       const out: AuthEmail[] = [];
       if (hashNew && email) out.push(linkEmail(email, hashNew));
       if (hash && newEmail) out.push(linkEmail(newEmail, hash));
-      // No new_email in the payload: still send the one link we have to the account address.
-      if (!out.length) out.push(linkEmail(newEmail || email, hash || hashNew));
+      // Fail closed: a link meant for the new address is never sent anywhere else
+      // (no new_email → no email; the handler reports the failure).
       return out;
     }
     return [linkEmail(email, str(data.token_hash))];

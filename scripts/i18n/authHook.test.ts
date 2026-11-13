@@ -5,7 +5,15 @@ import { readFileSync } from 'node:fs';
 import { Webhook } from 'standardwebhooks';
 import { loadCatalogs } from './catalog';
 import { emailStringsProblem } from './gen-email-strings';
-import { authEmailLanguage, buildAuthEmails, verifyLink, type AuthHookPayload } from '../../supabase/functions/_shared/authEmails.ts';
+import {
+  authEmailLanguage,
+  buildAuthEmails,
+  isKnownAuthEmailType,
+  sendAuthEmails,
+  verifyLink,
+  type AuthHookPayload,
+} from '../../supabase/functions/_shared/authEmails.ts';
+import { sendEmail } from '../../supabase/functions/_shared/email.ts';
 import { verifyHook } from '../../supabase/functions/_shared/hookSignature.ts';
 
 const catalogs = loadCatalogs();
@@ -160,10 +168,14 @@ describe('email change', () => {
     expect(mails[0].text).toContain(verifyLink(SITE, SUPABASE_URL, 'hash-main', 'email_change', REDIRECT));
   });
 
-  test('missing new_email still sends something and never throws', () => {
-    const one = buildAuthEmails(payload('email_change'), SUPABASE_URL);
-    expect(one).toHaveLength(1);
-    expect(one[0].to).toBe('vet@example.com');
+  test('missing new_email fails closed: the new-address link never goes to the current address', () => {
+    expect(buildAuthEmails(payload('email_change'), SUPABASE_URL)).toEqual([]);
+    expect(
+      buildAuthEmails(payload('email_change', { email_data: { token_hash: 'hash-for-new', token_hash_new: '' } }), SUPABASE_URL),
+    ).toEqual([]);
+  });
+
+  test('missing new_email with two pairs: only the current address gets its own link', () => {
     const two = buildAuthEmails(
       payload('email_change', { email_data: { token_new: '2', token_hash_new: 'hash-for-current' } }),
       SUPABASE_URL,
@@ -235,6 +247,49 @@ describe('other action types', () => {
   test('a malformed payload does not throw', () => {
     expect(() => buildAuthEmails({} as AuthHookPayload, SUPABASE_URL)).not.toThrow();
     expect(() => buildAuthEmails({ user: null, email_data: null } as unknown as AuthHookPayload, SUPABASE_URL)).not.toThrow();
+  });
+});
+
+describe('known action types', () => {
+  test.each(ALL_TYPES)('%s is known', (type) => expect(isKnownAuthEmailType(type)).toBe(true));
+  test.each(['something_new_notification', 'constructor', ''])('%j is unknown', (type) => expect(isKnownAuthEmailType(type)).toBe(false));
+});
+
+describe('sending (Resend, fetch mocked)', () => {
+  type Call = { url: string; init: RequestInit };
+  let calls: Call[];
+  let ok: (i: number) => boolean;
+  beforeEach(() => {
+    calls = [];
+    ok = () => true;
+    vi.stubGlobal('fetch', vi.fn(async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return { ok: ok(calls.length - 1) } as Response;
+    }));
+  });
+  afterEach(() => vi.unstubAllGlobals());
+  const header = (c: Call, name: string) => (c.init.headers as Record<string, string>)[name];
+  const mail = (to: string) => ({ to, subject: 's', html: '<p>h</p>', text: 't' });
+
+  test('sendEmail sets Idempotency-Key only when given, and a timeout signal', async () => {
+    expect(await sendEmail('k', mail('a@example.com'))).toBe(true);
+    expect(await sendEmail('k', mail('a@example.com'), { idempotencyKey: 'msg_1:0' })).toBe(true);
+    expect(header(calls[0], 'Idempotency-Key')).toBeUndefined();
+    expect(header(calls[1], 'Idempotency-Key')).toBe('msg_1:0');
+    expect(calls[1].init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  test('sendAuthEmails keys each email by webhook id and index, all sent', async () => {
+    expect(await sendAuthEmails('k', [mail('cur@example.com'), mail('new@example.com')], 'msg_9')).toBe(true);
+    expect(calls).toHaveLength(2);
+    const byTo = Object.fromEntries(calls.map((c) => [JSON.parse(String(c.init.body)).to[0], header(c, 'Idempotency-Key')]));
+    expect(byTo).toEqual({ 'cur@example.com': 'msg_9:0', 'new@example.com': 'msg_9:1' });
+  });
+
+  test('sendAuthEmails reports failure if any send fails, and omits the key without a webhook id', async () => {
+    ok = (i) => i === 0;
+    expect(await sendAuthEmails('k', [mail('a@example.com'), mail('b@example.com')], '')).toBe(false);
+    expect(calls.every((c) => header(c, 'Idempotency-Key') === undefined)).toBe(true);
   });
 });
 
