@@ -3892,26 +3892,6 @@ button.save-status--manual:hover {
 .tooth-chart__score .score-chips { flex-wrap: nowrap; }
 .tooth-chart__score .score-chips__chip { flex: 1 1 0; min-width: 0; }
 
-/* Editing a saved visit: the topbar's action row turns amber and holds
-   the way out (Revert / Done editing) — replaces the separate banner
-   that used to float over the chart. */
-.entry-grid__topbar-actions--editing {
-  padding: 0.3rem 0.35rem 0.3rem 0.75rem;
-  border: 1px solid #f6c343;
-  border-radius: 12px;
-  background: #fef7e3;
-}
-.topbar-editing {
-  margin-right: auto;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #7a4a12;
-  white-space: nowrap;
-}
-.topbar-editing::before { content: '✎ '; font-weight: 400; }
-.topbar-editing__revert { white-space: nowrap; }
-/* On its own row the amber bar spans the width, label left, buttons right. */
-.entry-grid__topbar-actions--editing { flex-grow: 1; }
 
 /* =============================================================================
  * TOUCH GUIDELINES (Apple HIG / Material) — phones and tablets
@@ -4085,18 +4065,6 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 .topbar-editing__undo:hover { background: #fff3d1; border-color: #b7791f; }
 @media (pointer: coarse) { .topbar-editing__undo { min-height: 44px; } }
 
-/* Viewing a saved visit: the topbar's action row turns a calm slate and
-   holds the way in (+ New visit, History, Edit chart) — the view-only
-   counterpart of the amber editing bar, replacing the separate banner. */
-.entry-grid__topbar-actions--viewing {
-  flex-grow: 1;
-  padding: 0.3rem 0.35rem 0.3rem 0.75rem;
-  border: 1px solid var(--border-strong, #cbd5e1);
-  border-radius: 12px;
-  background: var(--surface-sunken, #eef2f6);
-}
-.topbar-viewing { color: var(--text, #0f172a); }
-.topbar-viewing::before { content: none; }
 
 /* Phones hide the date / visit switcher — and now its divider too (a
    stray "|" was left after the species). */
@@ -4107,57 +4075,43 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   .entry-grid__patient-sep:has(+ .entry-grid__patient-date) { display: none; }
 }
 
-/* Smaller screens: when the viewing / editing bar has to wrap, the label
-   takes its own line and the buttons sit in tidy rows under it (instead
-   of one button stranded on a line, or the label alone beside a gap). */
-@media (max-width: 900px) {
-  .entry-grid__topbar-actions--viewing .topbar-editing,
-  .entry-grid__topbar-actions--editing .topbar-editing {
-    flex: 1 0 100%;
-    margin: 0 0 0.1rem;
-  }
-  .entry-grid__topbar-actions--viewing,
-  .entry-grid__topbar-actions--editing {
-    padding: 0.45rem 0.5rem 0.5rem 0.75rem;
-  }
-}
 
 
 /* Icons that stand in for button labels on phones (hidden elsewhere). */
 .topbar-icon { display: none; flex: none; }
-.topbar-state-chip { display: none; }
+
+/* Saved-visit state, beside the visit it describes (every screen size):
+   amber "Editing" / slate "View only". */
+.topbar-state-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.topbar-state-chip--editing { background: #fef7e3; border: 1px solid #f6c343; color: #7a4a12; }
+.topbar-state-chip--viewing { background: var(--surface-sunken, #eef2f6); border: 1px solid var(--border-strong, #cbd5e1); color: var(--text-muted, #475569); }
+
+/* My charts ▾ and + New patient. */
+.charts-menu__caret { margin-left: 0.35rem; flex: none; opacity: 0.7; }
+.chart-menu--open .charts-menu__caret { transform: rotate(180deg); }
+.topbar-new-patient { display: inline-flex; align-items: center; gap: 0.35rem; }
+.topbar-plus { flex: none; }
 
 /* =============================================================================
  * PHONE HEADER — compact and always tidy:
- *  row 1  patient … state chip (✎ Editing / Viewing)
- *  row 2  one row of buttons; Dictate, Settings, History and Undo become
- *         44px icon buttons (accessible names kept), primary is short.
+ *  row 1  patient … state chip (Editing / View only)
+ *  row 2  one row of buttons; Dictate, Settings and Undo become 44px icon
+ *         buttons (accessible names kept); New patient / Edit / Done short.
  * The section selector pins right under it so it's always reachable.
  * ========================================================================== */
 @media (max-width: 600px) {
-  .topbar-state-chip {
-    display: inline-flex;
-    align-items: center;
-    flex: none;
-    margin-left: auto;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .topbar-state-chip--editing { background: #fef7e3; border: 1px solid #f6c343; color: #7a4a12; }
-  .topbar-state-chip--viewing { background: var(--surface-sunken, #eef2f6); border: 1px solid var(--border-strong, #cbd5e1); color: var(--text, #0f172a); }
-
-  /* The tinted bar's box and label give way to the chip. */
-  .entry-grid__topbar-actions--viewing,
-  .entry-grid__topbar-actions--editing {
-    padding: 0;
-    border: 0;
-    background: transparent;
-  }
-  .entry-grid__topbar-actions--viewing .topbar-editing,
-  .entry-grid__topbar-actions--editing .topbar-editing { display: none; }
+  /* The state chip rides the right end of the patient row. */
+  .topbar-state-chip { margin-left: auto; }
 
   .entry-grid__topbar-actions { gap: 0.35rem; }
   .topbar-icon { display: inline-block; }
@@ -4191,3 +4145,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   .diagram-view__toolbar { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
   .chart-lock-banner { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
 }
+
+/* Topbar menus (My charts, Settings): the action row is nowrap, so its
+   dropdowns must opt back into wrapping or long descriptions get cut. */
+.entry-grid__topbar .chart-menu__panel { white-space: normal; }
