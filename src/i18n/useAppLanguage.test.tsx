@@ -1,4 +1,5 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import i18n from './index';
 
@@ -21,7 +22,9 @@ vi.mock('./config', async (orig) => ({
   },
 }));
 
-import { useAppLanguage } from './useAppLanguage';
+import { DeviceLanguage, useAppLanguage } from './useAppLanguage';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { holdLanguage, restoreLoaders } from './testing/holdLanguage';
 import type { AppLanguage } from './config';
 
 let seen: AppLanguage[] = [];
@@ -36,8 +39,12 @@ beforeEach(() => {
   document.documentElement.removeAttribute('lang');
 });
 afterEach(async () => {
+  vi.restoreAllMocks();
+  restoreLoaders();
   await i18n.changeLanguage('en');
 });
+
+const browserLanguages = (langs: string[]) => vi.spyOn(navigator, 'languages', 'get').mockReturnValue(langs);
 
 test('uses saved logged-out language', async () => {
   localStorage.setItem('app.language', 'de');
@@ -78,4 +85,26 @@ test('always English while switching is disabled', () => {
   } finally {
     langFlag.on = true;
   }
+});
+
+test('a device language still applies when DeviceLanguage unmounts before its catalogs arrive', async () => {
+  browserLanguages(['fr-FR']);
+  const fr = holdLanguage('fr');
+  const { unmount } = render(<DeviceLanguage />);
+  unmount(); // e.g. the session restored and the landing page gave way
+  fr.release();
+  await waitFor(() => expect(i18n.language).toBe('fr'));
+  expect(document.documentElement.lang).toBe('fr');
+});
+
+test('a slow device language never overrides a later pick in the switcher', async () => {
+  browserLanguages(['fr-FR']);
+  const fr = holdLanguage('fr');
+  render(<><DeviceLanguage /><LanguageSwitcher /></>);
+  await userEvent.selectOptions(screen.getByRole('combobox'), 'de');
+  await waitFor(() => expect(i18n.language).toBe('de'));
+  fr.release();
+  await new Promise((r) => setTimeout(r, 20));
+  expect(i18n.language).toBe('de');
+  expect(document.documentElement.lang).toBe('de');
 });

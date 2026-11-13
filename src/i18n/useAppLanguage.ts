@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import i18n, { loadLanguage } from './index';
+import { applyLanguage } from './applyLanguage';
 import { AppLanguage, LANGUAGE_SWITCHING_ENABLED } from './config';
 import { resolveLanguage } from './resolveLanguage';
 import { readStoredLanguage, writeStoredLanguage } from './storedLanguage';
@@ -18,18 +18,10 @@ export function useAppLanguage(saved: AppLanguage | null, loaded: boolean): AppL
     if (LANGUAGE_SWITCHING_ENABLED && loaded && saved && saved !== stored) writeStoredLanguage(saved);
   }, [loaded, saved, stored]);
 
+  // Not cancelled on unmount: the request stands until a newer one (from any
+  // screen) supersedes it. Offline, the next change of `lng` retries.
   useEffect(() => {
-    let current = true;
-    // If the catalog can't be fetched (offline), stay on the language in effect;
-    // the next change of `lng` retries.
-    void loadLanguage(lng).then(async (ok) => {
-      if (!current || !ok) return;
-      if (i18n.language !== lng) await i18n.changeLanguage(lng);
-      if (current) document.documentElement.lang = lng;
-    });
-    return () => {
-      current = false;
-    };
+    void applyLanguage(lng);
   }, [lng]);
   return lng;
 }

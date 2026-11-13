@@ -2,6 +2,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { formatDateTime } from '../i18n/format';
+import { AccountLanguage } from '../i18n/AccountLanguage';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
 import {
@@ -106,8 +107,16 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
 
   if (!cloudEnabled) return <>{children}</>;
 
+  // Blocking screens replace the chart, which owns the account's language.
+  const blocking = (screen: React.ReactNode) => (
+    <>
+      <AccountLanguage />
+      {screen}
+    </>
+  );
+
   if (finalizing) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
           <h1>{t('gate.settingUpTitle')}</h1>
@@ -122,7 +131,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   if (isAdmin) return <>{children}</>;
 
   if (loadError) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
           <h1>{t('gate.checkFailedTitle')}</h1>
@@ -136,7 +145,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     );
   }
 
-  if (!info || isAdmin === null) return null;
+  if (!info || isAdmin === null) return blocking(null);
 
   if (ACCESS_STATUSES.includes(info.status)) {
     return <>{children}</>;
@@ -165,7 +174,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
 
   // Members can't fix it — point them at the owner.
   if (info.role !== 'owner') {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
           <h1>{t('gate.memberTitle', { practice: info.practice?.name || t('gate.yourPractice') })}</h1>
@@ -187,7 +196,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   // A failed payment keeps the subscription alive in Stripe — the fix is
   // a new card in the portal, not a new checkout.
   if (info.status === 'past_due' && info.hasStripe) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
           <h1>{t('gate.failedTitle')}</h1>
@@ -232,7 +241,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     }
   };
 
-  return (
+  return blocking(
     <div className="billing-gate">
       <div className="billing-gate__panel">
         <h1>{t('gate.chooseTitle')}</h1>

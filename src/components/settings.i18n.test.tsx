@@ -48,6 +48,8 @@ vi.mock('./ui/dialogs', async (orig) => ({
   confirmDialog: dialogs.confirmDialog,
   toast: dialogs.toast,
 }));
+// The gate applies the account's language; these tests pick the language themselves.
+vi.mock('../i18n/AccountLanguage', () => ({ AccountLanguage: () => null }));
 vi.mock('../utils/accountDeletion', () => ({ deleteMyPractice: vi.fn() }));
 // The PDF itself is plan 3: stub the generator, keep the preview chrome.
 vi.mock('../utils/pdfGenerator', () => ({ buildDentalChartPDFBytes: vi.fn(async () => new Uint8Array([37, 80, 68, 70])) }));
