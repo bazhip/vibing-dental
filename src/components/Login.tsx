@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { LegalNotice } from './LegalNotice';
+import { LegalNotice, LEGAL_ACTION } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { uploadPracticeLogo } from '../hooks/useProfile';
-import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP } from '../constants/plans';
+import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
 import './Login.css';
 
 interface LoginProps {
@@ -26,15 +29,17 @@ const errCode = (e: AuthErr) => e?.code ?? '';
 const isUnconfirmed = (e: AuthErr) =>
   errCode(e) === 'email_not_confirmed' || /email not confirmed/i.test(e?.message ?? '');
 function friendlyAuthError(e: AuthErr): string {
+  const at = i18n.getFixedT(null, 'auth');
+  const ct = i18n.getFixedT(null, 'common');
   const code = errCode(e);
   const msg = e?.message ?? '';
-  if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg)) return 'Incorrect email or password.';
-  if (code === 'user_already_exists' || /already registered/i.test(msg)) return 'An account with this email already exists.';
-  if (code === 'weak_password' || /password should be/i.test(msg)) return 'Choose a stronger password — at least 8 characters.';
-  if (code === 'email_address_invalid' || /invalid email|unable to validate email/i.test(msg)) return 'Enter a valid email address.';
-  if (e?.status === 429 || /rate limit|too many/i.test(msg)) return 'Too many attempts. Wait a minute and try again.';
-  if (/fetch|network/i.test(msg)) return 'Can’t reach ToothOps — check your connection and try again.';
-  return msg || 'Something went wrong. Please try again.';
+  if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg)) return at('errors.invalidCredentials');
+  if (code === 'user_already_exists' || /already registered/i.test(msg)) return at('errors.userExists');
+  if (code === 'weak_password' || /password should be/i.test(msg)) return at('errors.weakPassword');
+  if (code === 'email_address_invalid' || /invalid email|unable to validate email/i.test(msg)) return at('errors.invalidEmail');
+  if (e?.status === 429 || /rate limit|too many/i.test(msg)) return ct('errors.rateLimit');
+  if (/fetch|network/i.test(msg)) return ct('errors.network');
+  return msg || ct('errors.generic');
 }
 
 const MIN_PASSWORD = 8;
@@ -56,6 +61,7 @@ const authRedirect = () => window.location.origin + window.location.pathname;
  * password, so the app keeps working standalone.
  */
 export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan }) => {
+  const { t } = useTranslation('auth');
   const [mode, setMode] = useState<Mode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -100,7 +106,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
       return;
     }
     setCooldown(RESEND_COOLDOWN_S);
-    setNotice(`Confirmation email sent to ${target}.`);
+    setNotice(t('login.confirmationSent', { email: target }));
   };
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [accountType, setAccountType] = useState<AccountType>(
@@ -122,7 +128,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         setError('');
         onAuthenticate();
       } else {
-        setError('Incorrect password');
+        setError(t('errors.wrongPassword'));
         setPassword('');
       }
       return;
@@ -135,11 +141,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
 
     if (signup) {
       if (!practiceName.trim() || !doctorName.trim()) {
-        setError('Practice and doctor name are required — they appear on your charts.');
+        setError(t('errors.namesRequired'));
         return;
       }
       if (password.length < MIN_PASSWORD) {
-        setError(`Password must be at least ${MIN_PASSWORD} characters.`);
+        setError(t('errors.passwordMin', { min: MIN_PASSWORD }));
         return;
       }
       setBusy(true);
@@ -170,7 +176,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
       // identities (Supabase hides account existence from the API).
       if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
         setAccountExists(true);
-        setError('An account with this email already exists.');
+        setError(t('errors.userExists'));
         return;
       }
       if (data.session) {
@@ -207,7 +213,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
       if (isUnconfirmed(authError)) {
         setPendingEmail(email.trim());
         setNeedsConfirm(true);
-        setError('Confirm your email first — open the link we sent you to activate your account.');
+        setError(t('errors.confirmFirst'));
         return;
       }
       setError(friendlyAuthError(authError));
@@ -223,15 +229,16 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         <div className="login-box">
           <div className="login-check">
             <div className="login-check__icon" aria-hidden="true">✉</div>
-            <h1 className="login-check__title">Check your inbox</h1>
+            <h1 className="login-check__title">{t('checkEmail.title')}</h1>
             <p className="login-check__lead">
-              We sent a confirmation link to <strong>{pendingEmail}</strong>.
-              Open it on this device to activate your account — you’ll be signed in automatically.
+              <Trans t={t} i18nKey="checkEmail.lead" values={{ email: pendingEmail }} components={{ strong: <strong /> }} />
             </p>
             <ul className="login-check__tips">
-              <li>It comes from <strong>ToothOps &lt;noreply@toothops.app&gt;</strong> and usually arrives within a minute.</li>
-              <li>Not there? Check your spam or promotions folder.</li>
-              {PAID_SIGNUP && <li>Your {TRIAL_DAYS}-day free trial starts once you confirm.</li>}
+              <li>
+                <Trans t={t} i18nKey="checkEmail.tipSender" shouldUnescape components={{ strong: <strong /> }} />
+              </li>
+              <li>{t('checkEmail.tipSpam')}</li>
+              {PAID_SIGNUP && <li>{t('checkEmail.tipTrial', { days: TRIAL_DAYS })}</li>}
             </ul>
             {error && <div className="login-error" role="alert">{error}</div>}
             {notice && <div className="login-notice" role="status">{notice}</div>}
@@ -241,13 +248,13 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               onClick={() => resendConfirmation(pendingEmail)}
               disabled={busy || cooldown > 0}
             >
-              {busy ? 'Sending…' : cooldown > 0 ? `Resend email (${cooldown}s)` : 'Resend email'}
+              {busy ? t('checkEmail.sending') : cooldown > 0 ? t('checkEmail.resendWait', { seconds: cooldown }) : t('checkEmail.resend')}
             </button>
             <button type="button" className="login-switch" onClick={() => { setEmail(pendingEmail); switchMode('signup'); }}>
-              Wrong email? Go back and fix it
+              {t('checkEmail.wrongEmail')}
             </button>
             <button type="button" className="login-switch" onClick={() => { setEmail(pendingEmail); switchMode('signin'); }}>
-              Already confirmed? Sign in
+              {t('checkEmail.confirmed')}
             </button>
           </div>
         </div>
@@ -259,13 +266,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
       <div className="login-box">
         <div className="login-header">
-          <h1>ToothOps Charting</h1>
+          <LanguageSwitcher compact />
+          <h1>{t('brand')}</h1>
           <p>
             {!cloudEnabled
-              ? 'Enter the practice password to continue'
+              ? t('login.subtitle.standalone')
               : signup
-              ? 'Create your practice account'
-              : 'Sign in with your practice account'}
+              ? t('login.subtitle.signup')
+              : t('login.subtitle.signin')}
           </p>
         </div>
 
@@ -273,25 +281,25 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           {cloudEnabled && (mode === 'signin' || signup) && (
             <>
               <GoogleSignInButton
-                label={signup ? 'Sign up with Google' : 'Continue with Google'}
+                label={signup ? t('google.signup') : t('google.continue')}
                 disabled={busy}
                 onError={setError}
                 onStart={markTermsPending}
               />
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
-              <LegalNotice action={signup ? 'signing up' : 'continuing'} className="login-legal--google" />
-              <div className="login-or">or {signup ? 'sign up' : 'sign in'} with email</div>
+              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" />
+              <div className="login-or">{signup ? t('login.orWithEmail.signup') : t('login.orWithEmail.signin')}</div>
             </>
           )}
           {cloudEnabled && signup && (
             <>
               <label className="login-field">
-                <span className="login-field__label">Practice name</span>
+                <span className="login-field__label">{t('login.practiceName')}</span>
                 <input
                   type="text"
                   className="login-input"
-                  placeholder="e.g. SoCal Tooth Ops"
+                  placeholder={t('login.practiceNamePlaceholder')}
                   autoComplete="organization"
                   value={practiceName}
                   onChange={(e) => setPracticeName(e.target.value)}
@@ -299,11 +307,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 />
               </label>
               <label className="login-field">
-                <span className="login-field__label">Doctor name</span>
+                <span className="login-field__label">{t('login.doctorName')}</span>
                 <input
                   type="text"
                   className="login-input"
-                  placeholder="e.g. Dr. M. Smith, DVM, DAVDC"
+                  placeholder={t('login.doctorNamePlaceholder')}
                   autoComplete="name"
                   value={doctorName}
                   onChange={(e) => setDoctorName(e.target.value)}
@@ -311,27 +319,26 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               </label>
               <label className="login-logo-field">
                 <span>
-                  {logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}
+                  {logoFile ? t('login.logoPicked', { name: logoFile.name }) : t('login.logoOptional')}
                 </span>
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  aria-label="Practice logo (optional)"
+                  aria-label={t('login.logoOptional')}
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
                 />
               </label>
 
               {!PAID_SIGNUP && (
                 <span className="login-hint">
-                  Free during the beta: full charting, diagrams &amp; PDFs, AI voice
-                  dictation, and up to 10 images per chart.
+                  {t('login.betaHint')}
                 </span>
               )}
 
               {PAID_SIGNUP && (
               <>
-              <fieldset className="login-plan" aria-label="Account type">
-                <legend className="login-plan__legend">Who's charting?</legend>
+              <fieldset className="login-plan" aria-label={t('login.accountType')}>
+                <legend className="login-plan__legend">{t('login.whoIsCharting')}</legend>
                 <label className={accountType === 'individual' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
                   <input
                     type="radio"
@@ -340,8 +347,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setAccountType('individual')}
                   />
                   <span className="login-plan__body">
-                    <strong>Individual</strong>
-                    <span>Just you. From $20/mo.</span>
+                    <strong>{t('login.individual')}</strong>
+                    <span>{t('login.individualBlurb', { price: formatPlanPrice(planByKey('individual_basic')?.priceMonthly ?? 0) })}</span>
                   </span>
                 </label>
                 <label className={accountType === 'practice' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
@@ -352,14 +359,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setAccountType('practice')}
                   />
                   <span className="login-plan__body">
-                    <strong>Practice</strong>
-                    <span>Up to 5 team members sharing charts. From $60/mo.</span>
+                    <strong>{t('login.practice')}</strong>
+                    <span>{t('login.practiceBlurb', { seats: planByKey('practice_basic')?.seats ?? 0, price: formatPlanPrice(planByKey('practice_basic')?.priceMonthly ?? 0) })}</span>
                   </span>
                 </label>
               </fieldset>
 
-              <fieldset className="login-plan" aria-label="Choose a plan">
-                <legend className="login-plan__legend">Plan · {TRIAL_DAYS}-day free trial on every plan</legend>
+              <fieldset className="login-plan" aria-label={t('login.choosePlan')}>
+                <legend className="login-plan__legend">{t('login.planLegend', { days: TRIAL_DAYS })}</legend>
                 <label className={plan === 'basic' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
                   <input
                     type="radio"
@@ -368,8 +375,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setPlan('basic')}
                   />
                   <span className="login-plan__body">
-                    <strong>Basic · ${planByKey(planKeyFor(accountType, 'basic'))?.priceMonthly}/mo</strong>
-                    <span>Full charting, PDFs, reminders. 30 images per chart.</span>
+                    <strong>{t('login.basic', { price: formatPlanPrice(planByKey(planKeyFor(accountType, 'basic'))?.priceMonthly ?? 0) })}</strong>
+                    <span>{t('login.basicBlurb')}</span>
                   </span>
                 </label>
                 <label className={plan === 'pro' ? 'login-plan__opt login-plan__opt--on' : 'login-plan__opt'}>
@@ -380,14 +387,13 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                     onChange={() => setPlan('pro')}
                   />
                   <span className="login-plan__body">
-                    <strong>Pro · ${planByKey(planKeyFor(accountType, 'pro'))?.priceMonthly}/mo</strong>
-                    <span>Everything in Basic, plus AI voice autofill and 100 images per chart.</span>
+                    <strong>{t('login.pro', { price: formatPlanPrice(planByKey(planKeyFor(accountType, 'pro'))?.priceMonthly ?? 0) })}</strong>
+                    <span>{t('login.proBlurb')}</span>
                   </span>
                 </label>
                 {chosenPlan && (
                   <span className="login-hint">
-                    {chosenPlan.name} — ${chosenPlan.priceMonthly}/mo after a {TRIAL_DAYS}-day free trial. You'll enter payment
-                    after confirming your email; cancel anytime.
+                    {t('login.planSummary', { plan: chosenPlan.name, price: formatPlanPrice(chosenPlan.priceMonthly), days: TRIAL_DAYS })}
                   </span>
                 )}
               </fieldset>
@@ -398,11 +404,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
 
           {cloudEnabled && (
             <label className="login-field">
-              <span className="login-field__label">Email</span>
+              <span className="login-field__label">{t('login.email')}</span>
               <input
                 type="email"
                 className="login-input"
-                placeholder="you@yourpractice.com"
+                placeholder={t('login.emailPlaceholder')}
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -412,7 +418,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           )}
 
           <label className="login-field">
-            <span className="login-field__label">Password</span>
+            <span className="login-field__label">{t('login.password')}</span>
             <span className="login-password">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -427,16 +433,16 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 type="button"
                 className="login-password__toggle"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
                 aria-pressed={showPassword}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? t('login.hide') : t('login.show')}
               </button>
             </span>
           </label>
           {cloudEnabled && signup && (
             <span className={`login-hint${password && password.length < MIN_PASSWORD ? ' login-hint--warn' : ''}`}>
-              At least {MIN_PASSWORD} characters{password ? ` · ${password.length}/${MIN_PASSWORD}` : ''}.
+              {password ? t('login.passwordHintCount', { min: MIN_PASSWORD, length: password.length }) : t('login.passwordHint', { min: MIN_PASSWORD })}
             </span>
           )}
 
@@ -450,12 +456,12 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                   onClick={() => resendConfirmation(pendingEmail)}
                   disabled={busy || cooldown > 0}
                 >
-                  {cooldown > 0 ? `Resend confirmation email (${cooldown}s)` : 'Resend confirmation email'}
+                  {cooldown > 0 ? t('login.resendConfirmationWait', { seconds: cooldown }) : t('login.resendConfirmation')}
                 </button>
               )}
               {accountExists && (
                 <button type="button" className="login-inline-action" onClick={() => switchMode('signin')}>
-                  Sign in instead
+                  {t('login.signInInstead')}
                 </button>
               )}
             </div>
@@ -465,15 +471,15 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           <button type="submit" className="login-button" disabled={busy}>
             {busy
               ? signup
-                ? 'Creating account…'
-                : 'Signing in…'
+                ? t('login.creating')
+                : t('login.signingIn')
               : signup
-              ? 'Create account'
+              ? t('login.createAccount')
               : !cloudEnabled
-              ? 'Continue'
-              : 'Sign in'}
+              ? t('login.continue')
+              : t('login.signIn')}
           </button>
-          {cloudEnabled && <LegalNotice action={signup ? 'creating an account' : 'signing in'} />}
+          {cloudEnabled && <LegalNotice action={signup ? LEGAL_ACTION.creatingAccount : LEGAL_ACTION.signingIn} />}
 
           {cloudEnabled && !signup && (
             <button
@@ -483,7 +489,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 if (!supabase) return;
                 const target = email.trim();
                 if (!target) {
-                  setError('Enter your email above first, then tap "Forgot password".');
+                  setError(t('errors.emailFirst'));
                   return;
                 }
                 setBusy(true);
@@ -494,10 +500,10 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 });
                 setBusy(false);
                 if (resetError) setError(friendlyAuthError(resetError));
-                else setNotice(`If an account exists for ${target}, a password reset link is on its way. It comes from noreply@toothops.app.`);
+                else setNotice(t('login.resetSent', { email: target }));
               }}
             >
-              Forgot password?
+              {t('login.forgotPassword')}
             </button>
           )}
 
@@ -507,9 +513,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               className="login-switch"
               onClick={() => switchMode(signup ? 'signin' : 'signup')}
             >
-              {signup
-                ? 'Already have an account? Sign in'
-                : 'New here? Create a practice account'}
+              {signup ? t('login.haveAccount') : t('login.newHere')}
             </button>
           )}
 

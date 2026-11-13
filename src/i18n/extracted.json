@@ -1,5 +1,13 @@
 [
   "src/components/AccountModal.tsx",
+  "src/components/AppLoading.tsx",
+  "src/components/ErrorBoundary.tsx",
+  "src/components/GoogleSignInButton.tsx",
+  "src/components/Landing.tsx",
+  "src/components/LandingFeatures.tsx",
+  "src/components/Login.tsx",
+  "src/components/ResetPassword.tsx",
+  "src/components/SessionExpiredOverlay.tsx",
   "src/components/WhatsNewModal.tsx",
   "src/constants/chartLayout.ts",
   "src/constants/columnDefinitions.ts",

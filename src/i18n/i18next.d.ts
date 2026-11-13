@@ -6,6 +6,8 @@ import type codes from '../locales/en/codes.json';
 import type chart from '../locales/en/chart.json';
 import type whatsNew from '../locales/en/whatsNew.json';
 import type billing from '../locales/en/billing.json';
+import type landing from '../locales/en/landing.json';
+import type auth from '../locales/en/auth.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -19,6 +21,8 @@ declare module 'i18next' {
       chart: typeof chart;
       whatsNew: typeof whatsNew;
       billing: typeof billing;
+      landing: typeof landing;
+      auth: typeof auth;
     };
   }
 }

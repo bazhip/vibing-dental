@@ -1,0 +1,204 @@
+{
+  "wordmark": "ToothOps Charting",
+  "nav": {
+    "pricing": "Preise",
+    "backToApp": "Zurück zur App",
+    "signIn": "Anmelden",
+    "getStarted": "Loslegen"
+  },
+  "hero": {
+    "eyebrow": "Zahnschema für die Tiermedizin – von Grund auf KI-gestützt",
+    "betaPill": "Kostenlose Beta",
+    "headlineLine1": "Einfach sprechen.",
+    "headlineLine2": "Das Zahnschema füllt sich von selbst.",
+    "sub": "Diktieren Sie während der Arbeit, und die KI überträgt Ihre Befunde direkt in ein Triadan-Schema des gesamten Gebisses – mit AVDC-Nomenklatur, Messwerten pro Zahn und den Diagrammen. Dazu Fotos und Röntgenbilder, die Besuchshistorie jedes Patienten, Kontrolltermin-Erinnerungen und ein fertiges PDF für den Tierhalter mit Ihrem Logo, sobald Sie fertig sind.",
+    "ctaTrial": "{{days}} Tage kostenlos testen",
+    "ctaFree": "Kostenloses Konto erstellen",
+    "tryFree": "Kostenlos ausprobieren – ohne Konto",
+    "openApp": "Charting-App öffnen",
+    "notePricing": "Tarife ab {{price}}/Monat · {{days}} Tage kostenlos testen · jederzeit kündbar",
+    "noteTrial": "{{days}} Tage kostenlos testen · jederzeit kündbar",
+    "noteBeta": "Während der Beta kostenlos · KI-Diktat inklusive · keine Kreditkarte nötig",
+    "noteNoAccount": "die Testversion ohne Konto verzichtet auf das KI-Diktat und versieht PDFs mit dem Aufdruck TRIAL"
+  },
+  "demo": {
+    "meta": "Katze · {{date}}",
+    "stepChart": "Schema",
+    "stepDiagram": "Diagramm",
+    "stepExport": "Export",
+    "colTooth": "Zahn",
+    "colMobility": "Mob",
+    "colPocket": "Tas",
+    "colGingivitis": "Gin",
+    "colStage": "PD",
+    "captionChart": "Tab · Enter – ausfüllen wie in einer Tabelle",
+    "captionDiagram": "Einmal markieren – Raster, Diagramm und PDF bleiben synchron",
+    "captionExport": "Ihr Logo, Ihre Arztzeile – auf jeder Seite",
+    "comment": "T/FX/CC — Pulpa freiliegend",
+    "voice": "„eins-null-vier komplizierte Kronenfraktur, Pulpa freiliegend …“",
+    "pause": "❚❚ Animation anhalten",
+    "play": "▶ Animation abspielen"
+  },
+  "features": {
+    "seeIt": "Ansehen →",
+    "previous": "← Zurück",
+    "next": "Weiter →",
+    "voiceResult1": "104 · Kommentar „CCF, Pulpa eröffnet“",
+    "voiceResult2": "104 · PD-Stadium → PD3",
+    "voiceResult3": "Eingriffsdiagramm · 104 zur Extraktion markiert",
+    "grid": {
+      "title": "Erfassen wie in einer Tabelle",
+      "blurb": "Triadan-Raster für das gesamte Gebiss bei Katze, Hund und Milchgebiss. Ein Klick zum Eingeben, mit Tab, Enter oder Leertaste fliegen Sie durch eine angesagte Zahlenreihe.",
+      "lead": "Das Raster funktioniert so, wie Ihr Team ohnehin tippt: Zelle anklicken und los. Sondierungstiefen eintragen, den Blick am Patienten.",
+      "imageAlt": "Das Befundraster mit eingetragenen Werten für Gingivitis, Zahnstein, Tasche, Furkation und Beweglichkeit, Zahn 106 als fehlend durchgestrichen",
+      "points": {
+        "p1": "Ein einziger Klick versetzt eine Zelle direkt in den Bearbeitungsmodus – kein Doppelklick nötig.",
+        "p2": "Tab, Enter und Leertaste springen weiter wie in einer Tabelle, sodass eine angesagte Reihe („3, 2, 4 …“) ohne Hinsehen sitzt.",
+        "p3": "Werte für das ganze Gebiss in einem Schritt: Zahnstein oder Gingivitis für jeden Zahn über die Spaltenüberschrift setzen.",
+        "p4": "Das Kontrollkästchen „Fehlend“ streicht die Zeile durch und füllt den Zahn im Diagramm – eine einzige Datenquelle.",
+        "p5": "Bei einer Folgebehandlung erscheinen die Werte vom letzten Mal als blasse Hinweise in leeren Zellen: vergleichen, ohne die alte Akte zu öffnen.",
+        "p6": "Gebisse von Katze, Hund, Welpe und Kitten, alle nach Triadan nummeriert."
+      }
+    },
+    "voice": {
+      "title": "KI-Spracheingabe, direkt integriert",
+      "tag": "KI · Kostenlose Beta",
+      "blurb": "Sagen Sie „104 komplizierte Kronenfraktur“, und der Befund landet am Zahn – transkribiert und eingetragen, während Ihre Hände am Patienten bleiben.",
+      "lead": "Diktieren Sie während der Arbeit: Ein Spracherkennungsmodell in medizinischer Qualität transkribiert, und die KI ordnet jeden Befund dem richtigen Zahn, Diagramm und Feld zu.",
+      "points": {
+        "p1": "Spracherkennung mit medizinischem Vokabular, abgestimmt auf veterinärzahnmedizinische Fachbegriffe.",
+        "p2": "Befunde landen als strukturierte Einträge – Rasterwerte, Zahnmarkierungen, verankerte Kommentare – statt als Textwüste.",
+        "p3": "Ein Live-Transkript in der Seitenleiste zeigt jede Aktion, während sie geschieht; jede hebt den betroffenen Zahn hervor.",
+        "p4": "Alles, was die KI schreibt, läuft über dasselbe Rückgängig-System wie Ihre eigenen Änderungen.",
+        "p5": "Nicht sicher, ob es Sie richtig verstanden hat? Es markiert den Befund und sagt nach einer Pause „Prüfe 109“ in Ihr Ohr – nie während Sie sprechen.",
+        "p6": "Keine API-Schlüssel und keine Einrichtung – während der Beta kostenlos."
+      }
+    },
+    "diagrams": {
+      "title": "Diagramme, die synchron bleiben",
+      "blurb": "Die Zahndiagramme für Befund und Eingriff folgen dem Raster – streichen Sie einen Zahn einmal durch, und die gesamte Akte zieht nach, vom Schema bis zum PDF.",
+      "lead": "Zwei anatomisch gezeichnete Diagramme – erst die Befunde, dann die Eingriffe –, die dem Raster und dem Ausdruck nie widersprechen.",
+      "imageAlt": "Das Befunddiagramm mit ausgefüllten fehlenden Zähnen und AVDC-Codes – T/FX, T/FX/CCF, TR, AB, AT – an jedem Zahn verankert",
+      "points": {
+        "p1": "Zähne mit einem Klick als fehlend oder extrahiert markieren (oder per Tastatur – jeder Zahn ist fokussierbar).",
+        "p2": "Kommentare werden an einem Zahn verankert und bleiben ihm zugeordnet; freie Kommentare können überall stehen.",
+        "p3": "Freihandzeichnung in fünf Farben für alles, was ein Code nicht sagen kann.",
+        "p4": "Zoomen und Verschieben für enge Katzengebisse.",
+        "p5": "Im Befund als fehlend markierte Zähne sind im Eingriffsdiagramm gesperrt – was fehlt, kann nicht erneut extrahiert werden.",
+        "p6": "Jedes Diagramm hat seinen eigenen Rückgängig-Verlauf (⌘Z gilt für das zuletzt bearbeitete)."
+      }
+    },
+    "avdc": {
+      "title": "Spricht AVDC",
+      "blurb": "Der vollständige AVDC-Abkürzungssatz durchgängig, mit einer durchsuchbaren Referenz neben den Diagrammen und einer Legende auf jedem Ausdruck.",
+      "lead": "Die Akte ist in jeder Hand eindeutig lesbar: einheitliche Nomenklatur von vorne bis hinten, und die Referenz ist immer nur einen Blick entfernt.",
+      "imageAlt": "Die durchsuchbare Referenz der AVDC-Codes",
+      "points": {
+        "p1": "Vollständiger AVDC-Abkürzungssatz für Pathologien und Eingriffe.",
+        "p2": "Eine durchsuchbare Code-Referenz steht neben jedem Diagramm – kein separater Tab, und sie bleibt auch bei gesperrten Akten durchsuchbar.",
+        "p3": "Jeder verwendete Code wird mit seiner Bedeutung in einer Legende im PDF ausgedruckt.",
+        "p4": "Autovervollständigung von Dentalcodes in Kommentarfeldern während der Eingabe."
+      }
+    },
+    "pdf": {
+      "title": "PDFs für Tierhalter",
+      "blurb": "Eine zweiseitige Akte in Ihrem Design, sobald Sie fertig sind – und das PDF selbst lässt sich später wieder importieren, um die gesamte Akte wiederherzustellen.",
+      "lead": "Mit einem Tipp wird die Akte zu einem ansprechenden Dokument mit Praxisname, Arztzeile und Logo.",
+      "imageAlt": "Das erzeugte PDF des Zahnschemas für den Hund mit Diagrammen, Untersuchungsbefunden und Kiefertabellen",
+      "points": {
+        "p1": "Zwei Seiten: Diagramme, Maulhöhlenuntersuchung, vollständige Kiefertabellen, Behandlungsbericht und Code-Legende.",
+        "p2": "Mehrere Dokumentstile – pro Download wählbar, die Vorschau wird live aktualisiert.",
+        "p3": "Der gesamte Stand der Akte ist im PDF eingebettet: später erneut importieren und weiterarbeiten, auch an einem anderen Rechner.",
+        "p4": "Besitzerbericht (Beta): eine separate Version in einfacher Sprache zum Mitnehmen, mit Vorher-nachher-Fotos – automatisch erstellt, vor dem Drucken bearbeitbar."
+      }
+    },
+    "photos": {
+      "title": "Fotos & Röntgenbilder",
+      "blurb": "Fügen Sie jeder Akte intraorale Fotos und Dentalröntgenbilder hinzu, beschriften Sie sie und heften Sie jedes an einen Zahn – privat zusammen mit der Akte gespeichert.",
+      "lead": "Die Bilder liegen dort, wo Sie sie suchen: in der Akte, am jeweiligen Zahn angeheftet.",
+      "points": {
+        "p1": "Intraorale Fotos und Röntgenbilder, beschriftet und pro Zahn angeheftet.",
+        "p2": "Private Speicherung mit kurzlebigen signierten Links – Bilder sind nie öffentlich.",
+        "p3": "Handyfotos werden automatisch verkleinert, damit die Akten schnell bleiben.",
+        "p4": "Fotos als Vorher/Nachher markieren, um sie in den Besitzerbericht (Beta) zu übernehmen."
+      }
+    },
+    "history": {
+      "title": "Jeder Besuch, ein Patient",
+      "blurb": "Akten werden nach Patient gruppiert, sodass die gesamte Geschichte eines wiederkehrenden Tieres einen Klick entfernt ist – und dieser Besuch beginnt dort, wo der letzte endete.",
+      "lead": "Ein Patient ist eine Geschichte, kein Dateihaufen. ToothOps hält die Besuche zusammen und übernimmt das Richtige.",
+      "points": {
+        "p1": "Akten werden nach Patient gruppiert; ein Besuchswähler in der Kopfleiste wechselt zwischen den Terminen.",
+        "p2": "Neue Besuche übernehmen extrahierte und fehlende Zähne automatisch – als „vorh.“ markiert, damit sie als Vorgeschichte und nicht als heutiger Befund gelesen werden.",
+        "p3": "Die Messwerte des letzten Besuchs erscheinen beim Sondieren als Hinweise, sodass Verläufe am Behandlungsstuhl sofort auffallen.",
+        "p4": "Jedes Speichern wird protokolliert – wer, wann – im Verlauf jeder Akte.",
+        "p5": "Frühere Besuche öffnen sich schreibgeschützt, bis sie bewusst entsperrt werden, damit Akten nicht versehentlich verändert werden – der heutige Besuch bleibt bearbeitbar."
+      }
+    },
+    "recall": {
+      "title": "Recall integriert",
+      "blurb": "Legen Sie beim Erfassen einen Kontrolltermin fest; die Patientenliste zeigt, wer fällig und wer überfällig ist, damit die nächste Zahnbehandlung nie untergeht.",
+      "lead": "Bei der Einhaltung der Kontrolltermine entscheidet sich der Behandlungserfolg – die Liste führt für Sie Buch.",
+      "points": {
+        "p1": "Ein Kontrolltermin in der Akte setzt den Patienten auf die Liste „Fällig“, markiert als fällig oder überfällig.",
+        "p2": "Senden Sie dem Tierhalter direkt aus der Patientenliste eine Erinnerungs-E-Mail.",
+        "p3": "Kontrolle ohne neue Akte erfolgt? Mit einem Klick löschen, und der Patient verschwindet aus der Liste.",
+        "p4": "Filtern Sie die Bibliothek auf fällige Patienten, um die Rückrufe der Woche zu planen."
+      }
+    },
+    "team": {
+      "title": "Ihr ganzes Team, eine Akte",
+      "blurb": "Fügen Sie Kolleginnen und Kollegen Ihrer Praxis hinzu, und alle teilen dieselben Akten, Vorlagen und Bilder – persönliche Konten statt eines gemeinsamen Passworts.",
+      "lead": "Die Praxis ist die Einheit: ein gemeinsamer Aktenbestand, individuelle Logins und die behandelnde Person bei jedem Besuch dokumentiert.",
+      "points": {
+        "p1": "Bis zu fünf Plätze pro Praxis (während der Beta kostenlos); jedes Mitglied hat sein eigenes Login.",
+        "p2": "Akten, Berichtsvorlagen, Bilder und das Praxislogo werden automatisch geteilt.",
+        "p3": "Jeder Besuch erfasst seine Autorin bzw. seinen Autor – die Bibliothek lässt sich nach Ärztin oder Arzt filtern.",
+        "p4": "Funktionen nur für den Inhaber: Praxis umbenennen und das Team verwalten."
+      }
+    },
+    "offline": {
+      "title": "Cloud & am Behandlungsstuhl",
+      "blurb": "Jede Akte wird automatisch in der Cloud gespeichert und als lokale Kopie am Behandlungsstuhl vorgehalten – eine abgebrochene Verbindung kostet nie ein Gebiss.",
+      "lead": "Das WLAN der Praxis ist kein Teil Ihres Narkoseprotokolls. ToothOps geht davon aus, dass die Verbindung abbricht, und plant dafür.",
+      "points": {
+        "p1": "Jeder Tastenanschlag wird sofort lokal gesichert – ein Neuladen mitten im Eingriff verliert nichts.",
+        "p2": "Neue Akten werden automatisch in der Cloud gespeichert; fehlgeschlagene Speichervorgänge werden bei wiederhergestellter Verbindung automatisch wiederholt.",
+        "p3": "Läuft Ihre Sitzung mitten im Eingriff ab, bleibt die Akte geöffnet – melden Sie sich direkt darüber wieder an.",
+        "p4": "Wiederverwendbare Berichtsvorlagen sparen bei jeder COHAT das Tippen."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Einfache monatliche Preise",
+    "sub": "Jeder Tarif beginnt mit {{days}} Tagen kostenloser Testphase. Jederzeit kündbar – wir bewahren Ihre Akten 30 Tage lang sicher auf, falls Sie zurückkommen.",
+    "mostPopular": "Am beliebtesten",
+    "perMonth": "/Monat",
+    "startTrial": "Kostenlos testen",
+    "contact": "Größeres Team? Mehrere Standorte? Universitätsprogramm? <a>Kontaktieren Sie uns</a> für Preise ab 5 Plätzen."
+  },
+  "paper": {
+    "title": "Die Akte, die Ihre Kunden mit nach Hause nehmen",
+    "body": "Ein Klick erzeugt den gesamten Eingriff als übersichtliches zweiseitiges PDF – oben Ihr Logo und Ihre Arztzeile, dazu die Raster für das ganze Gebiss, beide Diagramme, Untersuchungsbefunde und eine Legende für jeden verwendeten AVDC-Code.",
+    "point1": "Fünf professionelle Dokumentstile",
+    "point2": "Patientenidentität auf jeder Seite",
+    "point3": "Jedes PDF lässt sich wieder in die App öffnen – die Akte reist darin mit",
+    "page1Label": "Seite eins der Beispielakte in voller Größe ansehen",
+    "page1Zoom": "Seite eins der Beispielakte, volle Größe",
+    "page1Alt": "Seite eins eines erzeugten Zahnschema-PDFs: Praxislogo und Arztzeile, Befunddiagramm mit verankerten Kommentaren, Befunde der Maulhöhlenuntersuchung mit Kommentaren, teilweise Triadan-Sondierungsraster und eine Legende der verwendeten AVDC-Codes",
+    "page2Label": "Seite zwei der Beispielakte in voller Größe ansehen",
+    "page2Zoom": "Seite zwei der Beispielakte, volle Größe",
+    "page2Alt": "Seite zwei derselben Akte: Dosen der Leitungsanästhesie, das Eingriffsdiagramm mit markierten Extraktionen, der Behandlungs- und Operationsbericht und die verwendeten Eingriffscodes"
+  },
+  "closer": {
+    "title": "Bereit, das Klemmbrett wegzulegen?"
+  },
+  "lightboxClose": "Vollbildansicht schließen",
+  "footer": {
+    "tagline": "ToothOps Charting – entwickelt mit Tierzahnärzten.",
+    "privacy": "Datenschutz",
+    "terms": "Bedingungen",
+    "dpa": "AVV",
+    "contact": "Kontakt"
+  }
+}

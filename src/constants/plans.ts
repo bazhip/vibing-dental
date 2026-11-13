@@ -11,6 +11,7 @@
  */
 
 import i18n from '../i18n';
+import { formatNumber } from '../i18n/format';
 import type billing from '../locales/en/billing.json';
 
 export type PlanKey =
@@ -47,6 +48,10 @@ export interface PlanDef {
   readonly features: string[];
   featureList: PlanFeature[];
 }
+
+/** A whole-dollar USD price in the active language ("$20" in English). */
+export const formatPlanPrice = (n: number): string =>
+  formatNumber(n, { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0 });
 
 const billingT = (lng: string) => i18n.getFixedT(lng, 'billing');
 

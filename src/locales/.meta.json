@@ -276,6 +276,434 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "auth:brand": {
+      "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "auth:checkEmail.confirmed": {
+      "hash": "82ca0d6507a6",
+      "status": "machine"
+    },
+    "auth:checkEmail.lead": {
+      "hash": "cafcb7cc122f",
+      "status": "machine"
+    },
+    "auth:checkEmail.resend": {
+      "hash": "4f44603ef678",
+      "status": "machine"
+    },
+    "auth:checkEmail.resendWait": {
+      "hash": "61b02844b96c",
+      "status": "machine"
+    },
+    "auth:checkEmail.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSender": {
+      "hash": "139d6f3cbca1",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSpam": {
+      "hash": "935dc79c4457",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipTrial": {
+      "hash": "323f5ba32e4a",
+      "status": "machine"
+    },
+    "auth:checkEmail.title": {
+      "hash": "4ee2c02184f0",
+      "status": "machine"
+    },
+    "auth:checkEmail.wrongEmail": {
+      "hash": "22ef2d41374f",
+      "status": "machine"
+    },
+    "auth:crash.body": {
+      "hash": "d9c9aa905d37",
+      "status": "machine"
+    },
+    "auth:crash.details": {
+      "hash": "890ab358a55d",
+      "status": "machine"
+    },
+    "auth:crash.email": {
+      "hash": "8483df5ddf76",
+      "status": "machine"
+    },
+    "auth:crash.reload": {
+      "hash": "1982bff0f66e",
+      "status": "machine"
+    },
+    "auth:crash.title": {
+      "hash": "ab827e3fe17d",
+      "status": "machine"
+    },
+    "auth:errors.confirmFirst": {
+      "hash": "bded985aa1a2",
+      "status": "machine"
+    },
+    "auth:errors.emailFirst": {
+      "hash": "a5844013f3a7",
+      "status": "machine"
+    },
+    "auth:errors.invalidCredentials": {
+      "hash": "6f8e6becc59d",
+      "status": "machine"
+    },
+    "auth:errors.invalidEmail": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "auth:errors.namesRequired": {
+      "hash": "84248cc2df31",
+      "status": "machine"
+    },
+    "auth:errors.passwordMin": {
+      "hash": "6758b3ff7ef9",
+      "status": "machine"
+    },
+    "auth:errors.signInFailed": {
+      "hash": "71b3f3dba597",
+      "status": "machine"
+    },
+    "auth:errors.userExists": {
+      "hash": "05cfc22f3886",
+      "status": "machine"
+    },
+    "auth:errors.weakPassword": {
+      "hash": "47521530bc54",
+      "status": "machine"
+    },
+    "auth:errors.wrongPassword": {
+      "hash": "14b55f3d66cb",
+      "status": "machine"
+    },
+    "auth:expired.ariaLabel": {
+      "hash": "cb6c283f8db2",
+      "status": "machine"
+    },
+    "auth:expired.blurb": {
+      "hash": "31824099400c",
+      "status": "machine"
+    },
+    "auth:expired.cancelLabel": {
+      "hash": "aa20700fa9cf",
+      "status": "machine"
+    },
+    "auth:expired.confirmLabel": {
+      "hash": "4b8b2af2d2f7",
+      "status": "machine"
+    },
+    "auth:expired.confirmMessage": {
+      "hash": "13af5fe50016",
+      "status": "machine"
+    },
+    "auth:expired.confirmTitle": {
+      "hash": "5619eea23450",
+      "status": "machine"
+    },
+    "auth:expired.orWithEmail": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:expired.signOutInstead": {
+      "hash": "1104e3dca609",
+      "status": "machine"
+    },
+    "auth:expired.submit": {
+      "hash": "ad5085a415d2",
+      "status": "machine"
+    },
+    "auth:expired.title": {
+      "hash": "3a6573ba3009",
+      "status": "machine"
+    },
+    "auth:google.continue": {
+      "hash": "cce937e89144",
+      "status": "machine"
+    },
+    "auth:google.opening": {
+      "hash": "28caff1f8299",
+      "status": "machine"
+    },
+    "auth:google.signup": {
+      "hash": "fef12795d9f2",
+      "status": "machine"
+    },
+    "auth:google.startFailed": {
+      "hash": "442c5de16291",
+      "status": "machine"
+    },
+    "auth:legal.dpa": {
+      "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.privacy": {
+      "hash": "506ff3946215",
+      "status": "machine"
+    },
+    "auth:legal.terms": {
+      "hash": "4afa55bf7aec",
+      "status": "machine"
+    },
+    "auth:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "auth:login.accountType": {
+      "hash": "dac7998fba76",
+      "status": "machine"
+    },
+    "auth:login.basic": {
+      "hash": "be3b3b5fe515",
+      "status": "machine"
+    },
+    "auth:login.basicBlurb": {
+      "hash": "91229d13d5b5",
+      "status": "machine"
+    },
+    "auth:login.betaHint": {
+      "hash": "e36550a490b9",
+      "status": "machine"
+    },
+    "auth:login.choosePlan": {
+      "hash": "4c6fab7d6595",
+      "status": "machine"
+    },
+    "auth:login.confirmationSent": {
+      "hash": "412bdd9ed3da",
+      "status": "machine"
+    },
+    "auth:login.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "auth:login.createAccount": {
+      "hash": "798ca2ce18bf",
+      "status": "machine"
+    },
+    "auth:login.creating": {
+      "hash": "f2daf61e527b",
+      "status": "machine"
+    },
+    "auth:login.doctorName": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "auth:login.doctorNamePlaceholder": {
+      "hash": "2022346195f2",
+      "status": "machine"
+    },
+    "auth:login.email": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "auth:login.emailPlaceholder": {
+      "hash": "cb9cc26c78ae",
+      "status": "machine"
+    },
+    "auth:login.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "auth:login.haveAccount": {
+      "hash": "0f5b1d1f5fc8",
+      "status": "machine"
+    },
+    "auth:login.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "auth:login.hidePassword": {
+      "hash": "a60a56c584b3",
+      "status": "machine"
+    },
+    "auth:login.individual": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "auth:login.individualBlurb": {
+      "hash": "5b0d92dddf2e",
+      "status": "machine"
+    },
+    "auth:login.logoOptional": {
+      "hash": "d1a54671814e",
+      "status": "machine"
+    },
+    "auth:login.logoPicked": {
+      "hash": "d9111a330d5d",
+      "status": "machine"
+    },
+    "auth:login.newHere": {
+      "hash": "bf4e294526f9",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signin": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signup": {
+      "hash": "e02ce188d825",
+      "status": "machine"
+    },
+    "auth:login.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "auth:login.passwordHint": {
+      "hash": "81a6c912f3da",
+      "status": "machine"
+    },
+    "auth:login.passwordHintCount": {
+      "hash": "c9dee519e5ad",
+      "status": "machine"
+    },
+    "auth:login.planLegend": {
+      "hash": "196b5f3270ee",
+      "status": "machine"
+    },
+    "auth:login.planSummary": {
+      "hash": "15e97842351a",
+      "status": "machine"
+    },
+    "auth:login.practice": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "auth:login.practiceBlurb": {
+      "hash": "12ba96501a56",
+      "status": "machine"
+    },
+    "auth:login.practiceName": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "auth:login.practiceNamePlaceholder": {
+      "hash": "7829c8ffa67d",
+      "status": "machine"
+    },
+    "auth:login.pro": {
+      "hash": "d7e62cc04996",
+      "status": "machine"
+    },
+    "auth:login.proBlurb": {
+      "hash": "a87c96a6f387",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmation": {
+      "hash": "c617fff7f603",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmationWait": {
+      "hash": "e0a6955dfa0a",
+      "status": "machine"
+    },
+    "auth:login.resetSent": {
+      "hash": "587523f746f4",
+      "status": "machine"
+    },
+    "auth:login.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "auth:login.showPassword": {
+      "hash": "6aeaa6a53d09",
+      "status": "machine"
+    },
+    "auth:login.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "auth:login.signInInstead": {
+      "hash": "65da838eacef",
+      "status": "machine"
+    },
+    "auth:login.signingIn": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signin": {
+      "hash": "b3cbd852ccc1",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signup": {
+      "hash": "fbcfe02e9c17",
+      "status": "machine"
+    },
+    "auth:login.subtitle.standalone": {
+      "hash": "53ef7af99975",
+      "status": "machine"
+    },
+    "auth:login.whoIsCharting": {
+      "hash": "5a8f3e51aab2",
+      "status": "machine"
+    },
+    "auth:reset.accountFor": {
+      "hash": "6eec1b41b2e1",
+      "status": "machine"
+    },
+    "auth:reset.activate": {
+      "hash": "f871c2b5c7f3",
+      "status": "machine"
+    },
+    "auth:reset.backToSignIn": {
+      "hash": "71fe31ccd37c",
+      "status": "machine"
+    },
+    "auth:reset.confirmPassword": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "auth:reset.hidePasswords": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "auth:reset.leadInvite": {
+      "hash": "4d684369f221",
+      "status": "machine"
+    },
+    "auth:reset.leadRecovery": {
+      "hash": "21b945e7dd77",
+      "status": "machine"
+    },
+    "auth:reset.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "auth:reset.newPassword": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "auth:reset.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "auth:reset.setFailed": {
+      "hash": "fb705e4da547",
+      "status": "machine"
+    },
+    "auth:reset.setPassword": {
+      "hash": "4e4116871bf1",
+      "status": "machine"
+    },
+    "auth:reset.showPasswords": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "auth:reset.signingInAs": {
+      "hash": "407b0ebe7555",
+      "status": "machine"
+    },
+    "auth:reset.titleInvite": {
+      "hash": "f978cb4aefb0",
+      "status": "machine"
+    },
+    "auth:reset.titleRecovery": {
+      "hash": "887a560b8253",
+      "status": "machine"
+    },
     "billing:features.aiAutofill": {
       "hash": "ec7edefa36d8",
       "status": "machine"
@@ -2070,6 +2498,590 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "landing:closer.title": {
+      "hash": "c9ef94e44e1a",
+      "status": "machine"
+    },
+    "landing:demo.captionChart": {
+      "hash": "0387b035ce6c",
+      "status": "machine"
+    },
+    "landing:demo.captionDiagram": {
+      "hash": "e46c2ad238dc",
+      "status": "machine"
+    },
+    "landing:demo.captionExport": {
+      "hash": "d524950ac4b8",
+      "status": "machine"
+    },
+    "landing:demo.colGingivitis": {
+      "hash": "682e3a31b2fa",
+      "status": "machine"
+    },
+    "landing:demo.colMobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "landing:demo.colPocket": {
+      "hash": "921f0b6c212d",
+      "status": "machine"
+    },
+    "landing:demo.colStage": {
+      "hash": "17f7eeaff478",
+      "status": "machine"
+    },
+    "landing:demo.colTooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "landing:demo.comment": {
+      "hash": "220fffdcac9f",
+      "status": "machine"
+    },
+    "landing:demo.meta": {
+      "hash": "d07f5f08550b",
+      "status": "machine"
+    },
+    "landing:demo.pause": {
+      "hash": "74dd062562b5",
+      "status": "machine"
+    },
+    "landing:demo.play": {
+      "hash": "ce092d109ebe",
+      "status": "machine"
+    },
+    "landing:demo.stepChart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "landing:demo.stepDiagram": {
+      "hash": "913c5e96ccce",
+      "status": "machine"
+    },
+    "landing:demo.stepExport": {
+      "hash": "3664895579f0",
+      "status": "machine"
+    },
+    "landing:demo.voice": {
+      "hash": "c91d3b0ecaf1",
+      "status": "machine"
+    },
+    "landing:features.avdc.blurb": {
+      "hash": "36347941d364",
+      "status": "machine"
+    },
+    "landing:features.avdc.imageAlt": {
+      "hash": "54cd52db1e7a",
+      "status": "machine"
+    },
+    "landing:features.avdc.lead": {
+      "hash": "f6f98e41ce51",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p1": {
+      "hash": "07f0f9d45e3d",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p2": {
+      "hash": "bb2bf3f7e555",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p3": {
+      "hash": "bc03c7e70749",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p4": {
+      "hash": "eb160bbeb30f",
+      "status": "machine"
+    },
+    "landing:features.avdc.title": {
+      "hash": "8b137a705f07",
+      "status": "machine"
+    },
+    "landing:features.diagrams.blurb": {
+      "hash": "29a33475fc43",
+      "status": "machine"
+    },
+    "landing:features.diagrams.imageAlt": {
+      "hash": "e99a3fb69fc8",
+      "status": "machine"
+    },
+    "landing:features.diagrams.lead": {
+      "hash": "c67685b82ac4",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p1": {
+      "hash": "765d3eecf269",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p2": {
+      "hash": "eb6b41cf1e49",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p3": {
+      "hash": "ec8d0b8018ab",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p4": {
+      "hash": "912946c18aed",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p5": {
+      "hash": "5554dbdbdf4e",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p6": {
+      "hash": "5a7885120309",
+      "status": "machine"
+    },
+    "landing:features.diagrams.title": {
+      "hash": "f37789988dbf",
+      "status": "machine"
+    },
+    "landing:features.grid.blurb": {
+      "hash": "f68e25b893c5",
+      "status": "machine"
+    },
+    "landing:features.grid.imageAlt": {
+      "hash": "2c6b88f9a50c",
+      "status": "machine"
+    },
+    "landing:features.grid.lead": {
+      "hash": "b7903d74e30c",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p1": {
+      "hash": "930f3f4e8b90",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p2": {
+      "hash": "217fbc93dfb4",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p3": {
+      "hash": "388b4a2cbc16",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p4": {
+      "hash": "846372f06fdd",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p5": {
+      "hash": "9739f59e0785",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p6": {
+      "hash": "56e8e764c903",
+      "status": "machine"
+    },
+    "landing:features.grid.title": {
+      "hash": "75cea3d7032a",
+      "status": "machine"
+    },
+    "landing:features.history.blurb": {
+      "hash": "71882a169594",
+      "status": "machine"
+    },
+    "landing:features.history.lead": {
+      "hash": "42673b22ab81",
+      "status": "machine"
+    },
+    "landing:features.history.points.p1": {
+      "hash": "07f15ba1cbc6",
+      "status": "machine"
+    },
+    "landing:features.history.points.p2": {
+      "hash": "9d0f14ead46f",
+      "status": "machine"
+    },
+    "landing:features.history.points.p3": {
+      "hash": "0fc360c2f42e",
+      "status": "machine"
+    },
+    "landing:features.history.points.p4": {
+      "hash": "bce227c77249",
+      "status": "machine"
+    },
+    "landing:features.history.points.p5": {
+      "hash": "72387e4397b8",
+      "status": "machine"
+    },
+    "landing:features.history.title": {
+      "hash": "69cc196aa6b0",
+      "status": "machine"
+    },
+    "landing:features.next": {
+      "hash": "bcf0489a7b45",
+      "status": "machine"
+    },
+    "landing:features.offline.blurb": {
+      "hash": "ce044b81c61f",
+      "status": "machine"
+    },
+    "landing:features.offline.lead": {
+      "hash": "ee3f716a05e4",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p1": {
+      "hash": "64a153fb37b9",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p2": {
+      "hash": "a91fbd31cdc3",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p3": {
+      "hash": "20d0965c342d",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p4": {
+      "hash": "e9725b1b7a02",
+      "status": "machine"
+    },
+    "landing:features.offline.title": {
+      "hash": "f66a99e1c7e9",
+      "status": "machine"
+    },
+    "landing:features.pdf.blurb": {
+      "hash": "be8debbe9d03",
+      "status": "machine"
+    },
+    "landing:features.pdf.imageAlt": {
+      "hash": "474fbfebaba2",
+      "status": "machine"
+    },
+    "landing:features.pdf.lead": {
+      "hash": "c04d466e0f5d",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p1": {
+      "hash": "a3ea84013c27",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p2": {
+      "hash": "259c206fc377",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p3": {
+      "hash": "e645eb8c3c20",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p4": {
+      "hash": "1fa4f713f227",
+      "status": "machine"
+    },
+    "landing:features.pdf.title": {
+      "hash": "eb776ae91623",
+      "status": "machine"
+    },
+    "landing:features.photos.blurb": {
+      "hash": "2afa3028ea63",
+      "status": "machine"
+    },
+    "landing:features.photos.lead": {
+      "hash": "a21c8bd0b5a4",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p1": {
+      "hash": "9a1c937afd65",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p2": {
+      "hash": "0a07fae3ac62",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p3": {
+      "hash": "2a84d978e61f",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p4": {
+      "hash": "9a5df0e5b407",
+      "status": "machine"
+    },
+    "landing:features.photos.title": {
+      "hash": "2be0baba5494",
+      "status": "machine"
+    },
+    "landing:features.previous": {
+      "hash": "435567b14289",
+      "status": "machine"
+    },
+    "landing:features.recall.blurb": {
+      "hash": "d8f75b2910b5",
+      "status": "machine"
+    },
+    "landing:features.recall.lead": {
+      "hash": "64c1faca72ec",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p1": {
+      "hash": "c64bc704423c",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p2": {
+      "hash": "14c98163d2fc",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p3": {
+      "hash": "60a89b1f89da",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p4": {
+      "hash": "7b036c3d9487",
+      "status": "machine"
+    },
+    "landing:features.recall.title": {
+      "hash": "27bfee839022",
+      "status": "machine"
+    },
+    "landing:features.seeIt": {
+      "hash": "8173097d86b1",
+      "status": "machine"
+    },
+    "landing:features.team.blurb": {
+      "hash": "bdcfbee5c8fc",
+      "status": "machine"
+    },
+    "landing:features.team.lead": {
+      "hash": "015bfb40dd43",
+      "status": "machine"
+    },
+    "landing:features.team.points.p1": {
+      "hash": "ad8d3d993305",
+      "status": "machine"
+    },
+    "landing:features.team.points.p2": {
+      "hash": "230afdbd6cdd",
+      "status": "machine"
+    },
+    "landing:features.team.points.p3": {
+      "hash": "cdb4bfb269ec",
+      "status": "machine"
+    },
+    "landing:features.team.points.p4": {
+      "hash": "2c96c2eae57c",
+      "status": "machine"
+    },
+    "landing:features.team.title": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "landing:features.voice.blurb": {
+      "hash": "7646ccdcf554",
+      "status": "machine"
+    },
+    "landing:features.voice.lead": {
+      "hash": "9c43bcfedfac",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p1": {
+      "hash": "c4bc86e334f8",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p2": {
+      "hash": "3fd38a073d06",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p3": {
+      "hash": "f34c7dd0717b",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p4": {
+      "hash": "b49be85bfa44",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p5": {
+      "hash": "954a5bbaec11",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p6": {
+      "hash": "ca21529fa478",
+      "status": "machine"
+    },
+    "landing:features.voice.tag": {
+      "hash": "312db68f2da7",
+      "status": "machine"
+    },
+    "landing:features.voice.title": {
+      "hash": "9fdb083552a8",
+      "status": "machine"
+    },
+    "landing:features.voiceResult1": {
+      "hash": "9e040f169f93",
+      "status": "machine"
+    },
+    "landing:features.voiceResult2": {
+      "hash": "0de62e7f3ee7",
+      "status": "machine"
+    },
+    "landing:features.voiceResult3": {
+      "hash": "260bffd52f90",
+      "status": "machine"
+    },
+    "landing:footer.contact": {
+      "hash": "2b5c3d26721a",
+      "status": "machine"
+    },
+    "landing:footer.dpa": {
+      "hash": "76e613a6dbae",
+      "status": "machine"
+    },
+    "landing:footer.privacy": {
+      "hash": "54a57c3147c4",
+      "status": "machine"
+    },
+    "landing:footer.tagline": {
+      "hash": "bd762357f1de",
+      "status": "machine"
+    },
+    "landing:footer.terms": {
+      "hash": "ede548996483",
+      "status": "machine"
+    },
+    "landing:hero.betaPill": {
+      "hash": "2090d1c1bd03",
+      "status": "machine"
+    },
+    "landing:hero.ctaFree": {
+      "hash": "627c03c23b0f",
+      "status": "machine"
+    },
+    "landing:hero.ctaTrial": {
+      "hash": "73b23ca09633",
+      "status": "machine"
+    },
+    "landing:hero.eyebrow": {
+      "hash": "74921e89f572",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine1": {
+      "hash": "c8548d3d8ac6",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine2": {
+      "hash": "6185c79f6ca5",
+      "status": "machine"
+    },
+    "landing:hero.noteBeta": {
+      "hash": "b260793de6b6",
+      "status": "machine"
+    },
+    "landing:hero.noteNoAccount": {
+      "hash": "1c3f3f6a77c6",
+      "status": "machine"
+    },
+    "landing:hero.notePricing": {
+      "hash": "52221905ec29",
+      "status": "machine"
+    },
+    "landing:hero.noteTrial": {
+      "hash": "350662a204b6",
+      "status": "machine"
+    },
+    "landing:hero.openApp": {
+      "hash": "f64a1e329724",
+      "status": "machine"
+    },
+    "landing:hero.sub": {
+      "hash": "9f9c424f898f",
+      "status": "machine"
+    },
+    "landing:hero.tryFree": {
+      "hash": "c5164875cee9",
+      "status": "machine"
+    },
+    "landing:lightboxClose": {
+      "hash": "16bf90a55af6",
+      "status": "machine"
+    },
+    "landing:nav.backToApp": {
+      "hash": "926af83ed0f2",
+      "status": "machine"
+    },
+    "landing:nav.getStarted": {
+      "hash": "61e8d44ad423",
+      "status": "machine"
+    },
+    "landing:nav.pricing": {
+      "hash": "dfe95783edfe",
+      "status": "machine"
+    },
+    "landing:nav.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "landing:paper.body": {
+      "hash": "55e2f35ef75f",
+      "status": "machine"
+    },
+    "landing:paper.page1Alt": {
+      "hash": "da1707bd4775",
+      "status": "machine"
+    },
+    "landing:paper.page1Label": {
+      "hash": "9e85967626d8",
+      "status": "machine"
+    },
+    "landing:paper.page1Zoom": {
+      "hash": "b9b1b7739abe",
+      "status": "machine"
+    },
+    "landing:paper.page2Alt": {
+      "hash": "292ad79b2703",
+      "status": "machine"
+    },
+    "landing:paper.page2Label": {
+      "hash": "ac05413ab5b7",
+      "status": "machine"
+    },
+    "landing:paper.page2Zoom": {
+      "hash": "434dc48f08a3",
+      "status": "machine"
+    },
+    "landing:paper.point1": {
+      "hash": "63ce51cb06c4",
+      "status": "machine"
+    },
+    "landing:paper.point2": {
+      "hash": "203282db9df1",
+      "status": "machine"
+    },
+    "landing:paper.point3": {
+      "hash": "b6392418d754",
+      "status": "machine"
+    },
+    "landing:paper.title": {
+      "hash": "ec565e362d4e",
+      "status": "machine"
+    },
+    "landing:pricing.contact": {
+      "hash": "fb900f5d9021",
+      "status": "machine"
+    },
+    "landing:pricing.mostPopular": {
+      "hash": "ad2ea9485094",
+      "status": "machine"
+    },
+    "landing:pricing.perMonth": {
+      "hash": "dcc954337afd",
+      "status": "machine"
+    },
+    "landing:pricing.startTrial": {
+      "hash": "b1effd1ffed3",
+      "status": "machine"
+    },
+    "landing:pricing.sub": {
+      "hash": "6944e692cc7a",
+      "status": "machine"
+    },
+    "landing:pricing.title": {
+      "hash": "84b814dc2d54",
+      "status": "machine"
+    },
+    "landing:wordmark": {
+      "hash": "60366bdda79b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -2794,6 +3806,434 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "auth:brand": {
+      "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "auth:checkEmail.confirmed": {
+      "hash": "82ca0d6507a6",
+      "status": "machine"
+    },
+    "auth:checkEmail.lead": {
+      "hash": "cafcb7cc122f",
+      "status": "machine"
+    },
+    "auth:checkEmail.resend": {
+      "hash": "4f44603ef678",
+      "status": "machine"
+    },
+    "auth:checkEmail.resendWait": {
+      "hash": "61b02844b96c",
+      "status": "machine"
+    },
+    "auth:checkEmail.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSender": {
+      "hash": "139d6f3cbca1",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSpam": {
+      "hash": "935dc79c4457",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipTrial": {
+      "hash": "323f5ba32e4a",
+      "status": "machine"
+    },
+    "auth:checkEmail.title": {
+      "hash": "4ee2c02184f0",
+      "status": "machine"
+    },
+    "auth:checkEmail.wrongEmail": {
+      "hash": "22ef2d41374f",
+      "status": "machine"
+    },
+    "auth:crash.body": {
+      "hash": "d9c9aa905d37",
+      "status": "machine"
+    },
+    "auth:crash.details": {
+      "hash": "890ab358a55d",
+      "status": "machine"
+    },
+    "auth:crash.email": {
+      "hash": "8483df5ddf76",
+      "status": "machine"
+    },
+    "auth:crash.reload": {
+      "hash": "1982bff0f66e",
+      "status": "machine"
+    },
+    "auth:crash.title": {
+      "hash": "ab827e3fe17d",
+      "status": "machine"
+    },
+    "auth:errors.confirmFirst": {
+      "hash": "bded985aa1a2",
+      "status": "machine"
+    },
+    "auth:errors.emailFirst": {
+      "hash": "a5844013f3a7",
+      "status": "machine"
+    },
+    "auth:errors.invalidCredentials": {
+      "hash": "6f8e6becc59d",
+      "status": "machine"
+    },
+    "auth:errors.invalidEmail": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "auth:errors.namesRequired": {
+      "hash": "84248cc2df31",
+      "status": "machine"
+    },
+    "auth:errors.passwordMin": {
+      "hash": "6758b3ff7ef9",
+      "status": "machine"
+    },
+    "auth:errors.signInFailed": {
+      "hash": "71b3f3dba597",
+      "status": "machine"
+    },
+    "auth:errors.userExists": {
+      "hash": "05cfc22f3886",
+      "status": "machine"
+    },
+    "auth:errors.weakPassword": {
+      "hash": "47521530bc54",
+      "status": "machine"
+    },
+    "auth:errors.wrongPassword": {
+      "hash": "14b55f3d66cb",
+      "status": "machine"
+    },
+    "auth:expired.ariaLabel": {
+      "hash": "cb6c283f8db2",
+      "status": "machine"
+    },
+    "auth:expired.blurb": {
+      "hash": "31824099400c",
+      "status": "machine"
+    },
+    "auth:expired.cancelLabel": {
+      "hash": "aa20700fa9cf",
+      "status": "machine"
+    },
+    "auth:expired.confirmLabel": {
+      "hash": "4b8b2af2d2f7",
+      "status": "machine"
+    },
+    "auth:expired.confirmMessage": {
+      "hash": "13af5fe50016",
+      "status": "machine"
+    },
+    "auth:expired.confirmTitle": {
+      "hash": "5619eea23450",
+      "status": "machine"
+    },
+    "auth:expired.orWithEmail": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:expired.signOutInstead": {
+      "hash": "1104e3dca609",
+      "status": "machine"
+    },
+    "auth:expired.submit": {
+      "hash": "ad5085a415d2",
+      "status": "machine"
+    },
+    "auth:expired.title": {
+      "hash": "3a6573ba3009",
+      "status": "machine"
+    },
+    "auth:google.continue": {
+      "hash": "cce937e89144",
+      "status": "machine"
+    },
+    "auth:google.opening": {
+      "hash": "28caff1f8299",
+      "status": "machine"
+    },
+    "auth:google.signup": {
+      "hash": "fef12795d9f2",
+      "status": "machine"
+    },
+    "auth:google.startFailed": {
+      "hash": "442c5de16291",
+      "status": "machine"
+    },
+    "auth:legal.dpa": {
+      "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.privacy": {
+      "hash": "506ff3946215",
+      "status": "machine"
+    },
+    "auth:legal.terms": {
+      "hash": "4afa55bf7aec",
+      "status": "machine"
+    },
+    "auth:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "auth:login.accountType": {
+      "hash": "dac7998fba76",
+      "status": "machine"
+    },
+    "auth:login.basic": {
+      "hash": "be3b3b5fe515",
+      "status": "machine"
+    },
+    "auth:login.basicBlurb": {
+      "hash": "91229d13d5b5",
+      "status": "machine"
+    },
+    "auth:login.betaHint": {
+      "hash": "e36550a490b9",
+      "status": "machine"
+    },
+    "auth:login.choosePlan": {
+      "hash": "4c6fab7d6595",
+      "status": "machine"
+    },
+    "auth:login.confirmationSent": {
+      "hash": "412bdd9ed3da",
+      "status": "machine"
+    },
+    "auth:login.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "auth:login.createAccount": {
+      "hash": "798ca2ce18bf",
+      "status": "machine"
+    },
+    "auth:login.creating": {
+      "hash": "f2daf61e527b",
+      "status": "machine"
+    },
+    "auth:login.doctorName": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "auth:login.doctorNamePlaceholder": {
+      "hash": "2022346195f2",
+      "status": "machine"
+    },
+    "auth:login.email": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "auth:login.emailPlaceholder": {
+      "hash": "cb9cc26c78ae",
+      "status": "machine"
+    },
+    "auth:login.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "auth:login.haveAccount": {
+      "hash": "0f5b1d1f5fc8",
+      "status": "machine"
+    },
+    "auth:login.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "auth:login.hidePassword": {
+      "hash": "a60a56c584b3",
+      "status": "machine"
+    },
+    "auth:login.individual": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "auth:login.individualBlurb": {
+      "hash": "5b0d92dddf2e",
+      "status": "machine"
+    },
+    "auth:login.logoOptional": {
+      "hash": "d1a54671814e",
+      "status": "machine"
+    },
+    "auth:login.logoPicked": {
+      "hash": "d9111a330d5d",
+      "status": "machine"
+    },
+    "auth:login.newHere": {
+      "hash": "bf4e294526f9",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signin": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signup": {
+      "hash": "e02ce188d825",
+      "status": "machine"
+    },
+    "auth:login.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "auth:login.passwordHint": {
+      "hash": "81a6c912f3da",
+      "status": "machine"
+    },
+    "auth:login.passwordHintCount": {
+      "hash": "c9dee519e5ad",
+      "status": "machine"
+    },
+    "auth:login.planLegend": {
+      "hash": "196b5f3270ee",
+      "status": "machine"
+    },
+    "auth:login.planSummary": {
+      "hash": "15e97842351a",
+      "status": "machine"
+    },
+    "auth:login.practice": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "auth:login.practiceBlurb": {
+      "hash": "12ba96501a56",
+      "status": "machine"
+    },
+    "auth:login.practiceName": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "auth:login.practiceNamePlaceholder": {
+      "hash": "7829c8ffa67d",
+      "status": "machine"
+    },
+    "auth:login.pro": {
+      "hash": "d7e62cc04996",
+      "status": "machine"
+    },
+    "auth:login.proBlurb": {
+      "hash": "a87c96a6f387",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmation": {
+      "hash": "c617fff7f603",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmationWait": {
+      "hash": "e0a6955dfa0a",
+      "status": "machine"
+    },
+    "auth:login.resetSent": {
+      "hash": "587523f746f4",
+      "status": "machine"
+    },
+    "auth:login.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "auth:login.showPassword": {
+      "hash": "6aeaa6a53d09",
+      "status": "machine"
+    },
+    "auth:login.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "auth:login.signInInstead": {
+      "hash": "65da838eacef",
+      "status": "machine"
+    },
+    "auth:login.signingIn": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signin": {
+      "hash": "b3cbd852ccc1",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signup": {
+      "hash": "fbcfe02e9c17",
+      "status": "machine"
+    },
+    "auth:login.subtitle.standalone": {
+      "hash": "53ef7af99975",
+      "status": "machine"
+    },
+    "auth:login.whoIsCharting": {
+      "hash": "5a8f3e51aab2",
+      "status": "machine"
+    },
+    "auth:reset.accountFor": {
+      "hash": "6eec1b41b2e1",
+      "status": "machine"
+    },
+    "auth:reset.activate": {
+      "hash": "f871c2b5c7f3",
+      "status": "machine"
+    },
+    "auth:reset.backToSignIn": {
+      "hash": "71fe31ccd37c",
+      "status": "machine"
+    },
+    "auth:reset.confirmPassword": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "auth:reset.hidePasswords": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "auth:reset.leadInvite": {
+      "hash": "4d684369f221",
+      "status": "machine"
+    },
+    "auth:reset.leadRecovery": {
+      "hash": "21b945e7dd77",
+      "status": "machine"
+    },
+    "auth:reset.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "auth:reset.newPassword": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "auth:reset.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "auth:reset.setFailed": {
+      "hash": "fb705e4da547",
+      "status": "machine"
+    },
+    "auth:reset.setPassword": {
+      "hash": "4e4116871bf1",
+      "status": "machine"
+    },
+    "auth:reset.showPasswords": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "auth:reset.signingInAs": {
+      "hash": "407b0ebe7555",
+      "status": "machine"
+    },
+    "auth:reset.titleInvite": {
+      "hash": "f978cb4aefb0",
+      "status": "machine"
+    },
+    "auth:reset.titleRecovery": {
+      "hash": "887a560b8253",
+      "status": "machine"
+    },
     "billing:features.aiAutofill": {
       "hash": "ec7edefa36d8",
       "status": "machine"
@@ -4604,6 +6044,590 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "landing:closer.title": {
+      "hash": "c9ef94e44e1a",
+      "status": "machine"
+    },
+    "landing:demo.captionChart": {
+      "hash": "0387b035ce6c",
+      "status": "machine"
+    },
+    "landing:demo.captionDiagram": {
+      "hash": "e46c2ad238dc",
+      "status": "machine"
+    },
+    "landing:demo.captionExport": {
+      "hash": "d524950ac4b8",
+      "status": "machine"
+    },
+    "landing:demo.colGingivitis": {
+      "hash": "682e3a31b2fa",
+      "status": "machine"
+    },
+    "landing:demo.colMobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "landing:demo.colPocket": {
+      "hash": "921f0b6c212d",
+      "status": "machine"
+    },
+    "landing:demo.colStage": {
+      "hash": "17f7eeaff478",
+      "status": "machine"
+    },
+    "landing:demo.colTooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "landing:demo.comment": {
+      "hash": "220fffdcac9f",
+      "status": "machine"
+    },
+    "landing:demo.meta": {
+      "hash": "d07f5f08550b",
+      "status": "machine"
+    },
+    "landing:demo.pause": {
+      "hash": "74dd062562b5",
+      "status": "machine"
+    },
+    "landing:demo.play": {
+      "hash": "ce092d109ebe",
+      "status": "machine"
+    },
+    "landing:demo.stepChart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "landing:demo.stepDiagram": {
+      "hash": "913c5e96ccce",
+      "status": "machine"
+    },
+    "landing:demo.stepExport": {
+      "hash": "3664895579f0",
+      "status": "machine"
+    },
+    "landing:demo.voice": {
+      "hash": "c91d3b0ecaf1",
+      "status": "machine"
+    },
+    "landing:features.avdc.blurb": {
+      "hash": "36347941d364",
+      "status": "machine"
+    },
+    "landing:features.avdc.imageAlt": {
+      "hash": "54cd52db1e7a",
+      "status": "machine"
+    },
+    "landing:features.avdc.lead": {
+      "hash": "f6f98e41ce51",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p1": {
+      "hash": "07f0f9d45e3d",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p2": {
+      "hash": "bb2bf3f7e555",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p3": {
+      "hash": "bc03c7e70749",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p4": {
+      "hash": "eb160bbeb30f",
+      "status": "machine"
+    },
+    "landing:features.avdc.title": {
+      "hash": "8b137a705f07",
+      "status": "machine"
+    },
+    "landing:features.diagrams.blurb": {
+      "hash": "29a33475fc43",
+      "status": "machine"
+    },
+    "landing:features.diagrams.imageAlt": {
+      "hash": "e99a3fb69fc8",
+      "status": "machine"
+    },
+    "landing:features.diagrams.lead": {
+      "hash": "c67685b82ac4",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p1": {
+      "hash": "765d3eecf269",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p2": {
+      "hash": "eb6b41cf1e49",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p3": {
+      "hash": "ec8d0b8018ab",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p4": {
+      "hash": "912946c18aed",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p5": {
+      "hash": "5554dbdbdf4e",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p6": {
+      "hash": "5a7885120309",
+      "status": "machine"
+    },
+    "landing:features.diagrams.title": {
+      "hash": "f37789988dbf",
+      "status": "machine"
+    },
+    "landing:features.grid.blurb": {
+      "hash": "f68e25b893c5",
+      "status": "machine"
+    },
+    "landing:features.grid.imageAlt": {
+      "hash": "2c6b88f9a50c",
+      "status": "machine"
+    },
+    "landing:features.grid.lead": {
+      "hash": "b7903d74e30c",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p1": {
+      "hash": "930f3f4e8b90",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p2": {
+      "hash": "217fbc93dfb4",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p3": {
+      "hash": "388b4a2cbc16",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p4": {
+      "hash": "846372f06fdd",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p5": {
+      "hash": "9739f59e0785",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p6": {
+      "hash": "56e8e764c903",
+      "status": "machine"
+    },
+    "landing:features.grid.title": {
+      "hash": "75cea3d7032a",
+      "status": "machine"
+    },
+    "landing:features.history.blurb": {
+      "hash": "71882a169594",
+      "status": "machine"
+    },
+    "landing:features.history.lead": {
+      "hash": "42673b22ab81",
+      "status": "machine"
+    },
+    "landing:features.history.points.p1": {
+      "hash": "07f15ba1cbc6",
+      "status": "machine"
+    },
+    "landing:features.history.points.p2": {
+      "hash": "9d0f14ead46f",
+      "status": "machine"
+    },
+    "landing:features.history.points.p3": {
+      "hash": "0fc360c2f42e",
+      "status": "machine"
+    },
+    "landing:features.history.points.p4": {
+      "hash": "bce227c77249",
+      "status": "machine"
+    },
+    "landing:features.history.points.p5": {
+      "hash": "72387e4397b8",
+      "status": "machine"
+    },
+    "landing:features.history.title": {
+      "hash": "69cc196aa6b0",
+      "status": "machine"
+    },
+    "landing:features.next": {
+      "hash": "bcf0489a7b45",
+      "status": "machine"
+    },
+    "landing:features.offline.blurb": {
+      "hash": "ce044b81c61f",
+      "status": "machine"
+    },
+    "landing:features.offline.lead": {
+      "hash": "ee3f716a05e4",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p1": {
+      "hash": "64a153fb37b9",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p2": {
+      "hash": "a91fbd31cdc3",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p3": {
+      "hash": "20d0965c342d",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p4": {
+      "hash": "e9725b1b7a02",
+      "status": "machine"
+    },
+    "landing:features.offline.title": {
+      "hash": "f66a99e1c7e9",
+      "status": "machine"
+    },
+    "landing:features.pdf.blurb": {
+      "hash": "be8debbe9d03",
+      "status": "machine"
+    },
+    "landing:features.pdf.imageAlt": {
+      "hash": "474fbfebaba2",
+      "status": "machine"
+    },
+    "landing:features.pdf.lead": {
+      "hash": "c04d466e0f5d",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p1": {
+      "hash": "a3ea84013c27",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p2": {
+      "hash": "259c206fc377",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p3": {
+      "hash": "e645eb8c3c20",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p4": {
+      "hash": "1fa4f713f227",
+      "status": "machine"
+    },
+    "landing:features.pdf.title": {
+      "hash": "eb776ae91623",
+      "status": "machine"
+    },
+    "landing:features.photos.blurb": {
+      "hash": "2afa3028ea63",
+      "status": "machine"
+    },
+    "landing:features.photos.lead": {
+      "hash": "a21c8bd0b5a4",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p1": {
+      "hash": "9a1c937afd65",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p2": {
+      "hash": "0a07fae3ac62",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p3": {
+      "hash": "2a84d978e61f",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p4": {
+      "hash": "9a5df0e5b407",
+      "status": "machine"
+    },
+    "landing:features.photos.title": {
+      "hash": "2be0baba5494",
+      "status": "machine"
+    },
+    "landing:features.previous": {
+      "hash": "435567b14289",
+      "status": "machine"
+    },
+    "landing:features.recall.blurb": {
+      "hash": "d8f75b2910b5",
+      "status": "machine"
+    },
+    "landing:features.recall.lead": {
+      "hash": "64c1faca72ec",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p1": {
+      "hash": "c64bc704423c",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p2": {
+      "hash": "14c98163d2fc",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p3": {
+      "hash": "60a89b1f89da",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p4": {
+      "hash": "7b036c3d9487",
+      "status": "machine"
+    },
+    "landing:features.recall.title": {
+      "hash": "27bfee839022",
+      "status": "machine"
+    },
+    "landing:features.seeIt": {
+      "hash": "8173097d86b1",
+      "status": "machine"
+    },
+    "landing:features.team.blurb": {
+      "hash": "bdcfbee5c8fc",
+      "status": "machine"
+    },
+    "landing:features.team.lead": {
+      "hash": "015bfb40dd43",
+      "status": "machine"
+    },
+    "landing:features.team.points.p1": {
+      "hash": "ad8d3d993305",
+      "status": "machine"
+    },
+    "landing:features.team.points.p2": {
+      "hash": "230afdbd6cdd",
+      "status": "machine"
+    },
+    "landing:features.team.points.p3": {
+      "hash": "cdb4bfb269ec",
+      "status": "machine"
+    },
+    "landing:features.team.points.p4": {
+      "hash": "2c96c2eae57c",
+      "status": "machine"
+    },
+    "landing:features.team.title": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "landing:features.voice.blurb": {
+      "hash": "7646ccdcf554",
+      "status": "machine"
+    },
+    "landing:features.voice.lead": {
+      "hash": "9c43bcfedfac",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p1": {
+      "hash": "c4bc86e334f8",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p2": {
+      "hash": "3fd38a073d06",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p3": {
+      "hash": "f34c7dd0717b",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p4": {
+      "hash": "b49be85bfa44",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p5": {
+      "hash": "954a5bbaec11",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p6": {
+      "hash": "ca21529fa478",
+      "status": "machine"
+    },
+    "landing:features.voice.tag": {
+      "hash": "312db68f2da7",
+      "status": "machine"
+    },
+    "landing:features.voice.title": {
+      "hash": "9fdb083552a8",
+      "status": "machine"
+    },
+    "landing:features.voiceResult1": {
+      "hash": "9e040f169f93",
+      "status": "machine"
+    },
+    "landing:features.voiceResult2": {
+      "hash": "0de62e7f3ee7",
+      "status": "machine"
+    },
+    "landing:features.voiceResult3": {
+      "hash": "260bffd52f90",
+      "status": "machine"
+    },
+    "landing:footer.contact": {
+      "hash": "2b5c3d26721a",
+      "status": "machine"
+    },
+    "landing:footer.dpa": {
+      "hash": "76e613a6dbae",
+      "status": "machine"
+    },
+    "landing:footer.privacy": {
+      "hash": "54a57c3147c4",
+      "status": "machine"
+    },
+    "landing:footer.tagline": {
+      "hash": "bd762357f1de",
+      "status": "machine"
+    },
+    "landing:footer.terms": {
+      "hash": "ede548996483",
+      "status": "machine"
+    },
+    "landing:hero.betaPill": {
+      "hash": "2090d1c1bd03",
+      "status": "machine"
+    },
+    "landing:hero.ctaFree": {
+      "hash": "627c03c23b0f",
+      "status": "machine"
+    },
+    "landing:hero.ctaTrial": {
+      "hash": "73b23ca09633",
+      "status": "machine"
+    },
+    "landing:hero.eyebrow": {
+      "hash": "74921e89f572",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine1": {
+      "hash": "c8548d3d8ac6",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine2": {
+      "hash": "6185c79f6ca5",
+      "status": "machine"
+    },
+    "landing:hero.noteBeta": {
+      "hash": "b260793de6b6",
+      "status": "machine"
+    },
+    "landing:hero.noteNoAccount": {
+      "hash": "1c3f3f6a77c6",
+      "status": "machine"
+    },
+    "landing:hero.notePricing": {
+      "hash": "52221905ec29",
+      "status": "machine"
+    },
+    "landing:hero.noteTrial": {
+      "hash": "350662a204b6",
+      "status": "machine"
+    },
+    "landing:hero.openApp": {
+      "hash": "f64a1e329724",
+      "status": "machine"
+    },
+    "landing:hero.sub": {
+      "hash": "9f9c424f898f",
+      "status": "machine"
+    },
+    "landing:hero.tryFree": {
+      "hash": "c5164875cee9",
+      "status": "machine"
+    },
+    "landing:lightboxClose": {
+      "hash": "16bf90a55af6",
+      "status": "machine"
+    },
+    "landing:nav.backToApp": {
+      "hash": "926af83ed0f2",
+      "status": "machine"
+    },
+    "landing:nav.getStarted": {
+      "hash": "61e8d44ad423",
+      "status": "machine"
+    },
+    "landing:nav.pricing": {
+      "hash": "dfe95783edfe",
+      "status": "machine"
+    },
+    "landing:nav.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "landing:paper.body": {
+      "hash": "55e2f35ef75f",
+      "status": "machine"
+    },
+    "landing:paper.page1Alt": {
+      "hash": "da1707bd4775",
+      "status": "machine"
+    },
+    "landing:paper.page1Label": {
+      "hash": "9e85967626d8",
+      "status": "machine"
+    },
+    "landing:paper.page1Zoom": {
+      "hash": "b9b1b7739abe",
+      "status": "machine"
+    },
+    "landing:paper.page2Alt": {
+      "hash": "292ad79b2703",
+      "status": "machine"
+    },
+    "landing:paper.page2Label": {
+      "hash": "ac05413ab5b7",
+      "status": "machine"
+    },
+    "landing:paper.page2Zoom": {
+      "hash": "434dc48f08a3",
+      "status": "machine"
+    },
+    "landing:paper.point1": {
+      "hash": "63ce51cb06c4",
+      "status": "machine"
+    },
+    "landing:paper.point2": {
+      "hash": "203282db9df1",
+      "status": "machine"
+    },
+    "landing:paper.point3": {
+      "hash": "b6392418d754",
+      "status": "machine"
+    },
+    "landing:paper.title": {
+      "hash": "ec565e362d4e",
+      "status": "machine"
+    },
+    "landing:pricing.contact": {
+      "hash": "fb900f5d9021",
+      "status": "machine"
+    },
+    "landing:pricing.mostPopular": {
+      "hash": "ad2ea9485094",
+      "status": "machine"
+    },
+    "landing:pricing.perMonth": {
+      "hash": "dcc954337afd",
+      "status": "machine"
+    },
+    "landing:pricing.startTrial": {
+      "hash": "b1effd1ffed3",
+      "status": "machine"
+    },
+    "landing:pricing.sub": {
+      "hash": "6944e692cc7a",
+      "status": "machine"
+    },
+    "landing:pricing.title": {
+      "hash": "84b814dc2d54",
+      "status": "machine"
+    },
+    "landing:wordmark": {
+      "hash": "60366bdda79b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -5328,6 +7352,434 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "auth:brand": {
+      "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "auth:checkEmail.confirmed": {
+      "hash": "82ca0d6507a6",
+      "status": "machine"
+    },
+    "auth:checkEmail.lead": {
+      "hash": "cafcb7cc122f",
+      "status": "machine"
+    },
+    "auth:checkEmail.resend": {
+      "hash": "4f44603ef678",
+      "status": "machine"
+    },
+    "auth:checkEmail.resendWait": {
+      "hash": "61b02844b96c",
+      "status": "machine"
+    },
+    "auth:checkEmail.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSender": {
+      "hash": "139d6f3cbca1",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSpam": {
+      "hash": "935dc79c4457",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipTrial": {
+      "hash": "323f5ba32e4a",
+      "status": "machine"
+    },
+    "auth:checkEmail.title": {
+      "hash": "4ee2c02184f0",
+      "status": "machine"
+    },
+    "auth:checkEmail.wrongEmail": {
+      "hash": "22ef2d41374f",
+      "status": "machine"
+    },
+    "auth:crash.body": {
+      "hash": "d9c9aa905d37",
+      "status": "machine"
+    },
+    "auth:crash.details": {
+      "hash": "890ab358a55d",
+      "status": "machine"
+    },
+    "auth:crash.email": {
+      "hash": "8483df5ddf76",
+      "status": "machine"
+    },
+    "auth:crash.reload": {
+      "hash": "1982bff0f66e",
+      "status": "machine"
+    },
+    "auth:crash.title": {
+      "hash": "ab827e3fe17d",
+      "status": "machine"
+    },
+    "auth:errors.confirmFirst": {
+      "hash": "bded985aa1a2",
+      "status": "machine"
+    },
+    "auth:errors.emailFirst": {
+      "hash": "a5844013f3a7",
+      "status": "machine"
+    },
+    "auth:errors.invalidCredentials": {
+      "hash": "6f8e6becc59d",
+      "status": "machine"
+    },
+    "auth:errors.invalidEmail": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "auth:errors.namesRequired": {
+      "hash": "84248cc2df31",
+      "status": "machine"
+    },
+    "auth:errors.passwordMin": {
+      "hash": "6758b3ff7ef9",
+      "status": "machine"
+    },
+    "auth:errors.signInFailed": {
+      "hash": "71b3f3dba597",
+      "status": "machine"
+    },
+    "auth:errors.userExists": {
+      "hash": "05cfc22f3886",
+      "status": "machine"
+    },
+    "auth:errors.weakPassword": {
+      "hash": "47521530bc54",
+      "status": "machine"
+    },
+    "auth:errors.wrongPassword": {
+      "hash": "14b55f3d66cb",
+      "status": "machine"
+    },
+    "auth:expired.ariaLabel": {
+      "hash": "cb6c283f8db2",
+      "status": "machine"
+    },
+    "auth:expired.blurb": {
+      "hash": "31824099400c",
+      "status": "machine"
+    },
+    "auth:expired.cancelLabel": {
+      "hash": "aa20700fa9cf",
+      "status": "machine"
+    },
+    "auth:expired.confirmLabel": {
+      "hash": "4b8b2af2d2f7",
+      "status": "machine"
+    },
+    "auth:expired.confirmMessage": {
+      "hash": "13af5fe50016",
+      "status": "machine"
+    },
+    "auth:expired.confirmTitle": {
+      "hash": "5619eea23450",
+      "status": "machine"
+    },
+    "auth:expired.orWithEmail": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:expired.signOutInstead": {
+      "hash": "1104e3dca609",
+      "status": "machine"
+    },
+    "auth:expired.submit": {
+      "hash": "ad5085a415d2",
+      "status": "machine"
+    },
+    "auth:expired.title": {
+      "hash": "3a6573ba3009",
+      "status": "machine"
+    },
+    "auth:google.continue": {
+      "hash": "cce937e89144",
+      "status": "machine"
+    },
+    "auth:google.opening": {
+      "hash": "28caff1f8299",
+      "status": "machine"
+    },
+    "auth:google.signup": {
+      "hash": "fef12795d9f2",
+      "status": "machine"
+    },
+    "auth:google.startFailed": {
+      "hash": "442c5de16291",
+      "status": "machine"
+    },
+    "auth:legal.dpa": {
+      "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.privacy": {
+      "hash": "506ff3946215",
+      "status": "machine"
+    },
+    "auth:legal.terms": {
+      "hash": "4afa55bf7aec",
+      "status": "machine"
+    },
+    "auth:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "auth:login.accountType": {
+      "hash": "dac7998fba76",
+      "status": "machine"
+    },
+    "auth:login.basic": {
+      "hash": "be3b3b5fe515",
+      "status": "machine"
+    },
+    "auth:login.basicBlurb": {
+      "hash": "91229d13d5b5",
+      "status": "machine"
+    },
+    "auth:login.betaHint": {
+      "hash": "e36550a490b9",
+      "status": "machine"
+    },
+    "auth:login.choosePlan": {
+      "hash": "4c6fab7d6595",
+      "status": "machine"
+    },
+    "auth:login.confirmationSent": {
+      "hash": "412bdd9ed3da",
+      "status": "machine"
+    },
+    "auth:login.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "auth:login.createAccount": {
+      "hash": "798ca2ce18bf",
+      "status": "machine"
+    },
+    "auth:login.creating": {
+      "hash": "f2daf61e527b",
+      "status": "machine"
+    },
+    "auth:login.doctorName": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "auth:login.doctorNamePlaceholder": {
+      "hash": "2022346195f2",
+      "status": "machine"
+    },
+    "auth:login.email": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "auth:login.emailPlaceholder": {
+      "hash": "cb9cc26c78ae",
+      "status": "machine"
+    },
+    "auth:login.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "auth:login.haveAccount": {
+      "hash": "0f5b1d1f5fc8",
+      "status": "machine"
+    },
+    "auth:login.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "auth:login.hidePassword": {
+      "hash": "a60a56c584b3",
+      "status": "machine"
+    },
+    "auth:login.individual": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "auth:login.individualBlurb": {
+      "hash": "5b0d92dddf2e",
+      "status": "machine"
+    },
+    "auth:login.logoOptional": {
+      "hash": "d1a54671814e",
+      "status": "machine"
+    },
+    "auth:login.logoPicked": {
+      "hash": "d9111a330d5d",
+      "status": "machine"
+    },
+    "auth:login.newHere": {
+      "hash": "bf4e294526f9",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signin": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signup": {
+      "hash": "e02ce188d825",
+      "status": "machine"
+    },
+    "auth:login.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "auth:login.passwordHint": {
+      "hash": "81a6c912f3da",
+      "status": "machine"
+    },
+    "auth:login.passwordHintCount": {
+      "hash": "c9dee519e5ad",
+      "status": "machine"
+    },
+    "auth:login.planLegend": {
+      "hash": "196b5f3270ee",
+      "status": "machine"
+    },
+    "auth:login.planSummary": {
+      "hash": "15e97842351a",
+      "status": "machine"
+    },
+    "auth:login.practice": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "auth:login.practiceBlurb": {
+      "hash": "12ba96501a56",
+      "status": "machine"
+    },
+    "auth:login.practiceName": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "auth:login.practiceNamePlaceholder": {
+      "hash": "7829c8ffa67d",
+      "status": "machine"
+    },
+    "auth:login.pro": {
+      "hash": "d7e62cc04996",
+      "status": "machine"
+    },
+    "auth:login.proBlurb": {
+      "hash": "a87c96a6f387",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmation": {
+      "hash": "c617fff7f603",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmationWait": {
+      "hash": "e0a6955dfa0a",
+      "status": "machine"
+    },
+    "auth:login.resetSent": {
+      "hash": "587523f746f4",
+      "status": "machine"
+    },
+    "auth:login.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "auth:login.showPassword": {
+      "hash": "6aeaa6a53d09",
+      "status": "machine"
+    },
+    "auth:login.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "auth:login.signInInstead": {
+      "hash": "65da838eacef",
+      "status": "machine"
+    },
+    "auth:login.signingIn": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signin": {
+      "hash": "b3cbd852ccc1",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signup": {
+      "hash": "fbcfe02e9c17",
+      "status": "machine"
+    },
+    "auth:login.subtitle.standalone": {
+      "hash": "53ef7af99975",
+      "status": "machine"
+    },
+    "auth:login.whoIsCharting": {
+      "hash": "5a8f3e51aab2",
+      "status": "machine"
+    },
+    "auth:reset.accountFor": {
+      "hash": "6eec1b41b2e1",
+      "status": "machine"
+    },
+    "auth:reset.activate": {
+      "hash": "f871c2b5c7f3",
+      "status": "machine"
+    },
+    "auth:reset.backToSignIn": {
+      "hash": "71fe31ccd37c",
+      "status": "machine"
+    },
+    "auth:reset.confirmPassword": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "auth:reset.hidePasswords": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "auth:reset.leadInvite": {
+      "hash": "4d684369f221",
+      "status": "machine"
+    },
+    "auth:reset.leadRecovery": {
+      "hash": "21b945e7dd77",
+      "status": "machine"
+    },
+    "auth:reset.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "auth:reset.newPassword": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "auth:reset.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "auth:reset.setFailed": {
+      "hash": "fb705e4da547",
+      "status": "machine"
+    },
+    "auth:reset.setPassword": {
+      "hash": "4e4116871bf1",
+      "status": "machine"
+    },
+    "auth:reset.showPasswords": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "auth:reset.signingInAs": {
+      "hash": "407b0ebe7555",
+      "status": "machine"
+    },
+    "auth:reset.titleInvite": {
+      "hash": "f978cb4aefb0",
+      "status": "machine"
+    },
+    "auth:reset.titleRecovery": {
+      "hash": "887a560b8253",
+      "status": "machine"
+    },
     "billing:features.aiAutofill": {
       "hash": "ec7edefa36d8",
       "status": "machine"
@@ -7138,6 +9590,590 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "landing:closer.title": {
+      "hash": "c9ef94e44e1a",
+      "status": "machine"
+    },
+    "landing:demo.captionChart": {
+      "hash": "0387b035ce6c",
+      "status": "machine"
+    },
+    "landing:demo.captionDiagram": {
+      "hash": "e46c2ad238dc",
+      "status": "machine"
+    },
+    "landing:demo.captionExport": {
+      "hash": "d524950ac4b8",
+      "status": "machine"
+    },
+    "landing:demo.colGingivitis": {
+      "hash": "682e3a31b2fa",
+      "status": "machine"
+    },
+    "landing:demo.colMobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "landing:demo.colPocket": {
+      "hash": "921f0b6c212d",
+      "status": "machine"
+    },
+    "landing:demo.colStage": {
+      "hash": "17f7eeaff478",
+      "status": "machine"
+    },
+    "landing:demo.colTooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "landing:demo.comment": {
+      "hash": "220fffdcac9f",
+      "status": "machine"
+    },
+    "landing:demo.meta": {
+      "hash": "d07f5f08550b",
+      "status": "machine"
+    },
+    "landing:demo.pause": {
+      "hash": "74dd062562b5",
+      "status": "machine"
+    },
+    "landing:demo.play": {
+      "hash": "ce092d109ebe",
+      "status": "machine"
+    },
+    "landing:demo.stepChart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "landing:demo.stepDiagram": {
+      "hash": "913c5e96ccce",
+      "status": "machine"
+    },
+    "landing:demo.stepExport": {
+      "hash": "3664895579f0",
+      "status": "machine"
+    },
+    "landing:demo.voice": {
+      "hash": "c91d3b0ecaf1",
+      "status": "machine"
+    },
+    "landing:features.avdc.blurb": {
+      "hash": "36347941d364",
+      "status": "machine"
+    },
+    "landing:features.avdc.imageAlt": {
+      "hash": "54cd52db1e7a",
+      "status": "machine"
+    },
+    "landing:features.avdc.lead": {
+      "hash": "f6f98e41ce51",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p1": {
+      "hash": "07f0f9d45e3d",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p2": {
+      "hash": "bb2bf3f7e555",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p3": {
+      "hash": "bc03c7e70749",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p4": {
+      "hash": "eb160bbeb30f",
+      "status": "machine"
+    },
+    "landing:features.avdc.title": {
+      "hash": "8b137a705f07",
+      "status": "machine"
+    },
+    "landing:features.diagrams.blurb": {
+      "hash": "29a33475fc43",
+      "status": "machine"
+    },
+    "landing:features.diagrams.imageAlt": {
+      "hash": "e99a3fb69fc8",
+      "status": "machine"
+    },
+    "landing:features.diagrams.lead": {
+      "hash": "c67685b82ac4",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p1": {
+      "hash": "765d3eecf269",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p2": {
+      "hash": "eb6b41cf1e49",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p3": {
+      "hash": "ec8d0b8018ab",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p4": {
+      "hash": "912946c18aed",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p5": {
+      "hash": "5554dbdbdf4e",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p6": {
+      "hash": "5a7885120309",
+      "status": "machine"
+    },
+    "landing:features.diagrams.title": {
+      "hash": "f37789988dbf",
+      "status": "machine"
+    },
+    "landing:features.grid.blurb": {
+      "hash": "f68e25b893c5",
+      "status": "machine"
+    },
+    "landing:features.grid.imageAlt": {
+      "hash": "2c6b88f9a50c",
+      "status": "machine"
+    },
+    "landing:features.grid.lead": {
+      "hash": "b7903d74e30c",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p1": {
+      "hash": "930f3f4e8b90",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p2": {
+      "hash": "217fbc93dfb4",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p3": {
+      "hash": "388b4a2cbc16",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p4": {
+      "hash": "846372f06fdd",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p5": {
+      "hash": "9739f59e0785",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p6": {
+      "hash": "56e8e764c903",
+      "status": "machine"
+    },
+    "landing:features.grid.title": {
+      "hash": "75cea3d7032a",
+      "status": "machine"
+    },
+    "landing:features.history.blurb": {
+      "hash": "71882a169594",
+      "status": "machine"
+    },
+    "landing:features.history.lead": {
+      "hash": "42673b22ab81",
+      "status": "machine"
+    },
+    "landing:features.history.points.p1": {
+      "hash": "07f15ba1cbc6",
+      "status": "machine"
+    },
+    "landing:features.history.points.p2": {
+      "hash": "9d0f14ead46f",
+      "status": "machine"
+    },
+    "landing:features.history.points.p3": {
+      "hash": "0fc360c2f42e",
+      "status": "machine"
+    },
+    "landing:features.history.points.p4": {
+      "hash": "bce227c77249",
+      "status": "machine"
+    },
+    "landing:features.history.points.p5": {
+      "hash": "72387e4397b8",
+      "status": "machine"
+    },
+    "landing:features.history.title": {
+      "hash": "69cc196aa6b0",
+      "status": "machine"
+    },
+    "landing:features.next": {
+      "hash": "bcf0489a7b45",
+      "status": "machine"
+    },
+    "landing:features.offline.blurb": {
+      "hash": "ce044b81c61f",
+      "status": "machine"
+    },
+    "landing:features.offline.lead": {
+      "hash": "ee3f716a05e4",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p1": {
+      "hash": "64a153fb37b9",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p2": {
+      "hash": "a91fbd31cdc3",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p3": {
+      "hash": "20d0965c342d",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p4": {
+      "hash": "e9725b1b7a02",
+      "status": "machine"
+    },
+    "landing:features.offline.title": {
+      "hash": "f66a99e1c7e9",
+      "status": "machine"
+    },
+    "landing:features.pdf.blurb": {
+      "hash": "be8debbe9d03",
+      "status": "machine"
+    },
+    "landing:features.pdf.imageAlt": {
+      "hash": "474fbfebaba2",
+      "status": "machine"
+    },
+    "landing:features.pdf.lead": {
+      "hash": "c04d466e0f5d",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p1": {
+      "hash": "a3ea84013c27",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p2": {
+      "hash": "259c206fc377",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p3": {
+      "hash": "e645eb8c3c20",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p4": {
+      "hash": "1fa4f713f227",
+      "status": "machine"
+    },
+    "landing:features.pdf.title": {
+      "hash": "eb776ae91623",
+      "status": "machine"
+    },
+    "landing:features.photos.blurb": {
+      "hash": "2afa3028ea63",
+      "status": "machine"
+    },
+    "landing:features.photos.lead": {
+      "hash": "a21c8bd0b5a4",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p1": {
+      "hash": "9a1c937afd65",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p2": {
+      "hash": "0a07fae3ac62",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p3": {
+      "hash": "2a84d978e61f",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p4": {
+      "hash": "9a5df0e5b407",
+      "status": "machine"
+    },
+    "landing:features.photos.title": {
+      "hash": "2be0baba5494",
+      "status": "machine"
+    },
+    "landing:features.previous": {
+      "hash": "435567b14289",
+      "status": "machine"
+    },
+    "landing:features.recall.blurb": {
+      "hash": "d8f75b2910b5",
+      "status": "machine"
+    },
+    "landing:features.recall.lead": {
+      "hash": "64c1faca72ec",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p1": {
+      "hash": "c64bc704423c",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p2": {
+      "hash": "14c98163d2fc",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p3": {
+      "hash": "60a89b1f89da",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p4": {
+      "hash": "7b036c3d9487",
+      "status": "machine"
+    },
+    "landing:features.recall.title": {
+      "hash": "27bfee839022",
+      "status": "machine"
+    },
+    "landing:features.seeIt": {
+      "hash": "8173097d86b1",
+      "status": "machine"
+    },
+    "landing:features.team.blurb": {
+      "hash": "bdcfbee5c8fc",
+      "status": "machine"
+    },
+    "landing:features.team.lead": {
+      "hash": "015bfb40dd43",
+      "status": "machine"
+    },
+    "landing:features.team.points.p1": {
+      "hash": "ad8d3d993305",
+      "status": "machine"
+    },
+    "landing:features.team.points.p2": {
+      "hash": "230afdbd6cdd",
+      "status": "machine"
+    },
+    "landing:features.team.points.p3": {
+      "hash": "cdb4bfb269ec",
+      "status": "machine"
+    },
+    "landing:features.team.points.p4": {
+      "hash": "2c96c2eae57c",
+      "status": "machine"
+    },
+    "landing:features.team.title": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "landing:features.voice.blurb": {
+      "hash": "7646ccdcf554",
+      "status": "machine"
+    },
+    "landing:features.voice.lead": {
+      "hash": "9c43bcfedfac",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p1": {
+      "hash": "c4bc86e334f8",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p2": {
+      "hash": "3fd38a073d06",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p3": {
+      "hash": "f34c7dd0717b",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p4": {
+      "hash": "b49be85bfa44",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p5": {
+      "hash": "954a5bbaec11",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p6": {
+      "hash": "ca21529fa478",
+      "status": "machine"
+    },
+    "landing:features.voice.tag": {
+      "hash": "312db68f2da7",
+      "status": "machine"
+    },
+    "landing:features.voice.title": {
+      "hash": "9fdb083552a8",
+      "status": "machine"
+    },
+    "landing:features.voiceResult1": {
+      "hash": "9e040f169f93",
+      "status": "machine"
+    },
+    "landing:features.voiceResult2": {
+      "hash": "0de62e7f3ee7",
+      "status": "machine"
+    },
+    "landing:features.voiceResult3": {
+      "hash": "260bffd52f90",
+      "status": "machine"
+    },
+    "landing:footer.contact": {
+      "hash": "2b5c3d26721a",
+      "status": "machine"
+    },
+    "landing:footer.dpa": {
+      "hash": "76e613a6dbae",
+      "status": "machine"
+    },
+    "landing:footer.privacy": {
+      "hash": "54a57c3147c4",
+      "status": "machine"
+    },
+    "landing:footer.tagline": {
+      "hash": "bd762357f1de",
+      "status": "machine"
+    },
+    "landing:footer.terms": {
+      "hash": "ede548996483",
+      "status": "machine"
+    },
+    "landing:hero.betaPill": {
+      "hash": "2090d1c1bd03",
+      "status": "machine"
+    },
+    "landing:hero.ctaFree": {
+      "hash": "627c03c23b0f",
+      "status": "machine"
+    },
+    "landing:hero.ctaTrial": {
+      "hash": "73b23ca09633",
+      "status": "machine"
+    },
+    "landing:hero.eyebrow": {
+      "hash": "74921e89f572",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine1": {
+      "hash": "c8548d3d8ac6",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine2": {
+      "hash": "6185c79f6ca5",
+      "status": "machine"
+    },
+    "landing:hero.noteBeta": {
+      "hash": "b260793de6b6",
+      "status": "machine"
+    },
+    "landing:hero.noteNoAccount": {
+      "hash": "1c3f3f6a77c6",
+      "status": "machine"
+    },
+    "landing:hero.notePricing": {
+      "hash": "52221905ec29",
+      "status": "machine"
+    },
+    "landing:hero.noteTrial": {
+      "hash": "350662a204b6",
+      "status": "machine"
+    },
+    "landing:hero.openApp": {
+      "hash": "f64a1e329724",
+      "status": "machine"
+    },
+    "landing:hero.sub": {
+      "hash": "9f9c424f898f",
+      "status": "machine"
+    },
+    "landing:hero.tryFree": {
+      "hash": "c5164875cee9",
+      "status": "machine"
+    },
+    "landing:lightboxClose": {
+      "hash": "16bf90a55af6",
+      "status": "machine"
+    },
+    "landing:nav.backToApp": {
+      "hash": "926af83ed0f2",
+      "status": "machine"
+    },
+    "landing:nav.getStarted": {
+      "hash": "61e8d44ad423",
+      "status": "machine"
+    },
+    "landing:nav.pricing": {
+      "hash": "dfe95783edfe",
+      "status": "machine"
+    },
+    "landing:nav.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "landing:paper.body": {
+      "hash": "55e2f35ef75f",
+      "status": "machine"
+    },
+    "landing:paper.page1Alt": {
+      "hash": "da1707bd4775",
+      "status": "machine"
+    },
+    "landing:paper.page1Label": {
+      "hash": "9e85967626d8",
+      "status": "machine"
+    },
+    "landing:paper.page1Zoom": {
+      "hash": "b9b1b7739abe",
+      "status": "machine"
+    },
+    "landing:paper.page2Alt": {
+      "hash": "292ad79b2703",
+      "status": "machine"
+    },
+    "landing:paper.page2Label": {
+      "hash": "ac05413ab5b7",
+      "status": "machine"
+    },
+    "landing:paper.page2Zoom": {
+      "hash": "434dc48f08a3",
+      "status": "machine"
+    },
+    "landing:paper.point1": {
+      "hash": "63ce51cb06c4",
+      "status": "machine"
+    },
+    "landing:paper.point2": {
+      "hash": "203282db9df1",
+      "status": "machine"
+    },
+    "landing:paper.point3": {
+      "hash": "b6392418d754",
+      "status": "machine"
+    },
+    "landing:paper.title": {
+      "hash": "ec565e362d4e",
+      "status": "machine"
+    },
+    "landing:pricing.contact": {
+      "hash": "fb900f5d9021",
+      "status": "machine"
+    },
+    "landing:pricing.mostPopular": {
+      "hash": "ad2ea9485094",
+      "status": "machine"
+    },
+    "landing:pricing.perMonth": {
+      "hash": "dcc954337afd",
+      "status": "machine"
+    },
+    "landing:pricing.startTrial": {
+      "hash": "b1effd1ffed3",
+      "status": "machine"
+    },
+    "landing:pricing.sub": {
+      "hash": "6944e692cc7a",
+      "status": "machine"
+    },
+    "landing:pricing.title": {
+      "hash": "84b814dc2d54",
+      "status": "machine"
+    },
+    "landing:wordmark": {
+      "hash": "60366bdda79b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -7862,6 +10898,434 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "auth:brand": {
+      "hash": "60366bdda79b",
+      "status": "machine"
+    },
+    "auth:checkEmail.confirmed": {
+      "hash": "82ca0d6507a6",
+      "status": "machine"
+    },
+    "auth:checkEmail.lead": {
+      "hash": "cafcb7cc122f",
+      "status": "machine"
+    },
+    "auth:checkEmail.resend": {
+      "hash": "4f44603ef678",
+      "status": "machine"
+    },
+    "auth:checkEmail.resendWait": {
+      "hash": "61b02844b96c",
+      "status": "machine"
+    },
+    "auth:checkEmail.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSender": {
+      "hash": "139d6f3cbca1",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipSpam": {
+      "hash": "935dc79c4457",
+      "status": "machine"
+    },
+    "auth:checkEmail.tipTrial": {
+      "hash": "323f5ba32e4a",
+      "status": "machine"
+    },
+    "auth:checkEmail.title": {
+      "hash": "4ee2c02184f0",
+      "status": "machine"
+    },
+    "auth:checkEmail.wrongEmail": {
+      "hash": "22ef2d41374f",
+      "status": "machine"
+    },
+    "auth:crash.body": {
+      "hash": "d9c9aa905d37",
+      "status": "machine"
+    },
+    "auth:crash.details": {
+      "hash": "890ab358a55d",
+      "status": "machine"
+    },
+    "auth:crash.email": {
+      "hash": "8483df5ddf76",
+      "status": "machine"
+    },
+    "auth:crash.reload": {
+      "hash": "1982bff0f66e",
+      "status": "machine"
+    },
+    "auth:crash.title": {
+      "hash": "ab827e3fe17d",
+      "status": "machine"
+    },
+    "auth:errors.confirmFirst": {
+      "hash": "bded985aa1a2",
+      "status": "machine"
+    },
+    "auth:errors.emailFirst": {
+      "hash": "a5844013f3a7",
+      "status": "machine"
+    },
+    "auth:errors.invalidCredentials": {
+      "hash": "6f8e6becc59d",
+      "status": "machine"
+    },
+    "auth:errors.invalidEmail": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "auth:errors.namesRequired": {
+      "hash": "84248cc2df31",
+      "status": "machine"
+    },
+    "auth:errors.passwordMin": {
+      "hash": "6758b3ff7ef9",
+      "status": "machine"
+    },
+    "auth:errors.signInFailed": {
+      "hash": "71b3f3dba597",
+      "status": "machine"
+    },
+    "auth:errors.userExists": {
+      "hash": "05cfc22f3886",
+      "status": "machine"
+    },
+    "auth:errors.weakPassword": {
+      "hash": "47521530bc54",
+      "status": "machine"
+    },
+    "auth:errors.wrongPassword": {
+      "hash": "14b55f3d66cb",
+      "status": "machine"
+    },
+    "auth:expired.ariaLabel": {
+      "hash": "cb6c283f8db2",
+      "status": "machine"
+    },
+    "auth:expired.blurb": {
+      "hash": "31824099400c",
+      "status": "machine"
+    },
+    "auth:expired.cancelLabel": {
+      "hash": "aa20700fa9cf",
+      "status": "machine"
+    },
+    "auth:expired.confirmLabel": {
+      "hash": "4b8b2af2d2f7",
+      "status": "machine"
+    },
+    "auth:expired.confirmMessage": {
+      "hash": "13af5fe50016",
+      "status": "machine"
+    },
+    "auth:expired.confirmTitle": {
+      "hash": "5619eea23450",
+      "status": "machine"
+    },
+    "auth:expired.orWithEmail": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:expired.signOutInstead": {
+      "hash": "1104e3dca609",
+      "status": "machine"
+    },
+    "auth:expired.submit": {
+      "hash": "ad5085a415d2",
+      "status": "machine"
+    },
+    "auth:expired.title": {
+      "hash": "3a6573ba3009",
+      "status": "machine"
+    },
+    "auth:google.continue": {
+      "hash": "cce937e89144",
+      "status": "machine"
+    },
+    "auth:google.opening": {
+      "hash": "28caff1f8299",
+      "status": "machine"
+    },
+    "auth:google.signup": {
+      "hash": "fef12795d9f2",
+      "status": "machine"
+    },
+    "auth:google.startFailed": {
+      "hash": "442c5de16291",
+      "status": "machine"
+    },
+    "auth:legal.dpa": {
+      "hash": "ba0d6a897ca4",
+      "status": "machine"
+    },
+    "auth:legal.privacy": {
+      "hash": "506ff3946215",
+      "status": "machine"
+    },
+    "auth:legal.terms": {
+      "hash": "4afa55bf7aec",
+      "status": "machine"
+    },
+    "auth:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "auth:login.accountType": {
+      "hash": "dac7998fba76",
+      "status": "machine"
+    },
+    "auth:login.basic": {
+      "hash": "be3b3b5fe515",
+      "status": "machine"
+    },
+    "auth:login.basicBlurb": {
+      "hash": "91229d13d5b5",
+      "status": "machine"
+    },
+    "auth:login.betaHint": {
+      "hash": "e36550a490b9",
+      "status": "machine"
+    },
+    "auth:login.choosePlan": {
+      "hash": "4c6fab7d6595",
+      "status": "machine"
+    },
+    "auth:login.confirmationSent": {
+      "hash": "412bdd9ed3da",
+      "status": "machine"
+    },
+    "auth:login.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "auth:login.createAccount": {
+      "hash": "798ca2ce18bf",
+      "status": "machine"
+    },
+    "auth:login.creating": {
+      "hash": "f2daf61e527b",
+      "status": "machine"
+    },
+    "auth:login.doctorName": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "auth:login.doctorNamePlaceholder": {
+      "hash": "2022346195f2",
+      "status": "machine"
+    },
+    "auth:login.email": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "auth:login.emailPlaceholder": {
+      "hash": "cb9cc26c78ae",
+      "status": "machine"
+    },
+    "auth:login.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "auth:login.haveAccount": {
+      "hash": "0f5b1d1f5fc8",
+      "status": "machine"
+    },
+    "auth:login.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "auth:login.hidePassword": {
+      "hash": "a60a56c584b3",
+      "status": "machine"
+    },
+    "auth:login.individual": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "auth:login.individualBlurb": {
+      "hash": "5b0d92dddf2e",
+      "status": "machine"
+    },
+    "auth:login.logoOptional": {
+      "hash": "d1a54671814e",
+      "status": "machine"
+    },
+    "auth:login.logoPicked": {
+      "hash": "d9111a330d5d",
+      "status": "machine"
+    },
+    "auth:login.newHere": {
+      "hash": "bf4e294526f9",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signin": {
+      "hash": "30b91f1e9fc0",
+      "status": "machine"
+    },
+    "auth:login.orWithEmail.signup": {
+      "hash": "e02ce188d825",
+      "status": "machine"
+    },
+    "auth:login.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "auth:login.passwordHint": {
+      "hash": "81a6c912f3da",
+      "status": "machine"
+    },
+    "auth:login.passwordHintCount": {
+      "hash": "c9dee519e5ad",
+      "status": "machine"
+    },
+    "auth:login.planLegend": {
+      "hash": "196b5f3270ee",
+      "status": "machine"
+    },
+    "auth:login.planSummary": {
+      "hash": "15e97842351a",
+      "status": "machine"
+    },
+    "auth:login.practice": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "auth:login.practiceBlurb": {
+      "hash": "12ba96501a56",
+      "status": "machine"
+    },
+    "auth:login.practiceName": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "auth:login.practiceNamePlaceholder": {
+      "hash": "7829c8ffa67d",
+      "status": "machine"
+    },
+    "auth:login.pro": {
+      "hash": "d7e62cc04996",
+      "status": "machine"
+    },
+    "auth:login.proBlurb": {
+      "hash": "a87c96a6f387",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmation": {
+      "hash": "c617fff7f603",
+      "status": "machine"
+    },
+    "auth:login.resendConfirmationWait": {
+      "hash": "e0a6955dfa0a",
+      "status": "machine"
+    },
+    "auth:login.resetSent": {
+      "hash": "587523f746f4",
+      "status": "machine"
+    },
+    "auth:login.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "auth:login.showPassword": {
+      "hash": "6aeaa6a53d09",
+      "status": "machine"
+    },
+    "auth:login.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "auth:login.signInInstead": {
+      "hash": "65da838eacef",
+      "status": "machine"
+    },
+    "auth:login.signingIn": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signin": {
+      "hash": "b3cbd852ccc1",
+      "status": "machine"
+    },
+    "auth:login.subtitle.signup": {
+      "hash": "fbcfe02e9c17",
+      "status": "machine"
+    },
+    "auth:login.subtitle.standalone": {
+      "hash": "53ef7af99975",
+      "status": "machine"
+    },
+    "auth:login.whoIsCharting": {
+      "hash": "5a8f3e51aab2",
+      "status": "machine"
+    },
+    "auth:reset.accountFor": {
+      "hash": "6eec1b41b2e1",
+      "status": "machine"
+    },
+    "auth:reset.activate": {
+      "hash": "f871c2b5c7f3",
+      "status": "machine"
+    },
+    "auth:reset.backToSignIn": {
+      "hash": "71fe31ccd37c",
+      "status": "machine"
+    },
+    "auth:reset.confirmPassword": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "auth:reset.hidePasswords": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "auth:reset.leadInvite": {
+      "hash": "4d684369f221",
+      "status": "machine"
+    },
+    "auth:reset.leadRecovery": {
+      "hash": "21b945e7dd77",
+      "status": "machine"
+    },
+    "auth:reset.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "auth:reset.newPassword": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "auth:reset.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "auth:reset.setFailed": {
+      "hash": "fb705e4da547",
+      "status": "machine"
+    },
+    "auth:reset.setPassword": {
+      "hash": "4e4116871bf1",
+      "status": "machine"
+    },
+    "auth:reset.showPasswords": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "auth:reset.signingInAs": {
+      "hash": "407b0ebe7555",
+      "status": "machine"
+    },
+    "auth:reset.titleInvite": {
+      "hash": "f978cb4aefb0",
+      "status": "machine"
+    },
+    "auth:reset.titleRecovery": {
+      "hash": "887a560b8253",
+      "status": "machine"
+    },
     "billing:features.aiAutofill": {
       "hash": "ec7edefa36d8",
       "status": "machine"
@@ -9672,6 +13136,590 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "landing:closer.title": {
+      "hash": "c9ef94e44e1a",
+      "status": "machine"
+    },
+    "landing:demo.captionChart": {
+      "hash": "0387b035ce6c",
+      "status": "machine"
+    },
+    "landing:demo.captionDiagram": {
+      "hash": "e46c2ad238dc",
+      "status": "machine"
+    },
+    "landing:demo.captionExport": {
+      "hash": "d524950ac4b8",
+      "status": "machine"
+    },
+    "landing:demo.colGingivitis": {
+      "hash": "682e3a31b2fa",
+      "status": "machine"
+    },
+    "landing:demo.colMobility": {
+      "hash": "15e5c91a8167",
+      "status": "machine"
+    },
+    "landing:demo.colPocket": {
+      "hash": "921f0b6c212d",
+      "status": "machine"
+    },
+    "landing:demo.colStage": {
+      "hash": "17f7eeaff478",
+      "status": "machine"
+    },
+    "landing:demo.colTooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "landing:demo.comment": {
+      "hash": "220fffdcac9f",
+      "status": "machine"
+    },
+    "landing:demo.meta": {
+      "hash": "d07f5f08550b",
+      "status": "machine"
+    },
+    "landing:demo.pause": {
+      "hash": "74dd062562b5",
+      "status": "machine"
+    },
+    "landing:demo.play": {
+      "hash": "ce092d109ebe",
+      "status": "machine"
+    },
+    "landing:demo.stepChart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "landing:demo.stepDiagram": {
+      "hash": "913c5e96ccce",
+      "status": "machine"
+    },
+    "landing:demo.stepExport": {
+      "hash": "3664895579f0",
+      "status": "machine"
+    },
+    "landing:demo.voice": {
+      "hash": "c91d3b0ecaf1",
+      "status": "machine"
+    },
+    "landing:features.avdc.blurb": {
+      "hash": "36347941d364",
+      "status": "machine"
+    },
+    "landing:features.avdc.imageAlt": {
+      "hash": "54cd52db1e7a",
+      "status": "machine"
+    },
+    "landing:features.avdc.lead": {
+      "hash": "f6f98e41ce51",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p1": {
+      "hash": "07f0f9d45e3d",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p2": {
+      "hash": "bb2bf3f7e555",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p3": {
+      "hash": "bc03c7e70749",
+      "status": "machine"
+    },
+    "landing:features.avdc.points.p4": {
+      "hash": "eb160bbeb30f",
+      "status": "machine"
+    },
+    "landing:features.avdc.title": {
+      "hash": "8b137a705f07",
+      "status": "machine"
+    },
+    "landing:features.diagrams.blurb": {
+      "hash": "29a33475fc43",
+      "status": "machine"
+    },
+    "landing:features.diagrams.imageAlt": {
+      "hash": "e99a3fb69fc8",
+      "status": "machine"
+    },
+    "landing:features.diagrams.lead": {
+      "hash": "c67685b82ac4",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p1": {
+      "hash": "765d3eecf269",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p2": {
+      "hash": "eb6b41cf1e49",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p3": {
+      "hash": "ec8d0b8018ab",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p4": {
+      "hash": "912946c18aed",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p5": {
+      "hash": "5554dbdbdf4e",
+      "status": "machine"
+    },
+    "landing:features.diagrams.points.p6": {
+      "hash": "5a7885120309",
+      "status": "machine"
+    },
+    "landing:features.diagrams.title": {
+      "hash": "f37789988dbf",
+      "status": "machine"
+    },
+    "landing:features.grid.blurb": {
+      "hash": "f68e25b893c5",
+      "status": "machine"
+    },
+    "landing:features.grid.imageAlt": {
+      "hash": "2c6b88f9a50c",
+      "status": "machine"
+    },
+    "landing:features.grid.lead": {
+      "hash": "b7903d74e30c",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p1": {
+      "hash": "930f3f4e8b90",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p2": {
+      "hash": "217fbc93dfb4",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p3": {
+      "hash": "388b4a2cbc16",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p4": {
+      "hash": "846372f06fdd",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p5": {
+      "hash": "9739f59e0785",
+      "status": "machine"
+    },
+    "landing:features.grid.points.p6": {
+      "hash": "56e8e764c903",
+      "status": "machine"
+    },
+    "landing:features.grid.title": {
+      "hash": "75cea3d7032a",
+      "status": "machine"
+    },
+    "landing:features.history.blurb": {
+      "hash": "71882a169594",
+      "status": "machine"
+    },
+    "landing:features.history.lead": {
+      "hash": "42673b22ab81",
+      "status": "machine"
+    },
+    "landing:features.history.points.p1": {
+      "hash": "07f15ba1cbc6",
+      "status": "machine"
+    },
+    "landing:features.history.points.p2": {
+      "hash": "9d0f14ead46f",
+      "status": "machine"
+    },
+    "landing:features.history.points.p3": {
+      "hash": "0fc360c2f42e",
+      "status": "machine"
+    },
+    "landing:features.history.points.p4": {
+      "hash": "bce227c77249",
+      "status": "machine"
+    },
+    "landing:features.history.points.p5": {
+      "hash": "72387e4397b8",
+      "status": "machine"
+    },
+    "landing:features.history.title": {
+      "hash": "69cc196aa6b0",
+      "status": "machine"
+    },
+    "landing:features.next": {
+      "hash": "bcf0489a7b45",
+      "status": "machine"
+    },
+    "landing:features.offline.blurb": {
+      "hash": "ce044b81c61f",
+      "status": "machine"
+    },
+    "landing:features.offline.lead": {
+      "hash": "ee3f716a05e4",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p1": {
+      "hash": "64a153fb37b9",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p2": {
+      "hash": "a91fbd31cdc3",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p3": {
+      "hash": "20d0965c342d",
+      "status": "machine"
+    },
+    "landing:features.offline.points.p4": {
+      "hash": "e9725b1b7a02",
+      "status": "machine"
+    },
+    "landing:features.offline.title": {
+      "hash": "f66a99e1c7e9",
+      "status": "machine"
+    },
+    "landing:features.pdf.blurb": {
+      "hash": "be8debbe9d03",
+      "status": "machine"
+    },
+    "landing:features.pdf.imageAlt": {
+      "hash": "474fbfebaba2",
+      "status": "machine"
+    },
+    "landing:features.pdf.lead": {
+      "hash": "c04d466e0f5d",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p1": {
+      "hash": "a3ea84013c27",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p2": {
+      "hash": "259c206fc377",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p3": {
+      "hash": "e645eb8c3c20",
+      "status": "machine"
+    },
+    "landing:features.pdf.points.p4": {
+      "hash": "1fa4f713f227",
+      "status": "machine"
+    },
+    "landing:features.pdf.title": {
+      "hash": "eb776ae91623",
+      "status": "machine"
+    },
+    "landing:features.photos.blurb": {
+      "hash": "2afa3028ea63",
+      "status": "machine"
+    },
+    "landing:features.photos.lead": {
+      "hash": "a21c8bd0b5a4",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p1": {
+      "hash": "9a1c937afd65",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p2": {
+      "hash": "0a07fae3ac62",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p3": {
+      "hash": "2a84d978e61f",
+      "status": "machine"
+    },
+    "landing:features.photos.points.p4": {
+      "hash": "9a5df0e5b407",
+      "status": "machine"
+    },
+    "landing:features.photos.title": {
+      "hash": "2be0baba5494",
+      "status": "machine"
+    },
+    "landing:features.previous": {
+      "hash": "435567b14289",
+      "status": "machine"
+    },
+    "landing:features.recall.blurb": {
+      "hash": "d8f75b2910b5",
+      "status": "machine"
+    },
+    "landing:features.recall.lead": {
+      "hash": "64c1faca72ec",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p1": {
+      "hash": "c64bc704423c",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p2": {
+      "hash": "14c98163d2fc",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p3": {
+      "hash": "60a89b1f89da",
+      "status": "machine"
+    },
+    "landing:features.recall.points.p4": {
+      "hash": "7b036c3d9487",
+      "status": "machine"
+    },
+    "landing:features.recall.title": {
+      "hash": "27bfee839022",
+      "status": "machine"
+    },
+    "landing:features.seeIt": {
+      "hash": "8173097d86b1",
+      "status": "machine"
+    },
+    "landing:features.team.blurb": {
+      "hash": "bdcfbee5c8fc",
+      "status": "machine"
+    },
+    "landing:features.team.lead": {
+      "hash": "015bfb40dd43",
+      "status": "machine"
+    },
+    "landing:features.team.points.p1": {
+      "hash": "ad8d3d993305",
+      "status": "machine"
+    },
+    "landing:features.team.points.p2": {
+      "hash": "230afdbd6cdd",
+      "status": "machine"
+    },
+    "landing:features.team.points.p3": {
+      "hash": "cdb4bfb269ec",
+      "status": "machine"
+    },
+    "landing:features.team.points.p4": {
+      "hash": "2c96c2eae57c",
+      "status": "machine"
+    },
+    "landing:features.team.title": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "landing:features.voice.blurb": {
+      "hash": "7646ccdcf554",
+      "status": "machine"
+    },
+    "landing:features.voice.lead": {
+      "hash": "9c43bcfedfac",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p1": {
+      "hash": "c4bc86e334f8",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p2": {
+      "hash": "3fd38a073d06",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p3": {
+      "hash": "f34c7dd0717b",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p4": {
+      "hash": "b49be85bfa44",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p5": {
+      "hash": "954a5bbaec11",
+      "status": "machine"
+    },
+    "landing:features.voice.points.p6": {
+      "hash": "ca21529fa478",
+      "status": "machine"
+    },
+    "landing:features.voice.tag": {
+      "hash": "312db68f2da7",
+      "status": "machine"
+    },
+    "landing:features.voice.title": {
+      "hash": "9fdb083552a8",
+      "status": "machine"
+    },
+    "landing:features.voiceResult1": {
+      "hash": "9e040f169f93",
+      "status": "machine"
+    },
+    "landing:features.voiceResult2": {
+      "hash": "0de62e7f3ee7",
+      "status": "machine"
+    },
+    "landing:features.voiceResult3": {
+      "hash": "260bffd52f90",
+      "status": "machine"
+    },
+    "landing:footer.contact": {
+      "hash": "2b5c3d26721a",
+      "status": "machine"
+    },
+    "landing:footer.dpa": {
+      "hash": "76e613a6dbae",
+      "status": "machine"
+    },
+    "landing:footer.privacy": {
+      "hash": "54a57c3147c4",
+      "status": "machine"
+    },
+    "landing:footer.tagline": {
+      "hash": "bd762357f1de",
+      "status": "machine"
+    },
+    "landing:footer.terms": {
+      "hash": "ede548996483",
+      "status": "machine"
+    },
+    "landing:hero.betaPill": {
+      "hash": "2090d1c1bd03",
+      "status": "machine"
+    },
+    "landing:hero.ctaFree": {
+      "hash": "627c03c23b0f",
+      "status": "machine"
+    },
+    "landing:hero.ctaTrial": {
+      "hash": "73b23ca09633",
+      "status": "machine"
+    },
+    "landing:hero.eyebrow": {
+      "hash": "74921e89f572",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine1": {
+      "hash": "c8548d3d8ac6",
+      "status": "machine"
+    },
+    "landing:hero.headlineLine2": {
+      "hash": "6185c79f6ca5",
+      "status": "machine"
+    },
+    "landing:hero.noteBeta": {
+      "hash": "b260793de6b6",
+      "status": "machine"
+    },
+    "landing:hero.noteNoAccount": {
+      "hash": "1c3f3f6a77c6",
+      "status": "machine"
+    },
+    "landing:hero.notePricing": {
+      "hash": "52221905ec29",
+      "status": "machine"
+    },
+    "landing:hero.noteTrial": {
+      "hash": "350662a204b6",
+      "status": "machine"
+    },
+    "landing:hero.openApp": {
+      "hash": "f64a1e329724",
+      "status": "machine"
+    },
+    "landing:hero.sub": {
+      "hash": "9f9c424f898f",
+      "status": "machine"
+    },
+    "landing:hero.tryFree": {
+      "hash": "c5164875cee9",
+      "status": "machine"
+    },
+    "landing:lightboxClose": {
+      "hash": "16bf90a55af6",
+      "status": "machine"
+    },
+    "landing:nav.backToApp": {
+      "hash": "926af83ed0f2",
+      "status": "machine"
+    },
+    "landing:nav.getStarted": {
+      "hash": "61e8d44ad423",
+      "status": "machine"
+    },
+    "landing:nav.pricing": {
+      "hash": "dfe95783edfe",
+      "status": "machine"
+    },
+    "landing:nav.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "landing:paper.body": {
+      "hash": "55e2f35ef75f",
+      "status": "machine"
+    },
+    "landing:paper.page1Alt": {
+      "hash": "da1707bd4775",
+      "status": "machine"
+    },
+    "landing:paper.page1Label": {
+      "hash": "9e85967626d8",
+      "status": "machine"
+    },
+    "landing:paper.page1Zoom": {
+      "hash": "b9b1b7739abe",
+      "status": "machine"
+    },
+    "landing:paper.page2Alt": {
+      "hash": "292ad79b2703",
+      "status": "machine"
+    },
+    "landing:paper.page2Label": {
+      "hash": "ac05413ab5b7",
+      "status": "machine"
+    },
+    "landing:paper.page2Zoom": {
+      "hash": "434dc48f08a3",
+      "status": "machine"
+    },
+    "landing:paper.point1": {
+      "hash": "63ce51cb06c4",
+      "status": "machine"
+    },
+    "landing:paper.point2": {
+      "hash": "203282db9df1",
+      "status": "machine"
+    },
+    "landing:paper.point3": {
+      "hash": "b6392418d754",
+      "status": "machine"
+    },
+    "landing:paper.title": {
+      "hash": "ec565e362d4e",
+      "status": "machine"
+    },
+    "landing:pricing.contact": {
+      "hash": "fb900f5d9021",
+      "status": "machine"
+    },
+    "landing:pricing.mostPopular": {
+      "hash": "ad2ea9485094",
+      "status": "machine"
+    },
+    "landing:pricing.perMonth": {
+      "hash": "dcc954337afd",
+      "status": "machine"
+    },
+    "landing:pricing.startTrial": {
+      "hash": "b1effd1ffed3",
+      "status": "machine"
+    },
+    "landing:pricing.sub": {
+      "hash": "6944e692cc7a",
+      "status": "machine"
+    },
+    "landing:pricing.title": {
+      "hash": "84b814dc2d54",
+      "status": "machine"
+    },
+    "landing:wordmark": {
+      "hash": "60366bdda79b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
