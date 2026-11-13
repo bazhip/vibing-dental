@@ -269,6 +269,8 @@
   width: min(760px, 96vw);
 }
 
+.report-templates__short { display: none; }
+
 .report-templates__preview .pdf-preview-iframe-wrap,
 .report-templates__preview .pdf-preview-iframe {
   height: min(78vh, 860px);
@@ -323,5 +325,67 @@
 
   .report-templates__list-actions .diagram-view__action {
     flex: 1 1 30%;
+  }
+}
+
+/* ---- Phones: a full-screen editor sheet (the iOS / Material pattern) ------
+   The floating dialog left a ~220px window for the actual editing between
+   its header, template list and a two-row footer. Now: the whole screen,
+   one scrolling page, template actions as a tidy 2×2 grid, and a bar pinned
+   to the bottom with Preview + Save side by side (× closes, with the same
+   unsaved-changes check Cancel had). */
+@media (max-width: 600px) {
+  .ai-settings-overlay:has(> .report-templates) { padding: 0; align-items: stretch; }
+  .ai-settings-modal.report-templates {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+  }
+  .report-templates .ai-settings-header { padding: 0.6rem 0.75rem 0.6rem 1rem; }
+  .report-templates .pdf-preview-close { min-width: 44px; min-height: 44px; }
+  /* One scrolling page: the body scrolls, the editor inside it doesn't
+     (it was its own ~330px scroll box under a fixed template list). */
+  .report-templates__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .report-templates__editor { overflow: visible; }
+
+  /* Checkbox rows: a full 44px tap row and a larger box. */
+  .report-templates__check { align-items: center; min-height: 44px; margin: 0; }
+  .report-templates__check input { width: 20px; height: 20px; }
+
+  .report-templates__list-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .report-templates__list-actions .diagram-view__action { width: 100%; }
+  .report-templates__long { display: none; }
+  .report-templates__short { display: inline; }
+
+  /* iOS draws native selects at a fixed small height unless restyled. */
+  .report-templates select {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 44px;
+    padding: 0 2.25rem 0 0.75rem;
+    font-size: 16px;
+    border: 1px solid var(--border-strong, #cbd5e1);
+    border-radius: 8px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' fill='none' stroke='%2364748b' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 0.75rem center / 12px 12px;
+    color: var(--text, #0f172a);
+  }
+
+  .report-templates__footer {
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  }
+  .report-templates__footer .ai-settings-spacer,
+  .report-templates__footer .report-templates__cancel { display: none; }
+  .report-templates__footer > button {
+    flex: 1 1 0;
+    min-height: 48px;
+    justify-content: center;
   }
 }
