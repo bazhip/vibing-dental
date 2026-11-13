@@ -634,8 +634,9 @@
   background: var(--ios-fill-2);
   color: var(--ios-label);
 }
-:where(html.native-ios) .ios-swiperow__more:focus-visible,
-:where(html.native-ios) .ios-swiperow--open .ios-swiperow__more:focus {
+/* :focus-visible only: a tap or swipe (or a programmatic focus after one)
+ * must not draw the circle over the row. */
+:where(html.native-ios) .ios-swiperow__more:focus-visible {
   width: 44px;
   height: 44px;
   margin-top: -22px;
@@ -645,7 +646,7 @@
   align-items: center;
   justify-content: center;
 }
-:where(html.native-ios) .ios-swiperow--open .ios-swiperow__more:focus { right: calc(var(--ios-swipe-total) + 8px); }
+:where(html.native-ios) .ios-swiperow--open .ios-swiperow__more:focus-visible { right: calc(var(--ios-swipe-total) + 8px); }
 
 /* ---- Menus -------------------------------------------------------------- */
 :where(html.native-ios) .ios-contextmenu {

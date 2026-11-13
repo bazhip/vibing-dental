@@ -85,3 +85,15 @@ it('falls back to the plain label when the row has no string title', () => {
   expect(screen.getByRole('button', { name: 'More actions' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'More actions for Visit 3 May' })).toBeInTheDocument();
 });
+
+describe('SwipeRow "More actions" button styling', () => {
+  // The button is the keyboard / VoiceOver route. A tap or swipe must never
+  // reveal it (it drew a circle over swiped rows): only :focus-visible may.
+  it('is revealed by :focus-visible only, never by plain :focus', async () => {
+    const { readFileSync } = await import('node:fs');
+    const css = readFileSync('src/ios/ios.css', 'utf8');
+    const selectors = [...css.matchAll(/([^{}]*\.ios-swiperow__more[^{}]*)\{/g)].map((m) => m[1]);
+    expect(selectors.length).toBeGreaterThan(0);
+    for (const sel of selectors) expect(sel).not.toMatch(/__more:focus(?!-visible)/);
+  });
+});
