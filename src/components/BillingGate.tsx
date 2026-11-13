@@ -55,20 +55,25 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     if (!cloudEnabled || !supabase) return;
     let cancelled = false;
     if (new URLSearchParams(window.location.search).get('billing') === 'canceled') clearBillingParam();
-    supabase.auth.getSession().then(({ data }) => {
+    // The session is local (no network), so it's there offline too; its
+    // user id keys the app's billing cache.
+    const userId = supabase.auth.getSession().then(({ data }) => {
       if (!cancelled) setIsAdmin(data.session?.user.app_metadata?.role === 'admin');
+      return data.session?.user.id ?? '';
     });
     fetchBilling()
       .then((b) => {
         if (cancelled) return;
-        if (isNativeApp()) saveBillingCache(b);
+        if (isNativeApp()) void userId.then((id) => saveBillingCache(b, Date.now(), id));
         setInfo(b);
         setSelected(b.intendedPlan ?? null);
       })
-      .catch((e) => {
+      .catch(async (e) => {
         if (cancelled) return;
-        // App offline: go on the last known status if it's recent enough.
-        const cached = isNativeApp() ? readBillingCache() : null;
+        // App offline: go on this user's last known status if it's recent
+        // enough.
+        const cached = isNativeApp() ? readBillingCache(Date.now(), await userId) : null;
+        if (cancelled) return;
         if (cached) {
           setInfo(cached);
           return;

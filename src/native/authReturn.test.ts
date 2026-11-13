@@ -84,11 +84,11 @@ describe('handleAuthUrl', () => {
     expect(auth.exchangeCodeForSession).toHaveBeenCalledWith('abc');
   });
 
-  it('sets the session from hash tokens', async () => {
+  it('never signs in from hash tokens (an unsolicited link must not swap the account)', async () => {
     mockNative(true);
     const { handleAuthUrl } = await load();
     await expect(handleAuthUrl('toothops://auth-callback#access_token=at&refresh_token=rt&type=magiclink')).resolves.toBe(true);
-    expect(auth.setSession).toHaveBeenCalledWith({ access_token: 'at', refresh_token: 'rt' });
+    expect(auth.setSession).not.toHaveBeenCalled();
     expect(auth.exchangeCodeForSession).not.toHaveBeenCalled();
   });
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Browser } from '@capacitor/browser';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { AppleSignInButton } from './AppleSignInButton';
+import { AppleSignInButton, APPLE_HINT } from './AppleSignInButton';
 import { LegalNotice } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
@@ -46,7 +46,6 @@ function friendlyAuthError(e: AuthErr): string {
 
 const MIN_PASSWORD = 8;
 const RESEND_COOLDOWN_S = 60;
-const APPLE_HINT = 'Already have an account or were invited? Sign in with your email.';
 
 /**
  * Sign-in / sign-up screen.

@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import type { BillingInfo } from '../hooks/useBilling';
 
 const flags = vi.hoisted(() => ({ native: true, paid: false }));
 const auth = vi.hoisted(() => ({
-  getSession: vi.fn(async () => ({ data: { session: { user: { app_metadata: {} } } } })),
+  getSession: vi.fn(async () => ({ data: { session: { user: { id: 'u1', app_metadata: {} } } } })),
   signOut: vi.fn(),
 }));
 const fetchBilling = vi.hoisted(() => vi.fn());
@@ -78,7 +78,7 @@ beforeEach(() => {
 
 describe('BillingGate in the app', () => {
   it('offline with a fresh cached active plan: lets them in', async () => {
-    saveBillingCache(billing({ status: 'active' }), Date.now() - 6 * DAY);
+    saveBillingCache(billing({ status: 'active' }), Date.now() - 6 * DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
     expect(await screen.findByText('charting app')).toBeInTheDocument();
@@ -99,11 +99,20 @@ describe('BillingGate in the app', () => {
     expect(screen.queryByText('charting app')).toBeNull();
   });
 
-  it('a successful check is cached', async () => {
+  it('offline with another user\'s fresh cache: says it could not check', async () => {
+    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY, 'someone-else');
+    fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
+    renderGate();
+    expect(await screen.findByText("Couldn't check your subscription")).toBeInTheDocument();
+    expect(screen.queryByText('charting app')).toBeNull();
+  });
+
+  it('a successful check is cached for the signed-in user', async () => {
     fetchBilling.mockResolvedValue(billing({ status: 'trialing' }));
     renderGate();
     expect(await screen.findByText('charting app')).toBeInTheDocument();
-    expect(readBillingCache()?.status).toBe('trialing');
+    await waitFor(() => expect(readBillingCache(undefined, 'u1')?.status).toBe('trialing'));
+    expect(readBillingCache(undefined, 'u2')).toBeNull();
   });
 
   it('a fresh check overrides the cache', async () => {
@@ -136,7 +145,7 @@ describe('BillingGate in the app', () => {
   });
 
   it('offline with a fresh cached canceled plan: the neutral screen', async () => {
-    saveBillingCache(billing({ status: 'canceled' }), Date.now() - DAY);
+    saveBillingCache(billing({ status: 'canceled' }), Date.now() - DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
     expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();

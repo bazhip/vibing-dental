@@ -38,7 +38,15 @@ vi.stubGlobal('localStorage', {
 });
 
 import App from './App';
+import { act } from '@testing-library/react';
 import { writeString } from './utils/storage';
+import { readBillingCache, saveBillingCache } from './native/billingCache';
+import { markExplicitSignOut } from './utils/signOutIntent';
+import type { BillingInfo } from './hooks/useBilling';
+
+const cachedInfo = { status: 'active', role: 'owner', practice: { id: 'p1', name: 'A Vet' } } as unknown as BillingInfo;
+type AuthCb = (event: string, session: unknown) => void;
+const authCallback = () => (auth.onAuthStateChange.mock.calls.at(-1) as unknown as [AuthCb])[0];
 
 beforeEach(() => {
   flags.native = true;
@@ -69,6 +77,28 @@ describe('App routing in the iOS app', () => {
     expect(await screen.findByText('CHART')).toBeInTheDocument();
     expect(screen.queryByText('LANDING PAGE')).toBeNull();
     expect(entryGridProps.current?.onGoHome).toBeUndefined();
+  });
+});
+
+describe('billing cache hygiene in the app', () => {
+  it('a different account signing in clears the previous account\'s billing cache', async () => {
+    flags.session = { user: { id: 'user-a', email: 'a@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    saveBillingCache(cachedInfo, Date.now(), 'user-a');
+    act(() => authCallback()('SIGNED_IN', { user: { id: 'user-b', email: 'b@vet.com' } }));
+    expect(readBillingCache(Date.now(), 'user-a')).toBeNull();
+  });
+
+  it('a deliberate sign-out clears the billing cache', async () => {
+    flags.session = { user: { id: 'user-a', email: 'a@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    saveBillingCache(cachedInfo, Date.now(), 'user-a');
+    markExplicitSignOut();
+    act(() => authCallback()('SIGNED_OUT', null));
+    expect(readBillingCache(Date.now(), 'user-a')).toBeNull();
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
   });
 });
 

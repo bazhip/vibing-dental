@@ -15,6 +15,7 @@ import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { isNativeApp } from './native/platform';
+import { clearBillingCache } from './native/billingCache';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -168,6 +169,7 @@ const App: React.FC = () => {
         // inherit the previous patient's working chart (shared machines).
         if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
           clearChartStorage();
+          clearBillingCache();
           // The previous user's chart, profile and practice are still in
           // memory — start clean so nothing of theirs is shown or saved.
           window.location.reload();
@@ -184,6 +186,8 @@ const App: React.FC = () => {
       // No session. Deliberate sign-outs go to the landing page; anything
       // else while signed in is an expiry — keep the chart mounted.
       if (consumeExplicitSignOut() || !isAuthedRef.current) {
+        // The app's offline billing cache belongs to whoever signed out.
+        clearBillingCache();
         setSessionExpired(false);
         setIsAuthenticated(false);
       } else {
@@ -347,6 +351,7 @@ const App: React.FC = () => {
             // mark intent in case a stray SIGNED_OUT event still fires.
             markExplicitSignOut();
             clearChartStorage();
+            clearBillingCache();
             setSessionExpired(false);
             setIsAuthenticated(false);
           }}

@@ -9,6 +9,10 @@ import { friendlyError } from './ui/dialogs';
  *  must be one of the Client IDs on Supabase's Apple provider. */
 const APPLE_CLIENT_ID = 'app.toothops.ios';
 
+/** Shown under the Apple button wherever it appears: Apple may hide the
+ *  real email, so existing and invited users should use email sign-in. */
+export const APPLE_HINT = 'Already have an account or were invited? Sign in with your email.';
+
 const toHex = (bytes: Uint8Array) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 
 async function sha256Hex(text: string): Promise<string> {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BillingInfo } from '../hooks/useBilling';
-import { BILLING_GRACE_MS, readBillingCache, saveBillingCache } from './billingCache';
+import { BILLING_GRACE_MS, clearBillingCache, readBillingCache, saveBillingCache } from './billingCache';
 
 // This jsdom build has no Web Storage — give the cache somewhere to live.
 const store = new Map<string, string>();
@@ -66,5 +66,22 @@ describe('billing cache', () => {
     expect(readBillingCache(T0)).toBeNull();
     store.set(key, JSON.stringify({ savedAt: 'yesterday', info }));
     expect(readBillingCache(T0)).toBeNull();
+  });
+
+  it('belongs to the user it was saved for', () => {
+    saveBillingCache(info, T0, 'user-a');
+    expect(readBillingCache(T0, 'user-a')).toEqual(info);
+    expect(readBillingCache(T0, 'user-b')).toBeNull();
+  });
+
+  it('an entry without a user never matches a user', () => {
+    saveBillingCache(info, T0);
+    expect(readBillingCache(T0, 'user-a')).toBeNull();
+  });
+
+  it('can be cleared', () => {
+    saveBillingCache(info, T0, 'user-a');
+    clearBillingCache();
+    expect(readBillingCache(T0, 'user-a')).toBeNull();
   });
 });

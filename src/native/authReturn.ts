@@ -47,8 +47,12 @@ const handled = new Set<string>();
 
 /**
  * Finishes an auth flow that came back into the app. Returns false for
- * URLs that aren't ours. PKCE flows (the app's client uses PKCE) carry a
- * `?code=`; older implicit links carry tokens in the hash.
+ * URLs that aren't ours. Only PKCE codes are accepted: the app's client
+ * is PKCE-only, so every flow it starts returns `?code=`, and a code only
+ * exchanges with the verifier this device stored when it started the
+ * flow. Tokens in the hash are ignored on purpose — any page or app can
+ * open this URL, and accepting them would let a stranger's link swap the
+ * signed-in account (login CSRF).
  */
 export async function handleAuthUrl(url: string): Promise<boolean> {
   if (!url.startsWith(AUTH_CALLBACK_URL)) return false;
@@ -63,14 +67,6 @@ export async function handleAuthUrl(url: string): Promise<boolean> {
   const code = parsed.searchParams.get('code');
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) console.warn('Sign-in link could not be completed:', error.message);
-    return true;
-  }
-  const hash = new URLSearchParams(parsed.hash.replace(/^#/, ''));
-  const access_token = hash.get('access_token');
-  const refresh_token = hash.get('refresh_token');
-  if (access_token && refresh_token) {
-    const { error } = await supabase.auth.setSession({ access_token, refresh_token });
     if (error) console.warn('Sign-in link could not be completed:', error.message);
   }
   return true;
