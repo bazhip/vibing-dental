@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { findUntranslated, installPseudoLocale, restoreLocale } from './pseudo';
 import i18n from '../index';
 import { formatDate, formatDateTime, formatList, formatNumber } from '../format';
@@ -64,4 +64,43 @@ test('arrays in catalogs stay arrays (returnObjects)', async () => {
   await installPseudoLocale();
   const t = i18n.t as unknown as (key: string, opts: object) => unknown;
   expect(t('common:test.list', { returnObjects: true })).toEqual(['⟦One⟧', '⟦Two⟧']);
+});
+
+describe('<Trans> markup', () => {
+  // Test-only keys are not in the typed catalog.
+  const tr = (key: string, opts?: object) => (i18n.t as unknown as (k: string, o?: object) => string)(key, opts);
+  const add = async (messages: Record<string, string>) => {
+    i18n.addResourceBundle('en', 'common', { transTest: messages }, true, true);
+    await installPseudoLocale();
+  };
+  afterEach(() => {
+    // Drop only the test messages (and their pseudo copies); beforeEach re-installs the rest.
+    for (const lng of ['en', 'xx']) {
+      const { transTest: _drop, ...rest } = i18n.getResourceBundle(lng, 'common') as Record<string, unknown>;
+      i18n.removeResourceBundle(lng, 'common');
+      i18n.addResourceBundle(lng, 'common', rest);
+    }
+  });
+
+  test('each text run is wrapped separately, tags and placeholders stay intact', async () => {
+    await add({
+      numbered: 'Click <1>here</1> to go',
+      named: 'Sent to <strong>{{email}}</strong>.',
+      selfClosing: 'Line one<br/>Line two',
+      nested: 'A <1>b <2>c</2></1>',
+    });
+    expect(tr('common:transTest.numbered')).toBe('⟦Click ⟧<1>⟦here⟧</1>⟦ to go⟧');
+    expect(tr('common:transTest.named', { email: 'a@b.c' })).toBe('⟦Sent to ⟧<strong>⟦a@b.c⟧</strong>⟦.⟧');
+    expect(tr('common:transTest.selfClosing')).toBe('⟦Line one⟧<br/>⟦Line two⟧');
+    expect(tr('common:transTest.nested')).toBe('⟦A ⟧<1>⟦b ⟧<2>⟦c⟧</2></1>');
+  });
+
+  test('a rendered <Trans> has no unwrapped text, even inside its elements', async () => {
+    await add({ link: 'Read the <a>terms</a> and <strong>agree</strong>.' });
+    const { container } = render(
+      <Trans ns="common" i18nKey={'transTest.link' as never} components={{ a: <a href="/terms" />, strong: <strong /> }} />,
+    );
+    expect(container.textContent).toBe('⟦Read the ⟧⟦terms⟧⟦ and ⟧⟦agree⟧⟦.⟧');
+    expect(findUntranslated(container)).toEqual([]);
+  });
 });

@@ -21,6 +21,7 @@ vi.mock('../utils/supabaseClient', () => ({
     return flags.cloud;
   },
 }));
+vi.mock('../i18n/LanguageSwitcher', () => ({ LanguageSwitcher: () => <span data-testid="lang-switcher" /> }));
 vi.mock('../hooks/useProfile', () => ({ uploadPracticeLogo: vi.fn() }));
 // The pricing section and the plan pickers are behind feature flags; flip them per test.
 vi.mock('../constants/plans', async (importOriginal) => {
@@ -37,35 +38,32 @@ import { ResetPassword } from './ResetPassword';
 import { SessionExpiredOverlay } from './SessionExpiredOverlay';
 import { AppLoading } from './AppLoading';
 import { ErrorBoundary } from './ErrorBoundary';
-import { GoogleSignInButton } from './GoogleSignInButton';
-import { LegalNotice } from './LegalNotice';
-import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
-import * as landingTeeth from './landingTeeth';
+import './GoogleSignInButton';
+import './LegalNotice';
 import './landingTeeth';
 
-// Fixture data and non-catalog text: the demo patient, sample codes, the brand name,
-// addresses, and the English legal notice body (translated in plan 3).
+// Fixture data and non-catalog text: the demo patient, sample codes, the brand name, and
+// the crash message.
 const ALLOW: (string | RegExp)[] = [
   'Biscuit',
   'ToothOps',
   'C (104)',
   'chart_biscuit_2026-07-17.pdf',
   /^(M2|G2|G1|F2|PD|PD1|PD3)$/,
-  /^By .+ you agree to the$/,
-  'and',
-  'jane@vets.com',
-  'newvet@socal.vet',
   /boom/,
-  // <Trans> messages with an inline element render as "⟦text <strong>…</strong>⟧": the opening half is catalog text.
-  /^⟦[^⟧]*$/,
-  /^[^⟦]*⟧$/,
-  // Text inside a <Trans> element isn't wrapped by the pseudo-locale (the whole message is): the sender line and the mail link.
-  'ToothOps <noreply@toothops.app>',
-  'Contact us',
 ];
+// The legal notice sentence stays English until plan 3; only its link labels are catalog text.
+const LEGAL_ALLOW: (string | RegExp)[] = [/^By .+ you agree to the$/, 'and'];
 
 const fill = (label: RegExp, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
-const untranslated = (c: HTMLElement) => findUntranslated(c, ALLOW);
+/** Untranslated text under `c`: everything but the legal notices must be fully wrapped, and in a
+ *  notice only the English sentence is let through (its links must be wrapped). */
+function untranslated(c: HTMLElement): string[] {
+  const rest = c.cloneNode(true) as HTMLElement;
+  rest.querySelectorAll('.login-legal').forEach((n) => n.remove());
+  const legal = [...c.querySelectorAll<HTMLElement>('.login-legal')].flatMap((n) => findUntranslated(n, LEGAL_ALLOW));
+  return [...findUntranslated(rest, ALLOW), ...legal];
+}
 
 beforeEach(async () => {
   vi.clearAllMocks();
@@ -132,11 +130,9 @@ describe('Landing', () => {
     expect(untranslated(paid.container)).toEqual([]);
   });
 
-  it('has the language switcher in the header (hidden until switching is on)', () => {
-    expect(landingTeeth.DEMO_TEETH_PATHS.length).toBeGreaterThan(0);
+  it('puts the language switcher in the header nav', () => {
     const { container } = view();
-    expect(container.querySelector('.landing__topbar')).not.toBeNull();
-    render(<LanguageSwitcher compact />);
+    expect(container.querySelector('.landing__nav [data-testid="lang-switcher"]')).not.toBeNull();
   });
 });
 
@@ -212,8 +208,8 @@ describe('Login', () => {
     fireEvent.click(screen.getByRole('button', { name: '⟦Create account⟧' }));
     await screen.findByText('⟦Check your inbox⟧');
     expect(untranslated(container)).toEqual([]);
-    expect(screen.getByText('jane@vets.com')).toBeInTheDocument();
-    expect(screen.getByText('ToothOps <noreply@toothops.app>')).toBeInTheDocument();
+    expect(screen.getByText(/jane@vets\.com/)).toBeInTheDocument();
+    expect(screen.getByText(/ToothOps <noreply@toothops\.app>/)).toBeInTheDocument();
   });
 
   it('translates the standalone password screen and a wrong password', () => {
@@ -234,20 +230,20 @@ describe('Login', () => {
     expect(untranslated(container)).toEqual([]);
   });
 
-  it('has the language switcher on the card (hidden until switching is on)', () => {
-    render(<GoogleSignInButton />);
-    render(<LegalNotice action="signingUp" />);
+  it('puts the language switcher in the card header', () => {
+    const { container } = render(<Login onAuthenticate={vi.fn()} />);
+    expect(container.querySelector('.login-header [data-testid="lang-switcher"]')).not.toBeNull();
   });
 });
 
 describe('ResetPassword', () => {
   it('translates the invite and recovery screens and their errors', async () => {
     const { container, unmount } = render(<ResetPassword mode="invite" onDone={vi.fn()} />);
-    await screen.findByText('newvet@socal.vet');
+    await screen.findByText(/newvet@socal\.vet/);
     expect(untranslated(container)).toEqual([]);
     unmount();
     const rec = render(<ResetPassword onDone={vi.fn()} />);
-    await screen.findByText('newvet@socal.vet');
+    await screen.findByText(/newvet@socal\.vet/);
     fireEvent.change(screen.getByLabelText('⟦New password⟧'), { target: { value: 'short' } });
     fireEvent.submit(rec.container.querySelector('form')!);
     expect(untranslated(rec.container)).toEqual([]);

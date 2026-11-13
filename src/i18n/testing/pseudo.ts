@@ -6,10 +6,20 @@ import { NAMESPACES, PSEUDO_LOCALE as PSEUDO } from '../config';
 const OPEN = '⟦';
 const CLOSE = '⟧';
 
+// <Trans> markup (<1>…</1>, <strong>…</strong>, <br/>) stays outside the brackets and each
+// text run is wrapped on its own: "Click <1>here</1>" becomes "⟦Click ⟧<1>⟦here⟧</1>".
+const TAG = /(<\/?[A-Za-z0-9]+\s*\/?>)/;
+function wrapText(text: string): string {
+  return text
+    .split(TAG)
+    .map((part, i) => (i % 2 === 1 || !part ? part : `${OPEN}${part}${CLOSE}`))
+    .join('');
+}
+
 // Interpolation keeps {{placeholders}} intact inside the brackets. Arrays stay
 // arrays so `returnObjects` lookups keep their shape.
 function wrapAll(v: unknown): unknown {
-  if (typeof v === 'string') return `${OPEN}${v}${CLOSE}`;
+  if (typeof v === 'string') return wrapText(v);
   if (Array.isArray(v)) return v.map(wrapAll);
   if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, wrapAll(x)]));
   return v;
