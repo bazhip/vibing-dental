@@ -1,4 +1,5 @@
 import React from 'react';
+import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { useModalFocus } from '../hooks/useModalFocus';
 import {
   BuiltInSectionId,
@@ -84,6 +85,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const baseline = React.useMemo(() => JSON.stringify(config), [config]);
   const dirty = open && JSON.stringify(draft) !== baseline;
 
+  // The PDF behind previewUrl, for drawing it as pages where a frame can't show it.
+  const previewBlobRef = React.useRef<Blob | null>(null);
   const requestClose = React.useCallback(() => {
     if (busy) return;
     if (dirty && !window.confirm('Discard your unsaved changes to the owner report templates?')) return;
@@ -240,7 +243,9 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
         doctorName: branding.doctorName,
       });
       const bytes = await buildOwnerReportPdfBytes(model, branding, []);
-      const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/pdf' }));
+      const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
+      previewBlobRef.current = blob;
+      const url = URL.createObjectURL(blob);
       setPreviewUrl(url);
     } catch (e) {
       console.error(e);
@@ -302,8 +307,10 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                     className="diagram-view__action"
                     onClick={() => setDraft((d) => ({ ...d, defaultTemplateId: selected.id }))}
                     disabled={selected.id === draft.defaultTemplateId}
+                    aria-label="Set as default"
                   >
-                    Set as default
+                    <span className="report-templates__long">Set as default</span>
+                    <span className="report-templates__short">Set default</span>
                   </button>
                   <button
                     type="button"
@@ -623,13 +630,19 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
           {error && <div className="login-error report-templates__error" role="alert">{error}</div>}
           <footer className="ai-settings-footer report-templates__footer">
-            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy}>
-              {previewBusy ? 'Building preview…' : 'Preview with sample visit'}
+            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy} aria-label={previewBusy ? 'Building preview…' : 'Preview with sample visit'}>
+              {previewBusy ? 'Building preview…' : (
+                <>
+                  <span className="report-templates__long">Preview with sample visit</span>
+                  <span className="report-templates__short">Preview</span>
+                </>
+              )}
             </button>
             <span className="ai-settings-spacer" />
             {canEdit ? (
               <>
-                <button type="button" className="diagram-view__action" onClick={requestClose} disabled={busy}>
+                {/* Phones: × already closes (with the same unsaved-changes check). */}
+                <button type="button" className="diagram-view__action report-templates__cancel" onClick={requestClose} disabled={busy}>
                   Cancel
                 </button>
                 <button
@@ -663,7 +676,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               </button>
             </header>
             <div className="pdf-preview-iframe-wrap">
-              <iframe src={previewUrl} title="Owner report template preview" className="pdf-preview-iframe" />
+              {/* Phones (Android Chrome, iOS) can't show a PDF in a frame —
+                  draw its pages instead. */}
+              {canShowPdfInline() || !previewBlobRef.current
+                ? <iframe src={previewUrl} title="Owner report template preview" className="pdf-preview-iframe" />
+                : <PdfPagesPreview blob={previewBlobRef.current} title="Owner report template preview" />}
             </div>
           </div>
         </div>
