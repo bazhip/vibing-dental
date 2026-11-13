@@ -19,6 +19,7 @@ import { FinishSetupModal } from '../components/FinishSetupModal';
 import { SessionExpiredOverlay } from '../components/SessionExpiredOverlay';
 import { AppLockOverlay } from '../components/AppLockOverlay';
 import { InactivePlan } from '../components/InactivePlan';
+import { BillingGate } from '../components/BillingGate';
 import { Sheet } from './Sheet';
 import { ensureAiConsent } from '../native/aiConsent';
 import type { UseProfileReturn } from '../hooks/useProfile';
@@ -71,8 +72,10 @@ function patchCloud() {
   client.from = () => builder({ data: revisions, error: null });
   client.rpc = async () => ({ data: [{ id: 'u1', name: 'Tim O’Brien' }, { id: 'u2', name: 'Dr. Jane Kaser' }], error: null });
   // `functions` is a getter that builds a new client each time.
-  const invoke = async (_fn: string, opts: { body?: { preview?: boolean } }) =>
-    opts?.body?.preview ? { data: { practiceName: 'SoCal Veterinary Dentistry', alreadyMember: false }, error: null } : { data: {}, error: null };
+  const invoke = async (fn: string, opts: { body?: { preview?: boolean } }) =>
+    fn === 'billing-api'
+      ? { data: null, error: new Error('Network connection was lost.') }
+      : opts?.body?.preview ? { data: { practiceName: 'SoCal Veterinary Dentistry', alreadyMember: false }, error: null } : { data: {}, error: null };
   Object.defineProperty(client, 'functions', { configurable: true, value: { invoke } });
 }
 
@@ -119,6 +122,8 @@ const FIXTURES: Record<string, () => React.ReactElement> = {
   session: () => <SessionExpiredOverlay email="jane@socalvetdentistry.com" onSignOut={() => {}} />,
   lock: () => <AppLockOverlay lockOnLaunch />,
   inactive: () => <InactivePlan />,
+  // The subscription check failed and there is no cached status.
+  'billing-error': () => <BillingGate><p>Signed in</p></BillingGate>,
   // Long (French-length) bar labels, for the bar-layout check at large text sizes.
   // Sheet form rows: a text field and a switch row with long labels (check
   // at large text sizes: only the text field drops under its label).

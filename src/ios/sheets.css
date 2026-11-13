@@ -480,6 +480,14 @@ html.native-ios .billing-gate__cta {
   color: var(--ios-on-tint);
   font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
 }
+/* Try again / Sign out stack as full-width buttons, as on the lock screen. */
+html.native-ios .billing-gate__panel :is(.billing-gate__cta, .billing-gate__signout) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(320px, 100%);
+  margin: 8px auto 0;
+}
 html.native-ios .billing-gate__signout {
   min-height: 44px;
   border: 0;
