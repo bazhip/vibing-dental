@@ -52,6 +52,35 @@ export function useStack(): StackApi {
   return api;
 }
 
+/** The enclosing stack, or null outside one (components that render both
+ *  as a web dialog and as a pushed screen). */
+export function useOptionalStack(): StackApi | null {
+  return React.useContext(StackContext);
+}
+
+/** Asked before the user leaves a pushed screen; false keeps it open. */
+export type LeaveGuard = () => boolean | Promise<boolean>;
+
+const LeaveGuardContext = React.createContext<((guard: LeaveGuard | null) => void) | null>(null);
+
+/**
+ * Ask before the user leaves the enclosing pushed screen (unsaved
+ * changes): Back, the edge back-swipe and popToRoot() (re-tapping the
+ * tab) call `guard` first and stay put when it returns false. A
+ * programmatic pop() (after a successful Save) skips it. No-op on the
+ * root screen and outside a Stack. The latest `guard` is always used.
+ */
+export function useStackLeaveGuard(guard: LeaveGuard | null): void {
+  const register = React.useContext(LeaveGuardContext);
+  const latest = React.useRef(guard);
+  latest.current = guard;
+  React.useEffect(() => {
+    if (!register) return undefined;
+    register(() => (latest.current ? latest.current() : true));
+    return () => register(null);
+  }, [register]);
+}
+
 export interface StackScreenOptions {
   title?: string;
   trailing?: React.ReactNode;
@@ -119,7 +148,48 @@ export function Stack({ root, rootTitle }: StackProps) {
     setEntries((list) => list.map((e) => (leaving.has(e.key) ? { ...e, phase: 'exit' } : e)));
   }, []);
   const pop = React.useCallback(() => popFrom((l) => l.length - 1), [popFrom]);
-  const popToRoot = React.useCallback(() => popFrom(() => 0), [popFrom]);
+
+  // Leave guards (useStackLeaveGuard), by entry key.
+  const guards = React.useRef(new Map<number, LeaveGuard>());
+  const guardSetters = React.useRef(new Map<number, (g: LeaveGuard | null) => void>());
+  const guardSetterFor = (key: number) => {
+    let fn = guardSetters.current.get(key);
+    if (!fn) {
+      fn = (g: LeaveGuard | null) => {
+        if (g) guards.current.set(key, g);
+        else guards.current.delete(key);
+      };
+      guardSetters.current.set(key, fn);
+    }
+    return fn;
+  };
+  /** Asks the guards of these entries, top first; false = stay. */
+  const mayLeave = React.useCallback(async (leaving: Entry[]) => {
+    for (const e of [...leaving].reverse()) {
+      const guard = guards.current.get(e.key);
+      if (guard && !(await guard())) return false;
+    }
+    return true;
+  }, []);
+  /** User-initiated pop (Back, edge swipe): asks the top screen's guard. */
+  const requestPop = React.useCallback(async () => {
+    const liveNow = entriesRef.current.filter((e) => e.phase !== 'exit');
+    const top = liveNow[liveNow.length - 1];
+    if (!top || !(await mayLeave([top]))) return;
+    // Pop that screen only if it is still on top.
+    popFrom((l) => (l[l.length - 1]?.key === top.key ? l.length - 1 : -1));
+  }, [mayLeave, popFrom]);
+  const popToRoot = React.useCallback(() => {
+    const liveNow = entriesRef.current.filter((e) => e.phase !== 'exit');
+    if (!liveNow.length) return;
+    if (!liveNow.some((e) => guards.current.has(e.key))) {
+      popFrom(() => 0);
+      return;
+    }
+    void mayLeave(liveNow).then((ok) => {
+      if (ok) popFrom(() => 0);
+    });
+  }, [mayLeave, popFrom]);
 
   // Screens on their way out unmount once the slide has finished.
   React.useEffect(() => {
@@ -127,6 +197,10 @@ export function Stack({ root, rootTitle }: StackProps) {
     const t = window.setTimeout(() => {
       const gone = new Set(entriesRef.current.filter((e) => e.phase === 'exit').map((e) => e.key));
       setEntries((list) => list.filter((e) => !gone.has(e.key)));
+      for (const k of gone) {
+        guards.current.delete(k);
+        guardSetters.current.delete(k);
+      }
       setOptions((o) => Object.fromEntries(Object.entries(o).filter(([k]) => !gone.has(Number(k)))));
     }, exitDelay(TRANSITION_MS));
     return () => window.clearTimeout(t);
@@ -240,7 +314,7 @@ export function Stack({ root, rootTitle }: StackProps) {
     const v = tracker.current.velocity();
     const shouldPop = s.dx + v * 150 > s.width * 0.5 || (v > 0.35 && s.dx > 30);
     styleDrag(null, s.width);
-    if (shouldPop) pop();
+    if (shouldPop) void requestPop();
   };
   const onPointerCancel = (e: React.PointerEvent) => {
     const s = swipe.current;
@@ -326,8 +400,9 @@ export function Stack({ root, rootTitle }: StackProps) {
               title={titleOf(entry)}
               trailing={opts && 'trailing' in opts && opts.trailing !== undefined ? opts.trailing : entry.screen.trailing}
               setOptions={setterFor(entry.key)}
+              setGuard={guardSetterFor(entry.key)}
               backLabel={prevTitle || t('ios.back')}
-              onBack={pop}
+              onBack={() => void requestPop()}
             />
           );
         })}
@@ -344,6 +419,7 @@ function PushedLayer({
   title,
   trailing,
   setOptions,
+  setGuard,
   backLabel,
   onBack,
 }: {
@@ -354,6 +430,7 @@ function PushedLayer({
   title: string;
   trailing: React.ReactNode;
   setOptions: (o: StackScreenOptions) => void;
+  setGuard: (g: LeaveGuard | null) => void;
   backLabel: string;
   onBack: () => void;
 }) {
@@ -390,7 +467,9 @@ function PushedLayer({
       />
       <ScrollContainerContext.Provider value={scrollRef}>
         <ScreenOptionsContext.Provider value={setOptions}>
-          <div className="ios-stack__content">{content}</div>
+          <LeaveGuardContext.Provider value={setGuard}>
+            <div className="ios-stack__content">{content}</div>
+          </LeaveGuardContext.Provider>
         </ScreenOptionsContext.Provider>
       </ScrollContainerContext.Provider>
     </div>

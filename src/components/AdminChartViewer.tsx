@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ToothDiagram } from './ToothDiagram';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useStackScreenOptions } from '../ios/Stack';
 import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
 import { filledBlocks, fieldLines } from '../utils/customAnesthesia';
 import {
@@ -51,6 +52,9 @@ export interface AdminChartViewerProps {
   data: unknown;
   practiceName: string;
   onClose: () => void;
+  /** 'screen': the contents only, as a pushed screen in the iOS app (its
+   *  title goes to the navigation bar). Default: the dialog. */
+  presentation?: 'modal' | 'screen';
 }
 
 /** Teeth with any perio value, in Triadan order. */
@@ -60,10 +64,12 @@ export function chartedTeeth(toothData: ToothData[]): ToothData[] {
     .sort((a, b) => a.triadan - b.triadan);
 }
 
-export const AdminChartViewer: React.FC<AdminChartViewerProps> = ({ data, practiceName, onClose }) => {
-  const modalRef = useModalFocus<HTMLDivElement>(true);
+export const AdminChartViewer: React.FC<AdminChartViewerProps> = ({ data, practiceName, onClose, presentation = 'modal' }) => {
+  const asScreen = presentation === 'screen';
+  const modalRef = useModalFocus<HTMLDivElement>(!asScreen);
   // Escape closes just this view, not the admin panel underneath.
   React.useEffect(() => {
+    if (asScreen) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -72,7 +78,7 @@ export const AdminChartViewer: React.FC<AdminChartViewerProps> = ({ data, practi
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose]);
+  }, [onClose, asScreen]);
   const snap: ChartSnapshot | null = React.useMemo(
     () => (isChartSnapshot(data) ? normalizeSnapshot(data) : null),
     [data],
@@ -84,6 +90,17 @@ export const AdminChartViewer: React.FC<AdminChartViewerProps> = ({ data, practi
     <ChartBody snap={snap} />
   );
   const p = snap?.patientInfo;
+  const title = `${practiceName} · ${p?.patientName || 'Unnamed patient'}${p?.patientNumber ? ` #${p.patientNumber}` : ''}${p?.date ? ` · ${p.date}` : ''}`;
+  useStackScreenOptions({ title: asScreen ? title : undefined });
+
+  if (asScreen) {
+    return (
+      <div className="admin-chart-viewer admin-chart-viewer--screen ios-settings-page">
+        <div className="admin-chart-viewer__notice">Read-only admin view. This view is logged.</div>
+        <div className="admin-chart-viewer__body">{body}</div>
+      </div>
+    );
+  }
 
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay admin-chart-viewer__overlay" role="dialog" aria-modal="true" aria-label="Admin chart view">

@@ -5,11 +5,15 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { WHATS_NEW } from '../constants/whatsNew';
 
 /** The one-time "What's new" announcement (also reopenable from the
- *  Settings menu). Content lives in constants/whatsNew.ts. */
-export const WhatsNewModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const modalRef = useModalFocus<HTMLDivElement>(true);
+ *  Settings menu). Content lives in constants/whatsNew.ts.
+ *  `presentation="screen"`: the body only, as a pushed screen in the iOS
+ *  app's Settings tab. */
+export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'modal' | 'screen' }> = ({ onClose, presentation = 'modal' }) => {
+  const asScreen = presentation === 'screen';
+  const modalRef = useModalFocus<HTMLDivElement>(!asScreen);
   const backdrop = useBackdropDismiss(onClose);
   React.useEffect(() => {
+    if (asScreen) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -17,7 +21,27 @@ export const WhatsNewModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose]);
+  }, [onClose, asScreen]);
+
+  const whatsNewBody = (
+    <>
+      <p className="whats-new__intro">{WHATS_NEW.intro}</p>
+      {WHATS_NEW.groups.map((g) => (
+        <section key={g.heading} className="whats-new__group">
+          <h3 className="ai-settings-subhead">{g.heading}</h3>
+          <ul className="whats-new__list">
+            {g.items.map((it) => (
+              <li key={it.title}>
+                <strong>{it.title}.</strong> {it.body}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </>
+  );
+
+  if (asScreen) return <div className="ai-settings-body whats-new__body ios-settings-page">{whatsNewBody}</div>;
 
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="whats-new-title">
@@ -27,19 +51,7 @@ export const WhatsNewModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
         </header>
         <div className="ai-settings-body whats-new__body">
-          <p className="whats-new__intro">{WHATS_NEW.intro}</p>
-          {WHATS_NEW.groups.map((g) => (
-            <section key={g.heading} className="whats-new__group">
-              <h3 className="ai-settings-subhead">{g.heading}</h3>
-              <ul className="whats-new__list">
-                {g.items.map((it) => (
-                  <li key={it.title}>
-                    <strong>{it.title}.</strong> {it.body}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {whatsNewBody}
         </div>
         <footer className="ai-settings-footer">
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose} autoFocus>

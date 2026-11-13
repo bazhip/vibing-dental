@@ -1,5 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { confirmDialog } from './ui/dialogs';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
 interface ReportTemplatesModalProps {
@@ -13,7 +16,8 @@ interface ReportTemplatesModalProps {
 /**
  * Editor for the practice's saved report templates: pick one from the
  * list (or start a new one), edit its name and text, save or delete.
- * Reuses the AI-settings modal chrome.
+ * Reuses the AI-settings modal chrome; in the iOS app it is an iOS sheet
+ * (Close / Save in its bar, Delete at the end of the form).
  */
 export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   open,
@@ -21,6 +25,8 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   store,
   draftBody = '',
 }) => {
+  const { t } = useTranslation();
+  const asSheet = isNativeApp();
   // null = editing a new, not-yet-saved template.
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [name, setName] = React.useState('');
@@ -43,13 +49,13 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   }, [open]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || asSheet) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, asSheet]);
 
   if (!open) return null;
 
@@ -109,6 +115,99 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     }
   };
 
+  const templatesBody = (
+    <>
+      <section className="ai-settings-section">
+        <div className="report-templates__list-head">
+          <span className="patient-form__label">Saved templates</span>
+          <button type="button" className="diagram-view__action" onClick={startNew} disabled={busy}>
+            New template
+          </button>
+        </div>
+        {store.templates.length === 0 ? (
+          <p className="practice-logo-empty">
+            No templates yet — write one below and save it, or use
+            "Save as template" on the Treatment Report section.
+          </p>
+        ) : (
+          <ul className="report-templates__list">
+            {store.templates.map((t) => (
+              <li key={t.id}>
+                <button
+                  type="button"
+                  className={
+                    t.id === selectedId
+                      ? 'report-templates__item report-templates__item--active'
+                      : 'report-templates__item'
+                  }
+                  onClick={() => pick(t)}
+                  disabled={busy}
+                >
+                  {t.name.trim() || 'Untitled'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="ai-settings-section">
+        <label className="patient-form__label">
+          Template name
+          <input
+            ref={nameRef}
+            type="text"
+            className="patient-form__input"
+            placeholder="e.g. Routine cleaning (feline)"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
+          Report text
+          <textarea
+            className="patient-form__textarea report-templates__body"
+            placeholder="The report text inserted into Treatment & Surgery Report…"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          />
+        </label>
+      </section>
+
+      {error && <div className="login-error" role="alert">{error}</div>}
+    </>
+  );
+
+  if (asSheet) {
+    return (
+      <Sheet
+        open
+        onClose={onClose}
+        title="Report templates"
+        cancelLabel={t('actions.close')}
+        doneLabel={busy ? 'Saving…' : selectedId ? 'Save changes' : 'Save template'}
+        onDone={() => void handleSave()}
+        doneDisabled={busy}
+      >
+        <div className="ios-settings-page">
+          {templatesBody}
+          {selectedId && (
+            <div className="ios-settings-page__actions">
+              <button
+                type="button"
+                className="diagram-view__action diagram-view__action--danger"
+                onClick={handleDelete}
+                disabled={busy}
+              >
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
+      </Sheet>
+    );
+  }
+
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Report templates">
       <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
@@ -119,64 +218,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           </button>
         </header>
         <div className="ai-settings-body">
-          <section className="ai-settings-section">
-            <div className="report-templates__list-head">
-              <span className="patient-form__label">Saved templates</span>
-              <button type="button" className="diagram-view__action" onClick={startNew} disabled={busy}>
-                New template
-              </button>
-            </div>
-            {store.templates.length === 0 ? (
-              <p className="practice-logo-empty">
-                No templates yet — write one below and save it, or use
-                "Save as template" on the Treatment Report section.
-              </p>
-            ) : (
-              <ul className="report-templates__list">
-                {store.templates.map((t) => (
-                  <li key={t.id}>
-                    <button
-                      type="button"
-                      className={
-                        t.id === selectedId
-                          ? 'report-templates__item report-templates__item--active'
-                          : 'report-templates__item'
-                      }
-                      onClick={() => pick(t)}
-                      disabled={busy}
-                    >
-                      {t.name.trim() || 'Untitled'}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="ai-settings-section">
-            <label className="patient-form__label">
-              Template name
-              <input
-                ref={nameRef}
-                type="text"
-                className="patient-form__input"
-                placeholder="e.g. Routine cleaning (feline)"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
-              Report text
-              <textarea
-                className="patient-form__textarea report-templates__body"
-                placeholder="The report text inserted into Treatment & Surgery Report…"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-              />
-            </label>
-          </section>
-
-          {error && <div className="login-error" role="alert">{error}</div>}
+          {templatesBody}
         </div>
         <footer className="ai-settings-footer">
           {selectedId && (

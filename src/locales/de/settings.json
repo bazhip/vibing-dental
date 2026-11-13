@@ -1,0 +1,78 @@
+{
+  "chart": {
+    "noteAccount": "Nur für Sie – diese Einstellungen folgen Ihrem Konto auf jedes Gerät. Änderungen werden sofort gespeichert.",
+    "noteDevice": "Auf diesem Gerät gespeichert. Änderungen gelten sofort.",
+    "allSettings": "Alle Zahnschema-Einstellungen",
+    "view": "Ansicht",
+    "grid": "Raster",
+    "byTooth": "Nach Zahn",
+    "pocketDepths": "Taschentiefen",
+    "perTooth": "Eine pro Zahn",
+    "perRoot": "Eine pro Wurzel",
+    "perRootHint": "M / D, oder MB / MP / D bei dreiwurzeligen Zähnen",
+    "spaceKey": "Leertaste im Raster",
+    "spaceMovesDown": "Springt zum nächsten Zahn",
+    "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",
+    "spaceTypes": "Fügt ein Leerzeichen ein",
+    "scoreTap": "Nach dem Tippen auf einen Wert im Raster",
+    "scoreTapFinding": "Zum nächsten Befund am selben Zahn",
+    "scoreTapFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
+    "scoreTapTooth": "Zum nächsten Zahn",
+    "scoreTapToothHint": "Um einen Befund im ganzen Maul zu bewerten",
+    "scoreTapStay": "Stehen bleiben",
+    "columns": "Spalten",
+    "columnsFooter": "Spalten im Befundraster. Mindestens eine bleibt sichtbar.",
+    "field": {
+      "mobility": "Beweglichkeit",
+      "recession": "Rezession",
+      "pocket": "Tasche",
+      "furcation": "Furkation",
+      "hyperplasia": "Vergrößerung",
+      "calculus": "Zahnstein",
+      "gingivitis": "Gingivitis",
+      "pdstate": "PD-Stadium"
+    },
+    "besideTeeth": "Neben den Zähnen",
+    "mirror": "Befunde im Diagnose-Diagramm anzeigen",
+    "mirrorHint": "Und im PDF",
+    "include": "Einbeziehen",
+    "blocksShown": "Angezeigte Nervenblockaden",
+    "blocksNote": "Eine ausgeblendete Blockade bleibt in einem Zahnschema sichtbar, in dem sie eine Dosis hat.",
+    "block": {
+      "infraorbital": "Infraorbital",
+      "caudalMaxillary": "Kaudal maxillär",
+      "inferiorAlveolar": "Alveolaris inferior",
+      "mental": "Mentalis",
+      "other": "Andere"
+    },
+    "usualDrug": "Ihr übliches Lokalanästhetikum",
+    "usualDrugNote": "Wird in einem Zahnschema ohne festgelegtes Lokalanästhetikum mit einem Tippen angeboten.",
+    "drugName": "Wirkstoff",
+    "drugStrength": "Konzentration",
+    "drugPlaceholder": "z. B. Bupivacain",
+    "drugLabel": "Übliches Lokalanästhetikum",
+    "strengthLabel": "Konzentration des üblichen Lokalanästhetikums (%)",
+    "patientPage": "Seite „Patient“",
+    "hideRecheck": "Feld „Kontrolle fällig“ ausblenden",
+    "pdf": "PDF",
+    "pdfGrid": "Befundraster einbeziehen",
+    "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
+    "pdfImages": "Bilder einbeziehen",
+    "pdfImagesHint": "4 pro Seite, nach dem Zahnschema",
+    "sectionTitle": {
+      "patient": "Einstellungen der Seite „Patient“",
+      "anesthesia": "Narkose-Einstellungen",
+      "charting": "Befund-Einstellungen",
+      "diagnosis": "Diagnose-Einstellungen",
+      "images": "Bild-Einstellungen"
+    }
+  },
+  "ownerReport": {
+    "title": "Besitzerbericht"
+  },
+  "gettingStarted": {
+    "takeTour": "Rundgang starten",
+    "tourFooter": "Ein kurzer Rundgang, wo im Zahnschema was zu finden ist.",
+    "chartParts": "Teile des Zahnschemas"
+  }
+}

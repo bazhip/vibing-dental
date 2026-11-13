@@ -5,11 +5,19 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { DentalField } from '../types';
 import { BLOCK_ROW_OPTIONS, BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
+import { ChartSettingsList } from './ChartSettingsList';
 
 /**
  * Chart settings — per person: they follow your account to every device.
  * Each change applies (and saves) right away. Every default matches the
  * app's original layout.
+ *
+ * In the iOS app the same settings render as an inset-grouped list
+ * (ChartSettingsList): in a sheet here (a chart page's Customize), and as
+ * a pushed screen from the Settings tab.
  */
 
 export interface ChartSettingsModalProps {
@@ -36,7 +44,29 @@ const SECTION_TITLES: Record<SettingsSection, string> = {
 const toggle = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
   on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
 
-export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
+  isNativeApp() ? <ChartSettingsSheet {...props} /> : <ChartSettingsDialog {...props} />;
+
+/** The app: an iOS sheet holding the settings list. */
+function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section }: ChartSettingsModalProps) {
+  const { t } = useTranslation();
+  const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title={only ? t(`chart.sectionTitle.${only}`, { ns: 'settings' }) : t('ios.settings.chart')}
+      doneLabel={t('actions.done')}
+      onDone={onClose}
+      className="ios-chart-settings-sheet"
+    >
+      <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)} />
+    </Sheet>
+  );
+}
+
+/** The website's dialog. */
+const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   const showAll = only === null;
   // Which groups a page's Customize shows (everything from the menu).

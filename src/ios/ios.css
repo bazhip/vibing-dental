@@ -246,7 +246,7 @@
   gap: 8px;
   min-width: 0;
 }
-:where(html.native-ios) .ios-navbar__leading { justify-self: start; }
+:where(html.native-ios) .ios-navbar__leading { justify-self: stretch; }
 :where(html.native-ios) .ios-navbar__trailing { justify-self: end; }
 :where(html.native-ios) .ios-navbar__title {
   display: flex;
@@ -312,6 +312,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  min-width: 0; /* a long previous title truncates instead of running under the title */
   max-width: 100%;
   min-height: 44px;
   padding: 0 14px 0 8px;
