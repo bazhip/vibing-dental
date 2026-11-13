@@ -39,9 +39,21 @@ export function useChartSettingsModel(
 
   // Usual anesthetic: typed locally, saved when a field loses focus (not
   // on every keystroke).
-  const [drugName, setDrugName] = React.useState(prefs.usualDrug?.name ?? '');
-  const [drugStrength, setDrugStrength] = React.useState(prefs.usualDrug?.concentration ?? '');
+  const [drugName, setDrugNameState] = React.useState(prefs.usualDrug?.name ?? '');
+  const [drugStrength, setDrugStrengthState] = React.useState(prefs.usualDrug?.concentration ?? '');
+  // Edited since the last save: only then may unmount save the draft (an
+  // untouched or already-saved draft must not overwrite a newer usualDrug).
+  const drugDirty = React.useRef(false);
+  const setDrugName = (v: string) => {
+    drugDirty.current = true;
+    setDrugNameState(v);
+  };
+  const setDrugStrength = (v: string) => {
+    drugDirty.current = true;
+    setDrugStrengthState(v);
+  };
   const saveUsualDrug = () => {
+    drugDirty.current = false;
     const name = drugName.trim();
     const next = name ? { name, concentration: drugStrength.replace(/%/g, '').trim() } : null;
     if (JSON.stringify(next) !== JSON.stringify(prefs.usualDrug)) onChange({ usualDrug: next });
@@ -53,7 +65,9 @@ export function useChartSettingsModel(
   latestSave.current = saveUsualDrug;
   React.useEffect(() => {
     if (!saveDrugOnUnmount) return undefined;
-    return () => latestSave.current();
+    return () => {
+      if (drugDirty.current) latestSave.current();
+    };
   }, [saveDrugOnUnmount]);
 
   return { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock };
