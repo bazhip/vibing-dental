@@ -60,7 +60,9 @@ function Harness({
   onChartSection,
   onTabChange,
   controllerRef,
+  badges,
 }: {
+  badges?: Partial<Record<AppTab, number>>;
   controllerRef?: React.Ref<AppShellHandle>;
   initial?: AppTab;
   onOpenChart?: (id: string) => Promise<boolean | void> | boolean | void;
@@ -70,6 +72,7 @@ function Harness({
   const [tab, setTab] = React.useState<AppTab>(initial);
   return (
     <AppShell
+      badges={badges}
       activeTab={tab}
       onTabChange={(next) => {
         onTabChange?.(next);
@@ -203,6 +206,13 @@ describe('AppShell (iPad landscape: docked sidebar)', () => {
     const labels = within(sidebar).getAllByRole('button').map((b) => b.textContent);
     expect(labels).toEqual(expect.arrayContaining(['Chart', 'Patient', 'Charting', 'Patients', 'Rechecks', 'Settings']));
     expect(within(sidebar).getByRole('button', { name: 'Chart' })).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('a sidebar badge is part of the destination\'s name, as on the tab bar', () => {
+    mockWidth('landscape');
+    render(<Harness badges={{ rechecks: 4 }} />);
+    expect(screen.getByRole('button', { name: 'Rechecks, 4' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Patients' })).toBeInTheDocument();
   });
 
   it('switches tabs from the sidebar and keeps tabs mounted', () => {

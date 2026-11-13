@@ -58,6 +58,7 @@ import { previewLibrary } from './ios/previewLibrary';
 import { PatientsScreen } from './ios/screens/PatientsScreen';
 import { RechecksScreen } from './ios/screens/RechecksScreen';
 import { SettingsScreen } from './ios/screens/SettingsScreen';
+import { useRechecksDue } from './ios/screens/useRechecksDue';
 import { ChartNavBar, ChartNotice } from './ios/chart/ChartNavBar';
 import { chartStatus } from './ios/chart/chartStatus';
 import type { MenuItem } from './ios/ContextMenu';
@@ -1512,6 +1513,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [cloud.enabled, chart.cloudChartId, libraryVersion]
   );
+  // The library the app's screens see (DEV: the preview's sample patients).
+  const shellLibrary = import.meta.env.DEV ? previewLibrary(appLibrary) : appLibrary;
+  // Rechecks tab badge: patients Overdue + Due today (app only).
+  const rechecksDue = useRechecksDue(native ? shellLibrary : null);
+  const rechecksBadge = React.useMemo(() => (rechecksDue > 0 ? { rechecks: rechecksDue } : undefined), [rechecksDue]);
   const settingsFns = useStableFunctions({
     setPref,
     setLanguage: (lng: AppSettings['language']) => setPref({ language: lng }),
@@ -1679,7 +1685,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return (
       <div className="entry-grid-app">
         {/* DEV only: ?iosPreview=1&iosFixtures=1 gives the trial sample patients. */}
-        <AppDataProvider library={import.meta.env.DEV ? previewLibrary(appLibrary) : appLibrary} settings={appSettings}>
+        <AppDataProvider library={shellLibrary} settings={appSettings}>
           <AppShell
             activeTab={appTab}
             onTabChange={setAppTab}
@@ -1692,6 +1698,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             patients={tabScreens.patients}
             rechecks={tabScreens.rechecks}
             settings={tabScreens.settings}
+            badges={rechecksBadge}
           />
         </AppDataProvider>
         {/* Dictation floats above the tab bar, outside the shell's stacks

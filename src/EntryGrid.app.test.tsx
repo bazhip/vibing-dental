@@ -223,6 +223,21 @@ describe('EntryGrid in the app, with saved charts', () => {
     await waitFor(() => expect(version()).toBeGreaterThan(v));
   });
 
+  it('the Rechecks tab shows a badge with the patients Overdue + Due today (none when 0)', async () => {
+    const due = [
+      { id: 'r1', patient_name: 'Bella', patient_number: '1', owner_name: '', owner_phone: '', owner_email: '', species: 'canine', dentition: 'permanent', chart_date: '', recall_date: '2000-01-01', updated_at: '2026-11-01T00:00:00Z', created_by: 'u1' },
+      { id: 'r2', patient_name: 'Max', patient_number: '2', owner_name: '', owner_phone: '', owner_email: '', species: 'canine', dentition: 'permanent', chart_date: '', recall_date: '2000-01-02', updated_at: '2026-11-01T00:00:00Z', created_by: 'u1' },
+    ];
+    cloud.listCharts.mockImplementation((async (q?: { dueOnly?: boolean }) => ({ rows: q?.dueOnly ? due : [], hasMore: false })) as never);
+    const { unmount } = await renderApp();
+    await waitFor(() => expect(screen.getByRole('tab', { name: 'Rechecks, 2' })).toBeInTheDocument());
+    unmount();
+    cloud.listCharts.mockImplementation(async () => ({ rows: [], hasMore: false }));
+    await renderApp();
+    await waitFor(() => expect(cloud.listCharts).toHaveBeenCalledWith(expect.objectContaining({ dueOnly: true })));
+    expect(screen.getByRole('tab', { name: 'Rechecks' })).toBeInTheDocument();
+  });
+
   it('Sign out in Settings asks, then signs out through cloud sync', async () => {
     await renderApp();
     act(() => fireEvent.click(tab('Settings')));

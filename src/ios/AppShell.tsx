@@ -329,6 +329,7 @@ export function AppShell({
                       type="button"
                       className={`ios-appshell__item${selected ? ' ios-appshell__item--selected' : ''}`}
                       aria-current={selected ? 'page' : undefined}
+                      aria-label={badge && badge > 0 ? `${labels[tab]}, ${badge > 99 ? '99+' : badge}` : undefined}
                       onClick={() => {
                         if (!selected) hapticSelection();
                         selectTab(tab);
@@ -338,7 +339,7 @@ export function AppShell({
                       <Icon name={TAB_ICONS[tab]} size={22} filled={selected} />
                       <span className="ios-appshell__item-label">{labels[tab]}</span>
                       {badge && badge > 0 ? (
-                        <span className="ios-appshell__item-badge">{badge > 99 ? '99+' : badge}</span>
+                        <span className="ios-appshell__item-badge" aria-hidden="true">{badge > 99 ? '99+' : badge}</span>
                       ) : null}
                     </button>
                     {tab === 'chart' && chartSections.length > 0 && (
