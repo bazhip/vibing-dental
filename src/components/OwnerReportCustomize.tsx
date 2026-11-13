@@ -14,7 +14,9 @@ export const OwnerReportCustomize: React.FC<{
   config: OwnerReportConfig;
   onSave: (config: OwnerReportConfig) => Promise<void>;
   branding: { practiceName: string; doctorName: string; logoUrl: string };
-}> = ({ onClose, config, onSave, branding }) => {
+  /** Saved templates failed to load — block saving over them. */
+  loadFailed?: boolean;
+}> = ({ onClose, config, onSave, branding, loadFailed }) => {
   const team = useTeam(true);
   return (
     <OwnerReportTemplatesModal
@@ -24,6 +26,7 @@ export const OwnerReportCustomize: React.FC<{
       onSave={onSave}
       canEdit={team.loaded && team.role === 'owner'}
       roleKnown={team.loaded}
+      loadFailed={loadFailed}
       branding={branding}
     />
   );
