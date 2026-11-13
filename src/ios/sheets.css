@@ -367,6 +367,11 @@ html.native-ios .login-container--app {
   background: var(--ios-bg-grouped);
   align-items: flex-start;
 }
+/* iPad: the sign-in column sits in the middle of the screen, not pinned
+   under the status bar ("safe" keeps a tall form scrollable from the top). */
+@media (min-width: 768px) {
+  html.native-ios .login-container--app { align-items: safe center; }
+}
 html.native-ios .login-container--app .login-box {
   width: 100%;
   max-width: 440px;
