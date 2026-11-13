@@ -360,18 +360,49 @@ function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
 // scroll instead of crushing columns.
 const MIN_LAYOUT_WIDTH = 760;
 
-const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number }> = [
-  { key: 'mobility',    name: 'Mobility',    share: 0.08 },
-  { key: 'recession',   name: 'Recession',   share: 0.09 },
-  { key: 'pocket',      name: 'Pocket',      share: 0.08 },
-  { key: 'furcation',   name: 'Furcation',   share: 0.10 },
-  { key: 'hyperplasia', name: 'Enlargement', share: 0.12 },
-  { key: 'calculus',    name: 'Calculus',    share: 0.09 },
-  { key: 'gingivitis',  name: 'Gingivitis',  share: 0.11 },
+// `short`: the title used when full ones would be cut off ("MOBILIT",
+// "RECESSIO") — phones, small tablets and narrow windows.
+const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; short: string }> = [
+  { key: 'mobility',    name: 'Mobility',    share: 0.08, short: 'Mob', },
+  { key: 'recession',   name: 'Recession',   share: 0.09, short: 'Rec', },
+  { key: 'pocket',      name: 'Pocket',      share: 0.08, short: 'Pocket' },
+  { key: 'furcation',   name: 'Furcation',   share: 0.10, short: 'Furc', },
+  { key: 'hyperplasia', name: 'Enlargement', share: 0.12, short: 'Enl', },
+  { key: 'calculus',    name: 'Calculus',    share: 0.09, short: 'Calc', },
+  { key: 'gingivitis',  name: 'Gingivitis',  share: 0.11, short: 'Ging', },
   // pdstate's share is nominal — as the last column it takes whatever
   // slack is left so the columns always total the container exactly.
-  { key: 'pdstate',     name: 'PD State',    share: 0.12 },
+  { key: 'pdstate',     name: 'PD State',    share: 0.12, short: 'Stage', },
 ];
+
+/** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
+ *  the tooth stays in view while the findings scroll sideways. */
+const NARROW_LEAD = [40, 64, 54] as const;
+/** Matches the CSS breakpoint where the grid becomes its own scroller. */
+const NARROW_QUERY = '(max-width: 1000px)';
+
+/** Width a header needs for `label`: uppercase caption-size titles run
+ *  ≈10.4px a letter (measured: "MOBILITY" is 81px), plus the cell's
+ *  side padding and, on finding columns, the ⋯ set-all button and gap
+ *  (28px square on touch screens, 18px otherwise). */
+function headerWidth(label: string, opts: { button: boolean; narrow: boolean; coarse: boolean }): number {
+  const padding = opts.narrow ? 13 : 16;
+  const button = opts.button ? (opts.coarse ? 28 : 18) + 6 : 0;
+  return Math.ceil(label.length * 10.4 + padding + button);
+}
+
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = React.useState(() => window.matchMedia?.(query).matches ?? false);
+  React.useEffect(() => {
+    const mq = window.matchMedia?.(query);
+    if (!mq) return;
+    const on = () => setMatches(mq.matches);
+    on();
+    mq.addEventListener?.('change', on);
+    return () => mq.removeEventListener?.('change', on);
+  }, [query]);
+  return matches;
+}
 
 export const DentalGrid: React.FC<DentalGridProps> = ({
   toothData,
@@ -404,6 +435,15 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     // Per-root pockets need room for up to three small boxes.
     return shown.map((c) => (c.key === 'pocket' && pocketMode === 'root' ? { ...c, share: 0.17 } : c));
   }, [hiddenColumns, pocketMode]);
+  const narrow = useMediaQuery(NARROW_QUERY);
+  const coarse = useMediaQuery('(pointer: coarse)');
+  const headOpts = { button: !readOnly, narrow, coarse };
+  // Narrow screens lay out each finding column just wide enough for its
+  // short title (the card scrolls sideways); wider ones fill the
+  // container. Per-root pockets need room for up to three boxes.
+  const narrowWidth = (c: { key: keyof ToothData; short: string }) =>
+    Math.max(headerWidth(c.short, headOpts), c.key === 'pocket' && pocketMode === 'root' ? 132 : 60);
+  const narrowMinWidth = NARROW_LEAD.reduce((a, b) => a + b, 0) + visibleColumns.reduce((sum, c) => sum + narrowWidth(c), 0) + 2;
   const lastEditableRef = useRef(FIRST_EDITABLE + visibleColumns.length - 1);
   lastEditableRef.current = FIRST_EDITABLE + visibleColumns.length - 1;
   const speciesRef = useRef<Species>(species);
@@ -435,7 +475,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   }, []);
   // -2 for the card's side borders; floor keeps parity with the
   // horizontal-scroll breakpoint.
-  const layoutWidth = Math.max(containerWidth, MIN_LAYOUT_WIDTH) - 2;
+  const layoutWidth = Math.max(containerWidth, narrow ? narrowMinWidth : MIN_LAYOUT_WIDTH) - 2;
 
   // Whole-mouth scoring (calculus, gingivitis, …): one value applied to
   // every chartable tooth from the column header. Refs keep the handler
@@ -556,16 +596,28 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const fullShare = CODE_COLUMNS.reduce((sum, c) => sum + c.share, 0);
     const shownShare = visibleColumns.reduce((sum, c) => sum + c.share, 0) || 1;
     const scale = fullShare / shownShare;
-    const colWidth = (share: number) => px(share * scale);
+    const lead = narrow ? NARROW_LEAD : [px(0.06), px(0.07), px(0.08)];
+    const colWidth = (c: (typeof visibleColumns)[number]) => (narrow ? narrowWidth(c) : px(c.share * scale));
     const fixedTotal =
-      px(0.06) + px(0.07) + px(0.08) +
-      visibleColumns.slice(0, -1).reduce((sum, column) => sum + colWidth(column.share), 0);
+      lead[0] + lead[1] + lead[2] +
+      visibleColumns.slice(0, -1).reduce((sum, column) => sum + colWidth(column), 0);
     const lastColumnWidth = Math.max(layoutWidth - fixedTotal, 60);
+    const widthOf = (index: number) =>
+      index === visibleColumns.length - 1 ? lastColumnWidth : colWidth(visibleColumns[index]);
+    // One style across the row: if any finding's full title would be
+    // cut off, every finding column uses its short title.
+    const fits = (label: string, width: number, button = !readOnly) => headerWidth(label, { ...headOpts, button }) <= width;
+    const fullTitles = visibleColumns.every((c, i) => fits(c.name, widthOf(i)));
     return [
     {
       key: 'missing',
       name: 'Missing',
-      width: px(0.06),
+      width: lead[0],
+      // Pinned left on narrow screens (our own sticky CSS — the grid's
+      // `frozen` renders frozen cells twice when virtualization is off).
+      cellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
+      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
+      renderHeaderCell: () => (fits('Missing', lead[0], false) ? 'Missing' : <span title="Missing" aria-label="Missing">✕</span>),
       renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         const carried = isMissing && !!priorGoneTeeth?.has(row.triadan);
@@ -598,7 +650,11 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'tooth',
       name: 'Tooth',
-      width: px(0.07),
+      width: lead[1],
+      // Pinned left on narrow screens (our own sticky CSS — the grid's
+      // `frozen` renders frozen cells twice when virtualization is off).
+      cellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
+      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => (
@@ -610,17 +666,28 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     {
       key: 'triadan',
       name: 'Triadan',
-      width: px(0.08),
+      width: lead[2],
+      // Pinned left on narrow screens (our own sticky CSS — the grid's
+      // `frozen` renders frozen cells twice when virtualization is off).
+      cellClass: narrow ? 'dental-grid__pin dental-grid__pin--2' : undefined,
+      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--2' : undefined,
+      renderHeaderCell: () => (fits('Triadan', lead[2], false) ? 'Triadan' : <span title="Triadan" aria-label="Triadan">#</span>),
       renderCell: ({ row }) => (
         <span className="dental-grid__pick" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
           {row.triadan}
         </span>
       ),
     },
-    ...visibleColumns.map(({ key, name, share }, index): Column<ToothData> => ({
+    ...visibleColumns.map(({ key, name, short }, index): Column<ToothData> => {
+      const width = widthOf(index);
+      const fullTitle = key === 'pocket' && pocketMode === 'root' ? `${name} (per root)` : name;
+      // Short titles whenever full ones would be cut off (phones, small
+      // tablets, narrow windows).
+      const title = !fullTitles ? short : fits(fullTitle, width) ? fullTitle : name;
+      return {
       key,
       name,
-      width: index === visibleColumns.length - 1 ? lastColumnWidth : colWidth(share),
+      width,
       renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode === 'root' ? PocketCellEditor : CodeCellEditor,
       // Teeth marked missing have nothing to measure.
       editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
@@ -675,8 +742,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         ) : null;
       },
       renderHeaderCell: () => (
-        <span className="dental-grid__head">
-          {key === 'pocket' && pocketMode === 'root' ? `${name} (per root)` : name}
+        <span className="dental-grid__head" title={title !== fullTitle ? fullTitle : undefined}>
+          {title === fullTitle ? title : <span aria-label={fullTitle}>{title}</span>}
           <button
             type="button"
             className="dental-grid__set-all"
@@ -689,9 +756,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           </button>
         </span>
       ),
-    })),
+      };
+    }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse]);
 
   return (
     <div className="dental-grid-section">
@@ -764,7 +832,15 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       ) : (
         <p className="dental-grid__bulk-hint">Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.</p>
       ))}
-      <div className="dental-grid" ref={wrapperRef}>
+      <div
+        className="dental-grid"
+        ref={wrapperRef}
+        style={narrow ? ({
+          '--grid-min-width': `${narrowMinWidth - 2}px`,
+          '--pin-1': `${NARROW_LEAD[0]}px`,
+          '--pin-2': `${NARROW_LEAD[0] + NARROW_LEAD[1]}px`,
+        } as React.CSSProperties) : undefined}
+      >
         <EditorWiringContext.Provider value={wiring}>
           <DataGrid
             ref={gridRef}
