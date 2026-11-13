@@ -55,6 +55,7 @@ function FixtureProvider({ children }: { children: React.ReactNode }) {
 
 /** Wraps the Settings tab and each screen it pushes (DEV fixture only). */
 export function SettingsFixture({ children }: { children: React.ReactNode }) {
-  if (!fixtureOn()) return <>{children}</>;
+  // Checked inline so production builds drop the fixture entirely.
+  if (!import.meta.env.DEV || !fixtureOn()) return <>{children}</>;
   return <FixtureProvider>{children}</FixtureProvider>;
 }
