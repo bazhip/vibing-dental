@@ -25,7 +25,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "replay": "tsx scripts/replay-transcript.ts",
+    "replay": "node scripts/vite-run.mjs scripts/replay-transcript.ts",
     "lint": "eslint src",
     "i18n:check": "tsx scripts/i18n/check.ts",
     "i18n:translate": "tsx scripts/i18n/translate.ts",

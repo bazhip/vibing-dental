@@ -50,6 +50,7 @@ import { AdminPanel, useIsAdmin } from './components/AdminPanel';
 import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
+import type { AppLanguage } from './i18n/config';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
@@ -313,12 +314,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   const activeSectionRef = React.useRef(activeSection);
   activeSectionRef.current = activeSection;
-  const handleAiActivity = React.useCallback((actions: AiAction[]) => {
+  const handleAiActivity = React.useCallback((actions: AiAction[], lng: AppLanguage) => {
     // Never navigate: the vet stays on the page they chose, and the voice
     // panel says where anything else went ("→ Exam: …"). Just flash the
     // tooth from the last change that belongs on this page.
     for (let i = actions.length - 1; i >= 0; i--) {
-      const f = actionFocus(actions[i], activeSectionRef.current);
+      const f = actionFocus(actions[i], activeSectionRef.current, lng);
       if (!f || f.section !== activeSectionRef.current) continue;
       if (typeof f.triadan === 'number') {
         setAiHighlightTriadan(f.triadan);

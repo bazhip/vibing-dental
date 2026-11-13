@@ -1,3 +1,7 @@
+import type { AppLanguage } from '../i18n/config';
+import glossary from '../locales/glossary.json';
+import { SPOKEN_SYNONYMS } from '../utils/voice/terms';
+
 /**
  * Deepgram Nova-3 "keyterm prompting" list for AI voice autofill.
  *
@@ -122,3 +126,98 @@ export const VOICE_KEYTERMS: string[] = [
   'isoflurane',
   'sevoflurane',
 ];
+
+/** Deepgram limits: 100 terms and 500 tokens per request (over → error). */
+const MAX_TERMS = 100;
+const MAX_TOKENS = 500;
+
+/** Rough token estimate, deliberately pessimistic for non-English words. */
+const termTokens = (t: string): number => Math.ceil(t.length / 3) + 1;
+
+// Vets say these in English whatever the working language: Triadan numbering
+// and drug names (indices into VOICE_KEYTERMS by value, not position).
+const ENGLISH_CORE: string[] = [
+  'Triadan',
+  'bupivacaine', 'lidocaine', 'mepivacaine', 'dexmedetomidine', 'methadone',
+  'hydromorphone', 'buprenorphine', 'butorphanol', 'alfaxalone', 'midazolam',
+  'maropitant', 'meloxicam', 'carprofen', 'gabapentin', 'isoflurane', 'sevoflurane',
+];
+
+// VOICE_KEYTERMS entries whose glossary `en` value differs from the keyterm,
+// mapped to the glossary id. Some ids equal the keyterm ("mobility") but are
+// still needed: the lookup without an alias goes by `en` value, and that is
+// "tooth mobility" / "furcation involvement", not the keyterm.
+const GLOSSARY_ALIAS: Record<string, string> = {
+  'carnassial': 'carnassial_tooth',
+  'mobility': 'mobility',
+  'furcation': 'furcation',
+  'furcation exposure': 'furcation',
+  'enlargement': 'hyperplasia',
+  'root canal': 'root_canal_therapy',
+  'non-vital': 'non_vital_tooth',
+  'persistent deciduous': 'persistent_deciduous_tooth',
+  'supernumerary': 'supernumerary_tooth',
+};
+
+// Native nerve-block names, placed after the spoken synonyms so the token cap
+// trims the occlusion/procedure tail rather than the block sites.
+const NERVE_BLOCK_IDS = [
+  'nerve_block',
+  'infraorbital_nerve_block',
+  'caudal_maxillary_nerve_block',
+  'mental_nerve_block',
+  'inferior_alveolar_nerve_block',
+];
+
+// Most-dictated glossary terms that have no VOICE_KEYTERMS entry; placed
+// right after the nerve blocks.
+const EXTRA_GLOSSARY_IDS = ['periodontitis'];
+
+type GlossaryTerm = { id: string; en: string } & Partial<Record<AppLanguage, string>>;
+const TERMS = (glossary as { terms: GlossaryTerm[] }).terms;
+const BY_ID = new Map(TERMS.map((t) => [t.id, t]));
+const BY_EN = new Map(TERMS.map((t) => [t.en.toLowerCase(), t]));
+
+/** Curly apostrophes (catalog typography) become straight ones in keyterms. */
+const straightApostrophes = (t: string): string => t.replace(/[\u2018\u2019\u02BC]/g, "'");
+
+/**
+ * Keyterms for Deepgram in `lng`. English: VOICE_KEYTERMS unchanged. Other
+ * languages, in priority order (the cap trims the end): the English
+ * codes/drug names vets say in English, the spoken score synonyms, the
+ * native nerve-block names, then the glossary's native clinical values in
+ * VOICE_KEYTERMS order — de-duplicated and capped to Deepgram's term and
+ * token limits.
+ */
+export function voiceKeyterms(lng: AppLanguage): string[] {
+  if (lng === 'en') return VOICE_KEYTERMS;
+  const candidates: string[] = [...ENGLISH_CORE, ...SPOKEN_SYNONYMS[lng]];
+  for (const id of [...NERVE_BLOCK_IDS, ...EXTRA_GLOSSARY_IDS]) {
+    const v = BY_ID.get(id)?.[lng];
+    if (v) candidates.push(v);
+  }
+  for (const kt of VOICE_KEYTERMS) {
+    const entry = BY_ID.get(GLOSSARY_ALIAS[kt] ?? '') ?? BY_EN.get(kt.toLowerCase());
+    const v = entry?.[lng];
+    if (v) candidates.push(v);
+  }
+  return capKeyterms(candidates.map(straightApostrophes));
+}
+
+/** De-duplicate (case-insensitively) and fit Deepgram's limits, in order.
+ *  A term that would overflow the token budget is skipped, so shorter
+ *  terms after it still get in. */
+export function capKeyterms(candidates: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  let tokens = 0;
+  for (const term of candidates) {
+    if (out.length >= MAX_TERMS) break;
+    const key = term.toLowerCase();
+    if (seen.has(key) || tokens + termTokens(term) > MAX_TOKENS) continue;
+    seen.add(key);
+    out.push(term);
+    tokens += termTokens(term);
+  }
+  return out;
+}
