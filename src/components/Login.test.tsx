@@ -104,6 +104,19 @@ describe('Login — Sign in with Apple and app mode', () => {
     await waitFor(() => expect(browser.open).toHaveBeenCalledWith({ url: 'https://toothops.app/' }));
   });
 
+  it('appMode: the legal notice appears once (by the sign-in buttons)', () => {
+    cap.native = true;
+    render(<Login onAuthenticate={vi.fn()} appMode />);
+    const notices = document.querySelectorAll('.login-legal');
+    expect(notices).toHaveLength(1);
+    expect(notices[0]).toHaveTextContent(/^By continuing you agree to the Terms of Service/);
+  });
+
+  it('web keeps both legal notices (by Google and after the email form)', () => {
+    render(<Login onAuthenticate={vi.fn()} />);
+    expect(document.querySelectorAll('.login-legal')).toHaveLength(2);
+  });
+
   it('web: the website form (labelled fields, login buttons); no iOS styling', () => {
     render(<Login onAuthenticate={vi.fn()} />);
     expect(document.querySelector('.login-container')).not.toHaveClass('login-container--app');

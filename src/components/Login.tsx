@@ -518,7 +518,8 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               ? 'Continue'
               : 'Sign in'}
           </button>
-          {cloudEnabled && <LegalNotice action={signup ? 'creating an account' : 'signing in'} />}
+          {/* The app shows the notice once, by the sign-in buttons above. */}
+          {cloudEnabled && !app && <LegalNotice action={signup ? 'creating an account' : 'signing in'} />}
 
           {cloudEnabled && !signup && (
             <button
