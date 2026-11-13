@@ -1,4 +1,5 @@
 import React from 'react';
+import { pinnedSectionNav } from '../utils/pinnedSectionNav';
 import { MobileSectionMenu } from './MobileSectionMenu';
 
 /**
@@ -49,9 +50,8 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       const main = mainRef.current;
       if (!main) return;
       const panel = main.querySelector<HTMLElement>(`[data-section-id="${id}"]`);
-      // Clear the sticky topbar — and on phones the pinned section menu.
-      const menu = document.querySelector<HTMLElement>('.mobile-section-menu');
-      const menuH = menu && menu.offsetParent !== null ? menu.getBoundingClientRect().height : 0;
+      // Clear the sticky topbar — and the pinned section nav on smaller screens.
+      const menuH = pinnedSectionNav()?.getBoundingClientRect().height ?? 0;
       const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(main).getPropertyValue('--topbar-height')) || 72) - menuH - 12;
       if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top) });
       const heading = panel?.querySelector<HTMLElement>('h2');
@@ -61,12 +61,46 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       }
     });
   };
+  // Tablets show the sections as a sideways-scrolling tab strip: fade the
+  // edges only where more tabs are hidden, and keep the active tab in view.
+  const navRef = React.useRef<HTMLElement>(null);
+  const [fade, setFade] = React.useState({ start: false, end: false });
+  const updateFade = React.useCallback(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const scrollable = nav.scrollWidth > nav.clientWidth + 1;
+    const next = {
+      start: scrollable && nav.scrollLeft > 1,
+      end: scrollable && nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 1,
+    };
+    setFade((prev) => (prev.start === next.start && prev.end === next.end ? prev : next));
+  }, []);
+  React.useEffect(() => {
+    updateFade();
+    window.addEventListener('resize', updateFade);
+    return () => window.removeEventListener('resize', updateFade);
+  }, [updateFade]);
+  React.useEffect(() => {
+    const nav = navRef.current;
+    const item = nav?.querySelector<HTMLElement>('.sidebar-layout__nav-item--active');
+    if (!nav || !item || nav.scrollWidth <= nav.clientWidth + 1) return;
+    // Center the active tab where possible (horizontal only — never
+    // scrolls the page).
+    const left = item.offsetLeft - (nav.clientWidth - item.offsetWidth) / 2;
+    nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+  }, [active]);
+
   return (
     <div className="sidebar-layout">
       <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
       {/* Plain navigation, not an ARIA tablist — the buttons have no
           arrow-key contract, and sections read better as nav anyway. */}
-      <nav className="sidebar-layout__nav" aria-label="Chart sections">
+      <nav
+        ref={navRef}
+        className={`sidebar-layout__nav${fade.start ? ' sidebar-layout__nav--fade-start' : ''}${fade.end ? ' sidebar-layout__nav--fade-end' : ''}`}
+        aria-label="Chart sections"
+        onScroll={updateFade}
+      >
         {sections.map((s, i) => (
           <button
             key={s.id}

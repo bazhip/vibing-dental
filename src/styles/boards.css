@@ -104,12 +104,34 @@
      viewport and scroll the whole page. min-width:0 confines the
      overflow to the .dental-grid card. */
   .sidebar-layout { grid-template-columns: minmax(0, 1fr); }
+  /* Tablets: the sections become a scrollable tab strip (Material
+     "scrollable tabs") pinned under the header — always reachable, and
+     the edges fade only where more tabs are hidden that way. */
   .sidebar-layout__nav {
-    position: static;
+    position: sticky;
+    top: var(--topbar-height, 0px);
+    z-index: 40;
     flex-direction: row;
     overflow-x: auto;
     flex-wrap: nowrap;
-    padding: 0;
+    padding: 0.4rem 0;
+    margin-top: -0.4rem;
+    background: var(--bg-page, #eef1f3);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .sidebar-layout__nav::-webkit-scrollbar { display: none; }
+  .sidebar-layout__nav--fade-end {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent);
+  }
+  .sidebar-layout__nav--fade-start {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem);
+    mask-image: linear-gradient(to right, transparent, #000 3rem);
+  }
+  .sidebar-layout__nav--fade-start.sidebar-layout__nav--fade-end {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
   }
   .sidebar-layout__nav-item { flex: 0 0 auto; }
   .sidebar-layout__main { padding: 1.25rem; }
