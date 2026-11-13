@@ -49,7 +49,10 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       const main = mainRef.current;
       if (!main) return;
       const panel = main.querySelector<HTMLElement>(`[data-section-id="${id}"]`);
-      const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height')) || 72) - 12;
+      // Clear the sticky topbar — and on phones the pinned section menu.
+      const menu = document.querySelector<HTMLElement>('.mobile-section-menu');
+      const menuH = menu && menu.offsetParent !== null ? menu.getBoundingClientRect().height : 0;
+      const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(main).getPropertyValue('--topbar-height')) || 72) - menuH - 12;
       if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top) });
       const heading = panel?.querySelector<HTMLElement>('h2');
       if (heading) {

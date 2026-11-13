@@ -1227,6 +1227,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             )}
           </div>
           </div>
+          {/* Phones: the saved-visit state rides the patient row as a small
+              chip (the big tinted bar is desktop/tablet only). */}
+          {(editingSavedVisit || viewingSavedVisit) && (
+            <span className={`topbar-state-chip topbar-state-chip--${editingSavedVisit ? 'editing' : 'viewing'}`}>
+              {editingSavedVisit ? '✎ Editing' : 'Viewing'}
+            </span>
+          )}
         </div>
         <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}${viewingSavedVisit ? ' entry-grid__topbar-actions--viewing' : ''}`}>
           {viewingSavedVisit && (
@@ -1341,7 +1348,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             if (cloud.lastSavedAt) {
               return (
                 <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
-                  Saved · {formatSavedAt(cloud.lastSavedAt)}
+                  <span className="save-status__word">Saved · </span>{formatSavedAt(cloud.lastSavedAt)}
                 </span>
               );
             }
@@ -1418,8 +1425,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 className="chart-menu__trigger topbar-library-btn"
                 onClick={() => setHistoryFor({ id: chart.cloudChartId })}
                 title="Every saved version of this chart — who saved it and when"
+                aria-label="History"
               >
-                History
+                <svg className="topbar-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                  <path d="M8 2.5a5.5 5.5 0 1 1-5.24 3.83" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <path d="M2.2 2.8v3.5h3.5M8 5v3.2l2.2 1.3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="topbar-icon-label">History</span>
               </button>
               <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
                 <span className="topbar-label-long">Edit chart</span>
@@ -1433,10 +1445,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 <button
                   type="button"
                   className="topbar-editing__undo"
+                  aria-label="Undo changes"
                   onClick={revertUnlockedChanges}
                   title="Put this chart back the way it was when you chose Edit chart"
                 >
-                  <span aria-hidden="true">↺</span> <span className="topbar-label-long">Undo changes</span><span className="topbar-label-short">Undo</span>
+                  <span aria-hidden="true">↺</span> <span className="topbar-icon-label">Undo changes</span>
                 </button>
               )}
               <button
@@ -1444,7 +1457,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 className="entry-grid__button entry-grid__button--topbar"
                 onClick={doneEditing}
               >
-                Done editing
+                <span className="topbar-label-long">Done editing</span>
+                <span className="topbar-label-short">Done</span>
               </button>
             </>
           )}
