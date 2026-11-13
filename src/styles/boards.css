@@ -467,12 +467,12 @@
   margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--ios-label, #0f172a);
 }
 .pdf-preview-header p {
-  margin: 2px 0 0; color: var(--ios-label-2, #64748b); font-size: 0.85rem;
+  margin: 2px 0 0; color: var(--ios-label-muted, #64748b); font-size: 0.85rem;
 }
 .pdf-preview-close {
   width: 36px; height: 36px; border-radius: 18px;
   background: transparent; border: none; font-size: 22px; cursor: pointer;
-  color: var(--ios-label-2, #475569);
+  color: var(--ios-label-muted, #475569);
 }
 .pdf-preview-close:hover { background: var(--ios-fill, #f1f5f9); }
 
@@ -513,7 +513,7 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
 }
 .pdf-preview-style strong { font-size: 0.95rem; color: var(--ios-label, #0f172a); font-weight: 600; }
-.pdf-preview-style span   { font-size: 0.8rem; color: var(--ios-label-2, #64748b); line-height: 1.35; }
+.pdf-preview-style span   { font-size: 0.8rem; color: var(--ios-label-muted, #64748b); line-height: 1.35; }
 
 .pdf-preview-download {
   margin-top: 0.85rem;
@@ -1186,7 +1186,7 @@
 }
 
 /* ---------- Documents dialog: clinical chart / owner report tabs ---------- */
-.documents-modal__subtitle { font-weight: 500; color: var(--ios-label-2, #64748b); }
+.documents-modal__subtitle { font-weight: 500; color: var(--ios-label-muted, #64748b); }
 .documents-modal__tabs {
   display: flex; gap: 0.25rem;
   padding: 0 1.5rem;
@@ -1198,7 +1198,7 @@
   min-height: 44px;
   background: none; border: none;
   font: inherit; font-weight: 600; font-size: 0.95rem;
-  color: var(--ios-label-2, #64748b); cursor: pointer;
+  color: var(--ios-label-muted, #64748b); cursor: pointer;
 }
 .documents-modal__tab:hover { color: var(--ios-label, #0f172a); }
 .documents-modal__tab--on { color: var(--primary, #0c6b63); }
@@ -1212,7 +1212,7 @@
 .pdf-preview-styles .pdf-preview-notes {
   flex: none; overflow: visible;
   list-style: disc; margin: 0; padding: 0 0 0 1.1rem;
-  font-size: 0.85rem; line-height: 1.45; color: var(--ios-label-2, #475569);
+  font-size: 0.85rem; line-height: 1.45; color: var(--ios-label-muted, #475569);
   display: flex; flex-direction: column; gap: 0.4rem;
 }
 .pdf-preview-secondary {
@@ -1534,7 +1534,7 @@
   font: inherit; font-weight: 600; font-size: 0.95rem; cursor: pointer;
 }
 .pdf-style-button__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pdf-style-button__chevron { color: var(--ios-label-2, #64748b); font-size: 0.8rem; }
+.pdf-style-button__chevron { color: var(--ios-label-muted, #64748b); font-size: 0.8rem; }
 
 .pdf-style-sheet-backdrop {
   position: fixed; inset: 0; z-index: 1200;

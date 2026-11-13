@@ -831,7 +831,7 @@
 
 .species-tab:hover {
   color: var(--text);
-  background: var(--ios-on-tint-fill, rgba(255, 255, 255, 0.5));
+  background: var(--ios-segment-hover, rgba(255, 255, 255, 0.5));
 }
 
 .species-tab--active {
@@ -1007,7 +1007,7 @@
 .dental-grid__prior-hint {
   /* Readable (AA) but clearly a hint, not entered data: italic, muted,
      with a dotted underline. */
-  color: var(--ios-label-2, #64748b);
+  color: var(--ios-label-muted, #64748b);
   font-style: italic;
   text-decoration: underline dotted var(--ios-label-3, rgba(100, 116, 139, 0.6));
   text-underline-offset: 3px;
@@ -1122,7 +1122,7 @@
 }
 
 .dental-grid__set-all:hover {
-  background: var(--ios-fill-2, rgba(255, 255, 255, 0.15));
+  background: var(--ios-grid-header-hover, rgba(255, 255, 255, 0.15));
   color: var(--ios-grid-header-label, #fff);
 }
 
@@ -2742,7 +2742,7 @@
 }
 
 .code-ref__empty {
-  color: var(--ios-label-3, #a0aec0);
+  color: var(--ios-label-muted, #a0aec0);
   font-style: italic;
   font-size: 0.85rem;
 }

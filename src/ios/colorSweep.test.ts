@@ -180,4 +180,54 @@ describe('iOS tokens', () => {
     expect(tokens).toMatch(/@media \(prefers-contrast: more\)/);
     expect(tokens).toMatch(/@media \(prefers-reduced-motion: reduce\)/);
   });
+
+  // ---- contrast of small secondary text --------------------------------
+  const hexRgb = (h: string) => {
+    const m = /^#([0-9a-f]{6})$/i.exec(h.trim());
+    if (!m) throw new Error(`expected an opaque hex color, got ${h}`);
+    const n = parseInt(m[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const lum = (h: string) => {
+    const [r, g, b] = hexRgb(h).map((c) => {
+      const v = c / 255;
+      return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrast = (a: string, b: string) => {
+    const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+    return (x + 0.05) / (y + 0.05);
+  };
+  const tokenSet = (pred: (stack: string[]) => boolean) =>
+    Object.fromEntries(
+      declarations(tokens).filter((d) => pred(d.stack)).map((d) => [d.prop, d.value.trim()])
+    ) as Record<string, string>;
+  const SURFACES = ['--ios-bg', '--ios-bg-grouped', '--ios-bg-elevated', '--ios-cell', '--ios-cell-alt'];
+
+  it('muted (small secondary) text meets WCAG AA on every surface, light and dark', () => {
+    const light = tokenSet((st) => st.length === 1 && st[0] === 'html.native-ios');
+    const dark = { ...light, ...tokenSet((st) => st[0] === '@media (prefers-color-scheme: dark)') };
+    for (const [scheme, set] of [['light', light], ['dark', dark]] as const) {
+      for (const bg of SURFACES) {
+        const r = contrast(set['--ios-label-muted'], set[bg]);
+        expect(r, `${scheme} --ios-label-muted on ${bg} (${set[bg]}) = ${r.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+    // The theme's muted text uses it, not the translucent secondaryLabel.
+    expect(light['--text-muted']).toBe('var(--ios-label-muted)');
+  });
+
+  it('Reduce Motion keeps indeterminate spinners turning (slowed), not frozen', () => {
+    const rm = declarations(tokens).filter(
+      (d) => d.stack[0] === '@media (prefers-reduced-motion: reduce)' && /spinner/.test(d.stack[1] ?? '')
+    );
+    const sel = rm[0]?.stack[1] ?? '';
+    expect(sel).toMatch(/\.app-loading__spinner/);
+    expect(sel).toMatch(/\.billing-gate__spinner/);
+    const props = Object.fromEntries(rm.map((d) => [d.prop, d.value.trim()]));
+    expect(props['animation-iteration-count']).toBe('infinite !important');
+    expect(props['animation-duration']).toBe('2.4s !important');
+  });
 });
+
