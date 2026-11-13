@@ -6320,6 +6320,206 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -15084,6 +15284,206 @@
     },
     "onboarding:walkthrough.steps.welcome.title": {
       "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {
@@ -23880,6 +24280,206 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
+      "status": "machine"
+    },
     "pdfui:hints.firefoxAndroid": {
       "hash": "03778c19ffe6",
       "status": "machine"
@@ -32672,6 +33272,206 @@
     },
     "onboarding:walkthrough.steps.welcome.title": {
       "hash": "eb128161196d",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetic": {
+      "hash": "93793d0984e7",
+      "status": "machine"
+    },
+    "pdf:anesthesia.anesthetics": {
+      "hash": "6c0b52b03852",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.caudalMaxillary": {
+      "hash": "b6883c357510",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.inferiorAlveolar": {
+      "hash": "94061e0fc8e8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "pdf:anesthesia.blocks.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "pdf:anesthesia.dose": {
+      "hash": "1568d60dc4f6",
+      "status": "machine"
+    },
+    "pdf:anesthesia.left": {
+      "hash": "2cba9d25c1ea",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlock": {
+      "hash": "e5e144bfaa37",
+      "status": "machine"
+    },
+    "pdf:anesthesia.nerveBlockWith": {
+      "hash": "9745c6045c16",
+      "status": "machine"
+    },
+    "pdf:anesthesia.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "pdf:anesthesia.right": {
+      "hash": "c4ce3c7ad82c",
+      "status": "machine"
+    },
+    "pdf:anesthesia.title": {
+      "hash": "bf15b2bbcb10",
+      "status": "machine"
+    },
+    "pdf:codes.more": {
+      "hash": "7ea1b100a27c",
+      "status": "machine"
+    },
+    "pdf:codes.title": {
+      "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:exam.abnormal": {
+      "hash": "65b240c48fdc",
+      "status": "machine"
+    },
+    "pdf:exam.comment": {
+      "hash": "71772a68c6d1",
+      "status": "machine"
+    },
+    "pdf:exam.items.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "pdf:exam.items.extraoral": {
+      "hash": "99b4dd321bbe",
+      "status": "machine"
+    },
+    "pdf:exam.items.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "pdf:exam.items.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "pdf:exam.items.pharynx": {
+      "hash": "88c3def91279",
+      "status": "machine"
+    },
+    "pdf:exam.items.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.normal": {
+      "hash": "db2cb3fe28e2",
+      "status": "machine"
+    },
+    "pdf:exam.title": {
+      "hash": "7728a4e9153e",
+      "status": "machine"
+    },
+    "pdf:footer.generated": {
+      "hash": "b707870a525e",
+      "status": "machine"
+    },
+    "pdf:footer.pageOf": {
+      "hash": "e63f55f51647",
+      "status": "machine"
+    },
+    "pdf:footer.pid": {
+      "hash": "329ef6d97e0b",
+      "status": "machine"
+    },
+    "pdf:grid.mandible": {
+      "hash": "87bafb14b0e8",
+      "status": "machine"
+    },
+    "pdf:grid.maxilla": {
+      "hash": "7829e00bd33d",
+      "status": "machine"
+    },
+    "pdf:header.subtitle": {
+      "hash": "67a8dfb5255b",
+      "status": "machine"
+    },
+    "pdf:header.tech": {
+      "hash": "3c91ca38e67a",
+      "status": "machine"
+    },
+    "pdf:header.title.canine": {
+      "hash": "acfcbc30f24a",
+      "status": "machine"
+    },
+    "pdf:header.title.canineDeciduous": {
+      "hash": "eecb3e0bf8ce",
+      "status": "machine"
+    },
+    "pdf:header.title.feline": {
+      "hash": "593abbd60d0a",
+      "status": "machine"
+    },
+    "pdf:header.title.felineDeciduous": {
+      "hash": "3f1d0ff8d94c",
+      "status": "machine"
+    },
+    "pdf:images.failed": {
+      "hash": "bd3987c34e63",
+      "status": "machine"
+    },
+    "pdf:images.photo": {
+      "hash": "d84eebada93e",
+      "status": "machine"
+    },
+    "pdf:images.radiograph": {
+      "hash": "7703794c1e14",
+      "status": "machine"
+    },
+    "pdf:images.title": {
+      "hash": "5effbda35820",
+      "status": "machine"
+    },
+    "pdf:images.titleRange": {
+      "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:patient.complaint": {
+      "hash": "590a688f4d8b",
+      "status": "machine"
+    },
+    "pdf:patient.date": {
+      "hash": "99c40ab40592",
+      "status": "machine"
+    },
+    "pdf:patient.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "pdf:patient.pid": {
+      "hash": "3f302a2a7158",
+      "status": "machine"
+    },
+    "pdf:patient.title": {
+      "hash": "e16fbe8bb26c",
+      "status": "machine"
+    },
+    "pdf:treatment.continued": {
+      "hash": "aad5fb09fb67",
+      "status": "machine"
+    },
+    "pdf:treatment.findingsHeading": {
+      "hash": "1f886aec1b6f",
+      "status": "machine"
+    },
+    "pdf:treatment.title": {
+      "hash": "015955e43944",
+      "status": "machine"
+    },
+    "pdf:treatment.treatmentHeading": {
+      "hash": "a41297525ca5",
       "status": "machine"
     },
     "pdfui:hints.firefoxAndroid": {

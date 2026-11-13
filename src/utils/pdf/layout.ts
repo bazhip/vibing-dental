@@ -119,15 +119,8 @@ export const EXAM_COMMENT_BOX = {
   lineHeightFactor: 1.18,
 };
 
-/** Match the LaTeX-original label phrasing (no spaces around the slash). */
-export const EXAM_PDF_LABELS: Record<string, string> = {
-  extraoral: 'Extraoral/facial',
-  lymph:     'Lymph nodes',
-  buccal:    'Buccal mucosa',
-  tongue:    'Tongue',
-  palate:    'Palate',
-  pharynx:   'Pharynx/Tonsils',
-};
+// Exam row labels live in the `pdf` catalog (exam.items), phrased like the
+// LaTeX original (no spaces around the slash).
 
 // ---------- Page-2 treatment & surgery report ------------------------------
 export const TREATMENT_REPORT = {

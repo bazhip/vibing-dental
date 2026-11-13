@@ -1,0 +1,76 @@
+{
+  "header": {
+    "title": {
+      "canine": "Odontogramma canino",
+      "canineDeciduous": "Odontogramma canino (denti decidui)",
+      "feline": "Odontogramma felino",
+      "felineDeciduous": "Odontogramma felino (denti decidui)"
+    },
+    "subtitle": "Valutazione parodontale e piano di trattamento",
+    "tech": "Assistente: {{name}}"
+  },
+  "patient": {
+    "title": "Informazioni sul paziente",
+    "date": "Data",
+    "patient": "Paziente",
+    "pid": "N. paziente",
+    "complaint": "Motivo della visita"
+  },
+  "exam": {
+    "title": "Esame del cavo orale",
+    "normal": "NORMALE",
+    "abnormal": "ANORMALE",
+    "comment": "COMMENTO",
+    "items": {
+      "extraoral": "Extraorale/facciale",
+      "lymph": "Linfonodi",
+      "buccal": "Mucosa orale",
+      "tongue": "Lingua",
+      "palate": "Palato",
+      "pharynx": "Faringe/tonsille"
+    }
+  },
+  "grid": {
+    "maxilla": "Arcata mascellare",
+    "mandible": "Arcata mandibolare"
+  },
+  "codes": {
+    "title": "Codici utilizzati",
+    "more": "+{{n}} altri"
+  },
+  "treatment": {
+    "title": "Referto di trattamento e chirurgia",
+    "findingsHeading": "REPERTI RADIOGRAFICI",
+    "treatmentHeading": "TRATTAMENTO",
+    "continued": "… continua — il referto completo è incorporato in questo file (lo ricarichi nell’app)."
+  },
+  "anesthesia": {
+    "title": "Anestesia · Blocchi nervosi",
+    "nerveBlock": "Blocco nervoso",
+    "nerveBlockWith": "Blocco nervoso {{drug}}",
+    "anesthetic": "Anestetico",
+    "anesthetics": "Anestetici",
+    "right": "DESTRA",
+    "left": "SINISTRA",
+    "dose": "{{value}} mL",
+    "other": "Altro",
+    "blocks": {
+      "infraorbital": "Infraorbitario",
+      "caudalMaxillary": "Mascellare caudale",
+      "inferiorAlveolar": "Alveolare inferiore",
+      "mental": "Mentale"
+    }
+  },
+  "footer": {
+    "generated": "Generato il {{at}}",
+    "pid": "N. paziente {{id}}",
+    "pageOf": "Pagina {{n}} di {{total}}"
+  },
+  "images": {
+    "title": "Immagini e radiografie",
+    "titleRange": "Immagini e radiografie ({{range}} di {{total}})",
+    "failed": "Impossibile caricare l’immagine",
+    "photo": "Foto",
+    "radiograph": "Radiografia"
+  }
+}

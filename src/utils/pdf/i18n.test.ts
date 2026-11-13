@@ -1,8 +1,11 @@
 import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
-import { PDFPage } from 'pdf-lib';
+import { PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
 import { buildDentalChartPDFBytes, type DiagramExport, type PdfLayoutOptions } from '../pdfGenerator';
-import { EMPTY_NERVE_BLOCKS, type PatientInfo, type ToothData, type Species, type Logo } from '../../types';
-import type { DiagramState } from './parser';
+import { EMPTY_NERVE_BLOCKS, normalizeNerveBlocks, type PatientInfo, type ToothData, type Species, type Logo } from '../../types';
+import { parseDentalChartPDF, type DiagramState } from './parser';
+import { pdfSafe } from './sections';
+import { codeDefinition } from '../../constants/dentalCodes';
+import { APP_LANGUAGES } from '../../i18n/config';
 
 /**
  * Text the generated clinical chart PDF draws, captured from every
@@ -36,14 +39,28 @@ async function captureText(
   styleId: string,
   layout: PdfLayoutOptions
 ): Promise<Run[]> {
+  return (await buildCapturing(patientInfo, toothData, species, logo, pre, post, styleId, layout)).runs;
+}
+
+async function buildCapturing(
+  patientInfo: PatientInfo,
+  toothData: ToothData[],
+  species: Species,
+  logo: Logo,
+  pre: DiagramExport,
+  post: DiagramExport,
+  styleId: string,
+  layout: PdfLayoutOptions
+): Promise<{ runs: Run[]; bytes: Uint8Array }> {
   const runs: Run[] = [];
   const original = PDFPage.prototype.drawText;
   const spy = vi.spyOn(PDFPage.prototype, 'drawText').mockImplementation(function (this: PDFPage, text, options) {
     runs.push({ t: text, x: r2(options?.x ?? 0), y: r2(options?.y ?? 0), s: r2(options?.size ?? 0) });
     return original.call(this, text, options);
   });
+  let bytes: Uint8Array;
   try {
-    await buildDentalChartPDFBytes(
+    bytes = await buildDentalChartPDFBytes(
       patientInfo, toothData, species, logo, pre, post, styleId,
       { practiceName: 'Harbor Animal Dental', doctorName: 'Dr. Ada Lin, DVM' },
       layout
@@ -51,7 +68,7 @@ async function captureText(
   } finally {
     spy.mockRestore();
   }
-  return runs;
+  return { runs, bytes };
 }
 
 // ---------------------------------------------------------------- Fixtures --
@@ -185,5 +202,80 @@ describe('clinical chart PDF text', () => {
     const out: Record<string, Run[]> = {};
     for (const [name, args] of Object.entries(SCENARIOS)) out[name] = await captureText(...args);
     await expect(JSON.stringify(out, null, 1) + '\n').toMatchFileSnapshot('./__snapshots__/en-text.json');
+  });
+});
+
+describe('clinical chart PDF in another language', () => {
+  const texts = async (lng: string, styleId = 'clinic') => {
+    const [p, teeth, species, logo, pre, post, , layout] = SCENARIOS.vcaGrid;
+    const runs = await captureText(p, teeth, species, logo, pre, post, styleId, { ...layout, lng } as PdfLayoutOptions);
+    return runs.map((r) => r.t);
+  };
+
+  it('prints French headings, column labels and code definitions', async () => {
+    const fr = await texts('fr');
+    for (const s of [
+      'Schéma dentaire canin', 'Informations sur le patient', 'Motif de consultation', 'Examen bucco-dentaire',
+      'Nœuds lymphatiques', 'Arcade maxillaire', 'Arcade mandibulaire', 'Mobilité', 'Dent', 'Codes utilisés',
+      'Anesthésie · Blocs nerveux', 'Bloc nerveux', 'DROITE', 'GAUCHE', 'Infra-orbitaire', 'Autre',
+      'Compte rendu de traitement et de chirurgie', 'OBSERVATIONS RADIOGRAPHIQUES', 'Généré le 2026-11-13 09:30',
+      'Auxiliaire : Sam Patel', 'Bloc personnalisé', '0.3 mL',
+    ]) expect(fr, s).toContain(s);
+    expect(fr).toContain(codeDefinition('TR', 'fr'));
+    expect(codeDefinition('TR', 'fr')).not.toBe('Tooth resorption');
+    // "Page 1 sur 2" is drawn in three runs so the number can be bold.
+    expect(fr).toEqual(expect.arrayContaining(['Page ', ' sur 2']));
+    // No English chrome left behind.
+    for (const s of [
+      'Mobility', 'Patient Information', 'Oral Exam Findings', 'Maxillary Arch', 'Codes Used', 'Tooth resorption',
+      'RIGHT', 'LEFT', 'Other', 'Nerve Block', 'Custom block', ' of 2', 'Treatment & Surgery Report',
+    ]) expect(fr, s).not.toContain(s);
+    // Saved free text prints as stored.
+    expect(fr).toContain('TR on 307 and 407; RTR 208.');
+    expect(fr).toContain('Biscuit');
+  });
+
+  it('every language draws without unencodable characters', async () => {
+    for (const lng of APP_LANGUAGES) await expect(texts(lng, 'iris')).resolves.not.toHaveLength(0);
+  });
+});
+
+describe('PDF round trip', () => {
+  it('a PDF made in German loads back into the app', async () => {
+    const [p, teeth, species, logo, pre, post, styleId, layout] = SCENARIOS.vcaGrid;
+    const { bytes } = await buildCapturing(p, teeth, species, logo, pre, post, styleId, { ...layout, lng: 'de' } as PdfLayoutOptions);
+    const file = new File([bytes as BlobPart], 'chart.pdf', { type: 'application/pdf' });
+    if (typeof file.arrayBuffer !== 'function') {
+      Object.defineProperty(file, 'arrayBuffer', {
+        value: () => Promise.resolve(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)),
+      });
+    }
+    const parsed = await parseDentalChartPDF(file);
+    expect(parsed.patientInfo).toEqual({ ...p, nerveBlocks: normalizeNerveBlocks(p.nerveBlocks) });
+    expect(parsed.toothData).toEqual(teeth);
+    expect(parsed.species).toBe(species);
+    expect(parsed.logo).toBe(logo);
+    expect(parsed.preDiagram).toEqual(pre.state);
+  });
+});
+
+describe('PDF catalog strings', () => {
+  // Strings allowed to carry characters the standard fonts can't encode
+  // (safeFont swaps or drops them). Keep empty unless there's a reason.
+  const ALLOWED_UNSAFE = new Set<string>([]);
+
+  it('are all WinAnsi-encodable (standard PDF fonts)', async () => {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    const strings = (v: unknown): string[] =>
+      typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [];
+    const bad: string[] = [];
+    for (const lng of APP_LANGUAGES) {
+      const catalog = (await import(`../../locales/${lng}/pdf.json`)).default;
+      for (const s of strings(catalog)) {
+        if (pdfSafe(s, font) !== s && !ALLOWED_UNSAFE.has(s)) bad.push(`${lng}: ${s}`);
+      }
+    }
+    expect(bad).toEqual([]);
   });
 });

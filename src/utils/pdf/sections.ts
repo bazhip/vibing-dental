@@ -2,7 +2,8 @@ import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
 import type { CustomAnesthesia } from '../../types';
-import { DENTAL_CODES, DentalCode, findCodesInText } from '../../constants/dentalCodes';
+import { DENTAL_CODES, DentalCode, findCodesInText, codeDefinition } from '../../constants/dentalCodes';
+import i18n from '../../i18n';
 import {
   PatientInfo,
   Logo,
@@ -26,7 +27,6 @@ import {
   EXAM_ROW_SHORT_IN,
   EXAM_ROW_TALL_IN,
   EXAM_COMMENT_BOX,
-  EXAM_PDF_LABELS,
   TREATMENT_REPORT,
   NERVE_BLOCK_BOX,
   type DiagramSlot,
@@ -53,7 +53,14 @@ import {
  * Each function knows just enough about its own section to lay it out;
  * none of them touch PALETTE / ACTIVE except by reading them (those are
  * mutated up-stack by applyPdfStyle).
+ *
+ * Every drawer takes the document language last (`lng`, default 'en'):
+ * labels come from the `pdf` catalog (and `chart` / `codes`); text the
+ * person typed prints as stored.
  */
+
+/** The `pdf` catalog in the document's language. */
+const pdfT = (lng: string) => i18n.getFixedT(lng, 'pdf');
 
 // ---------------------------------------------------------------- Codes ----
 
@@ -125,9 +132,11 @@ export function drawCodesLegend(
   codes: DentalCode[],
   bold: PDFFont,
   regular: PDFFont,
-  maxCols = 3
+  maxCols = 3,
+  lng = 'en'
 ): void {
   if (codes.length === 0) return;
+  const t = pdfT(lng);
 
   const { height: pageHeight } = page.getSize();
   const x = region.xIn * PT_PER_IN;
@@ -136,7 +145,7 @@ export function drawCodesLegend(
   const heightPt = region.heightIn * PT_PER_IN;
 
   // One card: "Codes Used" band + entries in a single rounded frame.
-  const bandBottom = drawSectionCard(page, x, yTop, widthPt, heightPt, 'Codes Used', bold);
+  const bandBottom = drawSectionCard(page, x, yTop, widthPt, heightPt, t('codes.title'), bold);
   const bodyStartY = bandBottom - 3;
   const bodyHeight = heightPt - (yTop - bodyStartY) - 4;
 
@@ -178,7 +187,7 @@ export function drawCodesLegend(
     }
 
     page.drawText(c.code, { x: cx, y: cy, size: codeSize, font: bold, color: PALETTE.primary });
-    const defLines = wrapToWidth(c.definition, regular, codeSize, defWidth);
+    const defLines = wrapToWidth(codeDefinition(c.code, lng), regular, codeSize, defWidth);
     const text = defLines[0] + (defLines.length > 1 ? '…' : '');
     page.drawText(text, { x: cx + codeColWidth, y: cy, size: codeSize, font: regular, color: PALETTE.text });
 
@@ -190,7 +199,7 @@ export function drawCodesLegend(
     const cx = innerX + col * (colWidth + colGap);
     const cy = bodyStartY - rowInCol * lineHeight - lineHeight + 3;
     const remaining = codes.length - (capacity - 1);
-    page.drawText(`+${remaining} more`, {
+    page.drawText(t('codes.more', { n: remaining }), {
       x: cx, y: cy, size: codeSize, font: bold, color: PALETTE.muted,
     });
   }
@@ -213,19 +222,21 @@ export async function drawLogoAndHeader(
   customLogoUrl?: string,
   /** Practice name — drawn as a text wordmark when there's no uploaded
    *  logo, so a signed-in practice never prints another clinic's mark. */
-  practiceName?: string
+  practiceName?: string,
+  lng = 'en'
 ): Promise<number> {
+  const t = pdfT(lng);
   const { width: pageWidth, height: pageHeight } = page.getSize();
   const titleSize = 22;
   const subtitleSize = 9;
   const SPECIES_TITLES: Record<Species, string> = {
-    canine: 'Canine',
-    'canine-deciduous': 'Canine (Deciduous)',
-    feline: 'Feline',
-    'feline-deciduous': 'Feline (Deciduous)',
+    canine: t('header.title.canine'),
+    'canine-deciduous': t('header.title.canineDeciduous'),
+    feline: t('header.title.feline'),
+    'feline-deciduous': t('header.title.felineDeciduous'),
   };
-  const titleText = `${SPECIES_TITLES[species]} Dental Chart`;
-  const subtitleText = 'Periodontal Assessment & Treatment Plan';
+  const titleText = SPECIES_TITLES[species];
+  const subtitleText = t('header.subtitle');
   const logoWidthIn = 2.20;
   const logoWidth = logoWidthIn * PT_PER_IN;
   const logoUrl = logo === 'vca' ? 'logo_vca.png' : 'logo_socal.png';
@@ -312,7 +323,7 @@ export async function drawLogoAndHeader(
   let underlineY = drNameBaselineY - 4;
   if (logo === 'vca' && techName.trim()) {
     const techBaselineY = drNameBaselineY - techSize - 4;
-    drawClippedText(page, `Tech: ${techName}`, logoLeftPt + 2, techBaselineY,
+    drawClippedText(page, t('header.tech', { name: techName }), logoLeftPt + 2, techBaselineY,
       techSize, font, PALETTE.muted, nameMaxW);
     underlineY = techBaselineY - 4;
   }
@@ -367,8 +378,10 @@ export function drawPatientInfoBox(
   fontBold: PDFFont,
   /** Cap on complaint lines, budgeted by the caller from the space left
    *  above the exam card. Truncation past the cap gets an ellipsis. */
-  maxComplaintLines: number = 3
+  maxComplaintLines: number = 3,
+  lng = 'en'
 ): number {
+  const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const x = PATIENT_INFO_BOX.xIn * PT_PER_IN;
   const yTop = pageHeight - PATIENT_INFO_BOX.yTopIn * PT_PER_IN;
@@ -402,10 +415,10 @@ export function drawPatientInfoBox(
   // Patient + PID for both logos — Doctor / Tech live in the logo header
   // for VCA, not in the patient info box.
   const rows: Row[] = [
-    { label: 'Date',            value: patientInfo.date,          heightIn: PATIENT_INFO_BOX.rowDateIn },
-    { label: 'Patient',         value: patientInfo.patientName,   heightIn: PATIENT_INFO_BOX.rowPatientIn },
-    { label: 'PID',             value: patientInfo.patientNumber, heightIn: PATIENT_INFO_BOX.rowIdIn },
-    { label: 'Chief Complaint', value: patientInfo.complaint, multiline: true, heightIn: complaintRowIn },
+    { label: t('patient.date'),      value: patientInfo.date,          heightIn: PATIENT_INFO_BOX.rowDateIn },
+    { label: t('patient.patient'),   value: patientInfo.patientName,   heightIn: PATIENT_INFO_BOX.rowPatientIn },
+    { label: t('patient.pid'),       value: patientInfo.patientNumber, heightIn: PATIENT_INFO_BOX.rowIdIn },
+    { label: t('patient.complaint'), value: patientInfo.complaint, multiline: true, heightIn: complaintRowIn },
   ];
   const labeledRowsH = rows.reduce((acc, r) => acc + r.heightIn * PT_PER_IN, 0);
 
@@ -418,7 +431,7 @@ export function drawPatientInfoBox(
   const cardTop = yTop + 0.20 * PT_PER_IN;
   const bodyTop = drawSectionCard(
     page, x, cardTop, totalW, CARD_BAND_PT + labeledRowsH,
-    'Patient Information', fontBold
+    t('patient.title'), fontBold
   );
 
   // Alternating row tints (inset so they don't poke past the corners).
@@ -568,8 +581,10 @@ export function drawExamSection(
   font: PDFFont,
   fontBold: PDFFont,
   bodyTopIn: number = EXAM_TABLE_YTOP_IN,
-  geo: ExamGeometry = EXAM_GEOMETRY_STANDARD
+  geo: ExamGeometry = EXAM_GEOMETRY_STANDARD,
+  lng = 'en'
 ): number {
+  const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const fontSize = 9;
   const xPt = geo.xIn * PT_PER_IN;
@@ -587,7 +602,7 @@ export function drawExamSection(
   const rowsTotalH = layouts.reduce((acc, l) => acc + l.heightPt, 0);
   drawSectionCard(
     page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth,
-    CARD_BAND_PT + headPt + rowsTotalH, 'Oral Exam Findings', fontBold
+    CARD_BAND_PT + headPt + rowsTotalH, t('exam.title'), fontBold
   );
 
   // Column layout mirrors the app: label | Normal | Abnormal | Comment.
@@ -599,10 +614,10 @@ export function drawExamSection(
   // Caption row.
   const capSize = 6.5;
   const capBaseline = bodyTopPt - headPt + (headPt - capSize) / 2 + 1;
-  drawCenteredText(page, 'NORMAL',   normalCX - 40,   normalCX + 40,   capBaseline, capSize, fontBold, PALETTE.muted);
-  drawCenteredText(page, 'ABNORMAL', abnormalCX - 40, abnormalCX + 40, capBaseline, capSize, fontBold, PALETTE.muted);
+  drawCenteredText(page, t('exam.normal'),   normalCX - 40,   normalCX + 40,   capBaseline, capSize, fontBold, PALETTE.muted);
+  drawCenteredText(page, t('exam.abnormal'), abnormalCX - 40, abnormalCX + 40, capBaseline, capSize, fontBold, PALETTE.muted);
   if (!geo.commentBelow) {
-    page.drawText('COMMENT', { x: commentXPt, y: capBaseline, size: capSize, font: fontBold, color: PALETTE.muted });
+    page.drawText(t('exam.comment'), { x: commentXPt, y: capBaseline, size: capSize, font: fontBold, color: PALETTE.muted });
   }
   hlineLight(page, xPt, xPt + sectionWidth, bodyTopPt - headPt);
 
@@ -630,7 +645,7 @@ export function drawExamSection(
       page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.rowAlt });
     }
 
-    const labelText = EXAM_PDF_LABELS[key] ?? key;
+    const labelText = t(`exam.items.${key}`);
     page.drawText(labelText, {
       x: labelX, y: labelY, size: fontSize,
       font: abnormal ? fontBold : font,
@@ -698,7 +713,8 @@ export function drawToothGrid(
   font: PDFFont,
   fontBold: PDFFont,
   archTitle: string,
-  missingTriadans?: Set<number>
+  missingTriadans?: Set<number>,
+  lng = 'en'
 ): void {
   const { height: pageHeight } = page.getSize();
   const x = layout.xIn * PT_PER_IN;
@@ -769,8 +785,8 @@ export function drawToothGrid(
   const baselineForRow = (rowIdx: number, fontSize: number) =>
     yTop - rowIdx * rowH - rowH / 2 - fontSize / 2 + 1.5;
 
-  drawCenteredText(page, 'Tooth',   x, x + labelW, baselineForRow(0, headerSize), headerSize, fontBold, headerText);
-  drawCenteredText(page, 'Triadan', x, x + labelW, baselineForRow(1, headerSize), headerSize, fontBold, headerText);
+  drawCenteredText(page, columnLabel('tooth', lng),   x, x + labelW, baselineForRow(0, headerSize), headerSize, fontBold, headerText);
+  drawCenteredText(page, columnLabel('triadan', lng), x, x + labelW, baselineForRow(1, headerSize), headerSize, fontBold, headerText);
   for (let i = 0; i < layout.teeth.length; i++) {
     const tooth = layout.teeth[i];
     const cellLeft = x + labelW + i * toothW;
@@ -784,8 +800,7 @@ export function drawToothGrid(
   for (let r = 0; r < TOOTH_DATA_ROWS.length; r++) {
     const dataRow = TOOTH_DATA_ROWS[r];
     const rowIdx = 2 + r;
-    // The PDF stays English until it is translated (plan 3).
-    drawCenteredText(page, columnLabel(dataRow.key, 'en'), x, x + labelW, baselineForRow(rowIdx, labelSize), labelSize, fontBold, PALETTE.muted);
+    drawCenteredText(page, columnLabel(dataRow.key, lng), x, x + labelW, baselineForRow(rowIdx, labelSize), labelSize, fontBold, PALETTE.muted);
     const fieldKey = SUFFIX_TO_FIELD[dataRow.suffix];
     for (let i = 0; i < layout.teeth.length; i++) {
       const tooth = layout.teeth[i];
@@ -807,19 +822,22 @@ export function drawToothGrid(
 /** The treatment card's text: radiographic findings (when present) as a
  *  labelled first block, then the report — the card keeps its size and
  *  place, so charts without findings print exactly as before. */
-export function treatmentCardText(treatmentReport: string, radiographicFindings?: string): string {
+export function treatmentCardText(treatmentReport: string, radiographicFindings?: string, lng = 'en'): string {
   const rads = (radiographicFindings ?? '').trim();
   if (!rads) return treatmentReport;
   const report = treatmentReport.trim();
-  return `RADIOGRAPHIC FINDINGS\n${rads}${report ? `\n\nTREATMENT\n${report}` : ''}`;
+  const t = pdfT(lng);
+  return `${t('treatment.findingsHeading')}\n${rads}${report ? `\n\n${t('treatment.treatmentHeading')}\n${report}` : ''}`;
 }
 
 export function drawTreatmentReportField(
   page: PDFPage,
   value: string,
   font: PDFFont,
-  fontBold: PDFFont
+  fontBold: PDFFont,
+  lng = 'en'
 ): void {
+  const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const xPt = TREATMENT_REPORT.xIn * PT_PER_IN;
   const titleYTopPt = pageHeight - TREATMENT_REPORT.headerYTopIn * PT_PER_IN;
@@ -831,7 +849,7 @@ export function drawTreatmentReportField(
   const cardH = titleYTopPt - fieldY;
   const bodyTop = drawSectionCard(
     page, xPt, titleYTopPt, fieldW, cardH,
-    'Treatment & Surgery Report', fontBold
+    t('treatment.title'), fontBold
   );
 
   if (value) {
@@ -851,7 +869,7 @@ export function drawTreatmentReportField(
       drawWrappedText(page, value, innerX, innerYTop, innerWidth,
         fontSize, lineHeight, font, PALETTE.ink, maxLines - 1);
       const noteY = fieldY + 8;
-      page.drawText('… continued — full report is embedded in this file (load it back into the app).', {
+      page.drawText(t('treatment.continued'), {
         x: innerX, y: noteY, size: 7.5, font, color: PALETTE.muted,
       });
     } else {
@@ -878,8 +896,10 @@ export function drawNerveBlockTable(
   hiddenRows: readonly string[] = [],
   /** The chart's custom blocks (extra rows) and fields (lines at the top
    *  of the "Other" row) — printed only when filled. */
-  custom?: CustomAnesthesia
+  custom?: CustomAnesthesia,
+  lng = 'en'
 ): number {
+  const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const x = NERVE_BLOCK_BOX.xIn * PT_PER_IN;
   const yTop = pageHeight - NERVE_BLOCK_BOX.yTopIn * PT_PER_IN;
@@ -901,12 +921,12 @@ export function drawNerveBlockTable(
   const lr = (id: string, label: string, right: string, left: string): LR[] =>
     keep(id, { right, left }) ? [{ kind: 'lr', label, right, left }] : [];
   const rows: Array<LR | Free> = [
-    ...lr('infraorbital', 'Infraorbital', nerveBlocks.infraorbitalRight || '', nerveBlocks.infraorbitalLeft || ''),
-    ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: 'Caudal Maxillary', ...caudal }] : []),
-    ...lr('inferiorAlveolar', 'Inferior Alveolar', nerveBlocks.inferiorAlveolarRight || '', nerveBlocks.inferiorAlveolarLeft || ''),
-    ...lr('mental', 'Mental', nerveBlocks.mentalRight || '', nerveBlocks.mentalLeft || ''),
-    ...filledBlocks(custom).map((b): LR => ({ kind: 'lr', label: b.label || 'Custom block', right: b.right, left: b.left })),
-    { kind: 'free', label: 'Other', value: [...fieldLines(custom), (nerveBlocks.other || '').trim()].filter(Boolean).join('\n') },
+    ...lr('infraorbital', t('anesthesia.blocks.infraorbital'), nerveBlocks.infraorbitalRight || '', nerveBlocks.infraorbitalLeft || ''),
+    ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: t('anesthesia.blocks.caudalMaxillary'), ...caudal }] : []),
+    ...lr('inferiorAlveolar', t('anesthesia.blocks.inferiorAlveolar'), nerveBlocks.inferiorAlveolarRight || '', nerveBlocks.inferiorAlveolarLeft || ''),
+    ...lr('mental', t('anesthesia.blocks.mental'), nerveBlocks.mentalRight || '', nerveBlocks.mentalLeft || ''),
+    ...filledBlocks(custom).map((b): LR => ({ kind: 'lr', label: b.label || i18n.getFixedT(lng, 'chart')('customAnesthesia.block'), right: b.right, left: b.left })),
+    { kind: 'free', label: t('anesthesia.other'), value: [...fieldLines(custom, lng), (nerveBlocks.other || '').trim()].filter(Boolean).join('\n') },
   ];
 
   // The free-text "Other" row (always last) grows to fit wrapped content
@@ -934,10 +954,10 @@ export function drawNerveBlockTable(
   const drugs = effectiveNerveBlockDrugs(nerveBlocks, isVca ? 'vca' : 'socal').map(formatAnestheticDrug);
   const headerMaxWidth = labelW - padX * 2;
   const minHeaderSize = 6.5;
-  const singleLabel = `Nerve Block ${drugs[0]}`;
+  const singleLabel = t('anesthesia.nerveBlockWith', { drug: drugs[0] });
   const useDrugRow =
     drugs.length > 1 || bold.widthOfTextAtSize(singleLabel, minHeaderSize) > headerMaxWidth;
-  const drugLabel = drugs.length > 1 ? 'Anesthetics' : 'Anesthetic';
+  const drugLabel = drugs.length > 1 ? t('anesthesia.anesthetics') : t('anesthesia.anesthetic');
   const drugLabelW = bold.widthOfTextAtSize(drugLabel, bodySize);
   const drugValueX = x + padX + drugLabelW + 8;
   const drugValueWidth = x + totalW - padX - drugValueX;
@@ -976,7 +996,7 @@ export function drawNerveBlockTable(
   const cardTop = yTop + 0.20 * PT_PER_IN;
   const bodyTop = drawSectionCard(
     page, x, cardTop, totalW, CARD_BAND_PT + totalH,
-    'Anesthesia · Nerve Blocks', bold
+    t('anesthesia.title'), bold
   );
 
   if (useDrugRow) {
@@ -994,15 +1014,15 @@ export function drawNerveBlockTable(
   const tableTop = bodyTop - drugRowH;
   if (useDrugRow) hlineLight(page, x, x + totalW, tableTop);
 
-  const headerLabel = useDrugRow ? 'Nerve Block' : singleLabel;
+  const headerLabel = useDrugRow ? t('anesthesia.nerveBlock') : singleLabel;
   let headerLabelSize = headerSize;
   while (headerLabelSize > minHeaderSize && bold.widthOfTextAtSize(headerLabel, headerLabelSize) > headerMaxWidth) {
     headerLabelSize -= 0.25;
   }
   drawTableHeaderStrip(page, x, tableTop - rowH, totalW, rowH, [
     { text: headerLabel, xPt: x,                    widthPt: labelW, align: 'left' },
-    { text: 'RIGHT',     xPt: x + labelW,           widthPt: valueW, align: 'center' },
-    { text: 'LEFT',      xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
+    { text: t('anesthesia.right'), xPt: x + labelW,           widthPt: valueW, align: 'center' },
+    { text: t('anesthesia.left'),  xPt: x + labelW + valueW,  widthPt: valueW, align: 'center' },
   ], bold, headerLabelSize);
 
   // Alternating row tints — L/R rows are rowH, the Other row is otherRowH.
@@ -1035,7 +1055,7 @@ export function drawNerveBlockTable(
     page.drawText(row.label, { x: x + padX, y: baselineY, size: bodySize, font: regular, color: PALETTE.text });
     for (const [colIdx, raw] of [[1, row.right], [2, row.left]] as const) {
       if (!raw) continue;
-      const text = `${raw} mL`;
+      const text = t('anesthesia.dose', { value: raw });
       const colX = x + labelW + valueW * (colIdx - 1);
       const w = regular.widthOfTextAtSize(text, bodySize);
       page.drawText(text, { x: colX + (valueW - w) / 2, y: baselineY, size: bodySize, font: regular, color: PALETTE.ink });
@@ -1117,8 +1137,10 @@ export function drawFooter(
   pageNum: number,
   totalPages: number,
   generatedAt: string,
-  identityLine?: string
+  identityLine?: string,
+  lng = 'en'
 ): void {
+  const t = pdfT(lng);
   const { width: pageWidth } = page.getSize();
   const fontSize = 7;
   const ruleY = 0.40 * PT_PER_IN;
@@ -1129,7 +1151,7 @@ export function drawFooter(
     thickness: 0.4, color: PALETTE.border,
   });
 
-  page.drawText(`Generated ${generatedAt}`, {
+  page.drawText(t('footer.generated', { at: generatedAt }), {
     x: 0.30 * PT_PER_IN, y: 0.22 * PT_PER_IN,
     size: fontSize, font, color: PALETTE.muted,
   });
@@ -1144,15 +1166,17 @@ export function drawFooter(
     });
   }
 
-  // "Page X of Y" — page number bold-emphasized in primary color.
+  // "Page X of Y" — page number bold-emphasized in primary color. The
+  // sentence is split around the number so word order follows the language.
+  const MARK = '\u0000';
+  const [pageStr, ofStr = ''] = t('footer.pageOf', { n: MARK, total: totalPages }).split(MARK);
   const pageNumStr = `${pageNum}`;
-  const ofStr = ` of ${totalPages}`;
   const pageW = fontBold.widthOfTextAtSize(pageNumStr, fontSize);
   const ofW   = font.widthOfTextAtSize(ofStr, fontSize);
-  const totalW = pageW + ofW + font.widthOfTextAtSize('Page ', fontSize);
+  const totalW = pageW + ofW + font.widthOfTextAtSize(pageStr, fontSize);
   let cursor = pageWidth - 0.30 * PT_PER_IN - totalW;
-  page.drawText('Page ', { x: cursor, y: 0.22 * PT_PER_IN, size: fontSize, font, color: PALETTE.muted });
-  cursor += font.widthOfTextAtSize('Page ', fontSize);
+  page.drawText(pageStr, { x: cursor, y: 0.22 * PT_PER_IN, size: fontSize, font, color: PALETTE.muted });
+  cursor += font.widthOfTextAtSize(pageStr, fontSize);
   page.drawText(pageNumStr, { x: cursor, y: 0.22 * PT_PER_IN, size: fontSize, font: fontBold, color: PALETTE.primary });
   cursor += pageW;
   page.drawText(ofStr, { x: cursor, y: 0.22 * PT_PER_IN, size: fontSize, font, color: PALETTE.muted });
@@ -1179,7 +1203,7 @@ export const IMAGES_PER_PAGE = 4;
 
 /** Drop characters the standard (WinAnsi) font can't encode — a caption
  *  with an emoji or arrow would otherwise throw and sink the whole PDF. */
-function pdfSafe(text: string, font: PDFFont): string {
+export function pdfSafe(text: string, font: PDFFont): string {
   let out = '';
   for (const ch of text) {
     try {
@@ -1205,8 +1229,10 @@ export async function drawImagePage(
   startIndex: number,
   totalImages: number,
   font: PDFFont,
-  fontBold: PDFFont
+  fontBold: PDFFont,
+  lng = 'en'
 ): Promise<void> {
+  const t = pdfT(lng);
   const { height: pageHeight } = page.getSize();
   const cardX = 0.30 * PT_PER_IN;
   const cardW = 10.40 * PT_PER_IN;
@@ -1218,8 +1244,8 @@ export async function drawImagePage(
   const last = startIndex + images.length;
   const title =
     totalImages === 1
-      ? 'Images & Radiographs'
-      : `Images & Radiographs (${first === last ? first : `${first}–${last}`} of ${totalImages})`;
+      ? t('images.title')
+      : t('images.titleRange', { range: first === last ? `${first}` : `${first}–${last}`, total: totalImages });
   const bodyTop = drawSectionCard(page, cardX, cardTop, cardW, cardH, title, fontBold);
 
   const pad = 10;
@@ -1260,11 +1286,11 @@ export async function drawImagePage(
         x: cellX, y: boxBottom, width: cellW, height: boxH,
         color: PALETTE.rowAlt, borderColor: PALETTE.border, borderWidth: 0.5,
       });
-      drawCenteredText(page, 'Image could not be loaded', cellX, cellX + cellW, boxBottom + boxH / 2 - 4, 9, font, PALETTE.muted);
+      drawCenteredText(page, t('images.failed'), cellX, cellX + cellW, boxBottom + boxH / 2 - 4, 9, font, PALETTE.muted);
     }
 
     const n = startIndex + i + 1;
-    const kindLabel = img.kind === 'xray' ? 'Radiograph' : 'Photo';
+    const kindLabel = img.kind === 'xray' ? t('images.radiograph') : t('images.photo');
     const caption = pdfSafe(img.caption.trim().replace(/\s+/g, ' '), font);
     const label = `${n}. ${kindLabel}${caption ? ` — ${caption}` : ''}`;
     drawClippedText(page, label, cellX, boxBottom - 11, 8.5, font, PALETTE.text, cellW);
