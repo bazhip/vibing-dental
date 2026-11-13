@@ -955,6 +955,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             pocketMode={prefs.pocketMode}
             species={chart.species}
             spaceMovesDown={prefs.spaceMovesDown}
+            scoreTapMoves={prefs.scoreTapMoves}
           />
           )
         ) : null

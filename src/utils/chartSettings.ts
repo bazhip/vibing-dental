@@ -31,6 +31,9 @@ export const BLOCK_ROW_OPTIONS = [
 export type BlockRowId = (typeof BLOCK_ROW_OPTIONS)[number]['id'];
 const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));
 
+export type ScoreTapMove = 'finding' | 'tooth' | 'stay';
+const SCORE_TAP_MOVES = new Set<string>(['finding', 'tooth', 'stay']);
+
 export interface ChartPrefs {
   /** 'tooth' = one pocket box per tooth; 'root' = one per root. */
   pocketMode: 'tooth' | 'root';
@@ -51,6 +54,10 @@ export interface ChartPrefs {
   /** Space in a grid cell moves down to the next tooth (for calling out
    *  a run of depths) instead of typing a space. */
   spaceMovesDown: boolean;
+  /** Where the grid goes after a score is tapped (M2, F1, …): the same
+   *  tooth's next finding (exams go tooth by tooth), the next tooth in
+   *  the same column, or nowhere. */
+  scoreTapMoves: ScoreTapMove;
   /** Nerve block rows hidden on the Anesthesia page (shown anyway when
    *  they hold a dose). */
   hiddenBlocks: BlockRowId[];
@@ -75,6 +82,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   pdfIncludeImages: true,
   hideRecheck: false,
   spaceMovesDown: true,
+  scoreTapMoves: 'finding',
   hiddenBlocks: [],
   usualDrug: null,
   whatsNewSeen: '',
@@ -109,6 +117,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     pdfIncludeImages: bool(r.pdfIncludeImages, fallback.pdfIncludeImages),
     hideRecheck: bool(r.hideRecheck, fallback.hideRecheck),
     spaceMovesDown: bool(r.spaceMovesDown, fallback.spaceMovesDown),
+    scoreTapMoves: typeof r.scoreTapMoves === 'string' && SCORE_TAP_MOVES.has(r.scoreTapMoves) ? (r.scoreTapMoves as ScoreTapMove) : fallback.scoreTapMoves,
     hiddenBlocks: Array.isArray(r.hiddenBlocks)
       ? (r.hiddenBlocks.filter((b) => typeof b === 'string' && BLOCK_IDS.has(b)) as BlockRowId[])
       : fallback.hiddenBlocks,

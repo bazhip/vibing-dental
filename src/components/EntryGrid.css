@@ -3422,7 +3422,10 @@ button.save-status--manual:hover {
   scroll-margin-top: calc(var(--topbar-height, 0px) + 0.75rem);
 }
 @media (max-width: 900px) {
-  .tooth-chart__panel { position: static; }
+  /* Stacked layout: the findings panel goes first so it's in reach
+   * without scrolling past the whole diagram; tapping a tooth on the
+   * diagram below scrolls back up to it. */
+  .tooth-chart__panel { position: static; order: -1; }
 }
 .tooth-chart__empty p { margin: 0 0 0.5rem; }
 .tooth-chart__hint { font-size: 0.85rem; color: var(--text-muted); }
