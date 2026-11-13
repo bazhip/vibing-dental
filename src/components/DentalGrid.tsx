@@ -537,7 +537,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       const topbar = parseFloat(getComputedStyle(el).getPropertyValue('--topbar-height')) || 0;
       // Keyboard up: iOS pans the visible area down the page and the
       // topbar goes with it — sit at the top of what's visible instead.
-      const top = Math.max(topbar, window.visualViewport?.offsetTop ?? 0);
+      // On phones the section menu is pinned under the topbar too.
+      const menu = document.querySelector<HTMLElement>('.mobile-section-menu');
+      const menuBottom = menu && menu.offsetParent !== null ? menu.getBoundingClientRect().bottom : 0;
+      const top = Math.max(topbar, menuBottom, window.visualViewport?.offsetTop ?? 0);
       const head = (el.querySelector('.rdg-header-row .rdg-cell') as HTMLElement | null)?.offsetHeight ?? 44;
       const show = r.top < top && r.bottom > top + head * 2;
       fl.style.display = show ? 'flex' : 'none';
