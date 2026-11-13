@@ -1,4 +1,5 @@
 import type Anthropic from '@anthropic-ai/sdk';
+import i18n from '../i18n';
 import { ChartSnapshot } from '../types';
 import { AutofillRequest, sendAutofill } from './aiAutofill';
 import {
@@ -128,6 +129,6 @@ export function parseOwnerReportDraft(content: Array<{ type: string; name?: stri
 export async function draftOwnerReport(snapshot: ChartSnapshot, context?: OwnerReportContext): Promise<OwnerReportDraft> {
   const content = await sendAutofill(buildOwnerReportAiRequest(snapshot, context));
   const draft = parseOwnerReportDraft(content);
-  if (!draft) throw new Error('The AI didn’t return a draft. Please try again.');
+  if (!draft) throw new Error(i18n.t('section.draftEmpty', { ns: 'reportui' }));
   return draft;
 }

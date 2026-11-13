@@ -1184,6 +1184,26 @@
       "hash": "ba0d6a897ca4",
       "status": "machine"
     },
+    "auth:legal.notice.activating": {
+      "hash": "096263d1a207",
+      "status": "machine"
+    },
+    "auth:legal.notice.continuing": {
+      "hash": "e163ce746148",
+      "status": "machine"
+    },
+    "auth:legal.notice.creatingAccount": {
+      "hash": "57fd92724f83",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingIn": {
+      "hash": "b1d6452a71aa",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingUp": {
+      "hash": "6b270c8bc3bb",
+      "status": "machine"
+    },
     "auth:legal.privacy": {
       "hash": "506ff3946215",
       "status": "machine"
@@ -6956,6 +6976,10 @@
       "hash": "7e5c2995d103",
       "status": "machine"
     },
+    "reportui:section.draftEmpty": {
+      "hash": "841ae80acb8c",
+      "status": "machine"
+    },
     "reportui:section.draftFailed": {
       "hash": "340c637e236e",
       "status": "machine"
@@ -7982,6 +8006,494 @@
     },
     "settings:saving": {
       "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "voice:activity.anesthetic": {
+      "hash": "c488bfd88e46",
+      "status": "machine"
+    },
+    "voice:activity.anestheticConcentration": {
+      "hash": "4c80c06e9415",
+      "status": "machine"
+    },
+    "voice:activity.block": {
+      "hash": "172b45f9c297",
+      "status": "machine"
+    },
+    "voice:activity.clearedMark": {
+      "hash": "a23efa6607e0",
+      "status": "machine"
+    },
+    "voice:activity.destination": {
+      "hash": "abf7d2af3444",
+      "status": "machine"
+    },
+    "voice:activity.finalNone": {
+      "hash": "a555dfafab36",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_one": {
+      "hash": "9b8fbb293cb4",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_other": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.notApplied": {
+      "hash": "def41555cd69",
+      "status": "machine"
+    },
+    "voice:activity.notAppliedHome": {
+      "hash": "10c15a2d4b5f",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosis": {
+      "hash": "57f01a3e2f52",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosisTooth": {
+      "hash": "d9f6e9159ca6",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedure": {
+      "hash": "73aa8e34dd5f",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedureTooth": {
+      "hash": "a93dbeeb60c4",
+      "status": "machine"
+    },
+    "voice:activity.radiographic": {
+      "hash": "17939bc11411",
+      "status": "machine"
+    },
+    "voice:activity.removed": {
+      "hash": "528a9320bc5d",
+      "status": "machine"
+    },
+    "voice:activity.report": {
+      "hash": "c688ec8c9ff5",
+      "status": "machine"
+    },
+    "voice:button.dictate": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:button.resume": {
+      "hash": "d640c7421da0",
+      "status": "machine"
+    },
+    "voice:button.start": {
+      "hash": "e4bb9f1ece9a",
+      "status": "machine"
+    },
+    "voice:button.stop": {
+      "hash": "cae7d57bc067",
+      "status": "machine"
+    },
+    "voice:button.titleDictate": {
+      "hash": "fedb70e4a793",
+      "status": "machine"
+    },
+    "voice:button.titleStop": {
+      "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:dialog.confirm": {
+      "hash": "5eed7e9fc8f3",
+      "status": "machine"
+    },
+    "voice:dialog.message": {
+      "hash": "1c2376bf4ec9",
+      "status": "machine"
+    },
+    "voice:dialog.title": {
+      "hash": "4880dd9d438c",
+      "status": "machine"
+    },
+    "voice:errors.browserUnsupported": {
+      "hash": "5e95571c6c03",
+      "status": "machine"
+    },
+    "voice:errors.captureStart": {
+      "hash": "96e63d8771b9",
+      "status": "machine"
+    },
+    "voice:errors.deepgram": {
+      "hash": "df06e57485fd",
+      "status": "machine"
+    },
+    "voice:errors.deepgramRejected": {
+      "hash": "635a48c79417",
+      "status": "machine"
+    },
+    "voice:errors.deepgramSocket": {
+      "hash": "6c07efaeddcd",
+      "status": "machine"
+    },
+    "voice:errors.failed": {
+      "hash": "e2447479367a",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailed": {
+      "hash": "20fb2701172c",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailedDetail": {
+      "hash": "7f0e0d5fa1ba",
+      "status": "machine"
+    },
+    "voice:errors.micBlocked": {
+      "hash": "17c691df3bba",
+      "status": "machine"
+    },
+    "voice:errors.micStart": {
+      "hash": "a55677e93326",
+      "status": "machine"
+    },
+    "voice:errors.noCapture": {
+      "hash": "fc3641f20417",
+      "status": "machine"
+    },
+    "voice:errors.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "voice:errors.noMic": {
+      "hash": "cf757208df0f",
+      "status": "machine"
+    },
+    "voice:errors.recognition": {
+      "hash": "4fd3d86161eb",
+      "status": "machine"
+    },
+    "voice:errors.recognitionUnknown": {
+      "hash": "b23a6a8439c0",
+      "status": "machine"
+    },
+    "voice:errors.sessionStart": {
+      "hash": "7de4a45acda2",
+      "status": "machine"
+    },
+    "voice:errors.unsupported": {
+      "hash": "1660c6df4bf8",
+      "status": "machine"
+    },
+    "voice:intro.ariaLabel": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:intro.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "voice:intro.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "voice:intro.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:intro.step1": {
+      "hash": "90021fbf2e4d",
+      "status": "machine"
+    },
+    "voice:intro.step2": {
+      "hash": "3cc9ccdb648a",
+      "status": "machine"
+    },
+    "voice:intro.step3": {
+      "hash": "a96cf15f9e39",
+      "status": "machine"
+    },
+    "voice:intro.title": {
+      "hash": "34f11721f30a",
+      "status": "machine"
+    },
+    "voice:panel.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:panel.activityEmpty": {
+      "hash": "03f489444cbb",
+      "status": "machine"
+    },
+    "voice:panel.ariaLabel": {
+      "hash": "0aa35e3a7eba",
+      "status": "machine"
+    },
+    "voice:panel.close": {
+      "hash": "a600b900f83d",
+      "status": "machine"
+    },
+    "voice:panel.closeTitle": {
+      "hash": "f1ae24bff6d3",
+      "status": "machine"
+    },
+    "voice:panel.collapse": {
+      "hash": "8ad80bc1bbac",
+      "status": "machine"
+    },
+    "voice:panel.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "voice:panel.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "voice:panel.emptyConnecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:panel.emptyIdle": {
+      "hash": "b84a48106cbd",
+      "status": "machine"
+    },
+    "voice:panel.emptyListening": {
+      "hash": "6e228e5f53f1",
+      "status": "machine"
+    },
+    "voice:panel.expand": {
+      "hash": "4a74667f1970",
+      "status": "machine"
+    },
+    "voice:panel.feedback": {
+      "hash": "aac77df34720",
+      "status": "machine"
+    },
+    "voice:panel.feedbackTitle": {
+      "hash": "722e8aaf4e02",
+      "status": "machine"
+    },
+    "voice:panel.guess": {
+      "hash": "6be5c1331a74",
+      "status": "machine"
+    },
+    "voice:panel.guessMark": {
+      "hash": "90ee16d576a7",
+      "status": "machine"
+    },
+    "voice:panel.heard": {
+      "hash": "58c030098748",
+      "status": "machine"
+    },
+    "voice:panel.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "voice:panel.helpTitle": {
+      "hash": "9c870aa6e5e9",
+      "status": "machine"
+    },
+    "voice:panel.interrupted": {
+      "hash": "b914fe07a70f",
+      "status": "machine"
+    },
+    "voice:panel.keep": {
+      "hash": "183f00f483d3",
+      "status": "machine"
+    },
+    "voice:panel.needsReview": {
+      "hash": "07297fa94a99",
+      "status": "machine"
+    },
+    "voice:panel.needsReviewCount": {
+      "hash": "ca14ea3e0a02",
+      "status": "machine"
+    },
+    "voice:panel.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "voice:panel.notCharted": {
+      "hash": "9547c63e31f4",
+      "status": "machine"
+    },
+    "voice:panel.promptsOff": {
+      "hash": "a981c79c1397",
+      "status": "machine"
+    },
+    "voice:panel.promptsOn": {
+      "hash": "2fbfd8b79421",
+      "status": "machine"
+    },
+    "voice:panel.promptsTitle": {
+      "hash": "c15d18ad002b",
+      "status": "machine"
+    },
+    "voice:panel.providerBrowser": {
+      "hash": "bd0a31b51be6",
+      "status": "machine"
+    },
+    "voice:panel.providerDeepgram": {
+      "hash": "5a1c2f60192e",
+      "status": "machine"
+    },
+    "voice:panel.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "voice:panel.sending": {
+      "hash": "65ea0981f88b",
+      "status": "machine"
+    },
+    "voice:panel.showInChart": {
+      "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:peek.connecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:peek.goAhead": {
+      "hash": "ca250ddff761",
+      "status": "machine"
+    },
+    "voice:peek.pressResume": {
+      "hash": "7995c8cb3199",
+      "status": "machine"
+    },
+    "voice:peek.review_one": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_other": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.talking": {
+      "hash": "e4f095691501",
+      "status": "machine"
+    },
+    "voice:sections.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "voice:sections.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "voice:sections.diagnosis": {
+      "hash": "0b7b7041db4f",
+      "status": "machine"
+    },
+    "voice:sections.exam": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "voice:sections.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "voice:sections.procedure": {
+      "hash": "49c12482d6e9",
+      "status": "machine"
+    },
+    "voice:sections.treatment": {
+      "hash": "559821dfdff3",
+      "status": "machine"
+    },
+    "voice:spoken.check": {
+      "hash": "c94c4a908a0f",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_one": {
+      "hash": "80d500a28d55",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_other": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finding_one": {
+      "hash": "5f9d97174228",
+      "status": "machine"
+    },
+    "voice:spoken.finding_other": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.open_one": {
+      "hash": "98866940af4f",
+      "status": "machine"
+    },
+    "voice:spoken.open_other": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:status.connecting": {
+      "hash": "72021eb70e91",
+      "status": "machine"
+    },
+    "voice:status.finishing": {
+      "hash": "47e171283955",
+      "status": "machine"
+    },
+    "voice:status.interrupted": {
+      "hash": "132d124d6bb3",
+      "status": "machine"
+    },
+    "voice:status.listening": {
+      "hash": "49c4605816cf",
+      "status": "machine"
+    },
+    "voice:status.ready": {
+      "hash": "ed837c72f5ef",
+      "status": "machine"
+    },
+    "voice:status.stopped": {
+      "hash": "1a4f630ac1b6",
+      "status": "machine"
+    },
+    "voice:sub.connecting": {
+      "hash": "af73d401089d",
+      "status": "machine"
+    },
+    "voice:sub.finishing": {
+      "hash": "457ca7ac57b9",
+      "status": "machine"
+    },
+    "voice:sub.goAhead": {
+      "hash": "64415570d0b1",
+      "status": "machine"
+    },
+    "voice:sub.listening": {
+      "hash": "8560878b8782",
+      "status": "machine"
+    },
+    "voice:sub.listeningSending": {
+      "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:toReview_one": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_other": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toast.viewOnly": {
+      "hash": "d8e41e314b9b",
+      "status": "machine"
+    },
+    "voice:transcript.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:transcript.header": {
+      "hash": "5d05515d8eea",
       "status": "machine"
     },
     "whatsNew:anesthesia.body": {
@@ -9326,6 +9838,26 @@
       "hash": "ba0d6a897ca4",
       "status": "machine"
     },
+    "auth:legal.notice.activating": {
+      "hash": "096263d1a207",
+      "status": "machine"
+    },
+    "auth:legal.notice.continuing": {
+      "hash": "e163ce746148",
+      "status": "machine"
+    },
+    "auth:legal.notice.creatingAccount": {
+      "hash": "57fd92724f83",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingIn": {
+      "hash": "b1d6452a71aa",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingUp": {
+      "hash": "6b270c8bc3bb",
+      "status": "machine"
+    },
     "auth:legal.privacy": {
       "hash": "506ff3946215",
       "status": "machine"
@@ -15142,6 +15674,10 @@
       "hash": "7e5c2995d103",
       "status": "machine"
     },
+    "reportui:section.draftEmpty": {
+      "hash": "841ae80acb8c",
+      "status": "machine"
+    },
     "reportui:section.draftFailed": {
       "hash": "340c637e236e",
       "status": "machine"
@@ -16168,6 +16704,518 @@
     },
     "settings:saving": {
       "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "voice:activity.anesthetic": {
+      "hash": "c488bfd88e46",
+      "status": "machine"
+    },
+    "voice:activity.anestheticConcentration": {
+      "hash": "4c80c06e9415",
+      "status": "machine"
+    },
+    "voice:activity.block": {
+      "hash": "172b45f9c297",
+      "status": "machine"
+    },
+    "voice:activity.clearedMark": {
+      "hash": "a23efa6607e0",
+      "status": "machine"
+    },
+    "voice:activity.destination": {
+      "hash": "abf7d2af3444",
+      "status": "machine"
+    },
+    "voice:activity.finalNone": {
+      "hash": "a555dfafab36",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_many": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_one": {
+      "hash": "9b8fbb293cb4",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_other": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.notApplied": {
+      "hash": "def41555cd69",
+      "status": "machine"
+    },
+    "voice:activity.notAppliedHome": {
+      "hash": "10c15a2d4b5f",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosis": {
+      "hash": "57f01a3e2f52",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosisTooth": {
+      "hash": "d9f6e9159ca6",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedure": {
+      "hash": "73aa8e34dd5f",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedureTooth": {
+      "hash": "a93dbeeb60c4",
+      "status": "machine"
+    },
+    "voice:activity.radiographic": {
+      "hash": "17939bc11411",
+      "status": "machine"
+    },
+    "voice:activity.removed": {
+      "hash": "528a9320bc5d",
+      "status": "machine"
+    },
+    "voice:activity.report": {
+      "hash": "c688ec8c9ff5",
+      "status": "machine"
+    },
+    "voice:button.dictate": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:button.resume": {
+      "hash": "d640c7421da0",
+      "status": "machine"
+    },
+    "voice:button.start": {
+      "hash": "e4bb9f1ece9a",
+      "status": "machine"
+    },
+    "voice:button.stop": {
+      "hash": "cae7d57bc067",
+      "status": "machine"
+    },
+    "voice:button.titleDictate": {
+      "hash": "fedb70e4a793",
+      "status": "machine"
+    },
+    "voice:button.titleStop": {
+      "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:dialog.confirm": {
+      "hash": "5eed7e9fc8f3",
+      "status": "machine"
+    },
+    "voice:dialog.message": {
+      "hash": "1c2376bf4ec9",
+      "status": "machine"
+    },
+    "voice:dialog.title": {
+      "hash": "4880dd9d438c",
+      "status": "machine"
+    },
+    "voice:errors.browserUnsupported": {
+      "hash": "5e95571c6c03",
+      "status": "machine"
+    },
+    "voice:errors.captureStart": {
+      "hash": "96e63d8771b9",
+      "status": "machine"
+    },
+    "voice:errors.deepgram": {
+      "hash": "df06e57485fd",
+      "status": "machine"
+    },
+    "voice:errors.deepgramRejected": {
+      "hash": "635a48c79417",
+      "status": "machine"
+    },
+    "voice:errors.deepgramSocket": {
+      "hash": "6c07efaeddcd",
+      "status": "machine"
+    },
+    "voice:errors.failed": {
+      "hash": "e2447479367a",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailed": {
+      "hash": "20fb2701172c",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailedDetail": {
+      "hash": "7f0e0d5fa1ba",
+      "status": "machine"
+    },
+    "voice:errors.micBlocked": {
+      "hash": "17c691df3bba",
+      "status": "machine"
+    },
+    "voice:errors.micStart": {
+      "hash": "a55677e93326",
+      "status": "machine"
+    },
+    "voice:errors.noCapture": {
+      "hash": "fc3641f20417",
+      "status": "machine"
+    },
+    "voice:errors.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "voice:errors.noMic": {
+      "hash": "cf757208df0f",
+      "status": "machine"
+    },
+    "voice:errors.recognition": {
+      "hash": "4fd3d86161eb",
+      "status": "machine"
+    },
+    "voice:errors.recognitionUnknown": {
+      "hash": "b23a6a8439c0",
+      "status": "machine"
+    },
+    "voice:errors.sessionStart": {
+      "hash": "7de4a45acda2",
+      "status": "machine"
+    },
+    "voice:errors.unsupported": {
+      "hash": "1660c6df4bf8",
+      "status": "machine"
+    },
+    "voice:intro.ariaLabel": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:intro.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "voice:intro.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "voice:intro.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:intro.step1": {
+      "hash": "90021fbf2e4d",
+      "status": "machine"
+    },
+    "voice:intro.step2": {
+      "hash": "3cc9ccdb648a",
+      "status": "machine"
+    },
+    "voice:intro.step3": {
+      "hash": "a96cf15f9e39",
+      "status": "machine"
+    },
+    "voice:intro.title": {
+      "hash": "34f11721f30a",
+      "status": "machine"
+    },
+    "voice:panel.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:panel.activityEmpty": {
+      "hash": "03f489444cbb",
+      "status": "machine"
+    },
+    "voice:panel.ariaLabel": {
+      "hash": "0aa35e3a7eba",
+      "status": "machine"
+    },
+    "voice:panel.close": {
+      "hash": "a600b900f83d",
+      "status": "machine"
+    },
+    "voice:panel.closeTitle": {
+      "hash": "f1ae24bff6d3",
+      "status": "machine"
+    },
+    "voice:panel.collapse": {
+      "hash": "8ad80bc1bbac",
+      "status": "machine"
+    },
+    "voice:panel.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "voice:panel.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "voice:panel.emptyConnecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:panel.emptyIdle": {
+      "hash": "b84a48106cbd",
+      "status": "machine"
+    },
+    "voice:panel.emptyListening": {
+      "hash": "6e228e5f53f1",
+      "status": "machine"
+    },
+    "voice:panel.expand": {
+      "hash": "4a74667f1970",
+      "status": "machine"
+    },
+    "voice:panel.feedback": {
+      "hash": "aac77df34720",
+      "status": "machine"
+    },
+    "voice:panel.feedbackTitle": {
+      "hash": "722e8aaf4e02",
+      "status": "machine"
+    },
+    "voice:panel.guess": {
+      "hash": "6be5c1331a74",
+      "status": "machine"
+    },
+    "voice:panel.guessMark": {
+      "hash": "90ee16d576a7",
+      "status": "machine"
+    },
+    "voice:panel.heard": {
+      "hash": "58c030098748",
+      "status": "machine"
+    },
+    "voice:panel.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "voice:panel.helpTitle": {
+      "hash": "9c870aa6e5e9",
+      "status": "machine"
+    },
+    "voice:panel.interrupted": {
+      "hash": "b914fe07a70f",
+      "status": "machine"
+    },
+    "voice:panel.keep": {
+      "hash": "183f00f483d3",
+      "status": "machine"
+    },
+    "voice:panel.needsReview": {
+      "hash": "07297fa94a99",
+      "status": "machine"
+    },
+    "voice:panel.needsReviewCount": {
+      "hash": "ca14ea3e0a02",
+      "status": "machine"
+    },
+    "voice:panel.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "voice:panel.notCharted": {
+      "hash": "9547c63e31f4",
+      "status": "machine"
+    },
+    "voice:panel.promptsOff": {
+      "hash": "a981c79c1397",
+      "status": "machine"
+    },
+    "voice:panel.promptsOn": {
+      "hash": "2fbfd8b79421",
+      "status": "machine"
+    },
+    "voice:panel.promptsTitle": {
+      "hash": "c15d18ad002b",
+      "status": "machine"
+    },
+    "voice:panel.providerBrowser": {
+      "hash": "bd0a31b51be6",
+      "status": "machine"
+    },
+    "voice:panel.providerDeepgram": {
+      "hash": "5a1c2f60192e",
+      "status": "machine"
+    },
+    "voice:panel.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "voice:panel.sending": {
+      "hash": "65ea0981f88b",
+      "status": "machine"
+    },
+    "voice:panel.showInChart": {
+      "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:peek.connecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:peek.goAhead": {
+      "hash": "ca250ddff761",
+      "status": "machine"
+    },
+    "voice:peek.pressResume": {
+      "hash": "7995c8cb3199",
+      "status": "machine"
+    },
+    "voice:peek.review_many": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_one": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_other": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.talking": {
+      "hash": "e4f095691501",
+      "status": "machine"
+    },
+    "voice:sections.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "voice:sections.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "voice:sections.diagnosis": {
+      "hash": "0b7b7041db4f",
+      "status": "machine"
+    },
+    "voice:sections.exam": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "voice:sections.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "voice:sections.procedure": {
+      "hash": "49c12482d6e9",
+      "status": "machine"
+    },
+    "voice:sections.treatment": {
+      "hash": "559821dfdff3",
+      "status": "machine"
+    },
+    "voice:spoken.check": {
+      "hash": "c94c4a908a0f",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_many": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_one": {
+      "hash": "80d500a28d55",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_other": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finding_many": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.finding_one": {
+      "hash": "5f9d97174228",
+      "status": "machine"
+    },
+    "voice:spoken.finding_other": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.open_many": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:spoken.open_one": {
+      "hash": "98866940af4f",
+      "status": "machine"
+    },
+    "voice:spoken.open_other": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:status.connecting": {
+      "hash": "72021eb70e91",
+      "status": "machine"
+    },
+    "voice:status.finishing": {
+      "hash": "47e171283955",
+      "status": "machine"
+    },
+    "voice:status.interrupted": {
+      "hash": "132d124d6bb3",
+      "status": "machine"
+    },
+    "voice:status.listening": {
+      "hash": "49c4605816cf",
+      "status": "machine"
+    },
+    "voice:status.ready": {
+      "hash": "ed837c72f5ef",
+      "status": "machine"
+    },
+    "voice:status.stopped": {
+      "hash": "1a4f630ac1b6",
+      "status": "machine"
+    },
+    "voice:sub.connecting": {
+      "hash": "af73d401089d",
+      "status": "machine"
+    },
+    "voice:sub.finishing": {
+      "hash": "457ca7ac57b9",
+      "status": "machine"
+    },
+    "voice:sub.goAhead": {
+      "hash": "64415570d0b1",
+      "status": "machine"
+    },
+    "voice:sub.listening": {
+      "hash": "8560878b8782",
+      "status": "machine"
+    },
+    "voice:sub.listeningSending": {
+      "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:toReview_many": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_one": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_other": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toast.viewOnly": {
+      "hash": "d8e41e314b9b",
+      "status": "machine"
+    },
+    "voice:transcript.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:transcript.header": {
+      "hash": "5d05515d8eea",
       "status": "machine"
     },
     "whatsNew:anesthesia.body": {
@@ -17512,6 +18560,26 @@
       "hash": "ba0d6a897ca4",
       "status": "machine"
     },
+    "auth:legal.notice.activating": {
+      "hash": "096263d1a207",
+      "status": "machine"
+    },
+    "auth:legal.notice.continuing": {
+      "hash": "e163ce746148",
+      "status": "machine"
+    },
+    "auth:legal.notice.creatingAccount": {
+      "hash": "57fd92724f83",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingIn": {
+      "hash": "b1d6452a71aa",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingUp": {
+      "hash": "6b270c8bc3bb",
+      "status": "machine"
+    },
     "auth:legal.privacy": {
       "hash": "506ff3946215",
       "status": "machine"
@@ -23328,6 +24396,10 @@
       "hash": "7e5c2995d103",
       "status": "machine"
     },
+    "reportui:section.draftEmpty": {
+      "hash": "841ae80acb8c",
+      "status": "machine"
+    },
     "reportui:section.draftFailed": {
       "hash": "340c637e236e",
       "status": "machine"
@@ -24354,6 +25426,518 @@
     },
     "settings:saving": {
       "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "voice:activity.anesthetic": {
+      "hash": "c488bfd88e46",
+      "status": "machine"
+    },
+    "voice:activity.anestheticConcentration": {
+      "hash": "4c80c06e9415",
+      "status": "machine"
+    },
+    "voice:activity.block": {
+      "hash": "172b45f9c297",
+      "status": "machine"
+    },
+    "voice:activity.clearedMark": {
+      "hash": "a23efa6607e0",
+      "status": "machine"
+    },
+    "voice:activity.destination": {
+      "hash": "abf7d2af3444",
+      "status": "machine"
+    },
+    "voice:activity.finalNone": {
+      "hash": "a555dfafab36",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_many": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_one": {
+      "hash": "9b8fbb293cb4",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_other": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.notApplied": {
+      "hash": "def41555cd69",
+      "status": "machine"
+    },
+    "voice:activity.notAppliedHome": {
+      "hash": "10c15a2d4b5f",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosis": {
+      "hash": "57f01a3e2f52",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosisTooth": {
+      "hash": "d9f6e9159ca6",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedure": {
+      "hash": "73aa8e34dd5f",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedureTooth": {
+      "hash": "a93dbeeb60c4",
+      "status": "machine"
+    },
+    "voice:activity.radiographic": {
+      "hash": "17939bc11411",
+      "status": "machine"
+    },
+    "voice:activity.removed": {
+      "hash": "528a9320bc5d",
+      "status": "machine"
+    },
+    "voice:activity.report": {
+      "hash": "c688ec8c9ff5",
+      "status": "machine"
+    },
+    "voice:button.dictate": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:button.resume": {
+      "hash": "d640c7421da0",
+      "status": "machine"
+    },
+    "voice:button.start": {
+      "hash": "e4bb9f1ece9a",
+      "status": "machine"
+    },
+    "voice:button.stop": {
+      "hash": "cae7d57bc067",
+      "status": "machine"
+    },
+    "voice:button.titleDictate": {
+      "hash": "fedb70e4a793",
+      "status": "machine"
+    },
+    "voice:button.titleStop": {
+      "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:dialog.confirm": {
+      "hash": "5eed7e9fc8f3",
+      "status": "machine"
+    },
+    "voice:dialog.message": {
+      "hash": "1c2376bf4ec9",
+      "status": "machine"
+    },
+    "voice:dialog.title": {
+      "hash": "4880dd9d438c",
+      "status": "machine"
+    },
+    "voice:errors.browserUnsupported": {
+      "hash": "5e95571c6c03",
+      "status": "machine"
+    },
+    "voice:errors.captureStart": {
+      "hash": "96e63d8771b9",
+      "status": "machine"
+    },
+    "voice:errors.deepgram": {
+      "hash": "df06e57485fd",
+      "status": "machine"
+    },
+    "voice:errors.deepgramRejected": {
+      "hash": "635a48c79417",
+      "status": "machine"
+    },
+    "voice:errors.deepgramSocket": {
+      "hash": "6c07efaeddcd",
+      "status": "machine"
+    },
+    "voice:errors.failed": {
+      "hash": "e2447479367a",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailed": {
+      "hash": "20fb2701172c",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailedDetail": {
+      "hash": "7f0e0d5fa1ba",
+      "status": "machine"
+    },
+    "voice:errors.micBlocked": {
+      "hash": "17c691df3bba",
+      "status": "machine"
+    },
+    "voice:errors.micStart": {
+      "hash": "a55677e93326",
+      "status": "machine"
+    },
+    "voice:errors.noCapture": {
+      "hash": "fc3641f20417",
+      "status": "machine"
+    },
+    "voice:errors.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "voice:errors.noMic": {
+      "hash": "cf757208df0f",
+      "status": "machine"
+    },
+    "voice:errors.recognition": {
+      "hash": "4fd3d86161eb",
+      "status": "machine"
+    },
+    "voice:errors.recognitionUnknown": {
+      "hash": "b23a6a8439c0",
+      "status": "machine"
+    },
+    "voice:errors.sessionStart": {
+      "hash": "7de4a45acda2",
+      "status": "machine"
+    },
+    "voice:errors.unsupported": {
+      "hash": "1660c6df4bf8",
+      "status": "machine"
+    },
+    "voice:intro.ariaLabel": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:intro.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "voice:intro.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "voice:intro.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:intro.step1": {
+      "hash": "90021fbf2e4d",
+      "status": "machine"
+    },
+    "voice:intro.step2": {
+      "hash": "3cc9ccdb648a",
+      "status": "machine"
+    },
+    "voice:intro.step3": {
+      "hash": "a96cf15f9e39",
+      "status": "machine"
+    },
+    "voice:intro.title": {
+      "hash": "34f11721f30a",
+      "status": "machine"
+    },
+    "voice:panel.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:panel.activityEmpty": {
+      "hash": "03f489444cbb",
+      "status": "machine"
+    },
+    "voice:panel.ariaLabel": {
+      "hash": "0aa35e3a7eba",
+      "status": "machine"
+    },
+    "voice:panel.close": {
+      "hash": "a600b900f83d",
+      "status": "machine"
+    },
+    "voice:panel.closeTitle": {
+      "hash": "f1ae24bff6d3",
+      "status": "machine"
+    },
+    "voice:panel.collapse": {
+      "hash": "8ad80bc1bbac",
+      "status": "machine"
+    },
+    "voice:panel.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "voice:panel.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "voice:panel.emptyConnecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:panel.emptyIdle": {
+      "hash": "b84a48106cbd",
+      "status": "machine"
+    },
+    "voice:panel.emptyListening": {
+      "hash": "6e228e5f53f1",
+      "status": "machine"
+    },
+    "voice:panel.expand": {
+      "hash": "4a74667f1970",
+      "status": "machine"
+    },
+    "voice:panel.feedback": {
+      "hash": "aac77df34720",
+      "status": "machine"
+    },
+    "voice:panel.feedbackTitle": {
+      "hash": "722e8aaf4e02",
+      "status": "machine"
+    },
+    "voice:panel.guess": {
+      "hash": "6be5c1331a74",
+      "status": "machine"
+    },
+    "voice:panel.guessMark": {
+      "hash": "90ee16d576a7",
+      "status": "machine"
+    },
+    "voice:panel.heard": {
+      "hash": "58c030098748",
+      "status": "machine"
+    },
+    "voice:panel.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "voice:panel.helpTitle": {
+      "hash": "9c870aa6e5e9",
+      "status": "machine"
+    },
+    "voice:panel.interrupted": {
+      "hash": "b914fe07a70f",
+      "status": "machine"
+    },
+    "voice:panel.keep": {
+      "hash": "183f00f483d3",
+      "status": "machine"
+    },
+    "voice:panel.needsReview": {
+      "hash": "07297fa94a99",
+      "status": "machine"
+    },
+    "voice:panel.needsReviewCount": {
+      "hash": "ca14ea3e0a02",
+      "status": "machine"
+    },
+    "voice:panel.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "voice:panel.notCharted": {
+      "hash": "9547c63e31f4",
+      "status": "machine"
+    },
+    "voice:panel.promptsOff": {
+      "hash": "a981c79c1397",
+      "status": "machine"
+    },
+    "voice:panel.promptsOn": {
+      "hash": "2fbfd8b79421",
+      "status": "machine"
+    },
+    "voice:panel.promptsTitle": {
+      "hash": "c15d18ad002b",
+      "status": "machine"
+    },
+    "voice:panel.providerBrowser": {
+      "hash": "bd0a31b51be6",
+      "status": "machine"
+    },
+    "voice:panel.providerDeepgram": {
+      "hash": "5a1c2f60192e",
+      "status": "machine"
+    },
+    "voice:panel.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "voice:panel.sending": {
+      "hash": "65ea0981f88b",
+      "status": "machine"
+    },
+    "voice:panel.showInChart": {
+      "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:peek.connecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:peek.goAhead": {
+      "hash": "ca250ddff761",
+      "status": "machine"
+    },
+    "voice:peek.pressResume": {
+      "hash": "7995c8cb3199",
+      "status": "machine"
+    },
+    "voice:peek.review_many": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_one": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_other": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.talking": {
+      "hash": "e4f095691501",
+      "status": "machine"
+    },
+    "voice:sections.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "voice:sections.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "voice:sections.diagnosis": {
+      "hash": "0b7b7041db4f",
+      "status": "machine"
+    },
+    "voice:sections.exam": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "voice:sections.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "voice:sections.procedure": {
+      "hash": "49c12482d6e9",
+      "status": "machine"
+    },
+    "voice:sections.treatment": {
+      "hash": "559821dfdff3",
+      "status": "machine"
+    },
+    "voice:spoken.check": {
+      "hash": "c94c4a908a0f",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_many": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_one": {
+      "hash": "80d500a28d55",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_other": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finding_many": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.finding_one": {
+      "hash": "5f9d97174228",
+      "status": "machine"
+    },
+    "voice:spoken.finding_other": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.open_many": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:spoken.open_one": {
+      "hash": "98866940af4f",
+      "status": "machine"
+    },
+    "voice:spoken.open_other": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:status.connecting": {
+      "hash": "72021eb70e91",
+      "status": "machine"
+    },
+    "voice:status.finishing": {
+      "hash": "47e171283955",
+      "status": "machine"
+    },
+    "voice:status.interrupted": {
+      "hash": "132d124d6bb3",
+      "status": "machine"
+    },
+    "voice:status.listening": {
+      "hash": "49c4605816cf",
+      "status": "machine"
+    },
+    "voice:status.ready": {
+      "hash": "ed837c72f5ef",
+      "status": "machine"
+    },
+    "voice:status.stopped": {
+      "hash": "1a4f630ac1b6",
+      "status": "machine"
+    },
+    "voice:sub.connecting": {
+      "hash": "af73d401089d",
+      "status": "machine"
+    },
+    "voice:sub.finishing": {
+      "hash": "457ca7ac57b9",
+      "status": "machine"
+    },
+    "voice:sub.goAhead": {
+      "hash": "64415570d0b1",
+      "status": "machine"
+    },
+    "voice:sub.listening": {
+      "hash": "8560878b8782",
+      "status": "machine"
+    },
+    "voice:sub.listeningSending": {
+      "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:toReview_many": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_one": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_other": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toast.viewOnly": {
+      "hash": "d8e41e314b9b",
+      "status": "machine"
+    },
+    "voice:transcript.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:transcript.header": {
+      "hash": "5d05515d8eea",
       "status": "machine"
     },
     "whatsNew:anesthesia.body": {
@@ -25698,6 +27282,26 @@
       "hash": "ba0d6a897ca4",
       "status": "machine"
     },
+    "auth:legal.notice.activating": {
+      "hash": "096263d1a207",
+      "status": "machine"
+    },
+    "auth:legal.notice.continuing": {
+      "hash": "e163ce746148",
+      "status": "machine"
+    },
+    "auth:legal.notice.creatingAccount": {
+      "hash": "57fd92724f83",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingIn": {
+      "hash": "b1d6452a71aa",
+      "status": "machine"
+    },
+    "auth:legal.notice.signingUp": {
+      "hash": "6b270c8bc3bb",
+      "status": "machine"
+    },
     "auth:legal.privacy": {
       "hash": "506ff3946215",
       "status": "machine"
@@ -31514,6 +33118,10 @@
       "hash": "7e5c2995d103",
       "status": "machine"
     },
+    "reportui:section.draftEmpty": {
+      "hash": "841ae80acb8c",
+      "status": "machine"
+    },
     "reportui:section.draftFailed": {
       "hash": "340c637e236e",
       "status": "machine"
@@ -32540,6 +34148,518 @@
     },
     "settings:saving": {
       "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "voice:activity.anesthetic": {
+      "hash": "c488bfd88e46",
+      "status": "machine"
+    },
+    "voice:activity.anestheticConcentration": {
+      "hash": "4c80c06e9415",
+      "status": "machine"
+    },
+    "voice:activity.block": {
+      "hash": "172b45f9c297",
+      "status": "machine"
+    },
+    "voice:activity.clearedMark": {
+      "hash": "a23efa6607e0",
+      "status": "machine"
+    },
+    "voice:activity.destination": {
+      "hash": "abf7d2af3444",
+      "status": "machine"
+    },
+    "voice:activity.finalNone": {
+      "hash": "a555dfafab36",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_many": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_one": {
+      "hash": "9b8fbb293cb4",
+      "status": "machine"
+    },
+    "voice:activity.finalRaised_other": {
+      "hash": "2710b2533802",
+      "status": "machine"
+    },
+    "voice:activity.notApplied": {
+      "hash": "def41555cd69",
+      "status": "machine"
+    },
+    "voice:activity.notAppliedHome": {
+      "hash": "10c15a2d4b5f",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosis": {
+      "hash": "57f01a3e2f52",
+      "status": "machine"
+    },
+    "voice:activity.noteDiagnosisTooth": {
+      "hash": "d9f6e9159ca6",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedure": {
+      "hash": "73aa8e34dd5f",
+      "status": "machine"
+    },
+    "voice:activity.noteProcedureTooth": {
+      "hash": "a93dbeeb60c4",
+      "status": "machine"
+    },
+    "voice:activity.radiographic": {
+      "hash": "17939bc11411",
+      "status": "machine"
+    },
+    "voice:activity.removed": {
+      "hash": "528a9320bc5d",
+      "status": "machine"
+    },
+    "voice:activity.report": {
+      "hash": "c688ec8c9ff5",
+      "status": "machine"
+    },
+    "voice:button.dictate": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:button.resume": {
+      "hash": "d640c7421da0",
+      "status": "machine"
+    },
+    "voice:button.start": {
+      "hash": "e4bb9f1ece9a",
+      "status": "machine"
+    },
+    "voice:button.stop": {
+      "hash": "cae7d57bc067",
+      "status": "machine"
+    },
+    "voice:button.titleDictate": {
+      "hash": "fedb70e4a793",
+      "status": "machine"
+    },
+    "voice:button.titleStop": {
+      "hash": "a63d34f132ff",
+      "status": "machine"
+    },
+    "voice:dialog.confirm": {
+      "hash": "5eed7e9fc8f3",
+      "status": "machine"
+    },
+    "voice:dialog.message": {
+      "hash": "1c2376bf4ec9",
+      "status": "machine"
+    },
+    "voice:dialog.title": {
+      "hash": "4880dd9d438c",
+      "status": "machine"
+    },
+    "voice:errors.browserUnsupported": {
+      "hash": "5e95571c6c03",
+      "status": "machine"
+    },
+    "voice:errors.captureStart": {
+      "hash": "96e63d8771b9",
+      "status": "machine"
+    },
+    "voice:errors.deepgram": {
+      "hash": "df06e57485fd",
+      "status": "machine"
+    },
+    "voice:errors.deepgramRejected": {
+      "hash": "635a48c79417",
+      "status": "machine"
+    },
+    "voice:errors.deepgramSocket": {
+      "hash": "6c07efaeddcd",
+      "status": "machine"
+    },
+    "voice:errors.failed": {
+      "hash": "e2447479367a",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailed": {
+      "hash": "20fb2701172c",
+      "status": "machine"
+    },
+    "voice:errors.finalCheckFailedDetail": {
+      "hash": "7f0e0d5fa1ba",
+      "status": "machine"
+    },
+    "voice:errors.micBlocked": {
+      "hash": "17c691df3bba",
+      "status": "machine"
+    },
+    "voice:errors.micStart": {
+      "hash": "a55677e93326",
+      "status": "machine"
+    },
+    "voice:errors.noCapture": {
+      "hash": "fc3641f20417",
+      "status": "machine"
+    },
+    "voice:errors.noCloud": {
+      "hash": "52229db96c77",
+      "status": "machine"
+    },
+    "voice:errors.noMic": {
+      "hash": "cf757208df0f",
+      "status": "machine"
+    },
+    "voice:errors.recognition": {
+      "hash": "4fd3d86161eb",
+      "status": "machine"
+    },
+    "voice:errors.recognitionUnknown": {
+      "hash": "b23a6a8439c0",
+      "status": "machine"
+    },
+    "voice:errors.sessionStart": {
+      "hash": "7de4a45acda2",
+      "status": "machine"
+    },
+    "voice:errors.unsupported": {
+      "hash": "1660c6df4bf8",
+      "status": "machine"
+    },
+    "voice:intro.ariaLabel": {
+      "hash": "0b7004c8459a",
+      "status": "machine"
+    },
+    "voice:intro.cancel": {
+      "hash": "19766ed6ccb2",
+      "status": "machine"
+    },
+    "voice:intro.close": {
+      "hash": "7d9eb7acb13e",
+      "status": "machine"
+    },
+    "voice:intro.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "voice:intro.start": {
+      "hash": "d886bad793cf",
+      "status": "machine"
+    },
+    "voice:intro.step1": {
+      "hash": "90021fbf2e4d",
+      "status": "machine"
+    },
+    "voice:intro.step2": {
+      "hash": "3cc9ccdb648a",
+      "status": "machine"
+    },
+    "voice:intro.step3": {
+      "hash": "a96cf15f9e39",
+      "status": "machine"
+    },
+    "voice:intro.title": {
+      "hash": "34f11721f30a",
+      "status": "machine"
+    },
+    "voice:panel.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:panel.activityEmpty": {
+      "hash": "03f489444cbb",
+      "status": "machine"
+    },
+    "voice:panel.ariaLabel": {
+      "hash": "0aa35e3a7eba",
+      "status": "machine"
+    },
+    "voice:panel.close": {
+      "hash": "a600b900f83d",
+      "status": "machine"
+    },
+    "voice:panel.closeTitle": {
+      "hash": "f1ae24bff6d3",
+      "status": "machine"
+    },
+    "voice:panel.collapse": {
+      "hash": "8ad80bc1bbac",
+      "status": "machine"
+    },
+    "voice:panel.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "voice:panel.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "voice:panel.emptyConnecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:panel.emptyIdle": {
+      "hash": "b84a48106cbd",
+      "status": "machine"
+    },
+    "voice:panel.emptyListening": {
+      "hash": "6e228e5f53f1",
+      "status": "machine"
+    },
+    "voice:panel.expand": {
+      "hash": "4a74667f1970",
+      "status": "machine"
+    },
+    "voice:panel.feedback": {
+      "hash": "aac77df34720",
+      "status": "machine"
+    },
+    "voice:panel.feedbackTitle": {
+      "hash": "722e8aaf4e02",
+      "status": "machine"
+    },
+    "voice:panel.guess": {
+      "hash": "6be5c1331a74",
+      "status": "machine"
+    },
+    "voice:panel.guessMark": {
+      "hash": "90ee16d576a7",
+      "status": "machine"
+    },
+    "voice:panel.heard": {
+      "hash": "58c030098748",
+      "status": "machine"
+    },
+    "voice:panel.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "voice:panel.helpTitle": {
+      "hash": "9c870aa6e5e9",
+      "status": "machine"
+    },
+    "voice:panel.interrupted": {
+      "hash": "b914fe07a70f",
+      "status": "machine"
+    },
+    "voice:panel.keep": {
+      "hash": "183f00f483d3",
+      "status": "machine"
+    },
+    "voice:panel.needsReview": {
+      "hash": "07297fa94a99",
+      "status": "machine"
+    },
+    "voice:panel.needsReviewCount": {
+      "hash": "ca14ea3e0a02",
+      "status": "machine"
+    },
+    "voice:panel.new": {
+      "hash": "18fdd549b2ed",
+      "status": "machine"
+    },
+    "voice:panel.notCharted": {
+      "hash": "9547c63e31f4",
+      "status": "machine"
+    },
+    "voice:panel.promptsOff": {
+      "hash": "a981c79c1397",
+      "status": "machine"
+    },
+    "voice:panel.promptsOn": {
+      "hash": "2fbfd8b79421",
+      "status": "machine"
+    },
+    "voice:panel.promptsTitle": {
+      "hash": "c15d18ad002b",
+      "status": "machine"
+    },
+    "voice:panel.providerBrowser": {
+      "hash": "bd0a31b51be6",
+      "status": "machine"
+    },
+    "voice:panel.providerDeepgram": {
+      "hash": "5a1c2f60192e",
+      "status": "machine"
+    },
+    "voice:panel.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "voice:panel.sending": {
+      "hash": "65ea0981f88b",
+      "status": "machine"
+    },
+    "voice:panel.showInChart": {
+      "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.transcript": {
+      "hash": "721164f0dc70",
+      "status": "machine"
+    },
+    "voice:peek.connecting": {
+      "hash": "0ceeaaae1443",
+      "status": "machine"
+    },
+    "voice:peek.goAhead": {
+      "hash": "ca250ddff761",
+      "status": "machine"
+    },
+    "voice:peek.pressResume": {
+      "hash": "7995c8cb3199",
+      "status": "machine"
+    },
+    "voice:peek.review_many": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_one": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.review_other": {
+      "hash": "af515f5cc579",
+      "status": "machine"
+    },
+    "voice:peek.talking": {
+      "hash": "e4f095691501",
+      "status": "machine"
+    },
+    "voice:sections.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "voice:sections.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "voice:sections.diagnosis": {
+      "hash": "0b7b7041db4f",
+      "status": "machine"
+    },
+    "voice:sections.exam": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
+    "voice:sections.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "voice:sections.procedure": {
+      "hash": "49c12482d6e9",
+      "status": "machine"
+    },
+    "voice:sections.treatment": {
+      "hash": "559821dfdff3",
+      "status": "machine"
+    },
+    "voice:spoken.check": {
+      "hash": "c94c4a908a0f",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_many": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_one": {
+      "hash": "80d500a28d55",
+      "status": "machine"
+    },
+    "voice:spoken.finalFound_other": {
+      "hash": "411279a04fec",
+      "status": "machine"
+    },
+    "voice:spoken.finding_many": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.finding_one": {
+      "hash": "5f9d97174228",
+      "status": "machine"
+    },
+    "voice:spoken.finding_other": {
+      "hash": "d7826b9bafb0",
+      "status": "machine"
+    },
+    "voice:spoken.open_many": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:spoken.open_one": {
+      "hash": "98866940af4f",
+      "status": "machine"
+    },
+    "voice:spoken.open_other": {
+      "hash": "61d5c1e62f17",
+      "status": "machine"
+    },
+    "voice:status.connecting": {
+      "hash": "72021eb70e91",
+      "status": "machine"
+    },
+    "voice:status.finishing": {
+      "hash": "47e171283955",
+      "status": "machine"
+    },
+    "voice:status.interrupted": {
+      "hash": "132d124d6bb3",
+      "status": "machine"
+    },
+    "voice:status.listening": {
+      "hash": "49c4605816cf",
+      "status": "machine"
+    },
+    "voice:status.ready": {
+      "hash": "ed837c72f5ef",
+      "status": "machine"
+    },
+    "voice:status.stopped": {
+      "hash": "1a4f630ac1b6",
+      "status": "machine"
+    },
+    "voice:sub.connecting": {
+      "hash": "af73d401089d",
+      "status": "machine"
+    },
+    "voice:sub.finishing": {
+      "hash": "457ca7ac57b9",
+      "status": "machine"
+    },
+    "voice:sub.goAhead": {
+      "hash": "64415570d0b1",
+      "status": "machine"
+    },
+    "voice:sub.listening": {
+      "hash": "8560878b8782",
+      "status": "machine"
+    },
+    "voice:sub.listeningSending": {
+      "hash": "8feb1f7900de",
+      "status": "machine"
+    },
+    "voice:toReview_many": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_one": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toReview_other": {
+      "hash": "03c1ff0e0711",
+      "status": "machine"
+    },
+    "voice:toast.viewOnly": {
+      "hash": "d8e41e314b9b",
+      "status": "machine"
+    },
+    "voice:transcript.activity": {
+      "hash": "38da1505ca83",
+      "status": "machine"
+    },
+    "voice:transcript.header": {
+      "hash": "5d05515d8eea",
       "status": "machine"
     },
     "whatsNew:anesthesia.body": {

@@ -40,6 +40,7 @@
     "replaceMessage": "The AI draft replaces the opening summary and home care advice you edited. You can undo right after.",
     "drafted": "Draft written — please read it over before printing.",
     "draftFailed": "Couldn’t write the draft. {{reason}}",
+    "draftEmpty": "The AI didn’t return a draft. Please try again.",
     "printTitle": "What will print (generated from the chart)",
     "removedThisVisit": "Removed this visit:",
     "removedToday": "— removed today",

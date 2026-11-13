@@ -41,6 +41,7 @@
     "replaceMessage": "La bozza dell’IA sostituisce il riepilogo iniziale e i consigli di cura a casa che ha modificato. Può annullare subito dopo.",
     "drafted": "Bozza scritta — la rilegga prima di stampare.",
     "draftFailed": "Impossibile scrivere la bozza. {{reason}}",
+    "draftEmpty": "L’IA non ha restituito alcuna bozza. Riprovi.",
     "printTitle": "Cosa verrà stampato (generato dall’odontogramma)",
     "removedThisVisit": "Estratti in questa visita:",
     "removedToday": "— estratto oggi",

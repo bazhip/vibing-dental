@@ -35,6 +35,8 @@ const T_METHOD = "CallExpression[callee.property.name='t']";
 // rules aren't wanted), so register an inert rule of that name so those
 // directives resolve instead of erroring.
 const reactHooksStub = { rules: { 'exhaustive-deps': { meta: { schema: [] }, create: () => ({}) } } };
+// Same for the `@typescript-eslint/no-explicit-any` directives (typescript-eslint's rules aren't enabled here).
+const tsEslintStub = { rules: { 'no-explicit-any': { meta: { schema: [] }, create: () => ({}) } } };
 
 module.exports = [
   {
@@ -59,7 +61,7 @@ module.exports = [
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     linterOptions: { reportUnusedDisableDirectives: 'off' },
-    plugins: { i18next, 'react-hooks': reactHooksStub },
+    plugins: { i18next, 'react-hooks': reactHooksStub, '@typescript-eslint': tsEslintStub },
     rules: {
       'i18next/no-literal-string': [
         'error',

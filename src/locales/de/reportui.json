@@ -40,6 +40,7 @@
     "replaceMessage": "Der KI-Entwurf ersetzt die einleitende Zusammenfassung und die Pflegetipps, die Sie bearbeitet haben. Sie können das gleich danach rückgängig machen.",
     "drafted": "Entwurf geschrieben — bitte vor dem Drucken durchlesen.",
     "draftFailed": "Der Entwurf konnte nicht geschrieben werden. {{reason}}",
+    "draftEmpty": "Die KI hat keinen Entwurf geliefert. Bitte versuchen Sie es erneut.",
     "printTitle": "Was gedruckt wird (aus dem Zahnschema erzeugt)",
     "removedThisVisit": "Bei diesem Besuch entfernt:",
     "removedToday": "— heute entfernt",

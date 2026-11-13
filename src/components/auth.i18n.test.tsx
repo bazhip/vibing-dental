@@ -52,17 +52,10 @@ const ALLOW: (string | RegExp)[] = [
   /^(M2|G2|G1|F2|PD|PD1|PD3)$/,
   /boom/,
 ];
-// The legal notice sentence stays English until plan 3; only its link labels are catalog text.
-const LEGAL_ALLOW: (string | RegExp)[] = [/^By .+ you agree to the$/, 'and'];
-
 const fill = (label: RegExp, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
-/** Untranslated text under `c`: everything but the legal notices must be fully wrapped, and in a
- *  notice only the English sentence is let through (its links must be wrapped). */
+/** Untranslated text under `c` (legal notices included: the whole sentence is catalog text now). */
 function untranslated(c: HTMLElement): string[] {
-  const rest = c.cloneNode(true) as HTMLElement;
-  rest.querySelectorAll('.login-legal').forEach((n) => n.remove());
-  const legal = [...c.querySelectorAll<HTMLElement>('.login-legal')].flatMap((n) => findUntranslated(n, LEGAL_ALLOW));
-  return [...findUntranslated(rest, ALLOW), ...legal];
+  return findUntranslated(c, ALLOW);
 }
 
 beforeEach(async () => {

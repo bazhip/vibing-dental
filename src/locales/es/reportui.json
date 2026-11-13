@@ -41,6 +41,7 @@
     "replaceMessage": "El borrador de la IA reemplaza el resumen inicial y los consejos de cuidado en casa que editó. Puede deshacerlo justo después.",
     "drafted": "Borrador redactado: revíselo antes de imprimir.",
     "draftFailed": "No se pudo redactar el borrador. {{reason}}",
+    "draftEmpty": "La IA no devolvió ningún borrador. Inténtelo de nuevo.",
     "printTitle": "Lo que se imprimirá (generado a partir del odontograma)",
     "removedThisVisit": "Extraídos en esta visita:",
     "removedToday": "— extraído hoy",

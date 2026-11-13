@@ -1,0 +1,150 @@
+{
+  "activity": {
+    "anesthetic": "anesthetic + {{drug}}",
+    "anestheticConcentration": "anesthetic + {{concentration}}% {{drug}}",
+    "block": "block {{site}} = {{mL}} mL",
+    "clearedMark": "cleared {{diagram}}.{{triadan}}",
+    "destination": "→ {{section}}: {{text}}",
+    "finalNone": "Final check: nothing missed",
+    "finalRaised_one": "Final check: {{count}} item added to review",
+    "finalRaised_other": "Final check: {{count}} items added to review",
+    "notApplied": "Not applied: {{what}}",
+    "notAppliedHome": "Not applied (belongs on {{section}}): {{what}}",
+    "noteDiagnosis": "Diagnosis note: \"{{text}}\"",
+    "noteDiagnosisTooth": "Diagnosis note @{{triadan}}: \"{{text}}\"",
+    "noteProcedure": "Procedure note: \"{{text}}\"",
+    "noteProcedureTooth": "Procedure note @{{triadan}}: \"{{text}}\"",
+    "radiographic": "radiographic findings += \"{{text}}…\"",
+    "removed": "Removed: {{what}}",
+    "report": "report += \"{{text}}…\""
+  },
+  "button": {
+    "dictate": "Dictate",
+    "resume": "Resume",
+    "start": "Start",
+    "stop": "Stop",
+    "titleDictate": "Dictate — talk and the chart fills itself",
+    "titleStop": "Stop listening (the transcript is kept)"
+  },
+  "dialog": {
+    "confirm": "Start over",
+    "message": "The transcript, activity log and review list are cleared. Everything already entered in the chart stays.",
+    "title": "Start a new dictation?"
+  },
+  "errors": {
+    "browserUnsupported": "Speech recognition is not supported in this browser. Try Chrome or Safari.",
+    "captureStart": "Could not start audio capture.",
+    "deepgram": "Deepgram error",
+    "deepgramRejected": "Deepgram rejected the connection — check the API key.",
+    "deepgramSocket": "Deepgram WebSocket error.",
+    "failed": "Voice autofill failed",
+    "finalCheckFailed": "Final check failed",
+    "finalCheckFailedDetail": "Final check failed: {{message}}",
+    "micBlocked": "Microphone access is blocked. Allow it for this site in your browser settings, then try again.",
+    "micStart": "Couldn't start microphone: {{message}}",
+    "noCapture": "This browser cannot capture microphone audio.",
+    "noCloud": "Cloud is not configured.",
+    "noMic": "No microphone was found.",
+    "recognition": "Recognition error: {{error}}",
+    "recognitionUnknown": "unknown",
+    "sessionStart": "Couldn't start Deepgram session.",
+    "unsupported": "Voice input needs Chrome, Edge, or Safari."
+  },
+  "intro": {
+    "ariaLabel": "Dictate",
+    "cancel": "Cancel",
+    "close": "Close",
+    "gotIt": "Got it",
+    "start": "Start dictation",
+    "step1": "Talk like you normally would: <em>“104 GI 2, calc 1. 105 missing. Tongue normal.”</em>",
+    "step2": "Stay on any page. Each finding goes to the right place in the chart.",
+    "step3": "Tap <strong>Stop</strong> when you’re done. Anything it wasn’t sure about is listed under <strong>Needs review</strong>.",
+    "title": "Dictate your chart"
+  },
+  "panel": {
+    "activity": "Activity",
+    "activityEmpty": "Chart changes show here as the AI applies them.",
+    "ariaLabel": "AI autofill",
+    "close": "Close panel",
+    "closeTitle": "Close (the transcript is kept)",
+    "collapse": "Collapse panel",
+    "dismiss": "Dismiss",
+    "download": "Download",
+    "emptyConnecting": "Getting the microphone ready — one moment…",
+    "emptyIdle": "Press Start to dictate.",
+    "emptyListening": "🎙 Go ahead — start talking. Your words appear here.",
+    "expand": "Expand panel",
+    "feedback": "Feedback",
+    "feedbackTitle": "Tell us what went wrong — your transcript can be attached",
+    "guess": "Charted as a guess — {{reason}}",
+    "guessMark": "Guess — check the review list",
+    "heard": "“{{heard}}”",
+    "help": "Help",
+    "helpTitle": "How it works",
+    "interrupted": "The microphone was interrupted (camera, phone call, or leaving the page). Everything heard before that was kept — press <strong>Resume</strong> to carry on.",
+    "keep": "Keep",
+    "needsReview": "Needs review",
+    "needsReviewCount": "Needs review ({{count}})",
+    "new": "New",
+    "notCharted": "Not charted — {{reason}}",
+    "promptsOff": "Prompts: Off",
+    "promptsOn": "Prompts: On",
+    "promptsTitle": "Short spoken prompts (e.g. “Check 109”) after a pause, for things worth checking",
+    "providerBrowser": "Browser STT",
+    "providerDeepgram": "⚡ Deepgram",
+    "remove": "Remove",
+    "sending": "sending…",
+    "showInChart": "Show in the chart",
+    "transcript": "Transcript"
+  },
+  "peek": {
+    "connecting": "Getting the microphone ready — one moment…",
+    "goAhead": "🎙 Go ahead — start talking. Findings appear as they’re charted.",
+    "pressResume": "Press Resume to keep dictating.",
+    "review_one": "⚠ {{count}} to review — tap to check",
+    "review_other": "⚠ {{count}} to review — tap to check",
+    "talking": "Start talking — findings appear as they’re charted."
+  },
+  "sections": {
+    "anesthesia": "Anesthesia",
+    "charting": "Charting",
+    "diagnosis": "Diagnosis diagram",
+    "exam": "Exam",
+    "patient": "Patient",
+    "procedure": "Procedure diagram",
+    "treatment": "Treatment Report"
+  },
+  "spoken": {
+    "check": "Check {{list}}.",
+    "finalFound_one": "Final check found one item to review.",
+    "finalFound_other": "Final check found {{count}} items to review.",
+    "finding_one": "one finding",
+    "finding_other": "{{count}} findings",
+    "open_one": "One item to review.",
+    "open_other": "{{count}} items to review."
+  },
+  "status": {
+    "connecting": "Connecting…",
+    "finishing": "Finishing…",
+    "interrupted": "Interrupted",
+    "listening": "Listening",
+    "ready": "Ready — start talking",
+    "stopped": "Stopped"
+  },
+  "sub": {
+    "connecting": "getting mic ready…",
+    "finishing": "finishing…",
+    "goAhead": "go ahead — talk",
+    "listening": "listening",
+    "listeningSending": "listening · sending…"
+  },
+  "toReview_one": "{{count}} to review",
+  "toReview_other": "{{count}} to review",
+  "toast": {
+    "viewOnly": "This visit is view-only — choose Edit chart to dictate into it."
+  },
+  "transcript": {
+    "activity": "Activity",
+    "header": "Transcript — recording started {{date}}"
+  }
+}

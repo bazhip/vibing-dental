@@ -41,6 +41,7 @@
     "replaceMessage": "Le brouillon de l’IA remplace le résumé d’introduction et les conseils de soins à domicile que vous avez modifiés. Vous pourrez annuler juste après.",
     "drafted": "Brouillon rédigé — merci de le relire avant l’impression.",
     "draftFailed": "Impossible de rédiger le brouillon. {{reason}}",
+    "draftEmpty": "L’IA n’a pas renvoyé de brouillon. Veuillez réessayer.",
     "printTitle": "Ce qui sera imprimé (généré à partir du schéma)",
     "removedThisVisit": "Extraites lors de cette visite :",
     "removedToday": "— extraite aujourd’hui",

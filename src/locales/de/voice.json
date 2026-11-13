@@ -1,0 +1,150 @@
+{
+  "activity": {
+    "anesthetic": "Anästhetikum + {{drug}}",
+    "anestheticConcentration": "Anästhetikum + {{concentration}} % {{drug}}",
+    "block": "Block {{site}} = {{mL}} mL",
+    "clearedMark": "{{diagram}}.{{triadan}} gelöscht",
+    "destination": "→ {{section}}: {{text}}",
+    "finalNone": "Abschließende Prüfung: nichts übersehen",
+    "finalRaised_one": "Abschließende Prüfung: {{count}} Eintrag zu „Zu prüfen“ hinzugefügt",
+    "finalRaised_other": "Abschließende Prüfung: {{count}} Einträge zu „Zu prüfen“ hinzugefügt",
+    "notApplied": "Nicht angewendet: {{what}}",
+    "notAppliedHome": "Nicht angewendet (gehört zu {{section}}): {{what}}",
+    "noteDiagnosis": "Diagnosenotiz: „{{text}}“",
+    "noteDiagnosisTooth": "Diagnosenotiz @{{triadan}}: „{{text}}“",
+    "noteProcedure": "Verfahrensnotiz: „{{text}}“",
+    "noteProcedureTooth": "Verfahrensnotiz @{{triadan}}: „{{text}}“",
+    "radiographic": "Röntgenbefunde += „{{text}}…“",
+    "removed": "Entfernt: {{what}}",
+    "report": "Bericht += „{{text}}…“"
+  },
+  "button": {
+    "dictate": "Diktieren",
+    "resume": "Fortsetzen",
+    "start": "Starten",
+    "stop": "Stopp",
+    "titleDictate": "Diktieren — sprechen Sie, und das Formular füllt sich von selbst",
+    "titleStop": "Zuhören beenden (das Transkript bleibt erhalten)"
+  },
+  "dialog": {
+    "confirm": "Neu beginnen",
+    "message": "Transkript, Aktivitätsprotokoll und Prüfliste werden gelöscht. Alles, was bereits im Formular eingetragen ist, bleibt erhalten.",
+    "title": "Neues Diktat beginnen?"
+  },
+  "errors": {
+    "browserUnsupported": "Die Spracherkennung wird von diesem Browser nicht unterstützt. Versuchen Sie es mit Chrome oder Safari.",
+    "captureStart": "Die Audioaufnahme konnte nicht gestartet werden.",
+    "deepgram": "Deepgram-Fehler",
+    "deepgramRejected": "Deepgram hat die Verbindung abgelehnt — prüfen Sie den API-Schlüssel.",
+    "deepgramSocket": "Deepgram-WebSocket-Fehler.",
+    "failed": "Spracheingabe-Autofill fehlgeschlagen",
+    "finalCheckFailed": "Abschließende Prüfung fehlgeschlagen",
+    "finalCheckFailedDetail": "Abschließende Prüfung fehlgeschlagen: {{message}}",
+    "micBlocked": "Der Mikrofonzugriff ist blockiert. Erlauben Sie ihn für diese Website in den Browsereinstellungen und versuchen Sie es dann erneut.",
+    "micStart": "Das Mikrofon konnte nicht gestartet werden: {{message}}",
+    "noCapture": "Dieser Browser kann kein Mikrofon-Audio aufnehmen.",
+    "noCloud": "Die Cloud ist nicht konfiguriert.",
+    "noMic": "Es wurde kein Mikrofon gefunden.",
+    "recognition": "Erkennungsfehler: {{error}}",
+    "recognitionUnknown": "unbekannt",
+    "sessionStart": "Die Deepgram-Sitzung konnte nicht gestartet werden.",
+    "unsupported": "Spracheingabe erfordert Chrome, Edge oder Safari."
+  },
+  "intro": {
+    "ariaLabel": "Diktieren",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "gotIt": "Verstanden",
+    "start": "Diktat starten",
+    "step1": "Sprechen Sie ganz natürlich: <em>„104 GI 2, Zahnstein 1. 105 fehlt. Zunge unauffällig.“</em>",
+    "step2": "Bleiben Sie auf einer beliebigen Seite. Jeder Befund landet an der richtigen Stelle im Formular.",
+    "step3": "Tippen Sie auf <strong>Stopp</strong>, wenn Sie fertig sind. Alles Unsichere erscheint unter <strong>Zu prüfen</strong>.",
+    "title": "Diktieren Sie Ihr Formular"
+  },
+  "panel": {
+    "activity": "Aktivität",
+    "activityEmpty": "Änderungen am Formular erscheinen hier, sobald die KI sie übernimmt.",
+    "ariaLabel": "KI-Autofill",
+    "close": "Bereich schließen",
+    "closeTitle": "Schließen (das Transkript bleibt erhalten)",
+    "collapse": "Bereich zuklappen",
+    "dismiss": "Verwerfen",
+    "download": "Herunterladen",
+    "emptyConnecting": "Mikrofon wird vorbereitet — einen Moment …",
+    "emptyIdle": "Tippen Sie auf Starten, um zu diktieren.",
+    "emptyListening": "🎙 Bitte sprechen Sie. Ihre Worte erscheinen hier.",
+    "expand": "Bereich aufklappen",
+    "feedback": "Feedback",
+    "feedbackTitle": "Sagen Sie uns, was schiefgelaufen ist — Ihr Transkript kann angehängt werden",
+    "guess": "Als Vermutung eingetragen — {{reason}}",
+    "guessMark": "Vermutung — siehe Liste „Zu prüfen“",
+    "heard": "„{{heard}}“",
+    "help": "Hilfe",
+    "helpTitle": "So funktioniert es",
+    "interrupted": "Das Mikrofon wurde unterbrochen (Kamera, Anruf oder Verlassen der Seite). Alles bis dahin Gehörte wurde behalten — tippen Sie auf <strong>Fortsetzen</strong>, um weiterzumachen.",
+    "keep": "Behalten",
+    "needsReview": "Zu prüfen",
+    "needsReviewCount": "Zu prüfen ({{count}})",
+    "new": "Neu",
+    "notCharted": "Nicht eingetragen — {{reason}}",
+    "promptsOff": "Hinweise: Aus",
+    "promptsOn": "Hinweise: Ein",
+    "promptsTitle": "Kurze gesprochene Hinweise (z. B. „109 prüfen“) nach einer Pause, wenn etwas zu prüfen ist",
+    "providerBrowser": "Browser-Spracherkennung",
+    "providerDeepgram": "⚡ Deepgram",
+    "remove": "Entfernen",
+    "sending": "Senden …",
+    "showInChart": "Im Formular anzeigen",
+    "transcript": "Transkript"
+  },
+  "peek": {
+    "connecting": "Mikrofon wird vorbereitet — einen Moment …",
+    "goAhead": "🎙 Bitte sprechen Sie. Befunde erscheinen, sobald sie eingetragen werden.",
+    "pressResume": "Tippen Sie auf Fortsetzen, um weiter zu diktieren.",
+    "review_one": "⚠ {{count}} zu prüfen — zum Ansehen tippen",
+    "review_other": "⚠ {{count}} zu prüfen — zum Ansehen tippen",
+    "talking": "Sprechen Sie — Befunde erscheinen, sobald sie eingetragen werden."
+  },
+  "sections": {
+    "anesthesia": "Anästhesie",
+    "charting": "Charting",
+    "diagnosis": "Diagnosediagramm",
+    "exam": "Untersuchung",
+    "patient": "Patient",
+    "procedure": "Verfahrensdiagramm",
+    "treatment": "Behandlungsbericht"
+  },
+  "spoken": {
+    "check": "{{list}} prüfen.",
+    "finalFound_one": "Die abschließende Prüfung hat einen Eintrag zur Kontrolle gefunden.",
+    "finalFound_other": "Die abschließende Prüfung hat {{count}} Einträge zur Kontrolle gefunden.",
+    "finding_one": "ein Befund",
+    "finding_other": "{{count}} Befunde",
+    "open_one": "Ein Eintrag zu prüfen.",
+    "open_other": "{{count}} Einträge zu prüfen."
+  },
+  "status": {
+    "connecting": "Verbindung wird hergestellt …",
+    "finishing": "Abschluss …",
+    "interrupted": "Unterbrochen",
+    "listening": "Zuhören",
+    "ready": "Bereit — Sie können sprechen",
+    "stopped": "Gestoppt"
+  },
+  "sub": {
+    "connecting": "Mikrofon wird vorbereitet …",
+    "finishing": "Abschluss …",
+    "goAhead": "bitte sprechen",
+    "listening": "Zuhören",
+    "listeningSending": "Zuhören · Senden …"
+  },
+  "toReview_one": "{{count}} zu prüfen",
+  "toReview_other": "{{count}} zu prüfen",
+  "toast": {
+    "viewOnly": "Dieser Besuch ist schreibgeschützt — wählen Sie „Formular bearbeiten“, um darin zu diktieren."
+  },
+  "transcript": {
+    "activity": "Aktivität",
+    "header": "Transkript — Aufnahme gestartet {{date}}"
+  }
+}
