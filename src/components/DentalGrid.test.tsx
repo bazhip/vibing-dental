@@ -266,3 +266,22 @@ test('millimetre columns keep typing (number pad), with no score chips', () => {
   expect(screen.queryByRole('group', { name: /score/ })).not.toBeInTheDocument();
   expect(rowFor(101).querySelector('.rdg-editor-container input')).toHaveAttribute('inputmode', 'decimal');
 });
+
+test('phones: short column titles (full name kept for screen readers) and the tooth columns freeze', () => {
+  const original = window.matchMedia;
+  window.matchMedia = ((q: string) => ({
+    matches: q.includes('max-width: 1000px'),
+    media: q,
+    addEventListener() {},
+    removeEventListener() {},
+  })) as unknown as typeof window.matchMedia;
+  try {
+    renderGrid();
+    const mob = screen.getByRole('columnheader', { name: /^Mobility/ });
+    expect(mob).toHaveTextContent(/^Mob/);
+    expect(mob).not.toHaveTextContent(/Mobility/);
+    expect(screen.getByRole('columnheader', { name: 'Tooth' })).toHaveClass('dental-grid__pin');
+  } finally {
+    window.matchMedia = original;
+  }
+});

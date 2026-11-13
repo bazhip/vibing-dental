@@ -1204,21 +1204,37 @@
   text-decoration: none;
 }
 
-/* Tablets & phones: 11 columns can't compress below ~760px and stay
-   usable, so the grid lays out at that floor width (DentalGrid.tsx)
-   and the card scrolls horizontally. Inside a horizontal scrollport
-   the header can't track the page scroll — pin it to the card top. */
+/* Tablets & phones: 11 columns can't compress to a phone and stay
+   usable, so the grid lays out at its columns' natural width
+   (DentalGrid.tsx, short titles) and the card scrolls sideways. A
+   sideways scroller can't let the header stick to the PAGE, so the card
+   scrolls both ways inside a screen-high box: the header pins to its
+   top, and Missing/Tooth/Triadan stay frozen on the left. Scrolling past
+   either end of the list hands off to the page as usual. */
 @media (max-width: 1000px) {
   .dental-grid {
-    overflow-x: auto;
+    overflow: auto;
+    max-height: calc(100vh - var(--topbar-height, 0px) - 1rem);
+    max-height: calc(100dvh - var(--topbar-height, 0px) - 1rem);
     -webkit-overflow-scrolling: touch;
   }
   .dental-grid .rdg {
-    min-width: 760px;
+    min-width: var(--grid-min-width, 760px);
   }
   .dental-grid .rdg-header-row .rdg-cell {
     top: 0 !important;
+    padding: 0.7rem 0.4rem;
+    letter-spacing: 0.03em;
   }
+  /* Missing · Tooth · Triadan pinned on the left. Pinned header cells
+     sit above everything; pinned body cells above the scrolling ones,
+     with an opaque fill to cover what slides under them. */
+  .dental-grid .dental-grid__pin { position: sticky; z-index: 2; background-color: inherit; }
+  .dental-grid .rdg-row { background-color: var(--rdg-background-color, #fff); }
+  .dental-grid .dental-grid__pin--0 { left: 0; }
+  .dental-grid .dental-grid__pin--1 { left: var(--pin-1); }
+  .dental-grid .dental-grid__pin--2 { left: var(--pin-2); box-shadow: 2px 0 4px -2px rgba(15, 23, 42, 0.18); }
+  .dental-grid .rdg-header-row .dental-grid__pin { z-index: 12; background: var(--primary); }
 }
 
 /* Anesthesia Table */
