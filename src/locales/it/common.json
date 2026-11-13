@@ -1,9 +1,10 @@
 {
   "actions": {
-    "save": "Salva",
     "cancel": "Annulla",
     "close": "Chiudi",
     "delete": "Elimina",
-    "edit": "Modifica"
+    "duplicate": "Duplica",
+    "edit": "Modifica",
+    "save": "Salva"
   }
 }

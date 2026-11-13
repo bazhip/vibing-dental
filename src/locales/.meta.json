@@ -12,6 +12,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
     "common:actions.edit": {
       "hash": "464c4ffd019e",
       "status": "machine"
@@ -32,6 +36,10 @@
     },
     "common:actions.delete": {
       "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
       "status": "machine"
     },
     "common:actions.edit": {
@@ -56,6 +64,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
+      "status": "machine"
+    },
     "common:actions.edit": {
       "hash": "464c4ffd019e",
       "status": "machine"
@@ -76,6 +88,10 @@
     },
     "common:actions.delete": {
       "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "common:actions.duplicate": {
+      "hash": "02cdaabfca80",
       "status": "machine"
     },
     "common:actions.edit": {

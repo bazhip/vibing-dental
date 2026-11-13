@@ -25,7 +25,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "replay": "tsx scripts/replay-transcript.ts",
-    "i18n:check": "tsx scripts/i18n/check.ts"
+    "i18n:check": "tsx scripts/i18n/check.ts",
+    "i18n:translate": "tsx scripts/i18n/translate.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

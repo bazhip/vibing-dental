@@ -1,9 +1,10 @@
 {
   "actions": {
-    "save": "Speichern",
     "cancel": "Abbrechen",
     "close": "Schließen",
     "delete": "Löschen",
-    "edit": "Bearbeiten"
+    "duplicate": "Duplizieren",
+    "edit": "Bearbeiten",
+    "save": "Speichern"
   }
 }
