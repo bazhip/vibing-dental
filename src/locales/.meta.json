@@ -1596,6 +1596,142 @@
       "hash": "0d1fe19967e2",
       "status": "machine"
     },
+    "authEmail:invite.body": {
+      "hash": "32a8aaec0ea9",
+      "status": "machine"
+    },
+    "authEmail:invite.button": {
+      "hash": "7e17aadc3039",
+      "status": "machine"
+    },
+    "authEmail:invite.ignore": {
+      "hash": "493450c3e726",
+      "status": "machine"
+    },
+    "authEmail:invite.preheader": {
+      "hash": "291697898f1b",
+      "status": "machine"
+    },
+    "authEmail:invite.subject": {
+      "hash": "9ab958e0fb2e",
+      "status": "machine"
+    },
+    "authEmail:invite.title": {
+      "hash": "7f56cba651ae",
+      "status": "machine"
+    },
+    "authEmail:magiclink.body": {
+      "hash": "491edec03680",
+      "status": "machine"
+    },
+    "authEmail:magiclink.button": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "authEmail:magiclink.ignore": {
+      "hash": "47c460847a1c",
+      "status": "machine"
+    },
+    "authEmail:magiclink.preheader": {
+      "hash": "5a4b9b699078",
+      "status": "machine"
+    },
+    "authEmail:magiclink.subject": {
+      "hash": "b75b49ba29bc",
+      "status": "machine"
+    },
+    "authEmail:magiclink.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.body": {
+      "hash": "7d69b4109f93",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.subject": {
+      "hash": "3f99328f8466",
+      "status": "machine"
+    },
+    "authEmail:notice.footnote": {
+      "hash": "5ea57c15abca",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.body": {
+      "hash": "2fefe8005f64",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.subject": {
+      "hash": "898354e9576b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.body": {
+      "hash": "7fd26670b36b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.subject": {
+      "hash": "0a2bd76ea627",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.body": {
+      "hash": "62ff817ee479",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.subject": {
+      "hash": "7e9b3ea581c5",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.body": {
+      "hash": "bae8674d6392",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.subject": {
+      "hash": "d0443eacfaf1",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.body": {
+      "hash": "b75680d161ed",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.subject": {
+      "hash": "b24c45122fb9",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.body": {
+      "hash": "9d8016fc63e5",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.subject": {
+      "hash": "2d8739f40440",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.body": {
+      "hash": "91e2fbcaf070",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.subject": {
+      "hash": "38f812583ddb",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.body": {
+      "hash": "13cefd9e91b4",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.ignore": {
+      "hash": "c6796d188978",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.preheader": {
+      "hash": "3d12963d29d2",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.subject": {
+      "hash": "4093d9ea03f3",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.title": {
+      "hash": "da81bd0f191a",
+      "status": "machine"
+    },
     "authEmail:resetPassword.body": {
       "hash": "baea84dc1525",
       "status": "machine"
@@ -11704,6 +11840,142 @@
     },
     "authEmail:confirmSignup.title": {
       "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:invite.body": {
+      "hash": "32a8aaec0ea9",
+      "status": "machine"
+    },
+    "authEmail:invite.button": {
+      "hash": "7e17aadc3039",
+      "status": "machine"
+    },
+    "authEmail:invite.ignore": {
+      "hash": "493450c3e726",
+      "status": "machine"
+    },
+    "authEmail:invite.preheader": {
+      "hash": "291697898f1b",
+      "status": "machine"
+    },
+    "authEmail:invite.subject": {
+      "hash": "9ab958e0fb2e",
+      "status": "machine"
+    },
+    "authEmail:invite.title": {
+      "hash": "7f56cba651ae",
+      "status": "machine"
+    },
+    "authEmail:magiclink.body": {
+      "hash": "491edec03680",
+      "status": "machine"
+    },
+    "authEmail:magiclink.button": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "authEmail:magiclink.ignore": {
+      "hash": "47c460847a1c",
+      "status": "machine"
+    },
+    "authEmail:magiclink.preheader": {
+      "hash": "5a4b9b699078",
+      "status": "machine"
+    },
+    "authEmail:magiclink.subject": {
+      "hash": "b75b49ba29bc",
+      "status": "machine"
+    },
+    "authEmail:magiclink.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.body": {
+      "hash": "7d69b4109f93",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.subject": {
+      "hash": "3f99328f8466",
+      "status": "machine"
+    },
+    "authEmail:notice.footnote": {
+      "hash": "5ea57c15abca",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.body": {
+      "hash": "2fefe8005f64",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.subject": {
+      "hash": "898354e9576b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.body": {
+      "hash": "7fd26670b36b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.subject": {
+      "hash": "0a2bd76ea627",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.body": {
+      "hash": "62ff817ee479",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.subject": {
+      "hash": "7e9b3ea581c5",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.body": {
+      "hash": "bae8674d6392",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.subject": {
+      "hash": "d0443eacfaf1",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.body": {
+      "hash": "b75680d161ed",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.subject": {
+      "hash": "b24c45122fb9",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.body": {
+      "hash": "9d8016fc63e5",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.subject": {
+      "hash": "2d8739f40440",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.body": {
+      "hash": "91e2fbcaf070",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.subject": {
+      "hash": "38f812583ddb",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.body": {
+      "hash": "13cefd9e91b4",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.ignore": {
+      "hash": "c6796d188978",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.preheader": {
+      "hash": "3d12963d29d2",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.subject": {
+      "hash": "4093d9ea03f3",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.title": {
+      "hash": "da81bd0f191a",
       "status": "machine"
     },
     "authEmail:resetPassword.body": {
@@ -21904,6 +22176,142 @@
       "hash": "0d1fe19967e2",
       "status": "machine"
     },
+    "authEmail:invite.body": {
+      "hash": "32a8aaec0ea9",
+      "status": "machine"
+    },
+    "authEmail:invite.button": {
+      "hash": "7e17aadc3039",
+      "status": "machine"
+    },
+    "authEmail:invite.ignore": {
+      "hash": "493450c3e726",
+      "status": "machine"
+    },
+    "authEmail:invite.preheader": {
+      "hash": "291697898f1b",
+      "status": "machine"
+    },
+    "authEmail:invite.subject": {
+      "hash": "9ab958e0fb2e",
+      "status": "machine"
+    },
+    "authEmail:invite.title": {
+      "hash": "7f56cba651ae",
+      "status": "machine"
+    },
+    "authEmail:magiclink.body": {
+      "hash": "491edec03680",
+      "status": "machine"
+    },
+    "authEmail:magiclink.button": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "authEmail:magiclink.ignore": {
+      "hash": "47c460847a1c",
+      "status": "machine"
+    },
+    "authEmail:magiclink.preheader": {
+      "hash": "5a4b9b699078",
+      "status": "machine"
+    },
+    "authEmail:magiclink.subject": {
+      "hash": "b75b49ba29bc",
+      "status": "machine"
+    },
+    "authEmail:magiclink.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.body": {
+      "hash": "7d69b4109f93",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.subject": {
+      "hash": "3f99328f8466",
+      "status": "machine"
+    },
+    "authEmail:notice.footnote": {
+      "hash": "5ea57c15abca",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.body": {
+      "hash": "2fefe8005f64",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.subject": {
+      "hash": "898354e9576b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.body": {
+      "hash": "7fd26670b36b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.subject": {
+      "hash": "0a2bd76ea627",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.body": {
+      "hash": "62ff817ee479",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.subject": {
+      "hash": "7e9b3ea581c5",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.body": {
+      "hash": "bae8674d6392",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.subject": {
+      "hash": "d0443eacfaf1",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.body": {
+      "hash": "b75680d161ed",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.subject": {
+      "hash": "b24c45122fb9",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.body": {
+      "hash": "9d8016fc63e5",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.subject": {
+      "hash": "2d8739f40440",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.body": {
+      "hash": "91e2fbcaf070",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.subject": {
+      "hash": "38f812583ddb",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.body": {
+      "hash": "13cefd9e91b4",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.ignore": {
+      "hash": "c6796d188978",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.preheader": {
+      "hash": "3d12963d29d2",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.subject": {
+      "hash": "4093d9ea03f3",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.title": {
+      "hash": "da81bd0f191a",
+      "status": "machine"
+    },
     "authEmail:resetPassword.body": {
       "hash": "baea84dc1525",
       "status": "machine"
@@ -32100,6 +32508,142 @@
     },
     "authEmail:confirmSignup.title": {
       "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:invite.body": {
+      "hash": "32a8aaec0ea9",
+      "status": "machine"
+    },
+    "authEmail:invite.button": {
+      "hash": "7e17aadc3039",
+      "status": "machine"
+    },
+    "authEmail:invite.ignore": {
+      "hash": "493450c3e726",
+      "status": "machine"
+    },
+    "authEmail:invite.preheader": {
+      "hash": "291697898f1b",
+      "status": "machine"
+    },
+    "authEmail:invite.subject": {
+      "hash": "9ab958e0fb2e",
+      "status": "machine"
+    },
+    "authEmail:invite.title": {
+      "hash": "7f56cba651ae",
+      "status": "machine"
+    },
+    "authEmail:magiclink.body": {
+      "hash": "491edec03680",
+      "status": "machine"
+    },
+    "authEmail:magiclink.button": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "authEmail:magiclink.ignore": {
+      "hash": "47c460847a1c",
+      "status": "machine"
+    },
+    "authEmail:magiclink.preheader": {
+      "hash": "5a4b9b699078",
+      "status": "machine"
+    },
+    "authEmail:magiclink.subject": {
+      "hash": "b75b49ba29bc",
+      "status": "machine"
+    },
+    "authEmail:magiclink.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.body": {
+      "hash": "7d69b4109f93",
+      "status": "machine"
+    },
+    "authEmail:notice.emailChanged.subject": {
+      "hash": "3f99328f8466",
+      "status": "machine"
+    },
+    "authEmail:notice.footnote": {
+      "hash": "5ea57c15abca",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.body": {
+      "hash": "2fefe8005f64",
+      "status": "machine"
+    },
+    "authEmail:notice.generic.subject": {
+      "hash": "898354e9576b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.body": {
+      "hash": "7fd26670b36b",
+      "status": "machine"
+    },
+    "authEmail:notice.identityLinked.subject": {
+      "hash": "0a2bd76ea627",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.body": {
+      "hash": "62ff817ee479",
+      "status": "machine"
+    },
+    "authEmail:notice.identityUnlinked.subject": {
+      "hash": "7e9b3ea581c5",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.body": {
+      "hash": "bae8674d6392",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaEnrolled.subject": {
+      "hash": "d0443eacfaf1",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.body": {
+      "hash": "b75680d161ed",
+      "status": "machine"
+    },
+    "authEmail:notice.mfaUnenrolled.subject": {
+      "hash": "b24c45122fb9",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.body": {
+      "hash": "9d8016fc63e5",
+      "status": "machine"
+    },
+    "authEmail:notice.passwordChanged.subject": {
+      "hash": "2d8739f40440",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.body": {
+      "hash": "91e2fbcaf070",
+      "status": "machine"
+    },
+    "authEmail:notice.phoneChanged.subject": {
+      "hash": "38f812583ddb",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.body": {
+      "hash": "13cefd9e91b4",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.ignore": {
+      "hash": "c6796d188978",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.preheader": {
+      "hash": "3d12963d29d2",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.subject": {
+      "hash": "4093d9ea03f3",
+      "status": "machine"
+    },
+    "authEmail:reauthentication.title": {
+      "hash": "da81bd0f191a",
       "status": "machine"
     },
     "authEmail:resetPassword.body": {

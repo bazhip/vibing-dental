@@ -26,5 +26,63 @@
     "body": "Bestätigen Sie, dass <strong>{{newEmail}}</strong> die Adresse <strong>{{email}}</strong> als Anmelde-E-Mail Ihres ToothOps-Kontos ersetzen soll.",
     "button": "Neue E-Mail-Adresse bestätigen",
     "ignore": "Sie haben diese Änderung nicht veranlasst? Ignorieren Sie diese E-Mail – Ihre Anmelde-E-Mail-Adresse bleibt unverändert."
+  },
+  "invite": {
+    "subject": "Sie wurden zu ToothOps eingeladen",
+    "title": "Nehmen Sie Ihre Einladung an",
+    "preheader": "Sie wurden eingeladen, ein ToothOps-Konto zu erstellen.",
+    "body": "Sie wurden eingeladen, ein ToothOps-Konto für <strong>{{email}}</strong> zu erstellen. Nehmen Sie die Einladung an, um Ihr Passwort festzulegen und loszulegen.",
+    "button": "Einladung annehmen",
+    "ignore": "Sie haben diese Einladung nicht erwartet? Dann können Sie diese E-Mail ignorieren – es wird kein Konto erstellt, solange dieser Link nicht verwendet wird."
+  },
+  "magiclink": {
+    "subject": "Ihr Anmeldelink für ToothOps",
+    "title": "Bei ToothOps anmelden",
+    "preheader": "Ihr Link zur Anmeldung bei ToothOps.",
+    "body": "Melden Sie sich über die Schaltfläche unten als <strong>{{email}}</strong> bei ToothOps an. Der Link kann nur einmal verwendet werden.",
+    "button": "Anmelden",
+    "ignore": "Sie haben nicht versucht, sich anzumelden? Ignorieren Sie diese E-Mail – ohne diesen Link kann sich niemand anmelden."
+  },
+  "reauthentication": {
+    "subject": "Ihr ToothOps-Bestätigungscode",
+    "title": "Bestätigen Sie Ihre Identität",
+    "preheader": "Ihr ToothOps-Bestätigungscode.",
+    "body": "Geben Sie diesen Code in ToothOps ein, um Ihre Identität zu bestätigen:",
+    "ignore": "Sie haben diesen Code nicht angefordert? Ignorieren Sie diese E-Mail und ändern Sie gegebenenfalls Ihr Passwort."
+  },
+  "notice": {
+    "footnote": "Wenn Sie diese Änderung nicht vorgenommen haben, setzen Sie Ihr Passwort sofort zurück.",
+    "passwordChanged": {
+      "subject": "Ihr ToothOps-Passwort wurde geändert",
+      "body": "Das Passwort Ihres ToothOps-Kontos wurde geändert."
+    },
+    "emailChanged": {
+      "subject": "Ihre ToothOps-Anmelde-E-Mail-Adresse wurde geändert",
+      "body": "Die Anmelde-E-Mail-Adresse Ihres ToothOps-Kontos wurde geändert."
+    },
+    "phoneChanged": {
+      "subject": "Ihre ToothOps-Telefonnummer wurde geändert",
+      "body": "Die Telefonnummer Ihres ToothOps-Kontos wurde geändert."
+    },
+    "identityLinked": {
+      "subject": "Ihrem ToothOps-Konto wurde eine Anmeldemethode hinzugefügt",
+      "body": "Mit Ihrem ToothOps-Konto wurde eine neue Anmeldemethode verknüpft."
+    },
+    "identityUnlinked": {
+      "subject": "Aus Ihrem ToothOps-Konto wurde eine Anmeldemethode entfernt",
+      "body": "Aus Ihrem ToothOps-Konto wurde eine Anmeldemethode entfernt."
+    },
+    "mfaEnrolled": {
+      "subject": "Ihrem ToothOps-Konto wurde die Zwei-Faktor-Authentifizierung hinzugefügt",
+      "body": "Ihrem ToothOps-Konto wurde eine Methode zur Zwei-Faktor-Authentifizierung hinzugefügt."
+    },
+    "mfaUnenrolled": {
+      "subject": "Aus Ihrem ToothOps-Konto wurde die Zwei-Faktor-Authentifizierung entfernt",
+      "body": "Aus Ihrem ToothOps-Konto wurde eine Methode zur Zwei-Faktor-Authentifizierung entfernt."
+    },
+    "generic": {
+      "subject": "Ihr ToothOps-Konto wurde aktualisiert",
+      "body": "Eine Sicherheitseinstellung Ihres ToothOps-Kontos wurde geändert."
+    }
   }
 }

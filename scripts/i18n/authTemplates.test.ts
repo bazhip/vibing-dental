@@ -72,11 +72,14 @@ describe('generated Supabase auth templates', () => {
     expect(change).toContain('<strong>{{ .NewEmail }}</strong>');
   });
 
-  test('subjects.md lists every language’s subject, English as the fallback', () => {
+  test('subjects.md lists every language’s subject and gives English to paste', () => {
     const md = readFileSync('supabase/templates/subjects.md', 'utf8');
     for (const lng of APP_LANGUAGES) {
       expect(md).toContain(`| ${lng} | ${catalogs[lng].authEmail['resetPassword.subject']} |`);
     }
-    expect(md).toContain('{{ else }}Reset your ToothOps password{{ end }}');
+    // The dashboard Subject field is capped at 255 characters: paste English only.
+    expect(md).toContain('```\nReset your ToothOps password\n```');
+    expect(md).not.toContain('{{ if eq $lang');
+    for (const block of md.match(/```\n([^`]*)\n```/g) ?? []) expect(block.length - 8).toBeLessThanOrEqual(255);
   });
 });
