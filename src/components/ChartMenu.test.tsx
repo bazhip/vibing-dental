@@ -7,6 +7,8 @@ const auth = vi.hoisted(() => ({
   getSession: vi.fn(async () => ({ data: { session: { user: { email: 'session@vet.com' } } } })),
 }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: true }));
+const native = vi.hoisted(() => ({ value: false }));
+vi.mock('../native/platform', () => ({ isNativeApp: () => native.value, WEB_ORIGIN: 'https://toothops.app/' }));
 
 import { ChartMenu } from './ChartMenu';
 
@@ -58,5 +60,18 @@ describe('ChartMenu', () => {
     expect(screen.queryByRole('button', { name: /Practice settings/ })).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('in the app, practice settings make no mention of billing', async () => {
+    native.value = true;
+    try {
+      const user = userEvent.setup();
+      render(<ChartMenu onOpenWalkthrough={vi.fn()} cloud={cloud} email="me@vet.com" />);
+      await user.click(screen.getByRole('button', { name: 'Open settings menu' }));
+      expect(screen.getByText('Name, logo, and team.')).toBeInTheDocument();
+      expect(screen.queryByText(/billing/i)).toBeNull();
+    } finally {
+      native.value = false;
+    }
   });
 });

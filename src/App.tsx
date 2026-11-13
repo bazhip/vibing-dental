@@ -14,6 +14,7 @@ import { touchLastSeen } from './utils/lastSeen';
 import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
+import { isNativeApp } from './native/platform';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -21,6 +22,10 @@ import { lazyWithReload } from './utils/lazyWithReload';
 const EntryGrid = lazyWithReload(() => import('./EntryGrid'));
 const Landing = lazyWithReload(() =>
   import('./components/Landing').then((m) => ({ default: m.Landing }))
+);
+// The iOS app skips the landing page and opens straight to sign-in.
+const Login = lazyWithReload(() =>
+  import('./components/Login').then((m) => ({ default: m.Login }))
 );
 const ResetPassword = lazyWithReload(() =>
   import('./components/ResetPassword').then((m) => ({ default: m.ResetPassword }))
@@ -65,6 +70,9 @@ async function confirmSessionLost(): Promise<boolean> {
 }
 
 const App: React.FC = () => {
+  // In the iOS app there's no landing page, no no-account trial, and no
+  // "Homepage" — signed out means the sign-in-only login screen.
+  const native = isNativeApp();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !cloudEnabled && readString(AUTH_KEY, AUTH_VERSION, '') === '1'
   );
@@ -87,7 +95,7 @@ const App: React.FC = () => {
   // No-account trial (persisted so a refresh mid-trial doesn't bounce
   // back to the landing page). Signing in/up ends it.
   const [trialMode, setTrialMode] = useState<boolean>(
-    () => readString(TRIAL_KEY, 1, '') === '1'
+    () => !isNativeApp() && readString(TRIAL_KEY, 1, '') === '1'
   );
   // When the trial's "Create free account" CTA sends the user back to
   // the landing page, open the signup overlay right away.
@@ -122,7 +130,7 @@ const App: React.FC = () => {
   // leaving the session (or the trial); "Back to the app" (or the Back
   // button, now that it's a route) returns.
   const { route, navigate } = useHashRoute();
-  const showHome = route.view === 'home';
+  const showHome = !native && route.view === 'home';
   const setShowHome = (next: boolean) =>
     navigate(next ? '#/home' : '#/chart', { replace: !next });
 
@@ -280,6 +288,14 @@ const App: React.FC = () => {
     );
   }
 
+  if (!isAuthenticated && native) {
+    return (
+      <Suspense fallback={<AppLoading />}>
+        <Login appMode onAuthenticate={() => setIsAuthenticated(true)} />
+      </Suspense>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <Suspense fallback={<AppLoading />}>
@@ -304,7 +320,7 @@ const App: React.FC = () => {
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
         <BillingGate>
-          <EntryGrid onGoHome={() => setShowHome(true)} />
+          <EntryGrid onGoHome={native ? undefined : () => setShowHome(true)} />
         </BillingGate>
         {/* Invitation link for an existing account (#/join/<token>). */}
         {route.view === 'join' && route.joinToken && (
