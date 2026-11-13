@@ -77,7 +77,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
         onClose={() => onDone(false)}
         title={practiceName ? `Join ${practiceName}?` : 'Practice invitation'}
         cancelLabel={alreadyMember || error ? t('actions.close') : 'Not now'}
-        doneLabel={canJoin ? (busy ? 'Joining…' : t('ios.sheets.join.join')) : undefined}
+        doneLabel={canJoin ? (busy ? t('ios.sheets.joiningBusy') : t('ios.sheets.join.join')) : undefined}
         onDone={canJoin ? () => void accept() : undefined}
         doneDisabled={busy}
         confirmDismiss={() => !busy}

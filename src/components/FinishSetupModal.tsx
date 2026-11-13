@@ -138,7 +138,7 @@ export const FinishSetupModal: React.FC<{
         onClose={later}
         title="Finish setting up"
         cancelLabel="Later"
-        doneLabel={busy ? 'Saving…' : t('actions.save')}
+        doneLabel={busy ? t('ios.sheets.savingBusy') : t('actions.save')}
         onDone={() => void save()}
         doneDisabled={busy}
         confirmDismiss={async () =>

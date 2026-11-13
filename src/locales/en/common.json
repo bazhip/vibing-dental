@@ -74,7 +74,11 @@
       },
       "join": {
         "join": "Join"
-      }
+      },
+      "customColor": "Custom Color…",
+      "savingBusy": "Saving…",
+      "sendingBusy": "Sending…",
+      "joiningBusy": "Joining…"
     }
   }
 }

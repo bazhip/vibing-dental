@@ -16,7 +16,7 @@ App-only components for the ToothOps iOS app. Use them only when `isNativeApp()`
   - The layer element is provided through `ScrollContainerContext`.
   - `<NavBar largeTitle>` uses that context when no `scrollRef` is passed, and falls back to `window` outside a Stack.
   - A `<Sheet>` provides its body (`.ios-sheet__body`) through the same context, so a `<NavBar>` inside a sheet follows the sheet's scrolling, not the screen behind it.
-- **One sheet at a time.** Opening a `<Sheet>` closes the one already open, through its `onClose`, without asking `confirmDismiss`. The one exception is a sheet rendered inside another sheet (a picker opened from a sheet): it stacks on top, and Escape and Tab belong to the top sheet.
+- **One sheet at a time.** Opening a `<Sheet>` closes the one already open, through its `onClose`, without asking `confirmDismiss`. A choice inside a sheet is a menu (`MenuPopover`), never a second sheet.
 - **Sheets from plain code.** `presentSheet(({ open, finish }) => <Sheet open={open} …/>, fallback)` (in `components/ui/dialogs`) shows a one-off sheet through `<DialogHost />` and resolves with the value passed to `finish`.
 - **Unsaved changes.** Give the sheet `confirmDismiss={async () => !dirty || (await chooseDialog({ ... })) === 'discard'}`. It covers every dismissal except Done: Cancel, swipe, backdrop and Escape.
 - **Navigation.** `useStack()` returns `{ push, pop, popToRoot, depth }`. Use `popToRoot()` when the selected tab is tapped again.

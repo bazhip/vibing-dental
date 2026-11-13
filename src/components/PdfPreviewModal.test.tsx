@@ -21,6 +21,6 @@ describe('PdfPreviewModal (bare, inside Documents)', () => {
     const share = screen.getByRole('button', { name: 'Share PDF' });
     expect(share.querySelector('svg')).not.toBeNull();
     expect(screen.queryByRole('radiogroup')).toBeNull();
-    expect(screen.getByRole('button', { name: /Clinic Teal|Teal/ })).toHaveAttribute('aria-haspopup', 'dialog');
+    expect(screen.getByRole('button', { name: /Clinic Teal|Teal/ })).toHaveAttribute('aria-haspopup', 'menu');
   });
 });

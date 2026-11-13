@@ -74,7 +74,11 @@
       },
       "join": {
         "join": "Beitreten"
-      }
+      },
+      "customColor": "Eigene Farbe…",
+      "savingBusy": "Wird gespeichert…",
+      "sendingBusy": "Wird gesendet…",
+      "joiningBusy": "Wird beigetreten…"
     }
   }
 }

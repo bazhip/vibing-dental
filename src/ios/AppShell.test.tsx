@@ -3,6 +3,7 @@ import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AppShell, useAppShell, type AppTab, type AppShellHandle, REGULAR_WIDTH_QUERY, DOCKED_SIDEBAR_QUERY } from './AppShell';
 import { useStack } from './Stack';
+import { Sheet } from './Sheet';
 
 vi.mock('../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi.fn(), hapticImpact: vi.fn(), hapticSuccess: vi.fn() }));
 
@@ -289,6 +290,17 @@ describe('AppShell (iPad portrait: overlay sidebar is modal)', () => {
     fireEvent.keyDown(document.body, { key: 'Escape' });
     expect(document.querySelector('.ios-appshell')).toHaveClass('ios-appshell--sidebar-collapsed');
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Show sidebar' }));
+  });
+
+  it('an open sheet takes Escape before the overlay sidebar', async () => {
+    mockWidth('portrait');
+    const onClose = vi.fn();
+    const { rerender } = render(<><Harness /><Sheet open={false} onClose={onClose} title="S"><p>s</p></Sheet></>);
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    rerender(<><Harness /><Sheet open onClose={onClose} title="S"><p>s</p></Sheet></>);
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+    expect(document.querySelector('.ios-appshell')).not.toHaveClass('ios-appshell--sidebar-collapsed');
   });
 
   it('the docked sidebar never makes the content inert', () => {

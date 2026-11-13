@@ -74,7 +74,11 @@
       },
       "join": {
         "join": "Unisciti"
-      }
+      },
+      "customColor": "Colore personalizzato…",
+      "savingBusy": "Salvataggio…",
+      "sendingBusy": "Invio…",
+      "joiningBusy": "Adesione…"
     }
   }
 }

@@ -80,6 +80,20 @@ describe('ReminderModal — iOS app', () => {
     await waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 
+  it('cannot be dismissed while sending', async () => {
+    let finish: (v: unknown) => void = () => {};
+    invoke.mockImplementationOnce(() => new Promise((r) => { finish = r as (v: unknown) => void; }));
+    const onClose = vi.fn();
+    render(<ReminderModal open onClose={onClose} {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    expect(await screen.findByRole('button', { name: 'Sending…' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onClose).not.toHaveBeenCalled();
+    finish({ data: {}, error: null });
+  });
+
   it('Send sends through the edge function', async () => {
     render(<ReminderModal open onClose={vi.fn()} {...props} />);
     fireEvent.click(screen.getByRole('button', { name: 'Send' }));

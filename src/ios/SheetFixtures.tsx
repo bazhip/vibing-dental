@@ -19,6 +19,7 @@ import { FinishSetupModal } from '../components/FinishSetupModal';
 import { SessionExpiredOverlay } from '../components/SessionExpiredOverlay';
 import { AppLockOverlay } from '../components/AppLockOverlay';
 import { InactivePlan } from '../components/InactivePlan';
+import { Sheet } from './Sheet';
 import { ensureAiConsent } from '../native/aiConsent';
 import type { UseProfileReturn } from '../hooks/useProfile';
 // The chart screen's stylesheet (chart history, PDF bodies), as in the app.
@@ -118,6 +119,12 @@ const FIXTURES: Record<string, () => React.ReactElement> = {
   session: () => <SessionExpiredOverlay email="jane@socalvetdentistry.com" onSignOut={() => {}} />,
   lock: () => <AppLockOverlay lockOnLaunch />,
   inactive: () => <InactivePlan />,
+  // Long (French-length) bar labels, for the bar-layout check at large text sizes.
+  'bar-long': () => (
+    <Sheet open onClose={() => {}} title="Envoyer un rappel de contrôle" cancelLabel="Abandonner les modifications" doneLabel="Enregistrer et envoyer" onDone={() => {}}>
+      <p style={{ padding: 20 }}>Contenu</p>
+    </Sheet>
+  ),
 };
 
 export default function SheetFixtures() {

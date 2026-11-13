@@ -636,6 +636,10 @@
       "hash": "37e6112e84a8",
       "status": "machine"
     },
+    "common:ios.sheets.customColor": {
+      "hash": "b72324aab6a4",
+      "status": "machine"
+    },
     "common:ios.sheets.discard.discard": {
       "hash": "e07e053c2e10",
       "status": "machine"
@@ -660,8 +664,20 @@
       "hash": "fd30fe681b4b",
       "status": "machine"
     },
+    "common:ios.sheets.joiningBusy": {
+      "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
     "common:ios.sheets.reminder.send": {
       "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "common:ios.sheets.savingBusy": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "common:ios.sheets.sendingBusy": {
+      "hash": "b8ed5279e897",
       "status": "machine"
     },
     "common:ios.shell.appName": {
@@ -1638,6 +1654,10 @@
       "hash": "37e6112e84a8",
       "status": "machine"
     },
+    "common:ios.sheets.customColor": {
+      "hash": "b72324aab6a4",
+      "status": "machine"
+    },
     "common:ios.sheets.discard.discard": {
       "hash": "e07e053c2e10",
       "status": "machine"
@@ -1662,8 +1682,20 @@
       "hash": "fd30fe681b4b",
       "status": "machine"
     },
+    "common:ios.sheets.joiningBusy": {
+      "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
     "common:ios.sheets.reminder.send": {
       "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "common:ios.sheets.savingBusy": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "common:ios.sheets.sendingBusy": {
+      "hash": "b8ed5279e897",
       "status": "machine"
     },
     "common:ios.shell.appName": {
@@ -2640,6 +2672,10 @@
       "hash": "37e6112e84a8",
       "status": "machine"
     },
+    "common:ios.sheets.customColor": {
+      "hash": "b72324aab6a4",
+      "status": "machine"
+    },
     "common:ios.sheets.discard.discard": {
       "hash": "e07e053c2e10",
       "status": "machine"
@@ -2664,8 +2700,20 @@
       "hash": "fd30fe681b4b",
       "status": "machine"
     },
+    "common:ios.sheets.joiningBusy": {
+      "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
     "common:ios.sheets.reminder.send": {
       "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "common:ios.sheets.savingBusy": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "common:ios.sheets.sendingBusy": {
+      "hash": "b8ed5279e897",
       "status": "machine"
     },
     "common:ios.shell.appName": {
@@ -3642,6 +3690,10 @@
       "hash": "37e6112e84a8",
       "status": "machine"
     },
+    "common:ios.sheets.customColor": {
+      "hash": "b72324aab6a4",
+      "status": "machine"
+    },
     "common:ios.sheets.discard.discard": {
       "hash": "e07e053c2e10",
       "status": "machine"
@@ -3666,8 +3718,20 @@
       "hash": "fd30fe681b4b",
       "status": "machine"
     },
+    "common:ios.sheets.joiningBusy": {
+      "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
     "common:ios.sheets.reminder.send": {
       "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "common:ios.sheets.savingBusy": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "common:ios.sheets.sendingBusy": {
+      "hash": "b8ed5279e897",
       "status": "machine"
     },
     "common:ios.shell.appName": {

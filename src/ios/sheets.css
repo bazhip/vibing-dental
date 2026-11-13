@@ -97,7 +97,7 @@ html.native-ios .ios-field__accessory {
 /* Multi-line field: label above, text area below. */
 html.native-ios .ios-field--stacked { flex-direction: column; align-items: stretch; gap: 0; padding-top: 11px; }
 html.native-ios .ios-field--stacked .ios-field__label { max-width: none; color: var(--ios-label-muted); font-size: var(--ios-text-subheadline); }
-html.native-ios .ios-field--stacked textarea.ios-field__input { min-height: 14em; padding-top: 6px; resize: vertical; line-height: 1.4; }
+html.native-ios .ios-field--stacked textarea.ios-field__input { min-height: 14em; padding-top: 6px; resize: none; line-height: 1.4; }
 /* File picker row: the whole row picks the file. */
 html.native-ios .ios-field--file { position: relative; cursor: pointer; }
 html.native-ios .ios-field--file .ios-field__label { flex: 1 1 auto; max-width: none; color: var(--ios-tint); }
@@ -251,47 +251,8 @@ html.native-ios .documents-sheet .pdf-preview-iframe-wrap {
 html.native-ios .documents-sheet .pdf-preview-status { color: var(--ios-label-muted); }
 html.native-ios .documents-sheet .pdf-preview-warning { margin: 10px 4px 0; font-size: var(--ios-text-footnote); }
 
-/* ---- PDF style picker sheet: an inset-grouped list with a checkmark ---- */
-html.native-ios .pdf-style-picker-sheet .pdf-style-list {
-  gap: 0;
-  margin: 8px 16px 16px;
-  overflow: hidden;
-  border-radius: 26px;
-  background: var(--ios-list-cell, var(--ios-cell));
-}
-html.native-ios .pdf-style-picker-sheet .pdf-style-list > li { position: relative; }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style {
-  min-height: 44px;
-  padding: 11px 48px 11px 20px;
-  border: 0;
-  border-radius: 0;
-  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
-  background: transparent;
-}
-html.native-ios .pdf-style-picker-sheet .pdf-style-list > li:last-child .pdf-preview-style { box-shadow: none; }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style:active { background: var(--ios-glass-pressed); }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style strong { font: 400 var(--ios-text-body) / 1.3 var(--ios-font); color: var(--ios-label); }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style span { font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font); color: var(--ios-label-muted); }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style.pdf-style-custom { padding: 0 12px 0 0; }
-html.native-ios .pdf-style-picker-sheet .pdf-style-custom__pick { padding: 11px 8px 11px 20px; }
-html.native-ios .pdf-style-picker-sheet .pdf-preview-style--active:not(.pdf-style-custom)::after {
-  content: '';
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  width: 18px;
-  height: 18px;
-  margin-top: -9px;
-  background: var(--ios-tint);
-  -webkit-mask: no-repeat center / 18px 18px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  mask: no-repeat center / 18px 18px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-html.native-ios .pdf-style-picker-sheet .pdf-style-custom.pdf-preview-style--active .pdf-style-custom__pick strong::after {
-  content: ' \2713';
-  color: var(--ios-tint);
-}
+/* ---- PDF style menu: swatches in the menu rows ------------------------ */
+html.native-ios .ios-menu .pdf-style-swatch { display: block; width: 18px; height: 18px; }
 
 /* ---- Chart history sheet ---------------------------------------------- */
 html.native-ios .chart-history-sheet .ios-sheet__body { display: flex; flex-direction: column; }
@@ -527,3 +488,13 @@ html.native-ios .billing-gate__signout {
   text-decoration: none;
   font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
 }
+
+/* Field text follows Dynamic Type. !important beats the shared coarse-pointer
+   rule in EntryGrid.css that pins every input to 16px !important (its five
+   :not([type]) count 0,5,1; :not(#_) lifts this one above). */
+html.native-ios .ios-field .ios-field__input:not(#_) { font-size: max(16px, var(--ios-text-body)) !important; }
+/* At large text sizes the field drops under its label instead of being
+   squeezed to a sliver. */
+html.native-ios .ios-field:not(.ios-field--stacked) { flex-wrap: wrap; column-gap: 12px; row-gap: 0; }
+html.native-ios .ios-field:not(.ios-field--stacked) .ios-field__input,
+html.native-ios .ios-field:not(.ios-field--stacked) .ios-field__control { flex: 1 1 9em; }

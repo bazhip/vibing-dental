@@ -29,8 +29,6 @@ import { ScrollContainerContext } from './scrollContainer';
  * - Detents: `['medium', 'large']` opens at medium; drag (or scroll the
  *   body) up to expand. Default is large only.
  * - Only one sheet at a time: opening a sheet closes the one already open.
- *   The exception is a sheet opened from inside a sheet (a picker in a
- *   sheet): it stacks on top, and Escape / Tab belong to the top one.
  * - The body is the scroll container (ScrollContainerContext) for what it
  *   contains, so a NavBar inside follows the sheet, not the screen below.
  * - Regular-width iPad (≥ 768 × 600) shows a centred form sheet.
@@ -64,16 +62,13 @@ export interface SheetProps {
 
 const CLOSE_ICON: IconName = 'xmark';
 
-interface SheetHandle {
-  close: () => void;
+/** The sheet currently open (HIG: one at a time). */
+let activeSheet: { close: () => void } | null = null;
+
+/** True while a sheet is open (other Escape handlers defer to it). */
+export function isSheetOpen(): boolean {
+  return activeSheet !== null;
 }
-
-/** Open sheets, bottom to top. Normally one (HIG); a sheet opened from
- *  inside another sheet stacks on it. */
-const openSheets: SheetHandle[] = [];
-
-/** The sheet a component is rendered in (for stacking a child sheet). */
-const SheetParentContext = React.createContext<SheetHandle | null>(null);
 
 const EXIT_MS = 380;
 
@@ -82,8 +77,6 @@ export function Sheet(props: SheetProps) {
   const [mounted, setMounted] = React.useState(open);
   const onCloseRef = React.useRef(props.onClose);
   onCloseRef.current = props.onClose;
-  const parent = React.useContext(SheetParentContext);
-  const handle = React.useRef<SheetHandle>({ close: () => onCloseRef.current() }).current;
 
   React.useEffect(() => {
     if (open) {
@@ -94,26 +87,19 @@ export function Sheet(props: SheetProps) {
     return () => window.clearTimeout(t);
   }, [open]);
 
-  // Opening this sheet closes any other open sheet, except the sheet it
-  // was opened from (it stacks on that one).
+  // Opening this sheet closes any other open sheet.
   React.useEffect(() => {
     if (!open) return undefined;
-    const keep = parent ? openSheets.indexOf(parent) + 1 : 0;
-    openSheets.splice(keep).forEach((s) => s !== handle && s.close());
-    openSheets.push(handle);
+    const me = { close: () => onCloseRef.current() };
+    if (activeSheet && activeSheet !== me) activeSheet.close();
+    activeSheet = me;
     return () => {
-      const i = openSheets.indexOf(handle);
-      if (i >= 0) openSheets.splice(i, 1);
+      if (activeSheet === me) activeSheet = null;
     };
-  }, [open, parent, handle]);
+  }, [open]);
 
   if (!mounted) return null;
-  return ReactDOM.createPortal(
-    <SheetParentContext.Provider value={handle}>
-      <SheetPanel {...props} handle={handle} />
-    </SheetParentContext.Provider>,
-    document.body
-  );
+  return ReactDOM.createPortal(<SheetPanel {...props} />, document.body);
 }
 
 type Gesture =
@@ -135,8 +121,7 @@ function SheetPanel({
   confirmDismiss,
   className,
   children,
-  handle,
-}: SheetProps & { handle: SheetHandle }) {
+}: SheetProps) {
   const { t } = useTranslation();
   const titleId = React.useId();
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -204,14 +189,12 @@ function SheetPanel({
     if (!open) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented) return;
-      // A sheet stacked on this one takes Escape first.
-      if (openSheets.length && openSheets[openSheets.length - 1] !== handle) return;
       e.preventDefault();
       void requestDismiss();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, requestDismiss, handle]);
+  }, [open, requestDismiss]);
 
   // ---- Focus -----------------------------------------------------------
   React.useEffect(() => {
@@ -410,10 +393,7 @@ function SheetPanel({
         tabIndex={-1}
         className={`ios-sheet${isForm ? ' ios-sheet--form' : ''}${detent === 'medium' ? ' ios-sheet--medium' : ''}${className ? ` ${className}` : ''}`}
         style={style}
-        onKeyDown={(e) => {
-          // Keys from a stacked sheet bubble here through React; that sheet traps its own.
-          if (panelRef.current && panelRef.current.contains(e.target as Node)) trapTab(e, panelRef.current);
-        }}
+        onKeyDown={(e) => panelRef.current && trapTab(e, panelRef.current)}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -465,10 +445,7 @@ function SheetPanel({
           onFocus={(e) => {
             // At the medium detent the lower part of the body is off-screen;
             // keyboard / VoiceOver focus landing there expands the sheet.
-            if (
-              detent === 'medium' && stops.includes('large') && bodyRef.current?.contains(e.target) &&
-              e.target.getBoundingClientRect().bottom > window.innerHeight
-            ) {
+            if (detent === 'medium' && stops.includes('large') && e.target.getBoundingClientRect().bottom > window.innerHeight) {
               setDetent('large');
             }
           }}

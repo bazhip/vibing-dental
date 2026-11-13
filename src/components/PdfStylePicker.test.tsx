@@ -42,20 +42,34 @@ describe('PdfStylePicker', () => {
     expect(document.querySelector('.ios-sheet')).toBeNull();
   });
 
-  it('app: the picker is a kit sheet (grabber, Done) and the button has an icon, not a ▾ glyph', async () => {
+  it('app: the button opens a pull-down menu of presets (checkmark on the current one), not a sheet', () => {
     flags.native = true;
     const onChange = vi.fn();
     render(<PdfStylePicker styleId="iris" onChange={onChange} compact />);
     expect(screen.queryByText('▾')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: /Iris/ }));
-    const sheet = screen.getByRole('dialog', { name: 'PDF style' });
-    expect(sheet).toHaveClass('ios-sheet');
-    expect(document.querySelector('.ios-sheet__grabber')).not.toBeNull();
-    expect(document.querySelector('.pdf-style-sheet-backdrop')).toBeNull();
-    fireEvent.click(screen.getByRole('radio', { name: /^Journal/ }));
+    const button = screen.getByRole('button', { name: /Iris/ });
+    expect(button).toHaveAttribute('aria-haspopup', 'menu');
+    fireEvent.click(button);
+    expect(screen.getByRole('menu', { name: 'PDF style' })).toBeInTheDocument();
+    expect(document.querySelector('.ios-sheet')).toBeNull();
+    expect(screen.getByRole('menuitemradio', { name: /Iris/ })).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByRole('menuitemradio', { name: /Iris/ }).querySelector('.pdf-style-swatch')).not.toBeNull();
+    fireEvent.click(screen.getByRole('menuitemradio', { name: /^Journal/ }));
     expect(onChange).toHaveBeenLastCalledWith('journal');
-    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'PDF style' })).toBeNull());
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
+
+  it('app: Custom Color… opens the system color picker; picking a color applies it', () => {
+    flags.native = true;
+    const onChange = vi.fn();
+    render(<PdfStylePicker styleId="clinic" onChange={onChange} compact />);
+    const input = screen.getByLabelText('Choose custom color') as HTMLInputElement;
+    const click = vi.spyOn(input, 'click').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: /Clinic Teal/ }));
+    fireEvent.click(screen.getByRole('menuitemradio', { name: 'Custom Color…' }));
+    expect(click).toHaveBeenCalledTimes(1);
+    fireEvent.change(input, { target: { value: '#ff0000' } });
+    expect(onChange).toHaveBeenLastCalledWith('custom:clinic:#ff0000');
   });
 
   it('every preset has a translated name and description in the chart catalog', () => {

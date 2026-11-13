@@ -191,19 +191,28 @@
 }
 :where(html.native-ios) .ios-sheet__bar {
   display: grid;
-  /* The bar buttons keep their width; a long title truncates between them
-     instead of running under them. */
-  grid-template-columns: minmax(max-content, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+  /* Equal side columns keep the title centred; a side never shrinks below
+     its (capped) button, so a long title truncates between the buttons
+     instead of running under them, and a long label truncates at its cap. */
+  grid-template-columns: minmax(auto, 1fr) minmax(0, max-content) minmax(auto, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 52px;
 }
-:where(html.native-ios) .ios-sheet__bar-leading { justify-self: start; min-width: 0; }
-:where(html.native-ios) .ios-sheet__bar-trailing { justify-self: end; min-width: 0; }
+:where(html.native-ios) .ios-sheet__bar-leading { justify-self: start; }
+:where(html.native-ios) .ios-sheet__bar-trailing { justify-self: end; }
 :where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button {
-  max-width: 100%;
+  /* Long translations / accessibility text sizes: ellipsis at the cap. */
+  max-width: min(32vw, 11em);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Text buttons truncate from the end (a flex box would clip both sides). */
+:where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button:not(.ios-glass-button--icon) {
+  display: block;
+  padding-top: max(0px, calc((44px - 1.2em) / 2));
+  padding-bottom: max(0px, calc((44px - 1.2em) / 2));
+  line-height: 1.2;
 }
 :where(html.native-ios) .ios-sheet__title {
   margin: 0;

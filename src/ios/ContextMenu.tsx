@@ -18,6 +18,8 @@ export interface MenuItem {
   destructive?: boolean;
   /** For selection menus: shows a checkmark and aria-checked. */
   checked?: boolean;
+  /** Trailing visual in place of the icon (e.g. a color swatch); decorative. */
+  accessory?: React.ReactNode;
   onSelect(): void;
 }
 
@@ -158,7 +160,11 @@ export function MenuPopover({ items, anchor, onClose, radio = false, centered = 
               </span>
             )}
             <span className="ios-menu__label">{item.label}</span>
-            {item.icon && <Icon name={item.icon} size={19} className="ios-menu__icon" />}
+            {item.accessory ? (
+              <span className="ios-menu__icon" aria-hidden="true">{item.accessory}</span>
+            ) : (
+              item.icon && <Icon name={item.icon} size={19} className="ios-menu__icon" />
+            )}
           </button>
         ))}
       </div>

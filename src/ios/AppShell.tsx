@@ -5,6 +5,7 @@ import { Icon, type IconName } from './icons';
 import { Stack, useStack } from './Stack';
 import { TabBar } from './TabBar';
 import { ScrollContainerContext } from './scrollContainer';
+import { isSheetOpen } from './Sheet';
 
 /**
  * The app's top level: four tabs (Chart, Patients, Rechecks, Settings).
@@ -197,7 +198,9 @@ export function AppShell({
   React.useEffect(() => {
     if (!overlayOpen) return undefined;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || e.defaultPrevented) return;
+      // An open sheet (above everything) takes Escape first, whichever
+      // listener was registered first.
+      if (e.key !== 'Escape' || e.defaultPrevented || isSheetOpen()) return;
       e.preventDefault();
       setCollapsedPref(true);
     };

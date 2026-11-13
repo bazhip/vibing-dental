@@ -106,16 +106,18 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
         onClose={onClose}
         title="Send recheck reminder"
         cancelLabel={t('actions.cancel')}
-        doneLabel={busy ? 'Sending…' : t('ios.sheets.reminder.send')}
+        doneLabel={busy ? t('ios.sheets.sendingBusy') : t('ios.sheets.reminder.send')}
         onDone={() => void send()}
         doneDisabled={busy || !loaded || sent}
         confirmDismiss={async () =>
-          !dirty ||
-          (await chooseDialog({
-            title: t('ios.sheets.discard.title'),
-            choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
-            cancelLabel: t('ios.sheets.discard.keep'),
-          })) === 'discard'
+          // Not while sending: the result would land on a closed sheet.
+          !busy &&
+          (!dirty ||
+            (await chooseDialog({
+              title: t('ios.sheets.discard.title'),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep'),
+            })) === 'discard')
         }
         className="reminder-sheet"
       >
