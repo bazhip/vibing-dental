@@ -23,10 +23,35 @@ export async function getSessionTolerant(
   return stored ? { session: stored, offline: true } : { session: null, offline: false };
 }
 
+// auth-js keeps its storage key on the client (protected in the types).
+const storageKeyOf = (client: SupabaseClient) =>
+  (client.auth as unknown as { storageKey?: string }).storageKey;
+
+/** True when a session (even one with an expired token) is still stored. */
+export function hasStoredSession(client: SupabaseClient): boolean {
+  try {
+    const key = storageKeyOf(client);
+    return !!key && localStorage.getItem(key) !== null;
+  } catch {
+    return false;
+  }
+}
+
+/** Last resort for signing out when auth-js can't: offline with an expired
+ *  access token, signOut() fails loading the session before it removes it
+ *  (even with scope: 'local'). Removes what auth-js's own sign-out would.
+ *  Emits no auth event, so the caller must reload. */
+export function removeStoredSession(client: SupabaseClient): void {
+  const key = storageKeyOf(client);
+  if (!key) return;
+  for (const k of [key, `${key}-code-verifier`, `${key}-user`]) {
+    try { localStorage.removeItem(k); } catch { /* storage unavailable */ }
+  }
+}
+
 function readStoredSession(client: SupabaseClient): Session | null {
   try {
-    // auth-js keeps its storage key on the client (protected in the types).
-    const key = (client.auth as unknown as { storageKey?: string }).storageKey;
+    const key = storageKeyOf(client);
     if (!key) return null;
     const raw = localStorage.getItem(key);
     if (!raw) return null;

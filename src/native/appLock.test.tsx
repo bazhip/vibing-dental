@@ -74,7 +74,7 @@ describe('AppLockOverlay', () => {
     h.native = true;
     h.listeners = {};
     h.authenticate.mockReset();
-    h.signOut.mockReset();
+    h.signOut.mockReset().mockResolvedValue({ error: null });
     h.clear.mockReset();
     store.clear();
   });
