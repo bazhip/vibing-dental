@@ -485,40 +485,55 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  // Narrow screens: the card scrolls sideways, which stops the header
-  // sticking to the page — slide it down to sit under the app topbar
-  // instead (CSS reads --head-shift), stopping one row short of the end.
+  // Narrow screens: the card scrolls sideways, which stops its header
+  // sticking to the page. A fixed-position copy of the header takes over
+  // under the app topbar while the grid is scrolled past. Fixed elements
+  // ride the compositor on iOS, so it stays rock-steady during scrolling
+  // (moving the real header from scroll events trailed a frame behind and
+  // shook). Script only shows/hides it at the grid's edges and slides its
+  // columns sideways with the card.
+  const floatRef = useRef<HTMLDivElement>(null);
+  const floatTrackRef = useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const el = wrapperRef.current;
-    if (!narrow || !el) return;
+    const fl = floatRef.current;
+    const track = floatTrackRef.current;
+    if (!narrow || !el || !fl || !track) return;
     let frame = 0;
     const place = () => {
       frame = 0;
       const r = el.getBoundingClientRect();
       const topbar = parseFloat(getComputedStyle(el).getPropertyValue('--topbar-height')) || 0;
-      const head = (el.querySelector('.rdg-header-row .rdg-cell') as HTMLElement | null)?.offsetHeight ?? 40;
-      // With the on-screen keyboard up, iOS pans the visible area down
-      // the page (the sticky topbar goes off screen with it): pin to the
-      // top of what's actually visible, not to the hidden topbar.
-      const vv = window.visualViewport;
-      const visibleTop = vv ? vv.offsetTop : 0;
-      const target = Math.max(topbar, visibleTop);
-      const shift = Math.round(Math.min(Math.max(target - r.top, 0), Math.max(r.height - head * 2, 0)));
-      el.style.setProperty('--head-shift', `${shift}px`);
+      // Keyboard up: iOS pans the visible area down the page and the
+      // topbar goes with it — sit at the top of what's visible instead.
+      const top = Math.max(topbar, window.visualViewport?.offsetTop ?? 0);
+      const head = (el.querySelector('.rdg-header-row .rdg-cell') as HTMLElement | null)?.offsetHeight ?? 44;
+      const show = r.top < top && r.bottom > top + head * 2;
+      fl.style.display = show ? 'flex' : 'none';
+      if (show) {
+        fl.style.top = `${Math.round(top)}px`;
+        fl.style.left = `${Math.round(r.left + el.clientLeft)}px`;
+        fl.style.width = `${el.clientWidth}px`;
+        fl.style.height = `${head}px`;
+      }
     };
+    const sync = () => { track.style.transform = `translateX(${-el.scrollLeft}px)`; };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     place();
+    sync();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     window.visualViewport?.addEventListener('scroll', schedule);
     window.visualViewport?.addEventListener('resize', schedule);
+    el.addEventListener('scroll', sync, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       window.visualViewport?.removeEventListener('scroll', schedule);
       window.visualViewport?.removeEventListener('resize', schedule);
-      el.style.removeProperty('--head-shift');
+      el.removeEventListener('scroll', sync);
+      fl.style.display = 'none';
     };
   }, [narrow]);
   // -2 for the card's side borders; floor keeps parity with the
@@ -661,6 +676,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'missing',
       name: 'Missing',
       width: lead[0],
+      minWidth: lead[0], // the grid's default 50px floor would widen the compact columns
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
@@ -699,6 +715,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'tooth',
       name: 'Tooth',
       width: lead[1],
+      minWidth: lead[1], // the grid's default 50px floor would widen the compact columns
       // Narrow (or "Tooth" doesn't fit): one title over both Tooth and
       // Triadan, so neither column needs room for a title of its own.
       colSpan: narrow || !fits('Tooth', lead[1], false) ? (args) => (args.type === 'HEADER' ? 2 : undefined) : undefined,
@@ -718,6 +735,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'triadan',
       name: 'Triadan',
       width: lead[2],
+      minWidth: lead[2], // the grid's default 50px floor would widen the compact columns
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--2' : undefined,
@@ -883,6 +901,28 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       ) : (
         <p className="dental-grid__bulk-hint">Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.</p>
       ))}
+      {narrow && createPortal(
+        // Visual stand-in for the header while it's scrolled away (the
+        // real one stays in the grid for screen readers).
+        <div ref={floatRef} className="dental-grid__float-head" aria-hidden="true" style={{ display: 'none' }}>
+          <div className="dental-grid__float-pinned">
+            <div className="dental-grid__float-cell" style={{ width: NARROW_LEAD[0] }}>✕</div>
+            <div className="dental-grid__float-cell" style={{ width: NARROW_LEAD[1] + NARROW_LEAD[2] }}>Tooth</div>
+          </div>
+          <div className="dental-grid__float-viewport">
+            <div ref={floatTrackRef} className="dental-grid__float-track">
+              {columns.slice(3).map((c) => (
+                <div key={String(c.key)} className="dental-grid__float-cell" style={{ width: c.width as number }}>
+                  {c.renderHeaderCell
+                    ? (c.renderHeaderCell as (p: unknown) => React.ReactNode)({ column: c, sortDirection: undefined, priority: undefined, tabIndex: -1 })
+                    : String(c.name)}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
       <div
         className="dental-grid"
         ref={wrapperRef}

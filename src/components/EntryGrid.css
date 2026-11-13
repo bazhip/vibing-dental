@@ -1220,17 +1220,14 @@
    usable, so the grid lays out at its columns' natural width
    (DentalGrid.tsx, short titles) and the card scrolls sideways, with
    Missing/Tooth/Triadan pinned on the left. A sideways scroller can't
-   let the header stick to the PAGE, so DentalGrid slides the header
-   down by --head-shift as the page scrolls, keeping it just under the
-   app topbar. (No inner vertical scroller: the page scrolls as usual.) */
+   let the header stick to the PAGE, so while the grid is scrolled past,
+   DentalGrid shows a fixed copy of the header under the app topbar
+   (.dental-grid__float-head). The page scrolls as usual. */
 @media (max-width: 1000px) {
   .dental-grid {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-  }
-  .dental-grid .rdg-header-row .rdg-cell {
-    transform: translateY(var(--head-shift, 0px));
   }
   .dental-grid .rdg {
     min-width: var(--grid-min-width, 760px);
@@ -3987,4 +3984,40 @@ a, button, input, select, textarea, label, summary, [role='button'] {
     max-height: calc(100dvh - var(--topbar-height, 4rem) - 1rem);
     overflow-y: auto;
   }
+}
+
+/* Fixed stand-in for the grid header on narrow screens (see DentalGrid):
+   styled to match the real header row cell for cell. */
+.dental-grid__float-head {
+  position: fixed;
+  z-index: 55;
+  display: flex;
+  overflow: hidden;
+  background: var(--primary);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
+}
+.dental-grid__float-pinned {
+  display: flex;
+  flex: none;
+  position: relative;
+  z-index: 1;
+  background: var(--primary);
+  box-shadow: 2px 0 4px -2px rgba(15, 23, 42, 0.3);
+}
+.dental-grid__float-viewport { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.dental-grid__float-track { display: flex; height: 100%; will-change: transform; }
+.dental-grid__float-cell {
+  flex: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 0.4rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f2f7f6;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
 }
