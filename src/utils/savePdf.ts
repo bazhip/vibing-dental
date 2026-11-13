@@ -63,7 +63,7 @@ export function isFirefoxAndroid(ua: string = navigator.userAgent): boolean {
  *  simply save the file, so nobody is left wondering what happened. */
 export function downloadHint(ua: string = navigator.userAgent): string | null {
   if (isFirefoxAndroid(ua)) return 'Firefox opens the PDF in a new tab — tap Download at the top of it to save the file.';
-  if (isInAppBrowser(ua)) return 'This app’s built-in browser may not save files. If nothing happens, open ToothOps in Chrome (⋮ menu → “Open in browser”).';
+  if (isInAppBrowser(ua)) return 'This app’s built-in browser can’t always save files. Tap Download for a download link — or open ToothOps in Chrome (⋮ menu → “Open in browser”).';
   return null;
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { savePdf, IN_APP_BROWSER_MESSAGE, downloadHint } from '../utils/savePdf';
-import { toast } from './ui/dialogs';
+import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
+import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
+import { savePdf, downloadHint } from '../utils/savePdf';
 import {
   buildDentalChartPDFBytes,
   PDF_STYLES,
@@ -73,6 +74,9 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
   const pdfBlobRef = React.useRef<Blob | null>(null);
+  const inAppLink = useInAppPdfLink();
+  // A new PDF (style switched, data changed) invalidates an old link.
+  React.useEffect(() => { inAppLink.reset(); }, [pdfUrl]); // eslint-disable-line react-hooks/exhaustive-deps
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -196,8 +200,9 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     const { patientInfo } = snapshot;
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
     if (!pdfBlobRef.current) return;
-    savePdf(pdfBlobRef.current, filename).then((outcome) => {
-      if (outcome === 'unsupported') toast(IN_APP_BROWSER_MESSAGE, { kind: 'error' });
+    const blob = pdfBlobRef.current;
+    savePdf(blob, filename).then((outcome) => {
+      if (outcome === 'unsupported') void inAppLink.start(blob, filename);
     });
   };
 
@@ -230,7 +235,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             >
               Download PDF
             </button>
-            {downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+            {!inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+            <PdfLinkPanel state={inAppLink.state} />
             {imageWarning && (
               <p className="pdf-preview-warning" role="status">{imageWarning}</p>
             )}
@@ -244,14 +250,16 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (
+            {pdfUrl && !error && (canShowPdfInline() ? (
               <iframe
                 key={styleId}
                 src={pdfUrl}
                 title="Clinical chart preview"
                 className="pdf-preview-iframe"
               />
-            )}
+            ) : pdfBlobRef.current && (
+              <PdfPagesPreview blob={pdfBlobRef.current} title="Clinical chart preview" />
+            ))}
           </div>
         </div>
   );
