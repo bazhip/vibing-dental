@@ -173,7 +173,17 @@
       "gridHint": "(optional while findings are on the diagram)",
       "images": "Include images",
       "imagesHint": "(4 per page, after the chart)"
-    }
+    },
+    "noteDevice": "Saved on this device. Changes apply right away.",
+    "spaceMovesDownHint": "Fast for calling out a run of depths",
+    "scoreTapFindingHint": "Mobility → recession → … for tooth-by-tooth exams",
+    "scoreTapToothHint": "For scoring one finding across the mouth",
+    "columnsFooter": "Columns shown in the charting grid. At least one stays on.",
+    "mirrorHint": "And in the PDF",
+    "drugName": "Drug",
+    "drugStrength": "Strength",
+    "pdfGridHint": "Optional while findings are on the diagram",
+    "pdfImagesHint": "4 per page, after the chart"
   },
   "feedback": {
     "title": "Send feedback",
@@ -194,5 +204,46 @@
     "needsAccount": "Feedback needs an account.",
     "send": "Send",
     "sending": "Sending…"
+  },
+  "gettingStarted": {
+    "takeTour": "Take the tour",
+    "tourFooter": "A short tour of where everything lives in the chart.",
+    "chartParts": "Parts of the chart"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "A dental record, top to bottom. Tap the chart’s title to jump between sections — everything autosaves."
+      },
+      "grid": {
+        "body": "Per-tooth measurements. Tap a cell and type, or tap a score — chart without looking up."
+      },
+      "diagrams": {
+        "body": "Tap a tooth to mark it; switch between Comment and Draw, add free notes. Undo and Redo are in the diagram’s toolbar."
+      },
+      "codes": {
+        "body": "Search the full AVDC code set here, right with the diagram."
+      },
+      "treatment": {
+        "body": "Write the report, or insert a saved template — and save new ones to reuse."
+      },
+      "patients": {
+        "title": "Patients",
+        "body": "Every patient’s visits. Saved visits open read-only until you tap Edit. Rechecks lists the patients due for a recheck."
+      },
+      "share": {
+        "title": "Share the PDF",
+        "body": "Build the client-ready chart PDF with your logo, then share or save it whenever you’re ready."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tap tooth numbers in the grid to select several, then set one score on all of them.",
+    "customize": "Every page has Customize in its More menu: hide columns, choose what shows beside the teeth, and more. Settings follow your account to every device.",
+    "leftOff": "Opening ToothOps fresh shows Patients — unless today’s visit is still open — and today’s visit opens ready to edit."
+  },
+  "reminders": {
+    "sendFrom": "Send a reminder for one patient from Patients or Rechecks.",
+    "settingUp": "Your practice is being set up — check back in a moment."
   }
 }

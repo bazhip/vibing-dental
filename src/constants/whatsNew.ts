@@ -12,11 +12,22 @@ import type whatsNew from '../locales/en/whatsNew.json';
 
 type GroupId = keyof typeof whatsNew.groups;
 type ItemId = Exclude<keyof typeof whatsNew, 'title' | 'intro' | 'groups' | 'gotIt'>;
+type AppBody = 'severalTeeth' | 'customize' | 'leftOff';
+
+/** Items whose app wording differs (keyed by item id). */
+const APP_BODIES: Partial<Record<ItemId, AppBody>> = {
+  severalTeeth: 'severalTeeth',
+  makeItYours: 'customize',
+  startsWhereLeft: 'leftOff',
+};
 
 export interface WhatsNewItem {
   id: ItemId;
   readonly title: string;
   readonly body: string;
+  /** In the iOS app, the body from `settings:whatsNew.<appBody>` instead —
+   *  for items that speak mouse and keyboard or name web-only places. */
+  appBody?: AppBody;
 }
 
 export interface WhatsNewGroup {
@@ -29,6 +40,7 @@ const tw = () => i18n.getFixedT(i18n.language, 'whatsNew');
 
 const item = (id: ItemId): WhatsNewItem => ({
   id,
+  appBody: APP_BODIES[id],
   get title() {
     return tw()(`${id}.title`);
   },

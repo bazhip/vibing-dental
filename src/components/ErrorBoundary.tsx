@@ -94,7 +94,7 @@ function CrashScreen({ message, stack }: { message: string; stack: string }) {
             borderRadius: '8px',
             border: 'none',
             background: 'var(--primary, #0c6b63)',
-            color: '#fff',
+            color: 'var(--ios-on-tint, #fff)',
             fontSize: '1rem',
             fontWeight: 600,
             cursor: 'pointer',

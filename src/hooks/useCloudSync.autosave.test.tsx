@@ -11,6 +11,8 @@ const db = vi.hoisted(() => ({
   refuseUpserts: 0,
   /** Whether a refused chart's row is still readable by this account. */
   rowVisible: true,
+  /** Next N chart upserts fail like a dropped connection (then succeed). */
+  failUpserts: 0,
 }));
 vi.mock('../utils/supabaseClient', () => {
   const builder = () => {
@@ -22,6 +24,7 @@ vi.mock('../utils/supabaseClient', () => {
       order: chain, limit: chain, ilike: chain,
       eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
       maybeSingle: async () => {
+        if (q.__netFail) return { data: null, error: { message: 'Failed to fetch' } };
         if (q.__refused) return { data: null, error: { code: '42501', message: 'new row violates row-level security policy' } };
         if (q.__existCheck && !db.rowVisible) return { data: null, error: null };
         return { data: { id: 'x', updated_at: '2026-11-12T10:00:00Z' }, error: null };
@@ -30,6 +33,7 @@ vi.mock('../utils/supabaseClient', () => {
       upsert: (row: Record<string, unknown>) => {
         db.upserts.push(row);
         if (db.refuseUpserts > 0) { db.refuseUpserts--; q.__refused = true; }
+        else if (db.failUpserts > 0) { db.failUpserts--; q.__netFail = true; }
         return q;
       },
       then: (resolve: (v: unknown) => void) => resolve({ data: db.visits, error: null }),
@@ -82,7 +86,7 @@ const fakeChart = (s: ChartSnapshot, id = 'chart-1') => ({
 
 beforeEach(() => {
   store.clear();
-  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true;
+  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0;
   confirm.mockReset(); confirm.mockResolvedValue(false);
   vi.useFakeTimers();
 });
@@ -114,6 +118,37 @@ describe('autosave of new charts', () => {
     expect(result.current.awaitingClinical).toBe(false);
     await flush();
     expect(db.upserts).toHaveLength(1);
+  });
+});
+
+describe('retry when the connection comes back', () => {
+  it('a failed autosave is re-attempted when the online event fires', async () => {
+    db.failUpserts = 1;
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect(result.current.status).toBe('error');
+
+    // No further attempts on their own…
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+
+    // …but the connection coming back retries the save.
+    await act(async () => { window.dispatchEvent(new Event('online')); });
+    await flush();
+    expect(db.upserts).toHaveLength(2);
+    expect(result.current.status).toBe('saved');
+  });
+
+  it('offline then online also saves (existing behaviour)', async () => {
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await act(async () => { window.dispatchEvent(new Event('offline')); });
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+    await act(async () => { window.dispatchEvent(new Event('online')); });
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect(result.current.status).toBe('saved');
   });
 });
 

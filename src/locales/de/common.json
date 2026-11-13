@@ -8,7 +8,10 @@
     "duplicate": "Duplizieren",
     "edit": "Bearbeiten",
     "ok": "OK",
-    "save": "Speichern"
+    "save": "Speichern",
+    "done": "Fertig",
+    "signOut": "Abmelden",
+    "tryAgain": "Erneut versuchen"
   },
   "errors": {
     "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
@@ -90,9 +93,54 @@
       "voice_token_failed": "Es konnte kein Transkriptions-Token erstellt werden: {{detail}}",
       "voice_unreadable": "Deepgram hat eine unlesbare Antwort geliefert.",
       "voice_no_token": "Deepgram hat kein Token zurückgegeben."
-    }
+    },
+    "saveFile": "Die Datei konnte nicht gespeichert werden."
   },
   "language": {
     "label": "Sprache"
+  },
+  "ios": {
+    "back": "Zurück",
+    "moreActions": "Weitere Aktionen",
+    "copy": "Kopieren",
+    "moreActionsFor": "Weitere Aktionen für {{title}}",
+    "tabs": {
+      "chart": "Zahnschema",
+      "patients": "Patienten",
+      "rechecks": "Kontrollen",
+      "settings": "Einstellungen"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Seitenleiste ausblenden",
+      "showSidebar": "Seitenleiste einblenden"
+    },
+    "settings": {
+      "account": "Konto",
+      "help": "Hilfe",
+      "gettingStarted": "Erste Schritte",
+      "whatsNew": "Neuigkeiten",
+      "signIn": "Anmelden",
+      "signOutTitle": "Von ToothOps abmelden?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Dokumente",
+        "share": "PDF teilen"
+      },
+      "reminder": {
+        "send": "Senden"
+      },
+      "discard": {
+        "title": "Ihre Änderungen verwerfen?",
+        "discard": "Änderungen verwerfen",
+        "keep": "Weiter bearbeiten"
+      },
+      "join": {
+        "join": "Beitreten"
+      },
+      "customColor": "Eigene Farbe…",
+      "sendingBusy": "Wird gesendet…"
+    }
   }
 }

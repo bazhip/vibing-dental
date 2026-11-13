@@ -88,5 +88,31 @@
     "message_one": "La Sua modifica a {{list}} non è stata salvata.",
     "message_other": "Le Sue modifiche a {{list}} non sono state salvate.",
     "title": "Scartare le modifiche non salvate?"
+  },
+  "auth": {
+    "apple": {
+      "continue": "Continua con Apple",
+      "signUp": "Registrati con Apple",
+      "busy": "Accesso con Apple…",
+      "failed": "Impossibile accedere con Apple.",
+      "hint": "Ha già un account o è stato invitato? Acceda con il Suo indirizzo email."
+    },
+    "signUpOnWeb": "Nuovo su ToothOps? Si registri su toothops.app",
+    "incomplete": "L’accesso non è stato completato. Riprovi."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Il Suo piano non è attivo",
+      "manage": "Lo gestisca su toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps è bloccato",
+    "prompt": "Sblocchi l’app per proteggere le cartelle dei pazienti.",
+    "unavailable": "Face ID e il codice del dispositivo non sono disponibili su questo dispositivo. Per sbloccare ToothOps, imposti un codice nell’app Impostazioni e tocchi Riprova, oppure esca.",
+    "reason": "Sblocca ToothOps"
+  },
+  "team": {
+    "seatLimit": "Questo studio ha raggiunto il numero massimo di membri del team."
   }
 }

@@ -273,5 +273,71 @@
   "scoreChips": {
     "group": "Score {{name}}",
     "clear": "Effacer {{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Nom, logo et équipe."
+  },
+  "imaging": {
+    "takePhoto": "Prendre une photo",
+    "cameraFailed": "Impossible d’ouvrir l’appareil photo.",
+    "cameraNoPhoto": "L’appareil photo n’a renvoyé aucune photo.",
+    "cameraReadFailed": "Impossible de lire la photo ({{status}}).",
+    "limitReached_one": "Ce dossier a atteint sa limite de {{count}} image.",
+    "limitReached_many": "Ce dossier a atteint sa limite de {{count}} images.",
+    "limitReached_other": "Ce dossier a atteint sa limite de {{count}} images.",
+    "uploadsUnavailable": "L’import de photos n’est pas disponible sur ce compte.",
+    "formatsApp": "PNG, JPEG ou WEBP.",
+    "dicomUnavailable": "L’import DICOM n’est pas disponible sur ce compte. Exportez la radiographie en JPEG ou PNG pour l’ajouter."
+  },
+  "aiConsent": {
+    "title": "Utiliser les services d’IA ?",
+    "intro": "Pour dicter dans un dossier et rédiger des brouillons par IA, ToothOps envoie des données à deux services :",
+    "deepgram": "<strong>Deepgram</strong> reçoit l’audio de votre voix pendant la dictée, pour le transcrire en texte.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) reçoit la transcription de la dictée et le contenu du dossier, comme les informations sur le patient et les observations, pour remplir le dossier ou rédiger le compte rendu pour le propriétaire.",
+    "nothingSent": "Rien n’est envoyé si vous n’utilisez pas ces fonctions.",
+    "allow": "Autoriser",
+    "notNow": "Pas maintenant"
+  },
+  "ios": {
+    "newChart": "Nouveau dossier",
+    "more": "Plus",
+    "menu": {
+      "newChart": "Nouveau dossier",
+      "newVisit": "Nouvelle visite",
+      "saveNow": "Enregistrer maintenant",
+      "retrySave": "Réessayer l’enregistrement",
+      "customize": "Personnaliser : {{section}}"
+    },
+    "status": {
+      "saved": "Enregistré · {{time}}",
+      "notSaved": "Non enregistré",
+      "viewOnlyDate": "Lecture seule · {{date}}",
+      "editingWith": "Modification · {{status}}",
+      "keptOnDevice": "S’enregistre dès que vous commencez le schéma",
+      "unsaved": "Modifications non enregistrées",
+      "onDevice": "Sur cet appareil uniquement"
+    },
+    "notice": {
+      "otherTab": "Ce dossier est ouvert dans une autre fenêtre. Les deux modifient la même copie de travail — fermez-en une pour ne pas écraser vos modifications.",
+      "gotIt": "Compris",
+      "notSaved": "Ce dossier n’est pas enregistré."
+    },
+    "form": {
+      "patient": "Patient",
+      "owner": "Propriétaire",
+      "visit": "Visite",
+      "complaint": "Motif de consultation",
+      "dictate": "Dictée",
+      "nerveBlocks": "Blocs nerveux",
+      "addInterval": "Ajouter un intervalle"
+    },
+    "diagram": {
+      "numbers": "Numéros",
+      "freeComment": "Commentaire libre"
+    },
+    "grid": {
+      "tip": "Astuce : touchez les numéros des dents pour en sélectionner plusieurs, puis attribuez une même valeur à toutes.",
+      "pickTitle": "Touchez pour sélectionner cette dent et attribuer une valeur à plusieurs à la fois"
+    }
   }
 }

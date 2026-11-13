@@ -88,5 +88,31 @@
     "message_one": "Su cambio de {{list}} no se ha guardado.",
     "message_other": "Sus cambios de {{list}} no se han guardado.",
     "title": "¿Descartar los cambios sin guardar?"
+  },
+  "auth": {
+    "apple": {
+      "continue": "Continuar con Apple",
+      "signUp": "Registrarse con Apple",
+      "busy": "Iniciando sesión con Apple…",
+      "failed": "No se pudo iniciar sesión con Apple.",
+      "hint": "¿Ya tiene una cuenta o recibió una invitación? Inicie sesión con su correo electrónico."
+    },
+    "signUpOnWeb": "¿Es nuevo en ToothOps? Regístrese en toothops.app",
+    "incomplete": "No se completó el inicio de sesión. Inténtelo de nuevo."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Su plan no está activo",
+      "manage": "Adminístrelo en toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps está bloqueado",
+    "prompt": "Desbloquee la app para proteger los historiales de los pacientes.",
+    "unavailable": "Face ID y el código del dispositivo no están disponibles en este dispositivo. Para desbloquear ToothOps, configure un código en la app Ajustes y toque Reintentar, o cierre sesión.",
+    "reason": "Desbloquear ToothOps"
+  },
+  "team": {
+    "seatLimit": "Esta clínica ha alcanzado el límite de miembros del equipo."
   }
 }

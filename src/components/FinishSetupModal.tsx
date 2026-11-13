@@ -4,17 +4,19 @@ import { supabase } from '../utils/supabaseClient';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { readString, writeString } from '../utils/storage';
-import { friendlyError, toast } from './ui/dialogs';
+import { chooseDialog, friendlyError, toast } from './ui/dialogs';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 import './Login.css';
 import './AccountSurfaces.css';
 
 /**
- * Google sign-up skips the signup form, so a new Google account starts
+ * Google/Apple sign-up skips the signup form, so a new account starts
  * with no practice or doctor name — both print on every chart. This asks
- * for them once (doctor name pre-filled from the Google profile), plus an
+ * for them once (doctor name pre-filled from the Google/Apple profile), plus an
  * optional logo — the same one email sign-up offers.
  *
- * Only for accounts signed in with Google that are missing a name; team
+ * Only for accounts signed in with Google or Apple that are missing a name; team
  * members get the practice name from their practice, so they're asked
  * for their doctor name at most. "Later" hides it on this browser.
  */
@@ -35,11 +37,12 @@ export function useFinishSetup(profile: UseProfileReturn, enabled: boolean) {
       if (cancelled) return;
       const user = data.user;
       const providers = (user?.app_metadata?.providers as string[] | undefined) ?? [user?.app_metadata?.provider];
-      const viaGoogle = providers.includes('google');
+      // Apple sign-ups skip the signup form just like Google ones.
+      const viaOAuth = providers.includes('google') || providers.includes('apple');
       const practice = !profile.practiceId && !profile.practiceName.trim();
       const doctor = !profile.doctorName.trim();
       const dismissed = user ? readString(`setup.dismissed.${user.id}`, 1, '') === '1' : true;
-      if (user && viaGoogle && (practice || doctor) && !dismissed) {
+      if (user && viaOAuth && (practice || doctor) && !dismissed) {
         const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
         const full = String(meta.full_name ?? meta.name ?? '').trim();
         setNeed({ practice, doctor, suggestedDoctor: full, userId: user.id });
@@ -66,7 +69,8 @@ export const FinishSetupModal: React.FC<{
   const [doctorName, setDoctorName] = React.useState(profile.doctorName || need.suggestedDoctor);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
-  const modalRef = useModalFocus(true);
+  const native = isNativeApp();
+  const modalRef = useModalFocus(!native);
   // Optional logo — offered alongside the practice name (a solo account's
   // own logo), never to team members, whose logo belongs to the practice.
   const offerLogo = need.practice && !profile.logoUrl;
@@ -84,8 +88,8 @@ export const FinishSetupModal: React.FC<{
     onDone();
   };
 
-  const save = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const save = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if ((need.practice && !practiceName.trim()) || (need.doctor && !doctorName.trim())) {
       setError(t('finishSetup.namesNeeded'));
       return;
@@ -117,6 +121,86 @@ export const FinishSetupModal: React.FC<{
     }
   };
 
+  const blurb =
+    need.practice && need.doctor
+      ? t('finishSetup.both')
+      : need.practice
+        ? t('finishSetup.practiceOnly')
+        : t('finishSetup.doctorOnly');
+
+  if (native) {
+    // A sheet: Later (or swiping it away) hides it on this device, Save saves.
+    const dirty =
+      practiceName !== profile.practiceName || doctorName !== (profile.doctorName || need.suggestedDoctor) || !!logoFile;
+    return (
+      <Sheet
+        open
+        onClose={later}
+        title={t('finishSetup.title')}
+        cancelLabel={t('finishSetup.later')}
+        doneLabel={busy ? t('finishSetup.saving') : t('finishSetup.save')}
+        onDone={() => void save()}
+        doneDisabled={busy}
+        confirmDismiss={async () =>
+          !busy &&
+          (!dirty ||
+            (await chooseDialog({
+              title: t('ios.sheets.discard.title', { ns: 'common' }),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard', { ns: 'common' }), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
+            })) === 'discard')
+        }
+      >
+        <form className="ios-form" onSubmit={save}>
+          <p className="ios-form-text">{blurb}</p>
+          <div className="ios-form-group">
+            {need.practice && (
+              <label className="ios-field">
+                <span className="ios-field__label">{t('finishSetup.practiceName')}</span>
+                <input
+                  className="ios-field__input"
+                  value={practiceName}
+                  autoComplete="organization"
+                  onChange={(e) => setPracticeName(e.target.value)}
+                />
+              </label>
+            )}
+            {need.doctor && (
+              <label className="ios-field">
+                <span className="ios-field__label">{t('finishSetup.doctorName')}</span>
+                <input
+                  className="ios-field__input"
+                  value={doctorName}
+                  autoComplete="name"
+                  placeholder={t('finishSetup.doctorPlaceholder')}
+                  onChange={(e) => setDoctorName(e.target.value)}
+                />
+              </label>
+            )}
+            {offerLogo && (
+              <label className="ios-field ios-field--file">
+                {logoPreview && <img src={logoPreview} alt="" className="ios-field__thumb" />}
+                <span className="ios-field__label">{logoFile ? t('finishSetup.logoNamed', { name: logoFile.name }) : t('finishSetup.logoOptional')}</span>
+                <input
+                  type="file"
+                  className="ios-field__file"
+                  accept="image/png,image/jpeg,image/webp"
+                  aria-label={t('finishSetup.logoOptional')}
+                  disabled={busy}
+                  onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            )}
+          </div>
+          {offerLogo && <p className="ios-form-footer">{t('finishSetup.logoHint')}</p>}
+          {error && <p className="ios-form-error" role="alert">{error}</p>}
+          {/* Return on the keyboard saves, like Save in the bar. */}
+          <button type="submit" hidden tabIndex={-1} />
+        </form>
+      </Sheet>
+    );
+  }
+
   return (
     <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label={t('finishSetup.title')}>
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
@@ -124,13 +208,7 @@ export const FinishSetupModal: React.FC<{
           <h2>{t('finishSetup.title')}</h2>
         </header>
         <form className="ai-settings-body" onSubmit={save}>
-          <p className="ai-settings-blurb">
-            {need.practice && need.doctor
-              ? t('finishSetup.both')
-              : need.practice
-                ? t('finishSetup.practiceOnly')
-                : t('finishSetup.doctorOnly')}
-          </p>
+          <p className="ai-settings-blurb">{blurb}</p>
           {need.practice && (
             <label className="patient-form__label">
               {t('finishSetup.practiceName')}

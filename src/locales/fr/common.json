@@ -8,7 +8,10 @@
     "duplicate": "Dupliquer",
     "edit": "Modifier",
     "ok": "OK",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "done": "Terminé",
+    "signOut": "Se déconnecter",
+    "tryAgain": "Réessayer"
   },
   "errors": {
     "generic": "Une erreur s’est produite. Veuillez réessayer.",
@@ -93,9 +96,54 @@
       "voice_token_failed": "Impossible d’obtenir un jeton de transcription : {{detail}}",
       "voice_unreadable": "Deepgram a renvoyé une réponse illisible.",
       "voice_no_token": "Deepgram n’a renvoyé aucun jeton."
-    }
+    },
+    "saveFile": "Impossible d’enregistrer le fichier."
   },
   "language": {
     "label": "Langue"
+  },
+  "ios": {
+    "back": "Retour",
+    "moreActions": "Plus d’actions",
+    "copy": "Copier",
+    "moreActionsFor": "Plus d’actions pour {{title}}",
+    "tabs": {
+      "chart": "Schéma",
+      "patients": "Patients",
+      "rechecks": "Contrôles",
+      "settings": "Paramètres"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Masquer la barre latérale",
+      "showSidebar": "Afficher la barre latérale"
+    },
+    "settings": {
+      "account": "Compte",
+      "help": "Aide",
+      "gettingStarted": "Prise en main",
+      "whatsNew": "Nouveautés",
+      "signIn": "Se connecter",
+      "signOutTitle": "Se déconnecter de ToothOps ?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documents",
+        "share": "Partager le PDF"
+      },
+      "reminder": {
+        "send": "Envoyer"
+      },
+      "discard": {
+        "title": "Abandonner vos modifications ?",
+        "discard": "Abandonner les modifications",
+        "keep": "Continuer la modification"
+      },
+      "join": {
+        "join": "Rejoindre"
+      },
+      "customColor": "Couleur personnalisée…",
+      "sendingBusy": "Envoi…"
+    }
   }
 }

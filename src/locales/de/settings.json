@@ -173,7 +173,17 @@
       "gridHint": "(optional, wenn die Befunde im Schema stehen)",
       "images": "Bilder einbeziehen",
       "imagesHint": "(4 pro Seite, nach der Akte)"
-    }
+    },
+    "noteDevice": "Auf diesem Gerät gespeichert. Änderungen gelten sofort.",
+    "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",
+    "scoreTapFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
+    "scoreTapToothHint": "Um einen Befund im ganzen Maul zu bewerten",
+    "columnsFooter": "Spalten im Befundraster. Mindestens eine bleibt sichtbar.",
+    "mirrorHint": "Und im PDF",
+    "drugName": "Wirkstoff",
+    "drugStrength": "Konzentration",
+    "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
+    "pdfImagesHint": "4 pro Seite, nach der Akte"
   },
   "feedback": {
     "title": "Feedback senden",
@@ -194,5 +204,46 @@
     "needsAccount": "Für Feedback ist ein Konto erforderlich.",
     "send": "Senden",
     "sending": "Wird gesendet…"
+  },
+  "gettingStarted": {
+    "takeTour": "Rundgang starten",
+    "tourFooter": "Ein kurzer Rundgang, wo in der Akte was zu finden ist.",
+    "chartParts": "Teile der Akte"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Eine zahnärztliche Akte von oben nach unten. Tippen Sie auf den Titel der Akte, um zwischen den Abschnitten zu wechseln — alles wird automatisch gespeichert."
+      },
+      "grid": {
+        "body": "Messwerte pro Zahn. Tippen Sie auf eine Zelle und geben Sie den Wert ein, oder tippen Sie auf einen Score — befunden, ohne aufzusehen."
+      },
+      "diagrams": {
+        "body": "Tippen Sie auf einen Zahn, um ihn zu markieren; wechseln Sie zwischen Kommentar und Zeichnen, fügen Sie freie Notizen hinzu. Widerrufen und Wiederholen finden Sie in der Symbolleiste des Diagramms."
+      },
+      "codes": {
+        "body": "Durchsuchen Sie hier den vollständigen AVDC-Codesatz, direkt beim Diagramm."
+      },
+      "treatment": {
+        "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage ein — und speichern Sie neue zur Wiederverwendung."
+      },
+      "patients": {
+        "title": "Patienten",
+        "body": "Alle Besuche jedes Patienten. Gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten tippen. Kontrollen listet die Patienten auf, deren Kontrolle fällig ist."
+      },
+      "share": {
+        "title": "PDF teilen",
+        "body": "Erstellen Sie das kundenfertige PDF der Akte mit Ihrem Logo und teilen oder sichern Sie es, wann immer Sie bereit sind."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tippen Sie im Raster auf Zahnnummern, um mehrere auszuwählen, und vergeben Sie dann einen Score für alle.",
+    "customize": "Jede Seite hat Anpassen in ihrem Menü „Mehr“: Spalten ausblenden, festlegen, was neben den Zähnen angezeigt wird, und mehr. Die Einstellungen folgen Ihrem Konto auf jedes Gerät.",
+    "leftOff": "Beim Öffnen zeigt ToothOps die Patienten — es sei denn, der heutige Besuch ist noch geöffnet — und der heutige Besuch öffnet sich bereit zum Bearbeiten."
+  },
+  "reminders": {
+    "sendFrom": "Senden Sie eine Erinnerung für einen Patienten über Patienten oder Kontrollen.",
+    "settingUp": "Ihre Praxis wird eingerichtet — schauen Sie gleich noch einmal vorbei."
   }
 }

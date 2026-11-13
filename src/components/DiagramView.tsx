@@ -8,6 +8,14 @@ import { ToothDiagram, ToothDiagramHandle, DiagramTool, MarkMode, CommentExport 
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useDiagramHistory } from '../hooks/useDiagramHistory';
 import { usePersistedState } from '../hooks/usePersistedState';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
+
+// SF Symbol names (not text).
+const ARROW_UTURN_BACKWARD_ICON = 'arrow-uturn-backward';
+const ARROW_UTURN_FORWARD_ICON = 'arrow-uturn-forward';
+const MINUS_ICON = 'minus';
+const PLUS_ICON = 'plus';
 
 interface DiagramViewProps {
   title: string;
@@ -71,6 +79,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   highlightTriadan,
   readOnly = false,
 }, ref) => {
+  // The iOS app draws toolbar symbols as icons, not text glyphs.
+  const native = isNativeApp();
   const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
@@ -227,7 +237,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.undo')}
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
-              ↶
+              {native ? <Icon name={ARROW_UTURN_BACKWARD_ICON} size={18} /> : '↶'}
             </button>
             <button
               type="button"
@@ -237,7 +247,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.redo')}
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
-              ↷
+              {native ? <Icon name={ARROW_UTURN_FORWARD_ICON} size={18} /> : '↷'}
             </button>
           </div>
 
@@ -257,7 +267,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           </button>
           <div className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
           <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
-            {t('diagramView.freeComment')}
+            {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
           </button>
 
           <button
@@ -267,7 +277,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             aria-pressed={showNumbers}
             title={t('diagramView.numbersTitle')}
           >
-            {t('diagramView.numbers')}
+            {native ? t('ios.diagram.numbers') : t('diagramView.numbers')}
           </button>
 
           <div className="diagram-view__zoom" role="group" aria-label={t('diagramView.zoomGroup')}>
@@ -279,7 +289,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.zoomOut')}
               title={t('diagramView.zoomOut')}
             >
-              −
+              {native ? <Icon name={MINUS_ICON} size={16} /> : '−'}
             </button>
             <button
               type="button"
@@ -299,7 +309,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.zoomIn')}
               title={t('diagramView.zoomIn')}
             >
-              +
+              {native ? <Icon name={PLUS_ICON} size={16} /> : '+'}
             </button>
           </div>
 

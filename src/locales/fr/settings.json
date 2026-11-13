@@ -173,7 +173,17 @@
       "gridHint": "(facultatif lorsque les observations figurent sur le schéma)",
       "images": "Inclure les images",
       "imagesHint": "(4 par page, après le dossier)"
-    }
+    },
+    "noteDevice": "Enregistrés sur cet appareil. Les modifications s’appliquent immédiatement.",
+    "spaceMovesDownHint": "Rapide pour dicter une série de profondeurs",
+    "scoreTapFindingHint": "Mobilité → récession → … pour un examen dent par dent",
+    "scoreTapToothHint": "Pour noter un constat sur toute la bouche",
+    "columnsFooter": "Colonnes affichées dans la grille du schéma. Au moins une reste affichée.",
+    "mirrorHint": "Et dans le PDF",
+    "drugName": "Médicament",
+    "drugStrength": "Concentration",
+    "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
+    "pdfImagesHint": "4 par page, après le dossier"
   },
   "feedback": {
     "title": "Envoyer un commentaire",
@@ -194,5 +204,46 @@
     "needsAccount": "L’envoi de commentaires nécessite un compte.",
     "send": "Envoyer",
     "sending": "Envoi…"
+  },
+  "gettingStarted": {
+    "takeTour": "Faire la visite guidée",
+    "tourFooter": "Une courte visite pour savoir où tout se trouve dans le dossier.",
+    "chartParts": "Parties du dossier"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Un dossier dentaire, de haut en bas. Touchez le titre du dossier pour passer d’une section à l’autre — tout est enregistré automatiquement."
+      },
+      "grid": {
+        "body": "Mesures dent par dent. Touchez une cellule et saisissez, ou touchez un score — saisissez sans lever les yeux."
+      },
+      "diagrams": {
+        "body": "Touchez une dent pour la marquer ; passez de Commentaire à Dessin, ajoutez des notes libres. Annuler et Rétablir se trouvent dans la barre d’outils du schéma."
+      },
+      "codes": {
+        "body": "Recherchez ici l’ensemble des codes AVDC, juste à côté du schéma."
+      },
+      "treatment": {
+        "body": "Rédigez le compte rendu ou insérez un modèle enregistré — et enregistrez-en de nouveaux pour les réutiliser."
+      },
+      "patients": {
+        "title": "Patients",
+        "body": "Toutes les visites de chaque patient. Les visites enregistrées s’ouvrent en lecture seule jusqu’à ce que vous touchiez Modifier. Contrôles liste les patients dont le contrôle est dû."
+      },
+      "share": {
+        "title": "Partager le PDF",
+        "body": "Générez le PDF du dossier prêt pour le client avec votre logo, puis partagez-le ou enregistrez-le quand vous le souhaitez."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Touchez les numéros de dents dans la grille pour en sélectionner plusieurs, puis attribuez un même score à toutes.",
+    "customize": "Chaque page propose Personnaliser dans son menu Plus : masquez des colonnes, choisissez ce qui s’affiche à côté des dents, et plus encore. Les réglages suivent votre compte sur tous vos appareils.",
+    "leftOff": "À l’ouverture, ToothOps affiche Patients — sauf si la visite du jour est encore ouverte — et la visite du jour s’ouvre prête à être modifiée."
+  },
+  "reminders": {
+    "sendFrom": "Envoyez un rappel pour un patient depuis Patients ou Contrôles.",
+    "settingUp": "Votre clinique est en cours de configuration — revenez dans un instant."
   }
 }

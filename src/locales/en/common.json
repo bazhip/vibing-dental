@@ -8,7 +8,10 @@
     "duplicate": "Duplicate",
     "edit": "Edit",
     "ok": "OK",
-    "save": "Save"
+    "save": "Save",
+    "done": "Done",
+    "signOut": "Sign out",
+    "tryAgain": "Try again"
   },
   "errors": {
     "network": "Can’t reach ToothOps — check your connection and try again.",
@@ -90,9 +93,54 @@
       "voice_token_failed": "Could not mint a transcription token: {{detail}}",
       "voice_unreadable": "Deepgram returned an unreadable response.",
       "voice_no_token": "Deepgram did not return a token."
-    }
+    },
+    "saveFile": "Couldn't save the file."
   },
   "language": {
     "label": "Language"
+  },
+  "ios": {
+    "back": "Back",
+    "moreActions": "More actions",
+    "copy": "Copy",
+    "moreActionsFor": "More actions for {{title}}",
+    "tabs": {
+      "chart": "Chart",
+      "patients": "Patients",
+      "rechecks": "Rechecks",
+      "settings": "Settings"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Hide sidebar",
+      "showSidebar": "Show sidebar"
+    },
+    "settings": {
+      "account": "Account",
+      "help": "Help",
+      "gettingStarted": "Getting started",
+      "whatsNew": "What’s new",
+      "signIn": "Sign in",
+      "signOutTitle": "Sign out of ToothOps?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documents",
+        "share": "Share PDF"
+      },
+      "reminder": {
+        "send": "Send"
+      },
+      "discard": {
+        "title": "Discard your changes?",
+        "discard": "Discard Changes",
+        "keep": "Keep Editing"
+      },
+      "join": {
+        "join": "Join"
+      },
+      "customColor": "Custom Color…",
+      "sendingBusy": "Sending…"
+    }
   }
 }

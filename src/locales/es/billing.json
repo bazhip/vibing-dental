@@ -68,7 +68,6 @@
     "pickPlan": "Elija un plan arriba",
     "checkoutFailed": "No se pudo iniciar el pago.",
     "larger": "¿Más de 5 miembros en el equipo o un grupo con varias sedes? <a>Contáctenos</a> para un precio a medida.",
-    "signOut": "Cerrar sesión",
     "slowConfirm": "El pago se ha realizado, pero la confirmación tarda más de lo habitual — recargue la página en un minuto o contáctenos si el problema continúa."
   },
   "settings": {

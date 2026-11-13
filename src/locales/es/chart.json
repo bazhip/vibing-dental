@@ -273,5 +273,71 @@
   "scoreChips": {
     "group": "Puntuación de {{name}}",
     "clear": "Borrar {{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Nombre, logotipo y equipo."
+  },
+  "imaging": {
+    "takePhoto": "Tomar foto",
+    "cameraFailed": "No se pudo abrir la cámara.",
+    "cameraNoPhoto": "La cámara no devolvió ninguna foto.",
+    "cameraReadFailed": "No se pudo leer la foto ({{status}}).",
+    "limitReached_one": "Este historial ha alcanzado su límite de {{count}} imagen.",
+    "limitReached_many": "Este historial ha alcanzado su límite de {{count}} imágenes.",
+    "limitReached_other": "Este historial ha alcanzado su límite de {{count}} imágenes.",
+    "uploadsUnavailable": "La subida de fotos no está disponible en esta cuenta.",
+    "formatsApp": "PNG, JPEG o WEBP.",
+    "dicomUnavailable": "La subida de archivos DICOM no está disponible en esta cuenta. Exporte la radiografía como JPEG o PNG para añadirla."
+  },
+  "aiConsent": {
+    "title": "¿Usar servicios de IA?",
+    "intro": "Para dictar en un historial y redactar borradores con IA, ToothOps envía datos a dos servicios:",
+    "deepgram": "<strong>Deepgram</strong> recibe el audio de su voz mientras dicta, para convertirlo en texto.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) recibe la transcripción del dictado y el contenido del historial, como los datos del paciente y los hallazgos, para completar el historial o redactar el informe para el propietario.",
+    "nothingSent": "No se envía nada a menos que use estas funciones.",
+    "allow": "Permitir",
+    "notNow": "Ahora no"
+  },
+  "ios": {
+    "newChart": "Nuevo historial",
+    "more": "Más",
+    "menu": {
+      "newChart": "Nuevo historial",
+      "newVisit": "Nueva visita",
+      "saveNow": "Guardar ahora",
+      "retrySave": "Reintentar guardado",
+      "customize": "Personalizar: {{section}}"
+    },
+    "status": {
+      "saved": "Guardado · {{time}}",
+      "notSaved": "No guardado",
+      "viewOnlyDate": "Solo lectura · {{date}}",
+      "editingWith": "Editando · {{status}}",
+      "keptOnDevice": "Se guarda en cuanto empiece el odontograma",
+      "unsaved": "Cambios sin guardar",
+      "onDevice": "Solo en este dispositivo"
+    },
+    "notice": {
+      "otherTab": "Este historial está abierto en otra ventana. Ambas editan la misma copia de trabajo — cierre una para no sobrescribir sus cambios.",
+      "gotIt": "Entendido",
+      "notSaved": "Este historial no está guardado."
+    },
+    "form": {
+      "patient": "Paciente",
+      "owner": "Propietario",
+      "visit": "Visita",
+      "complaint": "Motivo de consulta",
+      "dictate": "Dictado",
+      "nerveBlocks": "Bloqueos nerviosos",
+      "addInterval": "Añadir intervalo"
+    },
+    "diagram": {
+      "numbers": "Números",
+      "freeComment": "Comentario libre"
+    },
+    "grid": {
+      "tip": "Consejo: toque los números de los dientes para seleccionar varios y luego asigne un mismo valor a todos.",
+      "pickTitle": "Toque para seleccionar este diente y asignar un valor a varios a la vez"
+    }
   }
 }

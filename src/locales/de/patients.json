@@ -1,0 +1,72 @@
+{
+  "title": "Patienten",
+  "search": {
+    "placeholder": "Suchen",
+    "label": "Patienten nach Name, Nummer oder Besitzer suchen",
+    "clear": "Suche löschen"
+  },
+  "signIn": "Melden Sie sich an, um Ihre gespeicherten Akten zu sehen.",
+  "unnamed": "Patient ohne Namen",
+  "empty": "Noch keine gespeicherten Akten. Sie werden beim Erfassen automatisch gespeichert.",
+  "retry": "Erneut versuchen",
+  "loadMore": "Mehr laden",
+  "filter": {
+    "button": "Filtern und sortieren",
+    "sortBy": "Sortieren nach",
+    "sortPatient": "Name",
+    "sortUpdated": "Zuletzt geändert",
+    "sortRecall": "Kontrolltermin",
+    "order": "Reihenfolge",
+    "patientAsc": "A bis Z",
+    "patientDesc": "Z bis A",
+    "updatedDesc": "Neueste zuerst",
+    "updatedAsc": "Älteste zuerst",
+    "recallAsc": "Nächste zuerst",
+    "recallDesc": "Späteste zuerst",
+    "species": "Tierart",
+    "allSpecies": "Alle Tierarten",
+    "doctor": "Tierarzt",
+    "allDoctors": "Alle Tierärzte",
+    "due": "Kontrolle fällig",
+    "dueCount": "Kontrolle fällig ({{count}})"
+  },
+  "add": {
+    "button": "Hinzufügen",
+    "newPatient": "Neuer Patient"
+  },
+  "row": {
+    "number": "Nr. {{number}}",
+    "visits_one": "{{count}} Besuch",
+    "visits_other": "{{count}} Besuche",
+    "updated": "Geändert am {{date}}"
+  },
+  "recall": {
+    "overdue": "Überfällig · {{date}}",
+    "today": "Heute fällig",
+    "upcoming": "Kontrolle am {{date}}"
+  },
+  "actions": {
+    "open": "Öffnen",
+    "delete": "Löschen",
+    "newVisit": "Neuer Besuch"
+  },
+  "confirmDelete": {
+    "title": "{{name}} löschen?",
+    "titleDated": "{{name}} ({{date}}) löschen?",
+    "confirm": "Besuch löschen"
+  },
+  "visits": {
+    "undated": "Besuch ohne Datum",
+    "byDoctor": "{{doctor}} · Geändert am {{date}}",
+    "updated": "Geändert am {{date}}",
+    "empty": "Keine Besuche.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Kontrollen",
+    "overdue": "Überfällig",
+    "today": "Heute fällig",
+    "empty": "Keine Kontrollen fällig",
+    "emptyHint": "Patienten erscheinen hier an dem Tag, an dem ihre Kontrolle fällig ist."
+  }
+}

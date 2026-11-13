@@ -7,6 +7,7 @@ import { supabase } from '../utils/supabaseClient';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { APP_LANGUAGES, AppLanguage, LANGUAGE_NAMES, LANGUAGE_SWITCHING_ENABLED, isAppLanguage } from '../i18n/config';
 import { deleteMyAccount } from '../utils/accountDeletion';
+import { useStackLeaveGuard } from '../ios/Stack';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -17,6 +18,9 @@ interface AccountModalProps {
   /** Language in effect, and how to change it (the select shows only while switching is enabled). */
   language?: AppLanguage;
   onLanguageChange?: (language: AppLanguage) => void;
+  /** 'screen': the body only, as a pushed screen in the iOS app's Settings
+   *  tab (the stack's Back asks about unsaved edits). Default: the dialog. */
+  presentation?: 'modal' | 'screen';
 }
 
 export const MIN_PASSWORD = 8;
@@ -38,7 +42,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   profile,
   language = 'en',
   onLanguageChange,
+  presentation = 'modal',
 }) => {
+  const asScreen = presentation === 'screen';
   const { t, i18n } = useTranslation('account');
   const [doctorName, setDoctorName] = React.useState(profile.doctorName);
   const [email, setEmail] = React.useState('');
@@ -51,7 +57,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [busy, setBusy] = React.useState<Section | null>(null);
   const [errors, setErrors] = React.useState<Partial<Record<Section, string>>>({});
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
-  const modalRef = useModalFocus(open);
+  const modalRef = useModalFocus(open && !asScreen);
 
   React.useEffect(() => {
     if (open) {
@@ -61,7 +67,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       setShowPassword(false);
       setRequestedEmail('');
       setErrors({});
-      firstFieldRef.current?.focus();
+      // (A pushed screen doesn't raise the keyboard on arrival.)
+      if (!asScreen) firstFieldRef.current?.focus();
       // Load the signed-in account's current email for the change field.
       if (supabase) {
         supabase.auth.getUser().then(({ data }) => {
@@ -87,9 +94,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     passwordDirty && t('unsaved.field.password'),
   ].filter(Boolean) as string[];
 
-  /** Close, asking first when something typed hasn't been saved. */
-  const requestClose = React.useCallback(async () => {
-    if (busy) return;
+  /** Asks before throwing away anything typed but not saved; false = stay. */
+  const confirmLeave = React.useCallback(async (): Promise<boolean> => {
+    if (busy) return false;
     if (unsaved.length > 0) {
       // en-GB joins "a, b and c" (no serial comma), matching the original English.
       const list = new Intl.ListFormat(i18n.language === 'en' ? 'en-GB' : i18n.language, {
@@ -103,15 +110,25 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         cancelLabel: t('unsaved.cancel'),
         danger: true,
       });
-      if (!discard) return;
+      if (!discard) return false;
     }
-    onClose();
+    return true;
     // `unsaved` is derived from the deps below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busy, doctorDirty, emailDirty, passwordDirty, onClose, t, i18n.language]);
+  }, [busy, doctorDirty, emailDirty, passwordDirty, t, i18n.language]);
+
+  /** Close, asking first when something typed hasn't been saved. */
+  const requestClose = React.useCallback(async () => {
+    if (busy) return;
+    if (unsaved.length > 0 && !(await confirmLeave())) return;
+    onClose();
+    // `unsaved` is derived from confirmLeave's deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [busy, confirmLeave, onClose]);
+  useStackLeaveGuard(asScreen ? confirmLeave : null);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || asScreen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -203,6 +220,172 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const tooShort = newPassword.length > 0 && newPassword.length < MIN_PASSWORD;
   const mismatch = confirmPassword.length > 0 && newPassword !== confirmPassword;
 
+  const accountBody = (
+    <>
+      {/* ---- Doctor name ------------------------------------------- */}
+      <form className="ai-settings-section" onSubmit={saveDoctor}>
+        <h3 className="ai-settings-subhead">{t('doctor.heading')}</h3>
+        <p className="ai-settings-blurb">{t('doctor.blurb')}</p>
+        <label className="patient-form__label">
+          {t('doctor.heading')}
+          <input
+            ref={firstFieldRef}
+            type="text"
+            className="patient-form__input"
+            value={doctorName}
+            onChange={(e) => {
+              setDoctorName(e.target.value);
+              setSectionError('doctor', '');
+            }}
+            placeholder={t('doctor.placeholder')}
+          />
+        </label>
+        <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
+          <button type="submit" className="diagram-view__action" disabled={!!busy || !doctorDirty}>
+            {busy === 'doctor' ? t('doctor.saving') : t('doctor.save')}
+          </button>
+        </div>
+        {doctorError}
+      </form>
+
+      {/* ---- Language ---------------------------------------------- */}
+      {LANGUAGE_SWITCHING_ENABLED && (
+        <section className="ai-settings-section">
+          <h3 className="ai-settings-subhead" id="account-language-heading">{t('language.heading')}</h3>
+          <select
+            className="patient-form__input"
+            aria-labelledby="account-language-heading"
+            value={language}
+            onChange={(e) => {
+              const next = e.target.value;
+              if (!isAppLanguage(next)) return;
+              onLanguageChange?.(next);
+              // Auth emails read user_metadata.language. Fire and forget: never blocks the UI.
+              void supabase?.auth.updateUser({ data: { language: next } }).catch(() => undefined);
+            }}
+          >
+            {APP_LANGUAGES.map((l) => (
+              <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>
+            ))}
+          </select>
+        </section>
+      )}
+
+      {/* ---- Email ------------------------------------------------- */}
+      <form className="ai-settings-section" onSubmit={saveEmail} noValidate>
+        <h3 className="ai-settings-subhead">{t('email.heading')}</h3>
+        <label className="patient-form__label">
+          {t('email.label')}
+          <input
+            type="email"
+            className="patient-form__input"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setSectionError('email', '');
+            }}
+          />
+        </label>
+        <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
+          <button type="submit" className="diagram-view__action" disabled={!!busy || !emailDirty}>
+            {busy === 'email' ? t('email.sending') : t('email.change')}
+          </button>
+        </div>
+        {requestedEmail && (
+          <div className="login-notice settings-msg" role="status">
+            {t('email.pending', { current: currentEmail, requested: requestedEmail })}
+          </div>
+        )}
+        {emailError}
+      </form>
+
+      {/* ---- Password ---------------------------------------------- */}
+      <form className="ai-settings-section" onSubmit={savePassword} noValidate>
+        <h3 className="ai-settings-subhead">{t('password.heading')}</h3>
+        {/* Hidden username field so password managers file the new
+            password under the right account. */}
+        <input type="text" name="username" autoComplete="username" value={currentEmail} readOnly hidden />
+        <label className="patient-form__label">
+          {t('password.newLabel')}
+          <span className="settings-password">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              className="patient-form__input"
+              autoComplete="new-password"
+              placeholder={t('password.placeholder', { min: MIN_PASSWORD })}
+              value={newPassword}
+              aria-invalid={tooShort || undefined}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setSectionError('password', '');
+              }}
+            />
+            <button
+              type="button"
+              className="settings-password__toggle"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? t('password.hideAll') : t('password.showAll')}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? t('password.hide') : t('password.show')}
+            </button>
+          </span>
+        </label>
+        <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
+          {t('password.confirmLabel')}
+          <input
+            type={showPassword ? 'text' : 'password'}
+            className="patient-form__input"
+            autoComplete="new-password"
+            value={confirmPassword}
+            aria-invalid={mismatch || undefined}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setSectionError('password', '');
+            }}
+          />
+        </label>
+        {(tooShort || mismatch) && (
+          <p className="patient-form__hint settings-hint--warn">
+            {tooShort
+              ? t('password.hintShort', { min: MIN_PASSWORD, current: newPassword.length })
+              : t('password.hintMismatch')}
+          </p>
+        )}
+        <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
+          <button
+            type="submit"
+            className="diagram-view__action"
+            disabled={!!busy || newPassword.length < MIN_PASSWORD || confirmPassword.length === 0}
+          >
+            {busy === 'password' ? t('password.updating') : t('password.update')}
+          </button>
+        </div>
+        {passwordError}
+      </form>
+
+      {currentEmail && (
+        <section className="ai-settings-section">
+          <h3 className="ai-settings-subhead">{t('delete.heading')}</h3>
+          <p className="patient-form__hint">{t('delete.blurb')}</p>
+          <div className="practice-logo-actions">
+            <button
+              type="button"
+              className="diagram-view__action diagram-view__action--danger"
+              disabled={!!busy}
+              onClick={() => void deleteMyAccount(currentEmail)}
+            >
+              {t('delete.button')}
+            </button>
+          </div>
+        </section>
+      )}
+    </>
+  );
+
+  if (asScreen) return <div className="ai-settings-body ios-settings-page">{accountBody}</div>;
+
   return (
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="account-settings-title">
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
@@ -213,165 +396,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           </button>
         </header>
         <div className="ai-settings-body">
-          {/* ---- Doctor name ------------------------------------------- */}
-          <form className="ai-settings-section" onSubmit={saveDoctor}>
-            <h3 className="ai-settings-subhead">{t('doctor.heading')}</h3>
-            <p className="ai-settings-blurb">{t('doctor.blurb')}</p>
-            <label className="patient-form__label">
-              {t('doctor.heading')}
-              <input
-                ref={firstFieldRef}
-                type="text"
-                className="patient-form__input"
-                value={doctorName}
-                onChange={(e) => {
-                  setDoctorName(e.target.value);
-                  setSectionError('doctor', '');
-                }}
-                placeholder={t('doctor.placeholder')}
-              />
-            </label>
-            <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-              <button type="submit" className="diagram-view__action" disabled={!!busy || !doctorDirty}>
-                {busy === 'doctor' ? t('doctor.saving') : t('doctor.save')}
-              </button>
-            </div>
-            {doctorError}
-          </form>
-
-          {/* ---- Language ---------------------------------------------- */}
-          {LANGUAGE_SWITCHING_ENABLED && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead" id="account-language-heading">{t('language.heading')}</h3>
-              <select
-                className="patient-form__input"
-                aria-labelledby="account-language-heading"
-                value={language}
-                onChange={(e) => {
-                  const next = e.target.value;
-                  if (!isAppLanguage(next)) return;
-                  onLanguageChange?.(next);
-                  // Auth emails read user_metadata.language. Fire and forget: never blocks the UI.
-                  void supabase?.auth.updateUser({ data: { language: next } }).catch(() => undefined);
-                }}
-              >
-                {APP_LANGUAGES.map((l) => (
-                  <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>
-                ))}
-              </select>
-            </section>
-          )}
-
-          {/* ---- Email ------------------------------------------------- */}
-          <form className="ai-settings-section" onSubmit={saveEmail} noValidate>
-            <h3 className="ai-settings-subhead">{t('email.heading')}</h3>
-            <label className="patient-form__label">
-              {t('email.label')}
-              <input
-                type="email"
-                className="patient-form__input"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setSectionError('email', '');
-                }}
-              />
-            </label>
-            <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-              <button type="submit" className="diagram-view__action" disabled={!!busy || !emailDirty}>
-                {busy === 'email' ? t('email.sending') : t('email.change')}
-              </button>
-            </div>
-            {requestedEmail && (
-              <div className="login-notice settings-msg" role="status">
-                {t('email.pending', { current: currentEmail, requested: requestedEmail })}
-              </div>
-            )}
-            {emailError}
-          </form>
-
-          {/* ---- Password ---------------------------------------------- */}
-          <form className="ai-settings-section" onSubmit={savePassword} noValidate>
-            <h3 className="ai-settings-subhead">{t('password.heading')}</h3>
-            {/* Hidden username field so password managers file the new
-                password under the right account. */}
-            <input type="text" name="username" autoComplete="username" value={currentEmail} readOnly hidden />
-            <label className="patient-form__label">
-              {t('password.newLabel')}
-              <span className="settings-password">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  className="patient-form__input"
-                  autoComplete="new-password"
-                  placeholder={t('password.placeholder', { min: MIN_PASSWORD })}
-                  value={newPassword}
-                  aria-invalid={tooShort || undefined}
-                  onChange={(e) => {
-                    setNewPassword(e.target.value);
-                    setSectionError('password', '');
-                  }}
-                />
-                <button
-                  type="button"
-                  className="settings-password__toggle"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? t('password.hideAll') : t('password.showAll')}
-                  aria-pressed={showPassword}
-                >
-                  {showPassword ? t('password.hide') : t('password.show')}
-                </button>
-              </span>
-            </label>
-            <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-              {t('password.confirmLabel')}
-              <input
-                type={showPassword ? 'text' : 'password'}
-                className="patient-form__input"
-                autoComplete="new-password"
-                value={confirmPassword}
-                aria-invalid={mismatch || undefined}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  setSectionError('password', '');
-                }}
-              />
-            </label>
-            {(tooShort || mismatch) && (
-              <p className="patient-form__hint settings-hint--warn">
-                {tooShort
-                  ? t('password.hintShort', { min: MIN_PASSWORD, current: newPassword.length })
-                  : t('password.hintMismatch')}
-              </p>
-            )}
-            <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
-              <button
-                type="submit"
-                className="diagram-view__action"
-                disabled={!!busy || newPassword.length < MIN_PASSWORD || confirmPassword.length === 0}
-              >
-                {busy === 'password' ? t('password.updating') : t('password.update')}
-              </button>
-            </div>
-            {passwordError}
-          </form>
-
-          {currentEmail && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">{t('delete.heading')}</h3>
-              <p className="patient-form__hint">{t('delete.blurb')}</p>
-              <div className="practice-logo-actions">
-                <button
-                  type="button"
-                  className="diagram-view__action diagram-view__action--danger"
-                  disabled={!!busy}
-                  onClick={() => void deleteMyAccount(currentEmail)}
-                >
-                  {t('delete.button')}
-                </button>
-              </div>
-            </section>
-          )}
+          {accountBody}
         </div>
         <footer className="ai-settings-footer">
           <button

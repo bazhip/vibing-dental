@@ -3,6 +3,8 @@ import { safeFont } from './pdf/safeFont';
 import download from 'downloadjs';
 import i18n, { loadLanguage } from '../i18n';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
+import { saveChartPdf } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
 import {
   ToothData,
   PatientInfo,
@@ -373,5 +375,7 @@ export async function generateDentalChartPDF(
   );
   const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   const filename = `${sanitize(patientInfo.patientName)}_${sanitize(patientInfo.patientNumber)}_${patientInfo.date}.pdf`;
-  download(pdfBytes, filename, 'application/pdf');
+  // The website downloads as it always has; the iOS app opens the share sheet.
+  if (isNativeApp()) await saveChartPdf(pdfBytes, filename);
+  else download(pdfBytes, filename, 'application/pdf');
 }

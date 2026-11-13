@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
+const native = vi.hoisted(() => ({ on: false }));
+vi.mock('../native/platform', () => ({ isNativeApp: () => native.on }));
 import { WhatsNewModal } from './WhatsNewModal';
 import { WHATS_NEW, shouldShowWhatsNew } from '../constants/whatsNew';
 
@@ -25,5 +27,21 @@ describe("What's new", () => {
     expect(shouldShowWhatsNew({ ...base, walkthroughOpen: true })).toBe(false);
     expect(shouldShowWhatsNew({ ...base, signedIn: false })).toBe(false); // trial
     expect(shouldShowWhatsNew({ ...base, seenId: 'older-release' })).toBe(true); // a newer announcement
+  });
+
+  it('the website keeps the mouse-and-keyboard wording', () => {
+    native.on = false;
+    render(<WhatsNewModal onClose={() => {}} presentation="screen" />);
+    expect(document.body.textContent).toContain('Shift-click for a range');
+  });
+
+  it('the app speaks touch and names its own places', () => {
+    native.on = true;
+    render(<WhatsNewModal onClose={() => {}} presentation="screen" />);
+    const text = document.body.textContent ?? '';
+    expect(text).not.toMatch(/click|Space key|My charts/i);
+    expect(text).toContain('Tap tooth numbers in the grid');
+    expect(text).toContain('Opening ToothOps fresh shows Patients');
+    native.on = false;
   });
 });

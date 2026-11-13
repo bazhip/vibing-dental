@@ -2,6 +2,7 @@ import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import i18n from '../i18n';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
+import { isNativeApp } from '../native/platform';
 import { LocalizedError } from '../utils/apiErrors';
 
 /**
@@ -80,6 +81,40 @@ export const MAX_UPLOAD_BYTES = ATTACHMENT_LIMITS.maxUploadBytes;
 const tm = () => i18n.getFixedT(null, 'media');
 
 const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
+
+/**
+ * Why an upload can't go ahead, or null when it can. In the iOS app the
+ * DICOM message states the fact without plan wording (the app sells
+ * nothing); the web keeps its free/paid-plan explanation.
+ */
+export function uploadRejection(u: {
+  dicom: boolean;
+  type: string;
+  size: number;
+  count: number;
+  maxImages: number;
+  dicomEnabled: boolean;
+  native: boolean;
+}): string | null {
+  if (u.dicom && !u.dicomEnabled) {
+    return u.native
+      ? i18n.t('chart:imaging.dicomUnavailable')
+      : tm()('upload.dicomPaid');
+  }
+  if (!u.dicom && !ALLOWED.includes(u.type)) {
+    return u.dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain');
+  }
+  if (u.count >= u.maxImages) {
+    return u.native
+      ? i18n.t('chart:imaging.limitReached', { count: u.maxImages })
+      : tm()('upload.maxImages', { max: u.maxImages });
+  }
+  if (u.size > ATTACHMENT_LIMITS.hardMaxBytes) {
+    return tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) });
+  }
+  return null;
+}
+
 const SIGN_TTL = 60 * 60; // 1 hour
 
 function extFor(type: string): string {
@@ -321,18 +356,16 @@ export function useAttachments(
       // Messages are looked up when thrown: an upload can outlast a language switch.
       if (!supabase) throw new LocalizedError(tm()('upload.noCloud'));
       const dicom = await isDicomFile(file);
-      if (dicom && !dicomEnabled) {
-        throw new LocalizedError(tm()('upload.dicomPaid'));
-      }
-      if (!dicom && !ALLOWED.includes(file.type)) {
-        throw new LocalizedError(dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain'));
-      }
-      if (itemsRef.current.length >= maxImages) {
-        throw new LocalizedError(tm()('upload.maxImages', { max: maxImages }));
-      }
-      if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
-        throw new LocalizedError(tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) }));
-      }
+      const rejection = uploadRejection({
+        dicom,
+        type: file.type,
+        size: file.size,
+        count: itemsRef.current.length,
+        maxImages,
+        dicomEnabled,
+        native: isNativeApp(),
+      });
+      if (rejection) throw new LocalizedError(rejection);
       // DICOM: render a preview for display; the original is kept as-is.
       const source = dicom ? await dicomPreview(file) : file;
       // Fit to the size/dimension caps and make the grid thumbnail.

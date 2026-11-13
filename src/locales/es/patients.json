@@ -1,0 +1,73 @@
+{
+  "title": "Pacientes",
+  "search": {
+    "placeholder": "Buscar",
+    "label": "Buscar pacientes por nombre, número o propietario",
+    "clear": "Borrar búsqueda"
+  },
+  "signIn": "Inicie sesión para ver sus historiales guardados.",
+  "unnamed": "Paciente sin nombre",
+  "empty": "Todavía no hay historiales guardados. Se guardan automáticamente mientras registra.",
+  "retry": "Reintentar",
+  "loadMore": "Cargar más",
+  "filter": {
+    "button": "Filtrar y ordenar",
+    "sortBy": "Ordenar por",
+    "sortPatient": "Nombre",
+    "sortUpdated": "Última modificación",
+    "sortRecall": "Fecha de revisión",
+    "order": "Orden",
+    "patientAsc": "De la A a la Z",
+    "patientDesc": "De la Z a la A",
+    "updatedDesc": "Más recientes primero",
+    "updatedAsc": "Más antiguos primero",
+    "recallAsc": "Más próximos primero",
+    "recallDesc": "Más lejanos primero",
+    "species": "Especie",
+    "allSpecies": "Todas las especies",
+    "doctor": "Veterinario",
+    "allDoctors": "Todos los veterinarios",
+    "due": "Control pendiente",
+    "dueCount": "Control pendiente ({{count}})"
+  },
+  "add": {
+    "button": "Añadir",
+    "newPatient": "Nuevo paciente"
+  },
+  "row": {
+    "number": "N.º {{number}}",
+    "visits_one": "{{count}} visita",
+    "visits_many": "{{count}} visitas",
+    "visits_other": "{{count}} visitas",
+    "updated": "Modificado el {{date}}"
+  },
+  "recall": {
+    "overdue": "Atrasado · {{date}}",
+    "today": "Para hoy",
+    "upcoming": "Control el {{date}}"
+  },
+  "actions": {
+    "open": "Abrir",
+    "delete": "Eliminar",
+    "newVisit": "Nueva visita"
+  },
+  "confirmDelete": {
+    "title": "¿Eliminar {{name}}?",
+    "titleDated": "¿Eliminar {{name}} ({{date}})?",
+    "confirm": "Eliminar visita"
+  },
+  "visits": {
+    "undated": "Visita sin fecha",
+    "byDoctor": "{{doctor}} · Modificado el {{date}}",
+    "updated": "Modificado el {{date}}",
+    "empty": "No hay visitas.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Controles",
+    "overdue": "Atrasados",
+    "today": "Para hoy",
+    "empty": "No hay controles pendientes",
+    "emptyHint": "Los pacientes aparecen aquí el día en que les toca el control."
+  }
+}

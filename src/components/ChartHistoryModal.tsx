@@ -11,6 +11,8 @@ import { confirmDialog, toast } from './ui/dialogs';
 import { detailText } from '../utils/apiErrors';
 import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
 import type { ChartSnapshot } from '../types';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 
 /**
  * Chart history: every saved version of this chart — who saved it and
@@ -48,7 +50,9 @@ export function revisionWhen(r: Pick<ChartRevision, 'startedAt' | 'savedAt'>): s
 
 export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore, label, restoreHint, onOpenChart }) => {
   const { t } = useTranslation('library');
-  const modalRef = useModalFocus<HTMLDivElement>(true);
+  // iOS app: a kit sheet, which handles focus, Escape and dismissal itself.
+  const native = isNativeApp();
+  const modalRef = useModalFocus<HTMLDivElement>(!native);
   const backdrop = useBackdropDismiss(onClose);
   const { revisions, error, loadData } = useChartHistory(chartId, true);
   const [selected, setSelected] = React.useState<number | null>(null);
@@ -57,6 +61,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
   const [restoring, setRestoring] = React.useState(false);
 
   React.useEffect(() => {
+    if (native) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -64,7 +69,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose]);
+  }, [onClose, native]);
 
   const pick = async (id: number) => {
     setSelected(id);
@@ -102,6 +107,80 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     }
   };
 
+  const content = (
+    <>
+      {onOpenChart && (
+        <div className="chart-history__bar">
+          <button type="button" className="diagram-view__action" onClick={onOpenChart}>{t('history.openVisit')}</button>
+        </div>
+      )}
+      <div className="chart-history__body">
+        <div className="chart-history__list">
+          {revisions === null ? (
+            <p className="chart-history__empty">{t('history.loading')}</p>
+          ) : error ? (
+            <p className="login-error" role="alert">{error}</p>
+          ) : revisions.length === 0 ? (
+            <p className="chart-history__empty">{t('history.empty')}</p>
+          ) : (
+            <ul>
+              {revisions.map((r) => (
+                <li key={r.id}>
+                  <button
+                    type="button"
+                    className={`chart-history__row${r.id === selected ? ' chart-history__row--on' : ''}`}
+                    onClick={() => pick(r.id)}
+                    aria-pressed={r.id === selected}
+                  >
+                    <span className="chart-history__who">
+                      {r.savedByName || (r.savedBy ? t('history.outside') : t('history.automatic'))}
+                      {r.id === current && <span className="chart-history__tag">{t('history.current')}</span>}
+                    </span>
+                    <span className="chart-history__when">
+                      {r.note === 'baseline' ? t('history.baseline', { when: fmt(r.savedAt) }) : revisionWhen(r)}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="chart-history__preview">
+          {selected == null ? (
+            <p className="chart-history__empty">{t('history.pick')}</p>
+          ) : loading ? (
+            <p className="chart-history__empty">{t('history.loadingVersion')}</p>
+          ) : data ? (
+            <>
+              <div className="chart-history__preview-head">
+                <span>{chosen ? revisionWhen(chosen) : ''}</span>
+                {selected !== current && (
+                  onRestore ? (
+                    <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={restore} disabled={restoring}>
+                      {restoring ? t('history.restoring') : t('history.restore')}
+                    </button>
+                  ) : (
+                    <span className="chart-history__hint">{restoreHint ?? t('history.restoreHint')}</span>
+                  )
+                )}
+              </div>
+              <div className="chart-history__view"><ChartReadOnlyView data={data} /></div>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </>
+  );
+
+  if (native) {
+    return (
+      <Sheet open onClose={onClose} title={t('history.title')} className="ios-sheet--page chart-history-sheet">
+        {label && <p className="chart-history-sheet__label">{label}</p>}
+        {content}
+      </Sheet>
+    );
+  }
+
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('history.aria')}>
       <div className="ai-settings-modal chart-history" ref={modalRef} tabIndex={-1}>
@@ -109,66 +188,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
           <h2>{label ? t('history.titleWith', { label }) : t('history.title')}</h2>
           <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>×</button>
         </header>
-        {onOpenChart && (
-          <div className="chart-history__bar">
-            <button type="button" className="diagram-view__action" onClick={onOpenChart}>{t('history.openVisit')}</button>
-          </div>
-        )}
-        <div className="chart-history__body">
-          <div className="chart-history__list">
-            {revisions === null ? (
-              <p className="chart-history__empty">{t('history.loading')}</p>
-            ) : error ? (
-              <p className="login-error" role="alert">{error}</p>
-            ) : revisions.length === 0 ? (
-              <p className="chart-history__empty">{t('history.empty')}</p>
-            ) : (
-              <ul>
-                {revisions.map((r) => (
-                  <li key={r.id}>
-                    <button
-                      type="button"
-                      className={`chart-history__row${r.id === selected ? ' chart-history__row--on' : ''}`}
-                      onClick={() => pick(r.id)}
-                      aria-pressed={r.id === selected}
-                    >
-                      <span className="chart-history__who">
-                        {r.savedByName || (r.savedBy ? t('history.outside') : t('history.automatic'))}
-                        {r.id === current && <span className="chart-history__tag">{t('history.current')}</span>}
-                      </span>
-                      <span className="chart-history__when">
-                        {r.note === 'baseline' ? t('history.baseline', { when: fmt(r.savedAt) }) : revisionWhen(r)}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="chart-history__preview">
-            {selected == null ? (
-              <p className="chart-history__empty">{t('history.pick')}</p>
-            ) : loading ? (
-              <p className="chart-history__empty">{t('history.loadingVersion')}</p>
-            ) : data ? (
-              <>
-                <div className="chart-history__preview-head">
-                  <span>{chosen ? revisionWhen(chosen) : ''}</span>
-                  {selected !== current && (
-                    onRestore ? (
-                      <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={restore} disabled={restoring}>
-                        {restoring ? t('history.restoring') : t('history.restore')}
-                      </button>
-                    ) : (
-                      <span className="chart-history__hint">{restoreHint ?? t('history.restoreHint')}</span>
-                    )
-                  )}
-                </div>
-                <div className="chart-history__view"><ChartReadOnlyView data={data} /></div>
-              </>
-            ) : null}
-          </div>
-        </div>
+        {content}
       </div>
     </div>,
     document.body,

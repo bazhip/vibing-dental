@@ -1,0 +1,73 @@
+{
+  "title": "Pazienti",
+  "search": {
+    "placeholder": "Cerca",
+    "label": "Cerca pazienti per nome, numero o proprietario",
+    "clear": "Cancella ricerca"
+  },
+  "signIn": "Acceda per vedere le Sue cartelle salvate.",
+  "unnamed": "Paziente senza nome",
+  "empty": "Nessuna cartella salvata. Vengono salvate automaticamente mentre compila.",
+  "retry": "Riprova",
+  "loadMore": "Carica altri",
+  "filter": {
+    "button": "Filtra e ordina",
+    "sortBy": "Ordina per",
+    "sortPatient": "Nome",
+    "sortUpdated": "Ultima modifica",
+    "sortRecall": "Data del controllo",
+    "order": "Ordine",
+    "patientAsc": "Dalla A alla Z",
+    "patientDesc": "Dalla Z alla A",
+    "updatedDesc": "Più recenti prima",
+    "updatedAsc": "Meno recenti prima",
+    "recallAsc": "Più vicini prima",
+    "recallDesc": "Più lontani prima",
+    "species": "Specie",
+    "allSpecies": "Tutte le specie",
+    "doctor": "Veterinario",
+    "allDoctors": "Tutti i veterinari",
+    "due": "Controllo in scadenza",
+    "dueCount": "Controllo in scadenza ({{count}})"
+  },
+  "add": {
+    "button": "Aggiungi",
+    "newPatient": "Nuovo paziente"
+  },
+  "row": {
+    "number": "n. {{number}}",
+    "visits_one": "{{count}} visita",
+    "visits_many": "{{count}} visite",
+    "visits_other": "{{count}} visite",
+    "updated": "Modificato il {{date}}"
+  },
+  "recall": {
+    "overdue": "Scaduto · {{date}}",
+    "today": "In scadenza oggi",
+    "upcoming": "Controllo il {{date}}"
+  },
+  "actions": {
+    "open": "Apri",
+    "delete": "Elimina",
+    "newVisit": "Nuova visita"
+  },
+  "confirmDelete": {
+    "title": "Eliminare {{name}}?",
+    "titleDated": "Eliminare {{name}} ({{date}})?",
+    "confirm": "Elimina visita"
+  },
+  "visits": {
+    "undated": "Visita senza data",
+    "byDoctor": "{{doctor}} · Modificato il {{date}}",
+    "updated": "Modificato il {{date}}",
+    "empty": "Nessuna visita.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Controlli",
+    "overdue": "Scaduti",
+    "today": "In scadenza oggi",
+    "empty": "Nessun controllo in scadenza",
+    "emptyHint": "I pazienti compaiono qui il giorno in cui scade il loro controllo."
+  }
+}

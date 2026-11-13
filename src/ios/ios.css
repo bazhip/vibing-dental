@@ -1,0 +1,1110 @@
+/* =============================================================================
+ * iOS component kit styles — app only.
+ *
+ * Every selector is under :where(html.native-ios) (zero added specificity),
+ * so none of this can reach the website. Colours, type and materials come
+ * from tokens.css; Reduce Motion is handled there globally (transitions and
+ * animations go to ~0ms) and the components' JS skips exit delays.
+ *
+ * Liquid Glass approximation: a translucent bar material with a strong
+ * backdrop blur + saturation, a hairline highlight and a soft shadow. With
+ * Reduce Transparency the material token is opaque and the blur is off;
+ * with Increase Contrast glass surfaces get a visible border.
+ * =============================================================================
+ */
+
+:where(html.native-ios) {
+  --ios-ease: cubic-bezier(0.32, 0.72, 0, 1);    /* sheets, pushes */
+  --ios-glass-highlight: rgba(255, 255, 255, 0.55);
+  --ios-sheet-bg: var(--ios-bg-grouped);
+  --ios-list-cell: var(--ios-cell);
+  --ios-swipe-gray: #636366;                       /* white label 5.9:1 */
+  --ios-glass-pressed: rgba(120, 120, 128, 0.16);
+}
+@media (prefers-color-scheme: dark) {
+  :where(html.native-ios) {
+    --ios-glass-highlight: rgba(255, 255, 255, 0.14);
+    --ios-sheet-bg: var(--ios-bg-elevated);
+    --ios-glass-pressed: rgba(120, 120, 128, 0.3);
+  }
+  /* Cells on an elevated sheet are one step lighter (iOS dark elevation). */
+  :where(html.native-ios) .ios-sheet { --ios-list-cell: var(--ios-cell-alt); }
+}
+
+/* ---- Glass material ---------------------------------------------------- */
+:where(html.native-ios) :is(
+  .ios-navbar--collapsed,
+  .ios-tabbar__capsule,
+  .ios-glass-button,
+  .ios-back-button,
+  .ios-menu,
+  .ios-toast,
+  .ios-alert,
+  .ios-action-sheet__group,
+  .ios-action-sheet__cancel
+) {
+  background-color: var(--ios-bar-material);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+/* Modal surfaces (alerts, action sheets, menus, toasts) use a thicker
+   material, so text on them stays legible over busy content even where
+   the blur is weak. The opaque colour is the fallback for WebKit without
+   color-mix(). */
+:where(html.native-ios) :is(.ios-menu, .ios-toast, .ios-alert, .ios-action-sheet__group, .ios-action-sheet__cancel) {
+  background-color: var(--ios-bg-elevated);
+  background-color: color-mix(in srgb, var(--ios-bg-elevated) 94%, transparent);
+}
+@media (prefers-reduced-transparency: reduce) {
+  :where(html.native-ios) :is(
+    .ios-navbar--collapsed, .ios-tabbar__capsule, .ios-glass-button, .ios-back-button, .ios-menu,
+    .ios-toast, .ios-alert, .ios-action-sheet__group, .ios-action-sheet__cancel, .ios-menu-layer--scrim .ios-menu-layer__catcher
+  ) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more) {
+  :where(html.native-ios) :is(
+    .ios-tabbar__capsule, .ios-glass-button, .ios-back-button, .ios-menu, .ios-toast, .ios-alert,
+    .ios-action-sheet__group, .ios-action-sheet__cancel
+  ) {
+    outline: 1px solid var(--ios-separator-opaque);
+    outline-offset: -1px;
+  }
+}
+
+/* ---- Shared buttons ----------------------------------------------------- */
+/* Toolbar button: a 44pt glass capsule (text) or circle (icon). */
+:where(html.native-ios) .ios-glass-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 2px 10px var(--ios-shadow-soft);
+  color: var(--ios-label);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+}
+:where(html.native-ios) .ios-glass-button--icon { width: 44px; padding: 0; }
+:where(html.native-ios) .ios-glass-button--tint { color: var(--ios-tint); }
+:where(html.native-ios) .ios-glass-button--prominent {
+  background-color: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font-weight: 600;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+:where(html.native-ios) .ios-glass-button:active:not(:disabled) { transform: scale(0.96); }
+:where(html.native-ios) .ios-glass-button:disabled {
+  background-color: var(--ios-fill);
+  color: var(--ios-label-3);
+  cursor: default;
+}
+:where(html.native-ios) :is(.ios-glass-button, .ios-back-button, .ios-tabbar__tab, .ios-row--button, .ios-menu__item,
+  .ios-swiperow__action, .ios-swiperow__more, .ios-alert__button, .ios-action-sheet__button, .ios-action-sheet__cancel,
+  .ios-toast__action, .ios-toast__close, .ios-navbar__title-button):focus-visible {
+  outline: 2px solid var(--ios-tint);
+  outline-offset: 2px;
+}
+
+/* ---- Sheet -------------------------------------------------------------- */
+:where(html.native-ios) .ios-sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+}
+:where(html.native-ios) .ios-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--ios-scrim);
+  opacity: 0;
+  transition: opacity 0.4s var(--ios-ease);
+  touch-action: none;
+}
+:where(html.native-ios) .ios-sheet-root--shown .ios-sheet__backdrop { opacity: 1; }
+/* While sliding in or out, the sheet doesn't take taps meant for the page. */
+:where(html.native-ios) .ios-sheet-root:not(.ios-sheet-root--shown) { pointer-events: none; }
+
+:where(html.native-ios) .ios-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  display: flex;
+  flex-direction: column;
+  background: var(--ios-sheet-bg);
+  color: var(--ios-label);
+  border-radius: 38px 38px 0 0;
+  box-shadow: 0 -2px 24px var(--ios-shadow-soft);
+  overflow: hidden;  /* clip scrolled content to the rounded corners */
+  transform: translate3d(0, 100%, 0);
+  transition: transform 0.45s var(--ios-ease);
+  outline: none;
+  will-change: transform;
+}
+:where(html.native-ios) .ios-sheet-root--shown .ios-sheet {
+  transform: translate3d(0, var(--ios-sheet-offset, 0px), 0);
+}
+:where(html.native-ios) .ios-sheet--dragging { transition: none; }
+:where(html.native-ios) .ios-sheet-root:has(.ios-sheet--dragging) .ios-sheet__backdrop { transition: none; }
+
+/* iPad: centred form sheet. */
+:where(html.native-ios) .ios-sheet-root--form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+:where(html.native-ios) .ios-sheet--form {
+  position: relative;
+  inset: auto;
+  width: min(580px, calc(100% - 40px));
+  height: min(720px, calc(100% - 80px));
+  border-radius: 30px;
+  box-shadow: 0 12px 60px var(--ios-shadow-strong);
+  transform: translate3d(0, 100vh, 0);
+}
+:where(html.native-ios) .ios-sheet-root--shown .ios-sheet--form { transform: translate3d(0, 0, 0); }
+:where(html.native-ios) .ios-sheet--form .ios-sheet__grabber { visibility: hidden; height: 0; margin-top: 8px; }
+
+:where(html.native-ios) .ios-sheet__header {
+  flex: none;
+  padding: 0 14px 6px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+:where(html.native-ios) .ios-sheet__grabber {
+  width: 36px;
+  height: 5px;
+  margin: 5px auto 3px;
+  border-radius: 3px;
+  background: var(--ios-label-3);
+}
+:where(html.native-ios) .ios-sheet__bar {
+  display: grid;
+  /* Equal side columns keep the title centred; a side never shrinks below
+     its (capped) button, so a long title truncates between the buttons
+     instead of running under them, and a long label truncates at its cap. */
+  grid-template-columns: minmax(auto, 1fr) minmax(0, max-content) minmax(auto, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+}
+:where(html.native-ios) .ios-sheet__bar-leading { justify-self: start; }
+:where(html.native-ios) .ios-sheet__bar-trailing { justify-self: end; }
+:where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button {
+  /* Bar buttons stop growing at the xxxLarge size (23pt), as UIKit bar
+     items do; past that iOS shows the Large Content Viewer. */
+  font-size: min(var(--ios-text-body), 23px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* The leading (secondary) action truncates at its cap; the trailing
+   (primary) action never truncates — the title gives way first. */
+:where(html.native-ios) .ios-sheet__bar .ios-sheet__bar-leading .ios-glass-button {
+  max-width: min(32vw, 11em);
+}
+:where(html.native-ios) .ios-sheet__bar .ios-sheet__bar-trailing .ios-glass-button {
+  /* Only a label longer than everything beside the leading cap (a long
+     translation at an accessibility size) ever truncates. */
+  max-width: calc(68vw - 64px);
+}
+/* Text buttons truncate from the end (a flex box would clip both sides). */
+:where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button:not(.ios-glass-button--icon) {
+  display: block;
+  padding-top: max(0px, calc((44px - 1.2em) / 2));
+  padding-bottom: max(0px, calc((44px - 1.2em) / 2));
+  line-height: 1.2;
+}
+:where(html.native-ios) .ios-sheet__title {
+  margin: 0;
+  max-width: 60vw;
+  font: 600 var(--ios-text-headline) / 1.25 var(--ios-font);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:where(html.native-ios) .ios-sheet__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Navigation bar ----------------------------------------------------- */
+:where(html.native-ios) .ios-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-top: env(safe-area-inset-top, 0px);
+  color: var(--ios-label);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+:where(html.native-ios) .ios-navbar--collapsed { box-shadow: 0 0.5px 0 var(--ios-separator); }
+:where(html.native-ios) .ios-navbar__bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 12px;
+}
+:where(html.native-ios) .ios-navbar__leading,
+:where(html.native-ios) .ios-navbar__trailing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+:where(html.native-ios) .ios-navbar__leading { justify-self: stretch; }
+:where(html.native-ios) .ios-navbar__trailing { justify-self: end; }
+:where(html.native-ios) .ios-navbar__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  max-width: 56vw;
+  transition: opacity 0.2s;
+}
+:where(html.native-ios) .ios-navbar--large .ios-navbar__title { opacity: 0; }
+:where(html.native-ios) .ios-navbar--large.ios-navbar--collapsed .ios-navbar__title { opacity: 1; }
+:where(html.native-ios) .ios-navbar__heading {
+  margin: 0;
+  max-width: 100%;
+  font: 600 var(--ios-text-headline) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-navbar__title .ios-navbar__title-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 600 var(--ios-text-headline) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-navbar__subtitle {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 400 var(--ios-text-caption1) / 1.2 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+:where(html.native-ios) .ios-navbar__large { padding: 0 20px 8px; color: var(--ios-label); }
+:where(html.native-ios) .ios-navbar__large-title {
+  margin: 0;
+  font: 700 var(--ios-text-large-title) / 1.2 var(--ios-font);
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+:where(html.native-ios) .ios-navbar__large-subtitle {
+  margin: 2px 0 0;
+  font: 400 var(--ios-text-subheadline) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+:where(html.native-ios) .ios-navbar__title-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-navbar__title-button--large { align-items: baseline; gap: 6px; text-align: left; }
+:where(html.native-ios) .ios-navbar__title-button--large .ios-navbar__title-text { font: inherit; }
+:where(html.native-ios) .ios-navbar__title-chevron { flex: none; color: var(--ios-label-muted); }
+
+/* Back button: chevron + previous title in a glass capsule. */
+:where(html.native-ios) .ios-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0; /* a long previous title truncates instead of running under the title */
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 14px 0 8px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 2px 10px var(--ios-shadow-soft);
+  color: var(--ios-label);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-back-button .ios-icon { flex: none; }
+:where(html.native-ios) .ios-back-button__label {
+  min-width: 0;
+  max-width: 34vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Tab bar ------------------------------------------------------------ */
+:where(html.native-ios) .ios-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px));
+  pointer-events: none;
+}
+:where(html.native-ios) .ios-tabbar__capsule {
+  display: flex;
+  width: min(100%, 440px);
+  padding: 4px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 8px 32px var(--ios-shadow);
+  pointer-events: auto;
+}
+:where(html.native-ios) .ios-tabbar__tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ios-label);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ios-ease), color 0.25s;
+}
+:where(html.native-ios) .ios-tabbar__tab:active { background: var(--ios-glass-pressed); }
+:where(html.native-ios) .ios-tabbar__tab--selected { color: var(--ios-tint); background: var(--ios-fill); }
+:where(html.native-ios) .ios-tabbar__icon { position: relative; display: flex; }
+:where(html.native-ios) .ios-tabbar__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Tab labels don't grow past ~13pt (iOS shows the Large Content Viewer
+     instead), so four tabs always fit at accessibility sizes. */
+  font: 600 min(0.625rem, 13px) / 1.2 var(--ios-font);
+}
+:where(html.native-ios) .ios-tabbar__badge {
+  position: absolute;
+  top: -4px;
+  left: calc(100% - 9px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--ios-danger-solid);
+  color: var(--ios-on-danger);
+  font: 600 12px / 18px var(--ios-font);
+  text-align: center;
+}
+
+/* ---- Navigation stack --------------------------------------------------- */
+:where(html.native-ios) .ios-stack {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+:where(html.native-ios) .ios-stack__layer {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  background: var(--ios-bg-grouped);
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.4s var(--ios-ease), filter 0.4s var(--ios-ease);
+  touch-action: pan-y;
+}
+:where(html.native-ios) .ios-stack__layer--pushed { box-shadow: -2px 0 16px var(--ios-shadow-soft); }
+:where(html.native-ios) .ios-stack__layer--enter,
+:where(html.native-ios) .ios-stack__layer--exit { transform: translate3d(100%, 0, 0); }
+:where(html.native-ios) .ios-stack__layer--under {
+  transform: translate3d(-30%, 0, 0);
+  filter: brightness(calc(1 - 0.1 * var(--ios-stack-dim, 1)));
+}
+:where(html.native-ios) .ios-stack__layer--buried { visibility: hidden; }
+:where(html.native-ios) .ios-stack__layer--dragging { transition: none; }
+:where(html.native-ios) .ios-stack__content { padding-bottom: 24px; }
+
+/* ---- Inset-grouped lists ----------------------------------------------- */
+:where(html.native-ios) .ios-list { padding: 0 16px 24px; }
+@media (min-width: 768px) {
+  :where(html.native-ios) .ios-list { padding: 0 20px 28px; }
+}
+:where(html.native-ios) .ios-list__section { margin-top: 24px; }
+:where(html.native-ios) .ios-list__header {
+  margin: 0 20px 7px;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--ios-label-muted);
+}
+:where(html.native-ios) .ios-list__footer {
+  margin: 7px 20px 0;
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+:where(html.native-ios) .ios-list__group {
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--ios-list-cell);
+}
+:where(html.native-ios) .ios-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 0 0 20px;
+  border: 0;
+  background: transparent;
+  color: var(--ios-label);
+  font: 400 var(--ios-text-body) / 1.3 var(--ios-font);
+  text-align: left;
+  -webkit-user-select: none;
+  user-select: none;
+}
+:where(html.native-ios) .ios-row--button { cursor: pointer; transition: background-color 0.2s; }
+:where(html.native-ios) .ios-row--button:active { background: var(--ios-glass-pressed); transition: none; }
+:where(html.native-ios) .ios-row__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 11px 16px 11px 0;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+}
+:where(html.native-ios) .ios-list__group > :last-child .ios-row__main { box-shadow: none; }
+:where(html.native-ios) .ios-row__icon {
+  flex: none;
+  width: 30px;
+  display: flex;
+  justify-content: center;
+  color: var(--ios-tint);
+}
+:where(html.native-ios) .ios-row__text {
+  /* A value wraps under the text when both don't fit, but the basis never
+     takes the whole row: at accessibility sizes a chevron, checkmark or
+     switch (up to 51pt + gap) stays trailing instead of dropping to a line
+     of its own. */
+  flex: 1 1 min(10em, calc(100% - 64px));
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+:where(html.native-ios) .ios-row__title { overflow-wrap: anywhere; }
+:where(html.native-ios) .ios-row__subtitle {
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+  overflow-wrap: anywhere;
+}
+:where(html.native-ios) .ios-row__value {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  color: var(--ios-label-muted);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+:where(html.native-ios) .ios-row__chevron { flex: none; color: var(--ios-label-3); }
+:where(html.native-ios) .ios-row__check { flex: none; color: var(--ios-tint); }
+:where(html.native-ios) .ios-row--destructive .ios-row__title { color: var(--ios-danger); }
+:where(html.native-ios) .ios-row--switch { cursor: pointer; }
+:where(html.native-ios) .ios-row--disabled { cursor: default; }
+:where(html.native-ios) .ios-row--disabled .ios-row__text { opacity: 0.5; }
+
+/* Switch (UISwitch proportions, ToothOps tint when on). */
+:where(html.native-ios) .ios-switch {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 51px;
+  height: 31px;
+  margin: 0 0 0 auto;
+  border: 0;
+  border-radius: 16px;
+  background: var(--ios-fill-2);
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+:where(html.native-ios) .ios-switch::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s var(--ios-ease);
+}
+:where(html.native-ios) .ios-switch:checked { background: var(--ios-tint); }
+:where(html.native-ios) .ios-switch:checked::before { transform: translateX(20px); }
+:where(html.native-ios) .ios-switch:disabled { opacity: 0.5; cursor: default; }
+:where(html.native-ios) .ios-switch:focus-visible { outline: 2px solid var(--ios-tint); outline-offset: 2px; }
+@media (prefers-contrast: more) {
+  :where(html.native-ios) .ios-switch:not(:checked) { box-shadow: inset 0 0 0 1px var(--ios-separator-opaque); }
+}
+
+/* ---- Swipe actions ------------------------------------------------------ */
+:where(html.native-ios) .ios-swiperow {
+  position: relative;
+  overflow: hidden;
+}
+:where(html.native-ios) .ios-swiperow__content {
+  position: relative;
+  z-index: 1;
+  background: var(--ios-list-cell);
+  transition: transform 0.35s var(--ios-ease);
+  touch-action: pan-y;
+}
+:where(html.native-ios) .ios-swiperow--open .ios-swiperow__content {
+  transform: translate3d(calc(-1 * var(--ios-swipe-total)), 0, 0);
+}
+:where(html.native-ios) .ios-swiperow__actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  display: flex;
+  flex-direction: row-reverse;   /* first action outermost */
+  overflow: hidden;
+  transition: width 0.35s var(--ios-ease);
+}
+:where(html.native-ios) .ios-swiperow--open .ios-swiperow__actions { width: var(--ios-swipe-total); }
+:where(html.native-ios) .ios-swiperow__content--dragging,
+:where(html.native-ios) .ios-swiperow__actions--dragging { transition: none; }
+:where(html.native-ios) .ios-swiperow__action {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 4px;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font: 500 var(--ios-text-footnote) / 1.2 var(--ios-font);
+  color: #fff;
+  background: var(--ios-swipe-gray);
+  cursor: pointer;
+  transition: flex-grow 0.2s var(--ios-ease);
+}
+/* Two-word labels ("Send reminder") wrap to a second line before truncating. */
+:where(html.native-ios) .ios-swiperow__action-label {
+  max-width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  text-align: center;
+  white-space: normal;
+}
+:where(html.native-ios) .ios-swiperow__action--destructive { background: var(--ios-danger-solid); color: var(--ios-on-danger); }
+:where(html.native-ios) .ios-swiperow__action--tint { background: var(--ios-tint); color: var(--ios-on-tint); }
+:where(html.native-ios) .ios-swiperow--full .ios-swiperow__action--first { flex-grow: 100; }
+/* The keyboard / VoiceOver route to the actions: invisible until focused. */
+:where(html.native-ios) .ios-swiperow__more {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 8px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  background: var(--ios-fill-2);
+  color: var(--ios-label);
+}
+/* :focus-visible only: a tap or swipe (or a programmatic focus after one)
+ * must not draw the circle over the row. */
+:where(html.native-ios) .ios-swiperow__more:focus-visible {
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  border-radius: 50%;
+  clip-path: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+:where(html.native-ios) .ios-swiperow--open .ios-swiperow__more:focus-visible { right: calc(var(--ios-swipe-total) + 8px); }
+
+/* ---- Menus -------------------------------------------------------------- */
+:where(html.native-ios) .ios-contextmenu {
+  display: contents;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+:where(html.native-ios) .ios-menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+}
+:where(html.native-ios) .ios-menu-layer__catcher { position: absolute; inset: 0; }
+:where(html.native-ios) .ios-menu-layer--scrim .ios-menu-layer__catcher {
+  background: rgba(0, 0, 0, 0.12);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: ios-fade-in 0.25s ease-out;
+}
+:where(html.native-ios) .ios-menu {
+  position: fixed;
+  min-width: 240px;
+  max-width: min(320px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 26px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 12px 48px var(--ios-shadow);
+  color: var(--ios-label);
+  animation: ios-menu-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+}
+:where(html.native-ios) .ios-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  color: inherit;
+  font: 400 var(--ios-text-body) / 1.25 var(--ios-font);
+  text-align: left;
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-menu__item:active,
+:where(html.native-ios) .ios-menu__item:focus-visible { background: var(--ios-glass-pressed); }
+:where(html.native-ios) .ios-menu__item--destructive { color: var(--ios-danger); }
+:where(html.native-ios) .ios-menu__check { flex: none; width: 16px; display: flex; }
+:where(html.native-ios) .ios-menu__label { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+:where(html.native-ios) .ios-menu__icon { flex: none; margin-left: auto; }
+/* Menu sections: a thick separator between groups, optional title. */
+:where(html.native-ios) .ios-menu__section--separated {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 6px solid var(--ios-fill);
+  margin-inline: -6px;
+  padding-inline: 6px;
+}
+:where(html.native-ios) .ios-menu__section-title {
+  padding: 6px 14px 2px;
+  color: var(--ios-label-2);
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+}
+/* Titles line up with the labels, past the checkmark column. */
+:where(html.native-ios) .ios-menu--checks .ios-menu__section-title { padding-left: 40px; }
+
+/* ---- Alerts and action sheets ----------------------------------------- */
+:where(html.native-ios) .ios-alert-overlay,
+:where(html.native-ios) .ios-action-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  justify-content: center;
+  background: var(--ios-scrim);
+  animation: ios-fade-in 0.2s ease-out;
+}
+:where(html.native-ios) .ios-alert-overlay { align-items: center; padding: 24px; }
+:where(html.native-ios) .ios-alert {
+  width: min(300px, 100%);
+  max-height: calc(100% - 48px);
+  overflow-y: auto;
+  padding: 22px 18px 18px;
+  border-radius: 34px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 16px 60px var(--ios-shadow-strong);
+  color: var(--ios-label);
+  text-align: center;
+  animation: ios-alert-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+}
+:where(html.native-ios) .ios-alert__title {
+  margin: 0;
+  font: 600 var(--ios-text-headline) / 1.3 var(--ios-font);
+  overflow-wrap: anywhere;
+}
+:where(html.native-ios) .ios-alert__message {
+  margin-top: 6px;
+  font: 400 var(--ios-text-subheadline) / 1.35 var(--ios-font);
+  overflow-wrap: anywhere;
+}
+:where(html.native-ios) .ios-alert__input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font: 400 max(16px, var(--ios-text-body)) / 1.25 var(--ios-font);
+  text-align: left;
+}
+:where(html.native-ios) .ios-alert__input:focus { outline: 2px solid var(--ios-tint); outline-offset: 0; }
+:where(html.native-ios) .ios-alert__error {
+  margin: 8px 0 0;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  color: var(--ios-danger);
+  text-align: left;
+}
+:where(html.native-ios) .ios-alert__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+:where(html.native-ios) .ios-alert__button {
+  flex: 1 1 7em;
+  min-height: 48px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ios-fill-2);
+  color: var(--ios-label);
+  font: 500 var(--ios-text-body) / 1.2 var(--ios-font);
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-alert__button:active { filter: brightness(0.92); }
+:where(html.native-ios) .ios-alert__button--default { background: var(--ios-tint); color: var(--ios-on-tint); font-weight: 600; }
+:where(html.native-ios) .ios-alert__button--destructive { background: var(--ios-danger-fill); color: var(--ios-danger); font-weight: 600; }
+
+:where(html.native-ios) .ios-action-sheet-overlay {
+  align-items: flex-end;
+  padding: 0 8px calc(env(safe-area-inset-bottom, 0px) + 8px);
+}
+:where(html.native-ios) .ios-action-sheet {
+  width: min(100%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: ios-slide-up 0.4s var(--ios-ease);
+}
+:where(html.native-ios) .ios-action-sheet__group {
+  overflow: hidden;
+  border-radius: 28px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight);
+}
+:where(html.native-ios) .ios-action-sheet__header {
+  padding: 14px 20px;
+  text-align: center;
+  color: var(--ios-label-muted);
+}
+:where(html.native-ios) .ios-action-sheet__title {
+  margin: 0;
+  font: 600 var(--ios-text-footnote) / 1.3 var(--ios-font);
+}
+:where(html.native-ios) .ios-action-sheet__message {
+  margin-top: 4px;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+}
+:where(html.native-ios) .ios-action-sheet__button,
+:where(html.native-ios) .ios-action-sheet__cancel {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 0;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-title3) / 1.25 var(--ios-font);
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-action-sheet__button { background: transparent; box-shadow: inset 0 0.5px 0 var(--ios-separator); }
+:where(html.native-ios) .ios-action-sheet__button:active,
+:where(html.native-ios) .ios-action-sheet__cancel:active { background: var(--ios-glass-pressed); }
+:where(html.native-ios) .ios-action-sheet__button--destructive { color: var(--ios-danger); }
+:where(html.native-ios) .ios-action-sheet__cancel {
+  border-radius: 28px;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight);
+}
+
+/* ---- Toasts: a capsule banner under the status bar ---------------------- */
+:where(html.native-ios) .ios-toasts {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 6px);
+  left: 0;
+  right: 0;
+  z-index: 1300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+:where(html.native-ios) .ios-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(100%, 480px);
+  min-height: 44px;
+  padding: 0 0 0 16px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 8px 30px var(--ios-shadow);
+  color: var(--ios-label);
+  font: 500 var(--ios-text-subheadline) / 1.3 var(--ios-font);
+  pointer-events: auto;
+  animation: ios-toast-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+}
+:where(html.native-ios) .ios-toast__icon { flex: none; }
+:where(html.native-ios) .ios-toast--success .ios-toast__icon { color: var(--ios-success-label); }
+:where(html.native-ios) .ios-toast--error .ios-toast__icon { color: var(--ios-danger); }
+:where(html.native-ios) .ios-toast__msg { flex: 1 1 auto; min-width: 0; padding: 10px 0; overflow-wrap: anywhere; }
+:where(html.native-ios) .ios-toast__action {
+  flex: none;
+  min-height: 44px;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--ios-tint);
+  font: 600 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-toast__close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ios-label-muted);
+  cursor: pointer;
+}
+
+/* ---- Keyframes ---------------------------------------------------------- */
+@keyframes ios-fade-in { from { opacity: 0; } }
+@keyframes ios-menu-in { from { opacity: 0; transform: scale(0.8); } }
+@keyframes ios-alert-in { from { opacity: 0; transform: scale(1.12); } }
+@keyframes ios-slide-up { from { transform: translate3d(0, 100%, 0); } }
+@keyframes ios-toast-in { from { opacity: 0; transform: translate3d(0, -120%, 0) scale(0.9); } }
+
+/* ---- Action sheet on iPad: popover at the anchor, or a centred card ---- */
+:where(html.native-ios) .ios-action-sheet-overlay--popover {
+  background: transparent;
+  padding: 0;
+}
+:where(html.native-ios) .ios-action-sheet--popover {
+  position: fixed;
+  width: 320px;
+  animation: ios-menu-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+}
+:where(html.native-ios) .ios-action-sheet--popover .ios-action-sheet__group {
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 12px 48px var(--ios-shadow);
+}
+:where(html.native-ios) .ios-action-sheet-overlay--card { align-items: center; padding: 24px; }
+:where(html.native-ios) .ios-action-sheet--card {
+  width: min(100%, 340px);
+  animation: ios-alert-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+}
+/* The popover's Cancel: invisible until it has keyboard focus. */
+:where(html.native-ios) .ios-action-sheet__popover-cancel:not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ---- App shell: tabs, iPad sidebar ------------------------------------- */
+:where(html.native-ios) .ios-appshell {
+  /* Room the floating tab bar takes at the bottom of every tab: capsule
+     (54pt tab + 8pt padding) + its bottom offset + a little air. */
+  --ios-tabbar-space: calc(62px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)) + 12px);
+  --ios-sidebar-width: 300px;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  background: var(--ios-bg-grouped);
+  color: var(--ios-label);
+}
+:where(html.native-ios) .ios-appshell__content {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+:where(html.native-ios) .ios-appshell__panel {
+  position: absolute;
+  inset: 0;
+}
+/* Hidden tabs stay laid out (visibility, not display:none) so WebKit keeps
+   each stack layer's scroll position. */
+:where(html.native-ios) .ios-appshell__panel[hidden] {
+  display: block;
+  visibility: hidden;
+}
+/* Content scrolls under the floating tab bar but can reach past it. */
+:where(html.native-ios) .ios-appshell--tabbar .ios-stack__layer {
+  padding-bottom: var(--ios-tabbar-space);
+}
+
+/* iPad sidebar: a floating glass column (iPadOS 26), inset from the edges. */
+:where(html.native-ios) .ios-appshell__sidebar {
+  flex: none;
+  width: var(--ios-sidebar-width);
+  margin: calc(8px + env(safe-area-inset-top, 0px)) 0 calc(8px + env(safe-area-inset-bottom, 0px)) calc(8px + env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px;
+  background-color: var(--ios-cell);
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 8px 32px var(--ios-shadow-soft);
+  overflow: hidden;
+  transition: margin-left 0.4s var(--ios-ease), opacity 0.3s;
+}
+:where(html.native-ios) .ios-appshell--sidebar-collapsed .ios-appshell__sidebar {
+  margin-left: calc(-1 * var(--ios-sidebar-width));
+  opacity: 0;
+}
+@media (prefers-contrast: more) {
+  :where(html.native-ios) .ios-appshell__sidebar { outline: 1px solid var(--ios-separator-opaque); outline-offset: -1px; }
+}
+:where(html.native-ios) .ios-appshell__sidebar-head {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 4px 10px;
+}
+:where(html.native-ios) .ios-appshell__sidebar-nav {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 10px 16px;
+}
+:where(html.native-ios) .ios-appshell__item,
+:where(html.native-ios) .ios-appshell__subitem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ios-label);
+  text-align: start;
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-appshell__item {
+  gap: 12px;
+  padding: 8px 12px;
+  font: 400 var(--ios-text-body) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-appshell__item .ios-icon { flex: none; color: var(--ios-tint); }
+:where(html.native-ios) .ios-appshell__item-label { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+:where(html.native-ios) .ios-appshell__item--selected {
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font-weight: 600;
+}
+:where(html.native-ios) .ios-appshell__item--selected .ios-icon { color: inherit; }
+:where(html.native-ios) .ios-appshell__item-badge {
+  flex: none;
+  min-width: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: var(--ios-fill);
+  color: var(--ios-label-2);
+  font: 600 var(--ios-text-footnote) / 22px var(--ios-font);
+  text-align: center;
+}
+:where(html.native-ios) .ios-appshell__item--selected .ios-appshell__item-badge {
+  background: var(--ios-on-tint-fill);
+  color: var(--ios-on-tint);
+}
+:where(html.native-ios) .ios-appshell__subitems {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px;
+}
+:where(html.native-ios) .ios-appshell__subitem {
+  padding: 6px 12px 6px 46px;
+  color: var(--ios-label-2);
+  font: 400 var(--ios-text-subheadline) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-appshell__subitem--selected {
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font-weight: 600;
+}
+:where(html.native-ios) :is(.ios-appshell__item, .ios-appshell__subitem):active:not(.ios-appshell__item--selected) {
+  background: var(--ios-glass-pressed);
+}
+:where(html.native-ios) :is(.ios-appshell__item, .ios-appshell__subitem):focus-visible {
+  outline: 2px solid var(--ios-tint);
+  outline-offset: -2px;
+}
+:where(html.native-ios) .ios-appshell__sidebar-reopen {
+  position: fixed;
+  z-index: 30;
+  top: calc(4px + env(safe-area-inset-top, 0px));
+  left: calc(16px + env(safe-area-inset-left, 0px));
+}
+/* iPad portrait: the sidebar floats over the content (hidden by default). */
+:where(html.native-ios) .ios-appshell--sidebar-overlay .ios-appshell__sidebar {
+  position: absolute;
+  z-index: 40;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 12px 48px var(--ios-shadow);
+}
+:where(html.native-ios) .ios-appshell__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  /* iPadOS dims only lightly behind an overlay sidebar (not a modal scrim). */
+  background: rgba(0, 0, 0, 0.1);
+  animation: ios-fade-in 0.25s;
+}
+@media (prefers-color-scheme: dark) {
+  :where(html.native-ios) .ios-appshell__scrim { background: rgba(0, 0, 0, 0.28); }
+}
+
+/* Placeholder / empty-state text in a list. */
+:where(html.native-ios) .ios-empty {
+  margin: 32px 16px;
+  color: var(--ios-label-2);
+  font: 400 var(--ios-text-body) / 1.35 var(--ios-font);
+  text-align: center;
+}

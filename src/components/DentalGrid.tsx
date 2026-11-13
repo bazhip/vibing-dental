@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { hapticTap } from '../native/haptics';
+import { isNativeApp } from '../native/platform';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { pinnedSectionNav } from '../utils/pinnedSectionNav';
@@ -249,7 +251,7 @@ function CodeCellEditor({
         height: '100%',
         border: 'none',
         padding: '0 0.4rem',
-        background: '#ffffff',
+        background: 'var(--ios-grid-active-cell, #ffffff)',
         color: 'var(--text, #0f172a)',
         font: 'inherit',
         outline: 'none',
@@ -473,10 +475,13 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   spaceMovesDown = true,
   scoreTapMoves = 'finding',
 }) => {
+  // The iOS app: touch wording for the selection tip and tooth title.
+  const native = isNativeApp();
   const { t, i18n } = useTranslation('chart');
   const language = i18n.language;
   const triadanLabel = columnLabel('triadan');
   const toothLabel = columnLabel('tooth');
+  const toothPickTitle = native ? t('ios.grid.pickTitle') : t('grid.tooth.title');
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
@@ -571,14 +576,17 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     place();
     sync();
-    window.addEventListener('scroll', schedule, { passive: true });
+    // The app scrolls the chart inside its tab's screen, not the window:
+    // listen for scrolls anywhere (capture) there.
+    const scrollOpts = isNativeApp() ? { passive: true, capture: true } : { passive: true };
+    window.addEventListener('scroll', schedule, scrollOpts);
     window.addEventListener('resize', schedule);
     window.visualViewport?.addEventListener('scroll', schedule);
     window.visualViewport?.addEventListener('resize', schedule);
     el.addEventListener('scroll', sync, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', schedule, scrollOpts);
       window.removeEventListener('resize', schedule);
       window.visualViewport?.removeEventListener('scroll', schedule);
       window.visualViewport?.removeEventListener('resize', schedule);
@@ -762,7 +770,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
               className="dental-grid__missing-check"
               checked={isMissing}
               disabled={readOnly}
-              onChange={() => onToggleMissing(row.triadan)}
+              onChange={() => { hapticTap(); onToggleMissing(row.triadan); }}
               aria-label={t(carried ? 'grid.missingCheck.labelCarried' : 'grid.missingCheck.label', { triadan: row.triadan })}
               title={
                 carried
@@ -798,7 +806,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => (
-        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : t('grid.tooth.title')}>
+        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : toothPickTitle}>
           <strong className="dental-grid__tid-num">{row.triadan}</strong>
           <span className="dental-grid__tid-sep" aria-hidden="true">–</span>
           <span className="dental-grid__tid-name">{(row.tooth ?? '').toUpperCase()}</span>
@@ -886,7 +894,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       };
     }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, t, triadanLabel, toothLabel]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, toothPickTitle, t, triadanLabel, toothLabel]);
 
   return (
     <div className="dental-grid-section">
@@ -957,7 +965,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           {bulkError && <span className="dental-grid__bulk-error">{bulkError}</span>}
         </div>
       ) : (
-        <p className="dental-grid__bulk-hint">{t('grid.bulk.tip')}</p>
+        <p className="dental-grid__bulk-hint">{native ? t('ios.grid.tip') : t('grid.bulk.tip')}</p>
       ))}
       {narrow && createPortal(
         // Visual stand-in for the header while it's scrolled away (the

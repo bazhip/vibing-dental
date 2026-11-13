@@ -2,6 +2,9 @@ import React from 'react';
 import i18n from '../i18n';
 import { cloudEnabled } from '../utils/supabaseClient';
 import { invokeFunction } from '../utils/edgeFunctions';
+import { ApiError, LocalizedError } from '../utils/apiErrors';
+import { emailLinkOrigin } from '../native/authReturn';
+import { isNativeApp } from '../native/platform';
 import { friendlyError } from '../components/ui/dialogs';
 
 /**
@@ -53,6 +56,28 @@ export async function call<T = Record<string, unknown>>(body: object): Promise<T
   return invokeFunction<T>('team-api', body);
 }
 
+/** team-api's seat-limit refusals (error codes; the bare English messages
+ *  are what older function deployments sent). */
+const SEAT_LIMIT_CODES = new Set(['seat_limit', 'seat_limit_individual']);
+const SEAT_LIMIT_MESSAGES = new Set([
+  'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.',
+  'Practice plans include up to 5 team members — contact us about a larger plan.',
+]);
+
+/**
+ * team-api's seat-limit refusals point at other plans ("switch to a
+ * Practice plan", "contact us about a larger plan"). The app sells
+ * nothing, so there they become a plain fact; the web keeps the server
+ * message. Other errors pass through untouched.
+ */
+export function appSafeTeamError(err: unknown, native: boolean = isNativeApp()): unknown {
+  const seatLimit =
+    (err instanceof ApiError && SEAT_LIMIT_CODES.has(err.code)) ||
+    (err instanceof Error && SEAT_LIMIT_MESSAGES.has(err.message.trim()));
+  if (native && seatLimit) return new LocalizedError(i18n.t('account:team.seatLimit'));
+  return err;
+}
+
 export function useTeam(open: boolean): UseTeamReturn {
   const [state, setState] = React.useState<TeamState>({ practice: null, role: null, primaryOwnerId: null, members: [] });
   const [loaded, setLoaded] = React.useState(false);
@@ -83,16 +108,21 @@ export function useTeam(open: boolean): UseTeamReturn {
   }, [refresh]);
 
   const addMember = React.useCallback(async (email: string): Promise<'invited' | 'pending'> => {
-    // Invited accounts get an email link back to wherever the owner is.
-    const redirectTo = window.location.origin + window.location.pathname;
+    // Invited accounts get an email link back to wherever the owner is
+    // (the website when the owner is in the app).
+    const redirectTo = emailLinkOrigin();
     // lang: the invite email's language when the invitee has none saved.
-    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo, lang: i18n.language });
+    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo, lang: i18n.language }).catch(
+      (err: unknown) => {
+        throw appSafeTeamError(err);
+      }
+    );
     await refresh();
     return res.pending ? 'pending' : 'invited';
   }, [refresh]);
 
   const resendInvite = React.useCallback(async (userId: string) => {
-    const redirectTo = window.location.origin + window.location.pathname;
+    const redirectTo = emailLinkOrigin();
     await call({ action: 'resend_invite', userId, redirectTo, lang: i18n.language });
     await refresh();
   }, [refresh]);

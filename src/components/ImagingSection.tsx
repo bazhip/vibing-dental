@@ -4,6 +4,8 @@ import { confirmDialog } from './ui/dialogs';
 import { errorText } from '../utils/apiErrors';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
+import { isNativeApp } from '../native/platform';
+import { takePhoto } from '../native/camera';
 
 interface ImagingSectionProps {
   /** The active chart's cloud id — attachments are scoped to it. */
@@ -77,9 +79,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     );
   }
 
-  const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
+  const addFiles = async (files: File[]) => {
+    const file = files[0];
     if (!file) return;
     setBusy(true);
     setError('');
@@ -92,6 +93,32 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       setBusy(false);
     }
   };
+
+  const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    await addFiles(files);
+  };
+
+  const onTakePhoto = async () => {
+    setError('');
+    let file: File | null = null;
+    try {
+      file = await takePhoto();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('imaging.cameraFailed', { ns: 'chart' }));
+      return;
+    }
+    if (file) await addFiles([file]);
+  };
+
+  const atLimit = store.items.length >= store.maxImages;
+  // The web keeps its wording; the app states the limit as a plain fact.
+  // The iOS app: yes/no options are switches.
+  const switchProps = isNativeApp() ? { role: 'switch', className: 'ios-switch' } : {};
+  const limitMessage = isNativeApp()
+    ? t('imaging.limitReached', { ns: 'chart', count: store.maxImages })
+    : t('imaging.limitReached', { max: store.maxImages });
 
   const onDelete = async (id: string, caption: string) => {
     if (!(await confirmDialog({
@@ -134,6 +161,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         >
           <input
             type="checkbox"
+            {...switchProps}
             disabled={readOnly}
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
@@ -149,10 +177,13 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
       {/* Zero-image plans (the free tier) get a plain explanation instead
           of a dead uploader. Existing images (e.g. from a lapsed paid
-          plan) still render below. */}
+          plan) still render below. The app states the fact without plan
+          wording (it sells nothing). */}
       {store.maxImages === 0 && (
         <p className="patient-form__hint">
-          {t('imaging.freePlan')}
+          {isNativeApp()
+            ? t('imaging.uploadsUnavailable', { ns: 'chart' })
+            : t('imaging.freePlan')}
         </p>
       )}
 
@@ -180,11 +211,22 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           type="button"
           className="diagram-view__action"
           onClick={() => fileRef.current?.click()}
-          disabled={busy || store.items.length >= store.maxImages}
-          title={store.items.length >= store.maxImages ? t('imaging.limitReached', { max: store.maxImages }) : undefined}
+          disabled={busy || atLimit}
+          title={atLimit ? limitMessage : undefined}
         >
           {busy ? t('imaging.uploading') : t('imaging.add')}
         </button>
+        {isNativeApp() && (
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={onTakePhoto}
+            disabled={busy || atLimit}
+            title={atLimit ? limitMessage : undefined}
+          >
+            {t('imaging.takePhoto', { ns: 'chart' })}
+          </button>
+        )}
         <input
           ref={fileRef}
           type="file"
@@ -203,6 +245,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         <p className="patient-form__hint imaging__formats">
           {store.dicomEnabled
             ? t('imaging.formatsDicom')
+            : isNativeApp()
+            ? t('imaging.formatsApp', { ns: 'chart' })
             : t('imaging.formatsPlain')}
         </p>
       )}
@@ -262,6 +306,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
                     <input
                       type="checkbox"
+                      {...switchProps}
             disabled={readOnly}
                       checked={!pdfExcludedImages.includes(a.id)}
                       onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}

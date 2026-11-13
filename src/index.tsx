@@ -3,12 +3,35 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Analytics } from '@vercel/analytics/react';
 import './index.css';
+import './styles/native-ios.css';
+import './ios/tokens.css';
+import './ios/ios.css';
+import './ios/sheets.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DialogHost } from './components/ui/dialogs';
 import { installIteratorHelpers } from './utils/iteratorHelpers';
 import { installScopeSelectorFallback } from './utils/scopeSelector';
+import { initNativeShell } from './native/platform';
+import { initAuthReturn } from './native/authReturn';
+import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
+import { isIosPreview } from './ios/preview';
 import { bootLanguage } from './i18n/bootLanguage';
+
+// DEV-only: `?iosPreview=1&iosGallery=1` renders the iOS component kit
+// gallery instead of the app. The constant DEV check drops it (and its
+// dynamic import) from production builds.
+const IosGallery =
+  import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosGallery') === '1'
+    ? React.lazy(() => import('./ios/Gallery'))
+    : null;
+
+// DEV-only: `?iosPreview=1&iosFixture=<name>` renders one sheet or sign-in
+// surface with sample data (src/ios/SheetFixtures.tsx), for screenshots.
+const IosFixture =
+  import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosFixture')
+    ? React.lazy(() => import('./ios/SheetFixtures'))
+    : null;
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
 // helpers (Chrome 122 / Firefox 131 / Safari 18.4) for rendering, and the `&`
@@ -16,6 +39,10 @@ import { bootLanguage } from './i18n/bootLanguage';
 // for cell focus. Install both before anything renders.
 installIteratorHelpers();
 installScopeSelectorFallback();
+initNativeShell();
+// App only: finish sign-ins that come back through toothops://auth-callback.
+initAuthReturn();
+initIosFeel();
 
 // Suppress the benign "ResizeObserver loop" message the data grid's
 // resize observers can trigger — non-actionable, and dev-overlay tooling
@@ -30,6 +57,15 @@ window.addEventListener('error', (e) => {
   }
 });
 
+// The native splash stays up (launchAutoHide: false) until React has
+// committed its first frame, so the app never flashes a blank webview.
+function SplashHandoff() {
+  React.useEffect(() => {
+    hideSplashAfterFirstRender();
+  }, []);
+  return null;
+}
+
 const container = document.getElementById('root');
 // eslint-disable-next-line no-restricted-syntax -- dev-only: broken index.html; no UI exists yet
 if (!container) throw new Error('Failed to find the root element');
@@ -38,10 +74,21 @@ const root = createRoot(container);
 const render = () => root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      {IosGallery ? (
+        <React.Suspense fallback={null}>
+          <IosGallery />
+        </React.Suspense>
+      ) : IosFixture ? (
+        <React.Suspense fallback={null}>
+          <IosFixture />
+        </React.Suspense>
+      ) : (
+        <App />
+      )}
       {/* App-wide confirm/prompt dialogs and toasts. */}
       <DialogHost />
     </ErrorBoundary>
+    <SplashHandoff />
     {/* Vercel Web Analytics — page views + custom events, alongside the
         cookieless Cloudflare beacon in index.html. No-op outside Vercel. */}
     <Analytics />

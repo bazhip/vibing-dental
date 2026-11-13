@@ -15,6 +15,11 @@ import { touchLastSeen } from './utils/lastSeen';
 import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
+import { isNativeApp } from './native/platform';
+import { isIosPreview } from './ios/preview';
+import { clearBillingCache } from './native/billingCache';
+import { getSessionTolerant } from './native/offlineSession';
+import { AppLockOverlay } from './components/AppLockOverlay';
 import { DeviceLanguage } from './i18n/useAppLanguage';
 
 // Split the two halves of the app: visitors on the marketing page don't
@@ -23,6 +28,10 @@ import { DeviceLanguage } from './i18n/useAppLanguage';
 const EntryGrid = lazyWithReload(() => import('./EntryGrid'));
 const Landing = lazyWithReload(() =>
   import('./components/Landing').then((m) => ({ default: m.Landing }))
+);
+// The iOS app skips the landing page and opens straight to sign-in.
+const Login = lazyWithReload(() =>
+  import('./components/Login').then((m) => ({ default: m.Login }))
 );
 const ResetPassword = lazyWithReload(() =>
   import('./components/ResetPassword').then((m) => ({ default: m.ResetPassword }))
@@ -67,6 +76,9 @@ async function confirmSessionLost(): Promise<boolean> {
 }
 
 const App: React.FC = () => {
+  // In the iOS app there's no landing page, no no-account trial, and no
+  // "Homepage" — signed out means the sign-in-only login screen.
+  const native = isNativeApp();
   const { t } = useTranslation('app');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !cloudEnabled && readString(AUTH_KEY, AUTH_VERSION, '') === '1'
@@ -74,6 +86,13 @@ const App: React.FC = () => {
   // With Supabase, wait for the initial session check before rendering
   // either screen — avoids a login flash for signed-in users.
   const [sessionChecked, setSessionChecked] = useState<boolean>(!cloudEnabled);
+  // The app opened with a session left from a previous run (vs. signing in
+  // now): the app lock checks how long it's been since it was backgrounded,
+  // since iOS may have killed it in the background.
+  const [launchedSignedIn, setLaunchedSignedIn] = useState(false);
+  useEffect(() => {
+    if (!isAuthenticated) setLaunchedSignedIn(false);
+  }, [isAuthenticated]);
   // True when the user arrived via a password-recovery email link.
   const [recovering, setRecovering] = useState(false);
   // True when the user arrived via a team-invite link (Supabase invite
@@ -90,7 +109,9 @@ const App: React.FC = () => {
   // No-account trial (persisted so a refresh mid-trial doesn't bounce
   // back to the landing page). Signing in/up ends it.
   const [trialMode, setTrialMode] = useState<boolean>(
-    () => readString(TRIAL_KEY, 1, '') === '1'
+    // (The DEV-only iOS preview keeps a trial started on the web, so app
+    // screens can be previewed without an account.)
+    () => (!isNativeApp() || isIosPreview()) && readString(TRIAL_KEY, 1, '') === '1'
   );
   // When the trial's "Create free account" CTA sends the user back to
   // the landing page, open the signup overlay right away.
@@ -125,7 +146,7 @@ const App: React.FC = () => {
   // leaving the session (or the trial); "Back to the app" (or the Back
   // button, now that it's a route) returns.
   const { route, navigate } = useHashRoute();
-  const showHome = route.view === 'home';
+  const showHome = !native && route.view === 'home';
   const setShowHome = (next: boolean) =>
     navigate(next ? '#/home' : '#/chart', { replace: !next });
 
@@ -144,25 +165,39 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
-    supabase.auth.getSession().then(({ data }) => {
-      setIsAuthenticated(!!data.session);
-      if (data.session) {
+    // App launched offline after the access token expired: getSession()
+    // can't refresh and says "no session", but the stored one is still
+    // good — stay signed in (see native/offlineSession).
+    void getSessionTolerant(supabase).then(({ session }) => {
+      // In the app this check (not INITIAL_SESSION, ignored below) decides
+      // signed-out at launch, so it clears the signed-out billing cache.
+      if (!session && native) clearBillingCache();
+      setIsAuthenticated(!!session);
+      setLaunchedSignedIn(!!session);
+      if (session) {
         touchLastSeen();
         // Returning from Google sign-in: record the terms notice they
         // signed in next to.
-        flushPendingTerms(data.session.user.id);
-        lastUserIdRef.current = data.session.user.id;
-        setLastEmail(data.session.user.email ?? '');
+        flushPendingTerms(session.user.id);
+        lastUserIdRef.current = session.user.id;
+        setLastEmail(session.user.email ?? '');
       }
       setSessionChecked(true);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') setRecovering(true);
+      // App: launched offline after the access token expired, auth-js emits
+      // INITIAL_SESSION with no session (its refresh failed) before
+      // getSessionTolerant above settles on the still-stored session.
+      // Taking it at face value would sign out and wipe the offline billing
+      // cache; the initial check owns the launch decision instead.
+      if (event === 'INITIAL_SESSION' && !session && native) return;
       if (session) {
         // A different account signing in over an expired session must not
         // inherit the previous patient's working chart (shared machines).
         if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
           clearChartStorage();
+          clearBillingCache();
           // The previous user's chart, profile and practice are still in
           // memory — start clean so nothing of theirs is shown or saved.
           window.location.reload();
@@ -179,6 +214,8 @@ const App: React.FC = () => {
       // No session. Deliberate sign-outs go to the landing page; anything
       // else while signed in is an expiry — keep the chart mounted.
       if (consumeExplicitSignOut() || !isAuthedRef.current) {
+        // The app's offline billing cache belongs to whoever signed out.
+        clearBillingCache();
         setSessionExpired(false);
         setIsAuthenticated(false);
       } else {
@@ -293,6 +330,15 @@ const App: React.FC = () => {
     );
   }
 
+  if (!isAuthenticated && native) {
+    return (
+      <Suspense fallback={<AppLoading />}>
+        <DeviceLanguage />
+        <Login appMode onAuthenticate={() => setIsAuthenticated(true)} />
+      </Suspense>
+    );
+  }
+
   if (!isAuthenticated) {
     return (
       <Suspense fallback={<AppLoading />}>
@@ -314,11 +360,12 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <AppLockOverlay lockOnLaunch={launchedSignedIn} />
       <Suspense fallback={<AppLoading />}>
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
         <BillingGate>
-          <EntryGrid onGoHome={() => setShowHome(true)} />
+          <EntryGrid onGoHome={native ? undefined : () => setShowHome(true)} />
         </BillingGate>
         {/* Invitation link for an existing account (#/join/<token>). */}
         {route.view === 'join' && route.joinToken && (
@@ -345,6 +392,7 @@ const App: React.FC = () => {
             // mark intent in case a stray SIGNED_OUT event still fires.
             markExplicitSignOut();
             clearChartStorage();
+            clearBillingCache();
             setSessionExpired(false);
             setIsAuthenticated(false);
           }}

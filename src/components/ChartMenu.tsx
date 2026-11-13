@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
+import { isNativeApp } from '../native/platform';
 import './AccountSurfaces.css';
 
 interface ChartMenuCloud {
@@ -201,7 +202,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
           {cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.practice')}</header>
-              {item(t('menu.practiceSettings.label'), t('menu.practiceSettings.sub'), cloud.onPracticeSettings)}
+              {item(t('menu.practiceSettings.label'), isNativeApp() ? t('menu.practiceSettingsHintApp', { ns: 'chart' }) : t('menu.practiceSettings.sub'), cloud.onPracticeSettings)}
               {item(t('menu.reminders.label'), t('menu.reminders.sub'), cloud.onOpenReminders)}
             </section>
           )}

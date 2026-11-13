@@ -273,5 +273,71 @@
   "scoreChips": {
     "group": "Punteggio {{name}}",
     "clear": "Cancella {{name}}"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Nome, logo e team."
+  },
+  "imaging": {
+    "takePhoto": "Scatta foto",
+    "cameraFailed": "Impossibile aprire la fotocamera.",
+    "cameraNoPhoto": "La fotocamera non ha restituito alcuna foto.",
+    "cameraReadFailed": "Impossibile leggere la foto ({{status}}).",
+    "limitReached_one": "Questa cartella ha raggiunto il limite di {{count}} immagine.",
+    "limitReached_many": "Questa cartella ha raggiunto il limite di {{count}} immagini.",
+    "limitReached_other": "Questa cartella ha raggiunto il limite di {{count}} immagini.",
+    "uploadsUnavailable": "Il caricamento di foto non è disponibile per questo account.",
+    "formatsApp": "PNG, JPEG o WEBP.",
+    "dicomUnavailable": "Il caricamento DICOM non è disponibile per questo account. Esporti la radiografia in JPEG o PNG per aggiungerla."
+  },
+  "aiConsent": {
+    "title": "Utilizzare i servizi di IA?",
+    "intro": "Per dettare in una cartella e scrivere bozze con l’IA, ToothOps invia dati a due servizi:",
+    "deepgram": "<strong>Deepgram</strong> riceve l’audio della Sua voce durante la dettatura, per trasformarlo in testo.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) riceve la trascrizione della dettatura e il contenuto della cartella, come i dati del paziente e i reperti, per compilare la cartella o redigere il referto per il proprietario.",
+    "nothingSent": "Non viene inviato nulla se non utilizza queste funzioni.",
+    "allow": "Consenti",
+    "notNow": "Non ora"
+  },
+  "ios": {
+    "newChart": "Nuova cartella",
+    "more": "Altro",
+    "menu": {
+      "newChart": "Nuova cartella",
+      "newVisit": "Nuova visita",
+      "saveNow": "Salva ora",
+      "retrySave": "Riprova a salvare",
+      "customize": "Personalizza: {{section}}"
+    },
+    "status": {
+      "saved": "Salvato · {{time}}",
+      "notSaved": "Non salvato",
+      "viewOnlyDate": "Sola lettura · {{date}}",
+      "editingWith": "Modifica in corso · {{status}}",
+      "keptOnDevice": "Viene salvato appena inizia l’odontogramma",
+      "unsaved": "Modifiche non salvate",
+      "onDevice": "Solo su questo dispositivo"
+    },
+    "notice": {
+      "otherTab": "Questa cartella è aperta in un’altra finestra. Entrambe modificano la stessa copia di lavoro — ne chiuda una per non sovrascrivere le Sue modifiche.",
+      "gotIt": "Ho capito",
+      "notSaved": "Questa cartella non è salvata."
+    },
+    "form": {
+      "patient": "Paziente",
+      "owner": "Proprietario",
+      "visit": "Visita",
+      "complaint": "Motivo della visita",
+      "dictate": "Dettatura",
+      "nerveBlocks": "Blocchi nervosi",
+      "addInterval": "Aggiungi intervallo"
+    },
+    "diagram": {
+      "numbers": "Numeri",
+      "freeComment": "Commento libero"
+    },
+    "grid": {
+      "tip": "Suggerimento: tocchi i numeri dei denti per selezionarne più di uno, poi imposti un unico valore per tutti.",
+      "pickTitle": "Tocchi per selezionare questo dente e impostare un valore su più denti insieme"
+    }
   }
 }

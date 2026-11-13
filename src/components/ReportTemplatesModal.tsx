@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { confirmDialog } from './ui/dialogs';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
 interface ReportTemplatesModalProps {
@@ -14,7 +16,8 @@ interface ReportTemplatesModalProps {
 /**
  * Editor for the practice's saved report templates: pick one from the
  * list (or start a new one), edit its name and text, save or delete.
- * Reuses the AI-settings modal chrome.
+ * Reuses the AI-settings modal chrome; in the iOS app it is an iOS sheet
+ * (Close / Save in its bar, Delete at the end of the form).
  */
 export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   open,
@@ -23,6 +26,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   draftBody = '',
 }) => {
   const { t } = useTranslation('library');
+  const asSheet = isNativeApp();
   // null = editing a new, not-yet-saved template.
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [name, setName] = React.useState('');
@@ -45,13 +49,13 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   }, [open]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || asSheet) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, asSheet]);
 
   if (!open) return null;
 
@@ -111,6 +115,98 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     }
   };
 
+  const templatesBody = (
+    <>
+      <section className="ai-settings-section">
+        <div className="report-templates__list-head">
+          <span className="patient-form__label">{t('templates.saved')}</span>
+          <button type="button" className="diagram-view__action" onClick={startNew} disabled={busy}>
+            {t('templates.new')}
+          </button>
+        </div>
+        {store.templates.length === 0 ? (
+          <p className="practice-logo-empty">
+            {t('templates.empty')}
+          </p>
+        ) : (
+          <ul className="report-templates__list">
+            {store.templates.map((tpl) => (
+              <li key={tpl.id}>
+                <button
+                  type="button"
+                  className={
+                    tpl.id === selectedId
+                      ? 'report-templates__item report-templates__item--active'
+                      : 'report-templates__item'
+                  }
+                  onClick={() => pick(tpl)}
+                  disabled={busy}
+                >
+                  {tpl.name.trim() || t('templates.untitled')}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="ai-settings-section">
+        <label className="patient-form__label">
+          {t('templates.nameLabel')}
+          <input
+            ref={nameRef}
+            type="text"
+            className="patient-form__input"
+            placeholder={t('templates.namePlaceholder')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
+          {t('templates.bodyLabel')}
+          <textarea
+            className="patient-form__textarea report-templates__body"
+            placeholder={t('templates.bodyPlaceholder')}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          />
+        </label>
+      </section>
+
+      {error && <div className="login-error" role="alert">{error}</div>}
+    </>
+  );
+
+  if (asSheet) {
+    return (
+      <Sheet
+        open
+        onClose={onClose}
+        title={t('templates.title')}
+        cancelLabel={t('actions.close', { ns: 'common' })}
+        doneLabel={busy ? t('templates.saving') : selectedId ? t('templates.saveChanges') : t('templates.saveTemplate')}
+        onDone={() => void handleSave()}
+        doneDisabled={busy}
+      >
+        <div className="ios-settings-page">
+          {templatesBody}
+          {selectedId && (
+            <div className="ios-settings-page__actions">
+              <button
+                type="button"
+                className="diagram-view__action diagram-view__action--danger"
+                onClick={handleDelete}
+                disabled={busy}
+              >
+                {t('actions.delete', { ns: 'common' })}
+              </button>
+            </div>
+          )}
+        </div>
+      </Sheet>
+    );
+  }
+
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
       <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
@@ -121,63 +217,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
           </button>
         </header>
         <div className="ai-settings-body">
-          <section className="ai-settings-section">
-            <div className="report-templates__list-head">
-              <span className="patient-form__label">{t('templates.saved')}</span>
-              <button type="button" className="diagram-view__action" onClick={startNew} disabled={busy}>
-                {t('templates.new')}
-              </button>
-            </div>
-            {store.templates.length === 0 ? (
-              <p className="practice-logo-empty">
-                {t('templates.empty')}
-              </p>
-            ) : (
-              <ul className="report-templates__list">
-                {store.templates.map((tpl) => (
-                  <li key={tpl.id}>
-                    <button
-                      type="button"
-                      className={
-                        tpl.id === selectedId
-                          ? 'report-templates__item report-templates__item--active'
-                          : 'report-templates__item'
-                      }
-                      onClick={() => pick(tpl)}
-                      disabled={busy}
-                    >
-                      {tpl.name.trim() || t('templates.untitled')}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="ai-settings-section">
-            <label className="patient-form__label">
-              {t('templates.nameLabel')}
-              <input
-                ref={nameRef}
-                type="text"
-                className="patient-form__input"
-                placeholder={t('templates.namePlaceholder')}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
-              {t('templates.bodyLabel')}
-              <textarea
-                className="patient-form__textarea report-templates__body"
-                placeholder={t('templates.bodyPlaceholder')}
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-              />
-            </label>
-          </section>
-
-          {error && <div className="login-error" role="alert">{error}</div>}
+          {templatesBody}
         </div>
         <footer className="ai-settings-footer">
           {selectedId && (

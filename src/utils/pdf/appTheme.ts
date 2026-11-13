@@ -28,6 +28,14 @@ function cssVar(name: string): string {
   }
 }
 
+function isIosApp(): boolean {
+  try {
+    return document.documentElement.classList.contains('native-ios');
+  } catch {
+    return false;
+  }
+}
+
 export interface AppTokenColors {
   primary: RGB;
   primaryDark: RGB;
@@ -68,6 +76,15 @@ const TOKEN_VARS: Record<keyof AppTokenColors, string> = {
  *  or isn't a parseable hex color. */
 export function readAppTokens(): AppTokenColors {
   const out = {} as AppTokenColors;
+  // In the iOS app the theme variables are re-pointed at the iOS tokens
+  // (src/ios/tokens.css), which follow system dark mode — but PDFs always
+  // print on white. Use the web theme's values there.
+  if (isIosApp()) {
+    for (const key of Object.keys(FALLBACKS) as Array<keyof AppTokenColors>) {
+      out[key] = hexToRgb(FALLBACKS[key]) as RGB;
+    }
+    return out;
+  }
   for (const key of Object.keys(TOKEN_VARS) as Array<keyof AppTokenColors>) {
     out[key] = hexToRgb(cssVar(TOKEN_VARS[key])) ?? (hexToRgb(FALLBACKS[key]) as RGB);
   }

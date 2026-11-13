@@ -5,6 +5,10 @@ import { isAppLanguage } from '../i18n/config';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
+import { saveChartPdf } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
+import { toast } from './ui/dialogs';
 import { PdfStylePicker, readSavedPdfStyle, savePdfStyle, useCompactPdfLayout } from './PdfStylePicker';
 import { resolvePdfStyle } from '../utils/pdf/styles';
 import {
@@ -25,6 +29,9 @@ import {
   DiagramComment,
   DiagramStroke,
 } from '../types';
+
+// SF Symbol names (not text).
+const SQUARE_AND_ARROW_UP_ICON = 'square-and-arrow-up';
 
 /**
  * One snapshot of the chart that's enough to (re-)build a PDF in any
@@ -78,7 +85,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // (preset or custom color) is remembered on this device.
   const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
   const setStyleId = (id: string) => { setStyleIdState(id); savePdfStyle(id); };
-  const compact = useCompactPdfLayout();
+  // In the app the preview always gets the width; the style list is a
+  // button that opens a picker sheet.
+  const compactLayout = useCompactPdfLayout();
+  const compact = compactLayout || isNativeApp();
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
@@ -210,6 +220,12 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
     if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
+    // In the iOS app the PDF goes to the native share sheet (Save to Files,
+    // Mail, AirDrop…); the browser download / in-app-link flow is web-only.
+    if (isNativeApp()) {
+      void saveChartPdf(blob, filename).catch(() => toast(i18n.t('common:errors.saveFile')));
+      return;
+    }
     savePdf(blob, filename).then((outcome) => {
       if (outcome === 'unsupported') void inAppLink.start(blob, filename);
     });
@@ -224,7 +240,14 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       onClick={handleDownload}
       disabled={!pdfUrl || generating || images === null}
     >
-      {t('preview.download')}
+      {isNativeApp() ? (
+        <>
+          <Icon name={SQUARE_AND_ARROW_UP_ICON} size={17} />
+          {t('ios.sheets.documents.share', { ns: 'common' })}
+        </>
+      ) : (
+        t('preview.download')
+      )}
     </button>
   );
 
@@ -242,7 +265,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
                 {downloadButton}
               </>
             )}
-            {!inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+            {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
             {imageWarning && (
               <p className="pdf-preview-warning" role="status">{imageWarning}</p>

@@ -7,7 +7,7 @@ import { formatDate, formatTime } from '../i18n/format';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
-import { markExplicitSignOut } from '../utils/signOutIntent';
+import { signOutAndSweep } from '../utils/signOutAndSweep';
 import { LocalizedError } from '../utils/apiErrors';
 
 /**
@@ -228,8 +228,12 @@ export function useCloudSync(
   // mine"; blocked = "Keep theirs" (no more saves until reopened).
   const conflictRef = React.useRef<{ chartId: string; mode: 'none' | 'force' | 'blocked' }>({ chartId: '', mode: 'none' });
   const [online, setOnline] = React.useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
+  // Bumped on every 'online' event, even when we never saw 'offline' (a
+  // save can fail on a flaky connection while navigator.onLine stays
+  // true) — it re-runs autosave so a failed save is retried.
+  const [reconnects, setReconnects] = React.useState(0);
   React.useEffect(() => {
-    const up = () => setOnline(true);
+    const up = () => { setOnline(true); setReconnects((n) => n + 1); };
     const down = () => setOnline(false);
     window.addEventListener('online', up);
     window.addEventListener('offline', down);
@@ -471,7 +475,8 @@ export function useCloudSync(
   saveNowRef.current = saveNow;
   // Saved charts autosave once the user has unlocked them (unlocking is
   // the deliberate step); while locked nothing can change anyway.
-  // Offline: wait, and retry as soon as the connection is back.
+  // Offline, or a save failed: wait, and retry as soon as the connection
+  // is back ('online' event).
   React.useEffect(() => {
     if (!on || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
@@ -482,7 +487,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, awaitingClinical]);
+  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -648,22 +653,7 @@ export function useCloudSync(
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
     if (!(await confirmDiscardIfDirty('signOut'))) return;
-    // Deliberate sign-out — App must NOT treat the coming SIGNED_OUT
-    // event as a session expiry (which keeps the chart mounted).
-    markExplicitSignOut();
-    await supabase.auth.signOut();
-    // Shared clinic machines: the next account must not inherit this
-    // patient's chart from localStorage.
-    clearChartStorage();
-    // Legacy BYOK era left API keys in localStorage; the app no longer
-    // collects keys client-side, so sweep any stragglers with the session.
-    for (const k of [
-      'vibing-dental.anthropic-api-key.v1',
-      'vibing-dental.deepgram-api-key.v1',
-      'vibing-dental.anthropic-model.v1',
-    ]) {
-      try { localStorage.removeItem(k); } catch { /* storage unavailable */ }
-    }
+    await signOutAndSweep();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

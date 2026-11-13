@@ -27,7 +27,7 @@ import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import { useAppLanguage } from './i18n/useAppLanguage';
-import { formatDateTime, formatMonthDay, formatTime } from './i18n/format';
+import { formatDate, formatDateTime, formatMonthDay, formatTime } from './i18n/format';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -55,6 +55,17 @@ import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFi
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
+import { isNativeApp } from './native/platform';
+import { AppShell, type AppTab, type AppShellHandle } from './ios/AppShell';
+import { AppDataProvider, useStableFunctions, type AppLibrary, type AppSettings } from './ios/appData';
+import { previewLibrary } from './ios/previewLibrary';
+import { PatientsScreen } from './ios/screens/PatientsScreen';
+import { RechecksScreen } from './ios/screens/RechecksScreen';
+import { SettingsScreen } from './ios/screens/SettingsScreen';
+import { useRechecksDue } from './ios/screens/useRechecksDue';
+import { ChartNavBar, ChartNotice } from './ios/chart/ChartNavBar';
+import { chartStatus } from './ios/chart/chartStatus';
+import type { MenuItem } from './ios/ContextMenu';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -98,9 +109,15 @@ function feedbackMailto(t: TFunction<'app'>): string {
   )}`;
 }
 
+/** Sections shown side by side on wide screens (app only): Charting (grid view)
+ *  with the Diagnosis diagram, so findings mirrored to the diagram show
+ *  up as they're typed. */
+const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
+
 // What toLocaleString() prints by default: the saved-at tooltip's old format.
 const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'owner-report';
+const WARNING_TONE = 'warning' as const;
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
 
@@ -134,6 +151,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   onGoHome,
 }) => {
   const { t } = useTranslation('app');
+  // The app's chart status messages (src/ios/chart/chartStatus.ts).
+  const { t: tChart } = useTranslation('chart');
   const chart = useChartState();
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
@@ -184,6 +203,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
   const { route, navigate } = useHashRoute();
+  // The iOS app renders the chart inside the app shell (tab bar / iPad
+  // sidebar) instead of the website's topbar and section rail.
+  const native = isNativeApp();
+  // App shell tab. #/library (My charts on the web) is the Patients tab.
+  const [appTab, setAppTab] = React.useState<AppTab>(() => (native && route.view === 'library' ? 'patients' : 'chart'));
+  // The one way to "land on the Chart tab": select it and pop its stack to
+  // the root (the shell's showChart; before the shell mounts, just select).
+  const shellRef = React.useRef<AppShellHandle>(null);
+  const landOnChart = React.useCallback(() => {
+    if (shellRef.current) shellRef.current.showChart();
+    else setAppTab('chart');
+  }, []);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
@@ -212,6 +243,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setActiveSection(id);
     if (routeViewRef.current === 'chart') navigate(`${hashBaseRef.current}/${id}`, { replace: true });
   }, [navigate]);
+  /** App: a chart section, shown in the Chart tab. */
+  const showChartSection = (id: string) => {
+    landOnChart();
+    goToSection(id);
+  };
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && chart.openedExisting && !editable;
@@ -282,14 +318,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chartingHeaderAccessory = (
     <div className="charting-header-actions">
       {chartingViewSwitch}
-      <button
-        type="button"
-        className="diagram-view__action"
-        onClick={() => setChartSettingsOpen('charting')}
-        title={t('customize.hint')}
-      >
-        {t('customize.label')}
-      </button>
+      {/* The app has Customize in the Chart bar's More menu. */}
+      {!native && (
+        <button
+          type="button"
+          className="diagram-view__action"
+          onClick={() => setChartSettingsOpen('charting')}
+          title={t('customize.hint')}
+        >
+          {t('customize.label')}
+        </button>
+      )}
     </div>
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
@@ -371,7 +410,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // "My charts" dialog — a real route (#/library) so the Back button and
   // gesture-back close it instead of exiting the site, and a refresh
   // reopens it.
-  const libraryOpen = cloud.enabled && route.view === 'library';
+  const libraryOpen = cloud.enabled && route.view === 'library' && !native;
   // True when THIS session pushed #/library — closing can then be a
   // history.back() (clean stack). A deep-linked/refreshed library has no
   // in-app entry behind it, so closing navigates to the chart instead.
@@ -381,13 +420,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     navigate('#/library');
   };
   const closeLibrary = React.useCallback(() => {
+    // The app has no My charts dialog: "close the library after opening a
+    // chart" means show the Chart tab.
+    if (native) {
+      landOnChart();
+      return;
+    }
     if (libraryPushedRef.current) {
       libraryPushedRef.current = false;
       window.history.back();
     } else {
       navigate(`#/chart/${chart.cloudChartId}`, { replace: true });
     }
-  }, [navigate, chart.cloudChartId]);
+  }, [navigate, chart.cloudChartId, native, landOnChart]);
 
   // Deep link support: arriving on #/chart/:id for a chart that isn't
   // the working one opens it from the cloud (same path as the library,
@@ -440,6 +485,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (route.view !== 'chart') return;
     navigate(`${hashBaseRef.current}/${activeSectionRef.current}`, { replace: true });
   }, [cloud.enabled, route.view, chart.cloudChartId, navigate]);
+  // App: #/library (the arrival rule, an old link) shows the Patients tab;
+  // the address goes back to naming the chart.
+  React.useEffect(() => {
+    if (!native || route.view !== 'library') return;
+    setAppTab('patients');
+    navigate(`${hashBaseRef.current}/${activeSectionRef.current}`, { replace: true });
+  }, [native, route.view, navigate]);
   const isAdmin = useIsAdmin();
   const [adminOpen, setAdminOpen] = React.useState(false);
   // Feedback form; `transcript` is offered when opened from the voice panel.
@@ -466,6 +518,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return () => ro.disconnect();
   }, []);
 
+  // The app's chart live region announces a save the user asked for
+  // (Save now, Try again, Done), not every autosave: an explicit save
+  // marks itself, and the next 'saved' it reaches is announced until the
+  // following save starts.
+  const explicitSaveRef = React.useRef(false);
+  const [announceSaved, setAnnounceSaved] = React.useState(false);
+  React.useEffect(() => {
+    if (cloud.status === 'saving') setAnnounceSaved(false);
+    else if (cloud.status === 'saved' && explicitSaveRef.current) {
+      explicitSaveRef.current = false;
+      setAnnounceSaved(true);
+    } else if (cloud.status === 'error') explicitSaveRef.current = false;
+  }, [cloud.status]);
+
   // Single save gate for the button, ⌘S, and retry: a chart with no
   // patient name can't be found again in My charts (the library groups by
   // number-else-name), so require one before it reaches the cloud.
@@ -477,6 +543,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       return;
     }
     setSaveHint('');
+    explicitSaveRef.current = true;
     cloud.saveNow().catch(() => {});
   };
   // Clear the hint the moment a name exists.
@@ -888,7 +955,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
           hideRecheck={prefs.hideRecheck}
-          onCustomize={() => setChartSettingsOpen('patient')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
     },
@@ -914,7 +981,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           logo={chart.logo}
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
-          onCustomize={() => setChartSettingsOpen('anesthesia')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('anesthesia')}
           customBlockDefs={prefs.customBlocks}
           customFieldDefs={prefs.customFields}
           customValues={chart.patientInfo.customAnesthesia}
@@ -992,7 +1059,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ref={preDiagramRef}
               readOnly={readOnly}
               title={t('sections.diagnosis')}
-              onCustomize={() => setChartSettingsOpen('diagnosis')}
+              onCustomize={native ? undefined : () => setChartSettingsOpen('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -1072,7 +1139,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}
-          onCustomize={() => setChartSettingsOpen('images')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
@@ -1105,7 +1172,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onPreview={() => openDocuments('owner')}
               context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
               aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-              onCustomize={cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined}
+              onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
             />
           ),
         }]
@@ -1129,9 +1196,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     });
   };
   // Start a blank chart (asks only when something would be lost).
-  const startNewPatient = async () => {
-    if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return;
+  const startNewPatient = async (): Promise<boolean> => {
+    if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return false;
     chart.resetChart();
+    return true;
   };
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
@@ -1151,11 +1219,547 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const doneEditing = async () => {
     if (cloud.dirty) {
+      explicitSaveRef.current = true;
       try { await cloud.saveNow(); } catch { return; /* the status pill shows the error */ }
     }
     try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
     setEditUnlocked(false);
   };
+
+  // ----- Saved-chart actions ---------------------------------------------
+  // One copy for the web's My charts dialog and the app's tabs (the app
+  // adds "land on the Chart tab" on top). Stable identities.
+  // libraryVersion tells the app's list screens to refetch.
+  const [libraryVersion, setLibraryVersion] = React.useState(0);
+  // App only: the website has no list that needs it (no extra renders there).
+  const bumpLibrary = React.useCallback(() => {
+    if (native) setLibraryVersion((v) => v + 1);
+  }, [native]);
+  // An autosave refreshes the lists only when it saved something they
+  // show: another chart, the patient's name/number/owner, species, visit
+  // or recheck date, or the first save of the day ("Updated" date). Each
+  // bump refetches the Rechecks badge's due query (up to 500 rows).
+  const pi = chart.patientInfo;
+  const listSignature = native
+    ? JSON.stringify([
+      chart.cloudChartId, pi.patientName, pi.patientNumber, pi.ownerName, pi.ownerPhone, pi.ownerEmail,
+      chart.species, pi.date, pi.recallDate ?? '', cloud.lastSavedAt ? localDateISO(new Date(cloud.lastSavedAt)) : '',
+    ])
+    : '';
+  const listedSignatureRef = React.useRef<string | null>(null);
+  React.useEffect(() => {
+    if (!cloud.lastSavedAt || listedSignatureRef.current === listSignature) return;
+    bumpLibrary();
+    // Edits still pending when this save landed may not be in it: the
+    // next save refreshes again.
+    listedSignatureRef.current = cloud.dirty ? null : listSignature;
+  }, [cloud.lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
+  const libraryCore = useStableFunctions({
+    deleteChart: async (id: string): Promise<void> => {
+      await cloud.deleteChart(id);
+      bumpLibrary();
+    },
+    /** Start a visit from the patient's latest; toasts failures. */
+    newVisit: async (latestChartId: string): Promise<boolean> => {
+      try {
+        if (!(await startVisitFromChart(latestChartId))) return false;
+      } catch (err) {
+        toast(t('errors.newVisit', { error: friendlyDetail(err) }), { kind: 'error' });
+        return false;
+      }
+      bumpLibrary();
+      return true;
+    },
+    newPatient: async (): Promise<boolean> => {
+      if (!(await startNewPatient())) return false;
+      bumpLibrary();
+      return true;
+    },
+    loadPdf: async (file: File): Promise<boolean> => {
+      if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return false;
+      await chart.loadFromPdf(file);
+      return true;
+    },
+    sendReminder: (c: CloudChartMeta) => setReminderTarget(c),
+    openHistory: (chartId: string, label: string) => setHistoryFor({ id: chartId, label, fromLibrary: true }),
+    clearRecalls: async (chartIds: string[]): Promise<void> => {
+      await cloud.clearRecalls(chartIds);
+      // If the working chart is one of them, mirror the clear
+      // locally — a later save must not resurrect the date.
+      if (chartIds.includes(chart.cloudChartId)) {
+        chart.handlePatientInfoChange('recallDate', '');
+      }
+      bumpLibrary();
+    },
+  });
+
+  // Shared by the website page and the app shell (same order on the web).
+  const otherTabBanner = otherTabWarning && (
+    <div className="chart-lock-banner chart-lock-banner--warning" role="alert">
+      <span className="chart-lock-banner__text">
+        {t('otherTab.text')}
+      </span>
+      <button
+        type="button"
+        className="entry-grid__button entry-grid__button--topbar"
+        onClick={() => setOtherTabWarning(false)}
+      >
+        {t('gotIt', { ns: 'whatsNew' })}
+      </button>
+    </div>
+  );
+  const dialogsBeforeForm = (
+    <>
+      {reportCustomizeOpen && (
+        <OwnerReportCustomize
+          onClose={() => setReportCustomizeOpen(false)}
+          config={profile.ownerReportConfig}
+          onSave={profile.saveOwnerReportConfig}
+          loadFailed={profile.ownerReportConfigLoadFailed}
+          branding={{ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }}
+        />
+      )}
+
+      {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
+
+      {historyFor && (() => {
+        // Restore only on the open, editable chart; from My charts it's
+        // view-only with a shortcut to open the visit.
+        const isOpenChart = historyFor.id === chart.cloudChartId;
+        const canRestore = isOpenChart && !readOnly;
+        return (
+          <ChartHistoryModal
+            chartId={historyFor.id}
+            label={historyFor.label}
+            onClose={() => setHistoryFor(null)}
+            onRestore={canRestore ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
+            restoreHint={isOpenChart ? undefined : t('historyRestoreHint')}
+            onOpenChart={historyFor.fromLibrary && !isOpenChart ? () => {
+              const id = historyFor.id;
+              setHistoryFor(null);
+              cloud.openChart(id).then((ok) => { if (ok) closeLibrary(); }).catch((err) => {
+                toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' });
+              });
+            } : undefined}
+          />
+        );
+      })()}
+
+      {chartSettingsOpen && (
+        <ChartSettingsModal
+          onClose={() => setChartSettingsOpen(false)}
+          section={chartSettingsOpen && chartSettingsOpen !== 'all' ? chartSettingsOpen : undefined}
+          prefs={prefs}
+          followsAccount={chartSettings.followsAccount}
+          onChange={setPref}
+        />
+      )}
+
+      {feedback && (
+        <FeedbackModal
+          onClose={() => setFeedback(null)}
+          section={activeSection}
+          transcript={feedback.transcript}
+        />
+      )}
+
+      {libraryOpen && (
+        <ChartLibrary
+          listCharts={cloud.listCharts}
+          onOpen={cloud.openChart}
+          onDelete={libraryCore.deleteChart}
+          onNewVisit={async (latestChartId) => {
+            // Cancelled at the unsaved-changes prompt → stay in the library.
+            if (await libraryCore.newVisit(latestChartId)) closeLibrary();
+          }}
+          onSendReminder={libraryCore.sendReminder}
+          onOpenHistory={libraryCore.openHistory}
+          onClearRecalls={libraryCore.clearRecalls}
+          onNewPatient={async () => { await libraryCore.newPatient(); }}
+          onLoadPdf={async (file) => { await libraryCore.loadPdf(file); }}
+          onClose={closeLibrary}
+        />
+      )}
+    </>
+  );
+  const chartForm = (
+    <form
+      id="chart-form"
+      className="entry-grid-form"
+      // Focus target for the skip link — without it the anchor jump
+      // scrolls but keyboard focus stays on the link.
+      tabIndex={-1}
+      onSubmit={handleOpenPreview}
+      // Stop browser-default form submit on Enter from any single-line
+      // input. Textareas, the actual submit button, and inputs that
+      // explicitly opt-in (data-allow-form-submit) still submit. This
+      // makes the chart behave like a spreadsheet — Enter advances the
+      // active grid cell rather than opening the preview modal.
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter') return;
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const tag = target.tagName;
+        const allow =
+          tag === 'TEXTAREA' ||
+          (target instanceof HTMLButtonElement && target.type === 'submit') ||
+          target.dataset.allowFormSubmit === 'true';
+        if (!allow) e.preventDefault();
+      }}
+    >
+      <SidebarLayout
+        sections={sections}
+        activeId={activeSection}
+        onActiveChange={goToSection}
+        // Wide screens in the app (13" iPad landscape): the Diagnosis
+        // diagram sits beside the grid. By tooth already has its own
+        // diagram. The website keeps its layout unchanged.
+        companions={native && chartingView === 'grid' ? CHARTING_COMPANIONS : undefined}
+        hideNav={native}
+      />
+    </form>
+  );
+  const pdfButton = (
+    <button
+      type="submit"
+      form="chart-form"
+      className="fab-download"
+      aria-haspopup="dialog"
+      aria-label={ownerReportOn ? t('fab.downloadAria') : t('fab.previewAria')}
+    >
+      <span aria-hidden="true">⤓</span> {ownerReportOn ? t('fab.download') : t('fab.preview')}
+    </button>
+  );
+  const dialogsAfterForm = (
+    <>
+      {previewSnapshot && (
+        <React.Suspense fallback={null}>
+          <DocumentsModal
+            open={previewOpen}
+            onClose={() => setPreviewOpen(false)}
+            initialTab={docsTab}
+            chartSnapshot={previewSnapshot}
+            ownerReport={ownerReportOn ? {
+              snapshot: chart.getSnapshot(),
+              branding: {
+                practiceName: profile.practiceName,
+                doctorName: profile.doctorName,
+                logoUrl: profile.logoUrl,
+              },
+              imageRoles: chart.imageRoles,
+              chartId: chart.cloudChartId,
+              practiceId: profile.practiceId,
+              cloudActive: cloud.enabled,
+              config: profile.ownerReportConfig,
+              onEditWording: () => {
+                setPreviewOpen(false);
+                goToSection(OWNER_REPORT_SECTION);
+              },
+            } : undefined}
+          />
+        </React.Suspense>
+      )}
+
+      <WalkthroughModal
+        open={walkthroughOpen}
+        onClose={() => setWalkthroughOpen(false)}
+        aiEnabled={profile.aiEnabled && !trial}
+        onNavigate={native ? showChartSection : goToSection}
+      />
+
+      <PracticeSettingsModal
+        open={practiceSettingsOpen}
+        onClose={() => setPracticeSettingsOpen(false)}
+        profile={profile}
+      />
+
+      <RemindersModal
+        open={remindersOpen}
+        onClose={() => setRemindersOpen(false)}
+      />
+
+      <AccountModal
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        profile={profile}
+        language={language}
+        onLanguageChange={(lng) => setPref({ language: lng })}
+      />
+
+      {setup.need && (
+        <FinishSetupModal need={setup.need} profile={profile} onDone={setup.done} />
+      )}
+
+      {isAdmin && (
+        <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
+      )}
+
+      {cloud.enabled && reminderTarget && (
+        <ReminderModal
+          open={!!reminderTarget}
+          onClose={() => setReminderTarget(null)}
+          practiceId={profile.practiceId}
+          practiceName={profile.practiceName}
+          chartId={reminderTarget.id}
+          toEmail={reminderTarget.owner_email ?? ''}
+          patientName={reminderTarget.patient_name}
+          ownerName={reminderTarget.owner_name ?? ''}
+          recheckDate={reminderTarget.recall_date ?? ''}
+        />
+      )}
+    </>
+  );
+
+  // ----- iOS app shell --------------------------------------------------
+  // What the Patients / Rechecks / Settings tabs get from this component
+  // (src/ios/appData.tsx documents the contract). Context values are
+  // referentially stable, and every "lands on Chart" goes through
+  // landOnChart (Chart tab + its stack popped to the root).
+  const appFns = useStableFunctions({
+    listCharts: cloud.listCharts,
+    /** The shell's onOpenChart: opens the visit; the shell then lands on Chart. */
+    openChart: async (id: string): Promise<boolean> => {
+      try {
+        return await cloud.openChart(id);
+      } catch (err) {
+        toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' });
+        return false;
+      }
+    },
+    newVisit: async (latestChartId: string): Promise<boolean> => {
+      if (!(await libraryCore.newVisit(latestChartId))) return false;
+      landOnChart();
+      return true;
+    },
+    newPatient: async (): Promise<boolean> => {
+      if (!(await libraryCore.newPatient())) return false;
+      goToSection('patient');
+      landOnChart();
+      return true;
+    },
+    loadPdf: async (file: File): Promise<boolean> => {
+      if (!(await libraryCore.loadPdf(file))) return false;
+      landOnChart();
+      return true;
+    },
+  });
+  const appLibrary = React.useMemo<AppLibrary | null>(
+    () => (cloud.enabled ? {
+      listCharts: appFns.listCharts,
+      libraryVersion,
+      deleteChart: libraryCore.deleteChart,
+      newVisit: appFns.newVisit,
+      newPatient: appFns.newPatient,
+      loadPdf: appFns.loadPdf,
+      sendReminder: libraryCore.sendReminder,
+      clearRecalls: libraryCore.clearRecalls,
+      openHistory: libraryCore.openHistory,
+      openChartId: chart.cloudChartId,
+    } : null),
+    // appFns' / libraryCore's members never change identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cloud.enabled, chart.cloudChartId, libraryVersion]
+  );
+  // The library the app's screens see (DEV: the preview's sample patients).
+  const shellLibrary = import.meta.env.DEV ? previewLibrary(appLibrary) : appLibrary;
+  // Rechecks tab badge: patients Overdue + Due today (app only).
+  const rechecksDue = useRechecksDue(native ? shellLibrary : null);
+  const rechecksBadge = React.useMemo(() => (rechecksDue > 0 ? { rechecks: rechecksDue } : undefined), [rechecksDue]);
+  const settingsFns = useStableFunctions({
+    setPref,
+    setLanguage: (lng: AppSettings['language']) => setPref({ language: lng }),
+    goToSection: showChartSection,
+    account: () => setAccountOpen(true),
+    practice: () => setPracticeSettingsOpen(true),
+    chartSettings: (section?: SettingsSection) => setChartSettingsOpen(section ?? 'all'),
+    reminders: () => setRemindersOpen(true),
+    walkthrough: () => setWalkthroughOpen(true),
+    whatsNew: () => setWhatsNewOpen(true),
+    feedback: () => setFeedback({}),
+    admin: () => setAdminOpen(true),
+    signOut: () => cloud.signOut().catch((err) => {
+      toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' });
+    }),
+    requestAccount: (mode: 'signup' | 'signin') => onRequestAccount?.(mode),
+  });
+  const appSettings = React.useMemo<AppSettings>(() => ({
+    trial,
+    cloudEnabled: cloud.enabled,
+    isAdmin: isAdmin && !trial,
+    aiEnabled: profile.aiEnabled && !trial,
+    canFeedback,
+    profile,
+    prefs,
+    prefsFollowAccount: chartSettings.followsAccount,
+    setPref: settingsFns.setPref,
+    language,
+    setLanguage: settingsFns.setLanguage,
+    activeSection,
+    goToSection: settingsFns.goToSection,
+    open: {
+      account: cloud.enabled ? settingsFns.account : undefined,
+      practice: cloud.enabled ? settingsFns.practice : undefined,
+      chartSettings: settingsFns.chartSettings,
+      reminders: cloud.enabled ? settingsFns.reminders : undefined,
+      walkthrough: settingsFns.walkthrough,
+      whatsNew: settingsFns.whatsNew,
+      feedback: canFeedback ? settingsFns.feedback : undefined,
+      admin: isAdmin && !trial ? settingsFns.admin : undefined,
+    },
+    signOut: cloud.enabled ? settingsFns.signOut : undefined,
+    requestAccount: trial && onRequestAccount ? settingsFns.requestAccount : undefined,
+    // settingsFns' members never change identity.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [trial, cloud.enabled, isAdmin, canFeedback, profile, prefs, chartSettings.followsAccount, language, activeSection, !!onRequestAccount]);
+
+  // Hoisted elements: the other tabs don't re-render when the chart does
+  // (they read live data through context; see appData.tsx).
+  const tabScreens = React.useMemo(() => ({
+    patients: <PatientsScreen />,
+    rechecks: <RechecksScreen />,
+    settings: <SettingsScreen />,
+  }), []);
+  const sectionLinksKey = sections.map((x) => `${x.id}\u0000${x.label}`).join('\u0001');
+  const chartSectionLinks = React.useMemo(
+    () => sections.map(({ id, label }) => ({ id, label })),
+    // Only ids/labels matter here; `sections` itself is rebuilt every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sectionLinksKey]
+  );
+
+  if (native) {
+    // ----- Chart tab (iOS): navigation bar, inline notices, dictation ----
+    const status = chartStatus(
+      {
+        cloudEnabled: cloud.enabled,
+        trial,
+        status: cloud.status,
+        saveError: cloud.saveError || '',
+        saveHint,
+        readOnly,
+        viewingSavedVisit,
+        editingSavedVisit,
+        dirty: cloud.dirty,
+        online: cloud.online,
+        hasName: !!chart.patientInfo.patientName.trim(),
+        awaitingClinical: !!cloud.awaitingClinical,
+        lastSavedAt: cloud.lastSavedAt || '',
+        announceSaved,
+        visitDate: chart.patientInfo.date,
+      },
+      tChart,
+      {
+        // In the active language (format helpers, as on the website).
+        time: (iso) => formatSavedAt(iso),
+        date: (ymd) => formatDate(ymd, 'medium'),
+      }
+    );
+    const customizeFor: Record<string, (() => void) | undefined> = {
+      patient: () => setChartSettingsOpen('patient'),
+      anesthesia: () => setChartSettingsOpen('anesthesia'),
+      charting: () => setChartSettingsOpen('charting'),
+      diagnosis: () => setChartSettingsOpen('diagnosis'),
+      imaging: () => setChartSettingsOpen('images'),
+      'owner-report': cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined,
+    };
+    const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
+    const customize = customizeFor[activeSection];
+    const sectionLabel = sections.find((x) => x.id === activeSection)?.label ?? '';
+    const moreMenu: MenuItem[] = [
+      // A fresh chart is one tap away, except mid-edit (Done comes first).
+      ...(cloud.enabled && !editingSavedVisit
+        ? [{ label: t('ios.menu.newChart', { ns: 'chart' }), icon: 'plus' as const, onSelect: () => { void appFns.newPatient(); } }]
+        : []),
+      ...(hasSavedPatient
+        ? [
+            { label: t('ios.menu.newVisit', { ns: 'chart' }), icon: 'calendar-badge-clock' as const, onSelect: startNewVisitFromLatest },
+            { label: t('history.title', { ns: 'library' }), icon: 'clock-arrow-circlepath' as const, onSelect: () => setHistoryFor({ id: chart.cloudChartId }) },
+          ]
+        : []),
+      ...(viewingSavedVisit ? [{ label: t('topbar.editChart', { ns: 'app' }), icon: 'doc-text' as const, onSelect: unlockForEditing }] : []),
+      ...(editingSavedVisit && unlockSnapshotChanged
+        ? [{ label: t('topbar.undo', { ns: 'app' }), icon: 'arrow-uturn-backward' as const, onSelect: () => { void revertUnlockedChanges(); } }]
+        : []),
+      ...(status.canSaveNow ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
+      ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
+      ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
+      // Always there, so the bar's trailing capsule keeps its shape.
+      { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
+    ];
+    const chartTab = (
+      <div className="ios-chart-screen">
+        <ChartNavBar
+          title={chart.patientInfo.patientName.trim() || t('ios.newChart', { ns: 'chart' })}
+          subtitle={status.text}
+          sections={chartSectionLinks}
+          activeSection={activeSection}
+          onSection={goToSection}
+          shareLabel={ownerReportOn ? t('fab.downloadAria', { ns: 'app' }) : t('fab.previewAria', { ns: 'app' })}
+          menu={moreMenu}
+          onEdit={viewingSavedVisit ? unlockForEditing : undefined}
+          onDone={editingSavedVisit ? () => { void doneEditing(); } : undefined}
+        />
+        {/* Stays mounted so screen readers hear every save. */}
+        {cloud.enabled && (
+          <span className="visually-hidden" role="status" aria-live="polite">{status.live}</span>
+        )}
+        {otherTabWarning && (
+          <ChartNotice tone={WARNING_TONE} text={t('ios.notice.otherTab', { ns: 'chart' })} actionLabel={t('ios.notice.gotIt', { ns: 'chart' })} onAction={() => setOtherTabWarning(false)} />
+        )}
+        {status.tone === 'error' && (
+          <ChartNotice
+            tone={status.tone}
+            text={t('ios.notice.notSaved', { ns: 'chart' })}
+            detail={status.detail}
+            actionLabel={status.retry ? t('actions.tryAgain', { ns: 'common' }) : undefined}
+            onAction={status.retry ? attemptSave : undefined}
+          />
+        )}
+        <div className="entry-grid-container entry-grid-container--app">
+          {chartForm}
+        </div>
+      </div>
+    );
+    return (
+      <div className="entry-grid-app">
+        {/* DEV only: ?iosPreview=1&iosFixtures=1 gives the trial sample patients. */}
+        <AppDataProvider library={shellLibrary} settings={appSettings}>
+          <AppShell
+            activeTab={appTab}
+            onTabChange={setAppTab}
+            controllerRef={shellRef}
+            onOpenChart={appFns.openChart}
+            chartSections={chartSectionLinks}
+            activeChartSection={activeSection}
+            onChartSection={goToSection}
+            chart={chartTab}
+            patients={tabScreens.patients}
+            rechecks={tabScreens.rechecks}
+            settings={tabScreens.settings}
+            badges={rechecksBadge}
+          />
+        </AppDataProvider>
+        {/* Dictation floats above the tab bar, outside the shell's stacks
+            (fixed position). Mounted on every tab so a recording keeps
+            going; shown on the Chart tab only. */}
+        {profile.aiEnabled && !trial && (
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+            <VoiceInputButton
+              context={aiContext}
+              handlers={aiHandlers}
+              onActivity={handleAiActivity}
+              activeSection={activeSection}
+              sessionKey={String(chart.chartSession)}
+              locked={readOnly}
+              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
+            />
+          </div>
+        )}
+        {dialogsBeforeForm}
+        {dialogsAfterForm}
+      </div>
+    );
+  }
 
   return (
     <div className="entry-grid-container" ref={containerRef}>
@@ -1476,222 +2080,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       </header>
 
-      {otherTabWarning && (
-        <div className="chart-lock-banner chart-lock-banner--warning" role="alert">
-          <span className="chart-lock-banner__text">
-            {t('otherTab.text')}
-          </span>
-          <button
-            type="button"
-            className="entry-grid__button entry-grid__button--topbar"
-            onClick={() => setOtherTabWarning(false)}
-          >
-            {t('gotIt', { ns: 'whatsNew' })}
-          </button>
-        </div>
-      )}
+      {otherTabBanner}
 
-      {reportCustomizeOpen && (
-        <OwnerReportCustomize
-          onClose={() => setReportCustomizeOpen(false)}
-          config={profile.ownerReportConfig}
-          onSave={profile.saveOwnerReportConfig}
-          loadFailed={profile.ownerReportConfigLoadFailed}
-          branding={{ practiceName: profile.practiceName, doctorName: profile.doctorName, logoUrl: profile.logoUrl }}
-        />
-      )}
+      {dialogsBeforeForm}
 
-      {whatsNewOpen && <WhatsNewModal onClose={closeWhatsNew} />}
+      {chartForm}
 
-      {historyFor && (() => {
-        // Restore only on the open, editable chart; from My charts it's
-        // view-only with a shortcut to open the visit.
-        const isOpenChart = historyFor.id === chart.cloudChartId;
-        const canRestore = isOpenChart && !readOnly;
-        return (
-          <ChartHistoryModal
-            chartId={historyFor.id}
-            label={historyFor.label}
-            onClose={() => setHistoryFor(null)}
-            onRestore={canRestore ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
-            restoreHint={isOpenChart ? undefined : t('historyRestoreHint')}
-            onOpenChart={historyFor.fromLibrary && !isOpenChart ? () => {
-              const id = historyFor.id;
-              setHistoryFor(null);
-              cloud.openChart(id).then((ok) => { if (ok) closeLibrary(); }).catch((err) => {
-                toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' });
-              });
-            } : undefined}
-          />
-        );
-      })()}
+      {pdfButton}
 
-      {chartSettingsOpen && (
-        <ChartSettingsModal
-          onClose={() => setChartSettingsOpen(false)}
-          section={chartSettingsOpen && chartSettingsOpen !== 'all' ? chartSettingsOpen : undefined}
-          prefs={prefs}
-          followsAccount={chartSettings.followsAccount}
-          onChange={setPref}
-        />
-      )}
-
-      {feedback && (
-        <FeedbackModal
-          onClose={() => setFeedback(null)}
-          section={activeSection}
-          transcript={feedback.transcript}
-        />
-      )}
-
-      {libraryOpen && (
-        <ChartLibrary
-          listCharts={cloud.listCharts}
-          onOpen={cloud.openChart}
-          onDelete={cloud.deleteChart}
-          onNewVisit={async (latestChartId) => {
-            try {
-              // Cancelled at the unsaved-changes prompt → stay in the library.
-              if (await startVisitFromChart(latestChartId)) closeLibrary();
-            } catch (err) {
-              toast(t('errors.newVisit', { error: friendlyDetail(err) }), { kind: 'error' });
-            }
-          }}
-          onSendReminder={(c) => setReminderTarget(c)}
-          onOpenHistory={(id, label) => setHistoryFor({ id, label, fromLibrary: true })}
-          onClearRecalls={async (chartIds) => {
-            await cloud.clearRecalls(chartIds);
-            // If the working chart is one of them, mirror the clear
-            // locally — a later save must not resurrect the date.
-            if (chartIds.includes(chart.cloudChartId)) {
-              chart.handlePatientInfoChange('recallDate', '');
-            }
-          }}
-          onNewPatient={startNewPatient}
-          onLoadPdf={async (file) => {
-            if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return;
-            await chart.loadFromPdf(file);
-          }}
-          onClose={closeLibrary}
-        />
-      )}
-
-      <form
-        id="chart-form"
-        className="entry-grid-form"
-        // Focus target for the skip link — without it the anchor jump
-        // scrolls but keyboard focus stays on the link.
-        tabIndex={-1}
-        onSubmit={handleOpenPreview}
-        // Stop browser-default form submit on Enter from any single-line
-        // input. Textareas, the actual submit button, and inputs that
-        // explicitly opt-in (data-allow-form-submit) still submit. This
-        // makes the chart behave like a spreadsheet — Enter advances the
-        // active grid cell rather than opening the preview modal.
-        onKeyDown={(e) => {
-          if (e.key !== 'Enter') return;
-          const target = e.target as HTMLElement | null;
-          if (!target) return;
-          const tag = target.tagName;
-          const allow =
-            tag === 'TEXTAREA' ||
-            (target instanceof HTMLButtonElement && target.type === 'submit') ||
-            target.dataset.allowFormSubmit === 'true';
-          if (!allow) e.preventDefault();
-        }}
-      >
-        <SidebarLayout
-          sections={sections}
-          activeId={activeSection}
-          onActiveChange={goToSection}
-        />
-      </form>
-
-      <button
-        type="submit"
-        form="chart-form"
-        className="fab-download"
-        aria-haspopup="dialog"
-        aria-label={ownerReportOn ? t('fab.downloadAria') : t('fab.previewAria')}
-      >
-        <span aria-hidden="true">⤓</span> {ownerReportOn ? t('fab.download') : t('fab.preview')}
-      </button>
-
-      {previewSnapshot && (
-        <React.Suspense fallback={null}>
-          <DocumentsModal
-            open={previewOpen}
-            onClose={() => setPreviewOpen(false)}
-            initialTab={docsTab}
-            chartSnapshot={previewSnapshot}
-            ownerReport={ownerReportOn ? {
-              snapshot: chart.getSnapshot(),
-              branding: {
-                practiceName: profile.practiceName,
-                doctorName: profile.doctorName,
-                logoUrl: profile.logoUrl,
-              },
-              imageRoles: chart.imageRoles,
-              chartId: chart.cloudChartId,
-              practiceId: profile.practiceId,
-              cloudActive: cloud.enabled,
-              config: profile.ownerReportConfig,
-              onEditWording: () => {
-                setPreviewOpen(false);
-                goToSection(OWNER_REPORT_SECTION);
-              },
-            } : undefined}
-          />
-        </React.Suspense>
-      )}
-
-      <WalkthroughModal
-        open={walkthroughOpen}
-        onClose={() => setWalkthroughOpen(false)}
-        aiEnabled={profile.aiEnabled && !trial}
-        onNavigate={goToSection}
-      />
-
-      <PracticeSettingsModal
-        open={practiceSettingsOpen}
-        onClose={() => setPracticeSettingsOpen(false)}
-        profile={profile}
-      />
-
-      <RemindersModal
-        open={remindersOpen}
-        onClose={() => setRemindersOpen(false)}
-      />
-
-      <AccountModal
-        open={accountOpen}
-        onClose={() => setAccountOpen(false)}
-        profile={profile}
-        language={language}
-        onLanguageChange={(lng) => setPref({ language: lng })}
-      />
-
-      {setup.need && (
-        <FinishSetupModal need={setup.need} profile={profile} onDone={setup.done} />
-      )}
-
-      {isAdmin && (
-        <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
-      )}
-
-      {cloud.enabled && reminderTarget && (
-        <ReminderModal
-          open={!!reminderTarget}
-          onClose={() => setReminderTarget(null)}
-          practiceId={profile.practiceId}
-          practiceName={profile.practiceName}
-          chartId={reminderTarget.id}
-          toEmail={reminderTarget.owner_email ?? ''}
-          patientName={reminderTarget.patient_name}
-          ownerName={reminderTarget.owner_name ?? ''}
-          recheckDate={reminderTarget.recall_date ?? ''}
-        />
-      )}
+      {dialogsAfterForm}
 
       {/* Compact feedback link — the email it opens pre-fills the useful
           details (what happened, section, browser). */}

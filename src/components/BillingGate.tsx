@@ -13,6 +13,11 @@ import {
   startCheckout,
   openBillingPortal,
 } from '../hooks/useBilling';
+import { isNativeApp } from '../native/platform';
+import { readBillingCache, saveBillingCache } from '../native/billingCache';
+import { getSessionTolerant } from '../native/offlineSession';
+import { InactivePlan } from './InactivePlan';
+import { SignOutLink } from './SignOutLink';
 import './BillingGate.css';
 
 interface BillingGateProps {
@@ -30,6 +35,11 @@ interface BillingGateProps {
  * Handles the round-trip back from Checkout too: ?billing=success polls
  * until the webhook lands, ?billing=canceled just clears the flag.
  * Admins and standalone mode bypass the gate entirely.
+ *
+ * In the iOS app nothing is sold: every no-access outcome shows the
+ * neutral InactivePlan screen instead of checkout/portal/member screens,
+ * and the last successful check is cached so the app opens offline for
+ * up to 7 days (see native/billingCache).
  */
 export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   const { t } = useTranslation('billing');
@@ -52,17 +62,33 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     if (!cloudEnabled || !supabase) return;
     let cancelled = false;
     if (new URLSearchParams(window.location.search).get('billing') === 'canceled') clearBillingParam();
-    supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) setIsAdmin(data.session?.user.app_metadata?.role === 'admin');
+    // Its user id keys the app's billing cache. Offline with an expired
+    // access token getSession() can't refresh, so fall back to the stored
+    // session (app only — see native/offlineSession).
+    const userId = getSessionTolerant(supabase).then(({ session }) => {
+      if (!cancelled) setIsAdmin(session?.user.app_metadata?.role === 'admin');
+      return session?.user.id ?? '';
     });
     fetchBilling()
       .then((b) => {
         if (cancelled) return;
+        // No user id, nothing to key the cache to: skip it rather than
+        // save an entry no one can read back.
+        if (isNativeApp()) void userId.then((id) => id && saveBillingCache(b, Date.now(), id));
         setInfo(b);
         setSelected(b.intendedPlan ?? null);
       })
-      .catch((e) => {
-        if (!cancelled) setLoadError(e instanceof Error ? e.message : i18n.t('gate.checkFailed', { ns: 'billing' }));
+      .catch(async (e) => {
+        if (cancelled) return;
+        // App offline: go on this user's last known status if it's recent
+        // enough.
+        const cached = isNativeApp() ? readBillingCache(Date.now(), await userId) : null;
+        if (cancelled) return;
+        if (cached) {
+          setInfo(cached);
+          return;
+        }
+        setLoadError(e instanceof Error ? e.message : i18n.t('gate.checkFailed', { ns: 'billing' }));
       });
     return () => {
       cancelled = true;
@@ -157,6 +183,9 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   if (!PAID_SIGNUP && info.status === 'none') {
     return <>{children}</>;
   }
+
+  // The app sells nothing and links to no billing — one neutral screen.
+  if (isNativeApp()) return <InactivePlan />;
 
   // Frozen or never-subscribed from here on. Data survives 30 days from
   // the freeze; say so wherever we block someone.
@@ -291,18 +320,5 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
         <SignOutLink />
       </div>
     </div>
-  );
-};
-
-const SignOutLink: React.FC = () => {
-  const { t } = useTranslation('billing');
-  return (
-    <button
-      type="button"
-      className="billing-gate__signout"
-      onClick={() => supabase?.auth.signOut()}
-    >
-      {t('gate.signOut')}
-    </button>
   );
 };

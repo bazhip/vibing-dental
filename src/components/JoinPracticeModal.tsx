@@ -3,6 +3,12 @@ import { Trans, useTranslation } from 'react-i18next';
 import { invokeFunction } from '../utils/edgeFunctions';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { friendlyError } from './ui/dialogs';
+import { isNativeApp } from '../native/platform';
+import { Sheet, type SheetDetent } from '../ios/Sheet';
+import { List, ListSection, SwitchRow } from '../ios/List';
+
+/** The sheet opens at half height and can be pulled to full. */
+const HALF_OR_FULL: SheetDetent[] = ['medium', 'large'];
 
 interface JoinPracticeModalProps {
   token: string;
@@ -19,8 +25,9 @@ const callTeamApi = <T,>(body: Record<string, unknown>): Promise<T> => invokeFun
  * separate, explicit choice.
  */
 export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onDone }) => {
+  const native = isNativeApp();
   const { t } = useTranslation('onboarding');
-  const ref = useModalFocus<HTMLDivElement>(true);
+  const ref = useModalFocus<HTMLDivElement>(!native);
   const [loaded, setLoaded] = React.useState(false);
   const [practiceName, setPracticeName] = React.useState('');
   const [alreadyMember, setAlreadyMember] = React.useState(false);
@@ -54,6 +61,47 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
   };
 
   const name = practiceName || t('join.thisPractice');
+
+  if (native) {
+    // A sheet: Not now (or swiping it away) declines, Join accepts.
+    const canJoin = loaded && !alreadyMember && !error;
+    return (
+      <Sheet
+        open
+        onClose={() => onDone(false)}
+        title={loaded ? t('join.title', { practice: name }) : t('join.invitation')}
+        cancelLabel={alreadyMember || error ? t('actions.close', { ns: 'common' }) : t('join.notNow')}
+        doneLabel={canJoin ? (busy ? t('join.joining') : t('ios.sheets.join.join', { ns: 'common' })) : undefined}
+        onDone={canJoin ? () => void accept() : undefined}
+        doneDisabled={busy}
+        confirmDismiss={() => !busy}
+        detents={HALF_OR_FULL}
+      >
+        <div className="ios-form">
+          {!loaded && !error && <p className="ios-form-text">{t('join.checking')}</p>}
+          {loaded && alreadyMember && <p className="ios-form-text">{t('join.alreadyMember', { practice: name })}</p>}
+          {canJoin && (
+            <p className="ios-form-text">
+              <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
+            </p>
+          )}
+          {error && <p className="ios-form-error" role="alert">{error}</p>}
+        </div>
+        {canJoin && (
+          <List>
+            <ListSection>
+              <SwitchRow
+                title={t('join.shareExisting')}
+                checked={shareExisting}
+                onChange={setShareExisting}
+                disabled={busy}
+              />
+            </ListSection>
+          </List>
+        )}
+      </Sheet>
+    );
+  }
 
   return (
     <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-labelledby="join-title">

@@ -1,0 +1,5 @@
+/* Permission prompts (English: Info.plist). Formal address. */
+"NSCameraUsageDescription" = "Fotos und Röntgenbilder für die Akte eines Patienten aufnehmen.";
+"NSPhotoLibraryUsageDescription" = "Fotos und Röntgenbilder an die Akte eines Patienten anhängen.";
+"NSMicrophoneUsageDescription" = "Befunde in die Akte diktieren.";
+"NSFaceIDUsageDescription" = "ToothOps entsperren, um Patientenakten zu schützen.";

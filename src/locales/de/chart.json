@@ -269,5 +269,70 @@
   "scoreChips": {
     "group": "{{name}}-Wert",
     "clear": "{{name}} löschen"
+  },
+  "menu": {
+    "practiceSettingsHintApp": "Name, Logo und Team."
+  },
+  "imaging": {
+    "takePhoto": "Foto aufnehmen",
+    "cameraFailed": "Die Kamera konnte nicht geöffnet werden.",
+    "cameraNoPhoto": "Die Kamera hat kein Foto geliefert.",
+    "cameraReadFailed": "Das Foto konnte nicht gelesen werden ({{status}}).",
+    "limitReached_one": "Diese Akte hat ihr Limit von {{count}} Bild erreicht.",
+    "limitReached_other": "Diese Akte hat ihr Limit von {{count}} Bildern erreicht.",
+    "uploadsUnavailable": "Foto-Uploads sind für dieses Konto nicht verfügbar.",
+    "formatsApp": "PNG, JPEG oder WEBP.",
+    "dicomUnavailable": "DICOM-Uploads sind für dieses Konto nicht verfügbar. Exportieren Sie die Röntgenaufnahme als JPEG oder PNG, um sie hinzuzufügen."
+  },
+  "aiConsent": {
+    "title": "KI-Dienste verwenden?",
+    "intro": "Zum Diktieren in eine Akte und für KI-Entwürfe sendet ToothOps Daten an zwei Dienste:",
+    "deepgram": "<strong>Deepgram</strong> empfängt die Aufnahme Ihrer Stimme, während Sie diktieren, um sie in Text umzuwandeln.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) empfängt das Diktat-Transkript und den Inhalt der Akte, etwa Patientendaten und Befunde, um die Akte auszufüllen oder den Bericht für den Tierhalter zu entwerfen.",
+    "nothingSent": "Es wird nichts gesendet, solange Sie diese Funktionen nicht nutzen.",
+    "allow": "Erlauben",
+    "notNow": "Nicht jetzt"
+  },
+  "ios": {
+    "newChart": "Neue Akte",
+    "more": "Mehr",
+    "menu": {
+      "newChart": "Neue Akte",
+      "newVisit": "Neuer Besuch",
+      "saveNow": "Jetzt speichern",
+      "retrySave": "Speichern erneut versuchen",
+      "customize": "Anpassen: {{section}}"
+    },
+    "status": {
+      "saved": "Gespeichert · {{time}}",
+      "notSaved": "Nicht gespeichert",
+      "viewOnlyDate": "Nur ansehen · {{date}}",
+      "editingWith": "Bearbeitung · {{status}}",
+      "keptOnDevice": "Wird gespeichert, sobald Sie mit dem Befund beginnen",
+      "unsaved": "Nicht gespeicherte Änderungen",
+      "onDevice": "Nur auf diesem Gerät"
+    },
+    "notice": {
+      "otherTab": "Diese Akte ist in einem anderen Fenster geöffnet. Beide bearbeiten dieselbe Arbeitskopie — schließen Sie eines, damit Ihre Änderungen nicht überschrieben werden.",
+      "gotIt": "Verstanden",
+      "notSaved": "Diese Akte ist nicht gespeichert."
+    },
+    "form": {
+      "patient": "Patient",
+      "owner": "Besitzer",
+      "visit": "Besuch",
+      "complaint": "Vorstellungsgrund",
+      "dictate": "Diktat",
+      "nerveBlocks": "Nervenblockaden",
+      "addInterval": "Intervall hinzufügen"
+    },
+    "diagram": {
+      "numbers": "Nummern",
+      "freeComment": "Freier Kommentar"
+    },
+    "grid": {
+      "tip": "Tipp: Tippen Sie auf Zahnnummern, um mehrere Zähne auszuwählen, und setzen Sie dann einen Wert für alle.",
+      "pickTitle": "Tippen, um diesen Zahn auszuwählen und mehreren Zähnen gleichzeitig einen Wert zu geben"
+    }
   }
 }

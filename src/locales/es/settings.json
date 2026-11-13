@@ -173,7 +173,17 @@
       "gridHint": "(opcional si los hallazgos están en el esquema)",
       "images": "Incluir las imágenes",
       "imagesHint": "(4 por página, después del historial)"
-    }
+    },
+    "noteDevice": "Guardados en este dispositivo. Los cambios se aplican al instante.",
+    "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",
+    "scoreTapFindingHint": "Movilidad → recesión → … para exploraciones diente a diente",
+    "scoreTapToothHint": "Para puntuar un hallazgo en toda la boca",
+    "columnsFooter": "Columnas que se muestran en la cuadrícula del odontograma. Al menos una sigue visible.",
+    "mirrorHint": "Y en el PDF",
+    "drugName": "Fármaco",
+    "drugStrength": "Concentración",
+    "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
+    "pdfImagesHint": "4 por página, después del historial"
   },
   "feedback": {
     "title": "Enviar comentarios",
@@ -194,5 +204,46 @@
     "needsAccount": "Para enviar comentarios hace falta una cuenta.",
     "send": "Enviar",
     "sending": "Enviando…"
+  },
+  "gettingStarted": {
+    "takeTour": "Hacer el recorrido",
+    "tourFooter": "Un breve recorrido por dónde está todo en el historial.",
+    "chartParts": "Partes del historial"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Un historial dental, de arriba abajo. Toque el título del historial para pasar de una sección a otra — todo se guarda automáticamente."
+      },
+      "grid": {
+        "body": "Medidas por diente. Toque una celda y escriba, o toque una puntuación — registre sin levantar la vista."
+      },
+      "diagrams": {
+        "body": "Toque un diente para marcarlo; cambie entre Comentario y Dibujo, añada notas libres. Deshacer y Rehacer están en la barra de herramientas del diagrama."
+      },
+      "codes": {
+        "body": "Busque aquí el conjunto completo de códigos AVDC, junto al diagrama."
+      },
+      "treatment": {
+        "body": "Redacte el informe o inserte una plantilla guardada — y guarde otras nuevas para reutilizarlas."
+      },
+      "patients": {
+        "title": "Pacientes",
+        "body": "Todas las visitas de cada paciente. Las visitas guardadas se abren en solo lectura hasta que toque Editar. Controles muestra los pacientes con un control pendiente."
+      },
+      "share": {
+        "title": "Compartir el PDF",
+        "body": "Genere el PDF del historial listo para el cliente con su logotipo y compártalo o guárdelo cuando quiera."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Toque los números de dientes en la cuadrícula para seleccionar varios y asigne una misma puntuación a todos.",
+    "customize": "Cada página tiene Personalizar en su menú Más: oculte columnas, elija qué se muestra junto a los dientes y mucho más. Los ajustes siguen a su cuenta en todos sus dispositivos.",
+    "leftOff": "Al abrirse, ToothOps muestra Pacientes — salvo que la visita de hoy siga abierta — y la visita de hoy se abre lista para editar."
+  },
+  "reminders": {
+    "sendFrom": "Envíe un recordatorio para un paciente desde Pacientes o Controles.",
+    "settingUp": "Su clínica se está configurando — vuelva a comprobarlo en un momento."
   }
 }

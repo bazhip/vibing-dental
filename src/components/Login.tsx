@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
+import { Browser } from '@capacitor/browser';
 import { GoogleSignInButton } from './GoogleSignInButton';
+import { AppleSignInButton, AppleSignInHint, showAppleSignIn } from './AppleSignInButton';
 import { LegalNotice, LEGAL_ACTION } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { withDetail } from '../utils/apiErrors';
 import { uploadPracticeLogo } from '../hooks/useProfile';
+import { authRedirectUrl } from '../native/authReturn';
+import { WEB_ORIGIN } from '../native/platform';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
+import { Icon } from '../ios/icons';
 import './Login.css';
 
 interface LoginProps {
@@ -19,6 +24,9 @@ interface LoginProps {
   embedded?: boolean;
   /** Plan preselected from the pricing page's card CTAs. */
   initialPlan?: PlanKey;
+  /** Inside the iOS app: sign-in only — no sign-up form or plans; new
+   *  users are pointed to the website instead. */
+  appMode?: boolean;
 }
 
 type Mode = 'signin' | 'signup' | 'check-email';
@@ -47,10 +55,10 @@ function friendlyAuthError(e: AuthErr): string {
   return msg ? withDetail(msg) : ct('errors.generic');
 }
 
+/** The app icon's symbol on the app's sign-in screen (not text). */
+const APP_ICON = 'tooth';
 const MIN_PASSWORD = 8;
 const RESEND_COOLDOWN_S = 60;
-/** Where confirmation / reset links land: back on this site. */
-const authRedirect = () => window.location.origin + window.location.pathname;
 
 /**
  * Sign-in / sign-up screen.
@@ -65,9 +73,9 @@ const authRedirect = () => window.location.origin + window.location.pathname;
  * Without Supabase (local dev, tests): the legacy shared practice
  * password, so the app keeps working standalone.
  */
-export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan }) => {
+export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan, appMode = false }) => {
   const { t } = useTranslation('auth');
-  const [mode, setMode] = useState<Mode>(initialMode);
+  const [mode, setMode] = useState<Mode>(appMode ? 'signin' : initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [practiceName, setPracticeName] = useState('');
@@ -103,7 +111,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     const { error: resendError } = await supabase.auth.resend({
       type: 'signup',
       email: target,
-      options: { emailRedirectTo: authRedirect() },
+      options: { emailRedirectTo: authRedirectUrl() },
     });
     setBusy(false);
     if (resendError) {
@@ -158,7 +166,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: authRedirect(),
+          emailRedirectTo: authRedirectUrl(),
           data: {
             practice_name: practiceName.trim(),
             doctor_name: doctorName.trim(),
@@ -231,6 +239,14 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     onAuthenticate();
   };
 
+  // iOS app (sign-in only): system styling — inset-grouped fields, filled
+  // and plain iOS buttons. The website form keeps its own classes.
+  const app = appMode;
+  const fieldClass = app ? 'ios-field' : 'login-field';
+  const fieldLabelClass = app ? 'ios-field__label' : 'login-field__label';
+  const inputClass = app ? 'ios-field__input' : 'login-input';
+  const linkButtonClass = app ? 'ios-button ios-button--plain' : 'login-switch';
+
   if (mode === 'check-email') {
     return (
       <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
@@ -270,10 +286,55 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     );
   }
 
+  const emailField = cloudEnabled && (
+    <label className={fieldClass}>
+      <span className={fieldLabelClass}>{t('login.email')}</span>
+      <input
+        type="email"
+        className={inputClass}
+        placeholder={t('login.emailPlaceholder')}
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        autoFocus={!signup && !app}
+      />
+    </label>
+  );
+  const passwordField = (
+    <label className={fieldClass}>
+      <span className={fieldLabelClass}>{t('login.password')}</span>
+      <span className={app ? 'ios-field__control' : 'login-password'}>
+        <input
+          type={showPassword ? 'text' : 'password'}
+          className={inputClass}
+          autoComplete={signup ? 'new-password' : 'current-password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoFocus={!cloudEnabled && !app}
+          minLength={signup ? MIN_PASSWORD : undefined}
+        />
+        <button
+          type="button"
+          className={app ? 'ios-field__accessory' : 'login-password__toggle'}
+          onClick={() => setShowPassword((v) => !v)}
+          aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
+          aria-pressed={showPassword}
+        >
+          {showPassword ? t('login.hide') : t('login.show')}
+        </button>
+      </span>
+    </label>
+  );
+
   return (
-    <div className={embedded ? 'login-container login-container--embedded' : 'login-container'}>
+    <div className={embedded ? 'login-container login-container--embedded' : app ? 'login-container login-container--app' : 'login-container'}>
       <div className="login-box">
         <div className="login-header">
+          {app && (
+            <span className="login-app-icon" aria-hidden="true">
+              <Icon name={APP_ICON} size={34} />
+            </span>
+          )}
           <LanguageSwitcher compact />
           <h1>{t('brand')}</h1>
           <p>
@@ -294,6 +355,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 onError={setError}
                 onStart={markTermsPending}
               />
+              {showAppleSignIn() && (
+                <>
+                  <AppleSignInButton
+                    label={signup ? t('auth.apple.signUp', { ns: 'account' }) : t('auth.apple.continue', { ns: 'account' })}
+                    disabled={busy}
+                    onError={setError}
+                    onStart={markTermsPending}
+                  />
+                  <AppleSignInHint />
+                </>
+              )}
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
               <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" withEnglishNote={false} />
@@ -410,44 +482,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             </>
           )}
 
-          {cloudEnabled && (
-            <label className="login-field">
-              <span className="login-field__label">{t('login.email')}</span>
-              <input
-                type="email"
-                className="login-input"
-                placeholder={t('login.emailPlaceholder')}
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoFocus={!signup}
-              />
-            </label>
+          {app ? (
+            <div className="ios-form-group">
+              {emailField}
+              {passwordField}
+            </div>
+          ) : (
+            <>
+              {emailField}
+              {passwordField}
+            </>
           )}
-
-          <label className="login-field">
-            <span className="login-field__label">{t('login.password')}</span>
-            <span className="login-password">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                className="login-input"
-                autoComplete={signup ? 'new-password' : 'current-password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoFocus={!cloudEnabled}
-                minLength={signup ? MIN_PASSWORD : undefined}
-              />
-              <button
-                type="button"
-                className="login-password__toggle"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
-                aria-pressed={showPassword}
-              >
-                {showPassword ? t('login.hide') : t('login.show')}
-              </button>
-            </span>
-          </label>
           {cloudEnabled && signup && (
             <span className={`login-hint${password && password.length < MIN_PASSWORD ? ' login-hint--warn' : ''}`}>
               {password ? t('login.passwordHintCount', { min: MIN_PASSWORD, length: password.length }) : t('login.passwordHint', { min: MIN_PASSWORD })}
@@ -476,7 +521,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           )}
           {notice && <div className="login-notice" role="status">{notice}</div>}
 
-          <button type="submit" className="login-button" disabled={busy}>
+          <button type="submit" className={app ? 'ios-button ios-button--filled' : 'login-button'} disabled={busy}>
             {busy
               ? signup
                 ? t('login.creating')
@@ -487,12 +532,13 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               ? t('login.continue')
               : t('login.signIn')}
           </button>
-          {cloudEnabled && <LegalNotice action={signup ? LEGAL_ACTION.creatingAccount : LEGAL_ACTION.signingIn} />}
+          {/* The app shows the notice once, by the sign-in buttons above. */}
+          {cloudEnabled && !app && <LegalNotice action={signup ? LEGAL_ACTION.creatingAccount : LEGAL_ACTION.signingIn} />}
 
           {cloudEnabled && !signup && (
             <button
               type="button"
-              className="login-switch"
+              className={linkButtonClass}
               onClick={async () => {
                 if (!supabase) return;
                 const target = email.trim();
@@ -504,7 +550,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 setError('');
                 setNotice('');
                 const { error: resetError } = await supabase.auth.resetPasswordForEmail(target, {
-                  redirectTo: authRedirect(),
+                  redirectTo: authRedirectUrl(),
                 });
                 setBusy(false);
                 if (resetError) setError(friendlyAuthError(resetError));
@@ -515,7 +561,22 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             </button>
           )}
 
-          {cloudEnabled && (
+          {cloudEnabled && appMode && (
+            <a
+              href={WEB_ORIGIN}
+              className={app ? 'ios-button ios-button--plain login-signup-link' : 'login-switch login-signup-link'}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                void Browser.open({ url: WEB_ORIGIN });
+              }}
+            >
+              {t('auth.signUpOnWeb', { ns: 'account' })}
+            </a>
+          )}
+
+          {cloudEnabled && !appMode && (
             <button
               type="button"
               className="login-switch"

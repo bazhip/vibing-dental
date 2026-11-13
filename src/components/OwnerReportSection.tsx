@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast, confirmDialog } from './ui/dialogs';
 import { detailText } from '../utils/apiErrors';
 import { draftOwnerReport } from '../utils/ownerReportAi';
+import { ensureAiConsent } from '../native/aiConsent';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
@@ -68,13 +69,27 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   // into the same editable fields. Hand edits are only replaced after a
   // confirm, and the toast offers the previous text back.
   const [drafting, setDrafting] = React.useState(false);
+  // Set synchronously on the first click: the confirm and consent dialogs
+  // are awaited before `drafting` is set, so a fast double-click would
+  // otherwise start two drafts.
+  const busyRef = React.useRef(false);
   const writeWithAi = async () => {
-    if (drafting) return;
+    if (busyRef.current) return;
+    busyRef.current = true;
+    try {
+      await writeDraft();
+    } finally {
+      busyRef.current = false;
+    }
+  };
+  const writeDraft = async () => {
     if ((introEdited || homecareEdited) && !(await confirmDialog({
       title: t('section.replaceTitle'),
       message: t('section.replaceMessage'),
       confirmLabel: t('section.writeWithAi'),
     }))) return;
+    // App only: one-time consent before chart text first goes to Anthropic.
+    if (!(await ensureAiConsent())) return;
     setDrafting(true);
     try {
       const draft = await draftOwnerReport(snapshot, context);

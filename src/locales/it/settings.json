@@ -173,7 +173,17 @@
       "gridHint": "(facoltativa quando i reperti sono nello schema)",
       "images": "Includi le immagini",
       "imagesHint": "(4 per pagina, dopo la cartella)"
-    }
+    },
+    "noteDevice": "Salvate su questo dispositivo. Le modifiche si applicano subito.",
+    "spaceMovesDownHint": "Veloce per dettare una serie di profondità",
+    "scoreTapFindingHint": "Mobilità → recessione → … per esami dente per dente",
+    "scoreTapToothHint": "Per valutare un reperto in tutta la bocca",
+    "columnsFooter": "Colonne mostrate nella griglia dell’odontogramma. Almeno una resta attiva.",
+    "mirrorHint": "E nel PDF",
+    "drugName": "Farmaco",
+    "drugStrength": "Concentrazione",
+    "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
+    "pdfImagesHint": "4 per pagina, dopo la cartella"
   },
   "feedback": {
     "title": "Invia feedback",
@@ -194,5 +204,46 @@
     "needsAccount": "Per inviare feedback serve un account.",
     "send": "Invia",
     "sending": "Invio…"
+  },
+  "gettingStarted": {
+    "takeTour": "Fai il tour",
+    "tourFooter": "Un breve tour per sapere dove si trova tutto nella cartella.",
+    "chartParts": "Parti della cartella"
+  },
+  "tour": {
+    "steps": {
+      "sections": {
+        "body": "Una cartella dentale, dall’alto in basso. Tocchi il titolo della cartella per passare da una sezione all’altra — tutto si salva automaticamente."
+      },
+      "grid": {
+        "body": "Misure dente per dente. Tocchi una cella e scriva, oppure tocchi un punteggio — registri senza alzare lo sguardo."
+      },
+      "diagrams": {
+        "body": "Tocchi un dente per contrassegnarlo; passi da Commento a Disegno, aggiunga note libere. Annulla e Ripristina sono nella barra degli strumenti del diagramma."
+      },
+      "codes": {
+        "body": "Cerchi qui l’intero set di codici AVDC, proprio accanto al diagramma."
+      },
+      "treatment": {
+        "body": "Scriva il referto o inserisca un modello salvato — e ne salvi di nuovi da riutilizzare."
+      },
+      "patients": {
+        "title": "Pazienti",
+        "body": "Tutte le visite di ogni paziente. Le visite salvate si aprono in sola lettura finché non tocca Modifica. Controlli elenca i pazienti con un controllo in scadenza."
+      },
+      "share": {
+        "title": "Condividi il PDF",
+        "body": "Crei il PDF della cartella pronto per il cliente con il Suo logo, poi lo condivida o lo salvi quando è pronto."
+      }
+    }
+  },
+  "whatsNew": {
+    "severalTeeth": "Tocchi i numeri dei denti nella griglia per selezionarne più di uno, poi assegni un unico punteggio a tutti.",
+    "customize": "Ogni pagina ha Personalizza nel menu Altro: nasconda colonne, scelga cosa mostrare accanto ai denti e altro ancora. Le impostazioni seguono il Suo account su ogni dispositivo.",
+    "leftOff": "All’apertura ToothOps mostra Pazienti — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
+  },
+  "reminders": {
+    "sendFrom": "Invii un promemoria per un paziente da Pazienti o Controlli.",
+    "settingUp": "La Sua struttura è in fase di configurazione — ricontrolli tra un momento."
   }
 }

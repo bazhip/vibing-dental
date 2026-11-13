@@ -9,12 +9,16 @@ import {
   styleSwatch,
 } from '../utils/pdf/styles';
 import { readString, writeString } from '../utils/storage';
+import { isNativeApp } from '../native/platform';
+import { MenuPopover, type MenuAnchor, type MenuItem } from '../ios/ContextMenu';
+import { Icon, type IconName } from '../ios/icons';
 
 type PresetId = 'clinic' | 'classic-blue' | 'slate' | 'iris' | 'journal';
 
 const STYLE_KEY = 'pdfStyle';
 const COLOR_KEY = 'pdfCustomColor';
 const DEFAULT_CUSTOM = '#7c3aed';
+const CHEVRON_ICON: IconName = 'chevron-down';
 
 /** The last PDF style used on this device (preset or custom color). */
 export function readSavedPdfStyle(): string {
@@ -56,6 +60,9 @@ interface Props {
 export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) => {
   const { t } = useTranslation('pdfui');
   const [open, setOpen] = React.useState(false);
+  const [menuAnchor, setMenuAnchor] = React.useState<MenuAnchor | null>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const colorRef = React.useRef<HTMLInputElement>(null);
   const active = resolvePdfStyle(styleId);
   const customColor = customStyleColor(styleId);
   const [lastColor, setLastColor] = React.useState(() => customColor ?? readString(COLOR_KEY, 1, DEFAULT_CUSTOM));
@@ -122,6 +129,62 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
   );
 
   if (!compact) return list;
+
+  // iOS app: a pull-down menu on the button (a popover-style menu on iPad
+  // too) — presets with their swatch and a checkmark, plus "Custom Color…"
+  // which opens the system color picker. The preview behind updates live.
+  // (A menu, not a second sheet: the picker lives inside the Documents sheet.)
+  if (isNativeApp()) {
+    const openMenu = () => {
+      const r = buttonRef.current?.getBoundingClientRect();
+      if (r) setMenuAnchor({ left: r.left, top: r.top, width: r.width, height: r.height });
+    };
+    const items: MenuItem[] = [
+      ...PDF_STYLES.map((s) => ({
+        label: presetName(s.id),
+        checked: s.id === styleId,
+        accessory: <span className="pdf-style-swatch" style={{ background: styleSwatch(s) }} />,
+        onSelect: () => pick(s.id),
+      })),
+      {
+        label: t('ios.sheets.customColor', { ns: 'common' }),
+        checked: !!customColor,
+        accessory: <span className="pdf-style-swatch pdf-style-swatch--custom" style={{ background: customColor ?? lastColor }} />,
+        onSelect: () => {
+          pickColor(customColor ?? lastColor);
+          colorRef.current?.click();
+        },
+      },
+    ];
+    return (
+      <>
+        <button
+          ref={buttonRef}
+          type="button"
+          className="pdf-style-button"
+          aria-haspopup="menu"
+          aria-expanded={!!menuAnchor}
+          onClick={openMenu}
+        >
+          <span className="pdf-style-swatch" style={{ background: styleSwatch(active) }} aria-hidden="true" />
+          <span className="pdf-style-button__label">{customColor ? t('style.customShort') : presetName(active.id)}</span>
+          <Icon name={CHEVRON_ICON} size={13} className="pdf-style-button__chevron" />
+        </button>
+        <input
+          ref={colorRef}
+          type="color"
+          className="visually-hidden"
+          tabIndex={-1}
+          aria-label={t('style.chooseColor')}
+          value={customColor ?? lastColor}
+          onChange={(e) => pickColor(e.target.value)}
+        />
+        {menuAnchor && (
+          <MenuPopover radio label={t('style.label')} anchor={menuAnchor} items={items} onClose={() => setMenuAnchor(null)} />
+        )}
+      </>
+    );
+  }
 
   return (
     <>

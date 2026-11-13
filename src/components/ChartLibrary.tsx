@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { formatDate, formatDateTime } from '../i18n/format';
-import { localDateISO } from '../utils/localDate';
 
 /** "Nov 11, 2026" — the same style as the Updated column. */
 function formatChartDate(iso: string): string {
@@ -12,6 +11,7 @@ import { confirmDialog, friendlyDetail } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
+import { todayIso, useChartLibraryList, type LibraryError, type PatientGroup, type SortKey } from './chartLibraryData';
 
 interface ChartLibraryProps {
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
@@ -48,90 +48,19 @@ function speciesLabel(species: string): string {
   return key ? i18n.t(key, { ns: 'app' }) : species ?? '—';
 }
 
-/** One animal's charts across visits. */
-interface PatientGroup {
-  key: string;
-  name: string;
-  number: string;
-  owner: string;
-  ownerPhone: string;
-  ownerEmail: string;
-  species: string;
-  dentition: string;
-  visits: CloudChartMeta[];
-  /** The chart a reminder should be sent from (latest visit that carries
-   *  an owner email, else the latest visit). */
-  reminderChart: CloudChartMeta | null;
-  latestUpdated: string;
-  /** Soonest upcoming (or most overdue) recall across the patient's visits. */
-  recall: string;
-}
+/** Catalog key for each failure (the cause follows in the message). */
+const ERROR_KEYS = {
+  load: 'errors.load',
+  more: 'errors.loadMore',
+  open: 'errors.open',
+  delete: 'errors.delete',
+  clear: 'errors.clearRecall',
+} as const satisfies Record<LibraryError['kind'], string>;
 
 /** Species offered in the filter (the stored species values). */
 const FILTER_SPECIES = ['canine', 'feline'] as const;
 
-type SortKey = 'patient' | 'updated' | 'recall';
-type SortDir = 'asc' | 'desc';
-
 const SORT_LABELS = { patient: 'table.patient', updated: 'table.updated', recall: 'table.recheck' } as const;
-
-/** Visits fetched per page — grouping happens on the loaded set, so a
- *  page comfortably covers a screenful of patients. */
-const PAGE_SIZE = 200;
-
-function todayIso(): string {
-  return localDateISO();
-}
-
-/** Group charts by patient: patient number if present, else name. */
-function groupByPatient(charts: CloudChartMeta[]): PatientGroup[] {
-  const groups = new Map<string, PatientGroup>();
-  for (const c of charts) {
-    const num = c.patient_number.trim().toLowerCase();
-    const name = c.patient_name.trim().toLowerCase();
-    const key = num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
-    let g = groups.get(key);
-    if (!g) {
-      g = {
-        key,
-        name: c.patient_name.trim() || i18n.t('unnamedPatient', { ns: 'library' }),
-        number: c.patient_number.trim(),
-        owner: c.owner_name?.trim() || '',
-        ownerPhone: c.owner_phone?.trim() || '',
-        ownerEmail: c.owner_email?.trim() || '',
-        species: c.species,
-        dentition: c.dentition || 'permanent',
-        visits: [],
-        reminderChart: null,
-        latestUpdated: c.updated_at,
-        recall: c.recall_date || '',
-      };
-      groups.set(key, g);
-    }
-    g.visits.push(c);
-    // Rows arrive newest-first, so the first-seen values are the latest.
-    if (c.updated_at > g.latestUpdated) g.latestUpdated = c.updated_at;
-    // Prefer a non-empty owner from any visit.
-    if (!g.owner && c.owner_name?.trim()) g.owner = c.owner_name.trim();
-    if (!g.ownerPhone && c.owner_phone?.trim()) g.ownerPhone = c.owner_phone.trim();
-    if (!g.ownerEmail && c.owner_email?.trim()) g.ownerEmail = c.owner_email.trim();
-    // Keep the soonest non-empty recall date across visits.
-    if (c.recall_date && (!g.recall || c.recall_date < g.recall)) g.recall = c.recall_date;
-    // The visit we'd remind from: prefer one that has an owner email.
-    if (!g.reminderChart || (c.owner_email?.trim() && !g.reminderChart.owner_email?.trim())) {
-      g.reminderChart = c;
-    }
-  }
-  // Visits within a group: newest chart date first, then updated.
-  const list = Array.from(groups.values());
-  for (const g of list) {
-    g.visits.sort((a, b) =>
-      (b.chart_date || '').localeCompare(a.chart_date || '') ||
-      b.updated_at.localeCompare(a.updated_at)
-    );
-  }
-  return list;
-}
 
 export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   listCharts,
@@ -148,28 +77,19 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const { t } = useTranslation('library');
   const lng = i18n.language;
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
-  const [charts, setCharts] = React.useState<CloudChartMeta[] | null>(null);
-  const [hasMore, setHasMore] = React.useState(false);
-  const [loadingMore, setLoadingMore] = React.useState(false);
-  const [query, setQuery] = React.useState('');
-  // Search runs server-side — debounce so we query per pause, not per key.
-  const [debouncedQuery, setDebouncedQuery] = React.useState('');
-  React.useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedQuery(query), 250);
-    return () => window.clearTimeout(timer);
-  }, [query]);
-  const [error, setError] = React.useState('');
-  const [busyId, setBusyId] = React.useState<string | null>(null);
-  const [sortKey, setSortKey] = React.useState<SortKey>('updated');
-  const [sortDir, setSortDir] = React.useState<SortDir>('desc');
-  const [dueOnly, setDueOnly] = React.useState(false);
-  const [dueCount, setDueCount] = React.useState(0);
-  // Visit-level filters. Doctor filters by each chart's author — the
-  // same patient can be seen by different doctors across visits, so
-  // filtering happens before grouping and a patient's row shows only
-  // the matching visits.
-  const [doctorFilter, setDoctorFilter] = React.useState('');
-  const [speciesFilter, setSpeciesFilter] = React.useState('');
+  const {
+    query, setQuery,
+    speciesFilter, setSpeciesFilter,
+    doctorFilter, setDoctorFilter,
+    dueOnly, setDueOnly,
+    sortKey, sortDir, setSort,
+    groups, hasMore, loadingMore, loadMore,
+    dueCount,
+    error: libraryError, setError: setLibraryError,
+    busyId, setBusyId,
+    deleteVisit, clearRecheck,
+  } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient') });
+  const error = libraryError ? t(ERROR_KEYS[libraryError.kind], { error: friendlyDetail(libraryError.cause) }) : '';
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
   // Mounted only while open, so the trap is always on.
   const modalRef = useModalFocus(true);
@@ -183,83 +103,6 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   );
   const showDoctors = doctorById.size > 1;
 
-  // Everything the server needs to produce the visible set. Filters and
-  // search happen in Postgres — the full library is searchable no matter
-  // how many charts exist; pagination only decides how much is SHOWN.
-  const listQuery = React.useMemo<ChartListQuery>(() => ({
-    search: debouncedQuery.trim() || undefined,
-    species: speciesFilter || undefined,
-    createdBy: doctorFilter || undefined,
-    dueOnly: dueOnly || undefined,
-    sortKey,
-    sortDir,
-  }), [debouncedQuery, speciesFilter, doctorFilter, dueOnly, sortKey, sortDir]);
-
-  // Monotonic request sequence: filters/search can change while a fetch
-  // is in flight, and a slow page-0 response must not overwrite a newer
-  // one (nor a stale Load-more append onto a re-filtered list).
-  const requestSeqRef = React.useRef(0);
-
-  const refresh = React.useCallback(async (keepCount?: number) => {
-    const seq = ++requestSeqRef.current;
-    setError('');
-    try {
-      // After a delete, re-fetch at least as many rows as were showing so
-      // the user's scroll position doesn't collapse back to one page.
-      const limit = Math.max(PAGE_SIZE, keepCount ?? 0);
-      const page = await listCharts({ ...listQuery, offset: 0, limit });
-      if (seq !== requestSeqRef.current) return; // superseded by a newer query
-      setCharts(page.rows);
-      setHasMore(page.hasMore);
-    } catch (e) {
-      if (seq !== requestSeqRef.current) return;
-      setError(t('errors.load', { error: friendlyDetail(e) }));
-    }
-  }, [listCharts, listQuery, t]);
-
-  React.useEffect(() => {
-    setCharts(null);
-    refresh();
-  }, [refresh]);
-
-  const loadMore = async () => {
-    if (!charts || loadingMore) return;
-    const seq = ++requestSeqRef.current;
-    setLoadingMore(true);
-    setError('');
-    try {
-      const page = await listCharts({ ...listQuery, offset: charts.length, limit: PAGE_SIZE });
-      if (seq === requestSeqRef.current) {
-        setCharts((prev) => [...(prev ?? []), ...page.rows]);
-        setHasMore(page.hasMore);
-      }
-    } catch (e) {
-      if (seq === requestSeqRef.current) {
-        setError(t('errors.loadMore', { error: friendlyDetail(e) }));
-      }
-    } finally {
-      // Always release the flag — if a newer refresh superseded this
-      // fetch, its results were discarded and nothing is loading now.
-      setLoadingMore(false);
-    }
-  };
-
-  // The Due badge counts due PATIENTS across the whole library, not just
-  // the loaded page — its own (small) query, grouped the same way.
-  // Refreshable so clearing a recheck updates the badge immediately.
-  const refreshDueCount = React.useCallback(() => {
-    listCharts({ dueOnly: true, limit: 500 })
-      .then((page) => {
-        const today = todayIso();
-        setDueCount(groupByPatient(page.rows).filter((g) => g.recall && g.recall <= today).length);
-      })
-      .catch(() => { /* badge only — never block the library on it */ });
-  }, [listCharts]);
-
-  React.useEffect(() => {
-    refreshDueCount();
-  }, [refreshDueCount]);
-
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -269,32 +112,6 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   }, [onClose]);
 
   const today = todayIso();
-
-  // Search, filters, and Due all happened server-side — this is purely
-  // grouping the returned visits into patients and ordering the groups.
-  const groups = React.useMemo(() => {
-    if (!charts) return null;
-    const g = groupByPatient(charts);
-    const cmp: Record<SortKey, (a: PatientGroup, b: PatientGroup) => number> = {
-      patient: (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
-      updated: (a, b) => a.latestUpdated.localeCompare(b.latestUpdated),
-      // Empty recall sorts last regardless of direction.
-      recall: (a, b) => (a.recall || '9999').localeCompare(b.recall || '9999'),
-    };
-    g.sort(cmp[sortKey]);
-    if (sortDir === 'desc') g.reverse();
-    return g;
-    // The unnamed-patient label is part of each group, so a language change regroups.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [charts, sortKey, sortDir, lng]);
-
-  const setSort = (key: SortKey) => {
-    if (key === sortKey) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    else {
-      setSortKey(key);
-      setSortDir(key === 'patient' || key === 'recall' ? 'asc' : 'desc');
-    }
-  };
 
   const toggle = (key: string) =>
     setExpanded((prev) => {
@@ -310,52 +127,29 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       // false = cancelled at the unsaved-changes prompt: stay here.
       if ((await onOpen(id)) !== false) onClose();
     } catch (e) {
-      setError(t('errors.open', { error: friendlyDetail(e) }));
+      setLibraryError({ kind: 'open', cause: e });
     } finally {
       setBusyId(null);
     }
   };
 
-  const handleDelete = async (c: CloudChartMeta) => {
+  const handleDelete = (c: CloudChartMeta) => {
     const name = c.patient_name.trim();
     const when = c.chart_date ? ` (${formatChartDate(c.chart_date)})` : '';
-    if (!(await confirmDialog({
+    return deleteVisit(c, () => confirmDialog({
       title: name ? t('deleteDialog.title', { name, when }) : t('deleteDialog.titleUnnamed', { when }),
       message: t('deleteDialog.message'),
       confirmLabel: t('deleteDialog.confirm'),
       danger: true,
-    }))) return;
-    setBusyId(c.id);
-    try {
-      await onDelete(c.id);
-      await refresh(charts?.length ?? 0);
-      refreshDueCount();
-    } catch (e) {
-      setError(t('errors.delete', { error: friendlyDetail(e) }));
-    } finally {
-      setBusyId(null);
-    }
+    }));
   };
 
-  const handleClearRecalls = async (group: PatientGroup) => {
-    const withRecall = group.visits.filter((v) => (v.recall_date ?? '').trim() !== '');
-    if (withRecall.length === 0) return;
-    if (!(await confirmDialog({
+  const handleClearRecalls = (group: PatientGroup) =>
+    clearRecheck(group, () => confirmDialog({
       title: t('clearDialog.title', { name: group.name }),
       message: t('clearDialog.message'),
       confirmLabel: t('clearDialog.confirm'),
-    }))) return;
-    setBusyId(withRecall[0].id);
-    try {
-      await onClearRecalls(withRecall.map((v) => v.id));
-      await refresh(charts?.length ?? 0);
-      refreshDueCount();
-    } catch (e) {
-      setError(t('errors.clearRecall', { error: friendlyDetail(e) }));
-    } finally {
-      setBusyId(null);
-    }
-  };
+    }));
 
   const recallCell = (recall: string) => {
     if (!recall) return <span className="chart-library__cell chart-library__cell--recall chart-library__cell--empty">—</span>;

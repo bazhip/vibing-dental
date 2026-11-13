@@ -1,0 +1,352 @@
+/* =============================================================================
+ * Settings tab (src/ios/screens/SettingsScreen.tsx + settingsScreens.tsx).
+ * App only: everything is scoped under html.native-ios.
+ * =============================================================================
+ */
+
+/* ---- Root list ---------------------------------------------------------- */
+/* Account row: initials in a tinted circle, like the Apple Account row. */
+html.native-ios .ios-settings__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  /* Fixed 40pt circle: the initials stop growing at 17px so they stay inside. */
+  font: 600 min(var(--ios-text-subheadline), 17px) / 1 var(--ios-font);
+  letter-spacing: 0.02em;
+}
+html.native-ios .ios-row--with-icon:has(.ios-settings__avatar) .ios-row__icon { width: 40px; }
+html.native-ios .ios-row--with-icon:has(.ios-settings__avatar) .ios-row__main { min-height: 60px; }
+
+/* Text-only action rows (Take the tour, All chart settings) use the tint. */
+html.native-ios .ios-row__tint { color: var(--ios-tint); }
+
+/* Sign out: centred, in its own group. */
+html.native-ios .ios-settings .ios-row--destructive .ios-row__main { justify-content: center; padding-left: 16px; }
+html.native-ios .ios-settings .ios-row--destructive .ios-row__text { flex: 0 1 auto; align-items: center; }
+
+/* ---- Rows with a text field (Chart settings → usual anesthetic) ---------- */
+html.native-ios .ios-row--field .ios-row__main { flex-wrap: nowrap; }
+html.native-ios .ios-row--field .ios-row__title { flex: none; min-width: 6.5em; }
+html.native-ios .ios-row--field .ios-row__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ios-label);
+  font: 400 max(16px, var(--ios-text-body)) / 1.3 var(--ios-font);
+  text-align: right;
+  outline: none;
+}
+html.native-ios .ios-row--field .ios-row__input::placeholder { color: var(--ios-label-3); }
+html.native-ios .ios-row--field .ios-row__suffix { flex: none; color: var(--ios-label-muted); }
+
+/* ---- A web form embedded in a list cell (custom anesthesia editor) ------- */
+html.native-ios .ios-cell-embed { padding: 12px 16px 14px 20px; }
+html.native-ios .ios-cell-embed .chart-settings__field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+/* The hairline between fieldsets is the bottom edge of the upper one: a
+   fieldset's top edge runs through its legend ("Your fields"), and WebKit
+   won't float a legend off it. */
+html.native-ios .ios-cell-embed .chart-settings__field:not(:last-of-type) {
+  padding-bottom: 14px;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+}
+html.native-ios .ios-cell-embed .chart-settings__field + .chart-settings__field { margin-top: 14px; }
+html.native-ios .ios-cell-embed legend {
+  padding: 0;
+  font: 600 var(--ios-text-body) / 1.3 var(--ios-font);
+  color: var(--ios-label);
+}
+html.native-ios .ios-cell-embed .chart-settings__note {
+  margin: 4px 0 8px;
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+
+/* Its controls in the iOS style: filled text fields, a plain tinted Add
+   button and a red Remove, each at least 44pt tall. */
+html.native-ios .ios-cell-embed .custom-def { gap: 8px; margin: 0 0 8px; }
+html.native-ios .ios-cell-embed .patient-form__input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  box-shadow: none;
+}
+html.native-ios .ios-cell-embed .patient-form__input::placeholder { color: var(--ios-label-3); }
+html.native-ios .ios-cell-embed .anesthesia-drug__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-cell-embed .custom-def__remove {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ios-danger);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+
+/* =============================================================================
+ * Today's settings dialogs as pushed screens (`presentation="screen"`):
+ * the dialog body on the grouped background, each section an inset
+ * rounded card, section headings as list headers, fields and buttons in
+ * the iOS style. Content and order are the dialog's.
+ * ========================================================================== */
+html.native-ios .ios-settings-page {
+  display: block;
+  max-height: none;
+  overflow: visible;
+  padding: 8px 16px 24px;
+  background: transparent;
+  color: var(--ios-label);
+  font: 400 var(--ios-text-body) / 1.35 var(--ios-font);
+}
+@media (min-width: 768px) {
+  html.native-ios .ios-settings-page { padding: 8px 20px 28px; }
+}
+html.native-ios .ios-settings-page .ai-settings-section {
+  position: relative;
+  margin: 36px 0 0;
+  padding: 14px 16px 16px 20px;
+  border: 0;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .ios-settings-page .ai-settings-section:first-child { margin-top: 28px; }
+/* Section heading sits above its card, like an inset-grouped list header. */
+html.native-ios .ios-settings-page .ai-settings-subhead {
+  position: absolute;
+  bottom: 100%;
+  left: 20px;
+  right: 20px;
+  margin: 0 0 7px;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-settings-page .ai-settings-blurb,
+html.native-ios .ios-settings-page .patient-form__hint,
+html.native-ios .ios-settings-page .practice-logo-empty {
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-settings-page .patient-form__label {
+  font: 400 var(--ios-text-subheadline) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-settings-page :is(.patient-form__input, .patient-form__textarea) {
+  border: 0;
+  border-radius: 12px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font: 400 max(16px, var(--ios-text-body)) / 1.3 var(--ios-font);
+  min-height: 44px;
+  box-shadow: none;
+}
+html.native-ios .ios-settings-page :is(.patient-form__input, .patient-form__textarea):focus {
+  box-shadow: 0 0 0 2px var(--ios-tint);
+}
+html.native-ios .ios-settings-page :is(.patient-form__input, .patient-form__textarea):disabled {
+  color: var(--ios-label-3);
+}
+/* Buttons: tinted text buttons with a 44pt target (destructive in red);
+   the dialog's primary buttons become filled capsules. */
+html.native-ios .ios-settings-page .diagram-view__action {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--ios-fill);
+  color: var(--ios-tint);
+  font: 500 var(--ios-text-body) / 1 var(--ios-font);
+  box-shadow: none;
+}
+html.native-ios .ios-settings-page .diagram-view__action--danger { color: var(--ios-danger); }
+html.native-ios .ios-settings-page .diagram-view__action:disabled { color: var(--ios-label-3); }
+html.native-ios .ios-settings-page .entry-grid__button {
+  min-height: 44px;
+  border-radius: 22px;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  border: 0;
+}
+html.native-ios .ios-settings-page .entry-grid__button:disabled {
+  background: var(--ios-fill);
+  color: var(--ios-label-3);
+}
+html.native-ios .ios-settings-page input[type='checkbox']:not(.ios-switch) {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--ios-tint);
+}
+html.native-ios .ios-settings-page .settings-msg { border-radius: 12px; }
+html.native-ios .ios-settings-page a { color: var(--ios-link, var(--ios-tint)); }
+html.native-ios .ios-settings-page__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Practice → Team: one member per row, separators like a list. */
+html.native-ios .ios-settings-page .team__members { margin: 8px 0; padding: 0; }
+html.native-ios .ios-settings-page .team__member {
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+}
+html.native-ios .ios-settings-page .team__member:last-child { box-shadow: none; }
+
+/* What's new: the intro on the grouped background, each group a card. */
+html.native-ios .ios-settings-page.whats-new__body .whats-new__group {
+  margin: 36px 0 0;
+  padding: 12px 16px 12px 20px;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  position: relative;
+}
+html.native-ios .ios-settings-page.whats-new__body .whats-new__intro {
+  margin: 12px 20px 0;
+  font: 400 var(--ios-text-subheadline) / 1.4 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-settings-page .whats-new__list { margin: 0; padding-left: 1.1em; }
+html.native-ios .ios-settings-page .whats-new__list li { margin: 6px 0; }
+
+/* Feedback: the kind picker as a segmented control (UISegmentedControl
+   selected-segment fill: white in light, grey #636366 in dark). */
+html.native-ios .feedback-modal--screen { --ios-segment-selected: #fff; }
+@media (prefers-color-scheme: dark) {
+  html.native-ios .feedback-modal--screen { --ios-segment-selected: #636366; }
+}
+html.native-ios .feedback-modal--screen .feedback-modal__kinds {
+  display: flex;
+  margin: 12px 0 20px;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--ios-fill);
+}
+html.native-ios .feedback-modal--screen .feedback-modal__kind {
+  flex: 1 1 0;
+  min-height: 32px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ios-label);
+  font: 500 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+}
+html.native-ios .feedback-modal--screen .feedback-modal__kind--on {
+  background: var(--ios-segment-selected, #fff);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+}
+html.native-ios .feedback-modal--screen .feedback-modal__note {
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+
+/* Owner report templates: list above the editor (one column). */
+html.native-ios .report-templates--screen .report-templates__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: visible;
+}
+html.native-ios .report-templates--screen .report-templates__list {
+  overflow: visible;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .report-templates--screen .report-templates__list-actions { border-top-color: var(--ios-separator); }
+html.native-ios .report-templates--screen .report-templates__editor,
+html.native-ios .report-templates--screen .report-templates__body > :last-child {
+  overflow: visible;
+  padding: 0;
+}
+html.native-ios .report-templates__screen-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Admin panel (light pass): iOS font, colours and dark mode; the data
+   tables stay and scroll sideways on narrow screens. */
+html.native-ios .admin-panel--screen {
+  font-family: var(--ios-font);
+}
+html.native-ios .admin-panel--screen .chart-library__table,
+html.native-ios .admin-panel--screen table {
+  background: var(--ios-list-cell, var(--ios-cell));
+  border-radius: 12px;
+}
+html.native-ios .admin-panel--screen .admin-panel__tabs { overflow-x: auto; }
+html.native-ios .admin-panel--screen :is(.admin-panel__usage, .admin-panel__billing, section) { overflow-x: auto; }
+html.native-ios .admin-chart-viewer--screen .admin-chart-viewer__notice { border-radius: 12px; }
+/* The read-only note keeps the normal section gap above the first card
+   (whose header sits above it). */
+html.native-ios .report-templates--screen .report-templates__editor > .login-notice {
+  margin: 0 0 22px;
+  border-radius: 12px;
+}
+html.native-ios .report-templates--screen .report-templates__fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/* ---- Product tour (Getting started → Take the tour) ---------------------- */
+/* The popover is an iOS callout: elevated material, large corner radius,
+   system type, capsule buttons (plain Skip, grey Back, filled Next). */
+html.native-ios .tour__pop {
+  max-width: calc(100vw - 24px);
+  padding: 18px 18px 14px;
+  border-radius: 26px;
+  background: var(--ios-bg-elevated);
+  color: var(--ios-label);
+  font-family: var(--ios-font);
+}
+html.native-ios .tour__eyebrow {
+  font: 600 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  letter-spacing: 0;
+  color: var(--ios-label-muted);
+}
+html.native-ios .tour__title { font: 600 var(--ios-text-headline) / 1.3 var(--ios-font); color: var(--ios-label); }
+html.native-ios .tour__body { font: 400 var(--ios-text-subheadline) / 1.4 var(--ios-font); color: var(--ios-label-muted); }
+html.native-ios .tour__nav { gap: 8px; }
+html.native-ios .tour__nav button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
+  font: 400 min(var(--ios-text-body), 23px) / 1.2 var(--ios-font);
+}
+html.native-ios .tour__nav .tour__skip { padding: 0 8px; background: transparent; color: var(--ios-tint); }
+html.native-ios .tour__nav .diagram-view__action { background: var(--ios-fill); color: var(--ios-label); }
+html.native-ios .tour__nav .entry-grid__button { background: var(--ios-tint); color: var(--ios-on-tint); font-weight: 600; }
+html.native-ios .tour__spotlight { border-radius: 16px; box-shadow: 0 0 0 9999px var(--ios-scrim), 0 0 0 2px var(--ios-tint); }

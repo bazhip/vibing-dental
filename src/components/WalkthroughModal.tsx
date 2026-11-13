@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { isNativeApp } from '../native/platform';
+import { buildAppSteps } from '../ios/tourSteps';
 
 interface WalkthroughModalProps {
   open: boolean;
@@ -13,7 +15,7 @@ interface WalkthroughModalProps {
 
 type StepId = 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'library' | 'dictate' | 'settings' | 'pdf';
 
-interface Step {
+export interface Step {
   /** Catalog id: onboarding:walkthrough.steps.<id>.title / .body. */
   id: StepId;
   /** Chart section to switch to before showing this step. */
@@ -24,7 +26,11 @@ interface Step {
   placement?: 'bottom' | 'top' | 'left' | 'right';
 }
 
-function buildSteps(aiEnabled?: boolean): Step[] {
+/** A step ready to show: its place on screen plus its text in the active language. */
+export type TourStep = Omit<Step, 'id'> & { title: string; body: string };
+
+/** The website tour's steps (the app's are in src/ios/tourSteps.ts). */
+export function buildSteps(aiEnabled?: boolean): Step[] {
   const steps: Step[] = [
     { id: 'welcome' },
     { id: 'sections', target: '.sidebar-layout__nav', placement: 'right' },
@@ -51,7 +57,20 @@ const POP_W = 320;
 
 export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, onNavigate }) => {
   const { t } = useTranslation('onboarding');
-  const steps = React.useMemo(() => buildSteps(aiEnabled), [aiEnabled]);
+  const { t: tSettings } = useTranslation('settings');
+  // The app's tour points at the app's chrome and speaks touch.
+  const app = isNativeApp();
+  const steps = React.useMemo<TourStep[]>(
+    () =>
+      app
+        ? buildAppSteps(tSettings, aiEnabled)
+        : buildSteps(aiEnabled).map(({ id, ...rest }) => ({
+            ...rest,
+            title: t(`walkthrough.steps.${id}.title`),
+            body: t(`walkthrough.steps.${id}.body`),
+          })),
+    [app, t, tSettings, aiEnabled],
+  );
   const [i, setI] = React.useState(0);
   const [rect, setRect] = React.useState<DOMRect | null>(null);
   const [tick, setTick] = React.useState(0); // forces re-measure
@@ -154,8 +173,8 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
 
       <div className="tour__pop" style={popStyle} ref={popRef} tabIndex={-1}>
         <div className="tour__eyebrow">{t('walkthrough.progress', { current: i + 1, total: steps.length })}</div>
-        <h3 className="tour__title">{t(`walkthrough.steps.${step.id}.title`)}</h3>
-        <p className="tour__body">{t(`walkthrough.steps.${step.id}.body`)}</p>
+        <h3 className="tour__title">{step.title}</h3>
+        <p className="tour__body">{step.body}</p>
         <div className="tour__foot">
           <div className="tour__dots" aria-hidden="true">
             {steps.map((_, n) => <span key={n} className={`tour__dot${n === i ? ' tour__dot--on' : ''}`} />)}

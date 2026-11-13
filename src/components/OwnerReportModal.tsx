@@ -4,6 +4,10 @@ import i18n from '../i18n';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
+import { saveFile } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
+import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -12,6 +16,9 @@ import { buildOwnerReportModel, hasSection, teethWithFindings } from '../utils/o
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
+
+// SF Symbol names (not text).
+const SQUARE_AND_ARROW_UP_ICON = 'square-and-arrow-up';
 
 interface OwnerReportModalProps {
   open: boolean;
@@ -166,6 +173,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     const filename = `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
     if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
+    // In the iOS app the PDF goes to the native share sheet (Save to Files,
+    // Mail, AirDrop…); the browser download / in-app-link flow is web-only.
+    if (isNativeApp()) {
+      void saveFile(blob, filename, 'application/pdf').catch(() => toast(i18n.t('common:errors.saveFile')));
+      return;
+    }
     savePdf(blob, filename).then((outcome) => {
       if (outcome === 'unsupported') void inAppLink.start(blob, filename);
     });
@@ -199,9 +212,16 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
               onClick={handleDownload}
               disabled={!pdfUrl || generating}
             >
-              {t('modal.download')}
+              {isNativeApp() ? (
+                <>
+                  <Icon name={SQUARE_AND_ARROW_UP_ICON} size={17} />
+                  {t('ios.sheets.documents.share', { ns: 'common' })}
+                </>
+              ) : (
+                t('modal.download')
+              )}
             </button>
-            {!inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+            {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
           </aside>
           <div className="pdf-preview-iframe-wrap">

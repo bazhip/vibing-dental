@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
+import { isNativeApp } from '../native/platform';
+import { FormField, FormGroup, Segmented } from '../ios/Form';
 
 interface PatientFormProps {
   patientInfo: PatientInfo;
@@ -19,6 +21,11 @@ interface PatientFormProps {
  * Form component for patient information entry. Loading a saved chart PDF
  * lives in the top-of-app ChartMenu now, not in this card.
  */
+// The app's grouped rows: element and label ids (not text).
+const GROUP_ROW = 'div' as const;
+const SPECIES_LABEL_ID = 'species-group-label';
+const DENTITION_LABEL_ID = 'dentition-group-label';
+
 export const PatientForm: React.FC<PatientFormProps> = ({
   patientInfo,
   species,
@@ -44,6 +51,165 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   const handleBaseChange = (b: 'feline' | 'canine') => onSpeciesChange(combine(b, dentition));
   const handleDentitionChange = (d: 'permanent' | 'deciduous') => onSpeciesChange(combine(base, d));
+  const native = isNativeApp();
+  // Quick-pick: common recheck intervals, counted from the visit date
+  // (falling back to today). Selecting one fills the date field; it can
+  // still be hand-adjusted after.
+  const recallQuick = (
+    <select
+      className="patient-form__input patient-form__recall-quick"
+      value=""
+      aria-label={t('patient.recheckQuick')}
+      onChange={(e) => {
+        const days = Number(e.target.value);
+        if (!days) return;
+        const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
+        base.setDate(base.getDate() + days);
+        onPatientInfoChange('recallDate', localDateISO(base));
+      }}
+    >
+      <option value="">{native ? t('ios.form.addInterval', { ns: 'chart' }) : t('patient.intervalPlaceholder')}</option>
+      <option value="7">{t('patient.intervals.week1')}</option>
+      <option value="14">{t('patient.intervals.weeks2')}</option>
+      <option value="30">{t('patient.intervals.month1')}</option>
+      <option value="90">{t('patient.intervals.months3')}</option>
+      <option value="182">{t('patient.intervals.months6')}</option>
+      <option value="365">{t('patient.intervals.year1')}</option>
+    </select>
+  );
+
+  // The iOS app: the same fields as inset-grouped label/value rows, and
+  // segmented controls for species and dentition.
+  if (native) {
+    const speciesOptions = [
+      { value: 'canine' as const, label: t('patient.canine') },
+      { value: 'feline' as const, label: t('patient.feline') },
+    ];
+    const dentitionOptions = [
+      { value: 'permanent' as const, label: t('patient.permanent') },
+      { value: 'deciduous' as const, label: t('patient.deciduous') },
+    ];
+    return (
+      <div className="patient-form patient-form--ios">
+        {/* Customize is in the Chart bar's More menu in the app. */}
+        <div className="patient-form__header">
+          <h2 className="patient-form__section-title">{t('patient.title')}</h2>
+        </div>
+        <FormGroup header={t('ios.form.patient', { ns: 'chart' })}>
+          <FormField label={<>{t('patient.name')} <span className="patient-form__req" aria-hidden="true">*</span></>}>
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder={t('patient.namePlaceholder')}
+              data-tour="patient-name"
+              value={patientInfo.patientName}
+              onChange={handleInputChange('patientName')}
+            />
+          </FormField>
+          <FormField label={t('patient.number')}>
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder={t('patient.numberPlaceholder')}
+              value={patientInfo.patientNumber}
+              onChange={handleInputChange('patientNumber')}
+            />
+          </FormField>
+          <FormField label={t('patient.date')}>
+            <input type="date" className="patient-form__input" value={patientInfo.date} onChange={handleInputChange('date')} />
+          </FormField>
+          <FormField as={GROUP_ROW} label={<span id={SPECIES_LABEL_ID}>{t('patient.species')}</span>}>
+            <Segmented
+              labelledBy={SPECIES_LABEL_ID}
+              options={speciesOptions}
+              value={base}
+              onChange={handleBaseChange}
+            />
+          </FormField>
+          <FormField as={GROUP_ROW} label={<span id={DENTITION_LABEL_ID}>{t('patient.dentition')}</span>}>
+            <Segmented
+              labelledBy={DENTITION_LABEL_ID}
+              options={dentitionOptions}
+              value={dentition}
+              onChange={handleDentitionChange}
+            />
+          </FormField>
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.owner', { ns: 'chart' })}>
+          <FormField label={t('patient.ownerName')}>
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder={t('patient.ownerNamePlaceholder')}
+              autoComplete="off"
+              value={patientInfo.ownerName ?? ''}
+              onChange={handleInputChange('ownerName')}
+            />
+          </FormField>
+          <FormField label={t('patient.ownerPhone')}>
+            <input
+              type="tel"
+              className="patient-form__input"
+              placeholder={t('patient.ownerPhonePlaceholder')}
+              autoComplete="off"
+              value={patientInfo.ownerPhone ?? ''}
+              onChange={handleInputChange('ownerPhone')}
+            />
+          </FormField>
+          <FormField label={t('patient.ownerEmail')}>
+            <input
+              type="email"
+              className="patient-form__input"
+              placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
+              autoComplete="off"
+              value={patientInfo.ownerEmail ?? ''}
+              onChange={handleInputChange('ownerEmail')}
+            />
+          </FormField>
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.visit', { ns: 'chart' })}>
+          <FormField label={t('patient.tech')}>
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder={t('patient.techPlaceholder')}
+              value={patientInfo.tech}
+              onChange={handleInputChange('tech')}
+            />
+          </FormField>
+          {!hideRecheck && (
+            <FormField as={GROUP_ROW} label={t('patient.recheck')}>
+              <span className="patient-form__recall">
+                <input
+                  type="date"
+                  className="patient-form__input"
+                  aria-label={t('patient.recheck')}
+                  value={patientInfo.recallDate ?? ''}
+                  onChange={handleInputChange('recallDate')}
+                />
+                {recallQuick}
+              </span>
+            </FormField>
+          )}
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.complaint', { ns: 'chart' })}>
+          <div className="ios-field ios-field--stacked ios-field--bare">
+            <CodeField
+              multiline
+              className="patient-form__textarea"
+              aria-label={t('patient.complaint')}
+              placeholder={t('patient.complaintPlaceholder')}
+              value={patientInfo.complaint}
+              onChange={(value) => onPatientInfoChange('complaint', value)}
+            />
+          </div>
+        </FormGroup>
+      </div>
+    );
+  }
 
   return (
     <div className="patient-form">
@@ -161,29 +327,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.recallDate ?? ''}
               onChange={handleInputChange('recallDate')}
             />
-            {/* Quick-pick: common recheck intervals, counted from the
-                visit date (falling back to today). Selecting one fills
-                the date field; it can still be hand-adjusted after. */}
-            <select
-              className="patient-form__input patient-form__recall-quick"
-              value=""
-              aria-label={t('patient.recheckQuick')}
-              onChange={(e) => {
-                const days = Number(e.target.value);
-                if (!days) return;
-                const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
-                base.setDate(base.getDate() + days);
-                onPatientInfoChange('recallDate', localDateISO(base));
-              }}
-            >
-              <option value="">{t('patient.intervalPlaceholder')}</option>
-              <option value="7">{t('patient.intervals.week1')}</option>
-              <option value="14">{t('patient.intervals.weeks2')}</option>
-              <option value="30">{t('patient.intervals.month1')}</option>
-              <option value="90">{t('patient.intervals.months3')}</option>
-              <option value="182">{t('patient.intervals.months6')}</option>
-              <option value="365">{t('patient.intervals.year1')}</option>
-            </select>
+            {recallQuick}
           </span>
         </label>
         )}

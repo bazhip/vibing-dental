@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScoreChoice } from '../constants/columnDefinitions';
+import { hapticTap } from '../native/haptics';
 
 interface ScoreChipsProps {
   /** Column name, for the group's accessible label ("Mobility score"). */
@@ -33,7 +34,7 @@ export function ScoreChips({ name, choices, value, onPick, disabled, clearable, 
           className="score-chips__chip score-chips__chip--clear"
           disabled={disabled}
           onMouseDown={hold}
-          onClick={() => onPick('')}
+          onClick={() => { hapticTap(); onPick(''); }}
           aria-label={t('scoreChips.clear', { name })}
           title={t('scoreChips.clear', { name })}
         >
@@ -48,7 +49,7 @@ export function ScoreChips({ name, choices, value, onPick, disabled, clearable, 
           disabled={disabled}
           aria-pressed={current === c.value}
           onMouseDown={hold}
-          onClick={() => onPick(c.value)}
+          onClick={() => { hapticTap(); onPick(c.value); }}
         >
           {c.label}
         </button>

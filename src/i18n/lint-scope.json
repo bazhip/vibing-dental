@@ -6,6 +6,10 @@
     { "pattern": "src/components/AdminChartList.tsx", "reason": "Operator-only surface; stays English." },
     { "pattern": "src/components/AdminChartViewer.tsx", "reason": "Operator-only surface; stays English." },
     { "pattern": "src/i18n/testing/**", "reason": "Pseudo-locale test kit; its strings are test helpers, not UI." },
-    { "pattern": "src/constants/voiceKeyterms.ts", "reason": "Speech-recognition vocabulary for the English dictation model, not UI text (voice language is plan 4)." }
+    { "pattern": "src/constants/voiceKeyterms.ts", "reason": "Speech-recognition vocabulary for the English dictation model, not UI text (voice language is plan 4)." },
+    { "pattern": "src/ios/Gallery.tsx", "reason": "DEV-only iOS component-kit gallery (?iosPreview=1&iosGallery=1); its sample text is never shown to users and the import is dropped from production builds." },
+    { "pattern": "src/ios/SheetFixtures.tsx", "reason": "DEV-only screenshot fixtures (?iosPreview=1&iosFixture=<name>) with sample data; the import is dropped from production builds." },
+    { "pattern": "src/ios/screens/settingsFixture.tsx", "reason": "DEV-only Settings-tab preview fixture (?iosPreview=1&iosSettingsFixture=1) with sample names; loaded only by a DEV-only dynamic import, so production builds never include it." },
+    { "pattern": "src/ios/screens/testHarness.tsx", "reason": "Test-only harness for the iOS screen tests (imported only by *.test.ts[x]); never shipped." }
   ]
 }

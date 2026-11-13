@@ -1,13 +1,17 @@
 import React from 'react';
+import { saveFile } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
+import i18n from '../i18n';
 import ReactDOM from 'react-dom';
 import { Trans, useTranslation } from 'react-i18next';
-import i18n from '../i18n';
 import { formatDateTime, formatList } from '../i18n/format';
 import { confirmDialog, toast } from './ui/dialogs';
 import { errorText } from '../utils/apiErrors';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useWakeLock } from '../hooks/useWakeLock';
+import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
 import type { AppLanguage } from '../i18n/config';
 import { endsMidFindingOther } from '../utils/voice/normalize';
 import {
@@ -28,6 +32,11 @@ import {
   ChartHandlers,
   AiAction,
 } from '../utils/aiAutofill';
+
+// SF Symbol names (not text).
+const CHEVRON_DOWN_ICON = 'chevron-down';
+const MIC_ICON = 'mic';
+const XMARK_ICON = 'xmark';
 
 /**
  * AI autofill: a topbar button plus a live panel (right sidebar on
@@ -676,7 +685,19 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     setPanelOpen(false);
   }, [sessionKey]);
 
+  // App only: the first dictation asks before any audio goes to Deepgram
+  // or text to Anthropic (App Store 5.1.2(i)); "Not now" starts nothing.
+  // Once allowed (and always on the web) it starts synchronously, inside
+  // the tap, as iOS audio needs.
   const listen = (fresh: boolean) => {
+    if (needsAiConsent()) {
+      void ensureAiConsent().then((ok) => { if (ok) startListening(fresh); });
+      return;
+    }
+    startListening(fresh);
+  };
+
+  const startListening = (fresh: boolean) => {
     if (!voice.supported) {
       setError(t('errors.unsupported'));
       return;
@@ -784,14 +805,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (!text) return;
     const start = voice.startedAt ?? new Date();
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `transcript_${start.toISOString().replace(/[:T]/g, '-').slice(0, 16)}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const filename = `transcript_${start.toISOString().replace(/[:T]/g, '-').slice(0, 16)}.txt`;
+    void saveFile(blob, filename, 'text/plain;charset=utf-8').catch(() => toast(i18n.t('common:errors.saveFile')));
   };
 
   // Let the page scroll its last rows clear of the phone bottom sheet.
@@ -806,6 +821,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
 
   const sending = activeChunkCount > 0;
+  // The iOS app draws its symbols as icons, not text glyphs.
+  const native = isNativeApp();
   const label = voice.recording ? t('button.stop') : hasSession ? t('button.resume') : t('button.dictate');
   const reviewLabel = reviews.length ? t('toReview', { count: reviews.length }) : null;
   // Recording but the mic isn't live yet: say so, so nobody talks into
@@ -863,6 +880,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       >
         {voice.recording ? (
           <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />
+        ) : native ? (
+          <Icon name={MIC_ICON} filled size={20} className="voice-input__mic" />
         ) : (
           <svg className="voice-input__mic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
@@ -884,7 +903,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
               <h2>{t('intro.title')}</h2>
-              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label={t('intro.close')}>×</button>
+              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label={t('intro.close')}>{native ? <Icon name={XMARK_ICON} size={16} /> : '×'}</button>
             </header>
             <div className="ai-settings-body">
               <ol className="ai-intro__list">
@@ -931,13 +950,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
                 {status.text}
               </span>
-              <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
+              {native ? (
+                <Icon name={CHEVRON_DOWN_ICON} size={14} className={`ai-sidebar__chevron${collapsed ? ' ai-sidebar__chevron--up' : ''}`} />
+              ) : (
+                <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
+              )}
             </button>
             <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick}>
               {primary.text}
             </button>
             <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label={t('panel.close')} title={t('panel.closeTitle')}>
-              ×
+              {native ? <Icon name={XMARK_ICON} size={16} /> : '×'}
             </button>
           </header>
 

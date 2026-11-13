@@ -87,5 +87,31 @@
     "message_one": "Ihre Änderung an {{list}} wurde nicht gespeichert.",
     "message_other": "Ihre Änderungen an {{list}} wurden nicht gespeichert.",
     "title": "Nicht gespeicherte Änderungen verwerfen?"
+  },
+  "auth": {
+    "apple": {
+      "continue": "Weiter mit Apple",
+      "signUp": "Mit Apple registrieren",
+      "busy": "Anmeldung mit Apple…",
+      "failed": "Die Anmeldung mit Apple ist fehlgeschlagen.",
+      "hint": "Sie haben bereits ein Konto oder wurden eingeladen? Melden Sie sich mit Ihrer E-Mail-Adresse an."
+    },
+    "signUpOnWeb": "Neu bei ToothOps? Registrieren Sie sich auf toothops.app",
+    "incomplete": "Die Anmeldung wurde nicht abgeschlossen. Bitte versuchen Sie es erneut."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Ihr Tarif ist nicht aktiv",
+      "manage": "Verwalten Sie ihn auf toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps ist gesperrt",
+    "prompt": "Entsperren Sie die App, um Patientendaten zu schützen.",
+    "unavailable": "Face ID und der Gerätecode sind auf diesem Gerät nicht verfügbar. Um ToothOps zu entsperren, legen Sie in der App „Einstellungen“ einen Code fest und tippen Sie auf „Erneut versuchen“, oder melden Sie sich ab.",
+    "reason": "ToothOps entsperren"
+  },
+  "team": {
+    "seatLimit": "Diese Praxis hat die maximale Anzahl an Teammitgliedern erreicht."
   }
 }
