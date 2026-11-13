@@ -130,6 +130,25 @@ describe('offline launch in the app', () => {
     expect(screen.queryByText('APP LOGIN')).toBeNull();
   });
 
+  it('auth-js reports INITIAL_SESSION(null) before getSession resolves: the billing cache survives', async () => {
+    // auth-js 2.110.x: the initial refresh fails offline and
+    // _emitInitialSession emits INITIAL_SESSION with no session, ahead of
+    // getSession() settling with the same retryable error.
+    store.set('sb-test-auth-token', JSON.stringify({
+      access_token: 'old', refresh_token: 'r1', expires_at: 1, user: { id: 'u1', email: 'me@vet.com' },
+    }));
+    saveBillingCache(cachedInfo, Date.now(), 'u1');
+    let settle!: () => void;
+    auth.getSession.mockImplementationOnce(() => new Promise((resolve) => {
+      settle = () => resolve({ data: { session: null }, error: new AuthRetryableFetchError('Failed to fetch', 0) });
+    }));
+    render(<App />);
+    act(() => authCallback()('INITIAL_SESSION', null));
+    await act(async () => { settle(); });
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(readBillingCache(Date.now(), 'u1')).toEqual(cachedInfo);
+  });
+
   it('offline with no stored session: the login', async () => {
     flags.error = new AuthRetryableFetchError('Failed to fetch', 0);
     render(<App />);
@@ -145,6 +164,14 @@ describe('billing cache hygiene in the app', () => {
     saveBillingCache(cachedInfo, Date.now(), 'user-a');
     act(() => authCallback()('SIGNED_IN', { user: { id: 'user-b', email: 'b@vet.com' } }));
     expect(readBillingCache(Date.now(), 'user-a')).toBeNull();
+  });
+
+  it('launching with no session clears a leftover billing cache', async () => {
+    saveBillingCache(cachedInfo, Date.now(), 'u1');
+    render(<App />);
+    act(() => authCallback()('INITIAL_SESSION', null));
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    expect(readBillingCache(Date.now(), 'u1')).toBeNull();
   });
 
   it('a deliberate sign-out clears the billing cache', async () => {
@@ -167,6 +194,14 @@ describe('App routing on the web (unchanged)', () => {
   it('signed out: the landing page', async () => {
     render(<App />);
     expect(await screen.findByText('LANDING PAGE')).toBeInTheDocument();
+  });
+
+  it('INITIAL_SESSION(null) still signs out and clears the billing cache, as before', async () => {
+    saveBillingCache(cachedInfo, Date.now(), 'u1');
+    render(<App />);
+    expect(await screen.findByText('LANDING PAGE')).toBeInTheDocument();
+    act(() => authCallback()('INITIAL_SESSION', null));
+    expect(readBillingCache(Date.now(), 'u1')).toBeNull();
   });
 
   it('signed in: the chart with a homepage action', async () => {

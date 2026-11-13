@@ -163,6 +163,9 @@ const App: React.FC = () => {
     // can't refresh and says "no session", but the stored one is still
     // good — stay signed in (see native/offlineSession).
     void getSessionTolerant(supabase).then(({ session }) => {
+      // In the app this check (not INITIAL_SESSION, ignored below) decides
+      // signed-out at launch, so it clears the signed-out billing cache.
+      if (!session && native) clearBillingCache();
       setIsAuthenticated(!!session);
       setLaunchedSignedIn(!!session);
       if (session) {
@@ -177,6 +180,12 @@ const App: React.FC = () => {
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') setRecovering(true);
+      // App: launched offline after the access token expired, auth-js emits
+      // INITIAL_SESSION with no session (its refresh failed) before
+      // getSessionTolerant above settles on the still-stored session.
+      // Taking it at face value would sign out and wipe the offline billing
+      // cache; the initial check owns the launch decision instead.
+      if (event === 'INITIAL_SESSION' && !session && native) return;
       if (session) {
         // A different account signing in over an expired session must not
         // inherit the previous patient's working chart (shared machines).
