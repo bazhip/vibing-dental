@@ -56,7 +56,7 @@ test('formatted dates, numbers and lists are wrapped under the pseudo-locale', (
     </p>,
   );
   expect(findUntranslated(container)).toEqual([]);
-  expect(formatDate('2026-07-19', 'long')).toBe('⟦19 July 2026⟧');
+  expect(formatDate('2026-07-19', 'long')).toBe(`⟦${new Date(2026, 6, 19).toLocaleDateString(undefined, { dateStyle: 'long' })}⟧`);
 });
 
 test('arrays in catalogs stay arrays (returnObjects)', async () => {

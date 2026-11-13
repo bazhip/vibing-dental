@@ -25,7 +25,7 @@ import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import { useAppLanguage } from './i18n/useAppLanguage';
-import { formatDate, formatDateTime, formatTime } from './i18n/format';
+import { formatDateTime, formatMonthDay, formatTime } from './i18n/format';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -56,11 +56,12 @@ import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
 // time a preview is requested, not with the charting screen.
-/** "2:41 pm" today, "Nov 9, 2:41 pm" otherwise. */
+/** Time of day today ("2:41 pm"), otherwise the short date then the time ("Nov 9, 2:41 pm"),
+ *  in the active language (English output is the browser-locale format it always was). */
 function formatSavedAt(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toDateString() === new Date().toDateString() ? formatTime(d) : formatDateTime(d);
+  return d.toDateString() === new Date().toDateString() ? formatTime(d) : `${formatMonthDay(d)}, ${formatTime(d)}`;
 }
 
 const DocumentsModal = lazyWithReload(() =>
@@ -94,6 +95,8 @@ function feedbackMailto(t: TFunction<'app'>): string {
   )}`;
 }
 
+// What toLocaleString() prints by default: the saved-at tooltip's old format.
+const FULL_DATE_TIME: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
 const OWNER_REPORT_SECTION = 'owner-report';
 const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
@@ -1214,7 +1217,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                             {opts.map((v, i) => (
                               <option key={v.id} value={v.id}>
                                 {t(i === 0 ? 'topbar.visitLatest' : 'topbar.visitEarlier', {
-                                  date: v.chart_date ? formatDate(v.chart_date) : t('topbar.undatedVisit'),
+                                  date: v.chart_date || t('topbar.undatedVisit'),
                                 })}
                               </option>
                             ))}
@@ -1222,7 +1225,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                         </span>
                       ) : (
                         <span className="entry-grid__patient-meta entry-grid__patient-date">
-                          {formatDate(chart.patientInfo.date)}
+                          {chart.patientInfo.date}
                         </span>
                       )}
                     </>
@@ -1242,7 +1245,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <span
               className="topbar-editing topbar-viewing"
               title={chart.patientInfo.date
-                ? t('topbar.viewingTitleDated', { date: formatDate(chart.patientInfo.date) })
+                ? t('topbar.viewingTitleDated', { date: chart.patientInfo.date })
                 : t('topbar.viewingTitle')}
             >
               <span className="topbar-label-long">{t('topbar.viewing')}</span>
@@ -1351,7 +1354,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
             if (cloud.lastSavedAt) {
               return (
-                <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt) })}>
+                <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
                   {t('status.saved', { when: formatSavedAt(cloud.lastSavedAt) })}
                 </span>
               );

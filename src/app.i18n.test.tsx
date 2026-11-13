@@ -252,8 +252,8 @@ describe('chart frame', () => {
     expect(screen.getByText('⟦Edit chart⟧')).toBeTruthy();
     expect(screen.getByText('⟦+ New visit⟧')).toBeTruthy();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-      expect.stringMatching(/^⟦⟦.+⟧ · latest⟧$/),
-      expect.stringMatching(/^⟦⟦.+⟧ · earlier⟧$/),
+      '⟦2026-11-12 · latest⟧',
+      '⟦2026-01-05 · earlier⟧',
     ]);
     expect(untranslated()).toEqual([]);
     view.unmount();
@@ -473,9 +473,45 @@ describe('French', () => {
     await loadLanguage('fr');
     await act(() => i18n.changeLanguage('fr'));
     await frame();
-    expect(screen.getAllByRole('option')[1].textContent).toBe(`${formatDate('2026-01-05', 'medium', 'fr')} · précédente`);
+    // Chart dates are language-neutral ISO; the saved-at time follows the language.
+    expect(screen.getAllByRole('option')[1].textContent).toBe('2026-01-05 · précédente');
     expect(formatDate('2026-01-05', 'medium', 'fr')).toMatch(/janv/);
     expect(screen.getByText('Modifier le dossier')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Ouvrir le menu des paramètres' })).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// English dates and times are exactly what the app showed before localization
+// ---------------------------------------------------------------------------
+
+describe('English dates', () => {
+  beforeEach(() => act(restoreLocale));
+  const norm = (s: string) => s.replace(/\s/g, ' ');
+  const pill = () => norm(document.querySelector('.save-status--saved')!.textContent!);
+
+  it('chart dates stay raw ISO and the saved-at time keeps the old format', async () => {
+    seedChart({ date: '2026-01-05', saved: true });
+    sync.override = fakeCloud();
+    const first = await frame();
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['2026-11-12 · latest', '2026-01-05 · earlier']);
+    first.unmount();
+
+    // A new chart shows the saved-at pill (a saved visit is view-only and hides it).
+    local.clear();
+    seedChart();
+    const at = new Date();
+    sync.override = fakeCloud({ lastSavedAt: at.toISOString() });
+    const view = await frame();
+    expect(pill()).toBe(norm(`Saved · ${at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`));
+    view.unmount();
+
+    // Another day: short date, then the time.
+    const earlier = new Date(2026, 10, 9, 14, 41);
+    sync.override = fakeCloud({ lastSavedAt: earlier.toISOString() });
+    await frame();
+    const time = earlier.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const day = earlier.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    expect(pill()).toBe(norm(`Saved · ${day}, ${time}`));
   });
 });
