@@ -23,12 +23,12 @@
     "resume": "Fortsetzen",
     "start": "Starten",
     "stop": "Stopp",
-    "titleDictate": "Diktieren — sprechen Sie, und das Formular füllt sich von selbst",
+    "titleDictate": "Diktieren — sprechen Sie, und die Akte füllt sich von selbst",
     "titleStop": "Zuhören beenden (das Transkript bleibt erhalten)"
   },
   "dialog": {
     "confirm": "Neu beginnen",
-    "message": "Transkript, Aktivitätsprotokoll und Prüfliste werden gelöscht. Alles, was bereits im Formular eingetragen ist, bleibt erhalten.",
+    "message": "Transkript, Aktivitätsprotokoll und Prüfliste werden gelöscht. Alles, was bereits in der Akte eingetragen ist, bleibt erhalten.",
     "title": "Neues Diktat beginnen?"
   },
   "errors": {
@@ -57,13 +57,13 @@
     "gotIt": "Verstanden",
     "start": "Diktat starten",
     "step1": "Sprechen Sie ganz natürlich: <em>„104 GI 2, Zahnstein 1. 105 fehlt. Zunge unauffällig.“</em>",
-    "step2": "Bleiben Sie auf einer beliebigen Seite. Jeder Befund landet an der richtigen Stelle im Formular.",
+    "step2": "Bleiben Sie auf einer beliebigen Seite. Jeder Befund landet an der richtigen Stelle in der Akte.",
     "step3": "Tippen Sie auf <strong>Stopp</strong>, wenn Sie fertig sind. Alles Unsichere erscheint unter <strong>Zu prüfen</strong>.",
-    "title": "Diktieren Sie Ihr Formular"
+    "title": "Diktieren Sie Ihre Akte"
   },
   "panel": {
     "activity": "Aktivität",
-    "activityEmpty": "Änderungen am Formular erscheinen hier, sobald die KI sie übernimmt.",
+    "activityEmpty": "Änderungen an der Akte erscheinen hier, sobald die KI sie übernimmt.",
     "ariaLabel": "KI-Autofill",
     "close": "Bereich schließen",
     "closeTitle": "Schließen (das Transkript bleibt erhalten)",
@@ -94,7 +94,7 @@
     "providerDeepgram": "⚡ Deepgram",
     "remove": "Entfernen",
     "sending": "Senden …",
-    "showInChart": "Im Formular anzeigen",
+    "showInChart": "In der Akte anzeigen",
     "transcript": "Transkript"
   },
   "peek": {
@@ -141,7 +141,7 @@
   "toReview_one": "{{count}} zu prüfen",
   "toReview_other": "{{count}} zu prüfen",
   "toast": {
-    "viewOnly": "Dieser Besuch ist schreibgeschützt — wählen Sie „Formular bearbeiten“, um darin zu diktieren."
+    "viewOnly": "Dieser Besuch ist schreibgeschützt — wählen Sie „{{button}}“, um darin zu diktieren."
   },
   "transcript": {
     "activity": "Aktivität",

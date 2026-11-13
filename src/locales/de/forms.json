@@ -138,7 +138,7 @@
     "placeholder": "Details zu Behandlung und Eingriff …",
     "dialog": {
       "title": "Als Vorlage speichern",
-      "message": "Speichert diesen Berichtstext, damit Sie ihn in künftige Schemata einfügen können.",
+      "message": "Speichert diesen Berichtstext, damit Sie ihn in künftige Akten einfügen können.",
       "label": "Name der Vorlage",
       "placeholder": "z. B. Routinereinigung",
       "confirm": "Vorlage speichern",

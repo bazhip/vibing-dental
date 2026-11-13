@@ -51,7 +51,7 @@
   },
   "writeWithAi": {
     "title": "✨ Rédiger avec l’IA",
-    "body": "Rédige le résumé d’introduction et les conseils de soins à domicile à partir du schéma, en s’appuyant uniquement sur ce que vous avez saisi. Vous relisez avant d’imprimer."
+    "body": "Rédige le résumé d’introduction et les conseils de soins à domicile à partir du dossier, en s’appuyant uniquement sur ce que vous avez saisi. Vous relisez avant d’imprimer."
   },
   "customizeReport": {
     "title": "Personnaliser le compte rendu",

@@ -1,13 +1,13 @@
 {
   "delete": {
-    "blurb": "Elimina de forma permanente su cuenta, sus fichas privadas y sus imágenes. Las fichas que haya compartido con una clínica permanecen en la clínica.",
+    "blurb": "Elimina de forma permanente su cuenta, sus historiales privados y sus imágenes. Los historiales que haya compartido con una clínica permanecen en la clínica.",
     "button": "Eliminar la cuenta…",
     "heading": "Eliminar la cuenta"
   },
   "deletion": {
     "account": {
       "confirmButton": "Eliminar mi cuenta",
-      "confirmMessage": "Esto elimina de forma permanente su cuenta, sus fichas privadas y sus fotos y radiografías. Las fichas que haya compartido con una clínica permanecen en la clínica. Si es la única persona de su clínica, la clínica y todas sus fichas también se eliminan, y se cancela cualquier suscripción. Esta acción no se puede deshacer.",
+      "confirmMessage": "Esto elimina de forma permanente su cuenta, sus historiales privados y sus fotos y radiografías. Los historiales que haya compartido con una clínica permanecen en la clínica. Si es la única persona de su clínica, la clínica y todos sus historiales también se eliminan, y se cancela cualquier suscripción. Esta acción no se puede deshacer.",
       "confirmTitle": "¿Eliminar su cuenta?",
       "continue": "Continuar",
       "done": "Su cuenta se ha eliminado.",
@@ -19,7 +19,7 @@
     },
     "practice": {
       "confirmButton": "Eliminar la clínica",
-      "confirmMessage": "Esto elimina de forma permanente la clínica y todas las fichas compartidas con ella, incluidas las creadas por los miembros de su equipo, junto con sus fotos y radiografías. Cualquier suscripción se cancela de inmediato. Los miembros del equipo conservan sus cuentas y sus fichas privadas. Esta acción no se puede deshacer.",
+      "confirmMessage": "Esto elimina de forma permanente la clínica y todos los historiales compartidos con ella, incluidos los creados por los miembros de su equipo, junto con sus fotos y radiografías. Cualquier suscripción se cancela de inmediato. Los miembros del equipo conservan sus cuentas y sus historiales privados. Esta acción no se puede deshacer.",
       "confirmTitle": "¿Eliminar «{{name}}»?",
       "confirmTitleUnnamed": "¿Eliminar esta clínica?",
       "confirmationLabel": "Confirmación",
@@ -35,7 +35,7 @@
     }
   },
   "doctor": {
-    "blurb": "Se imprime bajo el logotipo en cada ficha que cree.",
+    "blurb": "Se imprime bajo el logotipo en cada historial que cree.",
     "heading": "Nombre del veterinario",
     "placeholder": "p. ej. Dra. Juana Pérez, DVM, DAVDC",
     "save": "Guardar el nombre del veterinario",

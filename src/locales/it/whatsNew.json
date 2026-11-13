@@ -51,7 +51,7 @@
   },
   "writeWithAi": {
     "title": "✨ Scrivi con l’IA",
-    "body": "Redige il riepilogo iniziale e i consigli per le cure a casa a partire dall’odontogramma, usando solo ciò che ha registrato. Lei lo rivede prima di stampare."
+    "body": "Redige il riepilogo iniziale e i consigli per le cure a casa a partire dalla cartella, usando solo ciò che ha registrato. Lei lo rivede prima di stampare."
   },
   "customizeReport": {
     "title": "Personalizzare il referto",

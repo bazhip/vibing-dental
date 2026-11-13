@@ -1,13 +1,13 @@
 {
   "delete": {
-    "blurb": "Löscht Ihr Konto, Ihre privaten Karten und deren Bilder dauerhaft. Karten, die Sie mit einer Praxis geteilt haben, bleiben bei der Praxis.",
+    "blurb": "Löscht Ihr Konto, Ihre privaten Akten und deren Bilder dauerhaft. Akten, die Sie mit einer Praxis geteilt haben, bleiben bei der Praxis.",
     "button": "Konto löschen…",
     "heading": "Konto löschen"
   },
   "deletion": {
     "account": {
       "confirmButton": "Mein Konto löschen",
-      "confirmMessage": "Dadurch werden Ihr Konto, Ihre privaten Karten und deren Fotos und Röntgenbilder dauerhaft gelöscht. Karten, die Sie mit einer Praxis geteilt haben, bleiben bei dieser Praxis. Wenn Sie die einzige Person in Ihrer Praxis sind, werden auch die Praxis und alle ihre Karten gelöscht, und jedes Abonnement wird gekündigt. Dies kann nicht rückgängig gemacht werden.",
+      "confirmMessage": "Dadurch werden Ihr Konto, Ihre privaten Akten und deren Fotos und Röntgenbilder dauerhaft gelöscht. Akten, die Sie mit einer Praxis geteilt haben, bleiben bei dieser Praxis. Wenn Sie die einzige Person in Ihrer Praxis sind, werden auch die Praxis und alle ihre Akten gelöscht, und jedes Abonnement wird gekündigt. Dies kann nicht rückgängig gemacht werden.",
       "confirmTitle": "Ihr Konto löschen?",
       "continue": "Weiter",
       "done": "Ihr Konto wurde gelöscht.",
@@ -19,7 +19,7 @@
     },
     "practice": {
       "confirmButton": "Praxis löschen",
-      "confirmMessage": "Dadurch werden die Praxis und alle mit ihr geteilten Karten – auch die von Ihren Teammitgliedern erstellten – samt Fotos und Röntgenbildern dauerhaft gelöscht. Jedes Abonnement wird sofort gekündigt. Teammitglieder behalten ihre Konten und ihre privaten Karten. Dies kann nicht rückgängig gemacht werden.",
+      "confirmMessage": "Dadurch werden die Praxis und alle mit ihr geteilten Akten – auch die von Ihren Teammitgliedern erstellten – samt Fotos und Röntgenbildern dauerhaft gelöscht. Jedes Abonnement wird sofort gekündigt. Teammitglieder behalten ihre Konten und ihre privaten Akten. Dies kann nicht rückgängig gemacht werden.",
       "confirmTitle": "„{{name}}“ löschen?",
       "confirmTitleUnnamed": "Diese Praxis löschen?",
       "confirmationLabel": "Bestätigung",
@@ -35,7 +35,7 @@
     }
   },
   "doctor": {
-    "blurb": "Wird bei jeder von Ihnen erstellten Karte unter dem Logo gedruckt.",
+    "blurb": "Wird bei jeder von Ihnen erstellten Akte unter dem Logo gedruckt.",
     "heading": "Tierarztname",
     "placeholder": "z. B. Dr. Jana Schmidt, Dr. med. vet., DAVDC",
     "save": "Tierarztnamen speichern",

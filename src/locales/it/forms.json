@@ -138,7 +138,7 @@
     "placeholder": "Dettagli del trattamento e dell’intervento…",
     "dialog": {
       "title": "Salva come modello",
-      "message": "Salva questo testo del referto per poterlo inserire nelle schede future.",
+      "message": "Salva questo testo del referto per poterlo inserire nelle cartelle future.",
       "label": "Nome del modello",
       "placeholder": "ad es. Pulizia di routine",
       "confirm": "Salva modello",

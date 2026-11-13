@@ -24,12 +24,12 @@
     "resume": "Reanudar",
     "start": "Iniciar",
     "stop": "Detener",
-    "titleDictate": "Dictar: hable y la ficha se rellena sola",
+    "titleDictate": "Dictar: hable y el historial se rellena solo",
     "titleStop": "Dejar de escuchar (se conserva la transcripción)"
   },
   "dialog": {
     "confirm": "Empezar de nuevo",
-    "message": "Se borran la transcripción, el registro de actividad y la lista de revisión. Todo lo ya introducido en la ficha se conserva.",
+    "message": "Se borran la transcripción, el registro de actividad y la lista de revisión. Todo lo ya introducido en el historial se conserva.",
     "title": "¿Iniciar un nuevo dictado?"
   },
   "errors": {
@@ -58,13 +58,13 @@
     "gotIt": "Entendido",
     "start": "Iniciar dictado",
     "step1": "Hable como lo haría normalmente: <em>«104 GI 2, sarro 1. 105 ausente. Lengua normal.»</em>",
-    "step2": "Permanezca en cualquier página. Cada hallazgo va al lugar correcto de la ficha.",
+    "step2": "Permanezca en cualquier página. Cada hallazgo va al lugar correcto del historial.",
     "step3": "Toque <strong>Detener</strong> cuando termine. Todo aquello de lo que no estaba seguro aparece en <strong>Por revisar</strong>.",
-    "title": "Dicte su ficha"
+    "title": "Dicte su historial"
   },
   "panel": {
     "activity": "Actividad",
-    "activityEmpty": "Los cambios en la ficha aparecen aquí a medida que la IA los aplica.",
+    "activityEmpty": "Los cambios en el historial aparecen aquí a medida que la IA los aplica.",
     "ariaLabel": "Autorrelleno con IA",
     "close": "Cerrar el panel",
     "closeTitle": "Cerrar (se conserva la transcripción)",
@@ -95,7 +95,7 @@
     "providerDeepgram": "⚡ Deepgram",
     "remove": "Quitar",
     "sending": "enviando…",
-    "showInChart": "Mostrar en la ficha",
+    "showInChart": "Mostrar en el historial",
     "transcript": "Transcripción"
   },
   "peek": {
@@ -147,7 +147,7 @@
   "toReview_one": "{{count}} por revisar",
   "toReview_other": "{{count}} por revisar",
   "toast": {
-    "viewOnly": "Esta visita es de solo lectura: elija Editar ficha para dictar en ella."
+    "viewOnly": "Esta visita es de solo lectura: elija {{button}} para dictar en ella."
   },
   "transcript": {
     "activity": "Actividad",

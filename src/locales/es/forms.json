@@ -138,7 +138,7 @@
     "placeholder": "Detalles del tratamiento y de la cirugía…",
     "dialog": {
       "title": "Guardar como plantilla",
-      "message": "Guarda este texto del informe para que pueda insertarlo en futuras fichas.",
+      "message": "Guarda este texto del informe para que pueda insertarlo en futuros historiales.",
       "label": "Nombre de la plantilla",
       "placeholder": "p. ej. Limpieza de rutina",
       "confirm": "Guardar plantilla",

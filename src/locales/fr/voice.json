@@ -147,7 +147,7 @@
   "toReview_one": "{{count}} à vérifier",
   "toReview_other": "{{count}} à vérifier",
   "toast": {
-    "viewOnly": "Cette visite est en lecture seule — choisissez Modifier le dossier pour y dicter."
+    "viewOnly": "Cette visite est en lecture seule — choisissez {{button}} pour y dicter."
   },
   "transcript": {
     "activity": "Activité",

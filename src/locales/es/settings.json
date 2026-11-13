@@ -166,7 +166,7 @@
       "grid": "Incluir la cuadrícula de mediciones",
       "gridHint": "(opcional si los hallazgos están en el esquema)",
       "images": "Incluir las imágenes",
-      "imagesHint": "(4 por página, después del esquema)"
+      "imagesHint": "(4 por página, después del historial)"
     }
   },
   "feedback": {

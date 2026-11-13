@@ -51,7 +51,7 @@
   },
   "writeWithAi": {
     "title": "✨ Redactar con IA",
-    "body": "Redacta el resumen inicial y los consejos de cuidados en casa a partir del odontograma, usando solo lo que usted ha registrado. Usted lo revisa antes de imprimir."
+    "body": "Redacta el resumen inicial y los consejos de cuidados en casa a partir del historial, usando solo lo que usted ha registrado. Usted lo revisa antes de imprimir."
   },
   "customizeReport": {
     "title": "Personalice el informe",

@@ -166,7 +166,7 @@
       "grid": "Includi la griglia delle misure",
       "gridHint": "(facoltativa quando i reperti sono nello schema)",
       "images": "Includi le immagini",
-      "imagesHint": "(4 per pagina, dopo lo schema)"
+      "imagesHint": "(4 per pagina, dopo la cartella)"
     }
   },
   "feedback": {

@@ -141,7 +141,7 @@
   "toReview_one": "{{count}} to review",
   "toReview_other": "{{count}} to review",
   "toast": {
-    "viewOnly": "This visit is view-only — choose Edit chart to dictate into it."
+    "viewOnly": "This visit is view-only — choose {{button}} to dictate into it."
   },
   "transcript": {
     "activity": "Activity",

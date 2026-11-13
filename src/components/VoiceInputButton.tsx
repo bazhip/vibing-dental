@@ -709,7 +709,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const handleButton = () => {
     if (locked && !voice.recording) {
-      toast(t('toast.viewOnly'), { kind: 'info' });
+      toast(t('toast.viewOnly', { button: t('topbar.editChart', { ns: 'app' }) }), { kind: 'info' });
       return;
     }
     if (voice.recording) {

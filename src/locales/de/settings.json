@@ -166,7 +166,7 @@
       "grid": "Befundraster einbeziehen",
       "gridHint": "(optional, wenn die Befunde im Schema stehen)",
       "images": "Bilder einbeziehen",
-      "imagesHint": "(4 pro Seite, nach dem Schema)"
+      "imagesHint": "(4 pro Seite, nach der Akte)"
     }
   },
   "feedback": {

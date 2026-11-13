@@ -24,12 +24,12 @@
     "resume": "Riprendi",
     "start": "Avvia",
     "stop": "Stop",
-    "titleDictate": "Detta — parli e la scheda si compila da sola",
+    "titleDictate": "Detta — parli e la cartella si compila da sola",
     "titleStop": "Interrompi l’ascolto (la trascrizione viene conservata)"
   },
   "dialog": {
     "confirm": "Ricomincia",
-    "message": "La trascrizione, il registro delle attività e l’elenco da verificare vengono cancellati. Tutto ciò che è già stato inserito nella scheda resta.",
+    "message": "La trascrizione, il registro delle attività e l’elenco da verificare vengono cancellati. Tutto ciò che è già stato inserito nella cartella resta.",
     "title": "Avviare una nuova dettatura?"
   },
   "errors": {
@@ -58,13 +58,13 @@
     "gotIt": "Ho capito",
     "start": "Avvia la dettatura",
     "step1": "Parli come farebbe normalmente: <em>«104 GI 2, tartaro 1. 105 mancante. Lingua normale.»</em>",
-    "step2": "Rimanga pure su qualsiasi pagina. Ogni reperto finisce al posto giusto nella scheda.",
+    "step2": "Rimanga pure su qualsiasi pagina. Ogni reperto finisce al posto giusto nella cartella.",
     "step3": "Tocchi <strong>Stop</strong> quando ha finito. Tutto ciò su cui non era sicura è elencato in <strong>Da verificare</strong>.",
-    "title": "Detti la Sua scheda"
+    "title": "Detti la Sua cartella"
   },
   "panel": {
     "activity": "Attività",
-    "activityEmpty": "Le modifiche alla scheda compaiono qui man mano che l’IA le applica.",
+    "activityEmpty": "Le modifiche alla cartella compaiono qui man mano che l’IA le applica.",
     "ariaLabel": "Compilazione con IA",
     "close": "Chiudi il pannello",
     "closeTitle": "Chiudi (la trascrizione viene conservata)",
@@ -95,7 +95,7 @@
     "providerDeepgram": "⚡ Deepgram",
     "remove": "Rimuovi",
     "sending": "invio…",
-    "showInChart": "Mostra nella scheda",
+    "showInChart": "Mostra nella cartella",
     "transcript": "Trascrizione"
   },
   "peek": {
@@ -147,7 +147,7 @@
   "toReview_one": "{{count}} da verificare",
   "toReview_other": "{{count}} da verificare",
   "toast": {
-    "viewOnly": "Questa visita è in sola lettura: scelga Modifica scheda per dettarvi."
+    "viewOnly": "Questa visita è in sola lettura: scelga {{button}} per dettarvi."
   },
   "transcript": {
     "activity": "Attività",
