@@ -44,7 +44,58 @@ export async function startOAuth(provider: 'google' | 'apple'): Promise<void> {
   if (data?.url) await Browser.open({ url: data.url });
 }
 
+/** Auth-return URLs already handled. Kept in sessionStorage, not just
+ *  memory: Capacitor keeps reporting the launch URL after a page reload
+ *  (it never clears it natively), and re-exchanging a used code fails
+ *  with a false "Sign-in didn't complete". Stored as hashes so the codes
+ *  themselves aren't persisted. */
+const HANDLED_KEY = 'toothops.handledAuthUrls';
+const HANDLED_MAX = 20;
 const handled = new Set<string>();
+
+function urlHash(url: string): string {
+  // FNV-1a: dedupe only, not security.
+  let h = 0x811c9dc5;
+  for (let i = 0; i < url.length; i++) {
+    h ^= url.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36);
+}
+
+function readHandled(): string[] {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(HANDLED_KEY) ?? '[]');
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Marks the URL handled; returns false if it already was. */
+function markHandled(url: string): boolean {
+  const key = urlHash(url);
+  const stored = readHandled();
+  if (handled.has(key) || stored.includes(key)) return false;
+  handled.add(key);
+  try {
+    sessionStorage.setItem(HANDLED_KEY, JSON.stringify([...stored, key].slice(-HANDLED_MAX)));
+  } catch {
+    /* storage unavailable: the in-memory set still covers this page */
+  }
+  return true;
+}
+
+/** Exactly `toothops://auth-callback` (any path/query/hash), never a
+ *  look-alike such as `toothops://auth-callback.evil.example`. */
+function parseAuthCallback(url: string): URL | null {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'toothops:' && u.host === 'auth-callback' ? u : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Finishes an auth flow that came back into the app. Returns false for
@@ -56,15 +107,15 @@ const handled = new Set<string>();
  * signed-in account (login CSRF).
  */
 export async function handleAuthUrl(url: string): Promise<boolean> {
-  if (!url.startsWith(AUTH_CALLBACK_URL)) return false;
+  const parsed = parseAuthCallback(url);
+  if (!parsed) return false;
   // A cold start can report the same URL as both the launch URL and an
-  // appUrlOpen event; a code can only be exchanged once.
-  if (handled.has(url)) return true;
-  handled.add(url);
+  // appUrlOpen event, and again after a reload; a code can only be
+  // exchanged once.
+  if (!markHandled(url)) return true;
   // The in-app browser may already be gone (magic links open from Mail).
   await Browser.close().catch(() => undefined);
   if (!supabase) return true;
-  const parsed = new URL(url);
   // The provider or Supabase reports failures as error/error_description,
   // in the query (PKCE) or the hash. Say so — never fail silently.
   const hash = new URLSearchParams(parsed.hash.replace(/^#/, ''));

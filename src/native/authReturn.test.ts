@@ -24,12 +24,24 @@ function mockNative(native: boolean) {
   vi.doMock('@capacitor/app', () => ({ App: app }));
 }
 
+// This jsdom build has no Web Storage.
+const session = new Map<string, string>();
+vi.stubGlobal('sessionStorage', {
+  getItem: (k: string) => session.get(k) ?? null,
+  setItem: (k: string, v: string) => void session.set(k, String(v)),
+  removeItem: (k: string) => void session.delete(k),
+  clear: () => session.clear(),
+  key: (i: number) => Array.from(session.keys())[i] ?? null,
+  get length() { return session.size; },
+});
+
 const load = () => import('./authReturn');
 const here = () => window.location.origin + window.location.pathname;
 
 beforeEach(() => {
   vi.resetModules();
   vi.clearAllMocks();
+  session.clear();
 });
 
 describe('authRedirectUrl / emailLinkOrigin', () => {
@@ -151,6 +163,44 @@ describe('handleAuthUrl', () => {
     await handleAuthUrl('toothops://auth-callback?code=once');
     await handleAuthUrl('toothops://auth-callback?code=once');
     expect(auth.exchangeCodeForSession).toHaveBeenCalledTimes(1);
+  });
+
+  it('a reload replaying the same launch URL exchanges nothing and shows no error', async () => {
+    // Capacitor keeps reporting the launch URL after a reload; the code
+    // was already used, so a second exchange would fail with a toast.
+    mockNative(true);
+    app.getLaunchUrl.mockResolvedValue({ url: 'toothops://auth-callback?code=cold' });
+    (await load()).initAuthReturn();
+    await vi.waitFor(() => expect(auth.exchangeCodeForSession).toHaveBeenCalledTimes(1));
+    vi.resetModules();
+    mockNative(true);
+    auth.exchangeCodeForSession.mockResolvedValue({ data: {}, error: new Error('invalid flow state') } as never);
+    (await load()).initAuthReturn();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(auth.exchangeCodeForSession).toHaveBeenCalledTimes(1);
+    expect(dialogs.toastWhenReady).not.toHaveBeenCalled();
+    app.getLaunchUrl.mockReset();
+    auth.exchangeCodeForSession.mockReset();
+    auth.exchangeCodeForSession.mockResolvedValue({ data: {}, error: null });
+  });
+
+  it('does not persist the code itself', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await handleAuthUrl('toothops://auth-callback?code=secret-code');
+    expect(Array.from(session.values()).join('')).not.toContain('secret-code');
+  });
+
+  it('matches the scheme and host exactly', async () => {
+    mockNative(true);
+    const { handleAuthUrl } = await load();
+    await expect(handleAuthUrl('toothops://auth-callback.evil.example?code=a')).resolves.toBe(false);
+    await expect(handleAuthUrl('toothops://auth-callbackx?code=a')).resolves.toBe(false);
+    await expect(handleAuthUrl('toothopsx://auth-callback?code=a')).resolves.toBe(false);
+    await expect(handleAuthUrl('not a url')).resolves.toBe(false);
+    expect(auth.exchangeCodeForSession).not.toHaveBeenCalled();
+    await expect(handleAuthUrl('TOOTHOPS://auth-callback/?code=ok')).resolves.toBe(true);
+    expect(auth.exchangeCodeForSession).toHaveBeenCalledWith('ok');
   });
 
   it('ignores other URLs', async () => {
