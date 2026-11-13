@@ -2,7 +2,8 @@ import React from 'react';
 import { rootLabels, rootBoxes, formatRootPockets, pocketDepths } from '../utils/pocket';
 import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
-import { COLUMN_RANGES } from '../constants/columnDefinitions';
+import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
+import { ScoreChips } from './ScoreChips';
 import { ToothDiagram } from './ToothDiagram';
 import {
   FINDING_COLUMNS,
@@ -293,7 +294,8 @@ export function ToothChartView({
                         </fieldset>
                       );
                     }
-                    return (
+                    const choices = scoreChoices(col.key);
+                    const field = (
                       <label key={col.key} className="tooth-chart__finding" htmlFor={id}>
                         <span>{col.name}</span>
                         <input
@@ -310,6 +312,21 @@ export function ToothChartView({
                           onKeyDown={blockEnter}
                         />
                       </label>
+                    );
+                    if (!choices) return field;
+                    // Short scales: tap a score (tap it again to clear)
+                    // instead of typing — the box stays for typing.
+                    return (
+                      <div key={col.key} className="tooth-chart__score">
+                        {field}
+                        <ScoreChips
+                          name={col.name}
+                          choices={choices}
+                          value={value}
+                          disabled={isMissing || readOnly}
+                          onPick={(score) => setField(col.key, value.trim() === score ? '' : score)}
+                        />
+                      </div>
                     );
                   })}
                 </div>

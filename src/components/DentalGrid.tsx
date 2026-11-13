@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
-import { COLUMN_RANGES } from '../constants/columnDefinitions';
+import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
+import { ScoreChips } from './ScoreChips';
 import {
   DataGrid,
   Column,
@@ -90,9 +92,42 @@ interface EditorWiring {
 
 const EditorWiringContext = React.createContext<EditorWiring | null>(null);
 
+/** Touch-first device (tablet, phone): tap targets matter more than
+ *  keys, and the on-screen keyboard covers half the chart. */
+const isCoarsePointer = () => window.matchMedia?.('(pointer: coarse)').matches ?? false;
+
+/** Where the score popover sits: under the cell, or above it when the
+ *  cell is near the bottom of the screen. Fixed-positioned (portalled
+ *  out of the grid, whose cells clip their content). */
+function usePopoverPosition(anchor: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  const [pos, setPos] = React.useState<{ top: number; left: number; above: boolean } | null>(null);
+  React.useLayoutEffect(() => {
+    if (!enabled) return;
+    const place = () => {
+      const el = anchor.current?.closest('.rdg-editor-container') ?? anchor.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const above = window.innerHeight - r.bottom < 72 && r.top > 72;
+      setPos({ top: above ? r.top - 4 : r.bottom + 4, left: Math.max(4, r.left), above });
+    };
+    place();
+    window.addEventListener('scroll', place, true);
+    window.addEventListener('resize', place);
+    return () => {
+      window.removeEventListener('scroll', place, true);
+      window.removeEventListener('resize', place);
+    };
+  }, [anchor, enabled]);
+  return pos;
+}
+
 /** Plain input — measurements here are numeric grades (mobility, pocket
  *  depths, PD stage), so the dental-code autocomplete that CodeField
- *  provides elsewhere would only get in the way. */
+ *  provides elsewhere would only get in the way. Short-scale columns
+ *  (mobility, furcation, calculus, gingivitis, PD stage) also get a row
+ *  of tappable scores under the cell: a tap saves the score and opens
+ *  the next tooth in the same column, so a column can be swept with one
+ *  tap per tooth. Typing still works exactly as before. */
 function CodeCellEditor({
   column,
   row,
@@ -106,6 +141,12 @@ function CodeCellEditor({
   const value = typeof current === 'string' ? current : '';
   const lastRowIdx = (wiring?.rowCountRef.current ?? 0) - 1;
   const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
+  const choices = scoreChoices(key as string);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const popover = usePopoverPosition(inputRef, !!choices);
+  // On touch screens the scores cover every valid value, so keep the
+  // on-screen keyboard down (a hardware keyboard still types).
+  const [coarse] = React.useState(isCoarsePointer);
 
   const advance = (nextRow: number, nextIdx: number, enableEditor: boolean) => {
     if (nextRow < 0 || nextRow > lastRowIdx) return;
@@ -159,10 +200,21 @@ function CodeCellEditor({
     }
   };
 
+  const pickScore = (score: string) => {
+    onRowChange({ ...row, [key]: score }, true);
+    // Straight into the next tooth's editor, scores showing.
+    advance(rowIdx + 1, column.idx, true);
+  };
+
   return (
+    <>
     <input
+      ref={inputRef}
       autoFocus
       value={value}
+      inputMode={choices && coarse ? 'none' : 'decimal'}
+      autoComplete="off"
+      aria-label={`Tooth ${row.triadan} ${String(column.name)}`}
       onChange={(e) => onRowChange({ ...row, [key]: e.target.value })}
       onKeyDown={handleKeyDown}
       onBlur={() => onClose(true)}
@@ -179,6 +231,26 @@ function CodeCellEditor({
         outline: 'none',
       }}
     />
+    {choices && popover && createPortal(
+      // Portalled, but still inside the editor in React's tree — so a
+      // press here reaches the grid's own "click inside the editor"
+      // handler and doesn't count as clicking away.
+      <div
+        className={`dental-grid__score-pop${popover.above ? ' dental-grid__score-pop--above' : ''}`}
+        style={{ top: popover.top, left: popover.left }}
+      >
+        <ScoreChips
+          name={`Tooth ${row.triadan} ${String(column.name)}`}
+          choices={choices}
+          value={value}
+          onPick={pickScore}
+          clearable
+          keepFocus
+        />
+      </div>,
+      document.body
+    )}
+    </>
   );
 }
 
