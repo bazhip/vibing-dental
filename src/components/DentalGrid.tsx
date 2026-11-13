@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { hapticTap } from '../native/haptics';
+import { isNativeApp } from '../native/platform';
 import { createPortal } from 'react-dom';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
@@ -556,14 +557,17 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
     place();
     sync();
-    window.addEventListener('scroll', schedule, { passive: true });
+    // The app scrolls the chart inside its tab's screen, not the window:
+    // listen for scrolls anywhere (capture) there.
+    const scrollOpts = isNativeApp() ? { passive: true, capture: true } : { passive: true };
+    window.addEventListener('scroll', schedule, scrollOpts);
     window.addEventListener('resize', schedule);
     window.visualViewport?.addEventListener('scroll', schedule);
     window.visualViewport?.addEventListener('resize', schedule);
     el.addEventListener('scroll', sync, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', schedule, scrollOpts);
       window.removeEventListener('resize', schedule);
       window.visualViewport?.removeEventListener('scroll', schedule);
       window.visualViewport?.removeEventListener('resize', schedule);

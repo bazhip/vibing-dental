@@ -19,6 +19,9 @@ import {
   setBlockValue,
   setFieldValue,
 } from '../utils/customAnesthesia';
+import { isNativeApp } from '../native/platform';
+import { hapticSelection } from '../native/haptics';
+import { Icon } from '../ios/icons';
 
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
@@ -74,6 +77,8 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   customValues,
   onCustomValuesChange,
 }) => {
+  // The iOS app: switches for yes/no fields, icons instead of text glyphs.
+  const native = isNativeApp();
   const customBlocks = blocksForForm(customBlockDefs, customValues);
   const customFields = fieldsForForm(customFieldDefs, customValues);
   const setCustomBlock = (row: CustomBlockValue) => onCustomValuesChange?.(setBlockValue(customValues, row));
@@ -203,7 +208,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                     aria-label={`Remove ${d.name.trim() || `anesthetic ${i + 1}`}`}
                     title="Remove"
                   >
-                    &times;
+                    {native ? <Icon name="xmark" size={14} /> : <>&times;</>}
                   </button>
                 )}
               </li>
@@ -215,7 +220,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             ))}
           </datalist>
           <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
-            <span aria-hidden="true">+</span> Add anesthetic
+            {native ? <Icon name="plus" size={16} /> : <span aria-hidden="true">+</span>} Add anesthetic
           </button>
           {usingDefault && usualDrug && (
             <button
@@ -312,7 +317,18 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               const update = (value: string) => setCustomField({ ...f, value });
               return (
                 <label key={f.id} className={`patient-form__label anesthesia-custom__field anesthesia-custom__field--${f.type}`}>
-                  {f.type === 'checkbox' ? (
+                  {f.type === 'checkbox' && native ? (
+                    <span className="anesthesia-custom__check anesthesia-custom__check--switch">
+                      <span>{f.label}</span>
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        className="ios-switch"
+                        checked={f.value === 'yes'}
+                        onChange={(e) => { hapticSelection(); update(e.target.checked ? 'yes' : ''); }}
+                      />
+                    </span>
+                  ) : f.type === 'checkbox' ? (
                     <span className="anesthesia-custom__check">
                       <input type="checkbox" checked={f.value === 'yes'} onChange={(e) => update(e.target.checked ? 'yes' : '')} />
                       {f.label}

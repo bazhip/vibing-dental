@@ -392,6 +392,146 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.form.complaint": {
+      "hash": "2415571d319f",
+      "status": "machine"
+    },
+    "chart:ios.form.dictate": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.owner": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "chart:ios.form.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "chart:ios.form.visit": {
+      "hash": "1c8ac867f052",
+      "status": "machine"
+    },
+    "chart:ios.live.notSaved": {
+      "hash": "41ba0daba89e",
+      "status": "machine"
+    },
+    "chart:ios.live.saved": {
+      "hash": "ede719fbb0c4",
+      "status": "machine"
+    },
+    "chart:ios.live.saving": {
+      "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.customize": {
+      "hash": "764a6d9af28d",
+      "status": "machine"
+    },
+    "chart:ios.menu.editChart": {
+      "hash": "b2cc19cde314",
+      "status": "machine"
+    },
+    "chart:ios.menu.history": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "chart:ios.menu.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.menu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "chart:ios.menu.retrySave": {
+      "hash": "3adee60b2336",
+      "status": "machine"
+    },
+    "chart:ios.menu.saveNow": {
+      "hash": "b7d0a349ffa8",
+      "status": "machine"
+    },
+    "chart:ios.menu.undoChanges": {
+      "hash": "ba06242948bf",
+      "status": "machine"
+    },
+    "chart:ios.more": {
+      "hash": "d47d7cb0e4f8",
+      "status": "machine"
+    },
+    "chart:ios.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.notice.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "chart:ios.notice.notSaved": {
+      "hash": "50257e8d012c",
+      "status": "machine"
+    },
+    "chart:ios.notice.otherTab": {
+      "hash": "365b1f5f9a92",
+      "status": "machine"
+    },
+    "chart:ios.shareBoth": {
+      "hash": "c26bd1edc158",
+      "status": "machine"
+    },
+    "chart:ios.shareChart": {
+      "hash": "503dc94340a3",
+      "status": "machine"
+    },
+    "chart:ios.status.editing": {
+      "hash": "fab4539d26e0",
+      "status": "machine"
+    },
+    "chart:ios.status.editingWith": {
+      "hash": "7daed7fdc61b",
+      "status": "machine"
+    },
+    "chart:ios.status.keptOnDevice": {
+      "hash": "23f0795abc63",
+      "status": "machine"
+    },
+    "chart:ios.status.needsName": {
+      "hash": "a35e9fedd34b",
+      "status": "machine"
+    },
+    "chart:ios.status.notSaved": {
+      "hash": "22b3467c1ba9",
+      "status": "machine"
+    },
+    "chart:ios.status.offline": {
+      "hash": "c6cf7048dc61",
+      "status": "machine"
+    },
+    "chart:ios.status.onDevice": {
+      "hash": "f8252cf3d1fc",
+      "status": "machine"
+    },
+    "chart:ios.status.saved": {
+      "hash": "aa579b5d2708",
+      "status": "machine"
+    },
+    "chart:ios.status.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "chart:ios.status.unsaved": {
+      "hash": "a710c2b90913",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnly": {
+      "hash": "9b4c6c8590e9",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnlyDate": {
+      "hash": "27fbafe3ff63",
+      "status": "machine"
+    },
     "chart:library.newVisitFailed": {
       "hash": "fb88294aa6e1",
       "status": "machine"
@@ -1352,6 +1492,146 @@
     },
     "chart:imaging.uploadsUnavailable": {
       "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:ios.form.complaint": {
+      "hash": "2415571d319f",
+      "status": "machine"
+    },
+    "chart:ios.form.dictate": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.owner": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "chart:ios.form.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "chart:ios.form.visit": {
+      "hash": "1c8ac867f052",
+      "status": "machine"
+    },
+    "chart:ios.live.notSaved": {
+      "hash": "41ba0daba89e",
+      "status": "machine"
+    },
+    "chart:ios.live.saved": {
+      "hash": "ede719fbb0c4",
+      "status": "machine"
+    },
+    "chart:ios.live.saving": {
+      "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.customize": {
+      "hash": "764a6d9af28d",
+      "status": "machine"
+    },
+    "chart:ios.menu.editChart": {
+      "hash": "b2cc19cde314",
+      "status": "machine"
+    },
+    "chart:ios.menu.history": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "chart:ios.menu.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.menu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "chart:ios.menu.retrySave": {
+      "hash": "3adee60b2336",
+      "status": "machine"
+    },
+    "chart:ios.menu.saveNow": {
+      "hash": "b7d0a349ffa8",
+      "status": "machine"
+    },
+    "chart:ios.menu.undoChanges": {
+      "hash": "ba06242948bf",
+      "status": "machine"
+    },
+    "chart:ios.more": {
+      "hash": "d47d7cb0e4f8",
+      "status": "machine"
+    },
+    "chart:ios.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.notice.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "chart:ios.notice.notSaved": {
+      "hash": "50257e8d012c",
+      "status": "machine"
+    },
+    "chart:ios.notice.otherTab": {
+      "hash": "365b1f5f9a92",
+      "status": "machine"
+    },
+    "chart:ios.shareBoth": {
+      "hash": "c26bd1edc158",
+      "status": "machine"
+    },
+    "chart:ios.shareChart": {
+      "hash": "503dc94340a3",
+      "status": "machine"
+    },
+    "chart:ios.status.editing": {
+      "hash": "fab4539d26e0",
+      "status": "machine"
+    },
+    "chart:ios.status.editingWith": {
+      "hash": "7daed7fdc61b",
+      "status": "machine"
+    },
+    "chart:ios.status.keptOnDevice": {
+      "hash": "23f0795abc63",
+      "status": "machine"
+    },
+    "chart:ios.status.needsName": {
+      "hash": "a35e9fedd34b",
+      "status": "machine"
+    },
+    "chart:ios.status.notSaved": {
+      "hash": "22b3467c1ba9",
+      "status": "machine"
+    },
+    "chart:ios.status.offline": {
+      "hash": "c6cf7048dc61",
+      "status": "machine"
+    },
+    "chart:ios.status.onDevice": {
+      "hash": "f8252cf3d1fc",
+      "status": "machine"
+    },
+    "chart:ios.status.saved": {
+      "hash": "aa579b5d2708",
+      "status": "machine"
+    },
+    "chart:ios.status.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "chart:ios.status.unsaved": {
+      "hash": "a710c2b90913",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnly": {
+      "hash": "9b4c6c8590e9",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnlyDate": {
+      "hash": "27fbafe3ff63",
       "status": "machine"
     },
     "chart:library.newVisitFailed": {
@@ -2316,6 +2596,146 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.form.complaint": {
+      "hash": "2415571d319f",
+      "status": "machine"
+    },
+    "chart:ios.form.dictate": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.owner": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "chart:ios.form.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "chart:ios.form.visit": {
+      "hash": "1c8ac867f052",
+      "status": "machine"
+    },
+    "chart:ios.live.notSaved": {
+      "hash": "41ba0daba89e",
+      "status": "machine"
+    },
+    "chart:ios.live.saved": {
+      "hash": "ede719fbb0c4",
+      "status": "machine"
+    },
+    "chart:ios.live.saving": {
+      "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.customize": {
+      "hash": "764a6d9af28d",
+      "status": "machine"
+    },
+    "chart:ios.menu.editChart": {
+      "hash": "b2cc19cde314",
+      "status": "machine"
+    },
+    "chart:ios.menu.history": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "chart:ios.menu.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.menu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "chart:ios.menu.retrySave": {
+      "hash": "3adee60b2336",
+      "status": "machine"
+    },
+    "chart:ios.menu.saveNow": {
+      "hash": "b7d0a349ffa8",
+      "status": "machine"
+    },
+    "chart:ios.menu.undoChanges": {
+      "hash": "ba06242948bf",
+      "status": "machine"
+    },
+    "chart:ios.more": {
+      "hash": "d47d7cb0e4f8",
+      "status": "machine"
+    },
+    "chart:ios.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.notice.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "chart:ios.notice.notSaved": {
+      "hash": "50257e8d012c",
+      "status": "machine"
+    },
+    "chart:ios.notice.otherTab": {
+      "hash": "365b1f5f9a92",
+      "status": "machine"
+    },
+    "chart:ios.shareBoth": {
+      "hash": "c26bd1edc158",
+      "status": "machine"
+    },
+    "chart:ios.shareChart": {
+      "hash": "503dc94340a3",
+      "status": "machine"
+    },
+    "chart:ios.status.editing": {
+      "hash": "fab4539d26e0",
+      "status": "machine"
+    },
+    "chart:ios.status.editingWith": {
+      "hash": "7daed7fdc61b",
+      "status": "machine"
+    },
+    "chart:ios.status.keptOnDevice": {
+      "hash": "23f0795abc63",
+      "status": "machine"
+    },
+    "chart:ios.status.needsName": {
+      "hash": "a35e9fedd34b",
+      "status": "machine"
+    },
+    "chart:ios.status.notSaved": {
+      "hash": "22b3467c1ba9",
+      "status": "machine"
+    },
+    "chart:ios.status.offline": {
+      "hash": "c6cf7048dc61",
+      "status": "machine"
+    },
+    "chart:ios.status.onDevice": {
+      "hash": "f8252cf3d1fc",
+      "status": "machine"
+    },
+    "chart:ios.status.saved": {
+      "hash": "aa579b5d2708",
+      "status": "machine"
+    },
+    "chart:ios.status.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "chart:ios.status.unsaved": {
+      "hash": "a710c2b90913",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnly": {
+      "hash": "9b4c6c8590e9",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnlyDate": {
+      "hash": "27fbafe3ff63",
+      "status": "machine"
+    },
     "chart:library.newVisitFailed": {
       "hash": "fb88294aa6e1",
       "status": "machine"
@@ -3276,6 +3696,146 @@
     },
     "chart:imaging.uploadsUnavailable": {
       "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:ios.form.complaint": {
+      "hash": "2415571d319f",
+      "status": "machine"
+    },
+    "chart:ios.form.dictate": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.owner": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "chart:ios.form.patient": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "chart:ios.form.visit": {
+      "hash": "1c8ac867f052",
+      "status": "machine"
+    },
+    "chart:ios.live.notSaved": {
+      "hash": "41ba0daba89e",
+      "status": "machine"
+    },
+    "chart:ios.live.saved": {
+      "hash": "ede719fbb0c4",
+      "status": "machine"
+    },
+    "chart:ios.live.saving": {
+      "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.customize": {
+      "hash": "764a6d9af28d",
+      "status": "machine"
+    },
+    "chart:ios.menu.editChart": {
+      "hash": "b2cc19cde314",
+      "status": "machine"
+    },
+    "chart:ios.menu.history": {
+      "hash": "84480475f027",
+      "status": "machine"
+    },
+    "chart:ios.menu.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.menu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "chart:ios.menu.retrySave": {
+      "hash": "3adee60b2336",
+      "status": "machine"
+    },
+    "chart:ios.menu.saveNow": {
+      "hash": "b7d0a349ffa8",
+      "status": "machine"
+    },
+    "chart:ios.menu.undoChanges": {
+      "hash": "ba06242948bf",
+      "status": "machine"
+    },
+    "chart:ios.more": {
+      "hash": "d47d7cb0e4f8",
+      "status": "machine"
+    },
+    "chart:ios.newChart": {
+      "hash": "adfa805fa912",
+      "status": "machine"
+    },
+    "chart:ios.notice.gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "chart:ios.notice.notSaved": {
+      "hash": "50257e8d012c",
+      "status": "machine"
+    },
+    "chart:ios.notice.otherTab": {
+      "hash": "365b1f5f9a92",
+      "status": "machine"
+    },
+    "chart:ios.shareBoth": {
+      "hash": "c26bd1edc158",
+      "status": "machine"
+    },
+    "chart:ios.shareChart": {
+      "hash": "503dc94340a3",
+      "status": "machine"
+    },
+    "chart:ios.status.editing": {
+      "hash": "fab4539d26e0",
+      "status": "machine"
+    },
+    "chart:ios.status.editingWith": {
+      "hash": "7daed7fdc61b",
+      "status": "machine"
+    },
+    "chart:ios.status.keptOnDevice": {
+      "hash": "23f0795abc63",
+      "status": "machine"
+    },
+    "chart:ios.status.needsName": {
+      "hash": "a35e9fedd34b",
+      "status": "machine"
+    },
+    "chart:ios.status.notSaved": {
+      "hash": "22b3467c1ba9",
+      "status": "machine"
+    },
+    "chart:ios.status.offline": {
+      "hash": "c6cf7048dc61",
+      "status": "machine"
+    },
+    "chart:ios.status.onDevice": {
+      "hash": "f8252cf3d1fc",
+      "status": "machine"
+    },
+    "chart:ios.status.saved": {
+      "hash": "aa579b5d2708",
+      "status": "machine"
+    },
+    "chart:ios.status.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "chart:ios.status.unsaved": {
+      "hash": "a710c2b90913",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnly": {
+      "hash": "9b4c6c8590e9",
+      "status": "machine"
+    },
+    "chart:ios.status.viewOnlyDate": {
+      "hash": "27fbafe3ff63",
       "status": "machine"
     },
     "chart:library.newVisitFailed": {

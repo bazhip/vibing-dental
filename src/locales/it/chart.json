@@ -57,5 +57,52 @@
     "signOutFailed": "Impossibile uscire. {{error}}",
     "verbNewPatient": "Iniziare un nuovo paziente",
     "verbImportPdf": "Importare questo PDF"
+  },
+  "ios": {
+    "newChart": "Nuovo odontogramma",
+    "shareChart": "Anteprima e download del PDF dell’odontogramma",
+    "shareBoth": "Anteprima e download dell’odontogramma clinico e del referto per il proprietario",
+    "more": "Altro",
+    "menu": {
+      "newChart": "Nuovo odontogramma",
+      "newVisit": "Nuova visita",
+      "history": "Cronologia dell’odontogramma",
+      "editChart": "Modifica odontogramma",
+      "undoChanges": "Annulla modifiche",
+      "saveNow": "Salva ora",
+      "retrySave": "Riprova a salvare",
+      "customize": "Personalizza: {{section}}"
+    },
+    "status": {
+      "saving": "Salvataggio…",
+      "saved": "Salvato · {{time}}",
+      "notSaved": "Non salvato",
+      "viewOnly": "Sola lettura",
+      "viewOnlyDate": "Sola lettura · {{date}}",
+      "editing": "Modifica in corso",
+      "editingWith": "Modifica in corso · {{status}}",
+      "offline": "Offline — salvato su questo dispositivo",
+      "needsName": "Inserisca il nome del paziente per salvare",
+      "keptOnDevice": "Viene salvato appena inizia l’odontogramma",
+      "unsaved": "Modifiche non salvate",
+      "onDevice": "Solo su questo dispositivo"
+    },
+    "live": {
+      "saving": "Salvataggio dell’odontogramma",
+      "saved": "Odontogramma salvato",
+      "notSaved": "Odontogramma non salvato"
+    },
+    "notice": {
+      "otherTab": "Questo odontogramma è aperto in un’altra finestra. Entrambe modificano la stessa copia di lavoro — ne chiuda una per non sovrascrivere le modifiche.",
+      "gotIt": "Ho capito",
+      "notSaved": "Questo odontogramma non è salvato."
+    },
+    "form": {
+      "patient": "Paziente",
+      "owner": "Proprietario",
+      "visit": "Visita",
+      "complaint": "Motivo della visita",
+      "dictate": "Dettatura"
+    }
   }
 }

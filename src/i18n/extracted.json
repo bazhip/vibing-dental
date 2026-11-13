@@ -23,5 +23,8 @@
   "src/ios/appData.tsx",
   "src/ios/screens/PatientsScreen.tsx",
   "src/ios/screens/RechecksScreen.tsx",
-  "src/ios/screens/SettingsScreen.tsx"
+  "src/ios/screens/SettingsScreen.tsx",
+  "src/ios/Form.tsx",
+  "src/ios/chart/ChartNavBar.tsx",
+  "src/ios/chart/chartStatus.ts"
 ]

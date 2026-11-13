@@ -52,7 +52,10 @@ export function MenuPopover({ items, anchor, onClose, radio = false, centered = 
   React.useLayoutEffect(() => {
     const menu = menuRef.current;
     if (!menu) return;
-    const rect = menu.getBoundingClientRect();
+    // offsetWidth/Height: the open animation scales the menu, which
+    // would shrink a getBoundingClientRect() measurement and misplace it
+    // near the right edge (the Chart tab's More menu).
+    const rect = { width: menu.offsetWidth || menu.getBoundingClientRect().width, height: menu.offsetHeight || menu.getBoundingClientRect().height };
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     let left = centered ? anchor.left + anchor.width / 2 - rect.width / 2 : anchor.left;

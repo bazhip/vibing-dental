@@ -57,5 +57,52 @@
     "signOutFailed": "Impossible de se déconnecter. {{error}}",
     "verbNewPatient": "Commencer un nouveau patient",
     "verbImportPdf": "Importer ce PDF"
+  },
+  "ios": {
+    "newChart": "Nouveau schéma",
+    "shareChart": "Prévisualiser et télécharger le PDF du schéma",
+    "shareBoth": "Prévisualiser et télécharger le schéma clinique et le rapport pour le propriétaire",
+    "more": "Plus",
+    "menu": {
+      "newChart": "Nouveau schéma",
+      "newVisit": "Nouvelle visite",
+      "history": "Historique du schéma",
+      "editChart": "Modifier le schéma",
+      "undoChanges": "Annuler les modifications",
+      "saveNow": "Enregistrer maintenant",
+      "retrySave": "Réessayer l’enregistrement",
+      "customize": "Personnaliser : {{section}}"
+    },
+    "status": {
+      "saving": "Enregistrement…",
+      "saved": "Enregistré · {{time}}",
+      "notSaved": "Non enregistré",
+      "viewOnly": "Lecture seule",
+      "viewOnlyDate": "Lecture seule · {{date}}",
+      "editing": "Modification",
+      "editingWith": "Modification · {{status}}",
+      "offline": "Hors ligne — enregistré sur cet appareil",
+      "needsName": "Ajoutez un nom de patient pour enregistrer",
+      "keptOnDevice": "S’enregistre dès que vous commencez le schéma",
+      "unsaved": "Modifications non enregistrées",
+      "onDevice": "Sur cet appareil uniquement"
+    },
+    "live": {
+      "saving": "Enregistrement du schéma",
+      "saved": "Schéma enregistré",
+      "notSaved": "Schéma non enregistré"
+    },
+    "notice": {
+      "otherTab": "Ce schéma est ouvert dans une autre fenêtre. Les deux modifient la même copie de travail — fermez-en une pour ne pas écraser vos modifications.",
+      "gotIt": "Compris",
+      "notSaved": "Ce schéma n’est pas enregistré."
+    },
+    "form": {
+      "patient": "Patient",
+      "owner": "Propriétaire",
+      "visit": "Visite",
+      "complaint": "Motif de consultation",
+      "dictate": "Dictée"
+    }
   }
 }

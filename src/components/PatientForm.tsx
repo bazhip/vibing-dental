@@ -2,6 +2,9 @@ import React from 'react';
 import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { FormField, FormGroup, Segmented } from '../ios/Form';
 
 interface PatientFormProps {
   patientInfo: PatientInfo;
@@ -42,6 +45,160 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   const handleBaseChange = (b: 'feline' | 'canine') => onSpeciesChange(combine(b, dentition));
   const handleDentitionChange = (d: 'permanent' | 'deciduous') => onSpeciesChange(combine(base, d));
+  const { t } = useTranslation('chart');
+  // Quick-pick: common recheck intervals, counted from the visit date
+  // (falling back to today). Selecting one fills the date field; it can
+  // still be hand-adjusted after.
+  const recallQuick = (
+    <select
+      className="patient-form__input patient-form__recall-quick"
+      value=""
+      aria-label="Set the recheck date a common interval after the visit date"
+      onChange={(e) => {
+        const days = Number(e.target.value);
+        if (!days) return;
+        const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
+        base.setDate(base.getDate() + days);
+        onPatientInfoChange('recallDate', localDateISO(base));
+      }}
+    >
+      <option value="">+ interval</option>
+      <option value="7">1 week</option>
+      <option value="14">2 weeks</option>
+      <option value="30">1 month</option>
+      <option value="90">3 months</option>
+      <option value="182">6 months</option>
+      <option value="365">1 year</option>
+    </select>
+  );
+
+  // The iOS app: the same fields as inset-grouped label/value rows, and
+  // segmented controls for species and dentition.
+  if (isNativeApp()) {
+    return (
+      <div className="patient-form patient-form--ios">
+        <div className="patient-form__header">
+          <h2 className="patient-form__section-title">Patient Information</h2>
+          {onCustomize && (
+            <button type="button" className="diagram-view__action" onClick={onCustomize} title="Fields shown on this page">
+              Customize
+            </button>
+          )}
+        </div>
+        <FormGroup header={t('ios.form.patient')}>
+          <FormField label={<>Patient Name <span className="patient-form__req" aria-hidden="true">*</span></>}>
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Enter patient name"
+              value={patientInfo.patientName}
+              onChange={handleInputChange('patientName')}
+            />
+          </FormField>
+          <FormField label="Patient Number">
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Enter patient number"
+              value={patientInfo.patientNumber}
+              onChange={handleInputChange('patientNumber')}
+            />
+          </FormField>
+          <FormField label="Date">
+            <input type="date" className="patient-form__input" value={patientInfo.date} onChange={handleInputChange('date')} />
+          </FormField>
+          <FormField as="div" label={<span id="species-group-label">Species</span>}>
+            <Segmented
+              labelledBy="species-group-label"
+              options={[{ value: 'canine', label: 'Canine' }, { value: 'feline', label: 'Feline' }]}
+              value={base}
+              onChange={handleBaseChange}
+            />
+          </FormField>
+          <FormField as="div" label={<span id="dentition-group-label">Dentition</span>}>
+            <Segmented
+              labelledBy="dentition-group-label"
+              options={[{ value: 'permanent', label: 'Permanent' }, { value: 'deciduous', label: 'Deciduous' }]}
+              value={dentition}
+              onChange={handleDentitionChange}
+            />
+          </FormField>
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.owner')}>
+          <FormField label="Owner name">
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Pet owner / client"
+              autoComplete="off"
+              value={patientInfo.ownerName ?? ''}
+              onChange={handleInputChange('ownerName')}
+            />
+          </FormField>
+          <FormField label="Owner phone">
+            <input
+              type="tel"
+              className="patient-form__input"
+              placeholder="Contact number"
+              autoComplete="off"
+              value={patientInfo.ownerPhone ?? ''}
+              onChange={handleInputChange('ownerPhone')}
+            />
+          </FormField>
+          <FormField label="Owner email">
+            <input
+              type="email"
+              className="patient-form__input"
+              placeholder={hideRecheck ? 'Optional' : 'For recheck reminders'}
+              autoComplete="off"
+              value={patientInfo.ownerEmail ?? ''}
+              onChange={handleInputChange('ownerEmail')}
+            />
+          </FormField>
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.visit')}>
+          <FormField label="Tech">
+            <input
+              type="text"
+              className="patient-form__input"
+              placeholder="Tech name (optional)"
+              value={patientInfo.tech}
+              onChange={handleInputChange('tech')}
+            />
+          </FormField>
+          {!hideRecheck && (
+            <FormField as="div" label="Recheck due">
+              <span className="patient-form__recall">
+                <input
+                  type="date"
+                  className="patient-form__input"
+                  aria-label="Recheck due"
+                  value={patientInfo.recallDate ?? ''}
+                  onChange={handleInputChange('recallDate')}
+                />
+                {recallQuick}
+              </span>
+            </FormField>
+          )}
+        </FormGroup>
+
+        <FormGroup header={t('ios.form.complaint')}>
+          <div className="ios-field ios-field--stacked ios-field--bare">
+            <CodeField
+              multiline
+              className="patient-form__textarea"
+              aria-label="Chief Complaint"
+              placeholder="Enter chief complaint or reason for visit"
+              value={patientInfo.complaint}
+              onChange={(value) => onPatientInfoChange('complaint', value)}
+            />
+          </div>
+        </FormGroup>
+      </div>
+    );
+  }
 
   return (
     <div className="patient-form">
@@ -158,29 +315,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.recallDate ?? ''}
               onChange={handleInputChange('recallDate')}
             />
-            {/* Quick-pick: common recheck intervals, counted from the
-                visit date (falling back to today). Selecting one fills
-                the date field; it can still be hand-adjusted after. */}
-            <select
-              className="patient-form__input patient-form__recall-quick"
-              value=""
-              aria-label="Set the recheck date a common interval after the visit date"
-              onChange={(e) => {
-                const days = Number(e.target.value);
-                if (!days) return;
-                const base = patientInfo.date ? new Date(`${patientInfo.date}T12:00:00`) : new Date();
-                base.setDate(base.getDate() + days);
-                onPatientInfoChange('recallDate', localDateISO(base));
-              }}
-            >
-              <option value="">+ interval</option>
-              <option value="7">1 week</option>
-              <option value="14">2 weeks</option>
-              <option value="30">1 month</option>
-              <option value="90">3 months</option>
-              <option value="182">6 months</option>
-              <option value="365">1 year</option>
-            </select>
+            {recallQuick}
           </span>
         </label>
         )}

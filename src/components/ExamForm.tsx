@@ -1,5 +1,7 @@
 import React from 'react';
 import { ExamFindings, ExamFinding, EXAM_ITEMS } from '../types';
+import { isNativeApp } from '../native/platform';
+import { FormGroup } from '../ios/Form';
 
 interface ExamFormProps {
   exam: ExamFindings;
@@ -48,21 +50,74 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   onCommentChange,
 }) => {
   const unanswered = EXAM_ITEMS.filter(({ key }) => !exam[key].status);
+  const header = (
+    <div className="dental-grid__section-header">
+      <h2 className="dental-grid__title">Exam</h2>
+      {unanswered.length > 0 && (
+        <button
+          type="button"
+          className="diagram-view__action"
+          onClick={() => unanswered.forEach(({ key }) => onStatusChange(key, 'normal'))}
+          title="Mark every area you haven't answered as normal"
+        >
+          Mark {unanswered.length === EXAM_ITEMS.length ? 'all' : 'the rest'} normal
+        </button>
+      )}
+    </div>
+  );
+
+  // The iOS app: one row per area with a Normal / Abnormal segmented
+  // control (the same radios — tapping the chosen answer clears it), and
+  // the comment on its own row under an abnormal area.
+  if (isNativeApp()) {
+    return (
+      <div className="dental-grid-section exam-ios">
+        {header}
+        <FormGroup>
+          {EXAM_ITEMS.map(({ key, label }) => {
+            const item = exam[key];
+            const groupName = `exam-${key}`;
+            const answer = (value: 'normal' | 'abnormal', text: string) => (
+              <label className={`ios-segmented__segment${item.status === value ? ' ios-segmented__segment--selected' : ''}${value === 'abnormal' ? ' ios-segmented__segment--abnormal' : ''}`}>
+                <input
+                  type="radio"
+                  className="ios-segmented__input"
+                  name={groupName}
+                  checked={item.status === value}
+                  onChange={() => onStatusChange(key, value)}
+                  onClick={() => { if (item.status === value) onStatusChange(key, ''); }}
+                  aria-label={`${label}: ${value}`}
+                />
+                {text}
+              </label>
+            );
+            return (
+              <React.Fragment key={key}>
+                <div className={`ios-field exam-ios__row${item.status === 'abnormal' ? ' exam-ios__row--abnormal' : ''}`}>
+                  <span className="ios-field__label">{label}</span>
+                  <span className="ios-field__control">
+                    <span className="ios-segmented" role="radiogroup" aria-label={label}>
+                      {answer('normal', 'Normal')}
+                      {answer('abnormal', 'Abnormal')}
+                    </span>
+                  </span>
+                </div>
+                {item.status === 'abnormal' && (
+                  <div className="ios-field ios-field--stacked ios-field--bare exam-ios__comment">
+                    <CommentBox label={label} value={item.comment} onChange={(v) => onCommentChange(key, v)} />
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </FormGroup>
+      </div>
+    );
+  }
+
   return (
     <div className="dental-grid-section">
-      <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Exam</h2>
-        {unanswered.length > 0 && (
-          <button
-            type="button"
-            className="diagram-view__action"
-            onClick={() => unanswered.forEach(({ key }) => onStatusChange(key, 'normal'))}
-            title="Mark every area you haven't answered as normal"
-          >
-            Mark {unanswered.length === EXAM_ITEMS.length ? 'all' : 'the rest'} normal
-          </button>
-        )}
-      </div>
+      {header}
 
       <table className="exam-table">
         <thead>

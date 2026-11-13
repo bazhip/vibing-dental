@@ -111,6 +111,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   const atLimit = store.items.length >= store.maxImages;
   // The web keeps its wording; the app states the limit as a plain fact.
+  // The iOS app: yes/no options are switches.
+  const switchProps = isNativeApp() ? { role: 'switch', className: 'ios-switch' } : {};
   const limitMessage = isNativeApp()
     ? t('imaging.limitReached', { max: store.maxImages })
     : `Limit of ${store.maxImages} images reached`;
@@ -156,6 +158,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         >
           <input
             type="checkbox"
+            {...switchProps}
             disabled={readOnly}
             checked={includeInPdf}
             onChange={(e) => onIncludeInPdfChange(e.target.checked)}
@@ -301,6 +304,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   <label className="imaging__in-pdf" title="Include this image on the PDF's image pages">
                     <input
                       type="checkbox"
+                      {...switchProps}
             disabled={readOnly}
                       checked={!pdfExcludedImages.includes(a.id)}
                       onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
