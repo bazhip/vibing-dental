@@ -105,3 +105,47 @@ The `toothops` URL scheme is registered in `ios/App/App/Info.plist`
 - If the user hid their email (Hide My Email) they get a separate account. That
   is accepted for v1, and the hint under the Apple button points existing and
   invited users to email sign-in.
+
+## 7. Known gap: Apple token revocation on account deletion (not implemented)
+
+Apple requires apps that offer Sign in with Apple to **revoke the user's Apple
+tokens when they delete their account** (Guideline 5.1.1(v) and Apple's
+"Sign in with Apple REST API" account-deletion requirement). ToothOps deletes
+the account (`delete_account` in `supabase/functions/team-api/index.ts`), but
+it does **not** revoke the Apple token yet. App Review may reject a build for
+this. It needs server work, which hasn't been done.
+
+What it would take:
+
+1. **Keep a token to revoke.** At sign-in the native sheet returns
+   `response.authorizationCode` (in `src/components/AppleSignInButton.tsx`,
+   next to `response.identityToken`). The app currently discards it. The code
+   is single-use and expires after 5 minutes, so right after
+   `signInWithIdToken` succeeds the app must send it to a server function
+   (for example a new `apple_link` action in team-api). The server exchanges it
+   at `POST https://appleid.apple.com/auth/token` (`grant_type=authorization_code`,
+   `code`, `client_id`, `client_secret`) and stores the returned
+   `refresh_token`, keyed by the user id, in a service-role-only table. Never
+   store it on the device or in a table users can read.
+2. **Client secret JWT.** Both Apple endpoints take a `client_secret`: an ES256
+   JWT signed with the Sign in with Apple `.p8` key from step 1.3. Header
+   `kid` = Key ID. Claims: `iss` = Team ID, `sub` = the client ID (the bundle ID
+   `app.toothops.ios` for tokens from the app, the Services ID for tokens from
+   the website), `aud` = `https://appleid.apple.com`, `iat` = now, `exp` = at
+   most 6 months later. Generate it in the edge function from secrets
+   (`APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_PRIVATE_KEY`), not by hand.
+3. **Revoke on deletion.** In team-api's `delete_account`, after the checks and
+   just before `purgeAccount(admin, caller.id, ...)`, look up the stored Apple
+   refresh token for `caller.id` and call
+   `POST https://appleid.apple.com/auth/revoke` (form-encoded: `client_id`,
+   `client_secret`, `token`, `token_type_hint=refresh_token`). Apple answers
+   200 on success. Log a failure, but don't block the deletion. Then delete the
+   stored token row with the rest of the account.
+4. **Website Apple sign-ins** go through Supabase's OAuth redirect, which
+   doesn't hand the app an authorization code. Accounts that only ever signed
+   in with Apple on the website have no token to revoke until the website flow
+   also captures one. Apple's requirement is about the app, so the native path
+   (steps 1 to 3) is the minimum.
+
+Until this ships, write it in the App Review notes if asked, and track it in
+the release checklist (`docs/ios/release-checklist.md`).

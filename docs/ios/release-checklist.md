@@ -99,6 +99,15 @@ Native features:
       team seat-limit message. A practice without an active plan sees only "Your
       plan isn't active / Manage it at toothops.app." and Sign out.
 - [ ] **Account deletion** is reachable in the app (Guideline 5.1.1(v)).
+- [ ] **Known gap: Sign in with Apple token revocation.** Deleting an account
+      does not yet revoke the user's Apple token, which Apple requires for apps
+      offering Sign in with Apple. App Review may reject for it. This needs
+      server work: capture the native `authorizationCode` at sign-in, exchange
+      and store the refresh token server-side, build the `.p8` client-secret
+      JWT, and call `https://appleid.apple.com/auth/revoke` from team-api's
+      `delete_account` before `purgeAccount`. The steps are in
+      `docs/ios/sign-in-with-apple.md`, section 7. Decide before submitting
+      whether to ship it first.
 
 ## 5. App Store Connect
 
