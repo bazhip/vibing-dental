@@ -103,4 +103,26 @@ describe('Login — Sign in with Apple and app mode', () => {
     fireEvent.click(link);
     await waitFor(() => expect(browser.open).toHaveBeenCalledWith({ url: 'https://toothops.app/' }));
   });
+
+  it('web: the website form (labelled fields, login buttons); no iOS styling', () => {
+    render(<Login onAuthenticate={vi.fn()} />);
+    expect(document.querySelector('.login-container')).not.toHaveClass('login-container--app');
+    expect(screen.getByLabelText(/^Email/).closest('.login-field')).not.toBeNull();
+    expect(document.querySelector('.ios-form-group')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Sign in' })).toHaveClass('login-button');
+  });
+
+  it('appMode: inset-grouped Email / Password fields and iOS buttons', () => {
+    cap.native = true;
+    render(<Login onAuthenticate={vi.fn()} appMode />);
+    expect(document.querySelector('.login-container')).toHaveClass('login-container--app');
+    const group = document.querySelector('.ios-form-group')!;
+    expect(group).not.toBeNull();
+    expect(group.contains(screen.getByLabelText(/^Email/))).toBe(true);
+    expect(group.contains(screen.getByLabelText(/^Password/))).toBe(true);
+    expect(screen.getByRole('button', { name: 'Sign in' })).toHaveClass('ios-button', 'ios-button--filled');
+    expect(screen.getByRole('button', { name: 'Forgot password?' })).toHaveClass('ios-button', 'ios-button--plain');
+    expect(screen.getByText('New to ToothOps? Sign up at toothops.app')).toHaveClass('ios-button--plain');
+    expect(screen.getByText('Already have an account or were invited? Sign in with your email.')).toBeInTheDocument();
+  });
 });

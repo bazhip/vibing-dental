@@ -191,7 +191,9 @@
 }
 :where(html.native-ios) .ios-sheet__bar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* The bar buttons keep their width; a long title truncates between them
+     instead of running under them. */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 52px;

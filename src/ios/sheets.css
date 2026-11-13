@@ -1,0 +1,529 @@
+/* =============================================================================
+ * iOS app: sheets and sign-in surfaces — app only.
+ *
+ * Forms (inset-grouped text fields), iOS buttons and the segmented control
+ * used by the converted dialogs, plus the app-mode styling of Login,
+ * SessionExpiredOverlay, AppLockOverlay and BillingGate / InactivePlan.
+ * Every rule is under html.native-ios, so the website is untouched; colours
+ * and type come from tokens.css.
+ * =============================================================================
+ */
+
+/* ---- Page sheet (iPad): previews want more room than a form sheet ------- */
+html.native-ios .ios-sheet--form.ios-sheet--page {
+  width: min(960px, calc(100% - 48px));
+  height: calc(100% - 48px);
+}
+
+/* ---- Inset-grouped form --------------------------------------------------- */
+html.native-ios .ios-form { padding: 8px 16px 16px; }
+@media (min-width: 768px) {
+  html.native-ios .ios-form { padding: 8px 20px 20px; }
+}
+html.native-ios .ios-form-text {
+  margin: 8px 4px 16px;
+  font: 400 var(--ios-text-body) / 1.4 var(--ios-font);
+  color: var(--ios-label);
+}
+html.native-ios .ios-form-group {
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .ios-form-footer {
+  margin: 7px 20px 0;
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-form-error,
+html.native-ios .ios-form-notice {
+  margin: 12px 20px 0;
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+}
+html.native-ios .ios-form-error { color: var(--ios-danger); }
+html.native-ios .ios-form-notice { color: var(--ios-success-label); }
+
+/* One field per row: label on the leading side, the field fills the rest;
+   separators inset like list rows. */
+html.native-ios .ios-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin: 0 0 0 20px;
+  padding: 0 16px 0 0;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+  color: var(--ios-label);
+  font: 400 var(--ios-text-body) / 1.3 var(--ios-font);
+}
+html.native-ios .ios-form-group > :last-child { box-shadow: none; }
+html.native-ios .ios-field__label {
+  flex: 0 0 auto;
+  min-width: 7.5em;
+  max-width: 45%;
+  color: var(--ios-label);
+  overflow-wrap: anywhere;
+}
+html.native-ios .ios-field__control { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; }
+html.native-ios .ios-field__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 11px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ios-label);
+  font: 400 max(16px, var(--ios-text-body)) / 1.3 var(--ios-font);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+html.native-ios .ios-field__input::placeholder { color: var(--ios-label-3); }
+html.native-ios .ios-field__input[readonly] { color: var(--ios-label-muted); }
+html.native-ios .ios-field__accessory {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1 var(--ios-font);
+  cursor: pointer;
+}
+/* Multi-line field: label above, text area below. */
+html.native-ios .ios-field--stacked { flex-direction: column; align-items: stretch; gap: 0; padding-top: 11px; }
+html.native-ios .ios-field--stacked .ios-field__label { max-width: none; color: var(--ios-label-muted); font-size: var(--ios-text-subheadline); }
+html.native-ios .ios-field--stacked textarea.ios-field__input { min-height: 14em; padding-top: 6px; resize: vertical; line-height: 1.4; }
+/* File picker row: the whole row picks the file. */
+html.native-ios .ios-field--file { position: relative; cursor: pointer; }
+html.native-ios .ios-field--file .ios-field__label { flex: 1 1 auto; max-width: none; color: var(--ios-tint); }
+html.native-ios .ios-field__file { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+html.native-ios .ios-field__thumb { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; background: var(--ios-bg); }
+
+/* ---- iOS buttons ------------------------------------------------------- */
+html.native-ios .ios-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 50px;
+  margin: 0;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+html.native-ios .ios-button--filled { background: var(--ios-tint); color: var(--ios-on-tint); }
+html.native-ios .ios-button--filled:active:not(:disabled) { background: var(--ios-tint-pressed); }
+html.native-ios .ios-button--plain {
+  min-height: 44px;
+  background: none;
+  color: var(--ios-tint);
+  font-weight: 400;
+}
+html.native-ios .ios-button--plain:active:not(:disabled) { opacity: 0.5; }
+html.native-ios .ios-button:disabled { opacity: 0.4; cursor: default; }
+html.native-ios .ios-button:focus-visible { outline: 2px solid var(--ios-tint); outline-offset: 2px; }
+
+/* ---- Segmented control ------------------------------------------------- */
+html.native-ios .ios-segmented {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--ios-fill-2);
+}
+html.native-ios .ios-segmented__segment {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ios-label);
+  font: 500 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+html.native-ios .ios-segmented__segment--on {
+  background: var(--ios-bg-elevated);
+  box-shadow: 0 2px 6px var(--ios-shadow-soft);
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  html.native-ios .ios-segmented__segment--on { background: var(--ios-cell-sunken); }
+}
+html.native-ios .ios-segmented__segment:focus-visible { outline: 2px solid var(--ios-tint); outline-offset: 1px; }
+
+/* ---- Documents sheet (DocumentsModal + the PDF / owner-report bodies) --- */
+html.native-ios .documents-sheet .ios-sheet__body { display: flex; flex-direction: column; }
+html.native-ios .documents-sheet__head { flex: none; padding: 0 16px 10px; }
+html.native-ios .documents-sheet__subtitle {
+  margin: 0 0 10px;
+  text-align: center;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .documents-sheet__who {
+  margin: 10px 4px 0;
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .documents-sheet .documents-modal__panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+html.native-ios .documents-sheet .documents-modal__panel[hidden] { display: none; }
+html.native-ios .documents-sheet .pdf-preview-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+html.native-ios .documents-sheet .pdf-preview-styles {
+  flex: none;
+  max-height: none;
+  padding: 0 16px 12px;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+html.native-ios .documents-sheet .pdf-preview-styles ul.pdf-preview-notes {
+  flex: none;
+  margin: 0 0 10px;
+  padding: 12px 16px;
+  border-radius: 20px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  overflow: visible;
+}
+html.native-ios .documents-sheet .pdf-preview-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 50px;
+  margin-top: 0;
+  border-radius: 999px;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .documents-sheet .pdf-preview-download:hover:not(:disabled) { background: var(--ios-tint); }
+html.native-ios .documents-sheet .pdf-preview-secondary {
+  width: 100%;
+  min-height: 44px;
+  margin: 0 0 8px;
+  border: 0;
+  background: none;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .documents-sheet .pdf-preview-toolbar { gap: 10px; }
+html.native-ios .documents-sheet .pdf-style-button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 16px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  color: var(--ios-label);
+  font: 500 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .documents-sheet .pdf-style-button__chevron { color: var(--ios-label-muted); }
+/* The PDF pages sit in a neutral well (pages stay paper white). */
+html.native-ios .documents-sheet .pdf-preview-iframe-wrap {
+  flex: 1 1 auto;
+  min-height: 60dvh;
+  margin: 0 16px 16px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--ios-cell-sunken);
+}
+html.native-ios .documents-sheet .pdf-preview-status { color: var(--ios-label-muted); }
+html.native-ios .documents-sheet .pdf-preview-warning { margin: 10px 4px 0; font-size: var(--ios-text-footnote); }
+
+/* ---- PDF style picker sheet: an inset-grouped list with a checkmark ---- */
+html.native-ios .pdf-style-picker-sheet .pdf-style-list {
+  gap: 0;
+  margin: 8px 16px 16px;
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .pdf-style-picker-sheet .pdf-style-list > li { position: relative; }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style {
+  min-height: 44px;
+  padding: 11px 48px 11px 20px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+  background: transparent;
+}
+html.native-ios .pdf-style-picker-sheet .pdf-style-list > li:last-child .pdf-preview-style { box-shadow: none; }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style:active { background: var(--ios-glass-pressed); }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style strong { font: 400 var(--ios-text-body) / 1.3 var(--ios-font); color: var(--ios-label); }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style span { font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font); color: var(--ios-label-muted); }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style.pdf-style-custom { padding: 0 12px 0 0; }
+html.native-ios .pdf-style-picker-sheet .pdf-style-custom__pick { padding: 11px 8px 11px 20px; }
+html.native-ios .pdf-style-picker-sheet .pdf-preview-style--active:not(.pdf-style-custom)::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  background: var(--ios-tint);
+  -webkit-mask: no-repeat center / 18px 18px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask: no-repeat center / 18px 18px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+html.native-ios .pdf-style-picker-sheet .pdf-style-custom.pdf-preview-style--active .pdf-style-custom__pick strong::after {
+  content: ' \2713';
+  color: var(--ios-tint);
+}
+
+/* ---- Chart history sheet ---------------------------------------------- */
+html.native-ios .chart-history-sheet .ios-sheet__body { display: flex; flex-direction: column; }
+html.native-ios .chart-history-sheet__label {
+  flex: none;
+  margin: 0 16px 8px;
+  text-align: center;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .chart-history-sheet .chart-history__bar { flex: none; padding: 0 16px 8px; border: 0; justify-content: center; }
+html.native-ios .chart-history-sheet .chart-history__bar .diagram-view__action {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .chart-history-sheet .chart-history__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 16px;
+}
+@media (min-width: 768px) and (min-height: 600px) {
+  html.native-ios .chart-history-sheet .chart-history__body { display: grid; grid-template-columns: minmax(15rem, 20rem) 1fr; align-items: start; }
+}
+html.native-ios .chart-history-sheet .chart-history__list {
+  flex: none;
+  max-height: 40dvh;
+  overflow-y: auto;
+  border: 0;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .chart-history-sheet .chart-history__list li + li { border-top: 0; }
+html.native-ios .chart-history-sheet .chart-history__row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px 11px 20px;
+  border: 0;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
+  background: transparent;
+  color: var(--ios-label);
+  text-align: left;
+  font: inherit;
+}
+html.native-ios .chart-history-sheet li:last-child .chart-history__row { box-shadow: none; }
+html.native-ios .chart-history-sheet .chart-history__row--on { background: var(--ios-tint-fill); }
+html.native-ios .chart-history-sheet .chart-history__who { font: 400 var(--ios-text-body) / 1.3 var(--ios-font); }
+html.native-ios .chart-history-sheet .chart-history__when { font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font); color: var(--ios-label-muted); }
+html.native-ios .chart-history-sheet .chart-history__tag { background: var(--ios-tint); color: var(--ios-on-tint); }
+html.native-ios .chart-history-sheet .chart-history__preview {
+  min-height: 12rem;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  overflow: hidden;
+}
+html.native-ios .chart-history-sheet .chart-history__preview-head { flex-wrap: wrap; border-bottom: 0.5px solid var(--ios-separator); color: var(--ios-label-muted); }
+html.native-ios .chart-history-sheet .chart-history__preview-head .entry-grid__button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font: 600 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+}
+html.native-ios .chart-history-sheet .chart-history__empty { color: var(--ios-label-muted); }
+
+/* ---- Reminder composer -------------------------------------------------- */
+html.native-ios .reminder-sheet .ios-form { padding-top: 0; }
+
+/* ---- AI consent sheet --------------------------------------------------- */
+html.native-ios .ai-consent__list {
+  margin: 0;
+  padding: 12px 16px 12px 36px;
+  border-radius: 26px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  font: 400 var(--ios-text-body) / 1.4 var(--ios-font);
+  color: var(--ios-label);
+}
+html.native-ios .ai-consent__list li + li { margin-top: 10px; }
+
+/* ---- Sign-in surfaces ---------------------------------------------------
+ * Login (app mode), the session-expired screen and the lock screen share
+ * the system grouped background, the app glyph, large bold titles,
+ * capsule sign-in buttons and inset-grouped fields. */
+html.native-ios .login-app-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  border-radius: 15px;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  box-shadow: 0 4px 14px var(--ios-shadow-soft);
+}
+
+html.native-ios .login-container--app {
+  min-height: 100dvh;
+  padding: calc(24px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+  background: var(--ios-bg-grouped);
+  align-items: flex-start;
+}
+html.native-ios .login-container--app .login-box {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html.native-ios .login-container--app .login-header { margin-bottom: 24px; text-align: center; display: flex; flex-direction: column; }
+html.native-ios .login-container--app .login-header h1 {
+  margin: 0;
+  font: 700 var(--ios-text-title1) / 1.2 var(--ios-font);
+  color: var(--ios-label);
+}
+html.native-ios .login-container--app .login-header p {
+  margin: 6px 0 0;
+  font: 400 var(--ios-text-body) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-form { gap: 12px; }
+html.native-ios :is(.login-container--app, .ios-auth-screen) :is(.login-apple, .login-google) {
+  min-height: 50px;
+  border-radius: 999px;
+  font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-apple { background: var(--ios-inverse-bg); color: var(--ios-inverse-label); }
+html.native-ios :is(.login-container--app, .ios-auth-screen) :is(.login-hint, .login-legal) {
+  font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
+  color: var(--ios-label-muted);
+  text-align: center;
+}
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-or {
+  margin: 8px 0 4px;
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-or::before,
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-or::after { border-top-color: var(--ios-separator); }
+html.native-ios :is(.login-container--app, .ios-auth-screen) :is(.login-error, .login-notice) {
+  border-radius: 14px;
+  font: 400 var(--ios-text-subheadline) / 1.35 var(--ios-font);
+}
+html.native-ios :is(.login-container--app, .ios-auth-screen) .login-inline-action { color: var(--ios-tint); }
+html.native-ios .login-container--app .login-signup-link { margin-top: 4px; }
+
+/* Session expired: a full-screen cover (no dismiss), not a centred card. */
+html.native-ios .ios-auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1150;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--ios-bg-grouped);
+  color: var(--ios-label);
+  font-family: var(--ios-font);
+}
+html.native-ios .ios-auth-screen__content {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: calc(40px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px));
+  outline: none;
+}
+html.native-ios .ios-auth-screen__header h2 {
+  margin: 0;
+  text-align: center;
+  font: 700 var(--ios-text-title1) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-auth-screen__lead {
+  margin: 8px 0 24px;
+  text-align: center;
+  font: 400 var(--ios-text-body) / 1.4 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+
+/* Lock screen (AppLockOverlay): centred, system background. */
+html.native-ios .ios-lock { background: var(--ios-bg-grouped); font-family: var(--ios-font); }
+html.native-ios .ios-lock__title { margin: 0; font: 700 var(--ios-text-title2) / 1.2 var(--ios-font); }
+html.native-ios .ios-lock__text {
+  max-width: 34em;
+  margin: 0;
+  font: 400 var(--ios-text-body) / 1.4 var(--ios-font);
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-lock__actions { display: flex; flex-direction: column; gap: 8px; width: min(320px, 100%); margin-top: 8px; }
+
+/* Billing gate / inactive plan (the app shows only the neutral screens). */
+html.native-ios .billing-gate {
+  min-height: 100dvh;
+  padding: calc(40px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  background: var(--ios-bg-grouped);
+  font-family: var(--ios-font);
+}
+html.native-ios .billing-gate__panel {
+  border: 0;
+  border-radius: 26px;
+  background: var(--ios-cell);
+  box-shadow: none;
+  color: var(--ios-label);
+  text-align: center;
+}
+html.native-ios .billing-gate__panel h1 { font: 700 var(--ios-text-title2) / 1.25 var(--ios-font); color: var(--ios-label); }
+html.native-ios .billing-gate__sub { font: 400 var(--ios-text-body) / 1.4 var(--ios-font); color: var(--ios-label-muted); }
+html.native-ios .billing-gate__cta {
+  min-height: 50px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .billing-gate__signout {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ios-tint);
+  text-decoration: none;
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}

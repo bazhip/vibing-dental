@@ -2,6 +2,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 
+const flags = vi.hoisted(() => ({ native: false }));
+vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIGIN: 'https://toothops.app/' }));
+
 const snapshot = {
   patientInfo: {
     patientName: 'Bella', patientNumber: '1', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
@@ -26,6 +29,8 @@ import { ChartHistoryModal, revisionWhen } from './ChartHistoryModal';
 beforeAll(() => {
   window.ResizeObserver = window.ResizeObserver ?? class { observe() {} unobserve() {} disconnect() {} };
 });
+
+beforeEach(() => { flags.native = false; });
 
 describe('ChartHistoryModal', () => {
   it('lists who saved each version and when, newest first', () => {
@@ -60,5 +65,38 @@ describe('ChartHistoryModal', () => {
   it('formats merged editing sessions as a time range', () => {
     expect(revisionWhen({ startedAt: '2026-11-12T15:02:00Z', savedAt: '2026-11-12T15:02:30Z' })).not.toContain('–');
     expect(revisionWhen({ startedAt: '2026-11-12T15:02:00Z', savedAt: '2026-11-12T15:40:00Z' })).toContain('–');
+  });
+});
+
+describe('ChartHistoryModal chrome', () => {
+  it('website: the centred modal with a × close, as before; no iOS sheet', () => {
+    const onClose = vi.fn();
+    render(<ChartHistoryModal chartId="c1" onClose={onClose} label="Bella · Nov 12, 2026" />);
+    expect(document.querySelector('.ai-settings-overlay .ai-settings-modal.chart-history')).not.toBeNull();
+    expect(screen.getByRole('heading', { name: 'History — Bella · Nov 12, 2026' })).toBeInTheDocument();
+    expect(document.querySelector('.ios-sheet')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('app: a sheet with a grabber and close control; Escape closes once', async () => {
+    flags.native = true;
+    const onClose = vi.fn();
+    render(<ChartHistoryModal chartId="c1" onClose={onClose} label="Bella · Nov 12, 2026" />);
+    const sheet = screen.getByRole('dialog', { name: 'Chart history' });
+    expect(sheet).toHaveClass('ios-sheet');
+    expect(document.querySelector('.ios-sheet__grabber')).not.toBeNull();
+    expect(document.querySelector('.ai-settings-overlay')).toBeNull();
+    expect(screen.getByText('Bella · Nov 12, 2026')).toBeInTheDocument();
+    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('app: picking a version shows it with Restore', async () => {
+    flags.native = true;
+    render(<ChartHistoryModal chartId="c1" onClose={() => {}} onRestore={vi.fn(async () => true)} />);
+    fireEvent.click(screen.getAllByText('Tim')[0].closest('button')!);
+    expect(await screen.findByText('Old complaint')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Restore this version' })).toBeInTheDocument();
   });
 });

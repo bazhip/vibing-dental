@@ -7,7 +7,9 @@
     "cameraFailed": "No se pudo abrir la cámara.",
     "cameraNoPhoto": "La cámara no devolvió ninguna foto.",
     "cameraReadFailed": "No se pudo leer la foto ({{status}}).",
-    "limitReached": "Esta ficha ha alcanzado su límite de {{max}} imágenes.",
+    "limitReached_one": "Esta ficha ha alcanzado su límite de {{count}} imagen.",
+    "limitReached_many": "Esta ficha ha alcanzado su límite de {{count}} imágenes.",
+    "limitReached_other": "Esta ficha ha alcanzado su límite de {{count}} imágenes.",
     "uploadsUnavailable": "La subida de fotos no está disponible en esta cuenta.",
     "formatsApp": "PNG, JPEG o WEBP.",
     "dicomUnavailable": "La subida de archivos DICOM no está disponible en esta cuenta. Exporte la radiografía como JPEG o PNG para añadirla."

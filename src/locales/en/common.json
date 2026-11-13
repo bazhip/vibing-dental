@@ -58,6 +58,23 @@
       "signIn": "Sign in",
       "createAccount": "Create free account",
       "signOutTitle": "Sign out of ToothOps?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documents",
+        "share": "Share PDF"
+      },
+      "reminder": {
+        "send": "Send"
+      },
+      "discard": {
+        "title": "Discard your changes?",
+        "discard": "Discard Changes",
+        "keep": "Keep Editing"
+      },
+      "join": {
+        "join": "Join"
+      }
     }
   }
 }

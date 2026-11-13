@@ -37,6 +37,12 @@ describe('Sheet', () => {
     return waitFor(() => expect(onClose).toHaveBeenCalled());
   });
 
+  it('with Done but no Cancel, Done is the only bar button (no extra close control)', () => {
+    render(<Sheet open onClose={() => {}} title="Style" doneLabel="Done"><p>Body</p></Sheet>);
+    expect(screen.queryByRole('button', { name: 'Close' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
+  });
+
   it('Done calls onDone; a disabled Done does nothing', () => {
     const onDone = vi.fn();
     const { rerender } = render(<Sheet open onClose={() => {}} onDone={onDone} doneDisabled><p>x</p></Sheet>);

@@ -2,6 +2,10 @@ import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useReminderTemplate, fillTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
+import { chooseDialog } from './ui/dialogs';
 
 interface ReminderModalProps {
   open: boolean;
@@ -39,28 +43,35 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [sent, setSent] = React.useState(false);
-  const modalRef = useModalFocus(open);
+  // iOS app: a compose sheet (Cancel / Send, swipe down asks before
+  // discarding edits); the sheet handles focus and Escape.
+  const native = isNativeApp();
+  const { t } = useTranslation();
+  const modalRef = useModalFocus(open && !native);
+  const prefilled = React.useRef({ subject: '', body: '' });
 
   // Prefill once the template has loaded (or when reopened).
   React.useEffect(() => {
     if (!open || !loaded) return;
     const vars = { patient: patientName, owner: ownerName, practice: practiceName, recheckDate };
     setTo(toEmail);
-    setSubject(fillTemplate(template.subject, vars));
-    setBodyText(fillTemplate(template.body, vars));
+    const filled = { subject: fillTemplate(template.subject, vars), body: fillTemplate(template.body, vars) };
+    prefilled.current = filled;
+    setSubject(filled.subject);
+    setBodyText(filled.body);
     setError('');
     setSent(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, loaded]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || native) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, native]);
 
-  if (!open) return null;
+  if (!open && !native) return null;
 
   const send = async () => {
     setBusy(true);
@@ -86,6 +97,54 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
       setBusy(false);
     }
   };
+
+  if (native) {
+    const dirty = !sent && (subject !== prefilled.current.subject || bodyText !== prefilled.current.body);
+    return (
+      <Sheet
+        open={open}
+        onClose={onClose}
+        title="Send recheck reminder"
+        cancelLabel={t('actions.cancel')}
+        doneLabel={busy ? 'Sending…' : t('ios.sheets.reminder.send')}
+        onDone={() => void send()}
+        doneDisabled={busy || !loaded || sent}
+        confirmDismiss={async () =>
+          !dirty ||
+          (await chooseDialog({
+            title: t('ios.sheets.discard.title'),
+            choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
+            cancelLabel: t('ios.sheets.discard.keep'),
+          })) === 'discard'
+        }
+        className="reminder-sheet"
+      >
+        {!loaded ? (
+          <p className="ios-empty">Loading…</p>
+        ) : (
+          <div className="ios-form">
+            <div className="ios-form-group">
+              <label className="ios-field">
+                <span className="ios-field__label">To</span>
+                <input type="email" className="ios-field__input" value={to} readOnly aria-readonly="true" />
+              </label>
+              <label className="ios-field">
+                <span className="ios-field__label">Subject</span>
+                <input type="text" className="ios-field__input" value={subject} onChange={(e) => setSubject(e.target.value)} />
+              </label>
+              <label className="ios-field ios-field--stacked">
+                <span className="ios-field__label">Message</span>
+                <textarea className="ios-field__input reminder__body" value={bodyText} onChange={(e) => setBodyText(e.target.value)} />
+              </label>
+            </div>
+            <p className="ios-form-footer">Goes to the owner email on this chart. To change it, edit the chart's owner email.</p>
+            {error && <p className="ios-form-error" role="alert">{error}</p>}
+            {sent && <p className="ios-form-notice" role="status">Reminder sent.</p>}
+          </div>
+        )}
+      </Sheet>
+    );
+  }
 
   return (
     <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Send recheck reminder">

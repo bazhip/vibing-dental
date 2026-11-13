@@ -102,7 +102,7 @@ export function uploadRejection(u: {
   }
   if (u.count >= u.maxImages) {
     return u.native
-      ? i18n.t('chart:imaging.limitReached', { max: u.maxImages })
+      ? i18n.t('chart:imaging.limitReached', { count: u.maxImages })
       : `This chart already has the maximum of ${u.maxImages} images. Delete one to add another.`;
   }
   if (u.size > ATTACHMENT_LIMITS.hardMaxBytes) {

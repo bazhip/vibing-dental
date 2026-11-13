@@ -5,6 +5,7 @@ import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveChartPdf } from '../native/saveFile';
 import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 import { toast } from './ui/dialogs';
 import { PdfStylePicker, readSavedPdfStyle, savePdfStyle, useCompactPdfLayout } from './PdfStylePicker';
 import { resolvePdfStyle } from '../utils/pdf/styles';
@@ -75,7 +76,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // (preset or custom color) is remembered on this device.
   const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
   const setStyleId = (id: string) => { setStyleIdState(id); savePdfStyle(id); };
-  const compact = useCompactPdfLayout();
+  // In the app the preview always gets the width; the style list is a
+  // button that opens a picker sheet.
+  const compactLayout = useCompactPdfLayout();
+  const compact = compactLayout || isNativeApp();
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
@@ -227,7 +231,14 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       onClick={handleDownload}
       disabled={!pdfUrl || generating || images === null}
     >
-      Download PDF
+      {isNativeApp() ? (
+        <>
+          <Icon name="square-and-arrow-up" size={17} />
+          {i18n.t('common:ios.sheets.documents.share')}
+        </>
+      ) : (
+        'Download PDF'
+      )}
     </button>
   );
 

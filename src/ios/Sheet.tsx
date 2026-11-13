@@ -17,8 +17,8 @@ import { ScrollContainerContext } from './scrollContainer';
  * iOS modal sheet.
  *
  * - Grabber; Cancel on the leading edge and Done on the trailing edge
- *   (HIG). Without a Cancel button there is an xmark close control, so
- *   there is always a visible way out.
+ *   (HIG). With neither there is an xmark close control, so there is
+ *   always a visible way out.
  * - Swipe down to dismiss from the grabber/header anywhere, or from the
  *   body when its content is scrolled to the top. A drag that starts in
  *   scrolled content scrolls the content. Release decides by distance and
@@ -425,7 +425,7 @@ function SheetPanel({
           <div className="ios-sheet__grabber" aria-hidden="true" />
           <div className="ios-sheet__bar">
             <div className="ios-sheet__bar-leading">
-              {showCancel ? (
+              {showDone && !showCancel ? null : showCancel ? (
                 <button type="button" className="ios-glass-button" onClick={() => void requestDismiss()}>
                   {cancelLabel ?? t('actions.cancel')}
                 </button>

@@ -10,10 +10,16 @@ import {
 } from '../utils/pdf/styles';
 import { readString, writeString } from '../utils/storage';
 import type chartCatalog from '../locales/en/chart.json';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
+import { Icon, type IconName } from '../ios/icons';
+import type { SheetDetent } from '../ios/Sheet';
 
 const STYLE_KEY = 'pdfStyle';
 const COLOR_KEY = 'pdfCustomColor';
 const DEFAULT_CUSTOM = '#7c3aed';
+const CHEVRON_ICON: IconName = 'chevron-down';
+const PICKER_DETENTS: SheetDetent[] = ['medium', 'large'];
 
 /** The last PDF style used on this device (preset or custom color). */
 export function readSavedPdfStyle(): string {
@@ -132,6 +138,37 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
   );
 
   if (!compact) return list;
+
+  // iOS app: the kit sheet (grabber, swipe down, Done), opened at the medium
+  // detent so the preview stays in view. Inside the Documents sheet it
+  // stacks on top of it.
+  if (isNativeApp()) {
+    return (
+      <>
+        <button
+          type="button"
+          className="pdf-style-button"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
+        >
+          <span className="pdf-style-swatch" style={{ background: styleSwatch(active) }} aria-hidden="true" />
+          <span className="pdf-style-button__label">{customColor ? t('pdfStyle.custom') : styleName(active.id)}</span>
+          <Icon name={CHEVRON_ICON} size={13} className="pdf-style-button__chevron" />
+        </button>
+        <Sheet
+          open={open}
+          onClose={() => setOpen(false)}
+          title={t('pdfStyle.label')}
+          doneLabel={t('actions.done', { ns: 'common' })}
+          detents={PICKER_DETENTS}
+          className="pdf-style-picker-sheet"
+        >
+          {list}
+        </Sheet>
+      </>
+    );
+  }
 
   return (
     <>

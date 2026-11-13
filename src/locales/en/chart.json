@@ -7,7 +7,8 @@
     "cameraFailed": "Could not open the camera.",
     "cameraNoPhoto": "The camera did not return a photo.",
     "cameraReadFailed": "Could not read the photo ({{status}}).",
-    "limitReached": "This chart has reached its {{max}}-image limit.",
+    "limitReached_one": "This chart has reached its {{count}}-image limit.",
+    "limitReached_other": "This chart has reached its {{count}}-image limit.",
     "uploadsUnavailable": "Photo uploads aren't available on this account.",
     "formatsApp": "PNG, JPEG or WEBP.",
     "dicomUnavailable": "DICOM uploads aren't available on this account. Export the radiograph as a JPEG or PNG to add it."

@@ -58,6 +58,23 @@
       "signIn": "Se connecter",
       "createAccount": "Créer un compte gratuit",
       "signOutTitle": "Se déconnecter de ToothOps ?"
+    },
+    "sheets": {
+      "documents": {
+        "title": "Documents",
+        "share": "Partager le PDF"
+      },
+      "reminder": {
+        "send": "Envoyer"
+      },
+      "discard": {
+        "title": "Abandonner vos modifications ?",
+        "discard": "Abandonner les modifications",
+        "keep": "Continuer la modification"
+      },
+      "join": {
+        "join": "Rejoindre"
+      }
     }
   }
 }

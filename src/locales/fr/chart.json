@@ -7,7 +7,9 @@
     "cameraFailed": "Impossible d’ouvrir l’appareil photo.",
     "cameraNoPhoto": "L’appareil photo n’a renvoyé aucune photo.",
     "cameraReadFailed": "Impossible de lire la photo ({{status}}).",
-    "limitReached": "Ce dossier a atteint sa limite de {{max}} images.",
+    "limitReached_one": "Ce dossier a atteint sa limite de {{count}} image.",
+    "limitReached_many": "Ce dossier a atteint sa limite de {{count}} images.",
+    "limitReached_other": "Ce dossier a atteint sa limite de {{count}} images.",
     "uploadsUnavailable": "L’import de photos n’est pas disponible sur ce compte.",
     "formatsApp": "PNG, JPEG ou WEBP.",
     "dicomUnavailable": "L’import DICOM n’est pas disponible sur ce compte. Exportez la radiographie en JPEG ou PNG pour l’ajouter."

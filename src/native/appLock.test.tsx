@@ -111,6 +111,10 @@ describe('AppLockOverlay', () => {
     await background(5 * MIN);
     expect(await screen.findByRole('button', { name: 'Try again' })).toBeTruthy();
     expect(screen.getByText(/ToothOps is locked/i)).toBeTruthy();
+    // iOS lock screen: system styling, filled Try again and plain Sign out.
+    expect(screen.getByRole('dialog', { name: 'ToothOps is locked' })).toHaveClass('ios-auth-screen', 'ios-lock');
+    expect(screen.getByRole('button', { name: 'Try again' })).toHaveClass('ios-button', 'ios-button--filled');
+    expect(screen.getByRole('button', { name: 'Sign out' })).toHaveClass('ios-button', 'ios-button--plain');
     h.authenticate.mockResolvedValue(undefined);
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     await waitFor(() => expect(screen.queryByText(/ToothOps is locked/i)).toBeNull());
