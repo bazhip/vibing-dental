@@ -6,7 +6,12 @@ describe('platform helper', () => {
     vi.doUnmock('@capacitor/core');
     vi.doUnmock('./authReturn');
     document.documentElement.classList.remove('native-ios');
+    document.head.innerHTML =
+      '<meta name="viewport" content="width=device-width, initial-scale=1" />';
   });
+
+  const viewport = () =>
+    document.querySelector('meta[name="viewport"]')!.getAttribute('content');
 
   it('isNativeApp is false under jsdom', async () => {
     const { isNativeApp } = await import('./platform');
@@ -30,6 +35,20 @@ describe('platform helper', () => {
     const { initNativeShell } = await import('./platform');
     initNativeShell();
     expect(document.documentElement.classList.contains('native-ios')).toBe(true);
+  });
+
+  it('initNativeShell leaves the viewport alone on web', async () => {
+    const { initNativeShell } = await import('./platform');
+    initNativeShell();
+    expect(viewport()).toBe('width=device-width, initial-scale=1');
+  });
+
+  it('initNativeShell adds viewport-fit=cover when native (once)', async () => {
+    vi.doMock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => true } }));
+    const { initNativeShell } = await import('./platform');
+    initNativeShell();
+    initNativeShell();
+    expect(viewport()).toBe('width=device-width, initial-scale=1, viewport-fit=cover');
   });
 
   it('is a leaf: loading it never loads authReturn (no platform → authReturn → supabaseClient → platform cycle)', async () => {
