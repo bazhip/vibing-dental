@@ -1,5 +1,9 @@
 import React from 'react';
+import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
+import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
+import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
 import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
@@ -60,7 +64,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 }) => {
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
+  // The bytes behind pdfUrl — the share sheet needs the file itself,
+  // in hand when the button is tapped.
   const pdfBlobRef = React.useRef<Blob | null>(null);
+  const inAppLink = useInAppPdfLink();
+  // A new PDF (style switched, data changed) invalidates an old link.
+  React.useEffect(() => { inAppLink.reset(); }, [pdfUrl]); // eslint-disable-line react-hooks/exhaustive-deps
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -130,8 +139,8 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         const bytes = await buildOwnerReportPdfBytes(model, branding, photos, diagram);
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
-        pdfBlobRef.current = blob;
         createdUrl = URL.createObjectURL(blob);
+        pdfBlobRef.current = blob;
         setPdfUrl(createdUrl);
       } catch (err) {
         if (!cancelled) {
@@ -155,8 +164,17 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     if (!pdfUrl) return;
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const filename = `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
+    if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
-    if (blob) void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
+    // In the iOS app the PDF goes to the native share sheet (Save to Files,
+    // Mail, AirDrop…); the browser download / in-app-link flow is web-only.
+    if (isNativeApp()) {
+      void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
+      return;
+    }
+    savePdf(blob, filename).then((outcome) => {
+      if (outcome === 'unsupported') void inAppLink.start(blob, filename);
+    });
   };
 
   if (!open) return null;
@@ -189,15 +207,19 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             >
               Download PDF
             </button>
+            {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
+            <PdfLinkPanel state={inAppLink.state} />
           </aside>
           <div className="pdf-preview-iframe-wrap">
             {generating && <div className="pdf-preview-status">Generating the owner report…</div>}
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
-            {pdfUrl && !error && (
+            {pdfUrl && !error && (canShowPdfInline() ? (
               <iframe src={pdfUrl} title="Owner report preview" className="pdf-preview-iframe" />
-            )}
+            ) : pdfBlobRef.current && (
+              <PdfPagesPreview blob={pdfBlobRef.current} title="Owner report preview" />
+            ))}
           </div>
         </div>
   );
