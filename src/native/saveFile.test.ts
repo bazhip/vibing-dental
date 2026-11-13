@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const writeFile = vi.fn();
+const deleteFile = vi.fn(async (..._a: unknown[]) => undefined);
 const share = vi.fn();
 let native = false;
 
 vi.mock('./platform', () => ({ isNativeApp: () => native }));
 vi.mock('@capacitor/filesystem', () => ({
-  Filesystem: { writeFile: (...a: unknown[]) => writeFile(...a) },
+  Filesystem: { writeFile: (...a: unknown[]) => writeFile(...a), deleteFile: (...a: unknown[]) => deleteFile(...a) },
   Directory: { Cache: 'CACHE' },
 }));
 vi.mock('@capacitor/share', () => ({ Share: { share: (...a: unknown[]) => share(...a) } }));
@@ -18,6 +19,7 @@ import { saveFile, saveChartPdf } from './saveFile';
 describe('saveFile', () => {
   beforeEach(() => {
     writeFile.mockReset();
+    deleteFile.mockClear();
     share.mockReset();
     hapticSuccess.mockReset();
     native = false;
@@ -34,6 +36,37 @@ describe('saveFile', () => {
     expect(click).toHaveBeenCalledTimes(1);
     expect(writeFile).not.toHaveBeenCalled();
     click.mockRestore();
+  });
+
+  it('web: keeps the blob URL alive for a while before revoking it', async () => {
+    vi.useFakeTimers();
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    await saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf');
+    vi.advanceTimersByTime(5000);
+    expect(URL.revokeObjectURL).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(5000);
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:x');
+    click.mockRestore();
+    vi.useRealTimers();
+  });
+
+  it('native: deletes the cached copy once the share sheet closes', async () => {
+    native = true;
+    writeFile.mockResolvedValue({ uri: 'file:///cache/a.pdf' });
+    share.mockResolvedValue({});
+    await saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf');
+    expect(deleteFile).toHaveBeenCalledWith({ path: 'a.pdf', directory: 'CACHE' });
+  });
+
+  it('native: deletes the cached copy when the share is cancelled or fails too', async () => {
+    native = true;
+    writeFile.mockResolvedValue({ uri: 'file:///cache/a.pdf' });
+    share.mockRejectedValueOnce(new Error('Share canceled'));
+    await saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf');
+    share.mockRejectedValueOnce(new Error('boom'));
+    deleteFile.mockRejectedValueOnce(new Error('gone already'));
+    await expect(saveFile(new Uint8Array([1]), 'a.pdf', 'application/pdf')).rejects.toThrow('boom');
+    expect(deleteFile).toHaveBeenCalledTimes(2);
   });
 
   it('native: writes to cache then shares the written uri', async () => {

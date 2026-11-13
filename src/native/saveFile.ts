@@ -25,7 +25,9 @@ function downloadViaAnchor(data: Uint8Array | Blob, filename: string, mime: stri
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  // Some browsers (Safari, Firefox) start the download after click()
+  // returns; revoking at once can cancel it.
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
 /** Save a file: browser download on web, iOS share sheet in the native app.
@@ -48,6 +50,10 @@ export async function saveFile(data: Uint8Array | Blob, filename: string, mime: 
     // Dismissing the share sheet is not an error.
     if (err instanceof Error && /cancel/i.test(err.message)) return false;
     throw err;
+  } finally {
+    // The share sheet has closed (wherever it went has its own copy): don't
+    // leave a patient PDF lying in the app's cache.
+    await Filesystem.deleteFile({ path: filename, directory: Directory.Cache }).catch(() => undefined);
   }
   return true;
 }
