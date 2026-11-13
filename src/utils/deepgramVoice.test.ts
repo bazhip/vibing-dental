@@ -49,3 +49,119 @@ describe('Deepgram connection', () => {
     expect(fr.getAll('keyterm')).toContain('parodontite');
   });
 });
+
+import { startDeepgramSession } from './deepgramVoice';
+import { VOICE_STT } from './voice/sttConfig';
+
+describe('Deepgram handshake fallback', () => {
+  class FakeWs {
+    static CONNECTING = 0;
+    static OPEN = 1;
+    static CLOSING = 2;
+    static CLOSED = 3;
+    static instances: FakeWs[] = [];
+    readyState = FakeWs.CONNECTING;
+    binaryType = '';
+    onopen: (() => void) | null = null;
+    onmessage: ((e: { data: string }) => void) | null = null;
+    onerror: (() => void) | null = null;
+    onclose: ((e: { code: number }) => void) | null = null;
+    constructor(public url: string) { FakeWs.instances.push(this); }
+    send() { /* ignore */ }
+    close() { this.readyState = FakeWs.CLOSED; }
+    /** What a browser does when the upgrade is refused. */
+    failHandshake() {
+      this.readyState = FakeWs.CLOSED;
+      this.onerror?.();
+      this.onclose?.({ code: 1006 });
+    }
+  }
+
+  const fakeCtx = () => {
+    const node = () => ({ connect: vi.fn(), disconnect: vi.fn() });
+    return {
+      sampleRate: 48000,
+      state: 'running',
+      destination: {},
+      close: vi.fn(() => Promise.resolve()),
+      resume: vi.fn(() => Promise.resolve()),
+      createMediaStreamSource: vi.fn(node),
+      createScriptProcessor: vi.fn(() => ({ ...node(), onaudioprocess: null })),
+      createGain: vi.fn(() => ({ ...node(), gain: { value: 1 } })),
+    } as unknown as AudioContext;
+  };
+
+  const handlers = () => ({ onInterim: vi.fn(), onFinal: vi.fn(), onError: vi.fn(), onClose: vi.fn() });
+  const model = (ws: FakeWs) => new URL(ws.url).searchParams.get('model');
+  const auth = { token: 't', kind: 'bearer' as const };
+
+  beforeEach(() => {
+    FakeWs.instances = [];
+    vi.stubGlobal('WebSocket', FakeWs);
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: { getUserMedia: vi.fn(async () => ({ getTracks: () => [], getAudioTracks: () => [] })) },
+    });
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('gives non-English languages nova-3 as the fallback model and English none', () => {
+    expect(VOICE_STT.en.fallbackModel).toBeUndefined();
+    for (const l of ['fr', 'de', 'it', 'es'] as const) expect(VOICE_STT[l].fallbackModel).toBe('nova-3');
+  });
+
+  it('retries a failed fr handshake once with model=nova-3, same params', async () => {
+    const h = handlers();
+    await startDeepgramSession(auth, h, fakeCtx(), 'fr');
+    expect(FakeWs.instances).toHaveLength(1);
+    expect(model(FakeWs.instances[0])).toBe('nova-3-medical');
+    FakeWs.instances[0].failHandshake();
+    expect(FakeWs.instances).toHaveLength(2);
+    const first = new URL(FakeWs.instances[0].url).searchParams;
+    const second = new URL(FakeWs.instances[1].url).searchParams;
+    expect(model(FakeWs.instances[1])).toBe('nova-3');
+    expect(second.get('language')).toBe('multi');
+    for (const [k, v] of first) if (k !== 'model' && k !== 'keyterm') expect(second.get(k)).toBe(v);
+    expect(second.getAll('keyterm')).toEqual(first.getAll('keyterm'));
+    expect(h.onError).not.toHaveBeenCalled();
+    expect(h.onClose).not.toHaveBeenCalled();
+    // The fallback socket works normally.
+    const ws = FakeWs.instances[1];
+    ws.readyState = FakeWs.OPEN;
+    ws.onopen?.();
+    ws.onmessage?.({ data: JSON.stringify({ type: 'Results', is_final: false, channel: { alternatives: [{ transcript: 'bonjour' }] } }) });
+    expect(h.onInterim).toHaveBeenCalledWith('bonjour');
+  });
+
+  it('reports the existing error when the fallback handshake fails too', async () => {
+    const h = handlers();
+    await startDeepgramSession(auth, h, fakeCtx(), 'de');
+    FakeWs.instances[0].failHandshake();
+    FakeWs.instances[1].failHandshake();
+    expect(FakeWs.instances).toHaveLength(2);
+    expect(h.onError).toHaveBeenCalledTimes(1);
+    expect(h.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not retry English (existing behaviour)', async () => {
+    const h = handlers();
+    await startDeepgramSession(auth, h, fakeCtx(), 'en');
+    FakeWs.instances[0].failHandshake();
+    expect(FakeWs.instances).toHaveLength(1);
+    expect(h.onError).toHaveBeenCalledTimes(1);
+    expect(h.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not retry once a transcript has arrived', async () => {
+    const h = handlers();
+    await startDeepgramSession(auth, h, fakeCtx(), 'it');
+    const ws = FakeWs.instances[0];
+    ws.readyState = FakeWs.OPEN;
+    ws.onopen?.();
+    ws.onmessage?.({ data: JSON.stringify({ type: 'Results', is_final: false, channel: { alternatives: [{ transcript: 'ciao' }] } }) });
+    ws.readyState = FakeWs.CLOSED;
+    ws.onclose?.({ code: 1011 });
+    expect(FakeWs.instances).toHaveLength(1);
+    expect(h.onClose).toHaveBeenCalledTimes(1);
+  });
+});

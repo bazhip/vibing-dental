@@ -1,16 +1,26 @@
 import type { AppLanguage } from '../../i18n/config';
 
+export interface VoiceSttConfig {
+  model: string;
+  language: string;
+  /** Model to retry with, once, if the first socket fails or closes before
+   *  any transcript arrives (same parameters otherwise). */
+  fallbackModel?: string;
+}
+
 /**
- * Deepgram model + language per app language. nova-3-medical is monolingual
- * English only, but it supports `language=multi` (code-switching across
- * es/fr/de/it/en), so the other app languages use that.
+ * Deepgram model + language per app language. English uses nova-3-medical
+ * monolingual. Deepgram lists `language=multi` (code-switching across
+ * es/fr/de/it/en) for nova-3-medical, so the other app languages use that;
+ * if Deepgram refuses that combination the session retries once on general
+ * nova-3 with language=multi. English never retries.
  */
-export const VOICE_STT: Record<AppLanguage, { model: string; language: string }> = {
+export const VOICE_STT: Record<AppLanguage, VoiceSttConfig> = {
   en: { model: 'nova-3-medical', language: 'en' },
-  fr: { model: 'nova-3-medical', language: 'multi' },
-  de: { model: 'nova-3-medical', language: 'multi' },
-  it: { model: 'nova-3-medical', language: 'multi' },
-  es: { model: 'nova-3-medical', language: 'multi' },
+  fr: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
+  de: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
+  it: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
+  es: { model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' },
 };
 
 /** BCP-47 tag for the browser SpeechRecognition fallback; en keeps the

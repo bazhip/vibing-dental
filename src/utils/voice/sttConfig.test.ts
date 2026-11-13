@@ -1,12 +1,13 @@
 import { APP_LANGUAGES } from '../../i18n/config';
 import { capKeyterms, voiceKeyterms, VOICE_KEYTERMS } from '../../constants/voiceKeyterms';
 import { VOICE_STT, browserSpeechLang } from './sttConfig';
+import { SPOKEN_SYNONYMS } from './terms';
 
 describe('VOICE_STT', () => {
   it('uses monolingual English and multi for the rest', () => {
     expect(VOICE_STT.en).toEqual({ model: 'nova-3-medical', language: 'en' });
     for (const l of ['fr', 'de', 'it', 'es'] as const) {
-      expect(VOICE_STT[l]).toEqual({ model: 'nova-3-medical', language: 'multi' });
+      expect(VOICE_STT[l]).toEqual({ model: 'nova-3-medical', language: 'multi', fallbackModel: 'nova-3' });
     }
   });
 });
@@ -34,6 +35,29 @@ describe('voiceKeyterms', () => {
     expect(voiceKeyterms('de')).toContain('Zahnstein');
     expect(voiceKeyterms('it')).toContain('Triadan');
     expect(voiceKeyterms('es')).toContain('bupivacaine');
+  });
+});
+
+describe('voiceKeyterms priority', () => {
+  const NERVE_BLOCKS: Record<'fr' | 'de' | 'it' | 'es', string[]> = {
+    fr: ['bloc nerveux', 'bloc du nerf infra-orbitaire', 'bloc maxillaire caudal', 'bloc du nerf mentonnier', 'bloc du nerf alvéolaire inférieur'],
+    de: ['Nervenblockade', 'Infraorbitalblockade', 'kaudale Maxillarisblockade', 'Mentalisblockade', 'Blockade des N. alveolaris inferior'],
+    it: ['blocco nervoso', 'blocco del nervo infraorbitario', 'blocco mascellare caudale', 'blocco del nervo mentale', 'blocco del nervo alveolare inferiore'],
+    es: ['bloqueo nervioso', 'bloqueo del nervio infraorbitario', 'bloqueo maxilar caudal', 'bloqueo del nervio mentoniano', 'bloqueo del nervio alveolar inferior'],
+  };
+  it.each(['fr', 'de', 'it', 'es'] as const)('%s keeps spoken synonyms and nerve-block sites within the cap', (lng) => {
+    const terms = voiceKeyterms(lng);
+    const lower = terms.map((t) => t.toLowerCase());
+    for (const s of SPOKEN_SYNONYMS[lng]) expect(lower).toContain(s.toLowerCase());
+    for (const b of NERVE_BLOCKS[lng]) expect(terms).toContain(b);
+    expect(terms.length).toBeLessThanOrEqual(100);
+    expect(terms.reduce((n, t) => n + Math.ceil(t.length / 3) + 1, 0)).toBeLessThanOrEqual(500);
+  });
+  it.each(APP_LANGUAGES)('%s keyterms use straight apostrophes only', (lng) => {
+    for (const t of voiceKeyterms(lng)) expect(t).not.toMatch(/[\u2018\u2019\u02BC]/);
+  });
+  it('normalises French apostrophes in keyterms', () => {
+    expect(voiceKeyterms('fr')).toContain("perte d'attache");
   });
 });
 

@@ -61,11 +61,11 @@ const LOW_CONFIDENCE = 0.6;
 // prompting (VOICE_KEYTERMS) biases it toward the veterinary-dental terms
 // the human medical model won't know (Triadan, AVDC codes, vet drugs).
 const TARGET_SAMPLE_RATE = 16000;
-export function deepgramUrl(lng: AppLanguage): string {
+export function deepgramUrl(lng: AppLanguage, model: string = VOICE_STT[lng].model): string {
   const stt = VOICE_STT[lng];
   const keytermQs = voiceKeyterms(lng).map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
   return (
-    `wss://api.deepgram.com/v1/listen?model=${stt.model}` +
+    `wss://api.deepgram.com/v1/listen?model=${model}` +
     '&punctuate=true' +
     '&smart_format=true' +
     '&interim_results=true' +
@@ -181,8 +181,17 @@ export async function startDeepgramSession(
   }
 
   // Deepgram picks the auth scheme from the sub-protocol name.
-  const ws = new WebSocket(deepgramUrl(lng), [auth.kind, auth.token]);
-  ws.binaryType = 'arraybuffer';
+  const openSocket = (model?: string) => {
+    const socket = new WebSocket(deepgramUrl(lng, model), [auth.kind, auth.token]);
+    socket.binaryType = 'arraybuffer';
+    return socket;
+  };
+  let ws = openSocket();
+  // One retry on the fallback model (non-English only) if the first socket
+  // fails or closes before any transcript — e.g. Deepgram refusing
+  // nova-3-medical with language=multi.
+  let fallbackModel = VOICE_STT[lng].fallbackModel;
+  let gotTranscript = false;
 
   let closed = false;
   let micReleased = false;
@@ -259,72 +268,96 @@ export async function startDeepgramSession(
     }
   };
 
-  ws.onopen = () => {
-    // Flush any audio that arrived before the socket was ready.
-    for (const buf of pending) {
-      try { ws.send(buf); } catch { /* ignore */ }
-    }
-    pending.length = 0;
-    pendingBytes = 0;
-
-    // Heartbeat. Deepgram closes a connection that gets no data for ~10s;
-    // this keeps it alive through silences. Sent unconditionally — Deepgram
-    // accepts KeepAlive interleaved with audio.
-    keepAliveTimer = setInterval(() => {
-      if (ws.readyState === WebSocket.OPEN) {
-        try { ws.send(JSON.stringify({ type: 'KeepAlive' })); } catch { /* ignore */ }
-      }
-    }, 5000);
+  /** Swap to the fallback model once; true when a retry was started. */
+  const retryOnFallback = (): boolean => {
+    if (closed || drainTimer || gotTranscript || !fallbackModel) return false;
+    const model = fallbackModel;
+    fallbackModel = undefined;
+    const old = ws;
+    old.onopen = null;
+    old.onmessage = null;
+    old.onerror = null;
+    old.onclose = null;
+    if (keepAliveTimer) clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+    try { old.close(); } catch { /* ignore */ }
+    ws = openSocket(model);
+    wireSocket();
+    return true;
   };
 
-  ws.onmessage = (event) => {
-    let msg: DgMessage;
-    try {
-      msg = JSON.parse(typeof event.data === 'string' ? event.data : '');
-    } catch {
-      return;
-    }
-    if (msg.type === 'Error') {
-      const errMsg = msg as DgErrorMessage;
-      handlers.onError(errMsg.description || errMsg.message || i18n.t('errors.deepgram', { ns: 'voice' }));
-      return;
-    }
-    if (msg.type !== 'Results') return;
-    const result = msg as DgResultsMessage;
-    const alt = result.channel?.alternatives?.[0];
-    const transcript = alt?.transcript ?? '';
-    if (transcript) {
-      if (!result.is_final) {
-        handlers.onInterim(transcript);
-      } else {
-        // Final segment — group consecutive words by speaker so the output
-        // reads as "Speaker 0: foo. Speaker 1: bar.".
-        const words = alt?.words ?? [];
-        const text = formatSpeakerLabeled(transcript, words);
-        const annotated = formatSpeakerLabeled(transcript, words, (w) => {
-          const shown = w.punctuated_word ?? w.word;
-          return w.confidence != null && w.confidence < LOW_CONFIDENCE ? `[?${shown}]` : shown;
-        });
-        handlers.onFinal({ text, annotated, receivedAt: performance.now() });
+  const wireSocket = () => {
+    ws.onopen = () => {
+      // Flush any audio that arrived before the socket was ready.
+      for (const buf of pending) {
+        try { ws.send(buf); } catch { /* ignore */ }
       }
-    }
-  };
+      pending.length = 0;
+      pendingBytes = 0;
 
-  ws.onerror = () => {
-    handlers.onError(i18n.t('errors.deepgramSocket', { ns: 'voice' }));
-    cleanup();
-  };
+      // Heartbeat. Deepgram closes a connection that gets no data for ~10s;
+      // this keeps it alive through silences. Sent unconditionally — Deepgram
+      // accepts KeepAlive interleaved with audio.
+      keepAliveTimer = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          try { ws.send(JSON.stringify({ type: 'KeepAlive' })); } catch { /* ignore */ }
+        }
+      }, 5000);
+    };
 
-  ws.onclose = (event) => {
-    if (!closed) {
-      // Most common cause of unsolicited close: bad token (1008/1011).
-      // (A close during a graceful stop is Deepgram finishing normally.)
-      if (!drainTimer && (event.code === 1008 || event.code === 1011)) {
-        handlers.onError(i18n.t('errors.deepgramRejected', { ns: 'voice' }));
+    ws.onmessage = (event) => {
+      let msg: DgMessage;
+      try {
+        msg = JSON.parse(typeof event.data === 'string' ? event.data : '');
+      } catch {
+        return;
       }
+      if (msg.type === 'Error') {
+        const errMsg = msg as DgErrorMessage;
+        handlers.onError(errMsg.description || errMsg.message || i18n.t('errors.deepgram', { ns: 'voice' }));
+        return;
+      }
+      if (msg.type !== 'Results') return;
+      const result = msg as DgResultsMessage;
+      const alt = result.channel?.alternatives?.[0];
+      const transcript = alt?.transcript ?? '';
+      if (transcript) {
+        gotTranscript = true;
+        if (!result.is_final) {
+          handlers.onInterim(transcript);
+        } else {
+          // Final segment — group consecutive words by speaker so the output
+          // reads as "Speaker 0: foo. Speaker 1: bar.".
+          const words = alt?.words ?? [];
+          const text = formatSpeakerLabeled(transcript, words);
+          const annotated = formatSpeakerLabeled(transcript, words, (w) => {
+            const shown = w.punctuated_word ?? w.word;
+            return w.confidence != null && w.confidence < LOW_CONFIDENCE ? `[?${shown}]` : shown;
+          });
+          handlers.onFinal({ text, annotated, receivedAt: performance.now() });
+        }
+      }
+    };
+
+    ws.onerror = () => {
+      if (retryOnFallback()) return;
+      handlers.onError(i18n.t('errors.deepgramSocket', { ns: 'voice' }));
       cleanup();
-    }
+    };
+
+    ws.onclose = (event) => {
+      if (!closed) {
+        if (retryOnFallback()) return;
+        // Most common cause of unsolicited close: bad token (1008/1011).
+        // (A close during a graceful stop is Deepgram finishing normally.)
+        if (!drainTimer && (event.code === 1008 || event.code === 1011)) {
+          handlers.onError(i18n.t('errors.deepgramRejected', { ns: 'voice' }));
+        }
+        cleanup();
+      }
+    };
   };
+  wireSocket();
 
   // Wire the audio graph. The sink is a muted gain to the destination:
   // Safari only pulls audio through nodes connected to an output.

@@ -1,5 +1,6 @@
 import type { AppLanguage } from '../i18n/config';
 import glossary from '../locales/glossary.json';
+import { SPOKEN_SYNONYMS } from '../utils/voice/terms';
 
 /**
  * Deepgram Nova-3 "keyterm prompting" list for AI voice autofill.
@@ -158,8 +159,18 @@ const GLOSSARY_ALIAS: Record<string, string> = {
   'supernumerary': 'supernumerary_tooth',
 };
 
+// Native nerve-block names, placed after the spoken synonyms so the token cap
+// trims the occlusion/procedure tail rather than the block sites.
+const NERVE_BLOCK_IDS = [
+  'nerve_block',
+  'infraorbital_nerve_block',
+  'caudal_maxillary_nerve_block',
+  'mental_nerve_block',
+  'inferior_alveolar_nerve_block',
+];
+
 // Most-dictated glossary terms that have no VOICE_KEYTERMS entry; placed
-// right after the English core.
+// right after the nerve blocks.
 const EXTRA_GLOSSARY_IDS = ['periodontitis'];
 
 type GlossaryTerm = { id: string; en: string } & Partial<Record<AppLanguage, string>>;
@@ -167,16 +178,21 @@ const TERMS = (glossary as { terms: GlossaryTerm[] }).terms;
 const BY_ID = new Map(TERMS.map((t) => [t.id, t]));
 const BY_EN = new Map(TERMS.map((t) => [t.en.toLowerCase(), t]));
 
+/** Curly apostrophes (catalog typography) become straight ones in keyterms. */
+const straightApostrophes = (t: string): string => t.replace(/[\u2018\u2019\u02BC]/g, "'");
+
 /**
  * Keyterms for Deepgram in `lng`. English: VOICE_KEYTERMS unchanged. Other
- * languages: the English codes/drug names vets say in English, then the
- * glossary's native clinical values in VOICE_KEYTERMS order, de-duplicated
- * and capped to Deepgram's term and token limits.
+ * languages, in priority order (the cap trims the end): the English
+ * codes/drug names vets say in English, the spoken score synonyms, the
+ * native nerve-block names, then the glossary's native clinical values in
+ * VOICE_KEYTERMS order — de-duplicated and capped to Deepgram's term and
+ * token limits.
  */
 export function voiceKeyterms(lng: AppLanguage): string[] {
   if (lng === 'en') return VOICE_KEYTERMS;
-  const candidates: string[] = [...ENGLISH_CORE];
-  for (const id of EXTRA_GLOSSARY_IDS) {
+  const candidates: string[] = [...ENGLISH_CORE, ...SPOKEN_SYNONYMS[lng]];
+  for (const id of [...NERVE_BLOCK_IDS, ...EXTRA_GLOSSARY_IDS]) {
     const v = BY_ID.get(id)?.[lng];
     if (v) candidates.push(v);
   }
@@ -185,7 +201,7 @@ export function voiceKeyterms(lng: AppLanguage): string[] {
     const v = entry?.[lng];
     if (v) candidates.push(v);
   }
-  return capKeyterms(candidates);
+  return capKeyterms(candidates.map(straightApostrophes));
 }
 
 /** De-duplicate (case-insensitively) and fit Deepgram's limits, in order.
