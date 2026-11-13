@@ -85,7 +85,7 @@ describe('BillingGate in the app', () => {
   });
 
   it('offline with a stale cache: says it could not check', async () => {
-    saveBillingCache(billing({ status: 'active' }), Date.now() - 8 * DAY);
+    saveBillingCache(billing({ status: 'active' }), Date.now() - 8 * DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
     expect(await screen.findByText("Couldn't check your subscription")).toBeInTheDocument();
@@ -115,8 +115,17 @@ describe('BillingGate in the app', () => {
     expect(readBillingCache(undefined, 'u2')).toBeNull();
   });
 
+  it('without a signed-in user id, a successful check is not cached', async () => {
+    auth.getSession.mockResolvedValueOnce({ data: { session: null } } as never);
+    fetchBilling.mockResolvedValue(billing({ status: 'active' }));
+    renderGate();
+    expect(await screen.findByText('charting app')).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(readBillingCache()).toBeNull();
+  });
+
   it('a fresh check overrides the cache', async () => {
-    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY);
+    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY, 'u1');
     fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
     renderGate();
     expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
@@ -179,7 +188,7 @@ describe('BillingGate on the web (unchanged)', () => {
   });
 
   it('does not cache, and does not use a cache when the check fails', async () => {
-    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY);
+    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
     expect(await screen.findByText("Couldn't check your subscription")).toBeInTheDocument();

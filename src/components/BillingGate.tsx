@@ -64,7 +64,9 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     fetchBilling()
       .then((b) => {
         if (cancelled) return;
-        if (isNativeApp()) void userId.then((id) => saveBillingCache(b, Date.now(), id));
+        // No user id, nothing to key the cache to: skip it rather than
+        // save an entry no one can read back.
+        if (isNativeApp()) void userId.then((id) => id && saveBillingCache(b, Date.now(), id));
         setInfo(b);
         setSelected(b.intendedPlan ?? null);
       })
