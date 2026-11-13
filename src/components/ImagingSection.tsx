@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { confirmDialog } from './ui/dialogs';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
@@ -53,6 +54,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageInPdfChange,
   readOnly = false,
 }) => {
+  const { t } = useTranslation('chart');
   const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
   const [kind, setKind] = React.useState<AttachmentKind>('photo');
   const [description, setDescription] = React.useState('');
@@ -101,14 +103,17 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     try {
       file = await takePhoto();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not open the camera.');
+      setError(err instanceof Error ? err.message : t('imaging.cameraFailed'));
       return;
     }
     if (file) await addFiles([file]);
   };
 
   const atLimit = store.items.length >= store.maxImages;
-  const limitMessage = `This chart has reached its ${store.maxImages}-image limit.`;
+  // The web keeps its wording; the app states the limit as a plain fact.
+  const limitMessage = isNativeApp()
+    ? t('imaging.limitReached', { max: store.maxImages })
+    : `Limit of ${store.maxImages} images reached`;
 
   const onDelete = async (id: string, caption: string) => {
     if (!(await confirmDialog({
@@ -171,7 +176,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       {store.maxImages === 0 && (
         <p className="patient-form__hint">
           {isNativeApp()
-            ? "Photo uploads aren't available on this account."
+            ? t('imaging.uploadsUnavailable')
             : "Photo & radiograph uploads aren't included in the free plan."}
         </p>
       )}
@@ -213,7 +218,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
             disabled={busy || atLimit}
             title={atLimit ? limitMessage : undefined}
           >
-            Take photo
+            {t('imaging.takePhoto')}
           </button>
         )}
         <input
@@ -235,7 +240,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           {store.dicomEnabled
             ? 'PNG, JPEG, WEBP or DICOM (.dcm). DICOM originals are kept and can be downloaded.'
             : isNativeApp()
-            ? 'PNG, JPEG or WEBP.'
+            ? t('imaging.formatsApp')
             : 'PNG, JPEG or WEBP. DICOM (.dcm) uploads are included on paid plans.'}
         </p>
       )}

@@ -1,5 +1,33 @@
 {
   "de": {
+    "account:auth.apple.busy": {
+      "hash": "f3a644564f2f",
+      "status": "machine"
+    },
+    "account:auth.apple.continue": {
+      "hash": "340ac4c3fd1f",
+      "status": "machine"
+    },
+    "account:auth.apple.failed": {
+      "hash": "b4bb208ff47f",
+      "status": "machine"
+    },
+    "account:auth.apple.hint": {
+      "hash": "78ddcbaa7b10",
+      "status": "machine"
+    },
+    "account:auth.apple.signUp": {
+      "hash": "c904f3cdb567",
+      "status": "machine"
+    },
+    "account:auth.incomplete": {
+      "hash": "e299e331379c",
+      "status": "machine"
+    },
+    "account:auth.signUpOnWeb": {
+      "hash": "eeac89e24a5d",
+      "status": "machine"
+    },
     "account:delete.blurb": {
       "hash": "f5dca6f862cc",
       "status": "machine"
@@ -176,6 +204,22 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "account:lock.prompt": {
+      "hash": "881f1422f040",
+      "status": "machine"
+    },
+    "account:lock.reason": {
+      "hash": "328b2349ecea",
+      "status": "machine"
+    },
+    "account:lock.title": {
+      "hash": "fbcf2d888132",
+      "status": "machine"
+    },
+    "account:lock.unavailable": {
+      "hash": "bb77c5117e5f",
+      "status": "machine"
+    },
     "account:password.confirmLabel": {
       "hash": "bf000421aeb3",
       "status": "machine"
@@ -240,6 +284,18 @@
       "hash": "dfe40efe921f",
       "status": "machine"
     },
+    "account:plan.inactive.manage": {
+      "hash": "9bb654b0e850",
+      "status": "machine"
+    },
+    "account:plan.inactive.title": {
+      "hash": "18ed84b6193a",
+      "status": "machine"
+    },
+    "account:team.seatLimit": {
+      "hash": "5c2f934340c3",
+      "status": "machine"
+    },
     "account:title": {
       "hash": "a587aa1f4ffc",
       "status": "machine"
@@ -276,6 +332,134 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "chart:aiConsent.allow": {
+      "hash": "e213c161d5ce",
+      "status": "machine"
+    },
+    "chart:aiConsent.anthropic": {
+      "hash": "3deae248e823",
+      "status": "machine"
+    },
+    "chart:aiConsent.deepgram": {
+      "hash": "b0ae2ca146b4",
+      "status": "machine"
+    },
+    "chart:aiConsent.intro": {
+      "hash": "8a0458d46084",
+      "status": "machine"
+    },
+    "chart:aiConsent.notNow": {
+      "hash": "a0e63d7c7125",
+      "status": "machine"
+    },
+    "chart:aiConsent.nothingSent": {
+      "hash": "d4b0446efabd",
+      "status": "machine"
+    },
+    "chart:aiConsent.title": {
+      "hash": "048a02be8d62",
+      "status": "machine"
+    },
+    "chart:imaging.cameraFailed": {
+      "hash": "2188a0ca81aa",
+      "status": "machine"
+    },
+    "chart:imaging.cameraNoPhoto": {
+      "hash": "7ef11b491c63",
+      "status": "machine"
+    },
+    "chart:imaging.cameraReadFailed": {
+      "hash": "562f35944e55",
+      "status": "machine"
+    },
+    "chart:imaging.dicomUnavailable": {
+      "hash": "978fdb3e4402",
+      "status": "machine"
+    },
+    "chart:imaging.formatsApp": {
+      "hash": "d9ceee8d4b90",
+      "status": "machine"
+    },
+    "chart:imaging.limitReached": {
+      "hash": "84a6ee75705a",
+      "status": "machine"
+    },
+    "chart:imaging.takePhoto": {
+      "hash": "7100ac9979a6",
+      "status": "machine"
+    },
+    "chart:imaging.uploadsUnavailable": {
+      "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:menu.practiceSettingsHintApp": {
+      "hash": "09b95c15e19f",
+      "status": "machine"
+    },
+    "chart:pdfStyle.chooseColor": {
+      "hash": "5e2fbecaaca5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.custom": {
+      "hash": "494ca78f7374",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customColor": {
+      "hash": "a5f69a181be0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescription": {
+      "hash": "5212067467e4",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescriptionCurrent": {
+      "hash": "2c5cb04919ab",
+      "status": "machine"
+    },
+    "chart:pdfStyle.label": {
+      "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.description": {
+      "hash": "b4c8b31ac1d3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.name": {
+      "hash": "0060dc79c9a3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.description": {
+      "hash": "c38cb2a9bd3c",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.name": {
+      "hash": "97e2eb859559",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.description": {
+      "hash": "4aa2c50b8da5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.name": {
+      "hash": "65003c7a1864",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.description": {
+      "hash": "96788e72e4ca",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.name": {
+      "hash": "43b7c75d56f0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.description": {
+      "hash": "ae6cf2e853b7",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.name": {
+      "hash": "10ad4c387363",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -288,6 +472,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "common:actions.duplicate": {
       "hash": "02cdaabfca80",
       "status": "machine"
@@ -298,6 +486,14 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:actions.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "common:actions.tryAgain": {
+      "hash": "d8b8392e2c54",
       "status": "machine"
     },
     "common:errors.generic": {
@@ -318,6 +514,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.saveFile": {
+      "hash": "eef37847ee9b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -618,6 +818,34 @@
     }
   },
   "es": {
+    "account:auth.apple.busy": {
+      "hash": "f3a644564f2f",
+      "status": "machine"
+    },
+    "account:auth.apple.continue": {
+      "hash": "340ac4c3fd1f",
+      "status": "machine"
+    },
+    "account:auth.apple.failed": {
+      "hash": "b4bb208ff47f",
+      "status": "machine"
+    },
+    "account:auth.apple.hint": {
+      "hash": "78ddcbaa7b10",
+      "status": "machine"
+    },
+    "account:auth.apple.signUp": {
+      "hash": "c904f3cdb567",
+      "status": "machine"
+    },
+    "account:auth.incomplete": {
+      "hash": "e299e331379c",
+      "status": "machine"
+    },
+    "account:auth.signUpOnWeb": {
+      "hash": "eeac89e24a5d",
+      "status": "machine"
+    },
     "account:delete.blurb": {
       "hash": "f5dca6f862cc",
       "status": "machine"
@@ -794,6 +1022,22 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "account:lock.prompt": {
+      "hash": "881f1422f040",
+      "status": "machine"
+    },
+    "account:lock.reason": {
+      "hash": "328b2349ecea",
+      "status": "machine"
+    },
+    "account:lock.title": {
+      "hash": "fbcf2d888132",
+      "status": "machine"
+    },
+    "account:lock.unavailable": {
+      "hash": "bb77c5117e5f",
+      "status": "machine"
+    },
     "account:password.confirmLabel": {
       "hash": "bf000421aeb3",
       "status": "machine"
@@ -858,6 +1102,18 @@
       "hash": "dfe40efe921f",
       "status": "machine"
     },
+    "account:plan.inactive.manage": {
+      "hash": "9bb654b0e850",
+      "status": "machine"
+    },
+    "account:plan.inactive.title": {
+      "hash": "18ed84b6193a",
+      "status": "machine"
+    },
+    "account:team.seatLimit": {
+      "hash": "5c2f934340c3",
+      "status": "machine"
+    },
     "account:title": {
       "hash": "a587aa1f4ffc",
       "status": "machine"
@@ -898,6 +1154,134 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "chart:aiConsent.allow": {
+      "hash": "e213c161d5ce",
+      "status": "machine"
+    },
+    "chart:aiConsent.anthropic": {
+      "hash": "3deae248e823",
+      "status": "machine"
+    },
+    "chart:aiConsent.deepgram": {
+      "hash": "b0ae2ca146b4",
+      "status": "machine"
+    },
+    "chart:aiConsent.intro": {
+      "hash": "8a0458d46084",
+      "status": "machine"
+    },
+    "chart:aiConsent.notNow": {
+      "hash": "a0e63d7c7125",
+      "status": "machine"
+    },
+    "chart:aiConsent.nothingSent": {
+      "hash": "d4b0446efabd",
+      "status": "machine"
+    },
+    "chart:aiConsent.title": {
+      "hash": "048a02be8d62",
+      "status": "machine"
+    },
+    "chart:imaging.cameraFailed": {
+      "hash": "2188a0ca81aa",
+      "status": "machine"
+    },
+    "chart:imaging.cameraNoPhoto": {
+      "hash": "7ef11b491c63",
+      "status": "machine"
+    },
+    "chart:imaging.cameraReadFailed": {
+      "hash": "562f35944e55",
+      "status": "machine"
+    },
+    "chart:imaging.dicomUnavailable": {
+      "hash": "978fdb3e4402",
+      "status": "machine"
+    },
+    "chart:imaging.formatsApp": {
+      "hash": "d9ceee8d4b90",
+      "status": "machine"
+    },
+    "chart:imaging.limitReached": {
+      "hash": "84a6ee75705a",
+      "status": "machine"
+    },
+    "chart:imaging.takePhoto": {
+      "hash": "7100ac9979a6",
+      "status": "machine"
+    },
+    "chart:imaging.uploadsUnavailable": {
+      "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:menu.practiceSettingsHintApp": {
+      "hash": "09b95c15e19f",
+      "status": "machine"
+    },
+    "chart:pdfStyle.chooseColor": {
+      "hash": "5e2fbecaaca5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.custom": {
+      "hash": "494ca78f7374",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customColor": {
+      "hash": "a5f69a181be0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescription": {
+      "hash": "5212067467e4",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescriptionCurrent": {
+      "hash": "2c5cb04919ab",
+      "status": "machine"
+    },
+    "chart:pdfStyle.label": {
+      "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.description": {
+      "hash": "b4c8b31ac1d3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.name": {
+      "hash": "0060dc79c9a3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.description": {
+      "hash": "c38cb2a9bd3c",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.name": {
+      "hash": "97e2eb859559",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.description": {
+      "hash": "4aa2c50b8da5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.name": {
+      "hash": "65003c7a1864",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.description": {
+      "hash": "96788e72e4ca",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.name": {
+      "hash": "43b7c75d56f0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.description": {
+      "hash": "ae6cf2e853b7",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.name": {
+      "hash": "10ad4c387363",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -910,6 +1294,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "common:actions.duplicate": {
       "hash": "02cdaabfca80",
       "status": "machine"
@@ -920,6 +1308,14 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:actions.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "common:actions.tryAgain": {
+      "hash": "d8b8392e2c54",
       "status": "machine"
     },
     "common:errors.generic": {
@@ -940,6 +1336,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.saveFile": {
+      "hash": "eef37847ee9b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -1240,6 +1640,34 @@
     }
   },
   "fr": {
+    "account:auth.apple.busy": {
+      "hash": "f3a644564f2f",
+      "status": "machine"
+    },
+    "account:auth.apple.continue": {
+      "hash": "340ac4c3fd1f",
+      "status": "machine"
+    },
+    "account:auth.apple.failed": {
+      "hash": "b4bb208ff47f",
+      "status": "machine"
+    },
+    "account:auth.apple.hint": {
+      "hash": "78ddcbaa7b10",
+      "status": "machine"
+    },
+    "account:auth.apple.signUp": {
+      "hash": "c904f3cdb567",
+      "status": "machine"
+    },
+    "account:auth.incomplete": {
+      "hash": "e299e331379c",
+      "status": "machine"
+    },
+    "account:auth.signUpOnWeb": {
+      "hash": "eeac89e24a5d",
+      "status": "machine"
+    },
     "account:delete.blurb": {
       "hash": "f5dca6f862cc",
       "status": "machine"
@@ -1416,6 +1844,22 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "account:lock.prompt": {
+      "hash": "881f1422f040",
+      "status": "machine"
+    },
+    "account:lock.reason": {
+      "hash": "328b2349ecea",
+      "status": "machine"
+    },
+    "account:lock.title": {
+      "hash": "fbcf2d888132",
+      "status": "machine"
+    },
+    "account:lock.unavailable": {
+      "hash": "bb77c5117e5f",
+      "status": "machine"
+    },
     "account:password.confirmLabel": {
       "hash": "bf000421aeb3",
       "status": "machine"
@@ -1480,6 +1924,18 @@
       "hash": "dfe40efe921f",
       "status": "machine"
     },
+    "account:plan.inactive.manage": {
+      "hash": "9bb654b0e850",
+      "status": "machine"
+    },
+    "account:plan.inactive.title": {
+      "hash": "18ed84b6193a",
+      "status": "machine"
+    },
+    "account:team.seatLimit": {
+      "hash": "5c2f934340c3",
+      "status": "machine"
+    },
     "account:title": {
       "hash": "a587aa1f4ffc",
       "status": "machine"
@@ -1520,6 +1976,134 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "chart:aiConsent.allow": {
+      "hash": "e213c161d5ce",
+      "status": "machine"
+    },
+    "chart:aiConsent.anthropic": {
+      "hash": "3deae248e823",
+      "status": "machine"
+    },
+    "chart:aiConsent.deepgram": {
+      "hash": "b0ae2ca146b4",
+      "status": "machine"
+    },
+    "chart:aiConsent.intro": {
+      "hash": "8a0458d46084",
+      "status": "machine"
+    },
+    "chart:aiConsent.notNow": {
+      "hash": "a0e63d7c7125",
+      "status": "machine"
+    },
+    "chart:aiConsent.nothingSent": {
+      "hash": "d4b0446efabd",
+      "status": "machine"
+    },
+    "chart:aiConsent.title": {
+      "hash": "048a02be8d62",
+      "status": "machine"
+    },
+    "chart:imaging.cameraFailed": {
+      "hash": "2188a0ca81aa",
+      "status": "machine"
+    },
+    "chart:imaging.cameraNoPhoto": {
+      "hash": "7ef11b491c63",
+      "status": "machine"
+    },
+    "chart:imaging.cameraReadFailed": {
+      "hash": "562f35944e55",
+      "status": "machine"
+    },
+    "chart:imaging.dicomUnavailable": {
+      "hash": "978fdb3e4402",
+      "status": "machine"
+    },
+    "chart:imaging.formatsApp": {
+      "hash": "d9ceee8d4b90",
+      "status": "machine"
+    },
+    "chart:imaging.limitReached": {
+      "hash": "84a6ee75705a",
+      "status": "machine"
+    },
+    "chart:imaging.takePhoto": {
+      "hash": "7100ac9979a6",
+      "status": "machine"
+    },
+    "chart:imaging.uploadsUnavailable": {
+      "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:menu.practiceSettingsHintApp": {
+      "hash": "09b95c15e19f",
+      "status": "machine"
+    },
+    "chart:pdfStyle.chooseColor": {
+      "hash": "5e2fbecaaca5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.custom": {
+      "hash": "494ca78f7374",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customColor": {
+      "hash": "a5f69a181be0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescription": {
+      "hash": "5212067467e4",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescriptionCurrent": {
+      "hash": "2c5cb04919ab",
+      "status": "machine"
+    },
+    "chart:pdfStyle.label": {
+      "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.description": {
+      "hash": "b4c8b31ac1d3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.name": {
+      "hash": "0060dc79c9a3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.description": {
+      "hash": "c38cb2a9bd3c",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.name": {
+      "hash": "97e2eb859559",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.description": {
+      "hash": "4aa2c50b8da5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.name": {
+      "hash": "65003c7a1864",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.description": {
+      "hash": "96788e72e4ca",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.name": {
+      "hash": "43b7c75d56f0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.description": {
+      "hash": "ae6cf2e853b7",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.name": {
+      "hash": "10ad4c387363",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -1532,6 +2116,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "common:actions.duplicate": {
       "hash": "02cdaabfca80",
       "status": "machine"
@@ -1542,6 +2130,14 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:actions.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "common:actions.tryAgain": {
+      "hash": "d8b8392e2c54",
       "status": "machine"
     },
     "common:errors.generic": {
@@ -1562,6 +2158,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.saveFile": {
+      "hash": "eef37847ee9b",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -1862,6 +2462,34 @@
     }
   },
   "it": {
+    "account:auth.apple.busy": {
+      "hash": "f3a644564f2f",
+      "status": "machine"
+    },
+    "account:auth.apple.continue": {
+      "hash": "340ac4c3fd1f",
+      "status": "machine"
+    },
+    "account:auth.apple.failed": {
+      "hash": "b4bb208ff47f",
+      "status": "machine"
+    },
+    "account:auth.apple.hint": {
+      "hash": "78ddcbaa7b10",
+      "status": "machine"
+    },
+    "account:auth.apple.signUp": {
+      "hash": "c904f3cdb567",
+      "status": "machine"
+    },
+    "account:auth.incomplete": {
+      "hash": "e299e331379c",
+      "status": "machine"
+    },
+    "account:auth.signUpOnWeb": {
+      "hash": "eeac89e24a5d",
+      "status": "machine"
+    },
     "account:delete.blurb": {
       "hash": "f5dca6f862cc",
       "status": "machine"
@@ -2038,6 +2666,22 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "account:lock.prompt": {
+      "hash": "881f1422f040",
+      "status": "machine"
+    },
+    "account:lock.reason": {
+      "hash": "328b2349ecea",
+      "status": "machine"
+    },
+    "account:lock.title": {
+      "hash": "fbcf2d888132",
+      "status": "machine"
+    },
+    "account:lock.unavailable": {
+      "hash": "bb77c5117e5f",
+      "status": "machine"
+    },
     "account:password.confirmLabel": {
       "hash": "bf000421aeb3",
       "status": "machine"
@@ -2102,6 +2746,18 @@
       "hash": "dfe40efe921f",
       "status": "machine"
     },
+    "account:plan.inactive.manage": {
+      "hash": "9bb654b0e850",
+      "status": "machine"
+    },
+    "account:plan.inactive.title": {
+      "hash": "18ed84b6193a",
+      "status": "machine"
+    },
+    "account:team.seatLimit": {
+      "hash": "5c2f934340c3",
+      "status": "machine"
+    },
     "account:title": {
       "hash": "a587aa1f4ffc",
       "status": "machine"
@@ -2142,6 +2798,134 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "chart:aiConsent.allow": {
+      "hash": "e213c161d5ce",
+      "status": "machine"
+    },
+    "chart:aiConsent.anthropic": {
+      "hash": "3deae248e823",
+      "status": "machine"
+    },
+    "chart:aiConsent.deepgram": {
+      "hash": "b0ae2ca146b4",
+      "status": "machine"
+    },
+    "chart:aiConsent.intro": {
+      "hash": "8a0458d46084",
+      "status": "machine"
+    },
+    "chart:aiConsent.notNow": {
+      "hash": "a0e63d7c7125",
+      "status": "machine"
+    },
+    "chart:aiConsent.nothingSent": {
+      "hash": "d4b0446efabd",
+      "status": "machine"
+    },
+    "chart:aiConsent.title": {
+      "hash": "048a02be8d62",
+      "status": "machine"
+    },
+    "chart:imaging.cameraFailed": {
+      "hash": "2188a0ca81aa",
+      "status": "machine"
+    },
+    "chart:imaging.cameraNoPhoto": {
+      "hash": "7ef11b491c63",
+      "status": "machine"
+    },
+    "chart:imaging.cameraReadFailed": {
+      "hash": "562f35944e55",
+      "status": "machine"
+    },
+    "chart:imaging.dicomUnavailable": {
+      "hash": "978fdb3e4402",
+      "status": "machine"
+    },
+    "chart:imaging.formatsApp": {
+      "hash": "d9ceee8d4b90",
+      "status": "machine"
+    },
+    "chart:imaging.limitReached": {
+      "hash": "84a6ee75705a",
+      "status": "machine"
+    },
+    "chart:imaging.takePhoto": {
+      "hash": "7100ac9979a6",
+      "status": "machine"
+    },
+    "chart:imaging.uploadsUnavailable": {
+      "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:menu.practiceSettingsHintApp": {
+      "hash": "09b95c15e19f",
+      "status": "machine"
+    },
+    "chart:pdfStyle.chooseColor": {
+      "hash": "5e2fbecaaca5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.custom": {
+      "hash": "494ca78f7374",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customColor": {
+      "hash": "a5f69a181be0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescription": {
+      "hash": "5212067467e4",
+      "status": "machine"
+    },
+    "chart:pdfStyle.customDescriptionCurrent": {
+      "hash": "2c5cb04919ab",
+      "status": "machine"
+    },
+    "chart:pdfStyle.label": {
+      "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.description": {
+      "hash": "b4c8b31ac1d3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.classic-blue.name": {
+      "hash": "0060dc79c9a3",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.description": {
+      "hash": "c38cb2a9bd3c",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.clinic.name": {
+      "hash": "97e2eb859559",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.description": {
+      "hash": "4aa2c50b8da5",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.iris.name": {
+      "hash": "65003c7a1864",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.description": {
+      "hash": "96788e72e4ca",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.journal.name": {
+      "hash": "43b7c75d56f0",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.description": {
+      "hash": "ae6cf2e853b7",
+      "status": "machine"
+    },
+    "chart:pdfStyle.styles.slate.name": {
+      "hash": "10ad4c387363",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -2154,6 +2938,10 @@
       "hash": "e2d0a54968ea",
       "status": "machine"
     },
+    "common:actions.done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "common:actions.duplicate": {
       "hash": "02cdaabfca80",
       "status": "machine"
@@ -2164,6 +2952,14 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:actions.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "common:actions.tryAgain": {
+      "hash": "d8b8392e2c54",
       "status": "machine"
     },
     "common:errors.generic": {
@@ -2184,6 +2980,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.saveFile": {
+      "hash": "eef37847ee9b",
       "status": "machine"
     },
     "report:abnormalityNoted": {

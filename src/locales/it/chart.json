@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "practiceSettingsHintApp": "Nome, logo e team."
+  },
+  "imaging": {
+    "takePhoto": "Scatta foto",
+    "cameraFailed": "Impossibile aprire la fotocamera.",
+    "cameraNoPhoto": "La fotocamera non ha restituito alcuna foto.",
+    "cameraReadFailed": "Impossibile leggere la foto ({{status}}).",
+    "limitReached": "Questa cartella ha raggiunto il limite di {{max}} immagini.",
+    "uploadsUnavailable": "Il caricamento di foto non è disponibile per questo account.",
+    "formatsApp": "PNG, JPEG o WEBP.",
+    "dicomUnavailable": "Il caricamento DICOM non è disponibile per questo account. Esporti la radiografia in JPEG o PNG per aggiungerla."
+  },
+  "aiConsent": {
+    "title": "Utilizzare i servizi di IA?",
+    "intro": "Per dettare in una cartella e scrivere bozze con l’IA, ToothOps invia dati a due servizi:",
+    "deepgram": "<strong>Deepgram</strong> riceve l’audio della sua voce durante la dettatura, per trasformarlo in testo.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) riceve la trascrizione della dettatura e il contenuto della cartella, come i dati del paziente e i reperti, per compilare la cartella o redigere il referto per il proprietario.",
+    "nothingSent": "Non viene inviato nulla se non utilizza queste funzioni.",
+    "allow": "Consenti",
+    "notNow": "Non ora"
+  },
+  "pdfStyle": {
+    "label": "Stile PDF",
+    "custom": "Personalizzato",
+    "customColor": "Colore personalizzato",
+    "customDescription": "Qualsiasi colore, con il layout {{base}}.",
+    "customDescriptionCurrent": "Qualsiasi colore, con il layout attuale.",
+    "chooseColor": "Scegli un colore personalizzato",
+    "styles": {
+      "clinic": {
+        "name": "Verde acqua clinico",
+        "description": "Coordinato con l’app: intestazioni verde acqua, anomalie segnalate in rosso, riquadri arrotondati."
+      },
+      "classic-blue": {
+        "name": "Blu classico",
+        "description": "Il blu tradizionale delle cartelle cliniche, con intestazioni di sezione piene."
+      },
+      "slate": {
+        "name": "Ardesia",
+        "description": "Grafite neutra: si stampa nitida in bianco e nero."
+      },
+      "iris": {
+        "name": "Iris",
+        "description": "Discreti accenti indaco con intestazioni compatte in maiuscolo."
+      },
+      "journal": {
+        "name": "Rivista",
+        "description": "Classico da stampa con caratteri graziati: accenti rosso scuro su carta calda."
+      }
+    }
+  }
+}

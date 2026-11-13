@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "practiceSettingsHintApp": "Nom, logo et équipe."
+  },
+  "imaging": {
+    "takePhoto": "Prendre une photo",
+    "cameraFailed": "Impossible d’ouvrir l’appareil photo.",
+    "cameraNoPhoto": "L’appareil photo n’a renvoyé aucune photo.",
+    "cameraReadFailed": "Impossible de lire la photo ({{status}}).",
+    "limitReached": "Ce dossier a atteint sa limite de {{max}} images.",
+    "uploadsUnavailable": "L’import de photos n’est pas disponible sur ce compte.",
+    "formatsApp": "PNG, JPEG ou WEBP.",
+    "dicomUnavailable": "L’import DICOM n’est pas disponible sur ce compte. Exportez la radiographie en JPEG ou PNG pour l’ajouter."
+  },
+  "aiConsent": {
+    "title": "Utiliser les services d’IA ?",
+    "intro": "Pour dicter dans un dossier et rédiger des brouillons par IA, ToothOps envoie des données à deux services :",
+    "deepgram": "<strong>Deepgram</strong> reçoit l’audio de votre voix pendant la dictée, pour le transcrire en texte.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) reçoit la transcription de la dictée et le contenu du dossier, comme les informations sur le patient et les observations, pour remplir le dossier ou rédiger le compte rendu pour le propriétaire.",
+    "nothingSent": "Rien n’est envoyé si vous n’utilisez pas ces fonctions.",
+    "allow": "Autoriser",
+    "notNow": "Pas maintenant"
+  },
+  "pdfStyle": {
+    "label": "Style du PDF",
+    "custom": "Personnalisé",
+    "customColor": "Couleur personnalisée",
+    "customDescription": "La couleur de votre choix, avec la mise en page {{base}}.",
+    "customDescriptionCurrent": "La couleur de votre choix, avec la mise en page actuelle.",
+    "chooseColor": "Choisir une couleur personnalisée",
+    "styles": {
+      "clinic": {
+        "name": "Turquoise clinique",
+        "description": "Assorti à l’app — en-têtes turquoise, anomalies signalées en rouge, encadrés arrondis."
+      },
+      "classic-blue": {
+        "name": "Bleu classique",
+        "description": "Le bleu traditionnel des dossiers médicaux, avec des en-têtes de section pleins."
+      },
+      "slate": {
+        "name": "Ardoise",
+        "description": "Graphite neutre — s’imprime nettement en noir et blanc."
+      },
+      "iris": {
+        "name": "Iris",
+        "description": "Discrets accents indigo et en-têtes compacts en majuscules."
+      },
+      "journal": {
+        "name": "Journal",
+        "description": "Classique de l’imprimé à empattements — accents rouge foncé sur papier chaud."
+      }
+    }
+  }
+}

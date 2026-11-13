@@ -2,6 +2,7 @@ import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
 import { isNativeApp } from '../native/platform';
+import i18n from '../i18n';
 
 /**
  * Photos and radiographs pinned to the active chart. Files live in the
@@ -93,13 +94,17 @@ export function uploadRejection(u: {
 }): string | null {
   if (u.dicom && !u.dicomEnabled) {
     return u.native
-      ? "DICOM uploads aren't available on this account. Export the radiograph as a JPEG or PNG to add it."
+      ? i18n.t('chart:imaging.dicomUnavailable')
       : 'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.';
   }
   if (!u.dicom && !ALLOWED.includes(u.type)) {
     return u.dicomEnabled ? 'Use a PNG, JPEG, WEBP or DICOM image.' : 'Use a PNG, JPEG, or WEBP image.';
   }
-  if (u.count >= u.maxImages) return `This chart has reached its ${u.maxImages}-image limit.`;
+  if (u.count >= u.maxImages) {
+    return u.native
+      ? i18n.t('chart:imaging.limitReached', { max: u.maxImages })
+      : `This chart already has the maximum of ${u.maxImages} images. Delete one to add another.`;
+  }
   if (u.size > ATTACHMENT_LIMITS.hardMaxBytes) {
     return `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`;
   }

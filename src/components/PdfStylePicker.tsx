@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
@@ -8,6 +9,7 @@ import {
   styleSwatch,
 } from '../utils/pdf/styles';
 import { readString, writeString } from '../utils/storage';
+import type chartCatalog from '../locales/en/chart.json';
 
 const STYLE_KEY = 'pdfStyle';
 const COLOR_KEY = 'pdfCustomColor';
@@ -38,6 +40,8 @@ export function useCompactPdfLayout(): boolean {
   return compact;
 }
 
+type PresetId = keyof (typeof chartCatalog)['pdfStyle']['styles'];
+
 interface Props {
   styleId: string;
   onChange: (styleId: string) => void;
@@ -51,6 +55,14 @@ interface Props {
  * a bottom sheet, so the preview keeps the screen.
  */
 export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) => {
+  const { t } = useTranslation('chart');
+  // Preset names and blurbs come from the catalog, keyed by preset id
+  // (styles.ts keeps the English originals as the fallback).
+  const preset = (id: string) => PDF_STYLES.find((s) => s.id === id);
+  const styleName = (id: string) =>
+    t(`pdfStyle.styles.${id as PresetId}.name`, { defaultValue: preset(id)?.name ?? id });
+  const styleDescription = (id: string) =>
+    t(`pdfStyle.styles.${id as PresetId}.description`, { defaultValue: preset(id)?.description ?? '' });
   const [open, setOpen] = React.useState(false);
   const active = resolvePdfStyle(styleId);
   const customColor = customStyleColor(styleId);
@@ -65,7 +77,7 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
   };
 
   const list = (
-    <ul role="radiogroup" aria-label="PDF style" className="pdf-style-list">
+    <ul role="radiogroup" aria-label={t('pdfStyle.label')} className="pdf-style-list">
       {PDF_STYLES.map((s) => {
         const on = s.id === styleId;
         return (
@@ -79,9 +91,9 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
             >
               <span className="pdf-style-row">
                 <span className="pdf-style-swatch" style={{ background: styleSwatch(s) }} aria-hidden="true" />
-                <strong>{s.name}</strong>
+                <strong>{styleName(s.id)}</strong>
               </span>
-              <span>{s.description}</span>
+              <span>{styleDescription(s.id)}</span>
             </button>
           </li>
         );
@@ -97,17 +109,21 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
           >
             <span className="pdf-style-row">
               <span className="pdf-style-swatch pdf-style-swatch--custom" style={{ background: customColor ?? lastColor }} aria-hidden="true" />
-              <strong>Custom color</strong>
+              <strong>{t('pdfStyle.customColor')}</strong>
             </span>
-            <span>Any color you like, on the {PDF_STYLES.find((s) => s.id === baseId)?.name ?? 'current'} layout.</span>
+            <span>
+              {preset(baseId)
+                ? t('pdfStyle.customDescription', { base: styleName(baseId) })
+                : t('pdfStyle.customDescriptionCurrent')}
+            </span>
           </button>
           <label className="pdf-style-custom__color">
-            <span className="visually-hidden">Choose custom color</span>
+            <span className="visually-hidden">{t('pdfStyle.chooseColor')}</span>
             <input
               type="color"
               value={customColor ?? lastColor}
               onChange={(e) => pickColor(e.target.value)}
-              aria-label="Choose custom color"
+              aria-label={t('pdfStyle.chooseColor')}
             />
           </label>
         </div>
@@ -127,7 +143,7 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
         onClick={() => setOpen(true)}
       >
         <span className="pdf-style-swatch" style={{ background: styleSwatch(active) }} aria-hidden="true" />
-        <span className="pdf-style-button__label">{customColor ? 'Custom' : active.name}</span>
+        <span className="pdf-style-button__label">{customColor ? t('pdfStyle.custom') : styleName(active.id)}</span>
         <span aria-hidden="true" className="pdf-style-button__chevron">▾</span>
       </button>
       {open && (
@@ -136,12 +152,12 @@ export const PdfStylePicker: React.FC<Props> = ({ styleId, onChange, compact }) 
             className="pdf-style-sheet"
             role="dialog"
             aria-modal="true"
-            aria-label="PDF style"
+            aria-label={t('pdfStyle.label')}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="pdf-style-sheet__header">
-              <h3>PDF style</h3>
-              <button type="button" className="pdf-style-sheet__done" onClick={() => setOpen(false)}>Done</button>
+              <h3>{t('pdfStyle.label')}</h3>
+              <button type="button" className="pdf-style-sheet__done" onClick={() => setOpen(false)}>{t('actions.done', { ns: 'common' })}</button>
             </div>
             {list}
           </div>

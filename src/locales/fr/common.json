@@ -5,13 +5,17 @@
     "delete": "Supprimer",
     "duplicate": "Dupliquer",
     "edit": "Modifier",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "done": "Terminé",
+    "signOut": "Se déconnecter",
+    "tryAgain": "Réessayer"
   },
   "errors": {
     "generic": "Une erreur s’est produite. Veuillez réessayer.",
     "network": "Impossible de joindre ToothOps — vérifiez votre connexion et réessayez.",
     "notFound": "Ce dossier est introuvable — il a peut-être été supprimé.",
     "permission": "Vous n’y avez pas accès.",
-    "rateLimit": "Trop de tentatives. Patientez une minute et réessayez."
+    "rateLimit": "Trop de tentatives. Patientez une minute et réessayez.",
+    "saveFile": "Impossible d’enregistrer le fichier."
   }
 }

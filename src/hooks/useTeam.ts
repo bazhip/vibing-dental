@@ -3,6 +3,7 @@ import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { emailLinkOrigin } from '../native/authReturn';
 import { isNativeApp } from '../native/platform';
 import { friendlyError } from '../components/ui/dialogs';
+import i18n from '../i18n';
 
 /**
  * Practice (multi-doctor) membership for the signed-in user. All calls
@@ -82,7 +83,7 @@ const SEAT_LIMIT_MESSAGES = new Set([
  */
 export function appSafeTeamError(err: unknown, native: boolean = isNativeApp()): unknown {
   if (native && err instanceof Error && SEAT_LIMIT_MESSAGES.has(err.message.trim())) {
-    return new Error('This practice has reached its team member limit.');
+    return new Error(i18n.t('account:team.seatLimit'));
   }
   return err;
 }

@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "practiceSettingsHintApp": "Name, Logo und Team."
+  },
+  "imaging": {
+    "takePhoto": "Foto aufnehmen",
+    "cameraFailed": "Die Kamera konnte nicht geöffnet werden.",
+    "cameraNoPhoto": "Die Kamera hat kein Foto geliefert.",
+    "cameraReadFailed": "Das Foto konnte nicht gelesen werden ({{status}}).",
+    "limitReached": "Diese Karte hat ihr Limit von {{max}} Bildern erreicht.",
+    "uploadsUnavailable": "Foto-Uploads sind für dieses Konto nicht verfügbar.",
+    "formatsApp": "PNG, JPEG oder WEBP.",
+    "dicomUnavailable": "DICOM-Uploads sind für dieses Konto nicht verfügbar. Exportieren Sie die Röntgenaufnahme als JPEG oder PNG, um sie hinzuzufügen."
+  },
+  "aiConsent": {
+    "title": "KI-Dienste verwenden?",
+    "intro": "Zum Diktieren in eine Karte und für KI-Entwürfe sendet ToothOps Daten an zwei Dienste:",
+    "deepgram": "<strong>Deepgram</strong> empfängt die Aufnahme Ihrer Stimme, während Sie diktieren, um sie in Text umzuwandeln.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) empfängt das Diktat-Transkript und den Inhalt der Karte, etwa Patientendaten und Befunde, um die Karte auszufüllen oder den Bericht für den Tierhalter zu entwerfen.",
+    "nothingSent": "Es wird nichts gesendet, solange Sie diese Funktionen nicht nutzen.",
+    "allow": "Erlauben",
+    "notNow": "Nicht jetzt"
+  },
+  "pdfStyle": {
+    "label": "PDF-Stil",
+    "custom": "Benutzerdefiniert",
+    "customColor": "Eigene Farbe",
+    "customDescription": "Eine beliebige Farbe im Layout {{base}}.",
+    "customDescriptionCurrent": "Eine beliebige Farbe im aktuellen Layout.",
+    "chooseColor": "Eigene Farbe wählen",
+    "styles": {
+      "clinic": {
+        "name": "Klinik-Petrol",
+        "description": "Passend zur App – Überschriften in Petrol, rote Markierungen für Auffälligkeiten, abgerundete Kästen."
+      },
+      "classic-blue": {
+        "name": "Klassisches Blau",
+        "description": "Traditionelles Blau medizinischer Akten mit vollflächigen Abschnittsüberschriften."
+      },
+      "slate": {
+        "name": "Schiefer",
+        "description": "Neutrales Graphit – druckt gestochen scharf in Schwarzweiß."
+      },
+      "iris": {
+        "name": "Iris",
+        "description": "Dezente Indigo-Akzente mit kompakten Überschriften in Großbuchstaben."
+      },
+      "journal": {
+        "name": "Journal",
+        "description": "Klassischer Druck mit Serifenschrift – tiefrote Akzente auf warmem Papier."
+      }
+    }
+  }
+}

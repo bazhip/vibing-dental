@@ -5,13 +5,17 @@
     "delete": "Elimina",
     "duplicate": "Duplica",
     "edit": "Modifica",
-    "save": "Salva"
+    "save": "Salva",
+    "done": "Fine",
+    "signOut": "Esci",
+    "tryAgain": "Riprova"
   },
   "errors": {
     "generic": "Qualcosa è andato storto. Riprovi.",
     "network": "Impossibile raggiungere ToothOps: controlli la connessione e riprovi.",
     "notFound": "Cartella non trovata: potrebbe essere stata eliminata.",
     "permission": "Non ha accesso a questo elemento.",
-    "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi."
+    "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi.",
+    "saveFile": "Impossibile salvare il file."
   }
 }

@@ -1,7 +1,9 @@
 import React from 'react';
+import { Trans } from 'react-i18next';
 import { isNativeApp } from './platform';
 import { readString, writeString } from '../utils/storage';
 import { confirmDialog } from '../components/ui/dialogs';
+import i18n from '../i18n';
 
 /**
  * One-time consent before the app first sends anything to a third-party
@@ -23,25 +25,25 @@ export function needsAiConsent(): boolean {
 /** Resolves true when the AI action may go ahead. */
 export async function ensureAiConsent(): Promise<boolean> {
   if (!needsAiConsent()) return true;
+  const t = i18n.getFixedT(null, 'chart', 'aiConsent');
   const ok = await confirmDialog({
-    title: 'Use AI services?',
+    title: t('title'),
     message: (
       <>
-        <p>To dictate into a chart and to write AI drafts, ToothOps sends data to two services:</p>
+        <p>{t('intro')}</p>
         <ul>
           <li>
-            <strong>Deepgram</strong> receives the audio of your voice while you dictate, to turn it into text.
+            <Trans t={t} i18nKey="deepgram" components={{ strong: <strong /> }} />
           </li>
           <li>
-            <strong>Anthropic</strong> (Claude) receives the dictation transcript and the chart's contents, such as
-            patient details and findings, to fill in the chart or draft the owner report.
+            <Trans t={t} i18nKey="anthropic" components={{ strong: <strong /> }} />
           </li>
         </ul>
-        <p>Nothing is sent unless you use these features.</p>
+        <p>{t('nothingSent')}</p>
       </>
     ),
-    confirmLabel: 'Allow',
-    cancelLabel: 'Not now',
+    confirmLabel: t('allow'),
+    cancelLabel: t('notNow'),
   });
   if (ok) writeString(KEY, VERSION, 'allowed');
   return ok;

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Browser } from '@capacitor/browser';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { AppleSignInButton, APPLE_HINT, showAppleSignIn } from './AppleSignInButton';
+import { AppleSignInButton, AppleSignInHint, showAppleSignIn } from './AppleSignInButton';
 import { LegalNotice } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
@@ -61,6 +62,7 @@ const RESEND_COOLDOWN_S = 60;
  * password, so the app keeps working standalone.
  */
 export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'signin', embedded = false, initialPlan, appMode = false }) => {
+  const { t } = useTranslation('account');
   const [mode, setMode] = useState<Mode>(appMode ? 'signin' : initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -286,12 +288,12 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               {showAppleSignIn() && (
                 <>
                   <AppleSignInButton
-                    label={signup ? 'Sign up with Apple' : 'Continue with Apple'}
+                    label={signup ? t('auth.apple.signUp') : t('auth.apple.continue')}
                     disabled={busy}
                     onError={setError}
                     onStart={markTermsPending}
                   />
-                  <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
+                  <AppleSignInHint />
                 </>
               )}
               {/* The notice sits by both buttons: the email form's submit
@@ -528,7 +530,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 void Browser.open({ url: WEB_ORIGIN });
               }}
             >
-              New to ToothOps? Sign up at toothops.app
+              {t('auth.signUpOnWeb')}
             </a>
           )}
 

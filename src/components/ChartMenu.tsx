@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import { isNativeApp } from '../native/platform';
 import './AccountSurfaces.css';
@@ -63,6 +64,7 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * sign out). Lives in the topbar.
  */
 export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+  const { t } = useTranslation('chart');
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -200,7 +202,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
           {cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">Practice</header>
-              {item('Practice settings', isNativeApp() ? 'Name, logo, and team.' : 'Name, logo, team, and billing.', cloud.onPracticeSettings)}
+              {item('Practice settings', isNativeApp() ? t('menu.practiceSettingsHintApp') : 'Name, logo, team, and billing.', cloud.onPracticeSettings)}
               {item('Recheck reminders', 'Owner email template and auto-send schedule.', cloud.onOpenReminders)}
             </section>
           )}

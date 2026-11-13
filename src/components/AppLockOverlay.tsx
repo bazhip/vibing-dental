@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppLock } from '../native/appLock';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
 
@@ -29,6 +30,7 @@ function useInertBackground(active: boolean, cover: React.RefObject<HTMLElement 
  *  snapshot shows no chart). Renders nothing on web.
  *  `lockOnLaunch`: the app opened with a session from a previous run. */
 export const AppLockOverlay: React.FC<{ lockOnLaunch?: boolean }> = ({ lockOnLaunch }) => {
+  const { t } = useTranslation(['account', 'common']);
   const { locked, covered, unavailable, unlock } = useAppLock({ lockOnLaunch });
   const ref = useRef<HTMLDivElement>(null);
   const active = locked || covered;
@@ -42,19 +44,16 @@ export const AppLockOverlay: React.FC<{ lockOnLaunch?: boolean }> = ({ lockOnLau
     return createPortal(<div ref={ref} data-testid="privacy-cover" aria-hidden="true" style={coverStyle} />, document.body);
   }
   return createPortal(
-    <div ref={ref} role="dialog" aria-modal="true" aria-label="ToothOps is locked" style={coverStyle}>
-      <h2>ToothOps is locked</h2>
+    <div ref={ref} role="dialog" aria-modal="true" aria-label={t('lock.title')} style={coverStyle}>
+      <h2>{t('lock.title')}</h2>
       {unavailable ? (
         // No automatic re-prompt: it can only fail again. "Try again" is
         // for after they've set a passcode in Settings.
-        <p>
-          Face ID and the device passcode aren't available on this device. To unlock ToothOps,
-          set a passcode in the Settings app and tap Try again, or sign out.
-        </p>
+        <p>{t('lock.unavailable')}</p>
       ) : (
-        <p>Unlock to protect patient records.</p>
+        <p>{t('lock.prompt')}</p>
       )}
-      <button type="button" onClick={() => void unlock()}>Try again</button>
+      <button type="button" onClick={() => void unlock()}>{t('common:actions.tryAgain')}</button>
       <button
         type="button"
         // No unsaved-changes prompt here: the lock screen hides the chart,
@@ -62,7 +61,7 @@ export const AppLockOverlay: React.FC<{ lockOnLaunch?: boolean }> = ({ lockOnLau
         onClick={() => void signOutAndSweep()}
         style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
       >
-        Sign out
+        {t('common:actions.signOut')}
       </button>
     </div>,
     document.body

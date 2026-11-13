@@ -3,6 +3,7 @@ import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
+import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
 import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
@@ -169,7 +170,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     // In the iOS app the PDF goes to the native share sheet (Save to Files,
     // Mail, AirDrop…); the browser download / in-app-link flow is web-only.
     if (isNativeApp()) {
-      void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
+      void saveFile(blob, filename, 'application/pdf').catch(() => toast(i18n.t('common:errors.saveFile')));
       return;
     }
     savePdf(blob, filename).then((outcome) => {

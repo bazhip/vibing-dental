@@ -87,5 +87,31 @@
       "failed": "Could not delete the practice.",
       "done": "The practice has been deleted."
     }
+  },
+  "auth": {
+    "apple": {
+      "continue": "Continue with Apple",
+      "signUp": "Sign up with Apple",
+      "busy": "Signing in with Apple…",
+      "failed": "Couldn’t sign in with Apple.",
+      "hint": "Already have an account or were invited? Sign in with your email."
+    },
+    "signUpOnWeb": "New to ToothOps? Sign up at toothops.app",
+    "incomplete": "Sign-in didn't complete. Please try again."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Your plan isn't active",
+      "manage": "Manage it at toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps is locked",
+    "prompt": "Unlock to protect patient records.",
+    "unavailable": "Face ID and the device passcode aren't available on this device. To unlock ToothOps, set a passcode in the Settings app and tap Try again, or sign out.",
+    "reason": "Unlock ToothOps"
+  },
+  "team": {
+    "seatLimit": "This practice has reached its team member limit."
   }
 }

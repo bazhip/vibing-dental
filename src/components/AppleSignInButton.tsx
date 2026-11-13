@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { SignInWithApple } from '@capacitor-community/apple-sign-in';
 import { supabase } from '../utils/supabaseClient';
 import { isNativeApp } from '../native/platform';
@@ -11,7 +12,10 @@ const APPLE_CLIENT_ID = 'app.toothops.ios';
 
 /** Shown under the Apple button wherever it appears: Apple may hide the
  *  real email, so existing and invited users should use email sign-in. */
-export const APPLE_HINT = 'Already have an account or were invited? Sign in with your email.';
+export const AppleSignInHint: React.FC = () => {
+  const { t } = useTranslation('account');
+  return <span className="login-hint login-apple-hint">{t('auth.apple.hint')}</span>;
+};
 
 /**
  * Whether to offer Sign in with Apple. Always in the iOS app (App Store
@@ -52,7 +56,8 @@ export const AppleSignInButton: React.FC<{
   onError?: (message: string) => void;
   /** Runs just before sign-in starts (e.g. to note the terms notice). */
   onStart?: () => void;
-}> = ({ label = 'Continue with Apple', disabled, onError, onStart }) => {
+}> = ({ label, disabled, onError, onStart }) => {
+  const { t } = useTranslation('account');
   const [busy, setBusy] = React.useState(false);
   if (!supabase) return null;
   const client = supabase;
@@ -87,7 +92,7 @@ export const AppleSignInButton: React.FC<{
       }
     } catch (e) {
       setBusy(false);
-      if (!isCancel(e)) onError?.(friendlyError(e, 'Couldn’t sign in with Apple.'));
+      if (!isCancel(e)) onError?.(friendlyError(e, t('auth.apple.failed')));
     }
   };
 
@@ -99,7 +104,7 @@ export const AppleSignInButton: React.FC<{
           d="M14.2 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.7 4.8 2 5.8 1.1 7.4c-1.9 3.3-.5 8.1 1.3 10.8.9 1.3 2 2.7 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.5.9c1.5 0 2.4-1.3 3.3-2.6 1-1.5 1.5-3 1.5-3.1-.1 0-2.9-1.1-2.9-4.3zM11.6 3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"
         />
       </svg>
-      {busy ? 'Signing in with Apple…' : label}
+      {busy ? t('auth.apple.busy') : (label ?? t('auth.apple.continue'))}
     </button>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { AppleSignInButton, APPLE_HINT, showAppleSignIn } from './AppleSignInButton';
+import { AppleSignInButton, AppleSignInHint, showAppleSignIn } from './AppleSignInButton';
 import { confirmDialog } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -83,7 +83,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
             {showAppleSignIn() && (
               <>
                 <AppleSignInButton disabled={busy} onError={setError} />
-                <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
+                <AppleSignInHint />
               </>
             )}
             <div className="login-or">or sign in with email</div>

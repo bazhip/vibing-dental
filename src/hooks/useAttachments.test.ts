@@ -74,8 +74,10 @@ describe('uploadRejection', () => {
     expect(uploadRejection(ok)).toBeNull();
   });
 
-  it('states the image limit as a plain fact on both platforms', () => {
-    expect(uploadRejection({ ...ok, count: 10 })).toBe('This chart has reached its 10-image limit.');
+  it('image limit: the web keeps its wording, the app states a plain fact', () => {
+    expect(uploadRejection({ ...ok, count: 10 })).toBe(
+      'This chart already has the maximum of 10 images. Delete one to add another.'
+    );
     expect(uploadRejection({ ...ok, count: 10, native: true })).toBe('This chart has reached its 10-image limit.');
   });
 

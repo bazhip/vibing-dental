@@ -3,6 +3,7 @@ import { Browser } from '@capacitor/browser';
 import { supabase } from '../utils/supabaseClient';
 import { isNativeApp, WEB_ORIGIN } from './platform';
 import { toastWhenReady } from '../components/ui/dialogs';
+import i18n from '../i18n';
 
 /** Where auth flows started in the app come back to (the `toothops` URL
  *  scheme in Info.plist). Must be on Supabase's Redirect URLs allow-list. */
@@ -138,7 +139,7 @@ export async function handleAuthUrl(url: string): Promise<boolean> {
 function signInFailed(): void {
   // Held until the toast host mounts: a cold-start link is handled before
   // React's first commit.
-  toastWhenReady("Sign-in didn't complete. Please try again.", { kind: 'error' });
+  toastWhenReady(i18n.t('account:auth.incomplete'), { kind: 'error' });
 }
 
 /** Listens for auth returns: `appUrlOpen` while running, and the launch

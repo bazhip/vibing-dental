@@ -1,4 +1,13 @@
 [
   "src/components/AccountModal.tsx",
-  "src/utils/accountDeletion.ts"
+  "src/utils/accountDeletion.ts",
+  "src/components/AppLockOverlay.tsx",
+  "src/components/AppleSignInButton.tsx",
+  "src/components/InactivePlan.tsx",
+  "src/components/PdfStylePicker.tsx",
+  "src/components/SignOutLink.tsx",
+  "src/native/aiConsent.tsx",
+  "src/native/appLock.ts",
+  "src/native/authReturn.ts",
+  "src/native/camera.ts"
 ]

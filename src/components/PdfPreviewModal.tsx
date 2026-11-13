@@ -3,6 +3,7 @@ import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveChartPdf } from '../native/saveFile';
+import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
 import { toast } from './ui/dialogs';
 import { PdfStylePicker, readSavedPdfStyle, savePdfStyle, useCompactPdfLayout } from './PdfStylePicker';
@@ -209,7 +210,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     // In the iOS app the PDF goes to the native share sheet (Save to Files,
     // Mail, AirDrop…); the browser download / in-app-link flow is web-only.
     if (isNativeApp()) {
-      void saveChartPdf(blob, filename).catch(() => toast("Couldn't save the file."));
+      void saveChartPdf(blob, filename).catch(() => toast(i18n.t('common:errors.saveFile')));
       return;
     }
     savePdf(blob, filename).then((outcome) => {

@@ -88,5 +88,31 @@
     "message_one": "Votre modification ({{list}}) n’a pas été enregistrée.",
     "message_other": "Vos modifications ({{list}}) n’ont pas été enregistrées.",
     "title": "Abandonner les modifications non enregistrées ?"
+  },
+  "auth": {
+    "apple": {
+      "continue": "Continuer avec Apple",
+      "signUp": "S’inscrire avec Apple",
+      "busy": "Connexion avec Apple…",
+      "failed": "Impossible de se connecter avec Apple.",
+      "hint": "Vous avez déjà un compte ou avez été invité ? Connectez-vous avec votre adresse e-mail."
+    },
+    "signUpOnWeb": "Nouveau sur ToothOps ? Inscrivez-vous sur toothops.app",
+    "incomplete": "La connexion n’a pas abouti. Veuillez réessayer."
+  },
+  "plan": {
+    "inactive": {
+      "title": "Votre formule n’est pas active",
+      "manage": "Gérez-la sur toothops.app."
+    }
+  },
+  "lock": {
+    "title": "ToothOps est verrouillé",
+    "prompt": "Déverrouillez l’app pour protéger les dossiers des patients.",
+    "unavailable": "Face ID et le code de l’appareil ne sont pas disponibles sur cet appareil. Pour déverrouiller ToothOps, définissez un code dans l’app Réglages puis touchez Réessayer, ou déconnectez-vous.",
+    "reason": "Déverrouiller ToothOps"
+  },
+  "team": {
+    "seatLimit": "Ce cabinet a atteint le nombre maximal de membres d’équipe."
   }
 }

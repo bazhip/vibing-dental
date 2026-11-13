@@ -1,0 +1,54 @@
+{
+  "menu": {
+    "practiceSettingsHintApp": "Nombre, logotipo y equipo."
+  },
+  "imaging": {
+    "takePhoto": "Tomar foto",
+    "cameraFailed": "No se pudo abrir la cámara.",
+    "cameraNoPhoto": "La cámara no devolvió ninguna foto.",
+    "cameraReadFailed": "No se pudo leer la foto ({{status}}).",
+    "limitReached": "Esta ficha ha alcanzado su límite de {{max}} imágenes.",
+    "uploadsUnavailable": "La subida de fotos no está disponible en esta cuenta.",
+    "formatsApp": "PNG, JPEG o WEBP.",
+    "dicomUnavailable": "La subida de archivos DICOM no está disponible en esta cuenta. Exporte la radiografía como JPEG o PNG para añadirla."
+  },
+  "aiConsent": {
+    "title": "¿Usar servicios de IA?",
+    "intro": "Para dictar en una ficha y redactar borradores con IA, ToothOps envía datos a dos servicios:",
+    "deepgram": "<strong>Deepgram</strong> recibe el audio de su voz mientras dicta, para convertirlo en texto.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) recibe la transcripción del dictado y el contenido de la ficha, como los datos del paciente y los hallazgos, para completar la ficha o redactar el informe para el propietario.",
+    "nothingSent": "No se envía nada a menos que use estas funciones.",
+    "allow": "Permitir",
+    "notNow": "Ahora no"
+  },
+  "pdfStyle": {
+    "label": "Estilo del PDF",
+    "custom": "Personalizado",
+    "customColor": "Color personalizado",
+    "customDescription": "El color que quiera, con el diseño {{base}}.",
+    "customDescriptionCurrent": "El color que quiera, con el diseño actual.",
+    "chooseColor": "Elegir un color personalizado",
+    "styles": {
+      "clinic": {
+        "name": "Verde azulado clínico",
+        "description": "Como la app: encabezados verde azulado, anomalías marcadas en rojo, tarjetas redondeadas."
+      },
+      "classic-blue": {
+        "name": "Azul clásico",
+        "description": "El azul tradicional de los historiales médicos, con encabezados de sección sólidos."
+      },
+      "slate": {
+        "name": "Pizarra",
+        "description": "Grafito neutro: se imprime con nitidez en blanco y negro."
+      },
+      "iris": {
+        "name": "Iris",
+        "description": "Discretos acentos índigo con encabezados compactos en mayúsculas."
+      },
+      "journal": {
+        "name": "Revista",
+        "description": "Clásico impreso con serifa: acentos rojo oscuro sobre papel cálido."
+      }
+    }
+  }
+}

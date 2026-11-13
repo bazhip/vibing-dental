@@ -3,6 +3,7 @@ import { App } from '@capacitor/app';
 import { BiometricAuth } from '@aparajita/capacitor-biometric-auth';
 import { isNativeApp } from './platform';
 import { readJson, writeJson, removeKey } from '../utils/storage';
+import i18n from '../i18n';
 
 /** Lock after this long in the background. */
 export const LOCK_AFTER_MS = 5 * 60 * 1000;
@@ -62,7 +63,7 @@ export function useAppLock({ lockOnLaunch = false }: { lockOnLaunch?: boolean } 
     if (inFlight.current) return;
     inFlight.current = true;
     try {
-      await BiometricAuth.authenticate({ reason: 'Unlock ToothOps', allowDeviceCredential: true });
+      await BiometricAuth.authenticate({ reason: i18n.t('account:lock.reason'), allowDeviceCredential: true });
       setUnavailable(false);
       setLocked(false);
     } catch (e) {
