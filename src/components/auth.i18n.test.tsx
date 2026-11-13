@@ -39,6 +39,7 @@ import { SessionExpiredOverlay } from './SessionExpiredOverlay';
 import { AppLoading } from './AppLoading';
 import { ErrorBoundary } from './ErrorBoundary';
 import './GoogleSignInButton';
+import './LandingFeatures'; // rendered inside Landing
 import './LegalNotice';
 import './landingTeeth';
 

@@ -1,8 +1,9 @@
-// Opt-in literal-string lint: only files listed in src/i18n/extracted.json
-// (text fully moved into the catalogs) are checked. No style rules are enabled;
-// this project deliberately has no style linter.
+// Literal-string lint over every source file in src/i18n/lint-scope.json
+// (`files`), except its `exempt` entries, each of which states a reason. New
+// files are therefore linted by default. No style rules are enabled; this
+// project deliberately has no style linter.
 //
-// WHAT THE GUARANTEE COVERS (for a listed file, no more):
+// WHAT THE GUARANTEE COVERS (for a linted file, no more):
 //   1. JSX text (i18next/no-literal-string, mode 'jsx-only').
 //   2. The JSX attributes that carry text (title, placeholder, aria-label,
 //      alt, value on native tags; label and any other non-excluded attribute
@@ -17,7 +18,7 @@
 // that is rendered or passed on later. Those need human review.
 const tseslint = require('typescript-eslint');
 const i18next = require('eslint-plugin-i18next');
-const extracted = require('./src/i18n/extracted.json');
+const lintScope = require('./src/i18n/lint-scope.json');
 
 const HAS_LETTER = '/[A-Za-z\\u00C0-\\u024F]/';
 const TEXT_CALLS = 'toast|friendlyError|alert|confirm|prompt';
@@ -40,22 +41,11 @@ const tsEslintStub = { rules: { 'no-explicit-any': { meta: { schema: [] }, creat
 
 module.exports = [
   {
-    // Test files and operator-only surfaces are exempt.
-    ignores: [
-      'build/**',
-      'docs/**',
-      'public/**',
-      '.superpowers/**',
-      '.claude/**',
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      'src/components/AdminPanel.tsx',
-      'src/components/AdminChartList.tsx',
-      'src/components/AdminChartViewer.tsx',
-    ],
+    // Exempt files (tests, operator-only surfaces, …): see lint-scope.json for why.
+    ignores: ['build/**', 'docs/**', 'public/**', '.superpowers/**', '.claude/**', ...lintScope.exempt.map((e) => e.pattern)],
   },
   {
-    files: extracted,
+    files: lintScope.files,
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: { ecmaFeatures: { jsx: true } },

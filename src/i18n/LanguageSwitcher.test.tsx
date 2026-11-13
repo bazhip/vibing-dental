@@ -103,3 +103,27 @@ test('rapid changes: the last choice wins even if an earlier load finishes later
   expect(select.value).toBe('de');
   expect(localStorage.getItem('app.language')).toBe('de');
 });
+
+test('<html lang> follows the latest choice even if an earlier switch settles last', async () => {
+  const realChange = i18n.changeLanguage.bind(i18n);
+  const gate = deferred();
+  // A superseded switch that settles late: i18next drops it, but it still resolves.
+  const spy = vi.spyOn(i18n, 'changeLanguage').mockImplementation(async (lng) => {
+    if (lng === 'fr') {
+      await gate.promise;
+      return i18n.t;
+    }
+    return realChange(lng);
+  });
+  document.documentElement.lang = 'en';
+  render(<LanguageSwitcher />);
+  const select = screen.getByRole<HTMLSelectElement>('combobox');
+  await userEvent.selectOptions(select, 'fr');
+  await userEvent.selectOptions(select, 'de');
+  await waitFor(() => expect(document.documentElement.lang).toBe('de'));
+  gate.resolve({});
+  await new Promise((r) => setTimeout(r, 10));
+  expect(i18n.language).toBe('de');
+  expect(document.documentElement.lang).toBe('de');
+  spy.mockRestore();
+});

@@ -285,8 +285,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   lockedRef.current = locked;
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
+  // Activity lines are written from processChunk (a callback with [] deps), so they
+  // look up the language in effect now rather than the render-bound `t`.
   const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
     if (!actions.length && !skipped.length) return;
+    const tNow = i18n.getFixedT(null, 'voice');
     const now = new Date();
     setActivity((prev) => [
       ...prev,
@@ -301,8 +304,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         return {
           id: `${now.getTime()}_s${i}`,
           description: home
-            ? t('activity.notAppliedHome', { section: sectionLabel(home), what: describeAction(a) })
-            : t('activity.notApplied', { what: describeAction(a) }),
+            ? tNow('activity.notAppliedHome', { section: sectionLabel(home), what: describeAction(a) })
+            : tNow('activity.notApplied', { what: describeAction(a) }),
           at: now,
           skipped: true,
         };
@@ -506,7 +509,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     item.revert?.();
     if (choice === 'remove') {
       if (item.flag.applied) {
-        setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: t('activity.removed', { what: describeAction(item.flag.applied!) }), at: now }]);
+        setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: i18n.getFixedT(null, 'voice')('activity.removed', { what: describeAction(item.flag.applied!) }), at: now }]);
       }
       return;
     }

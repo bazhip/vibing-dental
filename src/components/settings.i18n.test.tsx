@@ -27,6 +27,8 @@ vi.mock('../utils/supabaseClient', () => ({
   supabase: {
     auth: {
       getSession: async () => ({ data: { session: { user: { app_metadata: { role: authMock.role } } } } }),
+      getUser: async () => ({ data: { user: { email: 'me@vet.com' } } }),
+      updateUser: async () => ({ error: null }),
       signOut: authMock.signOut,
     },
     functions: { invoke },
@@ -63,6 +65,8 @@ import { PdfStylePicker } from './PdfStylePicker';
 import { PdfPreviewModal, type ChartSnapshot } from './PdfPreviewModal';
 import { PdfLinkPanel } from './PdfLinkPanel';
 import { PdfPagesPreview } from './PdfPagesPreview';
+import { AccountModal } from './AccountModal';
+import { LANGUAGE_NAMES } from '../i18n/config';
 
 beforeAll(() => {
   window.ResizeObserver = window.ResizeObserver ?? class { observe() {} unobserve() {} disconnect() {} };
@@ -437,5 +441,19 @@ describe('PDF chrome', () => {
   it('browser hints are translated', () => {
     expect(downloadHint('Mozilla/5.0 (Android 14; Mobile; rv:160.0) Firefox/160.0')).toBe('⟦Firefox opens the PDF in a new tab — tap Download at the top of it to save the file.⟧');
     expect(inAppBrowserMessage()).toMatch(/^⟦/);
+  });
+});
+
+describe('AccountModal', () => {
+  it('every section, the language picker and the password hints', async () => {
+    const { container } = render(<AccountModal open onClose={() => {}} profile={profile()} language="en" onLanguageChange={() => {}} />);
+    await waitFor(() => expect(screen.getAllByDisplayValue('me@vet.com').length).toBeGreaterThan(0));
+    // Languages are named in themselves (endonyms), never translated.
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(Object.values(LANGUAGE_NAMES));
+    expect(findUntranslated(container, [...ALLOW, ...Object.values(LANGUAGE_NAMES)])).toEqual([]);
+    const [pw, confirm] = container.querySelectorAll<HTMLInputElement>('input[autocomplete="new-password"]');
+    fireEvent.change(pw, { target: { value: 'short' } });
+    fireEvent.change(confirm, { target: { value: 'shorter' } });
+    expect(findUntranslated(container, [...ALLOW, ...Object.values(LANGUAGE_NAMES)])).toEqual([]);
   });
 });

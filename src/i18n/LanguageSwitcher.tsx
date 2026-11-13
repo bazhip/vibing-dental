@@ -22,10 +22,12 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
     if (ok) {
       writeStoredLanguage(lng);
       await i18n.changeLanguage(lng);
+      // A newer choice may have been made (and applied) while this one settled.
+      if (request !== latest.current) return;
       document.documentElement.lang = lng;
     }
     // On failure (e.g. offline) the select falls back to the language in effect.
-    if (request === latest.current) setPending(null);
+    setPending(null);
   };
 
   const select = (

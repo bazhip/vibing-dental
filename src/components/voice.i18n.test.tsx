@@ -119,6 +119,26 @@ describe('VoiceInputButton', () => {
   }, 15000);
 });
 
+describe('switching language while dictating', () => {
+  it('activity lines use the language in effect when they are written, not the first render\'s', async () => {
+    await restoreLocale(); // mount in English
+    window.sessionStorage.setItem('ai.introSeen', '1');
+    const skipped = { name: 'add_comment', input: { diagram: 'pre', triadan: 109, text: 'AT' } };
+    extract.mockResolvedValue({ actions: [], skipped: [skipped], flags: [], ran: true });
+    render(<VoiceInputButton {...props} activeSection="patient" />);
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    await installPseudoLocale(); // the user switches language mid-session
+    act(() => FakeRecognition.last!.say('1098T'));
+    const row = await waitFor(() => {
+      const el = document.body.querySelector<HTMLElement>('.ai-sidebar__row--skipped .ai-sidebar__row-desc');
+      expect(el).not.toBeNull();
+      return el!;
+    }, { timeout: 4000 });
+    expect(row.textContent).toMatch(/^⟦/);
+    expect(findUntranslated(row, ALLOW)).toEqual([]);
+  }, 15000);
+});
+
 describe('voice helpers and hook messages', () => {
   it('describeAction and sectionLabel follow the active language', async () => {
     await i18n.changeLanguage('fr');

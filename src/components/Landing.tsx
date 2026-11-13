@@ -36,6 +36,9 @@ interface LandingProps {
   /** Set when the viewer already has the app open (signed in or trial)
    *  and is just visiting the homepage — CTAs become "Back to the app". */
   onOpenApp?: () => void;
+  /** Show the device language picker (default). Off when signed in: the
+   *  language is then an account setting, chosen in the Account dialog. */
+  languagePicker?: boolean;
 }
 
 /**
@@ -53,6 +56,7 @@ export const Landing: React.FC<LandingProps> = ({
   onTryFree,
   initialAuth = null,
   onOpenApp,
+  languagePicker = true,
 }) => {
   const { t } = useTranslation('landing');
   const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(initialAuth);
@@ -108,7 +112,7 @@ export const Landing: React.FC<LandingProps> = ({
           {t('wordmark')}
         </span>
         <nav className="landing__nav">
-          <LanguageSwitcher compact />
+          {languagePicker && <LanguageSwitcher compact />}
           {cloudEnabled && PRICING_PUBLIC && (
             <button type="button" className="landing__nav-signin" onClick={scrollToPricing}>
               {t('nav.pricing')}

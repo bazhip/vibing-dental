@@ -33,3 +33,12 @@ export function useAppLanguage(saved: AppLanguage | null, loaded: boolean): AppL
   }, [lng]);
   return lng;
 }
+
+/** Applies this device's language (the last pick in a LanguageSwitcher, else the
+ *  browser's) on screens shown without the chart, which owns the account's choice:
+ *  landing, sign-in, password reset. Signed in, the account's choice is mirrored
+ *  into the device choice, so both agree. */
+export function DeviceLanguage(): null {
+  useAppLanguage(null, true);
+  return null;
+}
