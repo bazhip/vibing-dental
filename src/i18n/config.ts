@@ -11,10 +11,13 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
 };
 
 // Append new namespaces here (and in i18next.d.ts).
-export const NAMESPACES = ['common', 'report', 'account'] as const;
+export const NAMESPACES = ['common', 'report', 'account', 'codes', 'chart', 'whatsNew', 'billing', 'landing', 'auth', 'app', 'forms', 'media', 'library', 'reminders', 'settings', 'onboarding', 'pdfui', 'reportui', 'voice'] as const;
 
-// Flip to expose a language switcher in the UI.
-export const LANGUAGE_SWITCHING_ENABLED = false;
+/** Test-only language whose strings read ⟦like this⟧ (see i18n/testing/pseudo.ts). */
+export const PSEUDO_LOCALE = 'xx';
+
+// Language switching (account picker, LanguageSwitcher on signed-out pages).
+export const LANGUAGE_SWITCHING_ENABLED = true;
 
 export function isAppLanguage(v: unknown): v is AppLanguage {
   return typeof v === 'string' && (APP_LANGUAGES as readonly string[]).includes(v);

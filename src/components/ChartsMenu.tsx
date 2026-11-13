@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ChartsMenuProps {
   /** Open the My charts library (search / open any patient). */
@@ -20,6 +21,7 @@ const ITEM_SELECTOR = '.chart-menu__item';
  * as the Settings menu: Esc / click outside closes, arrows move.
  */
 export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
+  const { t } = useTranslation('app');
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -99,8 +101,8 @@ export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
       >
-        <span className="topbar-label-long">My charts</span>
-        <span className="topbar-label-short">Charts</span>
+        <span className="topbar-label-long">{t('topbar.myCharts')}</span>
+        <span className="topbar-label-short">{t('topbar.myChartsShort')}</span>
         <svg className="charts-menu__caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
           <path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -109,14 +111,14 @@ export function ChartsMenu({ onOpenLibrary, thisPatient }: ChartsMenuProps) {
         <div className="chart-menu__panel" ref={panelRef} onKeyDown={onPanelKeyDown}>
           {thisPatient && (
             <section className="chart-menu__section">
-              <header className="chart-menu__section-head">{thisPatient.name || 'This patient'}</header>
-              {item('New visit', 'A fresh dated visit — identity and already-gone teeth carry over.', thisPatient.onNewVisit)}
-              {item('Version history', 'Every saved version of this chart — who saved it and when.', thisPatient.onHistory)}
+              <header className="chart-menu__section-head">{thisPatient.name || t('chartsMenu.thisPatient')}</header>
+              {item(t('chartsMenu.newVisit'), t('chartsMenu.newVisitHint'), thisPatient.onNewVisit)}
+              {item(t('chartsMenu.history'), t('chartsMenu.historyHint'), thisPatient.onHistory)}
             </section>
           )}
           <section className="chart-menu__section">
-            <header className="chart-menu__section-head">All patients</header>
-            {item('Open My charts…', 'Search and open any patient’s charts.', onOpenLibrary)}
+            <header className="chart-menu__section-head">{t('chartsMenu.allPatients')}</header>
+            {item(t('chartsMenu.openLibrary'), t('chartsMenu.openLibraryHint'), onOpenLibrary)}
           </section>
         </div>
       )}

@@ -3,8 +3,10 @@ import { ESLint } from 'eslint';
 import path from 'node:path';
 
 const eslint = new ESLint({ overrideConfigFile: 'eslint.config.js', warnIgnored: false });
-const LISTED = path.resolve('src/components/AccountModal.tsx');
-const UNLISTED = path.resolve('src/components/NotListed.tsx');
+// Every source file is linted unless src/i18n/lint-scope.json exempts it, so a
+// brand-new file is checked like an existing screen.
+const LISTED = path.resolve('src/components/BrandNewScreen.tsx');
+const UNLISTED = path.resolve('src/components/AdminPanel.tsx'); // exempt: operator-only
 
 async function rules(src: string, filePath: string): Promise<string[]> {
   const [result] = await eslint.lintText(src, { filePath });
@@ -12,11 +14,11 @@ async function rules(src: string, filePath: string): Promise<string[]> {
 }
 
 // (The rule skips variables with ALL-CAPS names, so test components are not named `A`.)
-test('a JSX literal in a listed file is reported', async () => {
+test('a JSX literal in a new, unlisted file is reported', async () => {
   expect(await rules('export const Comp = () => <p>Hello</p>;', LISTED)).toEqual(['i18next/no-literal-string']);
 });
 
-test('the same text in a file that is not listed is not reported', async () => {
+test('the same text in an exempt file is not reported', async () => {
   expect(await rules('export const Comp = () => <p>Hello</p>;', UNLISTED)).toEqual([]);
 });
 
@@ -52,7 +54,7 @@ describe('message helpers', () => {
     ["confirmDialog({ title: 'Delete?' })"],
     ["promptDialog({ title: t('x'), placeholder: `Type ${n}` })"],
     ["confirmDialog({ title: t('x'), cancelLabel: 'Keep' })"],
-  ])('%s is reported in a listed file', async (call) => {
+  ])('%s is reported in a linted file', async (call) => {
     expect(await rules(`export function run(n, err, t) { ${call}; }`, LISTED)).toEqual([RESTRICTED]);
   });
 
@@ -62,12 +64,26 @@ describe('message helpers', () => {
     ["friendlyError(err, t('x'))"],
     ["confirmDialog({ title: t('x'), danger: true })"],
     ["toast('…')"],
-  ])('%s is not reported in a listed file', async (call) => {
+  ])('%s is not reported in a linted file', async (call) => {
     expect(await rules(`export function run(n, err, t) { ${call}; }`, LISTED)).toEqual([]);
   });
 
-  test('the same literals are not reported in an unlisted file', async () => {
+  test('the same literals are not reported in an exempt file', async () => {
     const src = "export function run() { toast('Saved.'); confirmDialog({ title: 'Delete?' }); }";
     expect(await rules(src, UNLISTED)).toEqual([]);
+  });
+});
+
+describe('string concatenation with t()', () => {
+  test.each([["t('a') + name"], ["name + t('a')"], ["i18n.t('a') + name"]])('%s is reported in a linted file', async (expr) => {
+    expect(await rules(`export function run(t, i18n, name) { return ${expr}; }`, LISTED)).toEqual(['no-restricted-syntax']);
+  });
+
+  test('interpolation and arithmetic are not reported', async () => {
+    expect(await rules("export function run(t, n) { return [t('a', { n }), n + 1]; }", LISTED)).toEqual([]);
+  });
+
+  test('concatenation is not reported in an exempt file', async () => {
+    expect(await rules("export function run(t, name) { return t('a') + name; }", UNLISTED)).toEqual([]);
   });
 });

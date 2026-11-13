@@ -67,3 +67,17 @@ test('required plural forms the language needs are reported missing (fr many), d
   expect(problems.filter((p) => p.lng === 'fr')).toEqual([{ lng: 'fr', key: 'common:n_many', kind: 'missing' }]);
   expect(problems).toHaveLength(3);
 });
+
+test('stray namespaces and languages are extra', () => {
+  const c: Catalogs = { en: { common: { a: 'Hi' } }, pt: { common: { a: 'Olá' } }, ja: { common: { a: 'こんにちは' } } };
+  const extra = checkCatalogs(c, {}).filter((p) => p.kind === 'extra');
+  expect(extra).toEqual([
+    { lng: 'pt', key: 'common:a', kind: 'extra' },
+    { lng: 'ja', key: 'common:a', kind: 'extra' },
+  ]);
+});
+
+test('an empty stray language directory is extra', () => {
+  const c: Catalogs = { en: { common: { a: 'Hi' } }, ja: {} };
+  expect(checkCatalogs(c, {})).toContainEqual({ lng: 'ja', key: '*', kind: 'extra' });
+});

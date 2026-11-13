@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 
 /**
@@ -54,7 +55,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   }, []);
 
   const create = React.useCallback(async (name: string, body: string): Promise<ReportTemplate> => {
-    if (!supabase) throw new Error('Cloud is not configured.');
+    if (!supabase) throw new Error(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { data, error } = await supabase
       .from('report_templates')
       .insert({ name, body, practice_id: practiceIdRef.current || null })
@@ -67,7 +68,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   }, []);
 
   const update = React.useCallback(async (id: string, name: string, body: string): Promise<void> => {
-    if (!supabase) throw new Error('Cloud is not configured.');
+    if (!supabase) throw new Error(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { error } = await supabase
       .from('report_templates')
       .update({ name, body })
@@ -79,7 +80,7 @@ export function useReportTemplates(practiceId = ''): UseReportTemplatesReturn {
   }, []);
 
   const remove = React.useCallback(async (id: string): Promise<void> => {
-    if (!supabase) throw new Error('Cloud is not configured.');
+    if (!supabase) throw new Error(i18n.t('templates.cloudOff', { ns: 'library' }));
     const { error } = await supabase.from('report_templates').delete().eq('id', id);
     if (error) throw new Error(error.message);
     setTemplates((prev) => prev.filter((t) => t.id !== id));

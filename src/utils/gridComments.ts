@@ -1,5 +1,5 @@
 import { DiagramComment, ToothData, ToothMarks } from '../types';
-import { GRID_COLUMNS } from '../constants/columnDefinitions';
+import { ColumnKey, GRID_COLUMNS, columnLabel } from '../constants/columnDefinitions';
 
 /**
  * Charting → Diagnosis mirroring. When the vet opts in (checkbox on the
@@ -20,6 +20,10 @@ const WHOLE_MOUTH_ID = `${GRID_COMMENT_PREFIX}whole-mouth`;
 export const isGridComment = (c: DiagramComment) => c.id.startsWith(GRID_COMMENT_PREFIX);
 
 const FINDING_COLUMNS = GRID_COLUMNS.filter((c) => c.editable);
+
+// Comment text is saved into the chart, so it stays English for now: the
+// clinical-record language is decided later (plan 3), not by the UI language.
+const savedName = (key: keyof ToothData) => columnLabel(key as ColumnKey, 'en');
 
 const valueOf = (t: ToothData, key: keyof ToothData) => {
   const v = t[key];
@@ -45,7 +49,7 @@ export function gridCommentTexts(
       const first = valueOf(present[0], col.key);
       if (first && present.every((t) => valueOf(t, col.key) === first)) {
         uniform.add(col.key);
-        wholeParts.push(`${col.name} ${first}`);
+        wholeParts.push(`${savedName(col.key)} ${first}`);
       }
     }
   }
@@ -53,7 +57,7 @@ export function gridCommentTexts(
   for (const t of present) {
     const parts = columns
       .filter((col) => !uniform.has(col.key) && valueOf(t, col.key))
-      .map((col) => `${col.name} ${valueOf(t, col.key)}`);
+      .map((col) => `${savedName(col.key)} ${valueOf(t, col.key)}`);
     if (parts.length) perTooth.set(t.triadan, parts.join(' · '));
   }
   return { perTooth, wholeMouth: wholeParts.length ? `Whole mouth — ${wholeParts.join(' · ')}` : '' };

@@ -1,0 +1,92 @@
+{
+  "walkthrough": {
+    "aria": "Prise en main",
+    "progress": "{{current}} sur {{total}}",
+    "skip": "Passer",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Commencer",
+    "steps": {
+      "welcome": {
+        "title": "Bienvenue dans ToothOps",
+        "body": "Une visite de 60 secondes pour découvrir où se trouve chaque chose. Vous pouvez la revoir à tout moment depuis Paramètres → Prise en main."
+      },
+      "sections": {
+        "title": "Les huit sections",
+        "body": "Un dossier dentaire, de haut en bas. Parcourez-les dans l’ordre ou passez de l’une à l’autre — tout est enregistré automatiquement."
+      },
+      "patient": {
+        "title": "Patient et propriétaire",
+        "body": "Nom, coordonnées du propriétaire et date de contrôle. Seul le nom du patient est obligatoire pour enregistrer."
+      },
+      "species": {
+        "title": "Espèce et dentition",
+        "body": "Choisissez Félin ou Canin, puis Permanente ou Déciduale — le schéma des dents s’adapte."
+      },
+      "grid": {
+        "title": "La grille de mesures",
+        "body": "Mesures dent par dent. Tab avance vers la droite, Entrée vers le bas — saisissez sans quitter l’écran des yeux."
+      },
+      "diagrams": {
+        "title": "Schémas",
+        "body": "Cliquez sur une dent pour la marquer ; basculez entre Commentaire et Dessin, ajoutez des notes libres. Annulez avec ⌘Z."
+      },
+      "codes": {
+        "title": "Référence des codes",
+        "body": "Recherchez ici l’ensemble des codes AVDC ; la liste reste épinglée à côté du schéma lorsque vous faites défiler la page."
+      },
+      "treatment": {
+        "title": "Compte rendu de traitement et modèles",
+        "body": "Rédigez le compte rendu, ou insérez un modèle enregistré depuis la liste déroulante — et enregistrez-en de nouveaux pour les réutiliser."
+      },
+      "library": {
+        "title": "Mes dossiers",
+        "body": "Ouvrez les dossiers de n’importe quel patient (les visites enregistrées s’ouvrent en lecture seule tant que vous ne cliquez pas sur Modifier) ou — pour le patient affiché — démarrez une nouvelle visite ou consultez l’historique de ses versions. Nouveau patient, juste à côté, démarre un dossier vierge."
+      },
+      "dictate": {
+        "title": "Dicter",
+        "body": "Touchez Dicter et énoncez vos observations — depuis n’importe quelle page. Chacune arrive au bon endroit, et un panneau en direct affiche chaque modification pour que vous puissiez tout annuler."
+      },
+      "settings": {
+        "title": "Paramètres",
+        "body": "Nom et logo du cabinet, équipe, modèles de rappel de contrôle, votre compte — et cette visite guidée."
+      },
+      "pdf": {
+        "title": "Aperçu et téléchargement du PDF",
+        "body": "Générez le PDF du dossier, prêt à remettre au client et orné de votre logo, dès que vous le souhaitez."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Terminer la configuration",
+    "both": "Le nom de votre cabinet et celui du vétérinaire figurent sur chaque dossier que vous imprimez.",
+    "practiceOnly": "Le nom de votre cabinet figure sur chaque dossier que vous imprimez.",
+    "doctorOnly": "Le nom du vétérinaire figure sur chaque dossier que vous imprimez.",
+    "practiceName": "Nom du cabinet",
+    "doctorName": "Nom du vétérinaire",
+    "doctorPlaceholder": "p. ex. Dr Jeanne Martin",
+    "logoOptional": "Logo du cabinet (facultatif)",
+    "logoNamed": "Logo : {{name}}",
+    "logoHint": "Imprimé en haut de vos dossiers. PNG, JPG ou WebP.",
+    "later": "Plus tard",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "namesNeeded": "Les deux noms sont nécessaires — ils figurent sur vos dossiers.",
+    "logoFailed": "Vos noms sont enregistrés, mais le logo n’a pas pu être importé — ajoutez-le plus tard dans les paramètres du cabinet.",
+    "allSet": "Tout est prêt.",
+    "saveFailed": "Impossible d’enregistrer."
+  },
+  "join": {
+    "title": "Rejoindre {{practice}} ?",
+    "invitation": "Invitation à un cabinet",
+    "checking": "Vérification de votre invitation…",
+    "thisPractice": "ce cabinet",
+    "alreadyMember": "Vous êtes déjà membre de {{practice}}.",
+    "invited": "Vous avez été invité(e) à rejoindre <strong>{{practice}}</strong> sur ToothOps. Les membres partagent les dossiers, les modèles de compte rendu et la liste des contrôles du cabinet, et les nouveaux dossiers que vous enregistrez sont partagés avec l’équipe.",
+    "shareExisting": "Partager aussi les dossiers que j’ai déjà créés",
+    "close": "Fermer",
+    "notNow": "Pas maintenant",
+    "joining": "Adhésion en cours…",
+    "joinButton": "Rejoindre {{practice}}"
+  }
+}

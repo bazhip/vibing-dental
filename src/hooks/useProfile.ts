@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { FREE_BETA } from '../constants/plans';
 import { call as callTeamApi } from './useTeam';
@@ -104,7 +105,7 @@ async function normalizeToPng(file: File): Promise<Blob> {
     const img = new Image();
     await new Promise<void>((resolve, reject) => {
       img.onload = () => resolve();
-      img.onerror = () => reject(new Error('Could not read that image.'));
+      img.onerror = () => reject(new Error(i18n.t('logoErrors.unreadable', { ns: 'settings' })));
       img.src = url;
     });
     const scale = Math.min(1, LOGO_MAX_WIDTH / img.width);
@@ -112,12 +113,12 @@ async function normalizeToPng(file: File): Promise<Blob> {
     canvas.width = Math.max(1, Math.round(img.width * scale));
     canvas.height = Math.max(1, Math.round(img.height * scale));
     const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas unavailable');
+    if (!ctx) throw new Error(i18n.t('logoErrors.canvas', { ns: 'settings' }));
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob(resolve, 'image/png')
     );
-    if (!blob) throw new Error('Could not convert the image.');
+    if (!blob) throw new Error(i18n.t('logoErrors.convert', { ns: 'settings' }));
     return blob;
   } finally {
     URL.revokeObjectURL(url);
@@ -139,7 +140,7 @@ async function myPracticeId(userId: string): Promise<string> {
 export async function uploadPracticeLogo(file: File): Promise<string> {
   if (!supabase) return '';
   if (file.size > LOGO_MAX_UPLOAD_BYTES) {
-    throw new Error('That image is too large — logo files must be under 10 MB.');
+    throw new Error(i18n.t('logoErrors.tooLarge', { ns: 'settings' }));
   }
   const { data: sessionData } = await supabase.auth.getSession();
   const userId = sessionData.session?.user.id;
@@ -312,7 +313,7 @@ export function useProfile(): UseProfileReturn {
   const saveOwnerReportConfig = React.useCallback(async (config: OwnerReportConfig): Promise<void> => {
     const normalized = normalizeConfig(config);
     if (configByteSize(normalized) > MAX_CONFIG_BYTES) {
-      throw new Error('Those owner report settings are too large (50 KB max) — shorten some text or remove a template.');
+      throw new Error(i18n.t('logoErrors.reportTooLarge', { ns: 'settings' }));
     }
     if (reportLoadFailedRef.current) {
       throw new Error('Your saved owner report templates didn’t load, so saving now could overwrite them. Reload the page and try again.');

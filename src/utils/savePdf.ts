@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 /**
  * Save a generated PDF as a real file download on every browser that
  * allows it — validated on an Android 14 emulator:
@@ -62,10 +64,10 @@ export function isFirefoxAndroid(ua: string = navigator.userAgent): boolean {
 /** A line to show beside the Download button where the browser won't
  *  simply save the file, so nobody is left wondering what happened. */
 export function downloadHint(ua: string = navigator.userAgent): string | null {
-  if (isFirefoxAndroid(ua)) return 'Firefox opens the PDF in a new tab — tap Download at the top of it to save the file.';
-  if (isInAppBrowser(ua)) return 'This app’s built-in browser can’t always save files. Tap Download for a download link — or open ToothOps in Chrome (⋮ menu → “Open in browser”).';
+  if (isFirefoxAndroid(ua)) return i18n.t('hints.firefoxAndroid', { ns: 'pdfui' });
+  if (isInAppBrowser(ua)) return i18n.t('hints.inAppBrowser', { ns: 'pdfui' });
   return null;
 }
 
-export const IN_APP_BROWSER_MESSAGE =
-  'This app’s built-in browser can’t save files. Open ToothOps in Chrome (⋮ menu → “Open in browser”) to download the PDF.';
+/** Shown when an in-app browser can't save the PDF at all. */
+export const inAppBrowserMessage = (): string => i18n.t('hints.inAppBrowserMessage', { ns: 'pdfui' });

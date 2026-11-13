@@ -15,6 +15,8 @@
  * than baking version numbers into every call site.
  */
 
+import i18n from '../i18n';
+
 const PROJECT_PREFIX = 'vibing-dental';
 
 function fullKey(key: string, version: number): string {
@@ -40,7 +42,7 @@ function handleWriteError(err: unknown): void {
     console.warn('[storage] localStorage is full — changes may not be saved.');
     // Lazy import keeps this low-level util free of UI at load time.
     void import('../components/ui/dialogs').then(({ toast }) =>
-      toast('This browser’s storage is full — recent changes may not be kept on this device. Save the chart or download its PDF.', { kind: 'error' })
+      toast(i18n.getFixedT(null, 'app')('storage.full'), { kind: 'error' })
     );
   } catch {
     // non-browser env or alert blocked — the console.warn still fired

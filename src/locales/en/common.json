@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Cancel",
     "close": "Close",
+    "copy": "Copy",
     "delete": "Delete",
+    "dismiss": "Dismiss",
     "duplicate": "Duplicate",
     "edit": "Edit",
+    "ok": "OK",
     "save": "Save"
   },
   "errors": {
@@ -13,5 +16,8 @@
     "permission": "You don’t have access to that.",
     "rateLimit": "Too many attempts. Wait a minute and try again.",
     "generic": "Something went wrong. Please try again."
+  },
+  "language": {
+    "label": "Language"
   }
 }

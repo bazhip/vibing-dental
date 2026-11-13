@@ -1,0 +1,47 @@
+{
+  "style": {
+    "label": "Style du PDF",
+    "done": "Terminé",
+    "custom": "Couleur personnalisée",
+    "customShort": "Personnalisée",
+    "customDesc": "La couleur de votre choix, sur la mise en page {{layout}}.",
+    "currentLayout": "actuelle",
+    "chooseColor": "Choisir une couleur personnalisée"
+  },
+  "presets": {
+    "clinic": { "name": "Turquoise clinique", "description": "Reprend l’application — en-têtes turquoise, indicateurs rouges pour les anomalies, cartes arrondies." },
+    "classic-blue": { "name": "Bleu classique", "description": "Bleu traditionnel des dossiers médicaux, avec des en-têtes de section pleins." },
+    "slate": { "name": "Ardoise", "description": "Gris graphite neutre — s’imprime nettement en noir et blanc." },
+    "iris": { "name": "Iris", "description": "Discrets accents indigo et en-têtes compacts en majuscules." },
+    "journal": { "name": "Revue", "description": "Classique à empattements — accents rouge profond sur papier chaud." }
+  },
+  "preview": {
+    "title": "Dossier clinique",
+    "subtitle": "Pour vos archives et vos courriers de recommandation. Choisissez un style ou votre propre couleur — l’aperçu se met à jour en direct.",
+    "closeAria": "Fermer l’aperçu",
+    "download": "Télécharger le PDF",
+    "loadingImages": "Chargement des images…",
+    "generating": "Génération de l’aperçu…",
+    "buildFailed": "Impossible de générer l’aperçu. Consultez la console pour plus de détails.",
+    "imagesFailed": "Impossible de charger les images du dossier : elles ne figurent donc pas dans ce PDF. Fermez puis rouvrez l’aperçu pour réessayer.",
+    "imagesPartial": "Certaines images n’ont pas pu être chargées. Elles apparaissent comme des cadres vides dans le PDF.",
+    "frameTitle": "Aperçu du dossier clinique"
+  },
+  "link": {
+    "preparing": "Préparation d’un lien de téléchargement…",
+    "open": "Touchez pour télécharger le PDF",
+    "copy": "Copier le lien",
+    "copied": "Lien copié — collez-le dans Chrome pour télécharger.",
+    "copyPrompt": "Copiez ce lien et ouvrez-le dans Chrome :",
+    "note": "Le navigateur de cette application ne peut pas enregistrer le PDF directement ; voici donc un lien qui le peut. Il reste valable {{minutes}} minutes — si rien ne se télécharge, copiez-le dans Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, page {{n}} sur {{total}}",
+    "failed": "Impossible d’afficher l’aperçu — le téléchargement reste possible."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox ouvre le PDF dans un nouvel onglet — touchez Télécharger en haut de celui-ci pour enregistrer le fichier.",
+    "inAppBrowser": "Le navigateur intégré de cette application ne peut pas toujours enregistrer les fichiers. Touchez Télécharger pour obtenir un lien de téléchargement — ou ouvrez ToothOps dans Chrome (menu ⋮ → « Ouvrir dans le navigateur »).",
+    "inAppBrowserMessage": "Le navigateur intégré de cette application ne peut pas enregistrer les fichiers. Ouvrez ToothOps dans Chrome (menu ⋮ → « Ouvrir dans le navigateur ») pour télécharger le PDF."
+  }
+}

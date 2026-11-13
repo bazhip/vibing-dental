@@ -1,0 +1,68 @@
+{
+  "gotIt": "Got it",
+  "groups": {
+    "dictation": "Dictation",
+    "charting": "Charting",
+    "records": "Records",
+    "ownerReport": "Owner report",
+    "everyday": "Everyday"
+  },
+  "intro": "A big round of updates, most of them straight from your feedback — thank you!",
+  "title": "What’s new in ToothOps",
+  "dictateAnywhere": {
+    "title": "Dictate from any page",
+    "body": "The button is now 🎤 Dictate. Talk through your findings from wherever you are — each one lands in the right place."
+  },
+  "finalCheck": {
+    "title": "More accurate, with a final check",
+    "body": "It catches findings split across pauses and your corrections. When you tap Stop it re-reads the whole recording and lists anything it wasn’t sure about under Needs review."
+  },
+  "phones": {
+    "title": "Better on phones",
+    "body": "Dictation opens full screen and keeps your screen awake while you talk."
+  },
+  "understandsMore": {
+    "title": "Understands more",
+    "body": "“GE 3” for enlargement, pocket depths per root, the caudal maxillary block and radiographic findings."
+  },
+  "pocketPerRoot": {
+    "title": "Pocket depth per root",
+    "body": "Charting → Customize → One per root. Multi-rooted teeth get a labelled box per root (M / D, or MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Set several teeth at once",
+    "body": "Click tooth numbers in the grid (Shift-click for a range), then set one score on all of them."
+  },
+  "makeItYours": {
+    "title": "Make it yours",
+    "body": "Every page has a Customize button: hide columns, choose what shows beside the teeth, what the Space key does, and more. Settings follow your account to every device."
+  },
+  "radiographicFindings": {
+    "title": "Radiographic findings",
+    "body": "A dedicated box on the Images page. It prints on the PDF above the treatment report."
+  },
+  "anesthesia": {
+    "title": "Anesthesia",
+    "body": "Caudal maxillary block added. Hide the blocks you don’t use, and save your usual anesthetic for one-tap entry."
+  },
+  "skipRecheck": {
+    "title": "Skip the recheck field",
+    "body": "Don’t use recheck reminders? Patient → Customize → Hide the Recheck due field."
+  },
+  "writeWithAi": {
+    "title": "✨ Write with AI",
+    "body": "Drafts the opening summary and home care advice from the chart, using only what you charted. You review before printing."
+  },
+  "customizeReport": {
+    "title": "Customize the report",
+    "body": "Change its layout, wording and language right from the Owner Report page."
+  },
+  "startsWhereLeft": {
+    "title": "Starts where you left off",
+    "body": "Opening ToothOps fresh shows My charts — unless today’s visit is still open — and today’s visit opens ready to edit."
+  },
+  "sendFeedback": {
+    "title": "Send feedback in two taps",
+    "body": "Settings → Send feedback, or Feedback in the dictation panel (it can attach your transcript). It comes straight to us."
+  }
+}

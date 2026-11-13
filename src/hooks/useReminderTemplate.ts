@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 
 /**
@@ -75,7 +76,7 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
   }, [practiceId, open]);
 
   const save = React.useCallback(async (next: ReminderTemplate): Promise<void> => {
-    if (!supabase || !practiceId) throw new Error('No practice to save to.');
+    if (!supabase || !practiceId) throw new Error(i18n.t('settings.noPractice', { ns: 'reminders' }));
     const { error } = await supabase
       .from('practices')
       .update({

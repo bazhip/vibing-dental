@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { rootLabels, rootBoxes, formatRootPockets, pocketDepths } from '../utils/pocket';
 import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -94,6 +95,7 @@ export function ToothChartView({
   hiddenColumns,
   pocketMode = 'tooth',
 }: ToothChartViewProps) {
+  const { t } = useTranslation('chart');
   const diagram = TOOTH_DIAGRAMS[species];
   const [selected, setSelected] = React.useState<number | null>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
@@ -177,7 +179,7 @@ export function ToothChartView({
   return (
     <div className="dental-grid-section tooth-chart">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Charting</h2>
+        <h2 className="dental-grid__title">{t('grid.title')}</h2>
         {headerAccessory}
       </div>
 
@@ -200,24 +202,21 @@ export function ToothChartView({
             toothFlags={toothFlags}
             highlightTriadan={highlightTriadan}
           />
-          <ul className="tooth-chart__legend" aria-label="Diagram key">
-            <li><span className="tooth-chart__swatch tooth-chart__swatch--charted" /> Charted</li>
-            <li><span className="tooth-chart__swatch tooth-chart__swatch--planned" /> Planned extraction</li>
-            <li><span className="tooth-chart__swatch tooth-chart__swatch--extracted">✕</span> Extracted</li>
-            <li><span className="tooth-chart__swatch tooth-chart__swatch--missing" /> Missing</li>
+          <ul className="tooth-chart__legend" aria-label={t('toothChart.legend.label')}>
+            <li><span className="tooth-chart__swatch tooth-chart__swatch--charted" /> {t('toothChart.legend.charted')}</li>
+            <li><span className="tooth-chart__swatch tooth-chart__swatch--planned" /> {t('toothChart.legend.planned')}</li>
+            <li><span className="tooth-chart__swatch tooth-chart__swatch--extracted">✕</span> {t('toothChart.legend.extracted')}</li>
+            <li><span className="tooth-chart__swatch tooth-chart__swatch--missing" /> {t('toothChart.legend.missing')}</li>
           </ul>
         </div>
 
         <div className="tooth-chart__panel" ref={panelRef} aria-live="polite">
           {!tooth ? (
             <div className="tooth-chart__empty">
-              <p><strong>Click a tooth</strong> on the diagram to chart it.</p>
-              <p className="tooth-chart__hint">
-                Everything you enter here also fills the Charting grid and the
-                Diagnosis / Procedure diagrams.
-              </p>
+              <p><Trans t={t} i18nKey="toothChart.clickTooth" components={{ strong: <strong /> }} /></p>
+              <p className="tooth-chart__hint">{t('toothChart.hint')}</p>
               <button type="button" className="diagram-view__action" onClick={() => step(1)}>
-                Start at {order[0]} →
+                {t('toothChart.start', { triadan: order[0] })}
               </button>
             </div>
           ) : (
@@ -227,8 +226,8 @@ export function ToothChartView({
                   type="button"
                   className="diagram-view__action"
                   onClick={() => step(-1)}
-                  aria-label={`Previous tooth (${prevTooth})`}
-                  title="Previous tooth"
+                  aria-label={t('toothChart.prevAria', { triadan: prevTooth })}
+                  title={t('toothChart.prev')}
                 >
                   ← {prevTooth}
                 </button>
@@ -243,8 +242,8 @@ export function ToothChartView({
                   type="button"
                   className="diagram-view__action"
                   onClick={() => step(1)}
-                  aria-label={`Next tooth (${nextTooth})`}
-                  title="Next tooth"
+                  aria-label={t('toothChart.nextAria', { triadan: nextTooth })}
+                  title={t('toothChart.next')}
                 >
                   {nextTooth} →
                 </button>
@@ -257,10 +256,10 @@ export function ToothChartView({
                     checked={isMissing}
                     onChange={() => onToggleMissing(tooth.triadan)}
                   />
-                  Missing (before this visit)
+                  {t('toothChart.missingBefore')}
                 </label>
 
-                <div className="tooth-chart__group-title">Findings</div>
+                <div className="tooth-chart__group-title">{t('toothChart.findings')}</div>
                 <div className="tooth-chart__findings">
                   {FINDING_COLUMNS.filter((col) => !hiddenColumns?.includes(col.key as DentalField)).map((col) => {
                     const v = row?.[col.key];
@@ -284,7 +283,7 @@ export function ToothChartView({
                                   inputMode="decimal"
                                   autoComplete="off"
                                   disabled={isMissing}
-                                  aria-label={`Pocket, ${l} root`}
+                                  aria-label={t('toothChart.rootAria', { root: l })}
                                   onChange={(e) => setField('pocket', formatRootPockets(roots, { ...boxes.depths, [l]: e.target.value.replace(/[^\d.]/g, '') }))}
                                   onKeyDown={blockEnter}
                                 />
@@ -306,7 +305,7 @@ export function ToothChartView({
                           autoComplete="off"
                           disabled={isMissing}
                           aria-invalid={bad ? true : undefined}
-                          title={bad ? `Expected ${bad}` : undefined}
+                          title={bad ? t('toothChart.expected', { range: bad }) : undefined}
                           placeholder={COLUMN_RANGES[col.key] ? `${COLUMN_RANGES[col.key][0]}–${COLUMN_RANGES[col.key][1]}` : ''}
                           onChange={(e) => setField(col.key, e.target.value)}
                           onKeyDown={blockEnter}
@@ -332,10 +331,10 @@ export function ToothChartView({
                 </div>
 
                 <label className="tooth-chart__note">
-                  <span className="tooth-chart__group-title">Diagnosis note</span>
+                  <span className="tooth-chart__group-title">{t('toothChart.diagnosisNote')}</span>
                   <textarea
                     rows={2}
-                    placeholder="e.g. Fractured crown, pulp exposure"
+                    placeholder={t('toothChart.diagnosisPlaceholder')}
                     value={findToothNote(preComments, tooth.triadan)?.text ?? ''}
                     onChange={(e) => {
                       const text = e.target.value;
@@ -344,7 +343,7 @@ export function ToothChartView({
                   />
                 </label>
 
-                <div className="tooth-chart__group-title">Extraction</div>
+                <div className="tooth-chart__group-title">{t('toothChart.extraction')}</div>
                 <div className="tooth-chart__extraction">
                   <label className="tooth-chart__check">
                     <input
@@ -353,7 +352,7 @@ export function ToothChartView({
                       disabled={isMissing}
                       onChange={(e) => setPlannedExtraction(tooth.triadan, e.target.checked)}
                     />
-                    Plan to extract
+                    {t('toothChart.planExtract')}
                   </label>
                   <label className="tooth-chart__check">
                     <input
@@ -362,15 +361,15 @@ export function ToothChartView({
                       disabled={isMissing}
                       onChange={(e) => setExtracted(tooth.triadan, e.target.checked)}
                     />
-                    Extracted
+                    {t('toothChart.legend.extracted')}
                   </label>
                 </div>
 
                 <label className="tooth-chart__note">
-                  <span className="tooth-chart__group-title">Procedure note</span>
+                  <span className="tooth-chart__group-title">{t('toothChart.procedureNote')}</span>
                   <textarea
                     rows={2}
-                    placeholder="e.g. Surgical extraction, flap closed with 5-0"
+                    placeholder={t('toothChart.procedurePlaceholder')}
                     value={findToothNote(postComments, tooth.triadan)?.text ?? ''}
                     onChange={(e) => {
                       const text = e.target.value;
@@ -384,19 +383,19 @@ export function ToothChartView({
 
           {plannedExtractions.length > 0 && (
             <div className="tooth-chart__plan">
-              <div className="tooth-chart__group-title">Extraction plan</div>
+              <div className="tooth-chart__group-title">{t('toothChart.plan')}</div>
               <ul className="tooth-chart__plan-list">
-                {plannedExtractions.map((t) => {
-                  const done = effectivePostMarks[t] === 'extracted';
+                {plannedExtractions.map((planTooth) => {
+                  const done = effectivePostMarks[planTooth] === 'extracted';
                   return (
-                    <li key={t}>
+                    <li key={planTooth}>
                       <button
                         type="button"
-                        className={`tooth-chart__plan-chip${done ? ' tooth-chart__plan-chip--done' : ''}${t === selected ? ' tooth-chart__plan-chip--selected' : ''}`}
-                        onClick={() => select(t)}
-                        title={done ? `${t} — extracted` : `${t} — not yet marked extracted`}
+                        className={`tooth-chart__plan-chip${done ? ' tooth-chart__plan-chip--done' : ''}${planTooth === selected ? ' tooth-chart__plan-chip--selected' : ''}`}
+                        onClick={() => select(planTooth)}
+                        title={t(done ? 'toothChart.chipDone' : 'toothChart.chipPending', { triadan: planTooth })}
                       >
-                        {done ? '✓ ' : ''}{t}
+                        {done ? '✓ ' : ''}{planTooth}
                       </button>
                     </li>
                   );
@@ -404,11 +403,14 @@ export function ToothChartView({
               </ul>
               <div className="tooth-chart__plan-status">
                 {pendingPlanned.length === 0
-                  ? 'All planned extractions confirmed.'
-                  : `${plannedExtractions.filter((t) => effectivePostMarks[t] === 'extracted').length} of ${plannedExtractions.length} confirmed extracted.`}
+                  ? t('toothChart.allConfirmed')
+                  : t('toothChart.confirmed', {
+                      done: plannedExtractions.filter((p) => effectivePostMarks[p] === 'extracted').length,
+                      total: plannedExtractions.length,
+                    })}
                 {pendingPlanned.length > 0 && !readOnly && (
                   <button type="button" className="diagram-view__action" onClick={confirmAllPlanned}>
-                    Mark {pendingPlanned.length === 1 ? 'it' : `all ${pendingPlanned.length}`} extracted
+                    {t('toothChart.markExtracted', { count: pendingPlanned.length })}
                   </button>
                 )}
               </div>

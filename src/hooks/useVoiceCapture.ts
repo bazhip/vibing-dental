@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
+import i18n from '../i18n';
 import {
   startDeepgramSession, DeepgramSession, canCaptureRawAudio, createCaptureContext,
 } from '../utils/deepgramVoice';
@@ -232,7 +233,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
 
   const startBrowser = React.useCallback((id: number) => {
     if (!browserCtor) {
-      setError('Speech recognition is not supported in this browser. Try Chrome or Safari.');
+      setError(i18n.t('errors.browserUnsupported', { ns: 'voice' }));
       setRecording(false);
       return;
     }
@@ -257,7 +258,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     };
     rec.onerror = (e) => {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') fatalRef.current = true;
-      setError(`Recognition error: ${e.error ?? 'unknown'}`);
+      setError(i18n.t('errors.recognition', { ns: 'voice', error: e.error ?? i18n.t('errors.recognitionUnknown', { ns: 'voice' }) }));
     };
     rec.onend = () => {
       if (browserRef.current === rec) browserRef.current = null;
@@ -271,7 +272,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       sessionLiveRef.current = true;
       setReady(true);
     } catch (err) {
-      setError(`Couldn't start microphone: ${(err as Error).message}`);
+      setError(i18n.t('errors.micStart', { ns: 'voice', message: (err as Error).message }));
       browserRef.current = null;
       setRecording(false);
     }
@@ -333,11 +334,11 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       if (id !== sessionIdRef.current) return;
       const name = err instanceof Error ? err.name : '';
       if (name === 'NotAllowedError' || name === 'SecurityError') {
-        setError('Microphone access is blocked. Allow it for this site in your browser settings, then try again.');
+        setError(i18n.t('errors.micBlocked', { ns: 'voice' }));
       } else if (name === 'NotFoundError') {
-        setError('No microphone was found.');
+        setError(i18n.t('errors.noMic', { ns: 'voice' }));
       } else {
-        setError(err instanceof Error ? err.message : "Couldn't start Deepgram session.");
+        setError(err instanceof Error ? err.message : i18n.t('errors.sessionStart', { ns: 'voice' }));
       }
       setRecording(false);
     }

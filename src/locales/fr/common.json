@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Annuler",
     "close": "Fermer",
+    "copy": "Copier",
     "delete": "Supprimer",
+    "dismiss": "Ignorer",
     "duplicate": "Dupliquer",
     "edit": "Modifier",
+    "ok": "OK",
     "save": "Enregistrer"
   },
   "errors": {
@@ -13,5 +16,8 @@
     "notFound": "Ce dossier est introuvable — il a peut-être été supprimé.",
     "permission": "Vous n’y avez pas accès.",
     "rateLimit": "Trop de tentatives. Patientez une minute et réessayez."
+  },
+  "language": {
+    "label": "Langue"
   }
 }

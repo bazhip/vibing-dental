@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import { formatDateTime, formatTime } from '../i18n/format';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useChartHistory, ChartRevision } from '../hooks/useChartHistory';
@@ -30,18 +33,20 @@ export interface ChartHistoryModalProps {
 }
 
 const fmt = (iso: string) =>
-  new Date(iso).toLocaleString([], { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
-const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  formatDateTime(iso, i18n.language, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+const fmtTime = (iso: string) => formatTime(iso);
 
 /** "Nov 12, 2026, 3:02 PM" or "Nov 12, 2026, 3:02 PM – 3:40 PM". */
 export function revisionWhen(r: Pick<ChartRevision, 'startedAt' | 'savedAt'>): string {
   const a = new Date(r.startedAt);
   const b = new Date(r.savedAt);
   if (b.getTime() - a.getTime() < 60_000) return fmt(r.savedAt);
-  return a.toDateString() === b.toDateString() ? `${fmt(r.startedAt)} – ${fmtTime(r.savedAt)}` : `${fmt(r.startedAt)} – ${fmt(r.savedAt)}`;
+  const range = (end: string) => i18n.t('history.range', { ns: 'library', start: fmt(r.startedAt), end });
+  return range(a.toDateString() === b.toDateString() ? fmtTime(r.savedAt) : fmt(r.savedAt));
 }
 
 export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, onClose, onRestore, label, restoreHint, onOpenChart }) => {
+  const { t } = useTranslation('library');
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(onClose);
   const { revisions, error, loadData } = useChartHistory(chartId, true);
@@ -67,7 +72,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     try {
       setData(await loadData(id));
     } catch (err) {
-      toast(`Couldn’t load that version. ${err instanceof Error ? err.message : ''}`.trim(), { kind: 'error' });
+      toast(t('history.loadFailed', { error: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
     } finally {
       setLoading(false);
     }
@@ -79,43 +84,43 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
   const restore = async () => {
     if (!onRestore || !chosen || !isChartSnapshot(data)) return;
     if (!(await confirmDialog({
-      title: 'Restore this version?',
-      message: `The chart goes back to how it was saved ${revisionWhen(chosen)}. Today’s version stays in the history, so you can switch back.`,
-      confirmLabel: 'Restore',
+      title: t('history.confirmTitle'),
+      message: t('history.confirmMessage', { when: revisionWhen(chosen) }),
+      confirmLabel: t('history.confirmButton'),
     }))) return;
     setRestoring(true);
     try {
       if (await onRestore(normalizeSnapshot(data))) {
-        toast('Version restored.', { kind: 'success' });
+        toast(t('history.restored'), { kind: 'success' });
         onClose();
       }
     } catch (err) {
-      toast(`Couldn’t restore. ${err instanceof Error ? err.message : ''}`.trim(), { kind: 'error' });
+      toast(t('history.restoreFailed', { error: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
     } finally {
       setRestoring(false);
     }
   };
 
   return ReactDOM.createPortal(
-    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart history">
+    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('history.aria')}>
       <div className="ai-settings-modal chart-history" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>{label ? `History — ${label}` : 'Chart history'}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
+          <h2>{label ? t('history.titleWith', { label }) : t('history.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>×</button>
         </header>
         {onOpenChart && (
           <div className="chart-history__bar">
-            <button type="button" className="diagram-view__action" onClick={onOpenChart}>Open this visit</button>
+            <button type="button" className="diagram-view__action" onClick={onOpenChart}>{t('history.openVisit')}</button>
           </div>
         )}
         <div className="chart-history__body">
           <div className="chart-history__list">
             {revisions === null ? (
-              <p className="chart-history__empty">Loading…</p>
+              <p className="chart-history__empty">{t('history.loading')}</p>
             ) : error ? (
               <p className="login-error" role="alert">{error}</p>
             ) : revisions.length === 0 ? (
-              <p className="chart-history__empty">No saved versions yet — history starts with the first save.</p>
+              <p className="chart-history__empty">{t('history.empty')}</p>
             ) : (
               <ul>
                 {revisions.map((r) => (
@@ -127,11 +132,11 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
                       aria-pressed={r.id === selected}
                     >
                       <span className="chart-history__who">
-                        {r.savedByName || (r.savedBy ? 'Someone outside your practice' : 'ToothOps (automatic)')}
-                        {r.id === current && <span className="chart-history__tag">Current</span>}
+                        {r.savedByName || (r.savedBy ? t('history.outside') : t('history.automatic'))}
+                        {r.id === current && <span className="chart-history__tag">{t('history.current')}</span>}
                       </span>
                       <span className="chart-history__when">
-                        {r.note === 'baseline' ? `Before history began · last saved ${fmt(r.savedAt)}` : revisionWhen(r)}
+                        {r.note === 'baseline' ? t('history.baseline', { when: fmt(r.savedAt) }) : revisionWhen(r)}
                       </span>
                     </button>
                   </li>
@@ -141,9 +146,9 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
           </div>
           <div className="chart-history__preview">
             {selected == null ? (
-              <p className="chart-history__empty">Pick a version to see it.</p>
+              <p className="chart-history__empty">{t('history.pick')}</p>
             ) : loading ? (
-              <p className="chart-history__empty">Loading this version…</p>
+              <p className="chart-history__empty">{t('history.loadingVersion')}</p>
             ) : data ? (
               <>
                 <div className="chart-history__preview-head">
@@ -151,10 +156,10 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
                   {selected !== current && (
                     onRestore ? (
                       <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={restore} disabled={restoring}>
-                        {restoring ? 'Restoring…' : 'Restore this version'}
+                        {restoring ? t('history.restoring') : t('history.restore')}
                       </button>
                     ) : (
-                      <span className="chart-history__hint">{restoreHint ?? 'Choose Edit chart to restore an earlier version.'}</span>
+                      <span className="chart-history__hint">{restoreHint ?? t('history.restoreHint')}</span>
                     )
                   )}
                 </div>

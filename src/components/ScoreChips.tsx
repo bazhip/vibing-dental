@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScoreChoice } from '../constants/columnDefinitions';
 
 interface ScoreChipsProps {
@@ -21,10 +22,11 @@ interface ScoreChipsProps {
 /** One-tap score buttons (M0–M3, F1–F3, …) for short-scale findings, so
  *  charting on a tablet doesn't need the on-screen keyboard. */
 export function ScoreChips({ name, choices, value, onPick, disabled, clearable, keepFocus, className }: ScoreChipsProps) {
+  const { t } = useTranslation('chart');
   const current = value.trim();
   const hold = keepFocus ? (e: React.MouseEvent) => e.preventDefault() : undefined;
   return (
-    <div className={`score-chips${className ? ` ${className}` : ''}`} role="group" aria-label={`${name} score`}>
+    <div className={`score-chips${className ? ` ${className}` : ''}`} role="group" aria-label={t('scoreChips.group', { name })}>
       {clearable && (
         <button
           type="button"
@@ -32,8 +34,8 @@ export function ScoreChips({ name, choices, value, onPick, disabled, clearable, 
           disabled={disabled}
           onMouseDown={hold}
           onClick={() => onPick('')}
-          aria-label={`Clear ${name}`}
-          title={`Clear ${name}`}
+          aria-label={t('scoreChips.clear', { name })}
+          title={t('scoreChips.clear', { name })}
         >
           –
         </button>

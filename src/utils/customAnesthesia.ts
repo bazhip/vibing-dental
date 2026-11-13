@@ -1,4 +1,13 @@
 import { CustomAnesthesia, CustomBlockValue, CustomFieldType, CustomFieldValue } from '../types';
+import i18n from '../i18n';
+
+/** Default labels for unnamed entries, in `lng`. English by default: these
+ *  labels are saved into the chart (and printed), and the clinical-record
+ *  language is decided later (plan 3), not by the UI language. */
+const labels = (lng = 'en') => {
+  const t = i18n.getFixedT(lng, 'chart');
+  return { block: t('customAnesthesia.block'), field: t('customAnesthesia.field'), yes: t('customAnesthesia.yes') };
+};
 
 /**
  * Custom anesthesia fields.
@@ -103,9 +112,10 @@ const fieldFilled = (f: CustomFieldValue) => !!f.value.trim();
 export function blocksForForm(defs: CustomBlockDef[], chart: CustomAnesthesia | undefined): CustomBlockValue[] {
   const values = chart?.blocks ?? [];
   const byId = new Map(values.map((b) => [b.id, b]));
+  const unnamed = labels().block;
   const rows = defs.map((d) => {
     const v = byId.get(d.id);
-    return { id: d.id, label: d.label || v?.label || 'Custom block', right: v?.right ?? '', left: v?.left ?? '' };
+    return { id: d.id, label: d.label || v?.label || unnamed, right: v?.right ?? '', left: v?.left ?? '' };
   });
   const own = new Set(defs.map((d) => d.id));
   return [...rows, ...values.filter((b) => !own.has(b.id) && blockFilled(b))];
@@ -120,11 +130,12 @@ export function fieldsForForm(
 ): Array<{ value: CustomFieldValue; def?: CustomFieldDef }> {
   const values = chart?.fields ?? [];
   const byId = new Map(values.map((f) => [f.id, f]));
+  const unnamed = labels().field;
   const rows = defs.map((d) => {
     const v = byId.get(d.id);
     return {
       def: d,
-      value: { id: d.id, label: d.label || v?.label || 'Custom field', type: d.type, unit: d.unit, value: v?.value ?? '' } as CustomFieldValue,
+      value: { id: d.id, label: d.label || v?.label || unnamed, type: d.type, unit: d.unit, value: v?.value ?? '' } as CustomFieldValue,
     };
   });
   const own = new Set(defs.map((d) => d.id));
@@ -150,10 +161,12 @@ export function filledBlocks(chart: CustomAnesthesia | undefined): CustomBlockVa
   return (chart?.blocks ?? []).filter(blockFilled);
 }
 
-/** PDF / viewer: "Label: value unit" for each filled field. */
-export function fieldLines(chart: CustomAnesthesia | undefined): string[] {
+/** PDF / viewer: "Label: value unit" for each filled field. English by
+ *  default: the PDF and the operator viewer are not translated yet. */
+export function fieldLines(chart: CustomAnesthesia | undefined, lng = 'en'): string[] {
+  const l = labels(lng);
   return (chart?.fields ?? []).filter(fieldFilled).map((f) => {
-    const v = f.type === 'checkbox' ? 'Yes' : `${f.value}${f.type === 'number' && f.unit ? ` ${f.unit}` : ''}`;
-    return `${f.label || 'Custom field'}: ${v}`;
+    const v = f.type === 'checkbox' ? l.yes : `${f.value}${f.type === 'number' && f.unit ? ` ${f.unit}` : ''}`;
+    return `${f.label || l.field}: ${v}`;
   });
 }

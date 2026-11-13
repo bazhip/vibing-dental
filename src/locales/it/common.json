@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Annulla",
     "close": "Chiudi",
+    "copy": "Copia",
     "delete": "Elimina",
+    "dismiss": "Ignora",
     "duplicate": "Duplica",
     "edit": "Modifica",
+    "ok": "OK",
     "save": "Salva"
   },
   "errors": {
@@ -13,5 +16,8 @@
     "notFound": "Cartella non trovata: potrebbe essere stata eliminata.",
     "permission": "Non ha accesso a questo elemento.",
     "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi."
+  },
+  "language": {
+    "label": "Lingua"
   }
 }

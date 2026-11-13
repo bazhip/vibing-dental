@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Trans, useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import { formatDateTime, formatList } from '../i18n/format';
 import { confirmDialog, toast } from './ui/dialogs';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -138,7 +141,7 @@ export function withDestination(a: AiAction, activeSection: string | undefined):
   const home = actionFocus(a, activeSection)?.section;
   const text = describeAction(a);
   const label = sectionLabel(home ?? '').replace(/\s*\(.*\)$/, '');
-  return home && home !== activeSection ? `→ ${label}: ${text}` : text;
+  return home && home !== activeSection ? i18n.t('activity.destination', { ns: 'voice', section: label, text }) : text;
 }
 
 /** Quiet this long (no words being heard) before a prompt is spoken, so
@@ -150,15 +153,14 @@ function speechAvailable(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 }
 
-/** "Check 109", "Check 109 and 204", "Check 109, 204 and 308". */
+/** "Check 109", "Check 109 and 204", "Check 109, 204 and 308" (spoken, in the active language). */
 function promptFor(items: ReviewItem[]): string {
   const teeth = Array.from(new Set(items.map((r) => r.flag.triadan).filter((t): t is number => typeof t === 'number')));
   const others = items.filter((r) => typeof r.flag.triadan !== 'number').length;
   const parts = teeth.map(String);
-  if (others) parts.push(others === 1 ? 'one finding' : `${others} findings`);
+  if (others) parts.push(i18n.t('spoken.finding', { ns: 'voice', count: others }));
   if (parts.length === 0) return '';
-  const list = parts.length === 1 ? parts[0] : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
-  return `Check ${list}.`;
+  return i18n.t('spoken.check', { ns: 'voice', list: formatList(parts) });
 }
 
 /** Safety-net flush while recording, in case no pause is ever detected. */
@@ -173,6 +175,8 @@ export const DANGLING_RE = /(?:\b(?:GI|GE|G|enlargement|calc|calculus|mobility|m
 /** …or once speech has been pending this long, whichever comes first. */
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
+
+const ROW_TIME: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit' };
 
 const INTRO_SEEN_KEY = 'ai.introSeen';
 const COLLAPSED_KEY = 'ai.panelCollapsed';
@@ -215,6 +219,7 @@ function useStickToBottom<T extends HTMLElement>(dep: unknown) {
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   context, handlers, onActivity, activeSection, sessionKey, locked = false, onOpenFeedback}) => {
+  const { t } = useTranslation('voice');
   const [activeChunkCount, setActiveChunkCount] = React.useState(0);
   const [activity, setActivity] = React.useState<ActivityEntry[]>([]);
   const [error, setError] = React.useState<string | null>(null);
@@ -280,8 +285,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   lockedRef.current = locked;
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
+  // Activity lines are written from processChunk (a callback with [] deps), so they
+  // look up the language in effect now rather than the render-bound `t`.
   const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
     if (!actions.length && !skipped.length) return;
+    const tNow = i18n.getFixedT(null, 'voice');
     const now = new Date();
     setActivity((prev) => [
       ...prev,
@@ -295,7 +303,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         const home = actionFocus(a)?.section;
         return {
           id: `${now.getTime()}_s${i}`,
-          description: `Not applied${home ? ` (belongs on ${sectionLabel(home)})` : ''}: ${describeAction(a)}`,
+          description: home
+            ? tNow('activity.notAppliedHome', { section: sectionLabel(home), what: describeAction(a) })
+            : tNow('activity.notApplied', { what: describeAction(a) }),
           at: now,
           skipped: true,
         };
@@ -333,7 +343,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       if (gen === sessionGenRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
-      setError(err instanceof Error ? err.message : 'Voice autofill failed');
+      setError(err instanceof Error ? err.message : i18n.getFixedT(null, 'voice')('errors.failed'));
     } finally {
       inFlightRef.current = false;
       setActiveChunkCount((c) => c - 1);
@@ -409,6 +419,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    * Needs review.
    */
   const runFinalCheck = async () => {
+    // Read the language when the check finishes (this runs from a callback created once).
+    const tNow = i18n.getFixedT(null, 'voice');
     await drain();
     if (lockedRef.current) return; // view-only now: change nothing
     const segments = voiceRef.current?.allSegments() ?? [];
@@ -436,20 +448,20 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       setActivity((prev) => [...prev, {
         id: `${now.getTime()}_final`,
         description: raised
-          ? `Final check: ${raised} ${raised === 1 ? 'item' : 'items'} added to review`
-          : 'Final check: nothing missed',
+          ? tNow('activity.finalRaised', { count: raised })
+          : tNow('activity.finalNone'),
         at: now,
       }].slice(-200));
       if (raised) {
         setPanelOpen(true);
         setCollapsed(false);
         if (voicePromptsRef.current && !voiceRef.current?.recording) {
-          speak(raised === 1 ? 'Final check found one item to review.' : `Final check found ${raised} items to review.`);
+          speak(tNow('spoken.finalFound', { count: raised }));
         }
       }
     } catch (err) {
       console.error('[VoiceInputButton] final check failed', err);
-      setError(err instanceof Error ? `Final check failed: ${err.message}` : 'Final check failed');
+      setError(err instanceof Error ? tNow('errors.finalCheckFailedDetail', { message: err.message }) : tNow('errors.finalCheckFailed'));
     } finally {
       inFlightRef.current = false;
       setActiveChunkCount((c) => c - 1);
@@ -497,7 +509,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     item.revert?.();
     if (choice === 'remove') {
       if (item.flag.applied) {
-        setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: `Removed: ${describeAction(item.flag.applied!)}`, at: now }]);
+        setActivity((prev) => [...prev, { id: `${now.getTime()}_r`, description: i18n.getFixedT(null, 'voice')('activity.removed', { what: describeAction(item.flag.applied!) }), at: now }]);
       }
       return;
     }
@@ -573,6 +585,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (!text || !speechAvailable()) return;
     const u = new SpeechSynthesisUtterance(text);
     u.rate = 1.05;
+    // English keeps the browser's default voice; other languages ask for theirs.
+    if (i18n.language !== 'en') u.lang = i18n.language;
     let done = false;
     const finish = () => {
       if (done) return;
@@ -652,7 +666,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const listen = (fresh: boolean) => {
     if (!voice.supported) {
-      setError('Voice input needs Chrome, Edge, or Safari.');
+      setError(t('errors.unsupported'));
       return;
     }
     setError(null);
@@ -689,13 +703,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (open > 0) {
       setPanelOpen(true);
       setCollapsed(false);
-      if (voicePrompts) speak(open === 1 ? 'One item to review.' : `${open} items to review.`);
+      if (voicePrompts) speak(t('spoken.open', { count: open }));
     }
   };
 
   const handleButton = () => {
     if (locked && !voice.recording) {
-      toast('This visit is view-only — choose Edit chart to dictate into it.', { kind: 'info' });
+      toast(t('toast.viewOnly', { button: t('topbar.editChart', { ns: 'app' }) }), { kind: 'info' });
       return;
     }
     if (voice.recording) {
@@ -718,9 +732,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const startOver = async () => {
     if (hasSession && !(await confirmDialog({
-      title: 'Start a new dictation?',
-      message: 'The transcript, activity log and review list are cleared. Everything already entered in the chart stays.',
-      confirmLabel: 'Start over',
+      title: t('dialog.title'),
+      message: t('dialog.message'),
+      confirmLabel: t('dialog.confirm'),
     }))) return;
     if (voice.recording) voice.stop();
     voice.clear();
@@ -737,14 +751,15 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     const start = voice.startedAt ?? new Date();
     const startedPerf = segments[0]?.receivedAt ?? performance.now();
     const startedTs = start.getTime() - (performance.now() - startedPerf);
-    const lines = [`Transcript — recording started ${start.toLocaleString()}`, ''.padEnd(60, '─'), ''];
+    const en = { lng: 'en', ns: 'voice' } as const;
+    const lines = [i18n.t('transcript.header', { ...en, date: start.toLocaleString() }), ''.padEnd(60, '─'), ''];
     for (const seg of segments) {
       const wallTime = new Date(startedTs + (seg.receivedAt - startedPerf));
       const stamp = wallTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       lines.push(`[${stamp}] ${seg.text}`);
     }
     if (activity.length) {
-      lines.push('', 'Activity', ''.padEnd(60, '─'));
+      lines.push('', i18n.t('transcript.activity', en), ''.padEnd(60, '─'));
       for (const a of activity) {
         lines.push(`[${a.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}] ${a.description}`);
       }
@@ -779,32 +794,32 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
 
   const sending = activeChunkCount > 0;
-  const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'Dictate';
-  const reviewLabel = reviews.length ? `${reviews.length} to review` : null;
+  const label = voice.recording ? t('button.stop') : hasSession ? t('button.resume') : t('button.dictate');
+  const reviewLabel = reviews.length ? t('toReview', { count: reviews.length }) : null;
   // Recording but the mic isn't live yet: say so, so nobody talks into
   // the gap. Live but nothing heard yet: invite them to start.
   const connecting = voice.recording && !voice.ready;
   const goAhead = voice.recording && voice.ready && !heardSinceStart;
   const subLabel = connecting
-    ? 'getting mic ready…'
+    ? t('sub.connecting')
     : goAhead
-    ? 'go ahead — talk'
+    ? t('sub.goAhead')
     : voice.recording
-    ? (sending ? 'listening · sending…' : reviewLabel ?? 'listening')
-    : sending ? 'finishing…' : reviewLabel;
+    ? (sending ? t('sub.listeningSending') : reviewLabel ?? t('sub.listening'))
+    : sending ? t('sub.finishing') : reviewLabel;
   const className = ['voice-input', voice.recording ? 'voice-input--recording' : '', sending ? 'voice-input--processing' : ''].filter(Boolean).join(' ');
 
   const status = connecting
-    ? { text: 'Connecting…', cls: 'ai-sidebar__status--connecting' }
+    ? { text: t('status.connecting'), cls: 'ai-sidebar__status--connecting' }
     : goAhead
-    ? { text: 'Ready — start talking', cls: 'ai-sidebar__status--live' }
+    ? { text: t('status.ready'), cls: 'ai-sidebar__status--live' }
     : voice.recording
-    ? { text: 'Listening', cls: 'ai-sidebar__status--live' }
+    ? { text: t('status.listening'), cls: 'ai-sidebar__status--live' }
     : voice.interrupted
-      ? { text: 'Interrupted', cls: 'ai-sidebar__status--warn' }
+      ? { text: t('status.interrupted'), cls: 'ai-sidebar__status--warn' }
       : sending
-        ? { text: 'Finishing…', cls: '' }
-        : { text: 'Stopped', cls: '' };
+        ? { text: t('status.finishing'), cls: '' }
+        : { text: t('status.stopped'), cls: '' };
 
   const lastActivity = activity[activity.length - 1];
   // One-line summary for the collapsed panel: what's being heard right
@@ -812,18 +827,18 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const peek = voice.interim
     ? { text: voice.interim, cls: 'ai-sidebar__peek--interim' }
     : reviews.length
-      ? { text: `⚠ ${reviews.length} to review — tap to check`, cls: 'ai-sidebar__peek--review' }
+      ? { text: t('peek.review', { count: reviews.length }), cls: 'ai-sidebar__peek--review' }
     : lastActivity
       ? { text: lastActivity.description, cls: lastActivity.skipped ? 'ai-sidebar__peek--skipped' : '' }
       : connecting
-      ? { text: 'Getting the microphone ready — one moment…', cls: 'ai-sidebar__peek--empty' }
+      ? { text: t('peek.connecting'), cls: 'ai-sidebar__peek--empty' }
       : goAhead
-      ? { text: '🎙 Go ahead — start talking. Findings appear as they’re charted.', cls: 'ai-sidebar__peek--go' }
-      : { text: voice.recording ? 'Start talking — findings appear as they’re charted.' : 'Press Resume to keep dictating.', cls: 'ai-sidebar__peek--empty' };
+      ? { text: t('peek.goAhead'), cls: 'ai-sidebar__peek--go' }
+      : { text: voice.recording ? t('peek.talking') : t('peek.pressResume'), cls: 'ai-sidebar__peek--empty' };
 
   const primary = voice.recording
-    ? { text: 'Stop', onClick: stopListening, cls: 'ai-sidebar__primary--stop' }
-    : { text: hasSession ? 'Resume' : 'Start', onClick: () => listen(!hasSession), cls: '' };
+    ? { text: t('button.stop'), onClick: stopListening, cls: 'ai-sidebar__primary--stop' }
+    : { text: hasSession ? t('button.resume') : t('button.start'), onClick: () => listen(!hasSession), cls: '' };
 
   return (
     <div className="voice-input-wrap">
@@ -832,7 +847,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         className={className}
         onClick={handleButton}
         aria-pressed={voice.recording}
-        title={voice.recording ? 'Stop listening (the transcript is kept)' : 'Dictate — talk and the chart fills itself'}
+        title={voice.recording ? t('button.titleStop') : t('button.titleDictate')}
       >
         {voice.recording ? (
           <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />
@@ -845,7 +860,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         <span className="voice-input__label">{label}</span>
         {subLabel && <span className="voice-input__sublabel">{subLabel}</span>}
         {reviews.length > 0 && (
-          <span className="voice-input__review-badge" aria-label={`${reviews.length} to review`}>{reviews.length}</span>
+          <span className="voice-input__review-badge" aria-label={t('toReview', { count: reviews.length })}>{reviews.length}</span>
         )}
       </button>
 
@@ -853,30 +868,30 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           topbar's backdrop-filter containing block (which would clip a
           position:fixed overlay to the short topbar). */}
       {intro && ReactDOM.createPortal(
-        <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label="Dictate">
+        <div className="ai-settings-overlay" onClick={() => setIntro(null)} role="dialog" aria-modal="true" aria-label={t('intro.ariaLabel')}>
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
-              <h2>Dictate your chart</h2>
-              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label="Close">×</button>
+              <h2>{t('intro.title')}</h2>
+              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label={t('intro.close')}>×</button>
             </header>
             <div className="ai-settings-body">
               <ol className="ai-intro__list">
-                <li>Talk like you normally would: <em>“104 GI 2, calc 1. 105 missing. Tongue normal.”</em></li>
-                <li>Stay on any page. Each finding goes to the right place in the chart.</li>
-                <li>Tap <strong>Stop</strong> when you’re done. Anything it wasn’t sure about is listed under <strong>Needs review</strong>.</li>
+                <li><Trans t={t} i18nKey="intro.step1" components={{ em: <em /> }} /></li>
+                <li>{t('intro.step2')}</li>
+                <li><Trans t={t} i18nKey="intro.step3" components={{ strong: <strong /> }} /></li>
               </ol>
             </div>
             <footer className="ai-settings-footer">
               {intro === 'start' ? (
                 <>
-                  <button type="button" className="diagram-view__action" onClick={() => setIntro(null)}>Cancel</button>
+                  <button type="button" className="diagram-view__action" onClick={() => setIntro(null)}>{t('intro.cancel')}</button>
                   <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={beginFromIntro}>
-                    Start dictation
+                    {t('intro.start')}
                   </button>
                 </>
               ) : (
                 <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={() => setIntro(null)}>
-                  Got it
+                  {t('intro.gotIt')}
                 </button>
               )}
             </footer>
@@ -890,7 +905,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       {panelOpen && ReactDOM.createPortal(
         <aside
           className={`ai-sidebar${collapsed ? ' ai-sidebar--collapsed' : ''}${voice.recording ? ' ai-sidebar--live' : ''}${reviews.length ? ' ai-sidebar--has-review' : ''}`}
-          aria-label="AI autofill"
+          aria-label={t('panel.ariaLabel')}
         >
           <header className="ai-sidebar__head">
             <button
@@ -898,7 +913,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               className="ai-sidebar__toggle"
               onClick={toggleCollapsed}
               aria-expanded={!collapsed}
-              aria-label={collapsed ? 'Expand panel' : 'Collapse panel'}
+              aria-label={collapsed ? t('panel.expand') : t('panel.collapse')}
             >
               <span className={`ai-sidebar__status ${status.cls}`}>
                 {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
@@ -909,7 +924,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick}>
               {primary.text}
             </button>
-            <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label="Close panel" title="Close (the transcript is kept)">
+            <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label={t('panel.close')} title={t('panel.closeTitle')}>
               ×
             </button>
           </header>
@@ -921,17 +936,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           ) : (
             <>
               {reviews.length > 0 && (
-                <section className="ai-review" aria-label="Needs review">
-                  <div className="ai-sidebar__section-label ai-review__label">Needs review ({reviews.length})</div>
+                <section className="ai-review" aria-label={t('panel.needsReview')}>
+                  <div className="ai-sidebar__section-label ai-review__label">{t('panel.needsReviewCount', { count: reviews.length })}</div>
                   <ul className="ai-review__list">
                     {reviews.map((r) => (
                       <li key={r.id} className="ai-review__item">
-                        <button type="button" className="ai-review__what" onClick={() => showReview(r)} title="Show in the chart">
+                        <button type="button" className="ai-review__what" onClick={() => showReview(r)} title={t('panel.showInChart')}>
                           <span className="ai-review__heard">
-                            {r.flag.applied ? describeAction(r.flag.applied) : `“${r.flag.heard}”`}
+                            {r.flag.applied ? describeAction(r.flag.applied) : t('panel.heard', { heard: r.flag.heard })}
                           </span>
                           <span className="ai-review__reason">
-                            {r.flag.applied ? 'Charted as a guess — ' : 'Not charted — '}{r.flag.reason}
+                            {r.flag.applied ? t('panel.guess', { reason: r.flag.reason }) : t('panel.notCharted', { reason: r.flag.reason })}
                           </span>
                         </button>
                         <div className="ai-review__actions">
@@ -942,11 +957,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                           ))}
                           {r.flag.applied && (
                             <button type="button" className="ai-review__opt ai-review__opt--keep" onClick={() => resolveReview(r.id, 'keep')}>
-                              Keep
+                              {t('panel.keep')}
                             </button>
                           )}
                           <button type="button" className="ai-review__opt ai-review__opt--quiet" onClick={() => resolveReview(r.id, 'remove')}>
-                            {r.flag.applied && r.revert ? 'Remove' : 'Dismiss'}
+                            {r.flag.applied && r.revert ? t('panel.remove') : t('panel.dismiss')}
                           </button>
                         </div>
                       </li>
@@ -957,11 +972,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
               {voice.interrupted && !voice.recording && (
                 <div className="ai-sidebar__notice" role="alert">
-                  The microphone was interrupted (camera, phone call, or leaving the page). Everything heard before that was kept — press <strong>Resume</strong> to carry on.
+                  <Trans t={t} i18nKey="panel.interrupted" components={{ strong: <strong /> }} />
                 </div>
               )}
 
-              <div className="ai-sidebar__section-label">Transcript</div>
+              <div className="ai-sidebar__section-label">{t('panel.transcript')}</div>
               <div className="ai-sidebar__transcript" ref={transcriptScroll.ref} onScroll={transcriptScroll.onScroll} aria-live="polite">
                 {transcriptText || voice.interim ? (
                   <>
@@ -971,52 +986,52 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 ) : (
                   <span className="ai-sidebar__empty">
                     {connecting
-                      ? 'Getting the microphone ready — one moment…'
+                      ? t('panel.emptyConnecting')
                       : voice.recording
-                      ? '🎙 Go ahead — start talking. Your words appear here.'
-                      : 'Press Start to dictate.'}
+                      ? t('panel.emptyListening')
+                      : t('panel.emptyIdle')}
                   </span>
                 )}
               </div>
 
               <div className="ai-sidebar__section-label">
-                Activity
-                {sending && <span className="ai-sidebar__sending">sending…</span>}
+                {t('panel.activity')}
+                {sending && <span className="ai-sidebar__sending">{t('panel.sending')}</span>}
               </div>
               <div className="ai-sidebar__activity" ref={activityScroll.ref} onScroll={activityScroll.onScroll}>
                 {activity.length === 0 ? (
-                  <div className="ai-sidebar__empty">Chart changes show here as the AI applies them.</div>
+                  <div className="ai-sidebar__empty">{t('panel.activityEmpty')}</div>
                 ) : (
                   activity.map((entry) => (
                     <div key={entry.id} className={`ai-sidebar__row${entry.skipped ? ' ai-sidebar__row--skipped' : ''}${entry.uncertain ? ' ai-sidebar__row--uncertain' : ''}`}>
-                      <span className="ai-sidebar__row-time">{entry.at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}</span>
-                      <span className="ai-sidebar__row-desc">{entry.description}{entry.uncertain && <span className="ai-sidebar__row-flag" title="Guess — check the review list"> ?</span>}</span>
+                      <span className="ai-sidebar__row-time">{formatDateTime(entry.at, i18n.language, ROW_TIME)}</span>
+                      <span className="ai-sidebar__row-desc">{entry.description}{entry.uncertain && <span className="ai-sidebar__row-flag" title={t('panel.guessMark')}> ?</span>}</span>
                     </div>
                   ))
                 )}
               </div>
 
               <footer className="ai-sidebar__foot">
-                <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>New</button>
-                <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>Download</button>
+                <button type="button" className="ai-sidebar__link" onClick={startOver} disabled={!hasSession}>{t('panel.new')}</button>
+                <button type="button" className="ai-sidebar__link" onClick={handleDownloadTranscript} disabled={!transcriptText}>{t('panel.download')}</button>
                 {onOpenFeedback && (
-                  <button type="button" className="ai-sidebar__link" onClick={() => onOpenFeedback(buildTranscriptText())} title="Tell us what went wrong — your transcript can be attached">
-                    Feedback
+                  <button type="button" className="ai-sidebar__link" onClick={() => onOpenFeedback(buildTranscriptText())} title={t('panel.feedbackTitle')}>
+                    {t('panel.feedback')}
                   </button>
                 )}
-                <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')} title="How it works">Help</button>
+                <button type="button" className="ai-sidebar__link" onClick={() => setIntro('info')} title={t('panel.helpTitle')}>{t('panel.help')}</button>
                 {speechAvailable() && (
                   <button
                     type="button"
                     className="ai-sidebar__link"
                     onClick={toggleVoicePrompts}
                     aria-pressed={voicePrompts}
-                    title="Short spoken prompts (e.g. “Check 109”) after a pause, for things worth checking"
+                    title={t('panel.promptsTitle')}
                   >
-                    Prompts: {voicePrompts ? 'On' : 'Off'}
+                    {voicePrompts ? t('panel.promptsOn') : t('panel.promptsOff')}
                   </button>
                 )}
-                <span className="voice-input__provider-badge">{voice.provider === 'deepgram' ? '⚡ Deepgram' : 'Browser STT'}</span>
+                <span className="voice-input__provider-badge">{voice.provider === 'deepgram' ? t('panel.providerDeepgram') : t('panel.providerBrowser')}</span>
               </footer>
             </>
           )}

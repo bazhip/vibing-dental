@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Promemoria di controllo",
+    "title": "Promemoria di controllo",
+    "blurb": "Invii un’e-mail al proprietario quando è in scadenza un controllo. Segnaposto:",
+    "blurbTail": "Per inviare un promemoria a un singolo paziente usi <strong>Le mie cartelle</strong>.",
+    "loading": "Caricamento…",
+    "notSetUp": "Il Suo studio è in fase di configurazione: ricarichi la pagina tra un momento.",
+    "ownerOnly": "Solo un titolare dello studio può modificare il modello di promemoria.",
+    "auto": "Invia automaticamente un’e-mail ai proprietari",
+    "send": "Invio",
+    "lead": {
+      "onDate": "Il giorno del controllo",
+      "days3": "3 giorni prima",
+      "week1": "1 settimana prima",
+      "weeks2": "2 settimane prima",
+      "month1": "1 mese prima"
+    },
+    "subject": "Oggetto",
+    "message": "Messaggio",
+    "done": "Fine",
+    "saving": "Salvataggio…",
+    "saved": "Impostazioni dei promemoria salvate.",
+    "saveFailed": "Impossibile salvare le impostazioni dei promemoria.",
+    "noPractice": "Nessuno studio in cui salvare.",
+    "discard": {
+      "title": "Scartare le modifiche ai promemoria?",
+      "message": "Le Sue modifiche alle impostazioni dei promemoria non sono state salvate.",
+      "confirm": "Scarta",
+      "cancel": "Continua a modificare"
+    }
+  },
+  "composer": {
+    "aria": "Invia promemoria di controllo",
+    "title": "Invia promemoria di controllo",
+    "loading": "Caricamento…",
+    "to": "A",
+    "toTitle": "I promemoria vengono inviati all’e-mail del proprietario salvata in questa cartella. Per cambiarla, la modifichi nella cartella.",
+    "toHint": "Viene inviato all’e-mail del proprietario indicata in questa cartella. Per cambiarla, modifichi l’e-mail del proprietario nella cartella.",
+    "subject": "Oggetto",
+    "message": "Messaggio",
+    "sent": "Promemoria inviato.",
+    "sendFailed": "Impossibile inviare il promemoria.",
+    "send": "Invia promemoria",
+    "sending": "Invio…"
+  }
+}

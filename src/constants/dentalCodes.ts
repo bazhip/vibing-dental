@@ -10,10 +10,16 @@
  * can match each individually.
  */
 
+import i18n from '../i18n';
+import type chart from '../locales/en/chart.json';
+import type codes from '../locales/en/codes.json';
+
 export type CodeKind = 'diagnosis' | 'procedure';
 
 export interface DentalCode {
   code: string;
+  /** English, verbatim from the AVDC list. The voice prompt and the clinical
+   *  PDF read it; anything shown in the UI uses codeDefinition(). */
   definition: string;
   kind: CodeKind;
 }
@@ -29,23 +35,30 @@ const P = (code: string, definition: string): DentalCode => ({
   kind: 'procedure',
 });
 
+export type CodeGroupId = keyof typeof chart.codeGroups;
+
 /** A clinical cluster of codes, mirroring how the AVDC list is organized.
- *  Surfaced as sub-headers in the reference panels. */
+ *  Surfaced as sub-headers in the reference panels. `name` is read in the
+ *  active language each time. */
 export interface DentalCodeGroup {
-  name: string;
+  id: CodeGroupId;
+  readonly name: string;
   kind: CodeKind;
   codes: DentalCode[];
 }
 
-const G = (name: string, codes: DentalCode[]): DentalCodeGroup => ({
-  name,
+const G = (id: CodeGroupId, codes: DentalCode[]): DentalCodeGroup => ({
+  id,
+  get name() {
+    return i18n.getFixedT(i18n.language, 'chart')(`codeGroups.${id}`);
+  },
   kind: codes[0].kind,
   codes,
 });
 
 export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   // ── Diagnoses ──────────────────────────────────────────────────────
-  G('Occlusion', [
+  G('occlusion', [
   D('MAL', 'Malocclusion'),
   D('MAL1', 'Class 1 malocclusion (neutroclusion; dental malocclusion with normal jaw length relationship)'),
   D('MAL2', 'Class 2 malocclusion (mandibular distoclusion; lower jaw relatively shorter than the upper)'),
@@ -64,7 +77,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('CB/C', 'Crossbite, caudal'),
   D('CB/R', 'Crossbite, rostral'),
   ]),
-  G('Tooth number & eruption', [
+  G('toothNumberEruption', [
   D('ANO', 'Anodontia'),
   D('HYP', 'Hypodontia'),
   D('OLI', 'Oligodontia'),
@@ -82,7 +95,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('RCR', 'Retained crown-root'),
   D('RTR', 'Retained root'),
   ]),
-  G('Developmental anomalies', [
+  G('developmental', [
   D('T/CCR', 'Concrescence'),
   D('T/DEN', 'Dens invaginatus'),
   D('T/FUS', 'Fusion'),
@@ -92,7 +105,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('T/TRA', 'Transposition'),
   D('E/P', 'Enamel pearl'),
   ]),
-  G('Periodontal', [
+  G('periodontal', [
   D('PD', 'Periodontal disease'),
   D('PD0', 'No periodontal disease (clinically normal)'),
   D('PD1', 'Gingivitis only (no attachment loss)'),
@@ -106,7 +119,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('AOS', 'Alveolar osteitis'),
   D('PEC', 'Pericoronitis'),
   ]),
-  G('Tooth pathology', [
+  G('toothPathology', [
   D('TR', 'Tooth resorption'),
   D('RR', 'Internal resorption'),
   D('T/NV', 'Non-vital tooth'),
@@ -126,7 +139,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('CA', 'Caries'),
   D('HC', 'Hypercementosis'),
   ]),
-  G('Tooth fracture', [
+  G('toothFracture', [
   D('FX', 'Fracture (tooth or jaw)'),
   D('T/FX', 'Tooth fracture'),
   D('T/FX/EI', 'Enamel infraction'),
@@ -137,7 +150,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('T/FX/CCRF', 'Complicated crown-root fracture'),
   D('T/FX/RF', 'Root fracture'),
   ]),
-  G('Periapical & bone', [
+  G('periapicalBone', [
   D('PA/P', 'Periapical pathology (granuloma/abscess/cyst not distinguishable)'),
   D('PA/A', 'Periapical abscess'),
   D('PA/C', 'Periapical cyst'),
@@ -150,13 +163,13 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('FOD', 'Fibrous osteodystrophy'),
   D('CHO', 'Calvarial hyperostosis'),
   ]),
-  G('Trauma', [
+  G('trauma', [
   D('TMA', 'Trauma'),
   D('TMA/B', 'Ballistic trauma'),
   D('TMA/E', 'Electric trauma'),
   D('TMA/BRN', 'Burn trauma'),
   ]),
-  G('Soft tissue & mucosa', [
+  G('softTissue', [
   D('ST', 'Stomatitis'),
   D('ST/CS', 'Caudal stomatitis'),
   D('CU', 'Contact mucositis / contact mucosal ulceration'),
@@ -182,13 +195,13 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('CC', 'Calcinosis circumscripta'),
   D('FOL', 'Folliculitis'),
   ]),
-  G('Immune-mediated', [
+  G('immuneMediated', [
   D('BUP', 'Bullous pemphigoid'),
   D('EM', 'Erythema multiforme'),
   D('LE', 'Lupus erythematosus'),
   D('PV', 'Pemphigus vulgaris'),
   ]),
-  G('Salivary gland', [
+  G('salivary', [
   D('SG/ADS', 'Sialadenosis'),
   D('SG/IN', 'Sialadenitis'),
   D('SG/NEC', 'Necrotizing sialometaplasia'),
@@ -198,7 +211,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('SG/MUC/P', 'Sialocele, pharyngeal'),
   D('SG/MUC/C', 'Sialocele, cervical'),
   ]),
-  G('Head, nose & pharynx', [
+  G('headNosePharynx', [
   D('DI/ND', 'Nasal discharge, right'),
   D('DI/NS', 'Nasal discharge, left'),
   D('DI/NU', 'Nasal discharge, bilateral'),
@@ -216,7 +229,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('N/NPS', 'Nasopharyngeal stenosis'),
   D('N/POL', 'Nasopharyngeal polyp'),
   ]),
-  G('Masses & oncology', [
+  G('masses', [
   D('OM', 'Oral/maxillofacial mass'),
   D('OM/AA', 'Oral mass, acanthomatous ameloblastoma'),
   D('OM/AD', 'Oral mass, adenoma'),
@@ -252,7 +265,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   D('TT', 'Temporal teratoma'),
   D('LN/E', 'Lymph node enlargement'),
   ]),
-  G('Jaw, TMJ & congenital', [
+  G('jawTmj', [
   D('MN/FX', 'Mandibular fracture'),
   D('MX/FX', 'Maxillary fracture'),
   D('SYM/S', 'Symphyseal separation'),
@@ -279,7 +292,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   ]),
 
   // ── Procedures ─────────────────────────────────────────────────────
-  G('Imaging & diagnostics', [
+  G('imaging', [
   P('RAD', 'Radiography'),
   P('RAD/SG', 'Sialography'),
   P('CT', 'Computed tomography'),
@@ -301,7 +314,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('CS', 'Culture / sensitivity'),
   P('TP', 'Treatment plan'),
   ]),
-  G('Periodontal treatment', [
+  G('periodontalTreatment', [
   P('PRO', 'Professional dental cleaning (scaling, polishing, irrigation)'),
   P('GC', 'Gingival curettage'),
   P('RP/C', 'Closed root planing'),
@@ -331,7 +344,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('GTR', 'Guided tissue regeneration'),
   P('FRE', 'Frenuloplasty (frenulotomy, frenulectomy)'),
   ]),
-  G('Endodontics', [
+  G('endodontics', [
   P('RCT', 'Standard root canal therapy'),
   P('RCT/S', 'Surgical root canal therapy'),
   P('AP/X', 'Apicoectomy'),
@@ -347,7 +360,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('CR/XP', 'Crown reduction'),
   P('ODY', 'Odontoplasty'),
   ]),
-  G('Restorative & prosthodontics', [
+  G('restorative', [
   P('DP', 'Defect preparation (prior to filling a dental defect)'),
   P('R', 'Restoration (filling of a dental defect)'),
   P('R/A', 'Restoration, amalgam'),
@@ -376,7 +389,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('BR', 'Bite registration'),
   P('IMP', 'Implant'),
   ]),
-  G('Extractions', [
+  G('extractions', [
   P('X', 'Extraction, closed (no sectioning)'),
   P('XS', 'Extraction, closed with sectioning'),
   P('XSS', 'Extraction, open (surgical)'),
@@ -386,7 +399,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('T/RP', 'Tooth repositioning (luxated tooth)'),
   P('OP', 'Operculectomy'),
   ]),
-  G('Oral surgery', [
+  G('oralSurgery', [
   P('FB/R', 'Foreign body removal'),
   P('LAC/R', 'Laceration repair'),
   P('TMA/R', 'Trauma repair'),
@@ -429,12 +442,12 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('COR/X', 'Coronoidectomy'),
   P('CON/X', 'Condylectomy'),
   ]),
-  G('Oncologic therapy', [
+  G('oncologic', [
   P('CTH', 'Chemotherapy'),
   P('ITH', 'Immunotherapy'),
   P('RTH', 'Radiotherapy'),
   ]),
-  G('Jaw fracture & TMJ repair', [
+  G('jawRepair', [
   P('SYM/R', 'Symphyseal repair'),
   P('FX/R', 'Jaw fracture repair'),
   P('FX/R/PL', 'Jaw fracture repair, plate'),
@@ -451,7 +464,7 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   P('TMJ/A/R', 'TMJ ankylosis repair'),
   P('OMJL/R', 'Open-mouth jaw locking reduction'),
   ]),
-  G('Orthodontics', [
+  G('orthodontics', [
   P('IP', 'Inclined plane'),
   P('IP/AC', 'Inclined plane, acrylic'),
   P('IP/C', 'Inclined plane, composite'),
@@ -527,7 +540,9 @@ export function findCodesInText(text: string): DentalCode[] {
     .filter(Boolean);
 }
 
-/** Codes whose `code` starts with `prefix` (case-sensitive). */
+/** Codes whose `code` starts with `prefix` (case-sensitive), in catalog
+ *  order. CodeField's popup uses this: it opens on code-like tokens only,
+ *  so definition matches (searchCodes) would just add noise there. */
 export function codesMatchingPrefix(prefix: string, limit = 8): DentalCode[] {
   if (!prefix) return [];
   const out: DentalCode[] = [];
@@ -538,4 +553,42 @@ export function codesMatchingPrefix(prefix: string, limit = 8): DentalCode[] {
     }
   }
   return out;
+}
+
+type CodeKey = keyof typeof codes;
+
+/** A code's definition in `lng` (the active language by default). The
+ *  catalog (locales/<lng>/codes.json) is keyed by code; its English is the
+ *  `definition` field verbatim. Unknown codes come back unchanged. */
+export function codeDefinition(code: string, lng: string = i18n.language): string {
+  if (!CODES_BY_CODE[code]) return code;
+  return i18n.getFixedT(lng, 'codes')(code as CodeKey);
+}
+
+/** Lower-case, accents stripped: "Périapical" and "periapical" compare equal. */
+const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+const FOLDED_EN = new Map(DENTAL_CODES.map((c) => [c.code, fold(c.definition)]));
+
+/** Codes matching `query` by code, by definition in `lng`, or by English
+ *  definition — so a French vet typing "fracture", or an English term or
+ *  code, finds it. Case and accents are ignored. Ranked: exact code, code
+ *  prefix, code substring, then definition matches; within a rank the
+ *  catalog order is kept. An empty query matches every code. */
+export function searchCodes(query: string, lng: string = i18n.language): DentalCode[] {
+  const q = fold(query.trim());
+  if (!q) return [...DENTAL_CODES];
+  const t = i18n.getFixedT(lng, 'codes');
+  const ranked: Array<{ c: DentalCode; rank: number; i: number }> = [];
+  DENTAL_CODES.forEach((c, i) => {
+    const code = c.code.toLowerCase();
+    let rank: number;
+    if (code === q) rank = 0;
+    else if (code.startsWith(q)) rank = 1;
+    else if (code.includes(q)) rank = 2;
+    else if (fold(t(c.code as CodeKey)).includes(q) || FOLDED_EN.get(c.code)!.includes(q)) rank = 3;
+    else return;
+    ranked.push({ c, rank, i });
+  });
+  return ranked.sort((a, b) => a.rank - b.rank || a.i - b.i).map((r) => r.c);
 }

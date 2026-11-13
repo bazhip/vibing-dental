@@ -1,0 +1,119 @@
+{
+  "features": {
+    "fullCharting": "Odontogramma completo, diagrammi e PDF personalizzati",
+    "photos_one": "Foto e radiografie — {{count}} immagine per cartella",
+    "photos_other": "Foto e radiografie — {{count}} immagini per cartella",
+    "photos_many": "Foto e radiografie — {{count}} immagini per cartella",
+    "visitHistory": "Storico delle visite e promemoria dei controlli",
+    "users_one": "{{count}} utente",
+    "users_other": "{{count}} utenti",
+    "users_many": "{{count}} utenti",
+    "everythingIn": "Tutto ciò che include {{plan}}",
+    "aiAutofill": "Compilazione vocale con IA — Lei detta, la cartella si compila da sola",
+    "imagesPerChart_one": "{{count}} immagine per cartella",
+    "imagesPerChart_other": "{{count}} immagini per cartella",
+    "imagesPerChart_many": "{{count}} immagini per cartella",
+    "teamMembers_one": "Fino a {{count}} membro del team",
+    "teamMembers_other": "Fino a {{count}} membri del team",
+    "teamMembers_many": "Fino a {{count}} membri del team",
+    "sharedCharts": "Cartelle, modelli e logo dello studio condivisi",
+    "teamRoles": "Ruoli del team e trasferimento della titolarità",
+    "aiAutofillTeam": "Compilazione vocale con IA per tutto il team"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individuale",
+      "tagline": "Per il libero professionista"
+    },
+    "individual_pro": {
+      "name": "Individuale Pro",
+      "tagline": "In autonomia, con l’IA al microfono"
+    },
+    "practice_basic": {
+      "name": "Studio",
+      "tagline": "Tutto il team, un’unica cartella"
+    },
+    "practice_pro": {
+      "name": "Studio Pro",
+      "tagline": "Tutta la clinica, a mani libere"
+    }
+  },
+  "perMonth": "/mese",
+  "gate": {
+    "settingUpTitle": "Configurazione del Suo abbonamento…",
+    "settingUpSub": "Pagamento confermato — sblocchiamo ora il Suo account.",
+    "loading": "Caricamento",
+    "checkFailedTitle": "Impossibile verificare il Suo abbonamento",
+    "checkFailed": "Impossibile verificare il Suo abbonamento.",
+    "tryAgain": "Riprova",
+    "freezeOwner": "Le Sue cartelle e il Suo account sono congelati, non eliminati — sono conservati al sicuro fino al <strong>{{date}}</strong>, poi vengono eliminati definitivamente. Riattivi l’abbonamento prima di quella data e ritroverà tutto esattamente come l’aveva lasciato.",
+    "freezeMember": "Le Sue cartelle e il Suo account sono congelati, non eliminati — sono conservati al sicuro fino al <strong>{{date}}</strong>, poi vengono eliminati definitivamente.",
+    "memberTitle": "{{practice}} ha bisogno di un abbonamento",
+    "yourPractice": "Il Suo studio",
+    "memberPastDue": "L’ultimo pagamento dello studio non è andato a buon fine. Chieda a <strong>{{owner}}</strong> di sistemare la fatturazione — riavrà l’accesso non appena sarà fatto.",
+    "memberNone": "L’abbonamento dello studio non è ancora stato configurato. Chieda a <strong>{{owner}}</strong> di sistemare la fatturazione — riavrà l’accesso non appena sarà fatto.",
+    "memberEnded": "L’abbonamento dello studio è terminato. Chieda a <strong>{{owner}}</strong> di sistemare la fatturazione — riavrà l’accesso non appena sarà fatto.",
+    "yourOwner": "il titolare del Suo studio",
+    "failedTitle": "Pagamento non riuscito",
+    "failedBody": "Il Suo ultimo pagamento non è andato a buon fine — di solito per una carta scaduta o annullata. Aggiorni il metodo di pagamento e rientrerà subito; Stripe riprova automaticamente non appena la carta funziona.",
+    "opening": "Apertura…",
+    "updateCard": "Aggiorna il metodo di pagamento",
+    "portalFailed": "Impossibile aprire il portale di fatturazione.",
+    "trouble": "Problemi con la fatturazione? <a>Ci contatti</a>.",
+    "chooseTitle": "Scelga il Suo piano",
+    "trialSub": "Ogni piano inizia con una prova gratuita di {{days}} giorni — annullabile in qualsiasi momento.",
+    "endedSub": "Il Suo abbonamento è terminato — scelga un piano per tornare alle Sue cartelle.",
+    "openingCheckout": "Apertura del pagamento…",
+    "startTrial": "Inizia la prova gratuita di {{days}} giorni — poi {{price}}/mese",
+    "pickPlan": "Scelga un piano qui sopra",
+    "checkoutFailed": "Impossibile avviare il pagamento.",
+    "larger": "Più di 5 membri del team o un gruppo con più sedi? <a>Ci contatti</a> per un prezzo personalizzato.",
+    "signOut": "Esci",
+    "slowConfirm": "Il pagamento è andato a buon fine, ma la conferma sta richiedendo più tempo del solito — ricarichi la pagina tra un minuto o ci contatti se il problema persiste."
+  },
+  "settings": {
+    "title": "Fatturazione",
+    "loading": "Caricamento della fatturazione…",
+    "loadFailed": "Impossibile caricare la fatturazione.",
+    "retry": "Riprova",
+    "comped": "Questo studio ha un accesso gratuito — nessun abbonamento necessario.",
+    "freeBeta": "<strong>Beta gratuita</strong> · {{seats}} postazioni · {{images}} immagini per cartella · dettatura con IA inclusa",
+    "noCard": "Nessuna carta necessaria durante la beta.",
+    "seatsInUse": "{{used}} postazioni su {{seats}} in uso.",
+    "needMoreBeta": "Servono più di {{seats}} postazioni? <a>Ci contatti</a>.",
+    "history": "Cronologia di fatturazione",
+    "noPlan": "Nessun piano",
+    "seatsUsed": "{{used}}/{{seats}} postazioni",
+    "changePlan": "Cambia piano",
+    "planOption": "{{name}} — {{price}}/mese",
+    "manage": "Gestisci la fatturazione",
+    "hintStripe": "«Gestisci la fatturazione» apre Stripe — carta, fatture e disdetta.",
+    "hintNoStripe": "Le verrà chiesto di scegliere un piano quando il Suo accesso ne richiederà uno.",
+    "needMore": "Servono più di 5 postazioni? <a>Ci contatti</a>.",
+    "managedBy": "La fatturazione è gestita da {{owner}}.",
+    "theOwner": "il titolare dello studio",
+    "planUpdated": "Piano aggiornato.",
+    "switchTitle": "Passare al piano {{plan}}?",
+    "switchMessage": "{{price}} al mese. La differenza viene calcolata in proporzione sulla prossima fattura.",
+    "switchConfirm": "Cambia piano",
+    "changeFailed": "Impossibile cambiare piano.",
+    "portalFailed": "Impossibile aprire il portale di fatturazione.",
+    "status": {
+      "trialing": "prova gratuita",
+      "trialingDate": "prova gratuita — primo pagamento il {{date}}",
+      "active": "attivo",
+      "activeDate": "attivo — rinnovo il {{date}}",
+      "past_due": "pagamento non riuscito — aggiorni la carta",
+      "none": "non ancora abbonato",
+      "canceled": "annullato",
+      "incomplete": "incompleto",
+      "incomplete_expired": "incompleto, scaduto",
+      "unpaid": "non pagato",
+      "paused": "in pausa"
+    }
+  },
+  "errors": {
+    "checkoutLink": "Stripe non ha restituito un link di pagamento.",
+    "portalLink": "Stripe non ha restituito un link al portale."
+  }
+}

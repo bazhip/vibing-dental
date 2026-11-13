@@ -10,6 +10,7 @@
  */
 
 import { Species } from '../types';
+import type { ColumnKey } from './columnDefinitions';
 
 export interface ChartTooth {
   triadan: number;
@@ -251,13 +252,14 @@ export const TOOTH_GRID_LAYOUTS: Record<Species, { maxilla: ToothGridLayout; man
   },
 };
 
-export const TOOTH_DATA_ROWS: Array<{ label: string; suffix: string }> = [
-  { label: 'Mobility', suffix: 'mob' },
-  { label: 'Recession', suffix: 'rec' },
-  { label: 'Pocket', suffix: 'poc' },
-  { label: 'Furcation', suffix: 'fur' },
-  { label: 'Enlargement', suffix: 'hyp' },
-  { label: 'Calculus', suffix: 'cal' },
-  { label: 'Gingivitis', suffix: 'gin' },
-  { label: 'PD Stage', suffix: 'pds' },
+/** PDF grid rows. Labels come from columnLabel(key) (constants/columnDefinitions). */
+export const TOOTH_DATA_ROWS: Array<{ key: ColumnKey; suffix: string }> = [
+  { key: 'mobility', suffix: 'mob' },
+  { key: 'recession', suffix: 'rec' },
+  { key: 'pocket', suffix: 'poc' },
+  { key: 'furcation', suffix: 'fur' },
+  { key: 'hyperplasia', suffix: 'hyp' },
+  { key: 'calculus', suffix: 'cal' },
+  { key: 'gingivitis', suffix: 'gin' },
+  { key: 'pdstate', suffix: 'pds' },
 ];

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Species,
   ToothMark,
@@ -23,6 +24,17 @@ import {
   type ParsedDiagram,
   type SvgSubpath,
 } from './toothDiagram/parseSvg';
+
+const MISSING_FILL_CLASS = 'tooth-group__missing-fill';
+const HOVER_CLASS = 'tooth-group__hover';
+
+/** The diagram's built-in text labels, keyed by the text the species data carries. */
+const LABEL_KEYS = {
+  Maxilla: 'diagram.label.maxilla',
+  Mandible: 'diagram.label.mandible',
+  R: 'diagram.label.right',
+  L: 'diagram.label.left',
+} as const;
 
 export type DiagramTool = 'mark' | 'comment' | 'draw';
 
@@ -267,6 +279,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   // finished stroke is committed once on pointer-up as a single undo step.
   const [liveStroke, setLiveStroke] = React.useState<DiagramStroke | null>(null);
   const [rawParsed, setRawParsed] = React.useState<ParsedDiagram | null>(null);
+  const { t } = useTranslation('chart');
   const [hoveredTriadan, setHoveredTriadan] = React.useState<number | null>(null);
 
   // Imperative handle deferred to after layout/viewBox computations below
@@ -1061,12 +1074,12 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       role="group"
       aria-label={
         onToothSelect
-          ? 'Tooth diagram — choose a tooth to chart it'
+          ? t('diagram.aria.select')
           : markMode === 'extracted-only'
-          ? 'Tooth diagram — Enter or Space on a tooth toggles extracted'
+          ? t('diagram.aria.extracted')
           : markMode === 'missing-only'
-          ? 'Tooth diagram — Enter or Space on a tooth toggles missing'
-          : 'Tooth diagram'
+          ? t('diagram.aria.missing')
+          : t('diagram.aria.default')
       }
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -1115,7 +1128,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           dominantBaseline="central"
           pointerEvents="none"
         >
-          {l.text}
+          {l.text in LABEL_KEYS ? t(LABEL_KEYS[l.text as keyof typeof LABEL_KEYS]) : l.text}
         </text>
       ))}
 
@@ -1171,7 +1184,14 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               tabIndex={0}
               aria-pressed={onToothSelect ? selected : !!mark}
               aria-disabled={(!onToothSelect && locked) || undefined}
-              aria-label={`Tooth ${tooth.triadan}${mark ? `, marked ${mark}` : ''}${flags?.planned ? ', planned extraction' : ''}${!onToothSelect && locked ? ' (missing before this visit — locked)' : ''}`}
+              aria-label={t('diagram.tooth.label', {
+                triadan: tooth.triadan,
+                details: [
+                  mark === 'missing' ? t('diagram.tooth.markedMissing') : mark === 'extracted' ? t('diagram.tooth.markedExtracted') : '',
+                  flags?.planned ? t('diagram.tooth.planned') : '',
+                  !onToothSelect && locked ? t('diagram.tooth.locked') : '',
+                ].join(''),
+              })}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -1186,7 +1206,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               style={{ cursor: tool === 'draw' ? 'crosshair' : 'pointer' }}
             >
               {/* Solid fill for "missing" — bottom layer. */}
-              {mark === 'missing' && renderShape('tooth-group__missing-fill')}
+              {mark === 'missing' && renderShape(MISSING_FILL_CLASS)}
 
               {/* X overlay for "extracted". */}
               {mark === 'extracted' && (
@@ -1203,7 +1223,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               )}
 
               {/* Hit area + hover tint. */}
-              {renderShape('tooth-group__hover')}
+              {renderShape(HOVER_CLASS)}
             </g>
           );
         })}
@@ -1327,7 +1347,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
         <div
           key={comment.id}
           className={`diagram-comment${anchor ? '' : ' diagram-comment--unanchored'}${isGridComment(comment) ? ' diagram-comment--mirrored' : ''}`}
-          title={isGridComment(comment) ? 'From the Charting grid — edit the grid to change this' : undefined}
+          title={isGridComment(comment) ? t('diagram.comment.fromGrid') : undefined}
           data-comment-id={comment.id}
           style={toOverlayPct(x, y, w, h)}
           // For free comments (no header), the whole shell acts as the
@@ -1360,13 +1380,13 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               onPointerDown={(e) => handleCommentDragStart(comment.id, e)}
             >
               <span className="diagram-comment__label">{anchor.label}</span>
-              {isGridComment(comment) && <span className="diagram-comment__badge">Charting</span>}
+              {isGridComment(comment) && <span className="diagram-comment__badge">{t('grid.title')}</span>}
               <button
                 type="button"
                 className="diagram-comment__delete"
                 onPointerDown={(e) => e.stopPropagation()}
                 onClick={() => handleCommentDelete(comment.id)}
-                aria-label="Delete comment"
+                aria-label={t('diagram.comment.delete')}
               >
                 ✕
               </button>
@@ -1378,7 +1398,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               className="diagram-comment__delete diagram-comment__delete--floating"
               onPointerDown={(e) => e.stopPropagation()}
               onClick={() => handleCommentDelete(comment.id)}
-              aria-label="Delete comment"
+              aria-label={t('diagram.comment.delete')}
             >
               ✕
             </button>
@@ -1386,7 +1406,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           <CodeField
             multiline
             className="diagram-comment__text"
-            placeholder="Notes..."
+            placeholder={t('diagram.comment.placeholder')}
             value={comment.text}
             readOnly={readOnly || isGridComment(comment)}
             onChange={(text) => handleCommentEdit(comment.id, text)}
@@ -1395,7 +1415,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           <div
             className="diagram-comment__resize"
             onPointerDown={(e) => handleCommentResizeStart(comment.id, e)}
-            aria-label="Resize comment"
+            aria-label={t('diagram.comment.resize')}
           />
         </div>
       ))}

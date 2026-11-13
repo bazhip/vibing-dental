@@ -1,0 +1,192 @@
+{
+  "done": "Fertig",
+  "saving": "Wird gespeichert…",
+  "practice": {
+    "title": "Praxiseinstellungen",
+    "profile": "Profil",
+    "nameLabel": "Praxisname",
+    "namePlaceholder": "Wird in der App und auf jeder Akte angezeigt",
+    "nameLockedLoading": "Der Praxisname ist gesperrt, bis Ihr Team geladen ist — versuchen Sie es unten erneut.",
+    "nameLockedShared": "Der Praxisname gilt für das ganze Team — nur der Hauptinhaber kann ihn ändern.",
+    "nameSaved": "Praxisname gespeichert.",
+    "nameSaveFailed": "Der Praxisname konnte nicht gespeichert werden.",
+    "discard": {
+      "title": "Änderung des Praxisnamens verwerfen?",
+      "message": "Der neue Praxisname wurde nicht gespeichert.",
+      "confirm": "Verwerfen",
+      "cancel": "Weiter bearbeiten"
+    },
+    "logo": {
+      "label": "Praxislogo",
+      "alt": "Praxislogo",
+      "replace": "Ersetzen",
+      "remove": "Entfernen",
+      "working": "Wird verarbeitet…",
+      "empty": "Kein Logo hochgeladen — Akten verwenden das integrierte Zeichen der Vorlage.",
+      "upload": "Logo hochladen",
+      "uploading": "Wird hochgeladen…",
+      "choose": "Logo-Bild auswählen",
+      "updated": "Logo aktualisiert.",
+      "uploadFailed": "Das Logo konnte nicht hochgeladen werden.",
+      "removed": "Logo entfernt.",
+      "removeFailed": "Das Logo konnte nicht entfernt werden.",
+      "removeTitle": "Praxislogo entfernen?",
+      "removeMessage": "Neue Akten und PDFs verwenden das integrierte Zeichen der Vorlage, bis Sie ein anderes Logo hochladen.",
+      "removeConfirm": "Logo entfernen"
+    },
+    "team": {
+      "title": "Team",
+      "loading": "Team wird geladen…",
+      "settingUp": "Ihre Praxis wird noch eingerichtet.",
+      "checkAgain": "Erneut prüfen",
+      "checking": "Wird geprüft…",
+      "retry": "Erneut versuchen",
+      "retrying": "Neuer Versuch…",
+      "loadError": "Ihr Team konnte nicht geladen werden. {{error}}",
+      "ownerBlurb": "Kolleginnen und Kollegen, die Sie hinzufügen, teilen die Akten, Vorlagen und Bilder dieser Praxis.",
+      "memberBlurb": "Sie sind Mitglied von {{practice}}. Sie teilen die Akten dieser Praxis.",
+      "you": "(Sie)",
+      "pending": "Einladung ausstehend",
+      "roles": {
+        "primaryOwner": "Hauptinhaber",
+        "owner": "Inhaber",
+        "member": "Mitglied"
+      },
+      "resend": "Einladung erneut senden",
+      "makeOwner": "Zum Inhaber machen",
+      "makeMember": "Zum Mitglied machen",
+      "transfer": "Inhaberschaft übertragen",
+      "remove": "Entfernen",
+      "emailLabel": "E-Mail-Adresse der Kollegin / des Kollegen",
+      "add": "Hinzufügen",
+      "adding": "Wird hinzugefügt…",
+      "inviteHint": "Noch kein Konto? Wir senden eine Einladung per E-Mail, mit der ein Passwort festgelegt und der Praxis beigetreten werden kann.",
+      "invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "invited": "Einladung an {{email}} gesendet — die Person legt ein Passwort fest und ist dabei.",
+      "existingAccount": "{{email}} hat bereits ein ToothOps-Konto — wir haben einen Link zur Annahme per E-Mail gesendet. Die Person erscheint hier, sobald sie beigetreten ist.",
+      "addFailed": "Die Person konnte nicht hinzugefügt werden.",
+      "failed": "Das hat nicht geklappt. Bitte versuchen Sie es erneut.",
+      "loadFailed": "Ihr Team konnte nicht geladen werden.",
+      "transferTitle": "{{email}} zum Hauptinhaber machen?",
+      "transferMessage": "Der Hauptinhaber verwaltet die Abrechnung und den Praxisnamen. Sie bleiben Inhaber der Praxis.",
+      "transferConfirm": "Inhaberschaft übertragen",
+      "transferred": "Inhaberschaft übertragen.",
+      "removeTitle": "{{email}} aus der Praxis entfernen?",
+      "removePendingMessage": "Die Einladung wird zurückgezogen.",
+      "removeMessage": "Die Person verliert den Zugriff auf die gemeinsamen Akten der Praxis, behält aber ihre eigenen Akten.",
+      "cancelInvite": "Einladung zurückziehen",
+      "removeConfirm": "Entfernen",
+      "keep": "Behalten",
+      "inviteCancelled": "Einladung zurückgezogen.",
+      "memberRemoved": "Mitglied entfernt.",
+      "inviteResent": "Einladung erneut an {{email}} gesendet.",
+      "nowOwner": "{{email}} ist jetzt Inhaber.",
+      "nowMember": "{{email}} ist jetzt Mitglied."
+    },
+    "ownerReport": {
+      "title": "Besitzerbericht",
+      "blurb": "Der Bericht, den Tierhalter nach einem Zahnbehandlungstermin mit nach Hause nehmen — Abschnitte, Überschriften, Formulierungen, Sprache und das praxisweite Standardlayout.",
+      "customize": "Besitzerbericht anpassen"
+    },
+    "deletion": {
+      "title": "Praxis löschen",
+      "blurb": "Löscht die Praxis und alle mit ihr geteilten Akten, auch die Ihres Teams, endgültig und kündigt jedes Abonnement. Teammitglieder behalten ihre Konten und privaten Akten.",
+      "button": "Praxis löschen…"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Dieses Bild konnte nicht gelesen werden.",
+    "canvas": "Zeichenfläche nicht verfügbar",
+    "convert": "Das Bild konnte nicht umgewandelt werden.",
+    "tooLarge": "Dieses Bild ist zu groß — Logodateien dürfen höchstens 10 MB groß sein.",
+    "reportTooLarge": "Diese Einstellungen für den Besitzerbericht sind zu umfangreich (maximal 50 KB) — kürzen Sie einige Texte oder entfernen Sie eine Vorlage."
+  },
+  "chart": {
+    "title": "Zahnschema-Einstellungen",
+    "sections": {
+      "patient": "Einstellungen der Patientenseite",
+      "anesthesia": "Narkose-Einstellungen",
+      "charting": "Einstellungen für die Befunderfassung",
+      "diagnosis": "Diagnose-Einstellungen",
+      "images": "Bilder-Einstellungen"
+    },
+    "noteAccount": "Nur für Sie — diese Einstellungen folgen Ihrem Konto auf jedes Gerät. Änderungen werden sofort gespeichert.",
+    "noteBrowser": "In diesem Browser gespeichert. Änderungen gelten sofort.",
+    "all": "Alle Zahnschema-Einstellungen",
+    "charting": {
+      "title": "Zahnschema",
+      "view": "Ansicht",
+      "grid": "Raster",
+      "byTooth": "Pro Zahn",
+      "pocket": "Taschentiefen",
+      "pocketTooth": "Eine pro Zahn",
+      "pocketRoot": "Eine pro Wurzel",
+      "pocketRootHint": "M / D, oder MB / MP / D bei dreiwurzeligen Zähnen",
+      "space": "Leertaste im Raster",
+      "spaceDown": "Springt nach unten zum nächsten Zahn",
+      "spaceDownHint": "schnell, wenn Sie eine Reihe von Tiefen ansagen",
+      "spaceType": "Fügt ein Leerzeichen ein",
+      "scoreTap": "Nach dem Antippen eines Werts im Raster",
+      "scoreFinding": "Zum nächsten Befund am selben Zahn gehen",
+      "scoreFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
+      "scoreTooth": "Nach unten zum nächsten Zahn gehen",
+      "scoreToothHint": "um einen Befund im ganzen Gebiss zu bewerten",
+      "scoreStay": "Stehen bleiben",
+      "columns": "Spalten"
+    },
+    "beside": {
+      "title": "Neben den Zähnen",
+      "show": "Befunde im Diagnose-Schema anzeigen",
+      "showHint": "(und im PDF)",
+      "include": "Einbeziehen"
+    },
+    "anesthesia": {
+      "title": "Narkose",
+      "blocks": "Angezeigte Nervenblockaden",
+      "blocksNote": "Eine ausgeblendete Blockade wird in einer Akte weiterhin angezeigt, wenn dort eine Dosis eingetragen ist.",
+      "blockNames": {
+        "infraorbital": "Infraorbital",
+        "caudalMaxillary": "Kaudal maxillär",
+        "inferiorAlveolar": "Alveolaris inferior",
+        "mental": "Mental",
+        "other": "Andere"
+      },
+      "usual": "Ihr übliches Anästhetikum",
+      "usualNote": "Wird mit einem Tipp angeboten, wenn in der Akte kein Anästhetikum eingetragen ist.",
+      "drugPlaceholder": "z. B. Bupivacain",
+      "drugAria": "Übliches Anästhetikum",
+      "strengthAria": "Konzentration des üblichen Anästhetikums (%)"
+    },
+    "patient": {
+      "title": "Patientenseite",
+      "hideRecheck": "Feld „Kontrolle fällig“ ausblenden"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Befundraster einbeziehen",
+      "gridHint": "(optional, wenn die Befunde im Schema stehen)",
+      "images": "Bilder einbeziehen",
+      "imagesHint": "(4 pro Seite, nach der Akte)"
+    }
+  },
+  "feedback": {
+    "title": "Feedback senden",
+    "kinds": {
+      "bug": "Etwas stimmt nicht",
+      "idea": "Idee",
+      "other": "Sonstiges"
+    },
+    "kindsAria": "Art des Feedbacks",
+    "promptBug": "Was ist passiert?",
+    "promptIdea": "Was würde helfen?",
+    "promptOther": "Ihre Nachricht",
+    "bugPlaceholder": "Was Sie getan haben, was Sie erwartet haben, was stattdessen passiert ist…",
+    "attach": "Transkript meines Diktats beifügen",
+    "note": "Geht direkt an den ToothOps-Entwickler, der Ihnen per E-Mail antwortet.",
+    "sent": "Danke! Ihr Feedback wurde gesendet.",
+    "sendFailed": "Senden nicht möglich. Bitte versuchen Sie es erneut.",
+    "needsAccount": "Für Feedback ist ein Konto erforderlich.",
+    "send": "Senden",
+    "sending": "Wird gesendet…"
+  }
+}

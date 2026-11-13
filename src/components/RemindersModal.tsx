@@ -1,8 +1,12 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { confirmDialog, toast } from './ui/dialogs';
 import { useTeam } from '../hooks/useTeam';
 import { useReminderTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
+
+/** The tokens the reminder template understands (literal, never translated). */
+const PLACEHOLDERS = ['{{patient}}', '{{owner}}', '{{practice}}', '{{recheck_date}}'];
 
 interface RemindersModalProps {
   open: boolean;
@@ -16,6 +20,7 @@ interface RemindersModalProps {
  * happens from My charts.
  */
 export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose }) => {
+  const { t } = useTranslation('reminders');
   const team = useTeam(open);
   const reminder = useReminderTemplate(team.practice?.id ?? '', open);
 
@@ -45,14 +50,14 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
   // Closing with unsaved template edits asks first (Done, Escape, backdrop).
   const requestClose = React.useCallback(async () => {
     if (dirty && !(await confirmDialog({
-      title: 'Discard reminder changes?',
-      message: 'Your edits to the reminder settings haven’t been saved.',
-      confirmLabel: 'Discard',
-      cancelLabel: 'Keep editing',
+      title: t('settings.discard.title'),
+      message: t('settings.discard.message'),
+      confirmLabel: t('settings.discard.confirm'),
+      cancelLabel: t('settings.discard.cancel'),
       danger: true,
     }))) return;
     onClose();
-  }, [dirty, onClose]);
+  }, [dirty, onClose, t]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -73,10 +78,10 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
     setNote('');
     try {
       await reminder.save({ subject, body, auto, leadDays: lead });
-      toast('Reminder settings saved.', { kind: 'success' });
+      toast(t('settings.saved'), { kind: 'success' });
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not save the reminder settings.');
+      setError(e instanceof Error ? e.message : t('settings.saveFailed'));
     } finally {
       setBusy(false);
     }
@@ -89,57 +94,56 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
       onClick={(e) => { if (e.target === e.currentTarget && (e.currentTarget as HTMLElement).dataset.downOnBackdrop === 'true') void requestClose(); }}
       role="dialog"
       aria-modal="true"
-      aria-label="Recheck reminders"
+      aria-label={t('settings.aria')}
     >
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
-          <h2>Recheck reminders</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">
+          <h2>{t('settings.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>
         <div className="ai-settings-body">
           <section className="ai-settings-section">
             <p className="ai-settings-blurb">
-              Email the pet owner when a recheck is due. Placeholders:
-              {' '}<code>{'{{patient}}'}</code> <code>{'{{owner}}'}</code>{' '}
-              <code>{'{{practice}}'}</code> <code>{'{{recheck_date}}'}</code>.
-              {' '}Send a reminder for one patient from <strong>My charts</strong>.
+              {t('settings.blurb')}
+              {' '}{PLACEHOLDERS.map((p, i) => <React.Fragment key={p}><code>{p}</code>{i < PLACEHOLDERS.length - 1 ? ' ' : '.'}</React.Fragment>)}
+              {' '}<Trans t={t} i18nKey="settings.blurbTail" components={{ strong: <strong /> }} />
             </p>
 
             {!team.loaded ? (
-              <p className="practice-logo-empty">Loading…</p>
+              <p className="practice-logo-empty">{t('settings.loading')}</p>
             ) : !team.practice ? (
-              <p className="practice-logo-empty">Your practice is being set up — reload in a moment.</p>
+              <p className="practice-logo-empty">{t('settings.notSetUp')}</p>
             ) : !isOwner ? (
-              <p className="practice-logo-empty">Only a practice owner can change the reminder template.</p>
+              <p className="practice-logo-empty">{t('settings.ownerOnly')}</p>
             ) : (
               <>
                 <label className="patient-form__label" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.5rem' }}>
                   <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} />
-                  Automatically email owners
+                  {t('settings.auto')}
                 </label>
                 <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                  Send
+                  {t('settings.send')}
                   <select
                     className="patient-form__input"
                     value={lead}
                     onChange={(e) => setLead(Number(e.target.value))}
                     disabled={!auto}
                   >
-                    <option value={0}>On the recheck date</option>
-                    <option value={3}>3 days before</option>
-                    <option value={7}>1 week before</option>
-                    <option value={14}>2 weeks before</option>
-                    <option value={30}>1 month before</option>
+                    <option value={0}>{t('settings.lead.onDate')}</option>
+                    <option value={3}>{t('settings.lead.days3')}</option>
+                    <option value={7}>{t('settings.lead.week1')}</option>
+                    <option value={14}>{t('settings.lead.weeks2')}</option>
+                    <option value={30}>{t('settings.lead.month1')}</option>
                   </select>
                 </label>
                 <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                  Subject
+                  {t('settings.subject')}
                   <input className="patient-form__input" value={subject} onChange={(e) => setSubject(e.target.value)} />
                 </label>
                 <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-                  Message
+                  {t('settings.message')}
                   <textarea className="patient-form__textarea reminder__body" value={body} onChange={(e) => setBody(e.target.value)} />
                 </label>
 
@@ -154,15 +158,15 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose })
           {isOwner && dirty ? (
             <>
               <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={busy}>
-                Cancel
+                {t('actions.cancel', { ns: 'common' })}
               </button>
               <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={save} disabled={busy}>
-                {busy ? 'Saving…' : 'Save'}
+                {busy ? t('settings.saving') : t('actions.save', { ns: 'common' })}
               </button>
             </>
           ) : (
             <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose} disabled={busy}>
-              Done
+              {t('settings.done')}
             </button>
           )}
         </footer>

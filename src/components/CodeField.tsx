@@ -1,5 +1,6 @@
 import React from 'react';
-import { codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
+import { useTranslation } from 'react-i18next';
+import { codeDefinition, codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
 
 /**
  * Drop-in replacement for <input> / <textarea> that pops a small suggestion
@@ -11,6 +12,7 @@ import { codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
  *   - it must be entirely uppercase letters, digits, `/`, or `*`,
  *   - it must start with a letter (so just `4` or `/X` doesn't trigger),
  *   - and it must match the prefix of at least one known code.
+ * Definitions are shown in the active language (codeDefinition).
  */
 
 type CommonProps =
@@ -30,6 +32,8 @@ export const CodeField: React.FC<CodeFieldProps> = ({
   multiline,
   ...rest
 }) => {
+  // Subscribe to language changes so an open popup re-renders its definitions.
+  useTranslation('codes');
   const inputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [suggestions, setSuggestions] = React.useState<DentalCode[]>([]);
@@ -149,7 +153,7 @@ export const CodeField: React.FC<CodeFieldProps> = ({
           }}
         >
           <span className="code-field__code">{s.code}</span>
-          <span className="code-field__def">{s.definition}</span>
+          <span className="code-field__def">{codeDefinition(s.code)}</span>
         </button>
       ))}
     </div>

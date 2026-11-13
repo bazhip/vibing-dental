@@ -1,5 +1,6 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import { supabase } from './supabaseClient';
+import i18n from '../i18n';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
 import {
@@ -743,8 +744,20 @@ export function isScopedSection(section: string | undefined): boolean {
   return !!section && section in SECTION_SCOPES;
 }
 
+const SECTION_LABELS: Record<string, () => string> = {
+  patient: () => i18n.t('sections.patient', { ns: 'voice' }),
+  exam: () => i18n.t('sections.exam', { ns: 'voice' }),
+  anesthesia: () => i18n.t('sections.anesthesia', { ns: 'voice' }),
+  charting: () => i18n.t('sections.charting', { ns: 'voice' }),
+  diagnosis: () => i18n.t('sections.diagnosis', { ns: 'voice' }),
+  procedure: () => i18n.t('sections.procedure', { ns: 'voice' }),
+  treatment: () => i18n.t('sections.treatment', { ns: 'voice' }),
+};
+
+/** The section's name in the active language, for the activity log. (The AI prompt
+ *  keeps using the English `scope.label`.) */
 export function sectionLabel(section: string): string {
-  return SECTION_SCOPES[section]?.label ?? section;
+  return SECTION_LABELS[section]?.() ?? section;
 }
 
 /** What dictation may do on any page: everything except a diagram note
@@ -909,7 +922,7 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
 }
 
 export async function sendAutofill(requestBody: AutofillRequest): Promise<Array<Anthropic.ContentBlock>> {
-  if (!supabase) throw new Error('Cloud is not configured.');
+  if (!supabase) throw new Error(i18n.t('errors.noCloud', { ns: 'voice' }));
   const send = async (): Promise<Array<Anthropic.ContentBlock>> => {
     const { data, error } = await supabase!.functions.invoke('ai-autofill', { body: requestBody });
     if (error) {
@@ -1135,15 +1148,28 @@ export function describeAction(action: AiAction): string {
   const get = (k: string): string => String(input[k] ?? '');
   switch (name) {
     case 'set_tooth_mark':       return `${get('triadan')} → ${get('mark')}`;
-    case 'unset_tooth_mark':     return `cleared ${get('diagram')}.${get('triadan')}`;
+    case 'unset_tooth_mark':     return i18n.t('activity.clearedMark', { ns: 'voice', diagram: get('diagram'), triadan: get('triadan') });
     case 'set_tooth_field':      return `${get('triadan')} ${get('field')} = ${get('value')}`;
-    case 'add_comment':          return `${get('diagram') === 'post' ? 'Procedure' : 'Diagnosis'} note${input.triadan ? ` @${get('triadan')}` : ''}: "${get('text').slice(0, 60)}"`;
+    case 'add_comment': {
+      const text = get('text').slice(0, 60);
+      const triadan = get('triadan');
+      if (get('diagram') === 'post') {
+        return input.triadan
+          ? i18n.t('activity.noteProcedureTooth', { ns: 'voice', triadan, text })
+          : i18n.t('activity.noteProcedure', { ns: 'voice', text });
+      }
+      return input.triadan
+        ? i18n.t('activity.noteDiagnosisTooth', { ns: 'voice', triadan, text })
+        : i18n.t('activity.noteDiagnosis', { ns: 'voice', text });
+    }
     case 'set_exam_finding':     return `${get('area')} ${get('status')}${input.comment ? ` — ${get('comment')}` : ''}`;
-    case 'set_nerve_block':      return `block ${get('site')} = ${get('mL')} mL`;
-    case 'set_anesthetic_drug':  return `anesthetic + ${input.concentration ? `${get('concentration')}% ` : ''}${get('drug')}`;
+    case 'set_nerve_block':      return i18n.t('activity.block', { ns: 'voice', site: get('site'), mL: get('mL') });
+    case 'set_anesthetic_drug':  return input.concentration
+      ? i18n.t('activity.anestheticConcentration', { ns: 'voice', concentration: get('concentration'), drug: get('drug') })
+      : i18n.t('activity.anesthetic', { ns: 'voice', drug: get('drug') });
     case 'set_patient_field':    return `${get('field')} = ${get('value')}`;
-    case 'append_treatment_report': return `report += "${get('text').slice(0, 60)}…"`;
-    case 'append_radiographic_findings': return `radiographic findings += "${get('text').slice(0, 60)}…"`;
+    case 'append_treatment_report': return i18n.t('activity.report', { ns: 'voice', text: get('text').slice(0, 60) });
+    case 'append_radiographic_findings': return i18n.t('activity.radiographic', { ns: 'voice', text: get('text').slice(0, 60) });
     default:                     return name;
   }
 }

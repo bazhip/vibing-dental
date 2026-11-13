@@ -1,0 +1,134 @@
+{
+  "title": "Le mie cartelle",
+  "unnamedPatient": "Paziente senza nome",
+  "search": {
+    "placeholder": "Cerca per nome o numero del paziente…",
+    "aria": "Cerca nelle cartelle"
+  },
+  "filters": {
+    "speciesAria": "Filtra per specie",
+    "allSpecies": "Tutte le specie",
+    "doctorAria": "Filtra per veterinario",
+    "allDoctors": "Tutti i veterinari"
+  },
+  "importPdf": "Importa PDF della cartella",
+  "importPdfTitle": "Apra un PDF di cartella creato con questa app per continuare a modificarlo",
+  "newPatient": "+ Nuovo paziente",
+  "newPatientTitle": "Svuota la cartella in uso e inizia un paziente completamente nuovo",
+  "loading": "Caricamento…",
+  "empty": "Nessuna cartella salvata per ora: si salvano automaticamente mentre compila.",
+  "noMatch": {
+    "search": "Nessun paziente corrisponde a questa ricerca.",
+    "due": "Nessun paziente ha un controllo in scadenza.",
+    "filters": "Nessuna cartella corrisponde a questi filtri."
+  },
+  "table": {
+    "aria": "Pazienti",
+    "patient": "Paziente",
+    "number": "N. paziente",
+    "species": "Specie",
+    "visits": "Visite",
+    "updated": "Modificata",
+    "recheck": "Controllo"
+  },
+  "due": "In scadenza",
+  "dueCount": "In scadenza ({{n}})",
+  "dueTitle": "Mostra solo i pazienti con controllo in scadenza o scaduto",
+  "recall": {
+    "overdue": "{{date}} · scaduto",
+    "today": "{{date}} · oggi"
+  },
+  "deciduousSuffix": "{{species}} · Denti decidui",
+  "visits_one": "{{count}} visita",
+  "visits_many": "{{count}} visite",
+  "visits_other": "{{count}} visite",
+  "visitsExpand_one": "{{count}} visita — espandi",
+  "visitsExpand_many": "{{count}} visite — espandi",
+  "visitsExpand_other": "{{count}} visite — espandi",
+  "openPatient": "Apri {{name}}",
+  "visit": {
+    "undated": "Visita senza data",
+    "openDated": "Apri la visita del {{date}}",
+    "openUndated": "Apri la visita senza data",
+    "deleteDated": "Elimina la visita del {{date}} di {{name}}",
+    "deleteUndated": "Elimina la visita senza data di {{name}}",
+    "updated": "Modificata {{when}}"
+  },
+  "actions": {
+    "reminder": "Promemoria",
+    "reminderTitle": "Invia un promemoria di controllo a {{who}}",
+    "clearRecall": "Cancella il promemoria di controllo di {{name}}",
+    "clearRecallTitle": "Cancella il promemoria di controllo di {{name}} — ad es. dopo un controllo che non ha prodotto una nuova cartella",
+    "newVisit": "+ Visita",
+    "newVisitTitle": "Inizia una nuova visita per {{name}}",
+    "history": "Cronologia",
+    "historyChartTitle": "Chi ha salvato la cartella di {{name}} e quando",
+    "historyVisitTitle": "Chi ha salvato questa visita e quando",
+    "deleteChart": "Elimina la cartella di {{name}}",
+    "loadMore": "Carica altre cartelle"
+  },
+  "errors": {
+    "load": "Impossibile caricare le Sue cartelle. {{error}}",
+    "loadMore": "Impossibile caricare altre cartelle. {{error}}",
+    "open": "Impossibile aprire questa cartella. {{error}}",
+    "delete": "Impossibile eliminare questa visita. {{error}}",
+    "clearRecall": "Impossibile cancellare questo controllo. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Eliminare {{name}}{{when}}?",
+    "titleUnnamed": "Eliminare questa cartella{{when}}?",
+    "message": "Questa visita viene rimossa dal cloud per tutti i membri del Suo studio. L’operazione non può essere annullata.",
+    "confirm": "Elimina visita"
+  },
+  "clearDialog": {
+    "title": "Cancellare il controllo di {{name}}?",
+    "message": "Lo usi quando il controllo è avvenuto senza una nuova cartella oppure non è più necessario. Il paziente uscirà dall’elenco «In scadenza».",
+    "confirm": "Cancella controllo"
+  },
+  "history": {
+    "aria": "Cronologia della cartella",
+    "title": "Cronologia della cartella",
+    "titleWith": "Cronologia — {{label}}",
+    "openVisit": "Apri questa visita",
+    "loading": "Caricamento…",
+    "empty": "Nessuna versione salvata per ora: la cronologia inizia con il primo salvataggio.",
+    "pick": "Scelga una versione per visualizzarla.",
+    "loadingVersion": "Caricamento di questa versione…",
+    "current": "Attuale",
+    "outside": "Una persona esterna al Suo studio",
+    "automatic": "ToothOps (automatico)",
+    "baseline": "Prima dell’inizio della cronologia · ultimo salvataggio {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Ripristina questa versione",
+    "restoring": "Ripristino…",
+    "restoreHint": "Scelga «Modifica cartella» per ripristinare una versione precedente.",
+    "loadFailed": "Impossibile caricare questa versione. {{error}}",
+    "restoreFailed": "Impossibile ripristinare. {{error}}",
+    "restored": "Versione ripristinata.",
+    "confirmTitle": "Ripristinare questa versione?",
+    "confirmMessage": "La cartella torna allo stato salvato {{when}}. La versione di oggi resta nella cronologia, così potrà tornare indietro.",
+    "confirmButton": "Ripristina"
+  },
+  "templates": {
+    "aria": "Modelli di referto",
+    "title": "Modelli di referto",
+    "saved": "Modelli salvati",
+    "new": "Nuovo modello",
+    "empty": "Nessun modello per ora: ne scriva uno qui sotto e lo salvi, oppure usi «Salva come modello» nella sezione Referto del trattamento.",
+    "untitled": "Senza titolo",
+    "nameLabel": "Nome del modello",
+    "namePlaceholder": "ad es. Pulizia di routine (felino)",
+    "bodyLabel": "Testo del referto",
+    "bodyPlaceholder": "Il testo del referto inserito in Referto del trattamento e dell’intervento…",
+    "nameRequired": "Dia un nome al modello: serve a identificarlo nel menu di inserimento.",
+    "saveFailed": "Impossibile salvare il modello.",
+    "deleteFailed": "Impossibile eliminare il modello.",
+    "cloudOff": "Il cloud non è configurato.",
+    "deleteTitle": "Eliminare «{{name}}»?",
+    "deleteMessage": "Questo modello viene rimosso per tutti i membri del Suo studio. L’operazione non può essere annullata.",
+    "deleteConfirm": "Elimina modello",
+    "saving": "Salvataggio…",
+    "saveChanges": "Salva modifiche",
+    "saveTemplate": "Salva modello"
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import { useReminderTemplate, fillTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -32,6 +33,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
   ownerName,
   recheckDate,
 }) => {
+  const { t } = useTranslation('reminders');
   const { template, loaded } = useReminderTemplate(practiceId, open);
   const [to, setTo] = React.useState('');
   const [subject, setSubject] = React.useState('');
@@ -81,40 +83,40 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
       setSent(true);
       setTimeout(onClose, 900);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not send the reminder.');
+      setError(e instanceof Error ? e.message : t('composer.sendFailed'));
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Send recheck reminder">
+    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('composer.aria')}>
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
-          <h2>Send recheck reminder</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
+          <h2>{t('composer.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>×</button>
         </header>
         <div className="ai-settings-body">
           {!loaded ? (
-            <p className="practice-logo-empty">Loading…</p>
+            <p className="practice-logo-empty">{t('composer.loading')}</p>
           ) : (
             <>
               <label className="patient-form__label">
-                To
+                {t('composer.to')}
                 <input
                   type="email"
                   className="patient-form__input"
                   value={to}
                   readOnly
                   aria-readonly="true"
-                  title="Reminders go to the owner email saved on this chart. Edit it on the chart to change it."
+                  title={t('composer.toTitle')}
                 />
                 <span className="patient-form__hint">
-                  Goes to the owner email on this chart. To change it, edit the chart's owner email.
+                  {t('composer.toHint')}
                 </span>
               </label>
               <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
-                Subject
+                {t('composer.subject')}
                 <input
                   type="text"
                   className="patient-form__input"
@@ -123,7 +125,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                 />
               </label>
               <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
-                Message
+                {t('composer.message')}
                 <textarea
                   className="patient-form__textarea reminder__body"
                   value={bodyText}
@@ -131,19 +133,19 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                 />
               </label>
               {error && <div className="login-error" role="alert">{error}</div>}
-              {sent && <div className="login-notice" role="status">Reminder sent.</div>}
+              {sent && <div className="login-notice" role="status">{t('composer.sent')}</div>}
             </>
           )}
         </div>
         <footer className="ai-settings-footer">
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>Cancel</button>
+          <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>{t('actions.cancel', { ns: 'common' })}</button>
           <button
             type="button"
             className="entry-grid__button entry-grid__button--topbar"
             onClick={send}
             disabled={busy || !loaded}
           >
-            {busy ? 'Sending…' : 'Send reminder'}
+            {busy ? t('composer.sending') : t('composer.send')}
           </button>
         </footer>
       </div>

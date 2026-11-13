@@ -1,0 +1,192 @@
+{
+  "done": "Fine",
+  "saving": "Salvataggio…",
+  "practice": {
+    "title": "Impostazioni dello studio",
+    "profile": "Profilo",
+    "nameLabel": "Nome dello studio",
+    "namePlaceholder": "Mostrato nell’app e su ogni cartella",
+    "nameLockedLoading": "Il nome dello studio è bloccato finché il Suo team non è caricato — riprovi qui sotto.",
+    "nameLockedShared": "Il nome dello studio è condiviso da tutto il team — solo il titolare principale può modificarlo.",
+    "nameSaved": "Nome dello studio salvato.",
+    "nameSaveFailed": "Impossibile salvare il nome dello studio.",
+    "discard": {
+      "title": "Annullare la modifica del nome dello studio?",
+      "message": "Il nuovo nome dello studio non è stato salvato.",
+      "confirm": "Annulla modifica",
+      "cancel": "Continua a modificare"
+    },
+    "logo": {
+      "label": "Logo dello studio",
+      "alt": "Logo dello studio",
+      "replace": "Sostituisci",
+      "remove": "Rimuovi",
+      "working": "In corso…",
+      "empty": "Nessun logo caricato — le cartelle usano il simbolo integrato del modello.",
+      "upload": "Carica logo",
+      "uploading": "Caricamento…",
+      "choose": "Scegli un’immagine per il logo",
+      "updated": "Logo aggiornato.",
+      "uploadFailed": "Impossibile caricare il logo.",
+      "removed": "Logo rimosso.",
+      "removeFailed": "Impossibile rimuovere il logo.",
+      "removeTitle": "Rimuovere il logo dello studio?",
+      "removeMessage": "Le nuove cartelle e i nuovi PDF useranno il simbolo integrato del modello finché non caricherà un altro logo.",
+      "removeConfirm": "Rimuovi logo"
+    },
+    "team": {
+      "title": "Team",
+      "loading": "Caricamento del team…",
+      "settingUp": "Il Suo studio è ancora in fase di configurazione.",
+      "checkAgain": "Controlla di nuovo",
+      "checking": "Controllo…",
+      "retry": "Riprova",
+      "retrying": "Nuovo tentativo…",
+      "loadError": "Impossibile caricare il Suo team. {{error}}",
+      "ownerBlurb": "I colleghi che aggiunge condividono le cartelle, i modelli e le immagini di questo studio.",
+      "memberBlurb": "È membro di {{practice}}. Condivide le cartelle di questo studio.",
+      "you": "(Lei)",
+      "pending": "Invito in attesa",
+      "roles": {
+        "primaryOwner": "Titolare principale",
+        "owner": "Titolare",
+        "member": "Membro"
+      },
+      "resend": "Reinvia l’invito",
+      "makeOwner": "Rendi titolare",
+      "makeMember": "Rendi membro",
+      "transfer": "Trasferisci la titolarità",
+      "remove": "Rimuovi",
+      "emailLabel": "E-mail del collega",
+      "add": "Aggiungi",
+      "adding": "Aggiunta…",
+      "inviteHint": "Non ha ancora un account? Gli invieremo via e-mail un invito per impostare una password e unirsi allo studio.",
+      "invalidEmail": "Inserisca un indirizzo e-mail valido.",
+      "invited": "Invito inviato a {{email}} — la persona imposta una password ed entra a far parte dello studio.",
+      "existingAccount": "{{email}} ha già un account ToothOps — le abbiamo inviato via e-mail un link per accettare. Comparirà qui non appena si sarà unita allo studio.",
+      "addFailed": "Impossibile aggiungere la persona.",
+      "failed": "Operazione non riuscita. Riprovi.",
+      "loadFailed": "Impossibile caricare il Suo team.",
+      "transferTitle": "Rendere {{email}} titolare principale?",
+      "transferMessage": "Il titolare principale gestisce la fatturazione e il nome dello studio. Lei resta titolare dello studio.",
+      "transferConfirm": "Trasferisci la titolarità",
+      "transferred": "Titolarità trasferita.",
+      "removeTitle": "Rimuovere {{email}} dallo studio?",
+      "removePendingMessage": "Il suo invito viene annullato.",
+      "removeMessage": "La persona perde l’accesso alle cartelle condivise dello studio, ma conserva le proprie cartelle.",
+      "cancelInvite": "Annulla l’invito",
+      "removeConfirm": "Rimuovi",
+      "keep": "Mantieni",
+      "inviteCancelled": "Invito annullato.",
+      "memberRemoved": "Membro rimosso.",
+      "inviteResent": "Invito reinviato a {{email}}.",
+      "nowOwner": "{{email}} è ora titolare.",
+      "nowMember": "{{email}} è ora membro."
+    },
+    "ownerReport": {
+      "title": "Referto per il proprietario",
+      "blurb": "Il referto che le famiglie portano a casa dopo una visita odontoiatrica — sezioni, titoli, formulazioni, lingua e layout predefinito valido per tutto lo studio.",
+      "customize": "Personalizza il referto per il proprietario"
+    },
+    "deletion": {
+      "title": "Elimina lo studio",
+      "blurb": "Elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle del Suo team, e annulla qualsiasi abbonamento. I membri del team conservano i propri account e le cartelle private.",
+      "button": "Elimina lo studio…"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Impossibile leggere questa immagine.",
+    "canvas": "Area di disegno non disponibile",
+    "convert": "Impossibile convertire l’immagine.",
+    "tooLarge": "Questa immagine è troppo grande — i file del logo devono pesare meno di 10 MB.",
+    "reportTooLarge": "Queste impostazioni del referto per il proprietario sono troppo grandi (massimo 50 KB) — accorci alcuni testi o rimuova un modello."
+  },
+  "chart": {
+    "title": "Impostazioni dell’odontogramma",
+    "sections": {
+      "patient": "Impostazioni della pagina Paziente",
+      "anesthesia": "Impostazioni dell’anestesia",
+      "charting": "Impostazioni dell’odontogramma",
+      "diagnosis": "Impostazioni della diagnosi",
+      "images": "Impostazioni delle immagini"
+    },
+    "noteAccount": "Solo per Lei — queste impostazioni seguono il Suo account su ogni dispositivo. Le modifiche vengono salvate subito.",
+    "noteBrowser": "Salvate in questo browser. Le modifiche si applicano subito.",
+    "all": "Tutte le impostazioni dell’odontogramma",
+    "charting": {
+      "title": "Odontogramma",
+      "view": "Vista",
+      "grid": "Griglia",
+      "byTooth": "Per dente",
+      "pocket": "Profondità delle tasche",
+      "pocketTooth": "Una per dente",
+      "pocketRoot": "Una per radice",
+      "pocketRootHint": "M / D, oppure MB / MP / D sui denti con tre radici",
+      "space": "Tasto Spazio nella griglia",
+      "spaceDown": "Passa al dente successivo, in basso",
+      "spaceDownHint": "veloce per dettare una serie di profondità",
+      "spaceType": "Inserisce uno spazio",
+      "scoreTap": "Dopo aver toccato un punteggio nella griglia",
+      "scoreFinding": "Passa al reperto successivo sullo stesso dente",
+      "scoreFindingHint": "mobilità → recessione → … per gli esami dente per dente",
+      "scoreTooth": "Scendi al dente successivo",
+      "scoreToothHint": "per valutare un singolo reperto su tutta la bocca",
+      "scoreStay": "Resta dove sei",
+      "columns": "Colonne"
+    },
+    "beside": {
+      "title": "Accanto ai denti",
+      "show": "Mostra i reperti nello schema della diagnosi",
+      "showHint": "(e nel PDF)",
+      "include": "Includi"
+    },
+    "anesthesia": {
+      "title": "Anestesia",
+      "blocks": "Blocchi nervosi mostrati",
+      "blocksNote": "Un blocco nascosto compare comunque in una cartella in cui è indicata una dose.",
+      "blockNames": {
+        "infraorbital": "Infraorbitario",
+        "caudalMaxillary": "Mascellare caudale",
+        "inferiorAlveolar": "Alveolare inferiore",
+        "mental": "Mentoniero",
+        "other": "Altro"
+      },
+      "usual": "Il Suo anestetico abituale",
+      "usualNote": "Proposto con un tocco in una cartella senza anestetico impostato.",
+      "drugPlaceholder": "ad es. bupivacaina",
+      "drugAria": "Anestetico abituale",
+      "strengthAria": "Concentrazione dell’anestetico abituale (%)"
+    },
+    "patient": {
+      "title": "Pagina Paziente",
+      "hideRecheck": "Nascondi il campo Controllo previsto"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Includi la griglia delle misure",
+      "gridHint": "(facoltativa quando i reperti sono nello schema)",
+      "images": "Includi le immagini",
+      "imagesHint": "(4 per pagina, dopo la cartella)"
+    }
+  },
+  "feedback": {
+    "title": "Invia feedback",
+    "kinds": {
+      "bug": "Qualcosa non va",
+      "idea": "Idea",
+      "other": "Altro"
+    },
+    "kindsAria": "Tipo di feedback",
+    "promptBug": "Che cosa è successo?",
+    "promptIdea": "Che cosa sarebbe utile?",
+    "promptOther": "Il Suo messaggio",
+    "bugPlaceholder": "Che cosa ha fatto, che cosa si aspettava, che cosa è successo invece…",
+    "attach": "Includi la trascrizione della mia dettatura",
+    "note": "Arriva direttamente allo sviluppatore di ToothOps, che Le risponderà via e-mail.",
+    "sent": "Grazie! Il Suo feedback è stato inviato.",
+    "sendFailed": "Invio non riuscito. Riprovi.",
+    "needsAccount": "Per inviare feedback serve un account.",
+    "send": "Invia",
+    "sending": "Invio…"
+  }
+}

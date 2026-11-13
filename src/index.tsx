@@ -8,6 +8,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { DialogHost } from './components/ui/dialogs';
 import { installIteratorHelpers } from './utils/iteratorHelpers';
 import { installScopeSelectorFallback } from './utils/scopeSelector';
+import { bootLanguage } from './i18n/bootLanguage';
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
 // helpers (Chrome 122 / Firefox 131 / Safari 18.4) for rendering, and the `&`
@@ -33,7 +34,7 @@ const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
 
 const root = createRoot(container);
-root.render(
+const render = () => root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <App />
@@ -45,3 +46,9 @@ root.render(
     <Analytics />
   </React.StrictMode>
 );
+
+// Non-English users: wait (briefly) for their catalogs so the first paint is
+// already in their language. English renders at once.
+const booting = bootLanguage();
+if (booting) void booting.then(render);
+else render();

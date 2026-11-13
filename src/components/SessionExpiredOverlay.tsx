@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { confirmDialog } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
@@ -29,6 +30,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
   email: initialEmail,
   onSignOut,
 }) => {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -50,12 +52,12 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
       const msg = authError.message ?? '';
       setError(
         code === 'invalid_credentials' || /invalid login credentials/i.test(msg)
-          ? 'Incorrect email or password.'
+          ? t('errors.invalidCredentials')
           : authError.status === 429 || /rate limit|too many/i.test(msg)
-            ? 'Too many attempts. Wait a minute and try again.'
+            ? t('errors.rateLimit', { ns: 'common' })
             : /fetch|network/i.test(msg)
-              ? 'Can’t reach ToothOps — check your connection and try again.'
-              : msg || 'Couldn’t sign in. Please try again.'
+              ? t('errors.network', { ns: 'common' })
+              : msg || t('errors.signInFailed')
       );
       setPassword('');
       return;
@@ -64,23 +66,22 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
   };
 
   return (
-    <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label="Session expired — sign in to continue">
+    <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label={t('expired.ariaLabel')}>
       <div className="ai-settings-modal session-expired-modal" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>Your session expired</h2>
+          <h2>{t('expired.title')}</h2>
         </header>
         <div className="ai-settings-body">
           <p className="ai-settings-blurb">
-            Your chart is still here, saved on this device. Sign in again to
-            resume cloud saving and pick up where you left off.
+            {t('expired.blurb')}
           </p>
           <form onSubmit={handleSubmit} className="login-form">
             {/* Google redirects away and back — the chart is kept in this
                 device's storage, so it's still here on return. */}
             <GoogleSignInButton disabled={busy} onError={setError} />
-            <div className="login-or">or sign in with email</div>
+            <div className="login-or">{t('expired.orWithEmail')}</div>
             <label className="login-field">
-              <span className="login-field__label">Email</span>
+              <span className="login-field__label">{t('login.email')}</span>
               <input
                 type="email"
                 className="login-input"
@@ -91,7 +92,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
               />
             </label>
             <label className="login-field">
-              <span className="login-field__label">Password</span>
+              <span className="login-field__label">{t('login.password')}</span>
               <input
                 type="password"
                 className="login-input"
@@ -104,23 +105,23 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
             </label>
             {error && <div className="login-error" role="alert">{error}</div>}
             <button type="submit" className="login-button" disabled={busy}>
-              {busy ? 'Signing in…' : 'Sign in and continue charting'}
+              {busy ? t('login.signingIn') : t('expired.submit')}
             </button>
             <button
               type="button"
               className="login-switch"
               onClick={async () => {
                 if (await confirmDialog({
-                  title: 'Sign out and remove this chart?',
-                  message: 'The chart kept on this device is cleared. Anything not yet saved to the cloud is lost — sign in instead to keep it.',
-                  confirmLabel: 'Sign out and remove',
-                  cancelLabel: 'Keep chart',
+                  title: t('expired.confirmTitle'),
+                  message: t('expired.confirmMessage'),
+                  confirmLabel: t('expired.confirmLabel'),
+                  cancelLabel: t('expired.cancelLabel'),
                   danger: true,
                 })) onSignOut();
               }}
               disabled={busy}
             >
-              Sign out instead — leave this chart
+              {t('expired.signOutInstead')}
             </button>
           </form>
         </div>

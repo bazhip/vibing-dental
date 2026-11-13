@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import './styles/themes.css';
 import './styles/boards.css';
 import './App.css';
@@ -14,6 +15,7 @@ import { touchLastSeen } from './utils/lastSeen';
 import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
+import { DeviceLanguage } from './i18n/useAppLanguage';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -65,6 +67,7 @@ async function confirmSessionLost(): Promise<boolean> {
 }
 
 const App: React.FC = () => {
+  const { t } = useTranslation('app');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !cloudEnabled && readString(AUTH_KEY, AUTH_VERSION, '') === '1'
   );
@@ -105,10 +108,10 @@ const App: React.FC = () => {
     // account can save the work that convinced them. Say so first.
     if (nextAuth === 'signin') {
       const ok = await confirmDialog({
-        title: 'Sign in and clear the trial chart?',
-        message: 'Signing in to an existing account clears the trial chart on this device. To keep it, download its PDF first — or create a free account instead, which keeps it.',
-        confirmLabel: 'Clear and sign in',
-        cancelLabel: 'Keep charting',
+        title: t('trialSignIn.title'),
+        message: t('trialSignIn.message'),
+        confirmLabel: t('trialSignIn.confirm'),
+        cancelLabel: t('trialSignIn.cancel'),
       });
       if (!ok) return;
       clearChartStorage();
@@ -228,13 +231,20 @@ const App: React.FC = () => {
     else removeKey(AUTH_KEY, AUTH_VERSION);
   }, [isAuthenticated]);
 
+  // Screens without the chart (EntryGrid applies the account's language).
   if (!sessionChecked) {
-    return <AppLoading />;
+    return (
+      <>
+        <DeviceLanguage />
+        <AppLoading />
+      </>
+    );
   }
 
   if (recovering || invited) {
     return (
       <Suspense fallback={<AppLoading />}>
+        <DeviceLanguage />
         <ResetPassword
           mode={invited ? 'invite' : 'recovery'}
           onDone={() => {
@@ -253,6 +263,7 @@ const App: React.FC = () => {
   if (showHome && (isAuthenticated || trialMode)) {
     return (
       <Suspense fallback={<AppLoading />}>
+        <DeviceLanguage />
         <Landing
           onAuthenticate={() => {
             removeKey(TRIAL_KEY, 1);
@@ -261,6 +272,8 @@ const App: React.FC = () => {
             setShowHome(false);
           }}
           onOpenApp={() => setShowHome(false)}
+          // Signed in, the language is an account setting (Account dialog).
+          languagePicker={!isAuthenticated}
         />
       </Suspense>
     );
@@ -283,6 +296,7 @@ const App: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <Suspense fallback={<AppLoading />}>
+        <DeviceLanguage />
         <Landing
           onAuthenticate={() => {
             removeKey(TRIAL_KEY, 1);

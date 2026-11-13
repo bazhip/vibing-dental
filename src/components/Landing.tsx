@@ -1,8 +1,10 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Login } from './Login';
 import { LandingFeatures } from './LandingFeatures';
 import { cloudEnabled } from '../utils/supabaseClient';
-import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC, PAID_SIGNUP } from '../constants/plans';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, PRICING_PUBLIC, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
+import { LanguageSwitcher } from '../i18n/LanguageSwitcher';
 import {
   DEMO_TEETH_PATHS,
   DEMO_TEETH_VIEWBOX,
@@ -10,6 +12,19 @@ import {
   DEMO_MISSING_PATH,
 } from './landingTeeth';
 import './Landing.css';
+
+// Demo data, not UI text: the sample patient, its chart rows (AVDC / Triadan codes)
+// and the sample file name stay as they are in every language.
+const DEMO_PATIENT = 'Biscuit';
+const DEMO_DATE = '2026-07-17';
+const DEMO_PDF = `chart_biscuit_${DEMO_DATE}.pdf`;
+const DEMO_COMMENT_LABEL = 'C (104)';
+const DEMO_HEAD_STAGE = 'PD';
+const DEMO_ROWS = [
+  { tooth: '104', cells: ['M2', '6', 'G2', 'PD3'], classes: ['1', '2', '3', '4'] },
+  { tooth: '103', cells: ['—', '—', '—', '—'], missing: true },
+  { tooth: '108', cells: ['F2', '4', 'G1', 'PD1'], classes: ['5', '6', '7', '8'] },
+];
 
 interface LandingProps {
   onAuthenticate: () => void;
@@ -21,6 +36,9 @@ interface LandingProps {
   /** Set when the viewer already has the app open (signed in or trial)
    *  and is just visiting the homepage — CTAs become "Back to the app". */
   onOpenApp?: () => void;
+  /** Show the device language picker (default). Off when signed in: the
+   *  language is then an account setting, chosen in the Account dialog. */
+  languagePicker?: boolean;
 }
 
 /**
@@ -38,7 +56,9 @@ export const Landing: React.FC<LandingProps> = ({
   onTryFree,
   initialAuth = null,
   onOpenApp,
+  languagePicker = true,
 }) => {
+  const { t } = useTranslation('landing');
   const [auth, setAuth] = React.useState<'signin' | 'signup' | null>(initialAuth);
   // Set when a pricing card's CTA opened the signup — preselects the plan.
   const [signupPlan, setSignupPlan] = React.useState<PlanKey | undefined>(undefined);
@@ -89,26 +109,27 @@ export const Landing: React.FC<LandingProps> = ({
               />
             </svg>
           </span>
-          ToothOps Charting
+          {t('wordmark')}
         </span>
         <nav className="landing__nav">
+          {languagePicker && <LanguageSwitcher compact />}
           {cloudEnabled && PRICING_PUBLIC && (
             <button type="button" className="landing__nav-signin" onClick={scrollToPricing}>
-              Pricing
+              {t('nav.pricing')}
             </button>
           )}
           {inApp ? (
             <button type="button" className="landing__nav-cta" onClick={onOpenApp}>
-              Back to the app
+              {t('nav.backToApp')}
             </button>
           ) : (
             <>
               <button type="button" className="landing__nav-signin" onClick={() => setAuth('signin')}>
-                Sign in
+                {t('nav.signIn')}
               </button>
               {cloudEnabled && (
                 <button type="button" className="landing__nav-cta" onClick={() => openSignup()}>
-                  Get started
+                  {t('nav.getStarted')}
                 </button>
               )}
             </>
@@ -121,46 +142,44 @@ export const Landing: React.FC<LandingProps> = ({
         <section className="landing__hero">
           <div className="landing__hero-copy">
             <p className="landing__eyebrow">
-              AI-native veterinary dental charting
-              {!PAID_SIGNUP && <span className="landing__beta-pill">Free beta</span>}
+              {t('hero.eyebrow')}
+              {!PAID_SIGNUP && <span className="landing__beta-pill">{t('hero.betaPill')}</span>}
             </p>
             <h1 className="landing__headline">
-              Just talk.
+              {t('hero.headlineLine1')}
               <br />
-              The chart fills itself.
+              {t('hero.headlineLine2')}
             </h1>
             <p className="landing__sub">
-              Dictate as you work and AI writes the findings straight onto a
-              full-mouth Triadan chart — AVDC nomenclature, per-tooth
-              measurements, and the diagrams. Plus photos and radiographs,
-              per-patient visit history, recheck reminders, and a client-ready
-              PDF with your logo the moment you finish.
+              {t('hero.sub')}
             </p>
             <div className="landing__cta-row">
               {inApp ? (
                 <button type="button" className="landing__cta" onClick={onOpenApp}>
-                  Back to the app
+                  {t('nav.backToApp')}
                 </button>
               ) : cloudEnabled ? (
                 <>
                   <button type="button" className="landing__cta" onClick={() => openSignup()}>
-                    {PAID_SIGNUP ? `Start your ${TRIAL_DAYS}-day free trial` : 'Create your free account'}
+                    {PAID_SIGNUP ? t('hero.ctaTrial', { days: TRIAL_DAYS }) : t('hero.ctaFree')}
                   </button>
                   {onTryFree && (
                     <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
-                      Try it free — no account
+                      {t('hero.tryFree')}
                     </button>
                   )}
                   <span className="landing__cta-note">
                     {PAID_SIGNUP
-                      ? (PRICING_PUBLIC ? `Plans from $20/mo · ${TRIAL_DAYS}-day free trial · cancel anytime` : `${TRIAL_DAYS}-day free trial · cancel anytime`)
-                      : 'Free during the beta · AI dictation included · no card required'}
-                    {onTryFree ? ' · the no-account trial skips AI dictation and stamps PDFs TRIAL' : ''}
+                      ? (PRICING_PUBLIC
+                          ? t('hero.notePricing', { price: formatPlanPrice(20), days: TRIAL_DAYS })
+                          : t('hero.noteTrial', { days: TRIAL_DAYS }))
+                      : t('hero.noteBeta')}
+                    {onTryFree ? ` · ${t('hero.noteNoAccount')}` : ''}
                   </span>
                 </>
               ) : (
                 <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>
-                  Open the charting app
+                  {t('hero.openApp')}
                 </button>
               )}
             </div>
@@ -174,12 +193,12 @@ export const Landing: React.FC<LandingProps> = ({
           >
             <div className="demo-window">
               <div className="demo-window__bar">
-                <span className="demo-window__patient">Biscuit</span>
-                <span className="demo-window__meta">Feline · 2026-07-17</span>
+                <span className="demo-window__patient">{DEMO_PATIENT}</span>
+                <span className="demo-window__meta">{t('demo.meta', { date: DEMO_DATE })}</span>
                 <span className="demo-window__steps">
-                  <span className="demo-step demo-step--a">Chart</span>
-                  <span className="demo-step demo-step--b">Diagram</span>
-                  <span className="demo-step demo-step--c">Export</span>
+                  <span className="demo-step demo-step--a">{t('demo.stepChart')}</span>
+                  <span className="demo-step demo-step--b">{t('demo.stepDiagram')}</span>
+                  <span className="demo-step demo-step--c">{t('demo.stepExport')}</span>
                 </span>
               </div>
 
@@ -188,31 +207,24 @@ export const Landing: React.FC<LandingProps> = ({
                 <div className="demo-scene demo-scene--a">
                   <div className="demo-grid">
                     <div className="demo-grid__row demo-grid__row--head">
-                      <span>Tooth</span><span>Mob</span><span>Poc</span><span>Gin</span><span>PD</span>
+                      <span>{t('demo.colTooth')}</span>
+                      <span>{t('demo.colMobility')}</span>
+                      <span>{t('demo.colPocket')}</span>
+                      <span>{t('demo.colGingivitis')}</span>
+                      <span>{DEMO_HEAD_STAGE}</span>
                     </div>
-                    <div className="demo-grid__row">
-                      <span className="demo-grid__tooth">104</span>
-                      <span className="demo-cell demo-cell--1">M2</span>
-                      <span className="demo-cell demo-cell--2">6</span>
-                      <span className="demo-cell demo-cell--3">G2</span>
-                      <span className="demo-cell demo-cell--4">PD3</span>
-                    </div>
-                    <div className="demo-grid__row demo-grid__row--missing">
-                      <span className="demo-grid__tooth">103</span>
-                      <span className="demo-cell">—</span>
-                      <span className="demo-cell">—</span>
-                      <span className="demo-cell">—</span>
-                      <span className="demo-cell">—</span>
-                    </div>
-                    <div className="demo-grid__row">
-                      <span className="demo-grid__tooth">108</span>
-                      <span className="demo-cell demo-cell--5">F2</span>
-                      <span className="demo-cell demo-cell--6">4</span>
-                      <span className="demo-cell demo-cell--7">G1</span>
-                      <span className="demo-cell demo-cell--8">PD1</span>
-                    </div>
+                    {DEMO_ROWS.map((row) => (
+                      <div key={row.tooth} className={row.missing ? 'demo-grid__row demo-grid__row--missing' : 'demo-grid__row'}>
+                        <span className="demo-grid__tooth">{row.tooth}</span>
+                        {row.cells.map((cell, i) => (
+                          <span key={i} className={row.classes ? `demo-cell demo-cell--${row.classes[i]}` : 'demo-cell'}>
+                            {cell}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
                   </div>
-                  <div className="demo-caption">Tab · Enter — charts like a spreadsheet</div>
+                  <div className="demo-caption">{t('demo.captionChart')}</div>
                 </div>
 
                 {/* Scene B — the app's actual diagram artwork (maxillary
@@ -249,18 +261,18 @@ export const Landing: React.FC<LandingProps> = ({
                       </g>
                     </svg>
                     <div className="demo-comment">
-                      <strong>C (104)</strong>
-                      <span>T/FX/CC — pulp exposed</span>
+                      <strong>{DEMO_COMMENT_LABEL}</strong>
+                      <span>{t('demo.comment')}</span>
                     </div>
                   </div>
-                  <div className="demo-caption">Mark it once — grid, diagram &amp; PDF stay in sync</div>
+                  <div className="demo-caption">{t('demo.captionDiagram')}</div>
                 </div>
 
                 {/* Scene C — voice in, branded PDF out. */}
                 <div className="demo-scene demo-scene--c">
                   <div className="demo-voice">
                     <span className="demo-voice__mic">●</span>
-                    “one-oh-four complicated crown fracture, pulp exposed…”
+                    {t('demo.voice')}
                   </div>
                   <div className="demo-doc">
                     <div className="demo-doc__logo" />
@@ -269,9 +281,9 @@ export const Landing: React.FC<LandingProps> = ({
                     <div className="demo-doc__grid" />
                   </div>
                   <div className="demo-pdf">
-                    <span className="demo-pdf__icon">⤓</span> chart_biscuit_2026-07-17.pdf
+                    <span className="demo-pdf__icon">⤓</span> {DEMO_PDF}
                   </div>
-                  <div className="demo-caption">Your logo, your doctor line — on every page</div>
+                  <div className="demo-caption">{t('demo.captionExport')}</div>
                 </div>
               </div>
             </div>
@@ -283,7 +295,7 @@ export const Landing: React.FC<LandingProps> = ({
             onClick={() => setDemoPaused((p) => !p)}
             aria-pressed={demoPaused}
           >
-            {demoPaused ? '▶ Play animation' : '❚❚ Pause animation'}
+            {demoPaused ? t('demo.play') : t('demo.pause')}
           </button>
         </section>
 
@@ -296,19 +308,18 @@ export const Landing: React.FC<LandingProps> = ({
         {/* ---------------------------------------------------- pricing --- */}
         {cloudEnabled && PRICING_PUBLIC && (
           <section className="landing__pricing" id="pricing">
-            <h2>Simple monthly pricing</h2>
+            <h2>{t('pricing.title')}</h2>
             <p className="landing__pricing-sub">
-              Every plan starts with a {TRIAL_DAYS}-day free trial. Cancel anytime — we keep
-              your charts safe for 30 days in case you come back.
+              {t('pricing.sub', { days: TRIAL_DAYS })}
             </p>
             <div className="landing__pricing-grid">
               {PLANS.map((p) => (
                 <div key={p.key} className={p.key === 'practice_basic' ? 'pricing-card pricing-card--featured' : 'pricing-card'}>
-                  {p.key === 'practice_basic' && <span className="pricing-card__flag">Most popular</span>}
+                  {p.key === 'practice_basic' && <span className="pricing-card__flag">{t('pricing.mostPopular')}</span>}
                   <h3>{p.name}</h3>
                   <p className="pricing-card__price">
-                    ${p.priceMonthly}
-                    <span>/mo</span>
+                    {formatPlanPrice(p.priceMonthly)}
+                    <span>{t('pricing.perMonth')}</span>
                   </p>
                   <p className="pricing-card__tagline">{p.tagline}</p>
                   <ul>
@@ -318,18 +329,21 @@ export const Landing: React.FC<LandingProps> = ({
                   </ul>
                   {!inApp && (
                     <button type="button" className="pricing-card__cta" onClick={() => openSignup(p.key)}>
-                      Start free trial
+                      {t('pricing.startTrial')}
                     </button>
                   )}
                 </div>
               ))}
             </div>
             <p className="landing__pricing-contact">
-              Bigger team? Multi-location group? University program?{' '}
-              <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20pricing%20for%20a%20larger%20team`}>
-                Contact us
-              </a>{' '}
-              for pricing beyond 5 seats.
+              <Trans
+                t={t}
+                i18nKey="pricing.contact"
+                components={{
+                  // The subject line is for us to read, so it stays English.
+                  a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20pricing%20for%20a%20larger%20team`} />,
+                }}
+              />
             </p>
           </section>
         )}
@@ -337,16 +351,12 @@ export const Landing: React.FC<LandingProps> = ({
         {/* -------------------------------------------------- pdf preview --- */}
         <section className="landing__paper">
           <div className="landing__paper-copy">
-            <h2>The chart your clients take home</h2>
-            <p>
-              One click renders the whole procedure as a clean two-page PDF —
-              your logo and doctor line up top, full-mouth grids, both
-              diagrams, exam findings, and a legend for every AVDC code used.
-            </p>
+            <h2>{t('paper.title')}</h2>
+            <p>{t('paper.body')}</p>
             <ul className="landing__paper-points">
-              <li>Five professional document styles</li>
-              <li>Patient identity on every page</li>
-              <li>Re-open any PDF back into the app — the chart travels inside it</li>
+              <li>{t('paper.point1')}</li>
+              <li>{t('paper.point2')}</li>
+              <li>{t('paper.point3')}</li>
             </ul>
             {/* Page 2 sits under the copy so the section's two columns
                 fill evenly — page 1 alone runs taller than the text. */}
@@ -356,15 +366,15 @@ export const Landing: React.FC<LandingProps> = ({
               onClick={() =>
                 setZoomedChart({
                   src: '/landing-chart-p2.png',
-                  alt: 'Page two of the sample chart, full size',
+                  alt: t('paper.page2Zoom'),
                 })
               }
-              aria-label="View page two of the sample chart full size"
+              aria-label={t('paper.page2Label')}
             >
               <img
                 className="landing__paper-p2"
                 src="/landing-chart-p2.png"
-                alt="Page two of the same chart: nerve block doses, the procedure diagram with extractions marked, the treatment and surgery report, and the procedure codes used"
+                alt={t('paper.page2Alt')}
                 loading="lazy"
               />
             </button>
@@ -376,14 +386,14 @@ export const Landing: React.FC<LandingProps> = ({
               onClick={() =>
                 setZoomedChart({
                   src: '/landing-chart.png',
-                  alt: 'Page one of the sample chart, full size',
+                  alt: t('paper.page1Zoom'),
                 })
               }
-              aria-label="View page one of the sample chart full size"
+              aria-label={t('paper.page1Label')}
             >
               <img
                 src="/landing-chart.png"
-                alt="Page one of a generated dental chart PDF: practice logo and doctor line, diagnosis diagram with anchored comments, oral exam findings with comments, partial Triadan probing grids, and a legend of the AVDC codes used"
+                alt={t('paper.page1Alt')}
                 loading="lazy"
               />
             </button>
@@ -392,35 +402,35 @@ export const Landing: React.FC<LandingProps> = ({
 
         {/* ------------------------------------------------- final CTA --- */}
         <section className="landing__closer">
-          <h2>Ready to put the clipboard down?</h2>
+          <h2>{t('closer.title')}</h2>
           {inApp ? (
             <button type="button" className="landing__cta" onClick={onOpenApp}>
-              Back to the app
+              {t('nav.backToApp')}
             </button>
           ) : cloudEnabled ? (
             <button type="button" className="landing__cta" onClick={() => openSignup()}>
-              {PAID_SIGNUP ? `Start your ${TRIAL_DAYS}-day free trial` : 'Create your free account'}
+              {PAID_SIGNUP ? t('hero.ctaTrial', { days: TRIAL_DAYS }) : t('hero.ctaFree')}
             </button>
           ) : (
             <button type="button" className="landing__cta" onClick={() => setAuth('signin')}>
-              Open the charting app
+              {t('hero.openApp')}
             </button>
           )}
           {!inApp && cloudEnabled && onTryFree && (
             <button type="button" className="landing__cta-ghost" onClick={onTryFree}>
-              Try it free — no account
+              {t('hero.tryFree')}
             </button>
           )}
         </section>
       </main>
 
       <footer className="landing__footer">
-        <span>ToothOps Charting — built with veterinary dentists.</span>
+        <span>{t('footer.tagline')}</span>
         <span className="landing__footer-links">
-          <a href="/privacy">Privacy</a>
-          <a href="/terms">Terms</a>
-          <a href="/dpa">DPA</a>
-          <a href="mailto:bazhip@gmail.com">Contact</a>
+          <a href="/privacy">{t('footer.privacy')}</a>
+          <a href="/terms">{t('footer.terms')}</a>
+          <a href="/dpa">{t('footer.dpa')}</a>
+          <a href="mailto:bazhip@gmail.com">{t('footer.contact')}</a>
         </span>
       </footer>
 
@@ -430,10 +440,10 @@ export const Landing: React.FC<LandingProps> = ({
           onClick={() => setAuth(null)}
           role="dialog"
           aria-modal="true"
-          aria-label={auth === 'signup' ? 'Create your practice account' : 'Sign in'}
+          aria-label={auth === 'signup' ? t('login.subtitle.signup', { ns: 'auth' }) : t('login.signIn', { ns: 'auth' })}
         >
           <div className="landing__auth-panel" onClick={(e) => e.stopPropagation()}>
-            <button type="button" className="landing__auth-close" onClick={() => setAuth(null)} aria-label="Close">
+            <button type="button" className="landing__auth-close" onClick={() => setAuth(null)} aria-label={t('actions.close', { ns: 'common' })}>
               ×
             </button>
             <Login onAuthenticate={onAuthenticate} initialMode={auth} embedded initialPlan={signupPlan} />
@@ -454,7 +464,7 @@ export const Landing: React.FC<LandingProps> = ({
             type="button"
             className="landing__lightbox-close"
             onClick={() => setZoomedChart(null)}
-            aria-label="Close full-size view"
+            aria-label={t('lightboxClose')}
           >
             ×
           </button>

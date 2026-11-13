@@ -1,0 +1,115 @@
+{
+  "features": {
+    "fullCharting": "Full charting, diagrams & branded PDFs",
+    "photos_one": "Photos & radiographs — {{count}} image per chart",
+    "photos_other": "Photos & radiographs — {{count}} images per chart",
+    "visitHistory": "Visit history & recheck reminders",
+    "users_one": "{{count}} user",
+    "users_other": "{{count}} users",
+    "everythingIn": "Everything in {{plan}}",
+    "aiAutofill": "AI voice autofill — dictate, the chart fills itself",
+    "imagesPerChart_one": "{{count}} image per chart",
+    "imagesPerChart_other": "{{count}} images per chart",
+    "teamMembers_one": "Up to {{count}} team member",
+    "teamMembers_other": "Up to {{count}} team members",
+    "sharedCharts": "Shared charts, templates & practice logo",
+    "teamRoles": "Team roles & ownership transfer",
+    "aiAutofillTeam": "AI voice autofill for the whole team"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individual",
+      "tagline": "For a solo practitioner"
+    },
+    "individual_pro": {
+      "name": "Individual Pro",
+      "tagline": "Solo, with AI on the mic"
+    },
+    "practice_basic": {
+      "name": "Practice",
+      "tagline": "Your whole team, one record"
+    },
+    "practice_pro": {
+      "name": "Practice Pro",
+      "tagline": "The full clinic, hands-free"
+    }
+  },
+  "perMonth": "/mo",
+  "gate": {
+    "settingUpTitle": "Setting up your subscription…",
+    "settingUpSub": "Payment confirmed — unlocking your account now.",
+    "loading": "Loading",
+    "checkFailedTitle": "Couldn't check your subscription",
+    "checkFailed": "Could not check your subscription.",
+    "tryAgain": "Try again",
+    "freezeOwner": "Your charts and account are frozen, not gone — they're kept safe until <strong>{{date}}</strong>, then deleted permanently. Reactivate before then and everything is exactly as you left it.",
+    "freezeMember": "Your charts and account are frozen, not gone — they're kept safe until <strong>{{date}}</strong>, then deleted permanently.",
+    "memberTitle": "{{practice}} needs a subscription",
+    "yourPractice": "Your practice",
+    "memberPastDue": "The practice’s last payment didn’t go through. Ask <strong>{{owner}}</strong> to sort the billing — you'll be back in the moment they do.",
+    "memberNone": "The practice’s subscription hasn’t been set up yet. Ask <strong>{{owner}}</strong> to sort the billing — you'll be back in the moment they do.",
+    "memberEnded": "The practice’s subscription has ended. Ask <strong>{{owner}}</strong> to sort the billing — you'll be back in the moment they do.",
+    "yourOwner": "your practice owner",
+    "failedTitle": "Payment failed",
+    "failedBody": "Your last payment didn't go through — usually an expired or canceled card. Update your payment method and you're straight back in; Stripe retries automatically once the card works.",
+    "opening": "Opening…",
+    "updateCard": "Update payment method",
+    "portalFailed": "Could not open the billing portal.",
+    "trouble": "Trouble with billing? <a>Contact us</a>.",
+    "chooseTitle": "Choose your plan",
+    "trialSub": "Every plan starts with a {{days}}-day free trial — cancel anytime.",
+    "endedSub": "Your subscription has ended — pick a plan to get back to your charts.",
+    "openingCheckout": "Opening checkout…",
+    "startTrial": "Start {{days}}-day free trial — then {{price}}/mo",
+    "pickPlan": "Pick a plan above",
+    "checkoutFailed": "Could not start checkout.",
+    "larger": "More than 5 team members, or a multi-location group? <a>Contact us</a> for custom pricing.",
+    "signOut": "Sign out",
+    "slowConfirm": "Payment went through but the confirmation is taking longer than usual — reload in a minute, or contact us if this persists."
+  },
+  "settings": {
+    "title": "Billing",
+    "loading": "Loading billing…",
+    "loadFailed": "Could not load billing.",
+    "retry": "Retry",
+    "comped": "This practice has complimentary access — no subscription needed.",
+    "freeBeta": "<strong>Free beta</strong> · {{seats}} seats · {{images}} images per chart · AI dictation included",
+    "noCard": "No card needed during the beta.",
+    "seatsInUse": "{{used}} of {{seats}} seats in use.",
+    "needMoreBeta": "Need more than {{seats}} seats? <a>Contact us</a>.",
+    "history": "Billing history",
+    "noPlan": "No plan",
+    "seatsUsed": "{{used}}/{{seats}} seats",
+    "changePlan": "Change plan",
+    "planOption": "{{name}} — {{price}}/mo",
+    "manage": "Manage billing",
+    "hintStripe": "Manage billing opens Stripe — card, invoices, and cancellation.",
+    "hintNoStripe": "You’ll be asked to pick a plan when your access needs one.",
+    "needMore": "Need more than 5 seats? <a>Contact us</a>.",
+    "managedBy": "Billing is managed by {{owner}}.",
+    "theOwner": "the practice owner",
+    "planUpdated": "Plan updated.",
+    "switchTitle": "Switch to {{plan}}?",
+    "switchMessage": "{{price}}/month. The difference is prorated on your next invoice.",
+    "switchConfirm": "Switch plan",
+    "changeFailed": "Could not change the plan.",
+    "portalFailed": "Could not open the billing portal.",
+    "status": {
+      "trialing": "free trial",
+      "trialingDate": "free trial — first payment {{date}}",
+      "active": "active",
+      "activeDate": "active — renews {{date}}",
+      "past_due": "payment failed — update your card",
+      "none": "not subscribed yet",
+      "canceled": "canceled",
+      "incomplete": "incomplete",
+      "incomplete_expired": "incomplete expired",
+      "unpaid": "unpaid",
+      "paused": "paused"
+    }
+  },
+  "errors": {
+    "checkoutLink": "Stripe did not return a checkout link.",
+    "portalLink": "Stripe did not return a portal link."
+  }
+}

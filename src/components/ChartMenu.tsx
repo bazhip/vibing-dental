@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import './AccountSurfaces.css';
 
@@ -62,6 +63,7 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * sign out). Lives in the topbar.
  */
 export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+  const { t } = useTranslation('app');
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -179,53 +181,53 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ onOpenWalkthrough, onGoHom
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
         aria-expanded={open}
-        aria-label="Open settings menu"
+        aria-label={t('menu.open')}
       >
         <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>
-        <span className="chart-menu__trigger-label">Settings</span>
+        <span className="chart-menu__trigger-label">{t('menu.trigger')}</span>
       </button>
 
       {open && (
         <div className="chart-menu__panel" ref={panelRef} onKeyDown={onPanelKeyDown}>
           {cloud && signedInAs && (
             <div className="chart-menu__account" title={signedInAs}>
-              Signed in as <strong>{signedInAs}</strong>
+              <Trans t={t} i18nKey="menu.signedInAs" values={{ email: signedInAs }} components={{ strong: <strong /> }} />
             </div>
           )}
 
           {cloud && (
             <section className="chart-menu__section">
-              <header className="chart-menu__section-head">Practice</header>
-              {item('Practice settings', 'Name, logo, team, and billing.', cloud.onPracticeSettings)}
-              {item('Recheck reminders', 'Owner email template and auto-send schedule.', cloud.onOpenReminders)}
+              <header className="chart-menu__section-head">{t('menu.heads.practice')}</header>
+              {item(t('menu.practiceSettings.label'), t('menu.practiceSettings.sub'), cloud.onPracticeSettings)}
+              {item(t('menu.reminders.label'), t('menu.reminders.sub'), cloud.onOpenReminders)}
             </section>
           )}
 
           {cloud && (
             <section className="chart-menu__section">
-              <header className="chart-menu__section-head">Account</header>
-              {item('Account settings', 'Your doctor name, email, and password.', cloud.onOpenAccount)}
+              <header className="chart-menu__section-head">{t('menu.heads.account')}</header>
+              {item(t('menu.account.label'), t('menu.account.sub'), cloud.onOpenAccount)}
             </section>
           )}
 
           {onOpenAdmin && (
             <section className="chart-menu__section">
-              <header className="chart-menu__section-head">Admin</header>
-              {item('Admin panel', 'Manage users, practices, and plans.', onOpenAdmin)}
+              <header className="chart-menu__section-head">{t('menu.heads.admin')}</header>
+              {item(t('menu.admin.label'), t('menu.admin.sub'), onOpenAdmin)}
             </section>
           )}
 
           <section className="chart-menu__section">
-            <header className="chart-menu__section-head">App</header>
-            {onOpenChartSettings && item('Chart settings', 'Pockets per root, grid columns, what shows beside the teeth.', onOpenChartSettings)}
-            {onOpenFeedback && item('Send feedback', 'Report a problem or suggest an idea — it comes straight to us.', onOpenFeedback)}
-            {onOpenWhatsNew && item('What’s new', 'The latest features and improvements.', onOpenWhatsNew)}
-            {item('Getting started', 'Replay the walkthrough of every part of the app.', onOpenWalkthrough)}
-            {onGoHome && item('Homepage', 'View the product page — your chart stays right here.', onGoHome)}
-            {cloud && item('Sign out', 'End your session and return to the homepage.', cloud.onSignOut)}
+            <header className="chart-menu__section-head">{t('menu.heads.app')}</header>
+            {onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
+            {onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}
+            {onOpenWhatsNew && item(t('menu.whatsNew.label'), t('menu.whatsNew.sub'), onOpenWhatsNew)}
+            {item(t('menu.gettingStarted.label'), t('menu.gettingStarted.sub'), onOpenWalkthrough)}
+            {onGoHome && item(t('menu.homepage.label'), t('menu.homepage.sub'), onGoHome)}
+            {cloud && item(t('menu.signOut.label'), t('menu.signOut.sub'), cloud.onSignOut)}
           </section>
         </div>
       )}

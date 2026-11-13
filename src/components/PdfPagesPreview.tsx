@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 /**
  * PDF preview drawn as page images (pdf.js) for browsers that can't show
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export function PdfPagesPreview({ blob, title }: Props) {
+  const { t } = useTranslation('pdfui');
   const hostRef = React.useRef<HTMLDivElement>(null);
   const [error, setError] = React.useState(false);
 
@@ -58,7 +61,7 @@ export function PdfPagesPreview({ blob, title }: Props) {
           canvas.height = Math.floor(viewport.height);
           canvas.className = 'pdf-pages-preview__page';
           canvas.setAttribute('role', 'img');
-          canvas.setAttribute('aria-label', `${title}, page ${n} of ${doc.numPages}`);
+          canvas.setAttribute('aria-label', i18n.t('pages.pageAria', { ns: 'pdfui', title, n, total: doc.numPages }));
           const ctx = canvas.getContext('2d');
           if (!ctx) throw new Error('No 2D canvas');
           await page.render({ canvasContext: ctx, viewport }).promise;
@@ -82,7 +85,7 @@ export function PdfPagesPreview({ blob, title }: Props) {
   return (
     <div className="pdf-pages-preview" aria-label={title}>
       <div ref={hostRef} className="pdf-pages-preview__pages" />
-      {error && <div className="pdf-preview-status pdf-preview-status--error">Couldn’t draw the preview — Download still works.</div>}
+      {error && <div className="pdf-preview-status pdf-preview-status--error">{t('pages.failed')}</div>}
     </div>
   );
 }

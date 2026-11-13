@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { createPdfDownloadLink, LINK_TTL_MINUTES } from '../utils/pdfDownloadLink';
-import { IN_APP_BROWSER_MESSAGE } from '../utils/savePdf';
+import { inAppBrowserMessage } from '../utils/savePdf';
 import { toast } from './ui/dialogs';
 
 type LinkState = null | 'preparing' | { url: string; filename: string };
@@ -15,7 +16,7 @@ export function useInAppPdfLink() {
     if (url) setState({ url, filename });
     else {
       setState(null);
-      toast(IN_APP_BROWSER_MESSAGE, { kind: 'error' });
+      toast(inAppBrowserMessage(), { kind: 'error' });
     }
   }, []);
   const reset = React.useCallback(() => setState(null), []);
@@ -23,24 +24,26 @@ export function useInAppPdfLink() {
 }
 
 export function PdfLinkPanel({ state }: { state: LinkState }) {
+  const { t } = useTranslation('pdfui');
   if (!state) return null;
   if (state === 'preparing') {
-    return <p className="pdf-preview-hint" role="status">Preparing a download link…</p>;
+    return <p className="pdf-preview-hint" role="status">{t('link.preparing')}</p>;
   }
   const copy = () => {
+    const prompt = () => window.prompt(t('link.copyPrompt'), state.url);
     navigator.clipboard?.writeText(state.url).then(
-      () => toast('Link copied — paste it into Chrome to download.', { kind: 'success' }),
-      () => window.prompt('Copy this link and open it in Chrome:', state.url),
-    ) ?? window.prompt('Copy this link and open it in Chrome:', state.url);
+      () => toast(t('link.copied'), { kind: 'success' }),
+      prompt,
+    ) ?? prompt();
   };
   return (
     <div className="pdf-preview-link" role="status">
       <a className="pdf-preview-link__open" href={state.url} download={state.filename}>
-        Tap to download the PDF
+        {t('link.open')}
       </a>
-      <button type="button" className="pdf-preview-link__copy" onClick={copy}>Copy link</button>
+      <button type="button" className="pdf-preview-link__copy" onClick={copy}>{t('link.copy')}</button>
       <p className="pdf-preview-link__note">
-        This app’s browser can’t save the PDF directly, so here’s a link that can. It works for {LINK_TTL_MINUTES} minutes — if nothing downloads, copy it into Chrome.
+        {t('link.note', { minutes: LINK_TTL_MINUTES })}
       </p>
     </div>
   );

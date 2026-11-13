@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { pinnedSectionNav } from '../utils/pinnedSectionNav';
 import { MobileSectionMenu } from './MobileSectionMenu';
 
@@ -33,6 +34,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   activeId,
   onActiveChange,
 }) => {
+  const { t } = useTranslation('app');
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
   // Follow the controlled value when the parent drives it.
@@ -98,7 +100,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       <nav
         ref={navRef}
         className={`sidebar-layout__nav${fade.start ? ' sidebar-layout__nav--fade-start' : ''}${fade.end ? ' sidebar-layout__nav--fade-end' : ''}`}
-        aria-label="Chart sections"
+        aria-label={t('sections.nav')}
         onScroll={updateFade}
       >
         {sections.map((s, i) => (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
@@ -26,6 +27,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   hideRecheck = false,
   onCustomize,
 }) => {
+  const { t } = useTranslation('forms');
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -46,10 +48,10 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   return (
     <div className="patient-form">
       <div className="patient-form__header">
-        <h2 className="patient-form__section-title">Patient Information</h2>
+        <h2 className="patient-form__section-title">{t('patient.title')}</h2>
         {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Fields shown on this page">
-            Customize
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('patient.customizeTitle')}>
+            {t('patient.customize')}
           </button>
         )}
       </div>
@@ -62,29 +64,30 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               `required`: the whole chart is one form whose submit button
               is Preview PDF, and native validation was blocking nameless
               previews. attemptSave in EntryGrid enforces the name. */}
-          <span>Patient Name <span className="patient-form__req" aria-hidden="true">*</span></span>
+          <span>{t('patient.name')} <span className="patient-form__req" aria-hidden="true">*</span></span>
           <input
             type="text"
             className="patient-form__input"
-            placeholder="Enter patient name"
+            data-tour="patient-name"
+            placeholder={t('patient.namePlaceholder')}
             value={patientInfo.patientName}
             onChange={handleInputChange('patientName')}
           />
         </label>
 
         <label className="patient-form__label">
-          Patient Number
+          {t('patient.number')}
           <input
             type="text"
             className="patient-form__input"
-            placeholder="Enter patient number"
+            placeholder={t('patient.numberPlaceholder')}
             value={patientInfo.patientNumber}
             onChange={handleInputChange('patientNumber')}
           />
         </label>
 
         <label className="patient-form__label">
-          Date
+          {t('patient.date')}
           <input
             type="date"
             className="patient-form__input"
@@ -98,22 +101,22 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           the per-procedure fields. Searchable in My charts. */}
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Owner name
+          {t('patient.ownerName')}
           <input
             type="text"
             className="patient-form__input"
-            placeholder="Pet owner / client"
+            placeholder={t('patient.ownerNamePlaceholder')}
             autoComplete="off"
             value={patientInfo.ownerName ?? ''}
             onChange={handleInputChange('ownerName')}
           />
         </label>
         <label className="patient-form__label">
-          Owner phone
+          {t('patient.ownerPhone')}
           <input
             type="tel"
             className="patient-form__input"
-            placeholder="Contact number"
+            placeholder={t('patient.ownerPhonePlaceholder')}
             autoComplete="off"
             value={patientInfo.ownerPhone ?? ''}
             onChange={handleInputChange('ownerPhone')}
@@ -121,11 +124,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         </label>
 
         <label className="patient-form__label">
-          Owner email
+          {t('patient.ownerEmail')}
           <input
             type="email"
             className="patient-form__input"
-            placeholder={hideRecheck ? 'Optional' : 'For recheck reminders'}
+            placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
             autoComplete="off"
             value={patientInfo.ownerEmail ?? ''}
             onChange={handleInputChange('ownerEmail')}
@@ -138,11 +141,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           only the per-procedure tech is entered here. */}
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Tech
+          {t('patient.tech')}
           <input
             type="text"
             className="patient-form__input"
-            placeholder="Tech name (optional)"
+            placeholder={t('patient.techPlaceholder')}
             value={patientInfo.tech}
             onChange={handleInputChange('tech')}
           />
@@ -150,7 +153,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
         {!hideRecheck && (
         <label className="patient-form__label">
-          Recheck due
+          {t('patient.recheck')}
           <span className="patient-form__recall">
             <input
               type="date"
@@ -164,7 +167,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             <select
               className="patient-form__input patient-form__recall-quick"
               value=""
-              aria-label="Set the recheck date a common interval after the visit date"
+              aria-label={t('patient.recheckQuick')}
               onChange={(e) => {
                 const days = Number(e.target.value);
                 if (!days) return;
@@ -173,13 +176,13 @@ export const PatientForm: React.FC<PatientFormProps> = ({
                 onPatientInfoChange('recallDate', localDateISO(base));
               }}
             >
-              <option value="">+ interval</option>
-              <option value="7">1 week</option>
-              <option value="14">2 weeks</option>
-              <option value="30">1 month</option>
-              <option value="90">3 months</option>
-              <option value="182">6 months</option>
-              <option value="365">1 year</option>
+              <option value="">{t('patient.intervalPlaceholder')}</option>
+              <option value="7">{t('patient.intervals.week1')}</option>
+              <option value="14">{t('patient.intervals.weeks2')}</option>
+              <option value="30">{t('patient.intervals.month1')}</option>
+              <option value="90">{t('patient.intervals.months3')}</option>
+              <option value="182">{t('patient.intervals.months6')}</option>
+              <option value="365">{t('patient.intervals.year1')}</option>
             </select>
           </span>
         </label>
@@ -188,11 +191,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
       <div className="patient-form__row">
         <label className="patient-form__label">
-          Chief Complaint
+          {t('patient.complaint')}
           <CodeField
             multiline
             className="patient-form__textarea"
-            placeholder="Enter chief complaint or reason for visit"
+            placeholder={t('patient.complaintPlaceholder')}
             value={patientInfo.complaint}
             onChange={(value) => onPatientInfoChange('complaint', value)}
           />
@@ -202,7 +205,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
       <div className="patient-form__selectors">
         <div className="patient-form__selector">
           <span className="patient-form__selector-label" id="species-group-label">
-            Species
+            {t('patient.species')}
           </span>
           <div
             className="patient-form__species"
@@ -217,7 +220,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               className={`species-tab ${base === 'canine' ? 'species-tab--active' : ''}`}
               onClick={() => handleBaseChange('canine')}
             >
-              Canine
+              {t('patient.canine')}
             </button>
             <button
               type="button"
@@ -226,14 +229,14 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               className={`species-tab ${base === 'feline' ? 'species-tab--active' : ''}`}
               onClick={() => handleBaseChange('feline')}
             >
-              Feline
+              {t('patient.feline')}
             </button>
           </div>
         </div>
 
         <div className="patient-form__selector">
           <span className="patient-form__selector-label" id="dentition-group-label">
-            Dentition
+            {t('patient.dentition')}
           </span>
           <div
             className="patient-form__species"
@@ -247,7 +250,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               className={`species-tab ${dentition === 'permanent' ? 'species-tab--active' : ''}`}
               onClick={() => handleDentitionChange('permanent')}
             >
-              Permanent
+              {t('patient.permanent')}
             </button>
             <button
               type="button"
@@ -256,7 +259,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               className={`species-tab ${dentition === 'deciduous' ? 'species-tab--active' : ''}`}
               onClick={() => handleDentitionChange('deciduous')}
             >
-              Deciduous
+              {t('patient.deciduous')}
             </button>
           </div>
         </div>

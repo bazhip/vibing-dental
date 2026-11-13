@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 /** Shortcut hints match the platform (⌘ on Apple devices, Ctrl elsewhere). */
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
@@ -37,22 +38,22 @@ export interface DiagramViewHandle {
   getCommentExports: () => CommentExport[];
 }
 
-const STROKE_COLORS: Array<{ value: string; label: string }> = [
-  { value: '#e53e3e', label: 'red' },
-  { value: '#3182ce', label: 'blue' },
-  { value: '#38a169', label: 'green' },
-  { value: '#d69e2e', label: 'amber' },
-  { value: '#2d3748', label: 'charcoal' },
-];
+const STROKE_COLORS = [
+  { value: '#e53e3e', name: 'red' },
+  { value: '#3182ce', name: 'blue' },
+  { value: '#38a169', name: 'green' },
+  { value: '#d69e2e', name: 'amber' },
+  { value: '#2d3748', name: 'charcoal' },
+] as const;
 
 /** Comment text-size preset — multiplier applied to the 0.95rem base
  *  CSS font size via a CSS custom property on the .diagram-view root. */
-const TEXT_SIZES: Array<{ value: number; label: string }> = [
-  { value: 0.8, label: 'S' },
-  { value: 1.0, label: 'M' },
-  { value: 1.2, label: 'L' },
-  { value: 1.5, label: 'XL' },
-];
+const TEXT_SIZES = [
+  { value: 0.8, name: 's' },
+  { value: 1.0, name: 'm' },
+  { value: 1.2, name: 'l' },
+  { value: 1.5, name: 'xl' },
+] as const;
 
 export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>(({
   title,
@@ -70,6 +71,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   highlightTriadan,
   readOnly = false,
 }, ref) => {
+  const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
@@ -158,8 +160,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">{title}</h2>
         {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Findings shown beside the teeth">
-            Customize
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('diagramView.customizeTitle')}>
+            {t('diagramView.customize')}
           </button>
         )}
       </div>
@@ -176,7 +178,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           <div
             className="diagram-view__tool-group"
             role="group"
-            aria-label="Diagram tool"
+            aria-label={t('diagramView.toolGroup')}
           >
             <button
               type="button"
@@ -185,14 +187,14 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-pressed={tool === 'mark'}
               title={
                 markMode === 'missing-only'
-                  ? 'Tap a tooth to mark it missing (tap again to clear)'
+                  ? t('diagramView.markMissingTitle')
                   : markMode === 'extracted-only'
-                    ? 'Tap a tooth to mark it extracted (tap again to clear)'
-                    : 'Tap a tooth to mark it missing or extracted'
+                    ? t('diagramView.markExtractedTitle')
+                    : t('diagramView.markTitle')
               }
             >
-              <span className="diagram-view__long">{markMode === 'missing-only' ? 'Mark missing' : markMode === 'extracted-only' ? 'Mark extracted' : 'Mark'}</span>
-              <span className="diagram-view__short">Mark</span>
+              <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
+              <span className="diagram-view__short">{t('diagramView.mark')}</span>
             </button>
             <button
               type="button"
@@ -200,7 +202,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={() => setTool('comment')}
               aria-pressed={tool === 'comment'}
             >
-              Comment
+              {t('diagramView.comment')}
             </button>
             <button
               type="button"
@@ -208,22 +210,22 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               onClick={() => setTool('draw')}
               aria-pressed={tool === 'draw'}
             >
-              Draw
+              {t('diagramView.draw')}
             </button>
           </div>
 
           <div
             className="diagram-view__history"
             role="group"
-            aria-label="Undo / Redo"
+            aria-label={t('diagramView.historyGroup')}
           >
             <button
               type="button"
               className="diagram-view__action"
               onClick={history.undo}
               disabled={!history.canUndo}
-              aria-label="Undo"
-              title={`Undo (${IS_MAC ? "⌘Z" : "Ctrl+Z"})`}
+              aria-label={t('diagramView.undo')}
+              title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
               ↶
             </button>
@@ -232,8 +234,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               className="diagram-view__action"
               onClick={history.redo}
               disabled={!history.canRedo}
-              aria-label="Redo"
-              title={`Redo (${IS_MAC ? "⌘⇧Z" : "Ctrl+Y"})`}
+              aria-label={t('diagramView.redo')}
+              title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
               ↷
             </button>
@@ -248,14 +250,14 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             onClick={() => setMoreOpen((o) => !o)}
             aria-expanded={moreOpen}
             aria-haspopup="true"
-            aria-label="More diagram tools"
-            title="More tools — comments, numbers, zoom, text size"
+            aria-label={t('diagramView.more')}
+            title={t('diagramView.moreTitle')}
           >
             <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="3" cy="8" r="1.5" fill="currentColor" /><circle cx="8" cy="8" r="1.5" fill="currentColor" /><circle cx="13" cy="8" r="1.5" fill="currentColor" /></svg>
           </button>
           <div className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
           <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
-            + Free comment
+            {t('diagramView.freeComment')}
           </button>
 
           <button
@@ -263,19 +265,19 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             className={`diagram-view__tool diagram-view__numbers ${showNumbers ? 'diagram-view__tool--active' : ''}`}
             onClick={() => setShowNumbers(!showNumbers)}
             aria-pressed={showNumbers}
-            title="Show each tooth's Triadan number on the diagram (not printed on the PDF)"
+            title={t('diagramView.numbersTitle')}
           >
-            # Numbers
+            {t('diagramView.numbers')}
           </button>
 
-          <div className="diagram-view__zoom" role="group" aria-label="Zoom">
+          <div className="diagram-view__zoom" role="group" aria-label={t('diagramView.zoomGroup')}>
             <button
               type="button"
               className="diagram-view__action"
               onClick={() => zoomBy(1 / 1.25)}
               disabled={zoom <= ZOOM_MIN}
-              aria-label="Zoom out"
-              title="Zoom out"
+              aria-label={t('diagramView.zoomOut')}
+              title={t('diagramView.zoomOut')}
             >
               −
             </button>
@@ -284,8 +286,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               className="diagram-view__zoom-level"
               onClick={() => setZoom(1)}
               disabled={zoom === 1}
-              title="Reset zoom to fit"
-              aria-label={`Zoom ${Math.round(zoom * 100)} percent — reset to fit`}
+              title={t('diagramView.zoomReset')}
+              aria-label={t('diagramView.zoomLevel', { percent: Math.round(zoom * 100) })}
             >
               {Math.round(zoom * 100)}%
             </button>
@@ -294,8 +296,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               className="diagram-view__action"
               onClick={() => zoomBy(1.25)}
               disabled={zoom >= ZOOM_MAX}
-              aria-label="Zoom in"
-              title="Zoom in"
+              aria-label={t('diagramView.zoomIn')}
+              title={t('diagramView.zoomIn')}
             >
               +
             </button>
@@ -308,20 +310,20 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <div
               className="diagram-view__textsize"
               role="group"
-              aria-label="Comment text size"
+              aria-label={t('diagramView.textSize.group')}
             >
-              <span className="diagram-view__textsize-label" aria-hidden="true">A</span>
+              <span className="diagram-view__textsize-label" aria-hidden="true">{t('diagramView.textSize.glyph')}</span>
               {TEXT_SIZES.map((s) => (
                 <button
                   type="button"
-                  key={s.label}
+                  key={s.name}
                   className={`diagram-view__textsize-btn ${commentTextScale === s.value ? 'diagram-view__textsize-btn--active' : ''}`}
                   onClick={() => setCommentTextScale(s.value)}
                   aria-pressed={commentTextScale === s.value}
-                  aria-label={`Comment text size ${s.label}`}
-                  title={`Comment text size: ${s.label}`}
+                  aria-label={t('diagramView.textSize.aria', { size: t(`diagramView.textSize.${s.name}`) })}
+                  title={t('diagramView.textSize.title', { size: t(`diagramView.textSize.${s.name}`) })}
                 >
-                  {s.label}
+                  {t(`diagramView.textSize.${s.name}`)}
                 </button>
               ))}
             </div>
@@ -331,9 +333,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             <div
               className="diagram-view__draw-controls"
               role="group"
-              aria-label="Draw settings"
+              aria-label={t('diagramView.drawSettings')}
             >
-              <div role="group" aria-label="Stroke color">
+              <div role="group" aria-label={t('diagramView.strokeColor')}>
                 {STROKE_COLORS.map((c) => (
                   <button
                     type="button"
@@ -341,13 +343,13 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                     className={`diagram-view__color ${strokeColor === c.value ? 'diagram-view__color--active' : ''}`}
                     style={{ backgroundColor: c.value }}
                     onClick={() => setStrokeColor(c.value)}
-                    aria-label={`Stroke color ${c.label}`}
+                    aria-label={t('diagramView.strokeColorAria', { color: t(`diagramView.colors.${c.name}`) })}
                     aria-pressed={strokeColor === c.value}
                   />
                 ))}
               </div>
               <label className="diagram-view__width-label">
-                <span className="visually-hidden">Stroke width</span>
+                <span className="visually-hidden">{t('diagramView.strokeWidth')}</span>
                 <input
                   type="range"
                   min={1}
@@ -356,8 +358,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                   value={strokeWidth}
                   onChange={(e) => setStrokeWidth(parseFloat(e.target.value))}
                   className="diagram-view__width"
-                  aria-label="Stroke width"
-                  aria-valuetext={`${strokeWidth} pixels`}
+                  aria-label={t('diagramView.strokeWidth')}
+                  aria-valuetext={t('diagramView.strokeWidthValue', { width: strokeWidth })}
                 />
               </label>
               <button
@@ -365,7 +367,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                 className="diagram-view__action diagram-view__action--danger"
                 onClick={clearStrokes}
               >
-                Clear strokes
+                {t('diagramView.clearStrokes')}
               </button>
             </div>
           )}

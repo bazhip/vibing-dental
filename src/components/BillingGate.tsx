@@ -1,6 +1,10 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import { formatDateTime } from '../i18n/format';
+import { AccountLanguage } from '../i18n/AccountLanguage';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
-import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey, PAID_SIGNUP } from '../constants/plans';
+import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
 import {
   BillingInfo,
   ACCESS_STATUSES,
@@ -28,6 +32,7 @@ interface BillingGateProps {
  * Admins and standalone mode bypass the gate entirely.
  */
 export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
+  const { t } = useTranslation('billing');
   const params = new URLSearchParams(window.location.search);
   const [finalizing, setFinalizing] = React.useState(params.get('billing') === 'success');
   const [info, setInfo] = React.useState<BillingInfo | null>(null);
@@ -57,7 +62,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
         setSelected(b.intendedPlan ?? null);
       })
       .catch((e) => {
-        if (!cancelled) setLoadError(e instanceof Error ? e.message : 'Could not check your subscription.');
+        if (!cancelled) setLoadError(e instanceof Error ? e.message : i18n.t('gate.checkFailed', { ns: 'billing' }));
       });
     return () => {
       cancelled = true;
@@ -89,7 +94,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
         // a note rather than spinning forever.
         setFinalizing(false);
         clearBillingParam();
-        setError('Payment went through but the confirmation is taking longer than usual — reload in a minute, or contact us if this persists.');
+        setError(i18n.t('gate.slowConfirm', { ns: 'billing' }));
         return;
       }
       window.setTimeout(tick, 2500);
@@ -102,13 +107,21 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
 
   if (!cloudEnabled) return <>{children}</>;
 
+  // Blocking screens replace the chart, which owns the account's language.
+  const blocking = (screen: React.ReactNode) => (
+    <>
+      <AccountLanguage />
+      {screen}
+    </>
+  );
+
   if (finalizing) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
-          <h1>Setting up your subscription…</h1>
-          <p className="billing-gate__sub">Payment confirmed — unlocking your account now.</p>
-          <div className="billing-gate__spinner" aria-label="Loading" />
+          <h1>{t('gate.settingUpTitle')}</h1>
+          <p className="billing-gate__sub">{t('gate.settingUpSub')}</p>
+          <div className="billing-gate__spinner" aria-label={t('gate.loading')} />
         </div>
       </div>
     );
@@ -118,13 +131,13 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   if (isAdmin) return <>{children}</>;
 
   if (loadError) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
-          <h1>Couldn't check your subscription</h1>
+          <h1>{t('gate.checkFailedTitle')}</h1>
           <p className="billing-gate__sub">{loadError}</p>
           <button type="button" className="billing-gate__cta" onClick={() => window.location.reload()}>
-            Try again
+            {t('gate.tryAgain')}
           </button>
           <SignOutLink />
         </div>
@@ -132,7 +145,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     );
   }
 
-  if (!info || isAdmin === null) return null;
+  if (!info || isAdmin === null) return blocking(null);
 
   if (ACCESS_STATUSES.includes(info.status)) {
     return <>{children}</>;
@@ -150,26 +163,28 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   const deleteAt = deletionDate(info);
   const freezeNote = deleteAt ? (
     <p className="billing-gate__freeze" role="alert">
-      Your charts and account are frozen, not gone — they're kept safe until{' '}
-      <strong>{deleteAt.toLocaleDateString()}</strong>
-      {info.role === 'owner' ? ', then deleted permanently. Reactivate before then and everything is exactly as you left it.' : ', then deleted permanently.'}
+      <Trans
+        t={t}
+        i18nKey={info.role === 'owner' ? 'gate.freezeOwner' : 'gate.freezeMember'}
+        values={{ date: formatDateTime(deleteAt, i18n.language, { year: 'numeric', month: 'numeric', day: 'numeric' }) }}
+        components={{ strong: <strong /> }}
+      />
     </p>
   ) : null;
 
   // Members can't fix it — point them at the owner.
   if (info.role !== 'owner') {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
-          <h1>{info.practice?.name || 'Your practice'} needs a subscription</h1>
+          <h1>{t('gate.memberTitle', { practice: info.practice?.name || t('gate.yourPractice') })}</h1>
           <p className="billing-gate__sub">
-            {info.status === 'past_due'
-              ? 'The practice’s last payment didn’t go through.'
-              : info.status === 'none'
-              ? 'The practice’s subscription hasn’t been set up yet.'
-              : 'The practice’s subscription has ended.'}{' '}
-            Ask <strong>{info.ownerEmail || 'your practice owner'}</strong> to sort the billing — you'll be back in the
-            moment they do.
+            <Trans
+              t={t}
+              i18nKey={info.status === 'past_due' ? 'gate.memberPastDue' : info.status === 'none' ? 'gate.memberNone' : 'gate.memberEnded'}
+              values={{ owner: info.ownerEmail || t('gate.yourOwner') }}
+              components={{ strong: <strong /> }}
+            />
           </p>
           {freezeNote}
           <SignOutLink />
@@ -181,14 +196,11 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   // A failed payment keeps the subscription alive in Stripe — the fix is
   // a new card in the portal, not a new checkout.
   if (info.status === 'past_due' && info.hasStripe) {
-    return (
+    return blocking(
       <div className="billing-gate">
         <div className="billing-gate__panel billing-gate__panel--narrow">
-          <h1>Payment failed</h1>
-          <p className="billing-gate__sub">
-            Your last payment didn't go through — usually an expired or canceled card. Update your payment method and
-            you're straight back in; Stripe retries automatically once the card works.
-          </p>
+          <h1>{t('gate.failedTitle')}</h1>
+          <p className="billing-gate__sub">{t('gate.failedBody')}</p>
           {freezeNote}
           {error && <div className="login-error" role="alert">{error}</div>}
           <button
@@ -199,15 +211,15 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
               setBusy(true);
               setError('');
               openBillingPortal().catch((e) => {
-                setError(e instanceof Error ? e.message : 'Could not open the billing portal.');
+                setError(e instanceof Error ? e.message : t('gate.portalFailed'));
                 setBusy(false);
               });
             }}
           >
-            {busy ? 'Opening…' : 'Update payment method'}
+            {busy ? t('gate.opening') : t('gate.updateCard')}
           </button>
           <p className="billing-gate__contact">
-            Trouble with billing? <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20billing`}>Contact us</a>.
+            <Trans t={t} i18nKey="gate.trouble" components={{ a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20billing`} /> }} />
           </p>
           <SignOutLink />
         </div>
@@ -224,19 +236,17 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     try {
       await startCheckout(selected); // navigates away on success
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not start checkout.');
+      setError(e instanceof Error ? e.message : t('gate.checkoutFailed'));
       setBusy(false);
     }
   };
 
-  return (
+  return blocking(
     <div className="billing-gate">
       <div className="billing-gate__panel">
-        <h1>Choose your plan</h1>
+        <h1>{t('gate.chooseTitle')}</h1>
         <p className="billing-gate__sub">
-          {info.status === 'none'
-            ? `Every plan starts with a ${TRIAL_DAYS}-day free trial — cancel anytime.`
-            : 'Your subscription has ended — pick a plan to get back to your charts.'}
+          {info.status === 'none' ? t('gate.trialSub', { days: TRIAL_DAYS }) : t('gate.endedSub')}
         </p>
         {freezeNote}
 
@@ -252,8 +262,8 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
             >
               <span className="billing-plan__name">{p.name}</span>
               <span className="billing-plan__price">
-                ${p.priceMonthly}
-                <span className="billing-plan__per">/mo</span>
+                {formatPlanPrice(p.priceMonthly)}
+                <span className="billing-plan__per">{t('perMonth')}</span>
               </span>
               <span className="billing-plan__tagline">{p.tagline}</span>
               <ul className="billing-plan__features">
@@ -269,15 +279,14 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
 
         <button type="button" className="billing-gate__cta" onClick={subscribe} disabled={busy || !selected}>
           {busy
-            ? 'Opening checkout…'
+            ? t('gate.openingCheckout')
             : chosen
-            ? `Start ${TRIAL_DAYS}-day free trial — then $${chosen.priceMonthly}/mo`
-            : 'Pick a plan above'}
+            ? t('gate.startTrial', { days: TRIAL_DAYS, price: formatPlanPrice(chosen.priceMonthly) })
+            : t('gate.pickPlan')}
         </button>
 
         <p className="billing-gate__contact">
-          More than 5 team members, or a multi-location group?{' '}
-          <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a> for custom pricing.
+          <Trans t={t} i18nKey="gate.larger" components={{ a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`} /> }} />
         </p>
         <SignOutLink />
       </div>
@@ -285,12 +294,15 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
   );
 };
 
-const SignOutLink: React.FC = () => (
-  <button
-    type="button"
-    className="billing-gate__signout"
-    onClick={() => supabase?.auth.signOut()}
-  >
-    Sign out
-  </button>
-);
+const SignOutLink: React.FC = () => {
+  const { t } = useTranslation('billing');
+  return (
+    <button
+      type="button"
+      className="billing-gate__signout"
+      onClick={() => supabase?.auth.signOut()}
+    >
+      {t('gate.signOut')}
+    </button>
+  );
+};

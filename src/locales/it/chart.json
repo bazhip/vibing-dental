@@ -1,0 +1,277 @@
+{
+  "codeGroups": {
+    "occlusion": "Occlusione",
+    "toothNumberEruption": "Numero ed eruzione dei denti",
+    "developmental": "Anomalie di sviluppo",
+    "periodontal": "Parodonto",
+    "toothPathology": "Patologia dentale",
+    "toothFracture": "Frattura dentale",
+    "periapicalBone": "Periapicale e osso",
+    "trauma": "Trauma",
+    "softTissue": "Tessuti molli e mucose",
+    "immuneMediated": "Immunomediate",
+    "salivary": "Ghiandole salivari",
+    "headNosePharynx": "Testa, naso e faringe",
+    "masses": "Masse e oncologia",
+    "jawTmj": "Mascellari, ATM e anomalie congenite",
+    "imaging": "Diagnostica per immagini",
+    "periodontalTreatment": "Trattamento parodontale",
+    "endodontics": "Endodonzia",
+    "restorative": "Conservativa e protesi",
+    "extractions": "Estrazioni",
+    "oralSurgery": "Chirurgia orale",
+    "oncologic": "Terapia oncologica",
+    "jawRepair": "Fratture mascellari e ATM",
+    "orthodontics": "Ortodonzia"
+  },
+  "columns": {
+    "tooth": "Dente",
+    "triadan": "Triadan",
+    "mobility": "Mobilità",
+    "recession": "Recessione",
+    "pocket": "Tasca",
+    "furcation": "Forcazione",
+    "hyperplasia": "Ingrossamento",
+    "calculus": "Tartaro",
+    "gingivitis": "Gengivite",
+    "pdstate": "Stadio PD"
+  },
+  "customAnesthesia": {
+    "block": "Blocco personalizzato",
+    "field": "Campo personalizzato",
+    "yes": "Sì"
+  },
+  "grid": {
+    "title": "Odontogramma",
+    "short": {
+      "mobility": "Mob",
+      "recession": "Rec",
+      "pocket": "Tasca",
+      "furcation": "Forc",
+      "hyperplasia": "Ingr",
+      "calculus": "Tart",
+      "gingivitis": "Geng",
+      "pdstate": "Stad."
+    },
+    "pdstateTitle": "Stadio PD",
+    "perRoot": "{{name}} (per radice)",
+    "missing": "Mancante",
+    "triadanTooth": "Triadan · Dente",
+    "cellAria": "Dente {{triadan}} {{column}}",
+    "rootAria": "Dente {{triadan}} tasca, radice {{root}}",
+    "setAll": {
+      "title": "Imposta {{name}} per tutti i denti",
+      "message": "Si applica a tutti i denti non contrassegnati come mancanti. Lasci vuoto il campo per svuotare la colonna.",
+      "messageRange": "Si applica a tutti i denti non contrassegnati come mancanti. Usi un numero da {{min}} a {{max}}. Lasci vuoto il campo per svuotare la colonna.",
+      "confirm": "Applica a tutti",
+      "invalid": "{{name}} deve essere un numero da {{min}} a {{max}}.",
+      "applied": "{{name}} impostato a {{value}} su tutti i denti.",
+      "cleared": "{{name}} cancellato su tutti i denti."
+    },
+    "undo": "Annulla",
+    "clear": {
+      "title": "Cancellare {{name}} per tutti i denti?",
+      "message_one": "Rimuove {{count}} valore dalla colonna {{name}}.",
+      "message_other": "Rimuove {{count}} valori dalla colonna {{name}}.",
+      "message_many": "Rimuove {{count}} valori dalla colonna {{name}}.",
+      "confirm": "Svuota colonna"
+    },
+    "bulk": {
+      "toast_one": "{{name}} impostato a {{value}} su {{count}} dente.",
+      "toast_other": "{{name}} impostato a {{value}} su {{count}} denti.",
+      "toast_many": "{{name}} impostato a {{value}} su {{count}} denti.",
+      "range": "Usi {{min}}–{{max}}",
+      "region": "Imposta un valore per i denti selezionati",
+      "selected_one": "{{count}} dente selezionato",
+      "selected_other": "{{count}} denti selezionati",
+      "selected_many": "{{count}} denti selezionati",
+      "set": "Imposta",
+      "column": "Colonna da impostare",
+      "to": "a",
+      "value": "Valore",
+      "apply": "Applica",
+      "clearSelection": "Deseleziona",
+      "tip": "Suggerimento: faccia clic sui numeri dei denti per selezionarne diversi (Maiusc + clic per un intervallo), poi imposti un valore per tutti."
+    },
+    "missingCheck": {
+      "label": "Dente {{triadan}} mancante",
+      "labelCarried": "Dente {{triadan}} mancante (riportato dalla visita precedente)",
+      "titleCarried": "Il dente {{triadan}} era già mancante o estratto alla visita precedente — riportato automaticamente",
+      "titleUnmark": "Rimuovi il contrassegno di dente mancante dal dente {{triadan}}",
+      "titleMark": "Contrassegna il dente {{triadan}} come mancante — barra questa riga e riempie il dente nello schema Diagnosi",
+      "prev": "prec."
+    },
+    "tooth": {
+      "title": "Faccia clic per selezionare questo dente (Maiusc + clic per un intervallo) e impostare un valore su più denti insieme"
+    },
+    "slot": {
+      "root": "Radice {{root}}",
+      "rootLast": "Radice {{root}} — ultima visita {{value}}"
+    },
+    "unsplit": {
+      "title": "Non suddiviso per radice — faccia clic per modificare (lo cancelli per ottenere un riquadro per radice)",
+      "chip": "tutte le radici"
+    },
+    "lastVisit": "Ultima visita: {{value}}",
+    "lastVisitRef": "Ultima visita: {{value}} — mostrata come riferimento, non riportata",
+    "setAllHint": "Imposta {{name}} per tutti i denti in una volta",
+    "options": {
+      "mirror": "Mostra i reperti nello schema Diagnosi",
+      "mirrorTitle": "Aggiunge un commento a ogni dente compilato nello schema Diagnosi e lo mantiene aggiornato mentre compila. I Suoi commenti non vengono toccati.",
+      "pdf": "Includi la griglia nel PDF",
+      "pdfTitleOn": "Deselezioni per escludere le griglie delle arcate dal PDF — lo schema Diagnosi mostra già questi reperti e ottiene più spazio.",
+      "pdfTitleOff": "Disponibile quando i reperti sono mostrati nello schema Diagnosi."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Legenda dello schema",
+      "charted": "Compilato",
+      "planned": "Estrazione pianificata",
+      "extracted": "Estratto",
+      "missing": "Mancante"
+    },
+    "clickTooth": "<strong>Faccia clic su un dente</strong> dello schema per compilarlo.",
+    "hint": "Tutto ciò che inserisce qui compila anche la griglia dell’Odontogramma e gli schemi Diagnosi / Procedura.",
+    "start": "Inizia da {{triadan}} →",
+    "prev": "Dente precedente",
+    "prevAria": "Dente precedente ({{triadan}})",
+    "next": "Dente successivo",
+    "nextAria": "Dente successivo ({{triadan}})",
+    "missingBefore": "Mancante (prima di questa visita)",
+    "findings": "Reperti",
+    "rootAria": "Tasca, radice {{root}}",
+    "expected": "Previsto: {{range}}",
+    "diagnosisNote": "Nota diagnostica",
+    "diagnosisPlaceholder": "ad es. corona fratturata, esposizione pulpare",
+    "extraction": "Estrazione",
+    "planExtract": "Pianifica estrazione",
+    "procedureNote": "Nota procedurale",
+    "procedurePlaceholder": "ad es. estrazione chirurgica, lembo chiuso con 5-0",
+    "plan": "Piano di estrazione",
+    "chipDone": "{{triadan}} — estratto",
+    "chipPending": "{{triadan}} — non ancora contrassegnato come estratto",
+    "allConfirmed": "Tutte le estrazioni pianificate sono confermate.",
+    "confirmed": "{{done}} su {{total}} confermati come estratti.",
+    "markExtracted_one": "Contrassegna come estratto",
+    "markExtracted_other": "Contrassegna tutti e {{count}} come estratti",
+    "markExtracted_many": "Contrassegna tutti e {{count}} come estratti"
+  },
+  "toothName": {
+    "side": {
+      "right": "destro",
+      "left": "sinistro"
+    },
+    "jaw": {
+      "maxillary": "mascellare",
+      "mandibular": "mandibolare"
+    },
+    "type": {
+      "incisor": "incisivo",
+      "canine": "canino",
+      "premolar": "premolare",
+      "molar": "molare"
+    },
+    "ordinal": {
+      "1": "1°",
+      "2": "2°",
+      "3": "3°",
+      "4": "4°"
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{tooth}} {{jaw}} {{side}}",
+    "deciduous": "{{tooth}} deciduo {{jaw}} {{side}}"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Mascella",
+      "mandible": "Mandibola",
+      "right": "D",
+      "left": "S"
+    },
+    "aria": {
+      "select": "Schema dentale — scelga un dente da compilare",
+      "extracted": "Schema dentale — Invio o Spazio su un dente attiva o disattiva «estratto»",
+      "missing": "Schema dentale — Invio o Spazio su un dente attiva o disattiva «mancante»",
+      "default": "Schema dentale"
+    },
+    "tooth": {
+      "label": "Dente {{triadan}}{{details}}",
+      "markedMissing": ", contrassegnato come mancante",
+      "markedExtracted": ", contrassegnato come estratto",
+      "planned": ", estrazione pianificata",
+      "locked": " (mancante prima di questa visita — bloccato)"
+    },
+    "comment": {
+      "fromGrid": "Dalla griglia dell’Odontogramma — modifichi la griglia per cambiarlo",
+      "delete": "Elimina commento",
+      "placeholder": "Note...",
+      "resize": "Ridimensiona commento"
+    }
+  },
+  "diagramView": {
+    "customize": "Personalizza",
+    "customizeTitle": "Reperti mostrati accanto ai denti",
+    "toolGroup": "Strumento dello schema",
+    "markMissingTitle": "Tocchi un dente per contrassegnarlo come mancante (tocchi di nuovo per annullare)",
+    "markExtractedTitle": "Tocchi un dente per contrassegnarlo come estratto (tocchi di nuovo per annullare)",
+    "markTitle": "Tocchi un dente per contrassegnarlo come mancante o estratto",
+    "markMissing": "Segna mancante",
+    "markExtracted": "Segna estratto",
+    "mark": "Segna",
+    "comment": "Commento",
+    "draw": "Disegna",
+    "historyGroup": "Annulla / Ripristina",
+    "undo": "Annulla",
+    "redo": "Ripristina",
+    "undoTitle": "Annulla ({{shortcut}})",
+    "redoTitle": "Ripristina ({{shortcut}})",
+    "freeComment": "+ Commento libero",
+    "numbers": "# Numeri",
+    "numbersTitle": "Mostra il numero Triadan di ogni dente nello schema (non stampato nel PDF)",
+    "zoomGroup": "Zoom",
+    "zoomOut": "Riduci",
+    "zoomIn": "Ingrandisci",
+    "zoomReset": "Ripristina lo zoom adattato",
+    "zoomLevel": "Zoom {{percent}} per cento — ripristina l’adattamento",
+    "textSize": {
+      "group": "Dimensione del testo dei commenti",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Dimensione del testo dei commenti {{size}}",
+      "title": "Dimensione del testo dei commenti: {{size}}"
+    },
+    "drawSettings": "Impostazioni di disegno",
+    "strokeColor": "Colore del tratto",
+    "colors": {
+      "red": "rosso",
+      "blue": "blu",
+      "green": "verde",
+      "amber": "ambra",
+      "charcoal": "antracite"
+    },
+    "strokeColorAria": "Colore del tratto {{color}}",
+    "strokeWidth": "Spessore del tratto",
+    "strokeWidthValue": "{{width}} pixel",
+    "clearStrokes": "Cancella tratti",
+    "more": "Altri strumenti del diagramma",
+    "moreTitle": "Altri strumenti — commenti, numeri, zoom, dimensione del testo"
+  },
+  "codeRef": {
+    "all": "Codici",
+    "diagnosisTitle": "Codici di diagnosi",
+    "procedureTitle": "Codici di procedura",
+    "searchLabel": "Cerca codici o definizioni",
+    "searchPlaceholder": "Cerca codici o definizioni…",
+    "diagnoses": "Diagnosi",
+    "procedures": "Procedure",
+    "noMatches": "Nessun risultato."
+  },
+  "scoreChips": {
+    "group": "Punteggio {{name}}",
+    "clear": "Cancella {{name}}"
+  }
+}
