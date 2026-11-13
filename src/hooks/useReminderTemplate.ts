@@ -2,6 +2,7 @@ import React from 'react';
 import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import type { ReportLocale } from '../utils/ownerReportI18n';
+import { standardReminderText } from '../utils/reminderDefaults';
 import { usePracticeLanguage } from './usePracticeLanguage';
 
 /**
@@ -20,18 +21,9 @@ export interface ReminderTemplate {
   leadDays: number;
 }
 
-/** Literal placeholders passed back to the catalog so t() leaves them in the text. */
-const KEPT = { patient: '{{patient}}', owner: '{{owner}}', practice: '{{practice}}', recheck_date: '{{recheck_date}}' };
-
 /** The standard reminder, in the practice's client language. */
 export function defaultReminder(lng: ReportLocale): ReminderTemplate {
-  const t = i18n.getFixedT(lng, 'client');
-  return {
-    subject: t('reminder.subject', KEPT),
-    body: t('reminder.body', KEPT),
-    auto: false,
-    leadDays: 0,
-  };
+  return { ...standardReminderText(lng), auto: false, leadDays: 0 };
 }
 
 /** Substitute the placeholders; blanks fall back to wording in `lng`. */
@@ -56,7 +48,7 @@ interface StoredReminder {
 }
 
 export function useReminderTemplate(practiceId: string, open: boolean) {
-  const { language, loaded: languageLoaded } = usePracticeLanguage(practiceId || null);
+  const { language, loaded: languageLoaded } = usePracticeLanguage(practiceId || null, open);
   // What the database holds; empty text means "use the standard reminder".
   const [stored, setStored] = React.useState<StoredReminder | null>(null);
   const [rowLoaded, setRowLoaded] = React.useState(false);
@@ -105,7 +97,10 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
     // language) — unless auto-send is on: the scheduled job only reads these columns,
     // so the text as shown must be stored for it to send.
     const d = defaultReminder(language);
-    const field = (text: string, standard: string) => (text === standard && !next.auto ? '' : text);
+    const field = (text: string, standard: string) => {
+      const v = text.trim() ? text : standard;
+      return v === standard && !next.auto ? '' : v;
+    };
     const row: StoredReminder = {
       subject: field(next.subject, d.subject),
       body: field(next.body, d.body),

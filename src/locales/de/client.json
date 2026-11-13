@@ -3,7 +3,7 @@
     "body": "Guten Tag {{owner}},\n\nwir möchten Sie freundlich daran erinnern, dass bei {{patient}} eine Zahnkontrolle fällig ist. Bitte rufen Sie uns an, um einen Termin zu vereinbaren.\n\nVielen Dank\n{{practice}}",
     "fallback": {
       "owner": "Damen und Herren",
-      "pet": "Ihr Tier",
+      "pet": "Ihrem Tier",
       "practice": "Ihre Tierarztpraxis"
     },
     "subject": "Zeit für die Zahnkontrolle von {{patient}}"

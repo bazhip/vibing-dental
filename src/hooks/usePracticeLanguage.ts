@@ -1,6 +1,7 @@
 import React from 'react';
 import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
+import { standardReminderText } from '../utils/reminderDefaults';
 import { ReportLocale, appReportLocale, isReportLocale } from '../utils/ownerReportI18n';
 
 /** The practice's client language when it is a known one, else `fallback`. */
@@ -27,11 +28,22 @@ export interface UsePracticeLanguageReturn {
  * A database without the column yet (migration not run) reads as "not set";
  * saving then fails with the database's message.
  */
-export function usePracticeLanguage(practiceId: string | null): UsePracticeLanguageReturn {
+type Listener = (practiceId: string, lng: ReportLocale | null) => void;
+const listeners = new Set<Listener>();
+
+export function usePracticeLanguage(practiceId: string | null, open = true): UsePracticeLanguageReturn {
   const [stored, setStored] = React.useState<ReportLocale | null>(null);
   const [loaded, setLoaded] = React.useState(!supabase || !practiceId);
 
+  // Other instances (e.g. Practice settings) changing the language reach this one at once.
   React.useEffect(() => {
+    const onChange: Listener = (id, lng) => { if (id === practiceId) setStored(lng); };
+    listeners.add(onChange);
+    return () => { listeners.delete(onChange); };
+  }, [practiceId]);
+
+  React.useEffect(() => {
+    if (!open) return;
     if (!supabase || !practiceId) {
       setStored(null);
       setLoaded(true);
@@ -58,17 +70,32 @@ export function usePracticeLanguage(practiceId: string | null): UsePracticeLangu
     return () => {
       cancelled = true;
     };
-  }, [practiceId]);
+  }, [practiceId, open]);
 
+  const current = stored ?? appReportLocale();
   const save = React.useCallback(
     async (lng: ReportLocale | null): Promise<void> => {
       if (!supabase || !practiceId) throw new Error(i18n.t('settings.noPractice', { ns: 'reminders' }));
-      const { error } = await supabase.from('practices').update({ client_language: lng }).eq('id', practiceId);
+      // The auto-send job reads only the stored reminder text, so text that is still the old
+      // language's standard follows the switch; anything the owner edited stays as written.
+      const payload: Record<string, string | null> = { client_language: lng };
+      try {
+        const { data } = await supabase.from('practices').select('reminder_subject, reminder_body').eq('id', practiceId).maybeSingle();
+        const row = data as { reminder_subject?: string | null; reminder_body?: string | null } | null;
+        const from = standardReminderText(current);
+        const to = standardReminderText(lng ?? appReportLocale());
+        if (row?.reminder_subject && row.reminder_subject === from.subject) payload.reminder_subject = to.subject;
+        if (row?.reminder_body && row.reminder_body === from.body) payload.reminder_body = to.body;
+      } catch {
+        // Reminder text is best effort; the language change itself still goes through.
+      }
+      const { error } = await supabase.from('practices').update(payload).eq('id', practiceId);
       if (error) throw new Error(error.message);
       setStored(lng);
+      listeners.forEach((l) => l(practiceId, lng));
     },
-    [practiceId],
+    [practiceId, current],
   );
 
-  return { language: stored ?? appReportLocale(), explicit: stored !== null, loaded, save };
+  return { language: current, explicit: stored !== null, loaded, save };
 }
