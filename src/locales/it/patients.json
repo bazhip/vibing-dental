@@ -1,0 +1,98 @@
+{
+  "title": "Pazienti",
+  "search": {
+    "placeholder": "Cerca",
+    "label": "Cerca pazienti per nome, numero o proprietario",
+    "clear": "Cancella ricerca"
+  },
+  "signIn": "Acceda per vedere i Suoi odontogrammi salvati.",
+  "loading": "Caricamento…",
+  "unnamed": "Paziente senza nome",
+  "empty": "Nessun odontogramma salvato. Vengono salvati automaticamente mentre compila.",
+  "noMatch": {
+    "search": "Nessun paziente corrisponde alla ricerca.",
+    "due": "Nessun paziente ha un controllo in scadenza.",
+    "filters": "Nessun odontogramma corrisponde a questi filtri."
+  },
+  "retry": "Riprova",
+  "loadMore": "Carica altri",
+  "errors": {
+    "load": "Impossibile caricare i Suoi odontogrammi. {{error}}",
+    "more": "Impossibile caricare altri odontogrammi. {{error}}",
+    "open": "Impossibile aprire questo odontogramma. {{error}}",
+    "delete": "Impossibile eliminare questa visita. {{error}}",
+    "clear": "Impossibile rimuovere questo controllo. {{error}}"
+  },
+  "filter": {
+    "button": "Filtra e ordina",
+    "sortBy": "Ordina per",
+    "sortPatient": "Nome",
+    "sortUpdated": "Ultima modifica",
+    "sortRecall": "Data del controllo",
+    "order": "Ordine",
+    "patientAsc": "Dalla A alla Z",
+    "patientDesc": "Dalla Z alla A",
+    "updatedDesc": "Più recenti prima",
+    "updatedAsc": "Meno recenti prima",
+    "recallAsc": "Più vicini prima",
+    "recallDesc": "Più lontani prima",
+    "species": "Specie",
+    "allSpecies": "Tutte le specie",
+    "canine": "Cane",
+    "feline": "Gatto",
+    "doctor": "Veterinario",
+    "allDoctors": "Tutti i veterinari",
+    "due": "Controllo in scadenza",
+    "dueCount": "Controllo in scadenza ({{count}})"
+  },
+  "add": {
+    "button": "Aggiungi",
+    "newPatient": "Nuovo paziente",
+    "importPdf": "Importa PDF dell’odontogramma"
+  },
+  "row": {
+    "number": "n. {{number}}",
+    "visits_one": "{{count}} visita",
+    "visits_many": "{{count}} visite",
+    "visits_other": "{{count}} visite",
+    "updated": "Modificato il {{date}}"
+  },
+  "recall": {
+    "overdue": "Scaduto · {{date}}",
+    "today": "Scade oggi",
+    "upcoming": "Controllo il {{date}}"
+  },
+  "actions": {
+    "sendReminder": "Invia promemoria",
+    "clearRecheck": "Rimuovi controllo",
+    "history": "Cronologia",
+    "open": "Apri",
+    "delete": "Elimina",
+    "newVisit": "Nuova visita"
+  },
+  "confirmClear": {
+    "title": "Rimuovere il controllo di {{name}}?",
+    "message": "Usi questa opzione se il controllo è avvenuto senza un nuovo odontogramma o non è più necessario. Il paziente uscirà dall’elenco dei controlli in scadenza.",
+    "confirm": "Rimuovi controllo"
+  },
+  "confirmDelete": {
+    "title": "Eliminare {{name}}?",
+    "titleDated": "Eliminare {{name}} ({{date}})?",
+    "message": "Questa visita verrà rimossa dal cloud per tutta la Sua clinica. L’operazione non può essere annullata.",
+    "confirm": "Elimina visita"
+  },
+  "visits": {
+    "undated": "Visita senza data",
+    "byDoctor": "{{doctor}} · Modificato il {{date}}",
+    "updated": "Modificato il {{date}}",
+    "empty": "Nessuna visita.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Controlli",
+    "overdue": "Scaduti",
+    "today": "In scadenza oggi",
+    "empty": "Nessun controllo in scadenza",
+    "emptyHint": "I pazienti compaiono qui il giorno in cui scade il loro controllo."
+  }
+}

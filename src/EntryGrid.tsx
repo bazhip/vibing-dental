@@ -54,6 +54,7 @@ import { shouldOpenLibraryOnArrival } from './utils/arrival';
 import { isNativeApp } from './native/platform';
 import { AppShell, type AppTab, type AppShellHandle } from './ios/AppShell';
 import { AppDataProvider, useStableFunctions, type AppLibrary, type AppSettings } from './ios/appData';
+import { previewLibrary } from './ios/previewLibrary';
 import { PatientsScreen } from './ios/screens/PatientsScreen';
 import { RechecksScreen } from './ios/screens/RechecksScreen';
 import { SettingsScreen } from './ios/screens/SettingsScreen';
@@ -1569,7 +1570,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   if (native) {
     return (
       <div className="entry-grid-app">
-        <AppDataProvider library={appLibrary} settings={appSettings}>
+        {/* DEV only: ?iosPreview=1&iosFixtures=1 gives the trial sample patients. */}
+        <AppDataProvider library={import.meta.env.DEV ? previewLibrary(appLibrary) : appLibrary} settings={appSettings}>
           <AppShell
             activeTab={appTab}
             onTabChange={setAppTab}

@@ -1,0 +1,98 @@
+{
+  "title": "Pacientes",
+  "search": {
+    "placeholder": "Buscar",
+    "label": "Buscar pacientes por nombre, número o propietario",
+    "clear": "Borrar búsqueda"
+  },
+  "signIn": "Inicie sesión para ver sus odontogramas guardados.",
+  "loading": "Cargando…",
+  "unnamed": "Paciente sin nombre",
+  "empty": "Todavía no hay odontogramas guardados. Se guardan automáticamente mientras registra.",
+  "noMatch": {
+    "search": "Ningún paciente coincide con esa búsqueda.",
+    "due": "Ningún paciente tiene un control pendiente.",
+    "filters": "Ningún odontograma coincide con esos filtros."
+  },
+  "retry": "Reintentar",
+  "loadMore": "Cargar más",
+  "errors": {
+    "load": "No se han podido cargar sus odontogramas. {{error}}",
+    "more": "No se han podido cargar más odontogramas. {{error}}",
+    "open": "No se ha podido abrir ese odontograma. {{error}}",
+    "delete": "No se ha podido eliminar esa visita. {{error}}",
+    "clear": "No se ha podido quitar ese control. {{error}}"
+  },
+  "filter": {
+    "button": "Filtrar y ordenar",
+    "sortBy": "Ordenar por",
+    "sortPatient": "Nombre",
+    "sortUpdated": "Última modificación",
+    "sortRecall": "Fecha de control",
+    "order": "Orden",
+    "patientAsc": "De la A a la Z",
+    "patientDesc": "De la Z a la A",
+    "updatedDesc": "Más recientes primero",
+    "updatedAsc": "Más antiguos primero",
+    "recallAsc": "Más próximos primero",
+    "recallDesc": "Más lejanos primero",
+    "species": "Especie",
+    "allSpecies": "Todas las especies",
+    "canine": "Canino",
+    "feline": "Felino",
+    "doctor": "Veterinario",
+    "allDoctors": "Todos los veterinarios",
+    "due": "Control pendiente",
+    "dueCount": "Control pendiente ({{count}})"
+  },
+  "add": {
+    "button": "Añadir",
+    "newPatient": "Nuevo paciente",
+    "importPdf": "Importar PDF de odontograma"
+  },
+  "row": {
+    "number": "N.º {{number}}",
+    "visits_one": "{{count}} visita",
+    "visits_many": "{{count}} visitas",
+    "visits_other": "{{count}} visitas",
+    "updated": "Modificado el {{date}}"
+  },
+  "recall": {
+    "overdue": "Atrasado · {{date}}",
+    "today": "Para hoy",
+    "upcoming": "Control el {{date}}"
+  },
+  "actions": {
+    "sendReminder": "Enviar recordatorio",
+    "clearRecheck": "Quitar control",
+    "history": "Historial",
+    "open": "Abrir",
+    "delete": "Eliminar",
+    "newVisit": "Nueva visita"
+  },
+  "confirmClear": {
+    "title": "¿Quitar el control de {{name}}?",
+    "message": "Use esta opción cuando el control se haya hecho sin un nuevo odontograma o ya no sea necesario. El paciente saldrá de la lista de controles pendientes.",
+    "confirm": "Quitar control"
+  },
+  "confirmDelete": {
+    "title": "¿Eliminar {{name}}?",
+    "titleDated": "¿Eliminar {{name}} ({{date}})?",
+    "message": "Esta visita se eliminará de la nube para toda su clínica. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar visita"
+  },
+  "visits": {
+    "undated": "Visita sin fecha",
+    "byDoctor": "{{doctor}} · Modificado el {{date}}",
+    "updated": "Modificado el {{date}}",
+    "empty": "No hay visitas.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Controles",
+    "overdue": "Atrasados",
+    "today": "Para hoy",
+    "empty": "No hay controles pendientes",
+    "emptyHint": "Los pacientes aparecen aquí el día en que les toca el control."
+  }
+}

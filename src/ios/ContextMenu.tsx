@@ -18,6 +18,11 @@ export interface MenuItem {
   destructive?: boolean;
   /** For selection menus: shows a checkmark and aria-checked. */
   checked?: boolean;
+  /** Outside a `radio` menu, an item with `checked` is a checkbox unless
+   *  this says 'radio' (one choice within its section). */
+  type?: 'radio' | 'checkbox';
+  /** Starts a new section (a separated group): a string is its title. */
+  section?: string | true;
   onSelect(): void;
 }
 
@@ -43,6 +48,10 @@ export interface MenuPopoverProps {
 }
 
 const EDGE = 8;
+/** Measured at the viewport's leading edge, where shrink-to-fit gives the
+ *  menu its natural width (near the trailing edge it would be squeezed,
+ *  then grow past the screen once moved into place). */
+const HIDDEN_FOR_MEASURE: React.CSSProperties = { left: 0, top: 0, visibility: 'hidden' };
 const CHECK_ICON: IconName = 'checkmark';
 
 export function MenuPopover({ items, anchor, onClose, radio = false, centered = false, scrim = false, label }: MenuPopoverProps) {
@@ -52,7 +61,8 @@ export function MenuPopover({ items, anchor, onClose, radio = false, centered = 
   React.useLayoutEffect(() => {
     const menu = menuRef.current;
     if (!menu) return;
-    const rect = menu.getBoundingClientRect();
+    // Layout size: getBoundingClientRect would include the scale-in animation.
+    const rect = { width: menu.offsetWidth, height: menu.offsetHeight };
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     let left = centered ? anchor.left + anchor.width / 2 - rect.width / 2 : anchor.left;
@@ -123,6 +133,44 @@ export function MenuPopover({ items, anchor, onClose, radio = false, centered = 
     }
   };
 
+  const hasChecks = radio || items.some((item) => item.checked !== undefined);
+  const renderItem = (item: MenuItem, idx: number) => {
+    const kind = radio ? 'radio' : item.checked === undefined ? null : (item.type ?? 'checkbox');
+    return (
+      <button
+        key={`${item.label}-${idx}`}
+        type="button"
+        role={kind === 'radio' ? 'menuitemradio' : kind === 'checkbox' ? 'menuitemcheckbox' : 'menuitem'}
+        aria-checked={kind ? !!item.checked : undefined}
+        tabIndex={-1}
+        className={`ios-menu__item${item.destructive ? ' ios-menu__item--destructive' : ''}`}
+        onClick={() => {
+          onClose();
+          item.onSelect();
+        }}
+      >
+        {hasChecks && (
+          <span className="ios-menu__check" aria-hidden="true">
+            {item.checked && <Icon name={CHECK_ICON} size={15} />}
+          </span>
+        )}
+        <span className="ios-menu__label">{item.label}</span>
+        {item.icon && <Icon name={item.icon} size={19} className="ios-menu__icon" />}
+      </button>
+    );
+  };
+  // Sections, when any item starts one (items before the first form an
+  // untitled section).
+  const sections = items.some((item) => item.section)
+    ? items.reduce<{ title?: string; items: { item: MenuItem; idx: number }[] }[]>((list, item, idx) => {
+        if (item.section || list.length === 0) {
+          list.push({ title: typeof item.section === 'string' ? item.section : undefined, items: [] });
+        }
+        list[list.length - 1].items.push({ item, idx });
+        return list;
+      }, [])
+    : null;
+
   return ReactDOM.createPortal(
     <div className={`ios-menu-layer${scrim ? ' ios-menu-layer--scrim' : ''}`}>
       <div
@@ -135,32 +183,23 @@ export function MenuPopover({ items, anchor, onClose, radio = false, centered = 
         ref={menuRef}
         role="menu"
         aria-label={label}
-        className="ios-menu"
-        style={pos ? { left: pos.left, top: pos.top, transformOrigin: pos.origin } : { left: anchor.left, top: anchor.top + anchor.height, visibility: 'hidden' }}
+        className={`ios-menu${hasChecks ? ' ios-menu--checks' : ''}`}
+        style={pos ? { left: pos.left, top: pos.top, transformOrigin: pos.origin } : HIDDEN_FOR_MEASURE}
         onKeyDown={onKeyDown}
       >
-        {items.map((item, idx) => (
-          <button
-            key={`${item.label}-${idx}`}
-            type="button"
-            role={radio ? 'menuitemradio' : 'menuitem'}
-            aria-checked={radio ? !!item.checked : undefined}
-            tabIndex={-1}
-            className={`ios-menu__item${item.destructive ? ' ios-menu__item--destructive' : ''}`}
-            onClick={() => {
-              onClose();
-              item.onSelect();
-            }}
-          >
-            {radio && (
-              <span className="ios-menu__check" aria-hidden="true">
-                {item.checked && <Icon name={CHECK_ICON} size={15} />}
-              </span>
-            )}
-            <span className="ios-menu__label">{item.label}</span>
-            {item.icon && <Icon name={item.icon} size={19} className="ios-menu__icon" />}
-          </button>
-        ))}
+        {sections
+          ? sections.map((sec, i) => (
+              <div
+                key={i}
+                role="group"
+                aria-label={sec.title}
+                className={`ios-menu__section${i > 0 ? ' ios-menu__section--separated' : ''}`}
+              >
+                {sec.title && <div className="ios-menu__section-title" aria-hidden="true">{sec.title}</div>}
+                {sec.items.map(({ item, idx }) => renderItem(item, idx))}
+              </div>
+            ))
+          : items.map((item, idx) => renderItem(item, idx))}
       </div>
     </div>,
     document.body

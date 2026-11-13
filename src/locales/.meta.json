@@ -660,6 +660,290 @@
       "hash": "74a883a037bc",
       "status": "machine"
     },
+    "patients:actions.clearRecheck": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "patients:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "patients:actions.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "patients:actions.open": {
+      "hash": "ed077f3d8125",
+      "status": "machine"
+    },
+    "patients:actions.sendReminder": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "patients:add.button": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "patients:add.importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "patients:add.newPatient": {
+      "hash": "f081c1e0d14e",
+      "status": "machine"
+    },
+    "patients:confirmClear.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:confirmClear.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "patients:confirmClear.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "patients:confirmDelete.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "patients:confirmDelete.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "patients:confirmDelete.title": {
+      "hash": "69be14a40a60",
+      "status": "machine"
+    },
+    "patients:confirmDelete.titleDated": {
+      "hash": "366c0010a6b3",
+      "status": "machine"
+    },
+    "patients:empty": {
+      "hash": "29786c80b08e",
+      "status": "machine"
+    },
+    "patients:errors.clear": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "patients:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "patients:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "patients:errors.more": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "patients:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "patients:filter.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "patients:filter.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "patients:filter.button": {
+      "hash": "06df7c654f2b",
+      "status": "machine"
+    },
+    "patients:filter.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "patients:filter.doctor": {
+      "hash": "24669ff48290",
+      "status": "machine"
+    },
+    "patients:filter.due": {
+      "hash": "de9a7f271ba6",
+      "status": "machine"
+    },
+    "patients:filter.dueCount": {
+      "hash": "8f8e71b20da8",
+      "status": "machine"
+    },
+    "patients:filter.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "patients:filter.order": {
+      "hash": "6be090825c99",
+      "status": "machine"
+    },
+    "patients:filter.patientAsc": {
+      "hash": "790e831a32e5",
+      "status": "machine"
+    },
+    "patients:filter.patientDesc": {
+      "hash": "efe8139e05c6",
+      "status": "machine"
+    },
+    "patients:filter.recallAsc": {
+      "hash": "482c320bdab9",
+      "status": "machine"
+    },
+    "patients:filter.recallDesc": {
+      "hash": "7786faa48985",
+      "status": "machine"
+    },
+    "patients:filter.sortBy": {
+      "hash": "c9129025bd3f",
+      "status": "machine"
+    },
+    "patients:filter.sortPatient": {
+      "hash": "dcd1d5223f73",
+      "status": "machine"
+    },
+    "patients:filter.sortRecall": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "patients:filter.sortUpdated": {
+      "hash": "382ac5f308f7",
+      "status": "machine"
+    },
+    "patients:filter.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "patients:filter.updatedAsc": {
+      "hash": "6e2ebdab3c02",
+      "status": "machine"
+    },
+    "patients:filter.updatedDesc": {
+      "hash": "ffb6f5764bdd",
+      "status": "machine"
+    },
+    "patients:loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "patients:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "patients:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "patients:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "patients:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "patients:recall.overdue": {
+      "hash": "b85f92e10089",
+      "status": "machine"
+    },
+    "patients:recall.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:recall.upcoming": {
+      "hash": "20698ae337cd",
+      "status": "machine"
+    },
+    "patients:rechecks.empty": {
+      "hash": "75ce4d3a838b",
+      "status": "machine"
+    },
+    "patients:rechecks.emptyHint": {
+      "hash": "2480c9afc453",
+      "status": "machine"
+    },
+    "patients:rechecks.overdue": {
+      "hash": "d660945bc299",
+      "status": "machine"
+    },
+    "patients:rechecks.title": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "patients:rechecks.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "patients:row.number": {
+      "hash": "2036653b22ff",
+      "status": "machine"
+    },
+    "patients:row.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
+    "patients:row.visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "patients:row.visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:search.clear": {
+      "hash": "3b7ea51793e9",
+      "status": "machine"
+    },
+    "patients:search.label": {
+      "hash": "f79814fab912",
+      "status": "machine"
+    },
+    "patients:search.placeholder": {
+      "hash": "49c266baaaa7",
+      "status": "machine"
+    },
+    "patients:signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "patients:title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "patients:unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "patients:visits.byDoctor": {
+      "hash": "2619abb4cb67",
+      "status": "machine"
+    },
+    "patients:visits.empty": {
+      "hash": "4ee34bbb31da",
+      "status": "machine"
+    },
+    "patients:visits.historyLabel": {
+      "hash": "f52771b0302f",
+      "status": "machine"
+    },
+    "patients:visits.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "patients:visits.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -1620,6 +1904,294 @@
     },
     "common:ios.tabs.settings": {
       "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "patients:actions.clearRecheck": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "patients:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "patients:actions.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "patients:actions.open": {
+      "hash": "ed077f3d8125",
+      "status": "machine"
+    },
+    "patients:actions.sendReminder": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "patients:add.button": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "patients:add.importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "patients:add.newPatient": {
+      "hash": "f081c1e0d14e",
+      "status": "machine"
+    },
+    "patients:confirmClear.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:confirmClear.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "patients:confirmClear.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "patients:confirmDelete.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "patients:confirmDelete.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "patients:confirmDelete.title": {
+      "hash": "69be14a40a60",
+      "status": "machine"
+    },
+    "patients:confirmDelete.titleDated": {
+      "hash": "366c0010a6b3",
+      "status": "machine"
+    },
+    "patients:empty": {
+      "hash": "29786c80b08e",
+      "status": "machine"
+    },
+    "patients:errors.clear": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "patients:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "patients:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "patients:errors.more": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "patients:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "patients:filter.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "patients:filter.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "patients:filter.button": {
+      "hash": "06df7c654f2b",
+      "status": "machine"
+    },
+    "patients:filter.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "patients:filter.doctor": {
+      "hash": "24669ff48290",
+      "status": "machine"
+    },
+    "patients:filter.due": {
+      "hash": "de9a7f271ba6",
+      "status": "machine"
+    },
+    "patients:filter.dueCount": {
+      "hash": "8f8e71b20da8",
+      "status": "machine"
+    },
+    "patients:filter.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "patients:filter.order": {
+      "hash": "6be090825c99",
+      "status": "machine"
+    },
+    "patients:filter.patientAsc": {
+      "hash": "790e831a32e5",
+      "status": "machine"
+    },
+    "patients:filter.patientDesc": {
+      "hash": "efe8139e05c6",
+      "status": "machine"
+    },
+    "patients:filter.recallAsc": {
+      "hash": "482c320bdab9",
+      "status": "machine"
+    },
+    "patients:filter.recallDesc": {
+      "hash": "7786faa48985",
+      "status": "machine"
+    },
+    "patients:filter.sortBy": {
+      "hash": "c9129025bd3f",
+      "status": "machine"
+    },
+    "patients:filter.sortPatient": {
+      "hash": "dcd1d5223f73",
+      "status": "machine"
+    },
+    "patients:filter.sortRecall": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "patients:filter.sortUpdated": {
+      "hash": "382ac5f308f7",
+      "status": "machine"
+    },
+    "patients:filter.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "patients:filter.updatedAsc": {
+      "hash": "6e2ebdab3c02",
+      "status": "machine"
+    },
+    "patients:filter.updatedDesc": {
+      "hash": "ffb6f5764bdd",
+      "status": "machine"
+    },
+    "patients:loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "patients:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "patients:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "patients:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "patients:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "patients:recall.overdue": {
+      "hash": "b85f92e10089",
+      "status": "machine"
+    },
+    "patients:recall.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:recall.upcoming": {
+      "hash": "20698ae337cd",
+      "status": "machine"
+    },
+    "patients:rechecks.empty": {
+      "hash": "75ce4d3a838b",
+      "status": "machine"
+    },
+    "patients:rechecks.emptyHint": {
+      "hash": "2480c9afc453",
+      "status": "machine"
+    },
+    "patients:rechecks.overdue": {
+      "hash": "d660945bc299",
+      "status": "machine"
+    },
+    "patients:rechecks.title": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "patients:rechecks.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "patients:row.number": {
+      "hash": "2036653b22ff",
+      "status": "machine"
+    },
+    "patients:row.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
+    "patients:row.visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:row.visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "patients:row.visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:search.clear": {
+      "hash": "3b7ea51793e9",
+      "status": "machine"
+    },
+    "patients:search.label": {
+      "hash": "f79814fab912",
+      "status": "machine"
+    },
+    "patients:search.placeholder": {
+      "hash": "49c266baaaa7",
+      "status": "machine"
+    },
+    "patients:signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "patients:title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "patients:unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "patients:visits.byDoctor": {
+      "hash": "2619abb4cb67",
+      "status": "machine"
+    },
+    "patients:visits.empty": {
+      "hash": "4ee34bbb31da",
+      "status": "machine"
+    },
+    "patients:visits.historyLabel": {
+      "hash": "f52771b0302f",
+      "status": "machine"
+    },
+    "patients:visits.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "patients:visits.updated": {
+      "hash": "a89934bccef7",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -2584,6 +3156,294 @@
       "hash": "74a883a037bc",
       "status": "machine"
     },
+    "patients:actions.clearRecheck": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "patients:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "patients:actions.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "patients:actions.open": {
+      "hash": "ed077f3d8125",
+      "status": "machine"
+    },
+    "patients:actions.sendReminder": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "patients:add.button": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "patients:add.importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "patients:add.newPatient": {
+      "hash": "f081c1e0d14e",
+      "status": "machine"
+    },
+    "patients:confirmClear.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:confirmClear.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "patients:confirmClear.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "patients:confirmDelete.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "patients:confirmDelete.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "patients:confirmDelete.title": {
+      "hash": "69be14a40a60",
+      "status": "machine"
+    },
+    "patients:confirmDelete.titleDated": {
+      "hash": "366c0010a6b3",
+      "status": "machine"
+    },
+    "patients:empty": {
+      "hash": "29786c80b08e",
+      "status": "machine"
+    },
+    "patients:errors.clear": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "patients:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "patients:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "patients:errors.more": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "patients:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "patients:filter.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "patients:filter.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "patients:filter.button": {
+      "hash": "06df7c654f2b",
+      "status": "machine"
+    },
+    "patients:filter.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "patients:filter.doctor": {
+      "hash": "24669ff48290",
+      "status": "machine"
+    },
+    "patients:filter.due": {
+      "hash": "de9a7f271ba6",
+      "status": "machine"
+    },
+    "patients:filter.dueCount": {
+      "hash": "8f8e71b20da8",
+      "status": "machine"
+    },
+    "patients:filter.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "patients:filter.order": {
+      "hash": "6be090825c99",
+      "status": "machine"
+    },
+    "patients:filter.patientAsc": {
+      "hash": "790e831a32e5",
+      "status": "machine"
+    },
+    "patients:filter.patientDesc": {
+      "hash": "efe8139e05c6",
+      "status": "machine"
+    },
+    "patients:filter.recallAsc": {
+      "hash": "482c320bdab9",
+      "status": "machine"
+    },
+    "patients:filter.recallDesc": {
+      "hash": "7786faa48985",
+      "status": "machine"
+    },
+    "patients:filter.sortBy": {
+      "hash": "c9129025bd3f",
+      "status": "machine"
+    },
+    "patients:filter.sortPatient": {
+      "hash": "dcd1d5223f73",
+      "status": "machine"
+    },
+    "patients:filter.sortRecall": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "patients:filter.sortUpdated": {
+      "hash": "382ac5f308f7",
+      "status": "machine"
+    },
+    "patients:filter.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "patients:filter.updatedAsc": {
+      "hash": "6e2ebdab3c02",
+      "status": "machine"
+    },
+    "patients:filter.updatedDesc": {
+      "hash": "ffb6f5764bdd",
+      "status": "machine"
+    },
+    "patients:loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "patients:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "patients:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "patients:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "patients:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "patients:recall.overdue": {
+      "hash": "b85f92e10089",
+      "status": "machine"
+    },
+    "patients:recall.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:recall.upcoming": {
+      "hash": "20698ae337cd",
+      "status": "machine"
+    },
+    "patients:rechecks.empty": {
+      "hash": "75ce4d3a838b",
+      "status": "machine"
+    },
+    "patients:rechecks.emptyHint": {
+      "hash": "2480c9afc453",
+      "status": "machine"
+    },
+    "patients:rechecks.overdue": {
+      "hash": "d660945bc299",
+      "status": "machine"
+    },
+    "patients:rechecks.title": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "patients:rechecks.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "patients:row.number": {
+      "hash": "2036653b22ff",
+      "status": "machine"
+    },
+    "patients:row.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
+    "patients:row.visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:row.visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "patients:row.visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:search.clear": {
+      "hash": "3b7ea51793e9",
+      "status": "machine"
+    },
+    "patients:search.label": {
+      "hash": "f79814fab912",
+      "status": "machine"
+    },
+    "patients:search.placeholder": {
+      "hash": "49c266baaaa7",
+      "status": "machine"
+    },
+    "patients:signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "patients:title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "patients:unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "patients:visits.byDoctor": {
+      "hash": "2619abb4cb67",
+      "status": "machine"
+    },
+    "patients:visits.empty": {
+      "hash": "4ee34bbb31da",
+      "status": "machine"
+    },
+    "patients:visits.historyLabel": {
+      "hash": "f52771b0302f",
+      "status": "machine"
+    },
+    "patients:visits.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "patients:visits.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -3544,6 +4404,294 @@
     },
     "common:ios.tabs.settings": {
       "hash": "74a883a037bc",
+      "status": "machine"
+    },
+    "patients:actions.clearRecheck": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:actions.delete": {
+      "hash": "e2d0a54968ea",
+      "status": "machine"
+    },
+    "patients:actions.history": {
+      "hash": "0e7696009337",
+      "status": "machine"
+    },
+    "patients:actions.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "patients:actions.open": {
+      "hash": "ed077f3d8125",
+      "status": "machine"
+    },
+    "patients:actions.sendReminder": {
+      "hash": "a713c360cf7e",
+      "status": "machine"
+    },
+    "patients:add.button": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "patients:add.importPdf": {
+      "hash": "45d4e1443a0a",
+      "status": "machine"
+    },
+    "patients:add.newPatient": {
+      "hash": "f081c1e0d14e",
+      "status": "machine"
+    },
+    "patients:confirmClear.confirm": {
+      "hash": "19488971a09b",
+      "status": "machine"
+    },
+    "patients:confirmClear.message": {
+      "hash": "a850cdc55a41",
+      "status": "machine"
+    },
+    "patients:confirmClear.title": {
+      "hash": "2df645d7bc29",
+      "status": "machine"
+    },
+    "patients:confirmDelete.confirm": {
+      "hash": "fb93b6b80b25",
+      "status": "machine"
+    },
+    "patients:confirmDelete.message": {
+      "hash": "bd3695625393",
+      "status": "machine"
+    },
+    "patients:confirmDelete.title": {
+      "hash": "69be14a40a60",
+      "status": "machine"
+    },
+    "patients:confirmDelete.titleDated": {
+      "hash": "366c0010a6b3",
+      "status": "machine"
+    },
+    "patients:empty": {
+      "hash": "29786c80b08e",
+      "status": "machine"
+    },
+    "patients:errors.clear": {
+      "hash": "073745f517e4",
+      "status": "machine"
+    },
+    "patients:errors.delete": {
+      "hash": "736caf85167d",
+      "status": "machine"
+    },
+    "patients:errors.load": {
+      "hash": "b955908040bb",
+      "status": "machine"
+    },
+    "patients:errors.more": {
+      "hash": "30351355c2ef",
+      "status": "machine"
+    },
+    "patients:errors.open": {
+      "hash": "213a26c9862d",
+      "status": "machine"
+    },
+    "patients:filter.allDoctors": {
+      "hash": "16363e554725",
+      "status": "machine"
+    },
+    "patients:filter.allSpecies": {
+      "hash": "15553c64a9a3",
+      "status": "machine"
+    },
+    "patients:filter.button": {
+      "hash": "06df7c654f2b",
+      "status": "machine"
+    },
+    "patients:filter.canine": {
+      "hash": "04ff0e09fef8",
+      "status": "machine"
+    },
+    "patients:filter.doctor": {
+      "hash": "24669ff48290",
+      "status": "machine"
+    },
+    "patients:filter.due": {
+      "hash": "de9a7f271ba6",
+      "status": "machine"
+    },
+    "patients:filter.dueCount": {
+      "hash": "8f8e71b20da8",
+      "status": "machine"
+    },
+    "patients:filter.feline": {
+      "hash": "af57a7bf3645",
+      "status": "machine"
+    },
+    "patients:filter.order": {
+      "hash": "6be090825c99",
+      "status": "machine"
+    },
+    "patients:filter.patientAsc": {
+      "hash": "790e831a32e5",
+      "status": "machine"
+    },
+    "patients:filter.patientDesc": {
+      "hash": "efe8139e05c6",
+      "status": "machine"
+    },
+    "patients:filter.recallAsc": {
+      "hash": "482c320bdab9",
+      "status": "machine"
+    },
+    "patients:filter.recallDesc": {
+      "hash": "7786faa48985",
+      "status": "machine"
+    },
+    "patients:filter.sortBy": {
+      "hash": "c9129025bd3f",
+      "status": "machine"
+    },
+    "patients:filter.sortPatient": {
+      "hash": "dcd1d5223f73",
+      "status": "machine"
+    },
+    "patients:filter.sortRecall": {
+      "hash": "73944e1cf451",
+      "status": "machine"
+    },
+    "patients:filter.sortUpdated": {
+      "hash": "382ac5f308f7",
+      "status": "machine"
+    },
+    "patients:filter.species": {
+      "hash": "56205e12c20f",
+      "status": "machine"
+    },
+    "patients:filter.updatedAsc": {
+      "hash": "6e2ebdab3c02",
+      "status": "machine"
+    },
+    "patients:filter.updatedDesc": {
+      "hash": "ffb6f5764bdd",
+      "status": "machine"
+    },
+    "patients:loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "patients:loading": {
+      "hash": "ba3bbbe10d8b",
+      "status": "machine"
+    },
+    "patients:noMatch.due": {
+      "hash": "9eb2c6580a4a",
+      "status": "machine"
+    },
+    "patients:noMatch.filters": {
+      "hash": "7ff75f034437",
+      "status": "machine"
+    },
+    "patients:noMatch.search": {
+      "hash": "ca30ffff075b",
+      "status": "machine"
+    },
+    "patients:recall.overdue": {
+      "hash": "b85f92e10089",
+      "status": "machine"
+    },
+    "patients:recall.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:recall.upcoming": {
+      "hash": "20698ae337cd",
+      "status": "machine"
+    },
+    "patients:rechecks.empty": {
+      "hash": "75ce4d3a838b",
+      "status": "machine"
+    },
+    "patients:rechecks.emptyHint": {
+      "hash": "2480c9afc453",
+      "status": "machine"
+    },
+    "patients:rechecks.overdue": {
+      "hash": "d660945bc299",
+      "status": "machine"
+    },
+    "patients:rechecks.title": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "patients:rechecks.today": {
+      "hash": "19e82138c35f",
+      "status": "machine"
+    },
+    "patients:retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "patients:row.number": {
+      "hash": "2036653b22ff",
+      "status": "machine"
+    },
+    "patients:row.updated": {
+      "hash": "a89934bccef7",
+      "status": "machine"
+    },
+    "patients:row.visits_many": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:row.visits_one": {
+      "hash": "c41924be529c",
+      "status": "machine"
+    },
+    "patients:row.visits_other": {
+      "hash": "31d62812faf4",
+      "status": "machine"
+    },
+    "patients:search.clear": {
+      "hash": "3b7ea51793e9",
+      "status": "machine"
+    },
+    "patients:search.label": {
+      "hash": "f79814fab912",
+      "status": "machine"
+    },
+    "patients:search.placeholder": {
+      "hash": "49c266baaaa7",
+      "status": "machine"
+    },
+    "patients:signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "patients:title": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "patients:unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "patients:visits.byDoctor": {
+      "hash": "2619abb4cb67",
+      "status": "machine"
+    },
+    "patients:visits.empty": {
+      "hash": "4ee34bbb31da",
+      "status": "machine"
+    },
+    "patients:visits.historyLabel": {
+      "hash": "f52771b0302f",
+      "status": "machine"
+    },
+    "patients:visits.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
+    "patients:visits.updated": {
+      "hash": "a89934bccef7",
       "status": "machine"
     },
     "report:abnormalityNoted": {

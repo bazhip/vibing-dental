@@ -1,0 +1,97 @@
+{
+  "title": "Patients",
+  "search": {
+    "placeholder": "Search",
+    "label": "Search patients by name, number or owner",
+    "clear": "Clear search"
+  },
+  "signIn": "Sign in to see your saved charts.",
+  "loading": "Loading…",
+  "unnamed": "Unnamed patient",
+  "empty": "No saved charts yet. They save automatically as you chart.",
+  "noMatch": {
+    "search": "No patients match that search.",
+    "due": "No patients are due for a recheck.",
+    "filters": "No charts match those filters."
+  },
+  "retry": "Try again",
+  "loadMore": "Load more",
+  "errors": {
+    "load": "Couldn’t load your charts. {{error}}",
+    "more": "Couldn’t load more charts. {{error}}",
+    "open": "Couldn’t open that chart. {{error}}",
+    "delete": "Couldn’t delete that visit. {{error}}",
+    "clear": "Couldn’t clear that recheck. {{error}}"
+  },
+  "filter": {
+    "button": "Filter and sort",
+    "sortBy": "Sort by",
+    "sortPatient": "Name",
+    "sortUpdated": "Last updated",
+    "sortRecall": "Recheck date",
+    "order": "Order",
+    "patientAsc": "A to Z",
+    "patientDesc": "Z to A",
+    "updatedDesc": "Newest first",
+    "updatedAsc": "Oldest first",
+    "recallAsc": "Soonest first",
+    "recallDesc": "Latest first",
+    "species": "Species",
+    "allSpecies": "All species",
+    "canine": "Canine",
+    "feline": "Feline",
+    "doctor": "Doctor",
+    "allDoctors": "All doctors",
+    "due": "Due for recheck",
+    "dueCount": "Due for recheck ({{count}})"
+  },
+  "add": {
+    "button": "Add",
+    "newPatient": "New patient",
+    "importPdf": "Import chart PDF"
+  },
+  "row": {
+    "number": "#{{number}}",
+    "visits_one": "{{count}} visit",
+    "visits_other": "{{count}} visits",
+    "updated": "Updated {{date}}"
+  },
+  "recall": {
+    "overdue": "Overdue · {{date}}",
+    "today": "Due today",
+    "upcoming": "Recheck {{date}}"
+  },
+  "actions": {
+    "sendReminder": "Send reminder",
+    "clearRecheck": "Clear recheck",
+    "history": "History",
+    "open": "Open",
+    "delete": "Delete",
+    "newVisit": "New visit"
+  },
+  "confirmClear": {
+    "title": "Clear {{name}}’s recheck?",
+    "message": "Use this when the recheck happened without a new chart, or isn’t needed. They’ll drop off the Due list.",
+    "confirm": "Clear recheck"
+  },
+  "confirmDelete": {
+    "title": "Delete {{name}}?",
+    "titleDated": "Delete {{name}} ({{date}})?",
+    "message": "This visit is removed from the cloud for everyone in your practice. This can’t be undone.",
+    "confirm": "Delete visit"
+  },
+  "visits": {
+    "undated": "Undated visit",
+    "byDoctor": "{{doctor}} · Updated {{date}}",
+    "updated": "Updated {{date}}",
+    "empty": "No visits.",
+    "historyLabel": "{{name}} · {{date}}"
+  },
+  "rechecks": {
+    "title": "Rechecks",
+    "overdue": "Overdue",
+    "today": "Due today",
+    "empty": "No rechecks due",
+    "emptyHint": "Patients appear here on the day their recheck is due."
+  }
+}
