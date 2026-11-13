@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
-import { toast } from './ui/dialogs';
+import { useTranslation } from 'react-i18next';
+import { chooseDialog, toast } from './ui/dialogs';
 import { useStackScreenOptions } from '../ios/Stack';
+import { Sheet } from '../ios/Sheet';
+import { isNativeApp } from '../native/platform';
 
 /**
  * "Send feedback" — a short web form that emails the ToothOps owner (the
@@ -23,8 +26,10 @@ export interface FeedbackModalProps {
   transcript?: string;
   initialKind?: FeedbackKind;
   /** 'screen': the body only, as a pushed screen in the iOS app's Settings
-   *  tab, with Send in the navigation bar. Default: the dialog. */
-  presentation?: 'modal' | 'screen';
+   *  tab, with Send in the navigation bar. 'sheet': an iOS compose sheet
+   *  (Cancel / Send), the app's default (dictation panel). Default on the
+   *  website: the dialog. */
+  presentation?: 'modal' | 'screen' | 'sheet';
 }
 
 const KIND_OPTIONS: { id: FeedbackKind; label: string }[] = [
@@ -64,9 +69,12 @@ export async function sendFeedback(payload: {
   if (data && (data as { error?: string }).error) throw new Error((data as { error: string }).error);
 }
 
-export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, transcript, initialKind = 'bug', presentation = 'modal' }) => {
-  const asScreen = presentation === 'screen';
-  const modalRef = useModalFocus<HTMLFormElement>(!asScreen);
+export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, transcript, initialKind = 'bug', presentation }) => {
+  const shown = presentation ?? (isNativeApp() ? 'sheet' : 'modal');
+  const asScreen = shown === 'screen';
+  const asModal = shown === 'modal';
+  const { t } = useTranslation();
+  const modalRef = useModalFocus<HTMLFormElement>(asModal);
   const backdrop = useBackdropDismiss(onClose);
   const [kind, setKind] = React.useState<FeedbackKind>(initialKind);
   const [message, setMessage] = React.useState('');
@@ -75,7 +83,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
   const [error, setError] = React.useState('');
 
   React.useEffect(() => {
-    if (asScreen) return undefined;
+    // The sheet handles Escape itself.
+    if (!asModal) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || sending) return;
       e.stopImmediatePropagation();
@@ -83,7 +92,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose, sending, asScreen]);
+  }, [onClose, sending, asModal]);
 
   const submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -145,6 +154,35 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
         {feedbackBody}
         <ScreenSendButton disabled={sending || !message.trim()} sending={sending} onSend={() => void submit()} />
       </form>
+    );
+  }
+
+  if (shown === 'sheet') {
+    return (
+      <Sheet
+        open
+        onClose={onClose}
+        title={t('ios.settings.feedback')}
+        cancelLabel={t('actions.cancel')}
+        doneLabel={sending ? t('ios.sheets.sendingBusy') : t('ios.sheets.reminder.send')}
+        onDone={() => void submit()}
+        doneDisabled={sending || !message.trim()}
+        confirmDismiss={async () =>
+          // Not while sending: the result would land on a closed sheet.
+          !sending &&
+          (!message.trim() ||
+            (await chooseDialog({
+              title: t('ios.sheets.discard.title'),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep'),
+            })) === 'discard')
+        }
+        className="feedback-sheet"
+      >
+        <form className="ai-settings-body ios-settings-page feedback-modal feedback-modal--screen" onSubmit={submit}>
+          {feedbackBody}
+        </form>
+      </Sheet>
     );
   }
 

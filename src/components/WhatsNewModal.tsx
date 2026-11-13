@@ -5,19 +5,25 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useTranslation } from 'react-i18next';
 import { WHATS_NEW } from '../constants/whatsNew';
 import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
 
 /** The one-time "What's new" announcement (also reopenable from the
  *  Settings menu). Content lives in constants/whatsNew.ts.
  *  `presentation="screen"`: the body only, as a pushed screen in the iOS
- *  app's Settings tab. */
-export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'modal' | 'screen' }> = ({ onClose, presentation = 'modal' }) => {
-  const asScreen = presentation === 'screen';
-  const { t } = useTranslation('settings');
+ *  app's Settings tab. `"sheet"`: an iOS sheet with Done (the app's
+ *  default, for the once-per-release auto-open). The website: the dialog. */
+export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'modal' | 'screen' | 'sheet' }> = ({ onClose, presentation }) => {
   const app = isNativeApp();
-  const modalRef = useModalFocus<HTMLDivElement>(!asScreen);
+  const shown = presentation ?? (app ? 'sheet' : 'modal');
+  const asScreen = shown === 'screen';
+  const asModal = shown === 'modal';
+  const { t } = useTranslation('settings');
+  const { t: tc } = useTranslation();
+  const modalRef = useModalFocus<HTMLDivElement>(asModal);
   const backdrop = useBackdropDismiss(onClose);
   React.useEffect(() => {
-    if (asScreen) return undefined;
+    // The sheet handles Escape itself.
+    if (!asModal) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
@@ -25,7 +31,7 @@ export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'moda
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose, asScreen]);
+  }, [onClose, asModal]);
 
   const whatsNewBody = (
     <>
@@ -46,6 +52,14 @@ export const WhatsNewModal: React.FC<{ onClose: () => void; presentation?: 'moda
   );
 
   if (asScreen) return <div className="ai-settings-body whats-new__body ios-settings-page">{whatsNewBody}</div>;
+
+  if (shown === 'sheet') {
+    return (
+      <Sheet open onClose={onClose} title={WHATS_NEW.title} doneLabel={tc('actions.done')} onDone={onClose} className="whats-new-sheet">
+        <div className="ai-settings-body whats-new__body ios-settings-page">{whatsNewBody}</div>
+      </Sheet>
+    );
+  }
 
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="whats-new-title">

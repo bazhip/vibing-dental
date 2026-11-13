@@ -14,6 +14,8 @@ import { DocumentsModal } from '../components/DocumentsModal';
 import type { ChartSnapshot as PreviewSnapshot } from '../components/PdfPreviewModal';
 import { ChartHistoryModal } from '../components/ChartHistoryModal';
 import { ReminderModal } from '../components/ReminderModal';
+import { WhatsNewModal } from '../components/WhatsNewModal';
+import { FeedbackModal } from '../components/FeedbackModal';
 import { JoinPracticeModal } from '../components/JoinPracticeModal';
 import { FinishSetupModal } from '../components/FinishSetupModal';
 import { SessionExpiredOverlay } from '../components/SessionExpiredOverlay';
@@ -106,6 +108,10 @@ const FIXTURES: Record<string, () => React.ReactElement> = {
         imageRoles: {}, chartId: '', practiceId: '', cloudActive: false, onEditWording: () => {},
       }}
     />
+  ),
+  'whats-new': () => <WhatsNewModal onClose={() => {}} />,
+  feedback: () => (
+    <FeedbackModal onClose={() => {}} section="exam" transcript="[10:02] 104 gingival index 2, 108 fractured, slab fracture" />
   ),
   history: () => <ChartHistoryModal chartId="c1" onClose={() => {}} onRestore={async () => true} label="Bella · Nov 12, 2026" />,
   reminder: () => (
