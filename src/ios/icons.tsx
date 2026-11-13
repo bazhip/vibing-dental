@@ -26,6 +26,7 @@ export const ICON_NAMES = [
   'line-3-horizontal-decrease',
   'mic',
   'plus',
+  'minus',
   'trash',
   'arrow-uturn-backward',
   'arrow-uturn-forward',
@@ -157,6 +158,7 @@ const SPECS: Record<IconName, Spec> = {
     solid: <><rect x="8.2" y="2" width="7.6" height="12.4" rx="3.8" /><path d="M5.3 11a6.7 6.7 0 0 0 13.4 0M12 17.7v3.5" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" /></>,
   },
   plus: { outline: <path d="M12 4.5v15M4.5 12h15" strokeWidth={2.2} /> },
+  minus: { outline: <path d="M4.5 12h15" strokeWidth={2.2} /> },
   trash: {
     outline: <path d="M3.8 6h16.4M9 6V4.6A1.6 1.6 0 0 1 10.6 3h2.8A1.6 1.6 0 0 1 15 4.6V6M6 6l.95 13.4A1.8 1.8 0 0 0 8.75 21h6.5a1.8 1.8 0 0 0 1.8-1.6L18 6M10 10.2v6.6M14 10.2v6.6" />,
   },

@@ -88,18 +88,10 @@ html.native-ios .mobile-section-menu__list {
 
 /* ---------- App shell (src/ios/AppShell.tsx) -------------------------------
  * The chart is the Chart tab's root screen: no topbar or section rail
- * (the shell navigates). Until the chart gets its navigation bar, the page
- * clears the status bar itself and sticky headers pin under it. The PDF
- * button floats above the tab bar. */
-html.native-ios .entry-grid-container--app {
-  --topbar-height: env(safe-area-inset-top, 0px);
-  padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
-}
+ * (the shell navigates; the chart's glass navigation bar, its sticky
+ * offset and the dictation button are in src/ios/chart/chart.css). */
 html.native-ios .sidebar-layout.sidebar-layout--bare {
   grid-template-columns: minmax(0, 1fr);
-}
-html.native-ios .ios-appshell--tabbar ~ .fab-download {
-  bottom: calc(78px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)));
 }
 
 /* ---------- Full-screen web modals clear the status bar / home indicator --
@@ -117,7 +109,3 @@ html.native-ios .ai-settings-modal {
   max-height: calc(100dvh - 1rem - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
 }
 
-/* The iPad portrait sidebar overlay covers the PDF button too. */
-html.native-ios .ios-appshell--sidebar-overlay:not(.ios-appshell--sidebar-collapsed) ~ .fab-download {
-  visibility: hidden;
-}

@@ -1,5 +1,7 @@
 import React from 'react';
 import { saveFile } from '../native/saveFile';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 import i18n from '../i18n';
 import ReactDOM from 'react-dom';
 import { confirmDialog, toast } from './ui/dialogs';
@@ -788,6 +790,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const activityScroll = useStickToBottom<HTMLDivElement>(activity.length);
 
   const sending = activeChunkCount > 0;
+  // The iOS app draws its symbols as icons, not text glyphs.
+  const native = isNativeApp();
   const label = voice.recording ? 'Stop' : hasSession ? 'Resume' : 'Dictate';
   const reviewLabel = reviews.length ? `${reviews.length} to review` : null;
   // Recording but the mic isn't live yet: say so, so nobody talks into
@@ -845,6 +849,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       >
         {voice.recording ? (
           <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />
+        ) : native ? (
+          <Icon name="mic" filled size={20} className="voice-input__mic" />
         ) : (
           <svg className="voice-input__mic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
@@ -866,7 +872,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
           <div className="ai-settings-modal ai-intro" ref={introRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <header className="ai-settings-header">
               <h2>Dictate your chart</h2>
-              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label="Close">×</button>
+              <button type="button" className="pdf-preview-close" onClick={() => setIntro(null)} aria-label="Close">{native ? <Icon name="xmark" size={16} /> : '×'}</button>
             </header>
             <div className="ai-settings-body">
               <ol className="ai-intro__list">
@@ -913,13 +919,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
                 {status.text}
               </span>
-              <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
+              {native ? (
+                <Icon name="chevron-down" size={14} className={`ai-sidebar__chevron${collapsed ? ' ai-sidebar__chevron--up' : ''}`} />
+              ) : (
+                <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
+              )}
             </button>
             <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick}>
               {primary.text}
             </button>
             <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label="Close panel" title="Close (the transcript is kept)">
-              ×
+              {native ? <Icon name="xmark" size={16} /> : '×'}
             </button>
           </header>
 

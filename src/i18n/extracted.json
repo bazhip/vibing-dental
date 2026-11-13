@@ -28,5 +28,8 @@
   "src/ios/screens/patientShared.tsx",
   "src/ios/screens/settingsScreens.tsx",
   "src/ios/screens/settingsFixture.tsx",
-  "src/components/ChartSettingsList.tsx"
+  "src/components/ChartSettingsList.tsx",
+  "src/ios/Form.tsx",
+  "src/ios/chart/ChartNavBar.tsx",
+  "src/ios/chart/chartStatus.ts"
 ]

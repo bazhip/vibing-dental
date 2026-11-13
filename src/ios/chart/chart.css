@@ -1,0 +1,449 @@
+/* =============================================================================
+ * The Chart tab in the iOS app (EntryGrid's native branch + ChartNavBar).
+ * App only: every rule is scoped under html.native-ios. Grid and diagram
+ * keep their layout; this restyles their chrome with iOS colours, fonts
+ * and separators. Diagram artwork stays light (its own surface).
+ * =============================================================================
+ */
+
+/* The glass bar is 52pt + the status bar; sticky things (grid header,
+   diagram toolbar, codes panel, the dictation panel portaled to <body>)
+   pin under it. */
+html.native-ios {
+  --topbar-height: calc(52px + env(safe-area-inset-top, 0px));
+}
+
+/* ---- Screen -------------------------------------------------------------- */
+html.native-ios .ios-chart-screen {
+  min-height: 100%;
+  background: var(--ios-bg-grouped);
+}
+html.native-ios .ios-chart-screen .entry-grid-container--app {
+  --page-pad: 16px;
+  padding-top: 0.25rem;
+  padding-bottom: 2rem;
+  background: transparent;
+}
+@media (min-width: 700px) {
+  html.native-ios .ios-chart-screen .entry-grid-container--app { --page-pad: 20px; }
+}
+
+/* The wrapper must not box the sticky bar in (it would scroll away with it). */
+html.native-ios .ios-chart-bar { display: contents; }
+
+/* Scroll-edge effect: once content runs under the glass bar, a soft fade
+   continues the material below it (iOS 26). */
+html.native-ios .ios-chart-bar .ios-navbar--collapsed::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 10px;
+  pointer-events: none;
+  background: linear-gradient(var(--ios-bg-grouped), transparent);
+  opacity: 0.7;
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios .ios-chart-bar .ios-navbar--collapsed { background-color: var(--ios-bg-grouped); }
+  html.native-ios .ios-chart-bar .ios-navbar--collapsed::after { display: none; }
+}
+/* Share + More share one glass capsule, like a SwiftUI toolbar group. */
+html.native-ios .ios-chart-bar .ios-glass-group {
+  display: inline-flex;
+  border-radius: 999px;
+  background-color: var(--ios-bar-material);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 2px 10px var(--ios-shadow-soft);
+}
+html.native-ios .ios-chart-bar .ios-glass-group > .ios-glass-button {
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios .ios-chart-bar .ios-glass-group { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--ios-bg-elevated); }
+}
+
+/* ---- Inline notices under the bar (never over it) ----------------------- */
+html.native-ios .ios-chart-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0.25rem calc(16px + env(safe-area-inset-right, 0px)) 0.5rem calc(16px + env(safe-area-inset-left, 0px));
+  padding: 10px 12px 10px 14px;
+  border-radius: 14px;
+  background: var(--ios-warning-fill);
+  color: var(--ios-label);
+  font: 400 var(--ios-text-subheadline) / 1.35 var(--ios-font);
+}
+html.native-ios .ios-chart-notice--error { background: var(--ios-danger-fill); }
+html.native-ios .ios-chart-notice__icon { flex: none; color: var(--ios-warning-label); }
+html.native-ios .ios-chart-notice--error .ios-chart-notice__icon { color: var(--ios-danger); }
+html.native-ios .ios-chart-notice__text { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+html.native-ios .ios-chart-notice__title { font-weight: 600; }
+html.native-ios .ios-chart-notice__detail { color: var(--ios-label-muted); font-size: var(--ios-text-footnote); }
+html.native-ios .ios-chart-notice__action {
+  flex: none;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 600 var(--ios-text-subheadline) / 1 var(--ios-font);
+  cursor: pointer;
+}
+@media (min-width: 700px) {
+  html.native-ios .ios-chart-notice { margin-left: calc(20px + env(safe-area-inset-left, 0px)); margin-right: calc(20px + env(safe-area-inset-right, 0px)); }
+}
+
+/* ---- Section panel: no web card; sections sit on the grouped background - */
+html.native-ios .ios-chart-screen .sidebar-layout__main {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen :is(.patient-form, .dental-grid-section) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen .sidebar-layout__fieldset:disabled { opacity: 1; }
+html.native-ios .ios-chart-screen .lock-wrap--locked :is(input, textarea, select, .ios-segmented, .ios-switch) { opacity: 0.6; }
+
+/* Section heading row (title + Customize / Mark all normal): title-2 text
+   on the background, the actions as plain tinted buttons. */
+html.native-ios .ios-chart-screen :is(.patient-form__header, .dental-grid__section-header) {
+  min-height: 44px;
+  margin: 0.25rem 0 0.75rem;
+  padding: 0 4px;
+  border-bottom: 0;
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+html.native-ios .ios-chart-screen :is(.patient-form__section-title, .dental-grid__title) {
+  font: 700 var(--ios-text-title2) / 1.2 var(--ios-font);
+  color: var(--ios-label);
+  letter-spacing: 0;
+}
+html.native-ios .ios-chart-screen :is(.patient-form__header, .dental-grid__section-header, .surgery-report__template-bar) .diagram-view__action,
+html.native-ios .ios-chart-screen .owner-report-section__actions .diagram-view__action {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-screen .diagram-view__action:disabled { color: var(--ios-label-3); }
+
+/* ---- Checkboxes still in the chart (grid Missing, grid options, In PDF) -
+ * WebKit draws native checkboxes white even in dark mode. In the app they
+ * become iOS circular checkmarks that follow the scheme; Missing fills red
+ * (the clinical colour) when ticked. Switches (role=switch) are separate. */
+html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']) {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 1.5px solid var(--ios-label-3);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: middle;
+}
+html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):checked {
+  border-color: var(--ios-tint);
+  background: var(--ios-tint) no-repeat center / 14px 14px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.5 12.8 9.6 18 19.5 6' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+/* Missing: the same red ✕ as the column's badge (MissingBadge), white on
+   the clinical red. Out-specifies the generic tint checkmark above. */
+html.native-ios .ios-chart-screen input.dental-grid__missing-check[type='checkbox']:not([role='switch']):checked {
+  border-color: var(--ios-danger-solid);
+  background-color: var(--ios-danger-solid);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 4.5l7 7m0-7l-7 7' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+}
+html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):disabled { opacity: 0.5; cursor: default; }
+html.native-ios .ios-chart-screen input[type='checkbox']:not([role='switch']):focus-visible {
+  outline: 2px solid var(--ios-tint);
+  outline-offset: 2px;
+}
+
+/* ---- Patient: segmented rows wrap under the label on narrow phones ------- */
+html.native-ios .patient-form--ios .patient-form__recall {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+html.native-ios .patient-form--ios .patient-form__recall input[type='date'] { flex: 1 1 auto; }
+html.native-ios .patient-form--ios .patient-form__req { color: var(--ios-danger); }
+
+/* ---- Exam --------------------------------------------------------------- */
+html.native-ios .exam-ios__row--abnormal .ios-field__label { color: var(--ios-danger); font-weight: 600; }
+html.native-ios .exam-ios__comment textarea { min-height: 36px !important; }
+html.native-ios .exam-ios__comment::before { left: 16px; }
+
+/* ---- Anesthesia, Images, Treatment report, Owner report: grouped cards -- */
+html.native-ios .ios-chart-screen :is(.anesthesia-drug, .anesthesia-other, .anesthesia-custom, .radiographic-findings, .imaging__pdf-option) {
+  margin: 0 0 1.25rem;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen .anesthesia-table {
+  overflow: hidden;
+  margin: 0 0 1.25rem;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .ios-chart-screen .anesthesia-table :is(th, td) {
+  border: 0;
+  border-bottom: 0.5px solid var(--ios-separator);
+  background: transparent;
+}
+html.native-ios .ios-chart-screen .anesthesia-table tr:last-child td { border-bottom: 0; }
+html.native-ios .ios-chart-screen .anesthesia-table th {
+  font: 400 var(--ios-text-footnote) / 1.3 var(--ios-font);
+  text-transform: uppercase;
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-chart-screen .anesthesia-table__label {
+  font: 400 var(--ios-text-body) / 1.3 var(--ios-font);
+  color: var(--ios-label);
+  -webkit-hyphens: manual;
+  hyphens: manual;
+}
+html.native-ios .ios-chart-screen :is(.anesthesia-table, .anesthesia-drug, .anesthesia-custom, .anesthesia-other) .patient-form__input {
+  border: 0;
+  border-radius: 8px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen :is(.anesthesia-drug__add) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-screen .anesthesia-drug__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ios-label-muted);
+}
+html.native-ios .ios-chart-screen .anesthesia-custom__check--switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+}
+/* Switch on the trailing side of its row. */
+html.native-ios .ios-chart-screen .imaging__pdf-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  min-height: 44px;
+  font: 400 var(--ios-text-body) / 1.3 var(--ios-font);
+  color: var(--ios-label);
+}
+html.native-ios .ios-chart-screen .imaging__pdf-option > .ios-switch { order: 2; margin-left: auto; }
+html.native-ios .ios-chart-screen .imaging__pdf-option > .patient-form__hint { order: 3; flex-basis: 100%; }
+html.native-ios .ios-chart-screen .imaging__in-pdf { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+html.native-ios .ios-chart-screen .imaging__in-pdf > .ios-switch { order: 2; }
+
+/* Free-text areas as cards. */
+html.native-ios .ios-chart-screen :is(.surgery-report__textarea, .radiographic-findings__text, .anesthesia-table__other) {
+  border: 0;
+  border-radius: 12px;
+  background: var(--ios-list-cell, var(--ios-cell));
+  color: var(--ios-label);
+  box-shadow: none;
+  font: 400 max(16px, var(--ios-text-body)) / 1.4 var(--ios-font);
+  padding: 12px 16px;
+}
+html.native-ios .ios-chart-screen .radiographic-findings__text { padding: 8px 0; background: transparent; }
+html.native-ios .ios-chart-screen .anesthesia-table__other { background: var(--ios-fill); padding: 8px 12px; }
+html.native-ios .ios-chart-screen .surgery-report__template-select {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ios-fill);
+  color: var(--ios-tint);
+  font: 400 max(16px, var(--ios-text-subheadline)) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-screen .patient-form__hint { color: var(--ios-label-muted); font-size: var(--ios-text-footnote); }
+
+/* ---- Charting grid: an inset card, hairlines, system font --------------- */
+html.native-ios .ios-chart-screen .dental-grid {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: none;
+  background: var(--ios-list-cell, var(--ios-cell));
+}
+html.native-ios .ios-chart-screen .dental-grid .rdg {
+  font-family: var(--ios-font);
+  --rdg-border-color: var(--ios-separator);
+}
+
+/* ---- Diagram toolbar: a grouped card with iOS controls ------------------ */
+html.native-ios .ios-chart-screen .diagram-view__toolbar {
+  border: 0;
+  border-radius: 14px;
+  background: var(--ios-bar-material);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 2px 10px var(--ios-shadow-soft);
+}
+html.native-ios .ios-chart-screen .diagram-view__toolbar .diagram-view__action,
+html.native-ios .ios-chart-screen .diagram-view__toolbar .diagram-view__zoom-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-screen .diagram-view__toolbar .diagram-view__action:disabled { color: var(--ios-label-3); }
+html.native-ios .ios-chart-screen .diagram-comment__delete .ios-icon { display: block; }
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios .ios-chart-screen .diagram-view__toolbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--ios-bg-elevated); }
+}
+
+/* ---- Dictation: floats above the tab bar (or the bottom corner on iPad) - */
+html.native-ios .ios-chart-dictate {
+  position: fixed;
+  z-index: 40;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+html.native-ios .ios-chart-dictate[hidden] { display: none; }
+html.native-ios .ios-appshell--tabbar ~ .ios-chart-dictate {
+  bottom: calc(62px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)) + 14px);
+}
+/* The open dictation panel carries Start / Stop itself. */
+html.native-ios body:is(.ai-panel-open, .ai-panel-open--collapsed) .ios-chart-dictate { display: none; }
+/* The iPad portrait sidebar overlay covers it. */
+html.native-ios .ios-appshell--sidebar-overlay:not(.ios-appshell--sidebar-collapsed) ~ .ios-chart-dictate { visibility: hidden; }
+html.native-ios .ios-chart-dictate .voice-input {
+  min-height: 50px;
+  padding: 0 18px 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--ios-bar-material);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 4px 16px var(--ios-shadow);
+  color: var(--ios-tint);
+  font: 600 var(--ios-text-body) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-dictate .voice-input--recording { color: var(--ios-danger); }
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios .ios-chart-dictate .voice-input { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--ios-bg-elevated); }
+}
+/* Dictation panel (portaled to <body>): clear of the tab bar on phones. */
+@media (max-width: 700px) {
+  html.native-ios body:has(.ios-appshell--tabbar) .ai-sidebar {
+    bottom: calc(62px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)) + 12px);
+    max-height: 46dvh;
+  }
+}
+html.native-ios .ai-sidebar__chevron--up { transform: rotate(180deg); }
+
+/* ---- Existing pickers drawn as iOS segmented controls ------------------- *
+ * Charting view (Grid / By tooth), the diagram tool (Mark / Comment /
+ * Draw) and the comment text size keep their buttons and aria-pressed;
+ * only the look changes. */
+html.native-ios .ios-chart-screen :is(.charting-view-switch, .diagram-view__tool-group, .diagram-view__textsize) {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 2px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--ios-fill);
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen :is(.charting-view-switch__btn, .diagram-view__tool-group .diagram-view__tool, .diagram-view__textsize-btn) {
+  position: relative;
+  min-height: 34px;
+  min-width: 2.75em;
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ios-label);
+  font: 500 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+  box-shadow: none;
+}
+html.native-ios .ios-chart-screen :is(.charting-view-switch__btn, .diagram-view__tool-group .diagram-view__tool, .diagram-view__textsize-btn)::after {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+}
+html.native-ios .ios-chart-screen :is(.charting-view-switch__btn--active, .diagram-view__tool-group .diagram-view__tool--active, .diagram-view__textsize-btn--active),
+html.native-ios .ios-chart-screen :is(.charting-view-switch__btn--active, .diagram-view__tool-group .diagram-view__tool--active, .diagram-view__textsize-btn--active):hover {
+  background: var(--ios-segment-selected);
+  color: var(--ios-label);
+  font-weight: 600;
+  box-shadow: 0 1px 3px var(--ios-segment-selected-shadow), 0 0 0 0.5px var(--ios-segment-selected-shadow);
+}
+html.native-ios .ios-chart-screen .diagram-view__textsize-label { align-self: center; padding: 0 6px 0 8px; border: 0; color: var(--ios-label-muted); }
+/* Undo / Redo: two plain icon buttons. */
+html.native-ios .ios-chart-screen .diagram-view__history { gap: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+/* Numbers: a toggle pill. */
+html.native-ios .ios-chart-screen .diagram-view__numbers {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font: 500 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+}
+html.native-ios .ios-chart-screen .diagram-view__numbers.diagram-view__tool--active {
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+}
+html.native-ios .ios-chart-screen :is(.dental-grid__title, .patient-form__section-title) { flex: 1 1 0; min-width: 0; }
+html.native-ios .ios-chart-screen .radiographic-findings__title { font: 600 var(--ios-text-headline) / 1.3 var(--ios-font); }

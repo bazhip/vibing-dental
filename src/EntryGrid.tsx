@@ -58,6 +58,9 @@ import { previewLibrary } from './ios/previewLibrary';
 import { PatientsScreen } from './ios/screens/PatientsScreen';
 import { RechecksScreen } from './ios/screens/RechecksScreen';
 import { SettingsScreen } from './ios/screens/SettingsScreen';
+import { ChartNavBar, ChartNotice } from './ios/chart/ChartNavBar';
+import { chartStatus } from './ios/chart/chartStatus';
+import type { MenuItem } from './ios/ContextMenu';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -136,6 +139,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   onGoHome,
 }) => {
   const { t: tc } = useTranslation('chart');
+  const { t: tcommon } = useTranslation('common');
   const chart = useChartState();
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
@@ -301,14 +305,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chartingHeaderAccessory = (
     <div className="charting-header-actions">
       {chartingViewSwitch}
-      <button
-        type="button"
-        className="diagram-view__action"
-        onClick={() => setChartSettingsOpen('charting')}
-        title="Pockets per root, columns, what shows beside the teeth, PDF options"
-      >
-        Customize
-      </button>
+      {/* The app has Customize in the Chart bar's More menu. */}
+      {!native && (
+        <button
+          type="button"
+          className="diagram-view__action"
+          onClick={() => setChartSettingsOpen('charting')}
+          title="Pockets per root, columns, what shows beside the teeth, PDF options"
+        >
+          Customize
+        </button>
+      )}
     </div>
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
@@ -917,7 +924,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
           hideRecheck={prefs.hideRecheck}
-          onCustomize={() => setChartSettingsOpen('patient')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
     },
@@ -943,7 +950,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           logo={chart.logo}
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
-          onCustomize={() => setChartSettingsOpen('anesthesia')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('anesthesia')}
           customBlockDefs={prefs.customBlocks}
           customFieldDefs={prefs.customFields}
           customValues={chart.patientInfo.customAnesthesia}
@@ -1021,7 +1028,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ref={preDiagramRef}
               readOnly={readOnly}
               title="Diagnosis"
-              onCustomize={() => setChartSettingsOpen('diagnosis')}
+              onCustomize={native ? undefined : () => setChartSettingsOpen('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -1101,7 +1108,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}
-          onCustomize={() => setChartSettingsOpen('images')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
@@ -1134,7 +1141,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onPreview={() => openDocuments('owner')}
               context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
               aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-              onCustomize={cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined}
+              onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
             />
           ),
         }]
@@ -1568,6 +1575,107 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   );
 
   if (native) {
+    // ----- Chart tab (iOS): navigation bar, inline notices, dictation ----
+    const status = chartStatus(
+      {
+        cloudEnabled: cloud.enabled,
+        trial,
+        status: cloud.status,
+        saveError: cloud.saveError || '',
+        saveHint,
+        readOnly,
+        viewingSavedVisit,
+        editingSavedVisit,
+        dirty: cloud.dirty,
+        online: cloud.online,
+        hasName: !!chart.patientInfo.patientName.trim(),
+        awaitingClinical: !!cloud.awaitingClinical,
+        lastSavedAt: cloud.lastSavedAt || '',
+        visitDate: chart.patientInfo.date,
+      },
+      tc,
+      {
+        // The app's language, not the device locale.
+        time: (iso) => {
+          const d = new Date(iso);
+          if (Number.isNaN(d.getTime())) return '';
+          const time = d.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' });
+          return d.toDateString() === new Date().toDateString()
+            ? time
+            : `${d.toLocaleDateString(language, { month: 'short', day: 'numeric' })}, ${time}`;
+        },
+        date: (ymd) => {
+          const d = new Date(`${ymd}T12:00:00`);
+          return Number.isNaN(d.getTime()) ? ymd : d.toLocaleDateString(language, { month: 'short', day: 'numeric', year: 'numeric' });
+        },
+      }
+    );
+    const customizeFor: Record<string, (() => void) | undefined> = {
+      patient: () => setChartSettingsOpen('patient'),
+      anesthesia: () => setChartSettingsOpen('anesthesia'),
+      charting: () => setChartSettingsOpen('charting'),
+      diagnosis: () => setChartSettingsOpen('diagnosis'),
+      imaging: () => setChartSettingsOpen('images'),
+      'owner-report': cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined,
+    };
+    const hasSavedPatient = cloud.enabled && chart.openedExisting && !!chart.cloudChartId;
+    const customize = customizeFor[activeSection];
+    const sectionLabel = sections.find((x) => x.id === activeSection)?.label ?? '';
+    const moreMenu: MenuItem[] = [
+      // A fresh chart is one tap away, except mid-edit (Done comes first).
+      ...(cloud.enabled && !editingSavedVisit
+        ? [{ label: tc('ios.menu.newChart'), icon: 'plus' as const, onSelect: () => { void appFns.newPatient(); } }]
+        : []),
+      ...(hasSavedPatient
+        ? [
+            { label: tc('ios.menu.newVisit'), icon: 'calendar-badge-clock' as const, onSelect: startNewVisitFromLatest },
+            { label: tc('ios.menu.history'), icon: 'clock-arrow-circlepath' as const, onSelect: () => setHistoryFor({ id: chart.cloudChartId }) },
+          ]
+        : []),
+      ...(viewingSavedVisit ? [{ label: tc('ios.menu.editChart'), icon: 'doc-text' as const, onSelect: unlockForEditing }] : []),
+      ...(editingSavedVisit && unlockSnapshotChanged
+        ? [{ label: tc('ios.menu.undoChanges'), icon: 'arrow-uturn-backward' as const, onSelect: () => { void revertUnlockedChanges(); } }]
+        : []),
+      ...(status.canSaveNow ? [{ label: tc('ios.menu.saveNow'), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
+      ...(status.retry ? [{ label: tc('ios.menu.retrySave'), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
+      ...(customize ? [{ label: tc('ios.menu.customize', { section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
+      // Always there, so the bar's trailing capsule keeps its shape.
+      { label: tc('ios.menu.chartSettings'), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
+    ];
+    const chartTab = (
+      <div className="ios-chart-screen">
+        <ChartNavBar
+          title={chart.patientInfo.patientName.trim() || tc('ios.newChart')}
+          subtitle={status.text}
+          sections={chartSectionLinks}
+          activeSection={activeSection}
+          onSection={goToSection}
+          shareLabel={ownerReportOn ? tc('ios.shareBoth') : tc('ios.shareChart')}
+          menu={moreMenu}
+          onEdit={viewingSavedVisit ? unlockForEditing : undefined}
+          onDone={editingSavedVisit ? () => { void doneEditing(); } : undefined}
+        />
+        {/* Stays mounted so screen readers hear every save. */}
+        {cloud.enabled && (
+          <span className="visually-hidden" role="status" aria-live="polite">{status.live}</span>
+        )}
+        {otherTabWarning && (
+          <ChartNotice tone="warning" text={tc('ios.notice.otherTab')} actionLabel={tc('ios.notice.gotIt')} onAction={() => setOtherTabWarning(false)} />
+        )}
+        {status.tone === 'error' && (
+          <ChartNotice
+            tone="error"
+            text={tc('ios.notice.notSaved')}
+            detail={status.detail}
+            actionLabel={status.retry ? tcommon('actions.tryAgain') : undefined}
+            onAction={status.retry ? attemptSave : undefined}
+          />
+        )}
+        <div className="entry-grid-container entry-grid-container--app">
+          {chartForm}
+        </div>
+      </div>
+    );
     return (
       <div className="entry-grid-app">
         {/* DEV only: ?iosPreview=1&iosFixtures=1 gives the trial sample patients. */}
@@ -1580,21 +1688,28 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             chartSections={chartSectionLinks}
             activeChartSection={activeSection}
             onChartSection={goToSection}
-            chart={
-              // Task 4 adds the chart's navigation bar (title menu for the
-              // sections, save status, Share / More) and the dictation button.
-              <div className="entry-grid-container entry-grid-container--app">
-                {otherTabBanner}
-                {chartForm}
-              </div>
-            }
+            chart={chartTab}
             patients={tabScreens.patients}
             rechecks={tabScreens.rechecks}
             settings={tabScreens.settings}
           />
         </AppDataProvider>
-        {/* Outside the shell's stacks (fixed position); Chart tab only. */}
-        {appTab === 'chart' && pdfButton}
+        {/* Dictation floats above the tab bar, outside the shell's stacks
+            (fixed position). Mounted on every tab so a recording keeps
+            going; shown on the Chart tab only. */}
+        {profile.aiEnabled && !trial && (
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={tc('ios.form.dictate')}>
+            <VoiceInputButton
+              context={aiContext}
+              handlers={aiHandlers}
+              onActivity={handleAiActivity}
+              activeSection={activeSection}
+              sessionKey={String(chart.chartSession)}
+              locked={readOnly}
+              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
+            />
+          </div>
+        )}
         {dialogsBeforeForm}
         {dialogsAfterForm}
       </div>

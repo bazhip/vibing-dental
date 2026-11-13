@@ -58,5 +58,62 @@
     "signOutFailed": "Abmelden fehlgeschlagen. {{error}}",
     "verbNewPatient": "Neuen Patienten beginnen",
     "verbImportPdf": "Dieses PDF importieren"
+  },
+  "ios": {
+    "newChart": "Neues Zahnschema",
+    "shareChart": "PDF des Zahnschemas ansehen und herunterladen",
+    "shareBoth": "Klinisches Zahnschema und Besitzerbericht ansehen und herunterladen",
+    "more": "Mehr",
+    "menu": {
+      "newChart": "Neues Zahnschema",
+      "newVisit": "Neuer Besuch",
+      "history": "Verlauf des Zahnschemas",
+      "editChart": "Zahnschema bearbeiten",
+      "undoChanges": "Änderungen verwerfen",
+      "saveNow": "Jetzt speichern",
+      "retrySave": "Speichern erneut versuchen",
+      "customize": "Anpassen: {{section}}",
+      "chartSettings": "Zahnschema-Einstellungen"
+    },
+    "status": {
+      "saving": "Wird gespeichert…",
+      "saved": "Gespeichert · {{time}}",
+      "notSaved": "Nicht gespeichert",
+      "viewOnly": "Nur ansehen",
+      "viewOnlyDate": "Nur ansehen · {{date}}",
+      "editing": "Bearbeitung",
+      "editingWith": "Bearbeitung · {{status}}",
+      "offline": "Offline — auf diesem Gerät gespeichert",
+      "needsName": "Zum Speichern einen Patientennamen eingeben",
+      "keptOnDevice": "Wird gespeichert, sobald Sie mit dem Befund beginnen",
+      "unsaved": "Nicht gespeicherte Änderungen",
+      "onDevice": "Nur auf diesem Gerät"
+    },
+    "live": {
+      "saving": "Zahnschema wird gespeichert",
+      "saved": "Zahnschema gespeichert",
+      "notSaved": "Zahnschema nicht gespeichert"
+    },
+    "notice": {
+      "otherTab": "Dieses Zahnschema ist in einem anderen Fenster geöffnet. Beide bearbeiten dieselbe Arbeitskopie — schließen Sie eines, damit Ihre Änderungen nicht überschrieben werden.",
+      "gotIt": "Verstanden",
+      "notSaved": "Dieses Zahnschema ist nicht gespeichert."
+    },
+    "form": {
+      "patient": "Patient",
+      "owner": "Besitzer",
+      "visit": "Besuch",
+      "complaint": "Vorstellungsgrund",
+      "dictate": "Diktat",
+      "nerveBlocks": "Nervenblockaden",
+      "addInterval": "Intervall hinzufügen"
+    },
+    "diagram": {
+      "numbers": "Nummern"
+    },
+    "grid": {
+      "tip": "Tipp: Tippen Sie auf Zahnnummern, um mehrere Zähne auszuwählen, und setzen Sie dann einen Wert für alle.",
+      "pickTitle": "Tippen, um diesen Zahn auszuwählen und mehreren Zähnen gleichzeitig einen Wert zu geben"
+    }
   }
 }

@@ -9,6 +9,8 @@ import {
 } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { CodeField } from './CodeField';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 import { isGridComment } from '../utils/gridComments';
 // Pure helpers extracted from this component for testability.
 import {
@@ -1385,7 +1387,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
                 onClick={() => handleCommentDelete(comment.id)}
                 aria-label="Delete comment"
               >
-                ✕
+                {isNativeApp() ? <Icon name="xmark" size={12} /> : '✕'}
               </button>
             </div>
           )}
@@ -1397,7 +1399,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
               onClick={() => handleCommentDelete(comment.id)}
               aria-label="Delete comment"
             >
-              ✕
+              {isNativeApp() ? <Icon name="xmark" size={12} /> : '✕'}
             </button>
           )}
           <CodeField

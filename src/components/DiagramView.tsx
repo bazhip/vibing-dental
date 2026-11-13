@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 /** Shortcut hints match the platform (⌘ on Apple devices, Ctrl elsewhere). */
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
@@ -7,6 +8,8 @@ import { ToothDiagram, ToothDiagramHandle, DiagramTool, MarkMode, CommentExport 
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { useDiagramHistory } from '../hooks/useDiagramHistory';
 import { usePersistedState } from '../hooks/usePersistedState';
+import { isNativeApp } from '../native/platform';
+import { Icon } from '../ios/icons';
 
 interface DiagramViewProps {
   title: string;
@@ -70,6 +73,9 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   highlightTriadan,
   readOnly = false,
 }, ref) => {
+  // The iOS app draws toolbar symbols as icons, not text glyphs.
+  const native = isNativeApp();
+  const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
@@ -207,7 +213,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label="Undo"
               title={`Undo (${IS_MAC ? "⌘Z" : "Ctrl+Z"})`}
             >
-              ↶
+              {native ? <Icon name="arrow-uturn-backward" size={18} /> : '↶'}
             </button>
             <button
               type="button"
@@ -217,12 +223,12 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label="Redo"
               title={`Redo (${IS_MAC ? "⌘⇧Z" : "Ctrl+Y"})`}
             >
-              ↷
+              {native ? <Icon name="arrow-uturn-forward" size={18} /> : '↷'}
             </button>
           </div>
 
           <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={addFreeComment}>
-            + Free comment
+            {native ? <><Icon name="plus" size={15} /> Free comment</> : '+ Free comment'}
           </button>
 
           <button
@@ -232,7 +238,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             aria-pressed={showNumbers}
             title="Show each tooth's Triadan number on the diagram (not printed on the PDF)"
           >
-            # Numbers
+            {native ? t('ios.diagram.numbers') : '# Numbers'}
           </button>
 
           <div className="diagram-view__zoom" role="group" aria-label="Zoom">
@@ -244,7 +250,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label="Zoom out"
               title="Zoom out"
             >
-              −
+              {native ? <Icon name="minus" size={16} /> : '−'}
             </button>
             <button
               type="button"
@@ -264,7 +270,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label="Zoom in"
               title="Zoom in"
             >
-              +
+              {native ? <Icon name="plus" size={16} /> : '+'}
             </button>
           </div>
 
