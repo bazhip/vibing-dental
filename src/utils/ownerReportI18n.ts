@@ -205,9 +205,11 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     legendRemoved: t('legendRemoved'),
     before: t('before'),
     after: t('after'),
+    // Full sentences for the no-doctor case, so each language can inflect
+    // the preposition with the team phrase (it "dal", de dative "Ihrem").
     preparedBy: (doctor, practice) => {
-      const name = doctor || t('preparedBy.team');
-      return practice ? t('preparedBy.doctorAtPractice', { doctor: name, practice }) : t('preparedBy.doctor', { doctor: name });
+      if (!doctor) return practice ? t('preparedBy.byTeamAtPractice', { practice }) : t('preparedBy.byTeam');
+      return practice ? t('preparedBy.doctorAtPractice', { doctor, practice }) : t('preparedBy.doctor', { doctor });
     },
   };
 }

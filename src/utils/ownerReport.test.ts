@@ -293,12 +293,15 @@ describe('report languages', () => {
   test('Italian tooth names and report strings', () => {
     expect(toothLayName(309, true, 'it')).toBe('Primo molare inferiore sinistro (309)');
     expect(toothLayName(104, false, 'it')).toBe('Canino superiore destro');
-    expect(toothLayName(504, false, 'it')).toBe('Canino superiore destro deciduo');
+    expect(toothLayName(504, false, 'it')).toBe('Canino superiore destro da latte');
     expect(reportStrings('it').defaultTitle).toBe('Referto della visita odontoiatrica');
     expect(reportStrings('it').headings.diagram('Biscuit')).toBe('La bocca di Biscuit');
     expect(reportStrings('it').headings.diagram('')).toBe('La bocca del suo animale');
     expect(reportStrings('it').intro('')).toMatch(/^Il suo animale ha ricevuto/);
     expect(reportStrings('it').fieldPhrases.pocket('6')).toBe('tasca gengivale profonda (6 mm)');
+    expect(reportStrings('it').preparedBy('', '')).toBe('Redatto dal suo team veterinario.');
+    expect(reportStrings('it').preparedBy('', 'Bay Vets')).toBe('Redatto dal suo team veterinario, Bay Vets.');
+    expect(reportStrings('it').preparedBy('Dr. Lee', 'Bay Vets')).toBe('Redatto da Dr. Lee, Bay Vets.');
   });
 
   test('every report locale renders a PDF', async () => {

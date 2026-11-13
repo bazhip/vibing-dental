@@ -60,9 +60,10 @@
   "ownerLabel": "Proprietario",
   "patientLabel": "Paziente",
   "preparedBy": {
+    "byTeam": "Redatto dal suo team veterinario.",
+    "byTeamAtPractice": "Redatto dal suo team veterinario, {{practice}}.",
     "doctor": "Redatto da {{doctor}}.",
-    "doctorAtPractice": "Redatto da {{doctor}}, {{practice}}.",
-    "team": "il suo team veterinario"
+    "doctorAtPractice": "Redatto da {{doctor}}, {{practice}}."
   },
   "removedToday": "estratto oggi",
   "species": {
@@ -72,7 +73,7 @@
     "feline-deciduous": "Gattino"
   },
   "tooth": {
-    "deciduous": "deciduo",
+    "deciduous": "da latte",
     "kinds": {
       "canine": "canino",
       "incisor": "incisivo",

@@ -60,9 +60,10 @@
   "ownerLabel": "Tutor",
   "patientLabel": "Paciente",
   "preparedBy": {
+    "byTeam": "Preparado por sua equipe veterinária.",
+    "byTeamAtPractice": "Preparado por sua equipe veterinária, {{practice}}.",
     "doctor": "Preparado por {{doctor}}.",
-    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}.",
-    "team": "sua equipe veterinária"
+    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}."
   },
   "removedToday": "extraído hoje",
   "species": {

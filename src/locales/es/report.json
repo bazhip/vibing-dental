@@ -60,9 +60,10 @@
   "ownerLabel": "Propietario",
   "patientLabel": "Paciente",
   "preparedBy": {
+    "byTeam": "Preparado por su equipo veterinario.",
+    "byTeamAtPractice": "Preparado por su equipo veterinario, {{practice}}.",
     "doctor": "Preparado por {{doctor}}.",
-    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}.",
-    "team": "su equipo veterinario"
+    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}."
   },
   "removedToday": "extraído hoy",
   "species": {

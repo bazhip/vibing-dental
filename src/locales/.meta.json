@@ -224,16 +224,20 @@
       "hash": "835043ec8e6b",
       "status": "machine"
     },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
     "report:preparedBy.doctor": {
       "hash": "48b9fb119e75",
       "status": "machine"
     },
     "report:preparedBy.doctorAtPractice": {
       "hash": "306ae73f70e1",
-      "status": "machine"
-    },
-    "report:preparedBy.team": {
-      "hash": "3a0360fce6e0",
       "status": "machine"
     },
     "report:removedToday": {
@@ -542,16 +546,20 @@
       "hash": "835043ec8e6b",
       "status": "machine"
     },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
     "report:preparedBy.doctor": {
       "hash": "48b9fb119e75",
       "status": "machine"
     },
     "report:preparedBy.doctorAtPractice": {
       "hash": "306ae73f70e1",
-      "status": "machine"
-    },
-    "report:preparedBy.team": {
-      "hash": "3a0360fce6e0",
       "status": "machine"
     },
     "report:removedToday": {
@@ -860,16 +868,20 @@
       "hash": "835043ec8e6b",
       "status": "machine"
     },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
     "report:preparedBy.doctor": {
       "hash": "48b9fb119e75",
       "status": "machine"
     },
     "report:preparedBy.doctorAtPractice": {
       "hash": "306ae73f70e1",
-      "status": "machine"
-    },
-    "report:preparedBy.team": {
-      "hash": "3a0360fce6e0",
       "status": "machine"
     },
     "report:removedToday": {
@@ -1178,16 +1190,20 @@
       "hash": "835043ec8e6b",
       "status": "machine"
     },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
     "report:preparedBy.doctor": {
       "hash": "48b9fb119e75",
       "status": "machine"
     },
     "report:preparedBy.doctorAtPractice": {
       "hash": "306ae73f70e1",
-      "status": "machine"
-    },
-    "report:preparedBy.team": {
-      "hash": "3a0360fce6e0",
       "status": "machine"
     },
     "report:removedToday": {
@@ -1472,16 +1488,20 @@
       "hash": "835043ec8e6b",
       "status": "machine"
     },
+    "report:preparedBy.byTeam": {
+      "hash": "12d40523e8e1",
+      "status": "machine"
+    },
+    "report:preparedBy.byTeamAtPractice": {
+      "hash": "b4ce54912f91",
+      "status": "machine"
+    },
     "report:preparedBy.doctor": {
       "hash": "48b9fb119e75",
       "status": "machine"
     },
     "report:preparedBy.doctorAtPractice": {
       "hash": "306ae73f70e1",
-      "status": "machine"
-    },
-    "report:preparedBy.team": {
-      "hash": "3a0360fce6e0",
       "status": "machine"
     },
     "report:removedToday": {

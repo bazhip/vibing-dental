@@ -60,9 +60,10 @@
   "ownerLabel": "Besitzer",
   "patientLabel": "Patient",
   "preparedBy": {
+    "byTeam": "Erstellt von Ihrem Tierarztteam.",
+    "byTeamAtPractice": "Erstellt von Ihrem Tierarztteam, {{practice}}.",
     "doctor": "Erstellt von {{doctor}}.",
-    "doctorAtPractice": "Erstellt von {{doctor}}, {{practice}}.",
-    "team": "Ihrem Tierarztteam"
+    "doctorAtPractice": "Erstellt von {{doctor}}, {{practice}}."
   },
   "removedToday": "heute entfernt",
   "species": {
