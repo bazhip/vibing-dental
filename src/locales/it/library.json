@@ -68,7 +68,7 @@
     "loadMore": "Carica altre cartelle"
   },
   "errors": {
-    "load": "Impossibile caricare le sue cartelle. {{error}}",
+    "load": "Impossibile caricare le Sue cartelle. {{error}}",
     "loadMore": "Impossibile caricare altre cartelle. {{error}}",
     "open": "Impossibile aprire questa cartella. {{error}}",
     "delete": "Impossibile eliminare questa visita. {{error}}",
@@ -77,7 +77,7 @@
   "deleteDialog": {
     "title": "Eliminare {{name}}{{when}}?",
     "titleUnnamed": "Eliminare questa cartella{{when}}?",
-    "message": "Questa visita viene rimossa dal cloud per tutti i membri del suo studio. L’operazione non può essere annullata.",
+    "message": "Questa visita viene rimossa dal cloud per tutti i membri del Suo studio. L’operazione non può essere annullata.",
     "confirm": "Elimina visita"
   },
   "clearDialog": {
@@ -95,7 +95,7 @@
     "pick": "Scelga una versione per visualizzarla.",
     "loadingVersion": "Caricamento di questa versione…",
     "current": "Attuale",
-    "outside": "Una persona esterna al suo studio",
+    "outside": "Una persona esterna al Suo studio",
     "automatic": "ToothOps (automatico)",
     "baseline": "Prima dell’inizio della cronologia · ultimo salvataggio {{when}}",
     "range": "{{start}} – {{end}}",
@@ -125,7 +125,7 @@
     "deleteFailed": "Impossibile eliminare il modello.",
     "cloudOff": "Il cloud non è configurato.",
     "deleteTitle": "Eliminare «{{name}}»?",
-    "deleteMessage": "Questo modello viene rimosso per tutti i membri del suo studio. L’operazione non può essere annullata.",
+    "deleteMessage": "Questo modello viene rimosso per tutti i membri del Suo studio. L’operazione non può essere annullata.",
     "deleteConfirm": "Elimina modello",
     "saving": "Salvataggio…",
     "saveChanges": "Salva modifiche",

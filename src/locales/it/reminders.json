@@ -5,7 +5,7 @@
     "blurb": "Invii un’e-mail al proprietario quando è in scadenza un controllo. Segnaposto:",
     "blurbTail": "Per inviare un promemoria a un singolo paziente usi <strong>Le mie cartelle</strong>.",
     "loading": "Caricamento…",
-    "notSetUp": "Il suo studio è in fase di configurazione: ricarichi la pagina tra un momento.",
+    "notSetUp": "Il Suo studio è in fase di configurazione: ricarichi la pagina tra un momento.",
     "ownerOnly": "Solo un titolare dello studio può modificare il modello di promemoria.",
     "auto": "Invia automaticamente un’e-mail ai proprietari",
     "send": "Invio",
@@ -25,7 +25,7 @@
     "noPractice": "Nessuno studio in cui salvare.",
     "discard": {
       "title": "Scartare le modifiche ai promemoria?",
-      "message": "Le sue modifiche alle impostazioni dei promemoria non sono state salvate.",
+      "message": "Le Sue modifiche alle impostazioni dei promemoria non sono state salvate.",
       "confirm": "Scarta",
       "cancel": "Continua a modificare"
     }

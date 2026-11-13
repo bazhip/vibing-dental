@@ -1,25 +1,25 @@
 {
   "delete": {
-    "blurb": "Elimina definitivamente il suo account, le sue cartelle private e le relative immagini. Le cartelle condivise con uno studio restano allo studio.",
+    "blurb": "Elimina definitivamente il Suo account, le Sue cartelle private e le relative immagini. Le cartelle condivise con uno studio restano allo studio.",
     "button": "Elimina l’account…",
     "heading": "Elimina l’account"
   },
   "deletion": {
     "account": {
       "confirmButton": "Elimina il mio account",
-      "confirmMessage": "Questa azione elimina definitivamente il suo account, le sue cartelle private e le relative foto e radiografie. Le cartelle condivise con uno studio restano allo studio. Se è l’unica persona del suo studio, vengono eliminati anche lo studio e tutte le sue cartelle, e ogni abbonamento viene annullato. L’operazione non può essere annullata.",
-      "confirmTitle": "Eliminare il suo account?",
+      "confirmMessage": "Questa azione elimina definitivamente il Suo account, le Sue cartelle private e le relative foto e radiografie. Le cartelle condivise con uno studio restano allo studio. Se è l’unica persona del Suo studio, vengono eliminati anche lo studio e tutte le Sue cartelle, e ogni abbonamento viene annullato. L’operazione non può essere annullata.",
+      "confirmTitle": "Eliminare il Suo account?",
       "continue": "Continua",
-      "done": "Il suo account è stato eliminato.",
+      "done": "Il Suo account è stato eliminato.",
       "emailLabel": "E-mail",
-      "failed": "Impossibile eliminare il suo account.",
-      "mismatch": "Digiti esattamente la sua e-mail.",
-      "promptMessage": "Digiti la sua e-mail ({{email}}) per eliminare definitivamente il suo account.",
+      "failed": "Impossibile eliminare il Suo account.",
+      "mismatch": "Digiti esattamente la Sua e-mail.",
+      "promptMessage": "Digiti la Sua e-mail ({{email}}) per eliminare definitivamente il Suo account.",
       "promptTitle": "Conferma l’eliminazione dell’account"
     },
     "practice": {
       "confirmButton": "Elimina lo studio",
-      "confirmMessage": "Questa azione elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle create dai membri del suo team, insieme alle relative foto e radiografie. Ogni abbonamento viene annullato immediatamente. I membri del team mantengono i propri account e le proprie cartelle private. L’operazione non può essere annullata.",
+      "confirmMessage": "Questa azione elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle create dai membri del Suo team, insieme alle relative foto e radiografie. Ogni abbonamento viene annullato immediatamente. I membri del team mantengono i propri account e le proprie cartelle private. L’operazione non può essere annullata.",
       "confirmTitle": "Eliminare “{{name}}”?",
       "confirmTitleUnnamed": "Eliminare questo studio?",
       "confirmationLabel": "Conferma",
@@ -84,9 +84,9 @@
       "email": "e-mail",
       "password": "password"
     },
-    "message_many": "Le sue modifiche a {{list}} non sono state salvate.",
-    "message_one": "La sua modifica a {{list}} non è stata salvata.",
-    "message_other": "Le sue modifiche a {{list}} non sono state salvate.",
+    "message_many": "Le Sue modifiche a {{list}} non sono state salvate.",
+    "message_one": "La Sua modifica a {{list}} non è stata salvata.",
+    "message_other": "Le Sue modifiche a {{list}} non sono state salvate.",
     "title": "Scartare le modifiche non salvate?"
   }
 }

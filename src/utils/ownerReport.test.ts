@@ -296,11 +296,11 @@ describe('report languages', () => {
     expect(toothLayName(504, false, 'it')).toBe('Canino superiore destro da latte');
     expect(reportStrings('it').defaultTitle).toBe('Referto della visita odontoiatrica');
     expect(reportStrings('it').headings.diagram('Biscuit')).toBe('La bocca di Biscuit');
-    expect(reportStrings('it').headings.diagram('')).toBe('La bocca del suo animale');
-    expect(reportStrings('it').intro('')).toMatch(/^Il suo animale ha ricevuto/);
+    expect(reportStrings('it').headings.diagram('')).toBe('La bocca del Suo animale');
+    expect(reportStrings('it').intro('')).toMatch(/^Il Suo animale ha ricevuto/);
     expect(reportStrings('it').fieldPhrases.pocket('6')).toBe('tasca gengivale profonda (6 mm)');
-    expect(reportStrings('it').preparedBy('', '')).toBe('Redatto dal suo team veterinario.');
-    expect(reportStrings('it').preparedBy('', 'Bay Vets')).toBe('Redatto dal suo team veterinario, Bay Vets.');
+    expect(reportStrings('it').preparedBy('', '')).toBe('Redatto dal Suo team veterinario.');
+    expect(reportStrings('it').preparedBy('', 'Bay Vets')).toBe('Redatto dal Suo team veterinario, Bay Vets.');
     expect(reportStrings('it').preparedBy('Dr. Lee', 'Bay Vets')).toBe('Redatto da Dr. Lee, Bay Vets.');
   });
 

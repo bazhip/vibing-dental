@@ -36,15 +36,15 @@
   "headings": {
     "alreadyMissing": "Già mancanti prima di questa visita",
     "diagram_named": "La bocca di {{pet}}",
-    "diagram_unnamed": "La bocca del suo animale",
+    "diagram_unnamed": "La bocca del Suo animale",
     "examNotes": "Altre osservazioni della visita",
     "extractions": "Denti estratti durante questa visita",
     "findings": "Cosa abbiamo riscontrato",
     "homecare_named": "Come curare i denti di {{pet}} a casa",
-    "homecare_unnamed": "Come curare i denti del suo animale a casa",
+    "homecare_unnamed": "Come curare i denti del Suo animale a casa",
     "photos": "Prima e dopo",
     "recheck": "Controllo consigliato",
-    "teamNote": "Un messaggio dal suo team veterinario"
+    "teamNote": "Un messaggio dal Suo team veterinario"
   },
   "homecareTips": {
     "brushing": "Spazzolare i denti ogni giorno con un dentifricio adatto agli animali è la cosa più efficace che può fare.",
@@ -60,8 +60,8 @@
   "ownerLabel": "Proprietario",
   "patientLabel": "Paziente",
   "preparedBy": {
-    "byTeam": "Redatto dal suo team veterinario.",
-    "byTeamAtPractice": "Redatto dal suo team veterinario, {{practice}}.",
+    "byTeam": "Redatto dal Suo team veterinario.",
+    "byTeamAtPractice": "Redatto dal Suo team veterinario, {{practice}}.",
     "doctor": "Redatto da {{doctor}}.",
     "doctorAtPractice": "Redatto da {{doctor}}, {{practice}}."
   },
@@ -93,6 +93,6 @@
       "upperRight": "superiore destro"
     }
   },
-  "yourPet": "il suo animale",
-  "yourTeam": "il suo team veterinario"
+  "yourPet": "il Suo animale",
+  "yourTeam": "il Suo team veterinario"
 }

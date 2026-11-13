@@ -57,3 +57,25 @@ test('every string about a chart uses the chart_record term, not an older synony
   }
   expect(drift).toEqual([]);
 });
+
+// Italian addresses the user as Lei with the courtesy capital throughout:
+// Suo / Sua / Suoi / Sue. Lowercase is only for a third party's ("their").
+const THIRD_PERSON = new Set([
+  'app:sync.changedByOther', // someone else's version
+  'app:sync.notSavedConflict',
+  'auth:login.emailPlaceholder', // an example address
+  'landing:features.avdc.points.p3', // a code's meaning
+  'landing:paper.point3', // inside the PDF
+  'settings:practice.team.removePendingMessage', // the invitee's invite
+]);
+
+test('Italian capitalises the courtesy possessive (Suo, Sua, Suoi, Sue)', () => {
+  const lower: string[] = [];
+  for (const file of globSync('src/locales/it/*.json').filter((f) => !f.endsWith('.meta.json'))) {
+    const ns = path.basename(file, '.json');
+    for (const [key, text] of flat(load('it', ns))) {
+      if (/\b(suo|sua|suoi|sue)\b/.test(text) && !THIRD_PERSON.has(`${ns}:${key}`)) lower.push(`${ns}:${key}: ${text}`);
+    }
+  }
+  expect(lower).toEqual([]);
+});
