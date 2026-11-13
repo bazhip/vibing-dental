@@ -87,3 +87,50 @@ describe('string concatenation with t()', () => {
     expect(await rules("export function run(t, name) { return t('a') + name; }", UNLISTED)).toEqual([]);
   });
 });
+
+describe('thrown error text', () => {
+  const ERROR_MESSAGE =
+    'User-visible error text must come from t(); for developer-only errors add `// eslint-disable-next-line no-restricted-syntax -- dev-only: <reason>`';
+
+  async function messages(src: string, filePath: string) {
+    const [result] = await eslint.lintText(src, { filePath });
+    return (result?.messages ?? []).map((m) => `${m.ruleId}: ${m.message}`);
+  }
+
+  test.each([
+    ["new Error('Could not save.')"],
+    ['new Error(`Could not save ${n}.`)'],
+    ["new TypeError('Bad input')"],
+    ["new AuthFlowError('Sign-in failed')"],
+  ])('%s is reported in a linted file', async (expr) => {
+    expect(await messages(`export function run(t, n) { throw ${expr}; }`, LISTED)).toEqual([
+      `no-restricted-syntax: ${ERROR_MESSAGE}`,
+    ]);
+  });
+
+  test.each([
+    ["new Error(t('common:errors.generic'))"],
+    ['new Error(String(n))'],
+    ["new Error('…')"],
+    ["new LocalizedError('Already translated')"],
+    ["new ApiError('Already translated', 'code')"],
+    ["new DicomError('Already translated')"],
+    ["new Thing('Not an error')"],
+  ])('%s is not reported in a linted file', async (expr) => {
+    expect(await messages(`export function run(t, n) { throw ${expr}; }`, LISTED)).toEqual([]);
+  });
+
+  test('a dev-only disable comment silences it', async () => {
+    const src = [
+      'export function run() {',
+      '  // eslint-disable-next-line no-restricted-syntax -- dev-only: invariant',
+      "  throw new Error('unreachable');",
+      '}',
+    ].join('\n');
+    expect(await messages(src, LISTED)).toEqual([]);
+  });
+
+  test('thrown literals are not reported in an exempt file', async () => {
+    expect(await messages("export function run() { throw new Error('Oops'); }", UNLISTED)).toEqual([]);
+  });
+});

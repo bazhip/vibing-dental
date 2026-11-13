@@ -17,6 +17,7 @@
     "permission": "Vous n’y avez pas accès.",
     "rateLimit": "Trop de tentatives. Patientez une minute et réessayez.",
     "withDetail": "Une erreur s’est produite (détails : {{detail}})",
+    "detailOnly": "Détails : {{detail}}",
     "api": {
       "unauthorized": "Session non autorisée — veuillez vous reconnecter.",
       "already_member": "Cette personne est déjà membre de ce cabinet.",

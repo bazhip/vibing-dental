@@ -104,7 +104,8 @@
     "canvas": "Area di disegno non disponibile",
     "convert": "Impossibile convertire l’immagine.",
     "tooLarge": "Questa immagine è troppo grande — i file del logo devono pesare meno di 10 MB.",
-    "reportTooLarge": "Queste impostazioni del referto per il proprietario sono troppo grandi (massimo 50 KB) — accorci alcuni testi o rimuova un modello."
+    "reportTooLarge": "Queste impostazioni del referto per il proprietario sono troppo grandi (massimo 50 KB) — accorci alcuni testi o rimuova un modello.",
+    "reportNotLoaded": "I Suoi modelli di referto per il proprietario salvati non sono stati caricati, quindi salvare ora potrebbe sovrascriverli. Ricarichi la pagina e riprovi."
   },
   "chart": {
     "title": "Impostazioni dell’odontogramma",

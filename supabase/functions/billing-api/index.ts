@@ -299,8 +299,7 @@ Deno.serve(async (req: Request) => {
         }
         const sub = await stripe.subscriptions.retrieve(practice.stripe_subscription_id);
         const item = sub.items.data[0];
-        if (!item) return json(apiError('subscription_no_items'), 500)
-;
+        if (!item) return json(apiError('subscription_no_items'), 500);
         const priceId = await ensurePrice(stripe, planKey);
         await stripe.subscriptions.update(sub.id, {
           items: [{ id: item.id, price: priceId }],

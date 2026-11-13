@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import i18n from '../i18n';
 import { API_ERRORS, apiError, type ApiErrorCode } from '../../supabase/functions/_shared/apiErrors';
-import { ApiError, LocalizedError, apiErrorFromBody, apiErrorMessage, errorText } from './apiErrors';
-import { friendlyError } from '../components/ui/dialogs';
+import { ApiError, LocalizedError, apiErrorFromBody, apiErrorMessage, detailText, errorText } from './apiErrors';
+import { friendlyDetail, friendlyError } from '../components/ui/dialogs';
 import frCommon from '../locales/fr/common.json';
 
 // Sample params per parameterised code; several values exercise the plurals.
@@ -103,6 +103,30 @@ describe('friendlyError', () => {
     expect(friendlyError(new Error('new row violates row-level security policy'))).toBe('You don’t have access to that.');
     expect(friendlyError(new Error('Email rate limit exceeded'))).toBe('Too many attempts. Wait a minute and try again.');
     expect(friendlyError(apiErrorFromBody(apiError('already_member')))).toBe('They’re already a member of this practice.');
+  });
+});
+
+describe('friendlyDetail (after a "Couldn’t X." sentence)', () => {
+  it('labels raw text as details instead of a second failure sentence', async () => {
+    await i18n.changeLanguage('fr');
+    expect(friendlyDetail(new Error('weird backend text'))).toBe('Détails : weird backend text');
+    expect(friendlyDetail(new LocalizedError('Déjà traduit.'))).toBe('Déjà traduit.');
+    expect(friendlyDetail(new Error('TypeError: Failed to fetch'))).toBe(i18n.t('errors.network'));
+  });
+
+  it('detailText: err.message in English, labelled raw text elsewhere', async () => {
+    expect(detailText(new Error('raw'))).toBe('raw');
+    expect(detailText('nope')).toBe('');
+    await i18n.changeLanguage('de');
+    expect(detailText(new Error('raw'))).toBe('Details: raw');
+    expect(detailText(new LocalizedError('Schon übersetzt.'))).toBe('Schon übersetzt.');
+    expect(detailText(null)).toBe('');
+  });
+
+  it('matches friendlyError in English', () => {
+    for (const err of [new Error('weird backend text'), 'plain string', null, new Error('Failed to fetch'), new Error('42501')]) {
+      expect(friendlyDetail(err)).toBe(friendlyError(err));
+    }
   });
 });
 

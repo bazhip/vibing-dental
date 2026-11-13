@@ -104,7 +104,8 @@
     "canvas": "Canvas unavailable",
     "convert": "Could not convert the image.",
     "tooLarge": "That image is too large — logo files must be under 10 MB.",
-    "reportTooLarge": "Those owner report settings are too large (50 KB max) — shorten some text or remove a template."
+    "reportTooLarge": "Those owner report settings are too large (50 KB max) — shorten some text or remove a template.",
+    "reportNotLoaded": "Your saved owner report templates didn’t load, so saving now could overwrite them. Reload the page and try again."
   },
   "chart": {
     "title": "Chart settings",

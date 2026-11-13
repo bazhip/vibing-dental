@@ -288,6 +288,7 @@ export function useCloudSync(
     };
     try {
       const { data: sessionData } = await client.auth.getSession();
+      // eslint-disable-next-line no-restricted-syntax -- dev-only: describeSaveError matches this English text and shows app:sync.sessionExpired
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
       const snap: ChartSnapshot = JSON.parse(json);
       // The snapshot's `species` is the combined layout key (e.g.

@@ -104,7 +104,8 @@
     "canvas": "Zeichenfläche nicht verfügbar",
     "convert": "Das Bild konnte nicht umgewandelt werden.",
     "tooLarge": "Dieses Bild ist zu groß — Logodateien dürfen höchstens 10 MB groß sein.",
-    "reportTooLarge": "Diese Einstellungen für den Besitzerbericht sind zu umfangreich (maximal 50 KB) — kürzen Sie einige Texte oder entfernen Sie eine Vorlage."
+    "reportTooLarge": "Diese Einstellungen für den Besitzerbericht sind zu umfangreich (maximal 50 KB) — kürzen Sie einige Texte oder entfernen Sie eine Vorlage.",
+    "reportNotLoaded": "Ihre gespeicherten Vorlagen für den Besitzerbericht wurden nicht geladen, daher könnte Speichern sie jetzt überschreiben. Laden Sie die Seite neu und versuchen Sie es erneut."
   },
   "chart": {
     "title": "Zahnschema-Einstellungen",

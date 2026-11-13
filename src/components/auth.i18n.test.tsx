@@ -281,6 +281,14 @@ describe('SessionExpiredOverlay', () => {
     await screen.findByText('⟦Incorrect email or password.⟧');
     expect(untranslated(document.body)).toEqual([]);
   });
+
+  it('wraps raw auth text instead of showing it bare', async () => {
+    auth.signInWithPassword.mockResolvedValue({ error: { message: 'Database error querying schema' } });
+    render(<SessionExpiredOverlay email="jane@vets.com" onSignOut={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText('⟦Password⟧'), { target: { value: 'pw' } });
+    fireEvent.click(screen.getByRole('button', { name: '⟦Sign in and continue charting⟧' }));
+    await screen.findByText('⟦Something went wrong (details: Database error querying schema)⟧');
+  });
 });
 
 describe('AppLoading and ErrorBoundary', () => {

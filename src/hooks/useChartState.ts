@@ -604,9 +604,11 @@ export function useChartState(): UseChartStateReturn {
         typeof parsed.patientInfo.patientName !== 'string' ||
         !Array.isArray(parsed.toothData)
       ) {
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees errors.pdfImport
         throw new Error('Stashed chart state has an unexpected shape');
       }
       if (!(parsed.species in TOOTH_DIAGRAMS)) {
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees errors.pdfImport
         throw new Error(`Unknown species in PDF: ${String(parsed.species)}`);
       }
       // A restored PDF is a NEW chart: a fresh cloud row (so saving can't

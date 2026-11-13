@@ -4644,6 +4644,10 @@
       "hash": "0537b3a4ae69",
       "status": "machine"
     },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -8430,6 +8434,10 @@
     },
     "settings:logoErrors.convert": {
       "hash": "c7c7161ee1e4",
+      "status": "machine"
+    },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
       "status": "machine"
     },
     "settings:logoErrors.reportTooLarge": {
@@ -14110,6 +14118,10 @@
       "hash": "0537b3a4ae69",
       "status": "machine"
     },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -17908,6 +17920,10 @@
     },
     "settings:logoErrors.convert": {
       "hash": "c7c7161ee1e4",
+      "status": "machine"
+    },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
       "status": "machine"
     },
     "settings:logoErrors.reportTooLarge": {
@@ -23612,6 +23628,10 @@
       "hash": "0537b3a4ae69",
       "status": "machine"
     },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -27410,6 +27430,10 @@
     },
     "settings:logoErrors.convert": {
       "hash": "c7c7161ee1e4",
+      "status": "machine"
+    },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
       "status": "machine"
     },
     "settings:logoErrors.reportTooLarge": {
@@ -33114,6 +33138,10 @@
       "hash": "0537b3a4ae69",
       "status": "machine"
     },
+    "common:errors.detailOnly": {
+      "hash": "c632198b8db8",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -36912,6 +36940,10 @@
     },
     "settings:logoErrors.convert": {
       "hash": "c7c7161ee1e4",
+      "status": "machine"
+    },
+    "settings:logoErrors.reportNotLoaded": {
+      "hash": "1d74b5fd815f",
       "status": "machine"
     },
     "settings:logoErrors.reportTooLarge": {

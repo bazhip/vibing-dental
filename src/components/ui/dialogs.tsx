@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
-import { ApiError, LocalizedError, withDetail } from '../../utils/apiErrors';
+import { ApiError, LocalizedError, detailOnly, withDetail } from '../../utils/apiErrors';
 import './dialogs.css';
 
 /**
@@ -94,6 +94,18 @@ export function toast(message: string, opts: ToastOptions = {}): void {
  *  (LocalizedError, coded server errors) show as-is; any other raw text is
  *  wrapped as "Something went wrong (details: …)" outside English. */
 export function friendlyError(err: unknown, fallback = i18n.t('errors.generic')): string {
+  return describeError(err, fallback, withDetail);
+}
+
+/** friendlyError for the `{{error}}` slot of a message that already says
+ *  what failed ("Couldn’t open that chart. {{error}}"): raw text reads
+ *  "Details: …" outside English instead of a second failure sentence.
+ *  Identical to friendlyError in English. */
+export function friendlyDetail(err: unknown): string {
+  return describeError(err, i18n.t('errors.generic'), detailOnly);
+}
+
+function describeError(err: unknown, fallback: string, wrapRaw: (detail: string) => string): string {
   const msg = err instanceof Error ? err.message : typeof err === 'string' ? err : '';
   if (!msg) return fallback;
   // Coded server errors are matched on their English text, as before codes.
@@ -103,7 +115,7 @@ export function friendlyError(err: unknown, fallback = i18n.t('errors.generic'))
   if (/permission denied|row-level security|42501/i.test(probe)) return i18n.t('errors.permission');
   if (/rate limit|too many/i.test(probe)) return i18n.t('errors.rateLimit');
   if (err instanceof LocalizedError) return msg;
-  return withDetail(msg);
+  return wrapRaw(msg);
 }
 
 // ---------------------------------------------------------------------------

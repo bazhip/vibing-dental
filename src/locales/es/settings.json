@@ -104,7 +104,8 @@
     "canvas": "Lienzo no disponible",
     "convert": "No se pudo convertir la imagen.",
     "tooLarge": "Esa imagen es demasiado grande — los archivos de logotipo deben pesar menos de 10 MB.",
-    "reportTooLarge": "Esos ajustes del informe para el propietario son demasiado grandes (máximo 50 KB) — acorte algunos textos o elimine una plantilla."
+    "reportTooLarge": "Esos ajustes del informe para el propietario son demasiado grandes (máximo 50 KB) — acorte algunos textos o elimine una plantilla.",
+    "reportNotLoaded": "Sus plantillas guardadas del informe para el propietario no se cargaron, así que guardar ahora podría sobrescribirlas. Vuelva a cargar la página e inténtelo de nuevo."
   },
   "chart": {
     "title": "Ajustes del odontograma",

@@ -104,8 +104,7 @@ Deno.serve(async (req: Request) => {
     }),
   });
   const respText = await resp.text();
-  if (!resp.ok) return json(apiError('email_failed', { detail: respText }), 502)
-;
+  if (!resp.ok) return json(apiError('email_failed', { detail: respText }), 502);
   await admin.from('ai_usage').insert({ user_id: caller.id, model: 'reminder-email', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});
 
   await admin.from('charts').update({ reminder_sent_at: new Date().toISOString() }).eq('id', chartId);

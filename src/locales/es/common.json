@@ -17,6 +17,7 @@
     "permission": "No tiene acceso a eso.",
     "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo.",
     "withDetail": "Algo salió mal (detalles: {{detail}})",
+    "detailOnly": "Detalles: {{detail}}",
     "api": {
       "unauthorized": "No autorizado: vuelva a iniciar sesión.",
       "already_member": "Esta persona ya es miembro de esta clínica.",

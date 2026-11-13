@@ -17,6 +17,7 @@
     "permission": "Non ha accesso a questo elemento.",
     "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi.",
     "withDetail": "Qualcosa è andato storto (dettagli: {{detail}})",
+    "detailOnly": "Dettagli: {{detail}}",
     "api": {
       "unauthorized": "Non autorizzato: effettui di nuovo l’accesso.",
       "already_member": "Questa persona è già membro di questo studio.",

@@ -331,7 +331,7 @@ export function useProfile(): UseProfileReturn {
       throw new LocalizedError(i18n.t('logoErrors.reportTooLarge', { ns: 'settings' }));
     }
     if (reportLoadFailedRef.current) {
-      throw new Error('Your saved owner report templates didn’t load, so saving now could overwrite them. Reload the page and try again.');
+      throw new LocalizedError(i18n.t('logoErrors.reportNotLoaded', { ns: 'settings' }));
     }
     if (supabase) {
       const res = await callTeamApi<{ ok?: boolean; rev?: number }>({

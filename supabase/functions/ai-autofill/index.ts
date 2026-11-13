@@ -163,8 +163,7 @@ Deno.serve(async (req: Request) => {
   try {
     data = JSON.parse(text);
   } catch {
-    return json(apiError('ai_unreadable'), 502)
-;
+    return json(apiError('ai_unreadable'), 502);
   }
 
   // Log usage (best-effort — never fail the call over telemetry).

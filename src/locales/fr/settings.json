@@ -104,7 +104,8 @@
     "canvas": "Zone de dessin indisponible",
     "convert": "Impossible de convertir l’image.",
     "tooLarge": "Cette image est trop volumineuse — les fichiers de logo doivent faire moins de 10 Mo.",
-    "reportTooLarge": "Ces paramètres de compte rendu sont trop volumineux (50 Ko maximum) — raccourcissez certains textes ou supprimez un modèle."
+    "reportTooLarge": "Ces paramètres de compte rendu sont trop volumineux (50 Ko maximum) — raccourcissez certains textes ou supprimez un modèle.",
+    "reportNotLoaded": "Vos modèles de compte rendu enregistrés n’ont pas été chargés : enregistrer maintenant pourrait les écraser. Rechargez la page et réessayez."
   },
   "chart": {
     "title": "Réglages du schéma dentaire",

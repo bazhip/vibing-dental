@@ -56,8 +56,7 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json(apiError('voice_unreadable'), 502);
   }
-  if (!grant.access_token) return json(apiError('voice_no_token'), 502)
-;
+  if (!grant.access_token) return json(apiError('voice_no_token'), 502);
 
   // Log the mint (rate limiting + admin visibility). Best-effort.
   await admin.from('ai_usage').insert({ user_id: caller.id, model: 'deepgram-token', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});

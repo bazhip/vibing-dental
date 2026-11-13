@@ -60,6 +60,21 @@ export function withDetail(detail: string): string {
   return isEnglish() ? detail : i18n.t('errors.withDetail', { ns: 'common', detail });
 }
 
+/** Raw backend text placed after a sentence that already says what failed
+ *  ("Couldn’t load your charts. {{error}}"): bare in English, "Details: …"
+ *  elsewhere, so the user doesn't read two failure sentences. */
+export function detailOnly(detail: string): string {
+  return isEnglish() ? detail : i18n.t('errors.detailOnly', { ns: 'common', detail });
+}
+
+/** `err.message` for the detail slot after a "Couldn’t X." sentence:
+ *  translated errors as-is, raw text via detailOnly, '' when there is none. */
+export function detailText(err: unknown): string {
+  const msg = err instanceof Error ? err.message : '';
+  if (!msg || err instanceof LocalizedError) return msg;
+  return detailOnly(msg);
+}
+
 /** The message for an edge-function error body. */
 export function apiErrorMessage(body: ApiErrorBodyLike | unknown, fallbackKey: string): string {
   const b = (body && typeof body === 'object' ? body : {}) as ApiErrorBodyLike;

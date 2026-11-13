@@ -17,6 +17,7 @@
     "rateLimit": "Too many attempts. Wait a minute and try again.",
     "generic": "Something went wrong. Please try again.",
     "withDetail": "Something went wrong (details: {{detail}})",
+    "detailOnly": "Details: {{detail}}",
     "api": {
       "unauthorized": "unauthorized",
       "already_member": "They’re already a member of this practice.",

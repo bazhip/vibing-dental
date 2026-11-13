@@ -63,6 +63,7 @@ export function PdfPagesPreview({ blob, title }: Props) {
           canvas.setAttribute('role', 'img');
           canvas.setAttribute('aria-label', i18n.t('pages.pageAria', { ns: 'pdfui', title, n, total: doc.numPages }));
           const ctx = canvas.getContext('2d');
+          // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees the generic preview error
           if (!ctx) throw new Error('No 2D canvas');
           await page.render({ canvasContext: ctx, viewport }).promise;
           if (cancelled) return;

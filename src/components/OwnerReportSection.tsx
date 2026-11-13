@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast, confirmDialog } from './ui/dialogs';
+import { detailText } from '../utils/apiErrors';
 import { draftOwnerReport } from '../utils/ownerReportAi';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
@@ -91,7 +92,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         },
       });
     } catch (err) {
-      toast(t('section.draftFailed', { reason: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
+      toast(t('section.draftFailed', { reason: detailText(err) }).trim(), { kind: 'error' });
     } finally {
       setDrafting(false);
     }

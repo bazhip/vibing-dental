@@ -282,6 +282,7 @@ export async function drawLogoAndHeader(
     } else {
       if (!logoBytes) {
         const res = await fetch(logoUrl);
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: PDF build callers show a generic translated build error
         if (!res.ok) throw new Error(`logo fetch failed: ${res.status}`);
         logoBytes = await res.arrayBuffer();
       }

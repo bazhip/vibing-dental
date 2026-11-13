@@ -177,7 +177,6 @@ Deno.serve(async (req: Request) => {
     const row = data?.[0];
     return row
       ? { practiceId: row.practice_id as string, role: row.role as string, practice: embeddedOne(row.practices) as { id: string; name: string; owner: string } }
-
       : null;
   };
   const requireOwner = async () => {
