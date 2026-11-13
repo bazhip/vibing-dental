@@ -1250,7 +1250,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </div>
           </div>
         </div>
-        <div className="entry-grid__topbar-actions">
+        {/* --app: the signed-in toolbar (phones lay it out as an even,
+            full-width row). */}
+        <div className={`entry-grid__topbar-actions${cloud.enabled && !trial ? ' entry-grid__topbar-actions--app' : ''}`}>
           {trial && (
             <>
               <button

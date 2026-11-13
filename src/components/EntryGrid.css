@@ -4110,8 +4110,58 @@ a, button, input, select, textarea, label, summary, [role='button'] {
  * The section selector pins right under it so it's always reachable.
  * ========================================================================== */
 @media (max-width: 600px) {
-  /* The state chip rides the right end of the patient row. */
-  .topbar-state-chip { margin-left: auto; }
+  /* Row 1: patient … state chip; the save time sits at the row's right
+     end (lifted out of the toolbar). */
+  .topbar-state-chip { margin-left: 0.15rem; }
+  .entry-grid__topbar-actions--app > .save-status--saved,
+  .entry-grid__topbar-actions--app > .save-status--saving {
+    position: absolute;
+    top: 0.7rem;
+    right: var(--page-pad, 0.5rem);
+    width: auto;
+  }
+  /* Longer save messages (not saved, offline, add a name…) take their
+     own full line above the buttons rather than squeezing them. */
+  .entry-grid__topbar-actions--app > .save-status:not(.save-status--saved):not(.save-status--saving),
+  .entry-grid__topbar-actions--app > .save-status-error-wrap {
+    flex: 1 0 100%;
+    order: -1;
+    justify-content: center;
+  }
+  .entry-grid__topbar-lead { padding-right: 5.5rem; } /* room for the save time */
+
+  /* Row 2: the toolbar spans the width as equal buttons — a deliberate
+     toolbar, not a right-aligned leftover row. */
+  .entry-grid__topbar-actions--app {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    width: 100%;
+  }
+  .entry-grid__topbar-actions--app > * { flex: 1 1 0; }
+  /* Icon buttons keep a fixed 48px; the text buttons share the rest. */
+  .entry-grid__topbar-actions--app > .voice-input-wrap,
+  .entry-grid__topbar-actions--app > .topbar-tour-anchor,
+  .entry-grid__topbar-actions--app > .topbar-editing__undo { flex: 0 0 48px; }
+  .entry-grid__topbar-actions--app > *,
+  .entry-grid__topbar-actions--app .chart-menu,
+  .entry-grid__topbar-actions--app .voice-input-wrap,
+  .entry-grid__topbar-actions--app .chart-menu__trigger,
+  .entry-grid__topbar-actions--app .voice-input,
+  .entry-grid__topbar-actions--app .entry-grid__button,
+  .entry-grid__topbar-actions--app .topbar-editing__undo {
+    width: 100%;
+    min-width: 0;
+  }
+  .entry-grid__topbar-actions--app .chart-menu__trigger,
+  .entry-grid__topbar-actions--app .entry-grid__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    white-space: nowrap;
+  }
 
   .entry-grid__topbar-actions { gap: 0.35rem; }
   .topbar-icon { display: inline-block; }
