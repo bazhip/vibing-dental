@@ -18,6 +18,7 @@
 - Dark mode covers every app screen including the charting grid; PDFs, PDF preview pages and diagram artwork stay light. Clinical colors keep their meaning and meet WCAG AA in both schemes.
 - No new destructive actions; delete stays per visit. No new backend or schema.
 - Touch targets ≥ 44pt. No text glyphs (×, ☰, ⤓, ▾, ↶) in app chrome — icons from `src/ios/icons`.
+- **Translations (AGENTS.md on main):** all user-facing text goes through `t()`; add keys to `src/locales/en/<ns>.json` and write fr/de/it/es translations in the same change (formal address, glossary, identical placeholders), then `npm run i18n:translate -- --rehash`. `npm run build` runs `i18n:check`. Never bypass it by deleting keys.
 - Dev-only preview: `?iosPreview=1` works only when `import.meta.env.DEV` (never in production builds).
 - Commits as bazhip (`git config user.email` = 10350445+bazhip@users.noreply.github.com), co-author line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, branch `ios-app`, no push from task agents.
 
