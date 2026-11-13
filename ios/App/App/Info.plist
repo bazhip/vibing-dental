@@ -44,6 +44,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
