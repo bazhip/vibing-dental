@@ -790,8 +790,8 @@
   }
   .chart-library__cell--species,
   .chart-library__cell--recall,
-  .chart-library__head-row [role='columnheader']:nth-child(3),
-  .chart-library__head-row [role='columnheader']:nth-child(6) {
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(3),
+  .chart-library-modal:not(.admin-panel) .chart-library__head-row [role='columnheader']:nth-child(6) {
     display: none;
   }
 }
@@ -806,6 +806,9 @@
 .admin-panel .chart-library__row {
   grid-template-columns: 1fr; /* no delete column — actions live below */
 }
+/* Same side padding as the header row, so the fr columns resolve to the
+   same widths and every header sits over its cells. */
+.admin-panel .chart-library__row-main { padding-right: 0.75rem; }
 
 .admin-panel__row--active {
   background: color-mix(in srgb, var(--primary) 10%, transparent) !important;
@@ -1232,15 +1235,33 @@
     padding: 0.75rem;
     -webkit-overflow-scrolling: touch;
   }
+  /* The table frame is the ONE scroller (both directions): header and
+     rows slide sideways together, and the header stays pinned on top
+     while the rows scroll under it. (The rows used to scroll inside a
+     second scroller, so they slid sideways without the header and the
+     header rode up and down with the frame.) */
   .admin-panel .chart-library__table {
+    display: block;
     flex: none;
     min-height: 0;
     max-height: 55vh;
     max-height: 55dvh;
-    overflow-x: auto;
+    overflow: auto;
+    overscroll-behavior: contain;
   }
+  /* Wide enough for the Accounts columns' minimums (53.5rem + padding),
+     so rows never overflow the header's width. */
   .admin-panel .chart-library__head-row,
-  .admin-panel .chart-library__scroll { min-width: 47rem; }
+  .admin-panel .chart-library__scroll { min-width: 56rem; }
+  .admin-panel .chart-library__head-row {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .admin-panel .chart-library__scroll {
+    overflow: visible;
+    flex: none;
+  }
   .admin-panel__actions { flex: none; overflow: visible; }
   .admin-panel__ai,
   .admin-panel__billing { flex: none; overflow: visible; }

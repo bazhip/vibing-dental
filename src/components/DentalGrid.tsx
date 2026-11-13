@@ -148,7 +148,16 @@ function CodeCellEditor({
   const LAST_EDITABLE = wiring?.lastEditableRef.current ?? FIRST_EDITABLE;
   const choices = scoreChoices(key as string);
   const inputRef = useRef<HTMLInputElement>(null);
+  const popRef = useRef<HTMLDivElement>(null);
   const popover = usePopoverPosition(inputRef, !!choices);
+  // Keep the popover on screen: a cell near the right edge would push it
+  // past the viewport (and make the whole page scroll sideways).
+  React.useLayoutEffect(() => {
+    const el = popRef.current;
+    if (!el || !popover) return;
+    const maxLeft = window.innerWidth - el.offsetWidth - 4;
+    el.style.left = `${Math.max(4, Math.min(popover.left, maxLeft))}px`;
+  });
   // On touch screens the scores cover every valid value, so keep the
   // on-screen keyboard down (a hardware keyboard still types).
   const [coarse] = React.useState(isCoarsePointer);
@@ -247,8 +256,9 @@ function CodeCellEditor({
       // press here reaches the grid's own "click inside the editor"
       // handler and doesn't count as clicking away.
       <div
+        ref={popRef}
         className={`dental-grid__score-pop${popover.above ? ' dental-grid__score-pop--above' : ''}`}
-        style={{ top: popover.top, left: popover.left }}
+        style={{ top: popover.top }}
       >
         <ScoreChips
           name={`Tooth ${row.triadan} ${String(column.name)}`}
@@ -473,6 +483,32 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  // Narrow screens: the card scrolls sideways, which stops the header
+  // sticking to the page — slide it down to sit under the app topbar
+  // instead (CSS reads --head-shift), stopping one row short of the end.
+  React.useEffect(() => {
+    const el = wrapperRef.current;
+    if (!narrow || !el) return;
+    let frame = 0;
+    const place = () => {
+      frame = 0;
+      const r = el.getBoundingClientRect();
+      const topbar = parseFloat(getComputedStyle(el).getPropertyValue('--topbar-height')) || 0;
+      const head = (el.querySelector('.rdg-header-row .rdg-cell') as HTMLElement | null)?.offsetHeight ?? 40;
+      const shift = Math.round(Math.min(Math.max(topbar - r.top, 0), Math.max(r.height - head * 2, 0)));
+      el.style.setProperty('--head-shift', `${shift}px`);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(place); };
+    place();
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      el.style.removeProperty('--head-shift');
+    };
+  }, [narrow]);
   // -2 for the card's side borders; floor keeps parity with the
   // horizontal-scroll breakpoint.
   const layoutWidth = Math.max(containerWidth, narrow ? narrowMinWidth : MIN_LAYOUT_WIDTH) - 2;

@@ -1206,17 +1206,19 @@
 
 /* Tablets & phones: 11 columns can't compress to a phone and stay
    usable, so the grid lays out at its columns' natural width
-   (DentalGrid.tsx, short titles) and the card scrolls sideways. A
-   sideways scroller can't let the header stick to the PAGE, so the card
-   scrolls both ways inside a screen-high box: the header pins to its
-   top, and Missing/Tooth/Triadan stay frozen on the left. Scrolling past
-   either end of the list hands off to the page as usual. */
+   (DentalGrid.tsx, short titles) and the card scrolls sideways, with
+   Missing/Tooth/Triadan pinned on the left. A sideways scroller can't
+   let the header stick to the PAGE, so DentalGrid slides the header
+   down by --head-shift as the page scrolls, keeping it just under the
+   app topbar. (No inner vertical scroller: the page scrolls as usual.) */
 @media (max-width: 1000px) {
   .dental-grid {
-    overflow: auto;
-    max-height: calc(100vh - var(--topbar-height, 0px) - 1rem);
-    max-height: calc(100dvh - var(--topbar-height, 0px) - 1rem);
+    overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+  }
+  .dental-grid .rdg-header-row .rdg-cell {
+    transform: translateY(var(--head-shift, 0px));
   }
   .dental-grid .rdg {
     min-width: var(--grid-min-width, 760px);
@@ -2348,6 +2350,12 @@
   background: rgba(15, 23, 42, 0.55);
   display: flex; align-items: center; justify-content: center;
   padding: 1.5rem;
+}
+.ai-settings-overlay,
+.ai-settings-overlay * {
+  /* A scroll that reaches the end of anything inside a dialog stops
+     there instead of carrying on to the page behind it. */
+  overscroll-behavior: contain;
 }
 .ai-settings-modal {
   background: var(--surface, white);
@@ -3857,7 +3865,7 @@ button.save-status--manual:hover {
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.16);
 }
-.dental-grid__score-pop .score-chips { flex-wrap: nowrap; }
+.dental-grid__score-pop { max-width: calc(100vw - 8px); box-sizing: border-box; }
 .dental-grid__score-pop--above { transform: translateY(-100%); }
 .tooth-chart__score {
   grid-column: 1 / -1;

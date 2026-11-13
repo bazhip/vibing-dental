@@ -4,6 +4,36 @@ const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), ' +
   'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/** Open dialogs holding the page still (dialogs can stack). */
+let scrollLocks = 0;
+let lockedScrollY = 0;
+
+/** Keep the page behind an open dialog from scrolling. iOS Safari
+ *  ignores `overflow: hidden` on the body for touch scrolling, so the
+ *  body is pinned in place (position: fixed at the current offset) and
+ *  put back where it was when the last dialog closes. */
+function lockPageScroll(): () => void {
+  if (scrollLocks++ === 0) {
+    lockedScrollY = window.scrollY;
+    const s = document.body.style;
+    s.position = 'fixed';
+    s.top = `-${lockedScrollY}px`;
+    s.left = '0';
+    s.right = '0';
+    s.overflow = 'hidden';
+  }
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    if (--scrollLocks === 0) {
+      const s = document.body.style;
+      s.position = s.top = s.left = s.right = s.overflow = '';
+      if (lockedScrollY > 0) window.scrollTo(0, lockedScrollY);
+    }
+  };
+}
+
 /**
  * Dialog focus management for the shared modal pattern: while `open`,
  * Tab cycles inside the container (never escapes to the page behind the
@@ -53,7 +83,9 @@ export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
     };
 
     document.addEventListener('keydown', onKeyDown, true);
+    const unlockScroll = lockPageScroll();
     return () => {
+      unlockScroll();
       document.removeEventListener('keydown', onKeyDown, true);
       // Restore focus to the opener so keyboard users don't land back at
       // the top of the document.
