@@ -401,21 +401,37 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; s
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
  *  the tooth stays in view while the findings scroll sideways. */
 // Missing: a compact 44px touch target under a red ✕ badge. Tooth: one
-// column for "101 – I1" (Triadan number, then the tooth's name).
+// column just wide enough for "101 – I1" (Triadan number, then the
+// tooth's name). Fixed at every width — wider screens give the extra
+// room to the findings, not to these labels.
 const NARROW_LEAD = [44, 84] as const;
-/** Desktop shares of the grid width for Missing and Tooth. */
-const LEAD_SHARES = [0.05, 0.11] as const;
 /** Matches the CSS breakpoint where the grid becomes its own scroller. */
 const NARROW_QUERY = '(max-width: 1000px)';
 
-/** Width a header needs for `label`: uppercase caption-size titles run
- *  ≈10.4px a letter (measured: "MOBILITY" is 81px), plus the cell's
- *  side padding and, on finding columns, the ⋯ set-all button and gap
- *  (28px square on touch screens, 18px otherwise). */
+/** Width of an uppercase header title, measured with the page's font
+ *  (canvas), plus the letter-spacing the header uses. Falls back to
+ *  ≈10.4px a letter (measured: "MOBILITY" is 81px) where there's no
+ *  canvas (tests). */
+let measureCtx: CanvasRenderingContext2D | null | undefined;
+function titleTextWidth(label: string, narrow: boolean): number {
+  if (measureCtx === undefined) {
+    try { measureCtx = document.createElement('canvas').getContext('2d'); } catch { measureCtx = null; }
+  }
+  const text = label.toUpperCase();
+  if (!measureCtx) return text.length * 10.4;
+  const family = getComputedStyle(document.body).fontFamily || 'sans-serif';
+  measureCtx.font = `600 11.2px ${family}`;
+  const spacing = (narrow ? 0.03 : 0.05) * 11.2 * text.length;
+  return measureCtx.measureText(text).width + spacing;
+}
+
+/** Width a header needs for `label`: the title, the cell's side padding
+ *  and, on finding columns, the ⋯ set-all button and gap (28px square on
+ *  touch screens, 18px otherwise), plus a little breathing room. */
 function headerWidth(label: string, opts: { button: boolean; narrow: boolean; coarse: boolean }): number {
   const padding = opts.narrow ? 13 : 16;
   const button = opts.button ? (opts.coarse ? 28 : 18) + 6 : 0;
-  return Math.ceil(label.length * 10.4 + padding + button);
+  return Math.ceil(titleTextWidth(label, opts.narrow) + padding + button + 4);
 }
 
 function useMediaQuery(query: string): boolean {
@@ -668,24 +684,42 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   );
 
   const columns = React.useMemo((): readonly Column<ToothData>[] => {
-    const px = (share: number) => Math.floor(layoutWidth * share);
     // Shown columns split the width the full set would have used, so
     // hiding some widens the rest instead of leaving a gap.
     const shownShare = visibleColumns.reduce((sum, c) => sum + c.share, 0) || 1;
-    // Findings share whatever the two lead columns leave.
-    const scale = (1 - LEAD_SHARES[0] - LEAD_SHARES[1]) / shownShare;
-    const lead = narrow ? NARROW_LEAD : [Math.max(px(LEAD_SHARES[0]), 44), Math.max(px(LEAD_SHARES[1]), 84)];
-    const colWidth = (c: (typeof visibleColumns)[number]) => (narrow ? narrowWidth(c) : px(c.share * scale));
+    // Findings share whatever the two fixed lead columns leave.
+    const lead = NARROW_LEAD;
+    const dataWidth = layoutWidth - lead[0] - lead[1];
+    // Desktop: size findings by their titles (cells only hold short
+    // values). Every column starts at its short-title width; spare room
+    // upgrades as many as possible to the full title (cheapest first);
+    // anything left over is shared out by the usual proportions. If even
+    // short titles don't fit, fall back to plain proportions.
+    const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? `${c.name} (per root)` : c.name);
+    const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? 132 : 60);
+    const desktopWidths = (() => {
+      const opts = { ...headOpts, button: !readOnly };
+      const short = visibleColumns.map((c) => Math.max(headerWidth(c.short, opts), minOf(c)));
+      const full = visibleColumns.map((c, i) => Math.max(headerWidth(titleOf(c), opts), short[i]));
+      let spare = dataWidth - short.reduce((a, b) => a + b, 0);
+      if (spare < 0) return visibleColumns.map((c) => Math.floor((dataWidth * c.share) / shownShare));
+      const widths = [...short];
+      const byCost = visibleColumns.map((_, i) => i).sort((a, b) => (full[a] - short[a]) - (full[b] - short[b]));
+      for (const i of byCost) {
+        const cost = full[i] - short[i];
+        if (cost <= spare) { widths[i] = full[i]; spare -= cost; }
+      }
+      return widths.map((w, i) => w + Math.floor((spare * visibleColumns[i].share) / shownShare));
+    })();
+    const colWidth = (c: (typeof visibleColumns)[number]) => (narrow ? narrowWidth(c) : desktopWidths[visibleColumns.indexOf(c)]);
     const fixedTotal =
       lead[0] + lead[1] +
       visibleColumns.slice(0, -1).reduce((sum, column) => sum + colWidth(column), 0);
     const lastColumnWidth = Math.max(layoutWidth - fixedTotal, 60);
     const widthOf = (index: number) =>
       index === visibleColumns.length - 1 ? lastColumnWidth : colWidth(visibleColumns[index]);
-    // One style across the row: if any finding's full title would be
-    // cut off, every finding column uses its short title.
+    // Each column shows its full title when it fits, else the short one.
     const fits = (label: string, width: number, button = !readOnly) => headerWidth(label, { ...headOpts, button }) <= width;
-    const fullTitles = visibleColumns.every((c, i) => fits(c.name, widthOf(i)));
     return [
     {
       key: 'missing',
@@ -755,7 +789,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       const fullTitle = key === 'pocket' && pocketMode === 'root' ? `${name} (per root)` : name;
       // Short titles whenever full ones would be cut off (phones, small
       // tablets, narrow windows).
-      const title = !fullTitles ? short : fits(fullTitle, width) ? fullTitle : name;
+      const title = fits(fullTitle, width) ? fullTitle : fits(name, width) ? name : short;
       return {
       key,
       name,
@@ -946,6 +980,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             columns={columns}
             rows={toothData}
             rowHeight={coarsePointer ? 44 : 35}
+            // Fixed header height (room for the stacked "Triadan / Tooth"
+            // title) so every title sits vertically centered.
+            headerRowHeight={coarsePointer ? 48 : 44}
             onRowsChange={onToothDataChange}
             rowKeyGetter={(row: ToothData) => row.triadan}
             // Single click puts an editable cell straight into edit mode —
