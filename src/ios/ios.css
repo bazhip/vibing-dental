@@ -202,10 +202,21 @@
 :where(html.native-ios) .ios-sheet__bar-leading { justify-self: start; }
 :where(html.native-ios) .ios-sheet__bar-trailing { justify-self: end; }
 :where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button {
-  /* Long translations / accessibility text sizes: ellipsis at the cap. */
-  max-width: min(32vw, 11em);
+  /* Bar buttons stop growing at the xxxLarge size (23pt), as UIKit bar
+     items do; past that iOS shows the Large Content Viewer. */
+  font-size: min(var(--ios-text-body), 23px);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* The leading (secondary) action truncates at its cap; the trailing
+   (primary) action never truncates — the title gives way first. */
+:where(html.native-ios) .ios-sheet__bar .ios-sheet__bar-leading .ios-glass-button {
+  max-width: min(32vw, 11em);
+}
+:where(html.native-ios) .ios-sheet__bar .ios-sheet__bar-trailing .ios-glass-button {
+  /* Only a label longer than everything beside the leading cap (a long
+     translation at an accessibility size) ever truncates. */
+  max-width: calc(68vw - 64px);
 }
 /* Text buttons truncate from the end (a flex box would clip both sides). */
 :where(html.native-ios) .ios-sheet__bar :is(.ios-sheet__bar-leading, .ios-sheet__bar-trailing) .ios-glass-button:not(.ios-glass-button--icon) {
