@@ -119,6 +119,28 @@ describe('empty stored text with auto-send on', () => {
     expect(db.update).toHaveBeenCalledWith({ reminder_body: defaultReminder('fr').body });
   });
 
+  test('a throwing persist still finishes loading with the localized default', async () => {
+    db.row = row;
+    db.update.mockImplementationOnce(() => { throw new Error('boom'); });
+    const hook = renderHook(() => useReminderTemplate('p1', true, true));
+    await waitFor(() => expect(hook.result.current.loaded).toBe(true));
+    expect(hook.result.current.template.subject).toBe(defaultReminder('fr').subject);
+    expect(hook.result.current.template.body).toBe(defaultReminder('fr').body);
+  });
+
+  test('role flipping null to owner writes once; rerender does not rewrite', async () => {
+    db.row = row;
+    const hook = renderHook(({ owner }) => useReminderTemplate('p1', true, owner), { initialProps: { owner: false } });
+    await waitFor(() => expect(hook.result.current.loaded).toBe(true));
+    expect(db.update).not.toHaveBeenCalled();
+    hook.rerender({ owner: true });
+    await waitFor(() => expect(db.update).toHaveBeenCalledTimes(1));
+    hook.rerender({ owner: true });
+    hook.rerender({ owner: true });
+    await new Promise((r) => setTimeout(r, 50));
+    expect(db.update).toHaveBeenCalledTimes(1);
+  });
+
   test('member load does not write', async () => {
     db.row = row;
     const hook = renderHook(() => useReminderTemplate('p1', true, false));

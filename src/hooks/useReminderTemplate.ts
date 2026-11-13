@@ -86,10 +86,14 @@ export function useReminderTemplate(practiceId: string, open: boolean, isOwner =
             if (!row.subject) patch.reminder_subject = std.subject;
             if (!row.body) patch.reminder_body = std.body;
             // Best effort, once per load: a failure leaves the job on its fallback.
-            const { error } = await supabase.from('practices').update(patch).eq('id', practiceId);
-            if (!error) {
-              row.subject = row.subject || std.subject;
-              row.body = row.body || std.body;
+            try {
+              const { error } = await supabase.from('practices').update(patch).eq('id', practiceId);
+              if (!error) {
+                row.subject = row.subject || std.subject;
+                row.body = row.body || std.body;
+              }
+            } catch {
+              // Ignored: the modal still loads and shows the localized default.
             }
           }
           if (!cancelled) setStored(row);

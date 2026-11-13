@@ -3,9 +3,14 @@
 --
 -- This function lived only in the database. BEFORE applying, compare with the
 -- live definition:
+--   select prosecdef, proconfig, pg_get_function_result(oid)
+--     from pg_proc where proname = 'send_due_reminders';
 --   select pg_get_functiondef('public.send_due_reminders'::regproc);
--- The header below assumes `security definer set search_path = public`; if the
--- live function was NOT security definer, drop those attributes here to match.
+-- The header below assumes `security definer set search_path = public` and
+-- `returns void`. If prosecdef is false, delete the `security definer` line.
+-- If proconfig shows a different search_path (e.g. `public, extensions`), copy
+-- it exactly into the `set search_path` line. Diff the full function body from
+-- pg_get_functiondef against this file before applying.
 --
 -- Changes vs. the exported 2026-11-13 body (everything else is identical):
 --   * coalesce(patient_name / owner_name / recall_date, '') inside replace(), so
@@ -52,3 +57,6 @@ begin
   end loop;
 end
 $$;
+
+-- Only the cron job (running as the job owner) should call this; the app never does.
+revoke execute on function public.send_due_reminders() from public, anon, authenticated;
