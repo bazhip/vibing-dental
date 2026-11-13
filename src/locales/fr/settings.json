@@ -88,6 +88,11 @@
       "blurb": "Le compte rendu que les familles emportent après une visite dentaire — sections, titres, formulations, langue et mise en page par défaut du cabinet.",
       "customize": "Personnaliser le compte rendu"
     },
+    "clientLanguage": {
+      "title": "Langue pour les propriétaires d’animaux",
+      "blurb": "Langue des textes destinés aux propriétaires, comme les valeurs par défaut du rapport propriétaire. Le texte saisi n’est jamais traduit.",
+      "saveFailed": "Impossible d’enregistrer la langue."
+    },
     "deletion": {
       "title": "Supprimer le cabinet",
       "blurb": "Supprime définitivement le cabinet et tous les dossiers partagés avec lui, y compris ceux de votre équipe, et résilie tout abonnement. Les membres de l’équipe conservent leur compte et leurs dossiers privés.",

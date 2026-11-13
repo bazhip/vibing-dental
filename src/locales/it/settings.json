@@ -88,6 +88,11 @@
       "blurb": "Il referto che le famiglie portano a casa dopo una visita odontoiatrica — sezioni, titoli, formulazioni, lingua e layout predefinito valido per tutto lo studio.",
       "customize": "Personalizza il referto per il proprietario"
     },
+    "clientLanguage": {
+      "title": "Lingua per i proprietari degli animali",
+      "blurb": "Lingua dei testi destinati ai proprietari, come i valori predefiniti del report per il proprietario. Il testo digitato non viene mai tradotto.",
+      "saveFailed": "Impossibile salvare la lingua."
+    },
     "deletion": {
       "title": "Elimina lo studio",
       "blurb": "Elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle del Suo team, e annulla qualsiasi abbonamento. I membri del team conservano i propri account e le cartelle private.",

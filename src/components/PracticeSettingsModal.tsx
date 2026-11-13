@@ -18,6 +18,8 @@ import {
   planByKey,
   formatPlanPrice,
 } from '../constants/plans';
+import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
+import { REPORT_LOCALES, LOCALE_LABELS, isReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { deleteMyPractice } from '../utils/accountDeletion';
@@ -81,6 +83,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
+  const clientLang = usePracticeLanguage(team.practice?.id ?? null);
+  const [langError, setLangError] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
   const [teamBusy, setTeamBusy] = React.useState(false);
   const [teamError, setTeamError] = React.useState('');
@@ -590,6 +594,39 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             {teamError && <div className="login-error settings-msg" role="alert">{teamError}</div>}
             {teamNote && <div className="login-notice settings-msg" role="status">{teamNote}</div>}
           </section>
+
+          {/* ---- Language for pet owners ----------------------------------- */}
+          {team.practice && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">{t('practice.clientLanguage.title')}</h3>
+              <p className="ai-settings-blurb">{t('practice.clientLanguage.blurb')}</p>
+              {isOwner ? (
+                <select
+                  className="patient-form__input"
+                  value={clientLang.language}
+                  disabled={!clientLang.loaded}
+                  aria-label={t('practice.clientLanguage.title')}
+                  onChange={async (e) => {
+                    const next = e.target.value;
+                    if (!isReportLocale(next)) return;
+                    setLangError('');
+                    try {
+                      await clientLang.save(next);
+                    } catch (err) {
+                      setLangError(friendlyError(err, i18n.t('practice.clientLanguage.saveFailed', { ns: 'settings' })));
+                    }
+                  }}
+                >
+                  {REPORT_LOCALES.map((l) => (
+                    <option key={l} value={l}>{LOCALE_LABELS[l]}</option>
+                  ))}
+                </select>
+              ) : (
+                <p className="ai-settings-blurb" data-testid="client-language-readonly">{LOCALE_LABELS[clientLang.language]}</p>
+              )}
+              {langError && <div className="login-error settings-msg" role="alert">{langError}</div>}
+            </section>
+          )}
 
           {/* ---- Owner report --------------------------------------------- */}
           {profile.ownerReportEnabled && (

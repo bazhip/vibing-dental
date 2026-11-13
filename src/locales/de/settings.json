@@ -88,6 +88,11 @@
       "blurb": "Der Bericht, den Tierhalter nach einem Zahnbehandlungstermin mit nach Hause nehmen — Abschnitte, Überschriften, Formulierungen, Sprache und das praxisweite Standardlayout.",
       "customize": "Besitzerbericht anpassen"
     },
+    "clientLanguage": {
+      "title": "Sprache für Tierhalter",
+      "blurb": "Sprache der Texte für Tierhalter, etwa die Standardvorgaben des Besitzerberichts. Eingegebener Text wird nie übersetzt.",
+      "saveFailed": "Die Sprache konnte nicht gespeichert werden."
+    },
     "deletion": {
       "title": "Praxis löschen",
       "blurb": "Löscht die Praxis und alle mit ihr geteilten Akten, auch die Ihres Teams, endgültig und kündigt jedes Abonnement. Teammitglieder behalten ihre Konten und privaten Akten.",

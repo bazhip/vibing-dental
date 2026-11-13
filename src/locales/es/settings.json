@@ -88,6 +88,11 @@
       "blurb": "El informe que las familias se llevan a casa tras una visita dental — secciones, títulos, redacción, idioma y la maquetación predeterminada de toda la clínica.",
       "customize": "Personalizar el informe para el propietario"
     },
+    "clientLanguage": {
+      "title": "Idioma para los propietarios de mascotas",
+      "blurb": "Idioma de los textos que reciben los propietarios, como los valores predeterminados del informe para el propietario. El texto escrito nunca se traduce.",
+      "saveFailed": "No se pudo guardar el idioma."
+    },
     "deletion": {
       "title": "Eliminar la clínica",
       "blurb": "Elimina de forma permanente la clínica y todos los historiales compartidos con ella, incluidos los de su equipo, y cancela cualquier suscripción. Los miembros del equipo conservan sus cuentas y sus historiales privados.",

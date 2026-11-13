@@ -7716,6 +7716,18 @@
       "hash": "c00d5e3ab1fc",
       "status": "machine"
     },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
+      "status": "machine"
+    },
     "settings:practice.deletion.blurb": {
       "hash": "329e8544bf68",
       "status": "machine"
@@ -16440,6 +16452,18 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {
@@ -25192,6 +25216,18 @@
       "hash": "c00d5e3ab1fc",
       "status": "machine"
     },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
+      "status": "machine"
+    },
     "settings:practice.deletion.blurb": {
       "hash": "329e8544bf68",
       "status": "machine"
@@ -33940,6 +33976,18 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.blurb": {
+      "hash": "feea1b482f24",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.saveFailed": {
+      "hash": "6002b39bf69a",
+      "status": "machine"
+    },
+    "settings:practice.clientLanguage.title": {
+      "hash": "df416f81d50e",
       "status": "machine"
     },
     "settings:practice.deletion.blurb": {

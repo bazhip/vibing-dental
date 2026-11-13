@@ -3,6 +3,8 @@ import i18n from '../i18n';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { FREE_BETA } from '../constants/plans';
 import { call as callTeamApi } from './useTeam';
+import { clientLanguageOf } from './usePracticeLanguage';
+import { appReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportConfig, configByteSize, defaultConfig, normalizeConfig, MAX_CONFIG_BYTES } from '../utils/ownerReportConfig';
 
 /**
@@ -258,7 +260,14 @@ export function useProfile(): UseProfileReturn {
         }
         if (!reportError) {
           const row = reportRow as { owner_report_config?: unknown; owner_report_config_rev?: unknown } | null;
-          reportConfig = normalizeConfig(row?.owner_report_config);
+          // Practice client language (tolerates a database without the column).
+          const { data: langRow, error: langError } = await supabase
+            .from('practices')
+            .select('client_language')
+            .eq('id', pid)
+            .maybeSingle();
+          const seedLanguage = clientLanguageOf(langError ? null : (langRow as { client_language?: string | null } | null), appReportLocale());
+          reportConfig = normalizeConfig(row?.owner_report_config, seedLanguage);
           reportRev = typeof row?.owner_report_config_rev === 'number' ? row.owner_report_config_rev : null;
         } else {
           reportLoadFailed = true;

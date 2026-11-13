@@ -34,6 +34,10 @@ vi.mock('../utils/supabaseClient', () => ({
     functions: { invoke },
   },
 }));
+const langMock = vi.hoisted(() => ({ language: 'en', save: vi.fn(async () => {}) }));
+vi.mock('../hooks/usePracticeLanguage', () => ({
+  usePracticeLanguage: () => ({ language: langMock.language, explicit: false, loaded: true, save: langMock.save }),
+}));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
 vi.mock('../hooks/useBilling', async (orig) => ({
   ...(await orig<typeof import('../hooks/useBilling')>()),
@@ -68,6 +72,7 @@ import { PdfPreviewModal, type ChartSnapshot } from './PdfPreviewModal';
 import { PdfLinkPanel } from './PdfLinkPanel';
 import { PdfPagesPreview } from './PdfPagesPreview';
 import { AccountModal } from './AccountModal';
+import { LOCALE_LABELS } from '../utils/ownerReportI18n';
 import { LANGUAGE_NAMES } from '../i18n/config';
 
 beforeAll(() => {
@@ -126,6 +131,8 @@ afterEach(async () => {
 const ALLOW: (string | RegExp)[] = [
   'Elm Vet', 'Dr Kaser', 'Dr. Ann Lee', 'Ann Lee', 'me@vet.com', 'joined@vet.com', 'pending@vet.com', 'second@vet.com',
   'boss@vet.com', 'a@b.co', 'logo.png', 'ToothOps', 'Bella', 'Stripe',
+  // Report language names are endonyms, shown the same in every UI language.
+  ...Object.values(LOCALE_LABELS),
   /^me@vet\.com|^joined@vet\.com|^pending@vet\.com|^second@vet\.com/,
   /^\d+\/\d+$/,
 ];
@@ -133,6 +140,23 @@ const ALLOW: (string | RegExp)[] = [
 const DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 describe('PracticeSettingsModal', () => {
+  it('owners pick the pet-owner language; members see it read-only', async () => {
+    langMock.save.mockClear();
+    const { container, unmount } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
+    const select = (await screen.findByLabelText('⟦Language for pet owners⟧')) as HTMLSelectElement;
+    expect(Array.from(select.options).map((o) => o.value)).toEqual(['en', 'es', 'fr', 'de', 'it', 'pt']);
+    fireEvent.change(select, { target: { value: 'fr' } });
+    await waitFor(() => expect(langMock.save).toHaveBeenCalledWith('fr'));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    unmount();
+
+    teamState.current = makeTeam({ role: 'member' });
+    render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
+    await screen.findByText('⟦Language for pet owners⟧');
+    expect(screen.queryByLabelText('⟦Language for pet owners⟧')).toBeNull();
+    expect(screen.getByTestId('client-language-readonly').textContent).toBe('English');
+  });
+
   it('owner with a team, free beta billing and the delete section', async () => {
     const { container } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
     await screen.findByText('⟦Free beta⟧', { exact: false });
