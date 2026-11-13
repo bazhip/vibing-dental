@@ -1,0 +1,806 @@
+[
+  [
+    "Transcript — recording started 11/11/2026, 9:02:10 AM",
+    "Transcript — recording started 11/11/2026, 9:02:10 AM"
+  ],
+  [
+    "────────────────────────────────────────────────────────────",
+    "────────────────────────────────────────────────────────────"
+  ],
+  [
+    "",
+    ""
+  ],
+  [
+    "[09:02:11] Speaker 0: Okay, starting on the upper right.",
+    "[09:02:11] Speaker 0: Okay, starting on the upper right."
+  ],
+  [
+    "[09:02:15] Speaker 0: One oh one GI two, calc two.",
+    "[09:02:15] Speaker 0: 101 GI 2, calc 2."
+  ],
+  [
+    "[09:02:19] Speaker 0: One oh two, same thing,",
+    "[09:02:19] Speaker 0: 102, same thing,"
+  ],
+  [
+    "[09:02:21] Speaker 0: and mobility one.",
+    "[09:02:21] Speaker 0: and mobility 1."
+  ],
+  [
+    "[09:02:26] Speaker 1: Got it.",
+    "[09:02:26] Speaker 1: Got it."
+  ],
+  [
+    "[09:02:30] Speaker 0: One oh four is fractured, complicated, pulp is exposed.",
+    "[09:02:30] Speaker 0: 104 is fractured, complicated, pulp is exposed."
+  ],
+  [
+    "[09:02:36] Speaker 0: One oh eight stage three, five millimeter pocket distal, f e two.",
+    "[09:02:36] Speaker 0: 108 stage 3, 5 millimeter pocket distal, F2."
+  ],
+  [
+    "[09:02:44] Speaker 1: Did you say one oh eight or one oh nine?",
+    "[09:02:44] Speaker 1: Did you say 108 or 109?"
+  ],
+  [
+    "[09:02:46] Speaker 0: One oh eight. And one oh nine looks 8T.",
+    "[09:02:46] Speaker 0: 108. And 109 looks 8 T."
+  ],
+  [
+    "[09:02:52] Speaker 0: Actually scratch that, one oh two mobility is two, not one.",
+    "[09:02:52] Speaker 0: Actually scratch that, 102 mobility is two, not one."
+  ],
+  [
+    "[09:02:58] Speaker 0: Five oh four resorbed.",
+    "[09:02:58] Speaker 0: 504 resorbed."
+  ],
+  [
+    "[09:03:05] Speaker 0: Tongue and palate normal.",
+    "[09:03:05] Speaker 0: Tongue and palate normal."
+  ],
+  [
+    "Speaker 0: Okay, starting on the upper right.",
+    "Speaker 0: Okay, starting on the upper right."
+  ],
+  [
+    "Speaker 0: One oh one GI two, calc two.",
+    "Speaker 0: 101 GI 2, calc 2."
+  ],
+  [
+    "Speaker 0: One oh two, same thing,",
+    "Speaker 0: 102, same thing,"
+  ],
+  [
+    "Speaker 0: and mobility one.",
+    "Speaker 0: and mobility 1."
+  ],
+  [
+    "Speaker 1: Got it.",
+    "Speaker 1: Got it."
+  ],
+  [
+    "Speaker 0: One oh four is fractured, complicated, pulp is exposed.",
+    "Speaker 0: 104 is fractured, complicated, pulp is exposed."
+  ],
+  [
+    "Speaker 0: One oh eight stage three, five millimeter pocket distal, f e two.",
+    "Speaker 0: 108 stage 3, 5 millimeter pocket distal, F2."
+  ],
+  [
+    "Speaker 1: Did you say one oh eight or one oh nine?",
+    "Speaker 1: Did you say 108 or 109?"
+  ],
+  [
+    "Speaker 0: One oh eight. And one oh nine looks 8T.",
+    "Speaker 0: 108. And 109 looks 8 T."
+  ],
+  [
+    "Speaker 0: Actually scratch that, one oh two mobility is two, not one.",
+    "Speaker 0: Actually scratch that, 102 mobility is two, not one."
+  ],
+  [
+    "Speaker 0: Five oh four resorbed.",
+    "Speaker 0: 504 resorbed."
+  ],
+  [
+    "Speaker 0: Tongue and palate normal.",
+    "Speaker 0: Tongue and palate normal."
+  ],
+  [
+    "../types",
+    "../types"
+  ],
+  [
+    "./aiAutofill",
+    "./aiAutofill"
+  ],
+  [
+    "normalizeTranscript",
+    "normalizeTranscript"
+  ],
+  [
+    "collapses spelled-out triadan numbers",
+    "collapses spelled-out triadan numbers"
+  ],
+  [
+    "one oh four mobility class two",
+    "104 mobility class 2"
+  ],
+  [
+    "104 mobility class 2",
+    "104 mobility class 2"
+  ],
+  [
+    "two oh nine extracted",
+    "209 extracted"
+  ],
+  [
+    "209 extracted",
+    "209 extracted"
+  ],
+  [
+    "three zero one missing on exam",
+    "301 missing on exam"
+  ],
+  [
+    "301 missing on exam",
+    "301 missing on exam"
+  ],
+  [
+    "four-oh-eight has a fracture",
+    "408 has a fracture"
+  ],
+  [
+    "408 has a fracture",
+    "408 has a fracture"
+  ],
+  [
+    "also handles two-digit spell-outs",
+    "also handles two-digit spell-outs"
+  ],
+  [
+    "class M two on tooth four oh",
+    "class M2 on tooth 40"
+  ],
+  [
+    "40",
+    "40"
+  ],
+  [
+    "collapses shorthand spacing",
+    "collapses shorthand spacing"
+  ],
+  [
+    "PD 2 on the distal",
+    "PD2 on the distal"
+  ],
+  [
+    "PD2 on the distal",
+    "PD2 on the distal"
+  ],
+  [
+    "M 2, C 1, F 2",
+    "M2, C1, F2"
+  ],
+  [
+    "M2, C1, F2",
+    "M2, C1, F2"
+  ],
+  [
+    "P-D-3",
+    "PD3"
+  ],
+  [
+    "PD3",
+    "PD3"
+  ],
+  [
+    "leaves untouched text alone",
+    "leaves untouched text alone"
+  ],
+  [
+    "Hand me the scaler please",
+    "Hand me the scaler please"
+  ],
+  [
+    "104 already digits",
+    "104 already digits"
+  ],
+  [
+    "chunkWorthSending",
+    "chunkWorthSending"
+  ],
+  [
+    "sends findings, including ones the old keyword gate dropped",
+    "sends findings, including ones the old keyword gate dropped"
+  ],
+  [
+    "tongue normal palate normal",
+    "tongue normal palate normal"
+  ],
+  [
+    "104 M2",
+    "104 M2"
+  ],
+  [
+    "M2",
+    "M2"
+  ],
+  [
+    "504 fractured",
+    "504 fractured"
+  ],
+  [
+    "that one is fractured",
+    "that one is fractured"
+  ],
+  [
+    "and two on that one",
+    "and two on that one"
+  ],
+  [
+    "Speaker 0: resorbed",
+    "Speaker 0: resorbed"
+  ],
+  [
+    "2",
+    "2"
+  ],
+  [
+    "skips pure filler",
+    "skips pure filler"
+  ],
+  [
+    "ok",
+    "ok"
+  ],
+  [
+    "thanks",
+    "thanks"
+  ],
+  [
+    "Okay, got it.",
+    "Okay, got it."
+  ],
+  [
+    "Speaker 1: yeah thank you",
+    "Speaker 1: yeah thank you"
+  ],
+  [
+    "buildChunkRequest",
+    "buildChunkRequest"
+  ],
+  [
+    "canine",
+    "canine"
+  ],
+  [
+    "socal",
+    "socal"
+  ],
+  [
+    "sends the raw transcript alongside the cleaned one when they differ",
+    "sends the raw transcript alongside the cleaned one when they differ"
+  ],
+  [
+    "one oh four GI two",
+    "104 GI 2"
+  ],
+  [
+    "AS TRANSCRIBED:none oh four GI two",
+    "AS TRANSCRIBED:none 04 GI 2"
+  ],
+  [
+    "AUTO-CLEANED:n104 GI 2",
+    "AUTO-CLEANED:n 104 GI 2"
+  ],
+  [
+    "sends one copy when cleanup changes nothing",
+    "sends one copy when cleanup changes nothing"
+  ],
+  [
+    "104 extracted",
+    "104 extracted"
+  ],
+  [
+    "AS TRANSCRIBED",
+    "AS TRANSCRIBED"
+  ],
+  [
+    "lets earlier context complete a finding split across chunks",
+    "lets earlier context complete a finding split across chunks"
+  ],
+  [
+    "GI 2 calc 1",
+    "GI 2 calc 1"
+  ],
+  [
+    "105",
+    "105"
+  ],
+  [
+    "returns null for filler",
+    "returns null for filler"
+  ],
+  [
+    "okay",
+    "okay"
+  ],
+  [
+    "treats the open page as a hint, not a limit",
+    "treats the open page as a hint, not a limit"
+  ],
+  [
+    "tongue normal",
+    "tongue normal"
+  ],
+  [
+    "charting",
+    "charting"
+  ],
+  [
+    "OPEN PAGE",
+    "OPEN PAGE"
+  ],
+  [
+    "buildReviewRequest",
+    "buildReviewRequest"
+  ],
+  [
+    "sends the whole transcript, the chart and rejected items in review mode",
+    "sends the whole transcript, the chart and rejected items in review mode"
+  ],
+  [
+    "104 GI 2n105 missing",
+    "104 GI 2 n 105 missing"
+  ],
+  [
+    "set_tooth_mark",
+    "set_tooth_mark"
+  ],
+  [
+    "pre",
+    "pre"
+  ],
+  [
+    "missing",
+    "missing"
+  ],
+  [
+    "review",
+    "review"
+  ],
+  [
+    "Rejected by the vet",
+    "Rejected by the vet"
+  ],
+  [
+    "Current chart state",
+    "Current chart state"
+  ],
+  [
+    "keeps the end of an over-long transcript and says so",
+    "keeps the end of an over-long transcript and says so"
+  ],
+  [
+    "x",
+    "x"
+  ],
+  [
+    "n",
+    "n"
+  ],
+  [
+    "LAST LINE",
+    "LAST LINE"
+  ],
+  [
+    "starts partway through",
+    "starts partway through"
+  ],
+  [
+    "markFinalCheck",
+    "markFinalCheck"
+  ],
+  [
+    "turns every final-check change into a review flag",
+    "turns every final-check change into a review flag"
+  ],
+  [
+    "set_tooth_field",
+    "set_tooth_field"
+  ],
+  [
+    "gingivitis",
+    "gingivitis"
+  ],
+  [
+    "normalizeTranscript — multi-tooth perio runs",
+    "normalizeTranscript — multi-tooth perio runs"
+  ],
+  [
+    "keeps scores separate from tooth numbers (real dictation)",
+    "keeps scores separate from tooth numbers (real dictation)"
+  ],
+  [
+    "To the service one. One zero one g I two, calc two, f e three One zero two g I two, calc two, mobility three one zero three g I two calc two five millimeter pocket",
+    "To the service one. 101 GI 2, calc 2, F3 102 GI 2, calc 2, mobility 3 103 GI 2 calc 2 5 millimeter pocket"
+  ],
+  [
+    "101 GI 2, calc 2",
+    "101 GI 2, calc 2"
+  ],
+  [
+    "F3 102 GI 2, calc 2, mobility 3 103 GI 2 calc 2 5 millimeter pocket",
+    "F3 102 GI 2, calc 2, mobility 3 103 GI 2 calc 2 5 millimeter pocket"
+  ],
+  [
+    "still joins plain tooth numbers",
+    "still joins plain tooth numbers"
+  ],
+  [
+    "one oh four missing, two zero nine extracted",
+    "104 missing, 209 extracted"
+  ],
+  [
+    "104 missing, 209 extracted",
+    "104 missing, 209 extracted"
+  ],
+  [
+    "normalizeFieldValue",
+    "normalizeFieldValue"
+  ],
+  [
+    "strips prefixes and units to the bare grid number",
+    "strips prefixes and units to the bare grid number"
+  ],
+  [
+    "G2",
+    "G2"
+  ],
+  [
+    "GI 2",
+    "GI 2"
+  ],
+  [
+    "C1",
+    "C1"
+  ],
+  [
+    "1",
+    "1"
+  ],
+  [
+    "M3",
+    "M3"
+  ],
+  [
+    "3",
+    "3"
+  ],
+  [
+    "5mm",
+    "5 mm"
+  ],
+  [
+    "5",
+    "5"
+  ],
+  [
+    "4 5 4",
+    "4 5 4"
+  ],
+  [
+    "isPerioOnlyText",
+    "isPerioOnlyText"
+  ],
+  [
+    "flags comments that only repeat grid scores",
+    "flags comments that only repeat grid scores"
+  ],
+  [
+    "GI 2, calc 1",
+    "GI 2, calc 1"
+  ],
+  [
+    "M3, 5 mm pocket",
+    "M3, 5 mm pocket"
+  ],
+  [
+    "T/FX/CCF",
+    "T/FX/CCF"
+  ],
+  [
+    "GI 2, complicated crown fracture",
+    "GI 2, complicated crown fracture"
+  ],
+  [
+    "run-together Deepgram output",
+    "run-together Deepgram output"
+  ],
+  [
+    "splits \"104GI2\" into tooth + score and passes the medical gate",
+    "splits \"104 GI 2\" into tooth + score and passes the medical gate"
+  ],
+  [
+    "Speaker 0: 104GI2.",
+    "Speaker 0: 104 GI 2."
+  ],
+  [
+    "104 GI 2",
+    "104 GI 2"
+  ],
+  [
+    "passes spoken shorthand without a tooth number",
+    "passes spoken shorthand without a tooth number"
+  ],
+  [
+    "Or GI two?",
+    "Or GI 2?"
+  ],
+  [
+    "calc one",
+    "calc 1"
+  ],
+  [
+    "keeps codes joined to tooth numbers apart",
+    "keeps codes joined to tooth numbers apart"
+  ],
+  [
+    "calc 1T slash FX slash CCF105 missing",
+    "calc 1 T/FX/CCF 105 missing"
+  ],
+  [
+    "CCF 105 missing",
+    "CCF 105 missing"
+  ],
+  [
+    "codeOnlyComment",
+    "codeOnlyComment"
+  ],
+  [
+    "reduces \"Word (CODE)\" and \"CODE — words\" to the code",
+    "reduces \"Word (CODE)\" and \"CODE — words\" to the code"
+  ],
+  [
+    "Fracture (T/FX)",
+    "Fracture (T/FX)"
+  ],
+  [
+    "T/FX",
+    "T/FX"
+  ],
+  [
+    "Tooth resorption (TR).",
+    "Tooth resorption (TR)."
+  ],
+  [
+    "TR",
+    "TR"
+  ],
+  [
+    "T/FX — tooth fracture",
+    "T/FX — tooth fracture"
+  ],
+  [
+    "leaves codes, unknown parentheticals and plain notes alone",
+    "leaves codes, unknown parentheticals and plain notes alone"
+  ],
+  [
+    "Draining tract (left)",
+    "Draining tract (left)"
+  ],
+  [
+    "Biopsy sent to lab",
+    "Biopsy sent to lab"
+  ],
+  [
+    "dedupeActions — the 105/104 repeat from a real run",
+    "dedupeActions — the 105/104 repeat from a real run"
+  ],
+  [
+    "none",
+    "none"
+  ],
+  [
+    "P1",
+    "P 1"
+  ],
+  [
+    "C",
+    "C"
+  ],
+  [
+    "ai1",
+    "ai 1"
+  ],
+  [
+    "drops values/notes already on the chart and keeps real changes",
+    "drops values/notes already on the chart and keeps real changes"
+  ],
+  [
+    "calculus",
+    "calculus"
+  ],
+  [
+    "add_comment",
+    "add_comment"
+  ],
+  [
+    "set_tooth_field:calculus",
+    "set_tooth_field:calculus"
+  ],
+  [
+    "add_comment:T/FX/CCF",
+    "add_comment:T/FX/CCF"
+  ],
+  [
+    "real run 2 — Deepgram punctuation and homophones",
+    "real run 2 — Deepgram punctuation and homophones"
+  ],
+  [
+    "Speaker 0: 101GI2, calc 2102GI2, calc 2. Mobility one. 103GI1, Calc 1. 104. Fracture. 105. GI2. Calc. 3T slash FX slash CCF106 missing",
+    "Speaker 0: 101 GI 2, calc 2 102 GI 2, calc 2. Mobility 1. 103 GI 1, Calc 1. 104. Fracture. 105. GI 2. Calc 3 T/FX/CCF 106 missing"
+  ],
+  [
+    "rejoins a punctuated pause and turns spoken slashes into a code",
+    "rejoins a punctuated pause and turns spoken slashes into a code"
+  ],
+  [
+    "Calc 3 T/FX/CCF 106 missing",
+    "Calc 3 T/FX/CCF 106 missing"
+  ],
+  [
+    "Mobility 1",
+    "Mobility 1"
+  ],
+  [
+    "reads \"1098T\" as 109 AT",
+    "reads \"109 AT\" as 109 AT"
+  ],
+  [
+    "1098T. One ten enamel fracture.",
+    "109 AT. One ten enamel fracture."
+  ],
+  [
+    "109 AT",
+    "109 AT"
+  ],
+  [
+    "score run into the next tooth number",
+    "score run into the next tooth number"
+  ],
+  [
+    "splits \"calc 2102GI2\" into calc 2, tooth 102",
+    "splits \"calc 2 102 GI 2\" into calc 2, tooth 102"
+  ],
+  [
+    "101GI2, calc 2102GI2, calc 2.",
+    "101 GI 2, calc 2 102 GI 2, calc 2."
+  ],
+  [
+    "calc 2 102 GI 2",
+    "calc 2 102 GI 2"
+  ],
+  [
+    "../constants/dentalCodes",
+    "../constants/dentalCodes"
+  ],
+  [
+    "findCodesInText — one-letter codes",
+    "findCodesInText — one-letter codes"
+  ],
+  [
+    "ignores R/L/B/X used as words, counts them standing alone",
+    "ignores R/L/B/X used as words, counts them standing alone"
+  ],
+  [
+    "Mild ulceration R maxillary buccal mucosa",
+    "Mild ulceration R maxillary buccal mucosa"
+  ],
+  [
+    "R",
+    "R"
+  ],
+  [
+    "T/FX, X",
+    "T/FX, X"
+  ],
+  [
+    "X",
+    "X"
+  ],
+  [
+    "GE = gingival enlargement (the Enlargement column)",
+    "GE = gingival enlargement (the Enlargement column)"
+  ],
+  [
+    "normalizes the ways GE gets transcribed",
+    "normalizes the ways GE gets transcribed"
+  ],
+  [
+    "106 GE3",
+    "106 GE 3"
+  ],
+  [
+    "106 GE 3",
+    "106 GE 3"
+  ],
+  [
+    "106 GE three",
+    "106 GE 3"
+  ],
+  [
+    "106 G E three",
+    "106 GE 3"
+  ],
+  [
+    "104GE3, calc 1",
+    "104 GE 3, calc 1"
+  ],
+  [
+    "104 GE 3, calc 1",
+    "104 GE 3, calc 1"
+  ],
+  [
+    "enlargement three",
+    "enlargement 3"
+  ],
+  [
+    "enlargement 3",
+    "enlargement 3"
+  ],
+  [
+    "splits a GE score run into the next tooth",
+    "splits a GE score run into the next tooth"
+  ],
+  [
+    "105 GE 3102 GI 1",
+    "105 GE 3 102 GI 1"
+  ],
+  [
+    "105 GE 3 102 GI 1",
+    "105 GE 3 102 GI 1"
+  ],
+  [
+    "keeps GE distinct from GI and leaves ordinary words alone",
+    "keeps GE distinct from GI and leaves ordinary words alone"
+  ],
+  [
+    "106 GI two, GE three",
+    "106 GI 2, GE 3"
+  ],
+  [
+    "106 GI 2, GE 3",
+    "106 GI 2, GE 3"
+  ],
+  [
+    "the gauge is good",
+    "the gauge is good"
+  ],
+  [
+    "the prompt maps GE to hyperplasia, not gingivitis",
+    "the prompt maps GE to hyperplasia, not gingivitis"
+  ],
+  [
+    "call type is labelled for usage logging",
+    "call type is labelled for usage logging"
+  ],
+  [
+    "live chunks and final checks carry their kind",
+    "live chunks and final checks carry their kind"
+  ],
+  [
+    "live",
+    "live"
+  ],
+  [
+    "dictation prompt cache warmth",
+    "dictation prompt cache warmth"
+  ],
+  [
+    "is warm for a few minutes after the prompt was used, then cold",
+    "is warm for a few minutes after the prompt was used, then cold"
+  ]
+]

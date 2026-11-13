@@ -5,6 +5,7 @@ import { invokeFunction } from './edgeFunctions';
 import { ApiError, LocalizedError } from './apiErrors';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
+import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
 import {
   PatientInfo,
   Species,
@@ -442,30 +443,8 @@ function buildStaticSystemPrompt(): string {
 // ----- Transcript normalization -------------------------------------------
 // STT mangles numbers and shorthand. We normalize before Claude sees it.
 
-const DIGIT_WORDS: Record<string, string> = {
-  zero: '0', oh: '0',
-  one: '1', two: '2', three: '3', four: '4',
-  five: '5', six: '6', seven: '7', eight: '8', nine: '9',
-};
-
-const DIGIT_WORD_RE = new RegExp(
-  `\\b(${Object.keys(DIGIT_WORDS).join('|')})(?:[\\s\\-]+(${Object.keys(DIGIT_WORDS).join('|')}))(?:[\\s\\-]+(${Object.keys(DIGIT_WORDS).join('|')}))?\\b`,
-  'gi'
-);
-
-// Words after which a single spoken number is a score/measurement, not
-// part of a tooth number: "mobility three one zero three" is mobility 3,
-// tooth 103 — not tooth 310.
-const SCORE_TERMS = 'GI|GE|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis|enlargement|hyperplasia|mesial|distal|mesiobuccal|mesiopalatal|distobuccal|palatal';
-const SCORE_WORD_RE = new RegExp(
-  `\\b(${SCORE_TERMS})([\\s,.-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
-  'gi'
-);
-// A spoken number right before a unit is a measurement: "five millimeter".
-const UNIT_WORD_RE = new RegExp(
-  `\\b(${Object.keys(DIGIT_WORDS).join('|')})(?=[\\s-]*(?:mm|millimet(?:er|re)s?)\\b)`,
-  'gi'
-);
+// The English digit-word passes live in ./voice/numbers (shared with the
+// other languages' replaceSpokenNumbers); the order below is unchanged.
 
 export function normalizeTranscript(raw: string): string {
   let text = raw;
@@ -490,19 +469,15 @@ export function normalizeTranscript(raw: string): string {
   // Scores and measurements first, one word each, so the tooth-number
   // pass below can't swallow them ("calc two five millimeter" is calc 2,
   // 5 mm — not 25).
-  text = text.replace(SCORE_WORD_RE, (_m, term, sep, word) => `${term}${sep}${DIGIT_WORDS[word.toLowerCase()]}`);
+  text = englishScoreWords(text);
   // A score run into the next tooth number: "calc 2102" → "calc 2 102".
   text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\s+(\\d)([1-8][0-1]\\d)\\b`, 'gi'), '$1 $2 $3');
   // A pause before the value gets punctuated ("Calc. 3"): rejoin it.
   text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\.\\s+(?=\\d)`, 'gi'), '$1 ');
-  text = text.replace(UNIT_WORD_RE, (word) => DIGIT_WORDS[word.toLowerCase()]);
+  text = englishUnitWords(text);
 
   // "one oh four" / "two-o-nine" / "three zero one" → "104" / "209" / "301"
-  text = text.replace(DIGIT_WORD_RE, (match, a, b, c) => {
-    const parts = [a, b, c].filter(Boolean).map((w: string) => DIGIT_WORDS[w.toLowerCase()]);
-    if (parts.length < 2) return match;
-    return parts.join('');
-  });
+  text = englishDigitRuns(text);
 
   // "P D" / "P-D" → "PD" (the multi-letter prefix needs its own pass first;
   // otherwise "P-D-3" stays split because the second letter is followed
