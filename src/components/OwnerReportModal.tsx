@@ -1,4 +1,6 @@
 import React from 'react';
+import { saveFile } from '../native/saveFile';
+import { toast } from './ui/dialogs';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -58,6 +60,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 }) => {
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
+  const pdfBlobRef = React.useRef<Blob | null>(null);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -127,6 +130,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         const bytes = await buildOwnerReportPdfBytes(model, branding, photos, diagram);
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
+        pdfBlobRef.current = blob;
         createdUrl = URL.createObjectURL(blob);
         setPdfUrl(createdUrl);
       } catch (err) {
@@ -151,12 +155,8 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     if (!pdfUrl) return;
     const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const filename = `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
-    const a = document.createElement('a');
-    a.href = pdfUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const blob = pdfBlobRef.current;
+    if (blob) void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
   };
 
   if (!open) return null;

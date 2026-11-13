@@ -1,4 +1,6 @@
 import React from 'react';
+import { saveFile } from '../native/saveFile';
+import { toast } from './ui/dialogs';
 import {
   buildDentalChartPDFBytes,
   PDF_STYLES,
@@ -68,6 +70,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
   // preset; a pick in the modal's sidebar sticks for the session.
   const [styleId, setStyleId] = React.useState<string>(DEFAULT_PDF_STYLE_ID);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
+  const pdfBlobRef = React.useRef<Blob | null>(null);
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -166,6 +169,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
         );
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
+        pdfBlobRef.current = blob;
         createdUrl = URL.createObjectURL(blob);
         setPdfUrl(createdUrl);
       } catch (err) {
@@ -189,12 +193,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     const sanitize = (str: string) => str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const { patientInfo } = snapshot;
     const filename = `${sanitize(patientInfo.patientName) || 'patient'}_${sanitize(patientInfo.patientNumber) || 'pid'}_dental_chart_${patientInfo.date}.pdf`;
-    const a = document.createElement('a');
-    a.href = pdfUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const blob = pdfBlobRef.current;
+    if (blob) void saveFile(blob, filename, 'application/pdf').catch(() => toast("Couldn't save the file."));
   };
 
   if (!open) return null;
