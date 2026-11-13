@@ -11,6 +11,7 @@ import { TOOTH_GRID_LAYOUTS, TOOTH_DATA_ROWS } from '../constants/chartLayout';
 import {
   ACTIVE,
   applyPdfStyle,
+  resolvePdfStyle,
   FONT_MAP,
   PDF_STYLES,
   DEFAULT_PDF_STYLE_ID,
@@ -132,7 +133,7 @@ export async function buildDentalChartPDFBytes(
   const images = layoutOptions.images ?? [];
   const imagePageCount = Math.ceil(images.length / IMAGES_PER_PAGE);
   const totalPages = 2 + imagePageCount;
-  const style = PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
+  const style = resolvePdfStyle(styleId);
   applyPdfStyle(style);
 
   const pdfDoc = await PDFDocument.create();

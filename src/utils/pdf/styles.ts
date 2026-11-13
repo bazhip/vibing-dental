@@ -259,3 +259,95 @@ export const PDF_STYLES: PdfStyle[] = [
 ];
 
 export const DEFAULT_PDF_STYLE_ID = 'clinic';
+
+// ----- Custom accent color --------------------------------------------------
+//
+// A custom style is a preset with its accent swapped for a color the user
+// picked. It's encoded in the style id (`custom:<baseId>:<#rrggbb>`) so it
+// travels through the same `styleId` plumbing as the presets.
+
+const CUSTOM_PREFIX = 'custom:';
+
+export function customStyleId(hex: string, baseId: string = DEFAULT_PDF_STYLE_ID): string {
+  return `${CUSTOM_PREFIX}${baseId}:${normalizeHex(hex)}`;
+}
+
+/** The picked color for a custom style id, or null for a preset. */
+export function customStyleColor(styleId: string): string | null {
+  if (!styleId.startsWith(CUSTOM_PREFIX)) return null;
+  const hex = styleId.slice(styleId.lastIndexOf(':') + 1);
+  return /^#[0-9a-f]{6}$/i.test(hex) ? hex.toLowerCase() : null;
+}
+
+function normalizeHex(hex: string): string {
+  const h = hex.trim().toLowerCase();
+  if (/^#[0-9a-f]{6}$/.test(h)) return h;
+  if (/^#[0-9a-f]{3}$/.test(h)) return '#' + h.slice(1).split('').map((c) => c + c).join('');
+  return '#0c6b63';
+}
+
+type RGB = [number, number, number];
+const hexToRgb = (hex: string): RGB => {
+  const n = parseInt(normalizeHex(hex).slice(1), 16);
+  return [(n >> 16) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+};
+const rgbToHex = ([r, g, b]: RGB): string =>
+  '#' + [r, g, b].map((v) => Math.round(Math.min(1, Math.max(0, v)) * 255).toString(16).padStart(2, '0')).join('');
+const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const luminance = ([r, g, b]: RGB): number => {
+  const ch = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b);
+};
+/** WCAG contrast of a color against white. */
+export const contrastOnWhite = (c: RGB): number => 1.05 / (luminance(c) + 0.05);
+
+/** Darken until white text on it (table/section headers) is readable. */
+function readableAccent(c: RGB): RGB {
+  let out = c;
+  for (let i = 0; i < 30 && contrastOnWhite(out) < 4.5; i++) out = mix(out, [0, 0, 0], 0.08);
+  return out;
+}
+
+const BLACK: RGB = [0, 0, 0];
+const WHITE: RGB = [1, 1, 1];
+const toPdf = (c: RGB) => rgb(c[0], c[1], c[2]);
+
+/** The preset with its accent replaced by `hex` (made print-readable). */
+export function buildCustomStyle(hex: string, baseId: string = DEFAULT_PDF_STYLE_ID): PdfStyle {
+  const base = PDF_STYLES.find((s) => s.id === baseId) ?? PDF_STYLES[0];
+  const accent = readableAccent(hexToRgb(hex));
+  return {
+    ...base,
+    id: customStyleId(hex, base.id),
+    name: 'Custom color',
+    description: `${base.name} layout in your color.`,
+    palette: {
+      ...base.palette,
+      primary: toPdf(accent),
+      primaryDark: toPdf(mix(accent, BLACK, 0.3)),
+      primaryTint: toPdf(mix(accent, WHITE, 0.9)),
+    },
+    comment: {
+      ...base.comment,
+      bg: rgbToHex(mix(accent, WHITE, 0.93)),
+      border: rgbToHex(mix(accent, WHITE, 0.5)),
+      labelColor: rgbToHex(mix(accent, BLACK, 0.45)),
+    },
+  };
+}
+
+/** Any style id — preset or custom — to a complete style. */
+export function resolvePdfStyle(styleId: string): PdfStyle {
+  const color = customStyleColor(styleId);
+  if (color) {
+    const baseId = styleId.slice(CUSTOM_PREFIX.length, styleId.lastIndexOf(':'));
+    return buildCustomStyle(color, baseId);
+  }
+  return PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
+}
+
+/** CSS hex of a style's accent, for swatches. */
+export function styleSwatch(style: PdfStyle): string {
+  const p = style.palette.primary as unknown as { red: number; green: number; blue: number };
+  return rgbToHex([p.red, p.green, p.blue]);
+}

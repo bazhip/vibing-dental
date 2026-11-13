@@ -2,10 +2,10 @@ import React from 'react';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
+import { PdfStylePicker, readSavedPdfStyle, savePdfStyle, useCompactPdfLayout } from './PdfStylePicker';
+import { resolvePdfStyle } from '../utils/pdf/styles';
 import {
   buildDentalChartPDFBytes,
-  PDF_STYLES,
-  DEFAULT_PDF_STYLE_ID,
   type PdfBranding,
   type PdfImage,
 } from '../utils/pdfGenerator';
@@ -67,9 +67,11 @@ interface PdfPreviewModalProps {
 }
 
 export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false }) => {
-  // The document style is independent of the app UI. Start on the default
-  // preset; a pick in the modal's sidebar sticks for the session.
-  const [styleId, setStyleId] = React.useState<string>(DEFAULT_PDF_STYLE_ID);
+  // The document style is independent of the app UI. The last pick
+  // (preset or custom color) is remembered on this device.
+  const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
+  const setStyleId = (id: string) => { setStyleIdState(id); savePdfStyle(id); };
+  const compact = useCompactPdfLayout();
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
@@ -154,7 +156,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
 
     (async () => {
       try {
-        const style = PDF_STYLES.find((s) => s.id === styleId) ?? PDF_STYLES[0];
+        const style = resolvePdfStyle(styleId);
         const { width, height } = TOOTH_DIAGRAMS[snapshot.species];
         const crop = TOOTH_DIAGRAMS[snapshot.species].cropBounds;
         const [prePng, postPng] = await Promise.all([
@@ -208,33 +210,31 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
 
   if (!open) return null;
 
+  const downloadButton = (
+    <button
+      type="button"
+      className="pdf-preview-download"
+      onClick={handleDownload}
+      disabled={!pdfUrl || generating || images === null}
+    >
+      Download PDF
+    </button>
+  );
+
   const body = (
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
-            <ul role="radiogroup" aria-label="PDF style">
-              {PDF_STYLES.map((s) => (
-                <li key={s.id}>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={s.id === styleId}
-                    className={`pdf-preview-style${s.id === styleId ? ' pdf-preview-style--active' : ''}`}
-                    onClick={() => setStyleId(s.id)}
-                  >
-                    <strong>{s.name}</strong>
-                    <span>{s.description}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              className="pdf-preview-download"
-              onClick={handleDownload}
-              disabled={!pdfUrl || generating || images === null}
-            >
-              Download PDF
-            </button>
+            {compact ? (
+              <div className="pdf-preview-toolbar">
+                <PdfStylePicker styleId={styleId} onChange={setStyleId} compact />
+                {downloadButton}
+              </div>
+            ) : (
+              <>
+                <PdfStylePicker styleId={styleId} onChange={setStyleId} compact={false} />
+                {downloadButton}
+              </>
+            )}
             {!inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
             {imageWarning && (
@@ -278,7 +278,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
         <header className="pdf-preview-header">
           <div>
             <h2 id="pdf-preview-title">Clinical chart</h2>
-            <p>For your records and referrals. Pick a style — the preview updates live.</p>
+            <p>For your records and referrals. Pick a style or your own color — the preview updates live.</p>
           </div>
           <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
             ×
