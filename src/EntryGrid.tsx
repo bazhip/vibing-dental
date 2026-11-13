@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import i18n from './i18n';
 import {
   PatientForm,
   DentalGrid,
@@ -138,7 +139,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const prefs = chartSettings.prefs;
   const language = useAppLanguage(prefs.language, chartSettings.loaded);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
-    chartSettings.update(patch).catch((err) => toast(t('errors.setting', { error: friendlyError(err) }), { kind: 'error' }));
+    // Looked up when it fails, in the language in effect then.
+    chartSettings.update(patch).catch((err) =>
+      toast(i18n.getFixedT(null, 'app')('errors.setting', { error: friendlyError(err) }), { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);

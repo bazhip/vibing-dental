@@ -209,6 +209,16 @@ describe('PracticeSettingsModal', () => {
     expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
 
+  it('a billing error that lands after a language switch is in the new language', async () => {
+    let fail!: (e: Error) => void;
+    billingMock.fetchBilling.mockImplementation(() => new Promise((_, reject) => { fail = reject; }));
+    render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
+    await loadLanguage('fr');
+    await i18n.changeLanguage('fr');
+    fail(new Error(''));
+    await screen.findByText('Impossible de charger la facturation.');
+  });
+
   it('formats the renewal date in French', async () => {
     await loadLanguage('fr');
     await i18n.changeLanguage('fr');

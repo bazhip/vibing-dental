@@ -317,20 +317,20 @@ export function useAttachments(
 
   const upload = React.useCallback(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
-      const t = tm();
-      if (!supabase) throw new Error(t('upload.noCloud'));
+      // Messages are looked up when thrown: an upload can outlast a language switch.
+      if (!supabase) throw new Error(tm()('upload.noCloud'));
       const dicom = await isDicomFile(file);
       if (dicom && !dicomEnabled) {
-        throw new Error(t('upload.dicomPaid'));
+        throw new Error(tm()('upload.dicomPaid'));
       }
       if (!dicom && !ALLOWED.includes(file.type)) {
-        throw new Error(dicomEnabled ? t('upload.typeDicom') : t('upload.typePlain'));
+        throw new Error(dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain'));
       }
       if (itemsRef.current.length >= maxImages) {
-        throw new Error(t('upload.maxImages', { max: maxImages }));
+        throw new Error(tm()('upload.maxImages', { max: maxImages }));
       }
       if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
-        throw new Error(t('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) }));
+        throw new Error(tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) }));
       }
       // DICOM: render a preview for display; the original is kept as-is.
       const source = dicom ? await dicomPreview(file) : file;
@@ -338,7 +338,7 @@ export function useAttachments(
       const { main: toUpload, thumb } = await prepareUpload(source);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
-      if (!uid) throw new Error(t('upload.signIn'));
+      if (!uid) throw new Error(tm()('upload.signIn'));
       const id = crypto.randomUUID();
       const path = `${uid}/${chartId}/${id}.${extFor(toUpload.type)}`;
       const originalPath = dicom ? `${uid}/${chartId}/${id}.dcm` : null;
@@ -352,7 +352,7 @@ export function useAttachments(
           .upload(originalPath, file, { contentType: DICOM_MIME, upsert: false });
         if (origErr) {
           await supabase.storage.from('attachments').remove([path]).catch(() => undefined);
-          throw new Error(t('upload.originalFailed', { message: origErr.message }));
+          throw new Error(tm()('upload.originalFailed', { message: origErr.message }));
         }
       }
       if (thumb) {

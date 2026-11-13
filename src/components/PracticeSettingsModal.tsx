@@ -105,7 +105,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         if (!cancelled) setBilling(b);
       })
       .catch((e) => {
-        if (!cancelled) setBillingError(friendlyError(e, t('settings.loadFailed', { ns: 'billing' })));
+        // Looked up when it fails: the language may have changed meanwhile.
+        if (!cancelled) setBillingError(friendlyError(e, i18n.t('settings.loadFailed', { ns: 'billing' })));
       });
     return () => {
       cancelled = true;
