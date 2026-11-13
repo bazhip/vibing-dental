@@ -26,5 +26,63 @@
     "body": "Confermi che <strong>{{newEmail}}</strong> deve sostituire <strong>{{email}}</strong> come indirizzo e-mail di accesso del Suo account ToothOps.",
     "button": "Conferma il nuovo indirizzo",
     "ignore": "Non ha richiesto Lei questa modifica? Ignori questa e-mail: il Suo indirizzo di accesso rimane invariato."
+  },
+  "invite": {
+    "subject": "È stato invitato su ToothOps",
+    "title": "Accetti il Suo invito",
+    "preheader": "È stato invitato a creare un account ToothOps.",
+    "body": "È stato invitato a creare un account ToothOps per <strong>{{email}}</strong>. Accetti l’invito per impostare la Sua password e iniziare.",
+    "button": "Accetta l’invito",
+    "ignore": "Non si aspettava questo invito? Può ignorare questa e-mail: nessun account viene creato finché questo link non viene utilizzato."
+  },
+  "magiclink": {
+    "subject": "Il Suo link di accesso a ToothOps",
+    "title": "Acceda a ToothOps",
+    "preheader": "Il Suo link per accedere a ToothOps.",
+    "body": "Usi il pulsante qui sotto per accedere a ToothOps come <strong>{{email}}</strong>. Il link può essere utilizzato una sola volta.",
+    "button": "Accedi",
+    "ignore": "Non ha provato ad accedere? Ignori questa e-mail: nessuno può accedere senza questo link."
+  },
+  "reauthentication": {
+    "subject": "Il Suo codice di verifica ToothOps",
+    "title": "Confermi la Sua identità",
+    "preheader": "Il Suo codice di verifica ToothOps.",
+    "body": "Inserisca questo codice in ToothOps per confermare la Sua identità:",
+    "ignore": "Non ha richiesto questo codice? Ignori questa e-mail e valuti di cambiare la Sua password."
+  },
+  "notice": {
+    "footnote": "Se non ha effettuato Lei questa modifica, reimposti subito la Sua password.",
+    "passwordChanged": {
+      "subject": "La Sua password di ToothOps è stata modificata",
+      "body": "La password del Suo account ToothOps è stata modificata."
+    },
+    "emailChanged": {
+      "subject": "Il Suo indirizzo e-mail di accesso a ToothOps è stato modificato",
+      "body": "L’indirizzo e-mail di accesso del Suo account ToothOps è stato modificato."
+    },
+    "phoneChanged": {
+      "subject": "Il Suo numero di telefono ToothOps è stato modificato",
+      "body": "Il numero di telefono del Suo account ToothOps è stato modificato."
+    },
+    "identityLinked": {
+      "subject": "È stato aggiunto un metodo di accesso al Suo account ToothOps",
+      "body": "Un nuovo metodo di accesso è stato collegato al Suo account ToothOps."
+    },
+    "identityUnlinked": {
+      "subject": "È stato rimosso un metodo di accesso dal Suo account ToothOps",
+      "body": "Un metodo di accesso è stato rimosso dal Suo account ToothOps."
+    },
+    "mfaEnrolled": {
+      "subject": "L’autenticazione a due fattori è stata aggiunta al Suo account ToothOps",
+      "body": "Un metodo di autenticazione a due fattori è stato aggiunto al Suo account ToothOps."
+    },
+    "mfaUnenrolled": {
+      "subject": "L’autenticazione a due fattori è stata rimossa dal Suo account ToothOps",
+      "body": "Un metodo di autenticazione a due fattori è stato rimosso dal Suo account ToothOps."
+    },
+    "generic": {
+      "subject": "Il Suo account ToothOps è stato aggiornato",
+      "body": "Un’impostazione di sicurezza del Suo account ToothOps è stata modificata."
+    }
   }
 }

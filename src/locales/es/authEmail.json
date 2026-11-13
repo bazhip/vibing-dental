@@ -26,5 +26,63 @@
     "body": "Confirme que <strong>{{newEmail}}</strong> debe sustituir a <strong>{{email}}</strong> como correo de inicio de sesión de su cuenta de ToothOps.",
     "button": "Confirmar nuevo correo",
     "ignore": "¿No solicitó este cambio? Ignore este correo: su correo de inicio de sesión no cambiará."
+  },
+  "invite": {
+    "subject": "Le han invitado a ToothOps",
+    "title": "Acepte su invitación",
+    "preheader": "Le han invitado a crear una cuenta de ToothOps.",
+    "body": "Le han invitado a crear una cuenta de ToothOps para <strong>{{email}}</strong>. Acepte la invitación para establecer su contraseña y empezar.",
+    "button": "Aceptar invitación",
+    "ignore": "¿No esperaba esta invitación? Puede ignorar este correo: no se crea ninguna cuenta a menos que se use este enlace."
+  },
+  "magiclink": {
+    "subject": "Su enlace de inicio de sesión de ToothOps",
+    "title": "Inicie sesión en ToothOps",
+    "preheader": "Su enlace para iniciar sesión en ToothOps.",
+    "body": "Use el botón de abajo para iniciar sesión en ToothOps como <strong>{{email}}</strong>. El enlace solo puede usarse una vez.",
+    "button": "Iniciar sesión",
+    "ignore": "¿No intentó iniciar sesión? Ignore este correo: nadie puede iniciar sesión sin este enlace."
+  },
+  "reauthentication": {
+    "subject": "Su código de verificación de ToothOps",
+    "title": "Confirme que es usted",
+    "preheader": "Su código de verificación de ToothOps.",
+    "body": "Introduzca este código en ToothOps para confirmar que es usted:",
+    "ignore": "¿No solicitó este código? Ignore este correo y considere cambiar su contraseña."
+  },
+  "notice": {
+    "footnote": "Si no realizó este cambio, restablezca su contraseña de inmediato.",
+    "passwordChanged": {
+      "subject": "Se ha cambiado su contraseña de ToothOps",
+      "body": "Se ha cambiado la contraseña de su cuenta de ToothOps."
+    },
+    "emailChanged": {
+      "subject": "Se ha cambiado su correo de inicio de sesión de ToothOps",
+      "body": "Se ha cambiado el correo de inicio de sesión de su cuenta de ToothOps."
+    },
+    "phoneChanged": {
+      "subject": "Se ha cambiado su número de teléfono de ToothOps",
+      "body": "Se ha cambiado el número de teléfono de su cuenta de ToothOps."
+    },
+    "identityLinked": {
+      "subject": "Se ha añadido un método de inicio de sesión a su cuenta de ToothOps",
+      "body": "Se ha vinculado un nuevo método de inicio de sesión a su cuenta de ToothOps."
+    },
+    "identityUnlinked": {
+      "subject": "Se ha eliminado un método de inicio de sesión de su cuenta de ToothOps",
+      "body": "Se ha eliminado un método de inicio de sesión de su cuenta de ToothOps."
+    },
+    "mfaEnrolled": {
+      "subject": "Se ha añadido la autenticación de dos factores a su cuenta de ToothOps",
+      "body": "Se ha añadido un método de autenticación de dos factores a su cuenta de ToothOps."
+    },
+    "mfaUnenrolled": {
+      "subject": "Se ha eliminado la autenticación de dos factores de su cuenta de ToothOps",
+      "body": "Se ha eliminado un método de autenticación de dos factores de su cuenta de ToothOps."
+    },
+    "generic": {
+      "subject": "Se ha actualizado su cuenta de ToothOps",
+      "body": "Se ha cambiado un ajuste de seguridad de su cuenta de ToothOps."
+    }
   }
 }

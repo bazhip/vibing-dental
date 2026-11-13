@@ -26,5 +26,63 @@
     "body": "Confirm that <strong>{{newEmail}}</strong> should replace <strong>{{email}}</strong> as the sign-in email for your ToothOps account.",
     "button": "Confirm new email",
     "ignore": "Didn’t request this change? Ignore this email and your sign-in email stays the same."
+  },
+  "invite": {
+    "subject": "You’re invited to ToothOps",
+    "title": "Accept your invitation",
+    "preheader": "You’ve been invited to create a ToothOps account.",
+    "body": "You’ve been invited to create a ToothOps account for <strong>{{email}}</strong>. Accept the invitation to set your password and get started.",
+    "button": "Accept invitation",
+    "ignore": "Not expecting this invitation? You can ignore this email — no account is created unless this link is used."
+  },
+  "magiclink": {
+    "subject": "Your ToothOps sign-in link",
+    "title": "Sign in to ToothOps",
+    "preheader": "Your link to sign in to ToothOps.",
+    "body": "Use the button below to sign in to ToothOps as <strong>{{email}}</strong>. The link can be used only once.",
+    "button": "Sign in",
+    "ignore": "Didn’t try to sign in? Ignore this email — no one can sign in without this link."
+  },
+  "reauthentication": {
+    "subject": "Your ToothOps verification code",
+    "title": "Confirm it’s you",
+    "preheader": "Your ToothOps verification code.",
+    "body": "Enter this code in ToothOps to confirm it’s you:",
+    "ignore": "Didn’t request this code? Ignore this email, and consider changing your password."
+  },
+  "notice": {
+    "footnote": "If you didn’t make this change, reset your password right away.",
+    "passwordChanged": {
+      "subject": "Your ToothOps password was changed",
+      "body": "The password for your ToothOps account was changed."
+    },
+    "emailChanged": {
+      "subject": "Your ToothOps sign-in email was changed",
+      "body": "The sign-in email for your ToothOps account was changed."
+    },
+    "phoneChanged": {
+      "subject": "Your ToothOps phone number was changed",
+      "body": "The phone number for your ToothOps account was changed."
+    },
+    "identityLinked": {
+      "subject": "A sign-in method was added to your ToothOps account",
+      "body": "A new sign-in method was linked to your ToothOps account."
+    },
+    "identityUnlinked": {
+      "subject": "A sign-in method was removed from your ToothOps account",
+      "body": "A sign-in method was removed from your ToothOps account."
+    },
+    "mfaEnrolled": {
+      "subject": "Two-factor authentication was added to your ToothOps account",
+      "body": "A two-factor authentication method was added to your ToothOps account."
+    },
+    "mfaUnenrolled": {
+      "subject": "Two-factor authentication was removed from your ToothOps account",
+      "body": "A two-factor authentication method was removed from your ToothOps account."
+    },
+    "generic": {
+      "subject": "Your ToothOps account was updated",
+      "body": "A security setting on your ToothOps account was changed."
+    }
   }
 }
