@@ -37,6 +37,11 @@ module.exports = [
   {
     // Test files and operator-only surfaces are exempt.
     ignores: [
+      'build/**',
+      'docs/**',
+      'public/**',
+      '.superpowers/**',
+      '.claude/**',
       '**/*.test.ts',
       '**/*.test.tsx',
       'src/components/AdminPanel.tsx',

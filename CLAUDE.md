@@ -5,7 +5,7 @@
 Languages: en (source), fr, de, it, es. Owner reports also have pt. Language switching is off (`LANGUAGE_SWITCHING_ENABLED` in `src/i18n/config.ts`) until every screen is extracted.
 
 - All user-facing text goes through `t()`. Add keys to `src/locales/en/<ns>.json` only.
-- Then run `npm run i18n:translate`. It fills missing and stale translations via Claude and needs `ANTHROPIC_API_KEY` only when there is work. `--check` exits 1 if work exists, without calling the API.
+- Then run `npm run i18n:translate`. It fills missing and stale translations via Claude (and removes orphaned keys), and needs `ANTHROPIC_API_KEY` only when there are keys to translate. It never rewrites `en/*.json` or unchanged files. `--check` prints `todo=<n> remove=<m>` and exits 1 if any work exists, without calling the API.
 - No API key? Write the fr/de/it/es translations yourself in `src/locales/<lng>/<ns>.json`, following `src/locales/glossary.json` and keeping `{{placeholders}}` identical. Then stamp them:
   - New keys: `npm run i18n:translate -- --rehash` (stamps only translations that have no meta entry yet).
   - English wording changed: the old translations are stale and plain `--rehash` will NOT stamp them (it only lists them). Fix them by hand, then name each one: `npm run i18n:translate -- --rehash fr:common:actions.save de:common:actions.save it:common:actions.save es:common:actions.save`.

@@ -1,92 +1,92 @@
 {
-  "title": "Ajustes de la cuenta",
+  "delete": {
+    "blurb": "Elimina de forma permanente su cuenta, sus fichas privadas y sus imágenes. Las fichas que haya compartido con una clínica permanecen en la clínica.",
+    "button": "Eliminar la cuenta…",
+    "heading": "Eliminar la cuenta"
+  },
+  "deletion": {
+    "account": {
+      "confirmButton": "Eliminar mi cuenta",
+      "confirmMessage": "Esto elimina de forma permanente su cuenta, sus fichas privadas y sus fotos y radiografías. Las fichas que haya compartido con una clínica permanecen en la clínica. Si es la única persona de su clínica, la clínica y todas sus fichas también se eliminan, y se cancela cualquier suscripción. Esta acción no se puede deshacer.",
+      "confirmTitle": "¿Eliminar su cuenta?",
+      "continue": "Continuar",
+      "done": "Su cuenta se ha eliminado.",
+      "emailLabel": "Correo electrónico",
+      "failed": "No se pudo eliminar su cuenta.",
+      "mismatch": "Escriba su correo electrónico exactamente.",
+      "promptMessage": "Escriba su correo electrónico ({{email}}) para eliminar su cuenta de forma permanente.",
+      "promptTitle": "Confirmar la eliminación de la cuenta"
+    },
+    "practice": {
+      "confirmButton": "Eliminar la clínica",
+      "confirmMessage": "Esto elimina de forma permanente la clínica y todas las fichas compartidas con ella, incluidas las creadas por los miembros de su equipo, junto con sus fotos y radiografías. Cualquier suscripción se cancela de inmediato. Los miembros del equipo conservan sus cuentas y sus fichas privadas. Esta acción no se puede deshacer.",
+      "confirmTitle": "¿Eliminar «{{name}}»?",
+      "confirmTitleUnnamed": "¿Eliminar esta clínica?",
+      "confirmationLabel": "Confirmación",
+      "continue": "Continuar",
+      "done": "La clínica se ha eliminado.",
+      "failed": "No se pudo eliminar la clínica.",
+      "mismatch": "Escriba el nombre de la clínica exactamente.",
+      "mismatchUnnamed": "Escriba DELETE.",
+      "nameLabel": "Nombre de la clínica",
+      "promptMessage": "Escriba el nombre de la clínica ({{name}}) para eliminarla de forma permanente.",
+      "promptMessageUnnamed": "Escriba DELETE para eliminar esta clínica de forma permanente.",
+      "promptTitle": "Confirmar la eliminación de la clínica"
+    }
+  },
   "doctor": {
-    "heading": "Nombre del veterinario",
     "blurb": "Se imprime bajo el logotipo en cada ficha que cree.",
+    "heading": "Nombre del veterinario",
     "placeholder": "p. ej. Dra. Juana Pérez, DVM, DAVDC",
     "save": "Guardar el nombre del veterinario",
-    "saving": "Guardando…",
+    "saveFailed": "No se pudo guardar el nombre del veterinario.",
     "saved": "Nombre del veterinario guardado.",
-    "saveFailed": "No se pudo guardar el nombre del veterinario."
+    "saving": "Guardando…"
+  },
+  "done": "Hecho",
+  "email": {
+    "change": "Cambiar el correo electrónico",
+    "changeFailed": "No se pudo cambiar el correo electrónico.",
+    "heading": "Correo electrónico",
+    "invalid": "Introduzca una dirección de correo electrónico válida.",
+    "label": "Correo electrónico de inicio de sesión",
+    "pending": "Revise su bandeja de entrada: confirme el cambio desde {{current}} y desde {{requested}} para completarlo. Hasta entonces, siga iniciando sesión con {{current}}.",
+    "sending": "Enviando…",
+    "sent": "Correos de confirmación enviados."
   },
   "language": {
     "heading": "Idioma"
   },
-  "email": {
-    "heading": "Correo electrónico",
-    "label": "Correo electrónico de inicio de sesión",
-    "change": "Cambiar el correo electrónico",
-    "sending": "Enviando…",
-    "invalid": "Introduzca una dirección de correo electrónico válida.",
-    "sent": "Correos de confirmación enviados.",
-    "changeFailed": "No se pudo cambiar el correo electrónico.",
-    "pending": "Revise su bandeja de entrada: confirme el cambio desde {{current}} y desde {{requested}} para completarlo. Hasta entonces, siga iniciando sesión con {{current}}."
-  },
   "password": {
-    "heading": "Contraseña",
-    "newLabel": "Contraseña nueva",
     "confirmLabel": "Confirmar la contraseña nueva",
-    "placeholder": "Al menos {{min}} caracteres",
-    "hideAll": "Ocultar las contraseñas",
-    "showAll": "Mostrar las contraseñas",
+    "heading": "Contraseña",
     "hide": "Ocultar",
-    "show": "Mostrar",
-    "hintShort": "Al menos {{min}} caracteres · {{current}}/{{min}}",
+    "hideAll": "Ocultar las contraseñas",
     "hintMismatch": "Las dos contraseñas aún no coinciden.",
-    "update": "Actualizar la contraseña",
-    "updating": "Actualizando…",
-    "tooShort": "Use al menos {{min}} caracteres.",
+    "hintShort": "Al menos {{min}} caracteres · {{current}}/{{min}}",
     "mismatch": "Las dos contraseñas no coinciden.",
+    "newLabel": "Contraseña nueva",
+    "placeholder": "Al menos {{min}} caracteres",
+    "show": "Mostrar",
+    "showAll": "Mostrar las contraseñas",
+    "tooShort": "Use al menos {{min}} caracteres.",
+    "update": "Actualizar la contraseña",
+    "updateFailed": "No se pudo actualizar la contraseña.",
     "updated": "Contraseña actualizada.",
-    "updateFailed": "No se pudo actualizar la contraseña."
+    "updating": "Actualizando…"
   },
-  "delete": {
-    "heading": "Eliminar la cuenta",
-    "blurb": "Elimina de forma permanente su cuenta, sus fichas privadas y sus imágenes. Las fichas que haya compartido con una clínica permanecen en la clínica.",
-    "button": "Eliminar la cuenta…"
-  },
-  "done": "Hecho",
+  "title": "Ajustes de la cuenta",
   "unsaved": {
-    "title": "¿Descartar los cambios sin guardar?",
-    "message_one": "Su cambio de {{list}} no se ha guardado.",
-    "message_many": "Sus cambios de {{list}} no se han guardado.",
-    "message_other": "Sus cambios de {{list}} no se han guardado.",
-    "confirm": "Descartar",
     "cancel": "Seguir editando",
+    "confirm": "Descartar",
     "field": {
       "doctor": "nombre del veterinario",
       "email": "correo electrónico",
       "password": "contraseña"
-    }
-  },
-  "deletion": {
-    "account": {
-      "confirmTitle": "¿Eliminar su cuenta?",
-      "confirmMessage": "Esto elimina de forma permanente su cuenta, sus fichas privadas y sus fotos y radiografías. Las fichas que haya compartido con una clínica permanecen en la clínica. Si es la única persona de su clínica, la clínica y todas sus fichas también se eliminan, y se cancela cualquier suscripción. Esta acción no se puede deshacer.",
-      "continue": "Continuar",
-      "promptTitle": "Confirmar la eliminación de la cuenta",
-      "promptMessage": "Escriba su correo electrónico ({{email}}) para eliminar su cuenta de forma permanente.",
-      "emailLabel": "Correo electrónico",
-      "confirmButton": "Eliminar mi cuenta",
-      "mismatch": "Escriba su correo electrónico exactamente.",
-      "failed": "No se pudo eliminar su cuenta.",
-      "done": "Su cuenta se ha eliminado."
     },
-    "practice": {
-      "confirmTitle": "¿Eliminar «{{name}}»?",
-      "confirmTitleUnnamed": "¿Eliminar esta clínica?",
-      "confirmMessage": "Esto elimina de forma permanente la clínica y todas las fichas compartidas con ella, incluidas las creadas por los miembros de su equipo, junto con sus fotos y radiografías. Cualquier suscripción se cancela de inmediato. Los miembros del equipo conservan sus cuentas y sus fichas privadas. Esta acción no se puede deshacer.",
-      "continue": "Continuar",
-      "promptTitle": "Confirmar la eliminación de la clínica",
-      "promptMessage": "Escriba el nombre de la clínica ({{name}}) para eliminarla de forma permanente.",
-      "promptMessageUnnamed": "Escriba DELETE para eliminar esta clínica de forma permanente.",
-      "nameLabel": "Nombre de la clínica",
-      "confirmationLabel": "Confirmación",
-      "confirmButton": "Eliminar la clínica",
-      "mismatch": "Escriba el nombre de la clínica exactamente.",
-      "mismatchUnnamed": "Escriba DELETE.",
-      "failed": "No se pudo eliminar la clínica.",
-      "done": "La clínica se ha eliminado."
-    }
+    "message_many": "Sus cambios de {{list}} no se han guardado.",
+    "message_one": "Su cambio de {{list}} no se ha guardado.",
+    "message_other": "Sus cambios de {{list}} no se han guardado.",
+    "title": "¿Descartar los cambios sin guardar?"
   }
 }

@@ -2,15 +2,21 @@
 import { mkdtempSync, rmSync, statSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadCatalogs, loadMeta, hashEnglish, writeCatalogs, writeMeta } from './catalog';
+import { loadCatalogs, loadMeta, hashEnglish, writeCatalogs, writeCatalogFile, writeMeta } from './catalog';
 import type { Catalogs, Meta } from './catalog';
 import { checkCatalogs } from './check';
+import { readFileSync, writeFileSync, utimesSync } from 'node:fs';
 import { runRehash, runTranslate } from './translate';
 import type { Translator } from './work';
 import { parseReply } from './claudeTranslator';
 
 const LNGS = ['fr', 'de', 'it', 'es'];
 let dir: string;
+
+// Test seeding helper: unlike writeCatalogs it also writes English.
+function writeAll(d: string, c: Catalogs) {
+  for (const [lng, nss] of Object.entries(c)) for (const [ns, flat] of Object.entries(nss)) writeCatalogFile(d, lng, ns, flat);
+}
 
 function seed(opts: { frA?: boolean } = {}) {
   const en = { common: { a: 'Hello {{pet}}', b: 'Bye' } };
@@ -27,7 +33,7 @@ function seed(opts: { frA?: boolean } = {}) {
     delete c.fr.common.a;
     delete m.fr['common:a'];
   }
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   writeMeta(dir, m);
 }
 
@@ -58,7 +64,7 @@ test('translates missing and stale keys only', async () => {
   writeMeta(dir, m);
   const c = loadCatalogs(dir);
   delete c.de.common.a;
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   // rewriting drops nothing else; de.a now missing
   const spy = vi.fn(echo);
   await runTranslate(dir, spy);
@@ -94,7 +100,7 @@ test('removes extra keys', async () => {
   seed();
   const c = loadCatalogs(dir);
   c.fr.common.gone = 'x';
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   const m = loadMeta(dir);
   m.fr['common:gone'] = { hash: 'h', status: 'machine' };
   writeMeta(dir, m);
@@ -115,7 +121,7 @@ test('batches of at most 40', async () => {
   for (let i = 0; i < 85; i++) en[`k${i}`] = `Text ${i}`;
   const c: Catalogs = { en: { common: en } };
   for (const l of LNGS) c[l] = { common: {} };
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   const sizes: number[] = [];
   const fake: Translator = async (l, items) => {
     if (l === 'fr') sizes.push(items.length);
@@ -137,7 +143,7 @@ test('--rehash refuses placeholder mismatches', () => {
   seed();
   const c = loadCatalogs(dir);
   c.fr.common.a = 'Bonjour {{animal}}';
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   writeMeta(dir, {});
   expect(runRehash(dir).refused).toEqual(['fr common:a']);
   expect(loadMeta(dir).fr?.['common:a']).toBeUndefined();
@@ -163,7 +169,7 @@ test('runTranslate fills fr n_many and handles a changed plural base without thr
   }
   c.fr.common.n_many = 'de {{count}}';
   m.fr['common:n_many'] = { hash: 'old', status: 'machine' };
-  writeCatalogs(dir, c);
+  writeAll(dir, c);
   writeMeta(dir, m);
   const seen: Record<string, string> = {};
   const fake: Translator = async (l, items) => {
@@ -178,4 +184,56 @@ test('runTranslate fills fr n_many and handles a changed plural base without thr
   expect(out.it.common.n_many).toBeDefined();
   expect(out.de.common.n_many).toBeUndefined();
   expect(checkCatalogs(out, loadMeta(dir))).toEqual([]);
+});
+
+test('a run that adds one fr key rewrites only that fr file; en and others are untouched', async () => {
+  seed({ frA: false });
+  const files = ['en', ...LNGS].map((l) => join(dir, l, 'common.json'));
+  // Hand-written (unsorted) English, as committed.
+  writeFileSync(files[0], '{\n  "b": "Bye",\n  "a": "Hello {{pet}}"\n}\n');
+  const past = new Date(Date.now() - 100000);
+  for (const f of files) utimesSync(f, past, past);
+  const before = files.map((f) => [readFileSync(f, 'utf8'), statSync(f).mtimeMs]);
+  await runTranslate(dir, echo);
+  const after = files.map((f) => [readFileSync(f, 'utf8'), statSync(f).mtimeMs]);
+  expect(after[0]).toEqual(before[0]);
+  for (const i of [2, 3, 4]) expect(after[i]).toEqual(before[i]);
+  expect(after[1][0]).not.toBe(before[1][0]);
+  expect(JSON.parse(after[1][0] as string).a).toBe('Bonjour {{pet}}');
+});
+
+test('writeCatalogs never writes en and skips unchanged files', () => {
+  seed();
+  const en = join(dir, 'en', 'common.json');
+  writeFileSync(en, '{"a":"changed"}');
+  const c = loadCatalogs(dir);
+  c.en.common.a = 'other';
+  writeCatalogs(dir, c);
+  expect(readFileSync(en, 'utf8')).toBe('{"a":"changed"}');
+});
+
+test('flatten then nest round-trips nested content', () => {
+  writeFileSync(join(dir, 'x.json'), '');
+  mkdirSync(join(dir, 'fr'), { recursive: true });
+  const nested = { actions: { save: 'Save', cancel: 'Cancel' }, title: 'T', n_one: '1', n_other: 'many' };
+  writeFileSync(join(dir, 'fr', 'common.json'), JSON.stringify(nested));
+  const c = loadCatalogs(dir);
+  rmSync(join(dir, 'fr', 'common.json'));
+  writeCatalogFile(dir, 'fr', 'common', c.fr.common);
+  expect(JSON.parse(readFileSync(join(dir, 'fr', 'common.json'), 'utf8'))).toEqual(nested);
+});
+
+test('--rehash reports names that match nothing', () => {
+  seed();
+  writeMeta(dir, {});
+  expect(runRehash(dir, ['fr:common:a', 'fr:common:typo']).unmatched).toEqual(['fr:common:typo']);
+});
+
+test('--check summary exposes todo and remove counts', async () => {
+  const { checkSummary } = await import('./translate');
+  seed({ frA: false });
+  const c = loadCatalogs(dir);
+  c.de.common.gone = 'x';
+  writeAll(dir, c);
+  expect(checkSummary(dir)).toBe('todo=1 remove=1');
 });

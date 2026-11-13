@@ -55,14 +55,21 @@ jobs:
         if: steps.bot.outputs.skip != 'true'
         id: work
         run: |
-          if npm run --silent i18n:translate -- --check; then
-            echo "needed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "needed=true" >> "$GITHUB_OUTPUT"
+          # Prints `todo=<n> remove=<m>`; exits 1 when either is non-zero.
+          summary="$(npm run --silent i18n:translate -- --check || true)"
+          echo "$summary"
+          todo="$(echo "$summary" | sed -n 's/.*todo=\([0-9]*\).*/\1/p')"
+          remove="$(echo "$summary" | sed -n 's/.*remove=\([0-9]*\).*/\1/p')"
+          if [ -z "$todo" ] || [ -z "$remove" ]; then
+            echo "::error::Could not read the i18n:translate --check summary."
+            exit 1
           fi
+          # Removing orphan keys needs no API call, but still has to run.
+          if [ "$todo" -gt 0 ]; then echo "needs_key=true" >> "$GITHUB_OUTPUT"; else echo "needs_key=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "$todo" -gt 0 ] || [ "$remove" -gt 0 ]; then echo "needed=true" >> "$GITHUB_OUTPUT"; else echo "needed=false" >> "$GITHUB_OUTPUT"; fi
 
-      - name: Require ANTHROPIC_API_KEY when there is work
-        if: steps.bot.outputs.skip != 'true' && steps.work.outputs.needed == 'true'
+      - name: Require ANTHROPIC_API_KEY when there are keys to translate
+        if: steps.bot.outputs.skip != 'true' && steps.work.outputs.needs_key == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |

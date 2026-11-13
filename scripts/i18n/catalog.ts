@@ -57,12 +57,25 @@ export function loadCatalogs(dir = 'src/locales'): Catalogs {
   return out;
 }
 
+/** The canonical on-disk form of a catalog file: nested, keys sorted, trailing newline. */
+export function serializeCatalog(flat: Record<string, string>): string {
+  return JSON.stringify(sortDeep(nest(flat)), null, 2) + '\n';
+}
+
+/** Writes one catalog file, but only if its content would change. */
+export function writeCatalogFile(dir: string, lng: string, ns: string, flat: Record<string, string>): void {
+  const file = join(dir, lng, `${ns}.json`);
+  const text = serializeCatalog(flat);
+  if (existsSync(file) && readFileSync(file, 'utf8') === text) return;
+  mkdirSync(join(dir, lng), { recursive: true });
+  writeFileSync(file, text);
+}
+
+/** English is the hand-edited source of truth and is never written; unchanged files are skipped. */
 export function writeCatalogs(dir: string, catalogs: Catalogs): void {
   for (const [lng, nss] of Object.entries(catalogs)) {
-    mkdirSync(join(dir, lng), { recursive: true });
-    for (const [ns, flat] of Object.entries(nss)) {
-      writeFileSync(join(dir, lng, `${ns}.json`), JSON.stringify(sortDeep(nest(flat)), null, 2) + '\n');
-    }
+    if (lng === 'en') continue;
+    for (const [ns, flat] of Object.entries(nss)) writeCatalogFile(dir, lng, ns, flat);
   }
 }
 

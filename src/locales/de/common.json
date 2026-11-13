@@ -8,10 +8,10 @@
     "save": "Speichern"
   },
   "errors": {
+    "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "network": "ToothOps ist nicht erreichbar – prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     "notFound": "Diese Karte wurde nicht gefunden – möglicherweise wurde sie gelöscht.",
     "permission": "Sie haben keinen Zugriff darauf.",
-    "rateLimit": "Zu viele Versuche. Warten Sie eine Minute und versuchen Sie es erneut.",
-    "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    "rateLimit": "Zu viele Versuche. Warten Sie eine Minute und versuchen Sie es erneut."
   }
 }

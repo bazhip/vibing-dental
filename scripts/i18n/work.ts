@@ -79,12 +79,13 @@ export function rehashMeta(
   c: Catalogs,
   m: Meta,
   named: string[] = [],
-): { m: Meta; stamped: string[]; refused: string[]; stale: string[] } {
+): { m: Meta; stamped: string[]; refused: string[]; stale: string[]; unmatched: string[] } {
   const nm: Meta = structuredClone(m);
   const stamped: string[] = [];
   const refused: string[] = [];
   const stale: string[] = [];
   const want = new Set(named);
+  const seen = new Set<string>();
   for (const [lng, nss] of Object.entries(c)) {
     if (lng === 'en') continue;
     for (const [ns, tr] of Object.entries(nss)) {
@@ -96,6 +97,7 @@ export function rehashMeta(
         const hash = hashEnglish(en[enKey]);
         const existing = nm[lng]?.[id];
         const isNamed = want.has(`${lng}:${id}`);
+        if (isNamed) seen.add(`${lng}:${id}`);
         if (!same(placeholders(text), placeholders(en[enKey]))) {
           refused.push(`${lng} ${id}`);
           continue;
@@ -109,5 +111,5 @@ export function rehashMeta(
       }
     }
   }
-  return { m: nm, stamped, refused, stale };
+  return { m: nm, stamped, refused, stale, unmatched: named.filter((n) => !seen.has(n)) };
 }

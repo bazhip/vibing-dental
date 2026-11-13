@@ -63,6 +63,12 @@ export async function runTranslate(
   return { translated, removed: remove.length, failed };
 }
 
+/** `todo=<n> remove=<m>`: keys needing translation vs orphans to delete (CI gates the API key on todo>0). */
+export function checkSummary(dir: string): string {
+  const { todo, remove } = findWork(loadCatalogs(dir), loadMeta(dir));
+  return `todo=${todo.length} remove=${remove.length}`;
+}
+
 export function runRehash(dir: string, named: string[] = []) {
   const c = loadCatalogs(dir);
   const r = rehashMeta(c, loadMeta(dir), named);
@@ -72,7 +78,7 @@ export function runRehash(dir: string, named: string[] = []) {
 
 const USAGE = `Usage: i18n:translate [--check | --rehash [lng:ns:key ...]]
   (none)    translate missing/stale/empty keys with Claude (needs ANTHROPIC_API_KEY)
-  --check   exit 1 if there is work; no API call
+  --check   print todo=<n> remove=<m>, exit 1 if there is any work; no API call
   --rehash  stamp hashes on translations with no meta entry, plus the keys named as lng:ns:key,
             e.g. npm run i18n:translate -- --rehash fr:common:actions.save de:common:actions.save`;
 
@@ -85,19 +91,20 @@ async function main() {
   }
   if (args.includes('--rehash')) {
     const named = args.slice(args.indexOf('--rehash') + 1).filter((a) => !a.startsWith('--'));
-    const { stamped, refused, stale } = runRehash(dir, named);
+    const { stamped, refused, stale, unmatched } = runRehash(dir, named);
     for (const k of stamped) console.log(`stamped ${k}`);
     for (const k of refused) console.error(`${k} placeholder mismatch (not rehashed)`);
     if (stale.length) {
       for (const k of stale) console.error(`${k} stale (not rehashed)`);
       console.error('to bless a stale key, name it: npm run i18n:translate -- --rehash <lng>:<ns>:<key>');
     }
-    process.exit(refused.length || stale.length ? 1 : 0);
+    for (const k of unmatched) console.error(`warning: ${k} matches no translation (typo?)`);
+    process.exit(refused.length || stale.length || unmatched.length ? 1 : 0);
   }
   if (args.includes('--check')) {
-    const { todo, remove } = findWork(loadCatalogs(dir), loadMeta(dir));
-    console.log(`i18n:translate ${todo.length} to translate, ${remove.length} to remove`);
-    process.exit(todo.length || remove.length ? 1 : 0);
+    const summary = checkSummary(dir);
+    console.log(summary);
+    process.exit(summary === 'todo=0 remove=0' ? 0 : 1);
   }
   const w = findWork(loadCatalogs(dir), loadMeta(dir));
   if (!w.todo.length && !w.remove.length) {
