@@ -125,7 +125,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
-  const language = useAppLanguage(prefs.language);
+  const language = useAppLanguage(prefs.language, chartSettings.loaded);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps

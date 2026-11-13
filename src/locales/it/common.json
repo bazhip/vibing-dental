@@ -13,5 +13,8 @@
     "notFound": "Cartella non trovata: potrebbe essere stata eliminata.",
     "permission": "Non ha accesso a questo elemento.",
     "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi."
+  },
+  "language": {
+    "label": "Lingua"
   }
 }

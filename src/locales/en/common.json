@@ -13,5 +13,8 @@
     "permission": "You don’t have access to that.",
     "rateLimit": "Too many attempts. Wait a minute and try again.",
     "generic": "Something went wrong. Please try again."
+  },
+  "language": {
+    "label": "Language"
   }
 }

@@ -71,3 +71,17 @@ describe('message helpers', () => {
     expect(await rules(src, UNLISTED)).toEqual([]);
   });
 });
+
+describe('string concatenation with t()', () => {
+  test.each([["t('a') + name"], ["name + t('a')"], ["i18n.t('a') + name"]])('%s is reported in a listed file', async (expr) => {
+    expect(await rules(`export function run(t, i18n, name) { return ${expr}; }`, LISTED)).toEqual(['no-restricted-syntax']);
+  });
+
+  test('interpolation and arithmetic are not reported', async () => {
+    expect(await rules("export function run(t, n) { return [t('a', { n }), n + 1]; }", LISTED)).toEqual([]);
+  });
+
+  test('concatenation is not reported in an unlisted file', async () => {
+    expect(await rules("export function run(t, name) { return t('a') + name; }", UNLISTED)).toEqual([]);
+  });
+});

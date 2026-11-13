@@ -13,5 +13,8 @@
     "notFound": "Ce dossier est introuvable — il a peut-être été supprimé.",
     "permission": "Vous n’y avez pas accès.",
     "rateLimit": "Trop de tentatives. Patientez une minute et réessayez."
+  },
+  "language": {
+    "label": "Langue"
   }
 }

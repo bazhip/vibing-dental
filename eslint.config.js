@@ -12,6 +12,7 @@
 //      confirm / prompt, or given as title / message / label / confirmLabel /
 //      cancelLabel / placeholder in the options object of confirmDialog /
 //      promptDialog.
+//   4. No `t(...) + x` / `x + t(...)` concatenation (no-restricted-syntax).
 // NOT caught: any other non-JSX string, e.g. a const or a ternary of literals
 // that is rendered or passed on later. Those need human review.
 const tseslint = require('typescript-eslint');
@@ -26,6 +27,8 @@ const LITERAL = `Literal[value=${HAS_LETTER}]`;
 const TEMPLATE = `TemplateLiteral:has(TemplateElement[value.raw=${HAS_LETTER}])`;
 const MESSAGE = 'User-facing text must come from t()';
 const restrict = (selector) => ({ selector, message: MESSAGE });
+const T_CALL = "CallExpression[callee.name='t']";
+const T_METHOD = "CallExpression[callee.property.name='t']";
 
 // Source files carry `// eslint-disable-next-line react-hooks/exhaustive-deps`
 // from before this project had a linter. The plugin isn't installed (and its
@@ -80,6 +83,12 @@ module.exports = [
             `CallExpression[callee.name=/^(${DIALOG_CALLS})$/] > ObjectExpression > Property[key.name=/^(${DIALOG_TEXT_PROPS})$/] > ${text}`,
           ),
         ]),
+        // Sentences assembled from pieces can't be reordered by translators; use
+        // one key with {{placeholders}} instead.
+        ...[T_CALL, T_METHOD].map((call) => ({
+          selector: `BinaryExpression[operator='+'] > ${call}`,
+          message: 'Don’t concatenate translated text; use one key with {{placeholders}}',
+        })),
       ],
     },
   },

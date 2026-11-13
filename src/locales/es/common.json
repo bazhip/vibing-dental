@@ -13,5 +13,8 @@
     "notFound": "No se encontró esa ficha; puede que se haya eliminado.",
     "permission": "No tiene acceso a eso.",
     "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo."
+  },
+  "language": {
+    "label": "Idioma"
   }
 }
