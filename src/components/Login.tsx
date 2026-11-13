@@ -296,7 +296,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               />
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
-              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" />
+              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" withEnglishNote={false} />
               <div className="login-or">{signup ? t('login.orWithEmail.signup') : t('login.orWithEmail.signin')}</div>
             </>
           )}

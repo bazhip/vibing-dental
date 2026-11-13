@@ -865,6 +865,7 @@
   padding: 1.1rem 1.5rem;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   max-width: 1120px;
   width: 100%;
@@ -875,6 +876,7 @@
 }
 
 .landing__footer a { color: var(--primary); }
+.landing__footer .landing__footer-note { flex-basis: 100%; margin: 0; text-align: left; font-size: 0.75rem; }
 
 /* ---------- auth overlay ------------------------------------------------------ */
 .landing__auth-overlay {

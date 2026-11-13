@@ -319,4 +319,23 @@ describe('in French', () => {
     expect(screen.getByText(/Vous seul\(e\)\. À partir de 20\s\$\/mois\./)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Créer le compte' })).toBeInTheDocument();
   });
+
+  it('shows the English-governs notice once on sign-in, and on the landing footer, but not in English', async () => {
+    await act(restoreLocale);
+    const fr = 'Ces documents sont rédigés en anglais ; la version anglaise fait foi.';
+    await loadLanguage('fr');
+    await act(() => i18n.changeLanguage('fr'));
+    const login = render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    expect(screen.getAllByText(fr)).toHaveLength(1);
+    login.unmount();
+    render(<Landing onAuthenticate={vi.fn()} onTryFree={vi.fn()} />);
+    expect(screen.getAllByText(fr)).toHaveLength(1);
+  });
+
+  it('shows no English-governs notice in English', async () => {
+    await act(restoreLocale);
+    await act(() => i18n.changeLanguage('en'));
+    render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    expect(screen.queryByText(/English version governs/)).toBeNull();
+  });
 });
