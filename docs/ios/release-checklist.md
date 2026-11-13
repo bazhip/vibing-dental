@@ -88,9 +88,10 @@ Native features:
 - [ ] **Pencil drawing** on the iPad diagram: a resting palm adds no strokes, and
       finger drawing still works on an iPad without a Pencil.
 - [ ] **Rotation on iPad** in all four orientations. The side-by-side layout
-      (chart grid + diagram) starts at **1280px** wide: 13" iPad landscape and
-      desktops. 11" iPads in landscape, and all iPads in portrait, keep the
-      stacked layout.
+      (chart grid + diagram) starts at **1280px** wide: 13" iPad landscape.
+      11" iPads in landscape, and all iPads in portrait, keep the stacked
+      layout. It's app-only for now (gated on `html.native-ios`); the website
+      keeps the stacked layout at every width, desktop included.
 - [ ] Safe areas (notch, Dynamic Island, home indicator) and status bar look
       right on iPhone and iPad. No web tap flashes.
 - [ ] No prices, plan names, upgrade prompts, checkout, billing portal or Stripe

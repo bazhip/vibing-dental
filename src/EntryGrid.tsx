@@ -48,6 +48,7 @@ import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFi
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
+import { isNativeApp } from './native/platform';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -91,7 +92,7 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
   ].join('\n')
 )}`;
 
-/** Sections shown side by side on wide screens: Charting (grid view)
+/** Sections shown side by side on wide screens (app only): Charting (grid view)
  *  with the Diagnosis diagram, so findings mirrored to the diagram show
  *  up as they're typed. */
 const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
@@ -1581,9 +1582,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={sections}
           activeId={activeSection}
           onActiveChange={goToSection}
-          // Wide screens (iPad landscape, desktop): the Diagnosis diagram
-          // sits beside the grid. By tooth already has its own diagram.
-          companions={chartingView === 'grid' ? CHARTING_COMPANIONS : undefined}
+          // Wide screens in the app (13" iPad landscape): the Diagnosis
+          // diagram sits beside the grid. By tooth already has its own
+          // diagram. The website keeps its layout unchanged.
+          companions={isNativeApp() && chartingView === 'grid' ? CHARTING_COMPANIONS : undefined}
         />
       </form>
 

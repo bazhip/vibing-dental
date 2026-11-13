@@ -121,24 +121,27 @@
  * The grid lays out at 760px or wider above 1000px (DentalGrid.tsx), so
  * pairing starts where 760px of grid plus a usable diagram fit: 1280px,
  * with the rail narrowed to section numbers. Below that the companion
- * stays hidden and the layout is unchanged. */
+ * stays hidden and the layout is unchanged.
+ * App only for now (html.native-ios): the website keeps its stacked
+ * layout at every width. Dropping the html.native-ios prefix (and the
+ * isNativeApp() check in EntryGrid) would enable it on desktop web. */
 .sidebar-layout__panel--companion { display: none; }
 
 @media (min-width: 1280px) {
-  .sidebar-layout--paired {
+  html.native-ios .sidebar-layout--paired {
     grid-template-columns: 56px minmax(0, 1fr);
     gap: 1rem;
   }
-  .sidebar-layout--paired .sidebar-layout__nav-item {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__nav-item {
     justify-content: center;
     padding: 0.6rem 0;
   }
-  .sidebar-layout--paired .sidebar-layout__nav-num {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__nav-num {
     font-size: 0.8rem;
     opacity: 1;
   }
   /* Labels stay for screen readers; the buttons carry a title on hover. */
-  .sidebar-layout--paired .sidebar-layout__nav-label {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__nav-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -148,19 +151,19 @@
   }
   /* The grid keeps its 760px floor; the diagram takes ~36% of the panel
      and never less than 320px. */
-  .sidebar-layout--paired .sidebar-layout__main {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__main {
     display: flex;
     align-items: flex-start;
     gap: 1.25rem;
     padding: 1.25rem;
   }
-  .sidebar-layout--paired .sidebar-layout__panel {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__panel {
     flex: 1 1 0;
     min-width: 760px;
   }
   /* The diagram rides along while the grid scrolls, so the lower arch
      is in view when charting the mandible. */
-  .sidebar-layout--paired .sidebar-layout__panel--companion {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__panel--companion {
     display: block;
     flex: 0 1 36%;
     min-width: 320px;
@@ -175,10 +178,10 @@
   }
   /* No room for the codes reference beside a side-by-side diagram; it's
      a tap away in the Diagnosis section. */
-  .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes {
     grid-template-columns: minmax(0, 1fr);
   }
-  .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes__codes {
+  html.native-ios .sidebar-layout--paired .sidebar-layout__panel--companion .diagram-with-codes__codes {
     display: none;
   }
 }
