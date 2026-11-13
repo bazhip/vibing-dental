@@ -58,5 +58,35 @@
       "email": "e-mail",
       "password": "mot de passe"
     }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Supprimer votre compte ?",
+      "confirmMessage": "Cette action supprime définitivement votre compte, vos dossiers privés ainsi que leurs photos et radiographies. Les dossiers que vous avez partagés avec un cabinet restent au cabinet. Si vous êtes la seule personne de votre cabinet, le cabinet et tous ses dossiers sont également supprimés, et tout abonnement est résilié. Cette action est irréversible.",
+      "continue": "Continuer",
+      "promptTitle": "Confirmer la suppression du compte",
+      "promptMessage": "Saisissez votre e-mail ({{email}}) pour supprimer définitivement votre compte.",
+      "emailLabel": "E-mail",
+      "confirmButton": "Supprimer mon compte",
+      "mismatch": "Saisissez votre e-mail exactement.",
+      "failed": "Impossible de supprimer votre compte.",
+      "done": "Votre compte a été supprimé."
+    },
+    "practice": {
+      "confirmTitle": "Supprimer « {{name}} » ?",
+      "confirmTitleUnnamed": "Supprimer ce cabinet ?",
+      "confirmMessage": "Cette action supprime définitivement le cabinet et tous les dossiers partagés avec lui, y compris ceux créés par les membres de votre équipe, ainsi que leurs photos et radiographies. Tout abonnement est résilié immédiatement. Les membres de l’équipe conservent leur compte et leurs dossiers privés. Cette action est irréversible.",
+      "continue": "Continuer",
+      "promptTitle": "Confirmer la suppression du cabinet",
+      "promptMessage": "Saisissez le nom du cabinet ({{name}}) pour le supprimer définitivement.",
+      "promptMessageUnnamed": "Saisissez DELETE pour supprimer définitivement ce cabinet.",
+      "nameLabel": "Nom du cabinet",
+      "confirmationLabel": "Confirmation",
+      "confirmButton": "Supprimer le cabinet",
+      "mismatch": "Saisissez le nom du cabinet exactement.",
+      "mismatchUnnamed": "Saisissez DELETE.",
+      "failed": "Impossible de supprimer le cabinet.",
+      "done": "Le cabinet a été supprimé."
+    }
   }
 }

@@ -6,5 +6,12 @@
     "duplicate": "Duplicar",
     "edit": "Editar",
     "save": "Guardar"
+  },
+  "errors": {
+    "network": "No se puede conectar con ToothOps: revise su conexión e inténtelo de nuevo.",
+    "notFound": "No se encontró esa ficha; puede que se haya eliminado.",
+    "permission": "No tiene acceso a eso.",
+    "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo.",
+    "generic": "Algo salió mal. Inténtelo de nuevo."
   }
 }

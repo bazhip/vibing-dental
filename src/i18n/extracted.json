@@ -1,1 +1,4 @@
-["src/components/AccountModal.tsx"]
+[
+  "src/components/AccountModal.tsx",
+  "src/utils/accountDeletion.ts"
+]

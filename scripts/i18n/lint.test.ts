@@ -40,3 +40,34 @@ test('test files are ignored', async () => {
   });
   expect(results).toEqual([]);
 });
+
+describe('message helpers', () => {
+  const RESTRICTED = 'no-restricted-syntax';
+
+  test.each([
+    ["toast('Saved.')"],
+    ['toast(`Saved ${n}.`)'],
+    ["friendlyError(err, 'Could not save.')"],
+    ["window.alert('Oops')"],
+    ["confirmDialog({ title: 'Delete?' })"],
+    ["promptDialog({ title: t('x'), placeholder: `Type ${n}` })"],
+    ["confirmDialog({ title: t('x'), cancelLabel: 'Keep' })"],
+  ])('%s is reported in a listed file', async (call) => {
+    expect(await rules(`export function run(n, err, t) { ${call}; }`, LISTED)).toEqual([RESTRICTED]);
+  });
+
+  test.each([
+    ["toast(t('x'))"],
+    ["toast(t('x'), { kind: 'success' })"],
+    ["friendlyError(err, t('x'))"],
+    ["confirmDialog({ title: t('x'), danger: true })"],
+    ["toast('…')"],
+  ])('%s is not reported in a listed file', async (call) => {
+    expect(await rules(`export function run(n, err, t) { ${call}; }`, LISTED)).toEqual([]);
+  });
+
+  test('the same literals are not reported in an unlisted file', async () => {
+    const src = "export function run() { toast('Saved.'); confirmDialog({ title: 'Delete?' }); }";
+    expect(await rules(src, UNLISTED)).toEqual([]);
+  });
+});

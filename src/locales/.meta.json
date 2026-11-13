@@ -12,6 +12,102 @@
       "hash": "a2e20a335700",
       "status": "machine"
     },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
     "account:doctor.blurb": {
       "hash": "a295272f514f",
       "status": "machine"
@@ -202,6 +298,26 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -514,6 +630,102 @@
       "hash": "a2e20a335700",
       "status": "machine"
     },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
     "account:doctor.blurb": {
       "hash": "a295272f514f",
       "status": "machine"
@@ -708,6 +920,26 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -1020,6 +1252,102 @@
       "hash": "a2e20a335700",
       "status": "machine"
     },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
     "account:doctor.blurb": {
       "hash": "a295272f514f",
       "status": "machine"
@@ -1214,6 +1542,26 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -1526,6 +1874,102 @@
       "hash": "a2e20a335700",
       "status": "machine"
     },
+    "account:deletion.account.confirmButton": {
+      "hash": "21d5294717e2",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmMessage": {
+      "hash": "06375e49aa09",
+      "status": "machine"
+    },
+    "account:deletion.account.confirmTitle": {
+      "hash": "e3b4e711266e",
+      "status": "machine"
+    },
+    "account:deletion.account.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.account.done": {
+      "hash": "f65c2dd173fc",
+      "status": "machine"
+    },
+    "account:deletion.account.emailLabel": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:deletion.account.failed": {
+      "hash": "2adf5748c3e1",
+      "status": "machine"
+    },
+    "account:deletion.account.mismatch": {
+      "hash": "c6958c15bb22",
+      "status": "machine"
+    },
+    "account:deletion.account.promptMessage": {
+      "hash": "e75f157ca486",
+      "status": "machine"
+    },
+    "account:deletion.account.promptTitle": {
+      "hash": "61e3fb9ff07a",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmButton": {
+      "hash": "022632e0f6fd",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmMessage": {
+      "hash": "9770fa31abc7",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitle": {
+      "hash": "be8da1a106a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmTitleUnnamed": {
+      "hash": "e67aa47383a3",
+      "status": "machine"
+    },
+    "account:deletion.practice.confirmationLabel": {
+      "hash": "d743070540a1",
+      "status": "machine"
+    },
+    "account:deletion.practice.continue": {
+      "hash": "31fbef162594",
+      "status": "machine"
+    },
+    "account:deletion.practice.done": {
+      "hash": "00ad36aa654a",
+      "status": "machine"
+    },
+    "account:deletion.practice.failed": {
+      "hash": "f23387d43fd3",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatch": {
+      "hash": "6116a809406d",
+      "status": "machine"
+    },
+    "account:deletion.practice.mismatchUnnamed": {
+      "hash": "5ce5ad6f403b",
+      "status": "machine"
+    },
+    "account:deletion.practice.nameLabel": {
+      "hash": "b870e4392ba7",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessage": {
+      "hash": "9b2b12eb9442",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptMessageUnnamed": {
+      "hash": "478a19a1cbdf",
+      "status": "machine"
+    },
+    "account:deletion.practice.promptTitle": {
+      "hash": "1b18f32709cc",
+      "status": "machine"
+    },
     "account:doctor.blurb": {
       "hash": "a295272f514f",
       "status": "machine"
@@ -1720,6 +2164,26 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "common:errors.generic": {
+      "hash": "3ccd9d6586ef",
+      "status": "machine"
+    },
+    "common:errors.network": {
+      "hash": "108c2f87f776",
+      "status": "machine"
+    },
+    "common:errors.notFound": {
+      "hash": "38ef6c3d3cde",
+      "status": "machine"
+    },
+    "common:errors.permission": {
+      "hash": "0aa1cbabca58",
+      "status": "machine"
+    },
+    "common:errors.rateLimit": {
+      "hash": "6ebe0a5b5845",
       "status": "machine"
     },
     "report:abnormalityNoted": {

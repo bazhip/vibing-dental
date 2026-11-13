@@ -6,5 +6,12 @@
     "duplicate": "Duplica",
     "edit": "Modifica",
     "save": "Salva"
+  },
+  "errors": {
+    "network": "Impossibile raggiungere ToothOps: controlli la connessione e riprovi.",
+    "notFound": "Cartella non trovata: potrebbe essere stata eliminata.",
+    "permission": "Non ha accesso a questo elemento.",
+    "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi.",
+    "generic": "Qualcosa è andato storto. Riprovi."
   }
 }

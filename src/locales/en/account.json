@@ -57,5 +57,35 @@
       "email": "email",
       "password": "password"
     }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Delete your account?",
+      "confirmMessage": "This permanently deletes your account, your private charts, and their photos and radiographs. Charts you shared with a practice stay with that practice. If you’re the only person in your practice, the practice and all its charts are deleted too, and any subscription is cancelled. This can’t be undone.",
+      "continue": "Continue",
+      "promptTitle": "Confirm account deletion",
+      "promptMessage": "Type your email ({{email}}) to permanently delete your account.",
+      "emailLabel": "Email",
+      "confirmButton": "Delete my account",
+      "mismatch": "Type your email exactly.",
+      "failed": "Could not delete your account.",
+      "done": "Your account has been deleted."
+    },
+    "practice": {
+      "confirmTitle": "Delete “{{name}}”?",
+      "confirmTitleUnnamed": "Delete this practice?",
+      "confirmMessage": "This permanently deletes the practice and every chart shared with it — including charts your team members created — along with their photos and radiographs. Any subscription is cancelled immediately. Team members keep their accounts and their private charts. This can’t be undone.",
+      "continue": "Continue",
+      "promptTitle": "Confirm practice deletion",
+      "promptMessage": "Type the practice name ({{name}}) to permanently delete it.",
+      "promptMessageUnnamed": "Type DELETE to permanently delete this practice.",
+      "nameLabel": "Practice name",
+      "confirmationLabel": "Confirmation",
+      "confirmButton": "Delete practice",
+      "mismatch": "Type the practice name exactly.",
+      "mismatchUnnamed": "Type DELETE.",
+      "failed": "Could not delete the practice.",
+      "done": "The practice has been deleted."
+    }
   }
 }

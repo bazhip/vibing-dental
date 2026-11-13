@@ -57,5 +57,35 @@
       "email": "E-Mail",
       "password": "Passwort"
     }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Ihr Konto löschen?",
+      "confirmMessage": "Dadurch werden Ihr Konto, Ihre privaten Karten und deren Fotos und Röntgenbilder dauerhaft gelöscht. Karten, die Sie mit einer Praxis geteilt haben, bleiben bei dieser Praxis. Wenn Sie die einzige Person in Ihrer Praxis sind, werden auch die Praxis und alle ihre Karten gelöscht, und jedes Abonnement wird gekündigt. Dies kann nicht rückgängig gemacht werden.",
+      "continue": "Weiter",
+      "promptTitle": "Kontolöschung bestätigen",
+      "promptMessage": "Geben Sie Ihre E-Mail-Adresse ({{email}}) ein, um Ihr Konto dauerhaft zu löschen.",
+      "emailLabel": "E-Mail",
+      "confirmButton": "Mein Konto löschen",
+      "mismatch": "Geben Sie Ihre E-Mail-Adresse genau ein.",
+      "failed": "Ihr Konto konnte nicht gelöscht werden.",
+      "done": "Ihr Konto wurde gelöscht."
+    },
+    "practice": {
+      "confirmTitle": "„{{name}}“ löschen?",
+      "confirmTitleUnnamed": "Diese Praxis löschen?",
+      "confirmMessage": "Dadurch werden die Praxis und alle mit ihr geteilten Karten – auch die von Ihren Teammitgliedern erstellten – samt Fotos und Röntgenbildern dauerhaft gelöscht. Jedes Abonnement wird sofort gekündigt. Teammitglieder behalten ihre Konten und ihre privaten Karten. Dies kann nicht rückgängig gemacht werden.",
+      "continue": "Weiter",
+      "promptTitle": "Praxislöschung bestätigen",
+      "promptMessage": "Geben Sie den Praxisnamen ({{name}}) ein, um sie dauerhaft zu löschen.",
+      "promptMessageUnnamed": "Geben Sie DELETE ein, um diese Praxis dauerhaft zu löschen.",
+      "nameLabel": "Praxisname",
+      "confirmationLabel": "Bestätigung",
+      "confirmButton": "Praxis löschen",
+      "mismatch": "Geben Sie den Praxisnamen genau ein.",
+      "mismatchUnnamed": "Geben Sie DELETE ein.",
+      "failed": "Die Praxis konnte nicht gelöscht werden.",
+      "done": "Die Praxis wurde gelöscht."
+    }
   }
 }

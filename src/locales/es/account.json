@@ -58,5 +58,35 @@
       "email": "correo electrónico",
       "password": "contraseña"
     }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "¿Eliminar su cuenta?",
+      "confirmMessage": "Esto elimina de forma permanente su cuenta, sus fichas privadas y sus fotos y radiografías. Las fichas que haya compartido con una clínica permanecen en la clínica. Si es la única persona de su clínica, la clínica y todas sus fichas también se eliminan, y se cancela cualquier suscripción. Esta acción no se puede deshacer.",
+      "continue": "Continuar",
+      "promptTitle": "Confirmar la eliminación de la cuenta",
+      "promptMessage": "Escriba su correo electrónico ({{email}}) para eliminar su cuenta de forma permanente.",
+      "emailLabel": "Correo electrónico",
+      "confirmButton": "Eliminar mi cuenta",
+      "mismatch": "Escriba su correo electrónico exactamente.",
+      "failed": "No se pudo eliminar su cuenta.",
+      "done": "Su cuenta se ha eliminado."
+    },
+    "practice": {
+      "confirmTitle": "¿Eliminar «{{name}}»?",
+      "confirmTitleUnnamed": "¿Eliminar esta clínica?",
+      "confirmMessage": "Esto elimina de forma permanente la clínica y todas las fichas compartidas con ella, incluidas las creadas por los miembros de su equipo, junto con sus fotos y radiografías. Cualquier suscripción se cancela de inmediato. Los miembros del equipo conservan sus cuentas y sus fichas privadas. Esta acción no se puede deshacer.",
+      "continue": "Continuar",
+      "promptTitle": "Confirmar la eliminación de la clínica",
+      "promptMessage": "Escriba el nombre de la clínica ({{name}}) para eliminarla de forma permanente.",
+      "promptMessageUnnamed": "Escriba DELETE para eliminar esta clínica de forma permanente.",
+      "nameLabel": "Nombre de la clínica",
+      "confirmationLabel": "Confirmación",
+      "confirmButton": "Eliminar la clínica",
+      "mismatch": "Escriba el nombre de la clínica exactamente.",
+      "mismatchUnnamed": "Escriba DELETE.",
+      "failed": "No se pudo eliminar la clínica.",
+      "done": "La clínica se ha eliminado."
+    }
   }
 }
