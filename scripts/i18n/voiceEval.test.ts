@@ -58,6 +58,23 @@ describe('scoreActions', () => {
     expect(scoreActions([report('Detartrasi completa e lucidatura.')], [report('Pulizia completa con lucidatura')]).f1).toBe(1);
   });
 
+  it('does not accept dropped or empty free text', () => {
+    const exam = (comment?: string): AiAction => ({ name: 'set_exam_finding', input: { area: 'buccal', status: 'abnormal', ...(comment !== undefined ? { comment } : {}) } });
+    const report = (text: string): AiAction => ({ name: 'append_treatment_report', input: { text } });
+    // abnormal exam finding with the comment dropped → no match
+    expect(scoreActions([exam('Mild ulceration on the left cheek')], [exam()]).f1).toBe(0);
+    expect(scoreActions([exam('Mild ulceration on the left cheek')], [exam('  ')]).f1).toBe(0);
+    // empty treatment report → no match
+    expect(scoreActions([report('Full mouth scaling and polish.')], [report('')]).f1).toBe(0);
+    // a token-free text far shorter than expected → no match
+    expect(scoreActions([report('Détartrage complet et polissage.')], [report('Fait')]).f1).toBe(0);
+    // paraphrased comment of similar length → match
+    expect(scoreActions([exam('Leichte Ulzeration an der linken Wange')], [exam('Geringe Ulzeration, Wange links')]).f1).toBe(1);
+    // a normal finding with no expected comment still matches with or without one
+    const normal = (comment?: string): AiAction => ({ name: 'set_exam_finding', input: { area: 'tongue', status: 'normal', ...(comment ? { comment } : {}) } });
+    expect(scoreActions([normal()], [normal('ok')]).f1).toBe(1);
+  });
+
   it('handles empty lists', () => {
     expect(scoreActions([], [])).toMatchObject({ precision: 1, recall: 1, f1: 1 });
     expect(scoreActions([note(104, 'AT')], [])).toMatchObject({ precision: 0, recall: 0, f1: 0 });

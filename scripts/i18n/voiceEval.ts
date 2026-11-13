@@ -164,10 +164,20 @@ export function keyTokens(text: string): string[] {
   );
 }
 
+/** A token-free expected text needs an actual text at least this long,
+ *  relative to it, so a dropped or stub text never counts as a match. */
+const MIN_LENGTH_RATIO = 0.4;
+
 function looseMatch(expected: string, actual: string): boolean {
-  const have = actual.toUpperCase().replace(',', '.');
+  const want = expected.trim();
+  const got = actual.trim();
+  if (!want) return true;
+  if (!got) return false;
+  const tokens = keyTokens(want);
+  if (!tokens.length) return got.length >= MIN_LENGTH_RATIO * want.length;
+  const have = got.toUpperCase().replace(',', '.');
   // A code must match whole ("T/FX" is not "T/FX/CCF").
-  return keyTokens(expected).every((tok) => {
+  return tokens.every((tok) => {
     const t = tok.toUpperCase().replace(',', '.');
     return new RegExp(`(?<![A-Z0-9/])${t.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}(?![A-Z0-9/])`).test(have);
   });
