@@ -294,12 +294,12 @@
     "notNow": "Nicht jetzt"
   },
   "ios": {
-    "newChart": "Neues Zahnschema",
+    "newChart": "Neue Akte",
     "shareChart": "PDF des Zahnschemas ansehen und herunterladen",
     "shareBoth": "Klinisches Zahnschema und Besitzerbericht ansehen und herunterladen",
     "more": "Mehr",
     "menu": {
-      "newChart": "Neues Zahnschema",
+      "newChart": "Neue Akte",
       "newVisit": "Neuer Besuch",
       "history": "Verlauf des Zahnschemas",
       "editChart": "Zahnschema bearbeiten",

@@ -360,6 +360,25 @@ html.native-ios .login-app-icon {
   box-shadow: 0 4px 14px var(--ios-shadow-soft);
 }
 
+/* The signed-out language picker: a small tinted pull-down under the glyph
+   (the website's full-width select would read as a form field). */
+html.native-ios .login-container--app .language-switcher {
+  display: block;
+  width: auto;
+  min-height: 44px;
+  margin: 0 auto 4px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ios-tint);
+  font: 400 var(--ios-text-subheadline) / 1.2 var(--ios-font);
+  text-align: center;
+  text-align-last: center;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 html.native-ios .login-container--app {
   min-height: 100dvh;
   padding: calc(24px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px))

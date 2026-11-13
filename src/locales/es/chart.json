@@ -299,12 +299,12 @@
     "notNow": "Ahora no"
   },
   "ios": {
-    "newChart": "Nuevo odontograma",
+    "newChart": "Nuevo historial",
     "shareChart": "Previsualizar y descargar el PDF del odontograma",
     "shareBoth": "Previsualizar y descargar el odontograma clínico y el informe para el propietario",
     "more": "Más",
     "menu": {
-      "newChart": "Nuevo odontograma",
+      "newChart": "Nuevo historial",
       "newVisit": "Nueva visita",
       "history": "Historial del odontograma",
       "editChart": "Editar odontograma",

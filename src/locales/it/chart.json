@@ -299,12 +299,12 @@
     "notNow": "Non ora"
   },
   "ios": {
-    "newChart": "Nuovo odontogramma",
+    "newChart": "Nuova cartella",
     "shareChart": "Anteprima e download del PDF dell’odontogramma",
     "shareBoth": "Anteprima e download dell’odontogramma clinico e del referto per il proprietario",
     "more": "Altro",
     "menu": {
-      "newChart": "Nuovo odontogramma",
+      "newChart": "Nuova cartella",
       "newVisit": "Nuova visita",
       "history": "Cronologia dell’odontogramma",
       "editChart": "Modifica odontogramma",

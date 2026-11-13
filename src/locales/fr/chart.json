@@ -299,12 +299,12 @@
     "notNow": "Pas maintenant"
   },
   "ios": {
-    "newChart": "Nouveau schéma",
+    "newChart": "Nouveau dossier",
     "shareChart": "Prévisualiser et télécharger le PDF du schéma",
     "shareBoth": "Prévisualiser et télécharger le schéma clinique et le rapport pour le propriétaire",
     "more": "Plus",
     "menu": {
-      "newChart": "Nouveau schéma",
+      "newChart": "Nouveau dossier",
       "newVisit": "Nouvelle visite",
       "history": "Historique du schéma",
       "editChart": "Modifier le schéma",
