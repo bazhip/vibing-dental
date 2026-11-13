@@ -23,7 +23,7 @@ create or replace function public.send_due_reminders()
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare r record; k text; subj text; bod text;
 begin
