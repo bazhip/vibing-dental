@@ -71,7 +71,8 @@
       "undoChanges": "Änderungen verwerfen",
       "saveNow": "Jetzt speichern",
       "retrySave": "Speichern erneut versuchen",
-      "customize": "Anpassen: {{section}}"
+      "customize": "Anpassen: {{section}}",
+      "chartSettings": "Zahnschema-Einstellungen"
     },
     "status": {
       "saving": "Wird gespeichert…",
@@ -102,7 +103,16 @@
       "owner": "Besitzer",
       "visit": "Besuch",
       "complaint": "Vorstellungsgrund",
-      "dictate": "Diktat"
+      "dictate": "Diktat",
+      "nerveBlocks": "Nervenblockaden",
+      "addInterval": "Intervall hinzufügen"
+    },
+    "diagram": {
+      "numbers": "Nummern"
+    },
+    "grid": {
+      "tip": "Tipp: Tippen Sie auf Zahnnummern, um mehrere Zähne auszuwählen, und setzen Sie dann einen Wert für alle.",
+      "pickTitle": "Tippen, um diesen Zahn auszuwählen und mehreren Zähnen gleichzeitig einen Wert zu geben"
     }
   }
 }

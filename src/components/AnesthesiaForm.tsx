@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   NerveBlocks,
   NerveBlockSite,
@@ -79,6 +80,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
 }) => {
   // The iOS app: switches for yes/no fields, icons instead of text glyphs.
   const native = isNativeApp();
+  const { t } = useTranslation('chart');
   const customBlocks = blocksForForm(customBlockDefs, customValues);
   const customFields = fieldsForForm(customFieldDefs, customValues);
   const setCustomBlock = (row: CustomBlockValue) => onCustomValuesChange?.(setBlockValue(customValues, row));
@@ -161,7 +163,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">Anesthesia &mdash; Nerve Blocks</h2>
+        <h2 className="dental-grid__title">{native ? t('ios.form.nerveBlocks') : <>Anesthesia &mdash; Nerve Blocks</>}</h2>
         {onCustomize && (
           <button type="button" className="diagram-view__action" onClick={onCustomize} title="Choose which nerve blocks show and your usual anesthetic">
             Customize

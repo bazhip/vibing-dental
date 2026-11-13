@@ -71,7 +71,8 @@
       "undoChanges": "Deshacer cambios",
       "saveNow": "Guardar ahora",
       "retrySave": "Reintentar guardado",
-      "customize": "Personalizar: {{section}}"
+      "customize": "Personalizar: {{section}}",
+      "chartSettings": "Ajustes del odontograma"
     },
     "status": {
       "saving": "Guardando…",
@@ -102,7 +103,16 @@
       "owner": "Propietario",
       "visit": "Visita",
       "complaint": "Motivo de consulta",
-      "dictate": "Dictado"
+      "dictate": "Dictado",
+      "nerveBlocks": "Bloqueos nerviosos",
+      "addInterval": "Añadir intervalo"
+    },
+    "diagram": {
+      "numbers": "Números"
+    },
+    "grid": {
+      "tip": "Consejo: toque los números de los dientes para seleccionar varios y luego asigne un mismo valor a todos.",
+      "pickTitle": "Toque para seleccionar este diente y asignar un valor a varios a la vez"
     }
   }
 }

@@ -71,7 +71,8 @@
       "undoChanges": "Annuler les modifications",
       "saveNow": "Enregistrer maintenant",
       "retrySave": "Réessayer l’enregistrement",
-      "customize": "Personnaliser : {{section}}"
+      "customize": "Personnaliser : {{section}}",
+      "chartSettings": "Réglages du schéma"
     },
     "status": {
       "saving": "Enregistrement…",
@@ -102,7 +103,16 @@
       "owner": "Propriétaire",
       "visit": "Visite",
       "complaint": "Motif de consultation",
-      "dictate": "Dictée"
+      "dictate": "Dictée",
+      "nerveBlocks": "Blocs nerveux",
+      "addInterval": "Ajouter un intervalle"
+    },
+    "diagram": {
+      "numbers": "Numéros"
+    },
+    "grid": {
+      "tip": "Astuce : touchez les numéros des dents pour en sélectionner plusieurs, puis attribuez une même valeur à toutes.",
+      "pickTitle": "Touchez pour sélectionner cette dent et attribuer une valeur à plusieurs à la fois"
     }
   }
 }

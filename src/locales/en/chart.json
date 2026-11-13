@@ -71,7 +71,8 @@
       "undoChanges": "Undo changes",
       "saveNow": "Save now",
       "retrySave": "Retry saving",
-      "customize": "Customize {{section}}"
+      "customize": "Customize {{section}}",
+      "chartSettings": "Chart settings"
     },
     "status": {
       "saving": "Saving…",
@@ -102,7 +103,16 @@
       "owner": "Owner",
       "visit": "Visit",
       "complaint": "Chief complaint",
-      "dictate": "Dictation"
+      "dictate": "Dictation",
+      "nerveBlocks": "Nerve blocks",
+      "addInterval": "Add interval"
+    },
+    "diagram": {
+      "numbers": "Numbers"
+    },
+    "grid": {
+      "tip": "Tip: tap tooth numbers to select several teeth, then set one value on all of them.",
+      "pickTitle": "Tap to select this tooth and set a value on several at once"
     }
   }
 }

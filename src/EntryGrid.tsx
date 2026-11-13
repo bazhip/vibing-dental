@@ -304,14 +304,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chartingHeaderAccessory = (
     <div className="charting-header-actions">
       {chartingViewSwitch}
-      <button
-        type="button"
-        className="diagram-view__action"
-        onClick={() => setChartSettingsOpen('charting')}
-        title="Pockets per root, columns, what shows beside the teeth, PDF options"
-      >
-        Customize
-      </button>
+      {/* The app has Customize in the Chart bar's More menu. */}
+      {!native && (
+        <button
+          type="button"
+          className="diagram-view__action"
+          onClick={() => setChartSettingsOpen('charting')}
+          title="Pockets per root, columns, what shows beside the teeth, PDF options"
+        >
+          Customize
+        </button>
+      )}
     </div>
   );
   // Append the chart's photos/radiographs to the PDF as extra pages, four
@@ -920,7 +923,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
           hideRecheck={prefs.hideRecheck}
-          onCustomize={() => setChartSettingsOpen('patient')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
     },
@@ -946,7 +949,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           logo={chart.logo}
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
-          onCustomize={() => setChartSettingsOpen('anesthesia')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('anesthesia')}
           customBlockDefs={prefs.customBlocks}
           customFieldDefs={prefs.customFields}
           customValues={chart.patientInfo.customAnesthesia}
@@ -1024,7 +1027,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ref={preDiagramRef}
               readOnly={readOnly}
               title="Diagnosis"
-              onCustomize={() => setChartSettingsOpen('diagnosis')}
+              onCustomize={native ? undefined : () => setChartSettingsOpen('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
               onToothMarksChange={chart.setPreToothMarks}
@@ -1104,7 +1107,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}
-          onCustomize={() => setChartSettingsOpen('images')}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
           onImageInPdfChange={chart.setImageInPdf}
         />
@@ -1137,7 +1140,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onPreview={() => openDocuments('owner')}
               context={{ config: profile.ownerReportConfig, practiceName: profile.practiceName, doctorName: profile.doctorName }}
               aiEnabled={profile.aiEnabled && !trial && cloud.enabled}
-              onCustomize={cloud.enabled && !trial ? () => setReportCustomizeOpen(true) : undefined}
+              onCustomize={cloud.enabled && !trial && !native ? () => setReportCustomizeOpen(true) : undefined}
             />
           ),
         }]
@@ -1591,10 +1594,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       },
       tc,
       {
-        time: formatSavedAt,
+        // The app's language, not the device locale.
+        time: (iso) => {
+          const d = new Date(iso);
+          if (Number.isNaN(d.getTime())) return '';
+          const time = d.toLocaleTimeString(language, { hour: 'numeric', minute: '2-digit' });
+          return d.toDateString() === new Date().toDateString()
+            ? time
+            : `${d.toLocaleDateString(language, { month: 'short', day: 'numeric' })}, ${time}`;
+        },
         date: (ymd) => {
           const d = new Date(`${ymd}T12:00:00`);
-          return Number.isNaN(d.getTime()) ? ymd : d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+          return Number.isNaN(d.getTime()) ? ymd : d.toLocaleDateString(language, { month: 'short', day: 'numeric', year: 'numeric' });
         },
       }
     );
@@ -1627,6 +1638,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       ...(status.canSaveNow ? [{ label: tc('ios.menu.saveNow'), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
       ...(status.retry ? [{ label: tc('ios.menu.retrySave'), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
       ...(customize ? [{ label: tc('ios.menu.customize', { section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
+      // Always there, so the bar's trailing capsule keeps its shape.
+      { label: tc('ios.menu.chartSettings'), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
     ];
     const chartTab = (
       <div className="ios-chart-screen">

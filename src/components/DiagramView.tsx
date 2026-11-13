@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 /** Shortcut hints match the platform (⌘ on Apple devices, Ctrl elsewhere). */
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
@@ -74,6 +75,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 }, ref) => {
   // The iOS app draws toolbar symbols as icons, not text glyphs.
   const native = isNativeApp();
+  const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
@@ -236,7 +238,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             aria-pressed={showNumbers}
             title="Show each tooth's Triadan number on the diagram (not printed on the PDF)"
           >
-            # Numbers
+            {native ? t('ios.diagram.numbers') : '# Numbers'}
           </button>
 
           <div className="diagram-view__zoom" role="group" aria-label="Zoom">

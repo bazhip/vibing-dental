@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { hapticTap } from '../native/haptics';
 import { isNativeApp } from '../native/platform';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { promptDialog, confirmDialog, toast } from './ui/dialogs';
 
 import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
@@ -469,6 +470,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   spaceMovesDown = true,
   scoreTapMoves = 'finding',
 }) => {
+  // The iOS app: touch wording for the selection tip and tooth title.
+  const native = isNativeApp();
+  const { t } = useTranslation('chart');
+  const toothPickTitle = native ? t('ios.grid.pickTitle') : 'Click to select this tooth (Shift-click for a range) and set a value on several at once';
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
@@ -785,7 +790,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => (
-        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
+        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : toothPickTitle}>
           <strong className="dental-grid__tid-num">{row.triadan}</strong>
           <span className="dental-grid__tid-sep" aria-hidden="true">–</span>
           <span className="dental-grid__tid-name">{(row.tooth ?? '').toUpperCase()}</span>
@@ -873,7 +878,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       };
     }),
     ];
-  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse]);
+  }, [toothMarks, onToggleMissing, setAllForColumn, priorToothData, priorGoneTeeth, layoutWidth, readOnly, visibleColumns, pocketMode, species, narrow, coarse, toothPickTitle]);
 
   return (
     <div className="dental-grid-section">
@@ -944,7 +949,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
           {bulkError && <span className="dental-grid__bulk-error">{bulkError}</span>}
         </div>
       ) : (
-        <p className="dental-grid__bulk-hint">Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.</p>
+        <p className="dental-grid__bulk-hint">{native ? t('ios.grid.tip') : 'Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.'}</p>
       ))}
       {narrow && createPortal(
         // Visual stand-in for the header while it's scrolled away (the

@@ -71,7 +71,8 @@
       "undoChanges": "Annulla modifiche",
       "saveNow": "Salva ora",
       "retrySave": "Riprova a salvare",
-      "customize": "Personalizza: {{section}}"
+      "customize": "Personalizza: {{section}}",
+      "chartSettings": "Impostazioni dell’odontogramma"
     },
     "status": {
       "saving": "Salvataggio…",
@@ -102,7 +103,16 @@
       "owner": "Proprietario",
       "visit": "Visita",
       "complaint": "Motivo della visita",
-      "dictate": "Dettatura"
+      "dictate": "Dettatura",
+      "nerveBlocks": "Blocchi nervosi",
+      "addInterval": "Aggiungi intervallo"
+    },
+    "diagram": {
+      "numbers": "Numeri"
+    },
+    "grid": {
+      "tip": "Suggerimento: tocchi i numeri dei denti per selezionarne più di uno, poi imposti un unico valore per tutti.",
+      "pickTitle": "Tocchi per selezionare questo dente e impostare un valore su più denti insieme"
     }
   }
 }

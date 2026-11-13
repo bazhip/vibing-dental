@@ -392,12 +392,24 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.diagram.numbers": {
+      "hash": "b0640f0fc460",
+      "status": "machine"
+    },
+    "chart:ios.form.addInterval": {
+      "hash": "1d90d41dee7e",
+      "status": "machine"
+    },
     "chart:ios.form.complaint": {
       "hash": "2415571d319f",
       "status": "machine"
     },
     "chart:ios.form.dictate": {
       "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.nerveBlocks": {
+      "hash": "d4a03d3c3007",
       "status": "machine"
     },
     "chart:ios.form.owner": {
@@ -412,6 +424,14 @@
       "hash": "1c8ac867f052",
       "status": "machine"
     },
+    "chart:ios.grid.pickTitle": {
+      "hash": "81d7848ad14f",
+      "status": "machine"
+    },
+    "chart:ios.grid.tip": {
+      "hash": "0d281b421b0e",
+      "status": "machine"
+    },
     "chart:ios.live.notSaved": {
       "hash": "41ba0daba89e",
       "status": "machine"
@@ -422,6 +442,10 @@
     },
     "chart:ios.live.saving": {
       "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.chartSettings": {
+      "hash": "dacea30cc5ef",
       "status": "machine"
     },
     "chart:ios.menu.customize": {
@@ -1494,12 +1518,24 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.diagram.numbers": {
+      "hash": "b0640f0fc460",
+      "status": "machine"
+    },
+    "chart:ios.form.addInterval": {
+      "hash": "1d90d41dee7e",
+      "status": "machine"
+    },
     "chart:ios.form.complaint": {
       "hash": "2415571d319f",
       "status": "machine"
     },
     "chart:ios.form.dictate": {
       "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.nerveBlocks": {
+      "hash": "d4a03d3c3007",
       "status": "machine"
     },
     "chart:ios.form.owner": {
@@ -1514,6 +1550,14 @@
       "hash": "1c8ac867f052",
       "status": "machine"
     },
+    "chart:ios.grid.pickTitle": {
+      "hash": "81d7848ad14f",
+      "status": "machine"
+    },
+    "chart:ios.grid.tip": {
+      "hash": "0d281b421b0e",
+      "status": "machine"
+    },
     "chart:ios.live.notSaved": {
       "hash": "41ba0daba89e",
       "status": "machine"
@@ -1524,6 +1568,10 @@
     },
     "chart:ios.live.saving": {
       "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.chartSettings": {
+      "hash": "dacea30cc5ef",
       "status": "machine"
     },
     "chart:ios.menu.customize": {
@@ -2596,12 +2644,24 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.diagram.numbers": {
+      "hash": "b0640f0fc460",
+      "status": "machine"
+    },
+    "chart:ios.form.addInterval": {
+      "hash": "1d90d41dee7e",
+      "status": "machine"
+    },
     "chart:ios.form.complaint": {
       "hash": "2415571d319f",
       "status": "machine"
     },
     "chart:ios.form.dictate": {
       "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.nerveBlocks": {
+      "hash": "d4a03d3c3007",
       "status": "machine"
     },
     "chart:ios.form.owner": {
@@ -2616,6 +2676,14 @@
       "hash": "1c8ac867f052",
       "status": "machine"
     },
+    "chart:ios.grid.pickTitle": {
+      "hash": "81d7848ad14f",
+      "status": "machine"
+    },
+    "chart:ios.grid.tip": {
+      "hash": "0d281b421b0e",
+      "status": "machine"
+    },
     "chart:ios.live.notSaved": {
       "hash": "41ba0daba89e",
       "status": "machine"
@@ -2626,6 +2694,10 @@
     },
     "chart:ios.live.saving": {
       "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.chartSettings": {
+      "hash": "dacea30cc5ef",
       "status": "machine"
     },
     "chart:ios.menu.customize": {
@@ -3698,12 +3770,24 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:ios.diagram.numbers": {
+      "hash": "b0640f0fc460",
+      "status": "machine"
+    },
+    "chart:ios.form.addInterval": {
+      "hash": "1d90d41dee7e",
+      "status": "machine"
+    },
     "chart:ios.form.complaint": {
       "hash": "2415571d319f",
       "status": "machine"
     },
     "chart:ios.form.dictate": {
       "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "chart:ios.form.nerveBlocks": {
+      "hash": "d4a03d3c3007",
       "status": "machine"
     },
     "chart:ios.form.owner": {
@@ -3718,6 +3802,14 @@
       "hash": "1c8ac867f052",
       "status": "machine"
     },
+    "chart:ios.grid.pickTitle": {
+      "hash": "81d7848ad14f",
+      "status": "machine"
+    },
+    "chart:ios.grid.tip": {
+      "hash": "0d281b421b0e",
+      "status": "machine"
+    },
     "chart:ios.live.notSaved": {
       "hash": "41ba0daba89e",
       "status": "machine"
@@ -3728,6 +3820,10 @@
     },
     "chart:ios.live.saving": {
       "hash": "059e62663301",
+      "status": "machine"
+    },
+    "chart:ios.menu.chartSettings": {
+      "hash": "dacea30cc5ef",
       "status": "machine"
     },
     "chart:ios.menu.customize": {

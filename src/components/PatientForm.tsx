@@ -46,6 +46,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   const handleBaseChange = (b: 'feline' | 'canine') => onSpeciesChange(combine(b, dentition));
   const handleDentitionChange = (d: 'permanent' | 'deciduous') => onSpeciesChange(combine(base, d));
   const { t } = useTranslation('chart');
+  const native = isNativeApp();
   // Quick-pick: common recheck intervals, counted from the visit date
   // (falling back to today). Selecting one fills the date field; it can
   // still be hand-adjusted after.
@@ -62,7 +63,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
         onPatientInfoChange('recallDate', localDateISO(base));
       }}
     >
-      <option value="">+ interval</option>
+      <option value="">{native ? t('ios.form.addInterval') : '+ interval'}</option>
       <option value="7">1 week</option>
       <option value="14">2 weeks</option>
       <option value="30">1 month</option>
@@ -74,16 +75,12 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   // The iOS app: the same fields as inset-grouped label/value rows, and
   // segmented controls for species and dentition.
-  if (isNativeApp()) {
+  if (native) {
     return (
       <div className="patient-form patient-form--ios">
+        {/* Customize is in the Chart bar's More menu in the app. */}
         <div className="patient-form__header">
           <h2 className="patient-form__section-title">Patient Information</h2>
-          {onCustomize && (
-            <button type="button" className="diagram-view__action" onClick={onCustomize} title="Fields shown on this page">
-              Customize
-            </button>
-          )}
         </div>
         <FormGroup header={t('ios.form.patient')}>
           <FormField label={<>Patient Name <span className="patient-form__req" aria-hidden="true">*</span></>}>

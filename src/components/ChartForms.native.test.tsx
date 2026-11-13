@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 
 // The chart's form sections in the iOS app (inset-grouped label/value
@@ -21,6 +21,9 @@ import { AnesthesiaForm } from './AnesthesiaForm';
 import { ImagingSection } from './ImagingSection';
 import { SurgeryReportForm } from './SurgeryReportForm';
 import { DiagramView } from './DiagramView';
+import { DentalGrid } from './DentalGrid';
+import { getInitialToothData } from '../constants';
+import { installScopeSelectorFallback } from '../utils/scopeSelector';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, type PatientInfo } from '../types';
 
 const patientInfo: PatientInfo = {
@@ -31,6 +34,11 @@ const patientInfo: PatientInfo = {
 
 beforeEach(() => {
   flags.native = false;
+});
+beforeAll(() => {
+  window.ResizeObserver = window.ResizeObserver ?? class { observe() {} unobserve() {} disconnect() {} };
+  installScopeSelectorFallback();
+  Element.prototype.scrollIntoView = Element.prototype.scrollIntoView ?? (() => {});
 });
 
 describe('PatientForm', () => {
@@ -55,10 +63,19 @@ describe('PatientForm', () => {
     expect(onSpecies).toHaveBeenCalledWith('feline');
     // No web card grid in the app.
     expect(container.querySelector('.patient-form__row')).toBeNull();
+    // Words, not a "+" glyph, on the recheck interval picker.
+    expect(screen.getByRole('combobox', { name: /common interval/ }).querySelector('option')!.textContent).toBe('Add interval');
+  });
+
+  it('app: no Customize in the section header (it is in the Chart bar\'s More menu)', () => {
+    flags.native = true;
+    render(<PatientForm patientInfo={patientInfo} species="canine" onPatientInfoChange={vi.fn()} onSpeciesChange={vi.fn()} onCustomize={vi.fn()} />);
+    expect(screen.queryByRole('button', { name: 'Customize' })).toBeNull();
   });
 
   it('website: unchanged markup', () => {
     const { container } = renderIt();
+    expect(screen.getByRole('combobox', { name: /common interval/ }).querySelector('option')!.textContent).toBe('+ interval');
     expect(container.querySelector('.ios-form__group')).toBeNull();
     expect(container.querySelectorAll('.patient-form__row').length).toBe(4);
     expect(container.querySelectorAll('.species-tab').length).toBe(4);
@@ -117,12 +134,19 @@ describe('AnesthesiaForm', () => {
     expect(container.textContent).not.toMatch(/×/);
   });
 
+  it('app: short section title that fits on one line', () => {
+    flags.native = true;
+    render(<AnesthesiaForm {...base} />);
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/^Nerve blocks$/);
+  });
+
   it('website: checkbox and text glyphs as before', () => {
     render(<AnesthesiaForm {...base} customFieldDefs={fields} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'A', concentration: '' }, { name: 'B', concentration: '' }] }} />);
     expect(screen.getByRole('checkbox', { name: 'IV catheter' })).not.toHaveClass('ios-switch');
     expect(screen.queryByRole('switch')).toBeNull();
     expect(screen.getByRole('button', { name: 'Remove A' }).textContent).toBe('×');
     expect(screen.getByRole('button', { name: /Add anesthetic/ }).textContent).toBe('+ Add anesthetic');
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Anesthesia — Nerve Blocks');
   });
 });
 
@@ -172,10 +196,27 @@ describe('DiagramView toolbar', () => {
     expect(screen.getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Undo' }).textContent).toBe('');
+    expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
   it('website: Undo / Redo glyphs', () => {
     renderIt();
     expect(screen.getByRole('button', { name: 'Undo' }).textContent).toBe('↶');
     expect(screen.getByRole('button', { name: 'Redo' }).textContent).toBe('↷');
+    expect(screen.getByRole('button', { name: '# Numbers' })).toBeInTheDocument();
+  });
+});
+
+describe('DentalGrid selection tip', () => {
+  const renderIt = () =>
+    render(<DentalGrid toothData={getInitialToothData('canine')} onToothDataChange={vi.fn()} toothMarks={{}} onToggleMissing={vi.fn()} />);
+  it('app: touch wording, no Shift-click', () => {
+    flags.native = true;
+    const { container } = renderIt();
+    expect(container.querySelector('.dental-grid__bulk-hint')).toHaveTextContent('Tip: tap tooth numbers to select several teeth, then set one value on all of them.');
+    expect(container.innerHTML).not.toMatch(/Shift-click/);
+  });
+  it('website: unchanged wording', () => {
+    const { container } = renderIt();
+    expect(container.querySelector('.dental-grid__bulk-hint')).toHaveTextContent('Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.');
   });
 });

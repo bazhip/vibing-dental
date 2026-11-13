@@ -95,6 +95,23 @@ describe('Chart tab in the iOS app', () => {
     expect(await screen.findByRole('dialog', { name: /Chart settings/i })).toBeInTheDocument();
   });
 
+  it('More is always there (Chart settings) — also on sections without Customize', async () => {
+    flags.native = true;
+    await renderGrid();
+    fireEvent.click(within(chartPanel()).getAllByRole('button', { name: /New chart/ })[0]);
+    act(() => fireEvent.click(screen.getByRole('menuitemradio', { name: 'Exam' })));
+    fireEvent.click(within(chartPanel()).getByRole('button', { name: 'More' }));
+    expect(screen.queryByRole('menuitem', { name: /^Customize/ })).toBeNull();
+    act(() => fireEvent.click(screen.getByRole('menuitem', { name: 'Chart settings' })));
+    expect(await screen.findByRole('dialog', { name: /Chart settings/i })).toBeInTheDocument();
+  });
+
+  it('no Customize buttons in the section headers (they are in More)', async () => {
+    flags.native = true;
+    await renderGrid();
+    expect(within(chartPanel()).queryByRole('button', { name: 'Customize' })).toBeNull();
+  });
+
   it('no text glyphs in the chart chrome', async () => {
     flags.native = true;
     await renderGrid();
@@ -111,5 +128,7 @@ describe('Chart page on the website (unchanged)', () => {
     expect(container.querySelector('.ios-chart-notice')).toBeNull();
     expect(container.querySelector('.entry-grid__topbar .save-status')?.textContent).toBe('On this device only');
     expect(container.querySelector('.fab-download')?.textContent).toBe('⤓ Preview PDF');
+    // Section-header Customize stays on the website.
+    expect(screen.getAllByRole('button', { name: 'Customize' }).length).toBeGreaterThan(0);
   });
 });
