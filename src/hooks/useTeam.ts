@@ -98,14 +98,15 @@ export function useTeam(open: boolean): UseTeamReturn {
   const addMember = React.useCallback(async (email: string): Promise<'invited' | 'pending'> => {
     // Invited accounts get an email link back to wherever the owner is.
     const redirectTo = window.location.origin + window.location.pathname;
-    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo });
+    // lang: the invite email's language when the invitee has none saved.
+    const res = await call<{ invited?: boolean; pending?: boolean }>({ action: 'add_member', email, redirectTo, lang: i18n.language });
     await refresh();
     return res.pending ? 'pending' : 'invited';
   }, [refresh]);
 
   const resendInvite = React.useCallback(async (userId: string) => {
     const redirectTo = window.location.origin + window.location.pathname;
-    await call({ action: 'resend_invite', userId, redirectTo });
+    await call({ action: 'resend_invite', userId, redirectTo, lang: i18n.language });
     await refresh();
   }, [refresh]);
 

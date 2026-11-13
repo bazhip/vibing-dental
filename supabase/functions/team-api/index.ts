@@ -8,6 +8,8 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { sendBrandedEmail } from '../_shared/email.ts';
+import { chooseInviteLanguage, joinRequestEmail, teamInviteEmail } from '../_shared/inviteEmails.ts';
+import type { EmailLanguage } from '../_shared/emailStrings.ts';
 import { purgeAccount, purgePractice } from '../_shared/deletion.ts';
 
 /** Free beta — keep in step with FREE_BETA in src/constants/plans.ts. */
@@ -25,30 +27,22 @@ const json = (b: Json, status = 200) =>
 
 /** Create the account + email a set-password link via Resend (verified
  *  domain → delivers to anyone; not rate-limited like the built-in
- *  mailer). Returns the created user or an error. */
+ *  mailer). Returns the created user or an error. The invitee's language
+ *  is stored in user_metadata.language, which invite-reminders reads. */
 // deno-lint-ignore no-explicit-any
-async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo?: string) {
+async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo: string | undefined, lang: EmailLanguage) {
   const { data: link, error } = await admin.auth.admin.generateLink({
     type: 'invite',
     email,
-    options: redirectTo ? { redirectTo } : undefined,
+    options: { data: { language: lang }, ...(redirectTo ? { redirectTo } : {}) },
   });
   if (error || !link?.user || !link?.properties?.action_link) {
     return { user: null, error: error?.message ?? 'Could not create the invite.' };
   }
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (key) {
-    const who = practiceName || 'A practice';
-    await sendBrandedEmail(key, email, `${who} invited you to ToothOps`, {
-      preheader: `Set your password to join ${practiceName || 'the practice'} on ToothOps.`,
-      title: `You’re invited to join ${practiceName || 'a practice'}`,
-      paragraphs: [
-        `${who} added you to their team on ToothOps — chairside veterinary dental charting.`,
-        'Set your password to activate your account and see the practice’s charts.',
-      ],
-      button: { label: 'Set your password & join', url: link.properties.action_link },
-      footnote: 'If you weren’t expecting this, you can ignore this email.',
-    });
+    const m = teamInviteEmail(lang, practiceName, link.properties.action_link);
+    await sendBrandedEmail(key, email, m.subject, m.email, lang);
   }
   return { user: link.user, error: null };
 }
@@ -110,24 +104,17 @@ function safeAppUrl(redirectTo?: string): string {
 }
 
 // deno-lint-ignore no-explicit-any
-async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string) {
+async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string, lang: EmailLanguage) {
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return;
-  const name = practiceName || 'a practice';
-  await sendBrandedEmail(key, email, `Join ${name} on ToothOps?`, {
-    preheader: `${name} invited you to their team on ToothOps.`,
-    title: `Join ${name}?`,
-    paragraphs: [
-      `${name} invited you to join their team on ToothOps. Sign in with your existing account to accept.`,
-      'Nothing changes until you accept — and sharing your existing charts with the practice is a separate choice you make when joining.',
-    ],
-    button: { label: 'Review invitation', url: link },
-    footnote: 'The link works for 14 days. If you weren’t expecting this, ignore this email.',
-  });
+  const m = joinRequestEmail(lang, practiceName, link);
+  await sendBrandedEmail(key, email, m.subject, m.email, lang);
 }
 
 // deno-lint-ignore no-explicit-any
-async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo?: string) {
+// `inviterLang` is the inviter's app language: the email uses the invitee's
+// saved language when they have an account with one, else this.
+async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo: string | undefined, inviterLang: unknown) {
   const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   let target = list.users.find((u: { email?: string }) => (u.email ?? '').toLowerCase() === email);
   let invited = false;
@@ -137,11 +124,13 @@ async function addOrInviteMember(admin: any, practiceId: string, practiceName: s
       .eq('practice_id', practiceId).eq('user_id', target.id).maybeSingle();
     if (existing) return { status: 400, body: { error: 'They’re already a member of this practice.' } };
     const token = await signInvite(practiceId, target.id);
-    await sendJoinRequest(admin, email, practiceName, `${safeAppUrl(redirectTo)}#/join/${token}`);
+    const { data: prof } = await admin.from('profiles').select('chart_prefs').eq('id', target.id).maybeSingle();
+    const lang = chooseInviteLanguage(prof?.chart_prefs, inviterLang);
+    await sendJoinRequest(admin, email, practiceName, `${safeAppUrl(redirectTo)}#/join/${token}`, lang);
     return { status: 200, body: { ok: true, invited: false, pending: true } };
   }
   {
-    const inv = await inviteViaResend(admin, email, practiceName, safeAppUrl(redirectTo));
+    const inv = await inviteViaResend(admin, email, practiceName, safeAppUrl(redirectTo), chooseInviteLanguage(null, inviterLang));
     if (inv.error || !inv.user) return { status: 502, body: { error: `Couldn't send the invite: ${inv.error ?? 'unknown error'}` } };
     target = inv.user;
     invited = true;
@@ -279,7 +268,7 @@ Deno.serve(async (req: Request) => {
               : 'Practice plans include up to 5 team members — contact us about a larger plan.',
           }, 403);
         }
-        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo, body.lang);
         return json(result.body, result.status);
       }
 
@@ -299,7 +288,7 @@ Deno.serve(async (req: Request) => {
         // accounts own nothing; membership + profile are re-created by
         // addOrInviteMember.
         await admin.auth.admin.deleteUser(userId);
-        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo, body.lang);
         return json(result.body, result.status);
       }
 

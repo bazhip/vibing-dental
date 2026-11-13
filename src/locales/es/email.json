@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Establecer contraseña y unirse"
+  },
+  "invite": {
+    "body1": "{{who}} le ha invitado a unirse a su equipo en ToothOps, el odontograma veterinario para usar en la consulta.",
+    "body2": "Establezca su contraseña para activar su cuenta y ver los historiales de la clínica.",
+    "fallback": {
+      "preheader": "la clínica",
+      "title": "una clínica",
+      "who": "Una clínica"
+    },
+    "footnote": "Si no esperaba este correo, puede ignorarlo.",
+    "preheader": "Establezca su contraseña para unirse a {{practice}} en ToothOps.",
+    "subject": "{{who}} le ha invitado a ToothOps",
+    "title": "Invitación para unirse a {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} le ha invitado a unirse a su equipo en ToothOps. Inicie sesión con su cuenta actual para aceptar.",
+    "body2": "Nada cambia hasta que acepte, y compartir sus historiales actuales con la clínica es una decisión aparte que tomará al unirse.",
+    "button": "Ver invitación",
+    "fallback": "una clínica",
+    "footnote": "El enlace es válido durante 14 días. Si no esperaba este correo, ignórelo.",
+    "preheader": "{{name}} le ha invitado a su equipo en ToothOps.",
+    "subject": "¿Unirse a {{name}} en ToothOps?",
+    "title": "¿Unirse a {{name}}?"
+  },
+  "layout": {
+    "linkFallback": "Si el botón no funciona, copie este enlace en su navegador:",
+    "tagline": "Odontograma veterinario"
+  },
+  "reminder": {
+    "body1": "{{who}} le ha invitado a ToothOps, su aplicación de odontograma veterinario. Su cuenta está lista cuando usted lo esté: solo tiene que establecer una contraseña para empezar.",
+    "body2": "El enlace de abajo es válido durante 24 horas.",
+    "fallback": "su clínica",
+    "footnote": "¿No esperaba este correo o no desea unirse? Simplemente ignórelo: le enviaremos como máximo un recordatorio más.",
+    "footnoteFinal": "Este es el último recordatorio que le enviaremos. Si no se ha unido antes del {{date}}, esta invitación caducará y la cuenta pendiente se eliminará; {{who}} puede volver a invitarle en cualquier momento.",
+    "preheader": "{{who}} le espera en ToothOps: establezca su contraseña para unirse.",
+    "subject": "Recordatorio: {{who}} le ha invitado a ToothOps",
+    "subjectFinal": "Último recordatorio: únase a {{who}} en ToothOps",
+    "title": "Invitación para unirse a {{who}}",
+    "titleFinal": "Su invitación sigue esperándole"
+  }
+}

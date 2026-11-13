@@ -28,7 +28,8 @@
     "replay": "tsx scripts/replay-transcript.ts",
     "lint": "eslint src",
     "i18n:check": "tsx scripts/i18n/check.ts",
-    "i18n:translate": "tsx scripts/i18n/translate.ts"
+    "i18n:translate": "tsx scripts/i18n/translate.ts",
+    "i18n:emails": "tsx scripts/i18n/gen-email-strings.ts"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

@@ -1,5 +1,6 @@
 import { hashEnglish, languagesFor, loadCatalogs, loadMeta, englishKeyFor, placeholders } from './catalog';
 import type { Catalogs, Meta } from './catalog';
+import { emailStringsProblem } from './gen-email-strings';
 
 export type Problem = {
   lng: string;
@@ -65,16 +66,18 @@ export function checkCatalogs(c: Catalogs, m: Meta): Problem[] {
 }
 
 function main() {
-  const problems = checkCatalogs(loadCatalogs(), loadMeta('src/locales'));
+  const catalogs = loadCatalogs();
+  const problems = checkCatalogs(catalogs, loadMeta('src/locales'));
   const kinds: Problem['kind'][] = ['missing', 'stale', 'extra', 'empty', 'placeholders'];
   for (const kind of kinds) {
     for (const p of problems.filter((x) => x.kind === kind)) console.error(`${p.lng} ${p.key} ${kind}`);
   }
-  console.log(`i18n:check ${problems.length} problems`);
-  if (problems.length) {
-    console.error('run `npm run i18n:translate`');
-    process.exit(1);
-  }
+  // Edge-function email text is generated from the email namespace.
+  const emails = emailStringsProblem(catalogs);
+  if (emails) console.error(emails);
+  console.log(`i18n:check ${problems.length + (emails ? 1 : 0)} problems`);
+  if (problems.length) console.error('run `npm run i18n:translate`');
+  if (problems.length || emails) process.exit(1);
 }
 
 // Run only as a CLI, not when imported by tests.

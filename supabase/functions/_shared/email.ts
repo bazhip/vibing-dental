@@ -3,6 +3,10 @@
 // supabase/templates (teal button, ToothOps wordmark, footer) so every
 // email a practice or invitee receives looks like it comes from one
 // product. Always sends an HTML body plus a plain-text alternative.
+// The caller passes the recipient's language: it sets <html lang> and the
+// layout's own text (fallback-link line, footer tagline).
+
+import { emailLanguage, emailT } from './emailStrings.ts';
 
 export const EMAIL_FROM = 'ToothOps <noreply@toothops.app>';
 
@@ -20,13 +24,14 @@ export interface BrandedEmail {
   footnote?: string;
 }
 
-export function renderBrandedEmail(e: BrandedEmail): { html: string; text: string } {
+export function renderBrandedEmail(e: BrandedEmail, lng = 'en'): { html: string; text: string } {
+  const lang = emailLanguage(lng);
   const url = esc(e.button.url);
   const paras = e.paragraphs
     .map((p) => `<p style="margin:0 0 12px;font-size:16px;line-height:1.55;color:#17232e;">${esc(p)}</p>`)
     .join('');
   const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(e.title)}</title></head>
+<html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(e.title)}</title></head>
 <body style="margin:0;padding:0;background:#f4f6f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17232e;">
 <span style="display:none;max-height:0;overflow:hidden;opacity:0;">${esc(e.preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f7;padding:32px 12px;">
@@ -43,12 +48,12 @@ export function renderBrandedEmail(e: BrandedEmail): { html: string; text: strin
         <a href="${url}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">${esc(e.button.label)}</a>
       </td></tr>
       <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
-        If the button doesn’t work, copy this link into your browser:<br>
+        ${esc(emailT(lang, 'layout.linkFallback'))}<br>
         <a href="${url}" style="color:#0c6b63;word-break:break-all;">${url}</a>
         ${e.footnote ? `<p style="margin:16px 0 0;">${esc(e.footnote)}</p>` : ''}
       </td></tr>
     </table>
-    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · Veterinary dental charting · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · ${esc(emailT(lang, 'layout.tagline'))} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
   </td></tr>
 </table>
 </body></html>`;
@@ -65,8 +70,8 @@ export function renderBrandedEmail(e: BrandedEmail): { html: string; text: strin
 }
 
 /** Send a branded email through Resend. Returns true on success. */
-export async function sendBrandedEmail(apiKey: string, to: string, subject: string, e: BrandedEmail): Promise<boolean> {
-  const { html, text } = renderBrandedEmail(e);
+export async function sendBrandedEmail(apiKey: string, to: string, subject: string, e: BrandedEmail, lng = 'en'): Promise<boolean> {
+  const { html, text } = renderBrandedEmail(e, lng);
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },

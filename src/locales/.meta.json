@@ -4296,6 +4296,126 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -13252,6 +13372,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
@@ -22248,6 +22488,126 @@
       "hash": "a4fe65264ef7",
       "status": "machine"
     },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
+      "status": "machine"
+    },
     "forms:anesthesia.add": {
       "hash": "58a85a149b26",
       "status": "machine"
@@ -31240,6 +31600,126 @@
     },
     "common:language.label": {
       "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "email:common.setPasswordButton": {
+      "hash": "9c4c0b8eafc0",
+      "status": "machine"
+    },
+    "email:invite.body1": {
+      "hash": "0c1d9dee2ff7",
+      "status": "machine"
+    },
+    "email:invite.body2": {
+      "hash": "aaba992a212f",
+      "status": "machine"
+    },
+    "email:invite.fallback.preheader": {
+      "hash": "8c8a3f052ae3",
+      "status": "machine"
+    },
+    "email:invite.fallback.title": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:invite.fallback.who": {
+      "hash": "5b5288700c71",
+      "status": "machine"
+    },
+    "email:invite.footnote": {
+      "hash": "d0465d587817",
+      "status": "machine"
+    },
+    "email:invite.preheader": {
+      "hash": "674371fb5c06",
+      "status": "machine"
+    },
+    "email:invite.subject": {
+      "hash": "d949710f2071",
+      "status": "machine"
+    },
+    "email:invite.title": {
+      "hash": "e1868c8402a9",
+      "status": "machine"
+    },
+    "email:join.body1": {
+      "hash": "0b686d399105",
+      "status": "machine"
+    },
+    "email:join.body2": {
+      "hash": "d9a32db6cacb",
+      "status": "machine"
+    },
+    "email:join.button": {
+      "hash": "a26f0c4eaefc",
+      "status": "machine"
+    },
+    "email:join.fallback": {
+      "hash": "8963b0a22c41",
+      "status": "machine"
+    },
+    "email:join.footnote": {
+      "hash": "63020225339a",
+      "status": "machine"
+    },
+    "email:join.preheader": {
+      "hash": "c8cf65e64dcc",
+      "status": "machine"
+    },
+    "email:join.subject": {
+      "hash": "62c3211c73f7",
+      "status": "machine"
+    },
+    "email:join.title": {
+      "hash": "199e694c91e0",
+      "status": "machine"
+    },
+    "email:layout.linkFallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "email:layout.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "email:reminder.body1": {
+      "hash": "be9db8f979ce",
+      "status": "machine"
+    },
+    "email:reminder.body2": {
+      "hash": "9aaa9c31ce48",
+      "status": "machine"
+    },
+    "email:reminder.fallback": {
+      "hash": "103ed363f2dc",
+      "status": "machine"
+    },
+    "email:reminder.footnote": {
+      "hash": "7703c2271af9",
+      "status": "machine"
+    },
+    "email:reminder.footnoteFinal": {
+      "hash": "1fadd59b3f84",
+      "status": "machine"
+    },
+    "email:reminder.preheader": {
+      "hash": "4640b6a54f42",
+      "status": "machine"
+    },
+    "email:reminder.subject": {
+      "hash": "f0ce55d7fa34",
+      "status": "machine"
+    },
+    "email:reminder.subjectFinal": {
+      "hash": "f8e5819054e2",
+      "status": "machine"
+    },
+    "email:reminder.title": {
+      "hash": "51bc5e31b9af",
+      "status": "machine"
+    },
+    "email:reminder.titleFinal": {
+      "hash": "c6c1d88f054b",
       "status": "machine"
     },
     "forms:anesthesia.add": {
