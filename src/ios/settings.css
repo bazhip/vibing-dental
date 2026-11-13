@@ -55,22 +55,20 @@ html.native-ios .ios-cell-embed .chart-settings__field {
   border: 0;
   min-width: 0;
 }
-html.native-ios .ios-cell-embed .chart-settings__field + .chart-settings__field {
-  margin-top: 14px;
-  padding-top: 14px;
-  box-shadow: inset 0 0.5px 0 var(--ios-separator);
+/* The hairline between fieldsets is the bottom edge of the upper one: a
+   fieldset's top edge runs through its legend ("Your fields"), and WebKit
+   won't float a legend off it. */
+html.native-ios .ios-cell-embed .chart-settings__field:not(:last-of-type) {
+  padding-bottom: 14px;
+  box-shadow: inset 0 -0.5px 0 var(--ios-separator);
 }
-/* A floated legend leaves the fieldset's top edge, so the separator above
-   a fieldset runs over it, not through it. */
+html.native-ios .ios-cell-embed .chart-settings__field + .chart-settings__field { margin-top: 14px; }
 html.native-ios .ios-cell-embed legend {
-  float: left;
-  width: 100%;
   padding: 0;
   font: 600 var(--ios-text-body) / 1.3 var(--ios-font);
   color: var(--ios-label);
 }
 html.native-ios .ios-cell-embed .chart-settings__note {
-  clear: left;
   margin: 4px 0 8px;
   font: 400 var(--ios-text-footnote) / 1.35 var(--ios-font);
   color: var(--ios-label-muted);
