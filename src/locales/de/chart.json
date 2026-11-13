@@ -252,7 +252,9 @@
     "strokeColorAria": "Strichfarbe {{color}}",
     "strokeWidth": "Strichstärke",
     "strokeWidthValue": "{{width}} Pixel",
-    "clearStrokes": "Striche löschen"
+    "clearStrokes": "Striche löschen",
+    "more": "Weitere Diagrammwerkzeuge",
+    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße"
   },
   "codeRef": {
     "all": "Codes",

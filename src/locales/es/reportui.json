@@ -114,7 +114,9 @@
     "discardConfirm": "¿Descartar los cambios sin guardar en las plantillas del informe para el propietario?",
     "deleteConfirm": "¿Eliminar la plantilla «{{name}}»? Los odontogramas que la usan pasan a la predeterminada.",
     "saveFailed": "No se pudieron guardar las plantillas.",
-    "previewFailed": "No se pudo crear la vista previa. Vuelva a intentarlo en un momento."
+    "previewFailed": "No se pudo crear la vista previa. Vuelva a intentarlo en un momento.",
+    "setDefaultShort": "Predeterminada",
+    "previewShort": "Vista previa"
   },
   "sections": {
     "diagram": "Diagrama de la boca",

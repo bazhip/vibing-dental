@@ -256,7 +256,9 @@
     "strokeColorAria": "Couleur du trait {{color}}",
     "strokeWidth": "Épaisseur du trait",
     "strokeWidthValue": "{{width}} pixels",
-    "clearStrokes": "Effacer les traits"
+    "clearStrokes": "Effacer les traits",
+    "more": "Plus d’outils de diagramme",
+    "moreTitle": "Plus d’outils — commentaires, numéros, zoom, taille du texte"
   },
   "codeRef": {
     "all": "Codes",

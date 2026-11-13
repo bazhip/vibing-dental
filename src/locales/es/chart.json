@@ -256,7 +256,9 @@
     "strokeColorAria": "Color del trazo {{color}}",
     "strokeWidth": "Grosor del trazo",
     "strokeWidthValue": "{{width}} píxeles",
-    "clearStrokes": "Borrar trazos"
+    "clearStrokes": "Borrar trazos",
+    "more": "Más herramientas del diagrama",
+    "moreTitle": "Más herramientas: comentarios, números, zoom, tamaño del texto"
   },
   "codeRef": {
     "all": "Códigos",

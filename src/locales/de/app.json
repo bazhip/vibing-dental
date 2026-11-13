@@ -47,11 +47,6 @@
     "undatedVisit": "Besuch ohne Datum",
     "visitLatest": "{{date}} · neuester",
     "visitEarlier": "{{date}} · früherer",
-    "viewing": "Ansicht: gespeicherter Besuch",
-    "viewingShort": "Ansicht",
-    "viewingTitle": "Gespeicherter Besuch — nur Ansicht, damit er nicht versehentlich geändert wird. Wählen Sie Akte bearbeiten, um Änderungen vorzunehmen.",
-    "viewingTitleDated": "Gespeicherter Besuch vom {{date}} — nur Ansicht, damit er nicht versehentlich geändert wird. Wählen Sie Akte bearbeiten, um Änderungen vorzunehmen.",
-    "editing": "Gespeicherten Besuch bearbeiten",
     "editingShort": "Bearbeitung",
     "editingTitle": "Gespeicherter Besuch wird bearbeitet — Änderungen werden automatisch gespeichert",
     "signIn": "Anmelden",
@@ -60,17 +55,16 @@
     "signUpHint": "Legen Sie ein Praxiskonto an — Ihre Akten werden in der Cloud gespeichert und Ihre PDFs tragen Praxisnamen und Logo",
     "myCharts": "Meine Akten",
     "myChartsShort": "Akten",
-    "newVisit": "+ Neuer Besuch",
-    "newVisitShort": "+ Besuch",
-    "newVisitTitle": "Einen neuen datierten Besuch für diesen Patienten beginnen — Identität und bereits fehlende Zähne werden übernommen",
-    "history": "Verlauf",
-    "historyTitle": "Jede gespeicherte Version dieser Akte — wer sie gespeichert hat und wann",
     "editChart": "Akte bearbeiten",
     "editChartShort": "Bearbeiten",
     "undo": "Änderungen rückgängig",
-    "undoShort": "Rückgängig",
     "undoTitle": "Diese Akte auf den Stand zurücksetzen, den sie hatte, als Sie Akte bearbeiten gewählt haben",
-    "doneEditing": "Bearbeitung beenden"
+    "doneEditing": "Bearbeitung beenden",
+    "viewOnlyChipTitle": "Nur Ansicht, damit ein gespeicherter Besuch nicht versehentlich geändert wird — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen",
+    "newPatient": "Neuer Patient",
+    "newPatientShort": "Neu",
+    "newPatientTitle": "Eine leere Akte für einen neuen Patienten beginnen",
+    "doneEditingShort": "Fertig"
   },
   "status": {
     "srSaving": "Akte wird gespeichert",
@@ -89,11 +83,11 @@
     "saveTitle": "Vorerst auf diesem Gerät gespeichert — wird automatisch gespeichert, sobald Sie mit der Erfassung beginnen. Jetzt speichern, um es auf einem anderen Gerät zu öffnen.",
     "unsaved": "Nicht gespeicherte Änderungen",
     "unsavedTitle": "Wird automatisch gespeichert …",
-    "saved": "Gespeichert · {{when}}",
     "savedTitle": "In der Cloud gespeichert: {{when}}",
     "local": "Nur auf diesem Gerät",
     "localTitle": "Testakten bleiben in diesem Browser. Erstellen Sie ein kostenloses Konto, um in der Cloud zu speichern.",
-    "saveHint": "Tragen Sie vor dem Speichern einen Patientennamen ein — so finden Sie diese Akte wieder."
+    "saveHint": "Tragen Sie vor dem Speichern einen Patientennamen ein — so finden Sie diese Akte wieder.",
+    "savedRich": "<word>Gespeichert · </word>{{when}}"
   },
   "otherTab": {
     "text": "Diese Akte ist in einem anderen Tab oder Fenster geöffnet. Beide Tabs bearbeiten dieselbe Arbeitskopie — schließen Sie einen davon, damit Ihre Änderungen nicht überschrieben werden."
@@ -266,5 +260,15 @@
   },
   "storage": {
     "full": "Der Speicher dieses Browsers ist voll — die letzten Änderungen werden auf diesem Gerät möglicherweise nicht behalten. Speichern Sie die Akte oder laden Sie das PDF herunter."
+  },
+  "chartsMenu": {
+    "thisPatient": "Dieser Patient",
+    "newVisit": "Neuer Besuch",
+    "newVisitHint": "Ein neuer datierter Besuch — Identität und bereits fehlende Zähne werden übernommen.",
+    "history": "Versionsverlauf",
+    "historyHint": "Jede gespeicherte Version dieser Akte — wer sie gespeichert hat und wann.",
+    "allPatients": "Alle Patienten",
+    "openLibrary": "Meine Akten öffnen…",
+    "openLibraryHint": "Suchen und öffnen Sie die Akten eines beliebigen Patienten."
   }
 }

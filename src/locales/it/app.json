@@ -47,11 +47,6 @@
     "undatedVisit": "Visita senza data",
     "visitLatest": "{{date}} · ultima",
     "visitEarlier": "{{date}} · precedente",
-    "viewing": "Visita salvata (sola lettura)",
-    "viewingShort": "Lettura",
-    "viewingTitle": "Visita salvata — in sola lettura, così non viene modificata per errore. Scelga Modifica cartella per apportare modifiche.",
-    "viewingTitleDated": "Visita salvata del {{date}} — in sola lettura, così non viene modificata per errore. Scelga Modifica cartella per apportare modifiche.",
-    "editing": "Modifica di una visita salvata",
     "editingShort": "Modifica",
     "editingTitle": "Modifica di una visita salvata — le modifiche vengono salvate automaticamente",
     "signIn": "Accedi",
@@ -60,17 +55,16 @@
     "signUpHint": "Crei un account dello studio — le Sue cartelle vengono salvate nel cloud e i PDF riportano il nome e il logo del Suo studio",
     "myCharts": "Le mie cartelle",
     "myChartsShort": "Cartelle",
-    "newVisit": "+ Nuova visita",
-    "newVisitShort": "+ Visita",
-    "newVisitTitle": "Avviare una nuova visita datata per questo paziente — identità e denti già assenti vengono riportati",
-    "history": "Cronologia",
-    "historyTitle": "Ogni versione salvata di questa cartella — chi l’ha salvata e quando",
     "editChart": "Modifica cartella",
     "editChartShort": "Modifica",
     "undo": "Annulla modifiche",
-    "undoShort": "Annulla",
     "undoTitle": "Riportare questa cartella com’era quando ha scelto Modifica cartella",
-    "doneEditing": "Fine modifica"
+    "doneEditing": "Fine modifica",
+    "viewOnlyChipTitle": "Sola lettura, così una visita salvata non viene modificata per errore — scelga Modifica cartella per apportare modifiche",
+    "newPatient": "Nuovo paziente",
+    "newPatientShort": "Nuovo",
+    "newPatientTitle": "Avviare una cartella vuota per un nuovo paziente",
+    "doneEditingShort": "Fine"
   },
   "status": {
     "srSaving": "Salvataggio della cartella",
@@ -89,11 +83,11 @@
     "saveTitle": "Per ora resta su questo dispositivo — viene salvato automaticamente appena inizia a compilare l’odontogramma. Salvi ora per aprirlo su un altro dispositivo.",
     "unsaved": "Modifiche non salvate",
     "unsavedTitle": "Salvataggio automatico…",
-    "saved": "Salvato · {{when}}",
     "savedTitle": "Salvato nel cloud: {{when}}",
     "local": "Solo su questo dispositivo",
     "localTitle": "Le cartelle di prova restano in questo browser. Crei un account gratuito per salvare nel cloud.",
-    "saveHint": "Aggiunga il nome del paziente prima di salvare: è così che ritroverà questa cartella."
+    "saveHint": "Aggiunga il nome del paziente prima di salvare: è così che ritroverà questa cartella.",
+    "savedRich": "<word>Salvato · </word>{{when}}"
   },
   "otherTab": {
     "text": "Questa cartella è aperta in un’altra scheda o finestra. Entrambe modificano la stessa copia di lavoro: ne chiuda una per evitare di sovrascrivere le Sue modifiche."
@@ -268,5 +262,15 @@
   },
   "storage": {
     "full": "La memoria di questo browser è piena — le ultime modifiche potrebbero non essere conservate su questo dispositivo. Salvi la cartella o scarichi il PDF."
+  },
+  "chartsMenu": {
+    "thisPatient": "Questo paziente",
+    "newVisit": "Nuova visita",
+    "newVisitHint": "Una nuova visita datata — identità e denti già assenti vengono riportati.",
+    "history": "Cronologia delle versioni",
+    "historyHint": "Ogni versione salvata di questa cartella — chi l’ha salvata e quando.",
+    "allPatients": "Tutti i pazienti",
+    "openLibrary": "Apri Le mie cartelle…",
+    "openLibraryHint": "Cerchi e apra le cartelle di qualsiasi paziente."
   }
 }

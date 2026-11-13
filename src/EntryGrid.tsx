@@ -13,6 +13,7 @@ import {
 } from './components';
 import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
+import { ChartsMenu } from './components/ChartsMenu';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
@@ -1122,6 +1123,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       toast(t('errors.newVisit', { error: friendlyError(err) }), { kind: 'error' });
     });
   };
+  // Start a blank chart (asks only when something would be lost).
+  const startNewPatient = async () => {
+    if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return;
+    chart.resetChart();
+  };
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
     setEditUnlocked(true);
@@ -1231,6 +1237,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     </>
                   );
                 })()}
+                {/* Saved-visit state beside the visit it describes. */}
+                {(editingSavedVisit || viewingSavedVisit) && (
+                  <span
+                    className={`topbar-state-chip topbar-state-chip--${editingSavedVisit ? 'editing' : 'viewing'}`}
+                    title={editingSavedVisit ? t('topbar.editingTitle') : t('topbar.viewOnlyChipTitle')}
+                  >
+                    {editingSavedVisit ? (
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M11.3 2.3l2.4 2.4-8 8L3 13l.3-2.7z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+                    ) : (
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="currentColor" strokeWidth="1.5" /><circle cx="8" cy="8" r="2" fill="currentColor" /></svg>
+                    )}
+                    {editingSavedVisit ? t('topbar.editingShort') : t('status.viewOnly')}
+                  </span>
+                )}
               </>
             ) : (
               <span className="entry-grid__patient-empty">
@@ -1240,24 +1260,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </div>
           </div>
         </div>
-        <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}${viewingSavedVisit ? ' entry-grid__topbar-actions--viewing' : ''}`}>
-          {viewingSavedVisit && (
-            <span
-              className="topbar-editing topbar-viewing"
-              title={chart.patientInfo.date
-                ? t('topbar.viewingTitleDated', { date: chart.patientInfo.date })
-                : t('topbar.viewingTitle')}
-            >
-              <span className="topbar-label-long">{t('topbar.viewing')}</span>
-              <span className="topbar-label-short">{t('topbar.viewingShort')}</span>
-            </span>
-          )}
-          {editingSavedVisit && (
-            <span className="topbar-editing" title={t('topbar.editingTitle')}>
-              <span className="topbar-label-long">{t('topbar.editing')}</span>
-              <span className="topbar-label-short">{t('topbar.editingShort')}</span>
-            </span>
-          )}
+        {/* --app: the signed-in toolbar (phones lay it out as an even,
+            full-width row). */}
+        <div className={`entry-grid__topbar-actions${cloud.enabled && !trial ? ' entry-grid__topbar-actions--app' : ''}`}>
           {trial && (
             <>
               <button
@@ -1355,7 +1360,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             if (cloud.lastSavedAt) {
               return (
                 <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
-                  {t('status.saved', { when: formatSavedAt(cloud.lastSavedAt) })}
+                  <Trans
+                    t={t}
+                    i18nKey="status.savedRich"
+                    values={{ when: formatSavedAt(cloud.lastSavedAt) }}
+                    components={{ word: <span className="save-status__word" /> }}
+                  />
                 </span>
               );
             }
@@ -1366,17 +1376,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             </span>
           ) : null}
           {cloud.enabled && (
-            <button
-              type="button"
-              className="chart-menu__trigger topbar-library-btn"
-              data-tour="library"
-              aria-label={t('topbar.myCharts')}
-              onClick={openLibrary}
-              aria-haspopup="dialog"
-            >
-              <span className="topbar-label-long">{t('topbar.myCharts')}</span>
-              <span className="topbar-label-short">{t('topbar.myChartsShort')}</span>
-            </button>
+            <ChartsMenu
+              onOpenLibrary={openLibrary}
+              thisPatient={chart.openedExisting && chart.cloudChartId ? {
+                name: chart.patientInfo.patientName,
+                onNewVisit: startNewVisitFromLatest,
+                onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
+              } : undefined}
+            />
           )}
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
               behind JWT-gated edge functions, so trial (no account) and
@@ -1416,30 +1423,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
+          {/* A fresh chart is always one tap away (people reopen the app
+              on an old visit) — except mid-edit, where Done comes first. */}
+          {cloud.enabled && !editingSavedVisit && (
+            <button
+              type="button"
+              className="chart-menu__trigger topbar-library-btn topbar-new-patient"
+              onClick={startNewPatient}
+              aria-label={t('topbar.newPatient')}
+              title={t('topbar.newPatientTitle')}
+            >
+              <svg className="topbar-plus" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+              <span className="topbar-label-long">{t('topbar.newPatient')}</span>
+              <span className="topbar-label-short">{t('topbar.newPatientShort')}</span>
+            </button>
+          )}
           {viewingSavedVisit && (
-            <>
-              <button
-                type="button"
-                className="chart-menu__trigger topbar-library-btn"
-                onClick={startNewVisitFromLatest}
-                title={t('topbar.newVisitTitle')}
-              >
-                <span className="topbar-label-long">{t('topbar.newVisit')}</span>
-                <span className="topbar-label-short">{t('topbar.newVisitShort')}</span>
-              </button>
-              <button
-                type="button"
-                className="chart-menu__trigger topbar-library-btn"
-                onClick={() => setHistoryFor({ id: chart.cloudChartId })}
-                title={t('topbar.historyTitle')}
-              >
-                {t('topbar.history')}
-              </button>
-              <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
-                <span className="topbar-label-long">{t('topbar.editChart')}</span>
-                <span className="topbar-label-short">{t('topbar.editChartShort')}</span>
-              </button>
-            </>
+            <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
+              <span className="topbar-label-long">{t('topbar.editChart')}</span>
+              <span className="topbar-label-short">{t('topbar.editChartShort')}</span>
+            </button>
           )}
           {editingSavedVisit && (
             <>
@@ -1447,10 +1450,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 <button
                   type="button"
                   className="topbar-editing__undo"
+                  aria-label={t('topbar.undo')}
                   onClick={revertUnlockedChanges}
                   title={t('topbar.undoTitle')}
                 >
-                  <span aria-hidden="true">↺</span> <span className="topbar-label-long">{t('topbar.undo')}</span><span className="topbar-label-short">{t('topbar.undoShort')}</span>
+                  <span aria-hidden="true">↺</span> <span className="topbar-icon-label">{t('topbar.undo')}</span>
                 </button>
               )}
               <button
@@ -1458,7 +1462,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 className="entry-grid__button entry-grid__button--topbar"
                 onClick={doneEditing}
               >
-                {t('topbar.doneEditing')}
+                <span className="topbar-label-long">{t('topbar.doneEditing')}</span>
+                <span className="topbar-label-short">{t('topbar.doneEditingShort')}</span>
               </button>
             </>
           )}
@@ -1555,11 +1560,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               chart.handlePatientInfoChange('recallDate', '');
             }
           }}
-          onNewPatient={async () => {
-            // Only ask when something would actually be lost.
-            if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return;
-            chart.resetChart();
-          }}
+          onNewPatient={startNewPatient}
           onLoadPdf={async (file) => {
             if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return;
             await chart.loadFromPdf(file);

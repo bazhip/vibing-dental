@@ -252,7 +252,9 @@
     "strokeColorAria": "Stroke color {{color}}",
     "strokeWidth": "Stroke width",
     "strokeWidthValue": "{{width}} pixels",
-    "clearStrokes": "Clear strokes"
+    "clearStrokes": "Clear strokes",
+    "more": "More diagram tools",
+    "moreTitle": "More tools — comments, numbers, zoom, text size"
   },
   "codeRef": {
     "all": "Codes",

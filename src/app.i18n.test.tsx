@@ -111,6 +111,7 @@ vi.mock('./components/DocumentsModal', () => ({ DocumentsModal: () => null }));
 import EntryGrid from './EntryGrid';
 import { DialogHost, confirmDialog, promptDialog, toast, friendlyError } from './components/ui/dialogs';
 import { ChartMenu } from './components/ChartMenu';
+import { ChartsMenu } from './components/ChartsMenu';
 import { SidebarLayout } from './components/Layouts';
 import './components/MobileSectionMenu';
 import { useCloudSync, type DiscardAction } from './hooks/useCloudSync';
@@ -219,10 +220,11 @@ describe('chart frame', () => {
       expect(untranslated()).toEqual([]);
       unmount();
     }
-    // Saved: the time of day sits inside the same wrapped message.
+    // Saved: the word (hidden on phones) and the time of day are one message.
     sync.override = fakeCloud({ lastSavedAt: new Date().toISOString() });
     await frame();
-    expect(screen.getByText(/^⟦Saved · ⟦.+⟧⟧$/)).toBeTruthy();
+    expect(document.querySelector('.save-status__word')!.textContent).toBe('⟦Saved · ⟧');
+    expect(document.querySelector('.save-status--saved')!.textContent).toMatch(/^⟦Saved · ⟧.*⟦.+⟧/);
     expect(untranslated()).toEqual([]);
   });
 
@@ -248,13 +250,19 @@ describe('chart frame', () => {
     seedChart({ date: '2026-01-05', saved: true });
     sync.override = fakeCloud({ lastSavedAt: new Date().toISOString() });
     const view = await frame();
-    expect(screen.getByText('⟦Viewing saved visit⟧')).toBeTruthy();
+    expect(document.querySelector('.topbar-state-chip')!.textContent).toBe('⟦View only⟧');
     expect(screen.getByText('⟦Edit chart⟧')).toBeTruthy();
-    expect(screen.getByText('⟦+ New visit⟧')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '⟦New patient⟧' })).toBeTruthy();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
       '⟦2026-11-12 · latest⟧',
       '⟦2026-01-05 · earlier⟧',
     ]);
+    expect(untranslated()).toEqual([]);
+    // My charts ▾: this patient's New visit and Version history, plus the library.
+    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    expect(screen.getByText('⟦New visit⟧')).toBeTruthy();
+    expect(screen.getByText('⟦Version history⟧')).toBeTruthy();
+    expect(screen.getByText('⟦Open My charts…⟧')).toBeTruthy();
     expect(untranslated()).toEqual([]);
     view.unmount();
 
@@ -262,9 +270,10 @@ describe('chart frame', () => {
     session.set(`chart.unlocked.${CHART_ID}`, '1');
     session.set(`chart.unlockSnapshot.${CHART_ID}`, '{}');
     await frame();
-    expect(screen.getByText('⟦Editing saved visit⟧')).toBeTruthy();
+    expect(document.querySelector('.topbar-state-chip')!.textContent).toBe('⟦Editing⟧');
     expect(screen.getByText('⟦Undo changes⟧')).toBeTruthy();
     expect(screen.getByText('⟦Done editing⟧')).toBeTruthy();
+    expect(screen.getByText('⟦Done⟧')).toBeTruthy();
     expect(untranslated()).toEqual([]);
 
     // The revert confirmation is a dialog of ours.
@@ -327,6 +336,21 @@ describe('menus and layout', () => {
 
     render(<ChartMenu onOpenWalkthrough={noop} />);
     fireEvent.click(screen.getByRole('button', { name: '⟦Open settings menu⟧' }));
+    expect(findUntranslated(document.body)).toEqual([]);
+  });
+
+  it('My charts ▾, for an unnamed saved patient and for an unsaved chart', () => {
+    const noop = () => {};
+    const { unmount } = render(<ChartsMenu onOpenLibrary={noop} thisPatient={{ name: '', onNewVisit: noop, onHistory: noop }} />);
+    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    expect(screen.getByText('⟦This patient⟧')).toBeTruthy();
+    expect(screen.getByText('⟦All patients⟧')).toBeTruthy();
+    expect(findUntranslated(document.body)).toEqual([]);
+    unmount();
+
+    render(<ChartsMenu onOpenLibrary={noop} />);
+    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    expect(screen.queryByText('⟦New visit⟧')).toBeNull();
     expect(findUntranslated(document.body)).toEqual([]);
   });
 

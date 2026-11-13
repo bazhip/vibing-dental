@@ -114,7 +114,9 @@
     "discardConfirm": "Scartare le modifiche non salvate ai modelli di referto per il proprietario?",
     "deleteConfirm": "Eliminare il modello “{{name}}”? Gli odontogrammi che lo usano passano al modello predefinito.",
     "saveFailed": "Impossibile salvare i modelli.",
-    "previewFailed": "Impossibile creare l’anteprima. Riprovi tra un istante."
+    "previewFailed": "Impossibile creare l’anteprima. Riprovi tra un istante.",
+    "setDefaultShort": "Predefinito",
+    "previewShort": "Anteprima"
   },
   "sections": {
     "diagram": "Schema della bocca",

@@ -41,7 +41,7 @@
       },
       "library": {
         "title": "Meine Akten",
-        "body": "Öffnen Sie frühere Besuche eines Patienten erneut (schreibgeschützt, bis Sie auf Bearbeiten klicken), wechseln Sie zwischen Besuchen nach Datum, legen Sie einen neuen Patienten an oder laden Sie ein Akten-PDF."
+        "body": "Öffnen Sie die Akten eines beliebigen Patienten (gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten klicken) oder beginnen Sie — für den angezeigten Patienten — einen neuen Besuch bzw. sehen Sie dessen Versionsverlauf ein. Neuer Patient, gleich daneben, beginnt eine leere Akte."
       },
       "dictate": {
         "title": "Diktieren",

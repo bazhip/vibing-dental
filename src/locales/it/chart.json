@@ -256,7 +256,9 @@
     "strokeColorAria": "Colore del tratto {{color}}",
     "strokeWidth": "Spessore del tratto",
     "strokeWidthValue": "{{width}} pixel",
-    "clearStrokes": "Cancella tratti"
+    "clearStrokes": "Cancella tratti",
+    "more": "Altri strumenti del diagramma",
+    "moreTitle": "Altri strumenti — commenti, numeri, zoom, dimensione del testo"
   },
   "codeRef": {
     "all": "Codici",

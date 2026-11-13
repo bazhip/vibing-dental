@@ -113,7 +113,9 @@
     "discardConfirm": "Ihre nicht gespeicherten Änderungen an den Vorlagen für den Besitzerbericht verwerfen?",
     "deleteConfirm": "Die Vorlage „{{name}}“ löschen? Zahnschemata, die sie verwenden, wechseln zur Standardvorlage.",
     "saveFailed": "Die Vorlagen konnten nicht gespeichert werden.",
-    "previewFailed": "Die Vorschau konnte nicht erstellt werden. Versuchen Sie es gleich noch einmal."
+    "previewFailed": "Die Vorschau konnte nicht erstellt werden. Versuchen Sie es gleich noch einmal.",
+    "setDefaultShort": "Als Standard",
+    "previewShort": "Vorschau"
   },
   "sections": {
     "diagram": "Gebissschema",

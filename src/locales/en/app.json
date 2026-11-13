@@ -47,11 +47,6 @@
     "undatedVisit": "Undated visit",
     "visitLatest": "{{date}} · latest",
     "visitEarlier": "{{date}} · earlier",
-    "viewing": "Viewing saved visit",
-    "viewingShort": "Viewing",
-    "viewingTitle": "Viewing a saved visit — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.",
-    "viewingTitleDated": "Viewing a saved visit from {{date}} — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.",
-    "editing": "Editing saved visit",
     "editingShort": "Editing",
     "editingTitle": "Editing a saved visit — changes save automatically",
     "signIn": "Sign in",
@@ -60,17 +55,16 @@
     "signUpHint": "Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo",
     "myCharts": "My charts",
     "myChartsShort": "Charts",
-    "newVisit": "+ New visit",
-    "newVisitShort": "+ Visit",
-    "newVisitTitle": "Start a fresh dated visit for this patient — identity and already-gone teeth carry over",
-    "history": "History",
-    "historyTitle": "Every saved version of this chart — who saved it and when",
     "editChart": "Edit chart",
     "editChartShort": "Edit",
     "undo": "Undo changes",
-    "undoShort": "Undo",
     "undoTitle": "Put this chart back the way it was when you chose Edit chart",
-    "doneEditing": "Done editing"
+    "doneEditing": "Done editing",
+    "viewOnlyChipTitle": "View only, so a saved visit isn’t changed by accident — choose Edit chart to make changes",
+    "newPatient": "New patient",
+    "newPatientShort": "New",
+    "newPatientTitle": "Start a blank chart for a new patient",
+    "doneEditingShort": "Done"
   },
   "status": {
     "srSaving": "Saving chart",
@@ -89,11 +83,11 @@
     "saveTitle": "Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device.",
     "unsaved": "Unsaved changes",
     "unsavedTitle": "Saving automatically…",
-    "saved": "Saved · {{when}}",
     "savedTitle": "Saved to the cloud {{when}}",
     "local": "On this device only",
     "localTitle": "Trial charts stay in this browser. Create a free account to save to the cloud.",
-    "saveHint": "Add a patient name before saving — it’s how you’ll find this chart again."
+    "saveHint": "Add a patient name before saving — it’s how you’ll find this chart again.",
+    "savedRich": "<word>Saved · </word>{{when}}"
   },
   "otherTab": {
     "text": "This chart is open in another tab or window. Both tabs edit the same working copy — close one to avoid overwriting your changes."
@@ -266,5 +260,15 @@
   },
   "storage": {
     "full": "This browser’s storage is full — recent changes may not be kept on this device. Save the chart or download its PDF."
+  },
+  "chartsMenu": {
+    "thisPatient": "This patient",
+    "newVisit": "New visit",
+    "newVisitHint": "A fresh dated visit — identity and already-gone teeth carry over.",
+    "history": "Version history",
+    "historyHint": "Every saved version of this chart — who saved it and when.",
+    "allPatients": "All patients",
+    "openLibrary": "Open My charts…",
+    "openLibraryHint": "Search and open any patient’s charts."
   }
 }

@@ -41,7 +41,7 @@
       },
       "library": {
         "title": "Le mie cartelle",
-        "body": "Riapra le visite passate di un paziente (in sola lettura finché non fa clic su Modifica), passi da una visita all’altra per data, crei un nuovo paziente o carichi il PDF di una cartella."
+        "body": "Apra le cartelle di qualsiasi paziente (le visite salvate si aprono in sola lettura finché non fa clic su Modifica) oppure — per il paziente sullo schermo — avvii una nuova visita o consulti la cronologia delle versioni. Nuovo paziente, lì accanto, avvia una cartella vuota."
       },
       "dictate": {
         "title": "Detta",

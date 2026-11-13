@@ -304,6 +304,38 @@
       "hash": "a2f17f2a61a2",
       "status": "machine"
     },
+    "app:chartsMenu.allPatients": {
+      "hash": "6ad44df1e99b",
+      "status": "machine"
+    },
+    "app:chartsMenu.history": {
+      "hash": "a6df11e706c5",
+      "status": "machine"
+    },
+    "app:chartsMenu.historyHint": {
+      "hash": "a15af523a075",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisitHint": {
+      "hash": "ce74cc5e98c0",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibrary": {
+      "hash": "d4df8fa8d896",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibraryHint": {
+      "hash": "a3b5d05273a3",
+      "status": "machine"
+    },
+    "app:chartsMenu.thisPatient": {
+      "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -656,8 +688,8 @@
       "hash": "4f210273a1ac",
       "status": "machine"
     },
-    "app:status.saved": {
-      "hash": "0ff5ee4af361",
+    "app:status.savedRich": {
+      "hash": "1bd58480dd7b",
       "status": "machine"
     },
     "app:status.savedTitle": {
@@ -888,16 +920,16 @@
       "hash": "058f24ef2d7c",
       "status": "machine"
     },
+    "app:topbar.doneEditingShort": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "app:topbar.editChart": {
       "hash": "b2cc19cde314",
       "status": "machine"
     },
     "app:topbar.editChartShort": {
       "hash": "464c4ffd019e",
-      "status": "machine"
-    },
-    "app:topbar.editing": {
-      "hash": "2bd6ed926a1c",
       "status": "machine"
     },
     "app:topbar.editingShort": {
@@ -908,14 +940,6 @@
       "hash": "f3d060a173e0",
       "status": "machine"
     },
-    "app:topbar.history": {
-      "hash": "0e7696009337",
-      "status": "machine"
-    },
-    "app:topbar.historyTitle": {
-      "hash": "6326b08fe574",
-      "status": "machine"
-    },
     "app:topbar.myCharts": {
       "hash": "ff4314efd66b",
       "status": "machine"
@@ -924,16 +948,16 @@
       "hash": "f91cf6c6263d",
       "status": "machine"
     },
-    "app:topbar.newVisit": {
-      "hash": "6ccbf454f5e3",
+    "app:topbar.newPatient": {
+      "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "app:topbar.newVisitShort": {
-      "hash": "5ed4e2b7f59c",
+    "app:topbar.newPatientShort": {
+      "hash": "18fdd549b2ed",
       "status": "machine"
     },
-    "app:topbar.newVisitTitle": {
-      "hash": "bdd3b56aaebf",
+    "app:topbar.newPatientTitle": {
+      "hash": "44e47aa357da",
       "status": "machine"
     },
     "app:topbar.patientEmpty": {
@@ -964,28 +988,12 @@
       "hash": "ba06242948bf",
       "status": "machine"
     },
-    "app:topbar.undoShort": {
-      "hash": "a8283ade3185",
-      "status": "machine"
-    },
     "app:topbar.undoTitle": {
       "hash": "f30bb8ce79e0",
       "status": "machine"
     },
-    "app:topbar.viewing": {
-      "hash": "76283913a192",
-      "status": "machine"
-    },
-    "app:topbar.viewingShort": {
-      "hash": "9dc859e86f2e",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitle": {
-      "hash": "4af92ca67cf7",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitleDated": {
-      "hash": "8f467bd1b521",
+    "app:topbar.viewOnlyChipTitle": {
+      "hash": "d6cd21b8c579",
       "status": "machine"
     },
     "app:topbar.visitEarlier": {
@@ -2158,6 +2166,14 @@
     },
     "chart:diagramView.markTitle": {
       "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.more": {
+      "hash": "5430e2711ef9",
+      "status": "machine"
+    },
+    "chart:diagramView.moreTitle": {
+      "hash": "a1634141d993",
       "status": "machine"
     },
     "chart:diagramView.numbers": {
@@ -6209,7 +6225,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
-      "hash": "d52a046d445b",
+      "hash": "3a551c60736b",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.title": {
@@ -7276,6 +7292,10 @@
       "hash": "196ad5430081",
       "status": "machine"
     },
+    "reportui:templates.previewShort": {
+      "hash": "324b134f57c7",
+      "status": "machine"
+    },
     "reportui:templates.previewSubtitle": {
       "hash": "dc8d83007267",
       "status": "machine"
@@ -7314,6 +7334,10 @@
     },
     "reportui:templates.setDefault": {
       "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefaultShort": {
+      "hash": "ae188faa0901",
       "status": "machine"
     },
     "reportui:templates.showGrades": {
@@ -8950,6 +8974,38 @@
       "hash": "a2f17f2a61a2",
       "status": "machine"
     },
+    "app:chartsMenu.allPatients": {
+      "hash": "6ad44df1e99b",
+      "status": "machine"
+    },
+    "app:chartsMenu.history": {
+      "hash": "a6df11e706c5",
+      "status": "machine"
+    },
+    "app:chartsMenu.historyHint": {
+      "hash": "a15af523a075",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisitHint": {
+      "hash": "ce74cc5e98c0",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibrary": {
+      "hash": "d4df8fa8d896",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibraryHint": {
+      "hash": "a3b5d05273a3",
+      "status": "machine"
+    },
+    "app:chartsMenu.thisPatient": {
+      "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -9302,8 +9358,8 @@
       "hash": "4f210273a1ac",
       "status": "machine"
     },
-    "app:status.saved": {
-      "hash": "0ff5ee4af361",
+    "app:status.savedRich": {
+      "hash": "1bd58480dd7b",
       "status": "machine"
     },
     "app:status.savedTitle": {
@@ -9542,16 +9598,16 @@
       "hash": "058f24ef2d7c",
       "status": "machine"
     },
+    "app:topbar.doneEditingShort": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "app:topbar.editChart": {
       "hash": "b2cc19cde314",
       "status": "machine"
     },
     "app:topbar.editChartShort": {
       "hash": "464c4ffd019e",
-      "status": "machine"
-    },
-    "app:topbar.editing": {
-      "hash": "2bd6ed926a1c",
       "status": "machine"
     },
     "app:topbar.editingShort": {
@@ -9562,14 +9618,6 @@
       "hash": "f3d060a173e0",
       "status": "machine"
     },
-    "app:topbar.history": {
-      "hash": "0e7696009337",
-      "status": "machine"
-    },
-    "app:topbar.historyTitle": {
-      "hash": "6326b08fe574",
-      "status": "machine"
-    },
     "app:topbar.myCharts": {
       "hash": "ff4314efd66b",
       "status": "machine"
@@ -9578,16 +9626,16 @@
       "hash": "f91cf6c6263d",
       "status": "machine"
     },
-    "app:topbar.newVisit": {
-      "hash": "6ccbf454f5e3",
+    "app:topbar.newPatient": {
+      "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "app:topbar.newVisitShort": {
-      "hash": "5ed4e2b7f59c",
+    "app:topbar.newPatientShort": {
+      "hash": "18fdd549b2ed",
       "status": "machine"
     },
-    "app:topbar.newVisitTitle": {
-      "hash": "bdd3b56aaebf",
+    "app:topbar.newPatientTitle": {
+      "hash": "44e47aa357da",
       "status": "machine"
     },
     "app:topbar.patientEmpty": {
@@ -9618,28 +9666,12 @@
       "hash": "ba06242948bf",
       "status": "machine"
     },
-    "app:topbar.undoShort": {
-      "hash": "a8283ade3185",
-      "status": "machine"
-    },
     "app:topbar.undoTitle": {
       "hash": "f30bb8ce79e0",
       "status": "machine"
     },
-    "app:topbar.viewing": {
-      "hash": "76283913a192",
-      "status": "machine"
-    },
-    "app:topbar.viewingShort": {
-      "hash": "9dc859e86f2e",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitle": {
-      "hash": "4af92ca67cf7",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitleDated": {
-      "hash": "8f467bd1b521",
+    "app:topbar.viewOnlyChipTitle": {
+      "hash": "d6cd21b8c579",
       "status": "machine"
     },
     "app:topbar.visitEarlier": {
@@ -10828,6 +10860,14 @@
     },
     "chart:diagramView.markTitle": {
       "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.more": {
+      "hash": "5430e2711ef9",
+      "status": "machine"
+    },
+    "chart:diagramView.moreTitle": {
+      "hash": "a1634141d993",
       "status": "machine"
     },
     "chart:diagramView.numbers": {
@@ -14903,7 +14943,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
-      "hash": "d52a046d445b",
+      "hash": "3a551c60736b",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.title": {
@@ -15974,6 +16014,10 @@
       "hash": "196ad5430081",
       "status": "machine"
     },
+    "reportui:templates.previewShort": {
+      "hash": "324b134f57c7",
+      "status": "machine"
+    },
     "reportui:templates.previewSubtitle": {
       "hash": "dc8d83007267",
       "status": "machine"
@@ -16012,6 +16056,10 @@
     },
     "reportui:templates.setDefault": {
       "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefaultShort": {
+      "hash": "ae188faa0901",
       "status": "machine"
     },
     "reportui:templates.showGrades": {
@@ -17672,6 +17720,38 @@
       "hash": "a2f17f2a61a2",
       "status": "machine"
     },
+    "app:chartsMenu.allPatients": {
+      "hash": "6ad44df1e99b",
+      "status": "machine"
+    },
+    "app:chartsMenu.history": {
+      "hash": "a6df11e706c5",
+      "status": "machine"
+    },
+    "app:chartsMenu.historyHint": {
+      "hash": "a15af523a075",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisitHint": {
+      "hash": "ce74cc5e98c0",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibrary": {
+      "hash": "d4df8fa8d896",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibraryHint": {
+      "hash": "a3b5d05273a3",
+      "status": "machine"
+    },
+    "app:chartsMenu.thisPatient": {
+      "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -18024,8 +18104,8 @@
       "hash": "4f210273a1ac",
       "status": "machine"
     },
-    "app:status.saved": {
-      "hash": "0ff5ee4af361",
+    "app:status.savedRich": {
+      "hash": "1bd58480dd7b",
       "status": "machine"
     },
     "app:status.savedTitle": {
@@ -18264,16 +18344,16 @@
       "hash": "058f24ef2d7c",
       "status": "machine"
     },
+    "app:topbar.doneEditingShort": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "app:topbar.editChart": {
       "hash": "b2cc19cde314",
       "status": "machine"
     },
     "app:topbar.editChartShort": {
       "hash": "464c4ffd019e",
-      "status": "machine"
-    },
-    "app:topbar.editing": {
-      "hash": "2bd6ed926a1c",
       "status": "machine"
     },
     "app:topbar.editingShort": {
@@ -18284,14 +18364,6 @@
       "hash": "f3d060a173e0",
       "status": "machine"
     },
-    "app:topbar.history": {
-      "hash": "0e7696009337",
-      "status": "machine"
-    },
-    "app:topbar.historyTitle": {
-      "hash": "6326b08fe574",
-      "status": "machine"
-    },
     "app:topbar.myCharts": {
       "hash": "ff4314efd66b",
       "status": "machine"
@@ -18300,16 +18372,16 @@
       "hash": "f91cf6c6263d",
       "status": "machine"
     },
-    "app:topbar.newVisit": {
-      "hash": "6ccbf454f5e3",
+    "app:topbar.newPatient": {
+      "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "app:topbar.newVisitShort": {
-      "hash": "5ed4e2b7f59c",
+    "app:topbar.newPatientShort": {
+      "hash": "18fdd549b2ed",
       "status": "machine"
     },
-    "app:topbar.newVisitTitle": {
-      "hash": "bdd3b56aaebf",
+    "app:topbar.newPatientTitle": {
+      "hash": "44e47aa357da",
       "status": "machine"
     },
     "app:topbar.patientEmpty": {
@@ -18340,28 +18412,12 @@
       "hash": "ba06242948bf",
       "status": "machine"
     },
-    "app:topbar.undoShort": {
-      "hash": "a8283ade3185",
-      "status": "machine"
-    },
     "app:topbar.undoTitle": {
       "hash": "f30bb8ce79e0",
       "status": "machine"
     },
-    "app:topbar.viewing": {
-      "hash": "76283913a192",
-      "status": "machine"
-    },
-    "app:topbar.viewingShort": {
-      "hash": "9dc859e86f2e",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitle": {
-      "hash": "4af92ca67cf7",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitleDated": {
-      "hash": "8f467bd1b521",
+    "app:topbar.viewOnlyChipTitle": {
+      "hash": "d6cd21b8c579",
       "status": "machine"
     },
     "app:topbar.visitEarlier": {
@@ -19550,6 +19606,14 @@
     },
     "chart:diagramView.markTitle": {
       "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.more": {
+      "hash": "5430e2711ef9",
+      "status": "machine"
+    },
+    "chart:diagramView.moreTitle": {
+      "hash": "a1634141d993",
       "status": "machine"
     },
     "chart:diagramView.numbers": {
@@ -23625,7 +23689,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
-      "hash": "d52a046d445b",
+      "hash": "3a551c60736b",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.title": {
@@ -24696,6 +24760,10 @@
       "hash": "196ad5430081",
       "status": "machine"
     },
+    "reportui:templates.previewShort": {
+      "hash": "324b134f57c7",
+      "status": "machine"
+    },
     "reportui:templates.previewSubtitle": {
       "hash": "dc8d83007267",
       "status": "machine"
@@ -24734,6 +24802,10 @@
     },
     "reportui:templates.setDefault": {
       "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefaultShort": {
+      "hash": "ae188faa0901",
       "status": "machine"
     },
     "reportui:templates.showGrades": {
@@ -26394,6 +26466,38 @@
       "hash": "a2f17f2a61a2",
       "status": "machine"
     },
+    "app:chartsMenu.allPatients": {
+      "hash": "6ad44df1e99b",
+      "status": "machine"
+    },
+    "app:chartsMenu.history": {
+      "hash": "a6df11e706c5",
+      "status": "machine"
+    },
+    "app:chartsMenu.historyHint": {
+      "hash": "a15af523a075",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisit": {
+      "hash": "448d75b89b4d",
+      "status": "machine"
+    },
+    "app:chartsMenu.newVisitHint": {
+      "hash": "ce74cc5e98c0",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibrary": {
+      "hash": "d4df8fa8d896",
+      "status": "machine"
+    },
+    "app:chartsMenu.openLibraryHint": {
+      "hash": "a3b5d05273a3",
+      "status": "machine"
+    },
+    "app:chartsMenu.thisPatient": {
+      "hash": "bf5e4bdfc769",
+      "status": "machine"
+    },
     "app:customize.hint": {
       "hash": "fb6c656e4a3b",
       "status": "machine"
@@ -26746,8 +26850,8 @@
       "hash": "4f210273a1ac",
       "status": "machine"
     },
-    "app:status.saved": {
-      "hash": "0ff5ee4af361",
+    "app:status.savedRich": {
+      "hash": "1bd58480dd7b",
       "status": "machine"
     },
     "app:status.savedTitle": {
@@ -26986,16 +27090,16 @@
       "hash": "058f24ef2d7c",
       "status": "machine"
     },
+    "app:topbar.doneEditingShort": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
     "app:topbar.editChart": {
       "hash": "b2cc19cde314",
       "status": "machine"
     },
     "app:topbar.editChartShort": {
       "hash": "464c4ffd019e",
-      "status": "machine"
-    },
-    "app:topbar.editing": {
-      "hash": "2bd6ed926a1c",
       "status": "machine"
     },
     "app:topbar.editingShort": {
@@ -27006,14 +27110,6 @@
       "hash": "f3d060a173e0",
       "status": "machine"
     },
-    "app:topbar.history": {
-      "hash": "0e7696009337",
-      "status": "machine"
-    },
-    "app:topbar.historyTitle": {
-      "hash": "6326b08fe574",
-      "status": "machine"
-    },
     "app:topbar.myCharts": {
       "hash": "ff4314efd66b",
       "status": "machine"
@@ -27022,16 +27118,16 @@
       "hash": "f91cf6c6263d",
       "status": "machine"
     },
-    "app:topbar.newVisit": {
-      "hash": "6ccbf454f5e3",
+    "app:topbar.newPatient": {
+      "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "app:topbar.newVisitShort": {
-      "hash": "5ed4e2b7f59c",
+    "app:topbar.newPatientShort": {
+      "hash": "18fdd549b2ed",
       "status": "machine"
     },
-    "app:topbar.newVisitTitle": {
-      "hash": "bdd3b56aaebf",
+    "app:topbar.newPatientTitle": {
+      "hash": "44e47aa357da",
       "status": "machine"
     },
     "app:topbar.patientEmpty": {
@@ -27062,28 +27158,12 @@
       "hash": "ba06242948bf",
       "status": "machine"
     },
-    "app:topbar.undoShort": {
-      "hash": "a8283ade3185",
-      "status": "machine"
-    },
     "app:topbar.undoTitle": {
       "hash": "f30bb8ce79e0",
       "status": "machine"
     },
-    "app:topbar.viewing": {
-      "hash": "76283913a192",
-      "status": "machine"
-    },
-    "app:topbar.viewingShort": {
-      "hash": "9dc859e86f2e",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitle": {
-      "hash": "4af92ca67cf7",
-      "status": "machine"
-    },
-    "app:topbar.viewingTitleDated": {
-      "hash": "8f467bd1b521",
+    "app:topbar.viewOnlyChipTitle": {
+      "hash": "d6cd21b8c579",
       "status": "machine"
     },
     "app:topbar.visitEarlier": {
@@ -28272,6 +28352,14 @@
     },
     "chart:diagramView.markTitle": {
       "hash": "3dad347f739f",
+      "status": "machine"
+    },
+    "chart:diagramView.more": {
+      "hash": "5430e2711ef9",
+      "status": "machine"
+    },
+    "chart:diagramView.moreTitle": {
+      "hash": "a1634141d993",
       "status": "machine"
     },
     "chart:diagramView.numbers": {
@@ -32347,7 +32435,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
-      "hash": "d52a046d445b",
+      "hash": "3a551c60736b",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.title": {
@@ -33418,6 +33506,10 @@
       "hash": "196ad5430081",
       "status": "machine"
     },
+    "reportui:templates.previewShort": {
+      "hash": "324b134f57c7",
+      "status": "machine"
+    },
     "reportui:templates.previewSubtitle": {
       "hash": "dc8d83007267",
       "status": "machine"
@@ -33456,6 +33548,10 @@
     },
     "reportui:templates.setDefault": {
       "hash": "d09b4dd6265a",
+      "status": "machine"
+    },
+    "reportui:templates.setDefaultShort": {
+      "hash": "ae188faa0901",
       "status": "machine"
     },
     "reportui:templates.showGrades": {

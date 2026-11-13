@@ -82,6 +82,23 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   // a momentary "let me get closer" gesture, and every chart should open
   // at fit-to-width.
   const [zoom, setZoom] = React.useState(1);
+  // Compact screens: secondary controls live in a "⋯" pop-over so the
+  // toolbar stays one line (mode · undo/redo · more).
+  const [moreOpen, setMoreOpen] = React.useState(false);
+  const moreRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!moreOpen) return;
+    const onDown = (e: PointerEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMoreOpen(false); };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [moreOpen]);
   const ZOOM_MIN = 0.5;
   const ZOOM_MAX = 3;
   const zoomBy = (factor: number) =>
@@ -176,7 +193,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
                     : t('diagramView.markTitle')
               }
             >
-              {markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}
+              <span className="diagram-view__long">{markMode === 'missing-only' ? t('diagramView.markMissing') : markMode === 'extracted-only' ? t('diagramView.markExtracted') : t('diagramView.mark')}</span>
+              <span className="diagram-view__short">{t('diagramView.mark')}</span>
             </button>
             <button
               type="button"
@@ -223,7 +241,22 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </button>
           </div>
 
-          <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={addFreeComment}>
+          {/* Compact screens: everything below lives in this pop-over. On
+              wider screens the wrapper is display: contents (inline, as before). */}
+          <div className="diagram-view__more-wrap" ref={moreRef}>
+          <button
+            type="button"
+            className={`diagram-view__action diagram-view__more${moreOpen ? ' diagram-view__more--open' : ''}`}
+            onClick={() => setMoreOpen((o) => !o)}
+            aria-expanded={moreOpen}
+            aria-haspopup="true"
+            aria-label={t('diagramView.more')}
+            title={t('diagramView.moreTitle')}
+          >
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="3" cy="8" r="1.5" fill="currentColor" /><circle cx="8" cy="8" r="1.5" fill="currentColor" /><circle cx="13" cy="8" r="1.5" fill="currentColor" /></svg>
+          </button>
+          <div className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
+          <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
             {t('diagramView.freeComment')}
           </button>
 
@@ -338,6 +371,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               </button>
             </div>
           )}
+          </div>
+          </div>
 
         </div>
 

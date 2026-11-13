@@ -114,7 +114,9 @@
     "discardConfirm": "Abandonner vos modifications non enregistrées des modèles de compte rendu pour le propriétaire ?",
     "deleteConfirm": "Supprimer le modèle « {{name}} » ? Les dossiers qui l’utilisent passent au modèle par défaut.",
     "saveFailed": "Impossible d’enregistrer les modèles.",
-    "previewFailed": "Impossible de créer l’aperçu. Réessayez dans un instant."
+    "previewFailed": "Impossible de créer l’aperçu. Réessayez dans un instant.",
+    "setDefaultShort": "Par défaut",
+    "previewShort": "Aperçu"
   },
   "sections": {
     "diagram": "Schéma de la bouche",

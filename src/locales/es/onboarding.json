@@ -41,7 +41,7 @@
       },
       "library": {
         "title": "Mis historiales",
-        "body": "Vuelva a abrir las visitas anteriores de un paciente (solo lectura hasta que pulse Editar), cambie de visita por fecha, empiece con un paciente nuevo o cargue el PDF de un historial."
+        "body": "Abra los historiales de cualquier paciente (las visitas guardadas se abren en solo lectura hasta que pulse Editar) o, para el paciente en pantalla, inicie una nueva visita o consulte su historial de versiones. Nuevo paciente, al lado, inicia un historial en blanco."
       },
       "dictate": {
         "title": "Dictar",

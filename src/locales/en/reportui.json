@@ -113,7 +113,9 @@
     "discardConfirm": "Discard your unsaved changes to the owner report templates?",
     "deleteConfirm": "Delete the “{{name}}” template? Charts that use it switch to the default.",
     "saveFailed": "Could not save the templates.",
-    "previewFailed": "Couldn't build the preview. Try again in a moment."
+    "previewFailed": "Couldn't build the preview. Try again in a moment.",
+    "setDefaultShort": "Set default",
+    "previewShort": "Preview"
   },
   "sections": {
     "diagram": "Mouth diagram",

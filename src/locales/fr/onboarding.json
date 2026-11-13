@@ -41,7 +41,7 @@
       },
       "library": {
         "title": "Mes dossiers",
-        "body": "Rouvrez les visites passées d’un patient (en lecture seule tant que vous ne cliquez pas sur Modifier), changez de visite par date, créez un nouveau patient ou chargez un PDF de dossier."
+        "body": "Ouvrez les dossiers de n’importe quel patient (les visites enregistrées s’ouvrent en lecture seule tant que vous ne cliquez pas sur Modifier) ou — pour le patient affiché — démarrez une nouvelle visite ou consultez l’historique de ses versions. Nouveau patient, juste à côté, démarre un dossier vierge."
       },
       "dictate": {
         "title": "Dicter",

@@ -47,11 +47,6 @@
     "undatedVisit": "Visita sin fecha",
     "visitLatest": "{{date}} · última",
     "visitEarlier": "{{date}} · anterior",
-    "viewing": "Viendo visita guardada",
-    "viewingShort": "Viendo",
-    "viewingTitle": "Visita guardada — de solo lectura para que no se modifique por error. Elija Editar historial para hacer cambios.",
-    "viewingTitleDated": "Visita guardada del {{date}} — de solo lectura para que no se modifique por error. Elija Editar historial para hacer cambios.",
-    "editing": "Editando visita guardada",
     "editingShort": "Editando",
     "editingTitle": "Editando una visita guardada: los cambios se guardan automáticamente",
     "signIn": "Iniciar sesión",
@@ -60,17 +55,16 @@
     "signUpHint": "Cree una cuenta de la clínica: sus historiales se guardan en la nube y los PDF llevan el nombre y el logotipo de su clínica",
     "myCharts": "Mis historiales",
     "myChartsShort": "Historiales",
-    "newVisit": "+ Nueva visita",
-    "newVisitShort": "+ Visita",
-    "newVisitTitle": "Iniciar una nueva visita con fecha para este paciente: se conservan la identidad y los dientes ya ausentes",
-    "history": "Versiones",
-    "historyTitle": "Todas las versiones guardadas de este historial: quién la guardó y cuándo",
     "editChart": "Editar historial",
     "editChartShort": "Editar",
     "undo": "Deshacer cambios",
-    "undoShort": "Deshacer",
     "undoTitle": "Devolver este historial a como estaba cuando eligió Editar historial",
-    "doneEditing": "Terminar edición"
+    "doneEditing": "Terminar edición",
+    "viewOnlyChipTitle": "Solo lectura, para que una visita guardada no se modifique por error: elija Editar historial para hacer cambios",
+    "newPatient": "Nuevo paciente",
+    "newPatientShort": "Nuevo",
+    "newPatientTitle": "Iniciar un historial en blanco para un paciente nuevo",
+    "doneEditingShort": "Listo"
   },
   "status": {
     "srSaving": "Guardando el historial",
@@ -89,11 +83,11 @@
     "saveTitle": "Por ahora se conserva en este dispositivo: se guardará automáticamente en cuanto empiece a registrar. Guarde ahora para abrirlo en otro dispositivo.",
     "unsaved": "Cambios sin guardar",
     "unsavedTitle": "Guardado automático…",
-    "saved": "Guardado · {{when}}",
     "savedTitle": "Guardado en la nube: {{when}}",
     "local": "Solo en este dispositivo",
     "localTitle": "Los historiales de prueba se quedan en este navegador. Cree una cuenta gratuita para guardar en la nube.",
-    "saveHint": "Añada el nombre del paciente antes de guardar: así encontrará este historial."
+    "saveHint": "Añada el nombre del paciente antes de guardar: así encontrará este historial.",
+    "savedRich": "<word>Guardado · </word>{{when}}"
   },
   "otherTab": {
     "text": "Este historial está abierto en otra pestaña o ventana. Ambas editan la misma copia de trabajo: cierre una para evitar sobrescribir sus cambios."
@@ -268,5 +262,15 @@
   },
   "storage": {
     "full": "El almacenamiento de este navegador está lleno: puede que los últimos cambios no se conserven en este dispositivo. Guarde el historial o descargue su PDF."
+  },
+  "chartsMenu": {
+    "thisPatient": "Este paciente",
+    "newVisit": "Nueva visita",
+    "newVisitHint": "Una nueva visita con fecha: se conservan la identidad y los dientes ya ausentes.",
+    "history": "Historial de versiones",
+    "historyHint": "Todas las versiones guardadas de este historial: quién la guardó y cuándo.",
+    "allPatients": "Todos los pacientes",
+    "openLibrary": "Abrir Mis historiales…",
+    "openLibraryHint": "Busque y abra los historiales de cualquier paciente."
   }
 }
