@@ -1166,11 +1166,9 @@
   background-color: #f0f4f8;
 }
 
-/* Label columns (Tooth + Triadan — colindex 2/3 now that the Missing
-   toggle occupies column 1). Scoped to .rdg-row so the sticky header
-   cells keep their own background. */
-.dental-grid .rdg-row .rdg-cell[aria-colindex="2"],
-.dental-grid .rdg-row .rdg-cell[aria-colindex="3"] {
+/* The Tooth label column ("101 – I1", column 2 after Missing). Scoped to
+   .rdg-row so the sticky header cells keep their own background. */
+.dental-grid .rdg-row .rdg-cell[aria-colindex="2"] {
   background-color: var(--surface-sunken);
   font-size: 0.85rem;
   font-weight: 600;
@@ -1192,13 +1190,6 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  cursor: pointer;
-}
-
-.dental-grid__missing-check {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--danger);
   cursor: pointer;
 }
 
@@ -1243,8 +1234,7 @@
   .dental-grid .dental-grid__pin { position: sticky; z-index: 2; background-color: inherit; }
   .dental-grid .rdg-row { background-color: var(--rdg-background-color, #fff); }
   .dental-grid .dental-grid__pin--0 { left: 0; }
-  .dental-grid .dental-grid__pin--1 { left: var(--pin-1); }
-  .dental-grid .dental-grid__pin--2 { left: var(--pin-2); box-shadow: 2px 0 4px -2px rgba(15, 23, 42, 0.18); }
+  .dental-grid .dental-grid__pin--1 { left: var(--pin-1); box-shadow: 2px 0 4px -2px rgba(15, 23, 42, 0.18); }
   .dental-grid .rdg-header-row .dental-grid__pin { z-index: 12; background: var(--primary); }
   .dental-grid .rdg-row .dental-grid__pin { padding-left: 0.3rem; padding-right: 0.3rem; }
   .dental-grid .rdg-row .dental-grid__pin--0 { padding: 0; }
@@ -4022,14 +4012,52 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   overflow: hidden;
 }
 
-/* "MISSING" fits its compact column with slightly tighter side padding. */
+/* Missing: a red ✕ badge for the title, centered over the checkboxes. */
 .dental-grid .rdg-header-row .dental-grid__head--missing,
 .dental-grid__float-cell.dental-grid__head--missing {
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
+  padding-left: 0;
+  padding-right: 0;
   justify-content: center;
   text-align: center;
 }
+.dental-grid__missing-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  color: #dc2626;
+  vertical-align: middle;
+}
+/* A ticked Missing box shows the same red ✕ (not a tick). */
+.dental-grid__missing-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid #94a3b8;
+  border-radius: 5px;
+  background: #fff center / 14px 14px no-repeat;
+  cursor: pointer;
+}
+.dental-grid__missing-check:checked {
+  border-color: #dc2626;
+  background-color: #dc2626;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 3.5l9 9m0-9l-9 9' stroke='white' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.dental-grid__missing-check:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 2px; }
+.dental-grid__missing-check:disabled { cursor: default; opacity: 0.6; }
+
+/* Tooth: "101 – I1" in one column; stacked title when narrow. */
+.dental-grid__tid { display: inline-flex; align-items: baseline; gap: 0.3rem; white-space: nowrap; }
+.dental-grid__tid-num { font-weight: 700; font-variant-numeric: tabular-nums; }
+.dental-grid__tid-sep { color: var(--text-muted, #64748b); }
+.dental-grid__tid-name { font-weight: 600; color: var(--text-muted, #475569); }
+.dental-grid .rdg-header-row .dental-grid__head--tooth { padding-top: 0; padding-bottom: 0; }
+.dental-grid__head-stack { display: inline-flex; flex-direction: column; line-height: 1.15; }
 
 /* Undo changes (editing a saved visit): a real, clearly tappable action —
    the muted grey secondary style read as disabled. */

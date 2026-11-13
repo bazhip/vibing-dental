@@ -74,11 +74,12 @@ interface DentalGridProps {
  * would otherwise submit and open the PDF preview modal.
  */
 
-// Editable columns span idx 3 (mobility) … 10 (pdstate). Tab wraps
+// Editable columns span idx 2 (mobility) … 9 (pdstate) — after Missing
+// and Tooth ("101 – I1"). Tab wraps
 // forward to the next row's first editable column; Shift+Tab wraps
 // back to the previous row's last editable column. Off-page edges
 // are no-ops so focus stays in the grid.
-const FIRST_EDITABLE = 3;
+const FIRST_EDITABLE = 2;
 
 /** The bits of grid state the module-scope editor needs — refs only, so
  *  the editor component's identity never changes (recreating it per
@@ -361,6 +362,18 @@ function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
   return <PocketRootsEditor {...props} />;
 }
 
+/** Missing column title: a red ✕ in a white disc — compact, and the same
+ *  mark a missing tooth's checkbox shows when ticked. */
+function MissingBadge() {
+  return (
+    <span className="dental-grid__missing-badge" role="img" aria-label="Missing" title="Missing">
+      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+        <path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
 // Column shares of the grid width. Resolved to NUMERIC pixel widths
 // before they reach react-data-grid: the library re-measures string
 // widths ('8%') in a layout effect that can feed back into itself
@@ -387,11 +400,11 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; s
 
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
  *  the tooth stays in view while the findings scroll sideways. */
-// Missing is wide enough to say "MISSING" (a bare ✕ didn't read as
-// missing — and in dental charting ✕ suggests extracted); Tooth is just
-// wide enough for "M3" / "P4" (its title spans Tooth + Triadan).
-const MISSING_MIN = 62;
-const NARROW_LEAD = [MISSING_MIN, 36, 46] as const;
+// Missing: a compact 44px touch target under a red ✕ badge. Tooth: one
+// column for "101 – I1" (Triadan number, then the tooth's name).
+const NARROW_LEAD = [44, 84] as const;
+/** Desktop shares of the grid width for Missing and Tooth. */
+const LEAD_SHARES = [0.05, 0.11] as const;
 /** Matches the CSS breakpoint where the grid becomes its own scroller. */
 const NARROW_QUERY = '(max-width: 1000px)';
 
@@ -658,14 +671,13 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const px = (share: number) => Math.floor(layoutWidth * share);
     // Shown columns split the width the full set would have used, so
     // hiding some widens the rest instead of leaving a gap.
-    const fullShare = CODE_COLUMNS.reduce((sum, c) => sum + c.share, 0);
     const shownShare = visibleColumns.reduce((sum, c) => sum + c.share, 0) || 1;
-    const scale = fullShare / shownShare;
-    // Desktop headers use wider letter-spacing, so "MISSING" needs a little more.
-    const lead = narrow ? NARROW_LEAD : [Math.max(px(0.06), MISSING_MIN + 8), px(0.07), px(0.08)];
+    // Findings share whatever the two lead columns leave.
+    const scale = (1 - LEAD_SHARES[0] - LEAD_SHARES[1]) / shownShare;
+    const lead = narrow ? NARROW_LEAD : [Math.max(px(LEAD_SHARES[0]), 44), Math.max(px(LEAD_SHARES[1]), 84)];
     const colWidth = (c: (typeof visibleColumns)[number]) => (narrow ? narrowWidth(c) : px(c.share * scale));
     const fixedTotal =
-      lead[0] + lead[1] + lead[2] +
+      lead[0] + lead[1] +
       visibleColumns.slice(0, -1).reduce((sum, column) => sum + colWidth(column), 0);
     const lastColumnWidth = Math.max(layoutWidth - fixedTotal, 60);
     const widthOf = (index: number) =>
@@ -684,7 +696,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--0' : undefined,
       headerCellClass: `dental-grid__head--missing${narrow ? ' dental-grid__pin dental-grid__pin--0' : ''}`,
-      renderHeaderCell: () => 'Missing',
+      renderHeaderCell: () => <MissingBadge />,
       renderCell: ({ row }) => {
         const isMissing = toothMarks[row.triadan] === 'missing';
         const carried = isMissing && !!priorGoneTeeth?.has(row.triadan);
@@ -715,38 +727,26 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       },
     },
     {
-      key: 'tooth',
-      name: 'Tooth',
+      // One column: "101 – I1" (Triadan number, then the tooth's name).
+      key: 'triadan',
+      name: 'Triadan · Tooth',
       width: lead[1],
-      minWidth: lead[1], // the grid's default 50px floor would widen the compact columns
-      // Narrow (or "Tooth" doesn't fit): one title over both Tooth and
-      // Triadan, so neither column needs room for a title of its own.
-      colSpan: narrow || !fits('Tooth', lead[1], false) ? (args) => (args.type === 'HEADER' ? 2 : undefined) : undefined,
+      minWidth: lead[1], // the grid's default 50px floor would change the compact width
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
-      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
+      headerCellClass: `dental-grid__head--tooth${narrow ? ' dental-grid__pin dental-grid__pin--1' : ''}`,
+      // One line when it fits, else stacked.
+      renderHeaderCell: () => (fits('Triadan · Tooth', lead[1], false)
+        ? 'Triadan · Tooth'
+        : <span className="dental-grid__head-stack" aria-label="Triadan · Tooth"><span>Triadan</span><span>Tooth</span></span>),
       // Deciduous rows store lowercase labels (i1, c, p2 — standard
       // notation), but read better capitalized in the on-screen grid.
       renderCell: ({ row }) => (
-        <span className="dental-grid__pick" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
-          {(row.tooth ?? '').toUpperCase()}
-        </span>
-      ),
-    },
-    {
-      key: 'triadan',
-      name: 'Triadan',
-      width: lead[2],
-      minWidth: lead[2], // the grid's default 50px floor would widen the compact columns
-      // Pinned left on narrow screens (our own sticky CSS — the grid's
-      // `frozen` renders frozen cells twice when virtualization is off).
-      cellClass: narrow ? 'dental-grid__pin dental-grid__pin--2' : undefined,
-      headerCellClass: narrow ? 'dental-grid__pin dental-grid__pin--2' : undefined,
-      renderHeaderCell: () => (fits('Triadan', lead[2], false) ? 'Triadan' : <span title="Triadan" aria-label="Triadan">#</span>),
-      renderCell: ({ row }) => (
-        <span className="dental-grid__pick" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
-          {row.triadan}
+        <span className="dental-grid__pick dental-grid__tid" title={readOnly ? undefined : 'Click to select this tooth (Shift-click for a range) and set a value on several at once'}>
+          <strong className="dental-grid__tid-num">{row.triadan}</strong>
+          <span className="dental-grid__tid-sep" aria-hidden="true">–</span>
+          <span className="dental-grid__tid-name">{(row.tooth ?? '').toUpperCase()}</span>
         </span>
       ),
     },
@@ -909,12 +909,14 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         // real one stays in the grid for screen readers).
         <div ref={floatRef} className="dental-grid__float-head" aria-hidden="true" style={{ display: 'none' }}>
           <div className="dental-grid__float-pinned">
-            <div className="dental-grid__float-cell dental-grid__head--missing" style={{ width: NARROW_LEAD[0] }}>Missing</div>
-            <div className="dental-grid__float-cell" style={{ width: NARROW_LEAD[1] + NARROW_LEAD[2] }}>Tooth</div>
+            <div className="dental-grid__float-cell dental-grid__head--missing" style={{ width: NARROW_LEAD[0] }}><MissingBadge /></div>
+            <div className="dental-grid__float-cell dental-grid__head--tooth" style={{ width: NARROW_LEAD[1] }}>
+              <span className="dental-grid__head-stack"><span>Triadan</span><span>Tooth</span></span>
+            </div>
           </div>
           <div className="dental-grid__float-viewport">
             <div ref={floatTrackRef} className="dental-grid__float-track">
-              {columns.slice(3).map((c) => (
+              {columns.slice(FIRST_EDITABLE).map((c) => (
                 <div key={String(c.key)} className="dental-grid__float-cell" style={{ width: c.width as number }}>
                   {c.renderHeaderCell
                     ? (c.renderHeaderCell as (p: unknown) => React.ReactNode)({ column: c, sortDirection: undefined, priority: undefined, tabIndex: -1 })
@@ -932,7 +934,6 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
         style={narrow ? ({
           '--grid-min-width': `${narrowMinWidth - 2}px`,
           '--pin-1': `${NARROW_LEAD[0]}px`,
-          '--pin-2': `${NARROW_LEAD[0] + NARROW_LEAD[1]}px`,
         } as React.CSSProperties) : undefined}
       >
         <EditorWiringContext.Provider value={wiring}>
@@ -953,7 +954,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             // is a plain focus when the column has no editor).
             onCellClick={(args, event) => {
               // Tooth / Triadan cells select teeth for "set on several".
-              if (!readOnly && (args.column.key === 'tooth' || args.column.key === 'triadan')) {
+              if (!readOnly && args.column.key === 'triadan') {
                 toggleSelect(args.row.triadan, event.shiftKey);
                 return;
               }
