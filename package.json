@@ -23,6 +23,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@vercel/analytics": "^2.0.1",
     "dicom-parser": "^1.8.21",
+    "downloadjs": "^1.4.7",
     "i18next": "^27.1.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
