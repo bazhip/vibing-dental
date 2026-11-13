@@ -1,19 +1,39 @@
 import { ColumnDefinition } from '../types';
+import i18n from '../i18n';
+import type chart from '../locales/en/chart.json';
+
+export type ColumnKey = keyof typeof chart.columns;
+
+/** A grid column's display name in `lng` (the active language by default). */
+export function columnLabel(key: ColumnKey, lng: string = i18n.language): string {
+  return i18n.getFixedT(lng, 'chart')(`columns.${key}`);
+}
+
+// `name` is read through columnLabel each time, so it follows the language.
+const column = (key: ColumnKey, editable: boolean, width: number, frozen?: true): ColumnDefinition => ({
+  key,
+  get name() {
+    return columnLabel(key);
+  },
+  editable,
+  width,
+  ...(frozen ? { frozen } : {}),
+});
 
 /**
  * Column definitions for the dental data grid
  */
 export const GRID_COLUMNS: ColumnDefinition[] = [
-  { key: 'tooth', name: 'Tooth', editable: false, width: 60, frozen: true },
-  { key: 'triadan', name: 'Triadan', editable: false, width: 70, frozen: true },
-  { key: 'mobility', name: 'Mobility', editable: true, width: 85 },
-  { key: 'recession', name: 'Recession', editable: true, width: 85 },
-  { key: 'pocket', name: 'Pocket', editable: true, width: 70 },
-  { key: 'furcation', name: 'Furcation', editable: true, width: 90 },
-  { key: 'hyperplasia', name: 'Enlargement', editable: true, width: 110 },
-  { key: 'calculus', name: 'Calculus', editable: true, width: 85 },
-  { key: 'gingivitis', name: 'Gingivitis', editable: true, width: 90 },
-  { key: 'pdstate', name: 'PD Stage', editable: true, width: 85 },
+  column('tooth', false, 60, true),
+  column('triadan', false, 70, true),
+  column('mobility', true, 85),
+  column('recession', true, 85),
+  column('pocket', true, 70),
+  column('furcation', true, 90),
+  column('hyperplasia', true, 110),
+  column('calculus', true, 85),
+  column('gingivitis', true, 90),
+  column('pdstate', true, 85),
 ];
 
 /**

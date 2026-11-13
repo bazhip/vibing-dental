@@ -1,0 +1,44 @@
+{
+  "codeGroups": {
+    "occlusion": "Occlusion",
+    "toothNumberEruption": "Nombre de dents et éruption",
+    "developmental": "Anomalies de développement",
+    "periodontal": "Parodonte",
+    "toothPathology": "Pathologie dentaire",
+    "toothFracture": "Fracture dentaire",
+    "periapicalBone": "Lésions périapicales et osseuses",
+    "trauma": "Traumatisme",
+    "softTissue": "Tissus mous et muqueuses",
+    "immuneMediated": "Maladies à médiation immune",
+    "salivary": "Glandes salivaires",
+    "headNosePharynx": "Tête, nez et pharynx",
+    "masses": "Masses et oncologie",
+    "jawTmj": "Mâchoires, ATM et anomalies congénitales",
+    "imaging": "Imagerie et diagnostic",
+    "periodontalTreatment": "Traitement parodontal",
+    "endodontics": "Endodontie",
+    "restorative": "Dentisterie restauratrice et prothèse",
+    "extractions": "Extractions",
+    "oralSurgery": "Chirurgie buccale",
+    "oncologic": "Traitement oncologique",
+    "jawRepair": "Fractures de la mâchoire et ATM",
+    "orthodontics": "Orthodontie"
+  },
+  "columns": {
+    "tooth": "Dent",
+    "triadan": "Triadan",
+    "mobility": "Mobilité",
+    "recession": "Récession",
+    "pocket": "Poche",
+    "furcation": "Furcation",
+    "hyperplasia": "Accroissement",
+    "calculus": "Calcul",
+    "gingivitis": "Gingivite",
+    "pdstate": "Stade PD"
+  },
+  "customAnesthesia": {
+    "block": "Bloc personnalisé",
+    "field": "Champ personnalisé",
+    "yes": "Oui"
+  }
+}

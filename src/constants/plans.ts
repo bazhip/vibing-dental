@@ -10,6 +10,9 @@
  * the pricing page points them at CONTACT_EMAIL.
  */
 
+import i18n from '../i18n';
+import type billing from '../locales/en/billing.json';
+
 export type PlanKey =
   | 'individual_basic'
   | 'individual_pro'
@@ -19,16 +22,63 @@ export type PlanKey =
 export type AccountType = 'individual' | 'practice';
 export type PlanTier = 'basic' | 'pro';
 
+/** Feature ids are catalog keys (billing:features.*), without plural suffixes. */
+type FeatureId = {
+  [K in keyof typeof billing.features]: K extends `${infer B}_${'one' | 'other'}` ? B : K;
+}[keyof typeof billing.features];
+
+/** One line of a plan's feature list. Amounts stay data: `count` feeds the
+ *  plural, `plan` names another plan ("Everything in Individual"). */
+export interface PlanFeature {
+  id: FeatureId;
+  count?: number;
+  plan?: PlanKey;
+}
+
 export interface PlanDef {
   key: PlanKey;
-  name: string;
+  /** Display text, read in the active language each time (see planName). */
+  readonly name: string;
   priceMonthly: number;
   accountType: AccountType;
   tier: PlanTier;
   seats: number;
-  tagline: string;
-  features: string[];
+  readonly tagline: string;
+  readonly features: string[];
+  featureList: PlanFeature[];
 }
+
+const billingT = (lng: string) => i18n.getFixedT(lng, 'billing');
+
+/** A plan's display name in `lng` (the active language by default). */
+export const planName = (key: PlanKey, lng: string = i18n.language): string => billingT(lng)(`plans.${key}.name`);
+
+export const planTagline = (key: PlanKey, lng: string = i18n.language): string =>
+  billingT(lng)(`plans.${key}.tagline`);
+
+/** A plan's feature list, one line per feature, in `lng`. */
+export function planFeatures(key: PlanKey, lng: string = i18n.language): string[] {
+  const t = billingT(lng);
+  return planByKey(key)!.featureList.map(({ id, count, plan }) => {
+    const opts: { count?: number; plan?: string } = {};
+    if (count !== undefined) opts.count = count;
+    if (plan) opts.plan = planName(plan, lng);
+    return t(`features.${id}`, opts);
+  });
+}
+
+const plan = (def: Omit<PlanDef, 'name' | 'tagline' | 'features'>): PlanDef => ({
+  ...def,
+  get name() {
+    return planName(def.key);
+  },
+  get tagline() {
+    return planTagline(def.key);
+  },
+  get features() {
+    return planFeatures(def.key);
+  },
+});
 
 export const TRIAL_DAYS = 14;
 
@@ -54,66 +104,58 @@ export const FREE_BETA_SEATS = 5;
 export const CONTACT_EMAIL = 'bazhip@gmail.com';
 
 export const PLANS: PlanDef[] = [
-  {
+  plan({
     key: 'individual_basic',
-    name: 'Individual',
     priceMonthly: 20,
     accountType: 'individual',
     tier: 'basic',
     seats: 1,
-    tagline: 'For a solo practitioner',
-    features: [
-      'Full charting, diagrams & branded PDFs',
-      'Photos & radiographs — 30 images per chart',
-      'Visit history & recheck reminders',
-      '1 user',
+    featureList: [
+      { id: 'fullCharting' },
+      { id: 'photos', count: 30 },
+      { id: 'visitHistory' },
+      { id: 'users', count: 1 },
     ],
-  },
-  {
+  }),
+  plan({
     key: 'individual_pro',
-    name: 'Individual Pro',
     priceMonthly: 40,
     accountType: 'individual',
     tier: 'pro',
     seats: 1,
-    tagline: 'Solo, with AI on the mic',
-    features: [
-      'Everything in Individual',
-      'AI voice autofill — dictate, the chart fills itself',
-      '100 images per chart',
-      '1 user',
+    featureList: [
+      { id: 'everythingIn', plan: 'individual_basic' },
+      { id: 'aiAutofill' },
+      { id: 'imagesPerChart', count: 100 },
+      { id: 'users', count: 1 },
     ],
-  },
-  {
+  }),
+  plan({
     key: 'practice_basic',
-    name: 'Practice',
     priceMonthly: 60,
     accountType: 'practice',
     tier: 'basic',
     seats: 5,
-    tagline: 'Your whole team, one record',
-    features: [
-      'Everything in Individual',
-      'Up to 5 team members',
-      'Shared charts, templates & practice logo',
-      'Team roles & ownership transfer',
+    featureList: [
+      { id: 'everythingIn', plan: 'individual_basic' },
+      { id: 'teamMembers', count: 5 },
+      { id: 'sharedCharts' },
+      { id: 'teamRoles' },
     ],
-  },
-  {
+  }),
+  plan({
     key: 'practice_pro',
-    name: 'Practice Pro',
     priceMonthly: 120,
     accountType: 'practice',
     tier: 'pro',
     seats: 5,
-    tagline: 'The full clinic, hands-free',
-    features: [
-      'Everything in Practice',
-      'AI voice autofill for the whole team',
-      '100 images per chart',
-      'Up to 5 team members',
+    featureList: [
+      { id: 'everythingIn', plan: 'practice_basic' },
+      { id: 'aiAutofillTeam' },
+      { id: 'imagesPerChart', count: 100 },
+      { id: 'teamMembers', count: 5 },
     ],
-  },
+  }),
 ];
 
 export const planByKey = (key: string): PlanDef | undefined =>

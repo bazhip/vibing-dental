@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  codeDefinition,
   DENTAL_CODE_GROUPS,
   DentalCode,
   DentalCodeGroup,
+  searchCodes,
 } from '../constants/dentalCodes';
 
 /**
@@ -11,15 +14,6 @@ import {
  * working alongside the inline CodeField popup is meant to be belt-and-
  * suspenders — the panel for browsing, the popup for fast in-place input.
  */
-
-function matches(code: DentalCode, query: string): boolean {
-  if (!query) return true;
-  const q = query.toLowerCase();
-  return (
-    code.code.toLowerCase().includes(q) ||
-    code.definition.toLowerCase().includes(q)
-  );
-}
 
 interface CodeReferencePanelProps {
   /** Restrict the panel to one kind of code. Omit to show both columns. */
@@ -30,6 +24,8 @@ const TITLES = { diagnosis: 'Diagnoses', procedure: 'Procedures' } as const;
 
 export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
+  // Definitions and group names follow the active language.
+  const { i18n } = useTranslation('codes');
   const cardRef = React.useRef<HTMLDivElement>(null);
 
   // Sidebar mode only (the card is position:sticky there): keep the top
@@ -85,14 +81,14 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
 
   // Filter within each clinical group; groups with no surviving codes
   // drop out entirely (including their header).
-  const filteredGroups = React.useMemo(
-    () =>
-      DENTAL_CODE_GROUPS
-        .filter((g) => (kind ? g.kind === kind : true))
-        .map((g) => ({ ...g, codes: g.codes.filter((c) => matches(c, query)) }))
-        .filter((g) => g.codes.length > 0),
-    [query, kind]
-  );
+  const language = i18n.language;
+  const filteredGroups = React.useMemo(() => {
+    const hits = new Set(searchCodes(query, language));
+    return DENTAL_CODE_GROUPS
+      .filter((g) => (kind ? g.kind === kind : true))
+      .map((g) => ({ id: g.id, name: g.name, kind: g.kind, codes: g.codes.filter((c) => hits.has(c)) }))
+      .filter((g) => g.codes.length > 0);
+  }, [query, kind, language]);
 
   return (
     <div className="dental-grid-section">
@@ -155,7 +151,7 @@ const CodeRefColumn: React.FC<CodeRefColumnProps> = ({ title, groups }) => {
                 {g.codes.map((c: DentalCode) => (
                   <li key={c.code} className="code-ref__row">
                     <span className="code-ref__code">{c.code}</span>
-                    <span className="code-ref__def">{c.definition}</span>
+                    <span className="code-ref__def">{codeDefinition(c.code)}</span>
                   </li>
                 ))}
               </ul>

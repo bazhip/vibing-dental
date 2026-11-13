@@ -1,0 +1,41 @@
+{
+  "features": {
+    "fullCharting": "Odontogramma completo, diagrammi e PDF personalizzati",
+    "photos_one": "Foto e radiografie — {{count}} immagine per cartella",
+    "photos_other": "Foto e radiografie — {{count}} immagini per cartella",
+    "photos_many": "Foto e radiografie — {{count}} immagini per cartella",
+    "visitHistory": "Storico delle visite e promemoria dei controlli",
+    "users_one": "{{count}} utente",
+    "users_other": "{{count}} utenti",
+    "users_many": "{{count}} utenti",
+    "everythingIn": "Tutto ciò che include {{plan}}",
+    "aiAutofill": "Compilazione vocale con IA — Lei detta, la cartella si compila da sola",
+    "imagesPerChart_one": "{{count}} immagine per cartella",
+    "imagesPerChart_other": "{{count}} immagini per cartella",
+    "imagesPerChart_many": "{{count}} immagini per cartella",
+    "teamMembers_one": "Fino a {{count}} membro del team",
+    "teamMembers_other": "Fino a {{count}} membri del team",
+    "teamMembers_many": "Fino a {{count}} membri del team",
+    "sharedCharts": "Cartelle, modelli e logo dello studio condivisi",
+    "teamRoles": "Ruoli del team e trasferimento della titolarità",
+    "aiAutofillTeam": "Compilazione vocale con IA per tutto il team"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individuale",
+      "tagline": "Per il libero professionista"
+    },
+    "individual_pro": {
+      "name": "Individuale Pro",
+      "tagline": "In autonomia, con l’IA al microfono"
+    },
+    "practice_basic": {
+      "name": "Studio",
+      "tagline": "Tutto il team, un’unica cartella"
+    },
+    "practice_pro": {
+      "name": "Studio Pro",
+      "tagline": "Tutta la clinica, a mani libere"
+    }
+  }
+}

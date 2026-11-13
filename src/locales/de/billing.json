@@ -1,0 +1,37 @@
+{
+  "features": {
+    "fullCharting": "Vollständiges Zahnschema, Diagramme & PDFs mit Ihrem Logo",
+    "photos_one": "Fotos & Röntgenbilder — {{count}} Bild pro Akte",
+    "photos_other": "Fotos & Röntgenbilder — {{count}} Bilder pro Akte",
+    "visitHistory": "Besuchsverlauf & Erinnerungen an Kontrolltermine",
+    "users_one": "{{count}} Nutzer",
+    "users_other": "{{count}} Nutzer",
+    "everythingIn": "Alles aus {{plan}}",
+    "aiAutofill": "KI-Spracheingabe — Sie diktieren, die Akte füllt sich selbst",
+    "imagesPerChart_one": "{{count}} Bild pro Akte",
+    "imagesPerChart_other": "{{count}} Bilder pro Akte",
+    "teamMembers_one": "Bis zu {{count}} Teammitglied",
+    "teamMembers_other": "Bis zu {{count}} Teammitglieder",
+    "sharedCharts": "Gemeinsame Akten, Vorlagen & Praxislogo",
+    "teamRoles": "Teamrollen & Eigentümerwechsel",
+    "aiAutofillTeam": "KI-Spracheingabe für das ganze Team"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Einzelnutzer",
+      "tagline": "Für die Einzelpraxis"
+    },
+    "individual_pro": {
+      "name": "Einzelnutzer Pro",
+      "tagline": "Allein, mit KI am Mikrofon"
+    },
+    "practice_basic": {
+      "name": "Praxis",
+      "tagline": "Ihr ganzes Team, eine Akte"
+    },
+    "practice_pro": {
+      "name": "Praxis Pro",
+      "tagline": "Die ganze Klinik, freihändig"
+    }
+  }
+}

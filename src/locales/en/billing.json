@@ -1,0 +1,37 @@
+{
+  "features": {
+    "fullCharting": "Full charting, diagrams & branded PDFs",
+    "photos_one": "Photos & radiographs — {{count}} image per chart",
+    "photos_other": "Photos & radiographs — {{count}} images per chart",
+    "visitHistory": "Visit history & recheck reminders",
+    "users_one": "{{count}} user",
+    "users_other": "{{count}} users",
+    "everythingIn": "Everything in {{plan}}",
+    "aiAutofill": "AI voice autofill — dictate, the chart fills itself",
+    "imagesPerChart_one": "{{count}} image per chart",
+    "imagesPerChart_other": "{{count}} images per chart",
+    "teamMembers_one": "Up to {{count}} team member",
+    "teamMembers_other": "Up to {{count}} team members",
+    "sharedCharts": "Shared charts, templates & practice logo",
+    "teamRoles": "Team roles & ownership transfer",
+    "aiAutofillTeam": "AI voice autofill for the whole team"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individual",
+      "tagline": "For a solo practitioner"
+    },
+    "individual_pro": {
+      "name": "Individual Pro",
+      "tagline": "Solo, with AI on the mic"
+    },
+    "practice_basic": {
+      "name": "Practice",
+      "tagline": "Your whole team, one record"
+    },
+    "practice_pro": {
+      "name": "Practice Pro",
+      "tagline": "The full clinic, hands-free"
+    }
+  }
+}

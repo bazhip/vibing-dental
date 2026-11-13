@@ -1,5 +1,5 @@
 import React from 'react';
-import { codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
+import { codeDefinition, DENTAL_CODES, DentalCode, searchCodes } from '../constants/dentalCodes';
 
 /**
  * Drop-in replacement for <input> / <textarea> that pops a small suggestion
@@ -11,6 +11,8 @@ import { codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
  *   - it must be entirely uppercase letters, digits, `/`, or `*`,
  *   - it must start with a letter (so just `4` or `/X` doesn't trigger),
  *   - and it must match the prefix of at least one known code.
+ * Suggestions come from searchCodes: codes with that prefix first, then
+ * codes whose definition (active language or English) contains it.
  */
 
 type CommonProps =
@@ -23,6 +25,7 @@ type CodeFieldProps = {
 } & Omit<CommonProps, 'value' | 'onChange'>;
 
 const TRIGGER_RE = /[A-Z][A-Z0-9/*]*$/;
+const MAX_SUGGESTIONS = 8;
 
 export const CodeField: React.FC<CodeFieldProps> = ({
   value,
@@ -50,11 +53,12 @@ export const CodeField: React.FC<CodeFieldProps> = ({
       setOpen(false);
       return;
     }
-    const next = codesMatchingPrefix(m[0]);
-    if (next.length === 0) {
+    const prefix = m[0];
+    if (!DENTAL_CODES.some((c) => c.code.startsWith(prefix))) {
       setOpen(false);
       return;
     }
+    const next = searchCodes(prefix).slice(0, MAX_SUGGESTIONS);
     setSuggestions(next);
     setHighlight(0);
     setOpen(true);
@@ -149,7 +153,7 @@ export const CodeField: React.FC<CodeFieldProps> = ({
           }}
         >
           <span className="code-field__code">{s.code}</span>
-          <span className="code-field__def">{s.definition}</span>
+          <span className="code-field__def">{codeDefinition(s.code)}</span>
         </button>
       ))}
     </div>

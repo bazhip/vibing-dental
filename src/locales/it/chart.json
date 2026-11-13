@@ -1,0 +1,44 @@
+{
+  "codeGroups": {
+    "occlusion": "Occlusione",
+    "toothNumberEruption": "Numero ed eruzione dei denti",
+    "developmental": "Anomalie di sviluppo",
+    "periodontal": "Parodonto",
+    "toothPathology": "Patologia dentale",
+    "toothFracture": "Frattura dentale",
+    "periapicalBone": "Periapicale e osso",
+    "trauma": "Trauma",
+    "softTissue": "Tessuti molli e mucose",
+    "immuneMediated": "Immunomediate",
+    "salivary": "Ghiandole salivari",
+    "headNosePharynx": "Testa, naso e faringe",
+    "masses": "Masse e oncologia",
+    "jawTmj": "Mascellari, ATM e anomalie congenite",
+    "imaging": "Diagnostica per immagini",
+    "periodontalTreatment": "Trattamento parodontale",
+    "endodontics": "Endodonzia",
+    "restorative": "Conservativa e protesi",
+    "extractions": "Estrazioni",
+    "oralSurgery": "Chirurgia orale",
+    "oncologic": "Terapia oncologica",
+    "jawRepair": "Fratture mascellari e ATM",
+    "orthodontics": "Ortodonzia"
+  },
+  "columns": {
+    "tooth": "Dente",
+    "triadan": "Triadan",
+    "mobility": "Mobilità",
+    "recession": "Recessione",
+    "pocket": "Tasca",
+    "furcation": "Forcazione",
+    "hyperplasia": "Ingrossamento",
+    "calculus": "Tartaro",
+    "gingivitis": "Gengivite",
+    "pdstate": "Stadio PD"
+  },
+  "customAnesthesia": {
+    "block": "Blocco personalizzato",
+    "field": "Campo personalizzato",
+    "yes": "Sì"
+  }
+}

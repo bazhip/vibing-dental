@@ -1,0 +1,68 @@
+{
+  "gotIt": "Entendido",
+  "groups": {
+    "dictation": "Dictado",
+    "charting": "Odontograma",
+    "records": "Historiales",
+    "ownerReport": "Informe para el propietario",
+    "everyday": "Día a día"
+  },
+  "intro": "Una gran ronda de mejoras, la mayoría surgidas directamente de sus comentarios — ¡gracias!",
+  "title": "Novedades de ToothOps",
+  "dictateAnywhere": {
+    "title": "Dicte desde cualquier página",
+    "body": "El botón ahora es 🎤 Dictar. Describa sus hallazgos desde donde esté: cada uno va a su sitio."
+  },
+  "finalCheck": {
+    "title": "Más preciso, con una revisión final",
+    "body": "Detecta hallazgos separados por pausas y sus correcciones. Al tocar Detener, vuelve a leer toda la grabación y enumera en Por revisar todo aquello de lo que no estaba seguro."
+  },
+  "phones": {
+    "title": "Mejor en el móvil",
+    "body": "El dictado se abre a pantalla completa y mantiene la pantalla encendida mientras habla."
+  },
+  "understandsMore": {
+    "title": "Entiende más",
+    "body": "«GE 3» para agrandamiento gingival, profundidades de bolsa por raíz, el bloqueo maxilar caudal y los hallazgos radiográficos."
+  },
+  "pocketPerRoot": {
+    "title": "Profundidad de bolsa por raíz",
+    "body": "Odontograma → Personalizar → Una por raíz. Los dientes multirradiculares tienen una casilla etiquetada por raíz (M / D, o MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Asigne varios dientes a la vez",
+    "body": "Haga clic en los números de diente de la cuadrícula (Mayús+clic para un rango) y asigne una misma puntuación a todos."
+  },
+  "makeItYours": {
+    "title": "A su medida",
+    "body": "Cada página tiene un botón Personalizar: oculte columnas, elija qué se muestra junto a los dientes, qué hace la barra espaciadora y más. Los ajustes siguen a su cuenta en todos sus dispositivos."
+  },
+  "radiographicFindings": {
+    "title": "Hallazgos radiográficos",
+    "body": "Un recuadro propio en la página Imágenes. Se imprime en el PDF encima del informe de tratamiento."
+  },
+  "anesthesia": {
+    "title": "Anestesia",
+    "body": "Se añade el bloqueo maxilar caudal. Oculte los bloqueos que no utiliza y guarde su anestésico habitual para introducirlo con un toque."
+  },
+  "skipRecheck": {
+    "title": "Ocultar el campo de revisión",
+    "body": "¿No usa los recordatorios de revisión? Paciente → Personalizar → Ocultar el campo Próxima revisión."
+  },
+  "writeWithAi": {
+    "title": "✨ Redactar con IA",
+    "body": "Redacta el resumen inicial y los consejos de cuidados en casa a partir del odontograma, usando solo lo que usted ha registrado. Usted lo revisa antes de imprimir."
+  },
+  "customizeReport": {
+    "title": "Personalice el informe",
+    "body": "Cambie su diseño, redacción e idioma directamente desde la página Informe para el propietario."
+  },
+  "startsWhereLeft": {
+    "title": "Continúa donde lo dejó",
+    "body": "Al abrir ToothOps se muestra Mis historiales — salvo que la visita de hoy siga abierta — y la visita de hoy se abre lista para editar."
+  },
+  "sendFeedback": {
+    "title": "Envíe comentarios en dos toques",
+    "body": "Ajustes → Enviar comentarios, o Comentarios en el panel de dictado (puede adjuntar su transcripción). Nos llegan directamente."
+  }
+}

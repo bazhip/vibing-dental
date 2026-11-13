@@ -1,0 +1,44 @@
+{
+  "codeGroups": {
+    "occlusion": "Occlusion",
+    "toothNumberEruption": "Tooth number & eruption",
+    "developmental": "Developmental anomalies",
+    "periodontal": "Periodontal",
+    "toothPathology": "Tooth pathology",
+    "toothFracture": "Tooth fracture",
+    "periapicalBone": "Periapical & bone",
+    "trauma": "Trauma",
+    "softTissue": "Soft tissue & mucosa",
+    "immuneMediated": "Immune-mediated",
+    "salivary": "Salivary gland",
+    "headNosePharynx": "Head, nose & pharynx",
+    "masses": "Masses & oncology",
+    "jawTmj": "Jaw, TMJ & congenital",
+    "imaging": "Imaging & diagnostics",
+    "periodontalTreatment": "Periodontal treatment",
+    "endodontics": "Endodontics",
+    "restorative": "Restorative & prosthodontics",
+    "extractions": "Extractions",
+    "oralSurgery": "Oral surgery",
+    "oncologic": "Oncologic therapy",
+    "jawRepair": "Jaw fracture & TMJ repair",
+    "orthodontics": "Orthodontics"
+  },
+  "columns": {
+    "tooth": "Tooth",
+    "triadan": "Triadan",
+    "mobility": "Mobility",
+    "recession": "Recession",
+    "pocket": "Pocket",
+    "furcation": "Furcation",
+    "hyperplasia": "Enlargement",
+    "calculus": "Calculus",
+    "gingivitis": "Gingivitis",
+    "pdstate": "PD Stage"
+  },
+  "customAnesthesia": {
+    "block": "Custom block",
+    "field": "Custom field",
+    "yes": "Yes"
+  }
+}

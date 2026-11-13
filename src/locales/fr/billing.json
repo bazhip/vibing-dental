@@ -1,0 +1,41 @@
+{
+  "features": {
+    "fullCharting": "Schéma dentaire complet, diagrammes et PDF à vos couleurs",
+    "photos_one": "Photos et radiographies — {{count}} image par dossier",
+    "photos_other": "Photos et radiographies — {{count}} images par dossier",
+    "photos_many": "Photos et radiographies — {{count}} images par dossier",
+    "visitHistory": "Historique des visites et rappels de contrôle",
+    "users_one": "{{count}} utilisateur",
+    "users_other": "{{count}} utilisateurs",
+    "users_many": "{{count}} utilisateurs",
+    "everythingIn": "Tout ce qu’inclut {{plan}}",
+    "aiAutofill": "Saisie vocale par IA — vous dictez, le dossier se remplit",
+    "imagesPerChart_one": "{{count}} image par dossier",
+    "imagesPerChart_other": "{{count}} images par dossier",
+    "imagesPerChart_many": "{{count}} images par dossier",
+    "teamMembers_one": "Jusqu’à {{count}} membre d’équipe",
+    "teamMembers_other": "Jusqu’à {{count}} membres d’équipe",
+    "teamMembers_many": "Jusqu’à {{count}} membres d’équipe",
+    "sharedCharts": "Dossiers, modèles et logo du cabinet partagés",
+    "teamRoles": "Rôles d’équipe et transfert de propriété",
+    "aiAutofillTeam": "Saisie vocale par IA pour toute l’équipe"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individuel",
+      "tagline": "Pour un praticien indépendant"
+    },
+    "individual_pro": {
+      "name": "Individuel Pro",
+      "tagline": "En solo, avec l’IA au micro"
+    },
+    "practice_basic": {
+      "name": "Cabinet",
+      "tagline": "Toute votre équipe, un seul dossier"
+    },
+    "practice_pro": {
+      "name": "Cabinet Pro",
+      "tagline": "Toute la clinique, mains libres"
+    }
+  }
+}

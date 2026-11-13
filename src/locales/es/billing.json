@@ -1,0 +1,41 @@
+{
+  "features": {
+    "fullCharting": "Odontograma completo, diagramas y PDF con su marca",
+    "photos_one": "Fotos y radiografías — {{count}} imagen por historial",
+    "photos_other": "Fotos y radiografías — {{count}} imágenes por historial",
+    "photos_many": "Fotos y radiografías — {{count}} imágenes por historial",
+    "visitHistory": "Historial de visitas y recordatorios de revisión",
+    "users_one": "{{count}} usuario",
+    "users_other": "{{count}} usuarios",
+    "users_many": "{{count}} usuarios",
+    "everythingIn": "Todo lo incluido en {{plan}}",
+    "aiAutofill": "Autocompletado por voz con IA — usted dicta y el historial se rellena solo",
+    "imagesPerChart_one": "{{count}} imagen por historial",
+    "imagesPerChart_other": "{{count}} imágenes por historial",
+    "imagesPerChart_many": "{{count}} imágenes por historial",
+    "teamMembers_one": "Hasta {{count}} miembro del equipo",
+    "teamMembers_other": "Hasta {{count}} miembros del equipo",
+    "teamMembers_many": "Hasta {{count}} miembros del equipo",
+    "sharedCharts": "Historiales, plantillas y logotipo de la clínica compartidos",
+    "teamRoles": "Roles de equipo y transferencia de titularidad",
+    "aiAutofillTeam": "Autocompletado por voz con IA para todo el equipo"
+  },
+  "plans": {
+    "individual_basic": {
+      "name": "Individual",
+      "tagline": "Para profesionales independientes"
+    },
+    "individual_pro": {
+      "name": "Individual Pro",
+      "tagline": "En solitario, con la IA al micrófono"
+    },
+    "practice_basic": {
+      "name": "Clínica",
+      "tagline": "Todo su equipo, un solo historial"
+    },
+    "practice_pro": {
+      "name": "Clínica Pro",
+      "tagline": "Toda la clínica, manos libres"
+    }
+  }
+}

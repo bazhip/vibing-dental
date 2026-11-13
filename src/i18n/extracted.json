@@ -1,5 +1,12 @@
 [
   "src/components/AccountModal.tsx",
+  "src/components/WhatsNewModal.tsx",
+  "src/constants/chartLayout.ts",
+  "src/constants/columnDefinitions.ts",
+  "src/constants/dentalCodes.ts",
+  "src/constants/plans.ts",
+  "src/constants/whatsNew.ts",
   "src/i18n/LanguageSwitcher.tsx",
-  "src/utils/accountDeletion.ts"
+  "src/utils/accountDeletion.ts",
+  "src/utils/customAnesthesia.ts"
 ]

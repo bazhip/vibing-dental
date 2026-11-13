@@ -1,0 +1,44 @@
+{
+  "codeGroups": {
+    "occlusion": "Okklusion",
+    "toothNumberEruption": "Zahnzahl & Durchbruch",
+    "developmental": "Entwicklungsanomalien",
+    "periodontal": "Parodontium",
+    "toothPathology": "Zahnpathologie",
+    "toothFracture": "Zahnfraktur",
+    "periapicalBone": "Periapikal & Knochen",
+    "trauma": "Trauma",
+    "softTissue": "Weichgewebe & Schleimhaut",
+    "immuneMediated": "Immunvermittelt",
+    "salivary": "Speicheldrüsen",
+    "headNosePharynx": "Kopf, Nase & Pharynx",
+    "masses": "Umfangsvermehrungen & Onkologie",
+    "jawTmj": "Kiefer, Kiefergelenk & kongenital",
+    "imaging": "Bildgebung & Diagnostik",
+    "periodontalTreatment": "Parodontalbehandlung",
+    "endodontics": "Endodontie",
+    "restorative": "Restaurative Zahnheilkunde & Prothetik",
+    "extractions": "Extraktionen",
+    "oralSurgery": "Oralchirurgie",
+    "oncologic": "Onkologische Therapie",
+    "jawRepair": "Kieferfraktur- & Kiefergelenkversorgung",
+    "orthodontics": "Kieferorthopädie"
+  },
+  "columns": {
+    "tooth": "Zahn",
+    "triadan": "Triadan",
+    "mobility": "Beweglichkeit",
+    "recession": "Rezession",
+    "pocket": "Tasche",
+    "furcation": "Furkation",
+    "hyperplasia": "Vergrößerung",
+    "calculus": "Zahnstein",
+    "gingivitis": "Gingivitis",
+    "pdstate": "PD-Stadium"
+  },
+  "customAnesthesia": {
+    "block": "Eigene Blockade",
+    "field": "Eigenes Feld",
+    "yes": "Ja"
+  }
+}

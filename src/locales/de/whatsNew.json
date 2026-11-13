@@ -1,0 +1,68 @@
+{
+  "gotIt": "Verstanden",
+  "groups": {
+    "dictation": "Diktat",
+    "charting": "Zahnschema",
+    "records": "Unterlagen",
+    "ownerReport": "Besitzerbericht",
+    "everyday": "Im Alltag"
+  },
+  "intro": "Eine große Runde an Neuerungen, die meisten direkt aus Ihrem Feedback — vielen Dank!",
+  "title": "Neu in ToothOps",
+  "dictateAnywhere": {
+    "title": "Von jeder Seite aus diktieren",
+    "body": "Die Schaltfläche heißt jetzt 🎤 Diktieren. Sprechen Sie Ihre Befunde ein, wo immer Sie gerade sind — jeder landet an der richtigen Stelle."
+  },
+  "finalCheck": {
+    "title": "Genauer, mit abschließender Prüfung",
+    "body": "Das Diktat erkennt Befunde, die über Pausen verteilt sind, sowie Ihre Korrekturen. Wenn Sie auf Stopp tippen, wird die gesamte Aufnahme noch einmal gelesen, und alles Unsichere erscheint unter Zu prüfen."
+  },
+  "phones": {
+    "title": "Besser auf dem Smartphone",
+    "body": "Das Diktat öffnet sich im Vollbild und hält Ihren Bildschirm wach, während Sie sprechen."
+  },
+  "understandsMore": {
+    "title": "Versteht mehr",
+    "body": "„GE 3“ für Gingivavergrößerung, Taschentiefen pro Wurzel, die kaudale Maxillarisblockade und Röntgenbefunde."
+  },
+  "pocketPerRoot": {
+    "title": "Taschentiefe pro Wurzel",
+    "body": "Zahnschema → Anpassen → Eine pro Wurzel. Mehrwurzelige Zähne erhalten ein beschriftetes Feld pro Wurzel (M / D oder MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Mehrere Zähne auf einmal erfassen",
+    "body": "Klicken Sie im Raster auf Zahnnummern (Umschalt-Klick für einen Bereich) und vergeben Sie dann einen Wert für alle."
+  },
+  "makeItYours": {
+    "title": "Ganz nach Ihren Wünschen",
+    "body": "Jede Seite hat eine Schaltfläche Anpassen: Spalten ausblenden, festlegen, was neben den Zähnen angezeigt wird, was die Leertaste tut, und mehr. Die Einstellungen folgen Ihrem Konto auf jedes Gerät."
+  },
+  "radiographicFindings": {
+    "title": "Röntgenbefunde",
+    "body": "Ein eigenes Feld auf der Seite Bilder. Es wird im PDF über dem Behandlungsbericht gedruckt."
+  },
+  "anesthesia": {
+    "title": "Narkose",
+    "body": "Die kaudale Maxillarisblockade ist hinzugekommen. Blenden Sie nicht genutzte Blockaden aus und speichern Sie Ihr übliches Anästhetikum für die Eingabe mit einem Tipp."
+  },
+  "skipRecheck": {
+    "title": "Kontrolltermin-Feld ausblenden",
+    "body": "Sie nutzen keine Kontrollerinnerungen? Patient → Anpassen → Feld Kontrolle fällig ausblenden."
+  },
+  "writeWithAi": {
+    "title": "✨ Mit KI schreiben",
+    "body": "Entwirft die einleitende Zusammenfassung und die Pflegehinweise für zu Hause aus dem Zahnschema — nur mit dem, was Sie erfasst haben. Sie prüfen alles vor dem Drucken."
+  },
+  "customizeReport": {
+    "title": "Bericht anpassen",
+    "body": "Ändern Sie Layout, Formulierungen und Sprache direkt auf der Seite Besitzerbericht."
+  },
+  "startsWhereLeft": {
+    "title": "Beginnt dort, wo Sie aufgehört haben",
+    "body": "Beim Öffnen zeigt ToothOps Meine Akten — außer der heutige Besuch ist noch offen — und der heutige Besuch öffnet sich direkt zur Bearbeitung."
+  },
+  "sendFeedback": {
+    "title": "Feedback mit zwei Tipps senden",
+    "body": "Einstellungen → Feedback senden, oder Feedback im Diktatfenster (Ihr Transkript kann angehängt werden). Es kommt direkt bei uns an."
+  }
+}

@@ -276,6 +276,1754 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "billing:features.aiAutofill": {
+      "hash": "ec7edefa36d8",
+      "status": "machine"
+    },
+    "billing:features.aiAutofillTeam": {
+      "hash": "72ffe177bf5a",
+      "status": "machine"
+    },
+    "billing:features.everythingIn": {
+      "hash": "d3d7db0cc4be",
+      "status": "machine"
+    },
+    "billing:features.fullCharting": {
+      "hash": "5e32e6525fc5",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_one": {
+      "hash": "d83aeb2c278b",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_other": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.photos_one": {
+      "hash": "15d41914bd0f",
+      "status": "machine"
+    },
+    "billing:features.photos_other": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.sharedCharts": {
+      "hash": "0e748a0e41a5",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_one": {
+      "hash": "a790c4068836",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_other": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamRoles": {
+      "hash": "f34e5d767ed6",
+      "status": "machine"
+    },
+    "billing:features.users_one": {
+      "hash": "3aa39be0096d",
+      "status": "machine"
+    },
+    "billing:features.users_other": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.visitHistory": {
+      "hash": "25067003b0d7",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.name": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.tagline": {
+      "hash": "df87b76836f2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.name": {
+      "hash": "15538f6971e2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.tagline": {
+      "hash": "33b6114892ca",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.name": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.tagline": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.name": {
+      "hash": "f79df0fe002d",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.tagline": {
+      "hash": "d6af9793c895",
+      "status": "machine"
+    },
+    "chart:codeGroups.developmental": {
+      "hash": "8b263f32b01a",
+      "status": "machine"
+    },
+    "chart:codeGroups.endodontics": {
+      "hash": "af9cd09b7401",
+      "status": "machine"
+    },
+    "chart:codeGroups.extractions": {
+      "hash": "81ff9ea7137f",
+      "status": "machine"
+    },
+    "chart:codeGroups.headNosePharynx": {
+      "hash": "49b29b652caf",
+      "status": "machine"
+    },
+    "chart:codeGroups.imaging": {
+      "hash": "94db24586b5f",
+      "status": "machine"
+    },
+    "chart:codeGroups.immuneMediated": {
+      "hash": "a540b5fd5e71",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawRepair": {
+      "hash": "92f2fae84cc9",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawTmj": {
+      "hash": "27950ddafbf0",
+      "status": "machine"
+    },
+    "chart:codeGroups.masses": {
+      "hash": "3d089995e287",
+      "status": "machine"
+    },
+    "chart:codeGroups.occlusion": {
+      "hash": "865a3db23fd9",
+      "status": "machine"
+    },
+    "chart:codeGroups.oncologic": {
+      "hash": "15f2af0c90e1",
+      "status": "machine"
+    },
+    "chart:codeGroups.oralSurgery": {
+      "hash": "655e0297d63d",
+      "status": "machine"
+    },
+    "chart:codeGroups.orthodontics": {
+      "hash": "f325953ea439",
+      "status": "machine"
+    },
+    "chart:codeGroups.periapicalBone": {
+      "hash": "6255882a5933",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontal": {
+      "hash": "e28091946429",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontalTreatment": {
+      "hash": "369bc338ff26",
+      "status": "machine"
+    },
+    "chart:codeGroups.restorative": {
+      "hash": "048d162f1328",
+      "status": "machine"
+    },
+    "chart:codeGroups.salivary": {
+      "hash": "aa24bad01fed",
+      "status": "machine"
+    },
+    "chart:codeGroups.softTissue": {
+      "hash": "7372b5db8dc4",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothFracture": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothNumberEruption": {
+      "hash": "6bc3a7a6c671",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothPathology": {
+      "hash": "976c74b57b40",
+      "status": "machine"
+    },
+    "chart:codeGroups.trauma": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "chart:columns.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "chart:columns.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "chart:columns.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "chart:columns.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "chart:columns.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "chart:columns.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "chart:columns.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:columns.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "chart:columns.tooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "chart:columns.triadan": {
+      "hash": "9ac63c724069",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.block": {
+      "hash": "39ff9d93c0ae",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.field": {
+      "hash": "6163a41c0e5e",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "codes:AB": {
+      "hash": "510ad89a3da2",
+      "status": "machine"
+    },
+    "codes:ABE": {
+      "hash": "abe767a99e98",
+      "status": "machine"
+    },
+    "codes:ALV": {
+      "hash": "eba8f4b4177b",
+      "status": "machine"
+    },
+    "codes:ANO": {
+      "hash": "6c09ff013e93",
+      "status": "machine"
+    },
+    "codes:AOS": {
+      "hash": "66f2f43c0900",
+      "status": "machine"
+    },
+    "codes:AP/X": {
+      "hash": "eeaa20212d88",
+      "status": "machine"
+    },
+    "codes:APN": {
+      "hash": "e41b74497c2d",
+      "status": "machine"
+    },
+    "codes:AT": {
+      "hash": "907afb9b9795",
+      "status": "machine"
+    },
+    "codes:ATE": {
+      "hash": "6f1cd2d79181",
+      "status": "machine"
+    },
+    "codes:B": {
+      "hash": "4656852840f6",
+      "status": "machine"
+    },
+    "codes:B/B": {
+      "hash": "9e7ce0fad61e",
+      "status": "machine"
+    },
+    "codes:B/CN": {
+      "hash": "10d9d8f229d4",
+      "status": "machine"
+    },
+    "codes:B/E": {
+      "hash": "4466f0ff1e3f",
+      "status": "machine"
+    },
+    "codes:B/I": {
+      "hash": "1065c15540bf",
+      "status": "machine"
+    },
+    "codes:B/NA": {
+      "hash": "9c126e49fca1",
+      "status": "machine"
+    },
+    "codes:B/NB": {
+      "hash": "a481a5d2d389",
+      "status": "machine"
+    },
+    "codes:B/P": {
+      "hash": "f0c75d7f63e7",
+      "status": "machine"
+    },
+    "codes:B/S": {
+      "hash": "25507abef723",
+      "status": "machine"
+    },
+    "codes:BR": {
+      "hash": "467737e854f2",
+      "status": "machine"
+    },
+    "codes:BRI": {
+      "hash": "3892e10346fd",
+      "status": "machine"
+    },
+    "codes:BTH": {
+      "hash": "8679a44e1e5f",
+      "status": "machine"
+    },
+    "codes:BUC": {
+      "hash": "60ba80ea106e",
+      "status": "machine"
+    },
+    "codes:BUP": {
+      "hash": "3817773c1216",
+      "status": "machine"
+    },
+    "codes:CA": {
+      "hash": "49d896986080",
+      "status": "machine"
+    },
+    "codes:CB": {
+      "hash": "4bc308437b81",
+      "status": "machine"
+    },
+    "codes:CB/C": {
+      "hash": "e422ca0f909f",
+      "status": "machine"
+    },
+    "codes:CB/R": {
+      "hash": "2d1e14d9b84f",
+      "status": "machine"
+    },
+    "codes:CC": {
+      "hash": "7cfd167342b4",
+      "status": "machine"
+    },
+    "codes:CFL": {
+      "hash": "6fc3f936f963",
+      "status": "machine"
+    },
+    "codes:CFL/R": {
+      "hash": "a023e3c5633b",
+      "status": "machine"
+    },
+    "codes:CFP": {
+      "hash": "48481a6f2498",
+      "status": "machine"
+    },
+    "codes:CFP/R": {
+      "hash": "71e0af6ab662",
+      "status": "machine"
+    },
+    "codes:CFS": {
+      "hash": "a98e1134c642",
+      "status": "machine"
+    },
+    "codes:CFS/R": {
+      "hash": "cb02dac6908d",
+      "status": "machine"
+    },
+    "codes:CFSH": {
+      "hash": "ea83e7117305",
+      "status": "machine"
+    },
+    "codes:CFSH/R": {
+      "hash": "1c5f6f22d7fa",
+      "status": "machine"
+    },
+    "codes:CFSU": {
+      "hash": "76ca4a1dd175",
+      "status": "machine"
+    },
+    "codes:CFSU/R": {
+      "hash": "e0c830ef9abb",
+      "status": "machine"
+    },
+    "codes:CFT": {
+      "hash": "06beaf5e0b62",
+      "status": "machine"
+    },
+    "codes:CFT/R": {
+      "hash": "4a1120617a1f",
+      "status": "machine"
+    },
+    "codes:CHO": {
+      "hash": "38f9eb3c92e5",
+      "status": "machine"
+    },
+    "codes:CL": {
+      "hash": "05d336ff7c5e",
+      "status": "machine"
+    },
+    "codes:CL/B": {
+      "hash": "97435ccf4cda",
+      "status": "machine"
+    },
+    "codes:CL/L": {
+      "hash": "afde8e815680",
+      "status": "machine"
+    },
+    "codes:CL/P": {
+      "hash": "06e40e7ca42a",
+      "status": "machine"
+    },
+    "codes:CL/T": {
+      "hash": "78e7fbe67a7d",
+      "status": "machine"
+    },
+    "codes:CMO": {
+      "hash": "45243a339861",
+      "status": "machine"
+    },
+    "codes:COM": {
+      "hash": "9a9984a267bb",
+      "status": "machine"
+    },
+    "codes:CON/X": {
+      "hash": "83ac103a0422",
+      "status": "machine"
+    },
+    "codes:COO": {
+      "hash": "2c0bf879e909",
+      "status": "machine"
+    },
+    "codes:COR/X": {
+      "hash": "2731437e416f",
+      "status": "machine"
+    },
+    "codes:CPL": {
+      "hash": "3e17348cbe96",
+      "status": "machine"
+    },
+    "codes:CR/A": {
+      "hash": "3cbedc84cd8d",
+      "status": "machine"
+    },
+    "codes:CR/C": {
+      "hash": "4606ef68fb5c",
+      "status": "machine"
+    },
+    "codes:CR/C/P": {
+      "hash": "71d103c2f0ad",
+      "status": "machine"
+    },
+    "codes:CR/E": {
+      "hash": "70c3c26e09c2",
+      "status": "machine"
+    },
+    "codes:CR/L": {
+      "hash": "d059f1a4aac5",
+      "status": "machine"
+    },
+    "codes:CR/M": {
+      "hash": "bed25f3c5b56",
+      "status": "machine"
+    },
+    "codes:CR/M/P": {
+      "hash": "542567520892",
+      "status": "machine"
+    },
+    "codes:CR/P": {
+      "hash": "6e709cc3a655",
+      "status": "machine"
+    },
+    "codes:CR/PFM": {
+      "hash": "7c37292c1276",
+      "status": "machine"
+    },
+    "codes:CR/PFM/P": {
+      "hash": "5ddfb50cc843",
+      "status": "machine"
+    },
+    "codes:CR/R": {
+      "hash": "92f82fa6dedb",
+      "status": "machine"
+    },
+    "codes:CR/R/P": {
+      "hash": "634895f0c2a2",
+      "status": "machine"
+    },
+    "codes:CR/T": {
+      "hash": "07203df8993f",
+      "status": "machine"
+    },
+    "codes:CR/XP": {
+      "hash": "5fd72ef89740",
+      "status": "machine"
+    },
+    "codes:CS": {
+      "hash": "142abb9c6c99",
+      "status": "machine"
+    },
+    "codes:CT": {
+      "hash": "37e06f0c538b",
+      "status": "machine"
+    },
+    "codes:CT/CB": {
+      "hash": "2aedfdbfb782",
+      "status": "machine"
+    },
+    "codes:CTH": {
+      "hash": "dc82b99cf02c",
+      "status": "machine"
+    },
+    "codes:CU": {
+      "hash": "95d78201a8a6",
+      "status": "machine"
+    },
+    "codes:CUS": {
+      "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:DC": {
+      "hash": "3021239926f1",
+      "status": "machine"
+    },
+    "codes:DC/D": {
+      "hash": "d3c2d6d34104",
+      "status": "machine"
+    },
+    "codes:DC/SM": {
+      "hash": "72f1a6d524c5",
+      "status": "machine"
+    },
+    "codes:DI/ND": {
+      "hash": "51d6afc19833",
+      "status": "machine"
+    },
+    "codes:DI/NS": {
+      "hash": "2cefa6d97678",
+      "status": "machine"
+    },
+    "codes:DI/NU": {
+      "hash": "6c28b69d43bf",
+      "status": "machine"
+    },
+    "codes:DI/OD": {
+      "hash": "2a344b21e70b",
+      "status": "machine"
+    },
+    "codes:DI/OS": {
+      "hash": "22b2750347ec",
+      "status": "machine"
+    },
+    "codes:DI/OU": {
+      "hash": "0345e1c8f947",
+      "status": "machine"
+    },
+    "codes:DMO": {
+      "hash": "16d5e4647065",
+      "status": "machine"
+    },
+    "codes:DP": {
+      "hash": "77565b9c3787",
+      "status": "machine"
+    },
+    "codes:DT": {
+      "hash": "62ff83cc870a",
+      "status": "machine"
+    },
+    "codes:DT/P": {
+      "hash": "da9aaa8799e5",
+      "status": "machine"
+    },
+    "codes:DTC": {
+      "hash": "c37345655755",
+      "status": "machine"
+    },
+    "codes:DTC/R": {
+      "hash": "2338e0d7d674",
+      "status": "machine"
+    },
+    "codes:E/D": {
+      "hash": "ace05f629ccc",
+      "status": "machine"
+    },
+    "codes:E/H": {
+      "hash": "e55754ae3c81",
+      "status": "machine"
+    },
+    "codes:E/HM": {
+      "hash": "048065e9a33e",
+      "status": "machine"
+    },
+    "codes:E/P": {
+      "hash": "68073cf264d1",
+      "status": "machine"
+    },
+    "codes:EM": {
+      "hash": "aa2fe9bdc35b",
+      "status": "machine"
+    },
+    "codes:ENO": {
+      "hash": "97ead18f5942",
+      "status": "machine"
+    },
+    "codes:EOG": {
+      "hash": "ee3e96341900",
+      "status": "machine"
+    },
+    "codes:EOG/L": {
+      "hash": "de52e775bcc9",
+      "status": "machine"
+    },
+    "codes:EOG/P": {
+      "hash": "7d65583c47b1",
+      "status": "machine"
+    },
+    "codes:EOG/T": {
+      "hash": "ea6b402eef57",
+      "status": "machine"
+    },
+    "codes:ER": {
+      "hash": "d41111129d81",
+      "status": "machine"
+    },
+    "codes:ESP": {
+      "hash": "54cc978a371f",
+      "status": "machine"
+    },
+    "codes:ESP/R": {
+      "hash": "db62876b47a5",
+      "status": "machine"
+    },
+    "codes:EXO": {
+      "hash": "634610800faa",
+      "status": "machine"
+    },
+    "codes:F": {
+      "hash": "13c519458eca",
+      "status": "machine"
+    },
+    "codes:F/AD": {
+      "hash": "1ca1dccf7395",
+      "status": "machine"
+    },
+    "codes:F/AP": {
+      "hash": "6e0c36c49998",
+      "status": "machine"
+    },
+    "codes:F/CO": {
+      "hash": "514f34aafda8",
+      "status": "machine"
+    },
+    "codes:F/EN": {
+      "hash": "ad2f9ce365df",
+      "status": "machine"
+    },
+    "codes:F/HI": {
+      "hash": "041083751331",
+      "status": "machine"
+    },
+    "codes:F/IS": {
+      "hash": "bf5df917b346",
+      "status": "machine"
+    },
+    "codes:F/LA": {
+      "hash": "19e02c1707b0",
+      "status": "machine"
+    },
+    "codes:F/RO": {
+      "hash": "d7941c8e6da9",
+      "status": "machine"
+    },
+    "codes:F/TR": {
+      "hash": "d5e2794dbfb3",
+      "status": "machine"
+    },
+    "codes:FB": {
+      "hash": "c77fdf9d2fe2",
+      "status": "machine"
+    },
+    "codes:FB/R": {
+      "hash": "67b7a888309f",
+      "status": "machine"
+    },
+    "codes:FOD": {
+      "hash": "4b32bb6bcbab",
+      "status": "machine"
+    },
+    "codes:FOL": {
+      "hash": "f099cd0651e6",
+      "status": "machine"
+    },
+    "codes:FRE": {
+      "hash": "d96426f44dcc",
+      "status": "machine"
+    },
+    "codes:FT": {
+      "hash": "c6f2fb1230d7",
+      "status": "machine"
+    },
+    "codes:FX": {
+      "hash": "f4d6c647642c",
+      "status": "machine"
+    },
+    "codes:FX/R": {
+      "hash": "6d596d550258",
+      "status": "machine"
+    },
+    "codes:FX/R/EXF": {
+      "hash": "b2d52e0eda5c",
+      "status": "machine"
+    },
+    "codes:FX/R/IAS": {
+      "hash": "5f808b3ee65c",
+      "status": "machine"
+    },
+    "codes:FX/R/IDS": {
+      "hash": "81e259b0a1dc",
+      "status": "machine"
+    },
+    "codes:FX/R/IQS": {
+      "hash": "f9ff599f85a2",
+      "status": "machine"
+    },
+    "codes:FX/R/MMF": {
+      "hash": "b10d37385096",
+      "status": "machine"
+    },
+    "codes:FX/R/MZ": {
+      "hash": "f68c7b1a27b6",
+      "status": "machine"
+    },
+    "codes:FX/R/PL": {
+      "hash": "fda61a01756c",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/C": {
+      "hash": "1c607316b60f",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/OS": {
+      "hash": "a9ad500a85ac",
+      "status": "machine"
+    },
+    "codes:GC": {
+      "hash": "44c476a5438a",
+      "status": "machine"
+    },
+    "codes:GE": {
+      "hash": "c9d6e0cf4bfd",
+      "status": "machine"
+    },
+    "codes:GF": {
+      "hash": "a6e579f73baa",
+      "status": "machine"
+    },
+    "codes:GF/B": {
+      "hash": "8a6aaa7bdde8",
+      "status": "machine"
+    },
+    "codes:GF/C": {
+      "hash": "87efa5e6c88e",
+      "status": "machine"
+    },
+    "codes:GF/CT": {
+      "hash": "fbaecfe1e436",
+      "status": "machine"
+    },
+    "codes:GF/F": {
+      "hash": "05490e318c55",
+      "status": "machine"
+    },
+    "codes:GF/G": {
+      "hash": "744f9f4df3e0",
+      "status": "machine"
+    },
+    "codes:GF/M": {
+      "hash": "7b68a7c81813",
+      "status": "machine"
+    },
+    "codes:GF/N": {
+      "hash": "6b0ff1e47f0c",
+      "status": "machine"
+    },
+    "codes:GF/S": {
+      "hash": "0c7ea85759dc",
+      "status": "machine"
+    },
+    "codes:GF/V": {
+      "hash": "5718f155abab",
+      "status": "machine"
+    },
+    "codes:GH": {
+      "hash": "8b0b49672e25",
+      "status": "machine"
+    },
+    "codes:GR": {
+      "hash": "134fa4ff4cbc",
+      "status": "machine"
+    },
+    "codes:GTR": {
+      "hash": "780c4c980f35",
+      "status": "machine"
+    },
+    "codes:GV": {
+      "hash": "366f0b166291",
+      "status": "machine"
+    },
+    "codes:HC": {
+      "hash": "af23771d8555",
+      "status": "machine"
+    },
+    "codes:HS": {
+      "hash": "b382cd65ba7e",
+      "status": "machine"
+    },
+    "codes:HYP": {
+      "hash": "4613075a7bd8",
+      "status": "machine"
+    },
+    "codes:IM": {
+      "hash": "c9dfb5af82dc",
+      "status": "machine"
+    },
+    "codes:IM/F": {
+      "hash": "edbebcba539d",
+      "status": "machine"
+    },
+    "codes:IMP": {
+      "hash": "eb9c63551ba7",
+      "status": "machine"
+    },
+    "codes:IOF": {
+      "hash": "d737f8c6095c",
+      "status": "machine"
+    },
+    "codes:IOF/R": {
+      "hash": "afb151d12d68",
+      "status": "machine"
+    },
+    "codes:IP": {
+      "hash": "15f78c839159",
+      "status": "machine"
+    },
+    "codes:IP/AC": {
+      "hash": "4e2e1e8b84d7",
+      "status": "machine"
+    },
+    "codes:IP/C": {
+      "hash": "5ae93108ca4c",
+      "status": "machine"
+    },
+    "codes:IP/M": {
+      "hash": "f19957944b1a",
+      "status": "machine"
+    },
+    "codes:ITH": {
+      "hash": "057360b3c0d7",
+      "status": "machine"
+    },
+    "codes:LAC": {
+      "hash": "bf1caf4648da",
+      "status": "machine"
+    },
+    "codes:LAC/B": {
+      "hash": "ff433dc91dc5",
+      "status": "machine"
+    },
+    "codes:LAC/G": {
+      "hash": "55aaff82d78d",
+      "status": "machine"
+    },
+    "codes:LAC/L": {
+      "hash": "ed34eff2185f",
+      "status": "machine"
+    },
+    "codes:LAC/O": {
+      "hash": "7eba1f741ef9",
+      "status": "machine"
+    },
+    "codes:LAC/P": {
+      "hash": "6a18d0ff9775",
+      "status": "machine"
+    },
+    "codes:LAC/R": {
+      "hash": "834acdce0f42",
+      "status": "machine"
+    },
+    "codes:LAC/T": {
+      "hash": "fc6cee3c4ee7",
+      "status": "machine"
+    },
+    "codes:LE": {
+      "hash": "d7df0bdacd81",
+      "status": "machine"
+    },
+    "codes:LIN/X": {
+      "hash": "f5e1b57683d6",
+      "status": "machine"
+    },
+    "codes:LIP/A/R": {
+      "hash": "2806f0d035d5",
+      "status": "machine"
+    },
+    "codes:LIP/X": {
+      "hash": "47a671296a6a",
+      "status": "machine"
+    },
+    "codes:LN/E": {
+      "hash": "098416b6b30c",
+      "status": "machine"
+    },
+    "codes:LN/X": {
+      "hash": "c1a7c52420f0",
+      "status": "machine"
+    },
+    "codes:MAL": {
+      "hash": "c43983504b97",
+      "status": "machine"
+    },
+    "codes:MAL1": {
+      "hash": "62ce1025dd45",
+      "status": "machine"
+    },
+    "codes:MAL1/BV": {
+      "hash": "ccfc02248dd0",
+      "status": "machine"
+    },
+    "codes:MAL1/DV": {
+      "hash": "0497010edf76",
+      "status": "machine"
+    },
+    "codes:MAL1/LABV": {
+      "hash": "d8f6cab2ab9f",
+      "status": "machine"
+    },
+    "codes:MAL1/LV": {
+      "hash": "20ef03c55d6c",
+      "status": "machine"
+    },
+    "codes:MAL1/MV": {
+      "hash": "43c7e26ded90",
+      "status": "machine"
+    },
+    "codes:MAL1/PV": {
+      "hash": "2edcadbe83d1",
+      "status": "machine"
+    },
+    "codes:MAL2": {
+      "hash": "5b2a8f9d124d",
+      "status": "machine"
+    },
+    "codes:MAL3": {
+      "hash": "3e97d99fad7a",
+      "status": "machine"
+    },
+    "codes:MAL4": {
+      "hash": "63a5238acde0",
+      "status": "machine"
+    },
+    "codes:MAL4/DV": {
+      "hash": "2fc90c928b1a",
+      "status": "machine"
+    },
+    "codes:MAL4/RC": {
+      "hash": "736fb0443082",
+      "status": "machine"
+    },
+    "codes:MAL4/STS": {
+      "hash": "99441a572e7e",
+      "status": "machine"
+    },
+    "codes:MAR": {
+      "hash": "2d1879405603",
+      "status": "machine"
+    },
+    "codes:MET": {
+      "hash": "7b6169e6b876",
+      "status": "machine"
+    },
+    "codes:MET/D": {
+      "hash": "67cb7238d51e",
+      "status": "machine"
+    },
+    "codes:MET/R": {
+      "hash": "91a35bd23844",
+      "status": "machine"
+    },
+    "codes:MMM": {
+      "hash": "3bd7067198bb",
+      "status": "machine"
+    },
+    "codes:MN/FX": {
+      "hash": "44d2aab85ea2",
+      "status": "machine"
+    },
+    "codes:MRI": {
+      "hash": "82649d839ab2",
+      "status": "machine"
+    },
+    "codes:MX/FX": {
+      "hash": "697265ea24c6",
+      "status": "machine"
+    },
+    "codes:N/EN": {
+      "hash": "5a1b84b9ffdf",
+      "status": "machine"
+    },
+    "codes:N/LAV": {
+      "hash": "610fc6264224",
+      "status": "machine"
+    },
+    "codes:N/NPS": {
+      "hash": "4fede08dcbe9",
+      "status": "machine"
+    },
+    "codes:N/NPS/R": {
+      "hash": "d8d7467cb291",
+      "status": "machine"
+    },
+    "codes:N/NS": {
+      "hash": "290de41d03ff",
+      "status": "machine"
+    },
+    "codes:N/NS/R": {
+      "hash": "31f0bfdc0ad8",
+      "status": "machine"
+    },
+    "codes:N/POL": {
+      "hash": "d15089293cb5",
+      "status": "machine"
+    },
+    "codes:N/SCC": {
+      "hash": "ff76772919fb",
+      "status": "machine"
+    },
+    "codes:OA": {
+      "hash": "3fdea1272ef2",
+      "status": "machine"
+    },
+    "codes:OA/A": {
+      "hash": "aa414ce0b3aa",
+      "status": "machine"
+    },
+    "codes:OA/AR": {
+      "hash": "cb7f0985fdd5",
+      "status": "machine"
+    },
+    "codes:OA/BKT": {
+      "hash": "c8e266afb91d",
+      "status": "machine"
+    },
+    "codes:OA/CMB": {
+      "hash": "f0ffe91e1890",
+      "status": "machine"
+    },
+    "codes:OA/EC": {
+      "hash": "9c9bed0c14a4",
+      "status": "machine"
+    },
+    "codes:OA/I": {
+      "hash": "b8e1fe7aa683",
+      "status": "machine"
+    },
+    "codes:OA/R": {
+      "hash": "abf916344aad",
+      "status": "machine"
+    },
+    "codes:OA/WIR": {
+      "hash": "428b353ab851",
+      "status": "machine"
+    },
+    "codes:OAF": {
+      "hash": "9687348cfb6f",
+      "status": "machine"
+    },
+    "codes:OAF/R": {
+      "hash": "66101df70736",
+      "status": "machine"
+    },
+    "codes:OC": {
+      "hash": "6b2d26c7c1e2",
+      "status": "machine"
+    },
+    "codes:ODY": {
+      "hash": "9cdca5f18d93",
+      "status": "machine"
+    },
+    "codes:OFF": {
+      "hash": "851a0c8a5c61",
+      "status": "machine"
+    },
+    "codes:OFF/R": {
+      "hash": "828e89dadb08",
+      "status": "machine"
+    },
+    "codes:OLI": {
+      "hash": "df44da2b5ccc",
+      "status": "machine"
+    },
+    "codes:OM": {
+      "hash": "326f2241dd8e",
+      "status": "machine"
+    },
+    "codes:OM/AA": {
+      "hash": "749a972cff3c",
+      "status": "machine"
+    },
+    "codes:OM/AD": {
+      "hash": "8c349a1f9845",
+      "status": "machine"
+    },
+    "codes:OM/ADC": {
+      "hash": "954c02639863",
+      "status": "machine"
+    },
+    "codes:OM/APN": {
+      "hash": "c1bc6e614cd8",
+      "status": "machine"
+    },
+    "codes:OM/APO": {
+      "hash": "f9c5ef046a92",
+      "status": "machine"
+    },
+    "codes:OM/CE": {
+      "hash": "3214dc37510f",
+      "status": "machine"
+    },
+    "codes:OM/FIO": {
+      "hash": "7cb11bee4e14",
+      "status": "machine"
+    },
+    "codes:OM/FS": {
+      "hash": "fe1c0ddc1395",
+      "status": "machine"
+    },
+    "codes:OM/GCG": {
+      "hash": "44a4bc7b08bc",
+      "status": "machine"
+    },
+    "codes:OM/GCT": {
+      "hash": "53b9666e69ee",
+      "status": "machine"
+    },
+    "codes:OM/HS": {
+      "hash": "07a134d949d5",
+      "status": "machine"
+    },
+    "codes:OM/LI": {
+      "hash": "ba57868869f5",
+      "status": "machine"
+    },
+    "codes:OM/LS": {
+      "hash": "f32b6f481c17",
+      "status": "machine"
+    },
+    "codes:OM/MCT": {
+      "hash": "4fbe75712d13",
+      "status": "machine"
+    },
+    "codes:OM/MM": {
+      "hash": "9a3d9a774ccf",
+      "status": "machine"
+    },
+    "codes:OM/MTB": {
+      "hash": "cd035aafc36d",
+      "status": "machine"
+    },
+    "codes:OM/OO": {
+      "hash": "7fdf9676ad5b",
+      "status": "machine"
+    },
+    "codes:OM/OS": {
+      "hash": "53389b9f9c64",
+      "status": "machine"
+    },
+    "codes:OM/PAP": {
+      "hash": "b700f6617de2",
+      "status": "machine"
+    },
+    "codes:OM/PCT": {
+      "hash": "ea30f062e722",
+      "status": "machine"
+    },
+    "codes:OM/PNT": {
+      "hash": "d29ff10c1391",
+      "status": "machine"
+    },
+    "codes:OM/POF": {
+      "hash": "df4ecab175c2",
+      "status": "machine"
+    },
+    "codes:OM/RBM": {
+      "hash": "01a7e4d61b5d",
+      "status": "machine"
+    },
+    "codes:OM/SCC": {
+      "hash": "0458f1ac17cf",
+      "status": "machine"
+    },
+    "codes:OM/UDN": {
+      "hash": "1761a2502971",
+      "status": "machine"
+    },
+    "codes:OMJL": {
+      "hash": "cf7c1c883337",
+      "status": "machine"
+    },
+    "codes:OMJL/R": {
+      "hash": "bda3575c335c",
+      "status": "machine"
+    },
+    "codes:ONF": {
+      "hash": "74ebf4f90f34",
+      "status": "machine"
+    },
+    "codes:ONF/R": {
+      "hash": "d614391bb575",
+      "status": "machine"
+    },
+    "codes:OP": {
+      "hash": "d99b5ffe44f6",
+      "status": "machine"
+    },
+    "codes:OR": {
+      "hash": "ec97944616a0",
+      "status": "machine"
+    },
+    "codes:OS": {
+      "hash": "f1b52e6e78df",
+      "status": "machine"
+    },
+    "codes:OSN": {
+      "hash": "13d6f5af378f",
+      "status": "machine"
+    },
+    "codes:OSS": {
+      "hash": "375d302ebd14",
+      "status": "machine"
+    },
+    "codes:OST": {
+      "hash": "0a338c31cd51",
+      "status": "machine"
+    },
+    "codes:PA/A": {
+      "hash": "9372d7fe987e",
+      "status": "machine"
+    },
+    "codes:PA/C": {
+      "hash": "ceb41f958eec",
+      "status": "machine"
+    },
+    "codes:PA/G": {
+      "hash": "0defc21edcdf",
+      "status": "machine"
+    },
+    "codes:PA/P": {
+      "hash": "d8056a8a4d3b",
+      "status": "machine"
+    },
+    "codes:PCB": {
+      "hash": "e0a1d7f2a983",
+      "status": "machine"
+    },
+    "codes:PCD": {
+      "hash": "3b3b18bbcdf7",
+      "status": "machine"
+    },
+    "codes:PCI": {
+      "hash": "623a4388320a",
+      "status": "machine"
+    },
+    "codes:PD": {
+      "hash": "ad5f9fd3114d",
+      "status": "machine"
+    },
+    "codes:PD0": {
+      "hash": "7036dee19a60",
+      "status": "machine"
+    },
+    "codes:PD1": {
+      "hash": "71ded08f278f",
+      "status": "machine"
+    },
+    "codes:PD2": {
+      "hash": "a0a46a78b8b9",
+      "status": "machine"
+    },
+    "codes:PD3": {
+      "hash": "c0d21b033ea6",
+      "status": "machine"
+    },
+    "codes:PD4": {
+      "hash": "6a3919395cdf",
+      "status": "machine"
+    },
+    "codes:PDE": {
+      "hash": "47f6adcfe726",
+      "status": "machine"
+    },
+    "codes:PDE/R": {
+      "hash": "843aec5a7818",
+      "status": "machine"
+    },
+    "codes:PEC": {
+      "hash": "5ba3880d17ef",
+      "status": "machine"
+    },
+    "codes:PEO": {
+      "hash": "837ec7475685",
+      "status": "machine"
+    },
+    "codes:PHA/IN": {
+      "hash": "f92bf81784ee",
+      "status": "machine"
+    },
+    "codes:POB": {
+      "hash": "c6d5acb2c835",
+      "status": "machine"
+    },
+    "codes:PRO": {
+      "hash": "aaa30b575d40",
+      "status": "machine"
+    },
+    "codes:PTY": {
+      "hash": "9668b3a79a69",
+      "status": "machine"
+    },
+    "codes:PU/M": {
+      "hash": "698ba0b23be7",
+      "status": "machine"
+    },
+    "codes:PU/S": {
+      "hash": "3642205e46e0",
+      "status": "machine"
+    },
+    "codes:PV": {
+      "hash": "39d162d96ea4",
+      "status": "machine"
+    },
+    "codes:PYO": {
+      "hash": "5a04d0d568d6",
+      "status": "machine"
+    },
+    "codes:R": {
+      "hash": "14b81d2728f3",
+      "status": "machine"
+    },
+    "codes:R/A": {
+      "hash": "805f08273997",
+      "status": "machine"
+    },
+    "codes:R/C": {
+      "hash": "1bdd155cae65",
+      "status": "machine"
+    },
+    "codes:R/CP": {
+      "hash": "28aed4eb241a",
+      "status": "machine"
+    },
+    "codes:R/I": {
+      "hash": "218c10b5e2e5",
+      "status": "machine"
+    },
+    "codes:RAD": {
+      "hash": "4227373a006a",
+      "status": "machine"
+    },
+    "codes:RAD/SG": {
+      "hash": "6738ddecb60a",
+      "status": "machine"
+    },
+    "codes:RBA": {
+      "hash": "5f3ab17a45a8",
+      "status": "machine"
+    },
+    "codes:RCR": {
+      "hash": "b18a455fe51f",
+      "status": "machine"
+    },
+    "codes:RCT": {
+      "hash": "2057b1462ac0",
+      "status": "machine"
+    },
+    "codes:RCT/S": {
+      "hash": "5903ee1b09c4",
+      "status": "machine"
+    },
+    "codes:RO/X": {
+      "hash": "ba890ea03eff",
+      "status": "machine"
+    },
+    "codes:RP/C": {
+      "hash": "fb5e62016ba2",
+      "status": "machine"
+    },
+    "codes:RP/O": {
+      "hash": "abfe06e4c9d6",
+      "status": "machine"
+    },
+    "codes:RPA": {
+      "hash": "da0d944f729e",
+      "status": "machine"
+    },
+    "codes:RR": {
+      "hash": "9cc28a89d5ff",
+      "status": "machine"
+    },
+    "codes:RTH": {
+      "hash": "828fe62d0ad5",
+      "status": "machine"
+    },
+    "codes:RTR": {
+      "hash": "8169fa6dd918",
+      "status": "machine"
+    },
+    "codes:S/M": {
+      "hash": "df85860e44d4",
+      "status": "machine"
+    },
+    "codes:S/MB": {
+      "hash": "14afd982f3e8",
+      "status": "machine"
+    },
+    "codes:S/MD": {
+      "hash": "77ad4bda6a12",
+      "status": "machine"
+    },
+    "codes:S/MS": {
+      "hash": "73d9f31e8398",
+      "status": "machine"
+    },
+    "codes:S/MT": {
+      "hash": "54466817a346",
+      "status": "machine"
+    },
+    "codes:S/P": {
+      "hash": "244d1af451ff",
+      "status": "machine"
+    },
+    "codes:S/X": {
+      "hash": "d5f07480bbf8",
+      "status": "machine"
+    },
+    "codes:S/XB": {
+      "hash": "a225ee2db24d",
+      "status": "machine"
+    },
+    "codes:SCI": {
+      "hash": "b621649e087a",
+      "status": "machine"
+    },
+    "codes:SG/ADC": {
+      "hash": "49a3b16c8488",
+      "status": "machine"
+    },
+    "codes:SG/ADS": {
+      "hash": "fb0fc9d74def",
+      "status": "machine"
+    },
+    "codes:SG/IN": {
+      "hash": "4c964ad2d02d",
+      "status": "machine"
+    },
+    "codes:SG/MAR": {
+      "hash": "6e41f9569ebe",
+      "status": "machine"
+    },
+    "codes:SG/MUC/C": {
+      "hash": "e6c91f1180e4",
+      "status": "machine"
+    },
+    "codes:SG/MUC/P": {
+      "hash": "6ffc88a2e5b1",
+      "status": "machine"
+    },
+    "codes:SG/MUC/S": {
+      "hash": "52dad98779a2",
+      "status": "machine"
+    },
+    "codes:SG/NEC": {
+      "hash": "04540fff4381",
+      "status": "machine"
+    },
+    "codes:SG/RC": {
+      "hash": "10f8038b97ef",
+      "status": "machine"
+    },
+    "codes:SG/SI": {
+      "hash": "d7b473229d88",
+      "status": "machine"
+    },
+    "codes:SG/X": {
+      "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SR": {
+      "hash": "b7c5d92043ee",
+      "status": "machine"
+    },
+    "codes:ST": {
+      "hash": "654802804fc4",
+      "status": "machine"
+    },
+    "codes:ST/CS": {
+      "hash": "659984c9c30f",
+      "status": "machine"
+    },
+    "codes:SYM/R": {
+      "hash": "bfcac94d50fe",
+      "status": "machine"
+    },
+    "codes:SYM/S": {
+      "hash": "7c7b34385397",
+      "status": "machine"
+    },
+    "codes:T/A": {
+      "hash": "16c22f95a4e0",
+      "status": "machine"
+    },
+    "codes:T/CCR": {
+      "hash": "d73b836d6b96",
+      "status": "machine"
+    },
+    "codes:T/DEN": {
+      "hash": "496e27acc35a",
+      "status": "machine"
+    },
+    "codes:T/DIL": {
+      "hash": "233ade101f88",
+      "status": "machine"
+    },
+    "codes:T/E": {
+      "hash": "df56e4b6664d",
+      "status": "machine"
+    },
+    "codes:T/EL": {
+      "hash": "26887c27a71f",
+      "status": "machine"
+    },
+    "codes:T/FDR": {
+      "hash": "8d621032f65e",
+      "status": "machine"
+    },
+    "codes:T/FUS": {
+      "hash": "09d7515ed4bf",
+      "status": "machine"
+    },
+    "codes:T/FX": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "codes:T/FX/CCF": {
+      "hash": "af37bbdf8f2c",
+      "status": "machine"
+    },
+    "codes:T/FX/CCRF": {
+      "hash": "a4c64eb05092",
+      "status": "machine"
+    },
+    "codes:T/FX/EF": {
+      "hash": "26cb9ef5dddc",
+      "status": "machine"
+    },
+    "codes:T/FX/EI": {
+      "hash": "e6bd4b6469d7",
+      "status": "machine"
+    },
+    "codes:T/FX/RF": {
+      "hash": "6e6b97fcf258",
+      "status": "machine"
+    },
+    "codes:T/FX/UCF": {
+      "hash": "ff6e2a7c1b30",
+      "status": "machine"
+    },
+    "codes:T/FX/UCRF": {
+      "hash": "ecacb4683106",
+      "status": "machine"
+    },
+    "codes:T/GEM": {
+      "hash": "16cbf1cf52bb",
+      "status": "machine"
+    },
+    "codes:T/I": {
+      "hash": "ec0c4f679181",
+      "status": "machine"
+    },
+    "codes:T/LUX": {
+      "hash": "6506f7e2eeb4",
+      "status": "machine"
+    },
+    "codes:T/MAC": {
+      "hash": "c8aedde3e1e9",
+      "status": "machine"
+    },
+    "codes:T/MIC": {
+      "hash": "e7e93c095da4",
+      "status": "machine"
+    },
+    "codes:T/NE": {
+      "hash": "f7307ce42e1e",
+      "status": "machine"
+    },
+    "codes:T/NV": {
+      "hash": "fd1d15e8b2cf",
+      "status": "machine"
+    },
+    "codes:T/PE": {
+      "hash": "83e31ff119f9",
+      "status": "machine"
+    },
+    "codes:T/RI": {
+      "hash": "0e89fff1978c",
+      "status": "machine"
+    },
+    "codes:T/RP": {
+      "hash": "bb875ee053b6",
+      "status": "machine"
+    },
+    "codes:T/SN": {
+      "hash": "fe7d7d5ca9a9",
+      "status": "machine"
+    },
+    "codes:T/SR": {
+      "hash": "2d9a3d710189",
+      "status": "machine"
+    },
+    "codes:T/TRA": {
+      "hash": "ed6cd7806842",
+      "status": "machine"
+    },
+    "codes:T/U": {
+      "hash": "ed97849890fd",
+      "status": "machine"
+    },
+    "codes:T/V": {
+      "hash": "c68556fc27b6",
+      "status": "machine"
+    },
+    "codes:T/XP": {
+      "hash": "a902b6e3364a",
+      "status": "machine"
+    },
+    "codes:TMA": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "codes:TMA/B": {
+      "hash": "26ddca9807a1",
+      "status": "machine"
+    },
+    "codes:TMA/BRN": {
+      "hash": "63fb1d6e3a15",
+      "status": "machine"
+    },
+    "codes:TMA/E": {
+      "hash": "8fd26f6114fb",
+      "status": "machine"
+    },
+    "codes:TMA/R": {
+      "hash": "8bef03917ec2",
+      "status": "machine"
+    },
+    "codes:TMJ/A": {
+      "hash": "78f290a0483a",
+      "status": "machine"
+    },
+    "codes:TMJ/A/R": {
+      "hash": "ebd191da6583",
+      "status": "machine"
+    },
+    "codes:TMJ/D": {
+      "hash": "99660140f4db",
+      "status": "machine"
+    },
+    "codes:TMJ/FX": {
+      "hash": "7b9f4a41665d",
+      "status": "machine"
+    },
+    "codes:TMJ/FX/R": {
+      "hash": "50f4800cba4e",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX": {
+      "hash": "45b129f8fe40",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX/R": {
+      "hash": "b11b0a856975",
+      "status": "machine"
+    },
+    "codes:TON/IN": {
+      "hash": "cfd987f776ca",
+      "status": "machine"
+    },
+    "codes:TON/X": {
+      "hash": "88d7fde4c53a",
+      "status": "machine"
+    },
+    "codes:TP": {
+      "hash": "16c8fb0da228",
+      "status": "machine"
+    },
+    "codes:TR": {
+      "hash": "59801ae3dd5b",
+      "status": "machine"
+    },
+    "codes:TS": {
+      "hash": "88808dab2c08",
+      "status": "machine"
+    },
+    "codes:TT": {
+      "hash": "35ebd096dc82",
+      "status": "machine"
+    },
+    "codes:US": {
+      "hash": "faedfd09d850",
+      "status": "machine"
+    },
+    "codes:VPT": {
+      "hash": "563c0eefb553",
+      "status": "machine"
+    },
+    "codes:X": {
+      "hash": "3409a88ca603",
+      "status": "machine"
+    },
+    "codes:XS": {
+      "hash": "e196790c1c8d",
+      "status": "machine"
+    },
+    "codes:XS/ODY": {
+      "hash": "a5e54f6c2749",
+      "status": "machine"
+    },
+    "codes:XSS": {
+      "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:ZYG/X": {
+      "hash": "1006c1540735",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -618,6 +2366,150 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.body": {
+      "hash": "db6a26af1ae8",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.title": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.body": {
+      "hash": "a3c8990b42c7",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.title": {
+      "hash": "546a7c64290d",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.body": {
+      "hash": "4ac0965bf187",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.title": {
+      "hash": "e751f37c3e08",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.body": {
+      "hash": "d42c50807374",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.title": {
+      "hash": "2faed1a26b87",
+      "status": "machine"
+    },
+    "whatsNew:gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "whatsNew:groups.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "whatsNew:groups.dictation": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "whatsNew:groups.everyday": {
+      "hash": "d01872ef0010",
+      "status": "machine"
+    },
+    "whatsNew:groups.ownerReport": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "whatsNew:groups.records": {
+      "hash": "47a84e92d5b2",
+      "status": "machine"
+    },
+    "whatsNew:intro": {
+      "hash": "26325643fc44",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.body": {
+      "hash": "d3d949e7e6f0",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
+    "whatsNew:phones.body": {
+      "hash": "cdadcb703d93",
+      "status": "machine"
+    },
+    "whatsNew:phones.title": {
+      "hash": "23c636305501",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.body": {
+      "hash": "a22f16b5ef8d",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.title": {
+      "hash": "7df346f0d6b3",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.body": {
+      "hash": "06d4d2fab9dc",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.title": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.body": {
+      "hash": "99369cac3234",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.title": {
+      "hash": "3c7992fb7817",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.body": {
+      "hash": "fe25857c5d2e",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.title": {
+      "hash": "4dea82415176",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.body": {
+      "hash": "c16b7f2c4a2b",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.title": {
+      "hash": "7a7ef53d397a",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.body": {
+      "hash": "fee2870fa556",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.title": {
+      "hash": "a43f73adf41d",
+      "status": "machine"
+    },
+    "whatsNew:title": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.body": {
+      "hash": "425690d8fb26",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.title": {
+      "hash": "a0d1a3d64ab0",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.body": {
+      "hash": "982b203c9015",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.title": {
+      "hash": "596b070336ea",
       "status": "machine"
     }
   },
@@ -902,6 +2794,1770 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "billing:features.aiAutofill": {
+      "hash": "ec7edefa36d8",
+      "status": "machine"
+    },
+    "billing:features.aiAutofillTeam": {
+      "hash": "72ffe177bf5a",
+      "status": "machine"
+    },
+    "billing:features.everythingIn": {
+      "hash": "d3d7db0cc4be",
+      "status": "machine"
+    },
+    "billing:features.fullCharting": {
+      "hash": "5e32e6525fc5",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_many": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_one": {
+      "hash": "d83aeb2c278b",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_other": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.photos_many": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.photos_one": {
+      "hash": "15d41914bd0f",
+      "status": "machine"
+    },
+    "billing:features.photos_other": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.sharedCharts": {
+      "hash": "0e748a0e41a5",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_many": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_one": {
+      "hash": "a790c4068836",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_other": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamRoles": {
+      "hash": "f34e5d767ed6",
+      "status": "machine"
+    },
+    "billing:features.users_many": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.users_one": {
+      "hash": "3aa39be0096d",
+      "status": "machine"
+    },
+    "billing:features.users_other": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.visitHistory": {
+      "hash": "25067003b0d7",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.name": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.tagline": {
+      "hash": "df87b76836f2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.name": {
+      "hash": "15538f6971e2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.tagline": {
+      "hash": "33b6114892ca",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.name": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.tagline": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.name": {
+      "hash": "f79df0fe002d",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.tagline": {
+      "hash": "d6af9793c895",
+      "status": "machine"
+    },
+    "chart:codeGroups.developmental": {
+      "hash": "8b263f32b01a",
+      "status": "machine"
+    },
+    "chart:codeGroups.endodontics": {
+      "hash": "af9cd09b7401",
+      "status": "machine"
+    },
+    "chart:codeGroups.extractions": {
+      "hash": "81ff9ea7137f",
+      "status": "machine"
+    },
+    "chart:codeGroups.headNosePharynx": {
+      "hash": "49b29b652caf",
+      "status": "machine"
+    },
+    "chart:codeGroups.imaging": {
+      "hash": "94db24586b5f",
+      "status": "machine"
+    },
+    "chart:codeGroups.immuneMediated": {
+      "hash": "a540b5fd5e71",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawRepair": {
+      "hash": "92f2fae84cc9",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawTmj": {
+      "hash": "27950ddafbf0",
+      "status": "machine"
+    },
+    "chart:codeGroups.masses": {
+      "hash": "3d089995e287",
+      "status": "machine"
+    },
+    "chart:codeGroups.occlusion": {
+      "hash": "865a3db23fd9",
+      "status": "machine"
+    },
+    "chart:codeGroups.oncologic": {
+      "hash": "15f2af0c90e1",
+      "status": "machine"
+    },
+    "chart:codeGroups.oralSurgery": {
+      "hash": "655e0297d63d",
+      "status": "machine"
+    },
+    "chart:codeGroups.orthodontics": {
+      "hash": "f325953ea439",
+      "status": "machine"
+    },
+    "chart:codeGroups.periapicalBone": {
+      "hash": "6255882a5933",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontal": {
+      "hash": "e28091946429",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontalTreatment": {
+      "hash": "369bc338ff26",
+      "status": "machine"
+    },
+    "chart:codeGroups.restorative": {
+      "hash": "048d162f1328",
+      "status": "machine"
+    },
+    "chart:codeGroups.salivary": {
+      "hash": "aa24bad01fed",
+      "status": "machine"
+    },
+    "chart:codeGroups.softTissue": {
+      "hash": "7372b5db8dc4",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothFracture": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothNumberEruption": {
+      "hash": "6bc3a7a6c671",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothPathology": {
+      "hash": "976c74b57b40",
+      "status": "machine"
+    },
+    "chart:codeGroups.trauma": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "chart:columns.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "chart:columns.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "chart:columns.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "chart:columns.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "chart:columns.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "chart:columns.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "chart:columns.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:columns.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "chart:columns.tooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "chart:columns.triadan": {
+      "hash": "9ac63c724069",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.block": {
+      "hash": "39ff9d93c0ae",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.field": {
+      "hash": "6163a41c0e5e",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "codes:AB": {
+      "hash": "510ad89a3da2",
+      "status": "machine"
+    },
+    "codes:ABE": {
+      "hash": "abe767a99e98",
+      "status": "machine"
+    },
+    "codes:ALV": {
+      "hash": "eba8f4b4177b",
+      "status": "machine"
+    },
+    "codes:ANO": {
+      "hash": "6c09ff013e93",
+      "status": "machine"
+    },
+    "codes:AOS": {
+      "hash": "66f2f43c0900",
+      "status": "machine"
+    },
+    "codes:AP/X": {
+      "hash": "eeaa20212d88",
+      "status": "machine"
+    },
+    "codes:APN": {
+      "hash": "e41b74497c2d",
+      "status": "machine"
+    },
+    "codes:AT": {
+      "hash": "907afb9b9795",
+      "status": "machine"
+    },
+    "codes:ATE": {
+      "hash": "6f1cd2d79181",
+      "status": "machine"
+    },
+    "codes:B": {
+      "hash": "4656852840f6",
+      "status": "machine"
+    },
+    "codes:B/B": {
+      "hash": "9e7ce0fad61e",
+      "status": "machine"
+    },
+    "codes:B/CN": {
+      "hash": "10d9d8f229d4",
+      "status": "machine"
+    },
+    "codes:B/E": {
+      "hash": "4466f0ff1e3f",
+      "status": "machine"
+    },
+    "codes:B/I": {
+      "hash": "1065c15540bf",
+      "status": "machine"
+    },
+    "codes:B/NA": {
+      "hash": "9c126e49fca1",
+      "status": "machine"
+    },
+    "codes:B/NB": {
+      "hash": "a481a5d2d389",
+      "status": "machine"
+    },
+    "codes:B/P": {
+      "hash": "f0c75d7f63e7",
+      "status": "machine"
+    },
+    "codes:B/S": {
+      "hash": "25507abef723",
+      "status": "machine"
+    },
+    "codes:BR": {
+      "hash": "467737e854f2",
+      "status": "machine"
+    },
+    "codes:BRI": {
+      "hash": "3892e10346fd",
+      "status": "machine"
+    },
+    "codes:BTH": {
+      "hash": "8679a44e1e5f",
+      "status": "machine"
+    },
+    "codes:BUC": {
+      "hash": "60ba80ea106e",
+      "status": "machine"
+    },
+    "codes:BUP": {
+      "hash": "3817773c1216",
+      "status": "machine"
+    },
+    "codes:CA": {
+      "hash": "49d896986080",
+      "status": "machine"
+    },
+    "codes:CB": {
+      "hash": "4bc308437b81",
+      "status": "machine"
+    },
+    "codes:CB/C": {
+      "hash": "e422ca0f909f",
+      "status": "machine"
+    },
+    "codes:CB/R": {
+      "hash": "2d1e14d9b84f",
+      "status": "machine"
+    },
+    "codes:CC": {
+      "hash": "7cfd167342b4",
+      "status": "machine"
+    },
+    "codes:CFL": {
+      "hash": "6fc3f936f963",
+      "status": "machine"
+    },
+    "codes:CFL/R": {
+      "hash": "a023e3c5633b",
+      "status": "machine"
+    },
+    "codes:CFP": {
+      "hash": "48481a6f2498",
+      "status": "machine"
+    },
+    "codes:CFP/R": {
+      "hash": "71e0af6ab662",
+      "status": "machine"
+    },
+    "codes:CFS": {
+      "hash": "a98e1134c642",
+      "status": "machine"
+    },
+    "codes:CFS/R": {
+      "hash": "cb02dac6908d",
+      "status": "machine"
+    },
+    "codes:CFSH": {
+      "hash": "ea83e7117305",
+      "status": "machine"
+    },
+    "codes:CFSH/R": {
+      "hash": "1c5f6f22d7fa",
+      "status": "machine"
+    },
+    "codes:CFSU": {
+      "hash": "76ca4a1dd175",
+      "status": "machine"
+    },
+    "codes:CFSU/R": {
+      "hash": "e0c830ef9abb",
+      "status": "machine"
+    },
+    "codes:CFT": {
+      "hash": "06beaf5e0b62",
+      "status": "machine"
+    },
+    "codes:CFT/R": {
+      "hash": "4a1120617a1f",
+      "status": "machine"
+    },
+    "codes:CHO": {
+      "hash": "38f9eb3c92e5",
+      "status": "machine"
+    },
+    "codes:CL": {
+      "hash": "05d336ff7c5e",
+      "status": "machine"
+    },
+    "codes:CL/B": {
+      "hash": "97435ccf4cda",
+      "status": "machine"
+    },
+    "codes:CL/L": {
+      "hash": "afde8e815680",
+      "status": "machine"
+    },
+    "codes:CL/P": {
+      "hash": "06e40e7ca42a",
+      "status": "machine"
+    },
+    "codes:CL/T": {
+      "hash": "78e7fbe67a7d",
+      "status": "machine"
+    },
+    "codes:CMO": {
+      "hash": "45243a339861",
+      "status": "machine"
+    },
+    "codes:COM": {
+      "hash": "9a9984a267bb",
+      "status": "machine"
+    },
+    "codes:CON/X": {
+      "hash": "83ac103a0422",
+      "status": "machine"
+    },
+    "codes:COO": {
+      "hash": "2c0bf879e909",
+      "status": "machine"
+    },
+    "codes:COR/X": {
+      "hash": "2731437e416f",
+      "status": "machine"
+    },
+    "codes:CPL": {
+      "hash": "3e17348cbe96",
+      "status": "machine"
+    },
+    "codes:CR/A": {
+      "hash": "3cbedc84cd8d",
+      "status": "machine"
+    },
+    "codes:CR/C": {
+      "hash": "4606ef68fb5c",
+      "status": "machine"
+    },
+    "codes:CR/C/P": {
+      "hash": "71d103c2f0ad",
+      "status": "machine"
+    },
+    "codes:CR/E": {
+      "hash": "70c3c26e09c2",
+      "status": "machine"
+    },
+    "codes:CR/L": {
+      "hash": "d059f1a4aac5",
+      "status": "machine"
+    },
+    "codes:CR/M": {
+      "hash": "bed25f3c5b56",
+      "status": "machine"
+    },
+    "codes:CR/M/P": {
+      "hash": "542567520892",
+      "status": "machine"
+    },
+    "codes:CR/P": {
+      "hash": "6e709cc3a655",
+      "status": "machine"
+    },
+    "codes:CR/PFM": {
+      "hash": "7c37292c1276",
+      "status": "machine"
+    },
+    "codes:CR/PFM/P": {
+      "hash": "5ddfb50cc843",
+      "status": "machine"
+    },
+    "codes:CR/R": {
+      "hash": "92f82fa6dedb",
+      "status": "machine"
+    },
+    "codes:CR/R/P": {
+      "hash": "634895f0c2a2",
+      "status": "machine"
+    },
+    "codes:CR/T": {
+      "hash": "07203df8993f",
+      "status": "machine"
+    },
+    "codes:CR/XP": {
+      "hash": "5fd72ef89740",
+      "status": "machine"
+    },
+    "codes:CS": {
+      "hash": "142abb9c6c99",
+      "status": "machine"
+    },
+    "codes:CT": {
+      "hash": "37e06f0c538b",
+      "status": "machine"
+    },
+    "codes:CT/CB": {
+      "hash": "2aedfdbfb782",
+      "status": "machine"
+    },
+    "codes:CTH": {
+      "hash": "dc82b99cf02c",
+      "status": "machine"
+    },
+    "codes:CU": {
+      "hash": "95d78201a8a6",
+      "status": "machine"
+    },
+    "codes:CUS": {
+      "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:DC": {
+      "hash": "3021239926f1",
+      "status": "machine"
+    },
+    "codes:DC/D": {
+      "hash": "d3c2d6d34104",
+      "status": "machine"
+    },
+    "codes:DC/SM": {
+      "hash": "72f1a6d524c5",
+      "status": "machine"
+    },
+    "codes:DI/ND": {
+      "hash": "51d6afc19833",
+      "status": "machine"
+    },
+    "codes:DI/NS": {
+      "hash": "2cefa6d97678",
+      "status": "machine"
+    },
+    "codes:DI/NU": {
+      "hash": "6c28b69d43bf",
+      "status": "machine"
+    },
+    "codes:DI/OD": {
+      "hash": "2a344b21e70b",
+      "status": "machine"
+    },
+    "codes:DI/OS": {
+      "hash": "22b2750347ec",
+      "status": "machine"
+    },
+    "codes:DI/OU": {
+      "hash": "0345e1c8f947",
+      "status": "machine"
+    },
+    "codes:DMO": {
+      "hash": "16d5e4647065",
+      "status": "machine"
+    },
+    "codes:DP": {
+      "hash": "77565b9c3787",
+      "status": "machine"
+    },
+    "codes:DT": {
+      "hash": "62ff83cc870a",
+      "status": "machine"
+    },
+    "codes:DT/P": {
+      "hash": "da9aaa8799e5",
+      "status": "machine"
+    },
+    "codes:DTC": {
+      "hash": "c37345655755",
+      "status": "machine"
+    },
+    "codes:DTC/R": {
+      "hash": "2338e0d7d674",
+      "status": "machine"
+    },
+    "codes:E/D": {
+      "hash": "ace05f629ccc",
+      "status": "machine"
+    },
+    "codes:E/H": {
+      "hash": "e55754ae3c81",
+      "status": "machine"
+    },
+    "codes:E/HM": {
+      "hash": "048065e9a33e",
+      "status": "machine"
+    },
+    "codes:E/P": {
+      "hash": "68073cf264d1",
+      "status": "machine"
+    },
+    "codes:EM": {
+      "hash": "aa2fe9bdc35b",
+      "status": "machine"
+    },
+    "codes:ENO": {
+      "hash": "97ead18f5942",
+      "status": "machine"
+    },
+    "codes:EOG": {
+      "hash": "ee3e96341900",
+      "status": "machine"
+    },
+    "codes:EOG/L": {
+      "hash": "de52e775bcc9",
+      "status": "machine"
+    },
+    "codes:EOG/P": {
+      "hash": "7d65583c47b1",
+      "status": "machine"
+    },
+    "codes:EOG/T": {
+      "hash": "ea6b402eef57",
+      "status": "machine"
+    },
+    "codes:ER": {
+      "hash": "d41111129d81",
+      "status": "machine"
+    },
+    "codes:ESP": {
+      "hash": "54cc978a371f",
+      "status": "machine"
+    },
+    "codes:ESP/R": {
+      "hash": "db62876b47a5",
+      "status": "machine"
+    },
+    "codes:EXO": {
+      "hash": "634610800faa",
+      "status": "machine"
+    },
+    "codes:F": {
+      "hash": "13c519458eca",
+      "status": "machine"
+    },
+    "codes:F/AD": {
+      "hash": "1ca1dccf7395",
+      "status": "machine"
+    },
+    "codes:F/AP": {
+      "hash": "6e0c36c49998",
+      "status": "machine"
+    },
+    "codes:F/CO": {
+      "hash": "514f34aafda8",
+      "status": "machine"
+    },
+    "codes:F/EN": {
+      "hash": "ad2f9ce365df",
+      "status": "machine"
+    },
+    "codes:F/HI": {
+      "hash": "041083751331",
+      "status": "machine"
+    },
+    "codes:F/IS": {
+      "hash": "bf5df917b346",
+      "status": "machine"
+    },
+    "codes:F/LA": {
+      "hash": "19e02c1707b0",
+      "status": "machine"
+    },
+    "codes:F/RO": {
+      "hash": "d7941c8e6da9",
+      "status": "machine"
+    },
+    "codes:F/TR": {
+      "hash": "d5e2794dbfb3",
+      "status": "machine"
+    },
+    "codes:FB": {
+      "hash": "c77fdf9d2fe2",
+      "status": "machine"
+    },
+    "codes:FB/R": {
+      "hash": "67b7a888309f",
+      "status": "machine"
+    },
+    "codes:FOD": {
+      "hash": "4b32bb6bcbab",
+      "status": "machine"
+    },
+    "codes:FOL": {
+      "hash": "f099cd0651e6",
+      "status": "machine"
+    },
+    "codes:FRE": {
+      "hash": "d96426f44dcc",
+      "status": "machine"
+    },
+    "codes:FT": {
+      "hash": "c6f2fb1230d7",
+      "status": "machine"
+    },
+    "codes:FX": {
+      "hash": "f4d6c647642c",
+      "status": "machine"
+    },
+    "codes:FX/R": {
+      "hash": "6d596d550258",
+      "status": "machine"
+    },
+    "codes:FX/R/EXF": {
+      "hash": "b2d52e0eda5c",
+      "status": "machine"
+    },
+    "codes:FX/R/IAS": {
+      "hash": "5f808b3ee65c",
+      "status": "machine"
+    },
+    "codes:FX/R/IDS": {
+      "hash": "81e259b0a1dc",
+      "status": "machine"
+    },
+    "codes:FX/R/IQS": {
+      "hash": "f9ff599f85a2",
+      "status": "machine"
+    },
+    "codes:FX/R/MMF": {
+      "hash": "b10d37385096",
+      "status": "machine"
+    },
+    "codes:FX/R/MZ": {
+      "hash": "f68c7b1a27b6",
+      "status": "machine"
+    },
+    "codes:FX/R/PL": {
+      "hash": "fda61a01756c",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/C": {
+      "hash": "1c607316b60f",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/OS": {
+      "hash": "a9ad500a85ac",
+      "status": "machine"
+    },
+    "codes:GC": {
+      "hash": "44c476a5438a",
+      "status": "machine"
+    },
+    "codes:GE": {
+      "hash": "c9d6e0cf4bfd",
+      "status": "machine"
+    },
+    "codes:GF": {
+      "hash": "a6e579f73baa",
+      "status": "machine"
+    },
+    "codes:GF/B": {
+      "hash": "8a6aaa7bdde8",
+      "status": "machine"
+    },
+    "codes:GF/C": {
+      "hash": "87efa5e6c88e",
+      "status": "machine"
+    },
+    "codes:GF/CT": {
+      "hash": "fbaecfe1e436",
+      "status": "machine"
+    },
+    "codes:GF/F": {
+      "hash": "05490e318c55",
+      "status": "machine"
+    },
+    "codes:GF/G": {
+      "hash": "744f9f4df3e0",
+      "status": "machine"
+    },
+    "codes:GF/M": {
+      "hash": "7b68a7c81813",
+      "status": "machine"
+    },
+    "codes:GF/N": {
+      "hash": "6b0ff1e47f0c",
+      "status": "machine"
+    },
+    "codes:GF/S": {
+      "hash": "0c7ea85759dc",
+      "status": "machine"
+    },
+    "codes:GF/V": {
+      "hash": "5718f155abab",
+      "status": "machine"
+    },
+    "codes:GH": {
+      "hash": "8b0b49672e25",
+      "status": "machine"
+    },
+    "codes:GR": {
+      "hash": "134fa4ff4cbc",
+      "status": "machine"
+    },
+    "codes:GTR": {
+      "hash": "780c4c980f35",
+      "status": "machine"
+    },
+    "codes:GV": {
+      "hash": "366f0b166291",
+      "status": "machine"
+    },
+    "codes:HC": {
+      "hash": "af23771d8555",
+      "status": "machine"
+    },
+    "codes:HS": {
+      "hash": "b382cd65ba7e",
+      "status": "machine"
+    },
+    "codes:HYP": {
+      "hash": "4613075a7bd8",
+      "status": "machine"
+    },
+    "codes:IM": {
+      "hash": "c9dfb5af82dc",
+      "status": "machine"
+    },
+    "codes:IM/F": {
+      "hash": "edbebcba539d",
+      "status": "machine"
+    },
+    "codes:IMP": {
+      "hash": "eb9c63551ba7",
+      "status": "machine"
+    },
+    "codes:IOF": {
+      "hash": "d737f8c6095c",
+      "status": "machine"
+    },
+    "codes:IOF/R": {
+      "hash": "afb151d12d68",
+      "status": "machine"
+    },
+    "codes:IP": {
+      "hash": "15f78c839159",
+      "status": "machine"
+    },
+    "codes:IP/AC": {
+      "hash": "4e2e1e8b84d7",
+      "status": "machine"
+    },
+    "codes:IP/C": {
+      "hash": "5ae93108ca4c",
+      "status": "machine"
+    },
+    "codes:IP/M": {
+      "hash": "f19957944b1a",
+      "status": "machine"
+    },
+    "codes:ITH": {
+      "hash": "057360b3c0d7",
+      "status": "machine"
+    },
+    "codes:LAC": {
+      "hash": "bf1caf4648da",
+      "status": "machine"
+    },
+    "codes:LAC/B": {
+      "hash": "ff433dc91dc5",
+      "status": "machine"
+    },
+    "codes:LAC/G": {
+      "hash": "55aaff82d78d",
+      "status": "machine"
+    },
+    "codes:LAC/L": {
+      "hash": "ed34eff2185f",
+      "status": "machine"
+    },
+    "codes:LAC/O": {
+      "hash": "7eba1f741ef9",
+      "status": "machine"
+    },
+    "codes:LAC/P": {
+      "hash": "6a18d0ff9775",
+      "status": "machine"
+    },
+    "codes:LAC/R": {
+      "hash": "834acdce0f42",
+      "status": "machine"
+    },
+    "codes:LAC/T": {
+      "hash": "fc6cee3c4ee7",
+      "status": "machine"
+    },
+    "codes:LE": {
+      "hash": "d7df0bdacd81",
+      "status": "machine"
+    },
+    "codes:LIN/X": {
+      "hash": "f5e1b57683d6",
+      "status": "machine"
+    },
+    "codes:LIP/A/R": {
+      "hash": "2806f0d035d5",
+      "status": "machine"
+    },
+    "codes:LIP/X": {
+      "hash": "47a671296a6a",
+      "status": "machine"
+    },
+    "codes:LN/E": {
+      "hash": "098416b6b30c",
+      "status": "machine"
+    },
+    "codes:LN/X": {
+      "hash": "c1a7c52420f0",
+      "status": "machine"
+    },
+    "codes:MAL": {
+      "hash": "c43983504b97",
+      "status": "machine"
+    },
+    "codes:MAL1": {
+      "hash": "62ce1025dd45",
+      "status": "machine"
+    },
+    "codes:MAL1/BV": {
+      "hash": "ccfc02248dd0",
+      "status": "machine"
+    },
+    "codes:MAL1/DV": {
+      "hash": "0497010edf76",
+      "status": "machine"
+    },
+    "codes:MAL1/LABV": {
+      "hash": "d8f6cab2ab9f",
+      "status": "machine"
+    },
+    "codes:MAL1/LV": {
+      "hash": "20ef03c55d6c",
+      "status": "machine"
+    },
+    "codes:MAL1/MV": {
+      "hash": "43c7e26ded90",
+      "status": "machine"
+    },
+    "codes:MAL1/PV": {
+      "hash": "2edcadbe83d1",
+      "status": "machine"
+    },
+    "codes:MAL2": {
+      "hash": "5b2a8f9d124d",
+      "status": "machine"
+    },
+    "codes:MAL3": {
+      "hash": "3e97d99fad7a",
+      "status": "machine"
+    },
+    "codes:MAL4": {
+      "hash": "63a5238acde0",
+      "status": "machine"
+    },
+    "codes:MAL4/DV": {
+      "hash": "2fc90c928b1a",
+      "status": "machine"
+    },
+    "codes:MAL4/RC": {
+      "hash": "736fb0443082",
+      "status": "machine"
+    },
+    "codes:MAL4/STS": {
+      "hash": "99441a572e7e",
+      "status": "machine"
+    },
+    "codes:MAR": {
+      "hash": "2d1879405603",
+      "status": "machine"
+    },
+    "codes:MET": {
+      "hash": "7b6169e6b876",
+      "status": "machine"
+    },
+    "codes:MET/D": {
+      "hash": "67cb7238d51e",
+      "status": "machine"
+    },
+    "codes:MET/R": {
+      "hash": "91a35bd23844",
+      "status": "machine"
+    },
+    "codes:MMM": {
+      "hash": "3bd7067198bb",
+      "status": "machine"
+    },
+    "codes:MN/FX": {
+      "hash": "44d2aab85ea2",
+      "status": "machine"
+    },
+    "codes:MRI": {
+      "hash": "82649d839ab2",
+      "status": "machine"
+    },
+    "codes:MX/FX": {
+      "hash": "697265ea24c6",
+      "status": "machine"
+    },
+    "codes:N/EN": {
+      "hash": "5a1b84b9ffdf",
+      "status": "machine"
+    },
+    "codes:N/LAV": {
+      "hash": "610fc6264224",
+      "status": "machine"
+    },
+    "codes:N/NPS": {
+      "hash": "4fede08dcbe9",
+      "status": "machine"
+    },
+    "codes:N/NPS/R": {
+      "hash": "d8d7467cb291",
+      "status": "machine"
+    },
+    "codes:N/NS": {
+      "hash": "290de41d03ff",
+      "status": "machine"
+    },
+    "codes:N/NS/R": {
+      "hash": "31f0bfdc0ad8",
+      "status": "machine"
+    },
+    "codes:N/POL": {
+      "hash": "d15089293cb5",
+      "status": "machine"
+    },
+    "codes:N/SCC": {
+      "hash": "ff76772919fb",
+      "status": "machine"
+    },
+    "codes:OA": {
+      "hash": "3fdea1272ef2",
+      "status": "machine"
+    },
+    "codes:OA/A": {
+      "hash": "aa414ce0b3aa",
+      "status": "machine"
+    },
+    "codes:OA/AR": {
+      "hash": "cb7f0985fdd5",
+      "status": "machine"
+    },
+    "codes:OA/BKT": {
+      "hash": "c8e266afb91d",
+      "status": "machine"
+    },
+    "codes:OA/CMB": {
+      "hash": "f0ffe91e1890",
+      "status": "machine"
+    },
+    "codes:OA/EC": {
+      "hash": "9c9bed0c14a4",
+      "status": "machine"
+    },
+    "codes:OA/I": {
+      "hash": "b8e1fe7aa683",
+      "status": "machine"
+    },
+    "codes:OA/R": {
+      "hash": "abf916344aad",
+      "status": "machine"
+    },
+    "codes:OA/WIR": {
+      "hash": "428b353ab851",
+      "status": "machine"
+    },
+    "codes:OAF": {
+      "hash": "9687348cfb6f",
+      "status": "machine"
+    },
+    "codes:OAF/R": {
+      "hash": "66101df70736",
+      "status": "machine"
+    },
+    "codes:OC": {
+      "hash": "6b2d26c7c1e2",
+      "status": "machine"
+    },
+    "codes:ODY": {
+      "hash": "9cdca5f18d93",
+      "status": "machine"
+    },
+    "codes:OFF": {
+      "hash": "851a0c8a5c61",
+      "status": "machine"
+    },
+    "codes:OFF/R": {
+      "hash": "828e89dadb08",
+      "status": "machine"
+    },
+    "codes:OLI": {
+      "hash": "df44da2b5ccc",
+      "status": "machine"
+    },
+    "codes:OM": {
+      "hash": "326f2241dd8e",
+      "status": "machine"
+    },
+    "codes:OM/AA": {
+      "hash": "749a972cff3c",
+      "status": "machine"
+    },
+    "codes:OM/AD": {
+      "hash": "8c349a1f9845",
+      "status": "machine"
+    },
+    "codes:OM/ADC": {
+      "hash": "954c02639863",
+      "status": "machine"
+    },
+    "codes:OM/APN": {
+      "hash": "c1bc6e614cd8",
+      "status": "machine"
+    },
+    "codes:OM/APO": {
+      "hash": "f9c5ef046a92",
+      "status": "machine"
+    },
+    "codes:OM/CE": {
+      "hash": "3214dc37510f",
+      "status": "machine"
+    },
+    "codes:OM/FIO": {
+      "hash": "7cb11bee4e14",
+      "status": "machine"
+    },
+    "codes:OM/FS": {
+      "hash": "fe1c0ddc1395",
+      "status": "machine"
+    },
+    "codes:OM/GCG": {
+      "hash": "44a4bc7b08bc",
+      "status": "machine"
+    },
+    "codes:OM/GCT": {
+      "hash": "53b9666e69ee",
+      "status": "machine"
+    },
+    "codes:OM/HS": {
+      "hash": "07a134d949d5",
+      "status": "machine"
+    },
+    "codes:OM/LI": {
+      "hash": "ba57868869f5",
+      "status": "machine"
+    },
+    "codes:OM/LS": {
+      "hash": "f32b6f481c17",
+      "status": "machine"
+    },
+    "codes:OM/MCT": {
+      "hash": "4fbe75712d13",
+      "status": "machine"
+    },
+    "codes:OM/MM": {
+      "hash": "9a3d9a774ccf",
+      "status": "machine"
+    },
+    "codes:OM/MTB": {
+      "hash": "cd035aafc36d",
+      "status": "machine"
+    },
+    "codes:OM/OO": {
+      "hash": "7fdf9676ad5b",
+      "status": "machine"
+    },
+    "codes:OM/OS": {
+      "hash": "53389b9f9c64",
+      "status": "machine"
+    },
+    "codes:OM/PAP": {
+      "hash": "b700f6617de2",
+      "status": "machine"
+    },
+    "codes:OM/PCT": {
+      "hash": "ea30f062e722",
+      "status": "machine"
+    },
+    "codes:OM/PNT": {
+      "hash": "d29ff10c1391",
+      "status": "machine"
+    },
+    "codes:OM/POF": {
+      "hash": "df4ecab175c2",
+      "status": "machine"
+    },
+    "codes:OM/RBM": {
+      "hash": "01a7e4d61b5d",
+      "status": "machine"
+    },
+    "codes:OM/SCC": {
+      "hash": "0458f1ac17cf",
+      "status": "machine"
+    },
+    "codes:OM/UDN": {
+      "hash": "1761a2502971",
+      "status": "machine"
+    },
+    "codes:OMJL": {
+      "hash": "cf7c1c883337",
+      "status": "machine"
+    },
+    "codes:OMJL/R": {
+      "hash": "bda3575c335c",
+      "status": "machine"
+    },
+    "codes:ONF": {
+      "hash": "74ebf4f90f34",
+      "status": "machine"
+    },
+    "codes:ONF/R": {
+      "hash": "d614391bb575",
+      "status": "machine"
+    },
+    "codes:OP": {
+      "hash": "d99b5ffe44f6",
+      "status": "machine"
+    },
+    "codes:OR": {
+      "hash": "ec97944616a0",
+      "status": "machine"
+    },
+    "codes:OS": {
+      "hash": "f1b52e6e78df",
+      "status": "machine"
+    },
+    "codes:OSN": {
+      "hash": "13d6f5af378f",
+      "status": "machine"
+    },
+    "codes:OSS": {
+      "hash": "375d302ebd14",
+      "status": "machine"
+    },
+    "codes:OST": {
+      "hash": "0a338c31cd51",
+      "status": "machine"
+    },
+    "codes:PA/A": {
+      "hash": "9372d7fe987e",
+      "status": "machine"
+    },
+    "codes:PA/C": {
+      "hash": "ceb41f958eec",
+      "status": "machine"
+    },
+    "codes:PA/G": {
+      "hash": "0defc21edcdf",
+      "status": "machine"
+    },
+    "codes:PA/P": {
+      "hash": "d8056a8a4d3b",
+      "status": "machine"
+    },
+    "codes:PCB": {
+      "hash": "e0a1d7f2a983",
+      "status": "machine"
+    },
+    "codes:PCD": {
+      "hash": "3b3b18bbcdf7",
+      "status": "machine"
+    },
+    "codes:PCI": {
+      "hash": "623a4388320a",
+      "status": "machine"
+    },
+    "codes:PD": {
+      "hash": "ad5f9fd3114d",
+      "status": "machine"
+    },
+    "codes:PD0": {
+      "hash": "7036dee19a60",
+      "status": "machine"
+    },
+    "codes:PD1": {
+      "hash": "71ded08f278f",
+      "status": "machine"
+    },
+    "codes:PD2": {
+      "hash": "a0a46a78b8b9",
+      "status": "machine"
+    },
+    "codes:PD3": {
+      "hash": "c0d21b033ea6",
+      "status": "machine"
+    },
+    "codes:PD4": {
+      "hash": "6a3919395cdf",
+      "status": "machine"
+    },
+    "codes:PDE": {
+      "hash": "47f6adcfe726",
+      "status": "machine"
+    },
+    "codes:PDE/R": {
+      "hash": "843aec5a7818",
+      "status": "machine"
+    },
+    "codes:PEC": {
+      "hash": "5ba3880d17ef",
+      "status": "machine"
+    },
+    "codes:PEO": {
+      "hash": "837ec7475685",
+      "status": "machine"
+    },
+    "codes:PHA/IN": {
+      "hash": "f92bf81784ee",
+      "status": "machine"
+    },
+    "codes:POB": {
+      "hash": "c6d5acb2c835",
+      "status": "machine"
+    },
+    "codes:PRO": {
+      "hash": "aaa30b575d40",
+      "status": "machine"
+    },
+    "codes:PTY": {
+      "hash": "9668b3a79a69",
+      "status": "machine"
+    },
+    "codes:PU/M": {
+      "hash": "698ba0b23be7",
+      "status": "machine"
+    },
+    "codes:PU/S": {
+      "hash": "3642205e46e0",
+      "status": "machine"
+    },
+    "codes:PV": {
+      "hash": "39d162d96ea4",
+      "status": "machine"
+    },
+    "codes:PYO": {
+      "hash": "5a04d0d568d6",
+      "status": "machine"
+    },
+    "codes:R": {
+      "hash": "14b81d2728f3",
+      "status": "machine"
+    },
+    "codes:R/A": {
+      "hash": "805f08273997",
+      "status": "machine"
+    },
+    "codes:R/C": {
+      "hash": "1bdd155cae65",
+      "status": "machine"
+    },
+    "codes:R/CP": {
+      "hash": "28aed4eb241a",
+      "status": "machine"
+    },
+    "codes:R/I": {
+      "hash": "218c10b5e2e5",
+      "status": "machine"
+    },
+    "codes:RAD": {
+      "hash": "4227373a006a",
+      "status": "machine"
+    },
+    "codes:RAD/SG": {
+      "hash": "6738ddecb60a",
+      "status": "machine"
+    },
+    "codes:RBA": {
+      "hash": "5f3ab17a45a8",
+      "status": "machine"
+    },
+    "codes:RCR": {
+      "hash": "b18a455fe51f",
+      "status": "machine"
+    },
+    "codes:RCT": {
+      "hash": "2057b1462ac0",
+      "status": "machine"
+    },
+    "codes:RCT/S": {
+      "hash": "5903ee1b09c4",
+      "status": "machine"
+    },
+    "codes:RO/X": {
+      "hash": "ba890ea03eff",
+      "status": "machine"
+    },
+    "codes:RP/C": {
+      "hash": "fb5e62016ba2",
+      "status": "machine"
+    },
+    "codes:RP/O": {
+      "hash": "abfe06e4c9d6",
+      "status": "machine"
+    },
+    "codes:RPA": {
+      "hash": "da0d944f729e",
+      "status": "machine"
+    },
+    "codes:RR": {
+      "hash": "9cc28a89d5ff",
+      "status": "machine"
+    },
+    "codes:RTH": {
+      "hash": "828fe62d0ad5",
+      "status": "machine"
+    },
+    "codes:RTR": {
+      "hash": "8169fa6dd918",
+      "status": "machine"
+    },
+    "codes:S/M": {
+      "hash": "df85860e44d4",
+      "status": "machine"
+    },
+    "codes:S/MB": {
+      "hash": "14afd982f3e8",
+      "status": "machine"
+    },
+    "codes:S/MD": {
+      "hash": "77ad4bda6a12",
+      "status": "machine"
+    },
+    "codes:S/MS": {
+      "hash": "73d9f31e8398",
+      "status": "machine"
+    },
+    "codes:S/MT": {
+      "hash": "54466817a346",
+      "status": "machine"
+    },
+    "codes:S/P": {
+      "hash": "244d1af451ff",
+      "status": "machine"
+    },
+    "codes:S/X": {
+      "hash": "d5f07480bbf8",
+      "status": "machine"
+    },
+    "codes:S/XB": {
+      "hash": "a225ee2db24d",
+      "status": "machine"
+    },
+    "codes:SCI": {
+      "hash": "b621649e087a",
+      "status": "machine"
+    },
+    "codes:SG/ADC": {
+      "hash": "49a3b16c8488",
+      "status": "machine"
+    },
+    "codes:SG/ADS": {
+      "hash": "fb0fc9d74def",
+      "status": "machine"
+    },
+    "codes:SG/IN": {
+      "hash": "4c964ad2d02d",
+      "status": "machine"
+    },
+    "codes:SG/MAR": {
+      "hash": "6e41f9569ebe",
+      "status": "machine"
+    },
+    "codes:SG/MUC/C": {
+      "hash": "e6c91f1180e4",
+      "status": "machine"
+    },
+    "codes:SG/MUC/P": {
+      "hash": "6ffc88a2e5b1",
+      "status": "machine"
+    },
+    "codes:SG/MUC/S": {
+      "hash": "52dad98779a2",
+      "status": "machine"
+    },
+    "codes:SG/NEC": {
+      "hash": "04540fff4381",
+      "status": "machine"
+    },
+    "codes:SG/RC": {
+      "hash": "10f8038b97ef",
+      "status": "machine"
+    },
+    "codes:SG/SI": {
+      "hash": "d7b473229d88",
+      "status": "machine"
+    },
+    "codes:SG/X": {
+      "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SR": {
+      "hash": "b7c5d92043ee",
+      "status": "machine"
+    },
+    "codes:ST": {
+      "hash": "654802804fc4",
+      "status": "machine"
+    },
+    "codes:ST/CS": {
+      "hash": "659984c9c30f",
+      "status": "machine"
+    },
+    "codes:SYM/R": {
+      "hash": "bfcac94d50fe",
+      "status": "machine"
+    },
+    "codes:SYM/S": {
+      "hash": "7c7b34385397",
+      "status": "machine"
+    },
+    "codes:T/A": {
+      "hash": "16c22f95a4e0",
+      "status": "machine"
+    },
+    "codes:T/CCR": {
+      "hash": "d73b836d6b96",
+      "status": "machine"
+    },
+    "codes:T/DEN": {
+      "hash": "496e27acc35a",
+      "status": "machine"
+    },
+    "codes:T/DIL": {
+      "hash": "233ade101f88",
+      "status": "machine"
+    },
+    "codes:T/E": {
+      "hash": "df56e4b6664d",
+      "status": "machine"
+    },
+    "codes:T/EL": {
+      "hash": "26887c27a71f",
+      "status": "machine"
+    },
+    "codes:T/FDR": {
+      "hash": "8d621032f65e",
+      "status": "machine"
+    },
+    "codes:T/FUS": {
+      "hash": "09d7515ed4bf",
+      "status": "machine"
+    },
+    "codes:T/FX": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "codes:T/FX/CCF": {
+      "hash": "af37bbdf8f2c",
+      "status": "machine"
+    },
+    "codes:T/FX/CCRF": {
+      "hash": "a4c64eb05092",
+      "status": "machine"
+    },
+    "codes:T/FX/EF": {
+      "hash": "26cb9ef5dddc",
+      "status": "machine"
+    },
+    "codes:T/FX/EI": {
+      "hash": "e6bd4b6469d7",
+      "status": "machine"
+    },
+    "codes:T/FX/RF": {
+      "hash": "6e6b97fcf258",
+      "status": "machine"
+    },
+    "codes:T/FX/UCF": {
+      "hash": "ff6e2a7c1b30",
+      "status": "machine"
+    },
+    "codes:T/FX/UCRF": {
+      "hash": "ecacb4683106",
+      "status": "machine"
+    },
+    "codes:T/GEM": {
+      "hash": "16cbf1cf52bb",
+      "status": "machine"
+    },
+    "codes:T/I": {
+      "hash": "ec0c4f679181",
+      "status": "machine"
+    },
+    "codes:T/LUX": {
+      "hash": "6506f7e2eeb4",
+      "status": "machine"
+    },
+    "codes:T/MAC": {
+      "hash": "c8aedde3e1e9",
+      "status": "machine"
+    },
+    "codes:T/MIC": {
+      "hash": "e7e93c095da4",
+      "status": "machine"
+    },
+    "codes:T/NE": {
+      "hash": "f7307ce42e1e",
+      "status": "machine"
+    },
+    "codes:T/NV": {
+      "hash": "fd1d15e8b2cf",
+      "status": "machine"
+    },
+    "codes:T/PE": {
+      "hash": "83e31ff119f9",
+      "status": "machine"
+    },
+    "codes:T/RI": {
+      "hash": "0e89fff1978c",
+      "status": "machine"
+    },
+    "codes:T/RP": {
+      "hash": "bb875ee053b6",
+      "status": "machine"
+    },
+    "codes:T/SN": {
+      "hash": "fe7d7d5ca9a9",
+      "status": "machine"
+    },
+    "codes:T/SR": {
+      "hash": "2d9a3d710189",
+      "status": "machine"
+    },
+    "codes:T/TRA": {
+      "hash": "ed6cd7806842",
+      "status": "machine"
+    },
+    "codes:T/U": {
+      "hash": "ed97849890fd",
+      "status": "machine"
+    },
+    "codes:T/V": {
+      "hash": "c68556fc27b6",
+      "status": "machine"
+    },
+    "codes:T/XP": {
+      "hash": "a902b6e3364a",
+      "status": "machine"
+    },
+    "codes:TMA": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "codes:TMA/B": {
+      "hash": "26ddca9807a1",
+      "status": "machine"
+    },
+    "codes:TMA/BRN": {
+      "hash": "63fb1d6e3a15",
+      "status": "machine"
+    },
+    "codes:TMA/E": {
+      "hash": "8fd26f6114fb",
+      "status": "machine"
+    },
+    "codes:TMA/R": {
+      "hash": "8bef03917ec2",
+      "status": "machine"
+    },
+    "codes:TMJ/A": {
+      "hash": "78f290a0483a",
+      "status": "machine"
+    },
+    "codes:TMJ/A/R": {
+      "hash": "ebd191da6583",
+      "status": "machine"
+    },
+    "codes:TMJ/D": {
+      "hash": "99660140f4db",
+      "status": "machine"
+    },
+    "codes:TMJ/FX": {
+      "hash": "7b9f4a41665d",
+      "status": "machine"
+    },
+    "codes:TMJ/FX/R": {
+      "hash": "50f4800cba4e",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX": {
+      "hash": "45b129f8fe40",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX/R": {
+      "hash": "b11b0a856975",
+      "status": "machine"
+    },
+    "codes:TON/IN": {
+      "hash": "cfd987f776ca",
+      "status": "machine"
+    },
+    "codes:TON/X": {
+      "hash": "88d7fde4c53a",
+      "status": "machine"
+    },
+    "codes:TP": {
+      "hash": "16c8fb0da228",
+      "status": "machine"
+    },
+    "codes:TR": {
+      "hash": "59801ae3dd5b",
+      "status": "machine"
+    },
+    "codes:TS": {
+      "hash": "88808dab2c08",
+      "status": "machine"
+    },
+    "codes:TT": {
+      "hash": "35ebd096dc82",
+      "status": "machine"
+    },
+    "codes:US": {
+      "hash": "faedfd09d850",
+      "status": "machine"
+    },
+    "codes:VPT": {
+      "hash": "563c0eefb553",
+      "status": "machine"
+    },
+    "codes:X": {
+      "hash": "3409a88ca603",
+      "status": "machine"
+    },
+    "codes:XS": {
+      "hash": "e196790c1c8d",
+      "status": "machine"
+    },
+    "codes:XS/ODY": {
+      "hash": "a5e54f6c2749",
+      "status": "machine"
+    },
+    "codes:XSS": {
+      "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:ZYG/X": {
+      "hash": "1006c1540735",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -1244,6 +4900,150 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.body": {
+      "hash": "db6a26af1ae8",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.title": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.body": {
+      "hash": "a3c8990b42c7",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.title": {
+      "hash": "546a7c64290d",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.body": {
+      "hash": "4ac0965bf187",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.title": {
+      "hash": "e751f37c3e08",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.body": {
+      "hash": "d42c50807374",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.title": {
+      "hash": "2faed1a26b87",
+      "status": "machine"
+    },
+    "whatsNew:gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "whatsNew:groups.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "whatsNew:groups.dictation": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "whatsNew:groups.everyday": {
+      "hash": "d01872ef0010",
+      "status": "machine"
+    },
+    "whatsNew:groups.ownerReport": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "whatsNew:groups.records": {
+      "hash": "47a84e92d5b2",
+      "status": "machine"
+    },
+    "whatsNew:intro": {
+      "hash": "26325643fc44",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.body": {
+      "hash": "d3d949e7e6f0",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
+    "whatsNew:phones.body": {
+      "hash": "cdadcb703d93",
+      "status": "machine"
+    },
+    "whatsNew:phones.title": {
+      "hash": "23c636305501",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.body": {
+      "hash": "a22f16b5ef8d",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.title": {
+      "hash": "7df346f0d6b3",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.body": {
+      "hash": "06d4d2fab9dc",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.title": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.body": {
+      "hash": "99369cac3234",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.title": {
+      "hash": "3c7992fb7817",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.body": {
+      "hash": "fe25857c5d2e",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.title": {
+      "hash": "4dea82415176",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.body": {
+      "hash": "c16b7f2c4a2b",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.title": {
+      "hash": "7a7ef53d397a",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.body": {
+      "hash": "fee2870fa556",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.title": {
+      "hash": "a43f73adf41d",
+      "status": "machine"
+    },
+    "whatsNew:title": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.body": {
+      "hash": "425690d8fb26",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.title": {
+      "hash": "a0d1a3d64ab0",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.body": {
+      "hash": "982b203c9015",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.title": {
+      "hash": "596b070336ea",
       "status": "machine"
     }
   },
@@ -1528,6 +5328,1770 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "billing:features.aiAutofill": {
+      "hash": "ec7edefa36d8",
+      "status": "machine"
+    },
+    "billing:features.aiAutofillTeam": {
+      "hash": "72ffe177bf5a",
+      "status": "machine"
+    },
+    "billing:features.everythingIn": {
+      "hash": "d3d7db0cc4be",
+      "status": "machine"
+    },
+    "billing:features.fullCharting": {
+      "hash": "5e32e6525fc5",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_many": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_one": {
+      "hash": "d83aeb2c278b",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_other": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.photos_many": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.photos_one": {
+      "hash": "15d41914bd0f",
+      "status": "machine"
+    },
+    "billing:features.photos_other": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.sharedCharts": {
+      "hash": "0e748a0e41a5",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_many": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_one": {
+      "hash": "a790c4068836",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_other": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamRoles": {
+      "hash": "f34e5d767ed6",
+      "status": "machine"
+    },
+    "billing:features.users_many": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.users_one": {
+      "hash": "3aa39be0096d",
+      "status": "machine"
+    },
+    "billing:features.users_other": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.visitHistory": {
+      "hash": "25067003b0d7",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.name": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.tagline": {
+      "hash": "df87b76836f2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.name": {
+      "hash": "15538f6971e2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.tagline": {
+      "hash": "33b6114892ca",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.name": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.tagline": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.name": {
+      "hash": "f79df0fe002d",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.tagline": {
+      "hash": "d6af9793c895",
+      "status": "machine"
+    },
+    "chart:codeGroups.developmental": {
+      "hash": "8b263f32b01a",
+      "status": "machine"
+    },
+    "chart:codeGroups.endodontics": {
+      "hash": "af9cd09b7401",
+      "status": "machine"
+    },
+    "chart:codeGroups.extractions": {
+      "hash": "81ff9ea7137f",
+      "status": "machine"
+    },
+    "chart:codeGroups.headNosePharynx": {
+      "hash": "49b29b652caf",
+      "status": "machine"
+    },
+    "chart:codeGroups.imaging": {
+      "hash": "94db24586b5f",
+      "status": "machine"
+    },
+    "chart:codeGroups.immuneMediated": {
+      "hash": "a540b5fd5e71",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawRepair": {
+      "hash": "92f2fae84cc9",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawTmj": {
+      "hash": "27950ddafbf0",
+      "status": "machine"
+    },
+    "chart:codeGroups.masses": {
+      "hash": "3d089995e287",
+      "status": "machine"
+    },
+    "chart:codeGroups.occlusion": {
+      "hash": "865a3db23fd9",
+      "status": "machine"
+    },
+    "chart:codeGroups.oncologic": {
+      "hash": "15f2af0c90e1",
+      "status": "machine"
+    },
+    "chart:codeGroups.oralSurgery": {
+      "hash": "655e0297d63d",
+      "status": "machine"
+    },
+    "chart:codeGroups.orthodontics": {
+      "hash": "f325953ea439",
+      "status": "machine"
+    },
+    "chart:codeGroups.periapicalBone": {
+      "hash": "6255882a5933",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontal": {
+      "hash": "e28091946429",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontalTreatment": {
+      "hash": "369bc338ff26",
+      "status": "machine"
+    },
+    "chart:codeGroups.restorative": {
+      "hash": "048d162f1328",
+      "status": "machine"
+    },
+    "chart:codeGroups.salivary": {
+      "hash": "aa24bad01fed",
+      "status": "machine"
+    },
+    "chart:codeGroups.softTissue": {
+      "hash": "7372b5db8dc4",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothFracture": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothNumberEruption": {
+      "hash": "6bc3a7a6c671",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothPathology": {
+      "hash": "976c74b57b40",
+      "status": "machine"
+    },
+    "chart:codeGroups.trauma": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "chart:columns.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "chart:columns.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "chart:columns.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "chart:columns.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "chart:columns.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "chart:columns.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "chart:columns.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:columns.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "chart:columns.tooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "chart:columns.triadan": {
+      "hash": "9ac63c724069",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.block": {
+      "hash": "39ff9d93c0ae",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.field": {
+      "hash": "6163a41c0e5e",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "codes:AB": {
+      "hash": "510ad89a3da2",
+      "status": "machine"
+    },
+    "codes:ABE": {
+      "hash": "abe767a99e98",
+      "status": "machine"
+    },
+    "codes:ALV": {
+      "hash": "eba8f4b4177b",
+      "status": "machine"
+    },
+    "codes:ANO": {
+      "hash": "6c09ff013e93",
+      "status": "machine"
+    },
+    "codes:AOS": {
+      "hash": "66f2f43c0900",
+      "status": "machine"
+    },
+    "codes:AP/X": {
+      "hash": "eeaa20212d88",
+      "status": "machine"
+    },
+    "codes:APN": {
+      "hash": "e41b74497c2d",
+      "status": "machine"
+    },
+    "codes:AT": {
+      "hash": "907afb9b9795",
+      "status": "machine"
+    },
+    "codes:ATE": {
+      "hash": "6f1cd2d79181",
+      "status": "machine"
+    },
+    "codes:B": {
+      "hash": "4656852840f6",
+      "status": "machine"
+    },
+    "codes:B/B": {
+      "hash": "9e7ce0fad61e",
+      "status": "machine"
+    },
+    "codes:B/CN": {
+      "hash": "10d9d8f229d4",
+      "status": "machine"
+    },
+    "codes:B/E": {
+      "hash": "4466f0ff1e3f",
+      "status": "machine"
+    },
+    "codes:B/I": {
+      "hash": "1065c15540bf",
+      "status": "machine"
+    },
+    "codes:B/NA": {
+      "hash": "9c126e49fca1",
+      "status": "machine"
+    },
+    "codes:B/NB": {
+      "hash": "a481a5d2d389",
+      "status": "machine"
+    },
+    "codes:B/P": {
+      "hash": "f0c75d7f63e7",
+      "status": "machine"
+    },
+    "codes:B/S": {
+      "hash": "25507abef723",
+      "status": "machine"
+    },
+    "codes:BR": {
+      "hash": "467737e854f2",
+      "status": "machine"
+    },
+    "codes:BRI": {
+      "hash": "3892e10346fd",
+      "status": "machine"
+    },
+    "codes:BTH": {
+      "hash": "8679a44e1e5f",
+      "status": "machine"
+    },
+    "codes:BUC": {
+      "hash": "60ba80ea106e",
+      "status": "machine"
+    },
+    "codes:BUP": {
+      "hash": "3817773c1216",
+      "status": "machine"
+    },
+    "codes:CA": {
+      "hash": "49d896986080",
+      "status": "machine"
+    },
+    "codes:CB": {
+      "hash": "4bc308437b81",
+      "status": "machine"
+    },
+    "codes:CB/C": {
+      "hash": "e422ca0f909f",
+      "status": "machine"
+    },
+    "codes:CB/R": {
+      "hash": "2d1e14d9b84f",
+      "status": "machine"
+    },
+    "codes:CC": {
+      "hash": "7cfd167342b4",
+      "status": "machine"
+    },
+    "codes:CFL": {
+      "hash": "6fc3f936f963",
+      "status": "machine"
+    },
+    "codes:CFL/R": {
+      "hash": "a023e3c5633b",
+      "status": "machine"
+    },
+    "codes:CFP": {
+      "hash": "48481a6f2498",
+      "status": "machine"
+    },
+    "codes:CFP/R": {
+      "hash": "71e0af6ab662",
+      "status": "machine"
+    },
+    "codes:CFS": {
+      "hash": "a98e1134c642",
+      "status": "machine"
+    },
+    "codes:CFS/R": {
+      "hash": "cb02dac6908d",
+      "status": "machine"
+    },
+    "codes:CFSH": {
+      "hash": "ea83e7117305",
+      "status": "machine"
+    },
+    "codes:CFSH/R": {
+      "hash": "1c5f6f22d7fa",
+      "status": "machine"
+    },
+    "codes:CFSU": {
+      "hash": "76ca4a1dd175",
+      "status": "machine"
+    },
+    "codes:CFSU/R": {
+      "hash": "e0c830ef9abb",
+      "status": "machine"
+    },
+    "codes:CFT": {
+      "hash": "06beaf5e0b62",
+      "status": "machine"
+    },
+    "codes:CFT/R": {
+      "hash": "4a1120617a1f",
+      "status": "machine"
+    },
+    "codes:CHO": {
+      "hash": "38f9eb3c92e5",
+      "status": "machine"
+    },
+    "codes:CL": {
+      "hash": "05d336ff7c5e",
+      "status": "machine"
+    },
+    "codes:CL/B": {
+      "hash": "97435ccf4cda",
+      "status": "machine"
+    },
+    "codes:CL/L": {
+      "hash": "afde8e815680",
+      "status": "machine"
+    },
+    "codes:CL/P": {
+      "hash": "06e40e7ca42a",
+      "status": "machine"
+    },
+    "codes:CL/T": {
+      "hash": "78e7fbe67a7d",
+      "status": "machine"
+    },
+    "codes:CMO": {
+      "hash": "45243a339861",
+      "status": "machine"
+    },
+    "codes:COM": {
+      "hash": "9a9984a267bb",
+      "status": "machine"
+    },
+    "codes:CON/X": {
+      "hash": "83ac103a0422",
+      "status": "machine"
+    },
+    "codes:COO": {
+      "hash": "2c0bf879e909",
+      "status": "machine"
+    },
+    "codes:COR/X": {
+      "hash": "2731437e416f",
+      "status": "machine"
+    },
+    "codes:CPL": {
+      "hash": "3e17348cbe96",
+      "status": "machine"
+    },
+    "codes:CR/A": {
+      "hash": "3cbedc84cd8d",
+      "status": "machine"
+    },
+    "codes:CR/C": {
+      "hash": "4606ef68fb5c",
+      "status": "machine"
+    },
+    "codes:CR/C/P": {
+      "hash": "71d103c2f0ad",
+      "status": "machine"
+    },
+    "codes:CR/E": {
+      "hash": "70c3c26e09c2",
+      "status": "machine"
+    },
+    "codes:CR/L": {
+      "hash": "d059f1a4aac5",
+      "status": "machine"
+    },
+    "codes:CR/M": {
+      "hash": "bed25f3c5b56",
+      "status": "machine"
+    },
+    "codes:CR/M/P": {
+      "hash": "542567520892",
+      "status": "machine"
+    },
+    "codes:CR/P": {
+      "hash": "6e709cc3a655",
+      "status": "machine"
+    },
+    "codes:CR/PFM": {
+      "hash": "7c37292c1276",
+      "status": "machine"
+    },
+    "codes:CR/PFM/P": {
+      "hash": "5ddfb50cc843",
+      "status": "machine"
+    },
+    "codes:CR/R": {
+      "hash": "92f82fa6dedb",
+      "status": "machine"
+    },
+    "codes:CR/R/P": {
+      "hash": "634895f0c2a2",
+      "status": "machine"
+    },
+    "codes:CR/T": {
+      "hash": "07203df8993f",
+      "status": "machine"
+    },
+    "codes:CR/XP": {
+      "hash": "5fd72ef89740",
+      "status": "machine"
+    },
+    "codes:CS": {
+      "hash": "142abb9c6c99",
+      "status": "machine"
+    },
+    "codes:CT": {
+      "hash": "37e06f0c538b",
+      "status": "machine"
+    },
+    "codes:CT/CB": {
+      "hash": "2aedfdbfb782",
+      "status": "machine"
+    },
+    "codes:CTH": {
+      "hash": "dc82b99cf02c",
+      "status": "machine"
+    },
+    "codes:CU": {
+      "hash": "95d78201a8a6",
+      "status": "machine"
+    },
+    "codes:CUS": {
+      "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:DC": {
+      "hash": "3021239926f1",
+      "status": "machine"
+    },
+    "codes:DC/D": {
+      "hash": "d3c2d6d34104",
+      "status": "machine"
+    },
+    "codes:DC/SM": {
+      "hash": "72f1a6d524c5",
+      "status": "machine"
+    },
+    "codes:DI/ND": {
+      "hash": "51d6afc19833",
+      "status": "machine"
+    },
+    "codes:DI/NS": {
+      "hash": "2cefa6d97678",
+      "status": "machine"
+    },
+    "codes:DI/NU": {
+      "hash": "6c28b69d43bf",
+      "status": "machine"
+    },
+    "codes:DI/OD": {
+      "hash": "2a344b21e70b",
+      "status": "machine"
+    },
+    "codes:DI/OS": {
+      "hash": "22b2750347ec",
+      "status": "machine"
+    },
+    "codes:DI/OU": {
+      "hash": "0345e1c8f947",
+      "status": "machine"
+    },
+    "codes:DMO": {
+      "hash": "16d5e4647065",
+      "status": "machine"
+    },
+    "codes:DP": {
+      "hash": "77565b9c3787",
+      "status": "machine"
+    },
+    "codes:DT": {
+      "hash": "62ff83cc870a",
+      "status": "machine"
+    },
+    "codes:DT/P": {
+      "hash": "da9aaa8799e5",
+      "status": "machine"
+    },
+    "codes:DTC": {
+      "hash": "c37345655755",
+      "status": "machine"
+    },
+    "codes:DTC/R": {
+      "hash": "2338e0d7d674",
+      "status": "machine"
+    },
+    "codes:E/D": {
+      "hash": "ace05f629ccc",
+      "status": "machine"
+    },
+    "codes:E/H": {
+      "hash": "e55754ae3c81",
+      "status": "machine"
+    },
+    "codes:E/HM": {
+      "hash": "048065e9a33e",
+      "status": "machine"
+    },
+    "codes:E/P": {
+      "hash": "68073cf264d1",
+      "status": "machine"
+    },
+    "codes:EM": {
+      "hash": "aa2fe9bdc35b",
+      "status": "machine"
+    },
+    "codes:ENO": {
+      "hash": "97ead18f5942",
+      "status": "machine"
+    },
+    "codes:EOG": {
+      "hash": "ee3e96341900",
+      "status": "machine"
+    },
+    "codes:EOG/L": {
+      "hash": "de52e775bcc9",
+      "status": "machine"
+    },
+    "codes:EOG/P": {
+      "hash": "7d65583c47b1",
+      "status": "machine"
+    },
+    "codes:EOG/T": {
+      "hash": "ea6b402eef57",
+      "status": "machine"
+    },
+    "codes:ER": {
+      "hash": "d41111129d81",
+      "status": "machine"
+    },
+    "codes:ESP": {
+      "hash": "54cc978a371f",
+      "status": "machine"
+    },
+    "codes:ESP/R": {
+      "hash": "db62876b47a5",
+      "status": "machine"
+    },
+    "codes:EXO": {
+      "hash": "634610800faa",
+      "status": "machine"
+    },
+    "codes:F": {
+      "hash": "13c519458eca",
+      "status": "machine"
+    },
+    "codes:F/AD": {
+      "hash": "1ca1dccf7395",
+      "status": "machine"
+    },
+    "codes:F/AP": {
+      "hash": "6e0c36c49998",
+      "status": "machine"
+    },
+    "codes:F/CO": {
+      "hash": "514f34aafda8",
+      "status": "machine"
+    },
+    "codes:F/EN": {
+      "hash": "ad2f9ce365df",
+      "status": "machine"
+    },
+    "codes:F/HI": {
+      "hash": "041083751331",
+      "status": "machine"
+    },
+    "codes:F/IS": {
+      "hash": "bf5df917b346",
+      "status": "machine"
+    },
+    "codes:F/LA": {
+      "hash": "19e02c1707b0",
+      "status": "machine"
+    },
+    "codes:F/RO": {
+      "hash": "d7941c8e6da9",
+      "status": "machine"
+    },
+    "codes:F/TR": {
+      "hash": "d5e2794dbfb3",
+      "status": "machine"
+    },
+    "codes:FB": {
+      "hash": "c77fdf9d2fe2",
+      "status": "machine"
+    },
+    "codes:FB/R": {
+      "hash": "67b7a888309f",
+      "status": "machine"
+    },
+    "codes:FOD": {
+      "hash": "4b32bb6bcbab",
+      "status": "machine"
+    },
+    "codes:FOL": {
+      "hash": "f099cd0651e6",
+      "status": "machine"
+    },
+    "codes:FRE": {
+      "hash": "d96426f44dcc",
+      "status": "machine"
+    },
+    "codes:FT": {
+      "hash": "c6f2fb1230d7",
+      "status": "machine"
+    },
+    "codes:FX": {
+      "hash": "f4d6c647642c",
+      "status": "machine"
+    },
+    "codes:FX/R": {
+      "hash": "6d596d550258",
+      "status": "machine"
+    },
+    "codes:FX/R/EXF": {
+      "hash": "b2d52e0eda5c",
+      "status": "machine"
+    },
+    "codes:FX/R/IAS": {
+      "hash": "5f808b3ee65c",
+      "status": "machine"
+    },
+    "codes:FX/R/IDS": {
+      "hash": "81e259b0a1dc",
+      "status": "machine"
+    },
+    "codes:FX/R/IQS": {
+      "hash": "f9ff599f85a2",
+      "status": "machine"
+    },
+    "codes:FX/R/MMF": {
+      "hash": "b10d37385096",
+      "status": "machine"
+    },
+    "codes:FX/R/MZ": {
+      "hash": "f68c7b1a27b6",
+      "status": "machine"
+    },
+    "codes:FX/R/PL": {
+      "hash": "fda61a01756c",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/C": {
+      "hash": "1c607316b60f",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/OS": {
+      "hash": "a9ad500a85ac",
+      "status": "machine"
+    },
+    "codes:GC": {
+      "hash": "44c476a5438a",
+      "status": "machine"
+    },
+    "codes:GE": {
+      "hash": "c9d6e0cf4bfd",
+      "status": "machine"
+    },
+    "codes:GF": {
+      "hash": "a6e579f73baa",
+      "status": "machine"
+    },
+    "codes:GF/B": {
+      "hash": "8a6aaa7bdde8",
+      "status": "machine"
+    },
+    "codes:GF/C": {
+      "hash": "87efa5e6c88e",
+      "status": "machine"
+    },
+    "codes:GF/CT": {
+      "hash": "fbaecfe1e436",
+      "status": "machine"
+    },
+    "codes:GF/F": {
+      "hash": "05490e318c55",
+      "status": "machine"
+    },
+    "codes:GF/G": {
+      "hash": "744f9f4df3e0",
+      "status": "machine"
+    },
+    "codes:GF/M": {
+      "hash": "7b68a7c81813",
+      "status": "machine"
+    },
+    "codes:GF/N": {
+      "hash": "6b0ff1e47f0c",
+      "status": "machine"
+    },
+    "codes:GF/S": {
+      "hash": "0c7ea85759dc",
+      "status": "machine"
+    },
+    "codes:GF/V": {
+      "hash": "5718f155abab",
+      "status": "machine"
+    },
+    "codes:GH": {
+      "hash": "8b0b49672e25",
+      "status": "machine"
+    },
+    "codes:GR": {
+      "hash": "134fa4ff4cbc",
+      "status": "machine"
+    },
+    "codes:GTR": {
+      "hash": "780c4c980f35",
+      "status": "machine"
+    },
+    "codes:GV": {
+      "hash": "366f0b166291",
+      "status": "machine"
+    },
+    "codes:HC": {
+      "hash": "af23771d8555",
+      "status": "machine"
+    },
+    "codes:HS": {
+      "hash": "b382cd65ba7e",
+      "status": "machine"
+    },
+    "codes:HYP": {
+      "hash": "4613075a7bd8",
+      "status": "machine"
+    },
+    "codes:IM": {
+      "hash": "c9dfb5af82dc",
+      "status": "machine"
+    },
+    "codes:IM/F": {
+      "hash": "edbebcba539d",
+      "status": "machine"
+    },
+    "codes:IMP": {
+      "hash": "eb9c63551ba7",
+      "status": "machine"
+    },
+    "codes:IOF": {
+      "hash": "d737f8c6095c",
+      "status": "machine"
+    },
+    "codes:IOF/R": {
+      "hash": "afb151d12d68",
+      "status": "machine"
+    },
+    "codes:IP": {
+      "hash": "15f78c839159",
+      "status": "machine"
+    },
+    "codes:IP/AC": {
+      "hash": "4e2e1e8b84d7",
+      "status": "machine"
+    },
+    "codes:IP/C": {
+      "hash": "5ae93108ca4c",
+      "status": "machine"
+    },
+    "codes:IP/M": {
+      "hash": "f19957944b1a",
+      "status": "machine"
+    },
+    "codes:ITH": {
+      "hash": "057360b3c0d7",
+      "status": "machine"
+    },
+    "codes:LAC": {
+      "hash": "bf1caf4648da",
+      "status": "machine"
+    },
+    "codes:LAC/B": {
+      "hash": "ff433dc91dc5",
+      "status": "machine"
+    },
+    "codes:LAC/G": {
+      "hash": "55aaff82d78d",
+      "status": "machine"
+    },
+    "codes:LAC/L": {
+      "hash": "ed34eff2185f",
+      "status": "machine"
+    },
+    "codes:LAC/O": {
+      "hash": "7eba1f741ef9",
+      "status": "machine"
+    },
+    "codes:LAC/P": {
+      "hash": "6a18d0ff9775",
+      "status": "machine"
+    },
+    "codes:LAC/R": {
+      "hash": "834acdce0f42",
+      "status": "machine"
+    },
+    "codes:LAC/T": {
+      "hash": "fc6cee3c4ee7",
+      "status": "machine"
+    },
+    "codes:LE": {
+      "hash": "d7df0bdacd81",
+      "status": "machine"
+    },
+    "codes:LIN/X": {
+      "hash": "f5e1b57683d6",
+      "status": "machine"
+    },
+    "codes:LIP/A/R": {
+      "hash": "2806f0d035d5",
+      "status": "machine"
+    },
+    "codes:LIP/X": {
+      "hash": "47a671296a6a",
+      "status": "machine"
+    },
+    "codes:LN/E": {
+      "hash": "098416b6b30c",
+      "status": "machine"
+    },
+    "codes:LN/X": {
+      "hash": "c1a7c52420f0",
+      "status": "machine"
+    },
+    "codes:MAL": {
+      "hash": "c43983504b97",
+      "status": "machine"
+    },
+    "codes:MAL1": {
+      "hash": "62ce1025dd45",
+      "status": "machine"
+    },
+    "codes:MAL1/BV": {
+      "hash": "ccfc02248dd0",
+      "status": "machine"
+    },
+    "codes:MAL1/DV": {
+      "hash": "0497010edf76",
+      "status": "machine"
+    },
+    "codes:MAL1/LABV": {
+      "hash": "d8f6cab2ab9f",
+      "status": "machine"
+    },
+    "codes:MAL1/LV": {
+      "hash": "20ef03c55d6c",
+      "status": "machine"
+    },
+    "codes:MAL1/MV": {
+      "hash": "43c7e26ded90",
+      "status": "machine"
+    },
+    "codes:MAL1/PV": {
+      "hash": "2edcadbe83d1",
+      "status": "machine"
+    },
+    "codes:MAL2": {
+      "hash": "5b2a8f9d124d",
+      "status": "machine"
+    },
+    "codes:MAL3": {
+      "hash": "3e97d99fad7a",
+      "status": "machine"
+    },
+    "codes:MAL4": {
+      "hash": "63a5238acde0",
+      "status": "machine"
+    },
+    "codes:MAL4/DV": {
+      "hash": "2fc90c928b1a",
+      "status": "machine"
+    },
+    "codes:MAL4/RC": {
+      "hash": "736fb0443082",
+      "status": "machine"
+    },
+    "codes:MAL4/STS": {
+      "hash": "99441a572e7e",
+      "status": "machine"
+    },
+    "codes:MAR": {
+      "hash": "2d1879405603",
+      "status": "machine"
+    },
+    "codes:MET": {
+      "hash": "7b6169e6b876",
+      "status": "machine"
+    },
+    "codes:MET/D": {
+      "hash": "67cb7238d51e",
+      "status": "machine"
+    },
+    "codes:MET/R": {
+      "hash": "91a35bd23844",
+      "status": "machine"
+    },
+    "codes:MMM": {
+      "hash": "3bd7067198bb",
+      "status": "machine"
+    },
+    "codes:MN/FX": {
+      "hash": "44d2aab85ea2",
+      "status": "machine"
+    },
+    "codes:MRI": {
+      "hash": "82649d839ab2",
+      "status": "machine"
+    },
+    "codes:MX/FX": {
+      "hash": "697265ea24c6",
+      "status": "machine"
+    },
+    "codes:N/EN": {
+      "hash": "5a1b84b9ffdf",
+      "status": "machine"
+    },
+    "codes:N/LAV": {
+      "hash": "610fc6264224",
+      "status": "machine"
+    },
+    "codes:N/NPS": {
+      "hash": "4fede08dcbe9",
+      "status": "machine"
+    },
+    "codes:N/NPS/R": {
+      "hash": "d8d7467cb291",
+      "status": "machine"
+    },
+    "codes:N/NS": {
+      "hash": "290de41d03ff",
+      "status": "machine"
+    },
+    "codes:N/NS/R": {
+      "hash": "31f0bfdc0ad8",
+      "status": "machine"
+    },
+    "codes:N/POL": {
+      "hash": "d15089293cb5",
+      "status": "machine"
+    },
+    "codes:N/SCC": {
+      "hash": "ff76772919fb",
+      "status": "machine"
+    },
+    "codes:OA": {
+      "hash": "3fdea1272ef2",
+      "status": "machine"
+    },
+    "codes:OA/A": {
+      "hash": "aa414ce0b3aa",
+      "status": "machine"
+    },
+    "codes:OA/AR": {
+      "hash": "cb7f0985fdd5",
+      "status": "machine"
+    },
+    "codes:OA/BKT": {
+      "hash": "c8e266afb91d",
+      "status": "machine"
+    },
+    "codes:OA/CMB": {
+      "hash": "f0ffe91e1890",
+      "status": "machine"
+    },
+    "codes:OA/EC": {
+      "hash": "9c9bed0c14a4",
+      "status": "machine"
+    },
+    "codes:OA/I": {
+      "hash": "b8e1fe7aa683",
+      "status": "machine"
+    },
+    "codes:OA/R": {
+      "hash": "abf916344aad",
+      "status": "machine"
+    },
+    "codes:OA/WIR": {
+      "hash": "428b353ab851",
+      "status": "machine"
+    },
+    "codes:OAF": {
+      "hash": "9687348cfb6f",
+      "status": "machine"
+    },
+    "codes:OAF/R": {
+      "hash": "66101df70736",
+      "status": "machine"
+    },
+    "codes:OC": {
+      "hash": "6b2d26c7c1e2",
+      "status": "machine"
+    },
+    "codes:ODY": {
+      "hash": "9cdca5f18d93",
+      "status": "machine"
+    },
+    "codes:OFF": {
+      "hash": "851a0c8a5c61",
+      "status": "machine"
+    },
+    "codes:OFF/R": {
+      "hash": "828e89dadb08",
+      "status": "machine"
+    },
+    "codes:OLI": {
+      "hash": "df44da2b5ccc",
+      "status": "machine"
+    },
+    "codes:OM": {
+      "hash": "326f2241dd8e",
+      "status": "machine"
+    },
+    "codes:OM/AA": {
+      "hash": "749a972cff3c",
+      "status": "machine"
+    },
+    "codes:OM/AD": {
+      "hash": "8c349a1f9845",
+      "status": "machine"
+    },
+    "codes:OM/ADC": {
+      "hash": "954c02639863",
+      "status": "machine"
+    },
+    "codes:OM/APN": {
+      "hash": "c1bc6e614cd8",
+      "status": "machine"
+    },
+    "codes:OM/APO": {
+      "hash": "f9c5ef046a92",
+      "status": "machine"
+    },
+    "codes:OM/CE": {
+      "hash": "3214dc37510f",
+      "status": "machine"
+    },
+    "codes:OM/FIO": {
+      "hash": "7cb11bee4e14",
+      "status": "machine"
+    },
+    "codes:OM/FS": {
+      "hash": "fe1c0ddc1395",
+      "status": "machine"
+    },
+    "codes:OM/GCG": {
+      "hash": "44a4bc7b08bc",
+      "status": "machine"
+    },
+    "codes:OM/GCT": {
+      "hash": "53b9666e69ee",
+      "status": "machine"
+    },
+    "codes:OM/HS": {
+      "hash": "07a134d949d5",
+      "status": "machine"
+    },
+    "codes:OM/LI": {
+      "hash": "ba57868869f5",
+      "status": "machine"
+    },
+    "codes:OM/LS": {
+      "hash": "f32b6f481c17",
+      "status": "machine"
+    },
+    "codes:OM/MCT": {
+      "hash": "4fbe75712d13",
+      "status": "machine"
+    },
+    "codes:OM/MM": {
+      "hash": "9a3d9a774ccf",
+      "status": "machine"
+    },
+    "codes:OM/MTB": {
+      "hash": "cd035aafc36d",
+      "status": "machine"
+    },
+    "codes:OM/OO": {
+      "hash": "7fdf9676ad5b",
+      "status": "machine"
+    },
+    "codes:OM/OS": {
+      "hash": "53389b9f9c64",
+      "status": "machine"
+    },
+    "codes:OM/PAP": {
+      "hash": "b700f6617de2",
+      "status": "machine"
+    },
+    "codes:OM/PCT": {
+      "hash": "ea30f062e722",
+      "status": "machine"
+    },
+    "codes:OM/PNT": {
+      "hash": "d29ff10c1391",
+      "status": "machine"
+    },
+    "codes:OM/POF": {
+      "hash": "df4ecab175c2",
+      "status": "machine"
+    },
+    "codes:OM/RBM": {
+      "hash": "01a7e4d61b5d",
+      "status": "machine"
+    },
+    "codes:OM/SCC": {
+      "hash": "0458f1ac17cf",
+      "status": "machine"
+    },
+    "codes:OM/UDN": {
+      "hash": "1761a2502971",
+      "status": "machine"
+    },
+    "codes:OMJL": {
+      "hash": "cf7c1c883337",
+      "status": "machine"
+    },
+    "codes:OMJL/R": {
+      "hash": "bda3575c335c",
+      "status": "machine"
+    },
+    "codes:ONF": {
+      "hash": "74ebf4f90f34",
+      "status": "machine"
+    },
+    "codes:ONF/R": {
+      "hash": "d614391bb575",
+      "status": "machine"
+    },
+    "codes:OP": {
+      "hash": "d99b5ffe44f6",
+      "status": "machine"
+    },
+    "codes:OR": {
+      "hash": "ec97944616a0",
+      "status": "machine"
+    },
+    "codes:OS": {
+      "hash": "f1b52e6e78df",
+      "status": "machine"
+    },
+    "codes:OSN": {
+      "hash": "13d6f5af378f",
+      "status": "machine"
+    },
+    "codes:OSS": {
+      "hash": "375d302ebd14",
+      "status": "machine"
+    },
+    "codes:OST": {
+      "hash": "0a338c31cd51",
+      "status": "machine"
+    },
+    "codes:PA/A": {
+      "hash": "9372d7fe987e",
+      "status": "machine"
+    },
+    "codes:PA/C": {
+      "hash": "ceb41f958eec",
+      "status": "machine"
+    },
+    "codes:PA/G": {
+      "hash": "0defc21edcdf",
+      "status": "machine"
+    },
+    "codes:PA/P": {
+      "hash": "d8056a8a4d3b",
+      "status": "machine"
+    },
+    "codes:PCB": {
+      "hash": "e0a1d7f2a983",
+      "status": "machine"
+    },
+    "codes:PCD": {
+      "hash": "3b3b18bbcdf7",
+      "status": "machine"
+    },
+    "codes:PCI": {
+      "hash": "623a4388320a",
+      "status": "machine"
+    },
+    "codes:PD": {
+      "hash": "ad5f9fd3114d",
+      "status": "machine"
+    },
+    "codes:PD0": {
+      "hash": "7036dee19a60",
+      "status": "machine"
+    },
+    "codes:PD1": {
+      "hash": "71ded08f278f",
+      "status": "machine"
+    },
+    "codes:PD2": {
+      "hash": "a0a46a78b8b9",
+      "status": "machine"
+    },
+    "codes:PD3": {
+      "hash": "c0d21b033ea6",
+      "status": "machine"
+    },
+    "codes:PD4": {
+      "hash": "6a3919395cdf",
+      "status": "machine"
+    },
+    "codes:PDE": {
+      "hash": "47f6adcfe726",
+      "status": "machine"
+    },
+    "codes:PDE/R": {
+      "hash": "843aec5a7818",
+      "status": "machine"
+    },
+    "codes:PEC": {
+      "hash": "5ba3880d17ef",
+      "status": "machine"
+    },
+    "codes:PEO": {
+      "hash": "837ec7475685",
+      "status": "machine"
+    },
+    "codes:PHA/IN": {
+      "hash": "f92bf81784ee",
+      "status": "machine"
+    },
+    "codes:POB": {
+      "hash": "c6d5acb2c835",
+      "status": "machine"
+    },
+    "codes:PRO": {
+      "hash": "aaa30b575d40",
+      "status": "machine"
+    },
+    "codes:PTY": {
+      "hash": "9668b3a79a69",
+      "status": "machine"
+    },
+    "codes:PU/M": {
+      "hash": "698ba0b23be7",
+      "status": "machine"
+    },
+    "codes:PU/S": {
+      "hash": "3642205e46e0",
+      "status": "machine"
+    },
+    "codes:PV": {
+      "hash": "39d162d96ea4",
+      "status": "machine"
+    },
+    "codes:PYO": {
+      "hash": "5a04d0d568d6",
+      "status": "machine"
+    },
+    "codes:R": {
+      "hash": "14b81d2728f3",
+      "status": "machine"
+    },
+    "codes:R/A": {
+      "hash": "805f08273997",
+      "status": "machine"
+    },
+    "codes:R/C": {
+      "hash": "1bdd155cae65",
+      "status": "machine"
+    },
+    "codes:R/CP": {
+      "hash": "28aed4eb241a",
+      "status": "machine"
+    },
+    "codes:R/I": {
+      "hash": "218c10b5e2e5",
+      "status": "machine"
+    },
+    "codes:RAD": {
+      "hash": "4227373a006a",
+      "status": "machine"
+    },
+    "codes:RAD/SG": {
+      "hash": "6738ddecb60a",
+      "status": "machine"
+    },
+    "codes:RBA": {
+      "hash": "5f3ab17a45a8",
+      "status": "machine"
+    },
+    "codes:RCR": {
+      "hash": "b18a455fe51f",
+      "status": "machine"
+    },
+    "codes:RCT": {
+      "hash": "2057b1462ac0",
+      "status": "machine"
+    },
+    "codes:RCT/S": {
+      "hash": "5903ee1b09c4",
+      "status": "machine"
+    },
+    "codes:RO/X": {
+      "hash": "ba890ea03eff",
+      "status": "machine"
+    },
+    "codes:RP/C": {
+      "hash": "fb5e62016ba2",
+      "status": "machine"
+    },
+    "codes:RP/O": {
+      "hash": "abfe06e4c9d6",
+      "status": "machine"
+    },
+    "codes:RPA": {
+      "hash": "da0d944f729e",
+      "status": "machine"
+    },
+    "codes:RR": {
+      "hash": "9cc28a89d5ff",
+      "status": "machine"
+    },
+    "codes:RTH": {
+      "hash": "828fe62d0ad5",
+      "status": "machine"
+    },
+    "codes:RTR": {
+      "hash": "8169fa6dd918",
+      "status": "machine"
+    },
+    "codes:S/M": {
+      "hash": "df85860e44d4",
+      "status": "machine"
+    },
+    "codes:S/MB": {
+      "hash": "14afd982f3e8",
+      "status": "machine"
+    },
+    "codes:S/MD": {
+      "hash": "77ad4bda6a12",
+      "status": "machine"
+    },
+    "codes:S/MS": {
+      "hash": "73d9f31e8398",
+      "status": "machine"
+    },
+    "codes:S/MT": {
+      "hash": "54466817a346",
+      "status": "machine"
+    },
+    "codes:S/P": {
+      "hash": "244d1af451ff",
+      "status": "machine"
+    },
+    "codes:S/X": {
+      "hash": "d5f07480bbf8",
+      "status": "machine"
+    },
+    "codes:S/XB": {
+      "hash": "a225ee2db24d",
+      "status": "machine"
+    },
+    "codes:SCI": {
+      "hash": "b621649e087a",
+      "status": "machine"
+    },
+    "codes:SG/ADC": {
+      "hash": "49a3b16c8488",
+      "status": "machine"
+    },
+    "codes:SG/ADS": {
+      "hash": "fb0fc9d74def",
+      "status": "machine"
+    },
+    "codes:SG/IN": {
+      "hash": "4c964ad2d02d",
+      "status": "machine"
+    },
+    "codes:SG/MAR": {
+      "hash": "6e41f9569ebe",
+      "status": "machine"
+    },
+    "codes:SG/MUC/C": {
+      "hash": "e6c91f1180e4",
+      "status": "machine"
+    },
+    "codes:SG/MUC/P": {
+      "hash": "6ffc88a2e5b1",
+      "status": "machine"
+    },
+    "codes:SG/MUC/S": {
+      "hash": "52dad98779a2",
+      "status": "machine"
+    },
+    "codes:SG/NEC": {
+      "hash": "04540fff4381",
+      "status": "machine"
+    },
+    "codes:SG/RC": {
+      "hash": "10f8038b97ef",
+      "status": "machine"
+    },
+    "codes:SG/SI": {
+      "hash": "d7b473229d88",
+      "status": "machine"
+    },
+    "codes:SG/X": {
+      "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SR": {
+      "hash": "b7c5d92043ee",
+      "status": "machine"
+    },
+    "codes:ST": {
+      "hash": "654802804fc4",
+      "status": "machine"
+    },
+    "codes:ST/CS": {
+      "hash": "659984c9c30f",
+      "status": "machine"
+    },
+    "codes:SYM/R": {
+      "hash": "bfcac94d50fe",
+      "status": "machine"
+    },
+    "codes:SYM/S": {
+      "hash": "7c7b34385397",
+      "status": "machine"
+    },
+    "codes:T/A": {
+      "hash": "16c22f95a4e0",
+      "status": "machine"
+    },
+    "codes:T/CCR": {
+      "hash": "d73b836d6b96",
+      "status": "machine"
+    },
+    "codes:T/DEN": {
+      "hash": "496e27acc35a",
+      "status": "machine"
+    },
+    "codes:T/DIL": {
+      "hash": "233ade101f88",
+      "status": "machine"
+    },
+    "codes:T/E": {
+      "hash": "df56e4b6664d",
+      "status": "machine"
+    },
+    "codes:T/EL": {
+      "hash": "26887c27a71f",
+      "status": "machine"
+    },
+    "codes:T/FDR": {
+      "hash": "8d621032f65e",
+      "status": "machine"
+    },
+    "codes:T/FUS": {
+      "hash": "09d7515ed4bf",
+      "status": "machine"
+    },
+    "codes:T/FX": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "codes:T/FX/CCF": {
+      "hash": "af37bbdf8f2c",
+      "status": "machine"
+    },
+    "codes:T/FX/CCRF": {
+      "hash": "a4c64eb05092",
+      "status": "machine"
+    },
+    "codes:T/FX/EF": {
+      "hash": "26cb9ef5dddc",
+      "status": "machine"
+    },
+    "codes:T/FX/EI": {
+      "hash": "e6bd4b6469d7",
+      "status": "machine"
+    },
+    "codes:T/FX/RF": {
+      "hash": "6e6b97fcf258",
+      "status": "machine"
+    },
+    "codes:T/FX/UCF": {
+      "hash": "ff6e2a7c1b30",
+      "status": "machine"
+    },
+    "codes:T/FX/UCRF": {
+      "hash": "ecacb4683106",
+      "status": "machine"
+    },
+    "codes:T/GEM": {
+      "hash": "16cbf1cf52bb",
+      "status": "machine"
+    },
+    "codes:T/I": {
+      "hash": "ec0c4f679181",
+      "status": "machine"
+    },
+    "codes:T/LUX": {
+      "hash": "6506f7e2eeb4",
+      "status": "machine"
+    },
+    "codes:T/MAC": {
+      "hash": "c8aedde3e1e9",
+      "status": "machine"
+    },
+    "codes:T/MIC": {
+      "hash": "e7e93c095da4",
+      "status": "machine"
+    },
+    "codes:T/NE": {
+      "hash": "f7307ce42e1e",
+      "status": "machine"
+    },
+    "codes:T/NV": {
+      "hash": "fd1d15e8b2cf",
+      "status": "machine"
+    },
+    "codes:T/PE": {
+      "hash": "83e31ff119f9",
+      "status": "machine"
+    },
+    "codes:T/RI": {
+      "hash": "0e89fff1978c",
+      "status": "machine"
+    },
+    "codes:T/RP": {
+      "hash": "bb875ee053b6",
+      "status": "machine"
+    },
+    "codes:T/SN": {
+      "hash": "fe7d7d5ca9a9",
+      "status": "machine"
+    },
+    "codes:T/SR": {
+      "hash": "2d9a3d710189",
+      "status": "machine"
+    },
+    "codes:T/TRA": {
+      "hash": "ed6cd7806842",
+      "status": "machine"
+    },
+    "codes:T/U": {
+      "hash": "ed97849890fd",
+      "status": "machine"
+    },
+    "codes:T/V": {
+      "hash": "c68556fc27b6",
+      "status": "machine"
+    },
+    "codes:T/XP": {
+      "hash": "a902b6e3364a",
+      "status": "machine"
+    },
+    "codes:TMA": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "codes:TMA/B": {
+      "hash": "26ddca9807a1",
+      "status": "machine"
+    },
+    "codes:TMA/BRN": {
+      "hash": "63fb1d6e3a15",
+      "status": "machine"
+    },
+    "codes:TMA/E": {
+      "hash": "8fd26f6114fb",
+      "status": "machine"
+    },
+    "codes:TMA/R": {
+      "hash": "8bef03917ec2",
+      "status": "machine"
+    },
+    "codes:TMJ/A": {
+      "hash": "78f290a0483a",
+      "status": "machine"
+    },
+    "codes:TMJ/A/R": {
+      "hash": "ebd191da6583",
+      "status": "machine"
+    },
+    "codes:TMJ/D": {
+      "hash": "99660140f4db",
+      "status": "machine"
+    },
+    "codes:TMJ/FX": {
+      "hash": "7b9f4a41665d",
+      "status": "machine"
+    },
+    "codes:TMJ/FX/R": {
+      "hash": "50f4800cba4e",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX": {
+      "hash": "45b129f8fe40",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX/R": {
+      "hash": "b11b0a856975",
+      "status": "machine"
+    },
+    "codes:TON/IN": {
+      "hash": "cfd987f776ca",
+      "status": "machine"
+    },
+    "codes:TON/X": {
+      "hash": "88d7fde4c53a",
+      "status": "machine"
+    },
+    "codes:TP": {
+      "hash": "16c8fb0da228",
+      "status": "machine"
+    },
+    "codes:TR": {
+      "hash": "59801ae3dd5b",
+      "status": "machine"
+    },
+    "codes:TS": {
+      "hash": "88808dab2c08",
+      "status": "machine"
+    },
+    "codes:TT": {
+      "hash": "35ebd096dc82",
+      "status": "machine"
+    },
+    "codes:US": {
+      "hash": "faedfd09d850",
+      "status": "machine"
+    },
+    "codes:VPT": {
+      "hash": "563c0eefb553",
+      "status": "machine"
+    },
+    "codes:X": {
+      "hash": "3409a88ca603",
+      "status": "machine"
+    },
+    "codes:XS": {
+      "hash": "e196790c1c8d",
+      "status": "machine"
+    },
+    "codes:XS/ODY": {
+      "hash": "a5e54f6c2749",
+      "status": "machine"
+    },
+    "codes:XSS": {
+      "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:ZYG/X": {
+      "hash": "1006c1540735",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -1870,6 +7434,150 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.body": {
+      "hash": "db6a26af1ae8",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.title": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.body": {
+      "hash": "a3c8990b42c7",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.title": {
+      "hash": "546a7c64290d",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.body": {
+      "hash": "4ac0965bf187",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.title": {
+      "hash": "e751f37c3e08",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.body": {
+      "hash": "d42c50807374",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.title": {
+      "hash": "2faed1a26b87",
+      "status": "machine"
+    },
+    "whatsNew:gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "whatsNew:groups.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "whatsNew:groups.dictation": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "whatsNew:groups.everyday": {
+      "hash": "d01872ef0010",
+      "status": "machine"
+    },
+    "whatsNew:groups.ownerReport": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "whatsNew:groups.records": {
+      "hash": "47a84e92d5b2",
+      "status": "machine"
+    },
+    "whatsNew:intro": {
+      "hash": "26325643fc44",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.body": {
+      "hash": "d3d949e7e6f0",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
+    "whatsNew:phones.body": {
+      "hash": "cdadcb703d93",
+      "status": "machine"
+    },
+    "whatsNew:phones.title": {
+      "hash": "23c636305501",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.body": {
+      "hash": "a22f16b5ef8d",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.title": {
+      "hash": "7df346f0d6b3",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.body": {
+      "hash": "06d4d2fab9dc",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.title": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.body": {
+      "hash": "99369cac3234",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.title": {
+      "hash": "3c7992fb7817",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.body": {
+      "hash": "fe25857c5d2e",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.title": {
+      "hash": "4dea82415176",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.body": {
+      "hash": "c16b7f2c4a2b",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.title": {
+      "hash": "7a7ef53d397a",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.body": {
+      "hash": "fee2870fa556",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.title": {
+      "hash": "a43f73adf41d",
+      "status": "machine"
+    },
+    "whatsNew:title": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.body": {
+      "hash": "425690d8fb26",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.title": {
+      "hash": "a0d1a3d64ab0",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.body": {
+      "hash": "982b203c9015",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.title": {
+      "hash": "596b070336ea",
       "status": "machine"
     }
   },
@@ -2154,6 +7862,1770 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "billing:features.aiAutofill": {
+      "hash": "ec7edefa36d8",
+      "status": "machine"
+    },
+    "billing:features.aiAutofillTeam": {
+      "hash": "72ffe177bf5a",
+      "status": "machine"
+    },
+    "billing:features.everythingIn": {
+      "hash": "d3d7db0cc4be",
+      "status": "machine"
+    },
+    "billing:features.fullCharting": {
+      "hash": "5e32e6525fc5",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_many": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_one": {
+      "hash": "d83aeb2c278b",
+      "status": "machine"
+    },
+    "billing:features.imagesPerChart_other": {
+      "hash": "7534df7a1e07",
+      "status": "machine"
+    },
+    "billing:features.photos_many": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.photos_one": {
+      "hash": "15d41914bd0f",
+      "status": "machine"
+    },
+    "billing:features.photos_other": {
+      "hash": "a90a6ed94a83",
+      "status": "machine"
+    },
+    "billing:features.sharedCharts": {
+      "hash": "0e748a0e41a5",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_many": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_one": {
+      "hash": "a790c4068836",
+      "status": "machine"
+    },
+    "billing:features.teamMembers_other": {
+      "hash": "b5f27669e2fc",
+      "status": "machine"
+    },
+    "billing:features.teamRoles": {
+      "hash": "f34e5d767ed6",
+      "status": "machine"
+    },
+    "billing:features.users_many": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.users_one": {
+      "hash": "3aa39be0096d",
+      "status": "machine"
+    },
+    "billing:features.users_other": {
+      "hash": "b89ce7bf0c2c",
+      "status": "machine"
+    },
+    "billing:features.visitHistory": {
+      "hash": "25067003b0d7",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.name": {
+      "hash": "010dd7b94f5f",
+      "status": "machine"
+    },
+    "billing:plans.individual_basic.tagline": {
+      "hash": "df87b76836f2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.name": {
+      "hash": "15538f6971e2",
+      "status": "machine"
+    },
+    "billing:plans.individual_pro.tagline": {
+      "hash": "33b6114892ca",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.name": {
+      "hash": "d3857b12b4ce",
+      "status": "machine"
+    },
+    "billing:plans.practice_basic.tagline": {
+      "hash": "e527ff570182",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.name": {
+      "hash": "f79df0fe002d",
+      "status": "machine"
+    },
+    "billing:plans.practice_pro.tagline": {
+      "hash": "d6af9793c895",
+      "status": "machine"
+    },
+    "chart:codeGroups.developmental": {
+      "hash": "8b263f32b01a",
+      "status": "machine"
+    },
+    "chart:codeGroups.endodontics": {
+      "hash": "af9cd09b7401",
+      "status": "machine"
+    },
+    "chart:codeGroups.extractions": {
+      "hash": "81ff9ea7137f",
+      "status": "machine"
+    },
+    "chart:codeGroups.headNosePharynx": {
+      "hash": "49b29b652caf",
+      "status": "machine"
+    },
+    "chart:codeGroups.imaging": {
+      "hash": "94db24586b5f",
+      "status": "machine"
+    },
+    "chart:codeGroups.immuneMediated": {
+      "hash": "a540b5fd5e71",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawRepair": {
+      "hash": "92f2fae84cc9",
+      "status": "machine"
+    },
+    "chart:codeGroups.jawTmj": {
+      "hash": "27950ddafbf0",
+      "status": "machine"
+    },
+    "chart:codeGroups.masses": {
+      "hash": "3d089995e287",
+      "status": "machine"
+    },
+    "chart:codeGroups.occlusion": {
+      "hash": "865a3db23fd9",
+      "status": "machine"
+    },
+    "chart:codeGroups.oncologic": {
+      "hash": "15f2af0c90e1",
+      "status": "machine"
+    },
+    "chart:codeGroups.oralSurgery": {
+      "hash": "655e0297d63d",
+      "status": "machine"
+    },
+    "chart:codeGroups.orthodontics": {
+      "hash": "f325953ea439",
+      "status": "machine"
+    },
+    "chart:codeGroups.periapicalBone": {
+      "hash": "6255882a5933",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontal": {
+      "hash": "e28091946429",
+      "status": "machine"
+    },
+    "chart:codeGroups.periodontalTreatment": {
+      "hash": "369bc338ff26",
+      "status": "machine"
+    },
+    "chart:codeGroups.restorative": {
+      "hash": "048d162f1328",
+      "status": "machine"
+    },
+    "chart:codeGroups.salivary": {
+      "hash": "aa24bad01fed",
+      "status": "machine"
+    },
+    "chart:codeGroups.softTissue": {
+      "hash": "7372b5db8dc4",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothFracture": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothNumberEruption": {
+      "hash": "6bc3a7a6c671",
+      "status": "machine"
+    },
+    "chart:codeGroups.toothPathology": {
+      "hash": "976c74b57b40",
+      "status": "machine"
+    },
+    "chart:codeGroups.trauma": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "chart:columns.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "chart:columns.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "chart:columns.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "chart:columns.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "chart:columns.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "chart:columns.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "chart:columns.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "chart:columns.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "chart:columns.tooth": {
+      "hash": "046b9087750f",
+      "status": "machine"
+    },
+    "chart:columns.triadan": {
+      "hash": "9ac63c724069",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.block": {
+      "hash": "39ff9d93c0ae",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.field": {
+      "hash": "6163a41c0e5e",
+      "status": "machine"
+    },
+    "chart:customAnesthesia.yes": {
+      "hash": "85a39ab345d6",
+      "status": "machine"
+    },
+    "codes:AB": {
+      "hash": "510ad89a3da2",
+      "status": "machine"
+    },
+    "codes:ABE": {
+      "hash": "abe767a99e98",
+      "status": "machine"
+    },
+    "codes:ALV": {
+      "hash": "eba8f4b4177b",
+      "status": "machine"
+    },
+    "codes:ANO": {
+      "hash": "6c09ff013e93",
+      "status": "machine"
+    },
+    "codes:AOS": {
+      "hash": "66f2f43c0900",
+      "status": "machine"
+    },
+    "codes:AP/X": {
+      "hash": "eeaa20212d88",
+      "status": "machine"
+    },
+    "codes:APN": {
+      "hash": "e41b74497c2d",
+      "status": "machine"
+    },
+    "codes:AT": {
+      "hash": "907afb9b9795",
+      "status": "machine"
+    },
+    "codes:ATE": {
+      "hash": "6f1cd2d79181",
+      "status": "machine"
+    },
+    "codes:B": {
+      "hash": "4656852840f6",
+      "status": "machine"
+    },
+    "codes:B/B": {
+      "hash": "9e7ce0fad61e",
+      "status": "machine"
+    },
+    "codes:B/CN": {
+      "hash": "10d9d8f229d4",
+      "status": "machine"
+    },
+    "codes:B/E": {
+      "hash": "4466f0ff1e3f",
+      "status": "machine"
+    },
+    "codes:B/I": {
+      "hash": "1065c15540bf",
+      "status": "machine"
+    },
+    "codes:B/NA": {
+      "hash": "9c126e49fca1",
+      "status": "machine"
+    },
+    "codes:B/NB": {
+      "hash": "a481a5d2d389",
+      "status": "machine"
+    },
+    "codes:B/P": {
+      "hash": "f0c75d7f63e7",
+      "status": "machine"
+    },
+    "codes:B/S": {
+      "hash": "25507abef723",
+      "status": "machine"
+    },
+    "codes:BR": {
+      "hash": "467737e854f2",
+      "status": "machine"
+    },
+    "codes:BRI": {
+      "hash": "3892e10346fd",
+      "status": "machine"
+    },
+    "codes:BTH": {
+      "hash": "8679a44e1e5f",
+      "status": "machine"
+    },
+    "codes:BUC": {
+      "hash": "60ba80ea106e",
+      "status": "machine"
+    },
+    "codes:BUP": {
+      "hash": "3817773c1216",
+      "status": "machine"
+    },
+    "codes:CA": {
+      "hash": "49d896986080",
+      "status": "machine"
+    },
+    "codes:CB": {
+      "hash": "4bc308437b81",
+      "status": "machine"
+    },
+    "codes:CB/C": {
+      "hash": "e422ca0f909f",
+      "status": "machine"
+    },
+    "codes:CB/R": {
+      "hash": "2d1e14d9b84f",
+      "status": "machine"
+    },
+    "codes:CC": {
+      "hash": "7cfd167342b4",
+      "status": "machine"
+    },
+    "codes:CFL": {
+      "hash": "6fc3f936f963",
+      "status": "machine"
+    },
+    "codes:CFL/R": {
+      "hash": "a023e3c5633b",
+      "status": "machine"
+    },
+    "codes:CFP": {
+      "hash": "48481a6f2498",
+      "status": "machine"
+    },
+    "codes:CFP/R": {
+      "hash": "71e0af6ab662",
+      "status": "machine"
+    },
+    "codes:CFS": {
+      "hash": "a98e1134c642",
+      "status": "machine"
+    },
+    "codes:CFS/R": {
+      "hash": "cb02dac6908d",
+      "status": "machine"
+    },
+    "codes:CFSH": {
+      "hash": "ea83e7117305",
+      "status": "machine"
+    },
+    "codes:CFSH/R": {
+      "hash": "1c5f6f22d7fa",
+      "status": "machine"
+    },
+    "codes:CFSU": {
+      "hash": "76ca4a1dd175",
+      "status": "machine"
+    },
+    "codes:CFSU/R": {
+      "hash": "e0c830ef9abb",
+      "status": "machine"
+    },
+    "codes:CFT": {
+      "hash": "06beaf5e0b62",
+      "status": "machine"
+    },
+    "codes:CFT/R": {
+      "hash": "4a1120617a1f",
+      "status": "machine"
+    },
+    "codes:CHO": {
+      "hash": "38f9eb3c92e5",
+      "status": "machine"
+    },
+    "codes:CL": {
+      "hash": "05d336ff7c5e",
+      "status": "machine"
+    },
+    "codes:CL/B": {
+      "hash": "97435ccf4cda",
+      "status": "machine"
+    },
+    "codes:CL/L": {
+      "hash": "afde8e815680",
+      "status": "machine"
+    },
+    "codes:CL/P": {
+      "hash": "06e40e7ca42a",
+      "status": "machine"
+    },
+    "codes:CL/T": {
+      "hash": "78e7fbe67a7d",
+      "status": "machine"
+    },
+    "codes:CMO": {
+      "hash": "45243a339861",
+      "status": "machine"
+    },
+    "codes:COM": {
+      "hash": "9a9984a267bb",
+      "status": "machine"
+    },
+    "codes:CON/X": {
+      "hash": "83ac103a0422",
+      "status": "machine"
+    },
+    "codes:COO": {
+      "hash": "2c0bf879e909",
+      "status": "machine"
+    },
+    "codes:COR/X": {
+      "hash": "2731437e416f",
+      "status": "machine"
+    },
+    "codes:CPL": {
+      "hash": "3e17348cbe96",
+      "status": "machine"
+    },
+    "codes:CR/A": {
+      "hash": "3cbedc84cd8d",
+      "status": "machine"
+    },
+    "codes:CR/C": {
+      "hash": "4606ef68fb5c",
+      "status": "machine"
+    },
+    "codes:CR/C/P": {
+      "hash": "71d103c2f0ad",
+      "status": "machine"
+    },
+    "codes:CR/E": {
+      "hash": "70c3c26e09c2",
+      "status": "machine"
+    },
+    "codes:CR/L": {
+      "hash": "d059f1a4aac5",
+      "status": "machine"
+    },
+    "codes:CR/M": {
+      "hash": "bed25f3c5b56",
+      "status": "machine"
+    },
+    "codes:CR/M/P": {
+      "hash": "542567520892",
+      "status": "machine"
+    },
+    "codes:CR/P": {
+      "hash": "6e709cc3a655",
+      "status": "machine"
+    },
+    "codes:CR/PFM": {
+      "hash": "7c37292c1276",
+      "status": "machine"
+    },
+    "codes:CR/PFM/P": {
+      "hash": "5ddfb50cc843",
+      "status": "machine"
+    },
+    "codes:CR/R": {
+      "hash": "92f82fa6dedb",
+      "status": "machine"
+    },
+    "codes:CR/R/P": {
+      "hash": "634895f0c2a2",
+      "status": "machine"
+    },
+    "codes:CR/T": {
+      "hash": "07203df8993f",
+      "status": "machine"
+    },
+    "codes:CR/XP": {
+      "hash": "5fd72ef89740",
+      "status": "machine"
+    },
+    "codes:CS": {
+      "hash": "142abb9c6c99",
+      "status": "machine"
+    },
+    "codes:CT": {
+      "hash": "37e06f0c538b",
+      "status": "machine"
+    },
+    "codes:CT/CB": {
+      "hash": "2aedfdbfb782",
+      "status": "machine"
+    },
+    "codes:CTH": {
+      "hash": "dc82b99cf02c",
+      "status": "machine"
+    },
+    "codes:CU": {
+      "hash": "95d78201a8a6",
+      "status": "machine"
+    },
+    "codes:CUS": {
+      "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:DC": {
+      "hash": "3021239926f1",
+      "status": "machine"
+    },
+    "codes:DC/D": {
+      "hash": "d3c2d6d34104",
+      "status": "machine"
+    },
+    "codes:DC/SM": {
+      "hash": "72f1a6d524c5",
+      "status": "machine"
+    },
+    "codes:DI/ND": {
+      "hash": "51d6afc19833",
+      "status": "machine"
+    },
+    "codes:DI/NS": {
+      "hash": "2cefa6d97678",
+      "status": "machine"
+    },
+    "codes:DI/NU": {
+      "hash": "6c28b69d43bf",
+      "status": "machine"
+    },
+    "codes:DI/OD": {
+      "hash": "2a344b21e70b",
+      "status": "machine"
+    },
+    "codes:DI/OS": {
+      "hash": "22b2750347ec",
+      "status": "machine"
+    },
+    "codes:DI/OU": {
+      "hash": "0345e1c8f947",
+      "status": "machine"
+    },
+    "codes:DMO": {
+      "hash": "16d5e4647065",
+      "status": "machine"
+    },
+    "codes:DP": {
+      "hash": "77565b9c3787",
+      "status": "machine"
+    },
+    "codes:DT": {
+      "hash": "62ff83cc870a",
+      "status": "machine"
+    },
+    "codes:DT/P": {
+      "hash": "da9aaa8799e5",
+      "status": "machine"
+    },
+    "codes:DTC": {
+      "hash": "c37345655755",
+      "status": "machine"
+    },
+    "codes:DTC/R": {
+      "hash": "2338e0d7d674",
+      "status": "machine"
+    },
+    "codes:E/D": {
+      "hash": "ace05f629ccc",
+      "status": "machine"
+    },
+    "codes:E/H": {
+      "hash": "e55754ae3c81",
+      "status": "machine"
+    },
+    "codes:E/HM": {
+      "hash": "048065e9a33e",
+      "status": "machine"
+    },
+    "codes:E/P": {
+      "hash": "68073cf264d1",
+      "status": "machine"
+    },
+    "codes:EM": {
+      "hash": "aa2fe9bdc35b",
+      "status": "machine"
+    },
+    "codes:ENO": {
+      "hash": "97ead18f5942",
+      "status": "machine"
+    },
+    "codes:EOG": {
+      "hash": "ee3e96341900",
+      "status": "machine"
+    },
+    "codes:EOG/L": {
+      "hash": "de52e775bcc9",
+      "status": "machine"
+    },
+    "codes:EOG/P": {
+      "hash": "7d65583c47b1",
+      "status": "machine"
+    },
+    "codes:EOG/T": {
+      "hash": "ea6b402eef57",
+      "status": "machine"
+    },
+    "codes:ER": {
+      "hash": "d41111129d81",
+      "status": "machine"
+    },
+    "codes:ESP": {
+      "hash": "54cc978a371f",
+      "status": "machine"
+    },
+    "codes:ESP/R": {
+      "hash": "db62876b47a5",
+      "status": "machine"
+    },
+    "codes:EXO": {
+      "hash": "634610800faa",
+      "status": "machine"
+    },
+    "codes:F": {
+      "hash": "13c519458eca",
+      "status": "machine"
+    },
+    "codes:F/AD": {
+      "hash": "1ca1dccf7395",
+      "status": "machine"
+    },
+    "codes:F/AP": {
+      "hash": "6e0c36c49998",
+      "status": "machine"
+    },
+    "codes:F/CO": {
+      "hash": "514f34aafda8",
+      "status": "machine"
+    },
+    "codes:F/EN": {
+      "hash": "ad2f9ce365df",
+      "status": "machine"
+    },
+    "codes:F/HI": {
+      "hash": "041083751331",
+      "status": "machine"
+    },
+    "codes:F/IS": {
+      "hash": "bf5df917b346",
+      "status": "machine"
+    },
+    "codes:F/LA": {
+      "hash": "19e02c1707b0",
+      "status": "machine"
+    },
+    "codes:F/RO": {
+      "hash": "d7941c8e6da9",
+      "status": "machine"
+    },
+    "codes:F/TR": {
+      "hash": "d5e2794dbfb3",
+      "status": "machine"
+    },
+    "codes:FB": {
+      "hash": "c77fdf9d2fe2",
+      "status": "machine"
+    },
+    "codes:FB/R": {
+      "hash": "67b7a888309f",
+      "status": "machine"
+    },
+    "codes:FOD": {
+      "hash": "4b32bb6bcbab",
+      "status": "machine"
+    },
+    "codes:FOL": {
+      "hash": "f099cd0651e6",
+      "status": "machine"
+    },
+    "codes:FRE": {
+      "hash": "d96426f44dcc",
+      "status": "machine"
+    },
+    "codes:FT": {
+      "hash": "c6f2fb1230d7",
+      "status": "machine"
+    },
+    "codes:FX": {
+      "hash": "f4d6c647642c",
+      "status": "machine"
+    },
+    "codes:FX/R": {
+      "hash": "6d596d550258",
+      "status": "machine"
+    },
+    "codes:FX/R/EXF": {
+      "hash": "b2d52e0eda5c",
+      "status": "machine"
+    },
+    "codes:FX/R/IAS": {
+      "hash": "5f808b3ee65c",
+      "status": "machine"
+    },
+    "codes:FX/R/IDS": {
+      "hash": "81e259b0a1dc",
+      "status": "machine"
+    },
+    "codes:FX/R/IQS": {
+      "hash": "f9ff599f85a2",
+      "status": "machine"
+    },
+    "codes:FX/R/MMF": {
+      "hash": "b10d37385096",
+      "status": "machine"
+    },
+    "codes:FX/R/MZ": {
+      "hash": "f68c7b1a27b6",
+      "status": "machine"
+    },
+    "codes:FX/R/PL": {
+      "hash": "fda61a01756c",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/C": {
+      "hash": "1c607316b60f",
+      "status": "machine"
+    },
+    "codes:FX/R/WIR/OS": {
+      "hash": "a9ad500a85ac",
+      "status": "machine"
+    },
+    "codes:GC": {
+      "hash": "44c476a5438a",
+      "status": "machine"
+    },
+    "codes:GE": {
+      "hash": "c9d6e0cf4bfd",
+      "status": "machine"
+    },
+    "codes:GF": {
+      "hash": "a6e579f73baa",
+      "status": "machine"
+    },
+    "codes:GF/B": {
+      "hash": "8a6aaa7bdde8",
+      "status": "machine"
+    },
+    "codes:GF/C": {
+      "hash": "87efa5e6c88e",
+      "status": "machine"
+    },
+    "codes:GF/CT": {
+      "hash": "fbaecfe1e436",
+      "status": "machine"
+    },
+    "codes:GF/F": {
+      "hash": "05490e318c55",
+      "status": "machine"
+    },
+    "codes:GF/G": {
+      "hash": "744f9f4df3e0",
+      "status": "machine"
+    },
+    "codes:GF/M": {
+      "hash": "7b68a7c81813",
+      "status": "machine"
+    },
+    "codes:GF/N": {
+      "hash": "6b0ff1e47f0c",
+      "status": "machine"
+    },
+    "codes:GF/S": {
+      "hash": "0c7ea85759dc",
+      "status": "machine"
+    },
+    "codes:GF/V": {
+      "hash": "5718f155abab",
+      "status": "machine"
+    },
+    "codes:GH": {
+      "hash": "8b0b49672e25",
+      "status": "machine"
+    },
+    "codes:GR": {
+      "hash": "134fa4ff4cbc",
+      "status": "machine"
+    },
+    "codes:GTR": {
+      "hash": "780c4c980f35",
+      "status": "machine"
+    },
+    "codes:GV": {
+      "hash": "366f0b166291",
+      "status": "machine"
+    },
+    "codes:HC": {
+      "hash": "af23771d8555",
+      "status": "machine"
+    },
+    "codes:HS": {
+      "hash": "b382cd65ba7e",
+      "status": "machine"
+    },
+    "codes:HYP": {
+      "hash": "4613075a7bd8",
+      "status": "machine"
+    },
+    "codes:IM": {
+      "hash": "c9dfb5af82dc",
+      "status": "machine"
+    },
+    "codes:IM/F": {
+      "hash": "edbebcba539d",
+      "status": "machine"
+    },
+    "codes:IMP": {
+      "hash": "eb9c63551ba7",
+      "status": "machine"
+    },
+    "codes:IOF": {
+      "hash": "d737f8c6095c",
+      "status": "machine"
+    },
+    "codes:IOF/R": {
+      "hash": "afb151d12d68",
+      "status": "machine"
+    },
+    "codes:IP": {
+      "hash": "15f78c839159",
+      "status": "machine"
+    },
+    "codes:IP/AC": {
+      "hash": "4e2e1e8b84d7",
+      "status": "machine"
+    },
+    "codes:IP/C": {
+      "hash": "5ae93108ca4c",
+      "status": "machine"
+    },
+    "codes:IP/M": {
+      "hash": "f19957944b1a",
+      "status": "machine"
+    },
+    "codes:ITH": {
+      "hash": "057360b3c0d7",
+      "status": "machine"
+    },
+    "codes:LAC": {
+      "hash": "bf1caf4648da",
+      "status": "machine"
+    },
+    "codes:LAC/B": {
+      "hash": "ff433dc91dc5",
+      "status": "machine"
+    },
+    "codes:LAC/G": {
+      "hash": "55aaff82d78d",
+      "status": "machine"
+    },
+    "codes:LAC/L": {
+      "hash": "ed34eff2185f",
+      "status": "machine"
+    },
+    "codes:LAC/O": {
+      "hash": "7eba1f741ef9",
+      "status": "machine"
+    },
+    "codes:LAC/P": {
+      "hash": "6a18d0ff9775",
+      "status": "machine"
+    },
+    "codes:LAC/R": {
+      "hash": "834acdce0f42",
+      "status": "machine"
+    },
+    "codes:LAC/T": {
+      "hash": "fc6cee3c4ee7",
+      "status": "machine"
+    },
+    "codes:LE": {
+      "hash": "d7df0bdacd81",
+      "status": "machine"
+    },
+    "codes:LIN/X": {
+      "hash": "f5e1b57683d6",
+      "status": "machine"
+    },
+    "codes:LIP/A/R": {
+      "hash": "2806f0d035d5",
+      "status": "machine"
+    },
+    "codes:LIP/X": {
+      "hash": "47a671296a6a",
+      "status": "machine"
+    },
+    "codes:LN/E": {
+      "hash": "098416b6b30c",
+      "status": "machine"
+    },
+    "codes:LN/X": {
+      "hash": "c1a7c52420f0",
+      "status": "machine"
+    },
+    "codes:MAL": {
+      "hash": "c43983504b97",
+      "status": "machine"
+    },
+    "codes:MAL1": {
+      "hash": "62ce1025dd45",
+      "status": "machine"
+    },
+    "codes:MAL1/BV": {
+      "hash": "ccfc02248dd0",
+      "status": "machine"
+    },
+    "codes:MAL1/DV": {
+      "hash": "0497010edf76",
+      "status": "machine"
+    },
+    "codes:MAL1/LABV": {
+      "hash": "d8f6cab2ab9f",
+      "status": "machine"
+    },
+    "codes:MAL1/LV": {
+      "hash": "20ef03c55d6c",
+      "status": "machine"
+    },
+    "codes:MAL1/MV": {
+      "hash": "43c7e26ded90",
+      "status": "machine"
+    },
+    "codes:MAL1/PV": {
+      "hash": "2edcadbe83d1",
+      "status": "machine"
+    },
+    "codes:MAL2": {
+      "hash": "5b2a8f9d124d",
+      "status": "machine"
+    },
+    "codes:MAL3": {
+      "hash": "3e97d99fad7a",
+      "status": "machine"
+    },
+    "codes:MAL4": {
+      "hash": "63a5238acde0",
+      "status": "machine"
+    },
+    "codes:MAL4/DV": {
+      "hash": "2fc90c928b1a",
+      "status": "machine"
+    },
+    "codes:MAL4/RC": {
+      "hash": "736fb0443082",
+      "status": "machine"
+    },
+    "codes:MAL4/STS": {
+      "hash": "99441a572e7e",
+      "status": "machine"
+    },
+    "codes:MAR": {
+      "hash": "2d1879405603",
+      "status": "machine"
+    },
+    "codes:MET": {
+      "hash": "7b6169e6b876",
+      "status": "machine"
+    },
+    "codes:MET/D": {
+      "hash": "67cb7238d51e",
+      "status": "machine"
+    },
+    "codes:MET/R": {
+      "hash": "91a35bd23844",
+      "status": "machine"
+    },
+    "codes:MMM": {
+      "hash": "3bd7067198bb",
+      "status": "machine"
+    },
+    "codes:MN/FX": {
+      "hash": "44d2aab85ea2",
+      "status": "machine"
+    },
+    "codes:MRI": {
+      "hash": "82649d839ab2",
+      "status": "machine"
+    },
+    "codes:MX/FX": {
+      "hash": "697265ea24c6",
+      "status": "machine"
+    },
+    "codes:N/EN": {
+      "hash": "5a1b84b9ffdf",
+      "status": "machine"
+    },
+    "codes:N/LAV": {
+      "hash": "610fc6264224",
+      "status": "machine"
+    },
+    "codes:N/NPS": {
+      "hash": "4fede08dcbe9",
+      "status": "machine"
+    },
+    "codes:N/NPS/R": {
+      "hash": "d8d7467cb291",
+      "status": "machine"
+    },
+    "codes:N/NS": {
+      "hash": "290de41d03ff",
+      "status": "machine"
+    },
+    "codes:N/NS/R": {
+      "hash": "31f0bfdc0ad8",
+      "status": "machine"
+    },
+    "codes:N/POL": {
+      "hash": "d15089293cb5",
+      "status": "machine"
+    },
+    "codes:N/SCC": {
+      "hash": "ff76772919fb",
+      "status": "machine"
+    },
+    "codes:OA": {
+      "hash": "3fdea1272ef2",
+      "status": "machine"
+    },
+    "codes:OA/A": {
+      "hash": "aa414ce0b3aa",
+      "status": "machine"
+    },
+    "codes:OA/AR": {
+      "hash": "cb7f0985fdd5",
+      "status": "machine"
+    },
+    "codes:OA/BKT": {
+      "hash": "c8e266afb91d",
+      "status": "machine"
+    },
+    "codes:OA/CMB": {
+      "hash": "f0ffe91e1890",
+      "status": "machine"
+    },
+    "codes:OA/EC": {
+      "hash": "9c9bed0c14a4",
+      "status": "machine"
+    },
+    "codes:OA/I": {
+      "hash": "b8e1fe7aa683",
+      "status": "machine"
+    },
+    "codes:OA/R": {
+      "hash": "abf916344aad",
+      "status": "machine"
+    },
+    "codes:OA/WIR": {
+      "hash": "428b353ab851",
+      "status": "machine"
+    },
+    "codes:OAF": {
+      "hash": "9687348cfb6f",
+      "status": "machine"
+    },
+    "codes:OAF/R": {
+      "hash": "66101df70736",
+      "status": "machine"
+    },
+    "codes:OC": {
+      "hash": "6b2d26c7c1e2",
+      "status": "machine"
+    },
+    "codes:ODY": {
+      "hash": "9cdca5f18d93",
+      "status": "machine"
+    },
+    "codes:OFF": {
+      "hash": "851a0c8a5c61",
+      "status": "machine"
+    },
+    "codes:OFF/R": {
+      "hash": "828e89dadb08",
+      "status": "machine"
+    },
+    "codes:OLI": {
+      "hash": "df44da2b5ccc",
+      "status": "machine"
+    },
+    "codes:OM": {
+      "hash": "326f2241dd8e",
+      "status": "machine"
+    },
+    "codes:OM/AA": {
+      "hash": "749a972cff3c",
+      "status": "machine"
+    },
+    "codes:OM/AD": {
+      "hash": "8c349a1f9845",
+      "status": "machine"
+    },
+    "codes:OM/ADC": {
+      "hash": "954c02639863",
+      "status": "machine"
+    },
+    "codes:OM/APN": {
+      "hash": "c1bc6e614cd8",
+      "status": "machine"
+    },
+    "codes:OM/APO": {
+      "hash": "f9c5ef046a92",
+      "status": "machine"
+    },
+    "codes:OM/CE": {
+      "hash": "3214dc37510f",
+      "status": "machine"
+    },
+    "codes:OM/FIO": {
+      "hash": "7cb11bee4e14",
+      "status": "machine"
+    },
+    "codes:OM/FS": {
+      "hash": "fe1c0ddc1395",
+      "status": "machine"
+    },
+    "codes:OM/GCG": {
+      "hash": "44a4bc7b08bc",
+      "status": "machine"
+    },
+    "codes:OM/GCT": {
+      "hash": "53b9666e69ee",
+      "status": "machine"
+    },
+    "codes:OM/HS": {
+      "hash": "07a134d949d5",
+      "status": "machine"
+    },
+    "codes:OM/LI": {
+      "hash": "ba57868869f5",
+      "status": "machine"
+    },
+    "codes:OM/LS": {
+      "hash": "f32b6f481c17",
+      "status": "machine"
+    },
+    "codes:OM/MCT": {
+      "hash": "4fbe75712d13",
+      "status": "machine"
+    },
+    "codes:OM/MM": {
+      "hash": "9a3d9a774ccf",
+      "status": "machine"
+    },
+    "codes:OM/MTB": {
+      "hash": "cd035aafc36d",
+      "status": "machine"
+    },
+    "codes:OM/OO": {
+      "hash": "7fdf9676ad5b",
+      "status": "machine"
+    },
+    "codes:OM/OS": {
+      "hash": "53389b9f9c64",
+      "status": "machine"
+    },
+    "codes:OM/PAP": {
+      "hash": "b700f6617de2",
+      "status": "machine"
+    },
+    "codes:OM/PCT": {
+      "hash": "ea30f062e722",
+      "status": "machine"
+    },
+    "codes:OM/PNT": {
+      "hash": "d29ff10c1391",
+      "status": "machine"
+    },
+    "codes:OM/POF": {
+      "hash": "df4ecab175c2",
+      "status": "machine"
+    },
+    "codes:OM/RBM": {
+      "hash": "01a7e4d61b5d",
+      "status": "machine"
+    },
+    "codes:OM/SCC": {
+      "hash": "0458f1ac17cf",
+      "status": "machine"
+    },
+    "codes:OM/UDN": {
+      "hash": "1761a2502971",
+      "status": "machine"
+    },
+    "codes:OMJL": {
+      "hash": "cf7c1c883337",
+      "status": "machine"
+    },
+    "codes:OMJL/R": {
+      "hash": "bda3575c335c",
+      "status": "machine"
+    },
+    "codes:ONF": {
+      "hash": "74ebf4f90f34",
+      "status": "machine"
+    },
+    "codes:ONF/R": {
+      "hash": "d614391bb575",
+      "status": "machine"
+    },
+    "codes:OP": {
+      "hash": "d99b5ffe44f6",
+      "status": "machine"
+    },
+    "codes:OR": {
+      "hash": "ec97944616a0",
+      "status": "machine"
+    },
+    "codes:OS": {
+      "hash": "f1b52e6e78df",
+      "status": "machine"
+    },
+    "codes:OSN": {
+      "hash": "13d6f5af378f",
+      "status": "machine"
+    },
+    "codes:OSS": {
+      "hash": "375d302ebd14",
+      "status": "machine"
+    },
+    "codes:OST": {
+      "hash": "0a338c31cd51",
+      "status": "machine"
+    },
+    "codes:PA/A": {
+      "hash": "9372d7fe987e",
+      "status": "machine"
+    },
+    "codes:PA/C": {
+      "hash": "ceb41f958eec",
+      "status": "machine"
+    },
+    "codes:PA/G": {
+      "hash": "0defc21edcdf",
+      "status": "machine"
+    },
+    "codes:PA/P": {
+      "hash": "d8056a8a4d3b",
+      "status": "machine"
+    },
+    "codes:PCB": {
+      "hash": "e0a1d7f2a983",
+      "status": "machine"
+    },
+    "codes:PCD": {
+      "hash": "3b3b18bbcdf7",
+      "status": "machine"
+    },
+    "codes:PCI": {
+      "hash": "623a4388320a",
+      "status": "machine"
+    },
+    "codes:PD": {
+      "hash": "ad5f9fd3114d",
+      "status": "machine"
+    },
+    "codes:PD0": {
+      "hash": "7036dee19a60",
+      "status": "machine"
+    },
+    "codes:PD1": {
+      "hash": "71ded08f278f",
+      "status": "machine"
+    },
+    "codes:PD2": {
+      "hash": "a0a46a78b8b9",
+      "status": "machine"
+    },
+    "codes:PD3": {
+      "hash": "c0d21b033ea6",
+      "status": "machine"
+    },
+    "codes:PD4": {
+      "hash": "6a3919395cdf",
+      "status": "machine"
+    },
+    "codes:PDE": {
+      "hash": "47f6adcfe726",
+      "status": "machine"
+    },
+    "codes:PDE/R": {
+      "hash": "843aec5a7818",
+      "status": "machine"
+    },
+    "codes:PEC": {
+      "hash": "5ba3880d17ef",
+      "status": "machine"
+    },
+    "codes:PEO": {
+      "hash": "837ec7475685",
+      "status": "machine"
+    },
+    "codes:PHA/IN": {
+      "hash": "f92bf81784ee",
+      "status": "machine"
+    },
+    "codes:POB": {
+      "hash": "c6d5acb2c835",
+      "status": "machine"
+    },
+    "codes:PRO": {
+      "hash": "aaa30b575d40",
+      "status": "machine"
+    },
+    "codes:PTY": {
+      "hash": "9668b3a79a69",
+      "status": "machine"
+    },
+    "codes:PU/M": {
+      "hash": "698ba0b23be7",
+      "status": "machine"
+    },
+    "codes:PU/S": {
+      "hash": "3642205e46e0",
+      "status": "machine"
+    },
+    "codes:PV": {
+      "hash": "39d162d96ea4",
+      "status": "machine"
+    },
+    "codes:PYO": {
+      "hash": "5a04d0d568d6",
+      "status": "machine"
+    },
+    "codes:R": {
+      "hash": "14b81d2728f3",
+      "status": "machine"
+    },
+    "codes:R/A": {
+      "hash": "805f08273997",
+      "status": "machine"
+    },
+    "codes:R/C": {
+      "hash": "1bdd155cae65",
+      "status": "machine"
+    },
+    "codes:R/CP": {
+      "hash": "28aed4eb241a",
+      "status": "machine"
+    },
+    "codes:R/I": {
+      "hash": "218c10b5e2e5",
+      "status": "machine"
+    },
+    "codes:RAD": {
+      "hash": "4227373a006a",
+      "status": "machine"
+    },
+    "codes:RAD/SG": {
+      "hash": "6738ddecb60a",
+      "status": "machine"
+    },
+    "codes:RBA": {
+      "hash": "5f3ab17a45a8",
+      "status": "machine"
+    },
+    "codes:RCR": {
+      "hash": "b18a455fe51f",
+      "status": "machine"
+    },
+    "codes:RCT": {
+      "hash": "2057b1462ac0",
+      "status": "machine"
+    },
+    "codes:RCT/S": {
+      "hash": "5903ee1b09c4",
+      "status": "machine"
+    },
+    "codes:RO/X": {
+      "hash": "ba890ea03eff",
+      "status": "machine"
+    },
+    "codes:RP/C": {
+      "hash": "fb5e62016ba2",
+      "status": "machine"
+    },
+    "codes:RP/O": {
+      "hash": "abfe06e4c9d6",
+      "status": "machine"
+    },
+    "codes:RPA": {
+      "hash": "da0d944f729e",
+      "status": "machine"
+    },
+    "codes:RR": {
+      "hash": "9cc28a89d5ff",
+      "status": "machine"
+    },
+    "codes:RTH": {
+      "hash": "828fe62d0ad5",
+      "status": "machine"
+    },
+    "codes:RTR": {
+      "hash": "8169fa6dd918",
+      "status": "machine"
+    },
+    "codes:S/M": {
+      "hash": "df85860e44d4",
+      "status": "machine"
+    },
+    "codes:S/MB": {
+      "hash": "14afd982f3e8",
+      "status": "machine"
+    },
+    "codes:S/MD": {
+      "hash": "77ad4bda6a12",
+      "status": "machine"
+    },
+    "codes:S/MS": {
+      "hash": "73d9f31e8398",
+      "status": "machine"
+    },
+    "codes:S/MT": {
+      "hash": "54466817a346",
+      "status": "machine"
+    },
+    "codes:S/P": {
+      "hash": "244d1af451ff",
+      "status": "machine"
+    },
+    "codes:S/X": {
+      "hash": "d5f07480bbf8",
+      "status": "machine"
+    },
+    "codes:S/XB": {
+      "hash": "a225ee2db24d",
+      "status": "machine"
+    },
+    "codes:SCI": {
+      "hash": "b621649e087a",
+      "status": "machine"
+    },
+    "codes:SG/ADC": {
+      "hash": "49a3b16c8488",
+      "status": "machine"
+    },
+    "codes:SG/ADS": {
+      "hash": "fb0fc9d74def",
+      "status": "machine"
+    },
+    "codes:SG/IN": {
+      "hash": "4c964ad2d02d",
+      "status": "machine"
+    },
+    "codes:SG/MAR": {
+      "hash": "6e41f9569ebe",
+      "status": "machine"
+    },
+    "codes:SG/MUC/C": {
+      "hash": "e6c91f1180e4",
+      "status": "machine"
+    },
+    "codes:SG/MUC/P": {
+      "hash": "6ffc88a2e5b1",
+      "status": "machine"
+    },
+    "codes:SG/MUC/S": {
+      "hash": "52dad98779a2",
+      "status": "machine"
+    },
+    "codes:SG/NEC": {
+      "hash": "04540fff4381",
+      "status": "machine"
+    },
+    "codes:SG/RC": {
+      "hash": "10f8038b97ef",
+      "status": "machine"
+    },
+    "codes:SG/SI": {
+      "hash": "d7b473229d88",
+      "status": "machine"
+    },
+    "codes:SG/X": {
+      "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SR": {
+      "hash": "b7c5d92043ee",
+      "status": "machine"
+    },
+    "codes:ST": {
+      "hash": "654802804fc4",
+      "status": "machine"
+    },
+    "codes:ST/CS": {
+      "hash": "659984c9c30f",
+      "status": "machine"
+    },
+    "codes:SYM/R": {
+      "hash": "bfcac94d50fe",
+      "status": "machine"
+    },
+    "codes:SYM/S": {
+      "hash": "7c7b34385397",
+      "status": "machine"
+    },
+    "codes:T/A": {
+      "hash": "16c22f95a4e0",
+      "status": "machine"
+    },
+    "codes:T/CCR": {
+      "hash": "d73b836d6b96",
+      "status": "machine"
+    },
+    "codes:T/DEN": {
+      "hash": "496e27acc35a",
+      "status": "machine"
+    },
+    "codes:T/DIL": {
+      "hash": "233ade101f88",
+      "status": "machine"
+    },
+    "codes:T/E": {
+      "hash": "df56e4b6664d",
+      "status": "machine"
+    },
+    "codes:T/EL": {
+      "hash": "26887c27a71f",
+      "status": "machine"
+    },
+    "codes:T/FDR": {
+      "hash": "8d621032f65e",
+      "status": "machine"
+    },
+    "codes:T/FUS": {
+      "hash": "09d7515ed4bf",
+      "status": "machine"
+    },
+    "codes:T/FX": {
+      "hash": "68256095e7f0",
+      "status": "machine"
+    },
+    "codes:T/FX/CCF": {
+      "hash": "af37bbdf8f2c",
+      "status": "machine"
+    },
+    "codes:T/FX/CCRF": {
+      "hash": "a4c64eb05092",
+      "status": "machine"
+    },
+    "codes:T/FX/EF": {
+      "hash": "26cb9ef5dddc",
+      "status": "machine"
+    },
+    "codes:T/FX/EI": {
+      "hash": "e6bd4b6469d7",
+      "status": "machine"
+    },
+    "codes:T/FX/RF": {
+      "hash": "6e6b97fcf258",
+      "status": "machine"
+    },
+    "codes:T/FX/UCF": {
+      "hash": "ff6e2a7c1b30",
+      "status": "machine"
+    },
+    "codes:T/FX/UCRF": {
+      "hash": "ecacb4683106",
+      "status": "machine"
+    },
+    "codes:T/GEM": {
+      "hash": "16cbf1cf52bb",
+      "status": "machine"
+    },
+    "codes:T/I": {
+      "hash": "ec0c4f679181",
+      "status": "machine"
+    },
+    "codes:T/LUX": {
+      "hash": "6506f7e2eeb4",
+      "status": "machine"
+    },
+    "codes:T/MAC": {
+      "hash": "c8aedde3e1e9",
+      "status": "machine"
+    },
+    "codes:T/MIC": {
+      "hash": "e7e93c095da4",
+      "status": "machine"
+    },
+    "codes:T/NE": {
+      "hash": "f7307ce42e1e",
+      "status": "machine"
+    },
+    "codes:T/NV": {
+      "hash": "fd1d15e8b2cf",
+      "status": "machine"
+    },
+    "codes:T/PE": {
+      "hash": "83e31ff119f9",
+      "status": "machine"
+    },
+    "codes:T/RI": {
+      "hash": "0e89fff1978c",
+      "status": "machine"
+    },
+    "codes:T/RP": {
+      "hash": "bb875ee053b6",
+      "status": "machine"
+    },
+    "codes:T/SN": {
+      "hash": "fe7d7d5ca9a9",
+      "status": "machine"
+    },
+    "codes:T/SR": {
+      "hash": "2d9a3d710189",
+      "status": "machine"
+    },
+    "codes:T/TRA": {
+      "hash": "ed6cd7806842",
+      "status": "machine"
+    },
+    "codes:T/U": {
+      "hash": "ed97849890fd",
+      "status": "machine"
+    },
+    "codes:T/V": {
+      "hash": "c68556fc27b6",
+      "status": "machine"
+    },
+    "codes:T/XP": {
+      "hash": "a902b6e3364a",
+      "status": "machine"
+    },
+    "codes:TMA": {
+      "hash": "caa32123418e",
+      "status": "machine"
+    },
+    "codes:TMA/B": {
+      "hash": "26ddca9807a1",
+      "status": "machine"
+    },
+    "codes:TMA/BRN": {
+      "hash": "63fb1d6e3a15",
+      "status": "machine"
+    },
+    "codes:TMA/E": {
+      "hash": "8fd26f6114fb",
+      "status": "machine"
+    },
+    "codes:TMA/R": {
+      "hash": "8bef03917ec2",
+      "status": "machine"
+    },
+    "codes:TMJ/A": {
+      "hash": "78f290a0483a",
+      "status": "machine"
+    },
+    "codes:TMJ/A/R": {
+      "hash": "ebd191da6583",
+      "status": "machine"
+    },
+    "codes:TMJ/D": {
+      "hash": "99660140f4db",
+      "status": "machine"
+    },
+    "codes:TMJ/FX": {
+      "hash": "7b9f4a41665d",
+      "status": "machine"
+    },
+    "codes:TMJ/FX/R": {
+      "hash": "50f4800cba4e",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX": {
+      "hash": "45b129f8fe40",
+      "status": "machine"
+    },
+    "codes:TMJ/LUX/R": {
+      "hash": "b11b0a856975",
+      "status": "machine"
+    },
+    "codes:TON/IN": {
+      "hash": "cfd987f776ca",
+      "status": "machine"
+    },
+    "codes:TON/X": {
+      "hash": "88d7fde4c53a",
+      "status": "machine"
+    },
+    "codes:TP": {
+      "hash": "16c8fb0da228",
+      "status": "machine"
+    },
+    "codes:TR": {
+      "hash": "59801ae3dd5b",
+      "status": "machine"
+    },
+    "codes:TS": {
+      "hash": "88808dab2c08",
+      "status": "machine"
+    },
+    "codes:TT": {
+      "hash": "35ebd096dc82",
+      "status": "machine"
+    },
+    "codes:US": {
+      "hash": "faedfd09d850",
+      "status": "machine"
+    },
+    "codes:VPT": {
+      "hash": "563c0eefb553",
+      "status": "machine"
+    },
+    "codes:X": {
+      "hash": "3409a88ca603",
+      "status": "machine"
+    },
+    "codes:XS": {
+      "hash": "e196790c1c8d",
+      "status": "machine"
+    },
+    "codes:XS/ODY": {
+      "hash": "a5e54f6c2749",
+      "status": "machine"
+    },
+    "codes:XSS": {
+      "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:ZYG/X": {
+      "hash": "1006c1540735",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -2496,6 +9968,150 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.body": {
+      "hash": "db6a26af1ae8",
+      "status": "machine"
+    },
+    "whatsNew:anesthesia.title": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.body": {
+      "hash": "a3c8990b42c7",
+      "status": "machine"
+    },
+    "whatsNew:customizeReport.title": {
+      "hash": "546a7c64290d",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.body": {
+      "hash": "4ac0965bf187",
+      "status": "machine"
+    },
+    "whatsNew:dictateAnywhere.title": {
+      "hash": "e751f37c3e08",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.body": {
+      "hash": "d42c50807374",
+      "status": "machine"
+    },
+    "whatsNew:finalCheck.title": {
+      "hash": "2faed1a26b87",
+      "status": "machine"
+    },
+    "whatsNew:gotIt": {
+      "hash": "5ad3dbd1242a",
+      "status": "machine"
+    },
+    "whatsNew:groups.charting": {
+      "hash": "f4d573798f5b",
+      "status": "machine"
+    },
+    "whatsNew:groups.dictation": {
+      "hash": "25ce1a09ddc1",
+      "status": "machine"
+    },
+    "whatsNew:groups.everyday": {
+      "hash": "d01872ef0010",
+      "status": "machine"
+    },
+    "whatsNew:groups.ownerReport": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "whatsNew:groups.records": {
+      "hash": "47a84e92d5b2",
+      "status": "machine"
+    },
+    "whatsNew:intro": {
+      "hash": "26325643fc44",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.body": {
+      "hash": "d3d949e7e6f0",
+      "status": "machine"
+    },
+    "whatsNew:makeItYours.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
+    "whatsNew:phones.body": {
+      "hash": "cdadcb703d93",
+      "status": "machine"
+    },
+    "whatsNew:phones.title": {
+      "hash": "23c636305501",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.body": {
+      "hash": "a22f16b5ef8d",
+      "status": "machine"
+    },
+    "whatsNew:pocketPerRoot.title": {
+      "hash": "7df346f0d6b3",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.body": {
+      "hash": "06d4d2fab9dc",
+      "status": "machine"
+    },
+    "whatsNew:radiographicFindings.title": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.body": {
+      "hash": "99369cac3234",
+      "status": "machine"
+    },
+    "whatsNew:sendFeedback.title": {
+      "hash": "3c7992fb7817",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.body": {
+      "hash": "fe25857c5d2e",
+      "status": "machine"
+    },
+    "whatsNew:severalTeeth.title": {
+      "hash": "4dea82415176",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.body": {
+      "hash": "c16b7f2c4a2b",
+      "status": "machine"
+    },
+    "whatsNew:skipRecheck.title": {
+      "hash": "7a7ef53d397a",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.body": {
+      "hash": "fee2870fa556",
+      "status": "machine"
+    },
+    "whatsNew:startsWhereLeft.title": {
+      "hash": "a43f73adf41d",
+      "status": "machine"
+    },
+    "whatsNew:title": {
+      "hash": "f177bccf38d2",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.body": {
+      "hash": "425690d8fb26",
+      "status": "machine"
+    },
+    "whatsNew:understandsMore.title": {
+      "hash": "a0d1a3d64ab0",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.body": {
+      "hash": "982b203c9015",
+      "status": "machine"
+    },
+    "whatsNew:writeWithAi.title": {
+      "hash": "596b070336ea",
       "status": "machine"
     }
   },
