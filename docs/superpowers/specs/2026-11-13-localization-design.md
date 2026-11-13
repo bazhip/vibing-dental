@@ -83,10 +83,11 @@ of keeping five languages in sync must be near zero.
 core requirement and JSON is safe for scripts to edit. Type safety is
 kept by typing keys from `en.json`.
 
-For **who fills in translations**, chosen: **both** — Claude Code
-sessions translate as part of each change (project instruction), and a
-**GitHub Action on every PR** runs the translate script and commits
-anything missing as a backstop. Build-time translation was rejected
+For **who fills in translations**, chosen: **Claude Code sessions**
+translate as part of each change (project instruction), with the build
+gate as the enforcement. A GitHub Action backstop was built and then
+dropped (2026-11-13): the owner chose not to store an Anthropic API key
+as a repo secret. Build-time translation was rejected
 (non-deterministic, unreviewed).
 
 ## Design
@@ -163,10 +164,8 @@ anything missing as a backstop. Build-time translation was rejected
 4. **Claude sessions**: a project `CLAUDE.md` rule — when adding/changing
    UI text, add keys to `en` and run `i18n:translate` (or write the
    translations directly), and run the completeness test.
-5. **GitHub Action** on `pull_request`: install, run `i18n:translate`;
-   if files changed, commit to the PR branch ("i18n: translate new
-   strings"); then run lint + tests. Repo secret `ANTHROPIC_API_KEY`.
-   PRs from forks are skipped (no secrets).
+5. ~~GitHub Action on `pull_request`~~ — dropped (owner won't add the
+   `ANTHROPIC_API_KEY` secret). The build gate (step 0) is the backstop.
 
 ### Rollout
 
@@ -188,8 +187,8 @@ see a half-translated UI.
 
 - Languages: fr, de, it, es (+ en). Portuguese stays in the owner report only.
 - Library: react-i18next + JSON.
-- Automation: Claude sessions translate as they go *and* a GitHub Action
-  backstops on every PR.
+- Automation: Claude sessions translate as they go; the build gate blocks
+  anything missing. (GitHub Action backstop dropped — no API key secret.)
 - Translations ship machine-drafted; human review is optional, later.
 - Voice dictation: full parity at launch.
 - Legal documents: English, with translated "English governs" notice.
