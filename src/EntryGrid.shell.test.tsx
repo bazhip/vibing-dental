@@ -89,13 +89,15 @@ describe('EntryGrid in the iOS app', () => {
     expect(name.value).toBe('Biscuit');
   });
 
-  it('Chart settings from the Settings tab opens today’s chart settings dialog', async () => {
+  it('Chart settings from the Settings tab pushes the native Chart settings screen (no dialog)', async () => {
     flags.native = true;
     const { container } = await renderGrid();
     act(() => fireEvent.click(screen.getByRole('tab', { name: 'Settings' })));
     const settingsPanel = container.querySelector<HTMLElement>('[data-app-tab="settings"]')!;
     act(() => fireEvent.click(within(settingsPanel).getByRole('button', { name: /Chart settings/ })));
-    expect(await screen.findByRole('dialog', { name: /Chart settings/i })).toBeInTheDocument();
+    expect(await within(settingsPanel).findByRole('heading', { name: 'Chart settings' })).toBeInTheDocument();
+    expect(within(settingsPanel).getAllByRole('switch', { name: 'Mobility' })[0]).toBeChecked();
+    expect(screen.queryByRole('dialog', { name: /Chart settings/i })).toBeNull();
   });
 
   it('a #/library address lands on the Patients tab instead of the My charts dialog', async () => {

@@ -1,0 +1,78 @@
+{
+  "chart": {
+    "noteAccount": "Just for you — these follow your account on every device. Changes save right away.",
+    "noteDevice": "Saved on this device. Changes apply right away.",
+    "allSettings": "All chart settings",
+    "view": "View",
+    "grid": "Grid",
+    "byTooth": "By tooth",
+    "pocketDepths": "Pocket depths",
+    "perTooth": "One per tooth",
+    "perRoot": "One per root",
+    "perRootHint": "M / D, or MB / MP / D on three-rooted teeth",
+    "spaceKey": "Space key in the grid",
+    "spaceMovesDown": "Moves down to the next tooth",
+    "spaceMovesDownHint": "Fast for calling out a run of depths",
+    "spaceTypes": "Types a space",
+    "scoreTap": "After tapping a score in the grid",
+    "scoreTapFinding": "Go to the next finding on the same tooth",
+    "scoreTapFindingHint": "Mobility → recession → … for tooth-by-tooth exams",
+    "scoreTapTooth": "Go down to the next tooth",
+    "scoreTapToothHint": "For scoring one finding across the mouth",
+    "scoreTapStay": "Stay put",
+    "columns": "Columns",
+    "columnsFooter": "Columns shown in the charting grid. At least one stays on.",
+    "field": {
+      "mobility": "Mobility",
+      "recession": "Recession",
+      "pocket": "Pocket",
+      "furcation": "Furcation",
+      "hyperplasia": "Enlargement",
+      "calculus": "Calculus",
+      "gingivitis": "Gingivitis",
+      "pdstate": "PD Stage"
+    },
+    "besideTeeth": "Beside the teeth",
+    "mirror": "Show findings on the Diagnosis diagram",
+    "mirrorHint": "And in the PDF",
+    "include": "Include",
+    "blocksShown": "Nerve blocks shown",
+    "blocksNote": "A hidden block still shows on a chart where it has a dose.",
+    "block": {
+      "infraorbital": "Infraorbital",
+      "caudalMaxillary": "Caudal maxillary",
+      "inferiorAlveolar": "Inferior alveolar",
+      "mental": "Mental",
+      "other": "Other"
+    },
+    "usualDrug": "Your usual anesthetic",
+    "usualDrugNote": "Offered as one tap on a chart with no anesthetic set.",
+    "drugName": "Drug",
+    "drugStrength": "Strength",
+    "drugPlaceholder": "e.g. Bupivacaine",
+    "drugLabel": "Usual anesthetic",
+    "strengthLabel": "Usual anesthetic strength (%)",
+    "patientPage": "Patient page",
+    "hideRecheck": "Hide the Recheck due field",
+    "pdf": "PDF",
+    "pdfGrid": "Include the charting grid",
+    "pdfGridHint": "Optional while findings are on the diagram",
+    "pdfImages": "Include images",
+    "pdfImagesHint": "4 per page, after the chart",
+    "sectionTitle": {
+      "patient": "Patient page settings",
+      "anesthesia": "Anesthesia settings",
+      "charting": "Charting settings",
+      "diagnosis": "Diagnosis settings",
+      "images": "Images settings"
+    }
+  },
+  "ownerReport": {
+    "title": "Owner report"
+  },
+  "gettingStarted": {
+    "takeTour": "Take the tour",
+    "tourFooter": "A short tour of where everything lives in the chart.",
+    "chartParts": "Parts of the chart"
+  }
+}

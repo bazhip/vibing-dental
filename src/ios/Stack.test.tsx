@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { Stack, useStack, useStackScreenOptions } from './Stack';
+import { Stack, useOptionalStack, useStack, useStackLeaveGuard, useStackScreenOptions } from './Stack';
 import { NavBar } from './NavBar';
 
 function Beta() {
@@ -158,5 +158,103 @@ describe('Stack focus, live screens, popToRoot, scroll container', () => {
     Object.defineProperty(layer, 'scrollTop', { configurable: true, value: 200 });
     fireEvent.scroll(layer);
     expect(bar).toHaveClass('ios-navbar--collapsed');
+  });
+  it('a leave guard can keep a screen open on Back; programmatic pop() skips it', async () => {
+    let allow = false;
+    const asked: number[] = [];
+    function Guarded() {
+      const { pop } = useStack();
+      useStackLeaveGuard(() => {
+        asked.push(1);
+        return allow;
+      });
+      return (
+        <div>
+          <p>Guarded screen</p>
+          <button onClick={pop}>Saved, leave</button>
+        </div>
+      );
+    }
+    function Opener() {
+      const { push } = useStack();
+      return <button onClick={() => push({ id: 'g', title: 'Guarded', render: () => <Guarded /> })}>Open guarded</button>;
+    }
+    render(<Stack root={<Opener />} rootTitle="Settings" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open guarded' }));
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: /Settings/ })));
+    expect(asked).toHaveLength(1);
+    expect(screen.getByText('Guarded screen')).toBeInTheDocument();
+
+    allow = true;
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: /Settings/ })));
+    await waitFor(() => expect(screen.queryByText('Guarded screen')).toBeNull());
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open guarded' }));
+    allow = false;
+    asked.length = 0;
+    fireEvent.click(screen.getByRole('button', { name: 'Saved, leave' }));
+    await waitFor(() => expect(screen.queryByText('Guarded screen')).toBeNull());
+    expect(asked).toHaveLength(0);
+  });
+
+  it('the edge back-swipe asks the leave guard too', async () => {
+    let allow = false;
+    const asked: number[] = [];
+    function Guarded() {
+      useStackLeaveGuard(() => {
+        asked.push(1);
+        return allow;
+      });
+      return <p>Guarded screen</p>;
+    }
+    function Opener() {
+      const { push } = useStack();
+      return <button onClick={() => push({ id: 'g', title: 'Guarded', render: () => <Guarded /> })}>Open guarded</button>;
+    }
+    const { container } = render(<Stack root={<Opener />} rootTitle="Settings" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open guarded' }));
+    const stack = container.querySelector('.ios-stack') as HTMLElement;
+    const swipe = async () => {
+      await act(async () => {
+        fireEvent.pointerDown(stack, { pointerId: 1, clientX: 4, clientY: 300, pointerType: 'touch', button: 0 });
+        fireEvent.pointerMove(stack, { pointerId: 1, clientX: 400, clientY: 302, pointerType: 'touch' });
+        fireEvent.pointerMove(stack, { pointerId: 1, clientX: 900, clientY: 304, pointerType: 'touch' });
+        fireEvent.pointerUp(stack, { pointerId: 1, clientX: 900, clientY: 304, pointerType: 'touch' });
+      });
+    };
+    await swipe();
+    expect(asked).toHaveLength(1);
+    expect(screen.getByText('Guarded screen')).toBeInTheDocument();
+
+    allow = true;
+    await swipe();
+    expect(asked).toHaveLength(2);
+    await waitFor(() => expect(screen.queryByText('Guarded screen')).toBeNull());
+  });
+
+  it('popToRoot asks the leave guards of the screens it would pop', async () => {
+    let api: ReturnType<typeof useStack> | null = null;
+    function Guarded() {
+      useStackLeaveGuard(() => false);
+      return <p>Guarded screen</p>;
+    }
+    function Spy() {
+      api = useStack();
+      return <button onClick={() => api!.push({ id: 'g', title: 'Guarded', render: () => <Guarded /> })}>Open guarded</button>;
+    }
+    render(<Stack root={<Spy />} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open guarded' }));
+    await act(async () => api!.popToRoot());
+    expect(screen.getByText('Guarded screen')).toBeInTheDocument();
+  });
+
+  it('useOptionalStack is null outside a Stack', () => {
+    let got: unknown = 'unset';
+    function Probe() {
+      got = useOptionalStack();
+      return null;
+    }
+    render(<Probe />);
+    expect(got).toBeNull();
   });
 });

@@ -18,6 +18,8 @@ import {
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { deleteMyPractice } from '../utils/accountDeletion';
+import { useTranslation } from 'react-i18next';
+import { useStackLeaveGuard, useStackScreenOptions } from '../ios/Stack';
 import './Login.css';
 import './AccountSurfaces.css';
 
@@ -25,6 +27,12 @@ interface PracticeSettingsModalProps {
   open: boolean;
   onClose: () => void;
   profile: UseProfileReturn;
+  /** 'screen': the body only, as a pushed screen in the iOS app's Settings
+   *  tab — Save sits in the navigation bar while the name has an edit, and
+   *  Back asks before discarding it. Default: the dialog. */
+  presentation?: 'modal' | 'screen';
+  /** Screen only: open the owner report templates (pushes a screen). */
+  onCustomizeReport?: () => void;
 }
 
 /** Subscription statuses that mean a real (Stripe) subscription exists. */
@@ -56,7 +64,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   open,
   onClose,
   profile,
+  presentation = 'modal',
+  onCustomizeReport,
 }) => {
+  const { t } = useTranslation();
+  const asScreen = presentation === 'screen';
   const [practiceName, setPracticeName] = React.useState(profile.practiceName);
   const [nameBusy, setNameBusy] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
@@ -66,7 +78,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
   // The owner-report template editor swaps in on top of this dialog.
   const [templatesOpen, setTemplatesOpen] = React.useState(false);
-  const modalRef = useModalFocus(open && !templatesOpen);
+  const modalRef = useModalFocus(open && !templatesOpen && !asScreen);
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
@@ -112,7 +124,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       setMemberEmail('');
       setTeamError('');
       setTeamNote('');
-      firstFieldRef.current?.focus();
+      // (A pushed screen doesn't raise the keyboard on arrival.)
+      if (!asScreen) firstFieldRef.current?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -136,9 +149,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   const busy = nameBusy || logoBusy;
 
-  /** Close, asking first when the practice name has an unsaved edit. */
-  const requestClose = React.useCallback(async () => {
-    if (nameBusy) return;
+  /** Asks before discarding an unsaved practice name; false = stay. */
+  const confirmLeave = React.useCallback(async (): Promise<boolean> => {
+    if (nameBusy) return false;
     if (nameDirty) {
       const discard = await confirmDialog({
         title: 'Discard the practice name change?',
@@ -147,13 +160,34 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         cancelLabel: 'Keep editing',
         danger: true,
       });
-      if (!discard) return;
+      if (!discard) return false;
     }
+    return true;
+  }, [nameBusy, nameDirty]);
+
+  /** Close, asking first when the practice name has an unsaved edit. */
+  const requestClose = React.useCallback(async () => {
+    if (nameBusy) return;
+    if (nameDirty && !(await confirmLeave())) return;
     onClose();
-  }, [nameBusy, nameDirty, onClose]);
+  }, [nameBusy, nameDirty, confirmLeave, onClose]);
+
+  // As a pushed screen: Save in the navigation bar while the name has an
+  // edit; Back asks before discarding it.
+  const saveRef = React.useRef<() => Promise<void>>(async () => {});
+  useStackLeaveGuard(asScreen ? confirmLeave : null);
+  useStackScreenOptions({
+    trailing: asScreen
+      ? nameDirty ? (
+          <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={() => void saveRef.current()} disabled={nameBusy}>
+            {t('actions.save')}
+          </button>
+        ) : null
+      : undefined,
+  });
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || asScreen) return;
     const onKey = (e: KeyboardEvent) => {
       // The templates dialog handles its own Escape (unsaved-changes
       // check), so only close the practice dialog when it's on top.
@@ -164,7 +198,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, requestClose, templatesOpen]);
+  }, [open, requestClose, templatesOpen, asScreen]);
 
   const backdrop = useBackdropDismiss(() => void requestClose());
 
@@ -197,13 +231,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     try {
       await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
       toast('Practice name saved.', { kind: 'success' });
-      onClose();
+      // The screen stays (it holds the team, logo, …); the dialog closes.
+      if (!asScreen) onClose();
     } catch (e) {
       setNameError(friendlyError(e, 'Could not save the practice name.'));
     } finally {
       setNameBusy(false);
     }
   };
+
+  saveRef.current = handleSave;
 
   const handleLogoPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -375,6 +412,352 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       ? 'not subscribed yet'
       : b.status.replace(/_/g, ' ');
 
+  const practiceBody = (
+    <>
+      {/* ---- Identity ------------------------------------------------ */}
+      <form
+        className="ai-settings-section"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleSave();
+        }}
+      >
+        <h3 className="ai-settings-subhead">Profile</h3>
+        <label className="patient-form__label">
+          Practice name
+          <input
+            ref={firstFieldRef}
+            type="text"
+            className="patient-form__input"
+            value={practiceName}
+            onChange={(e) => {
+              setPracticeName(e.target.value);
+              setNameError('');
+            }}
+            placeholder="Shown in the app and on every chart"
+            disabled={!canRename || nameBusy}
+          />
+        </label>
+        {!canRename && (
+          <p className="patient-form__hint">
+            {teamLoadFailed
+              ? 'The practice name is locked until your team loads — retry below.'
+              : 'The practice name is shared by the whole team — only the primary owner can change it.'}
+          </p>
+        )}
+        {nameError && <div className="login-error settings-msg" role="alert">{nameError}</div>}
+      </form>
+
+      {/* ---- Logo --------------------------------------------------- */}
+      <section className="ai-settings-section">
+        <span className="patient-form__label">Practice logo</span>
+        {profile.logoUrl ? (
+          <div className="practice-logo-row">
+            <img src={profile.logoUrl} alt="Practice logo" className="practice-logo-preview" />
+            <div className="practice-logo-actions">
+              <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
+                {logoBusy ? 'Working…' : 'Replace'}
+              </button>
+              <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleLogoRemove} disabled={busy}>
+                Remove
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="practice-logo-row">
+            <span className="practice-logo-empty">
+              No logo uploaded — charts use the template's built-in mark.
+            </span>
+            <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
+              {logoBusy ? 'Uploading…' : 'Upload logo'}
+            </button>
+          </div>
+        )}
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={handleLogoPick}
+          style={{ display: 'none' }}
+          aria-label="Choose a logo image"
+        />
+        {logoError && <div className="login-error settings-msg" role="alert">{logoError}</div>}
+      </section>
+
+      {/* ---- Team --------------------------------------------------- */}
+      <section className="ai-settings-section">
+        <h3 className="ai-settings-subhead">Team</h3>
+        {!team.enabled ? null : !team.loaded ? (
+          <p className="practice-logo-empty">Loading team…</p>
+        ) : teamLoadFailed ? (
+          teamLoadErrorRow
+        ) : !team.practice ? (
+          <div className="settings-msg--row">
+            <p className="practice-logo-empty">Your practice is still being set up.</p>
+            <button
+              type="button"
+              className="diagram-view__action"
+              onClick={retryTeam}
+              disabled={teamRetrying}
+            >
+              {teamRetrying ? 'Checking…' : 'Check again'}
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="ai-settings-blurb">
+              {isOwner
+                ? 'Colleagues you add share this practice’s charts, templates, and images.'
+                : `You’re a member of ${team.practice.name}. You share this practice’s charts.`}
+            </p>
+            <ul className="team__members">
+              {team.members.map((m) => (
+                <li key={m.userId} className="team__member">
+                  <span className="team__member-id">
+                    <strong>{m.email}{m.isYou ? ' (you)' : ''}</strong>
+                    {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
+                  </span>
+                  {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
+                  <span className="team__member-role">{roleLabel(m)}</span>
+                  {isOwner && !m.isYou && (
+                    <span className="team__member-actions">
+                      {m.pending && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          disabled={teamBusy}
+                          onClick={() =>
+                            runTeam(`Invite re-sent to ${m.email}.`, () => team.resendInvite(m.userId))
+                          }
+                        >
+                          Resend invite
+                        </button>
+                      )}
+                      {/* Roles only apply to people who've joined —
+                          a pending invite can't own anything yet. */}
+                      {!m.pending && m.role === 'member' && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          disabled={teamBusy}
+                          onClick={() => runTeam(`${m.email} is now an owner.`, () => team.setRole(m.userId, 'owner'))}
+                        >
+                          Make owner
+                        </button>
+                      )}
+                      {!m.pending && m.role === 'owner' && !m.isPrimaryOwner && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          disabled={teamBusy}
+                          onClick={() => runTeam(`${m.email} is now a member.`, () => team.setRole(m.userId, 'member'))}
+                        >
+                          Make member
+                        </button>
+                      )}
+                      {!m.isPrimaryOwner && !m.pending && (
+                        <button
+                          type="button"
+                          className="diagram-view__action"
+                          disabled={teamBusy}
+                          onClick={() => handleTransfer(m)}
+                        >
+                          Transfer ownership
+                        </button>
+                      )}
+                      {!m.isPrimaryOwner && (
+                        <button
+                          type="button"
+                          className="diagram-view__action diagram-view__action--danger"
+                          disabled={teamBusy}
+                          onClick={() => handleRemove(m)}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+            {isOwner && (
+              <>
+                <form className="practice-team__add" onSubmit={handleAddMember} noValidate>
+                  <input
+                    type="email"
+                    className="patient-form__input"
+                    placeholder="Colleague's email"
+                    aria-label="Colleague's email"
+                    autoComplete="off"
+                    value={memberEmail}
+                    onChange={(e) => {
+                      setMemberEmail(e.target.value);
+                      setTeamError('');
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="diagram-view__action"
+                    disabled={teamBusy || !memberEmail.trim()}
+                  >
+                    {teamBusy ? 'Adding…' : 'Add'}
+                  </button>
+                </form>
+                <p className="patient-form__hint">
+                  No account yet? We'll email them an invite to set a password and join.
+                </p>
+              </>
+            )}
+            {/* A refresh after an action failed — the list above may be stale. */}
+            {team.error && teamLoadErrorRow}
+          </>
+        )}
+        {teamError && <div className="login-error settings-msg" role="alert">{teamError}</div>}
+        {teamNote && <div className="login-notice settings-msg" role="status">{teamNote}</div>}
+      </section>
+
+      {/* ---- Owner report --------------------------------------------- */}
+      {profile.ownerReportEnabled && (
+        <section className="ai-settings-section">
+          <h3 className="ai-settings-subhead">Owner report</h3>
+          <p className="ai-settings-blurb">
+            The report families take home after a dental visit — sections, headings, wording,
+            language, and the practice-wide default layout.
+          </p>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen(true))}
+          >
+            Customize owner report
+          </button>
+        </section>
+      )}
+
+      {/* ---- Billing (web only) -------------------------------------- */}
+      {showBilling && (
+        <section className="ai-settings-section">
+          <h3 className="ai-settings-subhead">Billing</h3>
+          {!billing ? (
+            billingError ? (
+              <div className="login-error settings-msg settings-msg--row" role="alert">
+                <span>{billingError}</span>
+                <button
+                  type="button"
+                  className="diagram-view__action settings-msg__action"
+                  onClick={() => setBillingLoadKey((k) => k + 1)}
+                >
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <p className="practice-logo-empty">Loading billing…</p>
+            )
+          ) : billing.status === 'comped' ? (
+            <p className="ai-settings-blurb">
+              This practice has complimentary access — no subscription needed.
+            </p>
+          ) : onFreeBeta ? (
+            <>
+              <p className="ai-settings-blurb">
+                <strong>Free beta</strong> · {FREE_BETA_SEATS} seats · {PLAN_LIMITS.free.maxImages} images per
+                chart · AI dictation included
+              </p>
+              <p className="patient-form__hint">
+                No card needed during the beta.
+                {billing.memberCount > 0 && ` ${billing.memberCount} of ${FREE_BETA_SEATS} seats in use.`}
+                {' '}Need more than {FREE_BETA_SEATS} seats?{' '}
+                <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+              </p>
+              {billing.role === 'owner' && billing.hasStripe && (
+                <div className="practice-logo-actions">
+                  <button type="button" className="diagram-view__action" disabled={billingBusy} onClick={handleOpenPortal}>
+                    Billing history
+                  </button>
+                </div>
+              )}
+              {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
+            </>
+          ) : (
+            <>
+              <p className="ai-settings-blurb">
+                <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? 'No plan'}</strong>
+                {' · '}
+                {statusText(billing)}
+                {billing.accountType === 'practice' && ` · ${billing.memberCount}/${billing.seats} seats`}
+              </p>
+              {billing.role === 'owner' ? (
+                <>
+                  {billing.hasStripe && (
+                    <div className="practice-team__add">
+                      <select
+                        className="patient-form__input"
+                        value={planKeyFor(billing.accountType, billing.plan)}
+                        disabled={billingBusy}
+                        aria-label="Change plan"
+                        onChange={(e) => void handlePlanChange(e.target.value as PlanKey)}
+                      >
+                        {PLANS.map((p) => (
+                          <option key={p.key} value={p.key}>
+                            {p.name} — ${p.priceMonthly}/mo
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="diagram-view__action"
+                        disabled={billingBusy}
+                        onClick={handleOpenPortal}
+                      >
+                        Manage billing
+                      </button>
+                    </div>
+                  )}
+                  <p className="patient-form__hint">
+                    {billing.hasStripe
+                      ? 'Manage billing opens Stripe — card, invoices, and cancellation.'
+                      : 'You’ll be asked to pick a plan when your access needs one.'}
+                    {' '}Need more than 5 seats?{' '}
+                    <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+                  </p>
+                </>
+              ) : (
+                <p className="patient-form__hint">
+                  Billing is managed by {billing.ownerEmail || 'the practice owner'}.
+                </p>
+              )}
+              {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
+              {billingNote && <div className="login-notice settings-msg" role="status">{billingNote}</div>}
+            </>
+          )}
+        </section>
+      )}
+
+      {/* ---- Delete practice (primary owner only) -------------------- */}
+      {team.practice && team.primaryOwnerId != null &&
+        team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
+        <section className="ai-settings-section">
+          <h3 className="ai-settings-subhead">Delete practice</h3>
+          <p className="patient-form__hint">
+            Permanently deletes the practice and every chart shared with it, including your
+            team’s, and cancels any subscription. Team members keep their accounts and private charts.
+          </p>
+          <div className="practice-logo-actions">
+            <button
+              type="button"
+              className="diagram-view__action diagram-view__action--danger"
+              onClick={() => void deleteMyPractice(team.practice?.name ?? '')}
+            >
+              Delete practice…
+            </button>
+          </div>
+        </section>
+      )}
+    </>
+  );
+
+  if (asScreen) return <div className="ai-settings-body ios-settings-page">{practiceBody}</div>;
+
   return (
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
@@ -385,345 +768,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           </button>
         </header>
         <div className="ai-settings-body">
-          {/* ---- Identity ------------------------------------------------ */}
-          <form
-            className="ai-settings-section"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void handleSave();
-            }}
-          >
-            <h3 className="ai-settings-subhead">Profile</h3>
-            <label className="patient-form__label">
-              Practice name
-              <input
-                ref={firstFieldRef}
-                type="text"
-                className="patient-form__input"
-                value={practiceName}
-                onChange={(e) => {
-                  setPracticeName(e.target.value);
-                  setNameError('');
-                }}
-                placeholder="Shown in the app and on every chart"
-                disabled={!canRename || nameBusy}
-              />
-            </label>
-            {!canRename && (
-              <p className="patient-form__hint">
-                {teamLoadFailed
-                  ? 'The practice name is locked until your team loads — retry below.'
-                  : 'The practice name is shared by the whole team — only the primary owner can change it.'}
-              </p>
-            )}
-            {nameError && <div className="login-error settings-msg" role="alert">{nameError}</div>}
-          </form>
-
-          {/* ---- Logo --------------------------------------------------- */}
-          <section className="ai-settings-section">
-            <span className="patient-form__label">Practice logo</span>
-            {profile.logoUrl ? (
-              <div className="practice-logo-row">
-                <img src={profile.logoUrl} alt="Practice logo" className="practice-logo-preview" />
-                <div className="practice-logo-actions">
-                  <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                    {logoBusy ? 'Working…' : 'Replace'}
-                  </button>
-                  <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleLogoRemove} disabled={busy}>
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="practice-logo-row">
-                <span className="practice-logo-empty">
-                  No logo uploaded — charts use the template's built-in mark.
-                </span>
-                <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                  {logoBusy ? 'Uploading…' : 'Upload logo'}
-                </button>
-              </div>
-            )}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              onChange={handleLogoPick}
-              style={{ display: 'none' }}
-              aria-label="Choose a logo image"
-            />
-            {logoError && <div className="login-error settings-msg" role="alert">{logoError}</div>}
-          </section>
-
-          {/* ---- Team --------------------------------------------------- */}
-          <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Team</h3>
-            {!team.enabled ? null : !team.loaded ? (
-              <p className="practice-logo-empty">Loading team…</p>
-            ) : teamLoadFailed ? (
-              teamLoadErrorRow
-            ) : !team.practice ? (
-              <div className="settings-msg--row">
-                <p className="practice-logo-empty">Your practice is still being set up.</p>
-                <button
-                  type="button"
-                  className="diagram-view__action"
-                  onClick={retryTeam}
-                  disabled={teamRetrying}
-                >
-                  {teamRetrying ? 'Checking…' : 'Check again'}
-                </button>
-              </div>
-            ) : (
-              <>
-                <p className="ai-settings-blurb">
-                  {isOwner
-                    ? 'Colleagues you add share this practice’s charts, templates, and images.'
-                    : `You’re a member of ${team.practice.name}. You share this practice’s charts.`}
-                </p>
-                <ul className="team__members">
-                  {team.members.map((m) => (
-                    <li key={m.userId} className="team__member">
-                      <span className="team__member-id">
-                        <strong>{m.email}{m.isYou ? ' (you)' : ''}</strong>
-                        {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
-                      </span>
-                      {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
-                      <span className="team__member-role">{roleLabel(m)}</span>
-                      {isOwner && !m.isYou && (
-                        <span className="team__member-actions">
-                          {m.pending && (
-                            <button
-                              type="button"
-                              className="diagram-view__action"
-                              disabled={teamBusy}
-                              onClick={() =>
-                                runTeam(`Invite re-sent to ${m.email}.`, () => team.resendInvite(m.userId))
-                              }
-                            >
-                              Resend invite
-                            </button>
-                          )}
-                          {/* Roles only apply to people who've joined —
-                              a pending invite can't own anything yet. */}
-                          {!m.pending && m.role === 'member' && (
-                            <button
-                              type="button"
-                              className="diagram-view__action"
-                              disabled={teamBusy}
-                              onClick={() => runTeam(`${m.email} is now an owner.`, () => team.setRole(m.userId, 'owner'))}
-                            >
-                              Make owner
-                            </button>
-                          )}
-                          {!m.pending && m.role === 'owner' && !m.isPrimaryOwner && (
-                            <button
-                              type="button"
-                              className="diagram-view__action"
-                              disabled={teamBusy}
-                              onClick={() => runTeam(`${m.email} is now a member.`, () => team.setRole(m.userId, 'member'))}
-                            >
-                              Make member
-                            </button>
-                          )}
-                          {!m.isPrimaryOwner && !m.pending && (
-                            <button
-                              type="button"
-                              className="diagram-view__action"
-                              disabled={teamBusy}
-                              onClick={() => handleTransfer(m)}
-                            >
-                              Transfer ownership
-                            </button>
-                          )}
-                          {!m.isPrimaryOwner && (
-                            <button
-                              type="button"
-                              className="diagram-view__action diagram-view__action--danger"
-                              disabled={teamBusy}
-                              onClick={() => handleRemove(m)}
-                            >
-                              Remove
-                            </button>
-                          )}
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-                {isOwner && (
-                  <>
-                    <form className="practice-team__add" onSubmit={handleAddMember} noValidate>
-                      <input
-                        type="email"
-                        className="patient-form__input"
-                        placeholder="Colleague's email"
-                        aria-label="Colleague's email"
-                        autoComplete="off"
-                        value={memberEmail}
-                        onChange={(e) => {
-                          setMemberEmail(e.target.value);
-                          setTeamError('');
-                        }}
-                      />
-                      <button
-                        type="submit"
-                        className="diagram-view__action"
-                        disabled={teamBusy || !memberEmail.trim()}
-                      >
-                        {teamBusy ? 'Adding…' : 'Add'}
-                      </button>
-                    </form>
-                    <p className="patient-form__hint">
-                      No account yet? We'll email them an invite to set a password and join.
-                    </p>
-                  </>
-                )}
-                {/* A refresh after an action failed — the list above may be stale. */}
-                {team.error && teamLoadErrorRow}
-              </>
-            )}
-            {teamError && <div className="login-error settings-msg" role="alert">{teamError}</div>}
-            {teamNote && <div className="login-notice settings-msg" role="status">{teamNote}</div>}
-          </section>
-
-          {/* ---- Owner report --------------------------------------------- */}
-          {profile.ownerReportEnabled && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Owner report</h3>
-              <p className="ai-settings-blurb">
-                The report families take home after a dental visit — sections, headings, wording,
-                language, and the practice-wide default layout.
-              </p>
-              <button
-                type="button"
-                className="diagram-view__action"
-                onClick={() => setTemplatesOpen(true)}
-              >
-                Customize owner report
-              </button>
-            </section>
-          )}
-
-          {/* ---- Billing (web only) -------------------------------------- */}
-          {showBilling && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Billing</h3>
-              {!billing ? (
-                billingError ? (
-                  <div className="login-error settings-msg settings-msg--row" role="alert">
-                    <span>{billingError}</span>
-                    <button
-                      type="button"
-                      className="diagram-view__action settings-msg__action"
-                      onClick={() => setBillingLoadKey((k) => k + 1)}
-                    >
-                      Retry
-                    </button>
-                  </div>
-                ) : (
-                  <p className="practice-logo-empty">Loading billing…</p>
-                )
-              ) : billing.status === 'comped' ? (
-                <p className="ai-settings-blurb">
-                  This practice has complimentary access — no subscription needed.
-                </p>
-              ) : onFreeBeta ? (
-                <>
-                  <p className="ai-settings-blurb">
-                    <strong>Free beta</strong> · {FREE_BETA_SEATS} seats · {PLAN_LIMITS.free.maxImages} images per
-                    chart · AI dictation included
-                  </p>
-                  <p className="patient-form__hint">
-                    No card needed during the beta.
-                    {billing.memberCount > 0 && ` ${billing.memberCount} of ${FREE_BETA_SEATS} seats in use.`}
-                    {' '}Need more than {FREE_BETA_SEATS} seats?{' '}
-                    <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
-                  </p>
-                  {billing.role === 'owner' && billing.hasStripe && (
-                    <div className="practice-logo-actions">
-                      <button type="button" className="diagram-view__action" disabled={billingBusy} onClick={handleOpenPortal}>
-                        Billing history
-                      </button>
-                    </div>
-                  )}
-                  {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
-                </>
-              ) : (
-                <>
-                  <p className="ai-settings-blurb">
-                    <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? 'No plan'}</strong>
-                    {' · '}
-                    {statusText(billing)}
-                    {billing.accountType === 'practice' && ` · ${billing.memberCount}/${billing.seats} seats`}
-                  </p>
-                  {billing.role === 'owner' ? (
-                    <>
-                      {billing.hasStripe && (
-                        <div className="practice-team__add">
-                          <select
-                            className="patient-form__input"
-                            value={planKeyFor(billing.accountType, billing.plan)}
-                            disabled={billingBusy}
-                            aria-label="Change plan"
-                            onChange={(e) => void handlePlanChange(e.target.value as PlanKey)}
-                          >
-                            {PLANS.map((p) => (
-                              <option key={p.key} value={p.key}>
-                                {p.name} — ${p.priceMonthly}/mo
-                              </option>
-                            ))}
-                          </select>
-                          <button
-                            type="button"
-                            className="diagram-view__action"
-                            disabled={billingBusy}
-                            onClick={handleOpenPortal}
-                          >
-                            Manage billing
-                          </button>
-                        </div>
-                      )}
-                      <p className="patient-form__hint">
-                        {billing.hasStripe
-                          ? 'Manage billing opens Stripe — card, invoices, and cancellation.'
-                          : 'You’ll be asked to pick a plan when your access needs one.'}
-                        {' '}Need more than 5 seats?{' '}
-                        <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
-                      </p>
-                    </>
-                  ) : (
-                    <p className="patient-form__hint">
-                      Billing is managed by {billing.ownerEmail || 'the practice owner'}.
-                    </p>
-                  )}
-                  {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
-                  {billingNote && <div className="login-notice settings-msg" role="status">{billingNote}</div>}
-                </>
-              )}
-            </section>
-          )}
-
-          {/* ---- Delete practice (primary owner only) -------------------- */}
-          {team.practice && team.primaryOwnerId != null &&
-            team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
-            <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Delete practice</h3>
-              <p className="patient-form__hint">
-                Permanently deletes the practice and every chart shared with it, including your
-                team’s, and cancels any subscription. Team members keep their accounts and private charts.
-              </p>
-              <div className="practice-logo-actions">
-                <button
-                  type="button"
-                  className="diagram-view__action diagram-view__action--danger"
-                  onClick={() => void deleteMyPractice(team.practice?.name ?? '')}
-                >
-                  Delete practice…
-                </button>
-              </div>
-            </section>
-          )}
+          {practiceBody}
         </div>
         <footer className="ai-settings-footer">
           {/* Logo, team and billing apply instantly; only the practice

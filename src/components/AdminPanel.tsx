@@ -12,6 +12,7 @@ import { supabase } from '../utils/supabaseClient';
 import { emailLinkOrigin } from '../native/authReturn';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
+import { useOptionalStack } from '../ios/Stack';
 import { confirmDialog, friendlyError, promptDialog } from './ui/dialogs';
 import './Login.css';
 import './AccountSurfaces.css';
@@ -238,9 +239,14 @@ async function adminCall<T = Record<string, unknown>>(body: object, fn: 'admin-a
 interface AdminPanelProps {
   open: boolean;
   onClose: () => void;
+  /** 'screen': the body only, as a pushed screen in the iOS app's Settings
+   *  tab (a viewed chart pushes another screen). Default: the dialog. */
+  presentation?: 'modal' | 'screen';
 }
 
-export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
+export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentation = 'modal' }) => {
+  const asScreen = presentation === 'screen';
+  const stack = useOptionalStack();
   const [stats, setStats] = React.useState<AdminStats | null>(null);
   const [users, setUsers] = React.useState<AdminUser[] | null>(null);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -294,7 +300,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
     </span>
   );
   const logoRef = React.useRef<HTMLInputElement>(null);
-  const modalRef = useModalFocus(open);
+  const modalRef = useModalFocus(open && !asScreen);
 
   const selected = users?.find((u) => u.id === selectedId) ?? null;
   const selectedPractice = practices?.find((p) => p.id === selectedPracticeId) ?? null;
@@ -332,7 +338,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const openChart = async (chartId: string, practiceName: string) => {
     try {
       const r = await adminCall<{ chart: { data: unknown } }>({ action: 'view_chart', chartId });
-      setViewingChart({ data: r.chart.data, practiceName });
+      if (asScreen && stack) {
+        // In the app: the chart pushes onto the Settings stack.
+        stack.push({
+          id: `admin-chart-${chartId}`,
+          title: practiceName,
+          render: () => <AdminChartViewer presentation="screen" data={r.chart.data} practiceName={practiceName} onClose={stack.pop} />,
+        });
+      } else {
+        setViewingChart({ data: r.chart.data, practiceName });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
@@ -361,13 +376,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   }, [open, refresh]);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!open || asScreen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, onClose, asScreen]);
 
   // Success notices fade on their own; errors stay until dismissed (or
   // the next action), so a failure can't vanish before it's read.
@@ -773,6 +788,696 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
   const fmt = (iso: string | null) =>
     iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
+  const adminBody = (
+    <>
+      <p className="chart-library__sub">
+        {stats
+          ? `${stats.users} user${stats.users === 1 ? '' : 's'} · ${stats.charts} chart${stats.charts === 1 ? '' : 's'} · ${stats.templates} report template${stats.templates === 1 ? '' : 's'}`
+          : 'Loading…'}
+      </p>
+
+      <div className="admin-panel__tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'accounts'}
+          className={tab === 'accounts' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+          onClick={() => setTab('accounts')}
+        >
+          Accounts{users ? ` (${users.length})` : ''}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'practices'}
+          className={tab === 'practices' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+          onClick={() => setTab('practices')}
+        >
+          Practices{practices ? ` (${practices.length})` : ''}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'billing'}
+          className={tab === 'billing' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+          onClick={() => setTab('billing')}
+        >
+          Billing
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'ai'}
+          className={tab === 'ai' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
+          onClick={() => setTab('ai')}
+        >
+          AI
+        </button>
+      </div>
+
+      {(error || notice) && (
+        <div className="admin-panel__banner">
+          {error && (
+            <div className="login-error" role="alert">
+              <span>{error}</span>
+              <button type="button" className="admin-panel__banner-dismiss" onClick={() => setError('')} aria-label="Dismiss error">
+                ×
+              </button>
+            </div>
+          )}
+          {notice && (
+            <div className="login-notice" role="status">
+              <span>{notice}</span>
+              <button type="button" className="admin-panel__banner-dismiss" onClick={() => setNotice('')} aria-label="Dismiss">
+                ×
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {(tab === 'accounts' || tab === 'practices') && (
+        <div className="admin-panel__search">
+          <input
+            type="search"
+            className="patient-form__input"
+            aria-label={tab === 'accounts' ? 'Search users' : 'Search practices'}
+            placeholder={tab === 'accounts' ? 'Search users by email or name' : 'Search practices by name or email'}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+      )}
+
+      {tab === 'accounts' && users === null && (
+        <div className="chart-library__empty">
+          {error ? (
+            <>
+              Couldn’t load users.{' '}
+              <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
+                Retry
+              </button>
+            </>
+          ) : (
+            'Loading users…'
+          )}
+        </div>
+      )}
+      {tab === 'accounts' && users !== null && users.length === 0 && (
+        <div className="chart-library__empty">No users yet.</div>
+      )}
+      {tab === 'accounts' && users !== null && users.length > 0 && filteredUsers.length === 0 && (
+        <div className="chart-library__empty">No users match “{query.trim()}”.</div>
+      )}
+
+      {tab === 'accounts' && filteredUsers.length > 0 && (
+        <div className="chart-library__table" role="table" aria-label="Users">
+          <div className="chart-library__head-row admin-panel__account-row" role="row">
+            {accountHeader('email', 'Email')}
+            {accountHeader('practice', 'Practice')}
+            {accountHeader('charts', 'Charts')}
+            {accountHeader('signedUp', 'Signed up')}
+            {accountHeader('active', 'Last active')}
+            {accountHeader('flags', 'Flags')}
+          </div>
+          <div className="chart-library__scroll">
+            {filteredUsers.map((u) => (
+              <div key={u.id} className="chart-library__row" role="row">
+                <button
+                  type="button"
+                  className={
+                    u.id === selectedId
+                      ? 'chart-library__row-main admin-panel__account-row admin-panel__row--active'
+                      : 'chart-library__row-main admin-panel__account-row'
+                  }
+                  onClick={() => pick(u)}
+                  disabled={busy}
+                >
+                  <span role="cell" className="chart-library__patient">{u.email}</span>
+                  <span role="cell" className="chart-library__cell">
+                    {accountPractice(u) || '—'}
+                  </span>
+                  <span role="cell" className="chart-library__cell">{u.chartCount}</span>
+                  <span role="cell" className="chart-library__cell" title={fmt(u.createdAt)}>
+                    {u.createdAt ? new Date(u.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '—'}
+                  </span>
+                  <span
+                    role="cell"
+                    className="chart-library__cell"
+                    title={`Last used the app: ${fmt(u.lastSeenAt ?? null)}\nLast signed in: ${fmt(u.lastSignInAt)}`}
+                  >
+                    {fmt(lastActiveAt(u))}
+                  </span>
+                  <span role="cell" className="chart-library__cell">
+                    {accountFlags(u) || '—'}
+                  </span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'accounts' && selected && (
+        <section className="admin-panel__actions">
+          {selected.teamPractice && (
+            <p className="patient-form__hint" style={{ margin: 0 }}>
+              {selected.teamRole === 'owner' ? 'Owner' : 'Member'} of <strong>{selected.teamPractice}</strong>
+              {!selected.emailConfirmed && ' (invite pending)'} — membership, roles, and billing live in the
+              Practices tab.
+            </p>
+          )}
+          <div className="admin-panel__names">
+            <label className="patient-form__label">
+              Practice name
+              <input
+                type="text"
+                className="patient-form__input"
+                value={practiceName}
+                onChange={(e) => setPracticeName(e.target.value)}
+              />
+            </label>
+            <label className="patient-form__label">
+              Doctor name
+              <input
+                type="text"
+                className="patient-form__input"
+                value={doctorName}
+                onChange={(e) => setDoctorName(e.target.value)}
+              />
+            </label>
+            <button type="button" className="diagram-view__action" onClick={handleSaveNames} disabled={busy}>
+              Save names
+            </button>
+          </div>
+          <AdminChartList
+            key={`user:${selected.id}`}
+            label={`Charts created by ${selected.email}`}
+            rows={chartRowsFor(`user:${selected.id}`)}
+            loading={chartsLoading}
+            onLoad={() => loadCharts(`user:${selected.id}`, { action: 'list_user_charts', userId: selected.id })}
+            onOpen={(id) => openChart(id, accountPractice(selected) || selected.email)}
+            emptyText="This account hasn’t created any charts."
+          />
+          <div className="admin-panel__buttons">
+            <button type="button" className="diagram-view__action" onClick={handleSetPassword} disabled={busy}>
+              Set password…
+            </button>
+            <button type="button" className="diagram-view__action" onClick={handleResetLink} disabled={busy}>
+              Copy reset link
+            </button>
+            {!selected.emailConfirmed && (
+              <button type="button" className="diagram-view__action" onClick={handleConfirmEmail} disabled={busy}>
+                Confirm email
+              </button>
+            )}
+            {selected.hasLogo && (
+              <button type="button" className="diagram-view__action" onClick={handleRemoveLogo} disabled={busy}>
+                Remove logo
+              </button>
+            )}
+            {!selected.isAdmin && (
+              <button
+                type="button"
+                className="diagram-view__action diagram-view__action--danger"
+                onClick={handleDelete}
+                disabled={busy}
+              >
+                Delete account…
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+
+      {tab === 'practices' && practices === null && (
+        <div className="chart-library__empty">
+          {error ? (
+            <>
+              Couldn’t load practices.{' '}
+              <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
+                Retry
+              </button>
+            </>
+          ) : (
+            'Loading practices…'
+          )}
+        </div>
+      )}
+
+      {tab === 'practices' && practices !== null && (
+        <div className="chart-library__table" role="table" aria-label="Practices">
+          <div className="chart-library__head-row admin-panel__practice-row" role="row">
+            {practiceHeader('name', 'Practice')}
+            {practiceHeader('owner', 'Owner')}
+            {practiceHeader('members', 'Members')}
+            {practiceHeader('charts', 'Charts')}
+            {practiceHeader('billing', 'Billing')}
+          </div>
+          <div className="chart-library__scroll">
+            {practices.length === 0 && <div className="chart-library__empty">No practices yet.</div>}
+            {practices.length > 0 && filteredPractices.length === 0 && (
+              <div className="chart-library__empty">No practices match “{query.trim()}”.</div>
+            )}
+            {filteredPractices.map((p) => (
+              <div key={p.id} className="chart-library__row" role="row">
+                <button
+                  type="button"
+                  className={
+                    p.id === selectedPracticeId
+                      ? 'chart-library__row-main admin-panel__practice-row admin-panel__row--active'
+                      : 'chart-library__row-main admin-panel__practice-row'
+                  }
+                  onClick={() => pickPractice(p)}
+                  disabled={busy}
+                >
+                  <span role="cell" className="chart-library__patient">{p.name || 'Untitled'}</span>
+                  <span role="cell" className="chart-library__cell">{p.ownerEmail}</span>
+                  <span role="cell" className="chart-library__cell">{p.memberCount}</span>
+                  <span role="cell" className="chart-library__cell">{p.chartCount}</span>
+                  <span role="cell" className="chart-library__cell">{billingChip(p.subscriptionStatus)}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === 'practices' && selectedPractice && (
+        <section className="admin-panel__actions">
+          <form className="admin-panel__names" onSubmit={handleRenamePractice}>
+            <label className="patient-form__label">
+              Practice name
+              <input
+                type="text"
+                className="patient-form__input"
+                value={practiceRename}
+                onChange={(e) => setPracticeRename(e.target.value)}
+              />
+            </label>
+            <button type="submit" className="diagram-view__action" disabled={busy}>
+              Rename
+            </button>
+          </form>
+
+          {/* What this account can actually do right now — resolved the
+              same way the app does (useProfile + PLAN_LIMITS). */}
+          {(() => {
+            const paid = PAID_STATUSES.includes(selectedPractice.subscriptionStatus);
+            const tier = paid ? selectedPractice.plan : 'free';
+            const limits = PLAN_LIMITS[tier];
+            const seats = FREE_BETA ? FREE_BETA_SEATS : selectedPractice.accountType === 'practice' ? 5 : 1;
+            const ownerReport = FREE_BETA || !!selectedPractice.ownerReportEnabled;
+            return (
+              <div className="admin-panel__access" aria-label="Effective access">
+                <span className="patient-form__label" style={{ marginBottom: 0 }}>Access</span>
+                <div className="admin-panel__access-body">
+                  <strong>
+                    {paid
+                      ? `${tier === 'pro' ? 'Pro' : 'Basic'} (${selectedPractice.subscriptionStatus})`
+                      : FREE_BETA ? 'Free beta' : 'Free'}
+                  </strong>
+                  <span>AI dictation {limits.aiAutofill ? '✓' : '✗'}</span>
+                  <span>{limits.maxImages} images / chart</span>
+                  <span>{seats} {seats === 1 ? 'seat' : 'seats'}</span>
+                  <span>Owner report {ownerReport ? '✓' : '✗'}</span>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Billing overrides. Tier + account type set images and
+              seats once an account is billed or comped; Stripe-managed
+              practices sync from the webhook, so hand-edits there are
+              only for comps and corrections. */}
+          <div className="admin-panel__plan">
+            <span className="patient-form__label" style={{ marginBottom: 0 }}>Plan</span>
+            <div className="admin-panel__plan-toggle" role="group" aria-label="Practice plan">
+              {(['basic', 'pro'] as const).map((pl) => (
+                <button
+                  key={pl}
+                  type="button"
+                  className={selectedPractice.plan === pl ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                  aria-pressed={selectedPractice.plan === pl}
+                  onClick={() => handleSetPlan(pl)}
+                  disabled={busy || selectedPractice.plan === pl}
+                >
+                  {pl === 'pro' ? 'Pro' : 'Basic'}
+                </button>
+              ))}
+              <span className="admin-panel__plan-note">
+                Applies once billed or comped: Basic {PLAN_LIMITS.basic.maxImages} images/chart, Pro {PLAN_LIMITS.pro.maxImages}.
+                Unbilled accounts are on the free tier ({PLAN_LIMITS.free.maxImages} images). AI dictation is on for every plan.
+              </span>
+            </div>
+          </div>
+
+          <div className="admin-panel__plan">
+            <span className="patient-form__label" style={{ marginBottom: 0 }}>Account type</span>
+            <div className="admin-panel__plan-toggle" role="group" aria-label="Account type">
+              {(['individual', 'practice'] as const).map((at) => (
+                <button
+                  key={at}
+                  type="button"
+                  className={selectedPractice.accountType === at ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                  aria-pressed={selectedPractice.accountType === at}
+                  onClick={() => handleSetAccountType(at)}
+                  disabled={busy || selectedPractice.accountType === at}
+                >
+                  {at === 'practice' ? 'Practice (5 seats)' : 'Individual (1 seat)'}
+                </button>
+              ))}
+              {FREE_BETA && (
+                <span className="admin-panel__plan-note">
+                  Not enforced during the free beta — every account gets {FREE_BETA_SEATS} seats.
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="admin-panel__plan">
+            <span className="patient-form__label" style={{ marginBottom: 0 }}>Features</span>
+            <div className="admin-panel__plan-toggle" role="group" aria-label="Feature flags">
+              <button
+                type="button"
+                className={selectedPractice.ownerReportEnabled ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                aria-pressed={!!selectedPractice.ownerReportEnabled}
+                onClick={() => handleSetOwnerReport(!selectedPractice.ownerReportEnabled)}
+                disabled={busy}
+              >
+                Owner report: {selectedPractice.ownerReportEnabled ? 'on' : 'off'}
+              </button>
+              <span className="admin-panel__plan-note">
+                {FREE_BETA
+                  ? 'Owner-facing take-home PDF — on for everyone during the free beta; this switch takes over when the beta ends.'
+                  : 'Owner-facing take-home PDF (beta) — off by default for every practice.'}
+              </span>
+            </div>
+          </div>
+
+          <div className="admin-panel__plan">
+            <span className="patient-form__label" style={{ marginBottom: 0 }}>Subscription</span>
+            <div className="admin-panel__plan-toggle">
+              {billingChip(selectedPractice.subscriptionStatus)}
+              {selectedPractice.periodEnd && (
+                <span className="admin-panel__plan-note">
+                  {selectedPractice.subscriptionStatus === 'trialing' ? 'trial ends' : 'renews'}{' '}
+                  {new Date(selectedPractice.periodEnd).toLocaleDateString()}
+                </span>
+              )}
+              {selectedPractice.frozenAt && (
+                <span className="admin-panel__plan-note">
+                  frozen — purge deletes it{' '}
+                  {new Date(new Date(selectedPractice.frozenAt).getTime() + 30 * 86400000).toLocaleDateString()}
+                </span>
+              )}
+              {selectedPractice.hasStripe ? (
+                <span className="admin-panel__plan-note">Stripe-managed — status syncs from the webhook.</span>
+              ) : (
+                <button
+                  type="button"
+                  className="admin-panel__plan-opt"
+                  onClick={() => handleSetComped(selectedPractice.subscriptionStatus !== 'comped')}
+                  disabled={busy}
+                >
+                  {selectedPractice.subscriptionStatus === 'comped' ? 'Remove comp' : 'Comp (free access)'}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Practice logo (the primary owner's logo — the brand on
+              their charts). */}
+          <div className="practice-logo-row">
+            {selectedPractice.logoUrl ? (
+              <img src={selectedPractice.logoUrl} alt="Practice logo" className="practice-logo-preview" />
+            ) : (
+              <span className="practice-logo-empty">No practice logo.</span>
+            )}
+            <div className="practice-logo-actions">
+              <button type="button" className="diagram-view__action" onClick={() => logoRef.current?.click()} disabled={busy}>
+                {selectedPractice.logoUrl ? 'Replace logo' : 'Upload logo'}
+              </button>
+              {selectedPractice.logoUrl && (
+                <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleRemovePracticeLogo} disabled={busy}>
+                  Remove logo
+                </button>
+              )}
+            </div>
+            <input
+              ref={logoRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              style={{ display: 'none' }}
+              onChange={handlePracticeLogoPick}
+            />
+          </div>
+
+          <ul className="team__members">
+            {selectedPractice.members.map((m) => (
+              <li key={m.userId} className="team__member">
+                <span className="team__member-id"><strong>{m.email}</strong></span>
+                {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
+                <span className="team__member-role">{roleLabel(m.role, m.isPrimaryOwner)}</span>
+                <span className="team__member-actions">
+                  {m.pending && (
+                    <button
+                      type="button"
+                      className="diagram-view__action"
+                      onClick={() => handleResendInvite(m.userId, m.email)}
+                      disabled={busy}
+                    >
+                      Resend invite
+                    </button>
+                  )}
+                  {/* A pending invite can't own the practice yet. */}
+                  {!m.isPrimaryOwner && !m.pending && (
+                    <button
+                      type="button"
+                      className="diagram-view__action"
+                      onClick={() => handleSetPracticeOwner(m.userId, m.email)}
+                      disabled={busy}
+                    >
+                      Make owner
+                    </button>
+                  )}
+                  {!m.isPrimaryOwner && (
+                    <button
+                      type="button"
+                      className="diagram-view__action diagram-view__action--danger"
+                      onClick={() => handleRemovePracticeMember(m.userId, m.email)}
+                      disabled={busy}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <form className="practice-team__add" onSubmit={handleAddPracticeMember}>
+            <input
+              type="email"
+              className="patient-form__input"
+              placeholder="Add member by email"
+              aria-label="Add member by email"
+              value={memberEmail}
+              onChange={(e) => setMemberEmail(e.target.value)}
+            />
+            <button type="submit" className="diagram-view__action" disabled={busy || !memberEmail.trim()}>
+              Add
+            </button>
+          </form>
+
+          <AdminChartList
+            key={`practice:${selectedPractice.id}`}
+            label={`Charts in ${selectedPractice.name || 'this practice'}`}
+            rows={chartRowsFor(`practice:${selectedPractice.id}`)}
+            loading={chartsLoading}
+            onLoad={() => loadCharts(`practice:${selectedPractice.id}`, { action: 'list_practice_charts', practiceId: selectedPractice.id })}
+            onOpen={(id) => openChart(id, selectedPractice.name || 'Untitled practice')}
+            emptyText="No charts in this practice."
+          />
+
+          <div className="admin-panel__buttons">
+            <button
+              type="button"
+              className="diagram-view__action diagram-view__action--danger"
+              onClick={handleDeletePractice}
+              disabled={busy}
+            >
+              Delete practice…
+            </button>
+          </div>
+        </section>
+      )}
+
+      {tab === 'billing' && (
+        <section className="admin-panel__billing">
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">Stripe</h3>
+            <p className="admin-panel__ai-total">
+              Monthly recurring revenue: <strong>${billingMrr.toFixed(2)}</strong>
+              {billingComped > 0 && <> · {billingComped} comped practice{billingComped === 1 ? '' : 's'}</>}
+            </p>
+            <div className="practice-logo-actions">
+              <button type="button" className="diagram-view__action" onClick={handleStripeSetup} disabled={busy}>
+                Run Stripe setup
+              </button>
+              <button type="button" className="diagram-view__action" onClick={loadBilling} disabled={busy}>
+                Refresh
+              </button>
+            </div>
+            {billingTax !== null && (
+              <p className="admin-panel__ai-total">
+                Stripe Tax: <strong>{billingTax ? 'on' : 'off'}</strong>
+                {!billingTax && (
+                  <span className="patient-form__hint">
+                    Checkout collects billing addresses and VAT/tax IDs but adds no tax. To turn it on, activate
+                    Stripe Tax in the Stripe Dashboard, then set the STRIPE_TAX_ENABLED=true function secret.
+                  </span>
+                )}
+              </p>
+            )}
+            {setupNote && <p className="patient-form__hint">{setupNote}</p>}
+            <p className="patient-form__hint">
+              Setup is idempotent: it creates the four plan prices (by lookup key) and the webhook endpoint in
+              Stripe if they don't exist yet. Run it once per Stripe account (and again after switching test → live keys).
+            </p>
+          </div>
+
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">Subscriptions</h3>
+            {billingRows === null ? (
+              <p className="chart-library__empty">Loading…</p>
+            ) : billingRows.length === 0 ? (
+              <p className="practice-logo-empty">No Stripe subscriptions yet.</p>
+            ) : (
+              <table className="admin-panel__usage-table">
+                <thead>
+                  <tr>
+                    {th(billingSort, 'practice', 'Practice')}
+                    {th(billingSort, 'plan', 'Plan')}
+                    {th(billingSort, 'status', 'Status')}
+                    {th(billingSort, 'amount', '$/mo')}
+                    {th(billingSort, 'renews', 'Renews')}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedBilling.map((r, i) => (
+                    <tr key={i}>
+                      <td>{r.practiceName}</td>
+                      <td>{r.planKey.replace(/_/g, ' ') || '—'}</td>
+                      <td>
+                        {r.status.replace(/_/g, ' ')}
+                        {r.cancelAtPeriodEnd ? ' (canceling)' : ''}
+                      </td>
+                      <td>${r.amountUsd.toFixed(0)}</td>
+                      <td>{r.periodEnd ? new Date(r.periodEnd).toLocaleDateString() : '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </section>
+      )}
+
+      {tab === 'ai' && (
+        <section className="admin-panel__ai">
+          {/* Model — chosen live from what the account can use. */}
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">Extraction model</h3>
+            {!aiConfigured && (
+              <p className="login-error" role="alert">
+                ANTHROPIC_API_KEY isn't set as an edge-function secret yet — AI autofill is off until it is.
+              </p>
+            )}
+            <label className="patient-form__label">
+              Model used for voice autofill
+              <select
+                className="patient-form__input"
+                value={aiModel}
+                onChange={(e) => handleSetModel(e.target.value)}
+                disabled={busy || !aiConfigured}
+              >
+                {aiModel && !AI_MODEL_CHOICES.some((c) => c.id === aiModel) && (
+                  <option value={aiModel}>{aiModel} (current — not tuned)</option>
+                )}
+                {AI_MODEL_CHOICES.map((c) => {
+                  // Grey out models this API key can't use (when the
+                  // live list loaded at all).
+                  const unavailable = aiModels.length > 0 && !aiModels.some((m) => m.id === c.id);
+                  return (
+                    <option key={c.id} value={c.id} disabled={unavailable}>
+                      {c.label} — {c.speed}, {c.costPerHour}{unavailable ? ' (not on this account)' : ''}
+                    </option>
+                  );
+                })}
+              </select>
+            </label>
+            <p className="patient-form__hint">
+              {AI_MODEL_CHOICES.find((c) => c.id === aiModel)?.note ?? 'Pick a model above.'}{' '}
+              Applies to every practice. Costs are rough estimates for an hour of continuous dictation.
+            </p>
+          </div>
+
+          {/* Credit / balance. */}
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">AI spend</h3>
+            <p className="admin-panel__ai-total">
+              Estimated Claude spend to date: <strong>${aiTotalCost.toFixed(2)}</strong>
+            </p>
+            {aiBalance?.deepgram && (
+              <p className="admin-panel__ai-total">Deepgram balance: <strong>{aiBalance.deepgram}</strong></p>
+            )}
+            {aiBalance?.note && <p className="patient-form__hint">{aiBalance.note}</p>}
+          </div>
+
+          {/* Per-user usage. */}
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">Token usage by user</h3>
+            {aiUsage === null ? (
+              <p className="chart-library__empty">Loading…</p>
+            ) : aiUsage.length === 0 ? (
+              <p className="practice-logo-empty">No AI usage recorded yet.</p>
+            ) : (
+              <table className="admin-panel__usage-table">
+                <thead>
+                  <tr>
+                    {th(aiSort, 'user', 'User')}
+                    {th(aiSort, 'calls', 'Calls')}
+                    {th(aiSort, 'input', 'Input')}
+                    {th(aiSort, 'output', 'Output')}
+                    {th(aiSort, 'cache', 'Cache')}
+                    {th(aiSort, 'cost', 'Est. cost')}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedAi.map((u) => (
+                    <tr key={u.userId}>
+                      <td>{u.email}</td>
+                      <td>{u.calls.toLocaleString()}</td>
+                      <td>{u.inputTokens.toLocaleString()}</td>
+                      <td>{u.outputTokens.toLocaleString()}</td>
+                      <td>{u.cacheReadTokens.toLocaleString()}</td>
+                      <td>${u.estCostUsd.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </section>
+      )}
+    </>
+  );
+
+  // In the app: the panel's body as a pushed screen (light pass: iOS font,
+  // colours and dark mode; the data tables stay).
+  if (asScreen) return <div className="chart-library-modal__body admin-panel admin-panel--screen ios-settings-page">{adminBody}</div>;
+
   return (
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Admin panel">
       <div className="ai-settings-modal chart-library-modal admin-panel" ref={modalRef} tabIndex={-1}>
@@ -784,687 +1489,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose }) => {
         </header>
 
         <div className="chart-library-modal__body">
-          <p className="chart-library__sub">
-            {stats
-              ? `${stats.users} user${stats.users === 1 ? '' : 's'} · ${stats.charts} chart${stats.charts === 1 ? '' : 's'} · ${stats.templates} report template${stats.templates === 1 ? '' : 's'}`
-              : 'Loading…'}
-          </p>
-
-          <div className="admin-panel__tabs" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'accounts'}
-              className={tab === 'accounts' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
-              onClick={() => setTab('accounts')}
-            >
-              Accounts{users ? ` (${users.length})` : ''}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'practices'}
-              className={tab === 'practices' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
-              onClick={() => setTab('practices')}
-            >
-              Practices{practices ? ` (${practices.length})` : ''}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'billing'}
-              className={tab === 'billing' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
-              onClick={() => setTab('billing')}
-            >
-              Billing
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'ai'}
-              className={tab === 'ai' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
-              onClick={() => setTab('ai')}
-            >
-              AI
-            </button>
-          </div>
-
-          {(error || notice) && (
-            <div className="admin-panel__banner">
-              {error && (
-                <div className="login-error" role="alert">
-                  <span>{error}</span>
-                  <button type="button" className="admin-panel__banner-dismiss" onClick={() => setError('')} aria-label="Dismiss error">
-                    ×
-                  </button>
-                </div>
-              )}
-              {notice && (
-                <div className="login-notice" role="status">
-                  <span>{notice}</span>
-                  <button type="button" className="admin-panel__banner-dismiss" onClick={() => setNotice('')} aria-label="Dismiss">
-                    ×
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {(tab === 'accounts' || tab === 'practices') && (
-            <div className="admin-panel__search">
-              <input
-                type="search"
-                className="patient-form__input"
-                aria-label={tab === 'accounts' ? 'Search users' : 'Search practices'}
-                placeholder={tab === 'accounts' ? 'Search users by email or name' : 'Search practices by name or email'}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-          )}
-
-          {tab === 'accounts' && users === null && (
-            <div className="chart-library__empty">
-              {error ? (
-                <>
-                  Couldn’t load users.{' '}
-                  <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
-                    Retry
-                  </button>
-                </>
-              ) : (
-                'Loading users…'
-              )}
-            </div>
-          )}
-          {tab === 'accounts' && users !== null && users.length === 0 && (
-            <div className="chart-library__empty">No users yet.</div>
-          )}
-          {tab === 'accounts' && users !== null && users.length > 0 && filteredUsers.length === 0 && (
-            <div className="chart-library__empty">No users match “{query.trim()}”.</div>
-          )}
-
-          {tab === 'accounts' && filteredUsers.length > 0 && (
-            <div className="chart-library__table" role="table" aria-label="Users">
-              <div className="chart-library__head-row admin-panel__account-row" role="row">
-                {accountHeader('email', 'Email')}
-                {accountHeader('practice', 'Practice')}
-                {accountHeader('charts', 'Charts')}
-                {accountHeader('signedUp', 'Signed up')}
-                {accountHeader('active', 'Last active')}
-                {accountHeader('flags', 'Flags')}
-              </div>
-              <div className="chart-library__scroll">
-                {filteredUsers.map((u) => (
-                  <div key={u.id} className="chart-library__row" role="row">
-                    <button
-                      type="button"
-                      className={
-                        u.id === selectedId
-                          ? 'chart-library__row-main admin-panel__account-row admin-panel__row--active'
-                          : 'chart-library__row-main admin-panel__account-row'
-                      }
-                      onClick={() => pick(u)}
-                      disabled={busy}
-                    >
-                      <span role="cell" className="chart-library__patient">{u.email}</span>
-                      <span role="cell" className="chart-library__cell">
-                        {accountPractice(u) || '—'}
-                      </span>
-                      <span role="cell" className="chart-library__cell">{u.chartCount}</span>
-                      <span role="cell" className="chart-library__cell" title={fmt(u.createdAt)}>
-                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '—'}
-                      </span>
-                      <span
-                        role="cell"
-                        className="chart-library__cell"
-                        title={`Last used the app: ${fmt(u.lastSeenAt ?? null)}\nLast signed in: ${fmt(u.lastSignInAt)}`}
-                      >
-                        {fmt(lastActiveAt(u))}
-                      </span>
-                      <span role="cell" className="chart-library__cell">
-                        {accountFlags(u) || '—'}
-                      </span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {tab === 'accounts' && selected && (
-            <section className="admin-panel__actions">
-              {selected.teamPractice && (
-                <p className="patient-form__hint" style={{ margin: 0 }}>
-                  {selected.teamRole === 'owner' ? 'Owner' : 'Member'} of <strong>{selected.teamPractice}</strong>
-                  {!selected.emailConfirmed && ' (invite pending)'} — membership, roles, and billing live in the
-                  Practices tab.
-                </p>
-              )}
-              <div className="admin-panel__names">
-                <label className="patient-form__label">
-                  Practice name
-                  <input
-                    type="text"
-                    className="patient-form__input"
-                    value={practiceName}
-                    onChange={(e) => setPracticeName(e.target.value)}
-                  />
-                </label>
-                <label className="patient-form__label">
-                  Doctor name
-                  <input
-                    type="text"
-                    className="patient-form__input"
-                    value={doctorName}
-                    onChange={(e) => setDoctorName(e.target.value)}
-                  />
-                </label>
-                <button type="button" className="diagram-view__action" onClick={handleSaveNames} disabled={busy}>
-                  Save names
-                </button>
-              </div>
-              <AdminChartList
-                key={`user:${selected.id}`}
-                label={`Charts created by ${selected.email}`}
-                rows={chartRowsFor(`user:${selected.id}`)}
-                loading={chartsLoading}
-                onLoad={() => loadCharts(`user:${selected.id}`, { action: 'list_user_charts', userId: selected.id })}
-                onOpen={(id) => openChart(id, accountPractice(selected) || selected.email)}
-                emptyText="This account hasn’t created any charts."
-              />
-              <div className="admin-panel__buttons">
-                <button type="button" className="diagram-view__action" onClick={handleSetPassword} disabled={busy}>
-                  Set password…
-                </button>
-                <button type="button" className="diagram-view__action" onClick={handleResetLink} disabled={busy}>
-                  Copy reset link
-                </button>
-                {!selected.emailConfirmed && (
-                  <button type="button" className="diagram-view__action" onClick={handleConfirmEmail} disabled={busy}>
-                    Confirm email
-                  </button>
-                )}
-                {selected.hasLogo && (
-                  <button type="button" className="diagram-view__action" onClick={handleRemoveLogo} disabled={busy}>
-                    Remove logo
-                  </button>
-                )}
-                {!selected.isAdmin && (
-                  <button
-                    type="button"
-                    className="diagram-view__action diagram-view__action--danger"
-                    onClick={handleDelete}
-                    disabled={busy}
-                  >
-                    Delete account…
-                  </button>
-                )}
-              </div>
-            </section>
-          )}
-
-          {tab === 'practices' && practices === null && (
-            <div className="chart-library__empty">
-              {error ? (
-                <>
-                  Couldn’t load practices.{' '}
-                  <button type="button" className="diagram-view__action" onClick={() => void refresh()} disabled={busy}>
-                    Retry
-                  </button>
-                </>
-              ) : (
-                'Loading practices…'
-              )}
-            </div>
-          )}
-
-          {tab === 'practices' && practices !== null && (
-            <div className="chart-library__table" role="table" aria-label="Practices">
-              <div className="chart-library__head-row admin-panel__practice-row" role="row">
-                {practiceHeader('name', 'Practice')}
-                {practiceHeader('owner', 'Owner')}
-                {practiceHeader('members', 'Members')}
-                {practiceHeader('charts', 'Charts')}
-                {practiceHeader('billing', 'Billing')}
-              </div>
-              <div className="chart-library__scroll">
-                {practices.length === 0 && <div className="chart-library__empty">No practices yet.</div>}
-                {practices.length > 0 && filteredPractices.length === 0 && (
-                  <div className="chart-library__empty">No practices match “{query.trim()}”.</div>
-                )}
-                {filteredPractices.map((p) => (
-                  <div key={p.id} className="chart-library__row" role="row">
-                    <button
-                      type="button"
-                      className={
-                        p.id === selectedPracticeId
-                          ? 'chart-library__row-main admin-panel__practice-row admin-panel__row--active'
-                          : 'chart-library__row-main admin-panel__practice-row'
-                      }
-                      onClick={() => pickPractice(p)}
-                      disabled={busy}
-                    >
-                      <span role="cell" className="chart-library__patient">{p.name || 'Untitled'}</span>
-                      <span role="cell" className="chart-library__cell">{p.ownerEmail}</span>
-                      <span role="cell" className="chart-library__cell">{p.memberCount}</span>
-                      <span role="cell" className="chart-library__cell">{p.chartCount}</span>
-                      <span role="cell" className="chart-library__cell">{billingChip(p.subscriptionStatus)}</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {tab === 'practices' && selectedPractice && (
-            <section className="admin-panel__actions">
-              <form className="admin-panel__names" onSubmit={handleRenamePractice}>
-                <label className="patient-form__label">
-                  Practice name
-                  <input
-                    type="text"
-                    className="patient-form__input"
-                    value={practiceRename}
-                    onChange={(e) => setPracticeRename(e.target.value)}
-                  />
-                </label>
-                <button type="submit" className="diagram-view__action" disabled={busy}>
-                  Rename
-                </button>
-              </form>
-
-              {/* What this account can actually do right now — resolved the
-                  same way the app does (useProfile + PLAN_LIMITS). */}
-              {(() => {
-                const paid = PAID_STATUSES.includes(selectedPractice.subscriptionStatus);
-                const tier = paid ? selectedPractice.plan : 'free';
-                const limits = PLAN_LIMITS[tier];
-                const seats = FREE_BETA ? FREE_BETA_SEATS : selectedPractice.accountType === 'practice' ? 5 : 1;
-                const ownerReport = FREE_BETA || !!selectedPractice.ownerReportEnabled;
-                return (
-                  <div className="admin-panel__access" aria-label="Effective access">
-                    <span className="patient-form__label" style={{ marginBottom: 0 }}>Access</span>
-                    <div className="admin-panel__access-body">
-                      <strong>
-                        {paid
-                          ? `${tier === 'pro' ? 'Pro' : 'Basic'} (${selectedPractice.subscriptionStatus})`
-                          : FREE_BETA ? 'Free beta' : 'Free'}
-                      </strong>
-                      <span>AI dictation {limits.aiAutofill ? '✓' : '✗'}</span>
-                      <span>{limits.maxImages} images / chart</span>
-                      <span>{seats} {seats === 1 ? 'seat' : 'seats'}</span>
-                      <span>Owner report {ownerReport ? '✓' : '✗'}</span>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Billing overrides. Tier + account type set images and
-                  seats once an account is billed or comped; Stripe-managed
-                  practices sync from the webhook, so hand-edits there are
-                  only for comps and corrections. */}
-              <div className="admin-panel__plan">
-                <span className="patient-form__label" style={{ marginBottom: 0 }}>Plan</span>
-                <div className="admin-panel__plan-toggle" role="group" aria-label="Practice plan">
-                  {(['basic', 'pro'] as const).map((pl) => (
-                    <button
-                      key={pl}
-                      type="button"
-                      className={selectedPractice.plan === pl ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
-                      aria-pressed={selectedPractice.plan === pl}
-                      onClick={() => handleSetPlan(pl)}
-                      disabled={busy || selectedPractice.plan === pl}
-                    >
-                      {pl === 'pro' ? 'Pro' : 'Basic'}
-                    </button>
-                  ))}
-                  <span className="admin-panel__plan-note">
-                    Applies once billed or comped: Basic {PLAN_LIMITS.basic.maxImages} images/chart, Pro {PLAN_LIMITS.pro.maxImages}.
-                    Unbilled accounts are on the free tier ({PLAN_LIMITS.free.maxImages} images). AI dictation is on for every plan.
-                  </span>
-                </div>
-              </div>
-
-              <div className="admin-panel__plan">
-                <span className="patient-form__label" style={{ marginBottom: 0 }}>Account type</span>
-                <div className="admin-panel__plan-toggle" role="group" aria-label="Account type">
-                  {(['individual', 'practice'] as const).map((at) => (
-                    <button
-                      key={at}
-                      type="button"
-                      className={selectedPractice.accountType === at ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
-                      aria-pressed={selectedPractice.accountType === at}
-                      onClick={() => handleSetAccountType(at)}
-                      disabled={busy || selectedPractice.accountType === at}
-                    >
-                      {at === 'practice' ? 'Practice (5 seats)' : 'Individual (1 seat)'}
-                    </button>
-                  ))}
-                  {FREE_BETA && (
-                    <span className="admin-panel__plan-note">
-                      Not enforced during the free beta — every account gets {FREE_BETA_SEATS} seats.
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="admin-panel__plan">
-                <span className="patient-form__label" style={{ marginBottom: 0 }}>Features</span>
-                <div className="admin-panel__plan-toggle" role="group" aria-label="Feature flags">
-                  <button
-                    type="button"
-                    className={selectedPractice.ownerReportEnabled ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
-                    aria-pressed={!!selectedPractice.ownerReportEnabled}
-                    onClick={() => handleSetOwnerReport(!selectedPractice.ownerReportEnabled)}
-                    disabled={busy}
-                  >
-                    Owner report: {selectedPractice.ownerReportEnabled ? 'on' : 'off'}
-                  </button>
-                  <span className="admin-panel__plan-note">
-                    {FREE_BETA
-                      ? 'Owner-facing take-home PDF — on for everyone during the free beta; this switch takes over when the beta ends.'
-                      : 'Owner-facing take-home PDF (beta) — off by default for every practice.'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="admin-panel__plan">
-                <span className="patient-form__label" style={{ marginBottom: 0 }}>Subscription</span>
-                <div className="admin-panel__plan-toggle">
-                  {billingChip(selectedPractice.subscriptionStatus)}
-                  {selectedPractice.periodEnd && (
-                    <span className="admin-panel__plan-note">
-                      {selectedPractice.subscriptionStatus === 'trialing' ? 'trial ends' : 'renews'}{' '}
-                      {new Date(selectedPractice.periodEnd).toLocaleDateString()}
-                    </span>
-                  )}
-                  {selectedPractice.frozenAt && (
-                    <span className="admin-panel__plan-note">
-                      frozen — purge deletes it{' '}
-                      {new Date(new Date(selectedPractice.frozenAt).getTime() + 30 * 86400000).toLocaleDateString()}
-                    </span>
-                  )}
-                  {selectedPractice.hasStripe ? (
-                    <span className="admin-panel__plan-note">Stripe-managed — status syncs from the webhook.</span>
-                  ) : (
-                    <button
-                      type="button"
-                      className="admin-panel__plan-opt"
-                      onClick={() => handleSetComped(selectedPractice.subscriptionStatus !== 'comped')}
-                      disabled={busy}
-                    >
-                      {selectedPractice.subscriptionStatus === 'comped' ? 'Remove comp' : 'Comp (free access)'}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Practice logo (the primary owner's logo — the brand on
-                  their charts). */}
-              <div className="practice-logo-row">
-                {selectedPractice.logoUrl ? (
-                  <img src={selectedPractice.logoUrl} alt="Practice logo" className="practice-logo-preview" />
-                ) : (
-                  <span className="practice-logo-empty">No practice logo.</span>
-                )}
-                <div className="practice-logo-actions">
-                  <button type="button" className="diagram-view__action" onClick={() => logoRef.current?.click()} disabled={busy}>
-                    {selectedPractice.logoUrl ? 'Replace logo' : 'Upload logo'}
-                  </button>
-                  {selectedPractice.logoUrl && (
-                    <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleRemovePracticeLogo} disabled={busy}>
-                      Remove logo
-                    </button>
-                  )}
-                </div>
-                <input
-                  ref={logoRef}
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  style={{ display: 'none' }}
-                  onChange={handlePracticeLogoPick}
-                />
-              </div>
-
-              <ul className="team__members">
-                {selectedPractice.members.map((m) => (
-                  <li key={m.userId} className="team__member">
-                    <span className="team__member-id"><strong>{m.email}</strong></span>
-                    {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
-                    <span className="team__member-role">{roleLabel(m.role, m.isPrimaryOwner)}</span>
-                    <span className="team__member-actions">
-                      {m.pending && (
-                        <button
-                          type="button"
-                          className="diagram-view__action"
-                          onClick={() => handleResendInvite(m.userId, m.email)}
-                          disabled={busy}
-                        >
-                          Resend invite
-                        </button>
-                      )}
-                      {/* A pending invite can't own the practice yet. */}
-                      {!m.isPrimaryOwner && !m.pending && (
-                        <button
-                          type="button"
-                          className="diagram-view__action"
-                          onClick={() => handleSetPracticeOwner(m.userId, m.email)}
-                          disabled={busy}
-                        >
-                          Make owner
-                        </button>
-                      )}
-                      {!m.isPrimaryOwner && (
-                        <button
-                          type="button"
-                          className="diagram-view__action diagram-view__action--danger"
-                          onClick={() => handleRemovePracticeMember(m.userId, m.email)}
-                          disabled={busy}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <form className="practice-team__add" onSubmit={handleAddPracticeMember}>
-                <input
-                  type="email"
-                  className="patient-form__input"
-                  placeholder="Add member by email"
-                  aria-label="Add member by email"
-                  value={memberEmail}
-                  onChange={(e) => setMemberEmail(e.target.value)}
-                />
-                <button type="submit" className="diagram-view__action" disabled={busy || !memberEmail.trim()}>
-                  Add
-                </button>
-              </form>
-
-              <AdminChartList
-                key={`practice:${selectedPractice.id}`}
-                label={`Charts in ${selectedPractice.name || 'this practice'}`}
-                rows={chartRowsFor(`practice:${selectedPractice.id}`)}
-                loading={chartsLoading}
-                onLoad={() => loadCharts(`practice:${selectedPractice.id}`, { action: 'list_practice_charts', practiceId: selectedPractice.id })}
-                onOpen={(id) => openChart(id, selectedPractice.name || 'Untitled practice')}
-                emptyText="No charts in this practice."
-              />
-
-              <div className="admin-panel__buttons">
-                <button
-                  type="button"
-                  className="diagram-view__action diagram-view__action--danger"
-                  onClick={handleDeletePractice}
-                  disabled={busy}
-                >
-                  Delete practice…
-                </button>
-              </div>
-            </section>
-          )}
-
-          {tab === 'billing' && (
-            <section className="admin-panel__billing">
-              <div className="admin-panel__ai-block">
-                <h3 className="ai-settings-subhead">Stripe</h3>
-                <p className="admin-panel__ai-total">
-                  Monthly recurring revenue: <strong>${billingMrr.toFixed(2)}</strong>
-                  {billingComped > 0 && <> · {billingComped} comped practice{billingComped === 1 ? '' : 's'}</>}
-                </p>
-                <div className="practice-logo-actions">
-                  <button type="button" className="diagram-view__action" onClick={handleStripeSetup} disabled={busy}>
-                    Run Stripe setup
-                  </button>
-                  <button type="button" className="diagram-view__action" onClick={loadBilling} disabled={busy}>
-                    Refresh
-                  </button>
-                </div>
-                {billingTax !== null && (
-                  <p className="admin-panel__ai-total">
-                    Stripe Tax: <strong>{billingTax ? 'on' : 'off'}</strong>
-                    {!billingTax && (
-                      <span className="patient-form__hint">
-                        Checkout collects billing addresses and VAT/tax IDs but adds no tax. To turn it on, activate
-                        Stripe Tax in the Stripe Dashboard, then set the STRIPE_TAX_ENABLED=true function secret.
-                      </span>
-                    )}
-                  </p>
-                )}
-                {setupNote && <p className="patient-form__hint">{setupNote}</p>}
-                <p className="patient-form__hint">
-                  Setup is idempotent: it creates the four plan prices (by lookup key) and the webhook endpoint in
-                  Stripe if they don't exist yet. Run it once per Stripe account (and again after switching test → live keys).
-                </p>
-              </div>
-
-              <div className="admin-panel__ai-block">
-                <h3 className="ai-settings-subhead">Subscriptions</h3>
-                {billingRows === null ? (
-                  <p className="chart-library__empty">Loading…</p>
-                ) : billingRows.length === 0 ? (
-                  <p className="practice-logo-empty">No Stripe subscriptions yet.</p>
-                ) : (
-                  <table className="admin-panel__usage-table">
-                    <thead>
-                      <tr>
-                        {th(billingSort, 'practice', 'Practice')}
-                        {th(billingSort, 'plan', 'Plan')}
-                        {th(billingSort, 'status', 'Status')}
-                        {th(billingSort, 'amount', '$/mo')}
-                        {th(billingSort, 'renews', 'Renews')}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedBilling.map((r, i) => (
-                        <tr key={i}>
-                          <td>{r.practiceName}</td>
-                          <td>{r.planKey.replace(/_/g, ' ') || '—'}</td>
-                          <td>
-                            {r.status.replace(/_/g, ' ')}
-                            {r.cancelAtPeriodEnd ? ' (canceling)' : ''}
-                          </td>
-                          <td>${r.amountUsd.toFixed(0)}</td>
-                          <td>{r.periodEnd ? new Date(r.periodEnd).toLocaleDateString() : '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </section>
-          )}
-
-          {tab === 'ai' && (
-            <section className="admin-panel__ai">
-              {/* Model — chosen live from what the account can use. */}
-              <div className="admin-panel__ai-block">
-                <h3 className="ai-settings-subhead">Extraction model</h3>
-                {!aiConfigured && (
-                  <p className="login-error" role="alert">
-                    ANTHROPIC_API_KEY isn't set as an edge-function secret yet — AI autofill is off until it is.
-                  </p>
-                )}
-                <label className="patient-form__label">
-                  Model used for voice autofill
-                  <select
-                    className="patient-form__input"
-                    value={aiModel}
-                    onChange={(e) => handleSetModel(e.target.value)}
-                    disabled={busy || !aiConfigured}
-                  >
-                    {aiModel && !AI_MODEL_CHOICES.some((c) => c.id === aiModel) && (
-                      <option value={aiModel}>{aiModel} (current — not tuned)</option>
-                    )}
-                    {AI_MODEL_CHOICES.map((c) => {
-                      // Grey out models this API key can't use (when the
-                      // live list loaded at all).
-                      const unavailable = aiModels.length > 0 && !aiModels.some((m) => m.id === c.id);
-                      return (
-                        <option key={c.id} value={c.id} disabled={unavailable}>
-                          {c.label} — {c.speed}, {c.costPerHour}{unavailable ? ' (not on this account)' : ''}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                <p className="patient-form__hint">
-                  {AI_MODEL_CHOICES.find((c) => c.id === aiModel)?.note ?? 'Pick a model above.'}{' '}
-                  Applies to every practice. Costs are rough estimates for an hour of continuous dictation.
-                </p>
-              </div>
-
-              {/* Credit / balance. */}
-              <div className="admin-panel__ai-block">
-                <h3 className="ai-settings-subhead">AI spend</h3>
-                <p className="admin-panel__ai-total">
-                  Estimated Claude spend to date: <strong>${aiTotalCost.toFixed(2)}</strong>
-                </p>
-                {aiBalance?.deepgram && (
-                  <p className="admin-panel__ai-total">Deepgram balance: <strong>{aiBalance.deepgram}</strong></p>
-                )}
-                {aiBalance?.note && <p className="patient-form__hint">{aiBalance.note}</p>}
-              </div>
-
-              {/* Per-user usage. */}
-              <div className="admin-panel__ai-block">
-                <h3 className="ai-settings-subhead">Token usage by user</h3>
-                {aiUsage === null ? (
-                  <p className="chart-library__empty">Loading…</p>
-                ) : aiUsage.length === 0 ? (
-                  <p className="practice-logo-empty">No AI usage recorded yet.</p>
-                ) : (
-                  <table className="admin-panel__usage-table">
-                    <thead>
-                      <tr>
-                        {th(aiSort, 'user', 'User')}
-                        {th(aiSort, 'calls', 'Calls')}
-                        {th(aiSort, 'input', 'Input')}
-                        {th(aiSort, 'output', 'Output')}
-                        {th(aiSort, 'cache', 'Cache')}
-                        {th(aiSort, 'cost', 'Est. cost')}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedAi.map((u) => (
-                        <tr key={u.userId}>
-                          <td>{u.email}</td>
-                          <td>{u.calls.toLocaleString()}</td>
-                          <td>{u.inputTokens.toLocaleString()}</td>
-                          <td>{u.outputTokens.toLocaleString()}</td>
-                          <td>{u.cacheReadTokens.toLocaleString()}</td>
-                          <td>${u.estCostUsd.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </section>
-          )}
+          {adminBody}
         </div>
       </div>
       {viewingChart && (

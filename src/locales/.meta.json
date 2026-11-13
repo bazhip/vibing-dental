@@ -1239,6 +1239,262 @@
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
       "status": "machine"
+    },
+    "settings:chart.allSettings": {
+      "hash": "f8aea4c05e07",
+      "status": "machine"
+    },
+    "settings:chart.besideTeeth": {
+      "hash": "47240bf7cb7c",
+      "status": "machine"
+    },
+    "settings:chart.block.caudalMaxillary": {
+      "hash": "f9a50a0273c1",
+      "status": "machine"
+    },
+    "settings:chart.block.inferiorAlveolar": {
+      "hash": "01ebd1a3a121",
+      "status": "machine"
+    },
+    "settings:chart.block.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "settings:chart.block.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "settings:chart.block.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "settings:chart.blocksNote": {
+      "hash": "0d37691bfd59",
+      "status": "machine"
+    },
+    "settings:chart.blocksShown": {
+      "hash": "17c1be1d8da5",
+      "status": "machine"
+    },
+    "settings:chart.byTooth": {
+      "hash": "749bea746040",
+      "status": "machine"
+    },
+    "settings:chart.columns": {
+      "hash": "53aade77cd69",
+      "status": "machine"
+    },
+    "settings:chart.columnsFooter": {
+      "hash": "db70ab83f8a2",
+      "status": "machine"
+    },
+    "settings:chart.drugLabel": {
+      "hash": "a726529c3b0c",
+      "status": "machine"
+    },
+    "settings:chart.drugName": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "settings:chart.drugPlaceholder": {
+      "hash": "d1da7e459904",
+      "status": "machine"
+    },
+    "settings:chart.drugStrength": {
+      "hash": "63ee3a1b965a",
+      "status": "machine"
+    },
+    "settings:chart.field.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "settings:chart.field.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "settings:chart.field.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "settings:chart.field.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "settings:chart.field.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "settings:chart.field.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "settings:chart.field.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "settings:chart.field.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "settings:chart.grid": {
+      "hash": "0d7d12ac624c",
+      "status": "machine"
+    },
+    "settings:chart.hideRecheck": {
+      "hash": "870eeab81a9d",
+      "status": "machine"
+    },
+    "settings:chart.include": {
+      "hash": "7285576bdacf",
+      "status": "machine"
+    },
+    "settings:chart.mirror": {
+      "hash": "76e7aa7671bf",
+      "status": "machine"
+    },
+    "settings:chart.mirrorHint": {
+      "hash": "2a98b1f7b5ed",
+      "status": "machine"
+    },
+    "settings:chart.noteAccount": {
+      "hash": "ac07d82e959d",
+      "status": "machine"
+    },
+    "settings:chart.noteDevice": {
+      "hash": "268acb4b5853",
+      "status": "machine"
+    },
+    "settings:chart.patientPage": {
+      "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.pdf": {
+      "hash": "1d393b0081b6",
+      "status": "machine"
+    },
+    "settings:chart.pdfGrid": {
+      "hash": "d89c86cc19fa",
+      "status": "machine"
+    },
+    "settings:chart.pdfGridHint": {
+      "hash": "ffaa20b6b53b",
+      "status": "machine"
+    },
+    "settings:chart.pdfImages": {
+      "hash": "eeb1e873130a",
+      "status": "machine"
+    },
+    "settings:chart.pdfImagesHint": {
+      "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.perRoot": {
+      "hash": "89bb4af6e573",
+      "status": "machine"
+    },
+    "settings:chart.perRootHint": {
+      "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.perTooth": {
+      "hash": "e3b56159e026",
+      "status": "machine"
+    },
+    "settings:chart.pocketDepths": {
+      "hash": "36aaa91cbd69",
+      "status": "machine"
+    },
+    "settings:chart.scoreTap": {
+      "hash": "c9fd1f216e0d",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFinding": {
+      "hash": "504cbd980a2c",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFindingHint": {
+      "hash": "f015bb86942b",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapStay": {
+      "hash": "79450bdfd35e",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapTooth": {
+      "hash": "3f16bc105f48",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapToothHint": {
+      "hash": "881ca8ce2abf",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.anesthesia": {
+      "hash": "8f1d658a72cd",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.charting": {
+      "hash": "481c48a27c4e",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.diagnosis": {
+      "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.images": {
+      "hash": "6690b5e0cd36",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.patient": {
+      "hash": "ce39d45363ae",
+      "status": "machine"
+    },
+    "settings:chart.spaceKey": {
+      "hash": "87d1b68a0553",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDown": {
+      "hash": "ee77c340d824",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDownHint": {
+      "hash": "a3452a5c519b",
+      "status": "machine"
+    },
+    "settings:chart.spaceTypes": {
+      "hash": "97732d8c38d0",
+      "status": "machine"
+    },
+    "settings:chart.strengthLabel": {
+      "hash": "5d4f96ec79c2",
+      "status": "machine"
+    },
+    "settings:chart.usualDrug": {
+      "hash": "b1800ffe72c7",
+      "status": "machine"
+    },
+    "settings:chart.usualDrugNote": {
+      "hash": "4884d1c50006",
+      "status": "machine"
+    },
+    "settings:chart.view": {
+      "hash": "dcc839a4015c",
+      "status": "machine"
+    },
+    "settings:gettingStarted.chartParts": {
+      "hash": "1f150917db87",
+      "status": "machine"
+    },
+    "settings:gettingStarted.takeTour": {
+      "hash": "a83c4366d2df",
+      "status": "machine"
+    },
+    "settings:gettingStarted.tourFooter": {
+      "hash": "1eee3cbb2545",
+      "status": "machine"
+    },
+    "settings:ownerReport.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
     }
   },
   "es": {
@@ -2488,6 +2744,262 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "settings:chart.allSettings": {
+      "hash": "f8aea4c05e07",
+      "status": "machine"
+    },
+    "settings:chart.besideTeeth": {
+      "hash": "47240bf7cb7c",
+      "status": "machine"
+    },
+    "settings:chart.block.caudalMaxillary": {
+      "hash": "f9a50a0273c1",
+      "status": "machine"
+    },
+    "settings:chart.block.inferiorAlveolar": {
+      "hash": "01ebd1a3a121",
+      "status": "machine"
+    },
+    "settings:chart.block.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "settings:chart.block.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "settings:chart.block.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "settings:chart.blocksNote": {
+      "hash": "0d37691bfd59",
+      "status": "machine"
+    },
+    "settings:chart.blocksShown": {
+      "hash": "17c1be1d8da5",
+      "status": "machine"
+    },
+    "settings:chart.byTooth": {
+      "hash": "749bea746040",
+      "status": "machine"
+    },
+    "settings:chart.columns": {
+      "hash": "53aade77cd69",
+      "status": "machine"
+    },
+    "settings:chart.columnsFooter": {
+      "hash": "db70ab83f8a2",
+      "status": "machine"
+    },
+    "settings:chart.drugLabel": {
+      "hash": "a726529c3b0c",
+      "status": "machine"
+    },
+    "settings:chart.drugName": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "settings:chart.drugPlaceholder": {
+      "hash": "d1da7e459904",
+      "status": "machine"
+    },
+    "settings:chart.drugStrength": {
+      "hash": "63ee3a1b965a",
+      "status": "machine"
+    },
+    "settings:chart.field.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "settings:chart.field.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "settings:chart.field.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "settings:chart.field.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "settings:chart.field.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "settings:chart.field.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "settings:chart.field.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "settings:chart.field.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "settings:chart.grid": {
+      "hash": "0d7d12ac624c",
+      "status": "machine"
+    },
+    "settings:chart.hideRecheck": {
+      "hash": "870eeab81a9d",
+      "status": "machine"
+    },
+    "settings:chart.include": {
+      "hash": "7285576bdacf",
+      "status": "machine"
+    },
+    "settings:chart.mirror": {
+      "hash": "76e7aa7671bf",
+      "status": "machine"
+    },
+    "settings:chart.mirrorHint": {
+      "hash": "2a98b1f7b5ed",
+      "status": "machine"
+    },
+    "settings:chart.noteAccount": {
+      "hash": "ac07d82e959d",
+      "status": "machine"
+    },
+    "settings:chart.noteDevice": {
+      "hash": "268acb4b5853",
+      "status": "machine"
+    },
+    "settings:chart.patientPage": {
+      "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.pdf": {
+      "hash": "1d393b0081b6",
+      "status": "machine"
+    },
+    "settings:chart.pdfGrid": {
+      "hash": "d89c86cc19fa",
+      "status": "machine"
+    },
+    "settings:chart.pdfGridHint": {
+      "hash": "ffaa20b6b53b",
+      "status": "machine"
+    },
+    "settings:chart.pdfImages": {
+      "hash": "eeb1e873130a",
+      "status": "machine"
+    },
+    "settings:chart.pdfImagesHint": {
+      "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.perRoot": {
+      "hash": "89bb4af6e573",
+      "status": "machine"
+    },
+    "settings:chart.perRootHint": {
+      "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.perTooth": {
+      "hash": "e3b56159e026",
+      "status": "machine"
+    },
+    "settings:chart.pocketDepths": {
+      "hash": "36aaa91cbd69",
+      "status": "machine"
+    },
+    "settings:chart.scoreTap": {
+      "hash": "c9fd1f216e0d",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFinding": {
+      "hash": "504cbd980a2c",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFindingHint": {
+      "hash": "f015bb86942b",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapStay": {
+      "hash": "79450bdfd35e",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapTooth": {
+      "hash": "3f16bc105f48",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapToothHint": {
+      "hash": "881ca8ce2abf",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.anesthesia": {
+      "hash": "8f1d658a72cd",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.charting": {
+      "hash": "481c48a27c4e",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.diagnosis": {
+      "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.images": {
+      "hash": "6690b5e0cd36",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.patient": {
+      "hash": "ce39d45363ae",
+      "status": "machine"
+    },
+    "settings:chart.spaceKey": {
+      "hash": "87d1b68a0553",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDown": {
+      "hash": "ee77c340d824",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDownHint": {
+      "hash": "a3452a5c519b",
+      "status": "machine"
+    },
+    "settings:chart.spaceTypes": {
+      "hash": "97732d8c38d0",
+      "status": "machine"
+    },
+    "settings:chart.strengthLabel": {
+      "hash": "5d4f96ec79c2",
+      "status": "machine"
+    },
+    "settings:chart.usualDrug": {
+      "hash": "b1800ffe72c7",
+      "status": "machine"
+    },
+    "settings:chart.usualDrugNote": {
+      "hash": "4884d1c50006",
+      "status": "machine"
+    },
+    "settings:chart.view": {
+      "hash": "dcc839a4015c",
+      "status": "machine"
+    },
+    "settings:gettingStarted.chartParts": {
+      "hash": "1f150917db87",
+      "status": "machine"
+    },
+    "settings:gettingStarted.takeTour": {
+      "hash": "a83c4366d2df",
+      "status": "machine"
+    },
+    "settings:gettingStarted.tourFooter": {
+      "hash": "1eee3cbb2545",
+      "status": "machine"
+    },
+    "settings:ownerReport.title": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     }
   },
@@ -3739,6 +4251,262 @@
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
       "status": "machine"
+    },
+    "settings:chart.allSettings": {
+      "hash": "f8aea4c05e07",
+      "status": "machine"
+    },
+    "settings:chart.besideTeeth": {
+      "hash": "47240bf7cb7c",
+      "status": "machine"
+    },
+    "settings:chart.block.caudalMaxillary": {
+      "hash": "f9a50a0273c1",
+      "status": "machine"
+    },
+    "settings:chart.block.inferiorAlveolar": {
+      "hash": "01ebd1a3a121",
+      "status": "machine"
+    },
+    "settings:chart.block.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "settings:chart.block.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "settings:chart.block.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "settings:chart.blocksNote": {
+      "hash": "0d37691bfd59",
+      "status": "machine"
+    },
+    "settings:chart.blocksShown": {
+      "hash": "17c1be1d8da5",
+      "status": "machine"
+    },
+    "settings:chart.byTooth": {
+      "hash": "749bea746040",
+      "status": "machine"
+    },
+    "settings:chart.columns": {
+      "hash": "53aade77cd69",
+      "status": "machine"
+    },
+    "settings:chart.columnsFooter": {
+      "hash": "db70ab83f8a2",
+      "status": "machine"
+    },
+    "settings:chart.drugLabel": {
+      "hash": "a726529c3b0c",
+      "status": "machine"
+    },
+    "settings:chart.drugName": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "settings:chart.drugPlaceholder": {
+      "hash": "d1da7e459904",
+      "status": "machine"
+    },
+    "settings:chart.drugStrength": {
+      "hash": "63ee3a1b965a",
+      "status": "machine"
+    },
+    "settings:chart.field.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "settings:chart.field.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "settings:chart.field.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "settings:chart.field.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "settings:chart.field.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "settings:chart.field.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "settings:chart.field.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "settings:chart.field.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "settings:chart.grid": {
+      "hash": "0d7d12ac624c",
+      "status": "machine"
+    },
+    "settings:chart.hideRecheck": {
+      "hash": "870eeab81a9d",
+      "status": "machine"
+    },
+    "settings:chart.include": {
+      "hash": "7285576bdacf",
+      "status": "machine"
+    },
+    "settings:chart.mirror": {
+      "hash": "76e7aa7671bf",
+      "status": "machine"
+    },
+    "settings:chart.mirrorHint": {
+      "hash": "2a98b1f7b5ed",
+      "status": "machine"
+    },
+    "settings:chart.noteAccount": {
+      "hash": "ac07d82e959d",
+      "status": "machine"
+    },
+    "settings:chart.noteDevice": {
+      "hash": "268acb4b5853",
+      "status": "machine"
+    },
+    "settings:chart.patientPage": {
+      "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.pdf": {
+      "hash": "1d393b0081b6",
+      "status": "machine"
+    },
+    "settings:chart.pdfGrid": {
+      "hash": "d89c86cc19fa",
+      "status": "machine"
+    },
+    "settings:chart.pdfGridHint": {
+      "hash": "ffaa20b6b53b",
+      "status": "machine"
+    },
+    "settings:chart.pdfImages": {
+      "hash": "eeb1e873130a",
+      "status": "machine"
+    },
+    "settings:chart.pdfImagesHint": {
+      "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.perRoot": {
+      "hash": "89bb4af6e573",
+      "status": "machine"
+    },
+    "settings:chart.perRootHint": {
+      "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.perTooth": {
+      "hash": "e3b56159e026",
+      "status": "machine"
+    },
+    "settings:chart.pocketDepths": {
+      "hash": "36aaa91cbd69",
+      "status": "machine"
+    },
+    "settings:chart.scoreTap": {
+      "hash": "c9fd1f216e0d",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFinding": {
+      "hash": "504cbd980a2c",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFindingHint": {
+      "hash": "f015bb86942b",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapStay": {
+      "hash": "79450bdfd35e",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapTooth": {
+      "hash": "3f16bc105f48",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapToothHint": {
+      "hash": "881ca8ce2abf",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.anesthesia": {
+      "hash": "8f1d658a72cd",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.charting": {
+      "hash": "481c48a27c4e",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.diagnosis": {
+      "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.images": {
+      "hash": "6690b5e0cd36",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.patient": {
+      "hash": "ce39d45363ae",
+      "status": "machine"
+    },
+    "settings:chart.spaceKey": {
+      "hash": "87d1b68a0553",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDown": {
+      "hash": "ee77c340d824",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDownHint": {
+      "hash": "a3452a5c519b",
+      "status": "machine"
+    },
+    "settings:chart.spaceTypes": {
+      "hash": "97732d8c38d0",
+      "status": "machine"
+    },
+    "settings:chart.strengthLabel": {
+      "hash": "5d4f96ec79c2",
+      "status": "machine"
+    },
+    "settings:chart.usualDrug": {
+      "hash": "b1800ffe72c7",
+      "status": "machine"
+    },
+    "settings:chart.usualDrugNote": {
+      "hash": "4884d1c50006",
+      "status": "machine"
+    },
+    "settings:chart.view": {
+      "hash": "dcc839a4015c",
+      "status": "machine"
+    },
+    "settings:gettingStarted.chartParts": {
+      "hash": "1f150917db87",
+      "status": "machine"
+    },
+    "settings:gettingStarted.takeTour": {
+      "hash": "a83c4366d2df",
+      "status": "machine"
+    },
+    "settings:gettingStarted.tourFooter": {
+      "hash": "1eee3cbb2545",
+      "status": "machine"
+    },
+    "settings:ownerReport.title": {
+      "hash": "9539f5ae5214",
+      "status": "machine"
     }
   },
   "it": {
@@ -4988,6 +5756,262 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "settings:chart.allSettings": {
+      "hash": "f8aea4c05e07",
+      "status": "machine"
+    },
+    "settings:chart.besideTeeth": {
+      "hash": "47240bf7cb7c",
+      "status": "machine"
+    },
+    "settings:chart.block.caudalMaxillary": {
+      "hash": "f9a50a0273c1",
+      "status": "machine"
+    },
+    "settings:chart.block.inferiorAlveolar": {
+      "hash": "01ebd1a3a121",
+      "status": "machine"
+    },
+    "settings:chart.block.infraorbital": {
+      "hash": "ad29f7158c36",
+      "status": "machine"
+    },
+    "settings:chart.block.mental": {
+      "hash": "6b4efad88345",
+      "status": "machine"
+    },
+    "settings:chart.block.other": {
+      "hash": "f97e9da0e3b8",
+      "status": "machine"
+    },
+    "settings:chart.blocksNote": {
+      "hash": "0d37691bfd59",
+      "status": "machine"
+    },
+    "settings:chart.blocksShown": {
+      "hash": "17c1be1d8da5",
+      "status": "machine"
+    },
+    "settings:chart.byTooth": {
+      "hash": "749bea746040",
+      "status": "machine"
+    },
+    "settings:chart.columns": {
+      "hash": "53aade77cd69",
+      "status": "machine"
+    },
+    "settings:chart.columnsFooter": {
+      "hash": "db70ab83f8a2",
+      "status": "machine"
+    },
+    "settings:chart.drugLabel": {
+      "hash": "a726529c3b0c",
+      "status": "machine"
+    },
+    "settings:chart.drugName": {
+      "hash": "e7b552847955",
+      "status": "machine"
+    },
+    "settings:chart.drugPlaceholder": {
+      "hash": "d1da7e459904",
+      "status": "machine"
+    },
+    "settings:chart.drugStrength": {
+      "hash": "63ee3a1b965a",
+      "status": "machine"
+    },
+    "settings:chart.field.calculus": {
+      "hash": "a946456fce85",
+      "status": "machine"
+    },
+    "settings:chart.field.furcation": {
+      "hash": "9a53ee559d07",
+      "status": "machine"
+    },
+    "settings:chart.field.gingivitis": {
+      "hash": "1e439abdd5d2",
+      "status": "machine"
+    },
+    "settings:chart.field.hyperplasia": {
+      "hash": "4434bb35d2b7",
+      "status": "machine"
+    },
+    "settings:chart.field.mobility": {
+      "hash": "e8f000eec857",
+      "status": "machine"
+    },
+    "settings:chart.field.pdstate": {
+      "hash": "82d0ad7a5968",
+      "status": "machine"
+    },
+    "settings:chart.field.pocket": {
+      "hash": "c13c5a5f8381",
+      "status": "machine"
+    },
+    "settings:chart.field.recession": {
+      "hash": "30c058aa8f6e",
+      "status": "machine"
+    },
+    "settings:chart.grid": {
+      "hash": "0d7d12ac624c",
+      "status": "machine"
+    },
+    "settings:chart.hideRecheck": {
+      "hash": "870eeab81a9d",
+      "status": "machine"
+    },
+    "settings:chart.include": {
+      "hash": "7285576bdacf",
+      "status": "machine"
+    },
+    "settings:chart.mirror": {
+      "hash": "76e7aa7671bf",
+      "status": "machine"
+    },
+    "settings:chart.mirrorHint": {
+      "hash": "2a98b1f7b5ed",
+      "status": "machine"
+    },
+    "settings:chart.noteAccount": {
+      "hash": "ac07d82e959d",
+      "status": "machine"
+    },
+    "settings:chart.noteDevice": {
+      "hash": "268acb4b5853",
+      "status": "machine"
+    },
+    "settings:chart.patientPage": {
+      "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.pdf": {
+      "hash": "1d393b0081b6",
+      "status": "machine"
+    },
+    "settings:chart.pdfGrid": {
+      "hash": "d89c86cc19fa",
+      "status": "machine"
+    },
+    "settings:chart.pdfGridHint": {
+      "hash": "ffaa20b6b53b",
+      "status": "machine"
+    },
+    "settings:chart.pdfImages": {
+      "hash": "eeb1e873130a",
+      "status": "machine"
+    },
+    "settings:chart.pdfImagesHint": {
+      "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.perRoot": {
+      "hash": "89bb4af6e573",
+      "status": "machine"
+    },
+    "settings:chart.perRootHint": {
+      "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.perTooth": {
+      "hash": "e3b56159e026",
+      "status": "machine"
+    },
+    "settings:chart.pocketDepths": {
+      "hash": "36aaa91cbd69",
+      "status": "machine"
+    },
+    "settings:chart.scoreTap": {
+      "hash": "c9fd1f216e0d",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFinding": {
+      "hash": "504cbd980a2c",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapFindingHint": {
+      "hash": "f015bb86942b",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapStay": {
+      "hash": "79450bdfd35e",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapTooth": {
+      "hash": "3f16bc105f48",
+      "status": "machine"
+    },
+    "settings:chart.scoreTapToothHint": {
+      "hash": "881ca8ce2abf",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.anesthesia": {
+      "hash": "8f1d658a72cd",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.charting": {
+      "hash": "481c48a27c4e",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.diagnosis": {
+      "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.images": {
+      "hash": "6690b5e0cd36",
+      "status": "machine"
+    },
+    "settings:chart.sectionTitle.patient": {
+      "hash": "ce39d45363ae",
+      "status": "machine"
+    },
+    "settings:chart.spaceKey": {
+      "hash": "87d1b68a0553",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDown": {
+      "hash": "ee77c340d824",
+      "status": "machine"
+    },
+    "settings:chart.spaceMovesDownHint": {
+      "hash": "a3452a5c519b",
+      "status": "machine"
+    },
+    "settings:chart.spaceTypes": {
+      "hash": "97732d8c38d0",
+      "status": "machine"
+    },
+    "settings:chart.strengthLabel": {
+      "hash": "5d4f96ec79c2",
+      "status": "machine"
+    },
+    "settings:chart.usualDrug": {
+      "hash": "b1800ffe72c7",
+      "status": "machine"
+    },
+    "settings:chart.usualDrugNote": {
+      "hash": "4884d1c50006",
+      "status": "machine"
+    },
+    "settings:chart.view": {
+      "hash": "dcc839a4015c",
+      "status": "machine"
+    },
+    "settings:gettingStarted.chartParts": {
+      "hash": "1f150917db87",
+      "status": "machine"
+    },
+    "settings:gettingStarted.takeTour": {
+      "hash": "a83c4366d2df",
+      "status": "machine"
+    },
+    "settings:gettingStarted.tourFooter": {
+      "hash": "1eee3cbb2545",
+      "status": "machine"
+    },
+    "settings:ownerReport.title": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     }
   },

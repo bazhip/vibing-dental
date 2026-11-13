@@ -10,7 +10,7 @@ interface WalkthroughModalProps {
   onNavigate?: (sectionId: string) => void;
 }
 
-interface Step {
+export interface Step {
   /** Chart section to switch to before showing this step. */
   section?: string;
   /** CSS selector for the element to point at. Omit for a centered step. */
@@ -21,7 +21,8 @@ interface Step {
   placement?: 'bottom' | 'top' | 'left' | 'right';
 }
 
-function buildSteps(aiEnabled?: boolean): Step[] {
+/** The tour's steps (also listed by the iOS app's Getting started screen). */
+export function buildSteps(aiEnabled?: boolean): Step[] {
   const steps: Step[] = [
     {
       title: 'Welcome to ToothOps',

@@ -1,0 +1,78 @@
+{
+  "chart": {
+    "noteAccount": "Solo para usted: estos ajustes siguen a su cuenta en todos sus dispositivos. Los cambios se guardan al instante.",
+    "noteDevice": "Guardados en este dispositivo. Los cambios se aplican al instante.",
+    "allSettings": "Todos los ajustes del odontograma",
+    "view": "Vista",
+    "grid": "Cuadrícula",
+    "byTooth": "Por diente",
+    "pocketDepths": "Profundidades de bolsa",
+    "perTooth": "Una por diente",
+    "perRoot": "Una por raíz",
+    "perRootHint": "M / D, o MB / MP / D en dientes de tres raíces",
+    "spaceKey": "Barra espaciadora en la cuadrícula",
+    "spaceMovesDown": "Baja al siguiente diente",
+    "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",
+    "spaceTypes": "Escribe un espacio",
+    "scoreTap": "Tras tocar una puntuación en la cuadrícula",
+    "scoreTapFinding": "Ir al siguiente hallazgo del mismo diente",
+    "scoreTapFindingHint": "Movilidad → recesión → … para exploraciones diente a diente",
+    "scoreTapTooth": "Bajar al siguiente diente",
+    "scoreTapToothHint": "Para puntuar un hallazgo en toda la boca",
+    "scoreTapStay": "Quedarse donde está",
+    "columns": "Columnas",
+    "columnsFooter": "Columnas que se muestran en la cuadrícula del odontograma. Al menos una sigue visible.",
+    "field": {
+      "mobility": "Movilidad",
+      "recession": "Recesión",
+      "pocket": "Bolsa",
+      "furcation": "Furca",
+      "hyperplasia": "Agrandamiento",
+      "calculus": "Cálculo dental",
+      "gingivitis": "Gingivitis",
+      "pdstate": "Estadio PD"
+    },
+    "besideTeeth": "Junto a los dientes",
+    "mirror": "Mostrar los hallazgos en el diagrama de Diagnóstico",
+    "mirrorHint": "Y en el PDF",
+    "include": "Incluir",
+    "blocksShown": "Bloqueos nerviosos visibles",
+    "blocksNote": "Un bloqueo oculto sigue visible en un odontograma donde tiene una dosis.",
+    "block": {
+      "infraorbital": "Infraorbitario",
+      "caudalMaxillary": "Maxilar caudal",
+      "inferiorAlveolar": "Alveolar inferior",
+      "mental": "Mentoniano",
+      "other": "Otro"
+    },
+    "usualDrug": "Su anestésico habitual",
+    "usualDrugNote": "Se ofrece con un toque en un odontograma sin anestésico definido.",
+    "drugName": "Fármaco",
+    "drugStrength": "Concentración",
+    "drugPlaceholder": "p. ej., Bupivacaína",
+    "drugLabel": "Anestésico habitual",
+    "strengthLabel": "Concentración del anestésico habitual (%)",
+    "patientPage": "Página Paciente",
+    "hideRecheck": "Ocultar el campo Revisión prevista",
+    "pdf": "PDF",
+    "pdfGrid": "Incluir la cuadrícula del odontograma",
+    "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
+    "pdfImages": "Incluir imágenes",
+    "pdfImagesHint": "4 por página, después del odontograma",
+    "sectionTitle": {
+      "patient": "Ajustes de la página Paciente",
+      "anesthesia": "Ajustes de anestesia",
+      "charting": "Ajustes del odontograma",
+      "diagnosis": "Ajustes de diagnóstico",
+      "images": "Ajustes de imágenes"
+    }
+  },
+  "ownerReport": {
+    "title": "Informe para el propietario"
+  },
+  "gettingStarted": {
+    "takeTour": "Hacer el recorrido",
+    "tourFooter": "Un breve recorrido por dónde está todo en el odontograma.",
+    "chartParts": "Partes del odontograma"
+  }
+}

@@ -3,13 +3,21 @@ import ReactDOM from 'react-dom';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
-import { DentalField } from '../types';
-import { BLOCK_ROW_OPTIONS, BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { useTranslation } from 'react-i18next';
+import { isNativeApp } from '../native/platform';
+import { Sheet } from '../ios/Sheet';
+import { ChartSettingsList } from './ChartSettingsList';
+import { USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 
 /**
  * Chart settings — per person: they follow your account to every device.
  * Each change applies (and saves) right away. Every default matches the
  * app's original layout.
+ *
+ * In the iOS app the same settings render as an inset-grouped list
+ * (ChartSettingsList): in a sheet here (a chart page's Customize), and as
+ * a pushed screen from the Settings tab.
  */
 
 export interface ChartSettingsModalProps {
@@ -33,21 +41,33 @@ const SECTION_TITLES: Record<SettingsSection, string> = {
   images: 'Images settings',
 };
 
-const toggle = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
-  on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
 
-export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
+  isNativeApp() ? <ChartSettingsSheet {...props} /> : <ChartSettingsDialog {...props} />;
+
+/** The app: an iOS sheet holding the settings list. */
+function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section }: ChartSettingsModalProps) {
+  const { t } = useTranslation();
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
-  const showAll = only === null;
-  // Which groups a page's Customize shows (everything from the menu).
-  const show = {
-    charting: showAll || only === 'charting',
-    beside: showAll || only === 'charting' || only === 'diagnosis',
-    anesthesia: showAll || only === 'anesthesia',
-    patient: showAll || only === 'patient',
-    pdfGrid: showAll || only === 'charting',
-    pdfImages: showAll || only === 'images',
-  };
+  return (
+    <Sheet
+      open
+      onClose={onClose}
+      title={only ? t(`chart.sectionTitle.${only}`, { ns: 'settings' }) : t('ios.settings.chart')}
+      doneLabel={t('actions.done')}
+      onDone={onClose}
+      className="ios-chart-settings-sheet"
+    >
+      <ChartSettingsList prefs={prefs} followsAccount={followsAccount} onChange={onChange} only={only} onShowAll={() => setOnly(null)} />
+    </Sheet>
+  );
+}
+
+/** The website's dialog. */
+const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+  const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
+  const { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock } =
+    useChartSettingsModel(prefs, onChange, only);
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(onClose);
 
@@ -60,20 +80,6 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
   }, [onClose]);
-
-  const shownColumns = PERIO_FIELDS.filter((f) => !prefs.hiddenColumns.includes(f.key));
-
-  // Usual anesthetic: typed locally, saved when a field loses focus (not
-  // on every keystroke).
-  const [drugName, setDrugName] = React.useState(prefs.usualDrug?.name ?? '');
-  const [drugStrength, setDrugStrength] = React.useState(prefs.usualDrug?.concentration ?? '');
-  const saveUsualDrug = () => {
-    const name = drugName.trim();
-    const next = name ? { name, concentration: drugStrength.replace(/%/g, '').trim() } : null;
-    if (JSON.stringify(next) !== JSON.stringify(prefs.usualDrug)) onChange({ usualDrug: next });
-  };
-  const toggleBlock = (id: BlockRowId, shown: boolean) =>
-    onChange({ hiddenBlocks: shown ? prefs.hiddenBlocks.filter((b) => b !== id) : Array.from(new Set([...prefs.hiddenBlocks, id])) });
 
   return ReactDOM.createPortal(
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart settings">
@@ -162,7 +168,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                         checked={shown}
                         // Keep at least one column.
                         disabled={shown && shownColumns.length === 1}
-                        onChange={(e) => onChange({ hiddenColumns: toggle(prefs.hiddenColumns, f.key, !e.target.checked) })}
+                        onChange={(e) => onChange({ hiddenColumns: toggleField(prefs.hiddenColumns, f.key, !e.target.checked) })}
                       />
                       {f.label}
                     </label>
@@ -188,7 +194,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                     <input
                       type="checkbox"
                       checked={prefs.besideTeeth.includes(f.key)}
-                      onChange={(e) => onChange({ besideTeeth: toggle(prefs.besideTeeth, f.key, e.target.checked) })}
+                      onChange={(e) => onChange({ besideTeeth: toggleField(prefs.besideTeeth, f.key, e.target.checked) })}
                     />
                     {f.label}
                   </label>
@@ -251,7 +257,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                   <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
                 </span>
                 <datalist id="chart-settings-drugs">
-                  {['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'].map((d) => <option key={d} value={d} />)}
+                  {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
                 </datalist>
               </div>
             </fieldset>

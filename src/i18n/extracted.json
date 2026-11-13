@@ -25,5 +25,8 @@
   "src/ios/screens/RechecksScreen.tsx",
   "src/ios/screens/SettingsScreen.tsx",
   "src/ios/SearchField.tsx",
-  "src/ios/screens/patientShared.tsx"
+  "src/ios/screens/patientShared.tsx",
+  "src/ios/screens/settingsScreens.tsx",
+  "src/ios/screens/settingsFixture.tsx",
+  "src/components/ChartSettingsList.tsx"
 ]

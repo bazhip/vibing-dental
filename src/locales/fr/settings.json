@@ -1,0 +1,78 @@
+{
+  "chart": {
+    "noteAccount": "Rien que pour vous : ces réglages suivent votre compte sur tous vos appareils. Les modifications sont enregistrées immédiatement.",
+    "noteDevice": "Enregistrés sur cet appareil. Les modifications s’appliquent immédiatement.",
+    "allSettings": "Tous les réglages du schéma",
+    "view": "Affichage",
+    "grid": "Grille",
+    "byTooth": "Par dent",
+    "pocketDepths": "Profondeurs de poche",
+    "perTooth": "Une par dent",
+    "perRoot": "Une par racine",
+    "perRootHint": "M / D, ou MB / MP / D sur les dents à trois racines",
+    "spaceKey": "Touche Espace dans la grille",
+    "spaceMovesDown": "Descend à la dent suivante",
+    "spaceMovesDownHint": "Rapide pour dicter une série de profondeurs",
+    "spaceTypes": "Saisit une espace",
+    "scoreTap": "Après avoir touché un score dans la grille",
+    "scoreTapFinding": "Passer au constat suivant sur la même dent",
+    "scoreTapFindingHint": "Mobilité → récession → … pour un examen dent par dent",
+    "scoreTapTooth": "Descendre à la dent suivante",
+    "scoreTapToothHint": "Pour noter un constat sur toute la bouche",
+    "scoreTapStay": "Rester sur place",
+    "columns": "Colonnes",
+    "columnsFooter": "Colonnes affichées dans la grille du schéma. Au moins une reste affichée.",
+    "field": {
+      "mobility": "Mobilité",
+      "recession": "Récession",
+      "pocket": "Poche",
+      "furcation": "Furcation",
+      "hyperplasia": "Accroissement",
+      "calculus": "Calcul dentaire",
+      "gingivitis": "Gingivite",
+      "pdstate": "Stade PD"
+    },
+    "besideTeeth": "À côté des dents",
+    "mirror": "Afficher les constats sur le schéma Diagnostic",
+    "mirrorHint": "Et dans le PDF",
+    "include": "Inclure",
+    "blocksShown": "Blocs nerveux affichés",
+    "blocksNote": "Un bloc masqué reste visible sur un schéma où il a une dose.",
+    "block": {
+      "infraorbital": "Infra-orbitaire",
+      "caudalMaxillary": "Maxillaire caudal",
+      "inferiorAlveolar": "Alvéolaire inférieur",
+      "mental": "Mentonnier",
+      "other": "Autre"
+    },
+    "usualDrug": "Votre anesthésique habituel",
+    "usualDrugNote": "Proposé en un geste sur un schéma sans anesthésique défini.",
+    "drugName": "Produit",
+    "drugStrength": "Concentration",
+    "drugPlaceholder": "p. ex. Bupivacaine",
+    "drugLabel": "Anesthésique habituel",
+    "strengthLabel": "Concentration de l’anesthésique habituel (%)",
+    "patientPage": "Page Patient",
+    "hideRecheck": "Masquer le champ Contrôle prévu",
+    "pdf": "PDF",
+    "pdfGrid": "Inclure la grille du schéma",
+    "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
+    "pdfImages": "Inclure les images",
+    "pdfImagesHint": "4 par page, après le schéma",
+    "sectionTitle": {
+      "patient": "Réglages de la page Patient",
+      "anesthesia": "Réglages de l’anesthésie",
+      "charting": "Réglages du schéma",
+      "diagnosis": "Réglages du diagnostic",
+      "images": "Réglages des images"
+    }
+  },
+  "ownerReport": {
+    "title": "Rapport au propriétaire"
+  },
+  "gettingStarted": {
+    "takeTour": "Faire la visite guidée",
+    "tourFooter": "Une courte visite pour savoir où tout se trouve dans le schéma.",
+    "chartParts": "Parties du schéma"
+  }
+}
