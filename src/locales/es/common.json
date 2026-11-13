@@ -36,15 +36,6 @@
       "showSidebar": "Mostrar barra lateral",
       "chartSections": "Secciones del odontograma"
     },
-    "patients": {
-      "signIn": "Inicie sesión para ver sus odontogramas guardados.",
-      "loadFailed": "No se han podido cargar sus odontogramas.",
-      "empty": "Todavía no hay odontogramas guardados.",
-      "unnamed": "Paciente sin nombre"
-    },
-    "rechecks": {
-      "empty": "No hay controles pendientes."
-    },
     "settings": {
       "account": "Cuenta",
       "practice": "Ajustes de la clínica",

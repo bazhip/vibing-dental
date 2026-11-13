@@ -36,15 +36,6 @@
       "showSidebar": "Show sidebar",
       "chartSections": "Chart sections"
     },
-    "patients": {
-      "signIn": "Sign in to see your saved charts.",
-      "loadFailed": "Couldn’t load your charts.",
-      "empty": "No saved charts yet.",
-      "unnamed": "Unnamed patient"
-    },
-    "rechecks": {
-      "empty": "No rechecks due."
-    },
     "settings": {
       "account": "Account",
       "practice": "Practice settings",

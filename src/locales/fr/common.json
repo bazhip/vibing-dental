@@ -36,15 +36,6 @@
       "showSidebar": "Afficher la barre latérale",
       "chartSections": "Sections du schéma"
     },
-    "patients": {
-      "signIn": "Connectez-vous pour voir vos schémas enregistrés.",
-      "loadFailed": "Impossible de charger vos schémas.",
-      "empty": "Aucun schéma enregistré pour le moment.",
-      "unnamed": "Patient sans nom"
-    },
-    "rechecks": {
-      "empty": "Aucun contrôle à prévoir."
-    },
     "settings": {
       "account": "Compte",
       "practice": "Réglages de la clinique",

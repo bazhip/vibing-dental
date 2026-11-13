@@ -732,26 +732,6 @@
       "hash": "565339bc4d33",
       "status": "machine"
     },
-    "common:ios.patients.empty": {
-      "hash": "0ff4e73b2967",
-      "status": "machine"
-    },
-    "common:ios.patients.loadFailed": {
-      "hash": "0b01074fa684",
-      "status": "machine"
-    },
-    "common:ios.patients.signIn": {
-      "hash": "ff7a1b322e73",
-      "status": "machine"
-    },
-    "common:ios.patients.unnamed": {
-      "hash": "115a96d09d75",
-      "status": "machine"
-    },
-    "common:ios.rechecks.empty": {
-      "hash": "420ac586e683",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
       "status": "machine"
@@ -2452,26 +2432,6 @@
     },
     "common:ios.ok": {
       "hash": "565339bc4d33",
-      "status": "machine"
-    },
-    "common:ios.patients.empty": {
-      "hash": "0ff4e73b2967",
-      "status": "machine"
-    },
-    "common:ios.patients.loadFailed": {
-      "hash": "0b01074fa684",
-      "status": "machine"
-    },
-    "common:ios.patients.signIn": {
-      "hash": "ff7a1b322e73",
-      "status": "machine"
-    },
-    "common:ios.patients.unnamed": {
-      "hash": "115a96d09d75",
-      "status": "machine"
-    },
-    "common:ios.rechecks.empty": {
-      "hash": "420ac586e683",
       "status": "machine"
     },
     "common:ios.settings.account": {
@@ -4180,26 +4140,6 @@
       "hash": "565339bc4d33",
       "status": "machine"
     },
-    "common:ios.patients.empty": {
-      "hash": "0ff4e73b2967",
-      "status": "machine"
-    },
-    "common:ios.patients.loadFailed": {
-      "hash": "0b01074fa684",
-      "status": "machine"
-    },
-    "common:ios.patients.signIn": {
-      "hash": "ff7a1b322e73",
-      "status": "machine"
-    },
-    "common:ios.patients.unnamed": {
-      "hash": "115a96d09d75",
-      "status": "machine"
-    },
-    "common:ios.rechecks.empty": {
-      "hash": "420ac586e683",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
       "status": "machine"
@@ -5904,26 +5844,6 @@
     },
     "common:ios.ok": {
       "hash": "565339bc4d33",
-      "status": "machine"
-    },
-    "common:ios.patients.empty": {
-      "hash": "0ff4e73b2967",
-      "status": "machine"
-    },
-    "common:ios.patients.loadFailed": {
-      "hash": "0b01074fa684",
-      "status": "machine"
-    },
-    "common:ios.patients.signIn": {
-      "hash": "ff7a1b322e73",
-      "status": "machine"
-    },
-    "common:ios.patients.unnamed": {
-      "hash": "115a96d09d75",
-      "status": "machine"
-    },
-    "common:ios.rechecks.empty": {
-      "hash": "420ac586e683",
       "status": "machine"
     },
     "common:ios.settings.account": {

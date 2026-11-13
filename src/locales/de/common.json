@@ -36,15 +36,6 @@
       "showSidebar": "Seitenleiste einblenden",
       "chartSections": "Abschnitte des Zahnschemas"
     },
-    "patients": {
-      "signIn": "Melden Sie sich an, um Ihre gespeicherten Zahnschemata zu sehen.",
-      "loadFailed": "Ihre Zahnschemata konnten nicht geladen werden.",
-      "empty": "Noch keine gespeicherten Zahnschemata.",
-      "unnamed": "Patient ohne Namen"
-    },
-    "rechecks": {
-      "empty": "Keine Kontrollen fällig."
-    },
     "settings": {
       "account": "Konto",
       "practice": "Praxiseinstellungen",
