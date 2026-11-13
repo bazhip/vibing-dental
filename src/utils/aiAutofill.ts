@@ -7,6 +7,7 @@ import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
 import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
 import { chunkWorthSendingOther, isPerioOnlyOther, normalizeOther } from './voice/normalize';
+import { NATIVE_FEW_SHOT, dictationLanguageBlock } from './voice/fewShot';
 import type { AppLanguage } from '../i18n/config';
 import {
   PatientInfo,
@@ -400,7 +401,11 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → set_tooth_mark(diagram=pre, triadan=105, mark=missing)
 `;
 
-function buildStaticSystemPrompt(): string {
+/** The cacheable system prompt. English is unchanged; fr/de/it/es add a
+ *  DICTATION LANGUAGE block after the core rules and native examples
+ *  after the English ones (./voice/fewShot). Each language has its own
+ *  prompt, so the prompt cache is per language. */
+export function buildStaticSystemPrompt(lng: AppLanguage = 'en'): string {
   const codeList = DENTAL_CODES
     .map((c) => `  ${c.code} — ${c.definition} (${c.kind})`)
     .join('\n');
@@ -420,6 +425,7 @@ function buildStaticSystemPrompt(): string {
     '9. Periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) go ONLY in set_tooth_field, never in add_comment — the app mirrors the grid onto the diagram itself when the vet wants that.',
     '10. Diagram notes are AVDC codes, not words: "T/FX", "TR", "AB", "T/FX/CCF". Use plain words only when no code exists for the finding.',
     '',
+    ...(lng === 'en' ? [] : [dictationLanguageBlock(lng), '']),
     'UNCERTAINTY (the vet is looking at the mouth, not the screen — flags are how they find out):',
     '- Words written [?like this] were low-confidence in speech-to-text. Treat them as possibly misheard.',
     '- When one reading is clearly most likely but you are not sure, make the call with uncertain=true, a short reason, and alternatives (each a complete tool call).',
@@ -436,6 +442,7 @@ function buildStaticSystemPrompt(): string {
     '- append_radiographic_findings for what the radiographs show ("on rads", "radiographically", "x-rays show") — not exam findings, not work done.',
     '',
     FEW_SHOT_EXAMPLES,
+    ...(lng === 'en' ? [] : [NATIVE_FEW_SHOT[lng]]),
     '',
     'DENTAL SHORTHAND CODES (use in field values and comments where natural):',
     codeList,
@@ -838,7 +845,7 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
     max_tokens: 1024,
     kind: 'live',
     system: [
-      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+      { type: 'text', text: buildStaticSystemPrompt(lng), cache_control: { type: 'ephemeral' } },
     ],
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
@@ -906,7 +913,7 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
     mode: 'review',
     kind: 'review',
     system: [
-      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+      { type: 'text', text: buildStaticSystemPrompt(input.lng ?? 'en'), cache_control: { type: 'ephemeral' } },
     ],
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
@@ -1080,10 +1087,13 @@ export function dictationCacheWarm(now: number = Date.now()): boolean {
   return now - lastDictationPromptAt < CACHE_STILL_WARM_MS;
 }
 
-export async function prewarmAutofill(): Promise<void> {
+export async function prewarmAutofill(lng: AppLanguage = 'en'): Promise<void> {
   if (!supabase) return;
   // Each cold warm-up writes the ~17.5k-token prompt into the cache (the
   // biggest single line on the bill) — skip it while the cache is warm.
+  // The prompt differs per dictation language but this warmth timestamp is
+  // shared: after a language switch within 4 minutes the first chunk pays
+  // one cache write. Acceptable — switching mid-session is rare.
   if (dictationCacheWarm()) return;
   markDictationPromptUsed();
   try {
@@ -1092,7 +1102,7 @@ export async function prewarmAutofill(): Promise<void> {
         max_tokens: 0,
         kind: 'warmup',
         system: [
-          { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+          { type: 'text', text: buildStaticSystemPrompt(lng), cache_control: { type: 'ephemeral' } },
         ],
         tools,
         messages: [{ role: 'user', content: [{ type: 'text', text: 'Warm-up. No transcript yet.' }] }],

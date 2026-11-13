@@ -561,9 +561,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (voice.interim && !heardSinceStart) setHeardSinceStart(true);
     if (voice.interim && voice.recording && !warmedThisListenRef.current) {
       warmedThisListenRef.current = true;
-      prewarmAutofill();
+      prewarmAutofill(voice.lng);
     }
-  }, [voice.interim, voice.recording, heardSinceStart]);
+  }, [voice.interim, voice.recording, heardSinceStart, voice.lng]);
 
   // The moment the mic is really live: a short buzz on phones that support
   // it. (No chime: playing audio through a second AudioContext while the

@@ -322,3 +322,119 @@ describe('dictation prompt cache warmth', () => {
     expect(dictationCacheWarm(t0 + 4.1 * 60_000)).toBe(false); // the 5-minute cache may be gone: warm again
   });
 });
+
+import enPromptSnapshot from './voice/__fixtures__/en-prompt-snapshot.json';
+import { buildStaticSystemPrompt, invalidReason, type AiAction } from './aiAutofill';
+import { NATIVE_FEW_SHOT } from './voice/fewShot';
+
+describe('dictation language in the AI prompt', () => {
+  const ctx = {
+    patientInfo: {
+      patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', doctor: '', tech: '',
+      date: '', complaint: '', treatmentReport: '', recallDate: '',
+      nerveBlocks: { ...EMPTY_NERVE_BLOCKS }, exam: { ...EMPTY_EXAM_FINDINGS },
+    },
+    species: 'canine' as const, logo: 'socal' as const, toothData: [],
+    preMarks: {}, preComments: [], postMarks: {}, postComments: [],
+  };
+  const chunkInput = { delta: 'one oh four GI two, 0.3 mL bupivacaine right infraorbital', recentContext: '105', context: ctx, section: 'charting' };
+  const reviewInput = {
+    transcript: '104 GI 2\n105 missing', context: ctx,
+    rejected: [{ name: 'set_tooth_mark', input: { diagram: 'pre', triadan: 105, mark: 'missing' } }],
+  };
+
+  it('keeps the English prompt and request bodies byte-identical (snapshot taken before languages)', () => {
+    expect(buildStaticSystemPrompt()).toBe(enPromptSnapshot.systemPrompt);
+    expect(buildStaticSystemPrompt('en')).toBe(enPromptSnapshot.systemPrompt);
+    expect(JSON.stringify(buildChunkRequest(chunkInput))).toBe(JSON.stringify(enPromptSnapshot.chunk));
+    expect(JSON.stringify(buildChunkRequest({ ...chunkInput, lng: 'en' }))).toBe(JSON.stringify(enPromptSnapshot.chunk));
+    expect(JSON.stringify(buildReviewRequest(reviewInput))).toBe(JSON.stringify(enPromptSnapshot.review));
+    expect(JSON.stringify(buildReviewRequest({ ...reviewInput, lng: 'en' }))).toBe(JSON.stringify(enPromptSnapshot.review));
+  });
+
+  it('adds the French language block and French examples for fr', () => {
+    const fr = buildStaticSystemPrompt('fr');
+    expect(fr).toContain('DICTATION LANGUAGE: French');
+    expect(fr).toContain('cent quatre mobilité deux, tartre stade un');
+    expect(fr).toContain('[FR C1]');
+    // The block sits after the core rules, the examples after the English ones.
+    expect(fr.indexOf('DICTATION LANGUAGE')).toBeGreaterThan(fr.indexOf('10. Diagram notes'));
+    expect(fr.indexOf('DICTATION LANGUAGE')).toBeLessThan(fr.indexOf('UNCERTAINTY'));
+    expect(fr.indexOf('[FR 1]')).toBeGreaterThan(fr.indexOf('[EX 18]'));
+    expect(fr.indexOf('[FR 1]')).toBeLessThan(fr.indexOf('DENTAL SHORTHAND CODES'));
+    // Everything English is still there.
+    expect(fr).toContain(enPromptSnapshot.systemPrompt.slice(0, 200));
+    expect(fr).not.toContain('[DE 1]');
+  });
+
+  it('uses the dictation language for the live and final-check system prompt', () => {
+    const de = buildChunkRequest({ ...chunkInput, lng: 'de' })!;
+    expect(de.system[0].text).toBe(buildStaticSystemPrompt('de'));
+    expect(de.system[0].text).toContain('DICTATION LANGUAGE: German');
+    expect(de.system[0].cache_control).toEqual({ type: 'ephemeral' });
+    const it_ = buildReviewRequest({ ...reviewInput, lng: 'it' })!;
+    expect(it_.system[0].text).toBe(buildStaticSystemPrompt('it'));
+    expect(buildStaticSystemPrompt('es')).toContain('DICTATION LANGUAGE: Spanish');
+  });
+
+  // Parses "→ name(k=v, k="quoted, text", ...)" lines of the native examples
+  // against the real tool schemas, so a typo in an example fails here.
+  const tools = buildChunkRequest(chunkInput)!.tools;
+  const schemaOf = (name: string) => tools.find((t) => t.name === name)?.input_schema as
+    { properties: Record<string, { type?: string; enum?: string[] }>; required?: string[] } | undefined;
+  function splitArgs(s: string): string[] {
+    const out: string[] = [];
+    let cur = '';
+    let quoted = false;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '"' && s[i - 1] !== '\\') quoted = !quoted;
+      if (ch === ',' && !quoted) { out.push(cur.trim()); cur = ''; continue; }
+      cur += ch;
+    }
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  }
+  function parseCall(line: string): AiAction {
+    const m = /^→ (\w+)\((.*)\)$/.exec(line.trim());
+    if (!m) throw new Error(`not a tool call: ${line}`);
+    const schema = schemaOf(m[1]);
+    if (!schema) throw new Error(`unknown tool: ${m[1]}`);
+    const input: Record<string, unknown> = {};
+    for (const arg of splitArgs(m[2])) {
+      const eq = arg.indexOf('=');
+      const key = arg.slice(0, eq);
+      const raw = arg.slice(eq + 1);
+      const prop = schema.properties[key];
+      if (!prop) throw new Error(`${m[1]} has no "${key}": ${line}`);
+      const value = raw.startsWith('"') ? JSON.parse(raw) : raw;
+      if (prop.type === 'integer') {
+        if (!/^\d+$/.test(value)) throw new Error(`${key} must be an integer: ${line}`);
+        input[key] = Number(value);
+      } else {
+        if (prop.enum && !prop.enum.includes(value)) throw new Error(`${key}=${value} not in enum: ${line}`);
+        input[key] = value;
+      }
+    }
+    for (const req of schema.required ?? []) if (!(req in input)) throw new Error(`${m[1]} missing ${req}: ${line}`);
+    return { name: m[1], input };
+  }
+
+  for (const [lng, examples] of Object.entries(NATIVE_FEW_SHOT)) {
+    it(`every ${lng} few-shot tool call is a valid action`, () => {
+      const lines = examples.split('\n').filter((l) => l.startsWith('→ ') && !l.startsWith('→ NO TOOL CALL'));
+      expect(lines.length).toBeGreaterThanOrEqual(15);
+      for (const line of lines) {
+        const action = parseCall(line);
+        expect(invalidReason(action), line).toBeNull();
+        if (action.name === 'set_nerve_block') expect(action.input.mL, line).toMatch(/^\d+\.\d+$/);
+        if (action.input.concentration != null) expect(action.input.concentration, line).toMatch(/^\d+(\.\d+)?$/);
+        if (action.name === 'set_anesthetic_drug') expect(['Bupivacaine', 'Lidocaine', 'Ropivacaine', 'Mepivacaine']).toContain(action.input.drug);
+      }
+      // EX 1–9b plus the three code-switching examples.
+      const labels = examples.match(/^\[[A-Z]{2} [^\]]+\]/gm) ?? [];
+      expect(labels).toHaveLength(13);
+      expect(buildStaticSystemPrompt(lng as 'fr')).toContain(examples);
+    });
+  }
+});
