@@ -1,0 +1,30 @@
+{
+  "common": {
+    "fallback": "If the button doesn’t work, copy this link into your browser:",
+    "tagline": "Veterinary dental charting"
+  },
+  "confirmSignup": {
+    "subject": "Confirm your ToothOps account",
+    "title": "Confirm your email",
+    "preheader": "Confirm your email to activate your ToothOps account.",
+    "body": "Welcome to ToothOps. Confirm <strong>{{email}}</strong> to activate your practice account — you’ll be signed in right away.",
+    "button": "Confirm email & sign in",
+    "ignore": "Didn’t sign up for ToothOps? You can ignore this email — the account stays inactive unless this link is used."
+  },
+  "resetPassword": {
+    "subject": "Reset your ToothOps password",
+    "title": "Reset your password",
+    "preheader": "Reset the password for your ToothOps account.",
+    "body": "We received a request to reset the password for <strong>{{email}}</strong>. The link is valid for one hour.",
+    "button": "Choose a new password",
+    "ignore": "Didn’t ask for this? Ignore this email — your password stays the same."
+  },
+  "changeEmail": {
+    "subject": "Confirm your new email for ToothOps",
+    "title": "Confirm your new email",
+    "preheader": "Confirm the new email address for your ToothOps account.",
+    "body": "Confirm that <strong>{{newEmail}}</strong> should replace <strong>{{email}}</strong> as the sign-in email for your ToothOps account.",
+    "button": "Confirm new email",
+    "ignore": "Didn’t request this change? Ignore this email and your sign-in email stays the same."
+  }
+}

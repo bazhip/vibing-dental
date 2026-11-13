@@ -3,13 +3,26 @@
 Supabase Auth sends three emails itself; these are their branded bodies.
 (Team invites and reminders are sent by our edge functions via Resend.)
 
-| Supabase template | Subject | File |
-|---|---|---|
-| Confirm signup | Confirm your ToothOps account | `confirm-signup.html` |
-| Reset password | Reset your ToothOps password | `reset-password.html` |
-| Change email address | Confirm your new email for ToothOps | `change-email.html` |
+**The templates are generated — do not edit the `.html` files or `subjects.md` by hand.**
+The text lives in `src/locales/<lng>/authEmail.json` (en, fr, de, it, es); run
+`npm run i18n:emails` after changing it. `npm run i18n:check` (and so the build)
+fails when the generated files are stale.
 
-Paste each into Dashboard → Authentication → Emails → Templates.
+Each file is one shared layout with a Go-template chain around every text run:
+`{{ if eq $lang "fr" }}…{{ else }}English{{ end }}`. `$lang` comes from the
+user's `language` metadata (`.Data.language`), which the app sets at signup and
+whenever the account language changes. Users without it get English.
+
+| Supabase template | File | Subject |
+|---|---|---|
+| Confirm signup | `confirm-signup.html` | see `subjects.md` |
+| Reset password | `reset-password.html` | see `subjects.md` |
+| Change email address | `change-email.html` | see `subjects.md` |
+
+To install (Owner action, after each change to the templates): in
+Dashboard → Authentication → Emails → Templates, open each template and paste
+the whole `.html` file into Message body and the matching block from
+`subjects.md` into Subject heading. Nothing is deployed automatically.
 
 For them to come from ToothOps (not Supabase), set custom SMTP in
 Dashboard → Authentication → Emails → SMTP Settings:

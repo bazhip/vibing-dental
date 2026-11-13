@@ -163,6 +163,9 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             // Agreed by the notice beside "Create account" — the new-user
             // trigger copies it onto the profile with the server's time.
             terms_version: TERMS_VERSION,
+            // The auth emails (confirm signup, reset, change email) pick their
+            // language from this; updated when the account language changes.
+            language: i18n.language,
           },
         },
       });

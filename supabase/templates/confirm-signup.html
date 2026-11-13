@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang="en">
+{{ $lang := "" }}{{ with .Data }}{{ with .language }}{{ $lang = . }}{{ end }}{{ end }}<!doctype html>
+<html lang="{{ if eq $lang "fr" }}fr{{ else if eq $lang "de" }}de{{ else if eq $lang "it" }}it{{ else if eq $lang "es" }}es{{ else }}en{{ end }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Confirm your email</title>
+<title>{{ if eq $lang "fr" }}Confirmez votre adresse e-mail{{ else if eq $lang "de" }}Bestätigen Sie Ihre E-Mail-Adresse{{ else if eq $lang "it" }}Confermi il Suo indirizzo e-mail{{ else if eq $lang "es" }}Confirme su correo electrónico{{ else }}Confirm your email{{ end }}</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f6f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#17232e;">
-<span style="display:none;max-height:0;overflow:hidden;opacity:0;">Confirm your email to activate your ToothOps account.</span>
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ if eq $lang "fr" }}Confirmez votre adresse e-mail pour activer votre compte ToothOps.{{ else if eq $lang "de" }}Bestätigen Sie Ihre E-Mail-Adresse, um Ihr ToothOps-Konto zu aktivieren.{{ else if eq $lang "it" }}Confermi il Suo indirizzo e-mail per attivare l’account ToothOps.{{ else if eq $lang "es" }}Confirme su correo electrónico para activar su cuenta de ToothOps.{{ else }}Confirm your email to activate your ToothOps account.{{ end }}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f7;padding:32px 12px;">
   <tr><td align="center">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;">
@@ -14,19 +14,19 @@
         <div style="font-size:20px;font-weight:700;color:#0c6b63;letter-spacing:-0.01em;">ToothOps</div>
       </td></tr>
       <tr><td style="padding:8px 32px 0;">
-        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#17232e;">Confirm your email</h1>
-        <p style="margin:0;font-size:16px;line-height:1.55;">Welcome to ToothOps. Confirm <strong>{{ .Email }}</strong> to activate your practice account — you’ll be signed in right away.</p>
+        <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;color:#17232e;">{{ if eq $lang "fr" }}Confirmez votre adresse e-mail{{ else if eq $lang "de" }}Bestätigen Sie Ihre E-Mail-Adresse{{ else if eq $lang "it" }}Confermi il Suo indirizzo e-mail{{ else if eq $lang "es" }}Confirme su correo electrónico{{ else }}Confirm your email{{ end }}</h1>
+        <p style="margin:0;font-size:16px;line-height:1.55;">{{ if eq $lang "fr" }}Bienvenue sur ToothOps. Confirmez <strong>{{ .Email }}</strong> pour activer le compte de votre clinique — vous serez connecté immédiatement.{{ else if eq $lang "de" }}Willkommen bei ToothOps. Bestätigen Sie <strong>{{ .Email }}</strong>, um das Konto Ihrer Praxis zu aktivieren – Sie sind danach sofort angemeldet.{{ else if eq $lang "it" }}Benvenuto in ToothOps. Confermi <strong>{{ .Email }}</strong> per attivare l’account del Suo studio: verrà connesso subito.{{ else if eq $lang "es" }}Bienvenido a ToothOps. Confirme <strong>{{ .Email }}</strong> para activar la cuenta de su clínica; iniciará sesión de inmediato.{{ else }}Welcome to ToothOps. Confirm <strong>{{ .Email }}</strong> to activate your practice account — you’ll be signed in right away.{{ end }}</p>
       </td></tr>
       <tr><td style="padding:20px 32px 8px;">
-        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">Confirm email &amp; sign in</a>
+        <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#0c6b63;color:#ffffff;text-decoration:none;font-weight:600;font-size:16px;padding:12px 22px;border-radius:8px;">{{ if eq $lang "fr" }}Confirmer l’e-mail et se connecter{{ else if eq $lang "de" }}E-Mail bestätigen &amp; anmelden{{ else if eq $lang "it" }}Conferma e-mail e accedi{{ else if eq $lang "es" }}Confirmar correo e iniciar sesión{{ else }}Confirm email &amp; sign in{{ end }}</a>
       </td></tr>
       <tr><td style="padding:12px 32px 28px;font-size:13px;line-height:1.5;color:#64748b;">
-        If the button doesn’t work, copy this link into your browser:<br>
+        {{ if eq $lang "fr" }}Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :{{ else if eq $lang "de" }}Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:{{ else if eq $lang "it" }}Se il pulsante non funziona, copi questo link nel Suo browser:{{ else if eq $lang "es" }}Si el botón no funciona, copie este enlace en su navegador:{{ else }}If the button doesn’t work, copy this link into your browser:{{ end }}<br>
         <a href="{{ .ConfirmationURL }}" style="color:#0c6b63;word-break:break-all;">{{ .ConfirmationURL }}</a>
-        <p style="margin:16px 0 0;">Didn’t sign up for ToothOps? You can ignore this email — the account stays inactive unless this link is used.</p>
+        <p style="margin:16px 0 0;">{{ if eq $lang "fr" }}Vous ne vous êtes pas inscrit sur ToothOps ? Vous pouvez ignorer cet e-mail — le compte reste inactif tant que ce lien n’est pas utilisé.{{ else if eq $lang "de" }}Sie haben sich nicht bei ToothOps registriert? Dann können Sie diese E-Mail ignorieren – das Konto bleibt inaktiv, solange dieser Link nicht verwendet wird.{{ else if eq $lang "it" }}Non si è registrato su ToothOps? Può ignorare questa e-mail: l’account resta inattivo finché questo link non viene utilizzato.{{ else if eq $lang "es" }}¿No se registró en ToothOps? Puede ignorar este correo: la cuenta permanece inactiva a menos que se use este enlace.{{ else }}Didn’t sign up for ToothOps? You can ignore this email — the account stays inactive unless this link is used.{{ end }}</p>
       </td></tr>
     </table>
-    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · Veterinary dental charting · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;">ToothOps · {{ if eq $lang "fr" }}Schéma dentaire vétérinaire{{ else if eq $lang "de" }}Zahnschema für die Tiermedizin{{ else if eq $lang "it" }}Odontogramma veterinario{{ else if eq $lang "es" }}Odontograma veterinario{{ else }}Veterinary dental charting{{ end }} · <a href="https://toothops.app" style="color:#94a3b8;">toothops.app</a></p>
   </td></tr>
 </table>
 </body>

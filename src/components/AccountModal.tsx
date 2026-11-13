@@ -247,7 +247,13 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 className="patient-form__input"
                 aria-labelledby="account-language-heading"
                 value={language}
-                onChange={(e) => isAppLanguage(e.target.value) && onLanguageChange?.(e.target.value)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  if (!isAppLanguage(next)) return;
+                  onLanguageChange?.(next);
+                  // Auth emails read user_metadata.language. Fire and forget: never blocks the UI.
+                  void supabase?.auth.updateUser({ data: { language: next } }).catch(() => undefined);
+                }}
               >
                 {APP_LANGUAGES.map((l) => (
                   <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>

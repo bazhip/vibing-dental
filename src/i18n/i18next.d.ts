@@ -21,6 +21,7 @@ import type voice from '../locales/en/voice.json';
 import type client from '../locales/en/client.json';
 import type pdf from '../locales/en/pdf.json';
 import type email from '../locales/en/email.json';
+import type authEmail from '../locales/en/authEmail.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -49,6 +50,7 @@ declare module 'i18next' {
       client: typeof client;
       pdf: typeof pdf;
       email: typeof email;
+      authEmail: typeof authEmail;
     };
   }
 }

@@ -1,6 +1,7 @@
 import { hashEnglish, languagesFor, loadCatalogs, loadMeta, englishKeyFor, placeholders } from './catalog';
 import type { Catalogs, Meta } from './catalog';
 import { emailStringsProblem } from './gen-email-strings';
+import { authTemplatesProblems } from './gen-auth-templates';
 
 export type Problem = {
   lng: string;
@@ -72,12 +73,12 @@ function main() {
   for (const kind of kinds) {
     for (const p of problems.filter((x) => x.kind === kind)) console.error(`${p.lng} ${p.key} ${kind}`);
   }
-  // Edge-function email text is generated from the email namespace.
-  const emails = emailStringsProblem(catalogs);
-  if (emails) console.error(emails);
-  console.log(`i18n:check ${problems.length + (emails ? 1 : 0)} problems`);
+  // Edge-function email text and the Supabase auth templates are generated from catalogs.
+  const generated = [emailStringsProblem(catalogs), ...authTemplatesProblems(catalogs)].filter((p): p is string => !!p);
+  for (const g of generated) console.error(g);
+  console.log(`i18n:check ${problems.length + generated.length} problems`);
   if (problems.length) console.error('run `npm run i18n:translate`');
-  if (problems.length || emails) process.exit(1);
+  if (problems.length || generated.length) process.exit(1);
 }
 
 // Run only as a CLI, not when imported by tests.

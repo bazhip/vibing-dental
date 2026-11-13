@@ -1,0 +1,30 @@
+{
+  "common": {
+    "fallback": "Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:",
+    "tagline": "Zahnschema für die Tiermedizin"
+  },
+  "confirmSignup": {
+    "subject": "Bestätigen Sie Ihr ToothOps-Konto",
+    "title": "Bestätigen Sie Ihre E-Mail-Adresse",
+    "preheader": "Bestätigen Sie Ihre E-Mail-Adresse, um Ihr ToothOps-Konto zu aktivieren.",
+    "body": "Willkommen bei ToothOps. Bestätigen Sie <strong>{{email}}</strong>, um das Konto Ihrer Praxis zu aktivieren – Sie sind danach sofort angemeldet.",
+    "button": "E-Mail bestätigen & anmelden",
+    "ignore": "Sie haben sich nicht bei ToothOps registriert? Dann können Sie diese E-Mail ignorieren – das Konto bleibt inaktiv, solange dieser Link nicht verwendet wird."
+  },
+  "resetPassword": {
+    "subject": "Setzen Sie Ihr ToothOps-Passwort zurück",
+    "title": "Passwort zurücksetzen",
+    "preheader": "Setzen Sie das Passwort für Ihr ToothOps-Konto zurück.",
+    "body": "Wir haben eine Anfrage erhalten, das Passwort für <strong>{{email}}</strong> zurückzusetzen. Der Link ist eine Stunde lang gültig.",
+    "button": "Neues Passwort wählen",
+    "ignore": "Sie haben das nicht angefordert? Ignorieren Sie diese E-Mail – Ihr Passwort bleibt unverändert."
+  },
+  "changeEmail": {
+    "subject": "Bestätigen Sie Ihre neue E-Mail-Adresse für ToothOps",
+    "title": "Bestätigen Sie Ihre neue E-Mail-Adresse",
+    "preheader": "Bestätigen Sie die neue E-Mail-Adresse für Ihr ToothOps-Konto.",
+    "body": "Bestätigen Sie, dass <strong>{{newEmail}}</strong> die Adresse <strong>{{email}}</strong> als Anmelde-E-Mail Ihres ToothOps-Kontos ersetzen soll.",
+    "button": "Neue E-Mail-Adresse bestätigen",
+    "ignore": "Sie haben diese Änderung nicht veranlasst? Ignorieren Sie diese E-Mail – Ihre Anmelde-E-Mail-Adresse bleibt unverändert."
+  }
+}

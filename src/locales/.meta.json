@@ -1476,6 +1476,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -10520,6 +10600,86 @@
     },
     "auth:reset.titleRecovery": {
       "hash": "887a560b8253",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
       "status": "machine"
     },
     "billing:errors.checkoutLink": {
@@ -19636,6 +19796,86 @@
       "hash": "887a560b8253",
       "status": "machine"
     },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
+      "status": "machine"
+    },
     "billing:errors.checkoutLink": {
       "hash": "97692daeca33",
       "status": "machine"
@@ -28748,6 +28988,86 @@
     },
     "auth:reset.titleRecovery": {
       "hash": "887a560b8253",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.body": {
+      "hash": "1de9673f4b00",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.button": {
+      "hash": "b6aab77765a6",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.ignore": {
+      "hash": "78a8854ca9bd",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.preheader": {
+      "hash": "7faf8333d5ec",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.subject": {
+      "hash": "3171f9fbc671",
+      "status": "machine"
+    },
+    "authEmail:changeEmail.title": {
+      "hash": "c5660ab13a99",
+      "status": "machine"
+    },
+    "authEmail:common.fallback": {
+      "hash": "b1c1be747966",
+      "status": "machine"
+    },
+    "authEmail:common.tagline": {
+      "hash": "dcf718c5aa1e",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.body": {
+      "hash": "b3adc05c0537",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.button": {
+      "hash": "e05913de3e8d",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.ignore": {
+      "hash": "76bec8f47853",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.preheader": {
+      "hash": "44abaeec2d56",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.subject": {
+      "hash": "d85b86f5db6c",
+      "status": "machine"
+    },
+    "authEmail:confirmSignup.title": {
+      "hash": "0d1fe19967e2",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.body": {
+      "hash": "baea84dc1525",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.button": {
+      "hash": "833b8512168f",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.ignore": {
+      "hash": "dcfff6cd2da9",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.preheader": {
+      "hash": "c2db6c2a83a4",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.subject": {
+      "hash": "0876182eeda0",
+      "status": "machine"
+    },
+    "authEmail:resetPassword.title": {
+      "hash": "59fa4379be1f",
       "status": "machine"
     },
     "billing:errors.checkoutLink": {

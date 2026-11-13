@@ -31,6 +31,20 @@ describe('Login — signup confirmation flow', () => {
     expect(screen.getByRole('button', { name: /Resend email/ })).toBeDisabled(); // cooldown
   });
 
+  it('signup records the language so the confirmation email is localized', async () => {
+    auth.signUp.mockResolvedValue({ data: { user: { identities: [{}] }, session: null }, error: null });
+    render(<Login onAuthenticate={vi.fn()} initialMode="signup" />);
+    fill(/Practice name/, 'Smile Vets');
+    fill(/Doctor name/, 'Dr. Jane');
+    fill(/^Email/, 'jane@vets.com');
+    fill(/^Password/, 'longenough');
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
+    await screen.findByText('Check your inbox');
+    expect(auth.signUp).toHaveBeenCalledWith(
+      expect.objectContaining({ options: expect.objectContaining({ data: expect.objectContaining({ language: 'en' }) }) }),
+    );
+  });
+
   it('an unconfirmed sign-in explains it and offers to resend — not "wrong password"', async () => {
     auth.signInWithPassword.mockResolvedValue({ error: { code: 'email_not_confirmed', message: 'Email not confirmed' } });
     render(<Login onAuthenticate={vi.fn()} />);
