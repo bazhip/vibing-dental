@@ -1,6 +1,5 @@
 import React from 'react';
 import { AppDataProvider, useAppLibrary, useAppSettings, type AppSettings } from '../appData';
-import { isIosPreview } from '../preview';
 import { toast } from '../../components/ui/dialogs';
 
 /**
@@ -12,21 +11,12 @@ import { toast } from '../../components/ui/dialogs';
  * to the real backend, so data they load themselves (team, billing,
  * admin lists) shows its signed-out state.
  *
- * `import.meta.env.DEV` is a build-time constant: production bundles
- * always take the pass-through branch.
+ * Loaded only through a DEV-only dynamic import in SettingsScreen, so
+ * production bundles never contain it.
  */
-function fixtureOn(): boolean {
-  if (!import.meta.env.DEV || !isIosPreview()) return false;
-  try {
-    return new URLSearchParams(window.location.search).get('iosSettingsFixture') === '1';
-  } catch {
-    return false;
-  }
-}
-
 /* eslint-disable i18next/no-literal-string -- DEV-only sample data */
 const SIGNED_OUT = 'Signed out (preview fixture)';
-function FixtureProvider({ children }: { children: React.ReactNode }) {
+export default function FixtureProvider({ children }: { children: React.ReactNode }) {
   const real = useAppSettings();
   const library = useAppLibrary();
   const settings = React.useMemo<AppSettings>(() => {
@@ -52,10 +42,3 @@ function FixtureProvider({ children }: { children: React.ReactNode }) {
   );
 }
 /* eslint-enable i18next/no-literal-string */
-
-/** Wraps the Settings tab and each screen it pushes (DEV fixture only). */
-export function SettingsFixture({ children }: { children: React.ReactNode }) {
-  // Checked inline so production builds drop the fixture entirely.
-  if (!import.meta.env.DEV || !fixtureOn()) return <>{children}</>;
-  return <FixtureProvider>{children}</FixtureProvider>;
-}

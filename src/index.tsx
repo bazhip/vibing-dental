@@ -16,6 +16,7 @@ import { initNativeShell } from './native/platform';
 import { initAuthReturn } from './native/authReturn';
 import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
 import { isIosPreview } from './ios/preview';
+import { bootLanguage } from './i18n/bootLanguage';
 
 // DEV-only: `?iosPreview=1&iosGallery=1` renders the iOS component kit
 // gallery instead of the app. The constant DEV check drops it (and its
@@ -31,7 +32,6 @@ const IosFixture =
   import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosFixture')
     ? React.lazy(() => import('./ios/SheetFixtures'))
     : null;
-import { bootLanguage } from './i18n/bootLanguage';
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
 // helpers (Chrome 122 / Firefox 131 / Safari 18.4) for rendering, and the `&`

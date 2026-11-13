@@ -16,7 +16,25 @@ import {
   RemindersSettingsScreen,
   WhatsNewScreen,
 } from './settingsScreens';
-import { SettingsFixture } from './settingsFixture';
+import { isIosPreview } from '../preview';
+
+// DEV-only: `?iosPreview=1&iosSettingsFixture=1` previews the tab as a
+// signed-in admin with sample names (./settingsFixture). The constant DEV
+// check drops it, and its dynamic import, from production builds.
+const FixtureProvider =
+  import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosSettingsFixture') === '1'
+    ? React.lazy(() => import('./settingsFixture'))
+    : null;
+
+/** Wraps the Settings tab and each screen it pushes (the DEV fixture, else nothing). */
+function SettingsFixture({ children }: { children: React.ReactNode }) {
+  if (!FixtureProvider) return <>{children}</>;
+  return (
+    <React.Suspense fallback={null}>
+      <FixtureProvider>{children}</FixtureProvider>
+    </React.Suspense>
+  );
+}
 
 const CHEVRON = 'chevron' as const;
 const SIGN_IN = 'signin' as const;
