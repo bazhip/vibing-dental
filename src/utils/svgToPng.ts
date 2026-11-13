@@ -285,6 +285,7 @@ export async function diagramSvgToPng(
     canvas.width = vw * outputScale;
     canvas.height = vh * outputScale;
     const ctx = canvas.getContext('2d');
+    // eslint-disable-next-line no-restricted-syntax -- dev-only: PDF build callers show a generic translated build error
     if (!ctx) throw new Error('Canvas 2D context unavailable');
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -300,6 +301,7 @@ export async function diagramSvgToPng(
     const blob = await new Promise<Blob | null>((resolve) =>
       cropped.toBlob(resolve, 'image/png')
     );
+    // eslint-disable-next-line no-restricted-syntax -- dev-only: PDF build callers show a generic translated build error
     if (!blob) throw new Error('canvas.toBlob returned null');
     return new Uint8Array(await blob.arrayBuffer());
   } finally {

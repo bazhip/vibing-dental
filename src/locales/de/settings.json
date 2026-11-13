@@ -88,6 +88,11 @@
       "blurb": "Der Bericht, den Tierhalter nach einem Zahnbehandlungstermin mit nach Hause nehmen — Abschnitte, Überschriften, Formulierungen, Sprache und das praxisweite Standardlayout.",
       "customize": "Besitzerbericht anpassen"
     },
+    "clientLanguage": {
+      "title": "Sprache für Tierhalter",
+      "blurb": "Sprache der Texte für Tierhalter, etwa die Standardvorgaben des Besitzerberichts. Eingegebener Text wird nie übersetzt.",
+      "saveFailed": "Die Sprache konnte nicht gespeichert werden."
+    },
     "deletion": {
       "title": "Praxis löschen",
       "blurb": "Löscht die Praxis und alle mit ihr geteilten Akten, auch die Ihres Teams, endgültig und kündigt jedes Abonnement. Teammitglieder behalten ihre Konten und privaten Akten.",
@@ -99,7 +104,8 @@
     "canvas": "Zeichenfläche nicht verfügbar",
     "convert": "Das Bild konnte nicht umgewandelt werden.",
     "tooLarge": "Dieses Bild ist zu groß — Logodateien dürfen höchstens 10 MB groß sein.",
-    "reportTooLarge": "Diese Einstellungen für den Besitzerbericht sind zu umfangreich (maximal 50 KB) — kürzen Sie einige Texte oder entfernen Sie eine Vorlage."
+    "reportTooLarge": "Diese Einstellungen für den Besitzerbericht sind zu umfangreich (maximal 50 KB) — kürzen Sie einige Texte oder entfernen Sie eine Vorlage.",
+    "reportNotLoaded": "Ihre gespeicherten Vorlagen für den Besitzerbericht wurden nicht geladen, daher könnte Speichern sie jetzt überschreiben. Laden Sie die Seite neu und versuchen Sie es erneut."
   },
   "chart": {
     "title": "Zahnschema-Einstellungen",

@@ -8,6 +8,7 @@ import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
 import { markExplicitSignOut } from '../utils/signOutIntent';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -287,6 +288,7 @@ export function useCloudSync(
     };
     try {
       const { data: sessionData } = await client.auth.getSession();
+      // eslint-disable-next-line no-restricted-syntax -- dev-only: describeSaveError matches this English text and shows app:sync.sessionExpired
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
       const snap: ChartSnapshot = JSON.parse(json);
       // The snapshot's `species` is the combined layout key (e.g.
@@ -608,7 +610,7 @@ export function useCloudSync(
   }, [upsertChart]);
 
   const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
-    if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
+    if (!supabase) throw new LocalizedError(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
     const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
     if (error) throw new Error(error.message);
     return data.data as ChartSnapshot;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { useTeam } from '../hooks/useTeam';
+import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 
 /**
@@ -18,6 +19,7 @@ export const OwnerReportCustomize: React.FC<{
   loadFailed?: boolean;
 }> = ({ onClose, config, onSave, branding, loadFailed }) => {
   const team = useTeam(true);
+  const clientLang = usePracticeLanguage(team.practice?.id ?? null);
   return (
     <OwnerReportTemplatesModal
       open
@@ -27,6 +29,7 @@ export const OwnerReportCustomize: React.FC<{
       canEdit={team.loaded && team.role === 'owner'}
       roleKnown={team.loaded}
       loadFailed={loadFailed}
+      clientLanguage={clientLang.language}
       branding={branding}
     />
   );

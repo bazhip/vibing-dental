@@ -11,6 +11,7 @@ import {
 } from './ownerReport';
 import type { OwnerReportContext } from './ownerReportConfig';
 import { LOCALE_LABELS } from './ownerReportI18n';
+import { LocalizedError } from './apiErrors';
 
 /**
  * "Write with AI" for the owner report: drafts the two narrative blocks —
@@ -129,6 +130,6 @@ export function parseOwnerReportDraft(content: Array<{ type: string; name?: stri
 export async function draftOwnerReport(snapshot: ChartSnapshot, context?: OwnerReportContext): Promise<OwnerReportDraft> {
   const content = await sendAutofill(buildOwnerReportAiRequest(snapshot, context));
   const draft = parseOwnerReportDraft(content);
-  if (!draft) throw new Error(i18n.t('section.draftEmpty', { ns: 'reportui' }));
+  if (!draft) throw new LocalizedError(i18n.t('section.draftEmpty', { ns: 'reportui' }));
   return draft;
 }

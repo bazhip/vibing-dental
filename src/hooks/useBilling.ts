@@ -1,5 +1,6 @@
 import i18n from '../i18n';
-import { supabase } from '../utils/supabaseClient';
+import { invokeFunction } from '../utils/edgeFunctions';
+import { LocalizedError } from '../utils/apiErrors';
 import { PlanKey } from '../constants/plans';
 
 /**
@@ -46,21 +47,7 @@ export function deletionDate(info: BillingInfo): Date | null {
 }
 
 async function call<T = Record<string, unknown>>(body: object): Promise<T> {
-  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
-  const { data, error } = await supabase.functions.invoke('billing-api', { body });
-  if (error) {
-    try {
-      const detail = await (error as { context?: Response }).context?.json();
-      if (detail?.error) throw new Error(detail.error);
-    } catch (inner) {
-      if (inner instanceof Error && inner.message) throw inner;
-    }
-    throw new Error(error.message);
-  }
-  if (data && typeof data === 'object' && 'error' in data && (data as { error?: string }).error) {
-    throw new Error((data as { error: string }).error);
-  }
-  return data as T;
+  return invokeFunction<T>('billing-api', body);
 }
 
 const returnUrl = () => window.location.origin + window.location.pathname;
@@ -72,14 +59,14 @@ export async function fetchBilling(): Promise<BillingInfo> {
 /** Start Stripe Checkout for a plan — navigates away on success. */
 export async function startCheckout(plan: PlanKey): Promise<void> {
   const { url } = await call<{ url: string }>({ action: 'checkout', plan, returnUrl: returnUrl() });
-  if (!url) throw new Error(i18n.t('errors.checkoutLink', { ns: 'billing' }));
+  if (!url) throw new LocalizedError(i18n.t('errors.checkoutLink', { ns: 'billing' }));
   window.location.assign(url);
 }
 
 /** Open the Stripe billing portal (card, invoices, cancel). */
 export async function openBillingPortal(): Promise<void> {
   const { url } = await call<{ url: string }>({ action: 'portal', returnUrl: returnUrl() });
-  if (!url) throw new Error(i18n.t('errors.portalLink', { ns: 'billing' }));
+  if (!url) throw new LocalizedError(i18n.t('errors.portalLink', { ns: 'billing' }));
   window.location.assign(url);
 }
 

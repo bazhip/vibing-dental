@@ -1,0 +1,44 @@
+{
+  "common": {
+    "setPasswordButton": "Définir votre mot de passe et rejoindre"
+  },
+  "invite": {
+    "body1": "{{who}} vous invite à rejoindre son équipe sur ToothOps, le schéma dentaire vétérinaire au fauteuil.",
+    "body2": "Définissez votre mot de passe pour activer votre compte et accéder aux dossiers du cabinet.",
+    "fallback": {
+      "preheader": "le cabinet",
+      "title": "un cabinet",
+      "who": "Un cabinet"
+    },
+    "footnote": "Si vous ne vous attendiez pas à cet e-mail, vous pouvez l’ignorer.",
+    "preheader": "Définissez votre mot de passe pour rejoindre {{practice}} sur ToothOps.",
+    "subject": "{{who}} vous invite sur ToothOps",
+    "title": "Invitation à rejoindre {{practice}}"
+  },
+  "join": {
+    "body1": "{{name}} vous invite à rejoindre son équipe sur ToothOps. Connectez-vous avec votre compte existant pour accepter.",
+    "body2": "Rien ne change tant que vous n’avez pas accepté — et le partage de vos dossiers existants avec le cabinet est un choix distinct, que vous faites au moment de le rejoindre.",
+    "button": "Voir l’invitation",
+    "fallback": "un cabinet",
+    "footnote": "Le lien est valable 14 jours. Si vous ne vous attendiez pas à cet e-mail, ignorez-le.",
+    "preheader": "{{name}} vous invite à rejoindre son équipe sur ToothOps.",
+    "subject": "Rejoindre {{name}} sur ToothOps ?",
+    "title": "Rejoindre {{name}} ?"
+  },
+  "layout": {
+    "linkFallback": "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
+    "tagline": "Schéma dentaire vétérinaire"
+  },
+  "reminder": {
+    "body1": "{{who}} vous invite sur ToothOps, son application de schéma dentaire vétérinaire. Votre compte est prêt dès que vous l’êtes — il vous suffit de définir un mot de passe pour commencer.",
+    "body2": "Le lien ci-dessous est valable 24 heures.",
+    "fallback": "votre cabinet",
+    "footnote": "Vous ne vous attendiez pas à cet e-mail ou ne souhaitez pas rejoindre l’équipe ? Ignorez-le simplement — nous vous enverrons au plus un autre rappel.",
+    "footnoteFinal": "Ceci est notre dernier rappel. Si vous n’avez pas rejoint l’équipe d’ici le {{date}}, cette invitation expirera et le compte en attente sera supprimé — {{who}} pourra vous inviter de nouveau à tout moment.",
+    "preheader": "{{who}} vous attend sur ToothOps — définissez votre mot de passe pour rejoindre l’équipe.",
+    "subject": "Rappel : {{who}} vous invite sur ToothOps",
+    "subjectFinal": "Dernier rappel : rejoignez {{who}} sur ToothOps",
+    "title": "Invitation à rejoindre {{who}}",
+    "titleFinal": "Votre invitation vous attend toujours"
+  }
+}

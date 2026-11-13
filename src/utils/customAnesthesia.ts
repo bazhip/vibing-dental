@@ -162,7 +162,7 @@ export function filledBlocks(chart: CustomAnesthesia | undefined): CustomBlockVa
 }
 
 /** PDF / viewer: "Label: value unit" for each filled field. English by
- *  default: the PDF and the operator viewer are not translated yet. */
+ *  default (the operator viewer stays English); the PDF passes its language. */
 export function fieldLines(chart: CustomAnesthesia | undefined, lng = 'en'): string[] {
   const l = labels(lng);
   return (chart?.fields ?? []).filter(fieldFilled).map((f) => {

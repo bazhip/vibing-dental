@@ -88,6 +88,11 @@
       "blurb": "The report families take home after a dental visit — sections, headings, wording, language, and the practice-wide default layout.",
       "customize": "Customize owner report"
     },
+    "clientLanguage": {
+      "title": "Language for pet owners",
+      "blurb": "The language used for text families receive, such as owner report defaults. Typed text is never translated.",
+      "saveFailed": "Couldn’t save the language."
+    },
     "deletion": {
       "title": "Delete practice",
       "blurb": "Permanently deletes the practice and every chart shared with it, including your team’s, and cancels any subscription. Team members keep their accounts and private charts.",
@@ -99,7 +104,8 @@
     "canvas": "Canvas unavailable",
     "convert": "Could not convert the image.",
     "tooLarge": "That image is too large — logo files must be under 10 MB.",
-    "reportTooLarge": "Those owner report settings are too large (50 KB max) — shorten some text or remove a template."
+    "reportTooLarge": "Those owner report settings are too large (50 KB max) — shorten some text or remove a template.",
+    "reportNotLoaded": "Your saved owner report templates didn’t load, so saving now could overwrite them. Reload the page and try again."
   },
   "chart": {
     "title": "Chart settings",

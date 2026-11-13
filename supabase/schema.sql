@@ -314,6 +314,11 @@ create index if not exists practices_stripe_customer_idx
 -- deleted; comped practices never freeze.
 alter table public.practices add column if not exists frozen_at timestamptz;
 
+-- Language the practice writes to pet owners in (owner-report defaults, client
+-- emails). Null = the owner's app language at the time defaults are used.
+alter table public.practices add column if not exists client_language text
+  check (client_language is null or client_language in ('en','fr','de','it','es','pt'));
+
 create or replace function public.purge_lapsed_practices()
 returns void
 language plpgsql

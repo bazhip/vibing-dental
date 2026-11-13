@@ -114,6 +114,7 @@ function readStashedState(form: PDFForm): StashedState {
     // The stash exists but is damaged. Don't silently fall back to a
     // blank/legacy reconstruction — surface it so the caller can warn the
     // user instead of handing them an empty chart.
+    // eslint-disable-next-line no-restricted-syntax -- dev-only: the PDF import caller shows app:errors.pdfImport
     throw new Error('Chart data is present but could not be parsed; the PDF may be damaged.');
   }
 }

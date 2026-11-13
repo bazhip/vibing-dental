@@ -35,6 +35,7 @@ export async function loadParsedDiagram(url: string): Promise<ParsedDiagram> {
   // `d=` attribute breaks if an earlier attribute value contains a `>`.
   const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
   const fullD = doc.querySelector('path')?.getAttribute('d');
+  // eslint-disable-next-line no-restricted-syntax -- dev-only: bundled-asset bug; ToothDiagram only logs it
   if (!fullD) throw new Error(`No path found in ${url}`);
 
   const subpathStrs = fullD

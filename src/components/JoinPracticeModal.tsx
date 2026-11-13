@@ -1,7 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import i18n from '../i18n';
-import { supabase } from '../utils/supabaseClient';
+import { invokeFunction } from '../utils/edgeFunctions';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { friendlyError } from './ui/dialogs';
 
@@ -11,20 +10,7 @@ interface JoinPracticeModalProps {
   onDone: (joined: boolean) => void;
 }
 
-async function callTeamApi<T>(body: Record<string, unknown>): Promise<T> {
-  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
-  const { data, error } = await supabase.functions.invoke('team-api', { body });
-  if (error) {
-    let msg = error.message;
-    try {
-      const detail = await (error as { context?: Response }).context?.json();
-      if (detail?.error) msg = detail.error;
-    } catch { /* keep msg */ }
-    throw new Error(msg);
-  }
-  if (data?.error) throw new Error(data.error);
-  return data as T;
-}
+const callTeamApi = <T,>(body: Record<string, unknown>): Promise<T> => invokeFunction<T>('team-api', body);
 
 /**
  * Accept an invitation to join a practice (an existing account added by a

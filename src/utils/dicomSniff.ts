@@ -4,7 +4,10 @@
  * into the main bundle. The decoder loads on demand.
  */
 
-export class DicomError extends Error {}
+import { LocalizedError } from './apiErrors';
+
+/** Messages are translated when thrown (see utils/dicom.ts). */
+export class DicomError extends LocalizedError {}
 
 export const DICOM_MIME = 'application/dicom';
 

@@ -28,6 +28,7 @@ import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
 import { useDentalData } from './useDentalData';
 import { getInitialToothData } from '../constants';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * Single source of truth for everything that lives on a chart: patient
@@ -560,7 +561,7 @@ export function useChartState(): UseChartStateReturn {
 
   const applySnapshot = (raw: ChartSnapshot, id: string): void => {
     if (!isChartSnapshot(raw)) {
-      throw new Error(i18n.t('errors.damagedChart', { ns: 'app' }));
+      throw new LocalizedError(i18n.t('errors.damagedChart', { ns: 'app' }));
     }
     const snapshot = normalizeSnapshot(raw);
     setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
@@ -603,9 +604,11 @@ export function useChartState(): UseChartStateReturn {
         typeof parsed.patientInfo.patientName !== 'string' ||
         !Array.isArray(parsed.toothData)
       ) {
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees errors.pdfImport
         throw new Error('Stashed chart state has an unexpected shape');
       }
       if (!(parsed.species in TOOTH_DIAGRAMS)) {
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees errors.pdfImport
         throw new Error(`Unknown species in PDF: ${String(parsed.species)}`);
       }
       // A restored PDF is a NEW chart: a fresh cloud row (so saving can't

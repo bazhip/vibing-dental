@@ -8,6 +8,7 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { useChartHistory, ChartRevision } from '../hooks/useChartHistory';
 import { ChartReadOnlyView } from './AdminChartViewer';
 import { confirmDialog, toast } from './ui/dialogs';
+import { detailText } from '../utils/apiErrors';
 import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
 import type { ChartSnapshot } from '../types';
 
@@ -72,7 +73,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     try {
       setData(await loadData(id));
     } catch (err) {
-      toast(t('history.loadFailed', { error: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
+      toast(t('history.loadFailed', { error: detailText(err) }).trim(), { kind: 'error' });
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
         onClose();
       }
     } catch (err) {
-      toast(t('history.restoreFailed', { error: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
+      toast(t('history.restoreFailed', { error: detailText(err) }).trim(), { kind: 'error' });
     } finally {
       setRestoring(false);
     }

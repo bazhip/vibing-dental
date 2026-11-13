@@ -14,6 +14,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import Stripe from 'npm:stripe@18.5.0';
+import { apiError } from '../_shared/apiErrors.ts';
 
 type Json = Record<string, unknown>;
 const CORS = {
@@ -76,10 +77,10 @@ Deno.serve(async (req: Request) => {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: callerData } = await admin.auth.getUser(token);
   const caller = callerData?.user;
-  if (!caller) return json({ error: 'unauthorized' }, 401);
+  if (!caller) return json(apiError('unauthorized'), 401);
 
   const stripeKey = Deno.env.get('STRIPE_API_KEY');
-  if (!stripeKey) return json({ error: 'Billing is not configured yet (STRIPE_API_KEY missing).' }, 503);
+  if (!stripeKey) return json(apiError('billing_not_configured'), 503);
   const stripe = new Stripe(stripeKey, { httpClient: Stripe.createFetchHttpClient() });
 
   let body: Json;
@@ -199,14 +200,14 @@ Deno.serve(async (req: Request) => {
 
       case 'checkout': {
         const def = PLANS[planKey];
-        if (!def) return json({ error: 'Pick a plan first.' }, 400);
+        if (!def) return json(apiError('plan_required'), 400);
         const { practice, role } = await ensurePractice();
-        if (role !== 'owner') return json({ error: 'Only a practice owner can manage the subscription.' }, 403);
+        if (role !== 'owner') return json(apiError('not_owner_subscription'), 403);
         if (practice.subscription_status === 'comped') {
-          return json({ error: 'This practice has complimentary access — no subscription needed.' }, 400);
+          return json(apiError('comped'), 400);
         }
         if (LIVE_SUB_STATUSES.includes(practice.subscription_status ?? '') && practice.stripe_subscription_id) {
-          return json({ error: 'This practice already has a subscription — use Manage billing instead.' }, 400);
+          return json(apiError('already_subscribed'), 400);
         }
 
         let customerId = practice.stripe_customer_id ?? '';
@@ -249,9 +250,9 @@ Deno.serve(async (req: Request) => {
 
       case 'portal': {
         const { practice, role } = await myPractice();
-        if (!practice) return json({ error: 'No practice to manage yet.' }, 400);
-        if (role !== 'owner') return json({ error: 'Only a practice owner can manage billing.' }, 403);
-        if (!practice.stripe_customer_id) return json({ error: 'This practice has no Stripe subscription.' }, 400);
+        if (!practice) return json(apiError('no_practice'), 400);
+        if (role !== 'owner') return json(apiError('not_owner_billing'), 403);
+        if (!practice.stripe_customer_id) return json(apiError('no_stripe_customer'), 400);
         try {
           const session = await stripe.billingPortal.sessions.create({
             customer: practice.stripe_customer_id,
@@ -283,22 +284,22 @@ Deno.serve(async (req: Request) => {
 
       case 'change_plan': {
         const def = PLANS[planKey];
-        if (!def) return json({ error: 'Pick a plan first.' }, 400);
+        if (!def) return json(apiError('plan_required'), 400);
         const { practice, role } = await myPractice();
-        if (!practice) return json({ error: 'No practice to manage yet.' }, 400);
-        if (role !== 'owner') return json({ error: 'Only a practice owner can change the plan.' }, 403);
-        if (!practice.stripe_subscription_id) return json({ error: 'No subscription to change — subscribe first.' }, 400);
+        if (!practice) return json(apiError('no_practice'), 400);
+        if (role !== 'owner') return json(apiError('not_owner_plan'), 403);
+        if (!practice.stripe_subscription_id) return json(apiError('no_subscription'), 400);
         // Downgrading to a solo plan with a team would strand members.
         const { count } = await admin
           .from('practice_members')
           .select('user_id', { count: 'exact', head: true })
           .eq('practice_id', practice.id);
         if ((count ?? 1) > def.seats) {
-          return json({ error: `Your team has ${count} members — remove members first or keep a Practice plan (${def.seats} seat${def.seats === 1 ? '' : 's'} on ${def.name}).` }, 400);
+          return json(apiError('team_too_large', { members: count ?? 1, count: def.seats, plan: def.name }), 400);
         }
         const sub = await stripe.subscriptions.retrieve(practice.stripe_subscription_id);
         const item = sub.items.data[0];
-        if (!item) return json({ error: 'Subscription has no items — contact support.' }, 500);
+        if (!item) return json(apiError('subscription_no_items'), 500);
         const priceId = await ensurePrice(stripe, planKey);
         await stripe.subscriptions.update(sub.id, {
           items: [{ id: item.id, price: priceId }],

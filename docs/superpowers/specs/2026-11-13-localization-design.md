@@ -129,20 +129,20 @@ as a repo secret. Build-time translation was rejected
 
 ### Surfaces
 
-| Surface | Treatment |
-|---|---|
-| All screens/modals/menus/toasts/errors | `t()` everywhere; aria-labels, titles, placeholders included |
-| Landing / marketing | Translated |
-| Legal (Terms, Privacy, DPA in `public/`, `LegalNotice`, terms acceptance) | **Owner decision:** stay English. A translated notice beside every legal link/acceptance states the documents are in English and the English version governs. `TERMS_VERSION` unchanged. |
-| Clinical chart PDF (`pdfGenerator`) | Labels from catalogs in the generating user's language |
-| Owner report | Per-template language as today; defaults to user's language for new templates |
-| "What's new" (`whatsNew.ts`) | Moves into catalogs; translated like everything else |
-| Emails via edge functions (invites, reminders) | Team-member emails in the recipient's language when known, else the sender's. Pet-owner emails (reminders) in the practice's client language (below). Templates in catalogs, bundled into functions at deploy |
-| Practice-stored text (reminder template, report templates, custom anesthesia labels) | New practice setting **client communication language** (defaults to the creating user's language). Stored text that is still the untouched seeded default (e.g. `DEFAULT_REMINDER`) is detected and rendered from catalogs in the right language; once a practice edits it, it's theirs and prints as saved. Placeholder fallbacks ("your pet") come from catalogs. *(builder call)* |
-| Supabase Auth emails | Single template per type with Go-template branches on `.Data.language` (user metadata); generated from catalogs by a script, still pasted into the dashboard manually (Supabase limitation) — script prints a reminder when they change |
-| Voice dictation | **Owner decision: full parity at launch.** `en` keeps `nova-3-medical` + English keyterms; fr/de/it/es use Deepgram `nova-3` with `language=<code>` and per-language keyterm lists (from glossary). Everything after transcription becomes per-language: `normalizeTranscript` in `src/utils/aiAutofill.ts` (spoken digits incl. tooth numbers like "cent quatre"/"eins null vier", score words, "slash"/unit words), the filler-word filter, the autofill system prompt and its examples, and the replay harness (`scripts/replay-transcript.ts`) with test transcripts per language. Must handle vets mixing English codes into native speech. Accuracy bar: per-language replay suite passes at the same rate as English. |
-| AI autofill / AI report | Prompts instruct output in user's language; extracted clinical codes unchanged |
-| Server error messages shown to users | Return error codes; client maps to translated text |
+| Surface | Treatment | Status |
+|---|---|---|
+| All screens/modals/menus/toasts/errors | `t()` everywhere; aria-labels, titles, placeholders included | Done (plans 1–2). Plan 3 added lint for thrown error text. |
+| Landing / marketing | Translated | Done (plan 2) |
+| Legal (Terms, Privacy, DPA in `public/`, `LegalNotice`, terms acceptance) | **Owner decision:** stay English. A translated notice beside every legal link/acceptance states the documents are in English and the English version governs. `TERMS_VERSION` unchanged. | Done (plan 3, task 7) |
+| Clinical chart PDF (`pdfGenerator`) | Labels from catalogs in the generating user's language | Done (plan 3, task 3) |
+| Owner report | Per-template language as today; defaults to user's language for new templates | Done (plan 2; plan 3 makes new templates default to the practice client language) |
+| "What's new" (`whatsNew.ts`) | Moves into catalogs; translated like everything else | Done (plan 2) |
+| Emails via edge functions (invites, reminders) | Team-member emails in the recipient's language when known, else the sender's. Pet-owner emails (reminders) in the practice's client language (below). Templates in catalogs, bundled into functions at deploy | Done (plan 3, task 4). The owner still has to deploy the functions. |
+| Practice-stored text (reminder template, report templates, custom anesthesia labels) | New practice setting **client communication language** (defaults to the creating user's language). Stored text that is still the untouched seeded default (e.g. `DEFAULT_REMINDER`) is detected and rendered from catalogs in the right language; once a practice edits it, it's theirs and prints as saved. Placeholder fallbacks ("your pet") come from catalogs. *(builder call)* | Done (plan 3, tasks 1–2). The owner still has to apply the migration. |
+| Supabase Auth emails | Single template per type with Go-template branches on `.Data.language` (user metadata); generated from catalogs by a script, still pasted into the dashboard manually (Supabase limitation) — script prints a reminder when they change | Done (plan 3, task 5). The owner still has to paste the templates into the dashboard. |
+| Voice dictation | **Owner decision: full parity at launch.** `en` keeps `nova-3-medical` + English keyterms; fr/de/it/es use Deepgram `nova-3` with `language=<code>` and per-language keyterm lists (from glossary). Everything after transcription becomes per-language: `normalizeTranscript` in `src/utils/aiAutofill.ts` (spoken digits incl. tooth numbers like "cent quatre"/"eins null vier", score words, "slash"/unit words), the filler-word filter, the autofill system prompt and its examples, and the replay harness (`scripts/replay-transcript.ts`) with test transcripts per language. Must handle vets mixing English codes into native speech. Accuracy bar: per-language replay suite passes at the same rate as English. | Plan 4 (voice chrome done in plan 2) |
+| AI autofill / AI report | Prompts instruct output in user's language; extracted clinical codes unchanged | Plan 4 |
+| Server error messages shown to users | Return error codes; client maps to translated text | Done (plan 3, task 6). The owner still has to deploy the functions. |
 
 ### Keeping it current (the automation)
 

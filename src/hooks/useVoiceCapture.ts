@@ -288,8 +288,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     // back to browser speech recognition.
     let dgAuth: { token: string; kind: 'token' | 'bearer' } | null = null;
     try {
+      // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; falls back to browser speech recognition
       if (!supabase) throw new Error('no cloud');
       const { data, error } = await supabase.functions.invoke('deepgram-token', { body: {} });
+      // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; falls back to browser speech recognition
       if (error || !data?.token) throw new Error(data?.error || error?.message || 'no token');
       dgAuth = { token: data.token as string, kind: (data.kind as 'token' | 'bearer') || 'bearer' };
     } catch {

@@ -8,7 +8,14 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { sendBrandedEmail } from '../_shared/email.ts';
+import { chooseInviteLanguage, joinRequestEmail, teamInviteEmail } from '../_shared/inviteEmails.ts';
+import type { EmailLanguage } from '../_shared/emailStrings.ts';
 import { purgeAccount, purgePractice } from '../_shared/deletion.ts';
+import { apiError } from '../_shared/apiErrors.ts';
+
+/** A to-one embed (`practices(...)` on practice_members) arrives as an
+ *  object at runtime, but supabase-js types it as an array; accept both. */
+const embeddedOne = <T>(v: T | T[] | null | undefined): T | undefined => (Array.isArray(v) ? v[0] : v ?? undefined);
 
 /** Free beta — keep in step with FREE_BETA in src/constants/plans.ts. */
 const FREE_BETA = true;
@@ -25,30 +32,22 @@ const json = (b: Json, status = 200) =>
 
 /** Create the account + email a set-password link via Resend (verified
  *  domain → delivers to anyone; not rate-limited like the built-in
- *  mailer). Returns the created user or an error. */
+ *  mailer). Returns the created user or an error. The invitee's language
+ *  is stored in user_metadata.language, which invite-reminders reads. */
 // deno-lint-ignore no-explicit-any
-async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo?: string) {
+async function inviteViaResend(admin: any, email: string, practiceName: string, redirectTo: string | undefined, lang: EmailLanguage) {
   const { data: link, error } = await admin.auth.admin.generateLink({
     type: 'invite',
     email,
-    options: redirectTo ? { redirectTo } : undefined,
+    options: { data: { language: lang }, ...(redirectTo ? { redirectTo } : {}) },
   });
   if (error || !link?.user || !link?.properties?.action_link) {
     return { user: null, error: error?.message ?? 'Could not create the invite.' };
   }
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (key) {
-    const who = practiceName || 'A practice';
-    await sendBrandedEmail(key, email, `${who} invited you to ToothOps`, {
-      preheader: `Set your password to join ${practiceName || 'the practice'} on ToothOps.`,
-      title: `You’re invited to join ${practiceName || 'a practice'}`,
-      paragraphs: [
-        `${who} added you to their team on ToothOps — chairside veterinary dental charting.`,
-        'Set your password to activate your account and see the practice’s charts.',
-      ],
-      button: { label: 'Set your password & join', url: link.properties.action_link },
-      footnote: 'If you weren’t expecting this, you can ignore this email.',
-    });
+    const m = teamInviteEmail(lang, practiceName, link.properties.action_link);
+    await sendBrandedEmail(key, email, m.subject, m.email, lang);
   }
   return { user: link.user, error: null };
 }
@@ -110,24 +109,17 @@ function safeAppUrl(redirectTo?: string): string {
 }
 
 // deno-lint-ignore no-explicit-any
-async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string) {
+async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string, lang: EmailLanguage) {
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
   if (!key) return;
-  const name = practiceName || 'a practice';
-  await sendBrandedEmail(key, email, `Join ${name} on ToothOps?`, {
-    preheader: `${name} invited you to their team on ToothOps.`,
-    title: `Join ${name}?`,
-    paragraphs: [
-      `${name} invited you to join their team on ToothOps. Sign in with your existing account to accept.`,
-      'Nothing changes until you accept — and sharing your existing charts with the practice is a separate choice you make when joining.',
-    ],
-    button: { label: 'Review invitation', url: link },
-    footnote: 'The link works for 14 days. If you weren’t expecting this, ignore this email.',
-  });
+  const m = joinRequestEmail(lang, practiceName, link);
+  await sendBrandedEmail(key, email, m.subject, m.email, lang);
 }
 
 // deno-lint-ignore no-explicit-any
-async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo?: string) {
+// `inviterLang` is the inviter's app language: the email uses the invitee's
+// saved language when they have an account with one, else this.
+async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo: string | undefined, inviterLang: unknown) {
   const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   let target = list.users.find((u: { email?: string }) => (u.email ?? '').toLowerCase() === email);
   let invited = false;
@@ -135,14 +127,16 @@ async function addOrInviteMember(admin: any, practiceId: string, practiceName: s
     // Existing account: ask, don't add.
     const { data: existing } = await admin.from('practice_members').select('user_id')
       .eq('practice_id', practiceId).eq('user_id', target.id).maybeSingle();
-    if (existing) return { status: 400, body: { error: 'They’re already a member of this practice.' } };
+    if (existing) return { status: 400, body: apiError('already_member') };
     const token = await signInvite(practiceId, target.id);
-    await sendJoinRequest(admin, email, practiceName, `${safeAppUrl(redirectTo)}#/join/${token}`);
+    const { data: prof } = await admin.from('profiles').select('chart_prefs').eq('id', target.id).maybeSingle();
+    const lang = chooseInviteLanguage(prof?.chart_prefs, inviterLang);
+    await sendJoinRequest(admin, email, practiceName, `${safeAppUrl(redirectTo)}#/join/${token}`, lang);
     return { status: 200, body: { ok: true, invited: false, pending: true } };
   }
   {
-    const inv = await inviteViaResend(admin, email, practiceName, safeAppUrl(redirectTo));
-    if (inv.error || !inv.user) return { status: 502, body: { error: `Couldn't send the invite: ${inv.error ?? 'unknown error'}` } };
+    const inv = await inviteViaResend(admin, email, practiceName, safeAppUrl(redirectTo), chooseInviteLanguage(null, inviterLang));
+    if (inv.error || !inv.user) return { status: 502, body: apiError('invite_failed', { detail: inv.error ?? 'unknown error' }) };
     target = inv.user;
     invited = true;
   }
@@ -162,7 +156,7 @@ Deno.serve(async (req: Request) => {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: callerData } = await admin.auth.getUser(token);
   const caller = callerData?.user;
-  if (!caller) return json({ error: 'unauthorized' }, 401);
+  if (!caller) return json(apiError('unauthorized'), 401);
 
   let body: Json;
   try {
@@ -182,7 +176,7 @@ Deno.serve(async (req: Request) => {
       .limit(1);
     const row = data?.[0];
     return row
-      ? { practiceId: row.practice_id as string, role: row.role as string, practice: row.practices as { id: string; name: string; owner: string } }
+      ? { practiceId: row.practice_id as string, role: row.role as string, practice: embeddedOne(row.practices) as { id: string; name: string; owner: string } }
       : null;
   };
   const requireOwner = async () => {
@@ -225,9 +219,9 @@ Deno.serve(async (req: Request) => {
 
       case 'create_practice': {
         const name = typeof body.name === 'string' ? body.name.trim() : '';
-        if (!name) return json({ error: 'Give the practice a name.' }, 400);
+        if (!name) return json(apiError('practice_name_required'), 400);
         const existing = await admin.from('practices').select('id').eq('owner', caller.id).maybeSingle();
-        if (existing.data) return json({ error: 'You already own a practice.' }, 400);
+        if (existing.data) return json(apiError('already_owner'), 400);
         const { data: prac, error: pErr } = await admin.from('practices').insert({ name, owner: caller.id }).select('id, name').single();
         if (pErr) throw pErr;
         await admin.from('practice_members').insert({ practice_id: prac.id, user_id: caller.id, role: 'owner' });
@@ -240,11 +234,11 @@ Deno.serve(async (req: Request) => {
       case 'accept_invite': {
         const token = typeof body.token === 'string' ? body.token : '';
         const inv = token ? await verifyInvite(token) : null;
-        if (!inv) return json({ error: 'This invite link isn’t valid. Ask the practice to send a new one.' }, 400);
-        if (inv.u !== caller.id) return json({ error: 'This invite was sent to a different account. Sign in with the invited email.' }, 403);
-        if (Date.now() > inv.e) return json({ error: 'This invite has expired. Ask the practice to send a new one.' }, 410);
+        if (!inv) return json(apiError('invite_invalid'), 400);
+        if (inv.u !== caller.id) return json(apiError('invite_wrong_account'), 403);
+        if (Date.now() > inv.e) return json(apiError('invite_expired'), 410);
         const { data: prac } = await admin.from('practices').select('id, name').eq('id', inv.p).maybeSingle();
-        if (!prac) return json({ error: 'That practice no longer exists.' }, 404);
+        if (!prac) return json(apiError('practice_gone'), 404);
         const { data: already } = await admin.from('practice_members').select('user_id')
           .eq('practice_id', inv.p).eq('user_id', caller.id).maybeSingle();
         if (body.preview === true) return json({ practiceName: prac.name ?? '', alreadyMember: !!already });
@@ -258,9 +252,9 @@ Deno.serve(async (req: Request) => {
       case 'add_member': {
         const email = (typeof body.email === 'string' ? body.email : '').trim().toLowerCase();
         const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
-        if (!email) return json({ error: 'Enter an email.' }, 400);
+        if (!email) return json(apiError('email_required'), 400);
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can add members.' }, 403);
+        if (!m) return json(apiError('not_owner'), 403);
         // Seat limits come from the subscription: Individual plans are
         // single-user, Practice plans include up to 5. (The admin panel
         // can bypass via admin-api for hand-arranged deals.)
@@ -273,41 +267,37 @@ Deno.serve(async (req: Request) => {
           .select('user_id', { count: 'exact', head: true })
           .eq('practice_id', m.practiceId);
         if ((count ?? 0) >= seats) {
-          return json({
-            error: seats === 1
-              ? 'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.'
-              : 'Practice plans include up to 5 team members — contact us about a larger plan.',
-          }, 403);
+          return json(apiError(seats === 1 ? 'seat_limit_individual' : 'seat_limit'), 403);
         }
-        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo, body.lang);
         return json(result.body, result.status);
       }
 
       case 'resend_invite': {
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can resend invites.' }, 403);
+        if (!m) return json(apiError('not_owner_resend'), 403);
         if (!userId) return json({ error: 'missing userId' }, 400);
         const redirectTo = typeof body.redirectTo === 'string' ? body.redirectTo : undefined;
         const { data: memRow } = await admin.from('practice_members').select('user_id').eq('practice_id', m.practiceId).eq('user_id', userId).maybeSingle();
-        if (!memRow) return json({ error: 'That person is not on the team.' }, 400);
+        if (!memRow) return json(apiError('not_on_team'), 400);
         const { data: u } = await admin.auth.admin.getUserById(userId);
         const email = (u?.user?.email ?? '').toLowerCase();
-        if (!u?.user || !email) return json({ error: 'Could not find that account.' }, 404);
-        if (u.user.email_confirmed_at) return json({ error: 'That account is already active — no invite to resend.' }, 400);
+        if (!u?.user || !email) return json(apiError('account_not_found'), 404);
+        if (u.user.email_confirmed_at) return json(apiError('account_already_active'), 400);
         // Invite links only mint for brand-new accounts, so recreate the
         // never-activated account and re-run the invite flow. Pending
         // accounts own nothing; membership + profile are re-created by
         // addOrInviteMember.
         await admin.auth.admin.deleteUser(userId);
-        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo);
+        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo, body.lang);
         return json(result.body, result.status);
       }
 
       case 'remove_member': {
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can remove members.' }, 403);
+        if (!m) return json(apiError('not_owner_remove'), 403);
         if (!userId) return json({ error: 'missing userId' }, 400);
-        if (userId === m.practice.owner) return json({ error: 'Transfer ownership before removing the primary owner.' }, 400);
+        if (userId === m.practice.owner) return json(apiError('remove_primary_owner'), 400);
         await admin.from('practice_members').delete().eq('practice_id', m.practiceId).eq('user_id', userId);
         await admin.from('profiles').update({ practice_id: null }).eq('id', userId).eq('practice_id', m.practiceId);
         return json({ ok: true });
@@ -316,10 +306,10 @@ Deno.serve(async (req: Request) => {
       case 'set_role': {
         const role = body.role === 'owner' ? 'owner' : 'member';
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can change roles.' }, 403);
+        if (!m) return json(apiError('not_owner_roles'), 403);
         if (!userId) return json({ error: 'missing userId' }, 400);
         if (userId === m.practice.owner && role === 'member') {
-          return json({ error: 'Transfer primary ownership before demoting this owner.' }, 400);
+          return json(apiError('demote_primary_owner'), 400);
         }
         const { error } = await admin.from('practice_members').update({ role }).eq('practice_id', m.practiceId).eq('user_id', userId);
         if (error) throw error;
@@ -328,11 +318,11 @@ Deno.serve(async (req: Request) => {
 
       case 'transfer_ownership': {
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can transfer ownership.' }, 403);
+        if (!m) return json(apiError('not_owner_transfer'), 403);
         if (!userId) return json({ error: 'missing userId' }, 400);
         // Target must already be a member.
         const { data: memRow } = await admin.from('practice_members').select('user_id').eq('practice_id', m.practiceId).eq('user_id', userId).maybeSingle();
-        if (!memRow) return json({ error: 'That person is not on the team.' }, 400);
+        if (!memRow) return json(apiError('not_on_team'), 400);
         await admin.from('practices').update({ owner: userId }).eq('id', m.practiceId);
         await admin.from('practice_members').update({ role: 'owner' }).eq('practice_id', m.practiceId).eq('user_id', userId);
         return json({ ok: true });
@@ -344,23 +334,23 @@ Deno.serve(async (req: Request) => {
         // a plain JSON object (or null to reset to the built-in report)
         // under ~50 KB.
         const m = await requireOwner();
-        if (!m) return json({ error: 'Only a practice owner can change the owner report templates.' }, 403);
+        if (!m) return json(apiError('not_owner_report_templates'), 403);
         const config = body.config;
         if (config !== null && (typeof config !== 'object' || Array.isArray(config))) {
-          return json({ error: 'Owner report settings must be an object.' }, 400);
+          return json(apiError('report_config_not_object'), 400);
         }
         if (config !== null && !Array.isArray((config as Json).templates)) {
-          return json({ error: 'Owner report settings need a templates list.' }, 400);
+          return json(apiError('report_config_no_templates'), 400);
         }
         const size = new TextEncoder().encode(JSON.stringify(config)).length;
         if (size > 50 * 1024) {
-          return json({ error: 'Those owner report settings are too large (50 KB max) — shorten some text or remove a template.' }, 413);
+          return json(apiError('report_config_too_large'), 413);
         }
         // Each save replaces the whole set, so a stale tab / device must
         // not overwrite newer templates: compare-and-swap on a version.
         // Clients send the version they loaded (expectedRev); older
         // clients that don't still bump it, so newer ones catch them.
-        const STALE = 'These templates were changed on another device or tab since you opened them. Close this window, reload the page, and make your changes again.';
+        const STALE = apiError('report_config_stale');
         const expectedRev = typeof body.expectedRev === 'number' ? body.expectedRev : null;
         const { data: cur, error: curErr } = await admin
           .from('practices').select('owner_report_config_rev').eq('id', m.practiceId).maybeSingle();
@@ -371,7 +361,7 @@ Deno.serve(async (req: Request) => {
           return json({ ok: true });
         }
         const currentRev = typeof cur?.owner_report_config_rev === 'number' ? cur.owner_report_config_rev : 0;
-        if (expectedRev !== null && expectedRev !== currentRev) return json({ error: STALE, conflict: true }, 409);
+        if (expectedRev !== null && expectedRev !== currentRev) return json({ ...STALE, conflict: true }, 409);
         const { data: updated, error } = await admin
           .from('practices')
           .update({ owner_report_config: config, owner_report_config_rev: currentRev + 1 })
@@ -380,7 +370,7 @@ Deno.serve(async (req: Request) => {
           .select('owner_report_config_rev');
         if (error) throw error;
         // Another save landed between the read and this write.
-        if (!updated || updated.length === 0) return json({ error: STALE, conflict: true }, 409);
+        if (!updated || updated.length === 0) return json({ ...STALE, conflict: true }, 409);
         return json({ ok: true, rev: currentRev + 1 });
       }
 
@@ -390,14 +380,14 @@ Deno.serve(async (req: Request) => {
       // type the practice name (or DELETE for an unnamed practice).
       case 'delete_practice': {
         const m = await myMembership();
-        if (!m || !m.practice) return json({ error: 'You’re not in a practice.' }, 400);
+        if (!m || !m.practice) return json(apiError('not_in_practice'), 400);
         if (m.practice.owner !== caller.id) {
-          return json({ error: 'Only the primary owner can delete the practice.' }, 403);
+          return json(apiError('not_primary_owner'), 403);
         }
         const expected = (m.practice.name ?? '').trim() || 'DELETE';
         const typed = typeof body.confirm === 'string' ? body.confirm.trim() : '';
         if (typed !== expected) {
-          return json({ error: `Type ${expected === 'DELETE' ? 'DELETE' : 'the practice name'} exactly to confirm.` }, 400);
+          return json(apiError(expected === 'DELETE' ? 'confirm_delete_word' : 'confirm_practice_name'), 400);
         }
         await purgePractice(admin, m.practiceId);
         return json({ ok: true });
@@ -408,9 +398,9 @@ Deno.serve(async (req: Request) => {
       case 'delete_account': {
         const email = (caller.email ?? '').trim().toLowerCase();
         const typed = typeof body.confirm === 'string' ? body.confirm.trim().toLowerCase() : '';
-        if (!email || typed !== email) return json({ error: 'Type your email exactly to confirm.' }, 400);
+        if (!email || typed !== email) return json(apiError('confirm_email'), 400);
         if (caller.app_metadata?.role === 'admin') {
-          return json({ error: 'Admin accounts can’t be deleted from here.' }, 400);
+          return json(apiError('admin_not_deletable'), 400);
         }
         // practices.owner cascades on user delete — a primary owner leaving
         // would silently take everyone's shared practice with them.
@@ -422,9 +412,10 @@ Deno.serve(async (req: Request) => {
             .eq('practice_id', owned.id)
             .neq('user_id', caller.id);
           if ((others ?? 0) > 0) {
-            return json({
-              error: `You’re the primary owner of ${owned.name ? `“${owned.name}”` : 'your practice'}, which has ${others} other member${others === 1 ? '' : 's'}. Transfer ownership or delete the practice first.`,
-            }, 400);
+            const count = others ?? 0;
+            return json(owned.name
+              ? apiError('owner_has_members', { name: owned.name, count })
+              : apiError('owner_has_members_unnamed', { count }), 400);
           }
         }
         await purgeAccount(admin, caller.id, owned?.id ?? null);

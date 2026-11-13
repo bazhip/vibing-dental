@@ -104,9 +104,9 @@ export function placeholders(text: string): string[] {
   return [...names].sort();
 }
 
-/** Report is also translated to Portuguese; everything else is app languages only. */
+/** Report and client (owner-facing defaults) are also translated to Portuguese; everything else is app languages only. */
 export function languagesFor(ns: string): string[] {
-  return ns === 'report' ? [...APP_LANGUAGES, 'pt'] : [...APP_LANGUAGES];
+  return ns === 'report' || ns === 'client' ? [...APP_LANGUAGES, 'pt'] : [...APP_LANGUAGES];
 }
 
 const PLURAL_SUFFIX = /_(zero|one|two|few|many|other)$/;

@@ -126,6 +126,18 @@ describe('OwnerReportTemplatesModal', () => {
     expect(saved.templates[0].language).toBe('en');
   });
 
+  it('a new template uses the practice client language, not the app language', async () => {
+    await loadLanguage('fr');
+    await i18n.changeLanguage('fr');
+    const onSave = vi.fn(async () => {});
+    render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} clientLanguage="de" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Nouveau' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Enregistrer/ }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
+    expect(saved.templates[1]).toMatchObject({ language: 'de', title: reportStrings('de').defaultTitle });
+  });
+
   it('a template created in an app language reports do not cover (pseudo-locale) is saved as English', async () => {
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);
@@ -249,5 +261,20 @@ describe('OwnerReportModal', () => {
     attachmentsState.items = [photo('a1'), photo('a2'), photo('a3')];
     rerender(<OwnerReportModal {...baseProps} imageRoles={{ a1: 'before', a2: 'after', a3: 'after' }} bare />);
     await waitFor(() => expect(screen.getByText('3 photos avant/après incluses.')).toBeInTheDocument());
+  });
+});
+
+describe('sampleOwnerReportSnapshot', () => {
+  it('English sample text is unchanged', () => {
+    const s = sampleOwnerReportSnapshot();
+    expect(s.patientInfo.exam.buccal.comment).toBe('Mild redness along the left cheek');
+    expect(s.postComments[0].text).toBe('Small chip on the tip — smooth, no treatment needed');
+    expect(s.ownerReport?.extraNotes).toBe('Soft food for the next 10 days while the extraction site heals.');
+  });
+  it('the Portuguese sample uses Portuguese text', () => {
+    const s = sampleOwnerReportSnapshot('pt');
+    expect(s.patientInfo.exam.buccal.comment).toBe('Leve vermelhidão ao longo da bochecha esquerda');
+    expect(s.postComments[0].text).toMatch(/lasca/);
+    expect(s.ownerReport?.extraNotes).toMatch(/Comida macia/);
   });
 });

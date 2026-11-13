@@ -8,10 +8,11 @@ interface Term {
   de: string;
   it: string;
   es: string;
+  pt: string;
   note?: string;
 }
 
-const LANGS = ['en', 'fr', 'de', 'it', 'es'] as const;
+const LANGS = ['en', 'fr', 'de', 'it', 'es', 'pt'] as const;
 
 const REQUIRED_IDS = [
   'mobility', 'recession', 'pocket', 'furcation', 'hyperplasia', 'calculus',
@@ -43,4 +44,10 @@ test('has at least 60 terms', () => {
 test('includes the core clinical terms', () => {
   const ids = new Set(terms.map((t) => t.id));
   expect(REQUIRED_IDS.filter((id) => !ids.has(id))).toEqual([]);
+});
+
+test('chart_record notes the Brazilian Portuguese choice', () => {
+  const record = terms.find((t) => t.id === 'chart_record');
+  expect(record?.pt).toBeTruthy();
+  expect(record?.note).toMatch(/Brazilian/);
 });

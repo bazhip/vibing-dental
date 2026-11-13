@@ -34,7 +34,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
-import { toast, friendlyError, confirmDialog } from './components/ui/dialogs';
+import { toast, friendlyDetail, confirmDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -137,11 +137,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
-  const language = useAppLanguage(prefs.language, chartSettings.loaded);
+  const language = useAppLanguage(prefs.language, chartSettings.loaded, true);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     // Looked up when it fails, in the language in effect then.
     chartSettings.update(patch).catch((err) =>
-      toast(i18n.getFixedT(null, 'app')('errors.setting', { error: friendlyError(err) }), { kind: 'error' }));
+      toast(i18n.getFixedT(null, 'app')('errors.setting', { error: friendlyDetail(err) }), { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
@@ -556,7 +556,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
     cloud.openChart(id).catch((err) => {
-      toast(t('errors.openVisit', { error: friendlyError(err) }), { kind: 'error' });
+      toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' });
     });
   };
 
@@ -815,6 +815,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       const preSvg  = preHandle?.getSvgElement();
       const postSvg = postHandle?.getSvgElement();
       if (!preHandle || !postHandle || !preSvg || !postSvg) {
+        // eslint-disable-next-line no-restricted-syntax -- dev-only: caught below; the user sees errors.preview
         throw new Error('Diagram SVGs not yet mounted');
       }
       setPreviewSnapshot({
@@ -1123,7 +1124,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // when viewing an older one.
     const latest = visits[0]?.id ?? chart.cloudChartId;
     startVisitFromChart(latest).catch((err) => {
-      toast(t('errors.newVisit', { error: friendlyError(err) }), { kind: 'error' });
+      toast(t('errors.newVisit', { error: friendlyDetail(err) }), { kind: 'error' });
     });
   };
   // Start a blank chart (asks only when something would be lost).
@@ -1419,7 +1420,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     onOpenAccount: () => setAccountOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch((err) => {
-                        toast(t('errors.signOut', { error: friendlyError(err) }), { kind: 'error' });
+                        toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' });
                       });
                     },
                   }
@@ -1517,7 +1518,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               const id = historyFor.id;
               setHistoryFor(null);
               cloud.openChart(id).then((ok) => { if (ok) closeLibrary(); }).catch((err) => {
-                toast(t('errors.openVisit', { error: friendlyError(err) }), { kind: 'error' });
+                toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' });
               });
             } : undefined}
           />
@@ -1552,7 +1553,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               // Cancelled at the unsaved-changes prompt → stay in the library.
               if (await startVisitFromChart(latestChartId)) closeLibrary();
             } catch (err) {
-              toast(t('errors.newVisit', { error: friendlyError(err) }), { kind: 'error' });
+              toast(t('errors.newVisit', { error: friendlyDetail(err) }), { kind: 'error' });
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}

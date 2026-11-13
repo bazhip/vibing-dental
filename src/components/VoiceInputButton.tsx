@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { formatDateTime, formatList } from '../i18n/format';
 import { confirmDialog, toast } from './ui/dialogs';
+import { errorText } from '../utils/apiErrors';
 import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useWakeLock } from '../hooks/useWakeLock';
@@ -343,7 +344,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       if (gen === sessionGenRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
-      setError(err instanceof Error ? err.message : i18n.getFixedT(null, 'voice')('errors.failed'));
+      setError(errorText(err, i18n.getFixedT(null, 'voice')('errors.failed')));
     } finally {
       inFlightRef.current = false;
       setActiveChunkCount((c) => c - 1);

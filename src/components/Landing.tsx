@@ -11,6 +11,7 @@ import {
   DEMO_CANINE_BBOX,
   DEMO_MISSING_PATH,
 } from './landingTeeth';
+import { EnglishGoverns } from './LegalNotice';
 import './Landing.css';
 
 // Demo data, not UI text: the sample patient, its chart rows (AVDC / Triadan codes)
@@ -432,6 +433,7 @@ export const Landing: React.FC<LandingProps> = ({
           <a href="/dpa">{t('footer.dpa')}</a>
           <a href="mailto:bazhip@gmail.com">{t('footer.contact')}</a>
         </span>
+        <EnglishGoverns className="landing__footer-note" />
       </footer>
 
       {auth && (

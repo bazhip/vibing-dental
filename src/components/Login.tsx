@@ -6,6 +6,7 @@ import { GoogleSignInButton } from './GoogleSignInButton';
 import { LegalNotice, LEGAL_ACTION } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { withDetail } from '../utils/apiErrors';
 import { uploadPracticeLogo } from '../hooks/useProfile';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
 import './Login.css';
@@ -33,13 +34,17 @@ function friendlyAuthError(e: AuthErr): string {
   const ct = i18n.getFixedT(null, 'common');
   const code = errCode(e);
   const msg = e?.message ?? '';
+  // Before the message patterns: its text ("New password should be
+  // different…") would read as a weak password.
+  if (code === 'same_password') return at('errors.samePassword');
   if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg)) return at('errors.invalidCredentials');
   if (code === 'user_already_exists' || /already registered/i.test(msg)) return at('errors.userExists');
   if (code === 'weak_password' || /password should be/i.test(msg)) return at('errors.weakPassword');
   if (code === 'email_address_invalid' || /invalid email|unable to validate email/i.test(msg)) return at('errors.invalidEmail');
-  if (e?.status === 429 || /rate limit|too many/i.test(msg)) return ct('errors.rateLimit');
+  if (code === 'email_not_confirmed') return at('errors.confirmFirst');
+  if (code === 'over_email_send_rate_limit' || e?.status === 429 || /rate limit|too many/i.test(msg)) return ct('errors.rateLimit');
   if (/fetch|network/i.test(msg)) return ct('errors.network');
-  return msg || ct('errors.generic');
+  return msg ? withDetail(msg) : ct('errors.generic');
 }
 
 const MIN_PASSWORD = 8;
@@ -163,6 +168,9 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
             // Agreed by the notice beside "Create account" — the new-user
             // trigger copies it onto the profile with the server's time.
             terms_version: TERMS_VERSION,
+            // The auth emails (confirm signup, reset, change email) pick their
+            // language from this; updated when the account language changes.
+            language: i18n.language,
           },
         },
       });
@@ -288,7 +296,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
               />
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
-              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" />
+              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" withEnglishNote={false} />
               <div className="login-or">{signup ? t('login.orWithEmail.signup') : t('login.orWithEmail.signin')}</div>
             </>
           )}

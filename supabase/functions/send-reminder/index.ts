@@ -10,6 +10,7 @@
 // the scheduled job won't double-send.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { apiError } from '../_shared/apiErrors.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -29,7 +30,7 @@ Deno.serve(async (req: Request) => {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: callerData } = await admin.auth.getUser(token);
   const caller = callerData?.user;
-  if (!caller) return json({ error: 'unauthorized' }, 401);
+  if (!caller) return json(apiError('unauthorized'), 401);
 
   let body: Record<string, unknown>;
   try {
@@ -40,8 +41,8 @@ Deno.serve(async (req: Request) => {
   const subject = typeof body.subject === 'string' ? body.subject : '';
   const text = typeof body.body === 'string' ? body.body : '';
   const chartId = typeof body.chartId === 'string' ? body.chartId : '';
-  if (!chartId) return json({ error: 'A saved chart is required to send a reminder.' }, 400);
-  if (!subject.trim() || !text.trim()) return json({ error: 'Subject and message are required.' }, 400);
+  if (!chartId) return json(apiError('chart_required'), 400);
+  if (!subject.trim() || !text.trim()) return json(apiError('subject_and_message_required'), 400);
 
   // Load the chart and confirm the caller may act on it: they created it,
   // or they're a member of the practice it's shared with.
@@ -50,7 +51,7 @@ Deno.serve(async (req: Request) => {
     .select('created_by, practice_id, owner_email')
     .eq('id', chartId)
     .maybeSingle();
-  if (!chart) return json({ error: 'That chart no longer exists.' }, 404);
+  if (!chart) return json(apiError('chart_gone'), 404);
 
   let allowed = chart.created_by === caller.id;
   if (!allowed && chart.practice_id) {
@@ -62,12 +63,12 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
     allowed = !!mem;
   }
-  if (!allowed) return json({ error: 'You do not have access to that chart.' }, 403);
+  if (!allowed) return json(apiError('chart_forbidden'), 403);
 
   // Recipient is the chart's recorded owner email — never a client value.
   const to = (chart.owner_email ?? '').trim();
   if (!isEmail(to)) {
-    return json({ error: "This patient has no owner email. Add one on the chart, then send." }, 400);
+    return json(apiError('no_owner_email'), 400);
   }
 
   // From-name: the caller's practice, if any. Strip CR/LF so a crafted
@@ -83,14 +84,14 @@ Deno.serve(async (req: Request) => {
   fromName = fromName.replace(/[\r\n]+/g, ' ').slice(0, 100);
 
   // Abuse guard: cap reminder emails per account per day, and length.
-  if (subject.length > 200 || text.length > 10_000) return json({ error: 'That message is too long.' }, 400);
+  if (subject.length > 200 || text.length > 10_000) return json(apiError('message_too_long'), 400);
   const { count: sentToday } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
     .eq('user_id', caller.id).eq('model', 'reminder-email')
     .gte('created_at', new Date(Date.now() - 86_400_000).toISOString());
-  if ((sentToday ?? 0) >= 100) return json({ error: 'Daily reminder limit reached (100). Try again tomorrow.' }, 429);
+  if ((sentToday ?? 0) >= 100) return json(apiError('daily_reminder_limit'), 429);
 
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
-  if (!key) return json({ error: 'Email is not configured.' }, 500);
+  if (!key) return json(apiError('email_not_configured'), 500);
 
   const resp = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -103,7 +104,7 @@ Deno.serve(async (req: Request) => {
     }),
   });
   const respText = await resp.text();
-  if (!resp.ok) return json({ error: `Email failed: ${respText}` }, 502);
+  if (!resp.ok) return json(apiError('email_failed', { detail: respText }), 502);
   await admin.from('ai_usage').insert({ user_id: caller.id, model: 'reminder-email', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});
 
   await admin.from('charts').update({ reminder_sent_at: new Date().toISOString() }).eq('id', chartId);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import i18n from '../i18n';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * A chart's history (public.chart_revisions): who saved each version and
@@ -59,7 +60,7 @@ export function useChartHistory(chartId: string, open: boolean) {
   React.useEffect(() => { if (open) void load(); }, [open, load]);
 
   const loadData = React.useCallback(async (revisionId: number): Promise<unknown> => {
-    if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
+    if (!supabase) throw new LocalizedError(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
     const { data, error: err } = await supabase.from('chart_revisions').select('data').eq('id', revisionId).single();
     if (err) throw new Error(err.message);
     return (data as { data: unknown }).data;

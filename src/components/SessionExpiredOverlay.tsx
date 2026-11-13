@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { confirmDialog } from './ui/dialogs';
 import { supabase } from '../utils/supabaseClient';
+import { withDetail } from '../utils/apiErrors';
 import { useModalFocus } from '../hooks/useModalFocus';
 import './Login.css';
 
@@ -57,7 +58,9 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
             ? t('errors.rateLimit', { ns: 'common' })
             : /fetch|network/i.test(msg)
               ? t('errors.network', { ns: 'common' })
-              : msg || t('errors.signInFailed')
+              : msg
+                ? withDetail(msg) // raw server text: bare in English, wrapped elsewhere (as in Login)
+                : t('errors.signInFailed')
       );
       setPassword('');
       return;

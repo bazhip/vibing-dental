@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { ApiError, LocalizedError, detailOnly, withDetail } from '../../utils/apiErrors';
 import './dialogs.css';
 
 /**
@@ -88,15 +89,33 @@ export function toast(message: string, opts: ToastOptions = {}): void {
   host?.pushToast({ id: nextId++, message, opts });
 }
 
-/** Turn an unknown error into a sentence a user can act on. */
+/** Turn an unknown error into a sentence a user can act on. Known
+ *  failure patterns get their own message; already-translated errors
+ *  (LocalizedError, coded server errors) show as-is; any other raw text is
+ *  wrapped as "Something went wrong (details: …)" outside English. */
 export function friendlyError(err: unknown, fallback = i18n.t('errors.generic')): string {
+  return describeError(err, fallback, withDetail);
+}
+
+/** friendlyError for the `{{error}}` slot of a message that already says
+ *  what failed ("Couldn’t open that chart. {{error}}"): raw text reads
+ *  "Details: …" outside English instead of a second failure sentence.
+ *  Identical to friendlyError in English. */
+export function friendlyDetail(err: unknown): string {
+  return describeError(err, i18n.t('errors.generic'), detailOnly);
+}
+
+function describeError(err: unknown, fallback: string, wrapRaw: (detail: string) => string): string {
   const msg = err instanceof Error ? err.message : typeof err === 'string' ? err : '';
   if (!msg) return fallback;
-  if (/failed to fetch|network|load failed/i.test(msg)) return i18n.t('errors.network');
-  if (/JSON object requested|multiple \(or no\) rows|PGRST116/i.test(msg)) return i18n.t('errors.notFound');
-  if (/permission denied|row-level security|42501/i.test(msg)) return i18n.t('errors.permission');
-  if (/rate limit|too many/i.test(msg)) return i18n.t('errors.rateLimit');
-  return msg;
+  // Coded server errors are matched on their English text, as before codes.
+  const probe = err instanceof ApiError ? err.serverMessage : msg;
+  if (/failed to fetch|network|load failed/i.test(probe)) return i18n.t('errors.network');
+  if (/JSON object requested|multiple \(or no\) rows|PGRST116/i.test(probe)) return i18n.t('errors.notFound');
+  if (/permission denied|row-level security|42501/i.test(probe)) return i18n.t('errors.permission');
+  if (/rate limit|too many/i.test(probe)) return i18n.t('errors.rateLimit');
+  if (err instanceof LocalizedError) return msg;
+  return wrapRaw(msg);
 }
 
 // ---------------------------------------------------------------------------

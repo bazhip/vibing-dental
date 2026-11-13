@@ -1,0 +1,76 @@
+{
+  "header": {
+    "title": {
+      "canine": "Zahnschema Hund",
+      "canineDeciduous": "Zahnschema Hund (Milchgebiss)",
+      "feline": "Zahnschema Katze",
+      "felineDeciduous": "Zahnschema Katze (Milchgebiss)"
+    },
+    "subtitle": "Parodontaler Befund & Behandlungsplan",
+    "tech": "Assistenz: {{name}}"
+  },
+  "patient": {
+    "title": "Patienteninformationen",
+    "date": "Datum",
+    "patient": "Patient",
+    "pid": "Patienten-Nr.",
+    "complaint": "Vorstellungsgrund"
+  },
+  "exam": {
+    "title": "Befunde der Maulhöhle",
+    "normal": "NORMAL",
+    "abnormal": "AUFFÄLLIG",
+    "comment": "KOMMENTAR",
+    "items": {
+      "extraoral": "Extraoral/Gesicht",
+      "lymph": "Lymphknoten",
+      "buccal": "Mundschleimhaut",
+      "tongue": "Zunge",
+      "palate": "Gaumen",
+      "pharynx": "Pharynx/Tonsillen"
+    }
+  },
+  "grid": {
+    "maxilla": "Oberkiefer",
+    "mandible": "Unterkiefer"
+  },
+  "codes": {
+    "title": "Verwendete Codes",
+    "more": "+{{n}} weitere"
+  },
+  "treatment": {
+    "title": "Behandlungs- & OP-Bericht",
+    "findingsHeading": "RÖNTGENBEFUNDE",
+    "treatmentHeading": "BEHANDLUNG",
+    "continued": "… Fortsetzung — der vollständige Bericht ist in dieser Datei eingebettet (laden Sie sie wieder in die App)."
+  },
+  "anesthesia": {
+    "title": "Narkose · Nervenblockaden",
+    "nerveBlock": "Nervenblockade",
+    "nerveBlockWith": "Nervenblockade {{drug}}",
+    "anesthetic": "Anästhetikum",
+    "anesthetics": "Anästhetika",
+    "right": "RECHTS",
+    "left": "LINKS",
+    "dose": "{{value}} mL",
+    "other": "Sonstige",
+    "blocks": {
+      "infraorbital": "Infraorbital",
+      "caudalMaxillary": "Kaudaler Maxillaris",
+      "inferiorAlveolar": "Alveolaris inferior",
+      "mental": "Mentalis"
+    }
+  },
+  "footer": {
+    "generated": "Erstellt am {{at}}",
+    "pid": "Patienten-Nr. {{id}}",
+    "pageOf": "Seite {{n}} von {{total}}"
+  },
+  "images": {
+    "title": "Bilder & Röntgenaufnahmen",
+    "titleRange": "Bilder & Röntgenaufnahmen ({{range}} von {{total}})",
+    "failed": "Bild konnte nicht geladen werden",
+    "photo": "Foto",
+    "radiograph": "Röntgenaufnahme"
+  }
+}

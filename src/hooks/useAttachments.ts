@@ -2,6 +2,7 @@ import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import i18n from '../i18n';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * Photos and radiographs pinned to the active chart. Files live in the
@@ -138,7 +139,7 @@ async function dicomPreview(file: File): Promise<File> {
     blob = await renderDicomPreview(new Uint8Array(await file.arrayBuffer()));
   } catch (err) {
     if (err instanceof DicomError) throw err;
-    throw new Error(tm()('upload.readDicom'));
+    throw new LocalizedError(tm()('upload.readDicom'));
   }
   const base = file.name.replace(/\.[^.]+$/, '') || 'radiograph';
   const ext = blob.type === 'image/jpeg' ? 'jpg' : 'png';
@@ -186,7 +187,7 @@ async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | nu
   const img = await decodeImage(file);
   if (!img) {
     if (file.size <= maxBytes) return { main: file, thumb: null };
-    throw new Error(tm()('upload.cantRead'));
+    throw new LocalizedError(tm()('upload.cantRead'));
   }
   const longest = Math.max(img.width, img.height);
 
@@ -208,7 +209,7 @@ async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | nu
   };
   const blob = await encodeUnderLimit(encode, maxBytes);
   if (!blob) {
-    throw new Error(tm()('upload.cantShrink', { mb: Math.round(maxBytes / 1024 / 1024) }));
+    throw new LocalizedError(tm()('upload.cantShrink', { mb: Math.round(maxBytes / 1024 / 1024) }));
   }
   const base = file.name.replace(/\.[^.]+$/, '') || 'image';
   return { main: new File([blob], `${base}.jpg`, { type: 'image/jpeg' }), thumb };
@@ -318,19 +319,19 @@ export function useAttachments(
   const upload = React.useCallback(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
       // Messages are looked up when thrown: an upload can outlast a language switch.
-      if (!supabase) throw new Error(tm()('upload.noCloud'));
+      if (!supabase) throw new LocalizedError(tm()('upload.noCloud'));
       const dicom = await isDicomFile(file);
       if (dicom && !dicomEnabled) {
-        throw new Error(tm()('upload.dicomPaid'));
+        throw new LocalizedError(tm()('upload.dicomPaid'));
       }
       if (!dicom && !ALLOWED.includes(file.type)) {
-        throw new Error(dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain'));
+        throw new LocalizedError(dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain'));
       }
       if (itemsRef.current.length >= maxImages) {
-        throw new Error(tm()('upload.maxImages', { max: maxImages }));
+        throw new LocalizedError(tm()('upload.maxImages', { max: maxImages }));
       }
       if (file.size > ATTACHMENT_LIMITS.hardMaxBytes) {
-        throw new Error(tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) }));
+        throw new LocalizedError(tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) }));
       }
       // DICOM: render a preview for display; the original is kept as-is.
       const source = dicom ? await dicomPreview(file) : file;
@@ -338,7 +339,7 @@ export function useAttachments(
       const { main: toUpload, thumb } = await prepareUpload(source);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
-      if (!uid) throw new Error(tm()('upload.signIn'));
+      if (!uid) throw new LocalizedError(tm()('upload.signIn'));
       const id = crypto.randomUUID();
       const path = `${uid}/${chartId}/${id}.${extFor(toUpload.type)}`;
       const originalPath = dicom ? `${uid}/${chartId}/${id}.dcm` : null;
@@ -352,7 +353,7 @@ export function useAttachments(
           .upload(originalPath, file, { contentType: DICOM_MIME, upsert: false });
         if (origErr) {
           await supabase.storage.from('attachments').remove([path]).catch(() => undefined);
-          throw new Error(tm()('upload.originalFailed', { message: origErr.message }));
+          throw new LocalizedError(tm()('upload.originalFailed', { message: origErr.message }));
         }
       }
       if (thumb) {

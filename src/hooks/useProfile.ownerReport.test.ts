@@ -1,6 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { vi, beforeEach } from 'vitest';
 import { defaultConfig } from '../utils/ownerReportConfig';
+import { LocalizedError } from '../utils/apiErrors';
 
 // Supabase double: each select(cols) on a table resolves via `respond`.
 let respond: (table: string, cols: string) => { data: unknown; error: { message: string } | null };
@@ -41,6 +42,8 @@ test('a failed templates load blocks saving (the default shown must never replac
   await waitFor(() => expect(result.current.loaded).toBe(true));
   expect(result.current.ownerReportConfigLoadFailed).toBe(true);
   await expect(result.current.saveOwnerReportConfig(defaultConfig())).rejects.toThrow(/didn’t load/);
+  // Translated text, shown as-is by the templates dialog.
+  await expect(result.current.saveOwnerReportConfig(defaultConfig())).rejects.toBeInstanceOf(LocalizedError);
   expect(teamCall).not.toHaveBeenCalled();
 });
 

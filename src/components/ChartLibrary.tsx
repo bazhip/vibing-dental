@@ -8,7 +8,7 @@ import { localDateISO } from '../utils/localDate';
 function formatChartDate(iso: string): string {
   return formatDate(iso, 'medium');
 }
-import { confirmDialog, friendlyError } from './ui/dialogs';
+import { confirmDialog, friendlyDetail } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
@@ -213,7 +213,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       setHasMore(page.hasMore);
     } catch (e) {
       if (seq !== requestSeqRef.current) return;
-      setError(t('errors.load', { error: friendlyError(e) }));
+      setError(t('errors.load', { error: friendlyDetail(e) }));
     }
   }, [listCharts, listQuery, t]);
 
@@ -235,7 +235,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       }
     } catch (e) {
       if (seq === requestSeqRef.current) {
-        setError(t('errors.loadMore', { error: friendlyError(e) }));
+        setError(t('errors.loadMore', { error: friendlyDetail(e) }));
       }
     } finally {
       // Always release the flag — if a newer refresh superseded this
@@ -310,7 +310,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       // false = cancelled at the unsaved-changes prompt: stay here.
       if ((await onOpen(id)) !== false) onClose();
     } catch (e) {
-      setError(t('errors.open', { error: friendlyError(e) }));
+      setError(t('errors.open', { error: friendlyDetail(e) }));
     } finally {
       setBusyId(null);
     }
@@ -331,7 +331,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       await refresh(charts?.length ?? 0);
       refreshDueCount();
     } catch (e) {
-      setError(t('errors.delete', { error: friendlyError(e) }));
+      setError(t('errors.delete', { error: friendlyDetail(e) }));
     } finally {
       setBusyId(null);
     }
@@ -351,7 +351,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
       await refresh(charts?.length ?? 0);
       refreshDueCount();
     } catch (e) {
-      setError(t('errors.clearRecall', { error: friendlyError(e) }));
+      setError(t('errors.clearRecall', { error: friendlyDetail(e) }));
     } finally {
       setBusyId(null);
     }
