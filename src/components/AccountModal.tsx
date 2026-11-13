@@ -4,6 +4,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { supabase } from '../utils/supabaseClient';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
+import { APP_LANGUAGES, AppLanguage, LANGUAGE_NAMES, LANGUAGE_SWITCHING_ENABLED, isAppLanguage } from '../i18n/config';
 import { deleteMyAccount } from '../utils/accountDeletion';
 import './Login.css';
 import './AccountSurfaces.css';
@@ -12,6 +13,9 @@ interface AccountModalProps {
   open: boolean;
   onClose: () => void;
   profile: UseProfileReturn;
+  /** Language in effect, and how to change it (the select shows only while switching is enabled). */
+  language?: AppLanguage;
+  onLanguageChange?: (language: AppLanguage) => void;
 }
 
 export const MIN_PASSWORD = 8;
@@ -31,6 +35,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   open,
   onClose,
   profile,
+  language = 'en',
+  onLanguageChange,
 }) => {
   const [doctorName, setDoctorName] = React.useState(profile.doctorName);
   const [email, setEmail] = React.useState('');
@@ -223,6 +229,25 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             </div>
             {sectionError('doctor')}
           </form>
+
+          {/* ---- Language ---------------------------------------------- */}
+          {LANGUAGE_SWITCHING_ENABLED && (
+            <section className="ai-settings-section">
+              <h3 className="ai-settings-subhead">Language</h3>
+              <label className="patient-form__label">
+                Language
+                <select
+                  className="patient-form__input"
+                  value={language}
+                  onChange={(e) => isAppLanguage(e.target.value) && onLanguageChange?.(e.target.value)}
+                >
+                  {APP_LANGUAGES.map((l) => (
+                    <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>
+                  ))}
+                </select>
+              </label>
+            </section>
+          )}
 
           {/* ---- Email ------------------------------------------------- */}
           <form className="ai-settings-section" onSubmit={saveEmail} noValidate>
