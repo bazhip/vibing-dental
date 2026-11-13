@@ -204,10 +204,54 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+/* Saved visit, view-only: compact state + way out, right of the picker. */
+.mobile-section-menu__trailing {
+  display: flex; align-items: center; gap: 0.4rem;
+  flex: none;
+}
+.mobile-section-menu__viewonly {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--border-strong, #cbd5e1);
+  border-radius: 999px;
+  background: var(--surface-sunken, #f1f5f9);
+  color: var(--text-muted);
+  font-size: 0.75rem; font-weight: 600;
+  white-space: nowrap;
+}
+.mobile-section-menu__edit {
+  min-height: 44px; min-width: 44px;
+  padding: 0 0.9rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font: inherit; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer;
+}
+
 /* Activate at the same phone breakpoint as the rest of the mobile pass.
    Each layout's native nav goes hidden so the menu's the single nav. */
 @media (max-width: 600px) {
-  .mobile-section-menu { display: block; }
+  /* The phone's one sticky bar under the topbar: section picker, plus a
+     saved visit's View only pill + Edit (the full banner scrolls away).
+     Opaque and full-bleed so content never shows through it; Layouts
+     publishes its height as --section-bar-height for whatever sticks
+     below it. */
+  .mobile-section-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: sticky;
+    top: var(--topbar-height, 0px);
+    margin: 0 calc(-1 * var(--page-pad, 0.5rem)) 0.5rem;
+    padding: 0.4rem var(--page-pad, 0.5rem);
+    background: var(--bg-page, #f8fafc);
+  }
+  .mobile-section-menu__trigger { flex: 1 1 auto; min-width: 0; min-height: 44px; }
+  .mobile-section-menu__list {
+    left: var(--page-pad, 0.5rem);
+    right: var(--page-pad, 0.5rem);
+  }
   .sidebar-layout__nav { display: none !important; }
   .sidebar-layout {
     grid-template-columns: minmax(0, 1fr);

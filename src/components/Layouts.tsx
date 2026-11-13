@@ -24,13 +24,22 @@ interface LayoutProps {
    *  (so it can jump the user to a section, e.g. on a blocked save). */
   activeId?: string;
   onActiveChange?: (id: string) => void;
+  /** Phone-only controls shown at the right of the sticky section bar. */
+  trailing?: React.ReactNode;
 }
+
+/** Live height of the sticky phone section bar (0 when hidden, i.e. on
+ *  wider screens), published as --section-bar-height so other sticky
+ *  things (diagram toolbar, grid header) stack beneath it. */
+const sectionBarHeight = (el: Element | null) =>
+  el ? parseFloat(getComputedStyle(el).getPropertyValue('--section-bar-height')) || 0 : 0;
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
   sections,
   defaultActiveId,
   activeId,
   onActiveChange,
+  trailing,
 }) => {
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
@@ -40,6 +49,22 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   }, [activeId]);
   const active = activeId ?? internal;
   const mainRef = React.useRef<HTMLElement>(null);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const root = rootRef.current;
+    const bar = root?.querySelector<HTMLElement>('.mobile-section-menu');
+    if (!root || !bar) return;
+    const publish = () => {
+      const h = bar.offsetHeight;
+      if (h) root.style.setProperty('--section-bar-height', `${h}px`);
+      else root.style.removeProperty('--section-bar-height');
+    };
+    publish();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(publish);
+    ro.observe(bar);
+    return () => ro.disconnect();
+  }, []);
   const choose = (id: string) => {
     setInternal(id);
     onActiveChange?.(id);
@@ -49,7 +74,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       const main = mainRef.current;
       if (!main) return;
       const panel = main.querySelector<HTMLElement>(`[data-section-id="${id}"]`);
-      const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height')) || 72) - 12;
+      const top = main.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-height')) || 72) - sectionBarHeight(rootRef.current) - 12;
       if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top) });
       const heading = panel?.querySelector<HTMLElement>('h2');
       if (heading) {
@@ -59,8 +84,8 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     });
   };
   return (
-    <div className="sidebar-layout">
-      <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
+    <div className="sidebar-layout" ref={rootRef}>
+      <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} trailing={trailing} />
       {/* Plain navigation, not an ARIA tablist — the buttons have no
           arrow-key contract, and sections read better as nav anyway. */}
       <nav className="sidebar-layout__nav" aria-label="Chart sections">

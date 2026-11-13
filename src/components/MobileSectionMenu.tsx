@@ -14,10 +14,13 @@ interface MobileSectionMenuProps {
   sections: ChartSection[];
   activeId: string | undefined;
   onSelect: (id: string) => void;
+  /** Extra controls on the right of the bar (e.g. a saved visit's
+   *  View only pill + Edit). Phone-only, like the menu itself. */
+  trailing?: React.ReactNode;
 }
 
 export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
-  sections, activeId, onSelect,
+  sections, activeId, onSelect, trailing,
 }) => {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -54,6 +57,7 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
         <span className="mobile-section-menu__label">{active?.label ?? 'Sections'}</span>
         <span className="mobile-section-menu__chev" aria-hidden="true">▾</span>
       </button>
+      {trailing && <div className="mobile-section-menu__trailing">{trailing}</div>}
 
       {open && (
         <ul className="mobile-section-menu__list">

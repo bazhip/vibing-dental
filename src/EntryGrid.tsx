@@ -198,6 +198,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && chart.openedExisting && !editable;
+  // A saved visit opened view-only: the banner says so, and on phones the
+  // sticky section bar carries a View only pill + Edit (the banner itself
+  // scrolls away there).
+  const viewingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && readOnly;
+  // Edit chart: remember the opened version (for Undo changes), then unlock.
+  const unlockForEditing = () => {
+    try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
+    setEditUnlocked(true);
+  };
   // Has the chart changed since the user chose Edit chart? (Offers Undo changes.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
@@ -1416,7 +1425,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {/* Saved-visit banner: opens view-only so history isn't changed by
           accident; Edit chart unlocks (changes then autosave), Undo changes
           restores the version that was opened, Done editing re-locks. */}
-      {cloud.enabled && chart.openedExisting && !currentVisit && readOnly && (
+      {viewingSavedVisit && (
         <div className="chart-lock-banner" role="status">
           {readOnly ? (
             <>
@@ -1449,10 +1458,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <button
                 type="button"
                 className="entry-grid__button entry-grid__button--topbar"
-                onClick={() => {
-                  try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
-                  setEditUnlocked(true);
-                }}
+                onClick={unlockForEditing}
               >
                 Edit chart
               </button>
@@ -1576,6 +1582,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={sections}
           activeId={activeSection}
           onActiveChange={goToSection}
+          trailing={viewingSavedVisit ? (
+            <>
+              <span className="mobile-section-menu__viewonly">View only</span>
+              <button
+                type="button"
+                className="mobile-section-menu__edit"
+                onClick={unlockForEditing}
+                title="Unlock this saved visit to edit it (changes then autosave)"
+              >
+                Edit
+              </button>
+            </>
+          ) : undefined}
         />
       </form>
 

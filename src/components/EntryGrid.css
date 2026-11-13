@@ -1755,7 +1755,8 @@
   /* Float below the app topbar while scrolling a tall diagram, so the
      Mark/Comment/Draw tools stay reachable mid-canvas. */
   position: sticky;
-  top: calc(var(--topbar-height, 0px) + 0.5rem);
+  /* --section-bar-height: the phone section bar (0 elsewhere). */
+  top: calc(var(--topbar-height, 0px) + var(--section-bar-height, 0px) + 0.5rem);
   z-index: 30;
   box-shadow: 0 1px 2px rgba(23, 35, 46, 0.05);
 }
@@ -2981,6 +2982,12 @@ button.save-status--error {
 
 .chart-lock-banner__text { flex: 1 1 auto; min-width: 0; }
 .chart-lock-banner .entry-grid__button { flex: none; }
+/* Phones: the sticky section bar carries the view-only state (pill +
+   Edit), so the banners scroll away with the page instead of pinning
+   over — or under — that bar. */
+@media (max-width: 600px) {
+  .chart-lock-banner { position: static; }
+}
 
 /* Failed-save detail: the plain-language reason + recovery step, shown
    next to the retry button. Capped so it wraps instead of shoving the

@@ -534,7 +534,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     const place = () => {
       frame = 0;
       const r = el.getBoundingClientRect();
-      const topbar = parseFloat(getComputedStyle(el).getPropertyValue('--topbar-height')) || 0;
+      const cs = getComputedStyle(el);
+      // Under the topbar and, on phones, the sticky section bar.
+      const topbar = (parseFloat(cs.getPropertyValue('--topbar-height')) || 0)
+        + (parseFloat(cs.getPropertyValue('--section-bar-height')) || 0);
       // Keyboard up: iOS pans the visible area down the page and the
       // topbar goes with it — sit at the top of what's visible instead.
       const top = Math.max(topbar, window.visualViewport?.offsetTop ?? 0);
