@@ -22,3 +22,23 @@ describe('toastWhenReady', () => {
     expect(screen.queryByText('Dropped')).toBeNull();
   });
 });
+
+describe('web rendering (unchanged)', () => {
+  it('confirm renders the web dialog, not the iOS alert', async () => {
+    const { confirmDialog } = await import('./dialogs');
+    render(<DialogHost />);
+    act(() => { void confirmDialog({ title: 'Delete chart?', danger: true }); });
+    const dlg = screen.getByRole('alertdialog', { name: 'Delete chart?' });
+    expect(dlg).toHaveClass('ui-dialog');
+    expect(document.querySelector('.ios-alert')).toBeNull();
+    expect(screen.getByRole('button', { name: 'OK' })).toHaveClass('ui-btn', 'ui-btn--danger');
+    expect(screen.getByRole('button', { name: 'Cancel' })).toHaveClass('ui-btn', 'ui-btn--secondary');
+  });
+
+  it('toasts keep the web markup', async () => {
+    render(<DialogHost />);
+    act(() => toast('Saved'));
+    expect((await screen.findByText('Saved')).closest('.ui-toast')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toHaveTextContent('×');
+  });
+});

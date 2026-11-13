@@ -17,5 +17,11 @@
     "rateLimit": "Too many attempts. Wait a minute and try again.",
     "generic": "Something went wrong. Please try again.",
     "saveFile": "Couldn't save the file."
+  },
+  "ios": {
+    "back": "Back",
+    "moreActions": "More actions",
+    "ok": "OK",
+    "copy": "Copy"
   }
 }

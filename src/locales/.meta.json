@@ -520,6 +520,22 @@
       "hash": "eef37847ee9b",
       "status": "machine"
     },
+    "common:ios.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "common:ios.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "common:ios.moreActions": {
+      "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.ok": {
+      "hash": "565339bc4d33",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -1340,6 +1356,22 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:ios.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "common:ios.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "common:ios.moreActions": {
+      "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.ok": {
+      "hash": "565339bc4d33",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -2164,6 +2196,22 @@
       "hash": "eef37847ee9b",
       "status": "machine"
     },
+    "common:ios.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "common:ios.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "common:ios.moreActions": {
+      "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.ok": {
+      "hash": "565339bc4d33",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -2984,6 +3032,22 @@
     },
     "common:errors.saveFile": {
       "hash": "eef37847ee9b",
+      "status": "machine"
+    },
+    "common:ios.back": {
+      "hash": "76900f1bfd16",
+      "status": "machine"
+    },
+    "common:ios.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "common:ios.moreActions": {
+      "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.ok": {
+      "hash": "565339bc4d33",
       "status": "machine"
     },
     "report:abnormalityNoted": {

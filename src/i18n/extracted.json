@@ -9,5 +9,14 @@
   "src/native/aiConsent.tsx",
   "src/native/appLock.ts",
   "src/native/authReturn.ts",
-  "src/native/camera.ts"
+  "src/native/camera.ts",
+  "src/ios/icons.tsx",
+  "src/ios/Sheet.tsx",
+  "src/ios/NavBar.tsx",
+  "src/ios/TabBar.tsx",
+  "src/ios/Stack.tsx",
+  "src/ios/List.tsx",
+  "src/ios/SwipeRow.tsx",
+  "src/ios/ContextMenu.tsx",
+  "src/ios/gesture.ts"
 ]

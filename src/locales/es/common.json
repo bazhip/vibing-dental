@@ -17,5 +17,11 @@
     "permission": "No tiene acceso a eso.",
     "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo.",
     "saveFile": "No se pudo guardar el archivo."
+  },
+  "ios": {
+    "back": "Atrás",
+    "moreActions": "Más acciones",
+    "ok": "Aceptar",
+    "copy": "Copiar"
   }
 }

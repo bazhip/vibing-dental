@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from '../../i18n';
+import { isNativeApp } from '../../native/platform';
+import { Icon } from '../../ios/icons';
 import './dialogs.css';
 
 /**
@@ -18,6 +20,10 @@ import './dialogs.css';
  * <DialogHost /> (mounted once at the app root) renders them. Without a
  * host (unit tests rendering a lone component) confirm/prompt fall back
  * to the native dialogs and toasts are dropped.
+ *
+ * In the iOS app (isNativeApp()) the same calls render as iOS components:
+ * confirm and prompt as alerts, chooseDialog as an action sheet, toasts
+ * as a capsule banner at the top. The website rendering is unchanged.
  */
 
 export interface ConfirmOptions {
@@ -44,6 +50,20 @@ export interface PromptOptions {
   readOnly?: boolean;
 }
 
+export interface Choice {
+  value: string;
+  label: string;
+  /** Red, and listed first (HIG) — e.g. "Discard Changes". */
+  destructive?: boolean;
+}
+
+export interface ChoiceOptions {
+  title: string;
+  message?: React.ReactNode;
+  choices: Choice[];
+  cancelLabel?: string;
+}
+
 export interface ToastOptions {
   kind?: 'success' | 'error' | 'info';
   /** ms before auto-dismiss; errors default to staying until dismissed. */
@@ -53,7 +73,8 @@ export interface ToastOptions {
 
 type DialogRequest =
   | { kind: 'confirm'; id: number; opts: ConfirmOptions; resolve: (v: boolean) => void }
-  | { kind: 'prompt'; id: number; opts: PromptOptions; resolve: (v: string | null) => void };
+  | { kind: 'prompt'; id: number; opts: PromptOptions; resolve: (v: string | null) => void }
+  | { kind: 'choose'; id: number; opts: ChoiceOptions; resolve: (v: string | null) => void };
 
 interface ToastItem { id: number; message: string; opts: ToastOptions }
 
@@ -83,6 +104,17 @@ export function promptDialog(opts: PromptOptions): Promise<string | null> {
   }
   const h = host;
   return new Promise((resolve) => h.openDialog({ kind: 'prompt', id: nextId++, opts, resolve }));
+}
+
+/**
+ * Choices related to an action the user just took (e.g. discard or keep a
+ * draft). Resolves with the chosen value, or null on Cancel. Renders as an
+ * action sheet in the iOS app.
+ */
+export function chooseDialog(opts: ChoiceOptions): Promise<string | null> {
+  if (!host) return Promise.resolve(null);
+  const h = host;
+  return new Promise((resolve) => h.openDialog({ kind: 'choose', id: nextId++, opts, resolve }));
 }
 
 export function toast(message: string, opts: ToastOptions = {}): void {
@@ -217,6 +249,193 @@ function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prom
   );
 }
 
+function ChoiceView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choose' }>; onDone: (v: string | null) => void }) {
+  const { opts } = req;
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => { cancelRef.current?.focus(); }, []);
+  const backdrop = useBackdropClose(() => onDone(null));
+  const titleId = `dlg-title-${req.id}`;
+  return (
+    <div className="ui-dialog-overlay" {...backdrop}>
+      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+        <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
+        {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
+        <div className="ui-dialog__actions">
+          <button ref={cancelRef} type="button" className="ui-btn ui-btn--secondary" onClick={() => onDone(null)}>
+            {opts.cancelLabel ?? i18n.t('actions.cancel')}
+          </button>
+          {opts.choices.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              className={`ui-btn ${c.destructive ? 'ui-btn--danger' : 'ui-btn--primary'}`}
+              onClick={() => onDone(c.value)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---- iOS app rendering -----------------------------------------------------
+
+function NativeConfirm({ req, onDone }: { req: Extract<DialogRequest, { kind: 'confirm' }>; onDone: (v: boolean) => void }) {
+  const { opts } = req;
+  const confirmRef = React.useRef<HTMLButtonElement>(null);
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => {
+    (opts.danger ? cancelRef : confirmRef).current?.focus();
+  }, [opts.danger]);
+  const titleId = `dlg-title-${req.id}`;
+  const msgId = `dlg-msg-${req.id}`;
+  return (
+    <div className="ios-alert-overlay">
+      <div className="ios-alert" role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={opts.message ? msgId : undefined}>
+        <div className="ios-alert__content">
+          <h2 id={titleId} className="ios-alert__title">{opts.title}</h2>
+          {opts.message && <div id={msgId} className="ios-alert__message">{opts.message}</div>}
+        </div>
+        <div className="ios-alert__buttons">
+          <button ref={cancelRef} type="button" className="ios-alert__button ios-alert__button--cancel" onClick={() => onDone(false)}>
+            {opts.cancelLabel ?? i18n.t('actions.cancel')}
+          </button>
+          <button
+            ref={confirmRef}
+            type="button"
+            className={`ios-alert__button ${opts.danger ? 'ios-alert__button--destructive' : 'ios-alert__button--default'}`}
+            onClick={() => onDone(true)}
+          >
+            {opts.confirmLabel ?? i18n.t('ios.ok')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NativePrompt({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prompt' }>; onDone: (v: string | null) => void }) {
+  const { opts } = req;
+  const [value, setValue] = React.useState(opts.defaultValue ?? '');
+  const [error, setError] = React.useState<string | null>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, []);
+  const submit = () => {
+    if (opts.readOnly) {
+      navigator.clipboard?.writeText(value).catch(() => { /* manual copy still possible */ });
+      onDone(value);
+      return;
+    }
+    const err = opts.validate?.(value) ?? null;
+    if (err) { setError(err); return; }
+    onDone(value);
+  };
+  const titleId = `dlg-title-${req.id}`;
+  const msgId = `dlg-msg-${req.id}`;
+  return (
+    <div className="ios-alert-overlay">
+      <form
+        className="ios-alert"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={opts.message ? msgId : undefined}
+        onSubmit={(e) => { e.preventDefault(); submit(); }}
+      >
+        <div className="ios-alert__content">
+          <h2 id={titleId} className="ios-alert__title">{opts.title}</h2>
+          {opts.message && <div id={msgId} className="ios-alert__message">{opts.message}</div>}
+          <input
+            ref={inputRef}
+            className="ios-alert__input"
+            type={opts.type ?? 'text'}
+            value={value}
+            placeholder={opts.placeholder}
+            readOnly={opts.readOnly}
+            aria-invalid={!!error}
+            aria-label={opts.label ?? opts.title}
+            onChange={(e) => { setValue(e.target.value); setError(null); }}
+          />
+          {error && <p className="ios-alert__error" role="alert">{error}</p>}
+        </div>
+        <div className="ios-alert__buttons">
+          <button type="button" className="ios-alert__button ios-alert__button--cancel" onClick={() => onDone(null)}>
+            {opts.cancelLabel ?? (opts.readOnly ? i18n.t('actions.close') : i18n.t('actions.cancel'))}
+          </button>
+          <button type="submit" className="ios-alert__button ios-alert__button--default">
+            {opts.confirmLabel ?? (opts.readOnly ? i18n.t('ios.copy') : i18n.t('ios.ok'))}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function NativeActionSheet({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choose' }>; onDone: (v: string | null) => void }) {
+  const { opts } = req;
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  React.useEffect(() => { cancelRef.current?.focus(); }, []);
+  const backdrop = useBackdropClose(() => onDone(null));
+  const titleId = `dlg-title-${req.id}`;
+  const msgId = `dlg-msg-${req.id}`;
+  // HIG: destructive choices first, Cancel last and set apart.
+  const choices = [...opts.choices.filter((c) => c.destructive), ...opts.choices.filter((c) => !c.destructive)];
+  return (
+    <div className="ios-action-sheet-overlay" {...backdrop}>
+      <div className="ios-action-sheet" role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={opts.message ? msgId : undefined}>
+        <div className="ios-action-sheet__group">
+          <div className="ios-action-sheet__header">
+            <h2 id={titleId} className="ios-action-sheet__title">{opts.title}</h2>
+            {opts.message && <div id={msgId} className="ios-action-sheet__message">{opts.message}</div>}
+          </div>
+          {choices.map((c) => (
+            <button
+              key={c.value}
+              type="button"
+              className={`ios-action-sheet__button${c.destructive ? ' ios-action-sheet__button--destructive' : ''}`}
+              onClick={() => onDone(c.value)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+        <button ref={cancelRef} type="button" className="ios-action-sheet__cancel" onClick={() => onDone(null)}>
+          {opts.cancelLabel ?? i18n.t('actions.cancel')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function NativeToast({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+  const kind = item.opts.kind ?? 'info';
+  useAutoDismiss(item, onDismiss);
+  return (
+    <div className={`ios-toast ios-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
+      {kind === 'success' && <Icon name="checkmark-circle" filled size={20} className="ios-toast__icon" />}
+      {kind === 'error' && <Icon name="exclamationmark-circle" filled size={20} className="ios-toast__icon" />}
+      <span className="ios-toast__msg">{item.message}</span>
+      {item.opts.action && (
+        <button
+          type="button"
+          className="ios-toast__action"
+          onClick={() => { item.opts.action!.onClick(); onDismiss(); }}
+        >
+          {item.opts.action.label}
+        </button>
+      )}
+      <button type="button" className="ios-toast__close" onClick={onDismiss} aria-label={i18n.t('actions.close')}>
+        <Icon name="xmark" size={14} />
+      </button>
+    </div>
+  );
+}
+
 /** Mount once at the app root. */
 export function DialogHost() {
   const [dialogs, setDialogs] = React.useState<DialogRequest[]>([]);
@@ -266,11 +485,27 @@ export function DialogHost() {
 
   const dismissToast = (id: number) => setToasts((list) => list.filter((t) => t.id !== id));
 
+  if (isNativeApp()) {
+    return ReactDOM.createPortal(
+      <>
+        {top?.kind === 'confirm' && <NativeConfirm key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
+        {top?.kind === 'prompt' && <NativePrompt key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
+        {top?.kind === 'choose' && <NativeActionSheet key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
+        <div className="ios-toasts" aria-live="polite" aria-atomic="false">
+          {toasts.map((t) => (
+            <NativeToast key={t.id} item={t} onDismiss={() => dismissToast(t.id)} />
+          ))}
+        </div>
+      </>,
+      document.body
+    );
+  }
+
   return ReactDOM.createPortal(
     <>
-      {top && (top.kind === 'confirm'
-        ? <ConfirmView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />
-        : <PromptView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />)}
+      {top?.kind === 'confirm' && <ConfirmView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
+      {top?.kind === 'prompt' && <PromptView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
+      {top?.kind === 'choose' && <ChoiceView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
       <div className="ui-toasts" aria-live="polite" aria-atomic="false">
         {toasts.map((t) => (
           <ToastView key={t.id} item={t} onDismiss={() => dismissToast(t.id)} />
@@ -281,7 +516,8 @@ export function DialogHost() {
   );
 }
 
-function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+/** Auto-dismiss a toast; errors stay until dismissed. */
+function useAutoDismiss(item: ToastItem, onDismiss: () => void) {
   const kind = item.opts.kind ?? 'info';
   const duration = item.opts.duration ?? (kind === 'error' ? 0 : item.opts.action ? 8000 : 4000);
   React.useEffect(() => {
@@ -289,6 +525,11 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
     const t = window.setTimeout(onDismiss, duration);
     return () => window.clearTimeout(t);
   }, [duration, onDismiss]);
+}
+
+function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+  const kind = item.opts.kind ?? 'info';
+  useAutoDismiss(item, onDismiss);
   return (
     <div className={`ui-toast ui-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
       <span className="ui-toast__msg">{item.message}</span>

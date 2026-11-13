@@ -17,5 +17,11 @@
     "permission": "Non ha accesso a questo elemento.",
     "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi.",
     "saveFile": "Impossibile salvare il file."
+  },
+  "ios": {
+    "back": "Indietro",
+    "moreActions": "Altre azioni",
+    "ok": "OK",
+    "copy": "Copia"
   }
 }
