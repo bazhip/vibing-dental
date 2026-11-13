@@ -24,6 +24,9 @@ export interface ChartStatusInput {
   lastSavedAt: string;
   /** The visit date (yyyy-mm-dd). */
   visitDate: string;
+  /** The last save was one the user asked for (Save now, Try again,
+   *  Done): announce it. Autosaves are not announced. */
+  announceSaved?: boolean;
 }
 
 export interface ChartStatus {
@@ -36,7 +39,8 @@ export interface ChartStatus {
   retry?: boolean;
   /** Kept on this device until charting starts; Save now puts it in the cloud. */
   canSaveNow?: boolean;
-  /** For the polite live region. */
+  /** For the polite live region: failures, going offline, and an
+   *  explicit save — never the autosave's Saving…/Saved. */
   live: string;
 }
 
@@ -48,12 +52,12 @@ export interface ChartStatusFormat {
 export function chartStatus(i: ChartStatusInput, t: TFunction<'chart'>, fmt: ChartStatusFormat): ChartStatus {
   const live = !i.cloudEnabled
     ? ''
-    : i.status === 'saving'
-    ? t('ios.live.saving')
-    : i.status === 'saved'
-    ? t('ios.live.saved')
     : i.status === 'error'
     ? i.saveError || t('ios.live.notSaved')
+    : i.status === 'saved' && i.announceSaved
+    ? t('ios.live.saved')
+    : i.status !== 'saving' && i.dirty && !i.online
+    ? t('ios.status.offline')
     : '';
   const base = ((): Omit<ChartStatus, 'live'> => {
     if (!i.cloudEnabled) return { text: i.trial ? t('ios.status.onDevice') : '', tone: 'normal' };

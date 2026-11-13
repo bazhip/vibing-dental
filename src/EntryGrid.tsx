@@ -506,6 +506,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     return () => ro.disconnect();
   }, []);
 
+  // The app's chart live region announces a save the user asked for
+  // (Save now, Try again, Done), not every autosave: an explicit save
+  // marks itself, and the next 'saved' it reaches is announced until the
+  // following save starts.
+  const explicitSaveRef = React.useRef(false);
+  const [announceSaved, setAnnounceSaved] = React.useState(false);
+  React.useEffect(() => {
+    if (cloud.status === 'saving') setAnnounceSaved(false);
+    else if (cloud.status === 'saved' && explicitSaveRef.current) {
+      explicitSaveRef.current = false;
+      setAnnounceSaved(true);
+    } else if (cloud.status === 'error') explicitSaveRef.current = false;
+  }, [cloud.status]);
+
   // Single save gate for the button, ⌘S, and retry: a chart with no
   // patient name can't be found again in My charts (the library groups by
   // number-else-name), so require one before it reaches the cloud.
@@ -517,6 +531,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       return;
     }
     setSaveHint('');
+    explicitSaveRef.current = true;
     cloud.saveNow().catch(() => {});
   };
   // Clear the hint the moment a name exists.
@@ -1189,6 +1204,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const doneEditing = async () => {
     if (cloud.dirty) {
+      explicitSaveRef.current = true;
       try { await cloud.saveNow(); } catch { return; /* the status pill shows the error */ }
     }
     try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
@@ -1204,9 +1220,25 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const bumpLibrary = React.useCallback(() => {
     if (native) setLibraryVersion((v) => v + 1);
   }, [native]);
+  // An autosave refreshes the lists only when it saved something they
+  // show: another chart, the patient's name/number/owner, species, visit
+  // or recheck date, or the first save of the day ("Updated" date). Each
+  // bump refetches the Rechecks badge's due query (up to 500 rows).
+  const pi = chart.patientInfo;
+  const listSignature = native
+    ? JSON.stringify([
+      chart.cloudChartId, pi.patientName, pi.patientNumber, pi.ownerName, pi.ownerPhone, pi.ownerEmail,
+      chart.species, pi.date, pi.recallDate ?? '', cloud.lastSavedAt ? localDateISO(new Date(cloud.lastSavedAt)) : '',
+    ])
+    : '';
+  const listedSignatureRef = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (cloud.lastSavedAt) bumpLibrary();
-  }, [cloud.lastSavedAt, bumpLibrary]);
+    if (!cloud.lastSavedAt || listedSignatureRef.current === listSignature) return;
+    bumpLibrary();
+    // Edits still pending when this save landed may not be in it: the
+    // next save refreshes again.
+    listedSignatureRef.current = cloud.dirty ? null : listSignature;
+  }, [cloud.lastSavedAt]); // eslint-disable-line react-hooks/exhaustive-deps
   const libraryCore = useStableFunctions({
     deleteChart: async (id: string): Promise<void> => {
       await cloud.deleteChart(id);
@@ -1597,6 +1629,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         hasName: !!chart.patientInfo.patientName.trim(),
         awaitingClinical: !!cloud.awaitingClinical,
         lastSavedAt: cloud.lastSavedAt || '',
+        announceSaved,
         visitDate: chart.patientInfo.date,
       },
       tc,

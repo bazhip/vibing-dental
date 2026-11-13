@@ -50,11 +50,23 @@ describe('chartStatus (the Chart navigation bar subtitle)', () => {
     expect(run({ cloudEnabled: false }).text).toBe('');
   });
 
-  it('announces saves for the live region', () => {
-    expect(run({ status: 'saving' }).live).toBe('Saving chart');
-    expect(run({ status: 'saved' }).live).toBe('Chart saved');
+  it('the live region stays quiet for autosaves (VoiceOver is not interrupted every few seconds)', () => {
+    expect(run({ status: 'saving' }).live).toBe('');
+    expect(run({ status: 'saved', lastSavedAt: '2026-03-04T09:41:00Z' }).live).toBe('');
+    expect(run({ status: 'saving', announceSaved: true }).live).toBe('');
+    expect(run({}).live).toBe('');
+    // The visual subtitle still says what the save is doing.
+    expect(run({ status: 'saving' }).text).toBe('Saving…');
+  });
+
+  it('announces "Chart saved" only after an explicit save (Save now, Try again, Done)', () => {
+    expect(run({ status: 'saved', announceSaved: true }).live).toBe('Chart saved');
+  });
+
+  it('announces failures and going offline', () => {
     expect(run({ status: 'error' }).live).toBe('Chart not saved');
     expect(run({ status: 'error', saveError: 'Quota' }).live).toBe('Quota');
-    expect(run({}).live).toBe('');
+    expect(run({ dirty: true, online: false }).live).toBe('Offline — saved on this device');
+    expect(run({ cloudEnabled: false, trial: true }).live).toBe('');
   });
 });
