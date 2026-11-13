@@ -1094,6 +1094,30 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       : []),
   ];
 
+  // Editing a saved visit (unlocked): the topbar's action row turns
+  // amber and carries the way out — Revert (back to the version that was
+  // opened) and Done editing (save, then re-lock).
+  const editingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && !readOnly;
+  const revertUnlockedChanges = async () => {
+    const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
+    if (!raw) return;
+    if (!(await confirmDialog({
+      title: 'Revert your changes?',
+      message: 'This chart goes back to how it was when you chose Edit chart, and that version is saved.',
+      confirmLabel: 'Revert changes',
+      danger: true,
+    }))) return;
+    chart.applySnapshot(JSON.parse(raw), chart.cloudChartId);
+    toast('Changes reverted.', { kind: 'success' });
+  };
+  const doneEditing = async () => {
+    if (cloud.dirty) {
+      try { await cloud.saveNow(); } catch { return; /* the status pill shows the error */ }
+    }
+    try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
+    setEditUnlocked(false);
+  };
+
   return (
     <div className="entry-grid-container" ref={containerRef}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
@@ -1186,7 +1210,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </div>
           </div>
         </div>
-        <div className="entry-grid__topbar-actions">
+        <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}`}>
+          {editingSavedVisit && (
+            <span className="topbar-editing" title="Editing a saved visit — changes save automatically">
+              <span className="topbar-label-long">Editing saved visit</span>
+              <span className="topbar-label-short">Editing</span>
+            </span>
+          )}
           {trial && (
             <>
               <button
@@ -1343,6 +1373,27 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
+          {editingSavedVisit && (
+            <>
+              {unlockSnapshotChanged && (
+                <button
+                  type="button"
+                  className="diagram-view__action topbar-editing__revert"
+                  onClick={revertUnlockedChanges}
+                  title="Put this chart back the way it was when you chose Edit chart"
+                >
+                  Revert
+                </button>
+              )}
+              <button
+                type="button"
+                className="entry-grid__button entry-grid__button--topbar"
+                onClick={doneEditing}
+              >
+                Done editing
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -1365,8 +1416,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {/* Saved-visit banner: opens view-only so history isn't changed by
           accident; Edit chart unlocks (changes then autosave), Revert
           restores the version that was opened, Done editing re-locks. */}
-      {cloud.enabled && chart.openedExisting && !currentVisit && (
-        <div className={`chart-lock-banner${readOnly ? '' : ' chart-lock-banner--editing'}`} role="status">
+      {cloud.enabled && chart.openedExisting && !currentVisit && readOnly && (
+        <div className="chart-lock-banner" role="status">
           {readOnly ? (
             <>
               <span className="chart-lock-banner__text">
@@ -1406,46 +1457,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 Edit chart
               </button>
             </>
-          ) : (
-            <>
-              <span className="chart-lock-banner__text">
-                <strong>Editing a saved visit</strong> — changes save automatically.
-              </span>
-              {unlockSnapshotChanged && (
-                <button
-                  type="button"
-                  className="diagram-view__action"
-                  onClick={async () => {
-                    const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
-                    if (!raw) return;
-                    if (!(await confirmDialog({
-                      title: 'Revert your changes?',
-                      message: 'This chart goes back to how it was when you chose Edit chart, and that version is saved.',
-                      confirmLabel: 'Revert changes',
-                      danger: true,
-                    }))) return;
-                    chart.applySnapshot(JSON.parse(raw), chart.cloudChartId);
-                    toast('Changes reverted.', { kind: 'success' });
-                  }}
-                >
-                  Revert my changes
-                </button>
-              )}
-              <button
-                type="button"
-                className="entry-grid__button entry-grid__button--topbar"
-                onClick={async () => {
-                  if (cloud.dirty) {
-                    try { await cloud.saveNow(); } catch { return; /* the status pill shows the error */ }
-                  }
-                  try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
-                  setEditUnlocked(false);
-                }}
-              >
-                Done editing
-              </button>
-            </>
-          )}
+          ) : null}
         </div>
       )}
       {reportCustomizeOpen && (

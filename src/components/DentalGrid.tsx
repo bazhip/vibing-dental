@@ -387,7 +387,7 @@ const CODE_COLUMNS: Array<{ key: keyof ToothData; name: string; share: number; s
 
 /** Missing · Tooth · Triadan on narrow screens: compact, and frozen so
  *  the tooth stays in view while the findings scroll sideways. */
-const NARROW_LEAD = [40, 64, 54] as const;
+const NARROW_LEAD = [34, 40, 46] as const;
 /** Matches the CSS breakpoint where the grid becomes its own scroller. */
 const NARROW_QUERY = '(max-width: 1000px)';
 
@@ -687,6 +687,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key: 'tooth',
       name: 'Tooth',
       width: lead[1],
+      // Narrow: one "Tooth" title over both Tooth and Triadan, so neither
+      // column has to be wide enough for a title of its own.
+      colSpan: narrow ? (args) => (args.type === 'HEADER' ? 2 : undefined) : undefined,
       // Pinned left on narrow screens (our own sticky CSS — the grid's
       // `frozen` renders frozen cells twice when virtualization is off).
       cellClass: narrow ? 'dental-grid__pin dental-grid__pin--1' : undefined,
