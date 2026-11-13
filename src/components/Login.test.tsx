@@ -11,6 +11,11 @@ vi.mock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: tr
 vi.mock('../hooks/useProfile', () => ({ uploadPracticeLogo: vi.fn() }));
 const browser = vi.hoisted(() => ({ open: vi.fn(async () => {}), close: vi.fn(async () => {}) }));
 vi.mock('@capacitor/browser', () => ({ Browser: browser }));
+const cap = vi.hoisted(() => ({ native: false }));
+vi.mock('@capacitor/core', async (orig) => ({
+  ...(await orig<typeof import('@capacitor/core')>()),
+  Capacitor: { isNativePlatform: () => cap.native, getPlatform: () => (cap.native ? 'ios' : 'web') },
+}));
 
 import { Login } from './Login';
 
@@ -59,20 +64,34 @@ describe('Login — signup confirmation flow', () => {
 });
 
 describe('Login — Sign in with Apple and app mode', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    cap.native = false;
+    vi.unstubAllEnvs();
+  });
 
   const APPLE_HINT = 'Already have an account or were invited? Sign in with your email.';
 
-  it('web: Apple sits beside Google, with the hint, and sign-up stays available', () => {
+  it('web, flag unset: no Apple button or hint (as before); Google and sign-up unchanged', () => {
     render(<Login onAuthenticate={vi.fn()} />);
     expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Continue with Apple' })).toBeInTheDocument();
-    expect(screen.getByText(APPLE_HINT)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /with Apple/ })).toBeNull();
+    expect(screen.queryByText(APPLE_HINT)).toBeNull();
     expect(screen.getByRole('button', { name: 'New here? Create a practice account' })).toBeInTheDocument();
     expect(screen.queryByText('New to ToothOps? Sign up at toothops.app')).toBeNull();
   });
 
+  it('web, VITE_APPLE_SIGNIN_WEB=true: Apple sits beside Google, with the hint', () => {
+    vi.stubEnv('VITE_APPLE_SIGNIN_WEB', 'true');
+    render(<Login onAuthenticate={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Continue with Apple' })).toBeInTheDocument();
+    expect(screen.getByText(APPLE_HINT)).toBeInTheDocument();
+  });
+
   it('appMode: sign-in only, with a link to sign up on the website', async () => {
+    // The app always shows Apple (App Store 4.8), flag or not.
+    cap.native = true;
     render(<Login onAuthenticate={vi.fn()} appMode initialMode="signup" />);
     expect(screen.queryByRole('button', { name: /Create account|Create a practice account|Sign up/ })).toBeNull();
     expect(screen.queryByLabelText(/Practice name/)).toBeNull();

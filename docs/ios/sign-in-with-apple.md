@@ -1,8 +1,8 @@
 # Sign in with Apple and app auth returns — setup
 
-ToothOps offers Sign in with Apple on the website and in the iOS app
-(App Store Guideline 4.8: an app that offers Google sign-in must offer
-Apple too). The code is in `src/components/AppleSignInButton.tsx` and
+ToothOps offers Sign in with Apple in the iOS app (App Store Guideline 4.8:
+an app that offers Google sign-in must offer Apple too), and on the website
+once it is turned on with `VITE_APPLE_SIGNIN_WEB` (step 4). The code is in `src/components/AppleSignInButton.tsx` and
 `src/native/authReturn.ts`. These are the one-time console steps that make it
 work.
 
@@ -63,7 +63,25 @@ Keep the existing website entries (`https://toothops.app/` and any preview URLs)
 If a redirect isn't on this list, Supabase falls back to the Site URL and the
 app never receives the callback.
 
-## 4. Xcode
+## 4. Turn the button on for the website: `VITE_APPLE_SIGNIN_WEB`
+
+The iOS app always shows "Continue with Apple" (Guideline 4.8). The **website**
+shows it only when the build sets:
+
+```
+VITE_APPLE_SIGNIN_WEB=true
+```
+
+Unset (or any other value), the website looks exactly as it did before Apple
+sign-in was added: no Apple button and no hint under it. Set the flag only
+after steps 1 to 3 are done, because a website Apple button with no Supabase
+Apple provider just shows an error. In Vercel, add it under Project → Settings →
+Environment Variables (Production and Preview), then redeploy. Vite inlines it at
+build time. The check is `showAppleSignIn()` in
+`src/components/AppleSignInButton.tsx`, used by the login screen and the
+session-expired overlay. The hint always appears and disappears with the button.
+
+## 5. Xcode
 
 The **Sign in with Apple** capability is already in the project
 (`CODE_SIGN_ENTITLEMENTS = App/App.entitlements` for Debug and Release). In
@@ -72,9 +90,10 @@ the App ID has the capability, automatic signing creates a matching profile.
 The `toothops` URL scheme is registered in `ios/App/App/Info.plist`
 (`CFBundleURLTypes`).
 
-## 5. Check it works
+## 6. Check it works
 
-- Website: "Continue with Apple" → Apple → back on toothops.app signed in.
+- Website with `VITE_APPLE_SIGNIN_WEB=true`: "Continue with Apple" → Apple → back
+  on toothops.app signed in. Without the flag: no Apple button on the website.
 - App, cold and warm: "Continue with Apple" shows the native sheet and signs in.
   Cancelling the sheet shows no error.
 - App: "Continue with Google" opens the system browser and returns to the app

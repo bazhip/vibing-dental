@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Browser } from '@capacitor/browser';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { AppleSignInButton, APPLE_HINT } from './AppleSignInButton';
+import { AppleSignInButton, APPLE_HINT, showAppleSignIn } from './AppleSignInButton';
 import { LegalNotice } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
@@ -283,13 +283,17 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                 onError={setError}
                 onStart={markTermsPending}
               />
-              <AppleSignInButton
-                label={signup ? 'Sign up with Apple' : 'Continue with Apple'}
-                disabled={busy}
-                onError={setError}
-                onStart={markTermsPending}
-              />
-              <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
+              {showAppleSignIn() && (
+                <>
+                  <AppleSignInButton
+                    label={signup ? 'Sign up with Apple' : 'Continue with Apple'}
+                    disabled={busy}
+                    onError={setError}
+                    onStart={markTermsPending}
+                  />
+                  <span className="login-hint login-apple-hint">{APPLE_HINT}</span>
+                </>
+              )}
               {/* The notice sits by both buttons: the email form's submit
                   is far below on the long signup form. */}
               <LegalNotice action={signup ? 'signing up' : 'continuing'} className="login-legal--google" />
