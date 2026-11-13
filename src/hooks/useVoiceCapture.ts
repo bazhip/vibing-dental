@@ -1,6 +1,8 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import i18n from '../i18n';
+import { isAppLanguage, type AppLanguage } from '../i18n/config';
+import { browserSpeechLang } from '../utils/voice/sttConfig';
 import {
   startDeepgramSession, DeepgramSession, canCaptureRawAudio, createCaptureContext,
 } from '../utils/deepgramVoice';
@@ -22,6 +24,8 @@ import {
  * segments since the last extraction tick, flush context for the model,
  * etc.
  */
+
+const appLanguage = (): AppLanguage => (isAppLanguage(i18n.language) ? i18n.language : 'en');
 
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
@@ -240,7 +244,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     const rec = new browserCtor();
     rec.continuous = true;
     rec.interimResults = true;
-    rec.lang = navigator.language || 'en-US';
+    rec.lang = browserSpeechLang(appLanguage(), navigator.language);
 
     rec.onresult = (event) => {
       let text = '';
@@ -321,7 +325,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
           if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
           handleSessionEnd(id);
         },
-      }, audioCtx);
+      }, audioCtx, appLanguage());
       holder.session = session;
       // Stopped during the handshake: tear straight back down.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {

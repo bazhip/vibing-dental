@@ -21,7 +21,9 @@
  * words. linear16 is unambiguous and identical on every browser.
  */
 
-import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
+import { voiceKeyterms } from '../constants/voiceKeyterms';
+import type { AppLanguage } from '../i18n/config';
+import { VOICE_STT } from './voice/sttConfig';
 import i18n from '../i18n';
 import { LocalizedError } from './apiErrors';
 
@@ -59,25 +61,30 @@ const LOW_CONFIDENCE = 0.6;
 // prompting (VOICE_KEYTERMS) biases it toward the veterinary-dental terms
 // the human medical model won't know (Triadan, AVDC codes, vet drugs).
 const TARGET_SAMPLE_RATE = 16000;
-const KEYTERM_QS = VOICE_KEYTERMS.map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
-export const DG_URL =
-  'wss://api.deepgram.com/v1/listen?model=nova-3-medical' +
-  '&punctuate=true' +
-  '&smart_format=true' +
-  '&interim_results=true' +
-  '&diarize=true' +
-  '&utterances=true' +
-  '&endpointing=400' +
-  '&channels=1' +
-  '&language=en' +
-  '&encoding=linear16' +
-  // Opt out of Deepgram's Model Improvement Program: by default Deepgram
-  // keeps request audio + transcripts to train its models (possibly
-  // outside the region). Opted out, it doesn't store them after the
-  // response — this is clinical dictation that can include names.
-  '&mip_opt_out=true' +
-  `&sample_rate=${TARGET_SAMPLE_RATE}` +
-  KEYTERM_QS;
+export function deepgramUrl(lng: AppLanguage): string {
+  const stt = VOICE_STT[lng];
+  const keytermQs = voiceKeyterms(lng).map((t) => `&keyterm=${encodeURIComponent(t)}`).join('');
+  return (
+    `wss://api.deepgram.com/v1/listen?model=${stt.model}` +
+    '&punctuate=true' +
+    '&smart_format=true' +
+    '&interim_results=true' +
+    '&diarize=true' +
+    '&utterances=true' +
+    '&endpointing=400' +
+    '&channels=1' +
+    `&language=${stt.language}` +
+    '&encoding=linear16' +
+    // Opt out of Deepgram's Model Improvement Program: by default Deepgram
+    // keeps request audio + transcripts to train its models (possibly
+    // outside the region). Opted out, it doesn't store them after the
+    // response — this is clinical dictation that can include names.
+    '&mip_opt_out=true' +
+    `&sample_rate=${TARGET_SAMPLE_RATE}` +
+    keytermQs
+  );
+}
+export const DG_URL = deepgramUrl('en');
 
 interface DgWord {
   word: string;
@@ -157,7 +164,8 @@ export function createCaptureContext(): AudioContext | null {
 export async function startDeepgramSession(
   auth: DeepgramAuth,
   handlers: DeepgramHandlers,
-  providedCtx?: AudioContext | null
+  providedCtx?: AudioContext | null,
+  lng: AppLanguage = 'en'
 ): Promise<DeepgramSession> {
   const ctx = providedCtx ?? createCaptureContext();
   if (!ctx) throw new LocalizedError(i18n.t('errors.noCapture', { ns: 'voice' }));
@@ -173,7 +181,7 @@ export async function startDeepgramSession(
   }
 
   // Deepgram picks the auth scheme from the sub-protocol name.
-  const ws = new WebSocket(DG_URL, [auth.kind, auth.token]);
+  const ws = new WebSocket(deepgramUrl(lng), [auth.kind, auth.token]);
   ws.binaryType = 'arraybuffer';
 
   let closed = false;

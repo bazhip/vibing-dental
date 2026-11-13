@@ -1,3 +1,6 @@
+import type { AppLanguage } from '../i18n/config';
+import glossary from '../locales/glossary.json';
+
 /**
  * Deepgram Nova-3 "keyterm prompting" list for AI voice autofill.
  *
@@ -122,3 +125,73 @@ export const VOICE_KEYTERMS: string[] = [
   'isoflurane',
   'sevoflurane',
 ];
+
+/** Deepgram limits: 100 terms and 500 tokens per request (over → error). */
+const MAX_TERMS = 100;
+const MAX_TOKENS = 500;
+
+/** Rough token estimate, deliberately pessimistic for non-English words. */
+const termTokens = (t: string): number => Math.ceil(t.length / 3) + 1;
+
+// Vets say these in English whatever the working language: Triadan numbering
+// and drug names (indices into VOICE_KEYTERMS by value, not position).
+const ENGLISH_CORE: string[] = [
+  'Triadan',
+  'bupivacaine', 'lidocaine', 'mepivacaine', 'dexmedetomidine', 'methadone',
+  'hydromorphone', 'buprenorphine', 'butorphanol', 'alfaxalone', 'midazolam',
+  'maropitant', 'meloxicam', 'carprofen', 'gabapentin', 'isoflurane', 'sevoflurane',
+];
+
+// VOICE_KEYTERMS entries whose glossary `en` value differs from the keyterm.
+const GLOSSARY_ALIAS: Record<string, string> = {
+  'carnassial': 'carnassial_tooth',
+  'mobility': 'mobility',
+  'furcation': 'furcation',
+  'furcation exposure': 'furcation',
+  'enlargement': 'hyperplasia',
+  'root canal': 'root_canal_therapy',
+  'non-vital': 'non_vital_tooth',
+  'persistent deciduous': 'persistent_deciduous_tooth',
+  'supernumerary': 'supernumerary_tooth',
+};
+
+// Most-dictated glossary terms that have no VOICE_KEYTERMS entry; placed
+// right after the English core.
+const EXTRA_GLOSSARY_IDS = ['periodontitis'];
+
+type GlossaryTerm = { id: string; en: string } & Partial<Record<AppLanguage, string>>;
+const TERMS = (glossary as { terms: GlossaryTerm[] }).terms;
+const BY_ID = new Map(TERMS.map((t) => [t.id, t]));
+const BY_EN = new Map(TERMS.map((t) => [t.en.toLowerCase(), t]));
+
+/**
+ * Keyterms for Deepgram in `lng`. English: VOICE_KEYTERMS unchanged. Other
+ * languages: the English codes/drug names vets say in English, then the
+ * glossary's native clinical values in VOICE_KEYTERMS order, de-duplicated
+ * and capped to Deepgram's term and token limits.
+ */
+export function voiceKeyterms(lng: AppLanguage): string[] {
+  if (lng === 'en') return VOICE_KEYTERMS;
+  const candidates: string[] = [...ENGLISH_CORE];
+  for (const id of EXTRA_GLOSSARY_IDS) {
+    const v = BY_ID.get(id)?.[lng];
+    if (v) candidates.push(v);
+  }
+  for (const kt of VOICE_KEYTERMS) {
+    const entry = BY_ID.get(GLOSSARY_ALIAS[kt] ?? '') ?? BY_EN.get(kt.toLowerCase());
+    const v = entry?.[lng];
+    if (v) candidates.push(v);
+  }
+  const seen = new Set<string>();
+  const out: string[] = [];
+  let tokens = 0;
+  for (const term of candidates) {
+    const key = term.toLowerCase();
+    if (seen.has(key)) continue;
+    if (out.length >= MAX_TERMS || tokens + termTokens(term) > MAX_TOKENS) break;
+    seen.add(key);
+    out.push(term);
+    tokens += termTokens(term);
+  }
+  return out;
+}
