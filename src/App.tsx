@@ -16,6 +16,7 @@ import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { isNativeApp } from './native/platform';
 import { clearBillingCache } from './native/billingCache';
+import { getSessionTolerant } from './native/offlineSession';
 import { AppLockOverlay } from './components/AppLockOverlay';
 
 // Split the two halves of the app: visitors on the marketing page don't
@@ -151,15 +152,18 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!cloudEnabled || !supabase) return;
-    supabase.auth.getSession().then(({ data }) => {
-      setIsAuthenticated(!!data.session);
-      if (data.session) {
+    // App launched offline after the access token expired: getSession()
+    // can't refresh and says "no session", but the stored one is still
+    // good — stay signed in (see native/offlineSession).
+    void getSessionTolerant(supabase).then(({ session }) => {
+      setIsAuthenticated(!!session);
+      if (session) {
         touchLastSeen();
         // Returning from Google sign-in: record the terms notice they
         // signed in next to.
-        flushPendingTerms(data.session.user.id);
-        lastUserIdRef.current = data.session.user.id;
-        setLastEmail(data.session.user.email ?? '');
+        flushPendingTerms(session.user.id);
+        lastUserIdRef.current = session.user.id;
+        setLastEmail(session.user.email ?? '');
       }
       setSessionChecked(true);
     });

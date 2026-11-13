@@ -5,6 +5,7 @@ import type { BillingInfo } from '../hooks/useBilling';
 
 const flags = vi.hoisted(() => ({ native: true, paid: false }));
 const auth = vi.hoisted(() => ({
+  storageKey: 'sb-test-auth-token',
   getSession: vi.fn(async () => ({ data: { session: { user: { id: 'u1', app_metadata: {} } } } })),
   signOut: vi.fn(),
 }));
@@ -38,6 +39,7 @@ vi.stubGlobal('localStorage', {
 });
 
 import { BillingGate } from './BillingGate';
+import { AuthRetryableFetchError } from '@supabase/supabase-js';
 import { readBillingCache, saveBillingCache } from '../native/billingCache';
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -81,6 +83,20 @@ beforeEach(() => {
 describe('BillingGate in the app', () => {
   it('offline with a fresh cached active plan: lets them in', async () => {
     saveBillingCache(billing({ status: 'active' }), Date.now() - 6 * DAY, 'u1');
+    fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
+    renderGate();
+    expect(await screen.findByText('charting app')).toBeInTheDocument();
+  });
+
+  it('offline with an expired access token: keys the cache from the stored session', async () => {
+    store.set('sb-test-auth-token', JSON.stringify({
+      access_token: 'old', refresh_token: 'r1', expires_at: 1, user: { id: 'u1', app_metadata: {} },
+    }));
+    auth.getSession.mockResolvedValueOnce({
+      data: { session: null },
+      error: new AuthRetryableFetchError('Failed to fetch', 0),
+    } as never);
+    saveBillingCache(billing({ status: 'active' }), Date.now() - DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
     expect(await screen.findByText('charting app')).toBeInTheDocument();

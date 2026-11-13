@@ -2,9 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 
-const flags = vi.hoisted(() => ({ native: true, session: null as null | { user: { id: string; email: string; app_metadata: object } } }));
+const flags = vi.hoisted(() => ({ native: true, session: null as null | { user: { id: string; email: string; app_metadata: object } }, error: null as unknown }));
 const auth = vi.hoisted(() => ({
-  getSession: vi.fn(async () => ({ data: { session: flags.session } })),
+  storageKey: 'sb-test-auth-token',
+  getSession: vi.fn(async () => ({ data: { session: flags.session }, error: flags.error })),
   onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
   startAutoRefresh: vi.fn(),
 }));
@@ -38,6 +39,7 @@ vi.stubGlobal('localStorage', {
 });
 
 import App from './App';
+import { AuthRetryableFetchError } from '@supabase/supabase-js';
 import { act } from '@testing-library/react';
 import { writeString } from './utils/storage';
 import { readBillingCache, saveBillingCache } from './native/billingCache';
@@ -51,6 +53,7 @@ const authCallback = () => (auth.onAuthStateChange.mock.calls.at(-1) as unknown 
 beforeEach(() => {
   flags.native = true;
   flags.session = null;
+  flags.error = null;
   store.clear();
   entryGridProps.current = null;
   window.location.hash = '';
@@ -77,6 +80,24 @@ describe('App routing in the iOS app', () => {
     expect(await screen.findByText('CHART')).toBeInTheDocument();
     expect(screen.queryByText('LANDING PAGE')).toBeNull();
     expect(entryGridProps.current?.onGoHome).toBeUndefined();
+  });
+});
+
+describe('offline launch in the app', () => {
+  it('expired access token + no network: stays signed in on the stored session', async () => {
+    store.set('sb-test-auth-token', JSON.stringify({
+      access_token: 'old', refresh_token: 'r1', expires_at: 1, user: { id: 'u1', email: 'me@vet.com' },
+    }));
+    flags.error = new AuthRetryableFetchError('Failed to fetch', 0);
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(screen.queryByText('APP LOGIN')).toBeNull();
+  });
+
+  it('offline with no stored session: the login', async () => {
+    flags.error = new AuthRetryableFetchError('Failed to fetch', 0);
+    render(<App />);
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
   });
 });
 

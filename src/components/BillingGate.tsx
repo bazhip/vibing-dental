@@ -11,6 +11,7 @@ import {
 } from '../hooks/useBilling';
 import { isNativeApp } from '../native/platform';
 import { readBillingCache, saveBillingCache } from '../native/billingCache';
+import { getSessionTolerant } from '../native/offlineSession';
 import { InactivePlan } from './InactivePlan';
 import { SignOutLink } from './SignOutLink';
 import './BillingGate.css';
@@ -56,11 +57,12 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     if (!cloudEnabled || !supabase) return;
     let cancelled = false;
     if (new URLSearchParams(window.location.search).get('billing') === 'canceled') clearBillingParam();
-    // The session is local (no network), so it's there offline too; its
-    // user id keys the app's billing cache.
-    const userId = supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) setIsAdmin(data.session?.user.app_metadata?.role === 'admin');
-      return data.session?.user.id ?? '';
+    // Its user id keys the app's billing cache. Offline with an expired
+    // access token getSession() can't refresh, so fall back to the stored
+    // session (app only — see native/offlineSession).
+    const userId = getSessionTolerant(supabase).then(({ session }) => {
+      if (!cancelled) setIsAdmin(session?.user.app_metadata?.role === 'admin');
+      return session?.user.id ?? '';
     });
     fetchBilling()
       .then((b) => {
