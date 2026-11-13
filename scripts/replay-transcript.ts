@@ -2,8 +2,17 @@
  * Replay a dictation transcript through the app's exact voice-autofill
  * pipeline and show where it loses information.
  *
- *   npm run replay -- <transcript.txt> [--lang fr] [--expect [expected.json]] [--offline] [--model claude-opus-5-5] [--section charting]
- *   npm run replay -- --all-langs [--expect] [--offline]
+ *   npm run replay -- <transcript.txt> [--lang fr] [--expect [expected.json]] [--runs N] [--offline] [--model claude-opus-5-5] [--section charting]
+ *   npm run replay -- --all-langs [--expect] [--runs N] [--offline]
+ *
+ * What it measures: transcript cleanup + filter (stage 1) and Claude's
+ * extraction (stages 2-4) from TEXT. It does not measure speech recognition
+ * (Deepgram) at all — the fixture transcripts are typed, not heard. To cover
+ * recognition, read the fixture script aloud in the app, download the
+ * transcript and replay that file:
+ *   npm run replay -- recording.txt --lang fr --expect scripts/fixtures/voice/fr/expected.json
+ * (the cleanup column will differ by design — the words are what Deepgram
+ * heard, not the typed fixture; the score is what counts).
  *
  * --lang is the dictation language (en, fr, de, it, es; default en). It
  * threads into the cleanup, the filler filter and the prompts.
@@ -15,6 +24,10 @@
  * --all-langs runs every fixture in scripts/fixtures/voice/<lng>/ and prints
  * a parity table (F1 per language, English as the baseline). Accept when each
  * language is within 0.05 of English.
+ * --runs N repeats the online pass (stages 2-4) N times per language and
+ * reports mean precision/recall/F1 plus every missing/extra action with how
+ * many runs it occurred in. Claude's output varies run to run, so use
+ * --runs 3 for the parity check.
  *
  * Input: the "Download transcript" file from the voice panel, or any text
  * file with one utterance per line (a single paragraph is split into
@@ -31,7 +44,7 @@
  * --offline runs stage 1 only (no API calls, no cost). Otherwise it calls
  * the Anthropic API directly with your credentials (ANTHROPIC_API_KEY or an
  * `ant auth login` profile) — one call per chunk plus two full-transcript
- * calls. Model settings mirror supabase/functions/ai-autofill — keep in sync.
+ * calls, per run. No Deepgram key is needed. Model settings mirror supabase/functions/ai-autofill — keep in sync.
  *
  * Runs through Vite's module runner (scripts/vite-run.mjs) because the app
  * modules it imports load their catalogs with import.meta.glob.
@@ -63,16 +76,17 @@ import {
   chartToActions,
   fixtureExpectedPath,
   fixtureTranscriptPath,
+  evaluateRuns,
+  parseRuns,
   readUtterances,
-  scoreActions,
-  type Score,
+  type AggregateScore,
   type VoiceFixture,
 } from './i18n/voiceEval';
 
 // ---- args ----------------------------------------------------------------
 const USAGE =
-  'usage: npm run replay -- <transcript.txt> [--lang en|fr|de|it|es] [--expect [expected.json]] [--offline] [--model id] [--section charting]\n' +
-  '       npm run replay -- --all-langs [--expect] [--offline] [--model id]';
+  'usage: npm run replay -- <transcript.txt> [--lang en|fr|de|it|es] [--expect [expected.json]] [--runs N] [--offline] [--model id] [--section charting]\n' +
+  '       npm run replay -- --all-langs [--expect] [--runs N] [--offline] [--model id]';
 const args = process.argv.slice(2);
 const flag = (name: string) => {
   const i = args.indexOf(name);
@@ -88,6 +102,13 @@ const allLangs = bool('--all-langs');
 const model = flag('--model') ?? 'claude-opus-5-5';
 const section = flag('--section');
 const lang = (flag('--lang') ?? 'en') as AppLanguage;
+let runs = 1;
+try {
+  runs = parseRuns(flag('--runs'));
+} catch (err) {
+  console.error(`${(err as Error).message}\n${USAGE}`);
+  process.exit(1);
+}
 // --expect takes an optional file; with --all-langs each fixture brings its own.
 let expectOn = false;
 let expectFile: string | undefined;
@@ -224,14 +245,18 @@ interface RunResult {
   /** Stage 1 against the fixture: lines whose cleanup differs, findings the filter drops. */
   cleanupMismatches: number;
   droppedFindings: number;
-  app?: Score;
-  oneShot?: Score;
+  app?: AggregateScore;
+  oneShot?: AggregateScore;
 }
 
-function printScore(label: string, s: Score) {
-  console.log(`  ${label}: precision ${s.precision.toFixed(2)} · recall ${s.recall.toFixed(2)} · F1 ${bold(s.f1.toFixed(2))}`);
-  for (const a of s.missing) console.log(`   missing: ${describeAction(a)}`);
-  for (const a of s.extra) console.log(dim(`   extra:   ${describeAction(a)}`));
+function printScore(label: string, s: AggregateScore) {
+  const many = s.runs > 1;
+  const prefix = many ? `mean of ${s.runs} runs: ` : '';
+  console.log(`  ${label}: ${prefix}precision ${s.precision.toFixed(2)} · recall ${s.recall.toFixed(2)} · F1 ${bold(s.f1.toFixed(2))}`);
+  if (many) console.log(dim(`   F1 per run: ${s.f1s.map((f) => f.toFixed(2)).join(', ')}`));
+  const times = (n: number) => (many ? ` (${n}/${s.runs} runs)` : '');
+  for (const m of s.missing) console.log(`   missing: ${describeAction(m.action)}${times(m.count)}`);
+  for (const m of s.extra) console.log(dim(`   extra:   ${describeAction(m.action)}${times(m.count)}`));
 }
 
 async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixture): Promise<RunResult> {
@@ -268,6 +293,28 @@ async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixtu
   if (offline) return result;
 
   const client = new Anthropic();
+  const once = async (k: number) => {
+    if (runs > 1) console.log(bold(`\n──── run ${k + 1}/${runs} ────`));
+    return onlinePass(client, lng, utterances);
+  };
+  if (!expected) {
+    for (let k = 0; k < runs; k++) await once(k);
+    return result;
+  }
+  const scored = await evaluateRuns(expected.actions, runs, async (k) => {
+    const { live, oneShot } = await once(k);
+    return { app: chartToActions(live), oneShot: chartToActions(oneShot) };
+  });
+  console.log(bold(`\nSCORE — final chart vs. expected${runs > 1 ? ` (${runs} runs)` : ''}\n`));
+  result.app = scored.app;
+  result.oneShot = scored.oneShot;
+  printScore('app (live + final check)', result.app);
+  printScore('one shot', result.oneShot);
+  return result;
+}
+
+/** Stages 2-4 once: the live chart (chunks + final check) and the one-shot chart. */
+async function onlinePass(client: Anthropic, lng: AppLanguage, utterances: string[]) {
   const live = blankChart();
   const liveHandlers = handlersFor(live);
   const allowed = (a: AiAction) => actionAllowedAnywhere(a, lng);
@@ -321,22 +368,15 @@ async function run(lng: AppLanguage, utterances: string[], expected?: VoiceFixtu
   for (const l of onlyApp) console.log(`  only app:      ${l}`);
 
   console.log(dim(`\nFinal app chart:\n${summarizeChart(live)}`));
-
-  if (expected) {
-    console.log(bold('\nSCORE — final chart vs. expected\n'));
-    result.app = scoreActions(expected.actions, chartToActions(live));
-    result.oneShot = scoreActions(expected.actions, chartToActions(oneShot));
-    printScore('app (live + final check)', result.app);
-    printScore('one shot', result.oneShot);
-  }
-  return result;
+  return { live, oneShot };
 }
 
 const loadExpected = (p: string) => JSON.parse(fs.readFileSync(p, 'utf8')) as VoiceFixture;
 
 function printParity(results: RunResult[]) {
-  console.log(bold('\nPARITY — per language, English is the baseline\n'));
   const en = results.find((r) => r.lng === 'en');
+  const meanOf = runs > 1 ? ` (mean of ${runs})` : '';
+  console.log(bold(`\nPARITY — per language, English is the baseline${offline ? '' : meanOf}\n`));
   const head = ['lang', 'cleanup', 'dropped', ...(offline ? [] : ['P', 'R', 'F1', 'ΔF1 vs en', 'one-shot F1', 'ok'])];
   const rows = results.map((r) => {
     const cells = [r.lng, String(r.cleanupMismatches), String(r.droppedFindings)];
@@ -355,7 +395,8 @@ function printParity(results: RunResult[]) {
   console.log('  |' + widths.map((w) => '-'.repeat(w + 2)).join('|') + '|');
   for (const r of rows) console.log(line(r));
   console.log(dim('\n  cleanup = lines whose cleanup differs from expected.json; dropped = finding lines the filter skips.'));
-  if (!offline) console.log(dim('  Accept when every language\'s F1 is within 0.05 of English (or above it).'));
+  if (!offline) console.log(dim('  Accept when every language\'s F1 is within 0.05 of English (or above it). Use --runs 3: one run is noisy.'));
+  console.log(dim('  Replay scores cleanup + Claude extraction from text only; it does not test speech recognition.'));
 }
 
 async function main() {

@@ -221,3 +221,80 @@ export function clinicalKey(a: AiAction): string {
   const i = a.input;
   return JSON.stringify([a.name, i.triadan ?? null, i.field ?? null, i.mark ?? null, i.site ?? null, i.area ?? null, i.status ?? null]);
 }
+
+// ----- repeated runs ----------------------------------------------------------
+
+/** An action and how many runs it was missing (or extra) in. */
+export interface CountedAction {
+  action: AiAction;
+  count: number;
+}
+
+/** Mean scores over several online runs (Claude is not deterministic), with
+ *  the union of missing/extra actions and how often each occurred. */
+export interface AggregateScore {
+  runs: number;
+  precision: number;
+  recall: number;
+  f1: number;
+  /** F1 of each run, in order. */
+  f1s: number[];
+  missing: CountedAction[];
+  extra: CountedAction[];
+}
+
+function countUnion(lists: AiAction[][]): CountedAction[] {
+  const byKey = new Map<string, CountedAction>();
+  for (const list of lists) {
+    // Count each distinct action once per run.
+    const seen = new Set<string>();
+    for (const action of list) {
+      const key = JSON.stringify([action.name, action.input]);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const hit = byKey.get(key);
+      if (hit) hit.count++;
+      else byKey.set(key, { action, count: 1 });
+    }
+  }
+  // Most frequent first; first-seen order breaks ties.
+  return [...byKey.values()].sort((a, b) => b.count - a.count);
+}
+
+const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+
+export function aggregateScores(scores: Score[]): AggregateScore {
+  return {
+    runs: scores.length,
+    precision: mean(scores.map((s) => s.precision)),
+    recall: mean(scores.map((s) => s.recall)),
+    f1: mean(scores.map((s) => s.f1)),
+    f1s: scores.map((s) => s.f1),
+    missing: countUnion(scores.map((s) => s.missing)),
+    extra: countUnion(scores.map((s) => s.extra)),
+  };
+}
+
+/** Run the online extraction `runs` times (sequentially) and score the app
+ *  chart (live + final check) and the one-shot chart against `expected`. */
+export async function evaluateRuns(
+  expected: AiAction[],
+  runs: number,
+  extract: (run: number) => Promise<{ app: AiAction[]; oneShot: AiAction[] }>,
+): Promise<{ app: AggregateScore; oneShot: AggregateScore }> {
+  const app: Score[] = [];
+  const oneShot: Score[] = [];
+  for (let i = 0; i < runs; i++) {
+    const r = await extract(i);
+    app.push(scoreActions(expected, r.app));
+    oneShot.push(scoreActions(expected, r.oneShot));
+  }
+  return { app: aggregateScores(app), oneShot: aggregateScores(oneShot) };
+}
+
+/** `--runs N`: default 1, positive integers only. */
+export function parseRuns(value: string | undefined): number {
+  if (value === undefined) return 1;
+  if (!/^[1-9]\d*$/.test(value)) throw new Error(`--runs must be a positive integer (got "${value}")`);
+  return Number(value);
+}

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import type { AiAction, ChartContext } from '../../src/utils/aiAutofill';
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../../src/types';
-import { chartToActions, keyTokens, readUtterances, scoreActions } from './voiceEval';
+import { aggregateScores, chartToActions, evaluateRuns, keyTokens, parseRuns, readUtterances, scoreActions } from './voiceEval';
 
 const field = (triadan: number, f: string, value: string): AiAction => ({ name: 'set_tooth_field', input: { triadan, field: f, value } });
 const note = (triadan: number, text: string, diagram = 'pre'): AiAction => ({ name: 'add_comment', input: { diagram, triadan, text } });
@@ -123,5 +123,52 @@ describe('readUtterances', () => {
   });
   it('keeps a plain line with a dash', () => {
     expect(readUtterances('Bon — on commence.\n101 GI 2.')).toEqual(['Bon — on commence.', '101 GI 2.']);
+  });
+});
+
+describe('repeated runs', () => {
+  const expected = [field(101, 'gingivitis', '2'), field(101, 'calculus', '2'), note(104, 'T/FX/CCF')];
+
+  it('averages precision, recall and F1 and counts missing/extra across runs', () => {
+    const runs = [
+      scoreActions(expected, expected), // F1 1
+      scoreActions(expected, [field(101, 'gingivitis', '2'), field(101, 'calculus', '3')]), // P .5 R 1/3
+      scoreActions(expected, [field(101, 'gingivitis', '2'), note(104, 'T/FX/CCF')]), // P 1 R 2/3
+    ];
+    const agg = aggregateScores(runs);
+    expect(agg.runs).toBe(3);
+    expect(agg.f1s).toEqual(runs.map((r) => r.f1));
+    expect(agg.f1).toBeCloseTo((runs[0].f1 + runs[1].f1 + runs[2].f1) / 3);
+    expect(agg.precision).toBeCloseTo((1 + 0.5 + 1) / 3);
+    expect(agg.recall).toBeCloseTo((1 + 1 / 3 + 2 / 3) / 3);
+    expect(agg.missing).toEqual([
+      { action: field(101, 'calculus', '2'), count: 2 },
+      { action: note(104, 'T/FX/CCF'), count: 1 },
+    ]);
+    expect(agg.extra).toEqual([{ action: field(101, 'calculus', '3'), count: 1 }]);
+  });
+
+  it('runs a fake extractor N times and aggregates app and one-shot separately', async () => {
+    const calls: number[] = [];
+    const result = await evaluateRuns(expected, 2, async (i) => {
+      calls.push(i);
+      return {
+        app: i === 0 ? expected : expected.slice(0, 2),
+        oneShot: [field(101, 'gingivitis', '2')],
+      };
+    });
+    expect(calls).toEqual([0, 1]);
+    expect(result.app.runs).toBe(2);
+    expect(result.app.f1s[0]).toBe(1);
+    expect(result.app.f1).toBeCloseTo((1 + scoreActions(expected, expected.slice(0, 2)).f1) / 2);
+    expect(result.app.missing).toEqual([{ action: note(104, 'T/FX/CCF'), count: 1 }]);
+    expect(result.oneShot.f1).toBeCloseTo(scoreActions(expected, [field(101, 'gingivitis', '2')]).f1);
+    expect(result.oneShot.missing.map((m) => m.count)).toEqual([2, 2]);
+  });
+
+  it('parses --runs (default 1, positive integers only)', () => {
+    expect(parseRuns(undefined)).toBe(1);
+    expect(parseRuns('3')).toBe(3);
+    for (const bad of ['0', '-1', '1.5', 'x', '']) expect(() => parseRuns(bad)).toThrow();
   });
 });
