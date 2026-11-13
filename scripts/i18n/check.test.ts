@@ -52,9 +52,10 @@ test('extra plural forms of an English key are allowed', () => {
   };
   expect(checkCatalogs(c, metaFor(c)).filter((p) => p.kind === 'extra')).toEqual([]);
 });
-test('pt is required for report only', () => {
+test('pt is required for report and client only', () => {
   const c = { en: { report: { a: 'Hi' } } };
   expect(checkCatalogs(c, {}).filter((p) => p.lng === 'pt')).toEqual([{ lng: 'pt', key: 'report:a', kind: 'missing' }]);
+  expect(checkCatalogs({ en: { client: { a: 'Hi' } } }, {}).filter((p) => p.lng === 'pt')).toEqual([{ lng: 'pt', key: 'client:a', kind: 'missing' }]);
   expect(checkCatalogs({ en: { common: { a: 'Hi' } } }, {}).some((p) => p.lng === 'pt')).toBe(false);
 });
 

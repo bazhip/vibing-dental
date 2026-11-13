@@ -1,13 +1,16 @@
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 import { getInitialToothData } from '../constants';
+import i18n from '../i18n';
+import type { ReportLocale } from './ownerReportI18n';
 
 /**
- * A made-up visit used to preview owner report templates in Practice
+ * A made-up visit (its free text in `lng`, the template's language) used to preview owner report templates in Practice
  * settings — enough findings to exercise every section (extractions,
  * per-tooth findings with grades, a missing tooth, an exam note, a team
  * note, and a recheck date).
  */
-export function sampleOwnerReportSnapshot(): ChartSnapshot {
+export function sampleOwnerReportSnapshot(lng: ReportLocale = 'en'): ChartSnapshot {
+  const t = i18n.getFixedT(lng, 'client');
   const toothData = getInitialToothData('canine').map((tooth) => {
     switch (tooth.triadan) {
       case 104:
@@ -38,7 +41,7 @@ export function sampleOwnerReportSnapshot(): ChartSnapshot {
       nerveBlocks: { ...EMPTY_NERVE_BLOCKS },
       exam: {
         ...EMPTY_EXAM_FINDINGS,
-        buccal: { status: 'abnormal', comment: 'Mild redness along the left cheek' },
+        buccal: { status: 'abnormal', comment: t('sample.buccalComment') },
       },
     },
     toothData,
@@ -48,10 +51,10 @@ export function sampleOwnerReportSnapshot(): ChartSnapshot {
     preComments: [],
     preStrokes: [],
     postMarks: { 108: 'extracted' },
-    postComments: [{ id: 'sample-1', text: 'Small chip on the tip — smooth, no treatment needed', anchorTriadan: 204 }],
+    postComments: [{ id: 'sample-1', text: t('sample.postComment'), anchorTriadan: 204 }],
     postStrokes: [],
     ownerReport: {
-      extraNotes: 'Soft food for the next 10 days while the extraction site heals.',
+      extraNotes: t('sample.extraNotes'),
     },
   };
 }

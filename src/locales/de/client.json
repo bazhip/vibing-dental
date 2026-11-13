@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Guten Tag {{owner}},\n\nwir möchten Sie freundlich daran erinnern, dass bei {{patient}} eine Zahnkontrolle fällig ist. Bitte rufen Sie uns an, um einen Termin zu vereinbaren.\n\nVielen Dank\n{{practice}}",
+    "fallback": {
+      "owner": "Damen und Herren",
+      "pet": "Ihr Tier",
+      "practice": "Ihre Tierarztpraxis"
+    },
+    "subject": "Zeit für die Zahnkontrolle von {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Leichte Rötung entlang der linken Wange",
+    "extraNotes": "In den nächsten 10 Tagen weiches Futter, bis die Extraktionsstelle verheilt ist.",
+    "postComment": "Kleiner Abbruch an der Spitze — glatt, keine Behandlung nötig"
+  }
+}

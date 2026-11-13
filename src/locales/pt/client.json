@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Prezado(a) {{owner}},\n\nLembramos que {{patient}} precisa fazer a revisão dentária. Por favor, ligue para nós para agendar uma consulta.\n\nObrigado,\n{{practice}}",
+    "fallback": {
+      "owner": "tutor",
+      "pet": "seu animal",
+      "practice": "sua clínica veterinária"
+    },
+    "subject": "Hora da revisão dentária de {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Leve vermelhidão ao longo da bochecha esquerda",
+    "extraNotes": "Comida macia nos próximos 10 dias, enquanto o local da extração cicatriza.",
+    "postComment": "Pequena lasca na ponta — lisa, não precisa de tratamento"
+  }
+}

@@ -18,6 +18,7 @@ import type onboarding from '../locales/en/onboarding.json';
 import type pdfui from '../locales/en/pdfui.json';
 import type reportui from '../locales/en/reportui.json';
 import type voice from '../locales/en/voice.json';
+import type client from '../locales/en/client.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -43,6 +44,7 @@ declare module 'i18next' {
       pdfui: typeof pdfui;
       reportui: typeof reportui;
       voice: typeof voice;
+      client: typeof client;
     };
   }
 }

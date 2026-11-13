@@ -241,7 +241,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     setPreviewBusy(true);
     setError('');
     try {
-      const model = buildOwnerReportModel(sampleOwnerReportSnapshot(), {
+      const model = buildOwnerReportModel(sampleOwnerReportSnapshot(selected.language), {
         template: selected,
         practiceName: branding.practiceName,
         doctorName: branding.doctorName,

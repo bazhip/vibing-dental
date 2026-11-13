@@ -2692,6 +2692,38 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
+      "status": "machine"
+    },
     "codes:AB": {
       "hash": "510ad89a3da2",
       "status": "machine"
@@ -11416,6 +11448,38 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
       "status": "machine"
     },
     "codes:AB": {
@@ -20180,6 +20244,38 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
+      "status": "machine"
+    },
     "codes:AB": {
       "hash": "510ad89a3da2",
       "status": "machine"
@@ -28942,6 +29038,38 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
+      "status": "machine"
+    },
     "codes:AB": {
       "hash": "510ad89a3da2",
       "status": "machine"
@@ -34968,6 +35096,38 @@
     }
   },
   "pt": {
+    "client:reminder.body": {
+      "hash": "c4a83ab8c917",
+      "status": "machine"
+    },
+    "client:reminder.fallback.owner": {
+      "hash": "e244f187f696",
+      "status": "machine"
+    },
+    "client:reminder.fallback.pet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "client:reminder.fallback.practice": {
+      "hash": "cc4e9c1bf754",
+      "status": "machine"
+    },
+    "client:reminder.subject": {
+      "hash": "b8e3ec7900bb",
+      "status": "machine"
+    },
+    "client:sample.buccalComment": {
+      "hash": "0f026a9dda9f",
+      "status": "machine"
+    },
+    "client:sample.extraNotes": {
+      "hash": "54e4fc8f346c",
+      "status": "machine"
+    },
+    "client:sample.postComment": {
+      "hash": "4c5cfe429207",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"

@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Gentile {{owner}},\n\nLe ricordiamo che {{patient}} deve sottoporsi al controllo dentale. La preghiamo di telefonarci per fissare un appuntamento.\n\nGrazie,\n{{practice}}",
+    "fallback": {
+      "owner": "cliente",
+      "pet": "il Suo animale",
+      "practice": "il Suo studio veterinario"
+    },
+    "subject": "Controllo dentale in scadenza per {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Lieve arrossamento lungo la guancia sinistra",
+    "extraNotes": "Cibo morbido per i prossimi 10 giorni, finché la sede dell'estrazione non è guarita.",
+    "postComment": "Piccola scheggiatura sulla punta — liscia, nessun trattamento necessario"
+  }
+}

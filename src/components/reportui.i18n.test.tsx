@@ -263,3 +263,18 @@ describe('OwnerReportModal', () => {
     await waitFor(() => expect(screen.getByText('3 photos avant/après incluses.')).toBeInTheDocument());
   });
 });
+
+describe('sampleOwnerReportSnapshot', () => {
+  it('English sample text is unchanged', () => {
+    const s = sampleOwnerReportSnapshot();
+    expect(s.patientInfo.exam.buccal.comment).toBe('Mild redness along the left cheek');
+    expect(s.postComments[0].text).toBe('Small chip on the tip — smooth, no treatment needed');
+    expect(s.ownerReport?.extraNotes).toBe('Soft food for the next 10 days while the extraction site heals.');
+  });
+  it('the Portuguese sample uses Portuguese text', () => {
+    const s = sampleOwnerReportSnapshot('pt');
+    expect(s.patientInfo.exam.buccal.comment).toBe('Leve vermelhidão ao longo da bochecha esquerda');
+    expect(s.postComments[0].text).toMatch(/lasca/);
+    expect(s.ownerReport?.extraNotes).toMatch(/Comida macia/);
+  });
+});

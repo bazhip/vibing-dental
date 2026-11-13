@@ -34,7 +34,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
   recheckDate,
 }) => {
   const { t } = useTranslation('reminders');
-  const { template, loaded } = useReminderTemplate(practiceId, open);
+  const { template, loaded, language } = useReminderTemplate(practiceId, open);
   const [to, setTo] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [bodyText, setBodyText] = React.useState('');
@@ -48,8 +48,8 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
     if (!open || !loaded) return;
     const vars = { patient: patientName, owner: ownerName, practice: practiceName, recheckDate };
     setTo(toEmail);
-    setSubject(fillTemplate(template.subject, vars));
-    setBodyText(fillTemplate(template.body, vars));
+    setSubject(fillTemplate(template.subject, vars, language));
+    setBodyText(fillTemplate(template.body, vars, language));
     setError('');
     setSent(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps

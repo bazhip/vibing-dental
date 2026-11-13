@@ -1,0 +1,16 @@
+{
+  "reminder": {
+    "body": "Estimado/a {{owner}}:\n\nLe recordamos amablemente que {{patient}} debe acudir a su revisión dental. Por favor, llámenos para pedir cita.\n\nGracias,\n{{practice}}",
+    "fallback": {
+      "owner": "cliente",
+      "pet": "su mascota",
+      "practice": "su clínica veterinaria"
+    },
+    "subject": "Es hora de la revisión dental de {{patient}}"
+  },
+  "sample": {
+    "buccalComment": "Leve enrojecimiento a lo largo de la mejilla izquierda",
+    "extraNotes": "Comida blanda durante los próximos 10 días, mientras cicatriza la zona de la extracción.",
+    "postComment": "Pequeña astilla en la punta — lisa, no requiere tratamiento"
+  }
+}
