@@ -17,7 +17,7 @@ import {
   formatAnestheticDrug,
 } from '../../types';
 import { ToothGridLayout, TOOTH_DATA_ROWS } from '../../constants/chartLayout';
-import { columnLabel } from '../../constants/columnDefinitions';
+import { columnLabel, type ColumnKey } from '../../constants/columnDefinitions';
 import { PALETTE, ACTIVE } from './styles';
 import {
   PT_PER_IN,
@@ -701,6 +701,32 @@ export function fitCellText(value: string, width: number, font: PDFFont, size: n
   return { text: value, size: shrunk };
 }
 
+const GRID_LABEL_PT = 6;
+const GRID_LABEL_MIN_PT = 4.5;
+/** Rows that have a short label (chart grid.short). */
+const SHORT_KEYS = {
+  mobility: 1, recession: 1, pocket: 1, furcation: 1, hyperplasia: 1, calculus: 1, gingivitis: 1, pdstate: 1,
+} as const;
+
+/** A tooth-grid row label sized for the label column: 6pt as always,
+ *  shrunk (to 4.5pt at least) when a translated label is too wide, and
+ *  the grid's short label when even that doesn't fit. The 0.5pt slack
+ *  keeps English exactly as it has always printed ("Enlargement" is
+ *  36.3pt in the 36pt column). */
+export function fitGridRowLabel(key: ColumnKey, lng: string, font: PDFFont, columnW: number): { text: string; size: number } {
+  const full = columnLabel(key, lng);
+  if (font.widthOfTextAtSize(full, GRID_LABEL_PT) <= columnW + 0.5) return { text: full, size: GRID_LABEL_PT };
+  const target = columnW - 2;
+  const shrink = (text: string) => {
+    const size = Math.max(GRID_LABEL_MIN_PT, Math.min(GRID_LABEL_PT, (GRID_LABEL_PT * target) / font.widthOfTextAtSize(text, GRID_LABEL_PT)));
+    return { text, size, fits: font.widthOfTextAtSize(text, size) <= target + 0.01 };
+  };
+  const shrunk = shrink(full);
+  if (shrunk.fits || !(key in SHORT_KEYS)) return { text: shrunk.text, size: shrunk.size };
+  const short = shrink(i18n.getFixedT(lng, 'chart')(`grid.short.${key as keyof typeof SHORT_KEYS}`));
+  return { text: short.text, size: short.size };
+}
+
 const SUFFIX_TO_FIELD: Record<string, DentalField> = {
   mob: 'mobility', rec: 'recession', poc: 'pocket', fur: 'furcation',
   hyp: 'hyperplasia', cal: 'calculus', gin: 'gingivitis', pds: 'pdstate',
@@ -724,7 +750,6 @@ export function drawToothGrid(
   const rowH = layout.rowHeightIn * PT_PER_IN;
   const totalW = labelW + toothW * layout.teeth.length;
   const headerSize = 6;
-  const labelSize = 6;
   const totalRows = 2 + TOOTH_DATA_ROWS.length;
   const totalH = rowH * totalRows;
 
@@ -785,8 +810,10 @@ export function drawToothGrid(
   const baselineForRow = (rowIdx: number, fontSize: number) =>
     yTop - rowIdx * rowH - rowH / 2 - fontSize / 2 + 1.5;
 
-  drawCenteredText(page, columnLabel('tooth', lng),   x, x + labelW, baselineForRow(0, headerSize), headerSize, fontBold, headerText);
-  drawCenteredText(page, columnLabel('triadan', lng), x, x + labelW, baselineForRow(1, headerSize), headerSize, fontBold, headerText);
+  for (const [rowIdx, key] of [[0, 'tooth'], [1, 'triadan']] as const) {
+    const fit = fitGridRowLabel(key, lng, fontBold, labelW);
+    drawCenteredText(page, fit.text, x, x + labelW, baselineForRow(rowIdx, fit.size), fit.size, fontBold, headerText);
+  }
   for (let i = 0; i < layout.teeth.length; i++) {
     const tooth = layout.teeth[i];
     const cellLeft = x + labelW + i * toothW;
@@ -800,7 +827,8 @@ export function drawToothGrid(
   for (let r = 0; r < TOOTH_DATA_ROWS.length; r++) {
     const dataRow = TOOTH_DATA_ROWS[r];
     const rowIdx = 2 + r;
-    drawCenteredText(page, columnLabel(dataRow.key, lng), x, x + labelW, baselineForRow(rowIdx, labelSize), labelSize, fontBold, PALETTE.muted);
+    const fit = fitGridRowLabel(dataRow.key, lng, fontBold, labelW);
+    drawCenteredText(page, fit.text, x, x + labelW, baselineForRow(rowIdx, fit.size), fit.size, fontBold, PALETTE.muted);
     const fieldKey = SUFFIX_TO_FIELD[dataRow.suffix];
     for (let i = 0; i < layout.teeth.length; i++) {
       const tooth = layout.teeth[i];

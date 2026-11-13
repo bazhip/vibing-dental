@@ -3,7 +3,10 @@ import { PDFDocument, PDFPage, StandardFonts } from 'pdf-lib';
 import { buildDentalChartPDFBytes, type DiagramExport, type PdfLayoutOptions } from '../pdfGenerator';
 import { EMPTY_NERVE_BLOCKS, normalizeNerveBlocks, type PatientInfo, type ToothData, type Species, type Logo } from '../../types';
 import { parseDentalChartPDF, type DiagramState } from './parser';
-import { pdfSafe } from './sections';
+import { pdfSafe, fitGridRowLabel } from './sections';
+import { TOOTH_DATA_ROWS, TOOTH_GRID_LAYOUTS } from '../../constants/chartLayout';
+import { columnLabel } from '../../constants/columnDefinitions';
+import { loadLanguage } from '../../i18n';
 import { codeDefinition } from '../../constants/dentalCodes';
 import { APP_LANGUAGES } from '../../i18n/config';
 
@@ -277,5 +280,54 @@ describe('PDF catalog strings', () => {
       }
     }
     expect(bad).toEqual([]);
+  });
+});
+
+describe('tooth grid row labels', () => {
+  const labelW = TOOTH_GRID_LAYOUTS.canine.maxilla.labelColIn * 72;
+
+  it('fit the label column in every language (Helvetica and Times)', async () => {
+    const doc = await PDFDocument.create();
+    const fonts = [await doc.embedFont(StandardFonts.HelveticaBold), await doc.embedFont(StandardFonts.TimesRomanBold)];
+    const bad: string[] = [];
+    for (const lng of APP_LANGUAGES) {
+      await loadLanguage(lng);
+      for (const font of fonts) {
+        for (const key of ['tooth', 'triadan', ...TOOTH_DATA_ROWS.map((r) => r.key)] as const) {
+          const fit = fitGridRowLabel(key, lng, font, labelW);
+          // English "Enlargement" has always printed at 36.3pt in the 36pt
+          // column (centered, inside the cell padding); 0.5pt of slack keeps it.
+          if (font.widthOfTextAtSize(fit.text, fit.size) > labelW + 0.5 || fit.size < 4.5) {
+            bad.push(`${lng} ${font.name} ${key}: ${fit.text} @${fit.size}`);
+          }
+        }
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('English labels keep their full text at 6pt', async () => {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.HelveticaBold);
+    for (const r of TOOTH_DATA_ROWS) {
+      expect(fitGridRowLabel(r.key, 'en', font, labelW)).toEqual({ text: columnLabel(r.key, 'en'), size: 6 });
+    }
+  });
+
+  it('the German PDF draws the long labels smaller', async () => {
+    const [p, teeth, species, logo, pre, post, styleId, layout] = SCENARIOS.vcaGrid;
+    const runs = await captureText(p, teeth, species, logo, pre, post, styleId, { ...layout, lng: 'de' } as PdfLayoutOptions);
+    const mob = runs.filter((r) => r.t === 'Beweglichkeit');
+    expect(mob).toHaveLength(2);
+    for (const r of mob) expect(r.s).toBeLessThan(6);
+  });
+});
+
+describe('species titles', () => {
+  it('a permanent feline chart gets the feline title', async () => {
+    const runs = await captureText(plainPatient, [], 'feline', 'socal', diagram(), diagram(), 'clinic', { lng: 'it' });
+    expect(runs.map((r) => r.t)).toContain('Odontogramma felino');
+    const en = await captureText(plainPatient, [], 'feline', 'socal', diagram(), diagram(), 'clinic', {});
+    expect(en.map((r) => r.t)).toContain('Feline Dental Chart');
   });
 });
