@@ -1,0 +1,272 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Prova",
+  "skipLink": "Vai alla cartella",
+  "sections": {
+    "patient": "Paziente",
+    "exam": "Esame",
+    "anesthesia": "Anestesia",
+    "charting": "Odontogramma",
+    "diagnosis": "Diagnosi",
+    "procedure": "Procedura",
+    "images": "Immagini",
+    "treatment": "Referto del trattamento",
+    "ownerReport": "Referto per il proprietario",
+    "menuFallback": "Sezioni",
+    "nav": "Sezioni della cartella"
+  },
+  "species": {
+    "feline": "Felino",
+    "canine": "Canino",
+    "felineDeciduous": "Felino · Denti decidui",
+    "canineDeciduous": "Canino · Denti decidui"
+  },
+  "chartingView": {
+    "label": "Vista dell’odontogramma",
+    "grid": "Griglia",
+    "tooth": "Per dente",
+    "gridHint": "Foglio di calcolo con le misure di ogni dente",
+    "toothHint": "Faccia clic su un dente di uno schema numerato e lo compili — reperti, note, estrazioni pianificate e confermate"
+  },
+  "customize": {
+    "label": "Personalizza",
+    "hint": "Tasche per radice, colonne, cosa mostrare accanto ai denti, opzioni PDF"
+  },
+  "radiographic": {
+    "title": "Reperti radiografici",
+    "placeholder": "es. 108: perdita ossea verticale radice distale, esposizione della forcazione. 307: riassorbimento dentale di tipo 2.",
+    "hint": "Viene stampato nel PDF sopra il referto del trattamento."
+  },
+  "lock": {
+    "title": "Sola lettura — scelga Modifica cartella per apportare modifiche"
+  },
+  "topbar": {
+    "patientEmpty": "Nessun paziente — ne aggiunga uno nella sezione Paziente",
+    "visitSwitchTitle": "Cronologia delle visite — {{n}} visite. Ne scelga una per visualizzarla.",
+    "visitSwitchLabel": "Cronologia delle visite — passi da una all’altra delle {{n}} visite di questo paziente",
+    "undatedVisit": "Visita senza data",
+    "visitLatest": "{{date}} · ultima",
+    "visitEarlier": "{{date}} · precedente",
+    "viewing": "Visita salvata (sola lettura)",
+    "viewingShort": "Lettura",
+    "viewingTitle": "Visita salvata — in sola lettura, così non viene modificata per errore. Scelga Modifica cartella per apportare modifiche.",
+    "viewingTitleDated": "Visita salvata del {{date}} — in sola lettura, così non viene modificata per errore. Scelga Modifica cartella per apportare modifiche.",
+    "editing": "Modifica di una visita salvata",
+    "editingShort": "Modifica",
+    "editingTitle": "Modifica di una visita salvata — le modifiche vengono salvate automaticamente",
+    "signIn": "Accedi",
+    "signInHint": "Ha già un account dello studio? Acceda",
+    "signUp": "Crea un account gratuito",
+    "signUpHint": "Crei un account dello studio — le Sue cartelle vengono salvate nel cloud e i PDF riportano il nome e il logo del Suo studio",
+    "myCharts": "Le mie cartelle",
+    "myChartsShort": "Cartelle",
+    "newVisit": "+ Nuova visita",
+    "newVisitShort": "+ Visita",
+    "newVisitTitle": "Avviare una nuova visita datata per questo paziente — identità e denti già assenti vengono riportati",
+    "history": "Cronologia",
+    "historyTitle": "Ogni versione salvata di questa cartella — chi l’ha salvata e quando",
+    "editChart": "Modifica cartella",
+    "editChartShort": "Modifica",
+    "undo": "Annulla modifiche",
+    "undoShort": "Annulla",
+    "undoTitle": "Riportare questa cartella com’era quando ha scelto Modifica cartella",
+    "doneEditing": "Fine modifica"
+  },
+  "status": {
+    "srSaving": "Salvataggio della cartella",
+    "srSaved": "Cartella salvata",
+    "srNotSaved": "Cartella non salvata",
+    "saving": "Salvataggio…",
+    "notSavedRetry": "Non salvato — riprova",
+    "retryTitle": "Riprova a salvare questa cartella",
+    "notSaved": "Non salvato",
+    "viewOnly": "Sola lettura",
+    "viewOnlyTitle": "Le visite salvate si aprono in sola lettura — scelga Modifica cartella per apportare modifiche",
+    "offline": "Offline — salvato su questo dispositivo",
+    "offlineTitle": "Le modifiche restano su questo dispositivo e vengono salvate al ritorno della connessione",
+    "needsName": "Aggiunga il nome del paziente per salvare",
+    "needsNameTitle": "Le cartelle vengono salvate non appena il paziente ha un nome",
+    "saveTitle": "Per ora resta su questo dispositivo — viene salvato automaticamente appena inizia a compilare l’odontogramma. Salvi ora per aprirlo su un altro dispositivo.",
+    "unsaved": "Modifiche non salvate",
+    "unsavedTitle": "Salvataggio automatico…",
+    "saved": "Salvato · {{when}}",
+    "savedTitle": "Salvato nel cloud: {{when}}",
+    "local": "Solo su questo dispositivo",
+    "localTitle": "Le cartelle di prova restano in questo browser. Crei un account gratuito per salvare nel cloud.",
+    "saveHint": "Aggiunga il nome del paziente prima di salvare: è così che ritroverà questa cartella."
+  },
+  "otherTab": {
+    "text": "Questa cartella è aperta in un’altra scheda o finestra. Entrambe modificano la stessa copia di lavoro: ne chiuda una per evitare di sovrascrivere le Sue modifiche."
+  },
+  "footer": {
+    "feedback": "Ha trovato un errore o ha un’idea? <a>Ci invii un feedback</a>"
+  },
+  "fab": {
+    "preview": "Anteprima PDF",
+    "download": "Scarica i PDF",
+    "previewAria": "Anteprima e download del PDF della cartella",
+    "downloadAria": "Anteprima e download della cartella clinica e del referto per il proprietario"
+  },
+  "errors": {
+    "setting": "Impossibile salvare questa impostazione. {{error}}",
+    "openVisit": "Impossibile aprire questa visita. {{error}}",
+    "newVisit": "Impossibile avviare una nuova visita. {{error}}",
+    "signOut": "Impossibile uscire. {{error}}",
+    "preview": "Impossibile creare l’anteprima per ora — i diagrammi sono ancora in caricamento. Riprovi tra un momento.",
+    "damagedChart": "Questa cartella è danneggiata e non è stato possibile aprirla.",
+    "pdfImport": "Impossibile leggere questo PDF. Usi un PDF di cartella scaricato da ToothOps."
+  },
+  "toasts": {
+    "reverted": "Modifiche annullate.",
+    "pdfImported": "La cartella è stata importata dal PDF come nuova cartella.",
+    "pdfImportedNamed": "{{name}} importato dal PDF come nuova cartella.",
+    "visitStarted": "Nuova visita avviata.",
+    "visitStartedFor": "Nuova visita avviata per {{name}}.",
+    "visitStartedCarried_one": "Nuova visita avviata — {{count}} dente mancante/estratto riportato.",
+    "visitStartedCarried_many": "Nuova visita avviata — {{count}} denti mancanti/estratti riportati.",
+    "visitStartedCarried_other": "Nuova visita avviata — {{count}} denti mancanti/estratti riportati.",
+    "visitStartedForCarried_one": "Nuova visita avviata per {{name}} — {{count}} dente mancante/estratto riportato.",
+    "visitStartedForCarried_many": "Nuova visita avviata per {{name}} — {{count}} denti mancanti/estratti riportati.",
+    "visitStartedForCarried_other": "Nuova visita avviata per {{name}} — {{count}} denti mancanti/estratti riportati."
+  },
+  "revert": {
+    "title": "Annullare le Sue modifiche?",
+    "message": "Questa cartella torna a com’era quando ha scelto Modifica cartella e quella versione viene salvata.",
+    "confirm": "Annulla modifiche"
+  },
+  "todaysVisit": {
+    "message": "Aprire la visita di oggi invece di avviarne una seconda?",
+    "confirm": "Apri la visita di oggi",
+    "cancel": "Avvia una seconda visita"
+  },
+  "historyRestoreHint": "Apra questa visita per ripristinare una versione precedente.",
+  "feedbackMail": {
+    "doing": "Cosa stavo facendo:",
+    "expected": "Cosa mi aspettavo:",
+    "actual": "Cosa è successo in realtà:",
+    "involved": "Specie / dente / sezione interessata (se applicabile):",
+    "browser": "Browser e dispositivo:",
+    "screenshot": "(Se può, alleghi uno screenshot: è di grande aiuto.)"
+  },
+  "menu": {
+    "open": "Apri il menu delle impostazioni",
+    "trigger": "Impostazioni",
+    "signedInAs": "Connesso come <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Studio",
+      "account": "Account",
+      "admin": "Amministrazione",
+      "app": "App"
+    },
+    "practiceSettings": {
+      "label": "Impostazioni dello studio",
+      "sub": "Nome, logo, team e fatturazione."
+    },
+    "reminders": {
+      "label": "Promemoria di controllo",
+      "sub": "Modello di e-mail per il proprietario e pianificazione dell’invio automatico."
+    },
+    "account": {
+      "label": "Impostazioni dell’account",
+      "sub": "Il Suo nome di veterinario, l’e-mail e la password."
+    },
+    "admin": {
+      "label": "Pannello di amministrazione",
+      "sub": "Gestione di utenti, studi e piani."
+    },
+    "chartSettings": {
+      "label": "Impostazioni dell’odontogramma",
+      "sub": "Tasche per radice, colonne della griglia, cosa mostrare accanto ai denti."
+    },
+    "feedback": {
+      "label": "Invia feedback",
+      "sub": "Segnali un problema o proponga un’idea: arriva direttamente a noi."
+    },
+    "whatsNew": {
+      "label": "Novità",
+      "sub": "Le funzioni e i miglioramenti più recenti."
+    },
+    "gettingStarted": {
+      "label": "Per iniziare",
+      "sub": "Riveda la presentazione di ogni parte dell’app."
+    },
+    "homepage": {
+      "label": "Home page",
+      "sub": "Veda la pagina del prodotto: la Sua cartella resta qui."
+    },
+    "signOut": {
+      "label": "Esci",
+      "sub": "Termini la sessione e torni alla home page."
+    }
+  },
+  "trialSignIn": {
+    "title": "Accedere e cancellare la cartella di prova?",
+    "message": "L’accesso a un account esistente cancella la cartella di prova su questo dispositivo. Per conservarla, scarichi prima il PDF — oppure crei invece un account gratuito, che la conserva.",
+    "confirm": "Cancella e accedi",
+    "cancel": "Continua a compilare"
+  },
+  "speciesChange": {
+    "title": "Cambiare specie o dentizione?",
+    "messageGrid": "Gatti, cani e denti decidui usano una numerazione dentale diversa, quindi questa operazione cancella la griglia di compilazione. I dati del paziente e i reperti dell’esame restano.",
+    "messageDiagram": "Gatti, cani e denti decidui usano una numerazione dentale diversa, quindi questa operazione cancella i segni, le note e i disegni dei diagrammi. I dati del paziente e i reperti dell’esame restano.",
+    "messageBoth": "Gatti, cani e denti decidui usano una numerazione dentale diversa, quindi questa operazione cancella la griglia di compilazione e i segni, le note e i disegni dei diagrammi. I dati del paziente e i reperti dell’esame restano.",
+    "confirm": "Cambia e cancella"
+  },
+  "sync": {
+    "cloudNotConfigured": "Il cloud non è configurato.",
+    "historyNotSetUp": "La cronologia delle cartelle non è ancora configurata sul server.",
+    "sessionExpired": "La Sua sessione è scaduta. Acceda di nuovo, poi salvi: la cartella è ancora qui, su questo dispositivo.",
+    "notAllowed": "Impossibile salvare questa cartella nel Suo account. Contatti il titolare dello studio se il problema persiste.",
+    "tooLarge": "Questa cartella è troppo grande per essere salvata (di solito troppe immagini o immagini troppo pesanti). Rimuova un allegato e riprovi.",
+    "offline": "Impossibile raggiungere il server. Controlli la connessione e riprovi: la cartella è al sicuro su questo dispositivo.",
+    "saveFailed": "Salvataggio non riuscito: {{message}}. La cartella è al sicuro su questo dispositivo: riprovi tra un momento.",
+    "unknownError": "errore sconosciuto",
+    "changedByOther": "Questa cartella è stata modificata da qualcun altro: la riapra da Le mie cartelle per vedere la sua versione",
+    "notSavedConflict": "Non salvato: questa cartella è stata modificata da qualcun altro. La riapra da Le mie cartelle per vedere la sua versione",
+    "noPermission": "Non ha l’autorizzazione per salvare modifiche a questa cartella. Lo chieda al titolare dello studio o avvii una nuova visita",
+    "conflict": {
+      "title": "Questa cartella è stata modificata altrove",
+      "message": "È stata salvata alle {{when}} — da un collega o su un altro dispositivo — dopo che l’ha aperta qui. Salvando ora, quelle modifiche vengono sostituite con le Sue.",
+      "confirm": "Sostituisci con le mie",
+      "cancel": "Mantieni le loro"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} ha già una visita oggi",
+      "titleOn": "{{name}} ha già una visita il {{date}}",
+      "patient": "Questo paziente",
+      "message": "Questa nuova cartella sarebbe una seconda visita nello stesso giorno. Aprire invece la visita esistente o mantenerle entrambe? Aprendola si perde quanto ha inserito in questa nuova cartella.",
+      "confirm": "Apri la visita esistente",
+      "cancel": "Mantieni entrambe"
+    },
+    "discard": {
+      "title": "Scartare le modifiche non salvate?",
+      "openOther": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Aprire comunque l’altra cartella? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta e apri l’altra cartella"
+      },
+      "restore": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Ripristinare comunque questa versione? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta e ripristina questa versione"
+      },
+      "signOut": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Uscire comunque? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta ed esci"
+      },
+      "newVisit": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Avviare comunque una nuova visita? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta e avvia una nuova visita"
+      },
+      "newPatient": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Avviare comunque un nuovo paziente? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta e avvia un nuovo paziente"
+      },
+      "importPdf": {
+        "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Importare comunque questo PDF? Per conservarle, annulli e prema prima Salva.",
+        "confirm": "Scarta e importa questo PDF"
+      }
+    }
+  },
+  "storage": {
+    "full": "La memoria di questo browser è piena — le ultime modifiche potrebbero non essere conservate su questo dispositivo. Salvi la cartella o scarichi il PDF."
+  }
+}

@@ -8,6 +8,7 @@ import type whatsNew from '../locales/en/whatsNew.json';
 import type billing from '../locales/en/billing.json';
 import type landing from '../locales/en/landing.json';
 import type auth from '../locales/en/auth.json';
+import type app from '../locales/en/app.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -23,6 +24,7 @@ declare module 'i18next' {
       billing: typeof billing;
       landing: typeof landing;
       auth: typeof auth;
+      app: typeof app;
     };
   }
 }

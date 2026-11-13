@@ -2,6 +2,8 @@ import React from 'react';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
 import { confirmDialog } from '../components/ui/dialogs';
+import i18n from '../i18n';
+import { formatDate, formatTime } from '../i18n/format';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
@@ -83,10 +85,10 @@ export interface UseCloudSyncReturn {
    *  by name) — powers the topbar visit switcher. */
   listPatientVisits: (patientNumber: string, patientName: string) => Promise<CloudChartMeta[]>;
   /** Ask before replacing a chart that has unsaved changes; true = go ahead. */
-  confirmDiscardIfDirty: (verb: string) => Promise<boolean>;
+  confirmDiscardIfDirty: (action: DiscardAction) => Promise<boolean>;
   /** `ifClean`: skip (no prompt) when the working chart has unsaved edits. */
   /** Resolves true when the chart was opened, false when the user cancelled. */
-  openChart: (id: string, opts?: { ifClean?: boolean; verb?: string; force?: boolean; skipConfirm?: boolean }) => Promise<boolean>;
+  openChart: (id: string, opts?: { ifClean?: boolean; action?: DiscardAction; force?: boolean; skipConfirm?: boolean }) => Promise<boolean>;
   /** ISO time this chart last reached the cloud ('' = never). */
   lastSavedAt: string;
   /** Browser connectivity. */
@@ -138,24 +140,43 @@ export function hasClinicalContent(s: ChartSnapshot): boolean {
   return hasContent(identityOnly as ChartSnapshot);
 }
 
+/** What the user is asking to leave the unsaved chart for. */
+export type DiscardAction = 'openOther' | 'restore' | 'signOut' | 'newVisit' | 'newPatient' | 'importPdf';
+
+/** A save failure whose user-facing wording we already know. The Error
+ *  message stays English (internal); `userMessage` is what the user reads. */
+class SaveFailure extends Error {
+  constructor(message: string, readonly userMessage: string) {
+    super(message);
+  }
+}
+
 /** Turn a raw Supabase/network failure into something a vet can act on.
  *  The categories map to the real recovery step, not the internal cause. */
 function describeSaveError(err: unknown): string {
+  const t = i18n.getFixedT(null, 'app');
+  if (err instanceof SaveFailure) return err.userMessage;
   const msg = err instanceof Error ? err.message : String(err ?? '');
   const code = (err as { code?: string } | null)?.code ?? '';
   if (/signed out|session|jwt|token|not authenticated|401/i.test(msg)) {
-    return 'Your session expired. Sign in again, then save — your chart is still here on this device.';
+    return t('sync.sessionExpired');
   }
   if (code === '42501' || /row-level security|permission denied|not authorized|403/i.test(msg)) {
-    return "This chart couldn't be saved to your account. Contact your practice owner if this keeps happening.";
+    return t('sync.notAllowed');
   }
   if (code === '54000' || /quota|payload|too large|entity too large|413/i.test(msg)) {
-    return 'This chart is too large to save (usually too many or too big images). Remove an attachment and retry.';
+    return t('sync.tooLarge');
   }
   if (/failed to fetch|network|timeout|timed out|connection|offline|econn/i.test(msg)) {
-    return "Couldn't reach the server. Check your connection and retry — your chart is safe on this device.";
+    return t('sync.offline');
   }
-  return `Save failed: ${msg || 'unknown error'}. Your chart is safe on this device — retry in a moment.`;
+  return t('sync.saveFailed', { message: msg || t('sync.unknownError') });
+}
+
+/** A SaveFailure whose wording is one of the `app:sync.*` messages. */
+function saveFailure(key: 'sync.changedByOther' | 'sync.notSavedConflict' | 'sync.noPermission', english: string): SaveFailure {
+  const t = i18n.getFixedT(null, 'app');
+  return new SaveFailure(english, t('sync.saveFailed', { message: t(key) }));
 }
 
 const CHART_META_COLUMNS =
@@ -293,23 +314,23 @@ export function useCloudSync(
         conflictRef.current = { chartId: '', mode: 'none' };
       }
       if (conflictRef.current.chartId === id && conflictRef.current.mode === 'blocked') {
-        fail(new Error('This chart was changed by someone else — reopen it from My charts to see their version.'));
+        fail(saveFailure('sync.changedByOther', 'This chart was changed by someone else — reopen it from My charts to see their version.'));
       }
       const known = lastSavedRef.current;
       if (openedExistingRef.current && known.chartId === id && known.at && conflictRef.current.mode !== 'force') {
         const { data: remote } = await client.from('charts').select('updated_at').eq('id', id).maybeSingle();
         const remoteAt = Date.parse((remote as { updated_at?: string } | null)?.updated_at ?? '');
         if (Number.isFinite(remoteAt) && remoteAt - Date.parse(known.at) > 1000) {
-          const when = new Date(remoteAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+          const t = i18n.getFixedT(null, 'app');
           const replace = await confirmDialog({
-            title: 'This chart changed somewhere else',
-            message: `It was saved at ${when} — by a teammate or on another device — after you opened it here. Saving now replaces those changes with yours.`,
-            confirmLabel: 'Replace with mine',
-            cancelLabel: 'Keep theirs',
+            title: t('sync.conflict.title'),
+            message: t('sync.conflict.message', { when: formatTime(new Date(remoteAt)) }),
+            confirmLabel: t('sync.conflict.confirm'),
+            cancelLabel: t('sync.conflict.cancel'),
             danger: true,
           });
           conflictRef.current = { chartId: id, mode: replace ? 'force' : 'blocked' };
-          if (!replace) fail(new Error('Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
+          if (!replace) fail(saveFailure('sync.notSavedConflict', 'Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
         }
       }
       setStatus('saving');
@@ -337,7 +358,7 @@ export function useCloudSync(
       // copied — that would leave the shared record unchanged while the
       // user believes it saved.
       if (refused && openedExistingRef.current) {
-        fail(new Error('You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.'));
+        fail(saveFailure('sync.noPermission', 'You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.'));
       }
       if (refused) {
         // Only fork when the row really belongs to another account — RLS
@@ -403,15 +424,15 @@ export function useCloudSync(
     const same = visits.find((v) => v.id !== id && v.chart_date === p.date && v.species === speciesBase);
     dupAnsweredRef.current = id;
     if (!same) return true;
-    const name = (p.patientName ?? '').trim() || 'This patient';
-    const day = same.chart_date === todayIso()
-      ? 'today'
-      : `on ${new Date(`${same.chart_date}T00:00:00`).toLocaleDateString(undefined, { dateStyle: 'medium' })}`;
+    const t = i18n.getFixedT(null, 'app');
+    const name = (p.patientName ?? '').trim() || t('sync.duplicate.patient');
     const openIt = await confirmDialog({
-      title: `${name} already has a visit ${day}`,
-      message: 'This new chart would be a second visit on the same day. Open the existing visit instead, or keep both? Opening it discards what you’ve entered in this new chart.',
-      confirmLabel: 'Open existing visit',
-      cancelLabel: 'Keep both',
+      title: same.chart_date === todayIso()
+        ? t('sync.duplicate.titleToday', { name })
+        : t('sync.duplicate.titleOn', { name, date: formatDate(same.chart_date) }),
+      message: t('sync.duplicate.message'),
+      confirmLabel: t('sync.duplicate.confirm'),
+      cancelLabel: t('sync.duplicate.cancel'),
       danger: true,
     });
     if (!openIt) return true;
@@ -462,12 +483,13 @@ export function useCloudSync(
   }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, awaitingClinical]);
 
   // Guard leaving a chart with unsaved changes.
-  const confirmDiscardIfDirty = async (verb: string): Promise<boolean> => {
+  const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
     if (!dirtyRef.current) return true;
+    const t = i18n.getFixedT(null, 'app');
     return confirmDialog({
-      title: 'Discard unsaved changes?',
-      message: `This chart has changes that aren’t saved to the cloud yet. ${verb} anyway? To keep them, cancel and press Save first.`,
-      confirmLabel: `Discard & ${verb.toLowerCase()}`,
+      title: t('sync.discard.title'),
+      message: t(`sync.discard.${action}.message`),
+      confirmLabel: t(`sync.discard.${action}.confirm`),
       danger: true,
     });
   };
@@ -536,7 +558,7 @@ export function useCloudSync(
   const applyRef = React.useRef(chart.applySnapshot);
   applyRef.current = chart.applySnapshot;
 
-  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; verb?: string; force?: boolean; skipConfirm?: boolean } = {}): Promise<boolean> => {
+  const openChart = React.useCallback(async (id: string, opts: { ifClean?: boolean; action?: DiscardAction; force?: boolean; skipConfirm?: boolean } = {}): Promise<boolean> => {
     if (!supabase) return false;
     // Deep links on page load never prompt: a working chart with edits
     // simply stays put (the user just reloaded their own work).
@@ -544,7 +566,7 @@ export function useCloudSync(
       // The caller already asked (e.g. the same-day duplicate question).
     } else if (opts.ifClean) {
       if (dirtyRef.current) return false;
-    } else if (!(await confirmDiscardIfDirty(opts.verb ?? 'Open the other chart'))) return false;
+    } else if (!(await confirmDiscardIfDirty(opts.action ?? 'openOther'))) return false;
     // Already on screen with nothing unsaved: nothing to do. (Re-applying
     // identical content would leave the "saved baseline" armed and the
     // next edit wrongly treated as saved.)
@@ -570,7 +592,7 @@ export function useCloudSync(
   const restoreRevision = React.useCallback(async (id: string, snapshot: ChartSnapshot): Promise<boolean> => {
     if (!supabase) return false;
     // Unsaved edits here would be replaced — ask, as opening a chart does.
-    if (!(await confirmDiscardIfDirty('Restore this version'))) return false;
+    if (!(await confirmDiscardIfDirty('restore'))) return false;
     // A deliberate restore: don't stop at the "changed elsewhere" check.
     conflictRef.current = { chartId: id, mode: 'force' };
     await upsertChart(JSON.stringify(snapshot), id);
@@ -586,7 +608,7 @@ export function useCloudSync(
   }, [upsertChart]);
 
   const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
-    if (!supabase) throw new Error('Cloud is not configured.');
+    if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
     const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
     if (error) throw new Error(error.message);
     return data.data as ChartSnapshot;
@@ -623,7 +645,7 @@ export function useCloudSync(
 
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
-    if (!(await confirmDiscardIfDirty('Sign out'))) return;
+    if (!(await confirmDiscardIfDirty('signOut'))) return;
     // Deliberate sign-out — App must NOT treat the coming SIGNED_OUT
     // event as a session expiry (which keeps the chart mounted).
     markExplicitSignOut();

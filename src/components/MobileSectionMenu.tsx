@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChartSection } from './Layouts';
 
 /**
@@ -19,6 +20,7 @@ interface MobileSectionMenuProps {
 export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
   sections, activeId, onSelect,
 }) => {
+  const { t } = useTranslation('app');
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -51,7 +53,7 @@ export const MobileSectionMenu: React.FC<MobileSectionMenuProps> = ({
         aria-expanded={open}
       >
         <span className="mobile-section-menu__icon" aria-hidden="true">☰</span>
-        <span className="mobile-section-menu__label">{active?.label ?? 'Sections'}</span>
+        <span className="mobile-section-menu__label">{active?.label ?? t('sections.menuFallback')}</span>
         <span className="mobile-section-menu__chev" aria-hidden="true">▾</span>
       </button>
 

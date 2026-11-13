@@ -1,0 +1,270 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Trial",
+  "skipLink": "Skip to the chart",
+  "sections": {
+    "patient": "Patient",
+    "exam": "Exam",
+    "anesthesia": "Anesthesia",
+    "charting": "Charting",
+    "diagnosis": "Diagnosis",
+    "procedure": "Procedure",
+    "images": "Images",
+    "treatment": "Treatment report",
+    "ownerReport": "Owner Report",
+    "menuFallback": "Sections",
+    "nav": "Chart sections"
+  },
+  "species": {
+    "feline": "Feline",
+    "canine": "Canine",
+    "felineDeciduous": "Feline · Deciduous",
+    "canineDeciduous": "Canine · Deciduous"
+  },
+  "chartingView": {
+    "label": "Charting view",
+    "grid": "Grid",
+    "tooth": "By tooth",
+    "gridHint": "Spreadsheet of every tooth's measurements",
+    "toothHint": "Click a tooth on a numbered diagram and chart it — findings, notes, planned and confirmed extractions"
+  },
+  "customize": {
+    "label": "Customize",
+    "hint": "Pockets per root, columns, what shows beside the teeth, PDF options"
+  },
+  "radiographic": {
+    "title": "Radiographic findings",
+    "placeholder": "e.g. 108: vertical bone loss distal root, furcation exposure. 307: type 2 tooth resorption.",
+    "hint": "Prints in the PDF above the treatment report."
+  },
+  "lock": {
+    "title": "View only — choose Edit chart to make changes"
+  },
+  "topbar": {
+    "patientEmpty": "No patient yet — add one in the Patient section",
+    "visitSwitchTitle": "Visit history — {{n}} visits. Pick one to view it.",
+    "visitSwitchLabel": "Visit history — switch between this patient's {{n}} visits",
+    "undatedVisit": "Undated visit",
+    "visitLatest": "{{date}} · latest",
+    "visitEarlier": "{{date}} · earlier",
+    "viewing": "Viewing saved visit",
+    "viewingShort": "Viewing",
+    "viewingTitle": "Viewing a saved visit — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.",
+    "viewingTitleDated": "Viewing a saved visit from {{date}} — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.",
+    "editing": "Editing saved visit",
+    "editingShort": "Editing",
+    "editingTitle": "Editing a saved visit — changes save automatically",
+    "signIn": "Sign in",
+    "signInHint": "Already have a practice account? Sign in",
+    "signUp": "Create free account",
+    "signUpHint": "Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo",
+    "myCharts": "My charts",
+    "myChartsShort": "Charts",
+    "newVisit": "+ New visit",
+    "newVisitShort": "+ Visit",
+    "newVisitTitle": "Start a fresh dated visit for this patient — identity and already-gone teeth carry over",
+    "history": "History",
+    "historyTitle": "Every saved version of this chart — who saved it and when",
+    "editChart": "Edit chart",
+    "editChartShort": "Edit",
+    "undo": "Undo changes",
+    "undoShort": "Undo",
+    "undoTitle": "Put this chart back the way it was when you chose Edit chart",
+    "doneEditing": "Done editing"
+  },
+  "status": {
+    "srSaving": "Saving chart",
+    "srSaved": "Chart saved",
+    "srNotSaved": "Chart not saved",
+    "saving": "Saving…",
+    "notSavedRetry": "Not saved — retry",
+    "retryTitle": "Retry saving this chart",
+    "notSaved": "Not saved",
+    "viewOnly": "View only",
+    "viewOnlyTitle": "Saved visits open view-only — choose Edit chart to make changes",
+    "offline": "Offline — saved on this device",
+    "offlineTitle": "Changes are kept on this device and save when you're back online",
+    "needsName": "Add a patient name to save",
+    "needsNameTitle": "Charts save once the patient has a name",
+    "saveTitle": "Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device.",
+    "unsaved": "Unsaved changes",
+    "unsavedTitle": "Saving automatically…",
+    "saved": "Saved · {{when}}",
+    "savedTitle": "Saved to the cloud {{when}}",
+    "local": "On this device only",
+    "localTitle": "Trial charts stay in this browser. Create a free account to save to the cloud.",
+    "saveHint": "Add a patient name before saving — it’s how you’ll find this chart again."
+  },
+  "otherTab": {
+    "text": "This chart is open in another tab or window. Both tabs edit the same working copy — close one to avoid overwriting your changes."
+  },
+  "footer": {
+    "feedback": "Found a bug or have an idea? <a>Send feedback</a>"
+  },
+  "fab": {
+    "preview": "Preview PDF",
+    "download": "Download PDFs",
+    "previewAria": "Preview and download the chart PDF",
+    "downloadAria": "Preview and download the clinical chart and owner report"
+  },
+  "errors": {
+    "setting": "Couldn’t save that setting. {{error}}",
+    "openVisit": "Couldn’t open that visit. {{error}}",
+    "newVisit": "Couldn’t start a new visit. {{error}}",
+    "signOut": "Couldn’t sign out. {{error}}",
+    "preview": "Couldn’t build the preview yet — the diagrams are still loading. Try again in a moment.",
+    "damagedChart": "That chart is damaged and could not be opened.",
+    "pdfImport": "Couldn’t read that PDF. Use a chart PDF downloaded from ToothOps."
+  },
+  "toasts": {
+    "reverted": "Changes reverted.",
+    "pdfImported": "Imported the chart from PDF as a new chart.",
+    "pdfImportedNamed": "Imported {{name}} from PDF as a new chart.",
+    "visitStarted": "New visit started.",
+    "visitStartedFor": "New visit for {{name}} started.",
+    "visitStartedCarried_one": "New visit started — {{count}} missing/extracted tooth carried forward.",
+    "visitStartedCarried_other": "New visit started — {{count}} missing/extracted teeth carried forward.",
+    "visitStartedForCarried_one": "New visit for {{name}} started — {{count}} missing/extracted tooth carried forward.",
+    "visitStartedForCarried_other": "New visit for {{name}} started — {{count}} missing/extracted teeth carried forward."
+  },
+  "revert": {
+    "title": "Revert your changes?",
+    "message": "This chart goes back to how it was when you chose Edit chart, and that version is saved.",
+    "confirm": "Revert changes"
+  },
+  "todaysVisit": {
+    "message": "Open today’s visit instead of starting a second one?",
+    "confirm": "Open today’s visit",
+    "cancel": "Start a second visit"
+  },
+  "historyRestoreHint": "Open this visit to restore an earlier version.",
+  "feedbackMail": {
+    "doing": "What I was doing:",
+    "expected": "What I expected to happen:",
+    "actual": "What actually happened:",
+    "involved": "Species / tooth / section involved (if any):",
+    "browser": "Browser & device:",
+    "screenshot": "(If you can, attach a screenshot — it helps a ton.)"
+  },
+  "menu": {
+    "open": "Open settings menu",
+    "trigger": "Settings",
+    "signedInAs": "Signed in as <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Practice",
+      "account": "Account",
+      "admin": "Admin",
+      "app": "App"
+    },
+    "practiceSettings": {
+      "label": "Practice settings",
+      "sub": "Name, logo, team, and billing."
+    },
+    "reminders": {
+      "label": "Recheck reminders",
+      "sub": "Owner email template and auto-send schedule."
+    },
+    "account": {
+      "label": "Account settings",
+      "sub": "Your doctor name, email, and password."
+    },
+    "admin": {
+      "label": "Admin panel",
+      "sub": "Manage users, practices, and plans."
+    },
+    "chartSettings": {
+      "label": "Chart settings",
+      "sub": "Pockets per root, grid columns, what shows beside the teeth."
+    },
+    "feedback": {
+      "label": "Send feedback",
+      "sub": "Report a problem or suggest an idea — it comes straight to us."
+    },
+    "whatsNew": {
+      "label": "What’s new",
+      "sub": "The latest features and improvements."
+    },
+    "gettingStarted": {
+      "label": "Getting started",
+      "sub": "Replay the walkthrough of every part of the app."
+    },
+    "homepage": {
+      "label": "Homepage",
+      "sub": "View the product page — your chart stays right here."
+    },
+    "signOut": {
+      "label": "Sign out",
+      "sub": "End your session and return to the homepage."
+    }
+  },
+  "trialSignIn": {
+    "title": "Sign in and clear the trial chart?",
+    "message": "Signing in to an existing account clears the trial chart on this device. To keep it, download its PDF first — or create a free account instead, which keeps it.",
+    "confirm": "Clear and sign in",
+    "cancel": "Keep charting"
+  },
+  "speciesChange": {
+    "title": "Change species or dentition?",
+    "messageGrid": "Cats, dogs and deciduous teeth use different tooth numbering, so this clears the charting grid. Patient details and exam findings stay.",
+    "messageDiagram": "Cats, dogs and deciduous teeth use different tooth numbering, so this clears the diagram marks, notes and drawings. Patient details and exam findings stay.",
+    "messageBoth": "Cats, dogs and deciduous teeth use different tooth numbering, so this clears the charting grid and the diagram marks, notes and drawings. Patient details and exam findings stay.",
+    "confirm": "Change and clear"
+  },
+  "sync": {
+    "cloudNotConfigured": "Cloud is not configured.",
+    "historyNotSetUp": "Chart history isn’t set up on the server yet.",
+    "sessionExpired": "Your session expired. Sign in again, then save — your chart is still here on this device.",
+    "notAllowed": "This chart couldn't be saved to your account. Contact your practice owner if this keeps happening.",
+    "tooLarge": "This chart is too large to save (usually too many or too big images). Remove an attachment and retry.",
+    "offline": "Couldn't reach the server. Check your connection and retry — your chart is safe on this device.",
+    "saveFailed": "Save failed: {{message}}. Your chart is safe on this device — retry in a moment.",
+    "unknownError": "unknown error",
+    "changedByOther": "This chart was changed by someone else — reopen it from My charts to see their version.",
+    "notSavedConflict": "Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.",
+    "noPermission": "You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.",
+    "conflict": {
+      "title": "This chart changed somewhere else",
+      "message": "It was saved at {{when}} — by a teammate or on another device — after you opened it here. Saving now replaces those changes with yours.",
+      "confirm": "Replace with mine",
+      "cancel": "Keep theirs"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} already has a visit today",
+      "titleOn": "{{name}} already has a visit on {{date}}",
+      "patient": "This patient",
+      "message": "This new chart would be a second visit on the same day. Open the existing visit instead, or keep both? Opening it discards what you’ve entered in this new chart.",
+      "confirm": "Open existing visit",
+      "cancel": "Keep both"
+    },
+    "discard": {
+      "title": "Discard unsaved changes?",
+      "openOther": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Open the other chart anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & open the other chart"
+      },
+      "restore": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Restore this version anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & restore this version"
+      },
+      "signOut": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Sign out anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & sign out"
+      },
+      "newVisit": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Start a new visit anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & start a new visit"
+      },
+      "newPatient": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Start a new patient anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & start a new patient"
+      },
+      "importPdf": {
+        "message": "This chart has changes that aren’t saved to the cloud yet. Import this PDF anyway? To keep them, cancel and press Save first.",
+        "confirm": "Discard & import this PDF"
+      }
+    }
+  },
+  "storage": {
+    "full": "This browser’s storage is full — recent changes may not be kept on this device. Save the chart or download its PDF."
+  }
+}

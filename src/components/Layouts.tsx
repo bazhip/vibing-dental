@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { MobileSectionMenu } from './MobileSectionMenu';
 
 /**
@@ -32,6 +33,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   activeId,
   onActiveChange,
 }) => {
+  const { t } = useTranslation('app');
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
   // Follow the controlled value when the parent drives it.
@@ -63,7 +65,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
       <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
       {/* Plain navigation, not an ARIA tablist — the buttons have no
           arrow-key contract, and sections read better as nav anyway. */}
-      <nav className="sidebar-layout__nav" aria-label="Chart sections">
+      <nav className="sidebar-layout__nav" aria-label={t('sections.nav')}>
         {sections.map((s, i) => (
           <button
             key={s.id}

@@ -68,7 +68,13 @@ module.exports = [
           // Attributes listed here are skipped; everything else (title,
           // placeholder, aria-label, alt, label) is checked.
           'jsx-attributes': {
-            exclude: ['className', 'data-testid', 'key', 'id', 'type', 'role', 'href'],
+            exclude: [
+              'className', 'data-testid', 'key', 'id', 'type', 'role', 'href',
+              // Component props that carry a mode or a callback, never text. A literal
+              // inside a handler still can't reach the user unnoticed: toast, friendlyError
+              // and the dialog helpers are checked by no-restricted-syntax below.
+              /^on[A-Z]/, 'cloud', 'kind', 'markMode', 'defaultTool', 'mode', 'initialAuth',
+            ],
           },
           // Only strings that contain a letter count as text.
           words: { exclude: [/^[^\p{L}]*$/u] },

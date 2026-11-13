@@ -2,6 +2,7 @@ import React from 'react';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { localDateISO } from '../utils/localDate';
 import { toast, confirmDialog } from '../components/ui/dialogs';
+import i18n from '../i18n';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import {
   PatientInfo,
@@ -363,13 +364,12 @@ export function useChartState(): UseChartStateReturn {
     };
     if (!hasGridData && !hasDiagramData) { apply(); return; }
     void confirmDialog({
-      title: 'Change species or dentition?',
-      message:
-        'Cats, dogs and deciduous teeth use different tooth numbering, so this clears ' +
-        [hasGridData ? 'the charting grid' : '', hasDiagramData ? 'the diagram marks, notes and drawings' : '']
-          .filter(Boolean).join(' and ') +
-        '. Patient details and exam findings stay.',
-      confirmLabel: 'Change and clear',
+      title: i18n.t('speciesChange.title', { ns: 'app' }),
+      message: i18n.t(
+        hasGridData && hasDiagramData ? 'speciesChange.messageBoth' : hasGridData ? 'speciesChange.messageGrid' : 'speciesChange.messageDiagram',
+        { ns: 'app' },
+      ),
+      confirmLabel: i18n.t('speciesChange.confirm', { ns: 'app' }),
       danger: true,
     }).then((ok) => { if (ok) apply(); });
   };
@@ -560,7 +560,7 @@ export function useChartState(): UseChartStateReturn {
 
   const applySnapshot = (raw: ChartSnapshot, id: string): void => {
     if (!isChartSnapshot(raw)) {
-      throw new Error('That chart is damaged and could not be opened.');
+      throw new Error(i18n.t('errors.damagedChart', { ns: 'app' }));
     }
     const snapshot = normalizeSnapshot(raw);
     setOpenedExisting(true); // opened from a saved chart → read-only until unlocked
@@ -644,9 +644,9 @@ export function useChartState(): UseChartStateReturn {
         setPostDiagramStrokes(parsed.postDiagram.strokes);
       }
       const name = parsed.patientInfo.patientName.trim();
-      toast(`Imported ${name || 'the chart'} from PDF as a new chart.`, { kind: 'success' });
+      toast(name ? i18n.t('toasts.pdfImportedNamed', { ns: 'app', name }) : i18n.t('toasts.pdfImported', { ns: 'app' }), { kind: 'success' });
     } catch (error) {
-      toast('Couldn’t read that PDF. Use a chart PDF downloaded from ToothOps.', { kind: 'error' });
+      toast(i18n.t('errors.pdfImport', { ns: 'app' }), { kind: 'error' });
       console.error(error);
     }
   };

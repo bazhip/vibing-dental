@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Annuler",
     "close": "Fermer",
+    "copy": "Copier",
     "delete": "Supprimer",
+    "dismiss": "Ignorer",
     "duplicate": "Dupliquer",
     "edit": "Modifier",
+    "ok": "OK",
     "save": "Enregistrer"
   },
   "errors": {

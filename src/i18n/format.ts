@@ -39,6 +39,13 @@ export function formatDateTime(value: Date | string, lng = i18n.language): strin
   return mark(new Intl.DateTimeFormat(locale(lng), { dateStyle: 'short', timeStyle: 'short' }).format(d), lng);
 }
 
+/** A time of day (hours and minutes) in the active language. Unparseable input is returned unchanged. */
+export function formatTime(value: Date | string, lng = i18n.language): string {
+  const d = toDate(value);
+  if (!d) return String(value);
+  return mark(new Intl.DateTimeFormat(locale(lng), { timeStyle: 'short' }).format(d), lng);
+}
+
 export function formatNumber(n: number, opts?: Intl.NumberFormatOptions, lng = i18n.language): string {
   return mark(new Intl.NumberFormat(locale(lng), opts).format(n), lng);
 }

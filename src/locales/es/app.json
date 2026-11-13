@@ -1,0 +1,272 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Prueba",
+  "skipLink": "Ir al historial",
+  "sections": {
+    "patient": "Paciente",
+    "exam": "Examen",
+    "anesthesia": "Anestesia",
+    "charting": "Odontograma",
+    "diagnosis": "Diagnóstico",
+    "procedure": "Procedimiento",
+    "images": "Imágenes",
+    "treatment": "Informe del tratamiento",
+    "ownerReport": "Informe para el propietario",
+    "menuFallback": "Secciones",
+    "nav": "Secciones del historial"
+  },
+  "species": {
+    "feline": "Felino",
+    "canine": "Canino",
+    "felineDeciduous": "Felino · Dientes deciduos",
+    "canineDeciduous": "Canino · Dientes deciduos"
+  },
+  "chartingView": {
+    "label": "Vista del odontograma",
+    "grid": "Cuadrícula",
+    "tooth": "Por diente",
+    "gridHint": "Hoja de cálculo con las mediciones de cada diente",
+    "toothHint": "Haga clic en un diente de un esquema numerado y regístrelo: hallazgos, notas, extracciones planificadas y confirmadas"
+  },
+  "customize": {
+    "label": "Personalizar",
+    "hint": "Bolsas por raíz, columnas, qué se muestra junto a los dientes, opciones de PDF"
+  },
+  "radiographic": {
+    "title": "Hallazgos radiográficos",
+    "placeholder": "p. ej. 108: pérdida ósea vertical en la raíz distal, exposición de la furca. 307: reabsorción dental de tipo 2.",
+    "hint": "Se imprime en el PDF encima del informe del tratamiento."
+  },
+  "lock": {
+    "title": "Solo lectura: elija Editar historial para hacer cambios"
+  },
+  "topbar": {
+    "patientEmpty": "Aún no hay paciente: añada uno en la sección Paciente",
+    "visitSwitchTitle": "Historial de visitas — {{n}} visitas. Elija una para verla.",
+    "visitSwitchLabel": "Historial de visitas: cambiar entre las {{n}} visitas de este paciente",
+    "undatedVisit": "Visita sin fecha",
+    "visitLatest": "{{date}} · última",
+    "visitEarlier": "{{date}} · anterior",
+    "viewing": "Viendo visita guardada",
+    "viewingShort": "Viendo",
+    "viewingTitle": "Visita guardada — de solo lectura para que no se modifique por error. Elija Editar historial para hacer cambios.",
+    "viewingTitleDated": "Visita guardada del {{date}} — de solo lectura para que no se modifique por error. Elija Editar historial para hacer cambios.",
+    "editing": "Editando visita guardada",
+    "editingShort": "Editando",
+    "editingTitle": "Editando una visita guardada: los cambios se guardan automáticamente",
+    "signIn": "Iniciar sesión",
+    "signInHint": "¿Ya tiene una cuenta de la clínica? Inicie sesión",
+    "signUp": "Crear cuenta gratuita",
+    "signUpHint": "Cree una cuenta de la clínica: sus historiales se guardan en la nube y los PDF llevan el nombre y el logotipo de su clínica",
+    "myCharts": "Mis historiales",
+    "myChartsShort": "Historiales",
+    "newVisit": "+ Nueva visita",
+    "newVisitShort": "+ Visita",
+    "newVisitTitle": "Iniciar una nueva visita con fecha para este paciente: se conservan la identidad y los dientes ya ausentes",
+    "history": "Versiones",
+    "historyTitle": "Todas las versiones guardadas de este historial: quién la guardó y cuándo",
+    "editChart": "Editar historial",
+    "editChartShort": "Editar",
+    "undo": "Deshacer cambios",
+    "undoShort": "Deshacer",
+    "undoTitle": "Devolver este historial a como estaba cuando eligió Editar historial",
+    "doneEditing": "Terminar edición"
+  },
+  "status": {
+    "srSaving": "Guardando el historial",
+    "srSaved": "Historial guardado",
+    "srNotSaved": "Historial no guardado",
+    "saving": "Guardando…",
+    "notSavedRetry": "No guardado: reintentar",
+    "retryTitle": "Reintentar guardar este historial",
+    "notSaved": "No guardado",
+    "viewOnly": "Solo lectura",
+    "viewOnlyTitle": "Las visitas guardadas se abren en solo lectura: elija Editar historial para hacer cambios",
+    "offline": "Sin conexión: guardado en este dispositivo",
+    "offlineTitle": "Los cambios se conservan en este dispositivo y se guardan al recuperar la conexión",
+    "needsName": "Añada el nombre del paciente para guardar",
+    "needsNameTitle": "Los historiales se guardan en cuanto el paciente tiene nombre",
+    "saveTitle": "Por ahora se conserva en este dispositivo: se guardará automáticamente en cuanto empiece a registrar. Guarde ahora para abrirlo en otro dispositivo.",
+    "unsaved": "Cambios sin guardar",
+    "unsavedTitle": "Guardado automático…",
+    "saved": "Guardado · {{when}}",
+    "savedTitle": "Guardado en la nube: {{when}}",
+    "local": "Solo en este dispositivo",
+    "localTitle": "Los historiales de prueba se quedan en este navegador. Cree una cuenta gratuita para guardar en la nube.",
+    "saveHint": "Añada el nombre del paciente antes de guardar: así encontrará este historial."
+  },
+  "otherTab": {
+    "text": "Este historial está abierto en otra pestaña o ventana. Ambas editan la misma copia de trabajo: cierre una para evitar sobrescribir sus cambios."
+  },
+  "footer": {
+    "feedback": "¿Ha encontrado un error o tiene una idea? <a>Envíenos sus comentarios</a>"
+  },
+  "fab": {
+    "preview": "Vista previa del PDF",
+    "download": "Descargar los PDF",
+    "previewAria": "Vista previa y descarga del PDF del historial",
+    "downloadAria": "Vista previa y descarga del historial clínico y del informe para el propietario"
+  },
+  "errors": {
+    "setting": "No se pudo guardar ese ajuste. {{error}}",
+    "openVisit": "No se pudo abrir esa visita. {{error}}",
+    "newVisit": "No se pudo iniciar una nueva visita. {{error}}",
+    "signOut": "No se pudo cerrar la sesión. {{error}}",
+    "preview": "Aún no se pudo crear la vista previa: los diagramas siguen cargando. Inténtelo de nuevo en un momento.",
+    "damagedChart": "Ese historial está dañado y no se pudo abrir.",
+    "pdfImport": "No se pudo leer ese PDF. Use un PDF de historial descargado de ToothOps."
+  },
+  "toasts": {
+    "reverted": "Cambios revertidos.",
+    "pdfImported": "Se importó el historial desde el PDF como un historial nuevo.",
+    "pdfImportedNamed": "{{name}} se importó desde el PDF como un historial nuevo.",
+    "visitStarted": "Nueva visita iniciada.",
+    "visitStartedFor": "Nueva visita iniciada para {{name}}.",
+    "visitStartedCarried_one": "Nueva visita iniciada — {{count}} diente ausente/extraído trasladado.",
+    "visitStartedCarried_many": "Nueva visita iniciada — {{count}} dientes ausentes/extraídos trasladados.",
+    "visitStartedCarried_other": "Nueva visita iniciada — {{count}} dientes ausentes/extraídos trasladados.",
+    "visitStartedForCarried_one": "Nueva visita iniciada para {{name}} — {{count}} diente ausente/extraído trasladado.",
+    "visitStartedForCarried_many": "Nueva visita iniciada para {{name}} — {{count}} dientes ausentes/extraídos trasladados.",
+    "visitStartedForCarried_other": "Nueva visita iniciada para {{name}} — {{count}} dientes ausentes/extraídos trasladados."
+  },
+  "revert": {
+    "title": "¿Revertir sus cambios?",
+    "message": "Este historial vuelve a como estaba cuando eligió Editar historial, y esa versión se guarda.",
+    "confirm": "Revertir cambios"
+  },
+  "todaysVisit": {
+    "message": "¿Abrir la visita de hoy en lugar de iniciar una segunda?",
+    "confirm": "Abrir la visita de hoy",
+    "cancel": "Iniciar una segunda visita"
+  },
+  "historyRestoreHint": "Abra esta visita para restaurar una versión anterior.",
+  "feedbackMail": {
+    "doing": "Lo que estaba haciendo:",
+    "expected": "Lo que esperaba que pasara:",
+    "actual": "Lo que pasó en realidad:",
+    "involved": "Especie / diente / sección implicada (si procede):",
+    "browser": "Navegador y dispositivo:",
+    "screenshot": "(Si puede, adjunte una captura de pantalla: ayuda muchísimo.)"
+  },
+  "menu": {
+    "open": "Abrir el menú de ajustes",
+    "trigger": "Ajustes",
+    "signedInAs": "Sesión iniciada como <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Clínica",
+      "account": "Cuenta",
+      "admin": "Administración",
+      "app": "Aplicación"
+    },
+    "practiceSettings": {
+      "label": "Ajustes de la clínica",
+      "sub": "Nombre, logotipo, equipo y facturación."
+    },
+    "reminders": {
+      "label": "Recordatorios de revisión",
+      "sub": "Plantilla de correo para el propietario y programación del envío automático."
+    },
+    "account": {
+      "label": "Ajustes de la cuenta",
+      "sub": "Su nombre de veterinario, correo electrónico y contraseña."
+    },
+    "admin": {
+      "label": "Panel de administración",
+      "sub": "Gestionar usuarios, clínicas y planes."
+    },
+    "chartSettings": {
+      "label": "Ajustes del odontograma",
+      "sub": "Bolsas por raíz, columnas de la cuadrícula, qué se muestra junto a los dientes."
+    },
+    "feedback": {
+      "label": "Enviar comentarios",
+      "sub": "Informe de un problema o sugiera una idea: nos llega directamente."
+    },
+    "whatsNew": {
+      "label": "Novedades",
+      "sub": "Las últimas funciones y mejoras."
+    },
+    "gettingStarted": {
+      "label": "Primeros pasos",
+      "sub": "Vuelva a ver el recorrido por cada parte de la aplicación."
+    },
+    "homepage": {
+      "label": "Página de inicio",
+      "sub": "Vea la página del producto: su historial se queda aquí."
+    },
+    "signOut": {
+      "label": "Cerrar sesión",
+      "sub": "Termine su sesión y vuelva a la página de inicio."
+    }
+  },
+  "trialSignIn": {
+    "title": "¿Iniciar sesión y borrar el historial de prueba?",
+    "message": "Iniciar sesión en una cuenta existente borra el historial de prueba de este dispositivo. Para conservarlo, descargue antes su PDF o cree en su lugar una cuenta gratuita, que lo conserva.",
+    "confirm": "Borrar e iniciar sesión",
+    "cancel": "Seguir registrando"
+  },
+  "speciesChange": {
+    "title": "¿Cambiar de especie o de dentición?",
+    "messageGrid": "Los gatos, los perros y los dientes deciduos usan una numeración dental distinta, por lo que esto borra la cuadrícula de registro. Los datos del paciente y los hallazgos del examen se conservan.",
+    "messageDiagram": "Los gatos, los perros y los dientes deciduos usan una numeración dental distinta, por lo que esto borra las marcas, notas y dibujos de los diagramas. Los datos del paciente y los hallazgos del examen se conservan.",
+    "messageBoth": "Los gatos, los perros y los dientes deciduos usan una numeración dental distinta, por lo que esto borra la cuadrícula de registro y las marcas, notas y dibujos de los diagramas. Los datos del paciente y los hallazgos del examen se conservan.",
+    "confirm": "Cambiar y borrar"
+  },
+  "sync": {
+    "cloudNotConfigured": "La nube no está configurada.",
+    "historyNotSetUp": "El historial de versiones aún no está configurado en el servidor.",
+    "sessionExpired": "Su sesión ha caducado. Inicie sesión de nuevo y guarde: su historial sigue aquí, en este dispositivo.",
+    "notAllowed": "No se pudo guardar este historial en su cuenta. Póngase en contacto con el propietario de la clínica si sigue ocurriendo.",
+    "tooLarge": "Este historial es demasiado grande para guardarlo (normalmente por demasiadas imágenes o imágenes demasiado pesadas). Quite un adjunto y vuelva a intentarlo.",
+    "offline": "No se pudo conectar con el servidor. Compruebe su conexión y vuelva a intentarlo: su historial está a salvo en este dispositivo.",
+    "saveFailed": "Error al guardar: {{message}}. Su historial está a salvo en este dispositivo: inténtelo de nuevo en un momento.",
+    "unknownError": "error desconocido",
+    "changedByOther": "Otra persona ha modificado este historial: ábralo de nuevo desde Mis historiales para ver su versión",
+    "notSavedConflict": "No guardado: otra persona ha modificado este historial. Ábralo de nuevo desde Mis historiales para ver su versión",
+    "noPermission": "No tiene permiso para guardar cambios en este historial. Pregunte al propietario de la clínica o inicie una nueva visita",
+    "conflict": {
+      "title": "Este historial se modificó en otro lugar",
+      "message": "Se guardó a las {{when}} —por un compañero o en otro dispositivo— después de que usted lo abriera aquí. Si guarda ahora, esos cambios se sustituyen por los suyos.",
+      "confirm": "Reemplazar con los míos",
+      "cancel": "Conservar los suyos"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} ya tiene una visita hoy",
+      "titleOn": "{{name}} ya tiene una visita el {{date}}",
+      "patient": "Este paciente",
+      "message": "Este nuevo historial sería una segunda visita el mismo día. ¿Abrir en su lugar la visita existente o conservar ambas? Al abrirla se descarta lo que ha introducido en este nuevo historial.",
+      "confirm": "Abrir la visita existente",
+      "cancel": "Conservar ambas"
+    },
+    "discard": {
+      "title": "¿Descartar los cambios sin guardar?",
+      "openOther": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Abrir el otro historial de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar y abrir el otro historial"
+      },
+      "restore": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Restaurar esta versión de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar y restaurar esta versión"
+      },
+      "signOut": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Cerrar sesión de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar y cerrar sesión"
+      },
+      "newVisit": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Iniciar una nueva visita de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar e iniciar una nueva visita"
+      },
+      "newPatient": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Iniciar un nuevo paciente de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar e iniciar un nuevo paciente"
+      },
+      "importPdf": {
+        "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Importar este PDF de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
+        "confirm": "Descartar e importar este PDF"
+      }
+    }
+  },
+  "storage": {
+    "full": "El almacenamiento de este navegador está lleno: puede que los últimos cambios no se conserven en este dispositivo. Guarde el historial o descargue su PDF."
+  }
+}

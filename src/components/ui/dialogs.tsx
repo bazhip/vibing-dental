@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import './dialogs.css';
 
@@ -114,6 +115,7 @@ function useBackdropClose(onClose: () => void) {
 }
 
 function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'confirm' }>; onDone: (v: boolean) => void }) {
+  const { t } = useTranslation();
   const { opts } = req;
   const confirmRef = React.useRef<HTMLButtonElement>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -130,7 +132,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">
           <button ref={cancelRef} type="button" className="ui-btn ui-btn--secondary" onClick={() => onDone(false)}>
-            {opts.cancelLabel ?? 'Cancel'}
+            {opts.cancelLabel ?? t('actions.cancel')}
           </button>
           <button
             ref={confirmRef}
@@ -138,7 +140,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
             className={`ui-btn ${opts.danger ? 'ui-btn--danger' : 'ui-btn--primary'}`}
             onClick={() => onDone(true)}
           >
-            {opts.confirmLabel ?? 'OK'}
+            {opts.confirmLabel ?? t('actions.ok')}
           </button>
         </div>
       </div>
@@ -147,6 +149,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
 }
 
 function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prompt' }>; onDone: (v: string | null) => void }) {
+  const { t } = useTranslation();
   const { opts } = req;
   const [value, setValue] = React.useState(opts.defaultValue ?? '');
   const [error, setError] = React.useState<string | null>(null);
@@ -195,10 +198,10 @@ function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prom
         {error && <p className="ui-dialog__error" role="alert">{error}</p>}
         <div className="ui-dialog__actions">
           <button type="button" className="ui-btn ui-btn--secondary" onClick={() => onDone(null)}>
-            {opts.cancelLabel ?? (opts.readOnly ? 'Close' : 'Cancel')}
+            {opts.cancelLabel ?? (opts.readOnly ? t('actions.close') : t('actions.cancel'))}
           </button>
           <button type="submit" className="ui-btn ui-btn--primary">
-            {opts.confirmLabel ?? (opts.readOnly ? 'Copy' : 'OK')}
+            {opts.confirmLabel ?? (opts.readOnly ? t('actions.copy') : t('actions.ok'))}
           </button>
         </div>
       </form>
@@ -266,6 +269,7 @@ export function DialogHost() {
 }
 
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+  const { t } = useTranslation();
   const kind = item.opts.kind ?? 'info';
   const duration = item.opts.duration ?? (kind === 'error' ? 0 : item.opts.action ? 8000 : 4000);
   React.useEffect(() => {
@@ -285,7 +289,7 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
           {item.opts.action.label}
         </button>
       )}
-      <button type="button" className="ui-toast__close" onClick={onDismiss} aria-label="Dismiss">×</button>
+      <button type="button" className="ui-toast__close" onClick={onDismiss} aria-label={t('actions.dismiss')}>×</button>
     </div>
   );
 }

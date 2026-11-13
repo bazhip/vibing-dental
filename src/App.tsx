@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import './styles/themes.css';
 import './styles/boards.css';
 import './App.css';
@@ -65,6 +66,7 @@ async function confirmSessionLost(): Promise<boolean> {
 }
 
 const App: React.FC = () => {
+  const { t } = useTranslation('app');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => !cloudEnabled && readString(AUTH_KEY, AUTH_VERSION, '') === '1'
   );
@@ -105,10 +107,10 @@ const App: React.FC = () => {
     // account can save the work that convinced them. Say so first.
     if (nextAuth === 'signin') {
       const ok = await confirmDialog({
-        title: 'Sign in and clear the trial chart?',
-        message: 'Signing in to an existing account clears the trial chart on this device. To keep it, download its PDF first — or create a free account instead, which keeps it.',
-        confirmLabel: 'Clear and sign in',
-        cancelLabel: 'Keep charting',
+        title: t('trialSignIn.title'),
+        message: t('trialSignIn.message'),
+        confirmLabel: t('trialSignIn.confirm'),
+        cancelLabel: t('trialSignIn.cancel'),
       });
       if (!ok) return;
       clearChartStorage();

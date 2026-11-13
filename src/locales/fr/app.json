@@ -1,0 +1,272 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Essai",
+  "skipLink": "Aller au dossier",
+  "sections": {
+    "patient": "Patient",
+    "exam": "Examen",
+    "anesthesia": "Anesthésie",
+    "charting": "Schéma dentaire",
+    "diagnosis": "Diagnostic",
+    "procedure": "Intervention",
+    "images": "Images",
+    "treatment": "Compte rendu de traitement",
+    "ownerReport": "Compte rendu pour le propriétaire",
+    "menuFallback": "Sections",
+    "nav": "Sections du dossier"
+  },
+  "species": {
+    "feline": "Félin",
+    "canine": "Canin",
+    "felineDeciduous": "Félin · Dents déciduales",
+    "canineDeciduous": "Canin · Dents déciduales"
+  },
+  "chartingView": {
+    "label": "Affichage du schéma dentaire",
+    "grid": "Grille",
+    "tooth": "Par dent",
+    "gridHint": "Tableur des mesures de chaque dent",
+    "toothHint": "Cliquez sur une dent d’un schéma numéroté pour la renseigner — observations, notes, extractions prévues et confirmées"
+  },
+  "customize": {
+    "label": "Personnaliser",
+    "hint": "Poches par racine, colonnes, éléments affichés à côté des dents, options PDF"
+  },
+  "radiographic": {
+    "title": "Observations radiographiques",
+    "placeholder": "p. ex. 108 : perte osseuse verticale racine distale, exposition de la furcation. 307 : résorption dentaire de type 2.",
+    "hint": "Figure dans le PDF au-dessus du compte rendu de traitement."
+  },
+  "lock": {
+    "title": "Lecture seule — choisissez Modifier le dossier pour apporter des changements"
+  },
+  "topbar": {
+    "patientEmpty": "Aucun patient pour l’instant — ajoutez-en un dans la section Patient",
+    "visitSwitchTitle": "Historique des visites — {{n}} visites. Choisissez-en une pour la consulter.",
+    "visitSwitchLabel": "Historique des visites — passer d’une des {{n}} visites de ce patient à l’autre",
+    "undatedVisit": "Visite sans date",
+    "visitLatest": "{{date}} · dernière",
+    "visitEarlier": "{{date}} · précédente",
+    "viewing": "Visite enregistrée (lecture)",
+    "viewingShort": "Lecture",
+    "viewingTitle": "Visite enregistrée — en lecture seule pour éviter toute modification accidentelle. Choisissez Modifier le dossier pour apporter des changements.",
+    "viewingTitleDated": "Visite enregistrée du {{date}} — en lecture seule pour éviter toute modification accidentelle. Choisissez Modifier le dossier pour apporter des changements.",
+    "editing": "Modification d’une visite enregistrée",
+    "editingShort": "Modification",
+    "editingTitle": "Modification d’une visite enregistrée — les changements sont enregistrés automatiquement",
+    "signIn": "Se connecter",
+    "signInHint": "Vous avez déjà un compte de cabinet ? Connectez-vous",
+    "signUp": "Créer un compte gratuit",
+    "signUpHint": "Créez un compte de cabinet — vos dossiers sont enregistrés dans le cloud et vos PDF portent le nom et le logo de votre cabinet",
+    "myCharts": "Mes dossiers",
+    "myChartsShort": "Dossiers",
+    "newVisit": "+ Nouvelle visite",
+    "newVisitShort": "+ Visite",
+    "newVisitTitle": "Démarrer une nouvelle visite datée pour ce patient — l’identité et les dents déjà absentes sont reprises",
+    "history": "Historique",
+    "historyTitle": "Toutes les versions enregistrées de ce dossier — qui l’a enregistrée et quand",
+    "editChart": "Modifier le dossier",
+    "editChartShort": "Modifier",
+    "undo": "Annuler les modifications",
+    "undoShort": "Annuler",
+    "undoTitle": "Rétablir ce dossier tel qu’il était lorsque vous avez choisi Modifier le dossier",
+    "doneEditing": "Terminer la modification"
+  },
+  "status": {
+    "srSaving": "Enregistrement du dossier",
+    "srSaved": "Dossier enregistré",
+    "srNotSaved": "Dossier non enregistré",
+    "saving": "Enregistrement…",
+    "notSavedRetry": "Non enregistré — réessayer",
+    "retryTitle": "Réessayer d’enregistrer ce dossier",
+    "notSaved": "Non enregistré",
+    "viewOnly": "Lecture seule",
+    "viewOnlyTitle": "Les visites enregistrées s’ouvrent en lecture seule — choisissez Modifier le dossier pour apporter des changements",
+    "offline": "Hors ligne — enregistré sur cet appareil",
+    "offlineTitle": "Les modifications sont conservées sur cet appareil et enregistrées dès le retour de la connexion",
+    "needsName": "Ajoutez un nom de patient pour enregistrer",
+    "needsNameTitle": "Les dossiers sont enregistrés dès que le patient a un nom",
+    "saveTitle": "Conservé sur cet appareil pour l’instant — il s’enregistre automatiquement dès que vous commencez à renseigner le schéma dentaire. Enregistrez maintenant pour l’ouvrir sur un autre appareil.",
+    "unsaved": "Modifications non enregistrées",
+    "unsavedTitle": "Enregistrement automatique…",
+    "saved": "Enregistré · {{when}}",
+    "savedTitle": "Enregistré dans le cloud : {{when}}",
+    "local": "Sur cet appareil uniquement",
+    "localTitle": "Les dossiers d’essai restent dans ce navigateur. Créez un compte gratuit pour enregistrer dans le cloud.",
+    "saveHint": "Ajoutez un nom de patient avant d’enregistrer — c’est ainsi que vous retrouverez ce dossier."
+  },
+  "otherTab": {
+    "text": "Ce dossier est ouvert dans un autre onglet ou une autre fenêtre. Les deux onglets modifient la même copie de travail — fermez-en un pour éviter d’écraser vos modifications."
+  },
+  "footer": {
+    "feedback": "Un bogue ou une idée ? <a>Envoyez-nous vos remarques</a>"
+  },
+  "fab": {
+    "preview": "Aperçu du PDF",
+    "download": "Télécharger les PDF",
+    "previewAria": "Aperçu et téléchargement du PDF du dossier",
+    "downloadAria": "Aperçu et téléchargement du dossier clinique et du compte rendu pour le propriétaire"
+  },
+  "errors": {
+    "setting": "Impossible d’enregistrer ce réglage. {{error}}",
+    "openVisit": "Impossible d’ouvrir cette visite. {{error}}",
+    "newVisit": "Impossible de démarrer une nouvelle visite. {{error}}",
+    "signOut": "Impossible de se déconnecter. {{error}}",
+    "preview": "Impossible de générer l’aperçu pour l’instant — les schémas sont encore en cours de chargement. Réessayez dans un instant.",
+    "damagedChart": "Ce dossier est endommagé et n’a pas pu être ouvert.",
+    "pdfImport": "Impossible de lire ce PDF. Utilisez un PDF de dossier téléchargé depuis ToothOps."
+  },
+  "toasts": {
+    "reverted": "Modifications annulées.",
+    "pdfImported": "Le dossier a été importé depuis le PDF comme nouveau dossier.",
+    "pdfImportedNamed": "{{name}} importé depuis le PDF comme nouveau dossier.",
+    "visitStarted": "Nouvelle visite démarrée.",
+    "visitStartedFor": "Nouvelle visite démarrée pour {{name}}.",
+    "visitStartedCarried_one": "Nouvelle visite démarrée — {{count}} dent absente/extraite reportée.",
+    "visitStartedCarried_many": "Nouvelle visite démarrée — {{count}} dents absentes/extraites reportées.",
+    "visitStartedCarried_other": "Nouvelle visite démarrée — {{count}} dents absentes/extraites reportées.",
+    "visitStartedForCarried_one": "Nouvelle visite démarrée pour {{name}} — {{count}} dent absente/extraite reportée.",
+    "visitStartedForCarried_many": "Nouvelle visite démarrée pour {{name}} — {{count}} dents absentes/extraites reportées.",
+    "visitStartedForCarried_other": "Nouvelle visite démarrée pour {{name}} — {{count}} dents absentes/extraites reportées."
+  },
+  "revert": {
+    "title": "Annuler vos modifications ?",
+    "message": "Ce dossier revient à son état au moment où vous avez choisi Modifier le dossier, et cette version est enregistrée.",
+    "confirm": "Annuler les modifications"
+  },
+  "todaysVisit": {
+    "message": "Ouvrir la visite du jour plutôt que d’en démarrer une deuxième ?",
+    "confirm": "Ouvrir la visite du jour",
+    "cancel": "Démarrer une deuxième visite"
+  },
+  "historyRestoreHint": "Ouvrez cette visite pour restaurer une version antérieure.",
+  "feedbackMail": {
+    "doing": "Ce que je faisais :",
+    "expected": "Ce que j’attendais :",
+    "actual": "Ce qui s’est réellement passé :",
+    "involved": "Espèce / dent / section concernée (le cas échéant) :",
+    "browser": "Navigateur et appareil :",
+    "screenshot": "(Si possible, joignez une capture d’écran — cela aide énormément.)"
+  },
+  "menu": {
+    "open": "Ouvrir le menu des paramètres",
+    "trigger": "Paramètres",
+    "signedInAs": "Connecté en tant que <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Cabinet",
+      "account": "Compte",
+      "admin": "Administration",
+      "app": "Application"
+    },
+    "practiceSettings": {
+      "label": "Paramètres du cabinet",
+      "sub": "Nom, logo, équipe et facturation."
+    },
+    "reminders": {
+      "label": "Rappels de contrôle",
+      "sub": "Modèle d’e-mail au propriétaire et calendrier d’envoi automatique."
+    },
+    "account": {
+      "label": "Paramètres du compte",
+      "sub": "Votre nom de vétérinaire, votre e-mail et votre mot de passe."
+    },
+    "admin": {
+      "label": "Panneau d’administration",
+      "sub": "Gérer les utilisateurs, les cabinets et les offres."
+    },
+    "chartSettings": {
+      "label": "Réglages du schéma dentaire",
+      "sub": "Poches par racine, colonnes de la grille, éléments affichés à côté des dents."
+    },
+    "feedback": {
+      "label": "Envoyer un commentaire",
+      "sub": "Signalez un problème ou proposez une idée — cela nous parvient directement."
+    },
+    "whatsNew": {
+      "label": "Nouveautés",
+      "sub": "Les dernières fonctionnalités et améliorations."
+    },
+    "gettingStarted": {
+      "label": "Prise en main",
+      "sub": "Revoir la présentation de chaque partie de l’application."
+    },
+    "homepage": {
+      "label": "Page d’accueil",
+      "sub": "Consultez la page du produit — votre dossier reste ici."
+    },
+    "signOut": {
+      "label": "Se déconnecter",
+      "sub": "Terminez votre session et revenez à la page d’accueil."
+    }
+  },
+  "trialSignIn": {
+    "title": "Se connecter et effacer le dossier d’essai ?",
+    "message": "La connexion à un compte existant efface le dossier d’essai sur cet appareil. Pour le conserver, téléchargez d’abord son PDF — ou créez plutôt un compte gratuit, qui le conserve.",
+    "confirm": "Effacer et se connecter",
+    "cancel": "Continuer la saisie"
+  },
+  "speciesChange": {
+    "title": "Changer d’espèce ou de dentition ?",
+    "messageGrid": "Les chats, les chiens et les dents déciduales utilisent une numérotation différente, donc cette action efface la grille de saisie. Les informations du patient et les observations de l’examen sont conservées.",
+    "messageDiagram": "Les chats, les chiens et les dents déciduales utilisent une numérotation différente, donc cette action efface les marques, notes et dessins des schémas. Les informations du patient et les observations de l’examen sont conservées.",
+    "messageBoth": "Les chats, les chiens et les dents déciduales utilisent une numérotation différente, donc cette action efface la grille de saisie ainsi que les marques, notes et dessins des schémas. Les informations du patient et les observations de l’examen sont conservées.",
+    "confirm": "Changer et effacer"
+  },
+  "sync": {
+    "cloudNotConfigured": "Le cloud n’est pas configuré.",
+    "historyNotSetUp": "L’historique des dossiers n’est pas encore configuré sur le serveur.",
+    "sessionExpired": "Votre session a expiré. Reconnectez-vous, puis enregistrez — votre dossier est toujours là, sur cet appareil.",
+    "notAllowed": "Ce dossier n’a pas pu être enregistré dans votre compte. Contactez le responsable de votre cabinet si le problème persiste.",
+    "tooLarge": "Ce dossier est trop volumineux pour être enregistré (en général, trop d’images ou des images trop lourdes). Supprimez une pièce jointe et réessayez.",
+    "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez — votre dossier est en sécurité sur cet appareil.",
+    "saveFailed": "Échec de l’enregistrement : {{message}}. Votre dossier est en sécurité sur cet appareil — réessayez dans un instant.",
+    "unknownError": "erreur inconnue",
+    "changedByOther": "Ce dossier a été modifié par quelqu’un d’autre — rouvrez-le depuis Mes dossiers pour voir sa version",
+    "notSavedConflict": "Non enregistré — ce dossier a été modifié par quelqu’un d’autre. Rouvrez-le depuis Mes dossiers pour voir sa version",
+    "noPermission": "Vous n’avez pas l’autorisation d’enregistrer des modifications dans ce dossier. Demandez au responsable du cabinet, ou démarrez une nouvelle visite",
+    "conflict": {
+      "title": "Ce dossier a été modifié ailleurs",
+      "message": "Il a été enregistré à {{when}} — par un collègue ou sur un autre appareil — après que vous l’avez ouvert ici. Enregistrer maintenant remplace ces modifications par les vôtres.",
+      "confirm": "Remplacer par les miennes",
+      "cancel": "Garder les leurs"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} a déjà une visite aujourd’hui",
+      "titleOn": "{{name}} a déjà une visite le {{date}}",
+      "patient": "Ce patient",
+      "message": "Ce nouveau dossier serait une deuxième visite le même jour. Ouvrir plutôt la visite existante, ou conserver les deux ? L’ouvrir supprime ce que vous avez saisi dans ce nouveau dossier.",
+      "confirm": "Ouvrir la visite existante",
+      "cancel": "Garder les deux"
+    },
+    "discard": {
+      "title": "Abandonner les modifications non enregistrées ?",
+      "openOther": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Ouvrir quand même l’autre dossier ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et ouvrir l’autre dossier"
+      },
+      "restore": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Restaurer quand même cette version ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et restaurer cette version"
+      },
+      "signOut": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Se déconnecter quand même ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et se déconnecter"
+      },
+      "newVisit": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Démarrer quand même une nouvelle visite ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et démarrer une nouvelle visite"
+      },
+      "newPatient": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Démarrer quand même un nouveau patient ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et démarrer un nouveau patient"
+      },
+      "importPdf": {
+        "message": "Ce dossier contient des modifications qui ne sont pas encore enregistrées dans le cloud. Importer quand même ce PDF ? Pour les conserver, annulez et appuyez d’abord sur Enregistrer.",
+        "confirm": "Abandonner et importer ce PDF"
+      }
+    }
+  },
+  "storage": {
+    "full": "Le stockage de ce navigateur est plein — les dernières modifications risquent de ne pas être conservées sur cet appareil. Enregistrez le dossier ou téléchargez son PDF."
+  }
+}

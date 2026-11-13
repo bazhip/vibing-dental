@@ -1,4 +1,6 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import {
   PatientForm,
   DentalGrid,
@@ -23,6 +25,7 @@ import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
 import { useAppLanguage } from './i18n/useAppLanguage';
+import { formatDate, formatDateTime, formatTime } from './i18n/format';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -57,11 +60,7 @@ import './components/EntryGrid.css';
 function formatSavedAt(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  const today = new Date();
-  return d.toDateString() === today.toDateString()
-    ? time
-    : `${d.toLocaleDateString([], { month: 'short', day: 'numeric' })}, ${time}`;
+  return d.toDateString() === new Date().toDateString() ? formatTime(d) : formatDateTime(d);
 }
 
 const DocumentsModal = lazyWithReload(() =>
@@ -73,32 +72,39 @@ const DocumentsModal = lazyWithReload(() =>
  * report actionable (repro steps, expected vs. actual, the tooth/section
  * involved, browser) so reports come back with enough detail to act on.
  */
-const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
-  'ToothOps Charting — feedback / bug report'
-)}&body=${encodeURIComponent(
-  [
-    'What I was doing:',
-    '',
-    'What I expected to happen:',
-    '',
-    'What actually happened:',
-    '',
-    'Species / tooth / section involved (if any):',
-    '',
-    'Browser & device:',
-    '',
-    '(If you can, attach a screenshot — it helps a ton.)',
-    '',
-  ].join('\n')
-)}`;
+// The subject stays English: it is read by whoever triages the report.
+function feedbackMailto(t: TFunction<'app'>): string {
+  return `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
+    'ToothOps Charting — feedback / bug report'
+  )}&body=${encodeURIComponent(
+    [
+      t('feedbackMail.doing'),
+      '',
+      t('feedbackMail.expected'),
+      '',
+      t('feedbackMail.actual'),
+      '',
+      t('feedbackMail.involved'),
+      '',
+      t('feedbackMail.browser'),
+      '',
+      t('feedbackMail.screenshot'),
+      '',
+    ].join('\n')
+  )}`;
+}
 
-/** Display names for the species toggle values, used in the patient banner. */
-const SPECIES_LABELS: Record<string, string> = {
-  feline: 'Feline',
-  canine: 'Canine',
-  'feline-deciduous': 'Feline · Deciduous',
-  'canine-deciduous': 'Canine · Deciduous',
-};
+const OWNER_REPORT_SECTION = 'owner-report';
+const CHARTING_VIEWS = ['grid', 'tooth'] as const;
+const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
+
+/** Catalog keys for the species toggle values, used in the patient banner. */
+const SPECIES_KEYS = {
+  feline: 'species.feline',
+  canine: 'species.canine',
+  'feline-deciduous': 'species.felineDeciduous',
+  'canine-deciduous': 'species.canineDeciduous',
+} as const;
 
 /**
  * Top-level chart entry. Reads chart state (with all the persistence,
@@ -121,13 +127,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   onRequestAccount,
   onGoHome,
 }) => {
+  const { t } = useTranslation('app');
   const chart = useChartState();
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
   const language = useAppLanguage(prefs.language, chartSettings.loaded);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
-    chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
+    chartSettings.update(patch).catch((err) => toast(t('errors.setting', { error: friendlyError(err) }), { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
   // Chart settings dialog: closed, everything, or one section only.
   const [chartSettingsOpen, setChartSettingsOpen] = React.useState<false | 'all' | SettingsSection>(false);
@@ -246,19 +253,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const chartingView = prefs.chartingView;
   const setChartingView = (v: 'grid' | 'tooth') => setPref({ chartingView: v });
   const chartingViewSwitch = (
-    <div className="charting-view-switch" role="group" aria-label="Charting view">
-      {([['grid', 'Grid'], ['tooth', 'By tooth']] as const).map(([v, label]) => (
+    <div className="charting-view-switch" role="group" aria-label={t('chartingView.label')}>
+      {CHARTING_VIEWS.map((v) => (
         <button
           key={v}
           type="button"
           className={`charting-view-switch__btn${chartingView === v ? ' charting-view-switch__btn--active' : ''}`}
           aria-pressed={chartingView === v}
           onClick={() => setChartingView(v)}
-          title={v === 'tooth'
-            ? 'Click a tooth on a numbered diagram and chart it — findings, notes, planned and confirmed extractions'
-            : 'Spreadsheet of every tooth\'s measurements'}
+          title={v === 'tooth' ? t('chartingView.toothHint') : t('chartingView.gridHint')}
         >
-          {label}
+          {t(CHARTING_VIEW_KEYS[v])}
         </button>
       ))}
     </div>
@@ -273,9 +278,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         type="button"
         className="diagram-view__action"
         onClick={() => setChartSettingsOpen('charting')}
-        title="Pockets per root, columns, what shows beside the teeth, PDF options"
+        title={t('customize.hint')}
       >
-        Customize
+        {t('customize.label')}
       </button>
     </div>
   );
@@ -459,7 +464,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const attemptSave = () => {
     if (!cloud.enabled || readOnly) return;
     if (!chart.patientInfo.patientName.trim()) {
-      setSaveHint('Add a patient name before saving — it’s how you’ll find this chart again.');
+      setSaveHint(t('status.saveHint'));
       goToSection('patient');
       return;
     }
@@ -544,7 +549,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
     cloud.openChart(id).catch((err) => {
-      toast(`Couldn’t open that visit. ${friendlyError(err)}`, { kind: 'error' });
+      toast(t('errors.openVisit', { error: friendlyError(err) }), { kind: 'error' });
     });
   };
 
@@ -554,7 +559,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // banner's "+ New visit".
   const startVisitFromChart = async (latestChartId: string): Promise<boolean> => {
     // Starting a visit replaces the open chart — never silently.
-    if (!(await cloud.confirmDiscardIfDirty('Start a new visit'))) return false;
+    if (!(await cloud.confirmDiscardIfDirty('newVisit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
     // Already seen today? Offer that visit rather than a second one —
     // same-day restarts were the main source of duplicate records.
@@ -563,12 +568,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
       const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       if (todays) {
-        const who = snap.patientInfo.patientName?.trim() || 'This patient';
+        const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
         const openIt = await confirmDialog({
-          title: `${who} already has a visit today`,
-          message: 'Open today’s visit instead of starting a second one?',
-          confirmLabel: 'Open today’s visit',
-          cancelLabel: 'Start a second visit',
+          title: t('sync.duplicate.titleToday', { name: who }),
+          message: t('todaysVisit.message'),
+          confirmLabel: t('todaysVisit.confirm'),
+          cancelLabel: t('todaysVisit.cancel'),
         });
         if (openIt) {
           // Unsaved changes were already confirmed above.
@@ -599,7 +604,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     goToSection('patient');
     const name = snap.patientInfo.patientName?.trim();
     toast(
-      `New visit${name ? ` for ${name}` : ''} started${gone.size ? ` — ${gone.size} missing/extracted ${gone.size === 1 ? 'tooth' : 'teeth'} carried forward` : ''}.`,
+      gone.size
+        ? name ? t('toasts.visitStartedForCarried', { name, count: gone.size }) : t('toasts.visitStartedCarried', { count: gone.size })
+        : name ? t('toasts.visitStartedFor', { name }) : t('toasts.visitStarted'),
       { kind: 'success' }
     );
     return true;
@@ -839,7 +846,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       });
       setPreviewOpen(true);
     } catch (error) {
-      toast('Couldn’t build the preview yet — the diagrams are still loading. Try again in a moment.', { kind: 'error' });
+      toast(t('errors.preview'), { kind: 'error' });
       console.error(error);
     }
   };
@@ -852,7 +859,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const lock = (node: React.ReactNode) => (
     <div
       className={readOnly ? 'lock-wrap lock-wrap--locked' : 'lock-wrap'}
-      title={readOnly ? 'View only — choose Edit chart to make changes' : undefined}
+      title={readOnly ? t('lock.title') : undefined}
     >
       <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
         {node}
@@ -864,7 +871,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const sections: ChartSection[] = [
     {
       id: 'patient',
-      label: 'Patient',
+      label: t('sections.patient'),
       content: lock(
         <PatientForm
           patientInfo={chart.patientInfo}
@@ -878,7 +885,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'exam',
-      label: 'Exam',
+      label: t('sections.exam'),
       content: lock(
         <ExamForm
           exam={chart.patientInfo.exam}
@@ -889,7 +896,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'anesthesia',
-      label: 'Anesthesia',
+      label: t('sections.anesthesia'),
       content: lock(
         <AnesthesiaForm
           nerveBlocks={chart.patientInfo.nerveBlocks}
@@ -908,7 +915,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'charting',
-      label: 'Charting',
+      label: t('sections.charting'),
       // Unlike the diagrams (whose mounted SVGs the PDF export needs),
       // the grid keeps no cross-section refs — so it only mounts while
       // its section is visible. react-data-grid runs measurement layout
@@ -965,7 +972,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'diagnosis',
-      label: 'Diagnosis',
+      label: t('sections.diagnosis'),
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
@@ -975,7 +982,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               key={`pre-${chart.chartSession}`}
               ref={preDiagramRef}
               readOnly={readOnly}
-              title="Diagnosis"
+              title={t('sections.diagnosis')}
               onCustomize={() => setChartSettingsOpen('diagnosis')}
               species={chart.species}
               toothMarks={chart.preToothMarks}
@@ -999,7 +1006,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'procedure',
-      label: 'Procedure',
+      label: t('sections.procedure'),
       content: (
         <div className="diagram-with-codes">
           <div className="diagram-with-codes__diagram">
@@ -1007,7 +1014,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               key={`post-${chart.chartSession}`}
               ref={postDiagramRef}
               readOnly={readOnly}
-              title="Procedure"
+              title={t('sections.procedure')}
               species={chart.species}
               toothMarks={chart.effectivePostMarks}
               onToothMarksChange={chart.handlePostMarksChange}
@@ -1028,21 +1035,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'imaging',
-      label: 'Images',
+      label: t('sections.images'),
       content: (
         <>
         {lock(
           <div className="patient-form radiographic-findings">
             <label className="patient-form__label">
-              <span className="patient-form__section-title radiographic-findings__title">Radiographic findings</span>
+              <span className="patient-form__section-title radiographic-findings__title">{t('radiographic.title')}</span>
               <CodeField
                 multiline
                 className="patient-form__textarea radiographic-findings__text"
-                placeholder="e.g. 108: vertical bone loss distal root, furcation exposure. 307: type 2 tooth resorption."
+                placeholder={t('radiographic.placeholder')}
                 value={chart.patientInfo.radiographicFindings ?? ''}
                 onChange={(value) => chart.handlePatientInfoChange('radiographicFindings', value)}
               />
-              <span className="patient-form__hint">Prints in the PDF above the treatment report.</span>
+              <span className="patient-form__hint">{t('radiographic.hint')}</span>
             </label>
           </div>
         )}
@@ -1065,7 +1072,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     {
       id: 'treatment',
-      label: 'Treatment report',
+      label: t('sections.treatment'),
       content: lock(
         <SurgeryReportForm
           value={chart.patientInfo.treatmentReport}
@@ -1078,8 +1085,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // Feature-flagged per practice (admin panel), off by default.
     ...(ownerReportOn
       ? [{
-          id: 'owner-report',
-          label: 'Owner Report',
+          id: OWNER_REPORT_SECTION,
+          label: t('sections.ownerReport'),
           content: (
             <OwnerReportSection
               readOnly={readOnly}
@@ -1109,7 +1116,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // when viewing an older one.
     const latest = visits[0]?.id ?? chart.cloudChartId;
     startVisitFromChart(latest).catch((err) => {
-      toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
+      toast(t('errors.newVisit', { error: friendlyError(err) }), { kind: 'error' });
     });
   };
   const unlockForEditing = () => {
@@ -1120,13 +1127,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
     if (!raw) return;
     if (!(await confirmDialog({
-      title: 'Revert your changes?',
-      message: 'This chart goes back to how it was when you chose Edit chart, and that version is saved.',
-      confirmLabel: 'Revert changes',
+      title: t('revert.title'),
+      message: t('revert.message'),
+      confirmLabel: t('revert.confirm'),
       danger: true,
     }))) return;
     chart.applySnapshot(JSON.parse(raw), chart.cloudChartId);
-    toast('Changes reverted.', { kind: 'success' });
+    toast(t('toasts.reverted'), { kind: 'success' });
   };
   const doneEditing = async () => {
     if (cloud.dirty) {
@@ -1140,7 +1147,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <div className="entry-grid-container" ref={containerRef}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
       <a className="skip-link" href="#chart-form">
-        Skip to the chart
+        {t('skipLink')}
       </a>
       <header className="entry-grid__topbar" ref={topbarRef}>
         <div className="entry-grid__topbar-lead">
@@ -1154,14 +1161,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <>
               <h1 className="entry-grid__doctor">{profile.doctorName}</h1>
               <span className="entry-grid__title">
-                {profile.practiceName.trim() || 'ToothOps Charting'}
+                {profile.practiceName.trim() || t('brand')}
               </span>
             </>
           ) : (
             <h1 className="entry-grid__title">
               {trial
-                ? 'ToothOps Charting · Trial'
-                : profile.practiceName.trim() || 'ToothOps Charting'}
+                ? t('brandTrial')
+                : profile.practiceName.trim() || t('brand')}
             </h1>
           )}
           {/* Live patient banner — EMR-style encounter context that stays
@@ -1174,7 +1181,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 </span>
                 <span className="entry-grid__patient-sep" aria-hidden="true" />
                 <span className="entry-grid__patient-meta">
-                  {SPECIES_LABELS[chart.species]}
+                  {t(SPECIES_KEYS[chart.species])}
                 </span>
                 {chart.patientInfo.date && (() => {
                   const hasCurrent = visits.some((v) => v.id === chart.cloudChartId);
@@ -1190,7 +1197,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                            icon so it reads as a control, not a date. */
                         <span
                           className="entry-grid__visit-switch"
-                          title={`Visit history — ${opts.length} visits. Pick one to view it.`}
+                          title={t('topbar.visitSwitchTitle', { n: opts.length })}
                         >
                           <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
                             <path
@@ -1202,18 +1209,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                             className="entry-grid__visit-select"
                             value={chart.cloudChartId}
                             onChange={(e) => switchVisit(e.target.value)}
-                            aria-label={`Visit history — switch between this patient's ${opts.length} visits`}
+                            aria-label={t('topbar.visitSwitchLabel', { n: opts.length })}
                           >
                             {opts.map((v, i) => (
                               <option key={v.id} value={v.id}>
-                                {(v.chart_date || 'Undated visit') + (i === 0 ? ' · latest' : ' · earlier')}
+                                {t(i === 0 ? 'topbar.visitLatest' : 'topbar.visitEarlier', {
+                                  date: v.chart_date ? formatDate(v.chart_date) : t('topbar.undatedVisit'),
+                                })}
                               </option>
                             ))}
                           </select>
                         </span>
                       ) : (
                         <span className="entry-grid__patient-meta entry-grid__patient-date">
-                          {chart.patientInfo.date}
+                          {formatDate(chart.patientInfo.date)}
                         </span>
                       )}
                     </>
@@ -1222,7 +1231,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               </>
             ) : (
               <span className="entry-grid__patient-empty">
-                No patient yet — add one in the Patient section
+                {t('topbar.patientEmpty')}
               </span>
             )}
           </div>
@@ -1232,16 +1241,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           {viewingSavedVisit && (
             <span
               className="topbar-editing topbar-viewing"
-              title={`Viewing a saved visit${chart.patientInfo.date ? ` from ${chart.patientInfo.date}` : ''} — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.`}
+              title={chart.patientInfo.date
+                ? t('topbar.viewingTitleDated', { date: formatDate(chart.patientInfo.date) })
+                : t('topbar.viewingTitle')}
             >
-              <span className="topbar-label-long">Viewing saved visit</span>
-              <span className="topbar-label-short">Viewing</span>
+              <span className="topbar-label-long">{t('topbar.viewing')}</span>
+              <span className="topbar-label-short">{t('topbar.viewingShort')}</span>
             </span>
           )}
           {editingSavedVisit && (
-            <span className="topbar-editing" title="Editing a saved visit — changes save automatically">
-              <span className="topbar-label-long">Editing saved visit</span>
-              <span className="topbar-label-short">Editing</span>
+            <span className="topbar-editing" title={t('topbar.editingTitle')}>
+              <span className="topbar-label-long">{t('topbar.editing')}</span>
+              <span className="topbar-label-short">{t('topbar.editingShort')}</span>
             </span>
           )}
           {trial && (
@@ -1250,17 +1261,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 type="button"
                 className="chart-menu__trigger topbar-library-btn"
                 onClick={() => onRequestAccount?.('signin')}
-                title="Already have a practice account? Sign in"
+                title={t('topbar.signInHint')}
               >
-                Sign in
+                {t('topbar.signIn')}
               </button>
               <button
                 type="button"
                 className="chart-menu__trigger topbar-library-btn"
                 onClick={() => onRequestAccount?.('signup')}
-                title="Create a practice account — your charts save to the cloud and PDFs carry your practice name and logo"
+                title={t('topbar.signUpHint')}
               >
-                Create free account
+                {t('topbar.signUp')}
               </button>
             </>
           )}
@@ -1272,11 +1283,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             // button — the one state the user must be able to act on.
             <span className="visually-hidden" role="status" aria-live="polite">
               {cloud.status === 'saving'
-                ? 'Saving chart'
+                ? t('status.srSaving')
                 : cloud.status === 'saved'
-                ? 'Chart saved'
+                ? t('status.srSaved')
                 : cloud.status === 'error'
-                ? cloud.saveError || 'Chart not saved'
+                ? cloud.saveError || t('status.srNotSaved')
                 : ''}
             </span>
           )}
@@ -1285,7 +1296,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               ⌘S / Ctrl+S saves immediately. */}
           {cloud.enabled ? (() => {
             if (cloud.status === 'saving') {
-              return <span className="save-status save-status--saving" aria-hidden="true">Saving…</span>;
+              return <span className="save-status save-status--saving" aria-hidden="true">{t('status.saving')}</span>;
             }
             if (cloud.status === 'error') {
               return (
@@ -1294,9 +1305,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     type="button"
                     className="save-status save-status--error"
                     onClick={attemptSave}
-                    title={cloud.saveError || 'Retry saving this chart'}
+                    title={cloud.saveError || t('status.retryTitle')}
                   >
-                    Not saved — retry
+                    {t('status.notSavedRetry')}
                   </button>
                   {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
                 </span>
@@ -1305,7 +1316,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             if (saveHint) {
               return (
                 <span className="save-status-error-wrap" role="alert">
-                  <span className="save-status save-status--error">Not saved</span>
+                  <span className="save-status save-status--error">{t('status.notSaved')}</span>
                   <span className="save-status__detail">{saveHint}</span>
                 </span>
               );
@@ -1313,13 +1324,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             if (readOnly) {
               // The viewing bar already says so.
               if (viewingSavedVisit) return null;
-              return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
+              return <span className="save-status save-status--muted" title={t('status.viewOnlyTitle')}>{t('status.viewOnly')}</span>;
             }
             if (cloud.dirty && !cloud.online) {
-              return <span className="save-status save-status--manual" title="Changes are kept on this device and save when you're back online">Offline — saved on this device</span>;
+              return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
             }
             if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
-              return <span className="save-status save-status--manual" title="Charts save once the patient has a name">Add a patient name to save</span>;
+              return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
             }
             if (cloud.awaitingClinical) {
               // Filled in ahead of time: autosave starts with charting;
@@ -1329,26 +1340,26 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                   type="button"
                   className="save-status save-status--manual"
                   onClick={attemptSave}
-                  title="Kept on this device for now — it saves automatically once you start charting. Save now to open it on another device."
+                  title={t('status.saveTitle')}
                 >
-                  Save
+                  {t('actions.save', { ns: 'common' })}
                 </button>
               );
             }
             if (cloud.dirty) {
-              return <span className="save-status save-status--manual" title="Saving automatically…">Unsaved changes</span>;
+              return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
             }
             if (cloud.lastSavedAt) {
               return (
-                <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
-                  Saved · {formatSavedAt(cloud.lastSavedAt)}
+                <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt) })}>
+                  {t('status.saved', { when: formatSavedAt(cloud.lastSavedAt) })}
                 </span>
               );
             }
             return null;
           })() : trial ? (
-            <span className="save-status save-status--muted" title="Trial charts stay in this browser. Create a free account to save to the cloud.">
-              On this device only
+            <span className="save-status save-status--muted" title={t('status.localTitle')}>
+              {t('status.local')}
             </span>
           ) : null}
           {cloud.enabled && (
@@ -1356,12 +1367,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               type="button"
               className="chart-menu__trigger topbar-library-btn"
               data-tour="library"
-              aria-label="My charts"
+              aria-label={t('topbar.myCharts')}
               onClick={openLibrary}
               aria-haspopup="dialog"
             >
-              <span className="topbar-label-long">My charts</span>
-              <span className="topbar-label-short">Charts</span>
+              <span className="topbar-label-long">{t('topbar.myCharts')}</span>
+              <span className="topbar-label-short">{t('topbar.myChartsShort')}</span>
             </button>
           )}
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
@@ -1394,7 +1405,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     onOpenAccount: () => setAccountOpen(true),
                     onSignOut: () => {
                       cloud.signOut().catch((err) => {
-                        toast(`Couldn’t sign out. ${friendlyError(err)}`, { kind: 'error' });
+                        toast(t('errors.signOut', { error: friendlyError(err) }), { kind: 'error' });
                       });
                     },
                   }
@@ -1408,22 +1419,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 type="button"
                 className="chart-menu__trigger topbar-library-btn"
                 onClick={startNewVisitFromLatest}
-                title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
+                title={t('topbar.newVisitTitle')}
               >
-                <span className="topbar-label-long">+ New visit</span>
-                <span className="topbar-label-short">+ Visit</span>
+                <span className="topbar-label-long">{t('topbar.newVisit')}</span>
+                <span className="topbar-label-short">{t('topbar.newVisitShort')}</span>
               </button>
               <button
                 type="button"
                 className="chart-menu__trigger topbar-library-btn"
                 onClick={() => setHistoryFor({ id: chart.cloudChartId })}
-                title="Every saved version of this chart — who saved it and when"
+                title={t('topbar.historyTitle')}
               >
-                History
+                {t('topbar.history')}
               </button>
               <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
-                <span className="topbar-label-long">Edit chart</span>
-                <span className="topbar-label-short">Edit</span>
+                <span className="topbar-label-long">{t('topbar.editChart')}</span>
+                <span className="topbar-label-short">{t('topbar.editChartShort')}</span>
               </button>
             </>
           )}
@@ -1434,9 +1445,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                   type="button"
                   className="topbar-editing__undo"
                   onClick={revertUnlockedChanges}
-                  title="Put this chart back the way it was when you chose Edit chart"
+                  title={t('topbar.undoTitle')}
                 >
-                  <span aria-hidden="true">↺</span> <span className="topbar-label-long">Undo changes</span><span className="topbar-label-short">Undo</span>
+                  <span aria-hidden="true">↺</span> <span className="topbar-label-long">{t('topbar.undo')}</span><span className="topbar-label-short">{t('topbar.undoShort')}</span>
                 </button>
               )}
               <button
@@ -1444,7 +1455,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 className="entry-grid__button entry-grid__button--topbar"
                 onClick={doneEditing}
               >
-                Done editing
+                {t('topbar.doneEditing')}
               </button>
             </>
           )}
@@ -1454,15 +1465,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {otherTabWarning && (
         <div className="chart-lock-banner chart-lock-banner--warning" role="alert">
           <span className="chart-lock-banner__text">
-            This chart is open in another tab or window. Both tabs edit the
-            same working copy — close one to avoid overwriting your changes.
+            {t('otherTab.text')}
           </span>
           <button
             type="button"
             className="entry-grid__button entry-grid__button--topbar"
             onClick={() => setOtherTabWarning(false)}
           >
-            Got it
+            {t('gotIt', { ns: 'whatsNew' })}
           </button>
         </div>
       )}
@@ -1489,12 +1499,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             label={historyFor.label}
             onClose={() => setHistoryFor(null)}
             onRestore={canRestore ? (snap) => cloud.restoreRevision(historyFor.id, snap) : undefined}
-            restoreHint={isOpenChart ? undefined : 'Open this visit to restore an earlier version.'}
+            restoreHint={isOpenChart ? undefined : t('historyRestoreHint')}
             onOpenChart={historyFor.fromLibrary && !isOpenChart ? () => {
               const id = historyFor.id;
               setHistoryFor(null);
               cloud.openChart(id).then((ok) => { if (ok) closeLibrary(); }).catch((err) => {
-                toast(`Couldn’t open that visit. ${friendlyError(err)}`, { kind: 'error' });
+                toast(t('errors.openVisit', { error: friendlyError(err) }), { kind: 'error' });
               });
             } : undefined}
           />
@@ -1529,7 +1539,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               // Cancelled at the unsaved-changes prompt → stay in the library.
               if (await startVisitFromChart(latestChartId)) closeLibrary();
             } catch (err) {
-              toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
+              toast(t('errors.newVisit', { error: friendlyError(err) }), { kind: 'error' });
             }
           }}
           onSendReminder={(c) => setReminderTarget(c)}
@@ -1544,11 +1554,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           }}
           onNewPatient={async () => {
             // Only ask when something would actually be lost.
-            if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return;
+            if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return;
             chart.resetChart();
           }}
           onLoadPdf={async (file) => {
-            if (!(await cloud.confirmDiscardIfDirty('Import this PDF'))) return;
+            if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return;
             await chart.loadFromPdf(file);
           }}
           onClose={closeLibrary}
@@ -1591,9 +1601,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         form="chart-form"
         className="fab-download"
         aria-haspopup="dialog"
-        aria-label={ownerReportOn ? 'Preview and download the clinical chart and owner report' : 'Preview and download the chart PDF'}
+        aria-label={ownerReportOn ? t('fab.downloadAria') : t('fab.previewAria')}
       >
-        <span aria-hidden="true">⤓</span> {ownerReportOn ? 'Download PDFs' : 'Preview PDF'}
+        <span aria-hidden="true">⤓</span> {ownerReportOn ? t('fab.download') : t('fab.preview')}
       </button>
 
       {previewSnapshot && (
@@ -1617,7 +1627,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               config: profile.ownerReportConfig,
               onEditWording: () => {
                 setPreviewOpen(false);
-                goToSection('owner-report');
+                goToSection(OWNER_REPORT_SECTION);
               },
             } : undefined}
           />
@@ -1676,7 +1686,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           details (what happened, section, browser). */}
       <footer className="entry-grid__footnote">
         <span className="entry-grid__footnote-lead">
-          Found a bug or have an idea? <a href={FEEDBACK_MAILTO}>Send feedback</a>
+          <Trans t={t} i18nKey="footer.feedback" components={{ a: <a href={feedbackMailto(t)} /> }} />
         </span>
       </footer>
     </div>
