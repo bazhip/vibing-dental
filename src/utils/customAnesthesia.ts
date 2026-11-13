@@ -1,8 +1,10 @@
 import { CustomAnesthesia, CustomBlockValue, CustomFieldType, CustomFieldValue } from '../types';
 import i18n from '../i18n';
 
-/** Default labels for unnamed entries, in `lng` (the active language by default). */
-const labels = (lng: string = i18n.language) => {
+/** Default labels for unnamed entries, in `lng`. English by default: these
+ *  labels are saved into the chart (and printed), and the clinical-record
+ *  language is decided later (plan 3), not by the UI language. */
+const labels = (lng = 'en') => {
   const t = i18n.getFixedT(lng, 'chart');
   return { block: t('customAnesthesia.block'), field: t('customAnesthesia.field'), yes: t('customAnesthesia.yes') };
 };

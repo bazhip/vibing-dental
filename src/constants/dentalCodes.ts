@@ -540,6 +540,21 @@ export function findCodesInText(text: string): DentalCode[] {
     .filter(Boolean);
 }
 
+/** Codes whose `code` starts with `prefix` (case-sensitive), in catalog
+ *  order. CodeField's popup uses this: it opens on code-like tokens only,
+ *  so definition matches (searchCodes) would just add noise there. */
+export function codesMatchingPrefix(prefix: string, limit = 8): DentalCode[] {
+  if (!prefix) return [];
+  const out: DentalCode[] = [];
+  for (const c of DENTAL_CODES) {
+    if (c.code.startsWith(prefix)) {
+      out.push(c);
+      if (out.length >= limit) break;
+    }
+  }
+  return out;
+}
+
 type CodeKey = keyof typeof codes;
 
 /** A code's definition in `lng` (the active language by default). The

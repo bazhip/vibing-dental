@@ -2,7 +2,9 @@ import i18n from '../i18n';
 import { APP_LANGUAGES } from '../i18n/config';
 import { installPseudoLocale, restoreLocale } from '../i18n/testing/pseudo';
 import glossary from '../locales/glossary.json';
-import { DENTAL_CODES, DENTAL_CODE_GROUPS, codeDefinition, searchCodes } from './dentalCodes';
+import { DENTAL_CODES, DENTAL_CODE_GROUPS, codeDefinition, codesMatchingPrefix, searchCodes } from './dentalCodes';
+import { gridCommentTexts } from '../utils/gridComments';
+import type { ToothData } from '../types';
 import { GRID_COLUMNS, columnLabel } from './columnDefinitions';
 import { TOOTH_DATA_ROWS } from './chartLayout';
 import { PLANS, planFeatures, planName, planTagline } from './plans';
@@ -91,8 +93,6 @@ describe('pseudo-locale', () => {
       WHATS_NEW.title,
       WHATS_NEW.intro,
       ...WHATS_NEW.groups.flatMap((g) => [g.heading, ...g.items.flatMap((it) => [it.title, it.body])]),
-      blocksForForm([{ id: 'b1', label: '' }], undefined)[0].label,
-      fieldsForForm([{ id: 'f1', label: '', type: 'text' }], undefined)[0].value.label,
     ];
     expect(texts.filter((s) => !WRAPPED.test(s))).toEqual([]);
   });
@@ -100,5 +100,44 @@ describe('pseudo-locale', () => {
   it('PDF-bound custom anesthesia lines stay English until the PDF is translated', () => {
     const chart = { blocks: [], fields: [{ id: 'f', label: '', type: 'checkbox' as const, value: 'true' }] };
     expect(fieldLines(chart)).toEqual(['Custom field: Yes']);
+  });
+});
+
+describe('CodeField suggestions (code prefix only, catalog order)', () => {
+  // The algorithm CodeField used before translation: codes starting with the
+  // prefix, in DENTAL_CODES order, at most 8.
+  const oldPrefix = (p: string) => DENTAL_CODES.filter((c) => c.code.startsWith(p)).slice(0, 8);
+
+  it('"CL" yields only CL codes and "AB" starts with ABE', () => {
+    expect(codesOf(codesMatchingPrefix('CL')).every((c) => c.startsWith('CL'))).toBe(true);
+    expect(codesMatchingPrefix('AB')[0].code).toBe('ABE');
+  });
+
+  it('matches the old prefix algorithm for every code prefix', () => {
+    const prefixes = new Set(DENTAL_CODES.flatMap((c) => [...c.code].map((_, i) => c.code.slice(0, i + 1))));
+    const differs = [...prefixes].filter((p) => codesOf(codesMatchingPrefix(p)).join() !== codesOf(oldPrefix(p)).join());
+    expect(differs).toEqual([]);
+  });
+});
+
+describe('text saved into charts stays English', () => {
+  afterEach(() => i18n.changeLanguage('en'));
+
+  it('grid comments and custom anesthesia defaults ignore the UI language', async () => {
+    const teeth = [
+      { tooth: 'C', triadan: 104, mobility: '2', pocket: '5' },
+      { tooth: 'C', triadan: 204, mobility: '2', calculus: '1' },
+    ] as ToothData[];
+    const en = gridCommentTexts(teeth, {});
+    const blockEn = blocksForForm([{ id: 'b1', label: '' }], undefined)[0].label;
+    const fieldEn = fieldsForForm([{ id: 'f1', label: '', type: 'text' }], undefined)[0].value.label;
+    await i18n.changeLanguage('fr');
+    expect(gridCommentTexts(teeth, {})).toEqual(en);
+    expect(en.wholeMouth).toBe('Whole mouth — Mobility 2');
+    expect(en.perTooth.get(104)).toBe('Pocket 5');
+    expect(blocksForForm([{ id: 'b1', label: '' }], undefined)[0].label).toBe(blockEn);
+    expect(blockEn).toBe('Custom block');
+    expect(fieldsForForm([{ id: 'f1', label: '', type: 'text' }], undefined)[0].value.label).toBe(fieldEn);
+    expect(fieldEn).toBe('Custom field');
   });
 });

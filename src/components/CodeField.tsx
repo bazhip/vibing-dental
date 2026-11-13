@@ -1,5 +1,5 @@
 import React from 'react';
-import { codeDefinition, DENTAL_CODES, DentalCode, searchCodes } from '../constants/dentalCodes';
+import { codeDefinition, codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
 
 /**
  * Drop-in replacement for <input> / <textarea> that pops a small suggestion
@@ -11,8 +11,7 @@ import { codeDefinition, DENTAL_CODES, DentalCode, searchCodes } from '../consta
  *   - it must be entirely uppercase letters, digits, `/`, or `*`,
  *   - it must start with a letter (so just `4` or `/X` doesn't trigger),
  *   - and it must match the prefix of at least one known code.
- * Suggestions come from searchCodes: codes with that prefix first, then
- * codes whose definition (active language or English) contains it.
+ * Definitions are shown in the active language (codeDefinition).
  */
 
 type CommonProps =
@@ -25,7 +24,6 @@ type CodeFieldProps = {
 } & Omit<CommonProps, 'value' | 'onChange'>;
 
 const TRIGGER_RE = /[A-Z][A-Z0-9/*]*$/;
-const MAX_SUGGESTIONS = 8;
 
 export const CodeField: React.FC<CodeFieldProps> = ({
   value,
@@ -53,12 +51,11 @@ export const CodeField: React.FC<CodeFieldProps> = ({
       setOpen(false);
       return;
     }
-    const prefix = m[0];
-    if (!DENTAL_CODES.some((c) => c.code.startsWith(prefix))) {
+    const next = codesMatchingPrefix(m[0]);
+    if (next.length === 0) {
       setOpen(false);
       return;
     }
-    const next = searchCodes(prefix).slice(0, MAX_SUGGESTIONS);
     setSuggestions(next);
     setHighlight(0);
     setOpen(true);
