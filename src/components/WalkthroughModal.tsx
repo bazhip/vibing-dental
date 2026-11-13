@@ -79,7 +79,7 @@ function buildSteps(aiEnabled?: boolean): Step[] {
       target: '[data-tour="library"]',
       placement: 'bottom',
       title: 'My charts',
-      body: 'Reopen a patient’s past visits (read-only until you Edit), switch visits by date, start a new patient, or load a chart PDF.',
+      body: 'Open any patient’s charts (saved visits open read-only until you Edit), or — for the patient on screen — start a new visit or see its version history. New patient, beside it, starts a blank chart.',
     },
   ];
   if (aiEnabled) {

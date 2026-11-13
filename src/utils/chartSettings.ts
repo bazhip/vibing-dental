@@ -1,4 +1,5 @@
 import { DentalField } from '../types';
+import { AppLanguage, isAppLanguage } from '../i18n/config';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 
 /**
@@ -70,6 +71,8 @@ export interface ChartPrefs {
   customBlocks: CustomBlockDef[];
   /** The person's own anesthesia fields (text, number, yes/no, pick-list). */
   customFields: CustomFieldDef[];
+  /** The person's chosen language. null = follow the browser. */
+  language: AppLanguage | null;
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -88,6 +91,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   whatsNewSeen: '',
   customBlocks: [],
   customFields: [],
+  language: null,
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -125,5 +129,6 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     whatsNewSeen: typeof r.whatsNewSeen === 'string' ? r.whatsNewSeen.slice(0, 40) : fallback.whatsNewSeen,
     customBlocks: Array.isArray(r.customBlocks) ? normalizeBlockDefs(r.customBlocks) : fallback.customBlocks,
     customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
+    language: r.language === null ? null : isAppLanguage(r.language) ? r.language : fallback.language,
   };
 }

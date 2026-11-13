@@ -1,0 +1,98 @@
+{
+  "abnormalityNoted": "alteração observada",
+  "after": "Depois",
+  "alreadyMissingLine": "Ausentes antes desta consulta: {{list}}.",
+  "before": "Antes",
+  "defaultTitle": "Relatório da consulta odontológica",
+  "examAreas": {
+    "buccal": "Mucosa oral",
+    "extraoral": "Extraoral / face",
+    "lymph": "Linfonodos",
+    "palate": "Palato",
+    "pharynx": "Faringe / tonsilas",
+    "tongue": "Língua"
+  },
+  "extractionsLead": "Estes dentes não podiam ser salvos e foram extraídos para que não causem mais dor ou infecção:",
+  "fieldPhrases": {
+    "calculus": "acúmulo de tártaro (grau {{value}})",
+    "furcation": "perda óssea entre as raízes (grau {{value}})",
+    "gingivitis": "inflamação da gengiva (grau {{value}})",
+    "hyperplasia": "crescimento excessivo da gengiva ({{value}})",
+    "mobility": "dente mole (mobilidade {{value}})",
+    "pdstate": "doença periodontal, estágio {{value}}",
+    "pocket": "bolsa gengival aprofundada ({{value}} mm)",
+    "recession": "retração gengival ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "acúmulo de tártaro",
+    "furcation": "perda óssea entre as raízes",
+    "gingivitis": "inflamação da gengiva",
+    "hyperplasia": "crescimento excessivo da gengiva",
+    "mobility": "dente mole",
+    "pdstate": "doença periodontal",
+    "pocket": "bolsa gengival aprofundada",
+    "recession": "retração gengival"
+  },
+  "headings": {
+    "alreadyMissing": "Ausentes antes desta consulta",
+    "diagram_named": "A boca de {{pet}}",
+    "diagram_unnamed": "A boca do seu animal",
+    "examNotes": "Outras observações do exame",
+    "extractions": "Dentes extraídos nesta consulta",
+    "findings": "O que encontramos",
+    "homecare_named": "Cuidando dos dentes de {{pet}} em casa",
+    "homecare_unnamed": "Cuidando dos dentes do seu animal em casa",
+    "photos": "Antes e depois",
+    "recheck": "Retorno recomendado",
+    "teamNote": "Uma mensagem da sua equipe veterinária"
+  },
+  "homecareTips": {
+    "brushing": "Escovar os dentes diariamente com um creme dental próprio para animais é a medida mais eficaz que você pode tomar.",
+    "products": "Rações dentais, petiscos mastigáveis e aditivos para a água com o selo VOHC ajudam entre as escovações.",
+    "warningSigns": "Fique atento ao mau hálito, à salivação excessiva, à comida caindo da boca ou se ele coçar a boca com a pata — ligue para nós se notar algo."
+  },
+  "intro": "{{pet}} passou por uma avaliação e limpeza dentária profissional sob anestesia. Este relatório explica o que encontramos em linguagem simples — o prontuário clínico completo, com as medições, está arquivado e disponível a qualquer momento.",
+  "legendFilled": "preenchido = ausente antes desta consulta",
+  "legendNumbers": "Os números correspondem aos achados abaixo",
+  "legendRemoved": "✕ vermelho = extraído hoje",
+  "noProblems": "Nenhum problema dentário foi registrado no prontuário nesta consulta — ótima notícia!",
+  "ourPractice": "nossa clínica",
+  "ownerLabel": "Tutor",
+  "patientLabel": "Paciente",
+  "preparedBy": {
+    "byTeam": "Preparado por sua equipe veterinária.",
+    "byTeamAtPractice": "Preparado por sua equipe veterinária, {{practice}}.",
+    "doctor": "Preparado por {{doctor}}.",
+    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}."
+  },
+  "removedToday": "extraído hoje",
+  "species": {
+    "canine": "Cão",
+    "canine-deciduous": "Filhote de cão",
+    "feline": "Gato",
+    "feline-deciduous": "Filhote de gato"
+  },
+  "tooth": {
+    "deciduous": "de leite",
+    "kinds": {
+      "canine": "canino",
+      "incisor": "incisivo",
+      "molar": "molar",
+      "premolar": "pré-molar"
+    },
+    "ordinals": {
+      "first": "primeiro",
+      "fourth": "quarto",
+      "second": "segundo",
+      "third": "terceiro"
+    },
+    "sides": {
+      "lowerLeft": "inferior esquerdo",
+      "lowerRight": "inferior direito",
+      "upperLeft": "superior esquerdo",
+      "upperRight": "superior direito"
+    }
+  },
+  "yourPet": "seu animal",
+  "yourTeam": "sua equipe veterinária"
+}

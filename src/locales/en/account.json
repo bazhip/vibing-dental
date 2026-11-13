@@ -1,0 +1,91 @@
+{
+  "title": "Account settings",
+  "doctor": {
+    "heading": "Doctor name",
+    "blurb": "Printed under the logo on every chart you create.",
+    "placeholder": "e.g. Dr. Jane Smith, DVM, DAVDC",
+    "save": "Save doctor name",
+    "saving": "Saving…",
+    "saved": "Doctor name saved.",
+    "saveFailed": "Could not save the doctor name."
+  },
+  "language": {
+    "heading": "Language"
+  },
+  "email": {
+    "heading": "Email",
+    "label": "Sign-in email",
+    "change": "Change email",
+    "sending": "Sending…",
+    "invalid": "Enter a valid email address.",
+    "sent": "Confirmation emails sent.",
+    "changeFailed": "Could not change the email.",
+    "pending": "Check your inbox — confirm the change from both {{current}} and {{requested}} to finish. Until then, keep signing in with {{current}}."
+  },
+  "password": {
+    "heading": "Password",
+    "newLabel": "New password",
+    "confirmLabel": "Confirm new password",
+    "placeholder": "At least {{min}} characters",
+    "hideAll": "Hide passwords",
+    "showAll": "Show passwords",
+    "hide": "Hide",
+    "show": "Show",
+    "hintShort": "At least {{min}} characters · {{current}}/{{min}}",
+    "hintMismatch": "The two passwords don’t match yet.",
+    "update": "Update password",
+    "updating": "Updating…",
+    "tooShort": "Use at least {{min}} characters.",
+    "mismatch": "The two passwords don’t match.",
+    "updated": "Password updated.",
+    "updateFailed": "Could not update the password."
+  },
+  "delete": {
+    "heading": "Delete account",
+    "blurb": "Permanently deletes your account, your private charts and their images. Charts you shared with a practice stay with the practice.",
+    "button": "Delete account…"
+  },
+  "done": "Done",
+  "unsaved": {
+    "title": "Discard unsaved changes?",
+    "message_one": "Your {{list}} change hasn’t been saved.",
+    "message_other": "Your {{list}} changes haven’t been saved.",
+    "confirm": "Discard",
+    "cancel": "Keep editing",
+    "field": {
+      "doctor": "doctor name",
+      "email": "email",
+      "password": "password"
+    }
+  },
+  "deletion": {
+    "account": {
+      "confirmTitle": "Delete your account?",
+      "confirmMessage": "This permanently deletes your account, your private charts, and their photos and radiographs. Charts you shared with a practice stay with that practice. If you’re the only person in your practice, the practice and all its charts are deleted too, and any subscription is cancelled. This can’t be undone.",
+      "continue": "Continue",
+      "promptTitle": "Confirm account deletion",
+      "promptMessage": "Type your email ({{email}}) to permanently delete your account.",
+      "emailLabel": "Email",
+      "confirmButton": "Delete my account",
+      "mismatch": "Type your email exactly.",
+      "failed": "Could not delete your account.",
+      "done": "Your account has been deleted."
+    },
+    "practice": {
+      "confirmTitle": "Delete “{{name}}”?",
+      "confirmTitleUnnamed": "Delete this practice?",
+      "confirmMessage": "This permanently deletes the practice and every chart shared with it — including charts your team members created — along with their photos and radiographs. Any subscription is cancelled immediately. Team members keep their accounts and their private charts. This can’t be undone.",
+      "continue": "Continue",
+      "promptTitle": "Confirm practice deletion",
+      "promptMessage": "Type the practice name ({{name}}) to permanently delete it.",
+      "promptMessageUnnamed": "Type DELETE to permanently delete this practice.",
+      "nameLabel": "Practice name",
+      "confirmationLabel": "Confirmation",
+      "confirmButton": "Delete practice",
+      "mismatch": "Type the practice name exactly.",
+      "mismatchUnnamed": "Type DELETE.",
+      "failed": "Could not delete the practice.",
+      "done": "The practice has been deleted."
+    }
+  }
+}

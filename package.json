@@ -23,20 +23,25 @@
     "@testing-library/user-event": "^14.4.3",
     "@vercel/analytics": "^2.0.1",
     "dicom-parser": "^1.8.21",
+    "i18next": "^27.1.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",
     "react": "^19.2.7",
     "react-data-grid": "^7.0.0-beta.61",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-i18next": "^18.0.1"
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run i18n:check && npm run lint && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "ios:sync": "npm run build && npx cap sync ios",
-    "replay": "tsx scripts/replay-transcript.ts"
+    "replay": "tsx scripts/replay-transcript.ts",
+    "lint": "eslint src",
+    "i18n:check": "tsx scripts/i18n/check.ts",
+    "i18n:translate": "tsx scripts/i18n/translate.ts"
   },
   "devDependencies": {
     "@capacitor/assets": "^4.0.0",
@@ -45,9 +50,12 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.14.0",
+    "eslint-plugin-i18next": "^6.1.5",
     "jsdom": "^29.1.1",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
   }

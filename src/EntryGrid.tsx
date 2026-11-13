@@ -11,6 +11,7 @@ import {
 } from './components';
 import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
+import { ChartsMenu } from './components/ChartsMenu';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
@@ -22,6 +23,7 @@ import { ChartHistoryModal } from './components/ChartHistoryModal';
 import { WHATS_NEW, shouldShowWhatsNew } from './constants/whatsNew';
 import { OwnerReportCustomize } from './components/OwnerReportCustomize';
 import { useChartSettings } from './hooks/useChartSettings';
+import { useAppLanguage } from './i18n/useAppLanguage';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
 import { useCloudSync } from './hooks/useCloudSync';
@@ -130,6 +132,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
+  const language = useAppLanguage(prefs.language);
   const setPref = React.useCallback((patch: Partial<ChartPrefs>) => {
     chartSettings.update(patch).catch((err) => toast(`Couldn’t save that setting. ${friendlyError(err)}`, { kind: 'error' }));
   }, [chartSettings.update]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -204,7 +207,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Inline reason a save was blocked (e.g. missing patient name).
   const [saveHint, setSaveHint] = React.useState('');
   const readOnly = cloud.enabled && chart.openedExisting && !editable;
-  // Has the chart changed since the user chose Edit chart? (Offers Revert.)
+  // Has the chart changed since the user chose Edit chart? (Offers Undo changes.)
   const unlockSnapshotChanged = React.useMemo(() => {
     if (!editUnlocked || !chart.openedExisting) return false;
     try {
@@ -1101,9 +1104,30 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   ];
 
   // Editing a saved visit (unlocked): the topbar's action row turns
-  // amber and carries the way out — Revert (back to the version that was
+  // amber and carries the way out — Undo changes (back to the version that was
   // opened) and Done editing (save, then re-lock).
   const editingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && !readOnly;
+  // Viewing a saved visit (opens view-only so history isn't changed by
+  // accident): the topbar's action row carries the state and the way in
+  // — + New visit, History, Edit chart — instead of a separate banner.
+  const viewingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && readOnly;
+  const startNewVisitFromLatest = () => {
+    // Carry forward from the patient's LATEST visit — this also shows
+    // when viewing an older one.
+    const latest = visits[0]?.id ?? chart.cloudChartId;
+    startVisitFromChart(latest).catch((err) => {
+      toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
+    });
+  };
+  // Start a blank chart (asks only when something would be lost).
+  const startNewPatient = async () => {
+    if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return;
+    chart.resetChart();
+  };
+  const unlockForEditing = () => {
+    try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
+    setEditUnlocked(true);
+  };
   const revertUnlockedChanges = async () => {
     const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
     if (!raw) return;
@@ -1207,6 +1231,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                     </>
                   );
                 })()}
+                {/* Saved-visit state beside the visit it describes. */}
+                {(editingSavedVisit || viewingSavedVisit) && (
+                  <span
+                    className={`topbar-state-chip topbar-state-chip--${editingSavedVisit ? 'editing' : 'viewing'}`}
+                    title={editingSavedVisit
+                      ? 'Editing a saved visit — changes save automatically'
+                      : 'View only, so a saved visit isn’t changed by accident — choose Edit chart to make changes'}
+                  >
+                    {editingSavedVisit ? (
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M11.3 2.3l2.4 2.4-8 8L3 13l.3-2.7z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+                    ) : (
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="currentColor" strokeWidth="1.5" /><circle cx="8" cy="8" r="2" fill="currentColor" /></svg>
+                    )}
+                    {editingSavedVisit ? 'Editing' : 'View only'}
+                  </span>
+                )}
               </>
             ) : (
               <span className="entry-grid__patient-empty">
@@ -1216,13 +1256,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </div>
           </div>
         </div>
-        <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}`}>
-          {editingSavedVisit && (
-            <span className="topbar-editing" title="Editing a saved visit — changes save automatically">
-              <span className="topbar-label-long">Editing saved visit</span>
-              <span className="topbar-label-short">Editing</span>
-            </span>
-          )}
+        <div className="entry-grid__topbar-actions">
           {trial && (
             <>
               <button
@@ -1290,6 +1324,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               );
             }
             if (readOnly) {
+              // The viewing bar already says so.
+              if (viewingSavedVisit) return null;
               return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
             }
             if (cloud.dirty && !cloud.online) {
@@ -1318,7 +1354,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             if (cloud.lastSavedAt) {
               return (
                 <span className="save-status save-status--saved" title={`Saved to the cloud ${new Date(cloud.lastSavedAt).toLocaleString()}`}>
-                  Saved · {formatSavedAt(cloud.lastSavedAt)}
+                  <span className="save-status__word">Saved · </span>{formatSavedAt(cloud.lastSavedAt)}
                 </span>
               );
             }
@@ -1329,17 +1365,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             </span>
           ) : null}
           {cloud.enabled && (
-            <button
-              type="button"
-              className="chart-menu__trigger topbar-library-btn"
-              data-tour="library"
-              aria-label="My charts"
-              onClick={openLibrary}
-              aria-haspopup="dialog"
-            >
-              <span className="topbar-label-long">My charts</span>
-              <span className="topbar-label-short">Charts</span>
-            </button>
+            <ChartsMenu
+              onOpenLibrary={openLibrary}
+              thisPatient={chart.openedExisting && chart.cloudChartId ? {
+                name: chart.patientInfo.patientName,
+                onNewVisit: startNewVisitFromLatest,
+                onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
+              } : undefined}
+            />
           )}
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
               behind JWT-gated edge functions, so trial (no account) and
@@ -1379,16 +1412,38 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
+          {/* A fresh chart is always one tap away (people reopen the app
+              on an old visit) — except mid-edit, where Done comes first. */}
+          {cloud.enabled && !editingSavedVisit && (
+            <button
+              type="button"
+              className="chart-menu__trigger topbar-library-btn topbar-new-patient"
+              onClick={startNewPatient}
+              aria-label="New patient"
+              title="Start a blank chart for a new patient"
+            >
+              <svg className="topbar-plus" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+              <span className="topbar-label-long">New patient</span>
+              <span className="topbar-label-short">New</span>
+            </button>
+          )}
+          {viewingSavedVisit && (
+            <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
+              <span className="topbar-label-long">Edit chart</span>
+              <span className="topbar-label-short">Edit</span>
+            </button>
+          )}
           {editingSavedVisit && (
             <>
               {unlockSnapshotChanged && (
                 <button
                   type="button"
-                  className="diagram-view__action topbar-editing__revert"
+                  className="topbar-editing__undo"
+                  aria-label="Undo changes"
                   onClick={revertUnlockedChanges}
                   title="Put this chart back the way it was when you chose Edit chart"
                 >
-                  Revert
+                  <span aria-hidden="true">↺</span> <span className="topbar-icon-label">Undo changes</span>
                 </button>
               )}
               <button
@@ -1396,7 +1451,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 className="entry-grid__button entry-grid__button--topbar"
                 onClick={doneEditing}
               >
-                Done editing
+                <span className="topbar-label-long">Done editing</span>
+                <span className="topbar-label-short">Done</span>
               </button>
             </>
           )}
@@ -1419,53 +1475,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       )}
 
-      {/* Saved-visit banner: opens view-only so history isn't changed by
-          accident; Edit chart unlocks (changes then autosave), Revert
-          restores the version that was opened, Done editing re-locks. */}
-      {cloud.enabled && chart.openedExisting && !currentVisit && readOnly && (
-        <div className="chart-lock-banner" role="status">
-          {readOnly ? (
-            <>
-              <span className="chart-lock-banner__text">
-                <strong>Viewing a saved visit</strong>{chart.patientInfo.date ? ` from ${chart.patientInfo.date}` : ''} — it’s view-only so it isn’t changed by accident.
-              </span>
-              <button
-                type="button"
-                className="diagram-view__action"
-                onClick={() => {
-                  // Carry forward from the patient's LATEST visit — this
-                  // banner also shows when viewing an older one.
-                  const latest = visits[0]?.id ?? chart.cloudChartId;
-                  startVisitFromChart(latest).catch((err) => {
-                    toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
-                  });
-                }}
-                title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
-              >
-                + New visit
-              </button>
-              <button
-                type="button"
-                className="diagram-view__action"
-                onClick={() => setHistoryFor({ id: chart.cloudChartId })}
-                title="Every saved version of this chart — who saved it and when"
-              >
-                History
-              </button>
-              <button
-                type="button"
-                className="entry-grid__button entry-grid__button--topbar"
-                onClick={() => {
-                  try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
-                  setEditUnlocked(true);
-                }}
-              >
-                Edit chart
-              </button>
-            </>
-          ) : null}
-        </div>
-      )}
       {reportCustomizeOpen && (
         <OwnerReportCustomize
           onClose={() => setReportCustomizeOpen(false)}
@@ -1541,11 +1550,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               chart.handlePatientInfoChange('recallDate', '');
             }
           }}
-          onNewPatient={async () => {
-            // Only ask when something would actually be lost.
-            if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return;
-            chart.resetChart();
-          }}
+          onNewPatient={startNewPatient}
           onLoadPdf={async (file) => {
             if (!(await cloud.confirmDiscardIfDirty('Import this PDF'))) return;
             await chart.loadFromPdf(file);
@@ -1649,6 +1654,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         open={accountOpen}
         onClose={() => setAccountOpen(false)}
         profile={profile}
+        language={language}
+        onLanguageChange={(lng) => setPref({ language: lng })}
       />
 
       {setup.need && (

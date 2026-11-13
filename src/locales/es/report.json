@@ -1,0 +1,98 @@
+{
+  "abnormalityNoted": "se observó una anomalía",
+  "after": "Después",
+  "alreadyMissingLine": "Ausentes antes de esta visita: {{list}}.",
+  "before": "Antes",
+  "defaultTitle": "Informe de la visita dental",
+  "examAreas": {
+    "buccal": "Mucosa bucal",
+    "extraoral": "Extraoral / facial",
+    "lymph": "Ganglios linfáticos",
+    "palate": "Paladar",
+    "pharynx": "Faringe / amígdalas",
+    "tongue": "Lengua"
+  },
+  "extractionsLead": "Estos dientes no se podían salvar y se extrajeron para que dejen de causar dolor o infección:",
+  "fieldPhrases": {
+    "calculus": "acumulación de sarro (grado {{value}})",
+    "furcation": "pérdida de hueso entre las raíces (grado {{value}})",
+    "gingivitis": "inflamación de las encías (grado {{value}})",
+    "hyperplasia": "crecimiento excesivo de las encías ({{value}})",
+    "mobility": "diente flojo (movilidad {{value}})",
+    "pdstate": "enfermedad periodontal, estadio {{value}}",
+    "pocket": "bolsa periodontal profunda ({{value}} mm)",
+    "recession": "retracción de las encías ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "acumulación de sarro",
+    "furcation": "pérdida de hueso entre las raíces",
+    "gingivitis": "inflamación de las encías",
+    "hyperplasia": "crecimiento excesivo de las encías",
+    "mobility": "diente flojo",
+    "pdstate": "enfermedad periodontal",
+    "pocket": "bolsa periodontal profunda",
+    "recession": "retracción de las encías"
+  },
+  "headings": {
+    "alreadyMissing": "Ausentes antes de esta visita",
+    "diagram_named": "La boca de {{pet}}",
+    "diagram_unnamed": "La boca de su mascota",
+    "examNotes": "Otras observaciones del examen",
+    "extractions": "Dientes extraídos durante esta visita",
+    "findings": "Lo que encontramos",
+    "homecare_named": "Cuidado dental de {{pet}} en casa",
+    "homecare_unnamed": "Cuidado dental de su mascota en casa",
+    "photos": "Antes y después",
+    "recheck": "Próxima revisión recomendada",
+    "teamNote": "Una nota de su equipo veterinario"
+  },
+  "homecareTips": {
+    "brushing": "Cepillarle los dientes a diario con una pasta dental apta para mascotas es lo más eficaz que puede hacer.",
+    "products": "Las dietas dentales, los premios masticables y los aditivos para el agua con el sello VOHC ayudan entre cepillados.",
+    "warningSigns": "Esté atento al mal aliento, la salivación excesiva, la comida que se le cae o si se toca la boca con la pata; llámenos si nota algo."
+  },
+  "intro": "{{pet}} recibió una evaluación y limpieza dental profesional bajo anestesia. Este informe explica lo que encontramos en un lenguaje sencillo; la ficha clínica completa con las mediciones está archivada y disponible en cualquier momento.",
+  "legendFilled": "relleno = ausente antes de esta visita",
+  "legendNumbers": "Los números corresponden a los hallazgos de abajo",
+  "legendRemoved": "✕ rojo = extraído hoy",
+  "noProblems": "No se registraron problemas dentales en la ficha de esta visita: ¡excelentes noticias!",
+  "ourPractice": "nuestra clínica",
+  "ownerLabel": "Propietario",
+  "patientLabel": "Paciente",
+  "preparedBy": {
+    "byTeam": "Preparado por su equipo veterinario.",
+    "byTeamAtPractice": "Preparado por su equipo veterinario, {{practice}}.",
+    "doctor": "Preparado por {{doctor}}.",
+    "doctorAtPractice": "Preparado por {{doctor}}, {{practice}}."
+  },
+  "removedToday": "extraído hoy",
+  "species": {
+    "canine": "Perro",
+    "canine-deciduous": "Cachorro",
+    "feline": "Gato",
+    "feline-deciduous": "Gatito"
+  },
+  "tooth": {
+    "deciduous": "de leche",
+    "kinds": {
+      "canine": "canino",
+      "incisor": "incisivo",
+      "molar": "molar",
+      "premolar": "premolar"
+    },
+    "ordinals": {
+      "first": "primer",
+      "fourth": "cuarto",
+      "second": "segundo",
+      "third": "tercer"
+    },
+    "sides": {
+      "lowerLeft": "inferior izquierdo",
+      "lowerRight": "inferior derecho",
+      "upperLeft": "superior izquierdo",
+      "upperRight": "superior derecho"
+    }
+  },
+  "yourPet": "su mascota",
+  "yourTeam": "su equipo veterinario"
+}

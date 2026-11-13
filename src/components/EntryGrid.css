@@ -992,7 +992,10 @@
   z-index: 10;
   background: var(--ios-grid-header-bg, var(--primary));
   border-right: 1px solid var(--ios-grid-header-hairline, rgba(255, 255, 255, 0.16));
-  padding: 0.8rem 0.5rem;
+  /* Titles centered vertically in the fixed-height header row. */
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
 }
 
 /* The last column stretches to the container edge (DentalGrid hands it
@@ -1166,11 +1169,9 @@
   background-color: var(--ios-grid-hover, #f0f4f8);
 }
 
-/* Label columns (Tooth + Triadan — colindex 2/3 now that the Missing
-   toggle occupies column 1). Scoped to .rdg-row so the sticky header
-   cells keep their own background. */
-.dental-grid .rdg-row .rdg-cell[aria-colindex="2"],
-.dental-grid .rdg-row .rdg-cell[aria-colindex="3"] {
+/* The Tooth label column ("101 – I1", column 2 after Missing). Scoped to
+   .rdg-row so the sticky header cells keep their own background. */
+.dental-grid .rdg-row .rdg-cell[aria-colindex="2"] {
   background-color: var(--surface-sunken);
   font-size: 0.85rem;
   font-weight: 600;
@@ -1192,13 +1193,6 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  cursor: pointer;
-}
-
-.dental-grid__missing-check {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--danger);
   cursor: pointer;
 }
 
@@ -1234,7 +1228,7 @@
   }
   .dental-grid .rdg-header-row .rdg-cell {
     top: 0 !important;
-    padding: 0.7rem 0.4rem;
+    padding: 0 0.4rem;
     letter-spacing: 0.03em;
   }
   /* Missing · Tooth · Triadan pinned on the left. Pinned header cells
@@ -1243,8 +1237,7 @@
   .dental-grid .dental-grid__pin { position: sticky; z-index: 2; background-color: inherit; }
   .dental-grid .rdg-row { background-color: var(--rdg-background-color, #fff); }
   .dental-grid .dental-grid__pin--0 { left: 0; }
-  .dental-grid .dental-grid__pin--1 { left: var(--pin-1); }
-  .dental-grid .dental-grid__pin--2 { left: var(--pin-2); box-shadow: 2px 0 4px -2px var(--ios-shadow, rgba(15, 23, 42, 0.18)); }
+  .dental-grid .dental-grid__pin--1 { left: var(--pin-1); box-shadow: 2px 0 4px -2px var(--ios-shadow, rgba(15, 23, 42, 0.18)); }
   .dental-grid .rdg-header-row .dental-grid__pin { z-index: 12; background: var(--ios-grid-header-bg, var(--primary)); }
   .dental-grid .rdg-row .dental-grid__pin { padding-left: 0.3rem; padding-right: 0.3rem; }
   .dental-grid .rdg-row .dental-grid__pin--0 { padding: 0; }
@@ -3899,26 +3892,6 @@ button.save-status--manual:hover {
 .tooth-chart__score .score-chips { flex-wrap: nowrap; }
 .tooth-chart__score .score-chips__chip { flex: 1 1 0; min-width: 0; }
 
-/* Editing a saved visit: the topbar's action row turns amber and holds
-   the way out (Revert / Done editing) — replaces the separate banner
-   that used to float over the chart. */
-.entry-grid__topbar-actions--editing {
-  padding: 0.3rem 0.35rem 0.3rem 0.75rem;
-  border: 1px solid var(--ios-warning-border, #f6c343);
-  border-radius: 12px;
-  background: var(--ios-warning-fill, #fef7e3);
-}
-.topbar-editing {
-  margin-right: auto;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--ios-warning-label, #7a4a12);
-  white-space: nowrap;
-}
-.topbar-editing::before { content: '✎ '; font-weight: 400; }
-.topbar-editing__revert { white-space: nowrap; }
-/* On its own row the amber bar spans the width, label left, buttons right. */
-.entry-grid__topbar-actions--editing { flex-grow: 1; }
 
 /* =============================================================================
  * TOUCH GUIDELINES (Apple HIG / Material) — phones and tablets
@@ -4024,3 +3997,155 @@ a, button, input, select, textarea, label, summary, [role='button'] {
   white-space: nowrap;
   overflow: hidden;
 }
+
+/* Missing: a red ✕ badge for the title, centered over the checkboxes. */
+.dental-grid .rdg-header-row .dental-grid__head--missing,
+.dental-grid__float-cell.dental-grid__head--missing {
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: center;
+  text-align: center;
+}
+.dental-grid__missing-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ios-cell, #fff);
+  color: var(--ios-danger, #dc2626);
+  vertical-align: middle;
+}
+/* A ticked Missing box shows the same red ✕ (not a tick). */
+.dental-grid__missing-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid var(--ios-separator-opaque, #94a3b8);
+  border-radius: 5px;
+  background: var(--ios-cell, #fff) center / 14px 14px no-repeat;
+  cursor: pointer;
+}
+.dental-grid__missing-check:checked {
+  border-color: var(--ios-danger-solid, #dc2626);
+  background-color: var(--ios-danger-solid, #dc2626);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 3.5l9 9m0-9l-9 9' stroke='white' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.dental-grid__missing-check:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 2px; }
+.dental-grid__missing-check:disabled { cursor: default; opacity: 0.6; }
+
+/* Tooth: "101 – I1" in one column; stacked title when narrow. */
+.dental-grid__tid { display: inline-flex; align-items: baseline; gap: 0.3rem; white-space: nowrap; }
+.dental-grid__tid-num { font-weight: 700; font-variant-numeric: tabular-nums; }
+.dental-grid__tid-sep { color: var(--text-muted, #64748b); }
+.dental-grid__tid-name { font-weight: 600; color: var(--text-muted, #475569); }
+.dental-grid .rdg-header-row .dental-grid__head--tooth { padding-top: 0; padding-bottom: 0; }
+.dental-grid__head-stack { display: inline-flex; flex-direction: column; line-height: 1.15; }
+
+/* Undo changes (editing a saved visit): a real, clearly tappable action —
+   the muted grey secondary style read as disabled. */
+.topbar-editing__undo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--ios-warning-border, #d9a521);
+  border-radius: 8px;
+  background: var(--ios-cell, #fff);
+  color: var(--ios-warning-label, #7a4a12);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.topbar-editing__undo:hover { background: var(--ios-warning-fill, #fff3d1); border-color: var(--ios-warning-solid, #b7791f); }
+@media (pointer: coarse) { .topbar-editing__undo { min-height: 44px; } }
+
+
+/* Phones hide the date / visit switcher — and now its divider too (a
+   stray "|" was left after the species). */
+@media (max-width: 640px) {
+  .entry-grid__patient-sep:has(+ .entry-grid__visit-switch) { display: none; }
+}
+@media (max-width: 600px) {
+  .entry-grid__patient-sep:has(+ .entry-grid__patient-date) { display: none; }
+}
+
+
+
+/* Icons that stand in for button labels on phones (hidden elsewhere). */
+.topbar-icon { display: none; flex: none; }
+
+/* Saved-visit state, beside the visit it describes (every screen size):
+   amber "Editing" / slate "View only". */
+.topbar-state-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.topbar-state-chip--editing { background: var(--ios-warning-fill, #fef7e3); border: 1px solid var(--ios-warning-border, #f6c343); color: var(--ios-warning-label, #7a4a12); }
+.topbar-state-chip--viewing { background: var(--surface-sunken, #eef2f6); border: 1px solid var(--border-strong, #cbd5e1); color: var(--text-muted, #475569); }
+
+/* My charts ▾ and + New patient. */
+.charts-menu__caret { margin-left: 0.35rem; flex: none; opacity: 0.7; }
+.chart-menu--open .charts-menu__caret { transform: rotate(180deg); }
+.topbar-new-patient { display: inline-flex; align-items: center; gap: 0.35rem; }
+.topbar-plus { flex: none; }
+
+/* =============================================================================
+ * PHONE HEADER — compact and always tidy:
+ *  row 1  patient … state chip (Editing / View only)
+ *  row 2  one row of buttons; Dictate, Settings and Undo become 44px icon
+ *         buttons (accessible names kept); New patient / Edit / Done short.
+ * The section selector pins right under it so it's always reachable.
+ * ========================================================================== */
+@media (max-width: 600px) {
+  /* The state chip rides the right end of the patient row. */
+  .topbar-state-chip { margin-left: auto; }
+
+  .entry-grid__topbar-actions { gap: 0.35rem; }
+  .topbar-icon { display: inline-block; }
+  .chart-menu__trigger-label,
+  .topbar-icon-label,
+  .entry-grid__topbar .voice-input__label {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .save-status__word { display: none; }
+  .chart-menu__trigger,
+  .entry-grid__topbar .voice-input,
+  .topbar-editing__undo {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0 0.65rem;
+  }
+
+  /* Section selector: pinned under the header, on the page background so
+     content scrolling beneath it doesn't show through the gaps. */
+  .entry-grid-container { --section-menu-h: 3.4rem; }
+  .mobile-section-menu {
+    position: sticky;
+    top: var(--topbar-height, 0px);
+    padding: 0.35rem 0;
+    margin: -0.35rem 0 0.15rem;
+    background: var(--bg-page, #eef1f3);
+  }
+  /* Other things that pin under the header sit below the selector. */
+  .diagram-view__toolbar { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
+  .chart-lock-banner { top: calc(var(--topbar-height, 0px) + var(--section-menu-h) + 0.25rem); }
+}
+
+/* Topbar menus (My charts, Settings): the action row is nowrap, so its
+   dropdowns must opt back into wrapping or long descriptions get cut. */
+.entry-grid__topbar .chart-menu__panel { white-space: normal; }

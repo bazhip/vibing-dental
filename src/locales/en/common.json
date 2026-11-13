@@ -1,0 +1,17 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "duplicate": "Duplicate",
+    "edit": "Edit",
+    "save": "Save"
+  },
+  "errors": {
+    "network": "Can’t reach ToothOps — check your connection and try again.",
+    "notFound": "That chart couldn’t be found — it may have been deleted.",
+    "permission": "You don’t have access to that.",
+    "rateLimit": "Too many attempts. Wait a minute and try again.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

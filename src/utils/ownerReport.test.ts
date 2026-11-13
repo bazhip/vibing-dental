@@ -8,6 +8,18 @@ import { DEFAULT_TEMPLATE, defaultTemplate, normalizeConfig } from './ownerRepor
 import { buildOwnerReportPdfBytes, pdfSafe } from './ownerReportPdf';
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 import { getInitialToothData } from '../constants';
+import { REPORT_LOCALES, reportStrings } from './ownerReportI18n';
+
+const REPORT_CATALOGS = import.meta.glob('../locales/*/report.json', {
+  eager: true,
+  import: 'default',
+}) as Record<string, unknown>;
+
+function catalogStrings(node: unknown): string[] {
+  if (typeof node === 'string') return [node];
+  if (node && typeof node === 'object') return Object.values(node).flatMap(catalogStrings);
+  return [];
+}
 
 function baseSnapshot(): ChartSnapshot {
   return {
@@ -264,5 +276,54 @@ describe('templates', () => {
     );
     expect(de.byteLength).toBeGreaterThan(1000);
     expect(pdfSafe('Hi 🐱 ✕ – “ok”')).toBe('Hi  X – “ok”');
+  });
+});
+
+describe('report languages', () => {
+  const withFindings = () => {
+    const snapshot = baseSnapshot();
+    snapshot.toothData = snapshot.toothData.map((t) =>
+      t.triadan === 104 ? { ...t, mobility: 'M1', pocket: '6', calculus: '2' } : { ...t }
+    );
+    snapshot.preMarks = { 103: 'missing' };
+    snapshot.postMarks = { 108: 'extracted' };
+    return snapshot;
+  };
+
+  test('Italian tooth names and report strings', () => {
+    expect(toothLayName(309, true, 'it')).toBe('Primo molare inferiore sinistro (309)');
+    expect(toothLayName(104, false, 'it')).toBe('Canino superiore destro');
+    expect(toothLayName(504, false, 'it')).toBe('Canino superiore destro da latte');
+    expect(reportStrings('it').defaultTitle).toBe('Referto della visita odontoiatrica');
+    expect(reportStrings('it').headings.diagram('Biscuit')).toBe('La bocca di Biscuit');
+    expect(reportStrings('it').headings.diagram('')).toBe('La bocca del suo animale');
+    expect(reportStrings('it').intro('')).toMatch(/^Il suo animale ha ricevuto/);
+    expect(reportStrings('it').fieldPhrases.pocket('6')).toBe('tasca gengivale profonda (6 mm)');
+    expect(reportStrings('it').preparedBy('', '')).toBe('Redatto dal suo team veterinario.');
+    expect(reportStrings('it').preparedBy('', 'Bay Vets')).toBe('Redatto dal suo team veterinario, Bay Vets.');
+    expect(reportStrings('it').preparedBy('Dr. Lee', 'Bay Vets')).toBe('Redatto da Dr. Lee, Bay Vets.');
+  });
+
+  test('every report locale renders a PDF', async () => {
+    const branding = { practiceName: 'Bay Vets', doctorName: 'Dr. Lee', logoUrl: '' };
+    for (const lng of REPORT_LOCALES) {
+      const model = buildOwnerReportModel(withFindings(), {
+        template: { ...defaultTemplate(), language: lng, title: '', dateFormat: 'long' },
+      });
+      const bytes = await buildOwnerReportPdfBytes(model, branding, []);
+      expect(bytes.byteLength, lng).toBeGreaterThan(1000);
+    }
+  });
+
+  test('report strings are WinAnsi-safe except the legend ✕', () => {
+    for (const lng of REPORT_LOCALES) {
+      const catalog = REPORT_CATALOGS[`../locales/${lng}/report.json`];
+      expect(catalog, lng).toBeDefined();
+      const strings = catalogStrings(catalog);
+      expect(strings.length, lng).toBeGreaterThan(50);
+      for (const s of strings) {
+        expect(pdfSafe(s) === s || s.includes('✕'), `${lng}: ${s}`).toBe(true);
+      }
+    }
   });
 });

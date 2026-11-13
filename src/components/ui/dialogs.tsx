@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import i18n from '../../i18n';
 import './dialogs.css';
 
 /**
@@ -98,13 +99,13 @@ export function toastWhenReady(message: string, opts: ToastOptions = {}): void {
 }
 
 /** Turn an unknown error into a sentence a user can act on. */
-export function friendlyError(err: unknown, fallback = 'Something went wrong. Please try again.'): string {
+export function friendlyError(err: unknown, fallback = i18n.t('errors.generic')): string {
   const msg = err instanceof Error ? err.message : typeof err === 'string' ? err : '';
   if (!msg) return fallback;
-  if (/failed to fetch|network|load failed/i.test(msg)) return 'Can’t reach ToothOps — check your connection and try again.';
-  if (/JSON object requested|multiple \(or no\) rows|PGRST116/i.test(msg)) return 'That chart couldn’t be found — it may have been deleted.';
-  if (/permission denied|row-level security|42501/i.test(msg)) return 'You don’t have access to that.';
-  if (/rate limit|too many/i.test(msg)) return 'Too many attempts. Wait a minute and try again.';
+  if (/failed to fetch|network|load failed/i.test(msg)) return i18n.t('errors.network');
+  if (/JSON object requested|multiple \(or no\) rows|PGRST116/i.test(msg)) return i18n.t('errors.notFound');
+  if (/permission denied|row-level security|42501/i.test(msg)) return i18n.t('errors.permission');
+  if (/rate limit|too many/i.test(msg)) return i18n.t('errors.rateLimit');
   return msg;
 }
 

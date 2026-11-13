@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
@@ -6,6 +6,13 @@ import React from 'react';
 const auth = vi.hoisted(() => ({
   getUser: vi.fn(async () => ({ data: { user: { email: 'me@vet.com' } } })),
   updateUser: vi.fn(async () => ({ error: null as null | Error })),
+}));
+const langFlag = vi.hoisted(() => ({ on: false }));
+vi.mock('../i18n/config', async (orig) => ({
+  ...(await orig<typeof import('../i18n/config')>()),
+  get LANGUAGE_SWITCHING_ENABLED() {
+    return langFlag.on;
+  },
 }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: true }));
 
@@ -19,10 +26,10 @@ const profile = {
   update: vi.fn().mockResolvedValue(undefined),
 } as unknown as UseProfileReturn;
 
-const renderModal = (onClose = vi.fn()) => {
+const renderModal = (onClose = vi.fn(), extra: Partial<React.ComponentProps<typeof AccountModal>> = {}) => {
   render(
     <>
-      <AccountModal open onClose={onClose} profile={profile} />
+      <AccountModal open onClose={onClose} profile={profile} {...extra} />
       <DialogHost />
     </>
   );
@@ -31,6 +38,7 @@ const renderModal = (onClose = vi.fn()) => {
 
 beforeEach(() => {
   auth.updateUser.mockClear();
+  langFlag.on = false;
 });
 
 describe('AccountModal', () => {
@@ -99,5 +107,23 @@ describe('AccountModal', () => {
     await waitFor(() => expect(screen.getByLabelText('Sign-in email')).toHaveValue('me@vet.com'));
     await user.click(screen.getByRole('button', { name: 'Done' }));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('hides the language select while switching is disabled', () => {
+    renderModal();
+    expect(screen.queryByRole('combobox', { name: /language/i })).not.toBeInTheDocument();
+  });
+
+  it('offers the five languages by their own names and reports a choice', async () => {
+    langFlag.on = true;
+    const user = userEvent.setup();
+    const onLanguageChange = vi.fn();
+    renderModal(vi.fn(), { language: 'en', onLanguageChange });
+    const select = screen.getByRole('combobox', { name: /language/i });
+    expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual([
+      'English', 'Français', 'Deutsch', 'Italiano', 'Español',
+    ]);
+    await user.selectOptions(select, 'Français');
+    expect(onLanguageChange).toHaveBeenCalledWith('fr');
   });
 });
