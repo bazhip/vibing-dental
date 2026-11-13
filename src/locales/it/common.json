@@ -23,6 +23,41 @@
     "moreActions": "Altre azioni",
     "ok": "OK",
     "copy": "Copia",
-    "moreActionsFor": "Altre azioni per {{title}}"
+    "moreActionsFor": "Altre azioni per {{title}}",
+    "tabs": {
+      "chart": "Odontogramma",
+      "patients": "Pazienti",
+      "rechecks": "Controlli",
+      "settings": "Impostazioni"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Nascondi barra laterale",
+      "showSidebar": "Mostra barra laterale",
+      "chartSections": "Sezioni dell’odontogramma"
+    },
+    "patients": {
+      "signIn": "Acceda per vedere i Suoi odontogrammi salvati.",
+      "loadFailed": "Impossibile caricare i Suoi odontogrammi.",
+      "empty": "Nessun odontogramma salvato.",
+      "unnamed": "Paziente senza nome"
+    },
+    "rechecks": {
+      "empty": "Nessun controllo in scadenza."
+    },
+    "settings": {
+      "account": "Account",
+      "practice": "Impostazioni della clinica",
+      "chart": "Impostazioni dell’odontogramma",
+      "reminders": "Promemoria dei controlli",
+      "help": "Aiuto",
+      "gettingStarted": "Per iniziare",
+      "whatsNew": "Novità",
+      "feedback": "Invia un feedback",
+      "admin": "Pannello di amministrazione",
+      "signIn": "Accedi",
+      "createAccount": "Crea un account gratuito",
+      "signOutTitle": "Uscire da ToothOps?"
+    }
   }
 }

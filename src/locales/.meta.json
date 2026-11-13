@@ -540,6 +540,106 @@
       "hash": "565339bc4d33",
       "status": "machine"
     },
+    "common:ios.patients.empty": {
+      "hash": "0ff4e73b2967",
+      "status": "machine"
+    },
+    "common:ios.patients.loadFailed": {
+      "hash": "0b01074fa684",
+      "status": "machine"
+    },
+    "common:ios.patients.signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "common:ios.patients.unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "common:ios.rechecks.empty": {
+      "hash": "420ac586e683",
+      "status": "machine"
+    },
+    "common:ios.settings.account": {
+      "hash": "7e1b0d5641f2",
+      "status": "machine"
+    },
+    "common:ios.settings.admin": {
+      "hash": "638343fec7c0",
+      "status": "machine"
+    },
+    "common:ios.settings.chart": {
+      "hash": "dacea30cc5ef",
+      "status": "machine"
+    },
+    "common:ios.settings.createAccount": {
+      "hash": "db14ef13b269",
+      "status": "machine"
+    },
+    "common:ios.settings.feedback": {
+      "hash": "8235980b80ad",
+      "status": "machine"
+    },
+    "common:ios.settings.gettingStarted": {
+      "hash": "831d0f72d242",
+      "status": "machine"
+    },
+    "common:ios.settings.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "common:ios.settings.practice": {
+      "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "common:ios.settings.reminders": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "common:ios.settings.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "common:ios.settings.signOutTitle": {
+      "hash": "0c6ac5be6ebf",
+      "status": "machine"
+    },
+    "common:ios.settings.whatsNew": {
+      "hash": "37e6112e84a8",
+      "status": "machine"
+    },
+    "common:ios.shell.appName": {
+      "hash": "a4cb7d1f0451",
+      "status": "machine"
+    },
+    "common:ios.shell.chartSections": {
+      "hash": "3d6dc063a97a",
+      "status": "machine"
+    },
+    "common:ios.shell.hideSidebar": {
+      "hash": "d1db29ebc76d",
+      "status": "machine"
+    },
+    "common:ios.shell.showSidebar": {
+      "hash": "9e8197ce9e5f",
+      "status": "machine"
+    },
+    "common:ios.tabs.chart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "common:ios.tabs.patients": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "common:ios.tabs.rechecks": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "common:ios.tabs.settings": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -1380,6 +1480,106 @@
     },
     "common:ios.ok": {
       "hash": "565339bc4d33",
+      "status": "machine"
+    },
+    "common:ios.patients.empty": {
+      "hash": "0ff4e73b2967",
+      "status": "machine"
+    },
+    "common:ios.patients.loadFailed": {
+      "hash": "0b01074fa684",
+      "status": "machine"
+    },
+    "common:ios.patients.signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "common:ios.patients.unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "common:ios.rechecks.empty": {
+      "hash": "420ac586e683",
+      "status": "machine"
+    },
+    "common:ios.settings.account": {
+      "hash": "7e1b0d5641f2",
+      "status": "machine"
+    },
+    "common:ios.settings.admin": {
+      "hash": "638343fec7c0",
+      "status": "machine"
+    },
+    "common:ios.settings.chart": {
+      "hash": "dacea30cc5ef",
+      "status": "machine"
+    },
+    "common:ios.settings.createAccount": {
+      "hash": "db14ef13b269",
+      "status": "machine"
+    },
+    "common:ios.settings.feedback": {
+      "hash": "8235980b80ad",
+      "status": "machine"
+    },
+    "common:ios.settings.gettingStarted": {
+      "hash": "831d0f72d242",
+      "status": "machine"
+    },
+    "common:ios.settings.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "common:ios.settings.practice": {
+      "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "common:ios.settings.reminders": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "common:ios.settings.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "common:ios.settings.signOutTitle": {
+      "hash": "0c6ac5be6ebf",
+      "status": "machine"
+    },
+    "common:ios.settings.whatsNew": {
+      "hash": "37e6112e84a8",
+      "status": "machine"
+    },
+    "common:ios.shell.appName": {
+      "hash": "a4cb7d1f0451",
+      "status": "machine"
+    },
+    "common:ios.shell.chartSections": {
+      "hash": "3d6dc063a97a",
+      "status": "machine"
+    },
+    "common:ios.shell.hideSidebar": {
+      "hash": "d1db29ebc76d",
+      "status": "machine"
+    },
+    "common:ios.shell.showSidebar": {
+      "hash": "9e8197ce9e5f",
+      "status": "machine"
+    },
+    "common:ios.tabs.chart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "common:ios.tabs.patients": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "common:ios.tabs.rechecks": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "common:ios.tabs.settings": {
+      "hash": "74a883a037bc",
       "status": "machine"
     },
     "report:abnormalityNoted": {
@@ -2224,6 +2424,106 @@
       "hash": "565339bc4d33",
       "status": "machine"
     },
+    "common:ios.patients.empty": {
+      "hash": "0ff4e73b2967",
+      "status": "machine"
+    },
+    "common:ios.patients.loadFailed": {
+      "hash": "0b01074fa684",
+      "status": "machine"
+    },
+    "common:ios.patients.signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "common:ios.patients.unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "common:ios.rechecks.empty": {
+      "hash": "420ac586e683",
+      "status": "machine"
+    },
+    "common:ios.settings.account": {
+      "hash": "7e1b0d5641f2",
+      "status": "machine"
+    },
+    "common:ios.settings.admin": {
+      "hash": "638343fec7c0",
+      "status": "machine"
+    },
+    "common:ios.settings.chart": {
+      "hash": "dacea30cc5ef",
+      "status": "machine"
+    },
+    "common:ios.settings.createAccount": {
+      "hash": "db14ef13b269",
+      "status": "machine"
+    },
+    "common:ios.settings.feedback": {
+      "hash": "8235980b80ad",
+      "status": "machine"
+    },
+    "common:ios.settings.gettingStarted": {
+      "hash": "831d0f72d242",
+      "status": "machine"
+    },
+    "common:ios.settings.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "common:ios.settings.practice": {
+      "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "common:ios.settings.reminders": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "common:ios.settings.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "common:ios.settings.signOutTitle": {
+      "hash": "0c6ac5be6ebf",
+      "status": "machine"
+    },
+    "common:ios.settings.whatsNew": {
+      "hash": "37e6112e84a8",
+      "status": "machine"
+    },
+    "common:ios.shell.appName": {
+      "hash": "a4cb7d1f0451",
+      "status": "machine"
+    },
+    "common:ios.shell.chartSections": {
+      "hash": "3d6dc063a97a",
+      "status": "machine"
+    },
+    "common:ios.shell.hideSidebar": {
+      "hash": "d1db29ebc76d",
+      "status": "machine"
+    },
+    "common:ios.shell.showSidebar": {
+      "hash": "9e8197ce9e5f",
+      "status": "machine"
+    },
+    "common:ios.tabs.chart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "common:ios.tabs.patients": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "common:ios.tabs.rechecks": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "common:ios.tabs.settings": {
+      "hash": "74a883a037bc",
+      "status": "machine"
+    },
     "report:abnormalityNoted": {
       "hash": "b1882b154e90",
       "status": "machine"
@@ -3064,6 +3364,106 @@
     },
     "common:ios.ok": {
       "hash": "565339bc4d33",
+      "status": "machine"
+    },
+    "common:ios.patients.empty": {
+      "hash": "0ff4e73b2967",
+      "status": "machine"
+    },
+    "common:ios.patients.loadFailed": {
+      "hash": "0b01074fa684",
+      "status": "machine"
+    },
+    "common:ios.patients.signIn": {
+      "hash": "ff7a1b322e73",
+      "status": "machine"
+    },
+    "common:ios.patients.unnamed": {
+      "hash": "115a96d09d75",
+      "status": "machine"
+    },
+    "common:ios.rechecks.empty": {
+      "hash": "420ac586e683",
+      "status": "machine"
+    },
+    "common:ios.settings.account": {
+      "hash": "7e1b0d5641f2",
+      "status": "machine"
+    },
+    "common:ios.settings.admin": {
+      "hash": "638343fec7c0",
+      "status": "machine"
+    },
+    "common:ios.settings.chart": {
+      "hash": "dacea30cc5ef",
+      "status": "machine"
+    },
+    "common:ios.settings.createAccount": {
+      "hash": "db14ef13b269",
+      "status": "machine"
+    },
+    "common:ios.settings.feedback": {
+      "hash": "8235980b80ad",
+      "status": "machine"
+    },
+    "common:ios.settings.gettingStarted": {
+      "hash": "831d0f72d242",
+      "status": "machine"
+    },
+    "common:ios.settings.help": {
+      "hash": "b79cac926e0b",
+      "status": "machine"
+    },
+    "common:ios.settings.practice": {
+      "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "common:ios.settings.reminders": {
+      "hash": "ccc4d8df14b1",
+      "status": "machine"
+    },
+    "common:ios.settings.signIn": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "common:ios.settings.signOutTitle": {
+      "hash": "0c6ac5be6ebf",
+      "status": "machine"
+    },
+    "common:ios.settings.whatsNew": {
+      "hash": "37e6112e84a8",
+      "status": "machine"
+    },
+    "common:ios.shell.appName": {
+      "hash": "a4cb7d1f0451",
+      "status": "machine"
+    },
+    "common:ios.shell.chartSections": {
+      "hash": "3d6dc063a97a",
+      "status": "machine"
+    },
+    "common:ios.shell.hideSidebar": {
+      "hash": "d1db29ebc76d",
+      "status": "machine"
+    },
+    "common:ios.shell.showSidebar": {
+      "hash": "9e8197ce9e5f",
+      "status": "machine"
+    },
+    "common:ios.tabs.chart": {
+      "hash": "3e5b90ae053f",
+      "status": "machine"
+    },
+    "common:ios.tabs.patients": {
+      "hash": "bdfd3f2381fc",
+      "status": "machine"
+    },
+    "common:ios.tabs.rechecks": {
+      "hash": "79ce75541048",
+      "status": "machine"
+    },
+    "common:ios.tabs.settings": {
+      "hash": "74a883a037bc",
       "status": "machine"
     },
     "report:abnormalityNoted": {

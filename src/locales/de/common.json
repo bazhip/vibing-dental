@@ -23,6 +23,41 @@
     "moreActions": "Weitere Aktionen",
     "ok": "OK",
     "copy": "Kopieren",
-    "moreActionsFor": "Weitere Aktionen für {{title}}"
+    "moreActionsFor": "Weitere Aktionen für {{title}}",
+    "tabs": {
+      "chart": "Zahnschema",
+      "patients": "Patienten",
+      "rechecks": "Kontrollen",
+      "settings": "Einstellungen"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Seitenleiste ausblenden",
+      "showSidebar": "Seitenleiste einblenden",
+      "chartSections": "Abschnitte des Zahnschemas"
+    },
+    "patients": {
+      "signIn": "Melden Sie sich an, um Ihre gespeicherten Zahnschemata zu sehen.",
+      "loadFailed": "Ihre Zahnschemata konnten nicht geladen werden.",
+      "empty": "Noch keine gespeicherten Zahnschemata.",
+      "unnamed": "Patient ohne Namen"
+    },
+    "rechecks": {
+      "empty": "Keine Kontrollen fällig."
+    },
+    "settings": {
+      "account": "Konto",
+      "practice": "Praxiseinstellungen",
+      "chart": "Zahnschema-Einstellungen",
+      "reminders": "Kontrollerinnerungen",
+      "help": "Hilfe",
+      "gettingStarted": "Erste Schritte",
+      "whatsNew": "Neuigkeiten",
+      "feedback": "Feedback senden",
+      "admin": "Adminbereich",
+      "signIn": "Anmelden",
+      "createAccount": "Kostenloses Konto erstellen",
+      "signOutTitle": "Von ToothOps abmelden?"
+    }
   }
 }

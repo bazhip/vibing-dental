@@ -894,3 +894,143 @@
   overflow: hidden;
   clip-path: inset(50%);
 }
+
+/* ---- App shell: tabs, iPad sidebar ------------------------------------- */
+:where(html.native-ios) .ios-appshell {
+  /* Room the floating tab bar takes at the bottom of every tab: capsule
+     (54pt tab + 8pt padding) + its bottom offset + a little air. */
+  --ios-tabbar-space: calc(62px + max(10px, calc(env(safe-area-inset-bottom, 0px) - 6px)) + 12px);
+  --ios-sidebar-width: 300px;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  background: var(--ios-bg-grouped);
+  color: var(--ios-label);
+}
+:where(html.native-ios) .ios-appshell__content {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+:where(html.native-ios) .ios-appshell__panel {
+  position: absolute;
+  inset: 0;
+}
+/* Hidden tabs stay laid out (visibility, not display:none) so WebKit keeps
+   each stack layer's scroll position. */
+:where(html.native-ios) .ios-appshell__panel[hidden] {
+  display: block;
+  visibility: hidden;
+}
+/* Content scrolls under the floating tab bar but can reach past it. */
+:where(html.native-ios) .ios-appshell--tabbar .ios-stack__layer {
+  padding-bottom: var(--ios-tabbar-space);
+}
+
+/* iPad sidebar: a floating glass column (iPadOS 26), inset from the edges. */
+:where(html.native-ios) .ios-appshell__sidebar {
+  flex: none;
+  width: var(--ios-sidebar-width);
+  margin: calc(8px + env(safe-area-inset-top, 0px)) 0 calc(8px + env(safe-area-inset-bottom, 0px)) calc(8px + env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px;
+  background-color: var(--ios-cell);
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 8px 32px var(--ios-shadow-soft);
+  overflow: hidden;
+  transition: margin-left 0.4s var(--ios-ease), opacity 0.3s;
+}
+:where(html.native-ios) .ios-appshell--sidebar-collapsed .ios-appshell__sidebar {
+  margin-left: calc(-1 * var(--ios-sidebar-width));
+  opacity: 0;
+}
+@media (prefers-contrast: more) {
+  :where(html.native-ios) .ios-appshell__sidebar { outline: 1px solid var(--ios-separator-opaque); outline-offset: -1px; }
+}
+:where(html.native-ios) .ios-appshell__sidebar-head {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 4px 10px;
+}
+:where(html.native-ios) .ios-appshell__sidebar-nav {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 10px 16px;
+}
+:where(html.native-ios) .ios-appshell__item,
+:where(html.native-ios) .ios-appshell__subitem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ios-label);
+  text-align: start;
+  cursor: pointer;
+}
+:where(html.native-ios) .ios-appshell__item {
+  gap: 12px;
+  padding: 8px 12px;
+  font: 400 var(--ios-text-body) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-appshell__item .ios-icon { flex: none; color: var(--ios-tint); }
+:where(html.native-ios) .ios-appshell__item-label { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+:where(html.native-ios) .ios-appshell__item--selected {
+  background: var(--ios-tint);
+  color: var(--ios-on-tint);
+  font-weight: 600;
+}
+:where(html.native-ios) .ios-appshell__item--selected .ios-icon { color: inherit; }
+:where(html.native-ios) .ios-appshell__item-badge {
+  flex: none;
+  min-width: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: var(--ios-fill);
+  color: var(--ios-label-2);
+  font: 600 var(--ios-text-footnote) / 22px var(--ios-font);
+  text-align: center;
+}
+:where(html.native-ios) .ios-appshell__item--selected .ios-appshell__item-badge {
+  background: var(--ios-on-tint-fill);
+  color: var(--ios-on-tint);
+}
+:where(html.native-ios) .ios-appshell__subitems {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px;
+}
+:where(html.native-ios) .ios-appshell__subitem {
+  padding: 6px 12px 6px 46px;
+  color: var(--ios-label-2);
+  font: 400 var(--ios-text-subheadline) / 1.25 var(--ios-font);
+}
+:where(html.native-ios) .ios-appshell__subitem--selected {
+  background: var(--ios-fill);
+  color: var(--ios-label);
+  font-weight: 600;
+}
+:where(html.native-ios) :is(.ios-appshell__item, .ios-appshell__subitem):active:not(.ios-appshell__item--selected) {
+  background: var(--ios-glass-pressed);
+}
+:where(html.native-ios) :is(.ios-appshell__item, .ios-appshell__subitem):focus-visible {
+  outline: 2px solid var(--ios-tint);
+  outline-offset: -2px;
+}
+:where(html.native-ios) .ios-appshell__sidebar-reopen {
+  position: fixed;
+  z-index: 30;
+  top: calc(4px + env(safe-area-inset-top, 0px));
+  left: calc(16px + env(safe-area-inset-left, 0px));
+}
+/* Placeholder / empty-state text in a list. */
+:where(html.native-ios) .ios-empty {
+  margin: 32px 16px;
+  color: var(--ios-label-2);
+  font: 400 var(--ios-text-body) / 1.35 var(--ios-font);
+  text-align: center;
+}

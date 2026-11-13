@@ -18,5 +18,10 @@
   "src/ios/List.tsx",
   "src/ios/SwipeRow.tsx",
   "src/ios/ContextMenu.tsx",
-  "src/ios/gesture.ts"
+  "src/ios/gesture.ts",
+  "src/ios/AppShell.tsx",
+  "src/ios/appData.tsx",
+  "src/ios/screens/PatientsScreen.tsx",
+  "src/ios/screens/RechecksScreen.tsx",
+  "src/ios/screens/SettingsScreen.tsx"
 ]

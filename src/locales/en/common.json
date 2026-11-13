@@ -23,6 +23,41 @@
     "moreActions": "More actions",
     "ok": "OK",
     "copy": "Copy",
-    "moreActionsFor": "More actions for {{title}}"
+    "moreActionsFor": "More actions for {{title}}",
+    "tabs": {
+      "chart": "Chart",
+      "patients": "Patients",
+      "rechecks": "Rechecks",
+      "settings": "Settings"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Hide sidebar",
+      "showSidebar": "Show sidebar",
+      "chartSections": "Chart sections"
+    },
+    "patients": {
+      "signIn": "Sign in to see your saved charts.",
+      "loadFailed": "Couldn’t load your charts.",
+      "empty": "No saved charts yet.",
+      "unnamed": "Unnamed patient"
+    },
+    "rechecks": {
+      "empty": "No rechecks due."
+    },
+    "settings": {
+      "account": "Account",
+      "practice": "Practice settings",
+      "chart": "Chart settings",
+      "reminders": "Recheck reminders",
+      "help": "Help",
+      "gettingStarted": "Getting started",
+      "whatsNew": "What’s new",
+      "feedback": "Send feedback",
+      "admin": "Admin panel",
+      "signIn": "Sign in",
+      "createAccount": "Create free account",
+      "signOutTitle": "Sign out of ToothOps?"
+    }
   }
 }

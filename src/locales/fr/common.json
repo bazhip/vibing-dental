@@ -23,6 +23,41 @@
     "moreActions": "Plus d’actions",
     "ok": "OK",
     "copy": "Copier",
-    "moreActionsFor": "Plus d’actions pour {{title}}"
+    "moreActionsFor": "Plus d’actions pour {{title}}",
+    "tabs": {
+      "chart": "Schéma",
+      "patients": "Patients",
+      "rechecks": "Contrôles",
+      "settings": "Réglages"
+    },
+    "shell": {
+      "appName": "ToothOps",
+      "hideSidebar": "Masquer la barre latérale",
+      "showSidebar": "Afficher la barre latérale",
+      "chartSections": "Sections du schéma"
+    },
+    "patients": {
+      "signIn": "Connectez-vous pour voir vos schémas enregistrés.",
+      "loadFailed": "Impossible de charger vos schémas.",
+      "empty": "Aucun schéma enregistré pour le moment.",
+      "unnamed": "Patient sans nom"
+    },
+    "rechecks": {
+      "empty": "Aucun contrôle à prévoir."
+    },
+    "settings": {
+      "account": "Compte",
+      "practice": "Réglages de la clinique",
+      "chart": "Réglages du schéma",
+      "reminders": "Rappels de contrôle",
+      "help": "Aide",
+      "gettingStarted": "Prise en main",
+      "whatsNew": "Nouveautés",
+      "feedback": "Envoyer un commentaire",
+      "admin": "Panneau d’administration",
+      "signIn": "Se connecter",
+      "createAccount": "Créer un compte gratuit",
+      "signOutTitle": "Se déconnecter de ToothOps ?"
+    }
   }
 }

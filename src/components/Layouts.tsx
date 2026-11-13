@@ -28,6 +28,9 @@ interface LayoutProps {
    *  its companion section shows beside it, e.g. the Diagnosis diagram
    *  next to the Charting grid. Narrower screens hide the companion. */
   companions?: Record<string, string>;
+  /** App shell (iOS): no section rail or phone section menu — the shell
+   *  provides section navigation (iPad sidebar, Chart title menu). */
+  hideNav?: boolean;
 }
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
@@ -36,6 +39,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   activeId,
   onActiveChange,
   companions,
+  hideNav = false,
 }) => {
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
   const [internal, setInternal] = React.useState(initial);
@@ -68,26 +72,28 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
     });
   };
   return (
-    <div className={companion ? 'sidebar-layout sidebar-layout--paired' : 'sidebar-layout'}>
-      <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />
+    <div className={`${companion ? 'sidebar-layout sidebar-layout--paired' : 'sidebar-layout'}${hideNav ? ' sidebar-layout--bare' : ''}`}>
+      {!hideNav && <MobileSectionMenu sections={sections} activeId={active} onSelect={choose} />}
       {/* Plain navigation, not an ARIA tablist — the buttons have no
           arrow-key contract, and sections read better as nav anyway. */}
-      <nav className="sidebar-layout__nav" aria-label="Chart sections">
-        {sections.map((s, i) => (
-          <button
-            key={s.id}
-            type="button"
-            aria-current={s.id === active ? 'true' : undefined}
-            className={`sidebar-layout__nav-item${s.id === active ? ' sidebar-layout__nav-item--active' : ''}`}
-            onClick={() => choose(s.id)}
-            // The paired layout narrows the rail to numbers only.
-            title={companion ? s.label : undefined}
-          >
-            <span className="sidebar-layout__nav-num">{String(i + 1).padStart(2, '0')}</span>
-            <span className="sidebar-layout__nav-label">{s.label}</span>
-          </button>
-        ))}
-      </nav>
+      {!hideNav && (
+        <nav className="sidebar-layout__nav" aria-label="Chart sections">
+          {sections.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              aria-current={s.id === active ? 'true' : undefined}
+              className={`sidebar-layout__nav-item${s.id === active ? ' sidebar-layout__nav-item--active' : ''}`}
+              onClick={() => choose(s.id)}
+              // The paired layout narrows the rail to numbers only.
+              title={companion ? s.label : undefined}
+            >
+              <span className="sidebar-layout__nav-num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="sidebar-layout__nav-label">{s.label}</span>
+            </button>
+          ))}
+        </nav>
+      )}
       <main className="sidebar-layout__main" ref={mainRef}>
         {sections.map((s) => (
           <div
