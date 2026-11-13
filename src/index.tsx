@@ -9,6 +9,7 @@ import { DialogHost } from './components/ui/dialogs';
 import { installIteratorHelpers } from './utils/iteratorHelpers';
 import { installScopeSelectorFallback } from './utils/scopeSelector';
 import { initNativeShell } from './native/platform';
+import { initAuthReturn } from './native/authReturn';
 import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
@@ -18,6 +19,8 @@ import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
 installIteratorHelpers();
 installScopeSelectorFallback();
 initNativeShell();
+// App only: finish sign-ins that come back through toothops://auth-callback.
+initAuthReturn();
 initIosFeel();
 
 // Suppress the benign "ResizeObserver loop" message the data grid's

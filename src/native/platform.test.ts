@@ -4,6 +4,7 @@ describe('platform helper', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.doUnmock('@capacitor/core');
+    vi.doUnmock('./authReturn');
     document.documentElement.classList.remove('native-ios');
   });
 
@@ -29,6 +30,14 @@ describe('platform helper', () => {
     const { initNativeShell } = await import('./platform');
     initNativeShell();
     expect(document.documentElement.classList.contains('native-ios')).toBe(true);
+  });
+
+  it('is a leaf: loading it never loads authReturn (no platform → authReturn → supabaseClient → platform cycle)', async () => {
+    vi.doMock('./authReturn', () => {
+      throw new Error('platform must not import authReturn');
+    });
+    const platform = await import('./platform');
+    expect(typeof platform.isNativeApp).toBe('function');
   });
 
   it('exposes WEB_ORIGIN', async () => {
