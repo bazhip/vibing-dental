@@ -15,6 +15,10 @@ export function bootLanguage(timeoutMs = 1500): Promise<void> | null {
   const timeout = new Promise<void>((resolve) => {
     timer = setTimeout(resolve, timeoutMs);
   });
-  const applied = applyLanguage(lng).then(() => undefined);
+  // Never block the first render on an error: render in English instead.
+  const applied = applyLanguage(lng).then(
+    () => undefined,
+    () => undefined,
+  );
   return Promise.race([applied, timeout]).finally(() => clearTimeout(timer));
 }

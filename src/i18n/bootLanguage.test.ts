@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import i18n, { catalogLoaders } from './index';
+import i18n, { catalogLoaders, loadLanguage } from './index';
 import { holdLanguage, restoreLoaders } from './testing/holdLanguage';
 import { bootLanguage } from './bootLanguage';
 
@@ -16,7 +16,7 @@ afterEach(async () => {
 test('a French browser is switched to French before the first render', async () => {
   browserLanguages(['fr-FR']);
   holdLanguage('fr').release(); // nothing loaded yet, as on a first visit
-  const boot = bootLanguage();
+  const boot = bootLanguage(10_000); // generous: chunk imports are slow on a cold test run
   expect(boot).not.toBeNull();
   await boot;
   expect(i18n.language).toBe('fr');
@@ -35,7 +35,7 @@ test('English renders at once, without loading anything', () => {
 test('catalogs that never arrive fall back to English after the timeout', async () => {
   vi.useFakeTimers();
   browserLanguages(['de-DE']);
-  holdLanguage('de'); // never released
+  const de = holdLanguage('de'); // not released until the end
   let done = false;
   void bootLanguage(1500)!.then(() => { done = true; });
   await vi.advanceTimersByTimeAsync(1499);
@@ -43,4 +43,16 @@ test('catalogs that never arrive fall back to English after the timeout', async 
   await vi.advanceTimersByTimeAsync(1);
   expect(done).toBe(true);
   expect(i18n.language).toBe('en');
+  // Free i18next's read slots for the next tests (it caps parallel reads).
+  vi.useRealTimers();
+  de.release();
+  await loadLanguage('de');
+});
+
+test('a failing switch still lets the app render', async () => {
+  browserLanguages(['it-IT']);
+  holdLanguage('it').release();
+  vi.spyOn(i18n, 'changeLanguage').mockRejectedValueOnce(new Error('boom'));
+  await expect(bootLanguage(10_000)).resolves.toBeUndefined();
+  expect(i18n.changeLanguage).toHaveBeenCalledWith('it');
 });

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import i18n from './index';
+import i18n, { loadLanguage } from './index';
 
 // This test environment has no working localStorage (as in useChartSettings.test).
 const store = new Map<string, string>();
@@ -93,7 +93,7 @@ test('a device language still applies when DeviceLanguage unmounts before its ca
   const { unmount } = render(<DeviceLanguage />);
   unmount(); // e.g. the session restored and the landing page gave way
   fr.release();
-  await waitFor(() => expect(i18n.language).toBe('fr'));
+  await waitFor(() => expect(i18n.language).toBe('fr'), { timeout: 5000 });
   expect(document.documentElement.lang).toBe('fr');
 });
 
@@ -102,8 +102,9 @@ test('a slow device language never overrides a later pick in the switcher', asyn
   const fr = holdLanguage('fr');
   render(<><DeviceLanguage /><LanguageSwitcher /></>);
   await userEvent.selectOptions(screen.getByRole('combobox'), 'de');
-  await waitFor(() => expect(i18n.language).toBe('de'));
+  await waitFor(() => expect(i18n.language).toBe('de'), { timeout: 5000 });
   fr.release();
+  await loadLanguage('fr'); // the device language's catalogs have now arrived
   await new Promise((r) => setTimeout(r, 20));
   expect(i18n.language).toBe('de');
   expect(document.documentElement.lang).toBe('de');

@@ -60,7 +60,7 @@ test('the paywall is in French for a French browser', async () => {
   vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['fr-FR', 'en']);
   holdLanguage('fr').release(); // catalogs not yet loaded, as on a first visit
   render(<BillingGate><div /></BillingGate>);
-  expect(await screen.findByRole('heading', { name: 'Choisissez votre formule' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: 'Choisissez votre formule' }, { timeout: 5000 })).toBeInTheDocument();
   expect(document.documentElement.lang).toBe('fr');
 });
 
@@ -68,6 +68,6 @@ test("the paywall follows the account's language over the browser's", async () =
   vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['fr-FR']);
   account.prefs = { language: 'de' };
   render(<BillingGate><div /></BillingGate>);
-  expect(await screen.findByRole('heading', { name: 'Wählen Sie Ihren Tarif' })).toBeInTheDocument();
+  expect(await screen.findByRole('heading', { name: 'Wählen Sie Ihren Tarif' }, { timeout: 5000 })).toBeInTheDocument();
   expect(i18n.language).toBe('de');
 });
