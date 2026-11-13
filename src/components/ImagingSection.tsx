@@ -2,6 +2,8 @@ import React from 'react';
 import { confirmDialog } from './ui/dialogs';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
+import { isNativeApp } from '../native/platform';
+import { takePhoto } from '../native/camera';
 
 interface ImagingSectionProps {
   /** The active chart's cloud id — attachments are scoped to it. */
@@ -72,9 +74,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     );
   }
 
-  const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
+  const addFiles = async (files: File[]) => {
+    const file = files[0];
     if (!file) return;
     setBusy(true);
     setError('');
@@ -87,6 +88,27 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       setBusy(false);
     }
   };
+
+  const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    await addFiles(files);
+  };
+
+  const onTakePhoto = async () => {
+    setError('');
+    let file: File | null = null;
+    try {
+      file = await takePhoto();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not open the camera.');
+      return;
+    }
+    if (file) await addFiles([file]);
+  };
+
+  const atLimit = store.items.length >= store.maxImages;
+  const limitMessage = `This chart has reached its ${store.maxImages}-image limit.`;
 
   const onDelete = async (id: string, caption: string) => {
     if (!(await confirmDialog({
@@ -175,11 +197,22 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
           type="button"
           className="diagram-view__action"
           onClick={() => fileRef.current?.click()}
-          disabled={busy || store.items.length >= store.maxImages}
-          title={store.items.length >= store.maxImages ? `Limit of ${store.maxImages} images reached` : undefined}
+          disabled={busy || atLimit}
+          title={atLimit ? limitMessage : undefined}
         >
           {busy ? 'Uploading…' : 'Add image'}
         </button>
+        {isNativeApp() && (
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={onTakePhoto}
+            disabled={busy || atLimit}
+            title={atLimit ? limitMessage : undefined}
+          >
+            Take photo
+          </button>
+        )}
         <input
           ref={fileRef}
           type="file"
