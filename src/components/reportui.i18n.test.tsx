@@ -126,6 +126,18 @@ describe('OwnerReportTemplatesModal', () => {
     expect(saved.templates[0].language).toBe('en');
   });
 
+  it('a new template uses the practice client language, not the app language', async () => {
+    await loadLanguage('fr');
+    await i18n.changeLanguage('fr');
+    const onSave = vi.fn(async () => {});
+    render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} clientLanguage="de" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Nouveau' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Enregistrer/ }));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const saved = (onSave.mock.calls[0] as unknown as [OwnerReportConfig])[0];
+    expect(saved.templates[1]).toMatchObject({ language: 'de', title: reportStrings('de').defaultTitle });
+  });
+
   it('a template created in an app language reports do not cover (pseudo-locale) is saved as English', async () => {
     const onSave = vi.fn(async () => {});
     render(<OwnerReportTemplatesModal {...props} onSave={onSave} config={defaultConfig()} />);

@@ -37,6 +37,8 @@ interface OwnerReportTemplatesModalProps {
    *  only the built-in default, so saving is blocked (it would replace
    *  the real templates). */
   loadFailed?: boolean;
+  /** Language new templates start in (the practice's client language); default: the app language. */
+  clientLanguage?: ReportLocale;
   branding: OwnerReportBranding;
 }
 
@@ -62,6 +64,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   canEdit,
   roleKnown,
   loadFailed = false,
+  clientLanguage,
   branding,
 }) => {
   const { t } = useTranslation('reportui');
@@ -175,7 +178,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     if (draft.templates.length >= MAX_TEMPLATES) return;
     const fresh = base
       ? { ...clone(base), id: newId('tpl-'), name: t('templates.copyName', { name: base.name }) }
-      : { ...defaultTemplate(appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
+      : { ...defaultTemplate(clientLanguage ?? appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
     setDraft((d) => ({ ...d, templates: [...d.templates, fresh] }));
     setSelectedId(fresh.id);
   };

@@ -260,13 +260,18 @@ export function useProfile(): UseProfileReturn {
         }
         if (!reportError) {
           const row = reportRow as { owner_report_config?: unknown; owner_report_config_rev?: unknown } | null;
-          // Practice client language (tolerates a database without the column).
-          const { data: langRow, error: langError } = await supabase
-            .from('practices')
-            .select('client_language')
-            .eq('id', pid)
-            .maybeSingle();
-          const seedLanguage = clientLanguageOf(langError ? null : (langRow as { client_language?: string | null } | null), appReportLocale());
+          // The seed language is only used when nothing is saved yet; the
+          // read tolerates a database without the column.
+          let seedLanguage = appReportLocale();
+          const saved = row?.owner_report_config;
+          if (!saved || typeof saved !== 'object' || Array.isArray(saved)) {
+            const { data: langRow, error: langError } = await supabase
+              .from('practices')
+              .select('client_language')
+              .eq('id', pid)
+              .maybeSingle();
+            seedLanguage = clientLanguageOf(langError ? null : (langRow as { client_language?: string | null } | null), seedLanguage);
+          }
           reportConfig = normalizeConfig(row?.owner_report_config, seedLanguage);
           reportRev = typeof row?.owner_report_config_rev === 'number' ? row.owner_report_config_rev : null;
         } else {

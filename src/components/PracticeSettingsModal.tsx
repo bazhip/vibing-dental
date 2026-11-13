@@ -19,7 +19,7 @@ import {
   formatPlanPrice,
 } from '../constants/plans';
 import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
-import { REPORT_LOCALES, LOCALE_LABELS, isReportLocale } from '../utils/ownerReportI18n';
+import { REPORT_LOCALES, ReportLocale, isReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { deleteMyPractice } from '../utils/accountDeletion';
@@ -84,6 +84,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
   const clientLang = usePracticeLanguage(team.practice?.id ?? null);
+  const languageName = (l: ReportLocale) => t(`languages.${l}`, { ns: 'reportui' });
   const [langError, setLangError] = React.useState('');
   const [memberEmail, setMemberEmail] = React.useState('');
   const [teamBusy, setTeamBusy] = React.useState(false);
@@ -193,6 +194,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         config={profile.ownerReportConfig}
         onSave={profile.saveOwnerReportConfig}
         loadFailed={profile.ownerReportConfigLoadFailed}
+        clientLanguage={clientLang.language}
         canEdit={team.loaded && team.role === 'owner'}
         roleKnown={team.loaded}
         branding={{
@@ -618,11 +620,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                   }}
                 >
                   {REPORT_LOCALES.map((l) => (
-                    <option key={l} value={l}>{LOCALE_LABELS[l]}</option>
+                    <option key={l} value={l}>{languageName(l)}</option>
                   ))}
                 </select>
               ) : (
-                <p className="ai-settings-blurb" data-testid="client-language-readonly">{LOCALE_LABELS[clientLang.language]}</p>
+                <p className="ai-settings-blurb" data-testid="client-language-readonly">{languageName(clientLang.language)}</p>
               )}
               {langError && <div className="login-error settings-msg" role="alert">{langError}</div>}
             </section>
