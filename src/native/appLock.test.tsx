@@ -7,6 +7,7 @@ const h = vi.hoisted(() => ({
   authenticate: vi.fn(),
   native: true,
   signOut: vi.fn(),
+  clear: vi.fn(),
 }));
 
 vi.mock('./platform', () => ({ isNativeApp: () => h.native }));
@@ -21,6 +22,7 @@ vi.mock('@capacitor/app', () => ({
 vi.mock('@aparajita/capacitor-biometric-auth', () => ({
   BiometricAuth: { authenticate: h.authenticate },
 }));
+vi.mock('../hooks/useChartState', () => ({ clearChartStorage: h.clear }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: { signOut: h.signOut } } }));
 
 import { shouldLock, LOCK_AFTER_MS } from './appLock';
@@ -53,6 +55,7 @@ describe('AppLockOverlay', () => {
     h.listeners = {};
     h.authenticate.mockReset();
     h.signOut.mockReset();
+    h.clear.mockReset();
   });
 
   it('renders nothing on web', async () => {
@@ -98,6 +101,7 @@ describe('AppLockOverlay', () => {
     await waitFor(() => expect(h.listeners.resume).toBeDefined());
     await background(5 * MIN);
     fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
-    expect(h.signOut).toHaveBeenCalled();
+    await waitFor(() => expect(h.signOut).toHaveBeenCalled());
+    await waitFor(() => expect(h.clear).toHaveBeenCalled());
   });
 });

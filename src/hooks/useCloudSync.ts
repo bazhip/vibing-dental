@@ -5,7 +5,7 @@ import { confirmDialog } from '../components/ui/dialogs';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
-import { markExplicitSignOut } from '../utils/signOutIntent';
+import { signOutAndSweep } from '../utils/signOutAndSweep';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -624,22 +624,7 @@ export function useCloudSync(
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
     if (!(await confirmDiscardIfDirty('Sign out'))) return;
-    // Deliberate sign-out — App must NOT treat the coming SIGNED_OUT
-    // event as a session expiry (which keeps the chart mounted).
-    markExplicitSignOut();
-    await supabase.auth.signOut();
-    // Shared clinic machines: the next account must not inherit this
-    // patient's chart from localStorage.
-    clearChartStorage();
-    // Legacy BYOK era left API keys in localStorage; the app no longer
-    // collects keys client-side, so sweep any stragglers with the session.
-    for (const k of [
-      'vibing-dental.anthropic-api-key.v1',
-      'vibing-dental.deepgram-api-key.v1',
-      'vibing-dental.anthropic-model.v1',
-    ]) {
-      try { localStorage.removeItem(k); } catch { /* storage unavailable */ }
-    }
+    await signOutAndSweep();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

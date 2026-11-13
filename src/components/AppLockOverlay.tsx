@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAppLock } from '../native/appLock';
-import { markExplicitSignOut } from '../utils/signOutIntent';
-import { supabase } from '../utils/supabaseClient';
+import { signOutAndSweep } from '../utils/signOutAndSweep';
 
 /** Full-screen cover shown after the app has been backgrounded for a
  *  while. Renders nothing on web. */
@@ -24,10 +23,9 @@ export const AppLockOverlay: React.FC = () => {
       <button type="button" onClick={() => void unlock()}>Try again</button>
       <button
         type="button"
-        onClick={() => {
-          markExplicitSignOut();
-          void supabase?.auth.signOut();
-        }}
+        // No unsaved-changes prompt here: the lock screen hides the chart,
+        // and signing out from it must still clear patient data.
+        onClick={() => void signOutAndSweep()}
         style={{ background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
       >
         Sign out
