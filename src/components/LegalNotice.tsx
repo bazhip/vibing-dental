@@ -15,11 +15,12 @@ export const LEGAL_ACTION = {
 
 /**
  * Small print saying the legal documents are English-only. Rendered for
- * non-English languages only, once per surface that links to them.
+ * a known non-English language only, once per surface that links to them.
  */
 export const EnglishGoverns: React.FC<{ className?: string }> = ({ className }) => {
   const { t, i18n } = useTranslation('auth');
-  if (i18n.resolvedLanguage === 'en') return null;
+  const lng = i18n.resolvedLanguage;
+  if (!lng || lng === 'en') return null;
   return <p className={`login-legal${className ? ` ${className}` : ''}`}>{t('legal.englishGoverns')}</p>;
 };
 

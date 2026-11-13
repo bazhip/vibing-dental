@@ -19,6 +19,7 @@ import {
   sectionLabel,
 } from '../utils/ownerReportConfig';
 import { REPORT_LOCALES, ReportLocale, appReportLocale, reportStrings } from '../utils/ownerReportI18n';
+import { errorText } from '../utils/apiErrors';
 import { buildOwnerReportModel } from '../utils/ownerReport';
 import { buildOwnerReportPdfBytes, OwnerReportBranding } from '../utils/ownerReportPdf';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
@@ -231,7 +232,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
       await onSave(cleaned);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('templates.saveFailed'));
+      setError(errorText(e, t('templates.saveFailed')));
     } finally {
       setBusy(false);
     }

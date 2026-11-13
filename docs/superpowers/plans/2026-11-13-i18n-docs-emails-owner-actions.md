@@ -58,3 +58,15 @@ English, which is today's text. The app writes the metadata at signup and
 whenever the account language changes. Repeat this step after every
 `npm run i18n:emails` that changes these files (see
 `supabase/templates/README.md`).
+
+## 4. Verify in the dashboard
+
+- [ ] Auto-send function `public.send_due_reminders()` (not in this repo):
+      check how it fills `{{owner}}`, `{{patient}}` and `{{practice}}` when a
+      value is missing. If it inserts English fallbacks ("there", "your
+      pet"), practices with a non-English client language get mixed-language
+      reminders. Remove the fallbacks, or source them per
+      `practices.client_language`.
+- [ ] Confirm the `practices` UPDATE RLS policy lets owners update
+      `client_language`, the same policy that covers name, logo and the
+      reminder columns. Otherwise changing the client language fails.

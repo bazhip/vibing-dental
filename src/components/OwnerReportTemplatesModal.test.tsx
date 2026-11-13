@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
+import i18n, { loadLanguage } from '../i18n';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { OwnerReportConfig, defaultConfig, defaultTemplate } from '../utils/ownerReportConfig';
 
@@ -165,5 +166,27 @@ describe('OwnerReportTemplatesModal', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/didn’t load/);
     await userEvent.type(screen.getByLabelText('Report title'), ' X');
     expect(screen.getByRole('button', { name: /Save templates/ })).toBeDisabled();
+  });
+
+  describe('save failure message', () => {
+    afterEach(async () => { await i18n.changeLanguage('en'); });
+    const failSave = async (raw: string) => {
+      const user = userEvent.setup();
+      renderModal({ onSave: vi.fn().mockRejectedValue(new Error(raw)) });
+      await user.click(screen.getByRole('checkbox', { name: /Teeth removed|Dents extraites/ }));
+      await user.click(screen.getByRole('button', { name: /Save templates|Enregistrer/ }));
+    };
+
+    it('shows raw text bare in English', async () => {
+      await failSave('boom');
+      expect(await screen.findByText('boom')).toBeInTheDocument();
+    });
+
+    it('wraps raw text in French', async () => {
+      await loadLanguage('fr');
+      await i18n.changeLanguage('fr');
+      await failSave('boom');
+      expect(await screen.findByText('Une erreur s’est produite (détails : boom)')).toBeInTheDocument();
+    });
   });
 });

@@ -11,6 +11,8 @@ vi.mock('../utils/supabaseClient', () => ({
   },
 }));
 
+import i18n, { loadLanguage } from '../i18n';
+import { standardReminderText } from '../utils/reminderDefaults';
 import { clientLanguageOf, usePracticeLanguage } from './usePracticeLanguage';
 
 describe('clientLanguageOf', () => {
@@ -43,5 +45,32 @@ describe('usePracticeLanguage', () => {
     await act(async () => { await result.current.save('fr'); });
     expect(db.update).toHaveBeenCalledWith({ client_language: 'fr' });
     expect(result.current.language).toBe('fr');
+  });
+});
+
+describe('usePracticeLanguage reminder text follows the switch', () => {
+  afterEach(async () => { await i18n.changeLanguage('en'); });
+
+  test('stored English standard is re-persisted in the new language even when the app is French', async () => {
+    await Promise.all(['en', 'fr', 'de'].map((l) => loadLanguage(l as 'en')));
+    await i18n.changeLanguage('fr');
+    const en = standardReminderText('en');
+    db.row = { client_language: null, reminder_subject: en.subject, reminder_body: en.body };
+    db.update.mockClear();
+    const { result } = renderHook(() => usePracticeLanguage('p1'));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    await act(async () => { await result.current.save('de'); });
+    const de = standardReminderText('de');
+    expect(db.update).toHaveBeenCalledWith({ client_language: 'de', reminder_subject: de.subject, reminder_body: de.body });
+  });
+
+  test('edited text is left alone', async () => {
+    await loadLanguage('de');
+    db.row = { client_language: null, reminder_subject: 'My own subject', reminder_body: 'My own body' };
+    db.update.mockClear();
+    const { result } = renderHook(() => usePracticeLanguage('p1'));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    await act(async () => { await result.current.save('de'); });
+    expect(db.update).toHaveBeenCalledWith({ client_language: 'de' });
   });
 });
