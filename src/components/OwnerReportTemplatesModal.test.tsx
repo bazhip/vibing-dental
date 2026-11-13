@@ -159,4 +159,11 @@ describe('OwnerReportTemplatesModal', () => {
     await user.click(screen.getByRole('button', { name: '{pet}' }));
     expect(intro).toHaveValue('{owner}{pet}');
   });
+
+  it('when the saved templates failed to load, it says so and keeps Save off — even after an edit', async () => {
+    renderModal({ loadFailed: true });
+    expect(screen.getByRole('alert')).toHaveTextContent(/didn’t load/);
+    await userEvent.type(screen.getByLabelText('Report title'), ' X');
+    expect(screen.getByRole('button', { name: /Save templates/ })).toBeDisabled();
+  });
 });

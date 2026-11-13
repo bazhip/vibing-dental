@@ -356,9 +356,32 @@ Deno.serve(async (req: Request) => {
         if (size > 50 * 1024) {
           return json({ error: 'Those owner report settings are too large (50 KB max) — shorten some text or remove a template.' }, 413);
         }
-        const { error } = await admin.from('practices').update({ owner_report_config: config }).eq('id', m.practiceId);
+        // Each save replaces the whole set, so a stale tab / device must
+        // not overwrite newer templates: compare-and-swap on a version.
+        // Clients send the version they loaded (expectedRev); older
+        // clients that don't still bump it, so newer ones catch them.
+        const STALE = 'These templates were changed on another device or tab since you opened them. Close this window, reload the page, and make your changes again.';
+        const expectedRev = typeof body.expectedRev === 'number' ? body.expectedRev : null;
+        const { data: cur, error: curErr } = await admin
+          .from('practices').select('owner_report_config_rev').eq('id', m.practiceId).maybeSingle();
+        if (curErr) {
+          // Version column not added yet (migration pending): plain write.
+          const { error } = await admin.from('practices').update({ owner_report_config: config }).eq('id', m.practiceId);
+          if (error) throw error;
+          return json({ ok: true });
+        }
+        const currentRev = typeof cur?.owner_report_config_rev === 'number' ? cur.owner_report_config_rev : 0;
+        if (expectedRev !== null && expectedRev !== currentRev) return json({ error: STALE, conflict: true }, 409);
+        const { data: updated, error } = await admin
+          .from('practices')
+          .update({ owner_report_config: config, owner_report_config_rev: currentRev + 1 })
+          .eq('id', m.practiceId)
+          .eq('owner_report_config_rev', currentRev)
+          .select('owner_report_config_rev');
         if (error) throw error;
-        return json({ ok: true });
+        // Another save landed between the read and this write.
+        if (!updated || updated.length === 0) return json({ error: STALE, conflict: true }, 409);
+        return json({ ok: true, rev: currentRev + 1 });
       }
 
       // Primary owner permanently deletes the practice: every chart shared
