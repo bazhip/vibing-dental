@@ -18,11 +18,29 @@ export function scrollFocusedCellIntoView(): void {
   target.scrollIntoView({ block: 'nearest' });
 }
 
+type SetStyle = (opts: { style: Style }) => Promise<void>;
+
+/** Status bar text follows the system appearance: dark text over the
+ *  light app, light text over the dark app — and switches live when the
+ *  user (or Control Center / a schedule) flips the scheme. */
+export function followColorSchemeForStatusBar(
+  setStyle: SetStyle = (opts) => StatusBar.setStyle(opts),
+  matchMedia: (q: string) => Pick<MediaQueryList, 'matches' | 'addEventListener'> =
+    (q) => window.matchMedia(q),
+): void {
+  const apply = (dark: boolean) => {
+    // Style.Dark = light text (for dark backgrounds); Style.Light = dark text.
+    setStyle({ style: dark ? Style.Dark : Style.Light }).catch(() => {});
+  };
+  const mql = matchMedia('(prefers-color-scheme: dark)');
+  apply(mql.matches);
+  mql.addEventListener('change', (e) => apply(e.matches));
+}
+
 /** Called once at startup, after initNativeShell(). No-op on the web. */
 export function initIosFeel(): void {
   if (!isNativeApp()) return;
-  // Dark text: the app's chrome is light.
-  StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+  followColorSchemeForStatusBar();
   Keyboard.addListener('keyboardDidShow', scrollFocusedCellIntoView).catch(() => {});
 }
 

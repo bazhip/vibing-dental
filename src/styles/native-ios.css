@@ -101,9 +101,9 @@ html.native-ios .ai-settings-modal {
 /* ---------- Chart settings, iOS style ------------------------------------
  * Grouped inset cards on the system grey, one setting per row, and
  * switches instead of checkboxes. */
-html.native-ios .chart-settings__body { background: #f2f2f7; }
+html.native-ios .chart-settings__body { background: var(--ios-bg-grouped); }
 html.native-ios .chart-settings__group {
-  background: white; border-radius: 12px; padding: 0.75rem 1rem;
+  background: var(--ios-cell); border-radius: 12px; padding: 0.75rem 1rem;
 }
 html.native-ios .chart-settings__group + .chart-settings__group { border-top: 0; padding-top: 0.75rem; }
 html.native-ios .chart-settings__grid { grid-template-columns: 1fr; gap: 0; }
@@ -112,7 +112,7 @@ html.native-ios .chart-settings__choice {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
   column-gap: 0.75rem; row-gap: 2px;
   min-height: 44px; padding: 0.5rem 0;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--ios-separator);
 }
 html.native-ios .chart-settings__choice .chart-settings__hint { grid-column: 1; grid-row: 2; }
 html.native-ios .chart-settings__choice > input { grid-column: 2; grid-row: 1 / span 2; }
@@ -121,7 +121,7 @@ html.native-ios .chart-settings input[type='checkbox'] {
   -webkit-appearance: none; appearance: none;
   order: 2; margin: 0 0 0 auto; flex: none;
   width: 51px; height: 31px; border-radius: 16px;
-  background: #e5e5ea; position: relative; cursor: pointer;
+  background: var(--ios-fill-2); position: relative; cursor: pointer;
   transition: background 0.2s ease;
 }
 html.native-ios .chart-settings input[type='checkbox']::before {
@@ -130,7 +130,7 @@ html.native-ios .chart-settings input[type='checkbox']::before {
   background: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease;
 }
-html.native-ios .chart-settings input[type='checkbox']:checked { background: #34c759; }
+html.native-ios .chart-settings input[type='checkbox']:checked { background: var(--ios-success); }
 html.native-ios .chart-settings input[type='checkbox']:checked::before { transform: translateX(20px); }
 html.native-ios .chart-settings input[type='checkbox']:disabled { opacity: 0.5; }
 /* Radio choices: a checkmark on the right, like an iOS picker list. */
@@ -139,7 +139,11 @@ html.native-ios .chart-settings input[type='radio'] {
   margin: 0; width: 22px; height: 22px; flex: none; cursor: pointer;
   background: none; border: 0;
 }
+/* The checkmark is a mask filled with the tint, so it follows dark mode. */
 html.native-ios .chart-settings input[type='radio']:checked {
-  background: no-repeat center / 18px 18px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%230c6b63' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background: var(--ios-tint);
+  -webkit-mask: no-repeat center / 18px 18px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask: no-repeat center / 18px 18px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }

@@ -1,0 +1,266 @@
+/* =============================================================================
+ * iOS design tokens — app only.
+ *
+ * Every rule here is scoped to html.native-ios (added by initNativeShell()
+ * inside the Capacitor shell, or by the DEV-only ?iosPreview=1 preview), so
+ * the website never sees these properties. The shared stylesheets wrap their
+ * colors as var(--ios-…, <web literal>): unset on the web → the literal,
+ * pixel for pixel; set here → the app follows iOS light/dark mode.
+ *
+ * Neutral colors are Apple's published iOS dynamic system colors
+ * (systemBackground, systemGroupedBackground, label, separator, fills,
+ * systemGray 1–6). Status hues come from the HIG system palette, choosing
+ * the "increased contrast" variants where the default fails WCAG AA for
+ * text. The tint is ToothOps teal, lifted for dark mode. Clinical colors
+ * (--ios-grid-*) carry the same meaning in both schemes; contrast ratios
+ * are recorded in the Task 1 report.
+ * =============================================================================
+ */
+
+html.native-ios {
+  color-scheme: light dark;
+
+  /* ---- Backgrounds ---------------------------------------------------- */
+  --ios-bg:            #ffffff;  /* systemBackground */
+  --ios-bg-grouped:    #f2f2f7;  /* systemGroupedBackground */
+  --ios-bg-elevated:   #ffffff;  /* sheets, popovers, menus */
+  --ios-cell:          #ffffff;  /* secondarySystemGroupedBackground */
+  --ios-cell-alt:      #f2f2f7;  /* tertiarySystemGroupedBackground — wells, stripes */
+  --ios-cell-sunken:   #e5e5ea;  /* systemGray5 — recessed fills */
+
+  /* ---- Foreground ----------------------------------------------------- */
+  --ios-label:         #000000;
+  --ios-label-2:       rgba(60, 60, 67, 0.6);
+  --ios-label-3:       rgba(60, 60, 67, 0.3);
+  --ios-separator:     rgba(60, 60, 67, 0.29);
+  --ios-separator-opaque: #c6c6c8;
+  --ios-fill:          rgba(118, 118, 128, 0.12);  /* tertiarySystemFill */
+  --ios-fill-2:        rgba(120, 120, 128, 0.2);   /* systemFill */
+  --ios-link:          #1e6ef4;  /* blue, increased contrast (AA on white) */
+  --ios-inverse-bg:    #000000;  /* dark-on-light chips/buttons, flips in dark */
+  --ios-inverse-label: #ffffff;
+  /* HUD surfaces (toasts, the PDF preview's status over its dark well)
+     stay dark in both schemes, so their labels stay white. */
+  --ios-hud-bg:        #1c1c1e;
+  --ios-on-dark:       #ffffff;
+  --ios-on-dark-2:     rgba(255, 255, 255, 0.75);
+  --ios-on-dark-hairline: rgba(255, 255, 255, 0.35);
+  --ios-on-dark-fill:  rgba(255, 255, 255, 0.12);
+  --ios-on-dark-danger: #ff6165;
+  --ios-danger-hud:    #7f1d1d;
+
+  /* ---- Tint: ToothOps teal -------------------------------------------- */
+  --ios-tint:          #0c6b63;
+  --ios-tint-pressed:  #095049;
+  --ios-tint-fill:     #e7f0ef;
+  --ios-tint-ring:     rgba(12, 107, 99, 0.14);
+  --ios-on-tint:       #ffffff;
+  --ios-on-tint-2:     rgba(255, 255, 255, 0.85);
+  --ios-on-tint-hairline: rgba(255, 255, 255, 0.35);
+  --ios-on-tint-fill:  rgba(255, 255, 255, 0.15);
+
+  /* ---- Status --------------------------------------------------------- */
+  --ios-danger:        #b23c2a;  /* clinical red (AA on white and on its tint) */
+  --ios-danger-strong: #96301f;
+  --ios-danger-solid:  #b23c2a;  /* filled destructive controls, white label */
+  --ios-on-danger:     #ffffff;
+  --ios-danger-fill:   #faf1ef;
+  --ios-danger-border: #f2b8b0;
+  --ios-danger-ring:   rgba(178, 60, 42, 0.3);
+  --ios-danger-ring-0: rgba(178, 60, 42, 0);
+  --ios-warning-label: #92400e;
+  --ios-warning-solid: #b45309;
+  --ios-warning-fill:  #fef3c7;
+  --ios-warning-border: #f6c343;
+  --ios-success:       #34c759;  /* green */
+  --ios-success-label: #0c6b48;
+  --ios-success-fill:  #e3f2ec;
+
+  /* ---- Elevation ------------------------------------------------------ */
+  --ios-shadow-soft:   rgba(0, 0, 0, 0.06);
+  --ios-shadow:        rgba(0, 0, 0, 0.14);
+  --ios-shadow-strong: rgba(0, 0, 0, 0.24);
+  --ios-scrim:         rgba(0, 0, 0, 0.4);
+  /* Translucent bar background; components add backdrop-filter. */
+  --ios-bar-material:  rgba(249, 249, 249, 0.8);
+
+  /* ---- Charting grid (clinical) --------------------------------------- */
+  --ios-grid-bg:             #ffffff;
+  --ios-grid-stripe:         #f8f8fa;  /* quaternary fill over the cell */
+  --ios-grid-hover:          #f2f2f7;
+  --ios-grid-header-bg:      #0c6b63;
+  --ios-grid-header-label:   #f2f7f6;
+  --ios-grid-header-hairline: rgba(255, 255, 255, 0.16);
+  --ios-grid-missing-bg:     #faf1ef;
+  --ios-grid-missing-label:  #5d6b7a;
+  --ios-grid-abnormal-bg:    #faf1ef;
+  --ios-grid-abnormal-label: #b23c2a;
+  --ios-grid-selected-bg:    #e1edec;
+  --ios-grid-selected-ring:  #0d9488;
+  --ios-grid-active-cell:    #ffffff;
+  --ios-grid-score-bg:       #ffffff;
+  --ios-grid-score-on-bg:    #0c6b63;
+  --ios-grid-score-on-label: #ffffff;
+
+  /* ---- Type ----------------------------------------------------------- */
+  --ios-font: -apple-system, system-ui, "Helvetica Neue", sans-serif;
+  /* Dynamic Type: the root font is the user's Body size (17pt at the
+     default setting), so 1rem = Body and every rem/em in the app scales
+     with Settings > Display & Text Size. Styles keep Apple's ratios at
+     the default (Large) size. */
+  --ios-text-large-title: 2rem;      /* 34pt */
+  --ios-text-title1:      1.647rem;  /* 28pt */
+  --ios-text-title2:      1.294rem;  /* 22pt */
+  --ios-text-title3:      1.176rem;  /* 20pt */
+  --ios-text-headline:    1rem;      /* 17pt semibold */
+  --ios-text-body:        1rem;      /* 17pt */
+  --ios-text-callout:     0.941rem;  /* 16pt */
+  --ios-text-subheadline: 0.882rem;  /* 15pt */
+  --ios-text-footnote:    0.765rem;  /* 13pt */
+  --ios-text-caption1:    0.706rem;  /* 12pt */
+  --ios-text-caption2:    0.647rem;  /* 11pt */
+
+  font: -apple-system-body;
+  font-family: var(--ios-font);
+
+  /* ---- Existing theme variables follow the iOS tokens ------------------ */
+  --bg-page:        var(--ios-bg-grouped);
+  --surface:        var(--ios-cell);
+  --surface-alt:    var(--ios-cell-alt);
+  --surface-2:      var(--ios-cell-alt);
+  --surface-sunken: var(--ios-cell-sunken);
+  --primary:        var(--ios-tint);
+  --primary-end:    var(--ios-tint-pressed);
+  --primary-tint:   var(--ios-tint-fill);
+  --accent:         var(--ios-tint);
+  --danger:         var(--ios-danger);
+  --danger-strong:  var(--ios-danger-strong);
+  --danger-tint:    var(--ios-danger-fill);
+  --text:           var(--ios-label);
+  --text-muted:     var(--ios-label-2);
+  --border:         var(--ios-separator);
+  --border-strong:  var(--ios-separator-opaque);
+  --shadow:         0 1px 2px var(--ios-shadow-soft), 0 4px 16px var(--ios-shadow-soft);
+  --font-body:      var(--ios-font);
+  --font-display:   var(--ios-font);
+}
+
+/* The DEV preview runs in desktop WebKit, where -apple-system-body is the
+   macOS size (13pt); pin the iPhone default instead. */
+html.native-ios.ios-preview {
+  font-size: 17px;
+}
+
+@media (prefers-color-scheme: dark) {
+  html.native-ios {
+    --ios-bg:            #000000;
+    --ios-bg-grouped:    #000000;
+    --ios-bg-elevated:   #1c1c1e;
+    --ios-cell:          #1c1c1e;
+    --ios-cell-alt:      #2c2c2e;
+    --ios-cell-sunken:   #3a3a3c;
+
+    --ios-label:         #ffffff;
+    --ios-label-2:       rgba(235, 235, 245, 0.6);
+    --ios-label-3:       rgba(235, 235, 245, 0.3);
+    --ios-separator:     rgba(84, 84, 88, 0.6);
+    --ios-separator-opaque: #38383a;
+    --ios-fill:          rgba(118, 118, 128, 0.24);
+    --ios-fill-2:        rgba(120, 120, 128, 0.36);
+    --ios-link:          #5cb8ff;
+    --ios-inverse-bg:    #ffffff;
+    --ios-inverse-label: #000000;
+    --ios-hud-bg:        #3a3a3c;
+
+    /* Lifted teal: AA as text on every dark surface. A white label can't
+       also clear AA on it, so labels on the tint go dark. */
+    --ios-tint:          #3cc4b4;
+    --ios-tint-pressed:  #5fd3c5;
+    --ios-tint-fill:     #213736;
+    --ios-tint-ring:     rgba(60, 196, 180, 0.3);
+    --ios-on-tint:       #000000;
+    --ios-on-tint-2:     rgba(0, 0, 0, 0.72);
+    --ios-on-tint-hairline: rgba(0, 0, 0, 0.28);
+    --ios-on-tint-fill:  rgba(0, 0, 0, 0.12);
+
+    --ios-danger:        #ff6165;  /* red, increased contrast (dark) */
+    --ios-danger-strong: #ff8a8d;
+    --ios-danger-solid:  #c9302c;
+    --ios-on-danger:     #ffffff;
+    --ios-danger-fill:   #402729;
+    --ios-danger-border: #8a3a3d;
+    --ios-danger-ring:   rgba(255, 97, 101, 0.35);
+    --ios-danger-ring-0: rgba(255, 97, 101, 0);
+    --ios-warning-label: #ffa056;  /* orange, increased contrast (dark) */
+    --ios-warning-solid: #a35a0c;
+    --ios-warning-fill:  #402f21;
+    --ios-warning-border: #7a5a1e;
+    --ios-success:       #30d158;
+    --ios-success-label: #4ad968;  /* green, increased contrast (dark) */
+    --ios-success-fill:  #1f3927;
+
+    --ios-shadow-soft:   rgba(0, 0, 0, 0.4);
+    --ios-shadow:        rgba(0, 0, 0, 0.5);
+    --ios-shadow-strong: rgba(0, 0, 0, 0.6);
+    --ios-scrim:         rgba(0, 0, 0, 0.6);
+    --ios-bar-material:  rgba(22, 22, 24, 0.75);
+
+    --ios-grid-bg:             #1c1c1e;
+    --ios-grid-stripe:         #232325;
+    --ios-grid-hover:          #2c2c2e;
+    --ios-grid-header-bg:      #2c2c2e;
+    --ios-grid-header-label:   #ebebf5;
+    --ios-grid-header-hairline: rgba(255, 255, 255, 0.12);
+    --ios-grid-missing-bg:     #402729;
+    --ios-grid-missing-label:  #b4aeb0;
+    --ios-grid-abnormal-bg:    #402729;
+    --ios-grid-abnormal-label: #ff6165;
+    --ios-grid-selected-bg:    #23413f;
+    --ios-grid-selected-ring:  #3cc4b4;
+    --ios-grid-active-cell:    #1c1c1e;
+    --ios-grid-score-bg:       #2c2c2e;
+    --ios-grid-score-on-bg:    #3cc4b4;
+    --ios-grid-score-on-label: #000000;
+  }
+}
+
+/* Reduce Transparency: bars go opaque. */
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios { --ios-bar-material: #f9f9f9; }
+}
+@media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) {
+  html.native-ios { --ios-bar-material: #161618; }
+}
+
+/* Increase Contrast: stronger separators and secondary text. */
+@media (prefers-contrast: more) {
+  html.native-ios {
+    --ios-separator:  rgba(60, 60, 67, 0.6);
+    --ios-separator-opaque: #8e8e93;
+    --ios-label-2:    rgba(60, 60, 67, 0.85);
+    --ios-label-3:    rgba(60, 60, 67, 0.6);
+  }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  html.native-ios {
+    --ios-separator:  rgba(124, 124, 128, 0.9);
+    --ios-separator-opaque: #7c7c80;
+    --ios-label-2:    rgba(235, 235, 245, 0.85);
+    --ios-label-3:    rgba(235, 235, 245, 0.6);
+  }
+}
+
+/* Reduce Motion: no transitions or animations in the app. Near-zero
+   durations rather than `none`, so animationend/transitionend still fire
+   for code that waits on them. */
+@media (prefers-reduced-motion: reduce) {
+  html.native-ios *,
+  html.native-ios *::before,
+  html.native-ios *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

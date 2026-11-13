@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 import './styles/native-ios.css';
+import './ios/tokens.css';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { DialogHost } from './components/ui/dialogs';

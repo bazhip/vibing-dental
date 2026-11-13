@@ -246,7 +246,7 @@ function CodeCellEditor({
         height: '100%',
         border: 'none',
         padding: '0 0.4rem',
-        background: '#ffffff',
+        background: 'var(--ios-grid-active-cell, #ffffff)',
         color: 'var(--text, #0f172a)',
         font: 'inherit',
         outline: 'none',

@@ -82,7 +82,7 @@
   line-height: 1;
   cursor: pointer;
 }
-.admin-panel__banner-dismiss:hover { background: rgba(15, 23, 42, 0.06); }
+.admin-panel__banner-dismiss:hover { background: var(--ios-fill, rgba(15, 23, 42, 0.06)); }
 
 /* Settings menu: who's signed in. */
 .chart-menu__account {

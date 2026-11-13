@@ -15,6 +15,7 @@ import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
 import { isNativeApp } from './native/platform';
+import { isIosPreview } from './ios/preview';
 import { clearBillingCache } from './native/billingCache';
 import { getSessionTolerant } from './native/offlineSession';
 import { AppLockOverlay } from './components/AppLockOverlay';
@@ -105,7 +106,9 @@ const App: React.FC = () => {
   // No-account trial (persisted so a refresh mid-trial doesn't bounce
   // back to the landing page). Signing in/up ends it.
   const [trialMode, setTrialMode] = useState<boolean>(
-    () => !isNativeApp() && readString(TRIAL_KEY, 1, '') === '1'
+    // (The DEV-only iOS preview keeps a trial started on the web, so app
+    // screens can be previewed without an account.)
+    () => (!isNativeApp() || isIosPreview()) && readString(TRIAL_KEY, 1, '') === '1'
   );
   // When the trial's "Create free account" CTA sends the user back to
   // the landing page, open the signup overlay right away.
