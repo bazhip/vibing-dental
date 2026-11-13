@@ -1,0 +1,192 @@
+{
+  "done": "Terminé",
+  "saving": "Enregistrement…",
+  "practice": {
+    "title": "Paramètres du cabinet",
+    "profile": "Profil",
+    "nameLabel": "Nom du cabinet",
+    "namePlaceholder": "Affiché dans l’application et sur chaque dossier",
+    "nameLockedLoading": "Le nom du cabinet est verrouillé tant que votre équipe n’est pas chargée — réessayez ci-dessous.",
+    "nameLockedShared": "Le nom du cabinet est partagé par toute l’équipe — seul le responsable principal peut le modifier.",
+    "nameSaved": "Nom du cabinet enregistré.",
+    "nameSaveFailed": "Impossible d’enregistrer le nom du cabinet.",
+    "discard": {
+      "title": "Abandonner la modification du nom du cabinet ?",
+      "message": "Le nouveau nom du cabinet n’a pas été enregistré.",
+      "confirm": "Abandonner",
+      "cancel": "Continuer la modification"
+    },
+    "logo": {
+      "label": "Logo du cabinet",
+      "alt": "Logo du cabinet",
+      "replace": "Remplacer",
+      "remove": "Retirer",
+      "working": "En cours…",
+      "empty": "Aucun logo importé — les dossiers utilisent l’emblème intégré au modèle.",
+      "upload": "Importer un logo",
+      "uploading": "Import en cours…",
+      "choose": "Choisir une image de logo",
+      "updated": "Logo mis à jour.",
+      "uploadFailed": "Impossible d’importer le logo.",
+      "removed": "Logo retiré.",
+      "removeFailed": "Impossible de retirer le logo.",
+      "removeTitle": "Retirer le logo du cabinet ?",
+      "removeMessage": "Les nouveaux dossiers et PDF utiliseront l’emblème intégré au modèle jusqu’à l’import d’un autre logo.",
+      "removeConfirm": "Retirer le logo"
+    },
+    "team": {
+      "title": "Équipe",
+      "loading": "Chargement de l’équipe…",
+      "settingUp": "Votre cabinet est encore en cours de configuration.",
+      "checkAgain": "Vérifier à nouveau",
+      "checking": "Vérification…",
+      "retry": "Réessayer",
+      "retrying": "Nouvelle tentative…",
+      "loadError": "Impossible de charger votre équipe. {{error}}",
+      "ownerBlurb": "Les collègues que vous ajoutez partagent les dossiers, les modèles et les images de ce cabinet.",
+      "memberBlurb": "Vous êtes membre de {{practice}}. Vous partagez les dossiers de ce cabinet.",
+      "you": "(vous)",
+      "pending": "Invitation en attente",
+      "roles": {
+        "primaryOwner": "Responsable principal",
+        "owner": "Responsable",
+        "member": "Membre"
+      },
+      "resend": "Renvoyer l’invitation",
+      "makeOwner": "Nommer responsable",
+      "makeMember": "Nommer membre",
+      "transfer": "Transférer la propriété",
+      "remove": "Retirer",
+      "emailLabel": "E-mail du collègue",
+      "add": "Ajouter",
+      "adding": "Ajout…",
+      "inviteHint": "Pas encore de compte ? Nous lui enverrons par e-mail une invitation pour définir un mot de passe et rejoindre le cabinet.",
+      "invalidEmail": "Saisissez une adresse e-mail valide.",
+      "invited": "Invitation envoyée à {{email}} — la personne définit un mot de passe et rejoint le cabinet.",
+      "existingAccount": "{{email}} a déjà un compte ToothOps — nous lui avons envoyé un lien d’acceptation par e-mail. La personne apparaîtra ici dès qu’elle aura rejoint le cabinet.",
+      "addFailed": "Impossible de l’ajouter.",
+      "failed": "L’opération a échoué. Veuillez réessayer.",
+      "loadFailed": "Impossible de charger votre équipe.",
+      "transferTitle": "Faire de {{email}} le responsable principal ?",
+      "transferMessage": "Le responsable principal gère la facturation et le nom du cabinet. Vous restez responsable du cabinet.",
+      "transferConfirm": "Transférer la propriété",
+      "transferred": "Propriété transférée.",
+      "removeTitle": "Retirer {{email}} du cabinet ?",
+      "removePendingMessage": "Son invitation est annulée.",
+      "removeMessage": "La personne perd l’accès aux dossiers partagés du cabinet, mais conserve ses propres dossiers.",
+      "cancelInvite": "Annuler l’invitation",
+      "removeConfirm": "Retirer",
+      "keep": "Conserver",
+      "inviteCancelled": "Invitation annulée.",
+      "memberRemoved": "Membre retiré.",
+      "inviteResent": "Invitation renvoyée à {{email}}.",
+      "nowOwner": "{{email}} est maintenant responsable.",
+      "nowMember": "{{email}} est maintenant membre."
+    },
+    "ownerReport": {
+      "title": "Compte rendu pour le propriétaire",
+      "blurb": "Le compte rendu que les familles emportent après une visite dentaire — sections, titres, formulations, langue et mise en page par défaut du cabinet.",
+      "customize": "Personnaliser le compte rendu"
+    },
+    "deletion": {
+      "title": "Supprimer le cabinet",
+      "blurb": "Supprime définitivement le cabinet et tous les dossiers partagés avec lui, y compris ceux de votre équipe, et résilie tout abonnement. Les membres de l’équipe conservent leur compte et leurs dossiers privés.",
+      "button": "Supprimer le cabinet…"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Impossible de lire cette image.",
+    "canvas": "Zone de dessin indisponible",
+    "convert": "Impossible de convertir l’image.",
+    "tooLarge": "Cette image est trop volumineuse — les fichiers de logo doivent faire moins de 10 Mo.",
+    "reportTooLarge": "Ces paramètres de compte rendu sont trop volumineux (50 Ko maximum) — raccourcissez certains textes ou supprimez un modèle."
+  },
+  "chart": {
+    "title": "Réglages du schéma dentaire",
+    "sections": {
+      "patient": "Réglages de la page Patient",
+      "anesthesia": "Réglages de l’anesthésie",
+      "charting": "Réglages du schéma dentaire",
+      "diagnosis": "Réglages du diagnostic",
+      "images": "Réglages des images"
+    },
+    "noteAccount": "Rien que pour vous — ces réglages suivent votre compte sur tous vos appareils. Les modifications sont enregistrées immédiatement.",
+    "noteBrowser": "Enregistrés dans ce navigateur. Les modifications s’appliquent immédiatement.",
+    "all": "Tous les réglages du schéma dentaire",
+    "charting": {
+      "title": "Schéma dentaire",
+      "view": "Affichage",
+      "grid": "Grille",
+      "byTooth": "Par dent",
+      "pocket": "Profondeurs de poche",
+      "pocketTooth": "Une par dent",
+      "pocketRoot": "Une par racine",
+      "pocketRootHint": "M / D, ou MB / MP / D sur les dents à trois racines",
+      "space": "Touche Espace dans la grille",
+      "spaceDown": "Passe à la dent suivante, vers le bas",
+      "spaceDownHint": "rapide pour dicter une série de profondeurs",
+      "spaceType": "Saisit une espace",
+      "scoreTap": "Après avoir touché un score dans la grille",
+      "scoreFinding": "Passer à l’observation suivante de la même dent",
+      "scoreFindingHint": "mobilité → récession → … pour les examens dent par dent",
+      "scoreTooth": "Descendre à la dent suivante",
+      "scoreToothHint": "pour noter une même observation sur toute la bouche",
+      "scoreStay": "Rester en place",
+      "columns": "Colonnes"
+    },
+    "beside": {
+      "title": "À côté des dents",
+      "show": "Afficher les observations sur le schéma de diagnostic",
+      "showHint": "(et dans le PDF)",
+      "include": "Inclure"
+    },
+    "anesthesia": {
+      "title": "Anesthésie",
+      "blocks": "Blocs nerveux affichés",
+      "blocksNote": "Un bloc masqué reste visible sur un dossier où une dose est saisie.",
+      "blockNames": {
+        "infraorbital": "Infra-orbitaire",
+        "caudalMaxillary": "Maxillaire caudal",
+        "inferiorAlveolar": "Alvéolaire inférieur",
+        "mental": "Mentonnier",
+        "other": "Autre"
+      },
+      "usual": "Votre anesthésique habituel",
+      "usualNote": "Proposé en un geste sur un dossier sans anesthésique renseigné.",
+      "drugPlaceholder": "p. ex. bupivacaïne",
+      "drugAria": "Anesthésique habituel",
+      "strengthAria": "Concentration de l’anesthésique habituel (%)"
+    },
+    "patient": {
+      "title": "Page Patient",
+      "hideRecheck": "Masquer le champ Contrôle prévu"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Inclure la grille de mesures",
+      "gridHint": "(facultatif lorsque les observations figurent sur le schéma)",
+      "images": "Inclure les images",
+      "imagesHint": "(4 par page, après le schéma)"
+    }
+  },
+  "feedback": {
+    "title": "Envoyer un commentaire",
+    "kinds": {
+      "bug": "Un problème",
+      "idea": "Idée",
+      "other": "Autre"
+    },
+    "kindsAria": "Type de commentaire",
+    "promptBug": "Que s’est-il passé ?",
+    "promptIdea": "Qu’est-ce qui vous aiderait ?",
+    "promptOther": "Votre message",
+    "bugPlaceholder": "Ce que vous avez fait, ce que vous attendiez, ce qui s’est passé à la place…",
+    "attach": "Joindre la transcription de ma dictée",
+    "note": "Transmis directement au développeur de ToothOps, qui vous répondra par e-mail.",
+    "sent": "Merci ! Votre commentaire a bien été envoyé.",
+    "sendFailed": "Envoi impossible. Veuillez réessayer.",
+    "needsAccount": "L’envoi de commentaires nécessite un compte.",
+    "send": "Envoyer",
+    "sending": "Envoi…"
+  }
+}

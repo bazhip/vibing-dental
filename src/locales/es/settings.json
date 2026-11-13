@@ -1,0 +1,192 @@
+{
+  "done": "Hecho",
+  "saving": "Guardando…",
+  "practice": {
+    "title": "Ajustes de la clínica",
+    "profile": "Perfil",
+    "nameLabel": "Nombre de la clínica",
+    "namePlaceholder": "Se muestra en la aplicación y en cada historial",
+    "nameLockedLoading": "El nombre de la clínica está bloqueado hasta que se cargue su equipo — reintente más abajo.",
+    "nameLockedShared": "El nombre de la clínica lo comparte todo el equipo — solo el propietario principal puede cambiarlo.",
+    "nameSaved": "Nombre de la clínica guardado.",
+    "nameSaveFailed": "No se pudo guardar el nombre de la clínica.",
+    "discard": {
+      "title": "¿Descartar el cambio del nombre de la clínica?",
+      "message": "El nuevo nombre de la clínica no se ha guardado.",
+      "confirm": "Descartar",
+      "cancel": "Seguir editando"
+    },
+    "logo": {
+      "label": "Logotipo de la clínica",
+      "alt": "Logotipo de la clínica",
+      "replace": "Reemplazar",
+      "remove": "Quitar",
+      "working": "Procesando…",
+      "empty": "No se ha subido ningún logotipo — los historiales usan el símbolo integrado de la plantilla.",
+      "upload": "Subir logotipo",
+      "uploading": "Subiendo…",
+      "choose": "Elegir una imagen de logotipo",
+      "updated": "Logotipo actualizado.",
+      "uploadFailed": "No se pudo subir el logotipo.",
+      "removed": "Logotipo quitado.",
+      "removeFailed": "No se pudo quitar el logotipo.",
+      "removeTitle": "¿Quitar el logotipo de la clínica?",
+      "removeMessage": "Los nuevos historiales y PDF usarán el símbolo integrado de la plantilla hasta que suba otro logotipo.",
+      "removeConfirm": "Quitar logotipo"
+    },
+    "team": {
+      "title": "Equipo",
+      "loading": "Cargando el equipo…",
+      "settingUp": "Su clínica aún se está configurando.",
+      "checkAgain": "Comprobar de nuevo",
+      "checking": "Comprobando…",
+      "retry": "Reintentar",
+      "retrying": "Reintentando…",
+      "loadError": "No se pudo cargar su equipo. {{error}}",
+      "ownerBlurb": "Los compañeros que añada comparten los historiales, las plantillas y las imágenes de esta clínica.",
+      "memberBlurb": "Es miembro de {{practice}}. Comparte los historiales de esta clínica.",
+      "you": "(usted)",
+      "pending": "Invitación pendiente",
+      "roles": {
+        "primaryOwner": "Propietario principal",
+        "owner": "Propietario",
+        "member": "Miembro"
+      },
+      "resend": "Reenviar invitación",
+      "makeOwner": "Hacer propietario",
+      "makeMember": "Hacer miembro",
+      "transfer": "Transferir la propiedad",
+      "remove": "Quitar",
+      "emailLabel": "Correo electrónico del compañero",
+      "add": "Añadir",
+      "adding": "Añadiendo…",
+      "inviteHint": "¿Aún no tiene cuenta? Le enviaremos por correo una invitación para crear una contraseña y unirse.",
+      "invalidEmail": "Introduzca una dirección de correo electrónico válida.",
+      "invited": "Invitación enviada a {{email}} — la persona crea una contraseña y ya forma parte de la clínica.",
+      "existingAccount": "{{email}} ya tiene una cuenta de ToothOps — le hemos enviado por correo un enlace para aceptar. Aparecerá aquí cuando se una.",
+      "addFailed": "No se pudo añadir a la persona.",
+      "failed": "No se pudo completar la operación. Inténtelo de nuevo.",
+      "loadFailed": "No se pudo cargar su equipo.",
+      "transferTitle": "¿Convertir a {{email}} en propietario principal?",
+      "transferMessage": "El propietario principal gestiona la facturación y el nombre de la clínica. Usted sigue siendo propietario de la clínica.",
+      "transferConfirm": "Transferir la propiedad",
+      "transferred": "Propiedad transferida.",
+      "removeTitle": "¿Quitar a {{email}} de la clínica?",
+      "removePendingMessage": "Su invitación se cancela.",
+      "removeMessage": "La persona pierde el acceso a los historiales compartidos de la clínica, pero conserva los suyos.",
+      "cancelInvite": "Cancelar invitación",
+      "removeConfirm": "Quitar",
+      "keep": "Conservar",
+      "inviteCancelled": "Invitación cancelada.",
+      "memberRemoved": "Miembro quitado.",
+      "inviteResent": "Invitación reenviada a {{email}}.",
+      "nowOwner": "{{email}} ahora es propietario.",
+      "nowMember": "{{email}} ahora es miembro."
+    },
+    "ownerReport": {
+      "title": "Informe para el propietario",
+      "blurb": "El informe que las familias se llevan a casa tras una visita dental — secciones, títulos, redacción, idioma y la maquetación predeterminada de toda la clínica.",
+      "customize": "Personalizar el informe para el propietario"
+    },
+    "deletion": {
+      "title": "Eliminar la clínica",
+      "blurb": "Elimina de forma permanente la clínica y todos los historiales compartidos con ella, incluidos los de su equipo, y cancela cualquier suscripción. Los miembros del equipo conservan sus cuentas y sus historiales privados.",
+      "button": "Eliminar la clínica…"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "No se pudo leer esa imagen.",
+    "canvas": "Lienzo no disponible",
+    "convert": "No se pudo convertir la imagen.",
+    "tooLarge": "Esa imagen es demasiado grande — los archivos de logotipo deben pesar menos de 10 MB.",
+    "reportTooLarge": "Esos ajustes del informe para el propietario son demasiado grandes (máximo 50 KB) — acorte algunos textos o elimine una plantilla."
+  },
+  "chart": {
+    "title": "Ajustes del odontograma",
+    "sections": {
+      "patient": "Ajustes de la página Paciente",
+      "anesthesia": "Ajustes de anestesia",
+      "charting": "Ajustes del odontograma",
+      "diagnosis": "Ajustes del diagnóstico",
+      "images": "Ajustes de las imágenes"
+    },
+    "noteAccount": "Solo para usted — estos ajustes siguen a su cuenta en todos sus dispositivos. Los cambios se guardan al instante.",
+    "noteBrowser": "Guardados en este navegador. Los cambios se aplican al instante.",
+    "all": "Todos los ajustes del odontograma",
+    "charting": {
+      "title": "Odontograma",
+      "view": "Vista",
+      "grid": "Cuadrícula",
+      "byTooth": "Por diente",
+      "pocket": "Profundidades de bolsa",
+      "pocketTooth": "Una por diente",
+      "pocketRoot": "Una por raíz",
+      "pocketRootHint": "M / D, o MB / MP / D en dientes de tres raíces",
+      "space": "Tecla Espacio en la cuadrícula",
+      "spaceDown": "Pasa al siguiente diente, hacia abajo",
+      "spaceDownHint": "rápido para dictar una serie de profundidades",
+      "spaceType": "Escribe un espacio",
+      "scoreTap": "Después de tocar una puntuación en la cuadrícula",
+      "scoreFinding": "Ir al siguiente hallazgo del mismo diente",
+      "scoreFindingHint": "movilidad → recesión → … para exámenes diente por diente",
+      "scoreTooth": "Bajar al siguiente diente",
+      "scoreToothHint": "para puntuar un mismo hallazgo en toda la boca",
+      "scoreStay": "Quedarse donde está",
+      "columns": "Columnas"
+    },
+    "beside": {
+      "title": "Junto a los dientes",
+      "show": "Mostrar los hallazgos en el esquema de diagnóstico",
+      "showHint": "(y en el PDF)",
+      "include": "Incluir"
+    },
+    "anesthesia": {
+      "title": "Anestesia",
+      "blocks": "Bloqueos nerviosos mostrados",
+      "blocksNote": "Un bloqueo oculto sigue apareciendo en un historial en el que tiene una dosis.",
+      "blockNames": {
+        "infraorbital": "Infraorbitario",
+        "caudalMaxillary": "Maxilar caudal",
+        "inferiorAlveolar": "Alveolar inferior",
+        "mental": "Mentoniano",
+        "other": "Otro"
+      },
+      "usual": "Su anestésico habitual",
+      "usualNote": "Se ofrece con un toque en un historial sin anestésico indicado.",
+      "drugPlaceholder": "p. ej., bupivacaína",
+      "drugAria": "Anestésico habitual",
+      "strengthAria": "Concentración del anestésico habitual (%)"
+    },
+    "patient": {
+      "title": "Página Paciente",
+      "hideRecheck": "Ocultar el campo Próxima revisión"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Incluir la cuadrícula de mediciones",
+      "gridHint": "(opcional si los hallazgos están en el esquema)",
+      "images": "Incluir las imágenes",
+      "imagesHint": "(4 por página, después del esquema)"
+    }
+  },
+  "feedback": {
+    "title": "Enviar comentarios",
+    "kinds": {
+      "bug": "Algo no funciona",
+      "idea": "Idea",
+      "other": "Otro"
+    },
+    "kindsAria": "Tipo de comentario",
+    "promptBug": "¿Qué ha pasado?",
+    "promptIdea": "¿Qué le ayudaría?",
+    "promptOther": "Su mensaje",
+    "bugPlaceholder": "Qué hizo, qué esperaba y qué ocurrió en su lugar…",
+    "attach": "Incluir la transcripción de mi dictado",
+    "note": "Llega directamente al desarrollador de ToothOps, que le responderá por correo electrónico.",
+    "sent": "¡Gracias! Su comentario se ha enviado.",
+    "sendFailed": "No se pudo enviar. Inténtelo de nuevo.",
+    "needsAccount": "Para enviar comentarios hace falta una cuenta.",
+    "send": "Enviar",
+    "sending": "Enviando…"
+  }
+}

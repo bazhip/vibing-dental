@@ -29,13 +29,13 @@ export const PERIO_FIELDS: { key: DentalField; readonly label: string }[] = [
 ];
 const FIELD_KEYS = new Set<string>(PERIO_FIELDS.map((f) => f.key));
 
-/** Nerve block rows on the Anesthesia page (each R/L pair, plus Other). */
+/** Nerve block rows on the Anesthesia page (each R/L pair, plus Other). Names: settings:chart.anesthesia.blockNames. */
 export const BLOCK_ROW_OPTIONS = [
-  { id: 'infraorbital', label: 'Infraorbital' },
-  { id: 'caudalMaxillary', label: 'Caudal maxillary' },
-  { id: 'inferiorAlveolar', label: 'Inferior alveolar' },
-  { id: 'mental', label: 'Mental' },
-  { id: 'other', label: 'Other' },
+  { id: 'infraorbital' },
+  { id: 'caudalMaxillary' },
+  { id: 'inferiorAlveolar' },
+  { id: 'mental' },
+  { id: 'other' },
 ] as const;
 export type BlockRowId = (typeof BLOCK_ROW_OPTIONS)[number]['id'];
 const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));

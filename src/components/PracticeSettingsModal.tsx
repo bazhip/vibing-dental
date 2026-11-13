@@ -1,4 +1,7 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import i18n from '../i18n';
+import { formatDateTime } from '../i18n/format';
 import { UseProfileReturn, PLAN_LIMITS } from '../hooks/useProfile';
 import { useTeam, TeamMember } from '../hooks/useTeam';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -13,6 +16,7 @@ import {
   FREE_BETA_SEATS,
   planKeyFor,
   planByKey,
+  formatPlanPrice,
 } from '../constants/plans';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
@@ -31,10 +35,17 @@ const LIVE_STATUSES = ['active', 'trialing', 'past_due'];
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
+/** Known subscription statuses with a catalog entry; anything else shows Stripe's own word. */
+const STATUS_WORDS = ['canceled', 'incomplete', 'incomplete_expired', 'unpaid', 'paused'] as const;
+
+/** A date in the active language's plain numeric short form (what toLocaleDateString() gave). */
+const numericDate = (d: Date | string) => formatDateTime(d, i18n.language, { year: 'numeric', month: 'numeric', day: 'numeric' });
+
 /** "Primary owner" / "Owner" / "Member" — never the raw role key. */
 export function roleLabel(m: Pick<TeamMember, 'role' | 'isPrimaryOwner'>): string {
-  if (m.isPrimaryOwner) return 'Primary owner';
-  return m.role === 'owner' ? 'Owner' : 'Member';
+  const t = i18n.getFixedT(null, 'settings');
+  if (m.isPrimaryOwner) return t('practice.team.roles.primaryOwner');
+  return m.role === 'owner' ? t('practice.team.roles.owner') : t('practice.team.roles.member');
 }
 
 /**
@@ -56,6 +67,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   onClose,
   profile,
 }) => {
+  const { t } = useTranslation('settings');
   const [practiceName, setPracticeName] = React.useState(profile.practiceName);
   const [nameBusy, setNameBusy] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
@@ -93,7 +105,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         if (!cancelled) setBilling(b);
       })
       .catch((e) => {
-        if (!cancelled) setBillingError(friendlyError(e, 'Could not load billing.'));
+        if (!cancelled) setBillingError(friendlyError(e, t('settings.loadFailed', { ns: 'billing' })));
       });
     return () => {
       cancelled = true;
@@ -137,16 +149,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     if (nameBusy) return;
     if (nameDirty) {
       const discard = await confirmDialog({
-        title: 'Discard the practice name change?',
-        message: 'The new practice name hasn’t been saved.',
-        confirmLabel: 'Discard',
-        cancelLabel: 'Keep editing',
+        title: t('practice.discard.title'),
+        message: t('practice.discard.message'),
+        confirmLabel: t('practice.discard.confirm'),
+        cancelLabel: t('practice.discard.cancel'),
         danger: true,
       });
       if (!discard) return;
     }
     onClose();
-  }, [nameBusy, nameDirty, onClose]);
+  }, [nameBusy, nameDirty, onClose, t]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -192,10 +204,10 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setNameError('');
     try {
       await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
-      toast('Practice name saved.', { kind: 'success' });
+      toast(t('practice.nameSaved'), { kind: 'success' });
       onClose();
     } catch (e) {
-      setNameError(friendlyError(e, 'Could not save the practice name.'));
+      setNameError(friendlyError(e, t('practice.nameSaveFailed')));
     } finally {
       setNameBusy(false);
     }
@@ -209,9 +221,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setLogoError('');
     try {
       await profile.uploadLogo(file);
-      toast('Logo updated.', { kind: 'success' });
+      toast(t('practice.logo.updated'), { kind: 'success' });
     } catch (err) {
-      setLogoError(friendlyError(err, 'Could not upload the logo.'));
+      setLogoError(friendlyError(err, t('practice.logo.uploadFailed')));
     } finally {
       setLogoBusy(false);
     }
@@ -219,9 +231,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   const handleLogoRemove = async () => {
     const ok = await confirmDialog({
-      title: 'Remove the practice logo?',
-      message: 'New charts and PDFs will use the template’s built-in mark until you upload another.',
-      confirmLabel: 'Remove logo',
+      title: t('practice.logo.removeTitle'),
+      message: t('practice.logo.removeMessage'),
+      confirmLabel: t('practice.logo.removeConfirm'),
       danger: true,
     });
     if (!ok) return;
@@ -229,9 +241,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setLogoError('');
     try {
       await profile.removeLogo();
-      toast('Logo removed.', { kind: 'success' });
+      toast(t('practice.logo.removed'), { kind: 'success' });
     } catch (err) {
-      setLogoError(friendlyError(err, 'Could not remove the logo.'));
+      setLogoError(friendlyError(err, t('practice.logo.removeFailed')));
     } finally {
       setLogoBusy(false);
     }
@@ -245,7 +257,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       await fn();
       setTeamNote(msg);
     } catch (e) {
-      setTeamError(friendlyError(e, 'That didn’t work. Please try again.'));
+      setTeamError(friendlyError(e, t('practice.team.failed')));
     } finally {
       setTeamBusy(false);
     }
@@ -262,26 +274,23 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   const handleTransfer = async (m: TeamMember) => {
     const ok = await confirmDialog({
-      title: `Make ${m.email} the primary owner?`,
-      message:
-        'The primary owner holds billing and the practice name. You stay an owner of the practice.',
-      confirmLabel: 'Transfer ownership',
+      title: t('practice.team.transferTitle', { email: m.email }),
+      message: t('practice.team.transferMessage'),
+      confirmLabel: t('practice.team.transferConfirm'),
       danger: true,
     });
-    if (ok) await runTeam('Ownership transferred.', () => team.transferOwnership(m.userId));
+    if (ok) await runTeam(t('practice.team.transferred'), () => team.transferOwnership(m.userId));
   };
 
   const handleRemove = async (m: TeamMember) => {
     const ok = await confirmDialog({
-      title: `Remove ${m.email} from the practice?`,
-      message: m.pending
-        ? 'Their invite is cancelled.'
-        : 'They lose access to the practice’s shared charts but keep any charts of their own.',
-      confirmLabel: m.pending ? 'Cancel invite' : 'Remove',
-      cancelLabel: 'Keep',
+      title: t('practice.team.removeTitle', { email: m.email }),
+      message: m.pending ? t('practice.team.removePendingMessage') : t('practice.team.removeMessage'),
+      confirmLabel: m.pending ? t('practice.team.cancelInvite') : t('practice.team.removeConfirm'),
+      cancelLabel: t('practice.team.keep'),
       danger: true,
     });
-    if (ok) await runTeam(m.pending ? 'Invite cancelled.' : 'Member removed.', () => team.removeMember(m.userId));
+    if (ok) await runTeam(m.pending ? t('practice.team.inviteCancelled') : t('practice.team.memberRemoved'), () => team.removeMember(m.userId));
   };
 
   const handleAddMember = async (e: React.FormEvent) => {
@@ -290,7 +299,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     if (!email || teamBusy) return;
     if (!EMAIL_RE.test(email)) {
       setTeamNote('');
-      setTeamError('Enter a valid email address.');
+      setTeamError(t('practice.team.invalidEmail'));
       return;
     }
     setTeamBusy(true);
@@ -300,12 +309,12 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       const result = await team.addMember(email);
       setTeamNote(
         result === 'invited'
-          ? `Invite emailed to ${email} — they set a password and they're in.`
-          : `${email} already has a ToothOps account — we emailed them a link to accept. They'll appear here once they join.`
+          ? t('practice.team.invited', { email })
+          : t('practice.team.existingAccount', { email })
       );
       setMemberEmail('');
     } catch (err) {
-      setTeamError(friendlyError(err, 'Could not add them.'));
+      setTeamError(friendlyError(err, t('practice.team.addFailed')));
     } finally {
       setTeamBusy(false);
     }
@@ -315,9 +324,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     const def = planByKey(next);
     if (!def) return;
     const ok = await confirmDialog({
-      title: `Switch to ${def.name}?`,
-      message: `$${def.priceMonthly}/month. The difference is prorated on your next invoice.`,
-      confirmLabel: 'Switch plan',
+      title: t('settings.switchTitle', { ns: 'billing', plan: def.name }),
+      message: t('settings.switchMessage', { ns: 'billing', price: formatPlanPrice(def.priceMonthly) }),
+      confirmLabel: t('settings.switchConfirm', { ns: 'billing' }),
     });
     if (!ok) return;
     setBillingBusy(true);
@@ -326,9 +335,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     try {
       await changePlan(next);
       setBilling(await fetchBilling());
-      setBillingNote('Plan updated.');
+      setBillingNote(t('settings.planUpdated', { ns: 'billing' }));
     } catch (err) {
-      setBillingError(friendlyError(err, 'Could not change the plan.'));
+      setBillingError(friendlyError(err, t('settings.changeFailed', { ns: 'billing' })));
     } finally {
       setBillingBusy(false);
     }
@@ -338,21 +347,21 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setBillingBusy(true);
     setBillingError('');
     openBillingPortal().catch((err) => {
-      setBillingError(friendlyError(err, 'Could not open the billing portal.'));
+      setBillingError(friendlyError(err, t('settings.portalFailed', { ns: 'billing' })));
       setBillingBusy(false);
     });
   };
 
   const teamLoadErrorRow = (
     <div className="login-error settings-msg settings-msg--row" role="alert">
-      <span>Couldn’t load your team. {team.error}</span>
+      <span>{t('practice.team.loadError', { error: team.error })}</span>
       <button
         type="button"
         className="diagram-view__action settings-msg__action"
         onClick={retryTeam}
         disabled={teamRetrying}
       >
-        {teamRetrying ? 'Retrying…' : 'Retry'}
+        {teamRetrying ? t('practice.team.retrying') : t('practice.team.retry')}
       </button>
     </div>
   );
@@ -360,23 +369,22 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const liveSubscription = !!billing && LIVE_STATUSES.includes(billing.status);
   const onFreeBeta = FREE_BETA && !!billing && !liveSubscription && billing.status !== 'comped';
 
-  const statusText = (b: BillingInfo) =>
-    b.status === 'trialing'
-      ? `free trial${b.periodEnd ? ` — first payment ${new Date(b.periodEnd).toLocaleDateString()}` : ''}`
-      : b.status === 'active'
-      ? `active${b.periodEnd ? ` — renews ${new Date(b.periodEnd).toLocaleDateString()}` : ''}`
-      : b.status === 'past_due'
-      ? 'payment failed — update your card'
-      : b.status === 'none'
-      ? 'not subscribed yet'
-      : b.status.replace(/_/g, ' ');
+  const statusText = (b: BillingInfo) => {
+    const date = b.periodEnd ? numericDate(b.periodEnd) : '';
+    if (b.status === 'trialing') return b.periodEnd ? t('settings.status.trialingDate', { ns: 'billing', date }) : t('settings.status.trialing', { ns: 'billing' });
+    if (b.status === 'active') return b.periodEnd ? t('settings.status.activeDate', { ns: 'billing', date }) : t('settings.status.active', { ns: 'billing' });
+    if (b.status === 'past_due') return t('settings.status.past_due', { ns: 'billing' });
+    if (b.status === 'none') return t('settings.status.none', { ns: 'billing' });
+    const word = STATUS_WORDS.find((w) => w === b.status);
+    return word ? t(`settings.status.${word}`, { ns: 'billing' }) : b.status.replace(/_/g, ' ');
+  };
 
   return (
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2 id="practice-settings-title">Practice settings</h2>
-          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label="Close">
+          <h2 id="practice-settings-title">{t('practice.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>
@@ -389,9 +397,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               void handleSave();
             }}
           >
-            <h3 className="ai-settings-subhead">Profile</h3>
+            <h3 className="ai-settings-subhead">{t('practice.profile')}</h3>
             <label className="patient-form__label">
-              Practice name
+              {t('practice.nameLabel')}
               <input
                 ref={firstFieldRef}
                 type="text"
@@ -401,15 +409,13 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                   setPracticeName(e.target.value);
                   setNameError('');
                 }}
-                placeholder="Shown in the app and on every chart"
+                placeholder={t('practice.namePlaceholder')}
                 disabled={!canRename || nameBusy}
               />
             </label>
             {!canRename && (
               <p className="patient-form__hint">
-                {teamLoadFailed
-                  ? 'The practice name is locked until your team loads — retry below.'
-                  : 'The practice name is shared by the whole team — only the primary owner can change it.'}
+                {teamLoadFailed ? t('practice.nameLockedLoading') : t('practice.nameLockedShared')}
               </p>
             )}
             {nameError && <div className="login-error settings-msg" role="alert">{nameError}</div>}
@@ -417,26 +423,26 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
           {/* ---- Logo --------------------------------------------------- */}
           <section className="ai-settings-section">
-            <span className="patient-form__label">Practice logo</span>
+            <span className="patient-form__label">{t('practice.logo.label')}</span>
             {profile.logoUrl ? (
               <div className="practice-logo-row">
-                <img src={profile.logoUrl} alt="Practice logo" className="practice-logo-preview" />
+                <img src={profile.logoUrl} alt={t('practice.logo.alt')} className="practice-logo-preview" />
                 <div className="practice-logo-actions">
                   <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                    {logoBusy ? 'Working…' : 'Replace'}
+                    {logoBusy ? t('practice.logo.working') : t('practice.logo.replace')}
                   </button>
                   <button type="button" className="diagram-view__action diagram-view__action--danger" onClick={handleLogoRemove} disabled={busy}>
-                    Remove
+                    {t('practice.logo.remove')}
                   </button>
                 </div>
               </div>
             ) : (
               <div className="practice-logo-row">
                 <span className="practice-logo-empty">
-                  No logo uploaded — charts use the template's built-in mark.
+                  {t('practice.logo.empty')}
                 </span>
                 <button type="button" className="diagram-view__action" onClick={() => fileRef.current?.click()} disabled={busy}>
-                  {logoBusy ? 'Uploading…' : 'Upload logo'}
+                  {logoBusy ? t('practice.logo.uploading') : t('practice.logo.upload')}
                 </button>
               </div>
             )}
@@ -446,45 +452,45 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               accept="image/png,image/jpeg,image/webp"
               onChange={handleLogoPick}
               style={{ display: 'none' }}
-              aria-label="Choose a logo image"
+              aria-label={t('practice.logo.choose')}
             />
             {logoError && <div className="login-error settings-msg" role="alert">{logoError}</div>}
           </section>
 
           {/* ---- Team --------------------------------------------------- */}
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Team</h3>
+            <h3 className="ai-settings-subhead">{t('practice.team.title')}</h3>
             {!team.enabled ? null : !team.loaded ? (
-              <p className="practice-logo-empty">Loading team…</p>
+              <p className="practice-logo-empty">{t('practice.team.loading')}</p>
             ) : teamLoadFailed ? (
               teamLoadErrorRow
             ) : !team.practice ? (
               <div className="settings-msg--row">
-                <p className="practice-logo-empty">Your practice is still being set up.</p>
+                <p className="practice-logo-empty">{t('practice.team.settingUp')}</p>
                 <button
                   type="button"
                   className="diagram-view__action"
                   onClick={retryTeam}
                   disabled={teamRetrying}
                 >
-                  {teamRetrying ? 'Checking…' : 'Check again'}
+                  {teamRetrying ? t('practice.team.checking') : t('practice.team.checkAgain')}
                 </button>
               </div>
             ) : (
               <>
                 <p className="ai-settings-blurb">
                   {isOwner
-                    ? 'Colleagues you add share this practice’s charts, templates, and images.'
-                    : `You’re a member of ${team.practice.name}. You share this practice’s charts.`}
+                    ? t('practice.team.ownerBlurb')
+                    : t('practice.team.memberBlurb', { practice: team.practice.name })}
                 </p>
                 <ul className="team__members">
                   {team.members.map((m) => (
                     <li key={m.userId} className="team__member">
                       <span className="team__member-id">
-                        <strong>{m.email}{m.isYou ? ' (you)' : ''}</strong>
+                        <strong>{m.email}{m.isYou ? ` ${t('practice.team.you')}` : ''}</strong>
                         {m.doctorName && <span className="team__member-name">{m.doctorName}</span>}
                       </span>
-                      {m.pending && <span className="team__badge team__badge--pending">Pending invite</span>}
+                      {m.pending && <span className="team__badge team__badge--pending">{t('practice.team.pending')}</span>}
                       <span className="team__member-role">{roleLabel(m)}</span>
                       {isOwner && !m.isYou && (
                         <span className="team__member-actions">
@@ -494,10 +500,10 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               className="diagram-view__action"
                               disabled={teamBusy}
                               onClick={() =>
-                                runTeam(`Invite re-sent to ${m.email}.`, () => team.resendInvite(m.userId))
+                                runTeam(t('practice.team.inviteResent', { email: m.email }), () => team.resendInvite(m.userId))
                               }
                             >
-                              Resend invite
+                              {t('practice.team.resend')}
                             </button>
                           )}
                           {/* Roles only apply to people who've joined —
@@ -507,9 +513,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               type="button"
                               className="diagram-view__action"
                               disabled={teamBusy}
-                              onClick={() => runTeam(`${m.email} is now an owner.`, () => team.setRole(m.userId, 'owner'))}
+                              onClick={() => runTeam(t('practice.team.nowOwner', { email: m.email }), () => team.setRole(m.userId, 'owner'))}
                             >
-                              Make owner
+                              {t('practice.team.makeOwner')}
                             </button>
                           )}
                           {!m.pending && m.role === 'owner' && !m.isPrimaryOwner && (
@@ -517,9 +523,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               type="button"
                               className="diagram-view__action"
                               disabled={teamBusy}
-                              onClick={() => runTeam(`${m.email} is now a member.`, () => team.setRole(m.userId, 'member'))}
+                              onClick={() => runTeam(t('practice.team.nowMember', { email: m.email }), () => team.setRole(m.userId, 'member'))}
                             >
-                              Make member
+                              {t('practice.team.makeMember')}
                             </button>
                           )}
                           {!m.isPrimaryOwner && !m.pending && (
@@ -529,7 +535,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               disabled={teamBusy}
                               onClick={() => handleTransfer(m)}
                             >
-                              Transfer ownership
+                              {t('practice.team.transfer')}
                             </button>
                           )}
                           {!m.isPrimaryOwner && (
@@ -539,7 +545,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                               disabled={teamBusy}
                               onClick={() => handleRemove(m)}
                             >
-                              Remove
+                              {t('practice.team.remove')}
                             </button>
                           )}
                         </span>
@@ -553,8 +559,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                       <input
                         type="email"
                         className="patient-form__input"
-                        placeholder="Colleague's email"
-                        aria-label="Colleague's email"
+                        placeholder={t('practice.team.emailLabel')}
+                        aria-label={t('practice.team.emailLabel')}
                         autoComplete="off"
                         value={memberEmail}
                         onChange={(e) => {
@@ -567,11 +573,11 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                         className="diagram-view__action"
                         disabled={teamBusy || !memberEmail.trim()}
                       >
-                        {teamBusy ? 'Adding…' : 'Add'}
+                        {teamBusy ? t('practice.team.adding') : t('practice.team.add')}
                       </button>
                     </form>
                     <p className="patient-form__hint">
-                      No account yet? We'll email them an invite to set a password and join.
+                      {t('practice.team.inviteHint')}
                     </p>
                   </>
                 )}
@@ -586,17 +592,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           {/* ---- Owner report --------------------------------------------- */}
           {profile.ownerReportEnabled && (
             <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Owner report</h3>
+              <h3 className="ai-settings-subhead">{t('practice.ownerReport.title')}</h3>
               <p className="ai-settings-blurb">
-                The report families take home after a dental visit — sections, headings, wording,
-                language, and the practice-wide default layout.
+                {t('practice.ownerReport.blurb')}
               </p>
               <button
                 type="button"
                 className="diagram-view__action"
                 onClick={() => setTemplatesOpen(true)}
               >
-                Customize owner report
+                {t('practice.ownerReport.customize')}
               </button>
             </section>
           )}
@@ -604,7 +609,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           {/* ---- Billing ------------------------------------------------- */}
           {cloudEnabled && (
             <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Billing</h3>
+              <h3 className="ai-settings-subhead">{t('settings.title', { ns: 'billing' })}</h3>
               {!billing ? (
                 billingError ? (
                   <div className="login-error settings-msg settings-msg--row" role="alert">
@@ -614,32 +619,41 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                       className="diagram-view__action settings-msg__action"
                       onClick={() => setBillingLoadKey((k) => k + 1)}
                     >
-                      Retry
+                      {t('settings.retry', { ns: 'billing' })}
                     </button>
                   </div>
                 ) : (
-                  <p className="practice-logo-empty">Loading billing…</p>
+                  <p className="practice-logo-empty">{t('settings.loading', { ns: 'billing' })}</p>
                 )
               ) : billing.status === 'comped' ? (
                 <p className="ai-settings-blurb">
-                  This practice has complimentary access — no subscription needed.
+                  {t('settings.comped', { ns: 'billing' })}
                 </p>
               ) : onFreeBeta ? (
                 <>
                   <p className="ai-settings-blurb">
-                    <strong>Free beta</strong> · {FREE_BETA_SEATS} seats · {PLAN_LIMITS.free.maxImages} images per
-                    chart · AI dictation included
+                    <Trans
+                      ns="billing"
+                      i18nKey="settings.freeBeta"
+                      values={{ seats: FREE_BETA_SEATS, images: PLAN_LIMITS.free.maxImages }}
+                      components={{ strong: <strong /> }}
+                    />
                   </p>
                   <p className="patient-form__hint">
-                    No card needed during the beta.
-                    {billing.memberCount > 0 && ` ${billing.memberCount} of ${FREE_BETA_SEATS} seats in use.`}
-                    {' '}Need more than {FREE_BETA_SEATS} seats?{' '}
-                    <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+                    {t('settings.noCard', { ns: 'billing' })}
+                    {billing.memberCount > 0 && ` ${t('settings.seatsInUse', { ns: 'billing', used: billing.memberCount, seats: FREE_BETA_SEATS })}`}
+                    {' '}
+                    <Trans
+                      ns="billing"
+                      i18nKey="settings.needMoreBeta"
+                      values={{ seats: FREE_BETA_SEATS }}
+                      components={{ a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`} /> }}
+                    />
                   </p>
                   {billing.role === 'owner' && billing.hasStripe && (
                     <div className="practice-logo-actions">
                       <button type="button" className="diagram-view__action" disabled={billingBusy} onClick={handleOpenPortal}>
-                        Billing history
+                        {t('settings.history', { ns: 'billing' })}
                       </button>
                     </div>
                   )}
@@ -648,10 +662,10 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
               ) : (
                 <>
                   <p className="ai-settings-blurb">
-                    <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? 'No plan'}</strong>
+                    <strong>{planByKey(planKeyFor(billing.accountType, billing.plan))?.name ?? t('settings.noPlan', { ns: 'billing' })}</strong>
                     {' · '}
                     {statusText(billing)}
-                    {billing.accountType === 'practice' && ` · ${billing.memberCount}/${billing.seats} seats`}
+                    {billing.accountType === 'practice' && ` · ${t('settings.seatsUsed', { ns: 'billing', used: billing.memberCount, seats: billing.seats })}`}
                   </p>
                   {billing.role === 'owner' ? (
                     <>
@@ -661,12 +675,12 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                             className="patient-form__input"
                             value={planKeyFor(billing.accountType, billing.plan)}
                             disabled={billingBusy}
-                            aria-label="Change plan"
+                            aria-label={t('settings.changePlan', { ns: 'billing' })}
                             onChange={(e) => void handlePlanChange(e.target.value as PlanKey)}
                           >
                             {PLANS.map((p) => (
                               <option key={p.key} value={p.key}>
-                                {p.name} — ${p.priceMonthly}/mo
+                                {t('settings.planOption', { ns: 'billing', name: p.name, price: formatPlanPrice(p.priceMonthly) })}
                               </option>
                             ))}
                           </select>
@@ -676,21 +690,23 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                             disabled={billingBusy}
                             onClick={handleOpenPortal}
                           >
-                            Manage billing
+                            {t('settings.manage', { ns: 'billing' })}
                           </button>
                         </div>
                       )}
                       <p className="patient-form__hint">
-                        {billing.hasStripe
-                          ? 'Manage billing opens Stripe — card, invoices, and cancellation.'
-                          : 'You’ll be asked to pick a plan when your access needs one.'}
-                        {' '}Need more than 5 seats?{' '}
-                        <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`}>Contact us</a>.
+                        {billing.hasStripe ? t('settings.hintStripe', { ns: 'billing' }) : t('settings.hintNoStripe', { ns: 'billing' })}
+                        {' '}
+                        <Trans
+                          ns="billing"
+                          i18nKey="settings.needMore"
+                          components={{ a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20larger%20plan`} /> }}
+                        />
                       </p>
                     </>
                   ) : (
                     <p className="patient-form__hint">
-                      Billing is managed by {billing.ownerEmail || 'the practice owner'}.
+                      {t('settings.managedBy', { ns: 'billing', owner: billing.ownerEmail || t('settings.theOwner', { ns: 'billing' }) })}
                     </p>
                   )}
                   {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
@@ -704,10 +720,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           {team.practice && team.primaryOwnerId != null &&
             team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
             <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Delete practice</h3>
+              <h3 className="ai-settings-subhead">{t('practice.deletion.title')}</h3>
               <p className="patient-form__hint">
-                Permanently deletes the practice and every chart shared with it, including your
-                team’s, and cancels any subscription. Team members keep their accounts and private charts.
+                {t('practice.deletion.blurb')}
               </p>
               <div className="practice-logo-actions">
                 <button
@@ -715,7 +730,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                   className="diagram-view__action diagram-view__action--danger"
                   onClick={() => void deleteMyPractice(team.practice?.name ?? '')}
                 >
-                  Delete practice…
+                  {t('practice.deletion.button')}
                 </button>
               </div>
             </section>
@@ -728,7 +743,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           {nameDirty ? (
             <>
               <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={nameBusy}>
-                Cancel
+                {t('actions.cancel', { ns: 'common' })}
               </button>
               <button
                 type="button"
@@ -736,12 +751,12 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                 onClick={() => void handleSave()}
                 disabled={nameBusy}
               >
-                {nameBusy ? 'Saving…' : 'Save'}
+                {nameBusy ? t('saving') : t('actions.save', { ns: 'common' })}
               </button>
             </>
           ) : (
             <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose}>
-              Done
+              {t('done')}
             </button>
           )}
         </footer>

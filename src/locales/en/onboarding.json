@@ -1,0 +1,92 @@
+{
+  "walkthrough": {
+    "aria": "Getting started",
+    "progress": "{{current}} of {{total}}",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Get charting",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to ToothOps",
+        "body": "A 60-second tour of where everything lives. You can replay it any time from Settings → Getting started."
+      },
+      "sections": {
+        "title": "The eight sections",
+        "body": "A dental record, top to bottom. Work down these in order or jump around — everything autosaves."
+      },
+      "patient": {
+        "title": "Patient & owner",
+        "body": "Name, owner contact, and the recheck date. Only the patient name is required to save."
+      },
+      "species": {
+        "title": "Species & dentition",
+        "body": "Pick Feline or Canine, then Permanent or Deciduous — the tooth layout follows."
+      },
+      "grid": {
+        "title": "The charting grid",
+        "body": "Per-tooth measurements. Tab moves across, Enter moves down — chart without looking up."
+      },
+      "diagrams": {
+        "title": "Diagrams",
+        "body": "Click a tooth to mark it; switch between Comment and Draw, add free notes. Undo with ⌘Z."
+      },
+      "codes": {
+        "title": "Code reference",
+        "body": "Search the full AVDC code set here; it stays pinned beside the diagram as you scroll."
+      },
+      "treatment": {
+        "title": "Treatment report & templates",
+        "body": "Write the report, or insert a saved template from the dropdown — and save new ones to reuse."
+      },
+      "library": {
+        "title": "My charts",
+        "body": "Reopen a patient’s past visits (read-only until you Edit), switch visits by date, start a new patient, or load a chart PDF."
+      },
+      "dictate": {
+        "title": "Dictate",
+        "body": "Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything."
+      },
+      "settings": {
+        "title": "Settings",
+        "body": "Practice name & logo, team, recheck-reminder templates, your account — and this tour."
+      },
+      "pdf": {
+        "title": "Preview & download the PDF",
+        "body": "Build the client-ready chart PDF with your logo whenever you’re ready."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Finish setting up",
+    "both": "Your practice and doctor name appear on every chart you print.",
+    "practiceOnly": "Your practice name appears on every chart you print.",
+    "doctorOnly": "Your doctor name appears on every chart you print.",
+    "practiceName": "Practice name",
+    "doctorName": "Doctor name",
+    "doctorPlaceholder": "e.g. Dr. Jane Smith",
+    "logoOptional": "Practice logo (optional)",
+    "logoNamed": "Logo: {{name}}",
+    "logoHint": "Printed at the top of your charts. PNG, JPG or WebP.",
+    "later": "Later",
+    "save": "Save",
+    "saving": "Saving…",
+    "namesNeeded": "Both names are needed — they appear on your charts.",
+    "logoFailed": "Your names are saved, but the logo couldn’t be uploaded — add it later in Practice settings.",
+    "allSet": "You’re all set.",
+    "saveFailed": "Could not save."
+  },
+  "join": {
+    "title": "Join {{practice}}?",
+    "invitation": "Practice invitation",
+    "checking": "Checking your invitation…",
+    "thisPractice": "this practice",
+    "alreadyMember": "You’re already a member of {{practice}}.",
+    "invited": "You’ve been invited to join <strong>{{practice}}</strong> on ToothOps. Members share the practice’s charts, report templates and recheck list, and new charts you save are shared with the team.",
+    "shareExisting": "Also share the charts I’ve already made",
+    "close": "Close",
+    "notNow": "Not now",
+    "joining": "Joining…",
+    "joinButton": "Join {{practice}}"
+  }
+}

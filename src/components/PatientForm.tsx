@@ -68,6 +68,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           <input
             type="text"
             className="patient-form__input"
+            data-tour="patient-name"
             placeholder={t('patient.namePlaceholder')}
             value={patientInfo.patientName}
             onChange={handleInputChange('patientName')}

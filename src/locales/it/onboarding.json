@@ -1,0 +1,92 @@
+{
+  "walkthrough": {
+    "aria": "Per iniziare",
+    "progress": "{{current}} di {{total}}",
+    "skip": "Salta",
+    "back": "Indietro",
+    "next": "Avanti",
+    "finish": "Inizia",
+    "steps": {
+      "welcome": {
+        "title": "Benvenuto in ToothOps",
+        "body": "Un giro di 60 secondi per scoprire dove si trova ogni cosa. Può rivederlo in qualsiasi momento da Impostazioni → Per iniziare."
+      },
+      "sections": {
+        "title": "Le otto sezioni",
+        "body": "Una cartella odontoiatrica, dall’alto in basso. Le percorra in ordine o salti dall’una all’altra — tutto viene salvato automaticamente."
+      },
+      "patient": {
+        "title": "Paziente e proprietario",
+        "body": "Nome, contatti del proprietario e data del controllo. Per salvare serve solo il nome del paziente."
+      },
+      "species": {
+        "title": "Specie e dentatura",
+        "body": "Scelga Felino o Canino, poi Permanente o Decidua — lo schema dei denti si adatta."
+      },
+      "grid": {
+        "title": "La griglia delle misure",
+        "body": "Misure dente per dente. Tab si sposta in orizzontale, Invio in basso — compili senza staccare gli occhi dallo schermo."
+      },
+      "diagrams": {
+        "title": "Schemi",
+        "body": "Faccia clic su un dente per segnarlo; passi tra Commento e Disegno e aggiunga note libere. Annulli con ⌘Z."
+      },
+      "codes": {
+        "title": "Riferimento dei codici",
+        "body": "Cerchi qui nell’intero set di codici AVDC; resta fissato accanto allo schema mentre scorre la pagina."
+      },
+      "treatment": {
+        "title": "Referto del trattamento e modelli",
+        "body": "Scriva il referto oppure inserisca un modello salvato dal menu a tendina — e ne salvi di nuovi per riutilizzarli."
+      },
+      "library": {
+        "title": "Le mie cartelle",
+        "body": "Riapra le visite passate di un paziente (in sola lettura finché non fa clic su Modifica), passi da una visita all’altra per data, crei un nuovo paziente o carichi il PDF di una cartella."
+      },
+      "dictate": {
+        "title": "Detta",
+        "body": "Tocchi Detta e descriva i Suoi reperti — da qualsiasi pagina. Ognuno finisce al posto giusto e un pannello in tempo reale mostra ogni modifica, così potrà annullare qualsiasi cosa."
+      },
+      "settings": {
+        "title": "Impostazioni",
+        "body": "Nome e logo dello studio, team, modelli dei promemoria di controllo, il Suo account — e questo giro guidato."
+      },
+      "pdf": {
+        "title": "Anteprima e download del PDF",
+        "body": "Crei il PDF della cartella, pronto per il cliente e con il Suo logo, quando vuole."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Completi la configurazione",
+    "both": "Il nome del Suo studio e quello del medico veterinario compaiono su ogni cartella che stampa.",
+    "practiceOnly": "Il nome del Suo studio compare su ogni cartella che stampa.",
+    "doctorOnly": "Il nome del medico veterinario compare su ogni cartella che stampa.",
+    "practiceName": "Nome dello studio",
+    "doctorName": "Nome del medico veterinario",
+    "doctorPlaceholder": "ad es. Dott.ssa Giulia Rossi",
+    "logoOptional": "Logo dello studio (facoltativo)",
+    "logoNamed": "Logo: {{name}}",
+    "logoHint": "Stampato in alto sulle Sue cartelle. PNG, JPG o WebP.",
+    "later": "Più tardi",
+    "save": "Salva",
+    "saving": "Salvataggio…",
+    "namesNeeded": "Servono entrambi i nomi — compaiono sulle Sue cartelle.",
+    "logoFailed": "I Suoi nomi sono stati salvati, ma non è stato possibile caricare il logo — lo aggiunga più tardi dalle impostazioni dello studio.",
+    "allSet": "È tutto pronto.",
+    "saveFailed": "Impossibile salvare."
+  },
+  "join": {
+    "title": "Unirsi a {{practice}}?",
+    "invitation": "Invito a uno studio",
+    "checking": "Verifica del Suo invito…",
+    "thisPractice": "questo studio",
+    "alreadyMember": "È già membro di {{practice}}.",
+    "invited": "È stato invitato a unirsi a <strong>{{practice}}</strong> su ToothOps. I membri condividono le cartelle, i modelli di referto e l’elenco dei controlli dello studio, e le nuove cartelle che salva vengono condivise con il team.",
+    "shareExisting": "Condividi anche le cartelle che ho già creato",
+    "close": "Chiudi",
+    "notNow": "Non ora",
+    "joining": "Adesione in corso…",
+    "joinButton": "Unisciti a {{practice}}"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "walkthrough": {
+    "aria": "Primeros pasos",
+    "progress": "{{current}} de {{total}}",
+    "skip": "Omitir",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "finish": "Empezar",
+    "steps": {
+      "welcome": {
+        "title": "Bienvenido a ToothOps",
+        "body": "Un recorrido de 60 segundos para ver dónde está cada cosa. Puede repetirlo cuando quiera desde Ajustes → Primeros pasos."
+      },
+      "sections": {
+        "title": "Las ocho secciones",
+        "body": "Un historial dental, de arriba abajo. Recórralas en orden o salte de una a otra — todo se guarda automáticamente."
+      },
+      "patient": {
+        "title": "Paciente y propietario",
+        "body": "Nombre, contacto del propietario y fecha de revisión. Solo el nombre del paciente es obligatorio para guardar."
+      },
+      "species": {
+        "title": "Especie y dentición",
+        "body": "Elija Felino o Canino, y después Permanente o Decidua — el esquema de los dientes se adapta."
+      },
+      "grid": {
+        "title": "La cuadrícula de mediciones",
+        "body": "Mediciones diente por diente. Tab avanza hacia la derecha, Intro hacia abajo — registre sin apartar la vista de la pantalla."
+      },
+      "diagrams": {
+        "title": "Esquemas",
+        "body": "Haga clic en un diente para marcarlo; alterne entre Comentario y Dibujo y añada notas libres. Deshaga con ⌘Z."
+      },
+      "codes": {
+        "title": "Referencia de códigos",
+        "body": "Busque aquí en todo el conjunto de códigos AVDC; se mantiene fijo junto al esquema mientras se desplaza."
+      },
+      "treatment": {
+        "title": "Informe del tratamiento y plantillas",
+        "body": "Redacte el informe o inserte una plantilla guardada desde el menú desplegable — y guarde otras nuevas para reutilizarlas."
+      },
+      "library": {
+        "title": "Mis historiales",
+        "body": "Vuelva a abrir las visitas anteriores de un paciente (solo lectura hasta que pulse Editar), cambie de visita por fecha, empiece con un paciente nuevo o cargue el PDF de un historial."
+      },
+      "dictate": {
+        "title": "Dictar",
+        "body": "Toque Dictar y describa sus hallazgos — desde cualquier página. Cada uno va a su sitio y un panel en directo muestra cada cambio para que pueda deshacer lo que sea."
+      },
+      "settings": {
+        "title": "Ajustes",
+        "body": "Nombre y logotipo de la clínica, equipo, plantillas de recordatorio de revisión, su cuenta — y este recorrido."
+      },
+      "pdf": {
+        "title": "Vista previa y descarga del PDF",
+        "body": "Genere el PDF del historial, listo para entregar al cliente y con su logotipo, cuando quiera."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Terminar la configuración",
+    "both": "El nombre de su clínica y el del veterinario aparecen en cada historial que imprime.",
+    "practiceOnly": "El nombre de su clínica aparece en cada historial que imprime.",
+    "doctorOnly": "El nombre del veterinario aparece en cada historial que imprime.",
+    "practiceName": "Nombre de la clínica",
+    "doctorName": "Nombre del veterinario",
+    "doctorPlaceholder": "p. ej., Dra. Ana García",
+    "logoOptional": "Logotipo de la clínica (opcional)",
+    "logoNamed": "Logotipo: {{name}}",
+    "logoHint": "Se imprime en la parte superior de sus historiales. PNG, JPG o WebP.",
+    "later": "Más tarde",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "namesNeeded": "Hacen falta ambos nombres — aparecen en sus historiales.",
+    "logoFailed": "Sus nombres se han guardado, pero no se pudo subir el logotipo — añádalo más tarde en los ajustes de la clínica.",
+    "allSet": "Todo listo.",
+    "saveFailed": "No se pudo guardar."
+  },
+  "join": {
+    "title": "¿Unirse a {{practice}}?",
+    "invitation": "Invitación a una clínica",
+    "checking": "Comprobando su invitación…",
+    "thisPractice": "esta clínica",
+    "alreadyMember": "Ya es miembro de {{practice}}.",
+    "invited": "Le han invitado a unirse a <strong>{{practice}}</strong> en ToothOps. Los miembros comparten los historiales, las plantillas de informe y la lista de revisiones de la clínica, y los historiales nuevos que guarde se comparten con el equipo.",
+    "shareExisting": "Compartir también los historiales que ya he creado",
+    "close": "Cerrar",
+    "notNow": "Ahora no",
+    "joining": "Uniéndose…",
+    "joinButton": "Unirse a {{practice}}"
+  }
+}

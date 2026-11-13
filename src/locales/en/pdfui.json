@@ -1,0 +1,47 @@
+{
+  "style": {
+    "label": "PDF style",
+    "done": "Done",
+    "custom": "Custom color",
+    "customShort": "Custom",
+    "customDesc": "Any color you like, on the {{layout}} layout.",
+    "currentLayout": "current",
+    "chooseColor": "Choose custom color"
+  },
+  "presets": {
+    "clinic": { "name": "Clinic Teal", "description": "Matches the app — teal headers, red abnormal flags, rounded cards." },
+    "classic-blue": { "name": "Classic Blue", "description": "Traditional medical-records blue with solid section headers." },
+    "slate": { "name": "Slate", "description": "Neutral graphite — prints crisply in black and white." },
+    "iris": { "name": "Iris", "description": "Quiet indigo accents with compact uppercase headers." },
+    "journal": { "name": "Journal", "description": "Serif print classic — deep red accents on warm paper." }
+  },
+  "preview": {
+    "title": "Clinical chart",
+    "subtitle": "For your records and referrals. Pick a style or your own color — the preview updates live.",
+    "closeAria": "Close preview",
+    "download": "Download PDF",
+    "loadingImages": "Loading images…",
+    "generating": "Generating preview…",
+    "buildFailed": "Couldn't build the preview. See console for details.",
+    "imagesFailed": "Couldn't load the chart's images, so they're not in this PDF. Close and reopen the preview to retry.",
+    "imagesPartial": "Some images could not be loaded. They show as blank boxes in the PDF.",
+    "frameTitle": "Clinical chart preview"
+  },
+  "link": {
+    "preparing": "Preparing a download link…",
+    "open": "Tap to download the PDF",
+    "copy": "Copy link",
+    "copied": "Link copied — paste it into Chrome to download.",
+    "copyPrompt": "Copy this link and open it in Chrome:",
+    "note": "This app’s browser can’t save the PDF directly, so here’s a link that can. It works for {{minutes}} minutes — if nothing downloads, copy it into Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, page {{n}} of {{total}}",
+    "failed": "Couldn’t draw the preview — Download still works."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox opens the PDF in a new tab — tap Download at the top of it to save the file.",
+    "inAppBrowser": "This app’s built-in browser can’t always save files. Tap Download for a download link — or open ToothOps in Chrome (⋮ menu → “Open in browser”).",
+    "inAppBrowserMessage": "This app’s built-in browser can’t save files. Open ToothOps in Chrome (⋮ menu → “Open in browser”) to download the PDF."
+  }
+}

@@ -13,6 +13,9 @@ import type forms from '../locales/en/forms.json';
 import type media from '../locales/en/media.json';
 import type library from '../locales/en/library.json';
 import type reminders from '../locales/en/reminders.json';
+import type settings from '../locales/en/settings.json';
+import type onboarding from '../locales/en/onboarding.json';
+import type pdfui from '../locales/en/pdfui.json';
 
 // Adding a namespace: one import above + one entry in `resources` below.
 declare module 'i18next' {
@@ -33,6 +36,9 @@ declare module 'i18next' {
       media: typeof media;
       library: typeof library;
       reminders: typeof reminders;
+      settings: typeof settings;
+      onboarding: typeof onboarding;
+      pdfui: typeof pdfui;
     };
   }
 }

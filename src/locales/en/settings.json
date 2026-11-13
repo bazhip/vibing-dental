@@ -1,0 +1,192 @@
+{
+  "done": "Done",
+  "saving": "Saving…",
+  "practice": {
+    "title": "Practice settings",
+    "profile": "Profile",
+    "nameLabel": "Practice name",
+    "namePlaceholder": "Shown in the app and on every chart",
+    "nameLockedLoading": "The practice name is locked until your team loads — retry below.",
+    "nameLockedShared": "The practice name is shared by the whole team — only the primary owner can change it.",
+    "nameSaved": "Practice name saved.",
+    "nameSaveFailed": "Could not save the practice name.",
+    "discard": {
+      "title": "Discard the practice name change?",
+      "message": "The new practice name hasn’t been saved.",
+      "confirm": "Discard",
+      "cancel": "Keep editing"
+    },
+    "logo": {
+      "label": "Practice logo",
+      "alt": "Practice logo",
+      "replace": "Replace",
+      "remove": "Remove",
+      "working": "Working…",
+      "empty": "No logo uploaded — charts use the template's built-in mark.",
+      "upload": "Upload logo",
+      "uploading": "Uploading…",
+      "choose": "Choose a logo image",
+      "updated": "Logo updated.",
+      "uploadFailed": "Could not upload the logo.",
+      "removed": "Logo removed.",
+      "removeFailed": "Could not remove the logo.",
+      "removeTitle": "Remove the practice logo?",
+      "removeMessage": "New charts and PDFs will use the template’s built-in mark until you upload another.",
+      "removeConfirm": "Remove logo"
+    },
+    "team": {
+      "title": "Team",
+      "loading": "Loading team…",
+      "settingUp": "Your practice is still being set up.",
+      "checkAgain": "Check again",
+      "checking": "Checking…",
+      "retry": "Retry",
+      "retrying": "Retrying…",
+      "loadError": "Couldn’t load your team. {{error}}",
+      "ownerBlurb": "Colleagues you add share this practice’s charts, templates, and images.",
+      "memberBlurb": "You’re a member of {{practice}}. You share this practice’s charts.",
+      "you": "(you)",
+      "pending": "Pending invite",
+      "roles": {
+        "primaryOwner": "Primary owner",
+        "owner": "Owner",
+        "member": "Member"
+      },
+      "resend": "Resend invite",
+      "makeOwner": "Make owner",
+      "makeMember": "Make member",
+      "transfer": "Transfer ownership",
+      "remove": "Remove",
+      "emailLabel": "Colleague's email",
+      "add": "Add",
+      "adding": "Adding…",
+      "inviteHint": "No account yet? We'll email them an invite to set a password and join.",
+      "invalidEmail": "Enter a valid email address.",
+      "invited": "Invite emailed to {{email}} — they set a password and they're in.",
+      "existingAccount": "{{email}} already has a ToothOps account — we emailed them a link to accept. They'll appear here once they join.",
+      "addFailed": "Could not add them.",
+      "failed": "That didn’t work. Please try again.",
+      "loadFailed": "Could not load your team.",
+      "transferTitle": "Make {{email}} the primary owner?",
+      "transferMessage": "The primary owner holds billing and the practice name. You stay an owner of the practice.",
+      "transferConfirm": "Transfer ownership",
+      "transferred": "Ownership transferred.",
+      "removeTitle": "Remove {{email}} from the practice?",
+      "removePendingMessage": "Their invite is cancelled.",
+      "removeMessage": "They lose access to the practice’s shared charts but keep any charts of their own.",
+      "cancelInvite": "Cancel invite",
+      "removeConfirm": "Remove",
+      "keep": "Keep",
+      "inviteCancelled": "Invite cancelled.",
+      "memberRemoved": "Member removed.",
+      "inviteResent": "Invite re-sent to {{email}}.",
+      "nowOwner": "{{email}} is now an owner.",
+      "nowMember": "{{email}} is now a member."
+    },
+    "ownerReport": {
+      "title": "Owner report",
+      "blurb": "The report families take home after a dental visit — sections, headings, wording, language, and the practice-wide default layout.",
+      "customize": "Customize owner report"
+    },
+    "deletion": {
+      "title": "Delete practice",
+      "blurb": "Permanently deletes the practice and every chart shared with it, including your team’s, and cancels any subscription. Team members keep their accounts and private charts.",
+      "button": "Delete practice…"
+    }
+  },
+  "logoErrors": {
+    "unreadable": "Could not read that image.",
+    "canvas": "Canvas unavailable",
+    "convert": "Could not convert the image.",
+    "tooLarge": "That image is too large — logo files must be under 10 MB.",
+    "reportTooLarge": "Those owner report settings are too large (50 KB max) — shorten some text or remove a template."
+  },
+  "chart": {
+    "title": "Chart settings",
+    "sections": {
+      "patient": "Patient page settings",
+      "anesthesia": "Anesthesia settings",
+      "charting": "Charting settings",
+      "diagnosis": "Diagnosis settings",
+      "images": "Images settings"
+    },
+    "noteAccount": "Just for you — these follow your account on every device. Changes save right away.",
+    "noteBrowser": "Saved in this browser. Changes apply right away.",
+    "all": "All chart settings",
+    "charting": {
+      "title": "Charting",
+      "view": "View",
+      "grid": "Grid",
+      "byTooth": "By tooth",
+      "pocket": "Pocket depths",
+      "pocketTooth": "One per tooth",
+      "pocketRoot": "One per root",
+      "pocketRootHint": "M / D, or MB / MP / D on three-rooted teeth",
+      "space": "Space key in the grid",
+      "spaceDown": "Moves down to the next tooth",
+      "spaceDownHint": "fast for calling out a run of depths",
+      "spaceType": "Types a space",
+      "scoreTap": "After tapping a score in the grid",
+      "scoreFinding": "Go to the next finding on the same tooth",
+      "scoreFindingHint": "mobility → recession → … for tooth-by-tooth exams",
+      "scoreTooth": "Go down to the next tooth",
+      "scoreToothHint": "for scoring one finding across the mouth",
+      "scoreStay": "Stay put",
+      "columns": "Columns"
+    },
+    "beside": {
+      "title": "Beside the teeth",
+      "show": "Show findings on the Diagnosis diagram",
+      "showHint": "(and in the PDF)",
+      "include": "Include"
+    },
+    "anesthesia": {
+      "title": "Anesthesia",
+      "blocks": "Nerve blocks shown",
+      "blocksNote": "A hidden block still shows on a chart where it has a dose.",
+      "blockNames": {
+        "infraorbital": "Infraorbital",
+        "caudalMaxillary": "Caudal maxillary",
+        "inferiorAlveolar": "Inferior alveolar",
+        "mental": "Mental",
+        "other": "Other"
+      },
+      "usual": "Your usual anesthetic",
+      "usualNote": "Offered as one tap on a chart with no anesthetic set.",
+      "drugPlaceholder": "e.g. Bupivacaine",
+      "drugAria": "Usual anesthetic",
+      "strengthAria": "Usual anesthetic strength (%)"
+    },
+    "patient": {
+      "title": "Patient page",
+      "hideRecheck": "Hide the Recheck due field"
+    },
+    "pdf": {
+      "title": "PDF",
+      "grid": "Include the charting grid",
+      "gridHint": "(optional while findings are on the diagram)",
+      "images": "Include images",
+      "imagesHint": "(4 per page, after the chart)"
+    }
+  },
+  "feedback": {
+    "title": "Send feedback",
+    "kinds": {
+      "bug": "Something’s wrong",
+      "idea": "Idea",
+      "other": "Other"
+    },
+    "kindsAria": "Type of feedback",
+    "promptBug": "What happened?",
+    "promptIdea": "What would help?",
+    "promptOther": "Your message",
+    "bugPlaceholder": "What you did, what you expected, what happened instead…",
+    "attach": "Include my dictation transcript",
+    "note": "Goes straight to the ToothOps developer, who’ll reply to your email.",
+    "sent": "Thanks! Your feedback was sent.",
+    "sendFailed": "Couldn’t send. Please try again.",
+    "needsAccount": "Feedback needs an account.",
+    "send": "Send",
+    "sending": "Sending…"
+  }
+}

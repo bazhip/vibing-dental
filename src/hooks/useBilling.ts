@@ -1,3 +1,4 @@
+import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import { PlanKey } from '../constants/plans';
 
@@ -45,7 +46,7 @@ export function deletionDate(info: BillingInfo): Date | null {
 }
 
 async function call<T = Record<string, unknown>>(body: object): Promise<T> {
-  if (!supabase) throw new Error('Cloud is not configured.');
+  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
   const { data, error } = await supabase.functions.invoke('billing-api', { body });
   if (error) {
     try {
@@ -71,14 +72,14 @@ export async function fetchBilling(): Promise<BillingInfo> {
 /** Start Stripe Checkout for a plan — navigates away on success. */
 export async function startCheckout(plan: PlanKey): Promise<void> {
   const { url } = await call<{ url: string }>({ action: 'checkout', plan, returnUrl: returnUrl() });
-  if (!url) throw new Error('Stripe did not return a checkout link.');
+  if (!url) throw new Error(i18n.t('errors.checkoutLink', { ns: 'billing' }));
   window.location.assign(url);
 }
 
 /** Open the Stripe billing portal (card, invoices, cancel). */
 export async function openBillingPortal(): Promise<void> {
   const { url } = await call<{ url: string }>({ action: 'portal', returnUrl: returnUrl() });
-  if (!url) throw new Error('Stripe did not return a portal link.');
+  if (!url) throw new Error(i18n.t('errors.portalLink', { ns: 'billing' }));
   window.location.assign(url);
 }
 

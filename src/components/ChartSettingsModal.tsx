@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
@@ -25,18 +26,14 @@ export interface ChartSettingsModalProps {
 
 export type SettingsSection = 'patient' | 'anesthesia' | 'charting' | 'diagnosis' | 'images';
 
-const SECTION_TITLES: Record<SettingsSection, string> = {
-  patient: 'Patient page settings',
-  anesthesia: 'Anesthesia settings',
-  charting: 'Charting settings',
-  diagnosis: 'Diagnosis settings',
-  images: 'Images settings',
-};
+/** Generic (international) drug names offered by the usual-anesthetic field — data, not interface text. */
+const USUAL_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 const toggle = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
   on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
 
 export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
+  const { t } = useTranslation('settings');
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
   const showAll = only === null;
   // Which groups a page's Customize shows (everything from the menu).
@@ -76,82 +73,80 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
     onChange({ hiddenBlocks: shown ? prefs.hiddenBlocks.filter((b) => b !== id) : Array.from(new Set([...prefs.hiddenBlocks, id])) });
 
   return ReactDOM.createPortal(
-    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Chart settings">
+    <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('chart.title')}>
       <div className="ai-settings-modal chart-settings" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>{only ? SECTION_TITLES[only] : 'Chart settings'}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close">×</button>
+          <h2>{only ? t(`chart.sections.${only}`) : t('chart.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>×</button>
         </header>
 
         <div className="ai-settings-body chart-settings__body">
           <p className="chart-settings__note">
-            {followsAccount
-              ? 'Just for you — these follow your account on every device. Changes save right away.'
-              : 'Saved in this browser. Changes apply right away.'}
+            {followsAccount ? t('chart.noteAccount') : t('chart.noteBrowser')}
           </p>
           {!showAll && (
             <button type="button" className="diagram-view__action chart-settings__all" onClick={() => setOnly(null)}>
-              All chart settings
+              {t('chart.all')}
             </button>
           )}
 
           {show.charting && (
           <section className="chart-settings__group">
-            <h3 className="ai-settings-subhead">Charting</h3>
+            <h3 className="ai-settings-subhead">{t('chart.charting.title')}</h3>
             <fieldset className="chart-settings__field">
-              <legend>View</legend>
+              <legend>{t('chart.charting.view')}</legend>
               <label className="chart-settings__choice">
                 <input type="radio" name="chartingView" checked={prefs.chartingView === 'grid'} onChange={() => onChange({ chartingView: 'grid' })} />
-                Grid
+                {t('chart.charting.grid')}
               </label>
               <label className="chart-settings__choice">
                 <input type="radio" name="chartingView" checked={prefs.chartingView === 'tooth'} onChange={() => onChange({ chartingView: 'tooth' })} />
-                By tooth
+                {t('chart.charting.byTooth')}
               </label>
             </fieldset>
 
             <fieldset className="chart-settings__field">
-              <legend>Pocket depths</legend>
+              <legend>{t('chart.charting.pocket')}</legend>
               <label className="chart-settings__choice">
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'tooth'} onChange={() => onChange({ pocketMode: 'tooth' })} />
-                One per tooth
+                {t('chart.charting.pocketTooth')}
               </label>
               <label className="chart-settings__choice">
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'root'} onChange={() => onChange({ pocketMode: 'root' })} />
-                One per root <span className="chart-settings__hint">M / D, or MB / MP / D on three-rooted teeth</span>
+                {t('chart.charting.pocketRoot')} <span className="chart-settings__hint">{t('chart.charting.pocketRootHint')}</span>
               </label>
             </fieldset>
 
             <fieldset className="chart-settings__field">
-              <legend>Space key in the grid</legend>
+              <legend>{t('chart.charting.space')}</legend>
               <label className="chart-settings__choice">
                 <input type="radio" name="spaceKey" checked={prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: true })} />
-                Moves down to the next tooth <span className="chart-settings__hint">fast for calling out a run of depths</span>
+                {t('chart.charting.spaceDown')} <span className="chart-settings__hint">{t('chart.charting.spaceDownHint')}</span>
               </label>
               <label className="chart-settings__choice">
                 <input type="radio" name="spaceKey" checked={!prefs.spaceMovesDown} onChange={() => onChange({ spaceMovesDown: false })} />
-                Types a space
+                {t('chart.charting.spaceType')}
               </label>
             </fieldset>
 
             <fieldset className="chart-settings__field">
-              <legend>After tapping a score in the grid</legend>
+              <legend>{t('chart.charting.scoreTap')}</legend>
               <label className="chart-settings__choice">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'finding'} onChange={() => onChange({ scoreTapMoves: 'finding' })} />
-                Go to the next finding on the same tooth <span className="chart-settings__hint">mobility → recession → … for tooth-by-tooth exams</span>
+                {t('chart.charting.scoreFinding')} <span className="chart-settings__hint">{t('chart.charting.scoreFindingHint')}</span>
               </label>
               <label className="chart-settings__choice">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'tooth'} onChange={() => onChange({ scoreTapMoves: 'tooth' })} />
-                Go down to the next tooth <span className="chart-settings__hint">for scoring one finding across the mouth</span>
+                {t('chart.charting.scoreTooth')} <span className="chart-settings__hint">{t('chart.charting.scoreToothHint')}</span>
               </label>
               <label className="chart-settings__choice">
                 <input type="radio" name="scoreTapMoves" checked={prefs.scoreTapMoves === 'stay'} onChange={() => onChange({ scoreTapMoves: 'stay' })} />
-                Stay put
+                {t('chart.charting.scoreStay')}
               </label>
             </fieldset>
 
             <fieldset className="chart-settings__field">
-              <legend>Columns</legend>
+              <legend>{t('chart.charting.columns')}</legend>
               <div className="chart-settings__grid">
                 {PERIO_FIELDS.map((f) => {
                   const shown = !prefs.hiddenColumns.includes(f.key);
@@ -175,13 +170,13 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
 
           {show.beside && (
           <section className="chart-settings__group">
-            <h3 className="ai-settings-subhead">Beside the teeth</h3>
+            <h3 className="ai-settings-subhead">{t('chart.beside.title')}</h3>
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.mirrorToDiagnosis} onChange={(e) => onChange({ mirrorToDiagnosis: e.target.checked })} />
-              Show findings on the Diagnosis diagram <span className="chart-settings__hint">(and in the PDF)</span>
+              {t('chart.beside.show')} <span className="chart-settings__hint">{t('chart.beside.showHint')}</span>
             </label>
             <fieldset className="chart-settings__field" disabled={!prefs.mirrorToDiagnosis}>
-              <legend>Include</legend>
+              <legend>{t('chart.beside.include')}</legend>
               <div className="chart-settings__grid">
                 {shownColumns.map((f) => (
                   <label key={f.key} className="chart-settings__choice">
@@ -200,10 +195,10 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
 
           {show.anesthesia && (
           <section className="chart-settings__group">
-            <h3 className="ai-settings-subhead">Anesthesia</h3>
+            <h3 className="ai-settings-subhead">{t('chart.anesthesia.title')}</h3>
             <fieldset className="chart-settings__field">
-              <legend>Nerve blocks shown</legend>
-              <p className="chart-settings__note">A hidden block still shows on a chart where it has a dose.</p>
+              <legend>{t('chart.anesthesia.blocks')}</legend>
+              <p className="chart-settings__note">{t('chart.anesthesia.blocksNote')}</p>
               <div className="chart-settings__grid">
                 {BLOCK_ROW_OPTIONS.map((b) => (
                   <label key={b.id} className="chart-settings__choice">
@@ -212,7 +207,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                       checked={!prefs.hiddenBlocks.includes(b.id)}
                       onChange={(e) => toggleBlock(b.id, e.target.checked)}
                     />
-                    {b.label}
+                    {t(`chart.anesthesia.blockNames.${b.id}`)}
                   </label>
                 ))}
               </div>
@@ -224,15 +219,15 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
               onFieldsChange={(customFields) => onChange({ customFields })}
             />
             <fieldset className="chart-settings__field">
-              <legend>Your usual anesthetic</legend>
-              <p className="chart-settings__note">Offered as one tap on a chart with no anesthetic set.</p>
+              <legend>{t('chart.anesthesia.usual')}</legend>
+              <p className="chart-settings__note">{t('chart.anesthesia.usualNote')}</p>
               <div className="chart-settings__drug">
                 <input
                   type="text"
                   list="chart-settings-drugs"
                   className="patient-form__input"
-                  placeholder="e.g. Bupivacaine"
-                  aria-label="Usual anesthetic"
+                  placeholder={t('chart.anesthesia.drugPlaceholder')}
+                  aria-label={t('chart.anesthesia.drugAria')}
                   value={drugName}
                   onChange={(e) => setDrugName(e.target.value)}
                   onBlur={saveUsualDrug}
@@ -243,7 +238,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                     inputMode="decimal"
                     className="patient-form__input"
                     placeholder="0.5"
-                    aria-label="Usual anesthetic strength (%)"
+                    aria-label={t('chart.anesthesia.strengthAria')}
                     value={drugStrength}
                     onChange={(e) => setDrugStrength(e.target.value.replace(/%/g, ''))}
                     onBlur={saveUsualDrug}
@@ -251,7 +246,7 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                   <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
                 </span>
                 <datalist id="chart-settings-drugs">
-                  {['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'].map((d) => <option key={d} value={d} />)}
+                  {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
                 </datalist>
               </div>
             </fieldset>
@@ -260,17 +255,17 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
 
           {show.patient && (
           <section className="chart-settings__group">
-            <h3 className="ai-settings-subhead">Patient page</h3>
+            <h3 className="ai-settings-subhead">{t('chart.patient.title')}</h3>
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: e.target.checked })} />
-              Hide the Recheck due field
+              {t('chart.patient.hideRecheck')}
             </label>
           </section>
           )}
 
           {(show.pdfGrid || show.pdfImages) && (
           <section className="chart-settings__group">
-            <h3 className="ai-settings-subhead">PDF</h3>
+            <h3 className="ai-settings-subhead">{t('chart.pdf.title')}</h3>
             {show.pdfGrid && (
             <label className="chart-settings__choice">
               <input
@@ -279,13 +274,13 @@ export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = ({ onClose,
                 disabled={!prefs.mirrorToDiagnosis}
                 onChange={(e) => onChange({ pdfIncludeGrid: e.target.checked })}
               />
-              Include the charting grid <span className="chart-settings__hint">(optional while findings are on the diagram)</span>
+              {t('chart.pdf.grid')} <span className="chart-settings__hint">{t('chart.pdf.gridHint')}</span>
             </label>
             )}
             {show.pdfImages && (
             <label className="chart-settings__choice">
               <input type="checkbox" checked={prefs.pdfIncludeImages} onChange={(e) => onChange({ pdfIncludeImages: e.target.checked })} />
-              Include images <span className="chart-settings__hint">(4 per page, after the chart)</span>
+              {t('chart.pdf.images')} <span className="chart-settings__hint">{t('chart.pdf.imagesHint')}</span>
             </label>
             )}
           </section>

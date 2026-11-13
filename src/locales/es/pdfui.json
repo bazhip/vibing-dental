@@ -1,0 +1,47 @@
+{
+  "style": {
+    "label": "Estilo del PDF",
+    "done": "Hecho",
+    "custom": "Color personalizado",
+    "customShort": "Personalizado",
+    "customDesc": "El color que prefiera, sobre el diseño {{layout}}.",
+    "currentLayout": "actual",
+    "chooseColor": "Elegir un color personalizado"
+  },
+  "presets": {
+    "clinic": { "name": "Turquesa clínico", "description": "Igual que la aplicación — encabezados turquesa, indicadores rojos para lo anómalo, tarjetas redondeadas." },
+    "classic-blue": { "name": "Azul clásico", "description": "El azul tradicional de los historiales médicos, con encabezados de sección rellenos." },
+    "slate": { "name": "Pizarra", "description": "Grafito neutro — se imprime con nitidez en blanco y negro." },
+    "iris": { "name": "Iris", "description": "Discretos acentos índigo y encabezados compactos en mayúsculas." },
+    "journal": { "name": "Revista", "description": "Clásico con serifas — acentos rojo intenso sobre papel cálido." }
+  },
+  "preview": {
+    "title": "Historial clínico",
+    "subtitle": "Para sus archivos y derivaciones. Elija un estilo o su propio color — la vista previa se actualiza al instante.",
+    "closeAria": "Cerrar la vista previa",
+    "download": "Descargar PDF",
+    "loadingImages": "Cargando imágenes…",
+    "generating": "Generando la vista previa…",
+    "buildFailed": "No se pudo crear la vista previa. Consulte la consola para más detalles.",
+    "imagesFailed": "No se pudieron cargar las imágenes del historial, así que no aparecen en este PDF. Cierre y vuelva a abrir la vista previa para reintentarlo.",
+    "imagesPartial": "No se pudieron cargar algunas imágenes. En el PDF aparecen como recuadros en blanco.",
+    "frameTitle": "Vista previa del historial clínico"
+  },
+  "link": {
+    "preparing": "Preparando un enlace de descarga…",
+    "open": "Toque para descargar el PDF",
+    "copy": "Copiar enlace",
+    "copied": "Enlace copiado — péguelo en Chrome para descargar.",
+    "copyPrompt": "Copie este enlace y ábralo en Chrome:",
+    "note": "El navegador de esta aplicación no puede guardar el PDF directamente, así que aquí tiene un enlace que sí puede. Funciona durante {{minutes}} minutos — si no se descarga nada, cópielo en Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, página {{n}} de {{total}}",
+    "failed": "No se pudo mostrar la vista previa — la descarga sigue funcionando."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox abre el PDF en una pestaña nueva — toque Descargar en la parte superior para guardar el archivo.",
+    "inAppBrowser": "El navegador integrado de esta aplicación no siempre puede guardar archivos. Toque Descargar para obtener un enlace de descarga — o abra ToothOps en Chrome (menú ⋮ → «Abrir en el navegador»).",
+    "inAppBrowserMessage": "El navegador integrado de esta aplicación no puede guardar archivos. Abra ToothOps en Chrome (menú ⋮ → «Abrir en el navegador») para descargar el PDF."
+  }
+}

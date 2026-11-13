@@ -11,7 +11,7 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
 };
 
 // Append new namespaces here (and in i18next.d.ts).
-export const NAMESPACES = ['common', 'report', 'account', 'codes', 'chart', 'whatsNew', 'billing', 'landing', 'auth', 'app', 'forms', 'media', 'library', 'reminders'] as const;
+export const NAMESPACES = ['common', 'report', 'account', 'codes', 'chart', 'whatsNew', 'billing', 'landing', 'auth', 'app', 'forms', 'media', 'library', 'reminders', 'settings', 'onboarding', 'pdfui'] as const;
 
 /** Test-only language whose strings read ⟦like this⟧ (see i18n/testing/pseudo.ts). */
 export const PSEUDO_LOCALE = 'xx';
