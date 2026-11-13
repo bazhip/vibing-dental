@@ -120,6 +120,30 @@ const FIXTURES: Record<string, () => React.ReactElement> = {
   lock: () => <AppLockOverlay lockOnLaunch />,
   inactive: () => <InactivePlan />,
   // Long (French-length) bar labels, for the bar-layout check at large text sizes.
+  // Sheet form rows: a text field and a switch row with long labels (check
+  // at large text sizes: only the text field drops under its label).
+  'field-controls': () => (
+    <Sheet open onClose={() => {}} title="Field rows" onDone={() => {}}>
+      <div className="ios-form">
+        <div className="ios-form-group">
+          <label className="ios-field">
+            <span className="ios-field__label">Practice name</span>
+            <input className="ios-field__input" defaultValue="SoCal Veterinary Dentistry" />
+          </label>
+          <label className="ios-field">
+            <span className="ios-field__label">Email reminders to owners</span>
+            <span className="ios-field__control">
+              <input type="checkbox" role="switch" className="ios-switch" defaultChecked />
+            </span>
+          </label>
+          <label className="ios-field">
+            <span className="ios-field__label">Doctor name</span>
+            <input className="ios-field__input" defaultValue="Dr. Jane Kaser" />
+          </label>
+        </div>
+      </div>
+    </Sheet>
+  ),
   'bar-long': () => (
     <Sheet open onClose={() => {}} title="Envoyer un rappel de contrôle" cancelLabel="Abandonner les modifications" doneLabel="Enregistrer et envoyer" onDone={() => {}}>
       <p style={{ padding: 20 }}>Contenu</p>

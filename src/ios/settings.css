@@ -31,7 +31,7 @@ html.native-ios .ios-settings .ios-row--destructive .ios-row__text { flex: 0 1 a
 /* ---- Rows with a text field (Chart settings → usual anesthetic) ---------- */
 html.native-ios .ios-row--field .ios-row__main { flex-wrap: nowrap; }
 html.native-ios .ios-row--field .ios-row__title { flex: none; min-width: 6.5em; }
-html.native-ios .ios-field {
+html.native-ios .ios-row--field .ios-row__input {
   flex: 1 1 auto;
   min-width: 0;
   margin: 0;
@@ -43,8 +43,8 @@ html.native-ios .ios-field {
   text-align: right;
   outline: none;
 }
-html.native-ios .ios-field::placeholder { color: var(--ios-label-3); }
-html.native-ios .ios-field__suffix { flex: none; color: var(--ios-label-muted); }
+html.native-ios .ios-row--field .ios-row__input::placeholder { color: var(--ios-label-3); }
+html.native-ios .ios-row--field .ios-row__suffix { flex: none; color: var(--ios-label-muted); }
 
 /* ---- A web form embedded in a list cell (custom anesthesia editor) ------- */
 html.native-ios .ios-cell-embed { padding: 12px 16px 14px 20px; }

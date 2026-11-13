@@ -162,7 +162,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
                   <input
                     type="text"
                     list={drugListId}
-                    className="ios-field"
+                    className="ios-row__input"
                     placeholder={t('chart.drugPlaceholder')}
                     aria-label={t('chart.drugLabel')}
                     value={drugName}
@@ -179,14 +179,14 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
                   <input
                     type="text"
                     inputMode="decimal"
-                    className="ios-field"
+                    className="ios-row__input"
                     placeholder="0.5"
                     aria-label={t('chart.strengthLabel')}
                     value={drugStrength}
                     onChange={(e) => setDrugStrength(e.target.value.replace(/%/g, ''))}
                     onBlur={saveUsualDrug}
                   />
-                  <span className="ios-field__suffix" aria-hidden="true">%</span>
+                  <span className="ios-row__suffix" aria-hidden="true">%</span>
                 </span>
               </label>
             </div>
