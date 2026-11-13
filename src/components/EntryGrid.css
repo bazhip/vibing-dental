@@ -18,7 +18,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  /* Identity and actions share a row when both fit at their natural
+     width; otherwise the actions drop to their own full-width row —
+     never squeezing the patient's name or overlapping it. */
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
   margin: 0 calc(-1 * var(--page-pad, 1.5rem)) 1.5rem;
   padding: 0.85rem var(--page-pad, 1.5rem);
   background: color-mix(in srgb, var(--bg-page) 88%, transparent);
@@ -30,6 +34,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -69,7 +74,7 @@
 
 .entry-grid__title {
   margin: 0;
-  font-size: 0.66rem;
+  font-size: 0.6875rem; /* 11px — HIG's smallest caption size */
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.1em;
@@ -82,7 +87,10 @@
 .entry-grid__patient {
   display: flex;
   align-items: baseline;
-  gap: 0.6rem;
+  /* Tight on room: species / date move under the name rather than the
+     name being cut off. */
+  flex-wrap: wrap;
+  gap: 0 0.6rem;
   min-width: 0;
 }
 
@@ -185,11 +193,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  /* Never overflow off-screen on phones — wrap to a second row instead. */
+  /* Sized to one line: when that doesn't fit beside the identity, the
+     whole row moves below it (see .entry-grid__topbar) and only wraps
+     itself if it still doesn't fit there (small tablets, phones). */
   flex-wrap: wrap;
+  flex: 0 1 auto;
   justify-content: flex-end;
   row-gap: 0.35rem;
-  min-width: 0;
+  margin-left: auto;
+  white-space: nowrap;
 }
 .topbar-label-short { display: none; }
 @media (max-width: 600px) {
@@ -1208,17 +1220,14 @@
    usable, so the grid lays out at its columns' natural width
    (DentalGrid.tsx, short titles) and the card scrolls sideways, with
    Missing/Tooth/Triadan pinned on the left. A sideways scroller can't
-   let the header stick to the PAGE, so DentalGrid slides the header
-   down by --head-shift as the page scrolls, keeping it just under the
-   app topbar. (No inner vertical scroller: the page scrolls as usual.) */
+   let the header stick to the PAGE, so while the grid is scrolled past,
+   DentalGrid shows a fixed copy of the header under the app topbar
+   (.dental-grid__float-head). The page scrolls as usual. */
 @media (max-width: 1000px) {
   .dental-grid {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-  }
-  .dental-grid .rdg-header-row .rdg-cell {
-    transform: translateY(var(--head-shift, 0px));
   }
   .dental-grid .rdg {
     min-width: var(--grid-min-width, 760px);
@@ -2237,12 +2246,6 @@
     gap: 0.5rem;
     padding: 0.75rem var(--page-pad, 0.75rem);
     margin-bottom: 1rem;
-  }
-  /* The lead column shrinks (patient name ellipsizes) so the voice/chart
-     actions stay on the same row. */
-  .entry-grid__topbar-lead {
-    flex: 1 1 0;
-    min-width: 0;
   }
 
   .entry-grid-form {
@@ -3343,7 +3346,7 @@ button.save-status--manual:hover {
 @media (max-width: 600px) {
   /* Phones: identity gets its own full-width row; actions sit below it,
      so the patient's name is never squeezed out by buttons. */
-  .entry-grid__topbar { flex-wrap: wrap; row-gap: 0.4rem; }
+  .entry-grid__topbar { row-gap: 0.4rem; }
   .entry-grid__topbar-lead { flex: 1 1 100%; }
   .entry-grid__topbar-actions { flex: 1 1 100%; justify-content: flex-end; }
   /* The exam table scrolls sideways rather than overflowing the card. */
@@ -3911,6 +3914,110 @@ button.save-status--manual:hover {
 }
 .topbar-editing::before { content: '✎ '; font-weight: 400; }
 .topbar-editing__revert { white-space: nowrap; }
+/* On its own row the amber bar spans the width, label left, buttons right. */
+.entry-grid__topbar-actions--editing { flex-grow: 1; }
+
+/* =============================================================================
+ * TOUCH GUIDELINES (Apple HIG / Material) — phones and tablets
+ * Found by a measured audit of every section and dialog at iPhone and iPad
+ * sizes. Scoped to touch screens (pointer: coarse) so desktop stays dense.
+ * ========================================================================== */
+
+/* Taps act immediately — no double-tap-to-zoom delay on controls. */
+a, button, input, select, textarea, label, summary, [role='button'] {
+  touch-action: manipulation;
+}
+
+@media (pointer: coarse) {
+  /* iOS zooms the page when a field under 16px takes focus. */
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):not([type='color']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Minimum 44×44pt touch targets. */
+  .chart-menu__trigger,
+  .diagram-view__action,
+  .diagram-view__tool,
+  .sidebar-layout__nav-item,
+  .mobile-section-menu__item,
+  .anesthesia-drug__add,
+  .charting-view-switch__btn,
+  .entry-grid__button,
+  .chart-library__act,
+  .chart-library__delete,
+  .chart-library__filter,
+  .chart-library__filter-select,
+  button.save-status,
+  .fab-download {
+    min-height: 44px;
+  }
+  .charting-view-switch__btn { display: inline-flex; align-items: center; }
+  .exam-table__radio-hit { min-height: 44px; box-sizing: border-box; }
+  .diagram-view__textsize-btn { min-width: 44px; min-height: 44px; }
+  .diagram-view__action { min-width: 44px; justify-content: center; }
+
+  /* Typing: floating buttons get out of the way of the keyboard (the
+     PDF button used to peek out above it). */
+  body:has(input:not([type='checkbox']):not([type='radio']):focus, textarea:focus, select:focus) .fab-download {
+    display: none;
+  }
+  .entry-grid__footnote a { display: inline-block; padding: 0.7rem 0.25rem; margin: -0.7rem 0; }
+}
+
+/* The floating PDF button clears the home indicator on tablets too
+   (phones already handle it above). */
+@media (min-width: 601px) {
+  .fab-download { bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); }
+}
 @media (max-width: 600px) {
-  .entry-grid__topbar-actions--editing { width: 100%; box-sizing: border-box; }
+  /* Settings menu: a full-width sheet under the topbar instead of a
+     340px popover anchored to a button that isn't at the screen edge
+     (its text ran off the right side). */
+  .chart-menu__panel {
+    position: fixed;
+    top: calc(var(--topbar-height, 4rem) + 4px);
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    max-height: calc(100dvh - var(--topbar-height, 4rem) - 1rem);
+    overflow-y: auto;
+  }
+}
+
+/* Fixed stand-in for the grid header on narrow screens (see DentalGrid):
+   styled to match the real header row cell for cell. */
+.dental-grid__float-head {
+  position: fixed;
+  z-index: 55;
+  display: flex;
+  overflow: hidden;
+  background: var(--primary);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
+}
+.dental-grid__float-pinned {
+  display: flex;
+  flex: none;
+  position: relative;
+  z-index: 1;
+  background: var(--primary);
+  box-shadow: 2px 0 4px -2px rgba(15, 23, 42, 0.3);
+}
+.dental-grid__float-viewport { flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.dental-grid__float-track { display: flex; height: 100%; will-change: transform; }
+.dental-grid__float-cell {
+  flex: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 0.4rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f2f7f6;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
 }

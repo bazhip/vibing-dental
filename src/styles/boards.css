@@ -58,7 +58,7 @@
 }
 
 .sidebar-layout__nav-num {
-  font-size: 0.68rem;
+  font-size: 0.6875rem; /* 11px — HIG's smallest caption size */
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.08em;
   color: var(--text-muted);
@@ -190,6 +190,9 @@
 .mobile-section-menu {
   display: none;
   position: relative;
+  /* Above the sticky section toolbars (z 30) that follow it on the
+     page — they used to cover the open list — and below the topbar. */
+  z-index: 40;
   margin-bottom: 0.5rem;
 }
 .mobile-section-menu__trigger {
@@ -383,6 +386,7 @@
 .chart-menu__item-icon { font-size: 1.15rem; line-height: 1.2; }
 .chart-menu__item-body {
   display: flex; flex-direction: column; gap: 2px;
+  min-width: 0; /* let long descriptions wrap inside the panel */
 }
 .chart-menu__item-body strong {
   font-weight: 600; font-size: 0.95rem; color: var(--text);
