@@ -9,6 +9,7 @@
 // Requires the ANTHROPIC_API_KEY edge-function secret (dashboard).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { apiError } from '../_shared/apiErrors.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -65,7 +66,7 @@ Deno.serve(async (req: Request) => {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: callerData } = await admin.auth.getUser(token);
   const caller = callerData?.user;
-  if (!caller) return json({ error: 'unauthorized' }, 401);
+  if (!caller) return json(apiError('unauthorized'), 401);
 
   // Free beta: open to every signed-in account (no plan check). The
   // practice is still looked up so usage is attributed in ai_usage.
@@ -73,13 +74,13 @@ Deno.serve(async (req: Request) => {
   const practiceId = prof?.practice_id ?? null;
 
   const key = Deno.env.get('ANTHROPIC_API_KEY');
-  if (!key) return json({ error: 'AI is not configured yet.' }, 503);
+  if (!key) return json(apiError('ai_not_configured'), 503);
 
   // Abuse guards — every signed-in account can use AI during the free
   // beta, so cap request size, response size and per-user call rate
   // (generous for dictation: one call per spoken phrase).
   const raw = await req.text();
-  if (raw.length > REVIEW_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
+  if (raw.length > REVIEW_MAX_CHARS) return json(apiError('request_too_large'), 413);
   let body: Record<string, unknown>;
   try {
     body = JSON.parse(raw);
@@ -91,18 +92,18 @@ Deno.serve(async (req: Request) => {
   // split by feature. Unknown values are dropped.
   const KINDS = ['live', 'review', 'owner_report', 'warmup'];
   const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
-  if (!review && raw.length > LIVE_MAX_CHARS) return json({ error: 'Request too large.' }, 413);
+  if (!review && raw.length > LIVE_MAX_CHARS) return json(apiError('request_too_large'), 413);
   const msgs = body.messages;
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
-    return json({ error: 'Unsupported request.' }, 400);
+    return json(apiError('unsupported_request'), 400);
   }
   const since = (ms: number) => new Date(Date.now() - ms).toISOString();
   const [{ count: perMinute }, { count: perDay }] = await Promise.all([
     admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(60_000)),
     admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(86_400_000)),
   ]);
-  if ((perMinute ?? 0) >= 40) return json({ error: 'Slow down a moment — too many AI requests in the last minute.' }, 429);
-  if ((perDay ?? 0) >= 2000) return json({ error: 'Daily AI limit reached. It resets within 24 hours.' }, 429);
+  if ((perMinute ?? 0) >= 40) return json(apiError('ai_rate_limit'), 429);
+  if ((perDay ?? 0) >= 2000) return json(apiError('ai_daily_limit'), 429);
 
   // The model is a site setting, not client-chosen.
   const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
@@ -147,7 +148,7 @@ Deno.serve(async (req: Request) => {
     resp = await send();
   }
   const text = await resp.text();
-  if (!resp.ok) return json({ error: `AI request failed: ${text}` }, 502);
+  if (!resp.ok) return json(apiError('ai_failed', { detail: text }), 502);
 
   let data: {
     content?: unknown;
@@ -162,7 +163,8 @@ Deno.serve(async (req: Request) => {
   try {
     data = JSON.parse(text);
   } catch {
-    return json({ error: 'AI returned an unreadable response.' }, 502);
+    return json(apiError('ai_unreadable'), 502)
+;
   }
 
   // Log usage (best-effort — never fail the call over telemetry).

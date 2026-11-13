@@ -28,6 +28,7 @@ import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
 import { useDentalData } from './useDentalData';
 import { getInitialToothData } from '../constants';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * Single source of truth for everything that lives on a chart: patient
@@ -560,7 +561,7 @@ export function useChartState(): UseChartStateReturn {
 
   const applySnapshot = (raw: ChartSnapshot, id: string): void => {
     if (!isChartSnapshot(raw)) {
-      throw new Error(i18n.t('errors.damagedChart', { ns: 'app' }));
+      throw new LocalizedError(i18n.t('errors.damagedChart', { ns: 'app' }));
     }
     const snapshot = normalizeSnapshot(raw);
     setOpenedExisting(true); // opened from a saved chart → read-only until unlocked

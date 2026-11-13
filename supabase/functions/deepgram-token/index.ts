@@ -6,6 +6,7 @@
 // Requires the DEEPGRAM_API_KEY edge-function secret (dashboard).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { apiError } from '../_shared/apiErrors.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -25,7 +26,7 @@ Deno.serve(async (req: Request) => {
   const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
   const { data: callerData } = await admin.auth.getUser(token);
   const caller = callerData?.user;
-  if (!caller) return json({ error: 'unauthorized' }, 401);
+  if (!caller) return json(apiError('unauthorized'), 401);
 
   // Free beta: voice autofill is open to every signed-in account (no
   // plan check). Signed-in only — anonymous trial users get no token.
@@ -34,10 +35,10 @@ Deno.serve(async (req: Request) => {
   const { count: recent } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
     .eq('user_id', caller.id).eq('model', 'deepgram-token')
     .gte('created_at', new Date(Date.now() - 3_600_000).toISOString());
-  if ((recent ?? 0) >= 60) return json({ error: 'Too many dictation sessions started this hour — try again shortly.' }, 429);
+  if ((recent ?? 0) >= 60) return json(apiError('dictation_rate_limit'), 429);
 
   const master = Deno.env.get('DEEPGRAM_API_KEY');
-  if (!master) return json({ error: 'Voice transcription is not configured yet.' }, 503);
+  if (!master) return json(apiError('voice_not_configured'), 503);
 
   // Deepgram's temporary-token grant: works with a standard API key (no
   // keys:write scope needed) and returns a short-lived bearer token the
@@ -48,14 +49,15 @@ Deno.serve(async (req: Request) => {
     body: JSON.stringify({ ttl_seconds: TTL_SECONDS }),
   });
   const grantText = await grantResp.text();
-  if (!grantResp.ok) return json({ error: `Could not mint a transcription token: ${grantText}` }, 502);
+  if (!grantResp.ok) return json(apiError('voice_token_failed', { detail: grantText }), 502);
   let grant: { access_token?: string; expires_in?: number };
   try {
     grant = JSON.parse(grantText);
   } catch {
-    return json({ error: 'Deepgram returned an unreadable response.' }, 502);
+    return json(apiError('voice_unreadable'), 502);
   }
-  if (!grant.access_token) return json({ error: 'Deepgram did not return a token.' }, 502);
+  if (!grant.access_token) return json(apiError('voice_no_token'), 502)
+;
 
   // Log the mint (rate limiting + admin visibility). Best-effort.
   await admin.from('ai_usage').insert({ user_id: caller.id, model: 'deepgram-token', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});

@@ -1116,6 +1116,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -4352,6 +4356,290 @@
       "hash": "1509f561f241",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -4370,6 +4658,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:language.label": {
@@ -10242,6 +10534,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -13510,6 +13806,302 @@
       "hash": "1509f561f241",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -13528,6 +14120,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:language.label": {
@@ -19436,6 +20032,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -22704,6 +23304,302 @@
       "hash": "1509f561f241",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -22722,6 +23618,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:language.label": {
@@ -28630,6 +29530,10 @@
       "hash": "6758b3ff7ef9",
       "status": "machine"
     },
+    "auth:errors.samePassword": {
+      "hash": "3285c6f01e25",
+      "status": "machine"
+    },
     "auth:errors.signInFailed": {
       "hash": "71b3f3dba597",
       "status": "machine"
@@ -31898,6 +32802,302 @@
       "hash": "1509f561f241",
       "status": "machine"
     },
+    "common:errors.api.account_already_active": {
+      "hash": "82aa4d83cd11",
+      "status": "machine"
+    },
+    "common:errors.api.account_not_found": {
+      "hash": "a525e1ea3c65",
+      "status": "machine"
+    },
+    "common:errors.api.admin_not_deletable": {
+      "hash": "688b0f4b0d81",
+      "status": "machine"
+    },
+    "common:errors.api.ai_daily_limit": {
+      "hash": "c47066c34a22",
+      "status": "machine"
+    },
+    "common:errors.api.ai_failed": {
+      "hash": "8e1db7402592",
+      "status": "machine"
+    },
+    "common:errors.api.ai_not_configured": {
+      "hash": "8f5b91a1b242",
+      "status": "machine"
+    },
+    "common:errors.api.ai_rate_limit": {
+      "hash": "f3240422510f",
+      "status": "machine"
+    },
+    "common:errors.api.ai_unreadable": {
+      "hash": "5e98e2d8e363",
+      "status": "machine"
+    },
+    "common:errors.api.already_member": {
+      "hash": "9b7e8a285efb",
+      "status": "machine"
+    },
+    "common:errors.api.already_owner": {
+      "hash": "4e576dff7efa",
+      "status": "machine"
+    },
+    "common:errors.api.already_subscribed": {
+      "hash": "760730f7502e",
+      "status": "machine"
+    },
+    "common:errors.api.billing_not_configured": {
+      "hash": "b4fe565333e8",
+      "status": "machine"
+    },
+    "common:errors.api.chart_forbidden": {
+      "hash": "9d18ec698db9",
+      "status": "machine"
+    },
+    "common:errors.api.chart_gone": {
+      "hash": "09c633fa8e43",
+      "status": "machine"
+    },
+    "common:errors.api.chart_required": {
+      "hash": "4dca0045c37d",
+      "status": "machine"
+    },
+    "common:errors.api.comped": {
+      "hash": "ff428e1e0b5c",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_delete_word": {
+      "hash": "8ccddea4aa56",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_email": {
+      "hash": "97a86e7f92dc",
+      "status": "machine"
+    },
+    "common:errors.api.confirm_practice_name": {
+      "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_reminder_limit": {
+      "hash": "90e0a2708d60",
+      "status": "machine"
+    },
+    "common:errors.api.demote_primary_owner": {
+      "hash": "b40f9e82b869",
+      "status": "machine"
+    },
+    "common:errors.api.dictation_rate_limit": {
+      "hash": "525a8dba1a6e",
+      "status": "machine"
+    },
+    "common:errors.api.email_failed": {
+      "hash": "2ad958a68290",
+      "status": "machine"
+    },
+    "common:errors.api.email_not_configured": {
+      "hash": "7406a8904b91",
+      "status": "machine"
+    },
+    "common:errors.api.email_required": {
+      "hash": "6eccd8c1442a",
+      "status": "machine"
+    },
+    "common:errors.api.invite_expired": {
+      "hash": "831c5b9b9c1e",
+      "status": "machine"
+    },
+    "common:errors.api.invite_failed": {
+      "hash": "53537d766531",
+      "status": "machine"
+    },
+    "common:errors.api.invite_invalid": {
+      "hash": "87e44bda8394",
+      "status": "machine"
+    },
+    "common:errors.api.invite_wrong_account": {
+      "hash": "7a35798748a2",
+      "status": "machine"
+    },
+    "common:errors.api.message_too_long": {
+      "hash": "c51fedf2217d",
+      "status": "machine"
+    },
+    "common:errors.api.no_owner_email": {
+      "hash": "96db324792e6",
+      "status": "machine"
+    },
+    "common:errors.api.no_practice": {
+      "hash": "a7287fb837db",
+      "status": "machine"
+    },
+    "common:errors.api.no_stripe_customer": {
+      "hash": "ad048dc8dd2e",
+      "status": "machine"
+    },
+    "common:errors.api.no_subscription": {
+      "hash": "f3b8d2469a13",
+      "status": "machine"
+    },
+    "common:errors.api.not_in_practice": {
+      "hash": "77a390d96f8c",
+      "status": "machine"
+    },
+    "common:errors.api.not_on_team": {
+      "hash": "31e3ee431e5c",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner": {
+      "hash": "5e9b2e2f1684",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_billing": {
+      "hash": "e586cd145921",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_plan": {
+      "hash": "78bab8838731",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_remove": {
+      "hash": "84137b96ac14",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_report_templates": {
+      "hash": "5cef0e008bf2",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_resend": {
+      "hash": "694fc85c72bd",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_roles": {
+      "hash": "889e3b2376db",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_subscription": {
+      "hash": "3dcaa6b24fd1",
+      "status": "machine"
+    },
+    "common:errors.api.not_owner_transfer": {
+      "hash": "42bd8dedf32c",
+      "status": "machine"
+    },
+    "common:errors.api.not_primary_owner": {
+      "hash": "0d1593c30f09",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_many": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_one": {
+      "hash": "2c1baab765c6",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_other": {
+      "hash": "a96cfe9df7f7",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_many": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_one": {
+      "hash": "ae44e591ca0f",
+      "status": "machine"
+    },
+    "common:errors.api.owner_has_members_unnamed_other": {
+      "hash": "98bc69648d3b",
+      "status": "machine"
+    },
+    "common:errors.api.plan_required": {
+      "hash": "0c59981fedd0",
+      "status": "machine"
+    },
+    "common:errors.api.practice_gone": {
+      "hash": "54079155cfca",
+      "status": "machine"
+    },
+    "common:errors.api.practice_name_required": {
+      "hash": "9dd596dbc6d0",
+      "status": "machine"
+    },
+    "common:errors.api.remove_primary_owner": {
+      "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_no_templates": {
+      "hash": "0d5f8869bbec",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_not_object": {
+      "hash": "e8424cf16b4f",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_stale": {
+      "hash": "0f557febbf72",
+      "status": "machine"
+    },
+    "common:errors.api.report_config_too_large": {
+      "hash": "8df7726148b9",
+      "status": "machine"
+    },
+    "common:errors.api.request_too_large": {
+      "hash": "4306846aecda",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit": {
+      "hash": "fbb0138194fa",
+      "status": "machine"
+    },
+    "common:errors.api.seat_limit_individual": {
+      "hash": "25846eb1dc4b",
+      "status": "machine"
+    },
+    "common:errors.api.subject_and_message_required": {
+      "hash": "4768103d7a66",
+      "status": "machine"
+    },
+    "common:errors.api.subscription_no_items": {
+      "hash": "73e79ae085bc",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_many": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_one": {
+      "hash": "695637f8f229",
+      "status": "machine"
+    },
+    "common:errors.api.team_too_large_other": {
+      "hash": "6c1dfcf8d825",
+      "status": "machine"
+    },
+    "common:errors.api.unauthorized": {
+      "hash": "e9d83f01c9af",
+      "status": "machine"
+    },
+    "common:errors.api.unsupported_request": {
+      "hash": "af2793a0968b",
+      "status": "machine"
+    },
+    "common:errors.api.voice_no_token": {
+      "hash": "225d21355c2e",
+      "status": "machine"
+    },
+    "common:errors.api.voice_not_configured": {
+      "hash": "f038bea76113",
+      "status": "machine"
+    },
+    "common:errors.api.voice_token_failed": {
+      "hash": "855f7ce34525",
+      "status": "machine"
+    },
+    "common:errors.api.voice_unreadable": {
+      "hash": "0537b3a4ae69",
+      "status": "machine"
+    },
     "common:errors.generic": {
       "hash": "3ccd9d6586ef",
       "status": "machine"
@@ -31916,6 +33116,10 @@
     },
     "common:errors.rateLimit": {
       "hash": "6ebe0a5b5845",
+      "status": "machine"
+    },
+    "common:errors.withDetail": {
+      "hash": "1d10c1bad0af",
       "status": "machine"
     },
     "common:language.label": {

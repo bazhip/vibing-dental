@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../utils/supabaseClient';
+import { invokeFunction } from '../utils/edgeFunctions';
+import { errorText } from '../utils/apiErrors';
 import { useReminderTemplate, fillTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
 
@@ -68,22 +69,11 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
     setBusy(true);
     setError('');
     try {
-      const { data, error: fnErr } = await supabase!.functions.invoke('send-reminder', {
-        body: { to: to.trim(), subject, body: bodyText, chartId },
-      });
-      if (fnErr) {
-        let msg = fnErr.message;
-        try {
-          const d = await (fnErr as { context?: Response }).context?.json();
-          if (d?.error) msg = d.error;
-        } catch { /* keep msg */ }
-        throw new Error(msg);
-      }
-      if (data && (data as { error?: string }).error) throw new Error((data as { error: string }).error);
+      await invokeFunction('send-reminder', { to: to.trim(), subject, body: bodyText, chartId });
       setSent(true);
       setTimeout(onClose, 900);
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('composer.sendFailed'));
+      setError(errorText(e, t('composer.sendFailed')));
     } finally {
       setBusy(false);
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import i18n from '../i18n';
-import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import { cloudEnabled } from '../utils/supabaseClient';
+import { invokeFunction } from '../utils/edgeFunctions';
 import { friendlyError } from '../components/ui/dialogs';
 
 /**
@@ -49,21 +50,7 @@ export interface UseTeamReturn extends TeamState {
 }
 
 export async function call<T = Record<string, unknown>>(body: object): Promise<T> {
-  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
-  const { data, error } = await supabase.functions.invoke('team-api', { body });
-  if (error) {
-    try {
-      const detail = await (error as { context?: Response }).context?.json();
-      if (detail?.error) throw new Error(detail.error);
-    } catch (inner) {
-      if (inner instanceof Error && inner.message) throw inner;
-    }
-    throw new Error(error.message);
-  }
-  if (data && typeof data === 'object' && 'error' in data && (data as { error?: string }).error) {
-    throw new Error((data as { error: string }).error);
-  }
-  return data as T;
+  return invokeFunction<T>('team-api', body);
 }
 
 export function useTeam(open: boolean): UseTeamReturn {

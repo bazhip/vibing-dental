@@ -8,6 +8,7 @@ import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
 import { markExplicitSignOut } from '../utils/signOutIntent';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -608,7 +609,7 @@ export function useCloudSync(
   }, [upsertChart]);
 
   const fetchChart = React.useCallback(async (id: string): Promise<ChartSnapshot> => {
-    if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
+    if (!supabase) throw new LocalizedError(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
     const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
     if (error) throw new Error(error.message);
     return data.data as ChartSnapshot;

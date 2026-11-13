@@ -6,6 +6,7 @@ import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { toast } from './ui/dialogs';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * "Send feedback" — a short web form that emails the ToothOps owner (the
@@ -33,7 +34,7 @@ export async function sendFeedback(payload: {
   transcript?: string;
   section?: string;
 }): Promise<void> {
-  if (!supabase) throw new Error(i18n.t('feedback.needsAccount', { ns: 'settings' }));
+  if (!supabase) throw new LocalizedError(i18n.t('feedback.needsAccount', { ns: 'settings' }));
   const { data, error } = await supabase.functions.invoke('send-feedback', {
     body: {
       kind: payload.kind,

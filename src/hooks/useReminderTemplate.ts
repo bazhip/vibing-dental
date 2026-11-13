@@ -4,6 +4,7 @@ import { supabase } from '../utils/supabaseClient';
 import type { ReportLocale } from '../utils/ownerReportI18n';
 import { standardReminderText } from '../utils/reminderDefaults';
 import { usePracticeLanguage } from './usePracticeLanguage';
+import { LocalizedError } from '../utils/apiErrors';
 
 /**
  * The practice's recheck-reminder email template (subject + body with
@@ -92,7 +93,7 @@ export function useReminderTemplate(practiceId: string, open: boolean) {
   }, [stored, language]);
 
   const save = React.useCallback(async (next: ReminderTemplate): Promise<void> => {
-    if (!supabase || !practiceId) throw new Error(i18n.t('settings.noPractice', { ns: 'reminders' }));
+    if (!supabase || !practiceId) throw new LocalizedError(i18n.t('settings.noPractice', { ns: 'reminders' }));
     // Untouched standard text stays empty in the database (it follows the practice
     // language) — unless auto-send is on: the scheduled job only reads these columns,
     // so the text as shown must be stored for it to send.

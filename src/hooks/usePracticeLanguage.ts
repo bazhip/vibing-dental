@@ -3,6 +3,7 @@ import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import { standardReminderText } from '../utils/reminderDefaults';
 import { ReportLocale, appReportLocale, isReportLocale } from '../utils/ownerReportI18n';
+import { LocalizedError } from '../utils/apiErrors';
 
 /** The practice's client language when it is a known one, else `fallback`. */
 export function clientLanguageOf(
@@ -75,7 +76,7 @@ export function usePracticeLanguage(practiceId: string | null, open = true): Use
   const current = stored ?? appReportLocale();
   const save = React.useCallback(
     async (lng: ReportLocale | null): Promise<void> => {
-      if (!supabase || !practiceId) throw new Error(i18n.t('settings.noPractice', { ns: 'reminders' }));
+      if (!supabase || !practiceId) throw new LocalizedError(i18n.t('settings.noPractice', { ns: 'reminders' }));
       // The auto-send job reads only the stored reminder text, so text that is still the old
       // language's standard follows the switch; anything the owner edited stays as written.
       const payload: Record<string, string | null> = { client_language: lng };

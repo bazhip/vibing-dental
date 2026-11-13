@@ -146,6 +146,27 @@ describe('Login', () => {
     expect(untranslated(container)).toEqual([]);
   });
 
+  it('maps the common Supabase auth codes, and wraps anything raw', async () => {
+    const cases: [{ code?: string; message: string; status?: number }, string][] = [
+      [{ code: 'weak_password', message: 'Password should be at least 6 characters.' }, '⟦Choose a stronger password — at least 8 characters.⟧'],
+      [{ code: 'email_address_invalid', message: 'Email address is invalid' }, '⟦Enter a valid email address.⟧'],
+      [{ code: 'user_already_exists', message: 'User already registered' }, '⟦An account with this email already exists.⟧'],
+      [{ code: 'over_email_send_rate_limit', message: 'email rate limit exceeded' }, '⟦Too many attempts. Wait a minute and try again.⟧'],
+      [{ code: 'same_password', message: 'New password should be different from the old password.' }, '⟦Choose a new password that’s different from your current one.⟧'],
+      [{ message: 'Database error querying schema' }, '⟦Something went wrong (details: Database error querying schema)⟧'],
+    ];
+    for (const [error, shown] of cases) {
+      auth.signInWithPassword.mockResolvedValue({ error });
+      const { container, unmount } = render(<Login onAuthenticate={vi.fn()} />);
+      fill(/^⟦Email⟧/, 'jane@vets.com');
+      fill(/^⟦Password⟧/, 'longenough');
+      fireEvent.click(screen.getByRole('button', { name: '⟦Sign in⟧' }));
+      await screen.findByText(shown);
+      expect(untranslated(container)).toEqual([]);
+      unmount();
+    }
+  });
+
   it('translates the unconfirmed-email and reset-link notices', async () => {
     auth.signInWithPassword.mockResolvedValue({ error: { code: 'email_not_confirmed', message: 'Email not confirmed' } });
     auth.resetPasswordForEmail.mockResolvedValue({ error: null });

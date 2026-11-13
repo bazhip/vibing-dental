@@ -210,8 +210,9 @@ describe('PracticeSettingsModal', () => {
     billingMock.fetchBilling.mockRejectedValue(new Error('boom'));
     teamState.current = makeTeam({ error: 'Nope', practice: null, role: null, members: [] });
     const second = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
-    await screen.findByText('boom');
-    expect(findUntranslated(second.container, [...ALLOW, 'boom', 'Nope'])).toEqual([]);
+    // Raw backend text is wrapped in a translated sentence, not shown bare.
+    await screen.findByText('⟦Something went wrong (details: boom)⟧');
+    expect(findUntranslated(second.container, [...ALLOW, 'Nope'])).toEqual([]);
   });
 
   it('while the team loads and while the practice is still being set up', () => {
@@ -386,10 +387,19 @@ describe('JoinPracticeModal', () => {
     expect(findUntranslated(d.container, ALLOW)).toEqual([]);
     d.unmount();
 
+    // A raw (uncoded) server error is wrapped, not shown bare.
     invoke.mockResolvedValue({ data: { error: 'Expired link' }, error: null });
     const c = render(<JoinPracticeModal token="t" onDone={() => {}} />);
-    await screen.findByText('Expired link');
-    expect(findUntranslated(c.container, [...ALLOW, 'Expired link'])).toEqual([]);
+    await screen.findByText('⟦Something went wrong (details: Expired link)⟧');
+    expect(findUntranslated(c.container, ALLOW)).toEqual([]);
+    c.unmount();
+
+    // A coded one, as the edge function sends it (non-2xx with a JSON body), is translated.
+    const body = { error: 'This invite has expired. Ask the practice to send a new one.', code: 'invite_expired' };
+    invoke.mockResolvedValue({ data: null, error: { message: 'Edge Function returned a non-2xx status code', context: new Response(JSON.stringify(body), { status: 410 }) } });
+    const e = render(<JoinPracticeModal token="t" onDone={() => {}} />);
+    await screen.findByText('⟦This invite has expired. Ask the practice to send a new one.⟧');
+    expect(findUntranslated(e.container, ALLOW)).toEqual([]);
   });
 });
 
