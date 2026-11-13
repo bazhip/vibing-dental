@@ -36,7 +36,7 @@ function Detail({ name }: { name: string }) {
   );
 }
 
-function Root({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement | null> }) {
+function Root() {
   const { push } = useStack();
   const [mode, setMode] = React.useState('Perio');
   const [style, setStyle] = React.useState('Compact');
@@ -52,7 +52,6 @@ function Root({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement | null>
         title="Kit gallery"
         subtitle={mode}
         largeTitle
-        scrollRef={scrollRef}
         titleMenu={['Perio', 'Restorative', 'Hygiene'].map((m) => ({ label: m, checked: m === mode, onSelect: () => setMode(m) }))}
         leading={
           <button type="button" className="ios-glass-button ios-glass-button--icon" aria-label="Sidebar">
@@ -61,7 +60,12 @@ function Root({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement | null>
         }
         trailing={
           <>
-            <button type="button" className="ios-glass-button ios-glass-button--icon" aria-label="Share">
+            <button
+              type="button"
+              className="ios-glass-button ios-glass-button--icon"
+              aria-label="Share"
+              onClick={(e) => void chooseDialog({ title: 'Share chart', choices: [{ value: 'pdf', label: 'Export PDF' }, { value: 'link', label: 'Copy Link' }], anchor: e.currentTarget })}
+            >
               <Icon name="square-and-arrow-up" />
             </button>
             <button type="button" className="ios-glass-button ios-glass-button--icon" aria-label="Add">
@@ -79,7 +83,7 @@ function Root({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement | null>
 
         <ListSection header="PDF style">
           {['Compact', 'Detailed', 'Custom'].map((s) => (
-            <ListRow key={s} title={s} accessory={s === style ? 'check' : undefined} onClick={() => setStyle(s)} />
+            <ListRow key={s} title={s} selected={s === style} onClick={() => setStyle(s)} />
           ))}
         </ListSection>
 
@@ -190,15 +194,10 @@ function Root({ scrollRef }: { scrollRef: React.RefObject<HTMLDivElement | null>
 
 export default function Gallery() {
   const [tab, setTab] = React.useState('chart');
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
-  React.useLayoutEffect(() => {
-    // The root layer of the stack is the scroll container.
-    scrollRef.current = document.querySelector<HTMLDivElement>('.ios-gallery .ios-stack__layer');
-  });
   return (
     <div className="ios-gallery">
       <style>{GALLERY_CSS}</style>
-      <Stack root={<Root scrollRef={scrollRef} />} rootTitle="Kit gallery" />
+      <Stack root={<Root />} rootTitle="Kit gallery" />
       <TabBar tabs={TABS} active={tab} onChange={setTab} />
     </div>
   );

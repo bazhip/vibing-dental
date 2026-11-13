@@ -2,6 +2,9 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { TabBar } from './TabBar';
+import { hapticSelection } from '../native/haptics';
+
+vi.mock('../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi.fn(), hapticImpact: vi.fn(), hapticSuccess: vi.fn() }));
 
 const tabs = [
   { id: 'chart', label: 'Chart', icon: 'doc-text' as const },
@@ -32,5 +35,22 @@ describe('TabBar', () => {
     chart.focus();
     fireEvent.keyDown(chart, { key: 'ArrowRight' });
     expect(onChange).toHaveBeenCalledWith('patients');
+  });
+});
+
+describe('TabBar feel', () => {
+  it('the active tab has the filled icon; the others are outlines', () => {
+    render(<TabBar tabs={tabs} active="patients" onChange={() => {}} />);
+    expect(screen.getByRole('tab', { name: /Patients/ }).querySelector('svg')).toHaveAttribute('data-filled', 'true');
+    expect(screen.getByRole('tab', { name: /Chart/ }).querySelector('svg')).not.toHaveAttribute('data-filled');
+  });
+
+  it('plays the selection haptic on a tab change, not on re-tapping the active tab', () => {
+    vi.mocked(hapticSelection).mockClear();
+    render(<TabBar tabs={tabs} active="chart" onChange={() => {}} />);
+    fireEvent.click(screen.getByRole('tab', { name: /Chart/ }));
+    expect(hapticSelection).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('tab', { name: /Settings/ }));
+    expect(hapticSelection).toHaveBeenCalledTimes(1);
   });
 });

@@ -328,8 +328,16 @@ function SheetPanel({
     if (!panel) return undefined;
     const onTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
-      if (touch && gesture.current.mode === 'pending') decide(touch.clientX, touch.clientY);
-      if (gesture.current.mode === 'drag' && e.cancelable) e.preventDefault();
+      const g = gesture.current;
+      // A downward move from the top of the body (content not scrolled, or
+      // the gesture would be 'none') is the sheet's from the very first
+      // touchmove, before the slop is passed: otherwise WebKit can start an
+      // overscroll on it and cancel the pointer stream.
+      const firstMoveIsOurs =
+        !!touch && g.mode === 'pending' && !g.fromHeader && touch.clientY - g.y0 > 0 &&
+        Math.abs(touch.clientY - g.y0) >= Math.abs(touch.clientX - g.x0);
+      if (touch && g.mode === 'pending') decide(touch.clientX, touch.clientY);
+      if ((firstMoveIsOurs || gesture.current.mode === 'drag') && e.cancelable) e.preventDefault();
     };
     panel.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => panel.removeEventListener('touchmove', onTouchMove);

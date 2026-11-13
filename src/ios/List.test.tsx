@@ -27,6 +27,21 @@ describe('List', () => {
     expect(screen.getByRole('button', { name: /Compact/ })).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('selected rows in a choice group report aria-pressed true/false and show the check', () => {
+    render(
+      <List>
+        <ListSection>
+          <ListRow title="Compact" selected onClick={() => {}} />
+          <ListRow title="Detailed" selected={false} onClick={() => {}} />
+        </ListSection>
+      </List>
+    );
+    expect(screen.getByRole('button', { name: /Compact/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /Detailed/ })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: /Compact/ }).querySelector('.ios-row__check')).not.toBeNull();
+    expect(screen.getByRole('button', { name: /Detailed/ }).querySelector('.ios-row__check')).toBeNull();
+  });
+
   it('SwitchRow is a labelled switch', () => {
     const onChange = vi.fn();
     render(<List><ListSection><SwitchRow title="Face ID" checked={false} onChange={onChange} /></ListSection></List>);

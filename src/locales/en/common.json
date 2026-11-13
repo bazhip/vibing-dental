@@ -22,6 +22,7 @@
     "back": "Back",
     "moreActions": "More actions",
     "ok": "OK",
-    "copy": "Copy"
+    "copy": "Copy",
+    "moreActionsFor": "More actions for {{title}}"
   }
 }

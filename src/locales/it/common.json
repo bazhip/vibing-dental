@@ -22,6 +22,7 @@
     "back": "Indietro",
     "moreActions": "Altre azioni",
     "ok": "OK",
-    "copy": "Copia"
+    "copy": "Copia",
+    "moreActionsFor": "Altre azioni per {{title}}"
   }
 }

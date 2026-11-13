@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, it } from 'vitest';
-import { Stack, useStack } from './Stack';
+import { Stack, useStack, useStackScreenOptions } from './Stack';
+import { NavBar } from './NavBar';
 
 function Beta() {
   const { depth, pop } = useStack();
@@ -96,5 +97,66 @@ describe('Stack', () => {
     fireEvent.pointerUp(layer, { ...ev, clientX: 900, clientY: 302 });
     await new Promise((r) => setTimeout(r, 450));
     expect(screen.getByText('Alpha screen')).toBeInTheDocument();
+  });
+});
+
+describe('Stack focus, live screens, popToRoot, scroll container', () => {
+  it('push focuses the new Back button; pop returns focus to the element focused before the push', async () => {
+    render(<Stack root={<Root />} rootTitle="Settings" />);
+    const open = screen.getByRole('button', { name: 'Open Alpha' });
+    open.focus();
+    fireEvent.click(open);
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: /Settings/ })));
+    fireEvent.click(screen.getByRole('button', { name: /Settings/ }));
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Open Alpha' })));
+  });
+
+  it('bar items set with useStackScreenOptions follow the screen’s state', () => {
+    function Editor() {
+      const [text, setText] = React.useState('');
+      useStackScreenOptions({
+        title: text ? `Edit: ${text}` : 'Edit',
+        trailing: <button disabled={!text}>Save</button>,
+      });
+      return <input aria-label="Name" value={text} onChange={(e) => setText(e.target.value)} />;
+    }
+    function Home() {
+      const { push } = useStack();
+      return <button onClick={() => push({ id: 'e', title: 'Edit', render: () => <Editor /> })}>Edit it</button>;
+    }
+    render(<Stack root={<Home />} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit it' }));
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(screen.getByRole('heading', { name: 'Edit' })).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Name' }), { target: { value: 'Jane' } });
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled();
+    expect(screen.getByRole('heading', { name: 'Edit: Jane' })).toBeInTheDocument();
+    // The typed value survives the bar update (the screen isn't remounted).
+    expect(screen.getByRole('textbox', { name: 'Name' })).toHaveValue('Jane');
+  });
+
+  it('popToRoot pops every pushed screen', async () => {
+    let api: ReturnType<typeof useStack> | null = null;
+    function Spy() {
+      api = useStack();
+      return <Root />;
+    }
+    render(<Stack root={<Spy />} rootTitle="Settings" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Open Alpha' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Open Beta' }));
+    expect(api!.depth).toBe(2);
+    act(() => api!.popToRoot());
+    await waitFor(() => expect(screen.queryByText(/Alpha screen|Beta screen/)).toBeNull());
+    expect(api!.depth).toBe(0);
+    expect(screen.getByText('Root screen, depth 0').closest('[inert]')).toBeNull();
+  });
+
+  it('a root NavBar with a large title collapses on its layer’s scroll without a scrollRef', () => {
+    const { container } = render(<Stack root={<><NavBar title="Patients" largeTitle /><p>rows</p></>} />);
+    const layer = container.querySelector('.ios-stack__layer') as HTMLElement;
+    const bar = container.querySelector('.ios-navbar')!;
+    Object.defineProperty(layer, 'scrollTop', { configurable: true, value: 200 });
+    fireEvent.scroll(layer);
+    expect(bar).toHaveClass('ios-navbar--collapsed');
   });
 });

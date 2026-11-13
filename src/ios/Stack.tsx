@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Icon, type IconName } from './icons';
 import { NavBar } from './NavBar';
 import { capturePointer, exitDelay, releasePointer, VelocityTracker } from './gesture';
+import { ScrollContainerContext } from './scrollContainer';
 
 /**
  * iOS navigation stack (UINavigationController).
@@ -16,6 +17,15 @@ import { capturePointer, exitDelay, releasePointer, VelocityTracker } from './ge
  * Every screen stays mounted while it is in the stack, so scroll position
  * and form state survive a push/pop; screens under the top one are inert
  * and hidden from assistive tech.
+ *
+ * Pushed screens are live components: `render()` is called once, at push
+ * time, and returns an element whose component reads current data through
+ * its own hooks / context (not values captured in the push closure). Bar
+ * items that depend on that state (a Save button that enables, a changing
+ * title) are set from inside the screen with useStackScreenOptions().
+ *
+ * Focus: a push moves focus to the new screen's Back button; a pop puts it
+ * back where it was before the push.
  */
 
 export interface StackScreen {
@@ -28,6 +38,8 @@ export interface StackScreen {
 export interface StackApi {
   push(screen: StackScreen): void;
   pop(): void;
+  /** Pop every pushed screen (e.g. re-tapping the selected tab). */
+  popToRoot(): void;
   /** Pushed screens above the root (0 at the root). */
   depth: number;
 }
@@ -40,10 +52,32 @@ export function useStack(): StackApi {
   return api;
 }
 
+export interface StackScreenOptions {
+  title?: string;
+  trailing?: React.ReactNode;
+}
+
+const ScreenOptionsContext = React.createContext<((opts: StackScreenOptions) => void) | null>(null);
+
+/**
+ * Set the enclosing pushed screen's bar items from inside the screen, so
+ * they follow its state. Overrides the `title` / `trailing` given to
+ * push(). No-op on the root screen (which renders its own NavBar).
+ */
+export function useStackScreenOptions(opts: StackScreenOptions): void {
+  const set = React.useContext(ScreenOptionsContext);
+  const { title, trailing } = opts;
+  React.useLayoutEffect(() => {
+    set?.({ title, trailing });
+  }, [set, title, trailing]);
+}
+
 interface Entry {
   key: number;
   screen: StackScreen;
   phase: 'enter' | 'idle' | 'exit';
+  /** Focused element when this screen was pushed; refocused on pop. */
+  returnFocus: HTMLElement | null;
 }
 
 const BACK_ICON: IconName = 'chevron-left';
@@ -61,26 +95,40 @@ export function Stack({ root, rootTitle }: StackProps) {
   const { t } = useTranslation();
   const [entries, setEntries] = React.useState<Entry[]>([]);
   const nextKey = React.useRef(1);
+  const [options, setOptions] = React.useState<Record<number, StackScreenOptions>>({});
   const live = entries.filter((e) => e.phase !== 'exit');
   const depth = live.length;
+  const entriesRef = React.useRef(entries);
+  entriesRef.current = entries;
+  /** Where focus goes after the next pop. */
+  const focusAfterPop = React.useRef<HTMLElement | null>(null);
 
   const push = React.useCallback((screen: StackScreen) => {
     const key = nextKey.current++;
-    setEntries((list) => [...list, { key, screen, phase: 'enter' }]);
+    const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setEntries((list) => [...list, { key, screen, phase: 'enter', returnFocus }]);
   }, []);
 
-  const pop = React.useCallback(() => {
-    setEntries((list) => {
-      const i = list.reduce((last, e, idx) => (e.phase !== 'exit' ? idx : last), -1);
-      if (i < 0) return list;
-      return list.map((e, idx) => (idx === i ? { ...e, phase: 'exit' } : e));
-    });
+  /** Slide out every live screen from index `from` up. */
+  const popFrom = React.useCallback((from: (liveEntries: Entry[]) => number) => {
+    const liveNow = entriesRef.current.filter((e) => e.phase !== 'exit');
+    const i = from(liveNow);
+    if (i < 0 || i >= liveNow.length) return;
+    focusAfterPop.current = liveNow[i].returnFocus;
+    const leaving = new Set(liveNow.slice(i).map((e) => e.key));
+    setEntries((list) => list.map((e) => (leaving.has(e.key) ? { ...e, phase: 'exit' } : e)));
   }, []);
+  const pop = React.useCallback(() => popFrom((l) => l.length - 1), [popFrom]);
+  const popToRoot = React.useCallback(() => popFrom(() => 0), [popFrom]);
 
   // Screens on their way out unmount once the slide has finished.
   React.useEffect(() => {
     if (!entries.some((e) => e.phase === 'exit')) return undefined;
-    const t = window.setTimeout(() => setEntries((list) => list.filter((e) => e.phase !== 'exit')), exitDelay(TRANSITION_MS));
+    const t = window.setTimeout(() => {
+      const gone = new Set(entriesRef.current.filter((e) => e.phase === 'exit').map((e) => e.key));
+      setEntries((list) => list.filter((e) => !gone.has(e.key)));
+      setOptions((o) => Object.fromEntries(Object.entries(o).filter(([k]) => !gone.has(Number(k)))));
+    }, exitDelay(TRANSITION_MS));
     return () => window.clearTimeout(t);
   }, [entries]);
 
@@ -92,7 +140,7 @@ export function Stack({ root, rootTitle }: StackProps) {
     return () => (window.cancelAnimationFrame ?? window.clearTimeout)(id);
   }, [entries]);
 
-  const api = React.useMemo<StackApi>(() => ({ push, pop, depth }), [push, pop, depth]);
+  const api = React.useMemo<StackApi>(() => ({ push, pop, popToRoot, depth }), [push, pop, popToRoot, depth]);
 
   // ---- Edge back-swipe ---------------------------------------------------
   const layerRefs = React.useRef(new Map<number, HTMLDivElement>());
@@ -104,6 +152,22 @@ export function Stack({ root, rootTitle }: StackProps) {
 
   const topKey = live.length ? live[live.length - 1].key : 0;
   const underKey = live.length > 1 ? live[live.length - 2].key : 0; // 0 = root
+
+  // Focus: Back button of a newly pushed screen; previous element on pop.
+  // Keys only grow, so a larger top key means a push.
+  const prevTopKey = React.useRef(topKey);
+  React.useEffect(() => {
+    const prev = prevTopKey.current;
+    prevTopKey.current = topKey;
+    if (prev === topKey) return;
+    if (topKey > prev) {
+      layerRefs.current.get(topKey)?.querySelector<HTMLElement>('.ios-back-button')?.focus({ preventScroll: true });
+    } else {
+      const el = focusAfterPop.current;
+      focusAfterPop.current = null;
+      if (el && el.isConnected) el.focus({ preventScroll: true });
+    }
+  }, [topKey]);
 
   const styleDrag = (dx: number | null, width: number) => {
     const top = layerRefs.current.get(topKey);
@@ -200,10 +264,22 @@ export function Stack({ root, rootTitle }: StackProps) {
   }, []);
 
   // ---- Render --------------------------------------------------------------
+  const rootLayerRef = React.useRef<HTMLDivElement | null>(null);
   const setLayerRef = (key: number) => (el: HTMLDivElement | null) => {
+    if (key === 0) rootLayerRef.current = el;
     if (el) layerRefs.current.set(key, el);
     else layerRefs.current.delete(key);
   };
+  const optionSetters = React.useRef(new Map<number, (o: StackScreenOptions) => void>());
+  const setterFor = (key: number) => {
+    let fn = optionSetters.current.get(key);
+    if (!fn) {
+      fn = (o: StackScreenOptions) => setOptions((all) => ({ ...all, [key]: o }));
+      optionSetters.current.set(key, fn);
+    }
+    return fn;
+  };
+  const titleOf = (e: Entry) => options[e.key]?.title ?? e.screen.title;
 
   const layerClass = (key: number, phase: Entry['phase'] | 'root') => {
     const classes = ['ios-stack__layer'];
@@ -233,12 +309,13 @@ export function Stack({ root, rootTitle }: StackProps) {
           aria-hidden={topKey !== 0 ? true : undefined}
           inert={topKey !== 0 ? true : undefined}
         >
-          {root}
+          <ScrollContainerContext.Provider value={rootLayerRef}>{root}</ScrollContainerContext.Provider>
         </div>
         {entries.map((entry) => {
           const index = live.indexOf(entry);
-          const prevTitle = index > 0 ? live[index - 1].screen.title : rootTitle;
+          const prevTitle = index > 0 ? titleOf(live[index - 1]) : rootTitle;
           const isTop = entry.key === topKey;
+          const opts = options[entry.key];
           return (
             <PushedLayer
               key={entry.key}
@@ -246,6 +323,9 @@ export function Stack({ root, rootTitle }: StackProps) {
               className={layerClass(entry.key, entry.phase)}
               hidden={!isTop}
               screen={entry.screen}
+              title={titleOf(entry)}
+              trailing={opts && 'trailing' in opts && opts.trailing !== undefined ? opts.trailing : entry.screen.trailing}
+              setOptions={setterFor(entry.key)}
               backLabel={prevTitle || t('ios.back')}
               onBack={pop}
             />
@@ -261,6 +341,9 @@ function PushedLayer({
   className,
   hidden,
   screen,
+  title,
+  trailing,
+  setOptions,
   backLabel,
   onBack,
 }: {
@@ -268,9 +351,15 @@ function PushedLayer({
   className: string;
   hidden: boolean;
   screen: StackScreen;
+  title: string;
+  trailing: React.ReactNode;
+  setOptions: (o: StackScreenOptions) => void;
   backLabel: string;
   onBack: () => void;
 }) {
+  // Rendered once: the screen's component updates itself through its own
+  // state/hooks, and bar changes it reports don't re-render it.
+  const content = React.useMemo(() => screen.render(), [screen]);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const setRefs = React.useCallback(
     (el: HTMLDivElement | null) => {
@@ -289,7 +378,7 @@ function PushedLayer({
       inert={hidden ? true : undefined}
     >
       <NavBar
-        title={screen.title}
+        title={title}
         scrollRef={scrollRef}
         leading={
           <button type="button" className="ios-back-button" onClick={onBack}>
@@ -297,9 +386,13 @@ function PushedLayer({
             <span className="ios-back-button__label">{backLabel}</span>
           </button>
         }
-        trailing={screen.trailing}
+        trailing={trailing}
       />
-      <div className="ios-stack__content">{screen.render()}</div>
+      <ScrollContainerContext.Provider value={scrollRef}>
+        <ScreenOptionsContext.Provider value={setOptions}>
+          <div className="ios-stack__content">{content}</div>
+        </ScreenOptionsContext.Provider>
+      </ScrollContainerContext.Provider>
     </div>
   );
 }

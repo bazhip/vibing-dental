@@ -130,6 +130,8 @@
   touch-action: none;
 }
 :where(html.native-ios) .ios-sheet-root--shown .ios-sheet__backdrop { opacity: 1; }
+/* While sliding in or out, the sheet doesn't take taps meant for the page. */
+:where(html.native-ios) .ios-sheet-root:not(.ios-sheet-root--shown) { pointer-events: none; }
 
 :where(html.native-ios) .ios-sheet {
   position: absolute;
@@ -863,3 +865,32 @@
 @keyframes ios-alert-in { from { opacity: 0; transform: scale(1.12); } }
 @keyframes ios-slide-up { from { transform: translate3d(0, 100%, 0); } }
 @keyframes ios-toast-in { from { opacity: 0; transform: translate3d(0, -120%, 0) scale(0.9); } }
+
+/* ---- Action sheet on iPad: popover at the anchor, or a centred card ---- */
+:where(html.native-ios) .ios-action-sheet-overlay--popover {
+  background: transparent;
+  padding: 0;
+}
+:where(html.native-ios) .ios-action-sheet--popover {
+  position: fixed;
+  width: 320px;
+  animation: ios-menu-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+}
+:where(html.native-ios) .ios-action-sheet--popover .ios-action-sheet__group {
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 12px 48px var(--ios-shadow);
+}
+:where(html.native-ios) .ios-action-sheet-overlay--card { align-items: center; padding: 24px; }
+:where(html.native-ios) .ios-action-sheet--card {
+  width: min(100%, 340px);
+  animation: ios-alert-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+}
+/* The popover's Cancel: invisible until it has keyboard focus. */
+:where(html.native-ios) .ios-action-sheet__popover-cancel:not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

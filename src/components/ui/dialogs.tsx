@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import i18n from '../../i18n';
 import { isNativeApp } from '../../native/platform';
 import { Icon } from '../../ios/icons';
+import { trapTab, useMediaQuery } from '../../ios/gesture';
 import './dialogs.css';
 
 /**
@@ -62,6 +63,9 @@ export interface ChoiceOptions {
   message?: React.ReactNode;
   choices: Choice[];
   cancelLabel?: string;
+  /** The control that asked. On iPad (regular width) the action sheet is
+   *  a popover next to it; without one it's a centred card. */
+  anchor?: HTMLElement | DOMRect;
 }
 
 export interface ToastOptions {
@@ -293,7 +297,14 @@ function NativeConfirm({ req, onDone }: { req: Extract<DialogRequest, { kind: 'c
   const msgId = `dlg-msg-${req.id}`;
   return (
     <div className="ios-alert-overlay">
-      <div className="ios-alert" role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={opts.message ? msgId : undefined}>
+      <div
+        className="ios-alert"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={opts.message ? msgId : undefined}
+        onKeyDown={(e) => trapTab(e, e.currentTarget)}
+      >
         <div className="ios-alert__content">
           <h2 id={titleId} className="ios-alert__title">{opts.title}</h2>
           {opts.message && <div id={msgId} className="ios-alert__message">{opts.message}</div>}
@@ -345,6 +356,7 @@ function NativePrompt({ req, onDone }: { req: Extract<DialogRequest, { kind: 'pr
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={opts.message ? msgId : undefined}
+        onKeyDown={(e) => trapTab(e, e.currentTarget)}
         onSubmit={(e) => { e.preventDefault(); submit(); }}
       >
         <div className="ios-alert__content">
@@ -376,18 +388,51 @@ function NativePrompt({ req, onDone }: { req: Extract<DialogRequest, { kind: 'pr
   );
 }
 
+const POPOVER_WIDTH = 320;
+const POPOVER_GAP = 10;
+const POPOVER_EDGE = 12;
+
 function NativeActionSheet({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choose' }>; onDone: (v: string | null) => void }) {
   const { opts } = req;
   const cancelRef = React.useRef<HTMLButtonElement>(null);
-  React.useEffect(() => { cancelRef.current?.focus(); }, []);
+  const sheetRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => { cancelRef.current?.focus({ preventScroll: true }); }, []);
   const backdrop = useBackdropClose(() => onDone(null));
   const titleId = `dlg-title-${req.id}`;
   const msgId = `dlg-msg-${req.id}`;
   // HIG: destructive choices first, Cancel last and set apart.
   const choices = [...opts.choices.filter((c) => c.destructive), ...opts.choices.filter((c) => !c.destructive)];
+  // iPad (regular width): a popover at the control that asked, or a centred
+  // card when there is no anchor. iPhone: a sheet from the bottom.
+  const regular = useMediaQuery('(min-width: 768px)');
+  const layout: 'sheet' | 'popover' | 'card' = !regular ? 'sheet' : opts.anchor ? 'popover' : 'card';
+
+  const [pos, setPos] = React.useState<{ left: number; top: number } | null>(null);
+  React.useLayoutEffect(() => {
+    if (layout !== 'popover' || !opts.anchor) return;
+    const a = opts.anchor instanceof Element ? opts.anchor.getBoundingClientRect() : opts.anchor;
+    const h = sheetRef.current?.getBoundingClientRect().height ?? 0;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const left = Math.max(POPOVER_EDGE, Math.min(a.left + a.width / 2 - POPOVER_WIDTH / 2, vw - POPOVER_WIDTH - POPOVER_EDGE));
+    const below = a.top + a.height + POPOVER_GAP;
+    const top = below + h <= vh - POPOVER_EDGE ? below : Math.max(POPOVER_EDGE, a.top - POPOVER_GAP - h);
+    setPos({ left, top });
+  }, [layout, opts.anchor]);
+
+  const cancelLabel = opts.cancelLabel ?? i18n.t('actions.cancel');
   return (
-    <div className="ios-action-sheet-overlay" {...backdrop}>
-      <div className="ios-action-sheet" role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={opts.message ? msgId : undefined}>
+    <div className={`ios-action-sheet-overlay ios-action-sheet-overlay--${layout}`} {...backdrop}>
+      <div
+        ref={sheetRef}
+        className={`ios-action-sheet ios-action-sheet--${layout}`}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={opts.message ? msgId : undefined}
+        style={layout === 'popover' ? (pos ? { left: pos.left, top: pos.top } : { visibility: 'hidden' }) : undefined}
+        onKeyDown={(e) => trapTab(e, e.currentTarget)}
+      >
         <div className="ios-action-sheet__group">
           <div className="ios-action-sheet__header">
             <h2 id={titleId} className="ios-action-sheet__title">{opts.title}</h2>
@@ -403,10 +448,19 @@ function NativeActionSheet({ req, onDone }: { req: Extract<DialogRequest, { kind
               {c.label}
             </button>
           ))}
+          {layout === 'popover' && (
+            // Popovers drop the visible Cancel (a tap outside cancels, HIG);
+            // keyboard, Switch Control and VoiceOver still get one.
+            <button ref={cancelRef} type="button" className="ios-action-sheet__button ios-action-sheet__popover-cancel" onClick={() => onDone(null)}>
+              {cancelLabel}
+            </button>
+          )}
         </div>
-        <button ref={cancelRef} type="button" className="ios-action-sheet__cancel" onClick={() => onDone(null)}>
-          {opts.cancelLabel ?? i18n.t('actions.cancel')}
-        </button>
+        {layout !== 'popover' && (
+          <button ref={cancelRef} type="button" className="ios-action-sheet__cancel" onClick={() => onDone(null)}>
+            {cancelLabel}
+          </button>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Sheet } from './Sheet';
+import { ContextMenu } from './ContextMenu';
 
 /** Drag with pointer events from (y0) to (y1) on `el`, in a few steps. */
 function drag(el: Element, y0: number, y1: number) {
@@ -176,5 +177,72 @@ describe('Sheet re-open', () => {
     await waitFor(() => expect(document.querySelector('.ios-sheet-root--shown')).not.toBeNull());
     await new Promise((r) => setTimeout(r, 450));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+});
+
+describe('Sheet first touchmove', () => {
+  /** A cancelable touchmove at (x, y), as WebKit sends it after pointermove. */
+  function touchMove(el: Element, x: number, y: number) {
+    const ev = new Event('touchmove', { bubbles: true, cancelable: true });
+    Object.defineProperty(ev, 'touches', { value: [{ clientX: x, clientY: y }] });
+    el.dispatchEvent(ev);
+    return ev;
+  }
+  const down = (el: Element, y: number) =>
+    fireEvent.pointerDown(el, { pointerId: 4, clientX: 100, clientY: y, button: 0, pointerType: 'touch', isPrimary: true });
+
+  it('the first downward touchmove from the top of the body is cancelled (no native overscroll)', () => {
+    render(<Sheet open onClose={() => {}} title="T"><p>Content</p></Sheet>);
+    const content = screen.getByText('Content');
+    down(content, 100);
+    // 1px: still inside the slop, but already the sheet's.
+    expect(touchMove(content, 100, 101).defaultPrevented).toBe(true);
+  });
+
+  it('touchmoves in a scrolled body are left to the browser (content scrolls)', () => {
+    render(<Sheet open onClose={() => {}} title="T"><p>Content</p></Sheet>);
+    Object.defineProperty(document.querySelector('.ios-sheet__body')!, 'scrollTop', { configurable: true, value: 80 });
+    const content = screen.getByText('Content');
+    down(content, 100);
+    expect(touchMove(content, 100, 101).defaultPrevented).toBe(false);
+    expect(touchMove(content, 100, 160).defaultPrevented).toBe(false);
+  });
+
+  it('an upward touchmove at the top of a large sheet scrolls the content', () => {
+    render(<Sheet open onClose={() => {}} title="T"><p>Content</p></Sheet>);
+    const content = screen.getByText('Content');
+    down(content, 300);
+    expect(touchMove(content, 100, 299).defaultPrevented).toBe(false);
+    expect(touchMove(content, 100, 260).defaultPrevented).toBe(false);
+  });
+});
+
+describe('Sheet with a menu open inside it', () => {
+  it('Escape closes the menu without closing the sheet', async () => {
+    const onClose = vi.fn();
+    render(
+      <Sheet open onClose={onClose} title="T">
+        <ContextMenu items={[{ label: 'Duplicate', onSelect: () => {} }]}>
+          <button>Row</button>
+        </ContextMenu>
+      </Sheet>
+    );
+    fireEvent.contextMenu(screen.getByRole('button', { name: 'Row' }));
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+    expect(screen.queryByRole('menu')).toBeNull();
+    await act(async () => { await Promise.resolve(); });
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+});
+
+describe('Sheet while closing', () => {
+  it('the exiting sheet does not take taps (pointer-events off until shown)', () => {
+    // The rule lives in ios.css; check the class contract it keys on.
+    const { rerender } = render(<Sheet open onClose={() => {}} title="T"><p>x</p></Sheet>);
+    rerender(<Sheet open={false} onClose={() => {}} title="T"><p>x</p></Sheet>);
+    const root = document.querySelector('.ios-sheet-root')!;
+    expect(root).not.toHaveClass('ios-sheet-root--shown');
   });
 });

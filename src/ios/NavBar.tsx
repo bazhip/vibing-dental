@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, type IconName } from './icons';
 import { MenuPopover, type MenuAnchor } from './ContextMenu';
+import { ScrollContainerContext } from './scrollContainer';
 
 /**
  * iOS navigation bar.
@@ -14,8 +15,8 @@ import { MenuPopover, type MenuAnchor } from './ContextMenu';
  * `titleMenu` turns the title into a button that opens a selection menu
  * (chevron-down after the title, like a SwiftUI toolbar title menu).
  *
- * `scrollRef` is the scroll container the bar lives in; the window when
- * omitted.
+ * `scrollRef` is the scroll container the bar lives in. When omitted, the
+ * enclosing <Stack> layer is used (ScrollContainerContext), else the window.
  */
 
 const CHEVRON_DOWN: IconName = 'chevron-down';
@@ -40,9 +41,11 @@ export function NavBar({ title, subtitle, largeTitle = false, leading, trailing,
   const [collapsed, setCollapsed] = React.useState(false);
   const [menuAnchor, setMenuAnchor] = React.useState<MenuAnchor | null>(null);
   const largeRef = React.useRef<HTMLDivElement>(null);
+  const contextRef = React.useContext(ScrollContainerContext);
+  const containerRef = scrollRef ?? contextRef;
 
   React.useEffect(() => {
-    const el = scrollRef?.current ?? null;
+    const el = containerRef?.current ?? null;
     const target: HTMLElement | Window = el ?? window;
     const read = () => (el ? el.scrollTop : window.scrollY);
     const onScroll = () => {
@@ -54,7 +57,7 @@ export function NavBar({ title, subtitle, largeTitle = false, leading, trailing,
     onScroll();
     target.addEventListener('scroll', onScroll, { passive: true });
     return () => target.removeEventListener('scroll', onScroll);
-  }, [scrollRef, largeTitle]);
+  }, [containerRef, largeTitle]);
 
   const openMenu = (e: React.MouseEvent<HTMLElement>) => {
     const r = e.currentTarget.getBoundingClientRect();

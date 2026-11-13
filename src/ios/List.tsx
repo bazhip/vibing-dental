@@ -52,13 +52,17 @@ export interface ListRowProps {
   value?: React.ReactNode;
   /** An icon name (drawn in the tint) or any node. */
   icon?: IconName | React.ReactNode;
-  /** 'chevron' = pushes a screen; 'check' = the selected choice. */
+  /** 'chevron' = pushes a screen; 'check' = a checkmark. */
   accessory?: 'chevron' | 'check' | React.ReactNode;
+  /** Row in a single-choice group: true shows the checkmark; every row of
+   *  the group reports aria-pressed true/false. */
+  selected?: boolean;
   destructive?: boolean;
   onClick?: () => void;
 }
 
-export function ListRow({ title, subtitle, value, icon, accessory, destructive, onClick }: ListRowProps) {
+export function ListRow({ title, subtitle, value, icon, accessory: accessoryProp, destructive, onClick, selected }: ListRowProps) {
+  const accessory = selected ? 'check' : accessoryProp;
   const wrapped = React.useContext(RowWrapperContext);
   const cls = `ios-row${destructive ? ' ios-row--destructive' : ''}${onClick ? ' ios-row--button' : ''}${icon ? ' ios-row--with-icon' : ''}`;
   const inner = (
@@ -81,7 +85,7 @@ export function ListRow({ title, subtitle, value, icon, accessory, destructive, 
     </>
   );
   const row = onClick ? (
-    <button type="button" className={cls} onClick={onClick} aria-pressed={accessory === 'check' ? true : undefined}>
+    <button type="button" className={cls} onClick={onClick} aria-pressed={selected !== undefined ? selected : accessory === 'check' ? true : undefined}>
       {inner}
     </button>
   ) : (

@@ -222,6 +222,7 @@ export function Icon({ name, size = 22, title, filled = false, className }: Icon
       height={size}
       viewBox="0 0 24 24"
       data-icon={name}
+      data-filled={useSolid ? 'true' : undefined}
       {...a11y}
     >
       {cutShapes && (

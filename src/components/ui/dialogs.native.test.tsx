@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { afterEach } from 'vitest';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../native/platform', () => ({ isNativeApp: () => true, WEB_ORIGIN: 'https://toothops.app/' }));
@@ -89,5 +90,77 @@ describe('DialogHost in the iOS app', () => {
     expect(document.querySelector('.ui-toasts')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     await waitFor(() => expect(screen.queryByText('Chart saved')).toBeNull());
+  });
+});
+
+describe('iOS dialogs: focus stays inside', () => {
+  it('Tab and Shift+Tab wrap inside an alert', () => {
+    render(<DialogHost />);
+    act(() => { void confirmDialog({ title: 'Replace?' }); });
+    const cancel = screen.getByRole('button', { name: 'Cancel' });
+    const ok = screen.getByRole('button', { name: 'OK' });
+    ok.focus();
+    fireEvent.keyDown(ok, { key: 'Tab' });
+    expect(document.activeElement).toBe(cancel);
+    fireEvent.keyDown(cancel, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(ok);
+  });
+
+  it('Tab wraps inside a prompt alert', () => {
+    render(<DialogHost />);
+    act(() => { void promptDialog({ title: 'Name' }); });
+    const input = screen.getByRole('textbox', { name: 'Name' });
+    const ok = screen.getByRole('button', { name: 'OK' });
+    ok.focus();
+    fireEvent.keyDown(ok, { key: 'Tab' });
+    expect(document.activeElement).toBe(input);
+  });
+
+  it('Tab wraps inside an action sheet', () => {
+    render(<DialogHost />);
+    act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }] }); });
+    const cancel = screen.getByRole('button', { name: 'Cancel' });
+    expect(document.activeElement).toBe(cancel);
+    fireEvent.keyDown(cancel, { key: 'Tab' });
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'PDF' }));
+  });
+});
+
+describe('iOS action sheet on iPad', () => {
+  const realMatchMedia = window.matchMedia;
+  afterEach(() => { window.matchMedia = realMatchMedia; });
+  function regularWidth() {
+    window.matchMedia = ((q: string) => ({
+      matches: q.includes('min-width: 768px'),
+      media: q,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+  }
+
+  it('with an anchor, renders as a popover next to it (no visible Cancel row)', () => {
+    regularWidth();
+    render(<DialogHost />);
+    const anchor = { left: 600, top: 100, width: 44, height: 44, right: 644, bottom: 144, x: 600, y: 100, toJSON: () => ({}) } as DOMRect;
+    act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }], anchor }); });
+    const sheet = screen.getByRole('alertdialog', { name: 'Export' });
+    expect(sheet).toHaveClass('ios-action-sheet--popover');
+    expect(sheet.style.top).toBe('154px'); // below the anchor, 10px gap
+    expect(document.querySelector('.ios-action-sheet__cancel')).toBeNull();
+    // Still a Cancel for keyboard / VoiceOver, focused first.
+    expect(document.activeElement).toHaveAccessibleName('Cancel');
+  });
+
+  it('without an anchor, renders as a centred card', () => {
+    regularWidth();
+    render(<DialogHost />);
+    act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }] }); });
+    expect(screen.getByRole('alertdialog', { name: 'Export' })).toHaveClass('ios-action-sheet--card');
+  });
+
+  it('on iPhone width, an anchor is ignored (bottom sheet)', () => {
+    render(<DialogHost />);
+    act(() => { void chooseDialog({ title: 'Export', choices: [{ value: 'pdf', label: 'PDF' }], anchor: document.body }); });
+    expect(screen.getByRole('alertdialog', { name: 'Export' })).toHaveClass('ios-action-sheet--sheet');
   });
 });

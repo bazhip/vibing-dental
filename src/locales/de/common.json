@@ -22,6 +22,7 @@
     "back": "Zurück",
     "moreActions": "Weitere Aktionen",
     "ok": "OK",
-    "copy": "Kopieren"
+    "copy": "Kopieren",
+    "moreActionsFor": "Weitere Aktionen für {{title}}"
   }
 }

@@ -31,7 +31,7 @@ describe('SwipeRow', () => {
     const user = userEvent.setup();
     const { onDelete } = row();
     expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull();
-    const more = screen.getByRole('button', { name: 'More actions' });
+    const more = screen.getByRole('button', { name: 'More actions for Jane Doe' });
     more.focus();
     await user.keyboard('{Enter}');
     expect(more).toHaveAttribute('aria-expanded', 'true');
@@ -67,4 +67,21 @@ describe('SwipeRow', () => {
     fireEvent.pointerUp(content(), { ...ev, clientX: 296, clientY: 200 });
     expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull();
   });
+});
+
+it('falls back to the plain label when the row has no string title', () => {
+  render(
+    <List>
+      <ListSection>
+        <SwipeRow actions={[{ label: 'Delete', onAction: () => {} }]}>
+          <ListRow title={<b>Jane</b>} />
+        </SwipeRow>
+        <SwipeRow label="Visit 3 May" actions={[{ label: 'Delete', onAction: () => {} }]}>
+          <ListRow title={<b>Visit</b>} />
+        </SwipeRow>
+      </ListSection>
+    </List>
+  );
+  expect(screen.getByRole('button', { name: 'More actions' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'More actions for Visit 3 May' })).toBeInTheDocument();
 });

@@ -532,6 +532,10 @@
       "hash": "f8d46c2570e7",
       "status": "machine"
     },
+    "common:ios.moreActionsFor": {
+      "hash": "ba498a40d775",
+      "status": "machine"
+    },
     "common:ios.ok": {
       "hash": "565339bc4d33",
       "status": "machine"
@@ -1368,6 +1372,10 @@
     },
     "common:ios.moreActions": {
       "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.moreActionsFor": {
+      "hash": "ba498a40d775",
       "status": "machine"
     },
     "common:ios.ok": {
@@ -2208,6 +2216,10 @@
       "hash": "f8d46c2570e7",
       "status": "machine"
     },
+    "common:ios.moreActionsFor": {
+      "hash": "ba498a40d775",
+      "status": "machine"
+    },
     "common:ios.ok": {
       "hash": "565339bc4d33",
       "status": "machine"
@@ -3044,6 +3056,10 @@
     },
     "common:ios.moreActions": {
       "hash": "f8d46c2570e7",
+      "status": "machine"
+    },
+    "common:ios.moreActionsFor": {
+      "hash": "ba498a40d775",
       "status": "machine"
     },
     "common:ios.ok": {

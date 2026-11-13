@@ -28,6 +28,9 @@ export interface SwipeAction {
 export interface SwipeRowProps {
   actions: SwipeAction[];
   children: React.ReactNode;
+  /** Names the row for the "More actions for …" button. Defaults to the
+   *  child ListRow's title when that is a string. */
+  label?: string;
 }
 
 const ACTION_WIDTH = 74;
@@ -40,7 +43,7 @@ type Drag =
   | { mode: 'pending'; id: number; x0: number; y0: number; start: number }
   | { mode: 'drag'; id: number; x0: number; start: number; offset: number; width: number };
 
-export function SwipeRow({ actions, children }: SwipeRowProps) {
+export function SwipeRow({ actions, children, label }: SwipeRowProps) {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [revealed, setRevealed] = React.useState(false);
@@ -53,6 +56,8 @@ export function SwipeRow({ actions, children }: SwipeRowProps) {
   const tracker = React.useRef(new VelocityTracker());
   const suppressClick = React.useRef(false);
   const total = actions.length * ACTION_WIDTH;
+  const childTitle = React.isValidElement<{ title?: unknown }>(children) ? children.props.title : undefined;
+  const rowName = label ?? (typeof childTitle === 'string' ? childTitle : undefined);
 
   const close = React.useCallback(() => {
     setOpen(false);
@@ -211,7 +216,7 @@ export function SwipeRow({ actions, children }: SwipeRowProps) {
         ref={moreRef}
         type="button"
         className="ios-swiperow__more"
-        aria-label={t('ios.moreActions')}
+        aria-label={rowName ? t('ios.moreActionsFor', { title: rowName }) : t('ios.moreActions')}
         aria-expanded={open}
         onClick={() => (open ? close() : setOpen(true))}
       >
