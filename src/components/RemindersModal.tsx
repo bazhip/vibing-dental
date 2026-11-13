@@ -28,7 +28,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, p
   const { t } = useTranslation('reminders');
   const asScreen = presentation === 'screen';
   const team = useTeam(open);
-  const reminder = useReminderTemplate(team.practice?.id ?? '', open);
+  const reminder = useReminderTemplate(team.practice?.id ?? '', open, team.role === 'owner');
 
   const [subject, setSubject] = React.useState('');
   const [body, setBody] = React.useState('');

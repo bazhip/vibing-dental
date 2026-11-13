@@ -12,6 +12,8 @@ import { useVoiceCapture, FinalSegment } from '../hooks/useVoiceCapture';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
+import type { AppLanguage } from '../i18n/config';
+import { endsMidFindingOther } from '../utils/voice/normalize';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -56,11 +58,13 @@ export interface AiFocus {
   field?: string;
 }
 
-export function actionFocus(a: AiAction, activeSection?: string): AiFocus | null {
+/** `lng` is the dictation language: whether a note is only perio scores
+ *  (so it isn't allowed on Charting) depends on it. */
+export function actionFocus(a: AiAction, activeSection?: string, lng: AppLanguage = 'en'): AiFocus | null {
   const triadan = typeof a.input.triadan === 'number' ? a.input.triadan : undefined;
   // Dictation is scoped to the page on screen: stay there (the grid's
   // Missing toggle, say, lives on Charting even though it's a diagram mark).
-  if (activeSection && isScopedSection(activeSection) && actionAllowedInSection(a, activeSection)) {
+  if (activeSection && isScopedSection(activeSection) && actionAllowedInSection(a, activeSection, lng)) {
     return {
       section: activeSection,
       triadan,
@@ -97,7 +101,7 @@ interface VoiceInputButtonProps {
   handlers: ChartHandlers;
   /** Called with each batch of applied actions so the app can focus the
    *  section + highlight the fields the AI just edited. */
-  onActivity?: (actions: AiAction[]) => void;
+  onActivity?: (actions: AiAction[], lng: AppLanguage) => void;
   /** Chart section on screen — dictation fills this section. */
   activeSection?: string;
   /** Identifies the open chart. When it changes, the dictation (transcript
@@ -147,8 +151,8 @@ function targetKey(a: AiAction): string {
 /** The activity line for a change: prefixed with where it landed when
  *  that isn't the page on screen ("→ Exam: tongue normal"), since the
  *  app stays put rather than jumping there. */
-export function withDestination(a: AiAction, activeSection: string | undefined): string {
-  const home = actionFocus(a, activeSection)?.section;
+export function withDestination(a: AiAction, activeSection: string | undefined, lng: AppLanguage = 'en'): string {
+  const home = actionFocus(a, activeSection, lng)?.section;
   const text = describeAction(a);
   const label = sectionLabel(home ?? '').replace(/\s*\(.*\)$/, '');
   return home && home !== activeSection ? i18n.t('activity.destination', { ns: 'voice', section: label, text }) : text;
@@ -182,6 +186,10 @@ const QUIET_FLUSH_MS = 1_200;
 const DANGLING_FLUSH_MS = 2_500;
 // Ends on a score word with no number yet, or on a bare tooth number.
 export const DANGLING_RE = /(?:\b(?:GI|GE|G|enlargement|calc|calculus|mobility|mob|pocket|furcation|F|PD|stage|grade|class|recession|and)|\b[1-8][0-1]\d)\s*[,.]?\s*$/i;
+/** DANGLING_RE in the dictation language (native score words, "et"/"und"…). */
+export function endsMidFinding(cleaned: string, lng: AppLanguage): boolean {
+  return lng === 'en' ? DANGLING_RE.test(cleaned) : endsMidFindingOther(cleaned, lng);
+}
 /** …or once speech has been pending this long, whichever comes first. */
 const MAX_PENDING_MS = 6_000;
 const RECENT_CONTEXT_MS = 90_000;
@@ -300,17 +308,18 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const appendActivity = (actions: AiAction[], skipped: AiAction[] = [], uncertain: Set<AiAction> = new Set()) => {
     if (!actions.length && !skipped.length) return;
     const tNow = i18n.getFixedT(null, 'voice');
+    const lng = voiceRef.current?.lng ?? 'en';
     const now = new Date();
     setActivity((prev) => [
       ...prev,
       ...actions.map((a, i) => ({
         id: `${now.getTime()}_${i}`,
-        description: withDestination(a, sectionRef.current),
+        description: withDestination(a, sectionRef.current, lng),
         at: now,
         uncertain: uncertain.has(a),
       })),
       ...skipped.map((a, i) => {
-        const home = actionFocus(a)?.section;
+        const home = actionFocus(a, undefined, lng)?.section;
         return {
           id: `${now.getTime()}_s${i}`,
           description: home
@@ -321,7 +330,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         };
       }),
     ].slice(-200));
-    if (actions.length) onActivityRef.current?.(actions);
+    if (actions.length) onActivityRef.current?.(actions, lng);
   };
 
   const clearFlushTimers = () => {
@@ -349,7 +358,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
-      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
+      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section, lng: voiceRef.current?.lng ?? 'en' });
       if (gen === sessionGenRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
@@ -450,6 +459,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         transcript,
         context: contextRef.current,
         rejected: rejectedRef.current,
+        lng: voiceRef.current?.lng ?? 'en',
       });
       if (!result.ran || gen !== sessionGenRef.current) return;
       finalCheckedSegmentsRef.current = segments.length;
@@ -529,7 +539,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
   const showReview = (item: ReviewItem) => {
     const a = item.flag.applied ?? item.flag.options[0]?.action;
-    if (a) onActivityRef.current?.([a]);
+    if (a) onActivityRef.current?.([a], voiceRef.current?.lng ?? 'en');
   };
 
   const onStop = React.useCallback(async (_t: string) => {
@@ -541,7 +551,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const onSegment = React.useCallback((seg: FinalSegment) => {
     lastSpeechRef.current = performance.now();
     const flush = () => { processChunk(false).catch(console.error); };
-    const dangling = DANGLING_RE.test(normalizeTranscript(seg.text));
+    const lng = voiceRef.current?.lng ?? 'en';
+    const dangling = endsMidFinding(normalizeTranscript(seg.text, lng), lng);
     window.clearTimeout(quietTimerRef.current);
     quietTimerRef.current = window.setTimeout(flush, dangling ? DANGLING_FLUSH_MS : QUIET_FLUSH_MS);
     if (maxTimerRef.current === undefined) {
@@ -569,9 +580,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     if (voice.interim && !heardSinceStart) setHeardSinceStart(true);
     if (voice.interim && voice.recording && !warmedThisListenRef.current) {
       warmedThisListenRef.current = true;
-      prewarmAutofill();
+      prewarmAutofill(voice.lng);
     }
-  }, [voice.interim, voice.recording, heardSinceStart]);
+  }, [voice.interim, voice.recording, heardSinceStart, voice.lng]);
 
   // The moment the mic is really live: a short buzz on phones that support
   // it. (No chime: playing audio through a second AudioContext while the

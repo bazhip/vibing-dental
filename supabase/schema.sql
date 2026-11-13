@@ -357,3 +357,11 @@ end $$;
 --     (select 1 from cron.job where jobname = 'daily-billing-purge');
 --   select cron.schedule('daily-billing-purge', '30 3 * * *',
 --     'select public.purge_lapsed_practices()');
+
+-- send_due_reminders() (migration 20261123_send_due_reminders_safety.sql):
+-- nightly auto-reminder job (security definer). For each chart whose recall_date
+-- is today + practice.reminder_lead_days (UTC), with an owner email and no
+-- reminder_sent_at, on a practice with reminder_auto on, it fills the practice's
+-- stored subject/body ({{patient}} {{owner}} {{practice}} {{recheck_date}}; NULLs
+-- become ''), posts via Resend (net.http_post, key from get_resend_key()) and
+-- stamps reminder_sent_at. Practice-name fallback follows client_language.

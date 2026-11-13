@@ -1,0 +1,393 @@
+{
+  "lng": "de",
+  "lines": [
+    {
+      "heard": "Speaker 0: So, wir fangen oben rechts an.",
+      "cleaned": "Speaker 0: So, wir fangen oben rechts an.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Hunderteins GI zwei, Zahnstein zwei.",
+      "cleaned": "Speaker 0: 101 GI 2, Zahnstein 2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Hundertzwei, dasselbe,",
+      "cleaned": "Speaker 0: 102, dasselbe,",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: und Lockerungsgrad eins.",
+      "cleaned": "Speaker 0: und Lockerungsgrad 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Notiert.",
+      "cleaned": "Speaker 1: Notiert.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Die hundertvier ist frakturiert, kompliziert, Pulpa eröffnet.",
+      "cleaned": "Speaker 0: Die 104 ist frakturiert, kompliziert, Pulpa eröffnet.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Hundertacht Stadium drei, Tasche fünf Millimeter distal, F zwei.",
+      "cleaned": "Speaker 0: 108 Stadium 3, Tasche 5 Millimeter distal, F2.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Hast du hundertacht oder hundertneun gesagt?",
+      "cleaned": "Speaker 1: Hast du 108 oder 109 gesagt?",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Hundertacht. Und die hundertneun hat Attrition.",
+      "cleaned": "Speaker 0: 108. Und die 109 hat Attrition.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Halt, streich das: hundertzwei Lockerungsgrad zwei, nicht eins.",
+      "cleaned": "Speaker 0: Halt, streich das: 102 Lockerungsgrad 2, nicht eins.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Fünfhundertvier resorbiert.",
+      "cleaned": "Speaker 0: 504 resorbiert.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Zunge und Gaumen unauffällig.",
+      "cleaned": "Speaker 0: Zunge und Gaumen unauffällig.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Jetzt oben links. 204 T Schrägstrich FX Schrägstrich UCF.",
+      "cleaned": "Speaker 0: Jetzt oben links. 204 T/FX/UCF.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Zweihundertfünf fehlt.",
+      "cleaned": "Speaker 0: 205 fehlt.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Gibst du mir mal die Sonde?",
+      "cleaned": "Speaker 0: Gibst du mir mal die Sonde?",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 1: Ja, hier.",
+      "cleaned": "Speaker 1: Ja, hier.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Sechshundertvier, persistierender Milchcaninus.",
+      "cleaned": "Speaker 0: 604, persistierender Milchcaninus.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: 309 GI 1, Zahnstein 1.",
+      "cleaned": "Speaker 0: 309 GI 1, Zahnstein 1.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Dreihundertfünf fehlt.",
+      "cleaned": "Speaker 0: 305 fehlt.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Vierhundertneun GI zwei, Zahnstein drei.",
+      "cleaned": "Speaker 0: 409 GI 2, Zahnstein 3.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Die vierhundertneun müssen wir eventuell ziehen, mal sehen, was das Röntgen sagt.",
+      "cleaned": "Speaker 0: Die 409 müssen wir eventuell ziehen, mal sehen, was das Röntgen sagt.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Extraoral ohne besonderen Befund, Lymphknoten unauffällig.",
+      "cleaned": "Speaker 0: Extraoral ohne besonderen Befund, Lymphknoten unauffällig.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Mundschleimhaut auffällig, leichte Ulzeration an der linken Wange.",
+      "cleaned": "Speaker 0: Mundschleimhaut auffällig, leichte Ulzeration an der linken Wange.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Herzfrequenz neunzig, sie ist stabil.",
+      "cleaned": "Speaker 1: Herzfrequenz neunzig, sie ist stabil.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Blockaden mit Bupivacain null Komma fünf Prozent, 0,3 ml Infraorbitalis rechts.",
+      "cleaned": "Speaker 0: Blockaden mit Bupivacain null Komma fünf Prozent, 0,3 ml Infraorbitalis rechts.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Und null Komma zwei Alveolaris inferior links.",
+      "cleaned": "Speaker 0: Und null Komma zwei Alveolaris inferior links.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Zahnsteinentfernung und Politur komplett durchgeführt.",
+      "cleaned": "Speaker 0: Zahnsteinentfernung und Politur komplett durchgeführt.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Hundertacht extrahiert.",
+      "cleaned": "Speaker 0: 108 extrahiert.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 0: Sechshundertvier ebenfalls extrahiert.",
+      "cleaned": "Speaker 0: 604 ebenfalls extrahiert.",
+      "finding": true
+    },
+    {
+      "heard": "Speaker 1: Okay.",
+      "cleaned": "Speaker 1: Okay.",
+      "finding": false
+    },
+    {
+      "heard": "Speaker 0: Das war's fürs Zahnschema.",
+      "cleaned": "Speaker 0: Das war's fürs Zahnschema.",
+      "finding": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 101,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "calculus",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 102,
+        "field": "mobility",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 104,
+        "text": "T/FX/CCF"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pdstate",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "pocket",
+        "value": "5"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 108,
+        "field": "furcation",
+        "value": "2"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 109,
+        "text": "AT"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 504,
+        "text": "TR"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "tongue",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "palate",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 204,
+        "text": "T/FX/UCF"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 205,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "add_comment",
+      "input": {
+        "diagram": "pre",
+        "triadan": 604,
+        "text": "DT/P"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "gingivitis",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 309,
+        "field": "calculus",
+        "value": "1"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "pre",
+        "triadan": 305,
+        "mark": "missing"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "gingivitis",
+        "value": "2"
+      }
+    },
+    {
+      "name": "set_tooth_field",
+      "input": {
+        "triadan": 409,
+        "field": "calculus",
+        "value": "3"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "extraoral",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "lymph",
+        "status": "normal"
+      }
+    },
+    {
+      "name": "set_exam_finding",
+      "input": {
+        "area": "buccal",
+        "status": "abnormal",
+        "comment": "Leichte Ulzeration an der linken Wange"
+      }
+    },
+    {
+      "name": "set_anesthetic_drug",
+      "input": {
+        "drug": "Bupivacaine",
+        "concentration": "0.5"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "infraorbitalRight",
+        "mL": "0.3"
+      }
+    },
+    {
+      "name": "set_nerve_block",
+      "input": {
+        "site": "inferiorAlveolarLeft",
+        "mL": "0.2"
+      }
+    },
+    {
+      "name": "append_treatment_report",
+      "input": {
+        "text": "Zahnsteinentfernung und Politur komplett durchgeführt."
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 108,
+        "mark": "extracted"
+      }
+    },
+    {
+      "name": "set_tooth_mark",
+      "input": {
+        "diagram": "post",
+        "triadan": 604,
+        "mark": "extracted"
+      }
+    }
+  ]
+}

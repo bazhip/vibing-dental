@@ -1,6 +1,8 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import i18n from '../i18n';
+import { isAppLanguage, type AppLanguage } from '../i18n/config';
+import { browserSpeechLang } from '../utils/voice/sttConfig';
 import {
   startDeepgramSession, DeepgramSession, canCaptureRawAudio, createCaptureContext,
 } from '../utils/deepgramVoice';
@@ -22,6 +24,8 @@ import {
  * segments since the last extraction tick, flush context for the model,
  * etc.
  */
+
+const appLanguage = (): AppLanguage => (isAppLanguage(i18n.language) ? i18n.language : 'en');
 
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
@@ -100,6 +104,10 @@ export interface VoiceCapture {
   startedAt: Date | null;
   /** Which transport will be used at the next `start()` call. */
   provider: VoiceProvider;
+  /** The language the current (or most recent) dictation listens in: the
+   *  app language when it began. Resuming keeps it while there is a
+   *  transcript; transcript cleanup uses the same one. */
+  lng: AppLanguage;
   /** True when the last session ended without the user pressing stop:
    *  the OS took the mic (iOS camera, a call), the page went to the
    *  background on a phone, or the connection dropped. Whatever was
@@ -146,6 +154,8 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   const [error, setError] = React.useState<string | null>(null);
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
   const [interrupted, setInterrupted] = React.useState(false);
+  const [lng, setLng] = React.useState<AppLanguage>(appLanguage);
+  const lngRef = React.useRef<AppLanguage>(lng);
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
@@ -240,7 +250,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     const rec = new browserCtor();
     rec.continuous = true;
     rec.interimResults = true;
-    rec.lang = navigator.language || 'en-US';
+    rec.lang = browserSpeechLang(lngRef.current, navigator.language);
 
     rec.onresult = (event) => {
       let text = '';
@@ -321,7 +331,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
           if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
           handleSessionEnd(id);
         },
-      }, audioCtx);
+      }, audioCtx, lngRef.current);
       holder.session = session;
       // Stopped during the handshake: tear straight back down.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {
@@ -354,6 +364,11 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     setInterrupted(false);
     setError(null);
     setStartedAt((prev) => prev ?? new Date());
+    // A dictation keeps one language: resuming mid-transcript stays in it
+    // even if the app language changed meanwhile. A fresh one (nothing
+    // heard yet, or after clear()/start()) takes the current app language.
+    if (allSegmentsRef.current.length === 0) lngRef.current = appLanguage();
+    setLng(lngRef.current);
     if (provider === 'deepgram') startDeepgram(id);
     else startBrowser(id);
   }, [provider, startBrowser, startDeepgram]);
@@ -449,6 +464,6 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   return {
     supported, recording, ready, transcript, interim, start, clear, stop, setMuted, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
-    provider, interrupted, resume, dismissInterruption,
+    provider, interrupted, resume, dismissInterruption, lng,
   };
 }

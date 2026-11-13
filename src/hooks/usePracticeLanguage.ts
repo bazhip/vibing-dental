@@ -81,14 +81,16 @@ export function usePracticeLanguage(practiceId: string | null, open = true): Use
       // language's standard follows the switch; anything the owner edited stays as written.
       const payload: Record<string, string | null> = { client_language: lng };
       try {
-        const { data } = await supabase.from('practices').select('reminder_subject, reminder_body').eq('id', practiceId).maybeSingle();
-        const row = data as { reminder_subject?: string | null; reminder_body?: string | null } | null;
+        const { data } = await supabase.from('practices').select('reminder_subject, reminder_body, reminder_auto').eq('id', practiceId).maybeSingle();
+        const row = data as { reminder_subject?: string | null; reminder_body?: string | null; reminder_auto?: boolean | null } | null;
         // "Standard" means the standard text of ANY report language (an English default stored
         // by an older version stays standard for an owner whose app is French).
         const standards = REPORT_LOCALES.map((l) => standardReminderText(l));
         const to = standardReminderText(lng ?? appReportLocale());
-        if (row?.reminder_subject && standards.some((s) => s.subject === row.reminder_subject)) payload.reminder_subject = to.subject;
-        if (row?.reminder_body && standards.some((s) => s.body === row.reminder_body)) payload.reminder_body = to.body;
+        // With auto-send on, an empty field would make the job send its English fallback.
+        const fill = !!row?.reminder_auto;
+        if (row && (row.reminder_subject ? standards.some((s) => s.subject === row.reminder_subject) : fill)) payload.reminder_subject = to.subject;
+        if (row && (row.reminder_body ? standards.some((s) => s.body === row.reminder_body) : fill)) payload.reminder_body = to.body;
       } catch {
         // Reminder text is best effort; the language change itself still goes through.
       }

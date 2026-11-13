@@ -5,6 +5,10 @@ import { invokeFunction } from './edgeFunctions';
 import { ApiError, LocalizedError } from './apiErrors';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
+import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
+import { chunkWorthSendingOther, isPerioOnlyOther, normalizeOther } from './voice/normalize';
+import { NATIVE_FEW_SHOT, dictationLanguageBlock } from './voice/fewShot';
+import type { AppLanguage } from '../i18n/config';
 import {
   PatientInfo,
   Species,
@@ -397,7 +401,11 @@ const FEW_SHOT_EXAMPLES = `EXAMPLES of vet phrasing → tool calls. Match these 
 → set_tooth_mark(diagram=pre, triadan=105, mark=missing)
 `;
 
-function buildStaticSystemPrompt(): string {
+/** The cacheable system prompt. English is unchanged; fr/de/it/es add a
+ *  DICTATION LANGUAGE block after the core rules and native examples
+ *  after the English ones (./voice/fewShot). Each language has its own
+ *  prompt, so the prompt cache is per language. */
+export function buildStaticSystemPrompt(lng: AppLanguage = 'en'): string {
   const codeList = DENTAL_CODES
     .map((c) => `  ${c.code} — ${c.definition} (${c.kind})`)
     .join('\n');
@@ -417,6 +425,7 @@ function buildStaticSystemPrompt(): string {
     '9. Periodontal grid values (gingivitis, calculus, mobility, pocket, furcation, recession, PD stage) go ONLY in set_tooth_field, never in add_comment — the app mirrors the grid onto the diagram itself when the vet wants that.',
     '10. Diagram notes are AVDC codes, not words: "T/FX", "TR", "AB", "T/FX/CCF". Use plain words only when no code exists for the finding.',
     '',
+    ...(lng === 'en' ? [] : [dictationLanguageBlock(lng), '']),
     'UNCERTAINTY (the vet is looking at the mouth, not the screen — flags are how they find out):',
     '- Words written [?like this] were low-confidence in speech-to-text. Treat them as possibly misheard.',
     '- When one reading is clearly most likely but you are not sure, make the call with uncertain=true, a short reason, and alternatives (each a complete tool call).',
@@ -433,6 +442,7 @@ function buildStaticSystemPrompt(): string {
     '- append_radiographic_findings for what the radiographs show ("on rads", "radiographically", "x-rays show") — not exam findings, not work done.',
     '',
     FEW_SHOT_EXAMPLES,
+    ...(lng === 'en' ? [] : [NATIVE_FEW_SHOT[lng]]),
     '',
     'DENTAL SHORTHAND CODES (use in field values and comments where natural):',
     codeList,
@@ -442,32 +452,12 @@ function buildStaticSystemPrompt(): string {
 // ----- Transcript normalization -------------------------------------------
 // STT mangles numbers and shorthand. We normalize before Claude sees it.
 
-const DIGIT_WORDS: Record<string, string> = {
-  zero: '0', oh: '0',
-  one: '1', two: '2', three: '3', four: '4',
-  five: '5', six: '6', seven: '7', eight: '8', nine: '9',
-};
+// The English digit-word passes live in ./voice/numbers (shared with the
+// other languages' replaceSpokenNumbers); the order below is unchanged.
+// fr/de/it/es run the same passes with native words (./voice/normalize).
 
-const DIGIT_WORD_RE = new RegExp(
-  `\\b(${Object.keys(DIGIT_WORDS).join('|')})(?:[\\s\\-]+(${Object.keys(DIGIT_WORDS).join('|')}))(?:[\\s\\-]+(${Object.keys(DIGIT_WORDS).join('|')}))?\\b`,
-  'gi'
-);
-
-// Words after which a single spoken number is a score/measurement, not
-// part of a tooth number: "mobility three one zero three" is mobility 3,
-// tooth 103 — not tooth 310.
-const SCORE_TERMS = 'GI|GE|G|C|calc|calculus|mobility|mob|M|F|furcation|PD|stage|grade|class|pocket|recession|gingivitis|enlargement|hyperplasia|mesial|distal|mesiobuccal|mesiopalatal|distobuccal|palatal';
-const SCORE_WORD_RE = new RegExp(
-  `\\b(${SCORE_TERMS})([\\s,.-]+)(${Object.keys(DIGIT_WORDS).join('|')})\\b`,
-  'gi'
-);
-// A spoken number right before a unit is a measurement: "five millimeter".
-const UNIT_WORD_RE = new RegExp(
-  `\\b(${Object.keys(DIGIT_WORDS).join('|')})(?=[\\s-]*(?:mm|millimet(?:er|re)s?)\\b)`,
-  'gi'
-);
-
-export function normalizeTranscript(raw: string): string {
+export function normalizeTranscript(raw: string, lng: AppLanguage = 'en'): string {
+  if (lng !== 'en') return normalizeOther(raw, lng);
   let text = raw;
 
   // Deepgram's smart formatting runs findings together ("104GI2",
@@ -490,19 +480,15 @@ export function normalizeTranscript(raw: string): string {
   // Scores and measurements first, one word each, so the tooth-number
   // pass below can't swallow them ("calc two five millimeter" is calc 2,
   // 5 mm — not 25).
-  text = text.replace(SCORE_WORD_RE, (_m, term, sep, word) => `${term}${sep}${DIGIT_WORDS[word.toLowerCase()]}`);
+  text = englishScoreWords(text);
   // A score run into the next tooth number: "calc 2102" → "calc 2 102".
   text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\s+(\\d)([1-8][0-1]\\d)\\b`, 'gi'), '$1 $2 $3');
   // A pause before the value gets punctuated ("Calc. 3"): rejoin it.
   text = text.replace(new RegExp(`\\b(${SCORE_TERMS})\\.\\s+(?=\\d)`, 'gi'), '$1 ');
-  text = text.replace(UNIT_WORD_RE, (word) => DIGIT_WORDS[word.toLowerCase()]);
+  text = englishUnitWords(text);
 
   // "one oh four" / "two-o-nine" / "three zero one" → "104" / "209" / "301"
-  text = text.replace(DIGIT_WORD_RE, (match, a, b, c) => {
-    const parts = [a, b, c].filter(Boolean).map((w: string) => DIGIT_WORDS[w.toLowerCase()]);
-    if (parts.length < 2) return match;
-    return parts.join('');
-  });
+  text = englishDigitRuns(text);
 
   // "P D" / "P-D" → "PD" (the multi-letter prefix needs its own pass first;
   // otherwise "P-D-3" stays split because the second letter is followed
@@ -535,7 +521,8 @@ const FILLER_WORDS = new Set([
   'perfect', 'nice', 'so', 'and', 'oh',
 ]);
 
-export function chunkWorthSending(chunk: string): boolean {
+export function chunkWorthSending(chunk: string, lng: AppLanguage = 'en'): boolean {
+  if (lng !== 'en') return chunkWorthSendingOther(chunk, lng);
   const text = chunk.replace(/\bSpeaker \d+:\s*/gi, '').trim();
   if (text.length < 2) return /\d/.test(text);
   if (/\d/.test(text)) return true;
@@ -672,7 +659,7 @@ interface SectionScope {
   label: string;
   /** What the model may write on this page, in plain words. */
   guidance: string;
-  allows: (a: AiAction) => boolean;
+  allows: (a: AiAction, lng: AppLanguage) => boolean;
 }
 
 const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre');
@@ -680,12 +667,18 @@ const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre')
 /** True when a comment holds nothing but periodontal scores ("GI 2, calc
  *  1, M3") — grid values the Charting page's mirror option already puts
  *  on the diagram, so a comment would duplicate them. */
-export function isPerioOnlyText(text: string): boolean {
-  const rest = text
-    .replace(/\b(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class|gingivitis|pocket|recession)\s*[-:=]?\s*\d+(?:\s*mm)?\b/gi, '')
-    .replace(/\b\d+\s*(?:mm|millimet(?:er|re)s?)\s*(?:pocket|recession)?\b/gi, '')
+export function isPerioOnlyText(text: string, lng: AppLanguage = 'en'): boolean {
+  if (lng !== 'en') return isPerioOnlyOther(text, lng, stripEnglishPerio);
+  const rest = stripEnglishPerio(text)
     .replace(/[\s,.;/]+/g, '');
   return text.trim().length > 0 && rest.length === 0;
+}
+
+/** Remove English perio scores and measurements ("GI 2", "calc 1", "5 mm pocket"). */
+function stripEnglishPerio(text: string): string {
+  return text
+    .replace(/\b(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class|gingivitis|pocket|recession)\s*[-:=]?\s*\d+(?:\s*mm)?\b/gi, '')
+    .replace(/\b\d+\s*(?:mm|millimet(?:er|re)s?)\s*(?:pocket|recession)?\b/gi, '');
 }
 
 const SECTION_SCOPES: Record<string, SectionScope> = {
@@ -711,12 +704,12 @@ const SECTION_SCOPES: Record<string, SectionScope> = {
       'set_tooth_mark/unset_tooth_mark with diagram=pre, mark=missing for missing teeth; ' +
       'and add_comment with diagram=pre for DIAGNOSIS findings that are not grid values (AVDC codes like T/FX, CCF, TR; fractures; resorption) — those go on the Diagnosis diagram. ' +
       'Never put periodontal values in a comment.',
-    allows: (a) =>
+    allows: (a, lng) =>
       a.name === 'set_tooth_field' ||
       ((a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark') &&
         diagramOf(a) === 'pre' &&
         (a.name === 'unset_tooth_mark' || a.input.mark === 'missing')) ||
-      (a.name === 'add_comment' && diagramOf(a) === 'pre' && !isPerioOnlyText(String(a.input.text ?? ''))),
+      (a.name === 'add_comment' && diagramOf(a) === 'pre' && !isPerioOnlyText(String(a.input.text ?? ''), lng)),
   },
   diagnosis: {
     label: 'Diagnosis diagram',
@@ -765,13 +758,13 @@ export function sectionLabel(section: string): string {
 /** What dictation may do on any page: everything except a diagram note
  *  holding only perio scores (those belong in the grid, which mirrors
  *  them onto the diagram itself). */
-export function actionAllowedAnywhere(a: AiAction): boolean {
-  return !(a.name === 'add_comment' && isPerioOnlyText(String(a.input.text ?? '')));
+export function actionAllowedAnywhere(a: AiAction, lng: AppLanguage = 'en'): boolean {
+  return !(a.name === 'add_comment' && isPerioOnlyText(String(a.input.text ?? ''), lng));
 }
 
-export function actionAllowedInSection(a: AiAction, section: string | undefined): boolean {
+export function actionAllowedInSection(a: AiAction, section: string | undefined, lng: AppLanguage = 'en'): boolean {
   const scope = section ? SECTION_SCOPES[section] : undefined;
-  return scope ? scope.allows(a) : true;
+  return scope ? scope.allows(a, lng) : true;
 }
 
 // ----- Caller --------------------------------------------------------------
@@ -791,6 +784,8 @@ export interface ExtractInput {
   /** Id of the chart section on screen — a tie-break hint only; findings
    *  go wherever they belong. */
   section?: string;
+  /** Dictation language (cleanup and filler filter). Defaults to 'en'. */
+  lng?: AppLanguage;
 }
 
 /** Something the vet should check: a best guess that was applied but may
@@ -817,8 +812,8 @@ export interface ExtractResult {
 
 /** Both transcript forms for the prompt: as transcribed, plus the regex
  *  cleanup when it changed anything. */
-function transcriptBlock(heading: string, raw: string): string {
-  const cleaned = normalizeTranscript(raw);
+function transcriptBlock(heading: string, raw: string, lng: AppLanguage): string {
+  const cleaned = normalizeTranscript(raw, lng);
   const trimmed = raw.replace(/\s+/g, ' ').trim();
   return cleaned === trimmed
     ? `${heading}:\n${trimmed}\n\n`
@@ -828,8 +823,8 @@ function transcriptBlock(heading: string, raw: string): string {
 /** The request body for one live chunk, or null when the chunk is pure
  *  filler. Pure — shared by the app and scripts/replay-transcript.ts. */
 export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
-  const { delta, recentContext, context, section } = input;
-  if (!chunkWorthSending(delta)) return null;
+  const { delta, recentContext, context, section, lng = 'en' } = input;
+  if (!chunkWorthSending(delta, lng)) return null;
   const scope = section ? SECTION_SCOPES[section] : undefined;
 
   const userText =
@@ -839,7 +834,7 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
         `If the new chunk completes, continues or corrects a finding that started here (e.g. a tooth number here, its values in the new chunk), emit the complete finding:\n` +
         `${recentContext.replace(/\s+/g, ' ').trim()}\n\n`
       : '') +
-    transcriptBlock('New transcript chunk to extract from', delta) +
+    transcriptBlock('New transcript chunk to extract from', delta, lng) +
     (scope
       ? `OPEN PAGE: the vet has the ${scope.label} page on screen. That doesn't limit anything — chart every finding where it belongs, ` +
         `whichever page it's on. Only when a finding could equally go in two places (e.g. a note for the Diagnosis or the Procedure diagram) prefer this page.\n\n`
@@ -850,7 +845,7 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
     max_tokens: 1024,
     kind: 'live',
     system: [
-      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+      { type: 'text', text: buildStaticSystemPrompt(lng), cache_control: { type: 'ephemeral' } },
     ],
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
@@ -879,6 +874,8 @@ export interface ReviewInput {
   context: ChartContext;
   /** Chart changes the vet rejected in review — never re-add them. */
   rejected: AiAction[];
+  /** Dictation language (filler filter). Defaults to 'en'. */
+  lng?: AppLanguage;
 }
 
 /**
@@ -888,7 +885,7 @@ export interface ReviewInput {
  */
 export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
   let transcript = input.transcript.trim();
-  if (!transcript || !chunkWorthSending(transcript)) return null;
+  if (!transcript || !chunkWorthSending(transcript, input.lng ?? 'en')) return null;
   let truncatedNote = '';
   if (transcript.length > REVIEW_TRANSCRIPT_MAX_CHARS) {
     transcript = transcript.slice(-REVIEW_TRANSCRIPT_MAX_CHARS);
@@ -916,7 +913,7 @@ export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
     mode: 'review',
     kind: 'review',
     system: [
-      { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+      { type: 'text', text: buildStaticSystemPrompt(input.lng ?? 'en'), cache_control: { type: 'ephemeral' } },
     ],
     tools,
     messages: [{ role: 'user', content: [{ type: 'text', text: userText }] }],
@@ -998,7 +995,7 @@ export async function extractChartActions(
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  return { ...parseAutofillContent(content, actionAllowedAnywhere), ran: true };
+  return { ...parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en')), ran: true };
 }
 
 /**
@@ -1011,7 +1008,7 @@ export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractR
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  const result = parseAutofillContent(content, actionAllowedAnywhere);
+  const result = parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en'));
   return { ...result, flags: markFinalCheck(result), ran: true };
 }
 
@@ -1090,10 +1087,13 @@ export function dictationCacheWarm(now: number = Date.now()): boolean {
   return now - lastDictationPromptAt < CACHE_STILL_WARM_MS;
 }
 
-export async function prewarmAutofill(): Promise<void> {
+export async function prewarmAutofill(lng: AppLanguage = 'en'): Promise<void> {
   if (!supabase) return;
   // Each cold warm-up writes the ~17.5k-token prompt into the cache (the
   // biggest single line on the bill) — skip it while the cache is warm.
+  // The prompt differs per dictation language but this warmth timestamp is
+  // shared: after a language switch within 4 minutes the first chunk pays
+  // one cache write. Acceptable — switching mid-session is rare.
   if (dictationCacheWarm()) return;
   markDictationPromptUsed();
   try {
@@ -1102,7 +1102,7 @@ export async function prewarmAutofill(): Promise<void> {
         max_tokens: 0,
         kind: 'warmup',
         system: [
-          { type: 'text', text: buildStaticSystemPrompt(), cache_control: { type: 'ephemeral' } },
+          { type: 'text', text: buildStaticSystemPrompt(lng), cache_control: { type: 'ephemeral' } },
         ],
         tools,
         messages: [{ role: 'user', content: [{ type: 'text', text: 'Warm-up. No transcript yet.' }] }],
@@ -1203,6 +1203,12 @@ export function normalizeFieldValue(value: string): string {
     .trim();
 }
 
+/** A dose dictated with a decimal comma may reach a tool call as "0,3"
+ *  despite the prompt; the chart stores "0.3". Any language. */
+export function decimalPoint(value: string): string {
+  return value.replace(/^(\d+),(\d+)$/, '$1.$2');
+}
+
 /**
  * True when applying `action` wouldn't change the chart: the value is
  * already there, the mark already set, the note already on that tooth.
@@ -1237,10 +1243,10 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
       return !!cur && cur.status === str('status') && (!str('comment') || cur.comment === str('comment'));
     }
     case 'set_nerve_block':
-      return String(c.patientInfo.nerveBlocks?.[str('site') as NerveBlockSite] ?? '') === str('mL');
+      return String(c.patientInfo.nerveBlocks?.[str('site') as NerveBlockSite] ?? '') === decimalPoint(str('mL'));
     case 'set_anesthetic_drug': {
       const want = str('drug').trim().toLowerCase();
-      const conc = str('concentration').replace(/%/g, '').trim();
+      const conc = decimalPoint(str('concentration').replace(/%/g, '').trim());
       return (c.patientInfo.nerveBlocks?.drugs ?? []).some(
         (d) => d.name.trim().toLowerCase() === want && (!conc || d.concentration.trim() === conc)
       );
@@ -1343,12 +1349,12 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     }
     case 'set_nerve_block': {
       if (!NERVE_SITES.has(s('site'))) return false;
-      h.setNerveBlock(s('site') as NerveBlockSite, s('mL'));
+      h.setNerveBlock(s('site') as NerveBlockSite, decimalPoint(s('mL')));
       return true;
     }
     case 'set_anesthetic_drug': {
       if (!s('drug').trim()) return false;
-      h.setAnestheticDrug(s('drug').trim(), s('concentration').replace(/%/g, '').trim() || undefined);
+      h.setAnestheticDrug(s('drug').trim(), decimalPoint(s('concentration').replace(/%/g, '').trim()) || undefined);
       return true;
     }
     case 'set_patient_field': {
