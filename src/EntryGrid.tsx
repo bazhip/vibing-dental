@@ -1098,6 +1098,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // amber and carries the way out — Undo changes (back to the version that was
   // opened) and Done editing (save, then re-lock).
   const editingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && !readOnly;
+  // Viewing a saved visit (opens view-only so history isn't changed by
+  // accident): the topbar's action row carries the state and the way in
+  // — + New visit, History, Edit chart — instead of a separate banner.
+  const viewingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && readOnly;
+  const startNewVisitFromLatest = () => {
+    // Carry forward from the patient's LATEST visit — this also shows
+    // when viewing an older one.
+    const latest = visits[0]?.id ?? chart.cloudChartId;
+    startVisitFromChart(latest).catch((err) => {
+      toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
+    });
+  };
+  const unlockForEditing = () => {
+    try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
+    setEditUnlocked(true);
+  };
   const revertUnlockedChanges = async () => {
     const raw = (() => { try { return window.sessionStorage.getItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { return null; } })();
     if (!raw) return;
@@ -1210,7 +1226,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </div>
           </div>
         </div>
-        <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}`}>
+        <div className={`entry-grid__topbar-actions${editingSavedVisit ? ' entry-grid__topbar-actions--editing' : ''}${viewingSavedVisit ? ' entry-grid__topbar-actions--viewing' : ''}`}>
+          {viewingSavedVisit && (
+            <span
+              className="topbar-editing topbar-viewing"
+              title={`Viewing a saved visit${chart.patientInfo.date ? ` from ${chart.patientInfo.date}` : ''} — it’s view-only so it isn’t changed by accident. Choose Edit chart to make changes.`}
+            >
+              <span className="topbar-label-long">Viewing saved visit</span>
+              <span className="topbar-label-short">Viewing</span>
+            </span>
+          )}
           {editingSavedVisit && (
             <span className="topbar-editing" title="Editing a saved visit — changes save automatically">
               <span className="topbar-label-long">Editing saved visit</span>
@@ -1284,6 +1309,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               );
             }
             if (readOnly) {
+              // The viewing bar already says so.
+              if (viewingSavedVisit) return null;
               return <span className="save-status save-status--muted" title="Saved visits open view-only — choose Edit chart to make changes">View only</span>;
             }
             if (cloud.dirty && !cloud.online) {
@@ -1373,6 +1400,31 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
+          {viewingSavedVisit && (
+            <>
+              <button
+                type="button"
+                className="chart-menu__trigger topbar-library-btn"
+                onClick={startNewVisitFromLatest}
+                title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
+              >
+                <span className="topbar-label-long">+ New visit</span>
+                <span className="topbar-label-short">+ Visit</span>
+              </button>
+              <button
+                type="button"
+                className="chart-menu__trigger topbar-library-btn"
+                onClick={() => setHistoryFor({ id: chart.cloudChartId })}
+                title="Every saved version of this chart — who saved it and when"
+              >
+                History
+              </button>
+              <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
+                <span className="topbar-label-long">Edit chart</span>
+                <span className="topbar-label-short">Edit</span>
+              </button>
+            </>
+          )}
           {editingSavedVisit && (
             <>
               {unlockSnapshotChanged && (
@@ -1382,7 +1434,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                   onClick={revertUnlockedChanges}
                   title="Put this chart back the way it was when you chose Edit chart"
                 >
-                  <span aria-hidden="true">↺</span> Undo changes
+                  <span aria-hidden="true">↺</span> <span className="topbar-label-long">Undo changes</span><span className="topbar-label-short">Undo</span>
                 </button>
               )}
               <button
@@ -1413,53 +1465,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       )}
 
-      {/* Saved-visit banner: opens view-only so history isn't changed by
-          accident; Edit chart unlocks (changes then autosave), Undo changes
-          restores the version that was opened, Done editing re-locks. */}
-      {cloud.enabled && chart.openedExisting && !currentVisit && readOnly && (
-        <div className="chart-lock-banner" role="status">
-          {readOnly ? (
-            <>
-              <span className="chart-lock-banner__text">
-                <strong>Viewing a saved visit</strong>{chart.patientInfo.date ? ` from ${chart.patientInfo.date}` : ''} — it’s view-only so it isn’t changed by accident.
-              </span>
-              <button
-                type="button"
-                className="diagram-view__action"
-                onClick={() => {
-                  // Carry forward from the patient's LATEST visit — this
-                  // banner also shows when viewing an older one.
-                  const latest = visits[0]?.id ?? chart.cloudChartId;
-                  startVisitFromChart(latest).catch((err) => {
-                    toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
-                  });
-                }}
-                title="Start a fresh dated visit for this patient — identity and already-gone teeth carry over"
-              >
-                + New visit
-              </button>
-              <button
-                type="button"
-                className="diagram-view__action"
-                onClick={() => setHistoryFor({ id: chart.cloudChartId })}
-                title="Every saved version of this chart — who saved it and when"
-              >
-                History
-              </button>
-              <button
-                type="button"
-                className="entry-grid__button entry-grid__button--topbar"
-                onClick={() => {
-                  try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
-                  setEditUnlocked(true);
-                }}
-              >
-                Edit chart
-              </button>
-            </>
-          ) : null}
-        </div>
-      )}
       {reportCustomizeOpen && (
         <OwnerReportCustomize
           onClose={() => setReportCustomizeOpen(false)}

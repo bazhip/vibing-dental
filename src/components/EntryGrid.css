@@ -4084,3 +4084,60 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 }
 .topbar-editing__undo:hover { background: #fff3d1; border-color: #b7791f; }
 @media (pointer: coarse) { .topbar-editing__undo { min-height: 44px; } }
+
+/* Viewing a saved visit: the topbar's action row turns a calm slate and
+   holds the way in (+ New visit, History, Edit chart) — the view-only
+   counterpart of the amber editing bar, replacing the separate banner. */
+.entry-grid__topbar-actions--viewing {
+  flex-grow: 1;
+  padding: 0.3rem 0.35rem 0.3rem 0.75rem;
+  border: 1px solid var(--border-strong, #cbd5e1);
+  border-radius: 12px;
+  background: var(--surface-sunken, #eef2f6);
+}
+.topbar-viewing { color: var(--text, #0f172a); }
+.topbar-viewing::before { content: none; }
+
+/* Phones hide the date / visit switcher — and now its divider too (a
+   stray "|" was left after the species). */
+@media (max-width: 640px) {
+  .entry-grid__patient-sep:has(+ .entry-grid__visit-switch) { display: none; }
+}
+@media (max-width: 600px) {
+  .entry-grid__patient-sep:has(+ .entry-grid__patient-date) { display: none; }
+}
+
+/* Smaller screens: when the viewing / editing bar has to wrap, the label
+   takes its own line and the buttons sit in tidy rows under it (instead
+   of one button stranded on a line, or the label alone beside a gap). */
+@media (max-width: 900px) {
+  .entry-grid__topbar-actions--viewing .topbar-editing,
+  .entry-grid__topbar-actions--editing .topbar-editing {
+    flex: 1 0 100%;
+    margin: 0 0 0.1rem;
+  }
+  .entry-grid__topbar-actions--viewing,
+  .entry-grid__topbar-actions--editing {
+    padding: 0.45rem 0.5rem 0.5rem 0.75rem;
+  }
+}
+
+/* Phones: the bar's buttons form an even grid — three equal columns
+   under the label — rather than ragged rows. */
+@media (max-width: 600px) {
+  .entry-grid__topbar-actions--viewing,
+  .entry-grid__topbar-actions--editing {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+  .entry-grid__topbar-actions--viewing .topbar-editing,
+  .entry-grid__topbar-actions--editing .topbar-editing { grid-column: 1 / -1; }
+  .entry-grid__topbar-actions--viewing > *:not(.topbar-editing),
+  .entry-grid__topbar-actions--editing > *:not(.topbar-editing) {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+}
