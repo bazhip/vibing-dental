@@ -268,3 +268,15 @@ html.native-ios .admin-panel--screen table {
 html.native-ios .admin-panel--screen .admin-panel__tabs { overflow-x: auto; }
 html.native-ios .admin-panel--screen :is(.admin-panel__usage, .admin-panel__billing, section) { overflow-x: auto; }
 html.native-ios .admin-chart-viewer--screen .admin-chart-viewer__notice { border-radius: 12px; }
+/* The read-only note keeps the normal section gap above the first card
+   (whose header sits above it). */
+html.native-ios .report-templates--screen .report-templates__editor > .login-notice {
+  margin: 0 0 22px;
+  border-radius: 12px;
+}
+html.native-ios .report-templates--screen .report-templates__fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}

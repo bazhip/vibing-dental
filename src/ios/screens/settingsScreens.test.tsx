@@ -43,6 +43,7 @@ import {
   AccountSettingsScreen,
   AdminScreen,
   ChartSettingsScreen,
+  OwnerReportTemplatesScreen,
   FeedbackScreen,
   GettingStartedScreen,
   PracticeSettingsScreen,
@@ -173,6 +174,53 @@ describe('Settings tab screens', () => {
     fireEvent.change(screen.getByDisplayValue('Dr Jane Ng'), { target: { value: 'Dr Jane Ng-Smith' } });
     fireEvent.click(back());
     expect(await screen.findByRole('alertdialog')).toBeInTheDocument();
+  });
+
+  it('Account: Back → Keep editing stays; Back → Discard pops', async () => {
+    pushScreen(<AccountSettingsScreen />);
+    fireEvent.change(screen.getByDisplayValue('Dr Jane Ng'), { target: { value: 'Dr Jane Ng-Smith' } });
+    fireEvent.click(back());
+    let alert = await screen.findByRole('alertdialog');
+    await act(async () => fireEvent.click(within(alert).getByRole('button', { name: /Keep/ })));
+    expect(screen.getByDisplayValue('Dr Jane Ng-Smith')).toBeInTheDocument();
+    fireEvent.click(back());
+    alert = await screen.findByRole('alertdialog');
+    await act(async () => fireEvent.click(within(alert).getByRole('button', { name: /Discard/ })));
+    await waitFor(() => expect(screen.queryByDisplayValue('Dr Jane Ng-Smith')).toBeNull());
+  });
+
+  it('Practice settings: Back with an unsaved name asks first', async () => {
+    pushScreen(<PracticeSettingsScreen />, makeSettings(), 'Practice settings');
+    fireEvent.change(screen.getByDisplayValue('SoCal Vet'), { target: { value: 'Harbor Vet' } });
+    fireEvent.click(back());
+    const alert = await screen.findByRole('alertdialog');
+    expect(alert).toHaveTextContent('Discard the practice name change?');
+    await act(async () => fireEvent.click(within(alert).getByRole('button', { name: 'Keep editing' })));
+    expect(screen.getByDisplayValue('Harbor Vet')).toBeInTheDocument();
+  });
+
+  it('Owner report templates: Save in the bar saves, then goes back', async () => {
+    const s = makeSettings();
+    const { container } = pushScreen(<OwnerReportTemplatesScreen />, s, 'Owner report');
+    const save = () => within(bar(container)).getByRole('button', { name: 'Save' });
+    expect(save()).toBeDisabled();
+    fireEvent.change(screen.getByDisplayValue('Standard'), { target: { value: 'Clinic standard' } });
+    await act(async () => fireEvent.click(save()));
+    expect(s.profile.saveOwnerReportConfig).toHaveBeenCalledWith(
+      expect.objectContaining({ templates: [expect.objectContaining({ name: 'Clinic standard' })] }),
+    );
+    await waitFor(() => expect(screen.queryByDisplayValue('Clinic standard')).toBeNull());
+  });
+
+  it('Chart settings: a usual anesthetic typed then left with Back (no blur) is still saved', async () => {
+    const s = makeSettings();
+    pushScreen(<ChartSettingsScreen />, s);
+    fireEvent.change(screen.getByLabelText('Usual anesthetic'), { target: { value: 'Lidocaine' } });
+    fireEvent.change(screen.getByLabelText('Usual anesthetic strength (%)'), { target: { value: '2' } });
+    expect(s.setPref).not.toHaveBeenCalled();
+    fireEvent.click(back());
+    await waitFor(() => expect(screen.queryByLabelText('Usual anesthetic')).toBeNull());
+    expect(s.setPref).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '2' } });
   });
 
   it('Send feedback: Send sits in the bar, sends the chart section, then goes back', async () => {

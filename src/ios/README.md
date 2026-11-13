@@ -18,7 +18,7 @@ App-only components for the ToothOps iOS app. Use them only when `isNativeApp()`
   - Inside a `<Sheet>`, pass `scrollRef` explicitly if a NavBar-like header needs to react to scrolling. The sheet body is `.ios-sheet__body`.
 - **One sheet at a time.** Opening a `<Sheet>` closes the one already open, through its `onClose`, without asking `confirmDismiss`.
 - **Unsaved changes.** Give the sheet `confirmDismiss={async () => !dirty || (await chooseDialog({ ... })) === 'discard'}`. It covers every dismissal except Done: Cancel, swipe, backdrop and Escape.
-- **Leaving a pushed screen with unsaved edits.** Call `useStackLeaveGuard(async () => !dirty || await confirm…)` inside the screen. Back, the edge back-swipe and `popToRoot()` ask it first; a programmatic `pop()` (after a successful Save) skips it.
+- **Leaving a pushed screen with unsaved edits.** Call `useStackLeaveGuard(async () => !dirty || await confirm…)` inside the screen. Back, the edge back-swipe and `popToRoot()` ask it first; a programmatic `pop()` (after a successful Save) skips it. A layer holds **one** guard: if several components in the same pushed screen call the hook, the last one mounted wins (and unmounting any of them clears it), so register it once, from the screen's top component.
 - **Components that are both a web dialog and a pushed screen** can use `useOptionalStack()` (null outside a Stack); `useStackScreenOptions` and `useStackLeaveGuard` are no-ops outside one.
 - **Navigation.** `useStack()` returns `{ push, pop, popToRoot, depth }`. Use `popToRoot()` when the selected tab is tapped again.
 - **Icons.** Take icons from `icons.tsx`. Don't use text glyphs in app chrome.

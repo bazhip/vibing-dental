@@ -2,8 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
-import type { DentalField } from '../types';
-import { BLOCK_ROW_OPTIONS, BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import '../ios/settings.css';
 import type { SettingsSection } from './ChartSettingsModal';
 
 /**
@@ -24,7 +25,6 @@ export interface ChartSettingsListProps {
   onShowAll?: () => void;
 }
 
-const DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 // Pref values (not text).
 const GRID = 'grid' as const;
 const TOOTH = 'tooth' as const;
@@ -32,32 +32,13 @@ const ROOT = 'root' as const;
 const FINDING = 'finding' as const;
 const STAY = 'stay' as const;
 
-const toggle = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
-  on ? Array.from(new Set([...list, key])) : list.filter((k) => k !== key);
 
 export function ChartSettingsList({ prefs, followsAccount, onChange, only, onShowAll }: ChartSettingsListProps) {
   const { t } = useTranslation('settings');
-  const showAll = only === null;
-  const show = {
-    charting: showAll || only === 'charting',
-    beside: showAll || only === 'charting' || only === 'diagnosis',
-    anesthesia: showAll || only === 'anesthesia',
-    patient: showAll || only === 'patient',
-    pdfGrid: showAll || only === 'charting',
-    pdfImages: showAll || only === 'images',
-  };
-  const shownColumns = PERIO_FIELDS.filter((f) => !prefs.hiddenColumns.includes(f.key));
-
-  // Usual anesthetic: typed locally, saved when a field loses focus.
-  const [drugName, setDrugName] = React.useState(prefs.usualDrug?.name ?? '');
-  const [drugStrength, setDrugStrength] = React.useState(prefs.usualDrug?.concentration ?? '');
-  const saveUsualDrug = () => {
-    const name = drugName.trim();
-    const next = name ? { name, concentration: drugStrength.replace(/%/g, '').trim() } : null;
-    if (JSON.stringify(next) !== JSON.stringify(prefs.usualDrug)) onChange({ usualDrug: next });
-  };
-  const toggleBlock = (id: BlockRowId, shown: boolean) =>
-    onChange({ hiddenBlocks: shown ? prefs.hiddenBlocks.filter((b) => b !== id) : Array.from(new Set([...prefs.hiddenBlocks, id])) });
+  // Same rules as the web dialog; a pending usual-anesthetic edit is also
+  // saved when the screen or sheet goes away without a blur (iOS Back).
+  const { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock } =
+    useChartSettingsModel(prefs, onChange, only, { saveDrugOnUnmount: true });
   const drugListId = React.useId();
 
   const note = followsAccount ? t('chart.noteAccount') : t('chart.noteDevice');
@@ -119,7 +100,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
                   checked={shown}
                   // Keep at least one column.
                   disabled={shown && shownColumns.length === 1}
-                  onChange={(on) => onChange({ hiddenColumns: toggle(prefs.hiddenColumns, f.key, !on) })}
+                  onChange={(on) => onChange({ hiddenColumns: toggleField(prefs.hiddenColumns, f.key, !on) })}
                 />
               );
             })}
@@ -144,7 +125,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
                 title={t(`chart.field.${f.key}`)}
                 checked={prefs.besideTeeth.includes(f.key)}
                 disabled={!prefs.mirrorToDiagnosis}
-                onChange={(on) => onChange({ besideTeeth: toggle(prefs.besideTeeth, f.key, on) })}
+                onChange={(on) => onChange({ besideTeeth: toggleField(prefs.besideTeeth, f.key, on) })}
               />
             ))}
           </ListSection>
@@ -210,7 +191,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
               </label>
             </div>
             <datalist id={drugListId}>
-              {DRUGS.map((d) => <option key={d} value={d} />)}
+              {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
             </datalist>
           </ListSection>
         </>
