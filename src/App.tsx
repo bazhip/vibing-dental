@@ -14,6 +14,7 @@ import { touchLastSeen } from './utils/lastSeen';
 import { flushPendingTerms } from './utils/terms';
 import { useHashRoute } from './hooks/useHashRoute';
 import { lazyWithReload } from './utils/lazyWithReload';
+import { AppLockOverlay } from './components/AppLockOverlay';
 
 // Split the two halves of the app: visitors on the marketing page don't
 // download the charting screen (data grid, diagrams, voice pipeline),
@@ -300,6 +301,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <AppLockOverlay />
       <Suspense fallback={<AppLoading />}>
         {/* Signed in — but the charting app is behind the subscription
             gate (trials, comps, and admins pass straight through). */}
