@@ -94,7 +94,6 @@ describe('PatientsScreen', () => {
       g.getAttribute('aria-label'),
       Array.from(g.querySelectorAll<HTMLElement>('[role^="menuitem"]')).map((i) => `${i.textContent}${i.getAttribute('aria-checked') === 'true' ? ' ✓' : ''}`),
     ]);
-    await waitFor(() => expect(groups).toBeTruthy());
     expect(groups).toEqual([
       ['Sort by', ['Name', 'Last updated ✓', 'Recheck date']],
       ['Order', ['Newest first ✓', 'Oldest first']],
@@ -152,6 +151,36 @@ describe('PatientsScreen', () => {
     const maxActions = within(p).getByRole('button', { name: 'More actions for Max' }).closest('.ios-swiperow')!.querySelector('.ios-swiperow__actions') as HTMLElement;
     expect(within(maxActions).getAllByRole('button').map((b) => b.textContent)).toEqual(['Clear recheck', 'History']);
     expect(p.querySelectorAll('.ios-swiperow__action--destructive')).toHaveLength(0);
+  });
+
+  it('Clear recheck leaves the refetch to the library (libraryVersion): no second fetch', async () => {
+    const { p, library } = await openPatients();
+    const list = library.listCharts as unknown as ReturnType<typeof vi.fn>;
+    const n = list.mock.calls.length;
+    fireEvent.contextMenu(patientRow(p, 'Bella'));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Clear recheck' }));
+    await act(async () => fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Clear recheck' })));
+    await waitFor(() => expect(library.clearRecalls).toHaveBeenCalledWith(['a1']));
+    await act(async () => {});
+    // The fake library doesn't bump libraryVersion, so the screen itself
+    // must not have fetched (the app's bumpLibrary reload is the only one).
+    expect(list.mock.calls.length).toBe(n);
+  });
+
+  it('a patient row is disabled while its Clear recheck runs', async () => {
+    let finish!: () => void;
+    const library = fakeLibrary(ROWS, '2026-11-13', { clearRecalls: vi.fn(() => new Promise<void>((r) => { finish = r; })) });
+    renderShell(library, 'patients');
+    const p = panel('patients');
+    await within(p).findByText('Max');
+    fireEvent.contextMenu(patientRow(p, 'Bella'));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Clear recheck' }));
+    await act(async () => fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Clear recheck' })));
+    await waitFor(() => expect(patientRow(p, 'Bella')).toBeDisabled());
+    expect(within(p).queryByRole('button', { name: 'More actions for Bella' })).toBeNull();
+    expect(patientRow(p, 'Max')).toBeEnabled();
+    await act(async () => finish());
+    await waitFor(() => expect(patientRow(p, 'Bella')).toBeEnabled());
   });
 
   it('long-press menu on a patient: Open plus the same actions, no Delete', async () => {

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { List, ListRow, ListSection } from '../List';
+import { List, ListRow, ListSection, type ListRowProps } from '../List';
 import { SwipeRow, type SwipeAction } from '../SwipeRow';
 import { ContextMenu, type MenuItem } from '../ContextMenu';
 import { Icon, type IconName } from '../icons';
 import { useStack, useStackScreenOptions } from '../Stack';
 import { useAppShell, type AppTab } from '../AppShell';
-import { useAppLibrary } from '../appData';
+import { useAppLibrary, type AppLibrary } from '../appData';
 import { confirmDialog, friendlyError, toast } from '../../components/ui/dialogs';
 import { groupByPatient, recallStatus, todayIso, type PatientGroup } from '../../components/chartLibraryData';
 import type { CloudChartMeta, ChartListQuery } from '../../hooks/useCloudSync';
@@ -104,17 +104,76 @@ export function visitDateLabel(t: PT, v: CloudChartMeta): string {
 export async function clearPatientRecheck(
   t: PT,
   group: PatientGroup,
-  clearRecalls: (ids: string[]) => Promise<void>
+  clearRecalls: (ids: string[]) => Promise<void>,
+  onBusy?: (busy: boolean) => void
 ): Promise<boolean> {
   const ids = group.visits.filter((v) => (v.recall_date ?? '').trim() !== '').map((v) => v.id);
   if (ids.length === 0 || !(await confirmClearRecheck(t, group.name))) return false;
+  onBusy?.(true);
   try {
+    // The library bumps libraryVersion, which refetches the lists.
     await clearRecalls(ids);
     return true;
   } catch (e) {
     toast(t('errors.clear', { error: friendlyError(e) }), { kind: 'error' });
     return false;
+  } finally {
+    onBusy?.(false);
   }
+}
+
+/** A patient's actions (swipe and long-press): Send reminder (with an
+ *  owner email), Clear recheck (with a recheck), History (latest visit). */
+export interface PatientAction {
+  key: 'reminder' | 'clear' | 'history';
+  label: string;
+  icon: IconName;
+  run(): void;
+}
+
+export function patientActions(t: PT, library: AppLibrary, g: PatientGroup, onBusy: (busy: boolean) => void): PatientAction[] {
+  const reminder = g.ownerEmail && g.reminderChart ? g.reminderChart : null;
+  const latest = g.visits[0];
+  const out: PatientAction[] = [];
+  if (reminder) out.push({ key: 'reminder', label: t('actions.sendReminder'), icon: 'bell', run: () => library.sendReminder(reminder) });
+  if (g.recall) {
+    out.push({
+      key: 'clear',
+      label: t('actions.clearRecheck'),
+      icon: 'checkmark-circle',
+      run: () => void clearPatientRecheck(t, g, library.clearRecalls, onBusy),
+    });
+  }
+  out.push({ key: 'history', label: t('actions.history'), icon: HISTORY_ICON, run: () => library.openHistory(latest.id, historyLabel(t, g.name, latest)) });
+  return out;
+}
+
+/**
+ * A patient row: swipe actions plus the long-press menu (Open, then the
+ * actions). While one of its actions runs (`busy`) it is a dimmed,
+ * disabled row with neither.
+ */
+export function PatientRow({ group, actions, swipe, busy, row }: {
+  group: PatientGroup;
+  actions: PatientAction[];
+  swipe: SwipeAction[];
+  busy: boolean;
+  row: Omit<ListRowProps, 'disabled'>;
+}) {
+  const { t } = useTranslation('patients');
+  const shell = useAppShell();
+  if (busy) return <ListRow {...row} disabled />;
+  const menu: MenuItem[] = [
+    { label: t('actions.open'), icon: OPEN_ICON, onSelect: () => void shell.openChart(group.visits[0].id) },
+    ...actions.map((a) => ({ label: a.label, icon: a.icon, onSelect: a.run })),
+  ];
+  return (
+    <SwipeRow actions={swipe} label={group.name}>
+      <ContextMenu items={menu}>
+        <ListRow {...row} />
+      </ContextMenu>
+    </SwipeRow>
+  );
 }
 
 /** The label ChartHistoryModal shows for a visit. */

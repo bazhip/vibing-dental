@@ -75,6 +75,34 @@ describe('RechecksScreen', () => {
     await waitFor(() => expect(library.clearRecalls).toHaveBeenCalledWith(['c1', 'c2']));
   });
 
+  it('long-press menu on a row: Open plus the patient actions (as on Patients)', async () => {
+    const { p, library, onOpenChart } = await open();
+    fireEvent.contextMenu(within(p).getByRole('button', { name: /^Coco/ }));
+    const menu = screen.getByRole('menu');
+    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Open', 'Send reminder', 'Clear recheck', 'History']);
+    fireEvent.click(within(menu).getByRole('menuitem', { name: 'History' }));
+    expect(library.openHistory).toHaveBeenCalledWith('c1', expect.stringContaining('Coco'));
+    fireEvent.contextMenu(within(p).getByRole('button', { name: /^Coco/ }));
+    fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Open' }));
+    await waitFor(() => expect(onOpenChart).toHaveBeenCalledWith('c1'));
+  });
+
+  it('a row is disabled while its Clear recheck runs', async () => {
+    let finish!: () => void;
+    const library = fakeLibrary(ROWS, TODAY, { clearRecalls: vi.fn(() => new Promise<void>((r) => { finish = r; })) });
+    renderShell(library, 'rechecks');
+    const p = panel('rechecks');
+    await within(p).findByText('Coco');
+    const row = () => within(p).getByRole('button', { name: /^Coco/ });
+    fireEvent.click(within(p).getByRole('button', { name: 'More actions for Coco' }));
+    fireEvent.click(within(p).getByRole('button', { name: 'Clear recheck' }));
+    await act(async () => fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Clear recheck' })));
+    await waitFor(() => expect(row()).toBeDisabled());
+    expect(within(p).getByRole('button', { name: /^Max/ })).toBeEnabled();
+    await act(async () => finish());
+    await waitFor(() => expect(row()).toBeEnabled());
+  });
+
   it('no reminder without an owner email', async () => {
     const { p } = await open();
     const more = within(p).getByRole('button', { name: 'More actions for Max' });

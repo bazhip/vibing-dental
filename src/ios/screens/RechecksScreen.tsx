@@ -2,19 +2,20 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavBar } from '../NavBar';
 import { List, ListRow, ListSection } from '../List';
-import { SwipeRow, type SwipeAction } from '../SwipeRow';
+import { type SwipeAction } from '../SwipeRow';
 import { useAppLibrary } from '../appData';
 import { friendlyError } from '../../components/ui/dialogs';
 import { duePatients, type PatientGroup } from '../../components/chartLibraryData';
 import type { CloudChartMeta } from '../../hooks/useCloudSync';
-import { clearPatientRecheck, formatChartDate, todayIso, usePushPatient, useTabReload } from './patientShared';
+import { PatientRow, formatChartDate, patientActions, todayIso, usePushPatient, useTabReload } from './patientShared';
 
 /**
  * Rechecks tab: patients whose recheck is due, from the same data as the
  * website's Due filter (listCharts({ dueOnly: true }), recheck date today
  * or earlier), in two sections: Overdue (before today) and Due today. No
  * "later" section (that would need a new query). Tap a patient for their
- * visits; swipe for Send reminder (today's composer) / Clear recheck.
+ * visits; swipe for Send reminder (today's composer) / Clear recheck;
+ * long-press for Open plus those and History (as on Patients).
  */
 
 const CHEVRON = 'chevron' as const;
@@ -56,26 +57,29 @@ export function RechecksScreen() {
     [rows, today, unnamed]
   );
 
+  const [busyKey, setBusyKey] = React.useState<string | null>(null);
   const row = (g: PatientGroup, overdue: boolean) => {
     if (!library) return null;
-    const actions: SwipeAction[] = [];
-    const reminder = g.ownerEmail && g.reminderChart ? g.reminderChart : null;
-    if (reminder) actions.push({ label: t('actions.sendReminder'), icon: 'bell', tone: 'tint', onAction: () => library.sendReminder(reminder) });
-    actions.push({
-      label: t('actions.clearRecheck'),
-      icon: 'checkmark-circle',
-      onAction: () => void clearPatientRecheck(t, g, library.clearRecalls),
-    });
+    const actions = patientActions(t, library, g, (busy) => setBusyKey(busy ? g.key : null));
+    // Swipe: Send reminder / Clear recheck; History is in the long-press menu.
+    const swipe: SwipeAction[] = actions
+      .filter((a) => a.key !== 'history')
+      .map((a) => ({ label: a.label, icon: a.icon, tone: a.key === 'reminder' ? 'tint' : 'default', onAction: a.run }));
     return (
-      <SwipeRow key={g.key} actions={actions} label={g.name}>
-        <ListRow
-          title={g.name}
-          subtitle={[g.owner, g.number ? t('row.number', { number: g.number }) : ''].filter(Boolean).join(' · ') || undefined}
-          value={overdue ? <span className="ios-recall ios-recall--overdue">{formatChartDate(g.recall)}</span> : undefined}
-          accessory={CHEVRON}
-          onClick={() => pushPatient(g)}
-        />
-      </SwipeRow>
+      <PatientRow
+        key={g.key}
+        group={g}
+        actions={actions}
+        swipe={swipe}
+        busy={busyKey === g.key}
+        row={{
+          title: g.name,
+          subtitle: [g.owner, g.number ? t('row.number', { number: g.number }) : ''].filter(Boolean).join(' · ') || undefined,
+          value: overdue ? <span className="ios-recall ios-recall--overdue">{formatChartDate(g.recall)}</span> : undefined,
+          accessory: CHEVRON,
+          onClick: () => pushPatient(g),
+        }}
+      />
     );
   };
 

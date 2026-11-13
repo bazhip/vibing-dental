@@ -2,19 +2,18 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavBar } from '../NavBar';
 import { List, ListRow, ListSection } from '../List';
-import { SwipeRow, type SwipeAction } from '../SwipeRow';
-import { ContextMenu, MenuPopover, type MenuAnchor, type MenuItem } from '../ContextMenu';
+import { type SwipeAction } from '../SwipeRow';
+import { MenuPopover, type MenuAnchor, type MenuItem } from '../ContextMenu';
 import { SearchField } from '../SearchField';
 import { Icon, type IconName } from '../icons';
-import { useAppShell } from '../AppShell';
 import { useAppLibrary, type AppLibrary } from '../appData';
 import { friendlyError, toast } from '../../components/ui/dialogs';
-import { useChartLibraryList, type PatientGroup, type SortDir, type SortKey } from '../../components/chartLibraryData';
+import { defaultSortDir, useChartLibraryList, type PatientGroup, type SortDir, type SortKey } from '../../components/chartLibraryData';
 import {
+  PatientRow,
   RecallLabel,
-  confirmClearRecheck,
   formatUpdated,
-  historyLabel,
+  patientActions,
   todayIso,
   useDoctors,
   usePushPatient,
@@ -33,11 +32,9 @@ import {
 const CHEVRON = 'chevron' as const;
 const FILTER_ICON: IconName = 'line-3-horizontal-decrease';
 const PLUS_ICON: IconName = 'plus';
-const OPEN_ICON: IconName = 'doc-text';
 const TINT = 'tint' as const;
 const PLAIN = 'default' as const;
 const TAB = 'patients' as const;
-const REMINDER = 'reminder';
 
 const SORT_LABEL = { patient: 'filter.sortPatient', updated: 'filter.sortUpdated', recall: 'filter.sortRecall' } as const;
 const ORDER_LABELS = {
@@ -86,7 +83,7 @@ function BarItems({ library, list, shown }: { library: AppLibrary; list: ListSta
       section: i === 0 ? t('filter.sortBy') : undefined,
       type: 'radio' as const,
       checked: list.sortKey === key,
-      onSelect: () => list.setSortOrder(key, key === list.sortKey ? list.sortDir : key === 'updated' ? 'desc' : 'asc'),
+      onSelect: () => list.setSortOrder(key, key === list.sortKey ? list.sortDir : defaultSortDir(key)),
     })),
     ...(Object.keys(ORDER_LABELS[list.sortKey]) as SortDir[]).map((dir, i) => ({
       label: t(ORDER_LABELS[list.sortKey][dir]),
@@ -173,7 +170,6 @@ function BarItems({ library, list, shown }: { library: AppLibrary; list: ListSta
 
 function PatientsList({ library }: { library: AppLibrary }) {
   const { t } = useTranslation('patients');
-  const shell = useAppShell();
   const { shown, token } = useTabReload(TAB);
   const pushPatient = usePushPatient(TAB);
   const list = useChartLibraryList({
@@ -196,22 +192,8 @@ function PatientsList({ library }: { library: AppLibrary }) {
   const today = todayIso();
   const { groups } = list;
 
-  const actionsFor = (g: PatientGroup) => {
-    const reminder = g.ownerEmail && g.reminderChart ? g.reminderChart : null;
-    const latest = g.visits[0];
-    const out: { key: string; label: string; icon: IconName; run(): void }[] = [];
-    if (reminder) out.push({ key: REMINDER, label: t('actions.sendReminder'), icon: 'bell', run: () => library.sendReminder(reminder) });
-    if (g.recall) {
-      out.push({
-        key: 'clear',
-        label: t('actions.clearRecheck'),
-        icon: 'checkmark-circle',
-        run: () => void list.clearRecheck(g, () => confirmClearRecheck(t, g.name)),
-      });
-    }
-    out.push({ key: 'history', label: t('actions.history'), icon: 'clock-arrow-circlepath', run: () => library.openHistory(latest.id, historyLabel(t, g.name, latest)) });
-    return out;
-  };
+  const { busyId, setBusyId } = list;
+  const actionsFor = (g: PatientGroup) => patientActions(t, library, g, (busy) => setBusyId(busy ? g.key : null));
 
   let body: React.ReactNode;
   if (list.error?.kind === 'load') {
@@ -239,34 +221,33 @@ function PatientsList({ library }: { library: AppLibrary }) {
           const swipe: SwipeAction[] = actions.map((a) => ({
             label: a.label,
             icon: a.icon,
-            tone: a.key === REMINDER ? TINT : PLAIN,
+            tone: a.key === 'reminder' ? TINT : PLAIN,
             onAction: a.run,
           }));
-          const menu: MenuItem[] = [
-            { label: t('actions.open'), icon: OPEN_ICON, onSelect: () => void shell.openChart(g.visits[0].id) },
-            ...actions.map((a) => ({ label: a.label, icon: a.icon, onSelect: a.run })),
-          ];
           const details = [
             g.number ? t('row.number', { number: g.number }) : '',
             t('row.visits', { count: g.visits.length }),
             t('row.updated', { date: formatUpdated(g.latestUpdated) }),
           ].filter(Boolean).join(' · ');
           return (
-            <SwipeRow key={g.key} actions={swipe} label={g.name}>
-              <ContextMenu items={menu}>
-                <ListRow
-                  title={g.name}
-                  subtitle={
-                    <>
-                      <span className="ios-patient__details">{details}</span>
-                      {g.recall && <RecallLabel recall={g.recall} today={today} />}
-                    </>
-                  }
-                  accessory={CHEVRON}
-                  onClick={() => pushPatient(g, { species: list.speciesFilter || undefined, createdBy: list.doctorFilter || undefined })}
-                />
-              </ContextMenu>
-            </SwipeRow>
+            <PatientRow
+              key={g.key}
+              group={g}
+              actions={actions}
+              swipe={swipe}
+              busy={busyId === g.key}
+              row={{
+                title: g.name,
+                subtitle: (
+                  <>
+                    <span className="ios-patient__details">{details}</span>
+                    {g.recall && <RecallLabel recall={g.recall} today={today} />}
+                  </>
+                ),
+                accessory: CHEVRON,
+                onClick: () => pushPatient(g, { species: list.speciesFilter || undefined, createdBy: list.doctorFilter || undefined }),
+              }}
+            />
           );
         })}
         {list.hasMore && (

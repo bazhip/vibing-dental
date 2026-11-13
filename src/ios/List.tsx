@@ -58,13 +58,15 @@ export interface ListRowProps {
    *  the group reports aria-pressed true/false. */
   selected?: boolean;
   destructive?: boolean;
+  /** Dimmed and not tappable (e.g. while the row's action runs). */
+  disabled?: boolean;
   onClick?: () => void;
 }
 
-export function ListRow({ title, subtitle, value, icon, accessory: accessoryProp, destructive, onClick, selected }: ListRowProps) {
+export function ListRow({ title, subtitle, value, icon, accessory: accessoryProp, destructive, disabled, onClick, selected }: ListRowProps) {
   const accessory = selected ? 'check' : accessoryProp;
   const wrapped = React.useContext(RowWrapperContext);
-  const cls = `ios-row${destructive ? ' ios-row--destructive' : ''}${onClick ? ' ios-row--button' : ''}${icon ? ' ios-row--with-icon' : ''}`;
+  const cls = `ios-row${destructive ? ' ios-row--destructive' : ''}${onClick ? ' ios-row--button' : ''}${icon ? ' ios-row--with-icon' : ''}${disabled ? ' ios-row--disabled' : ''}`;
   const inner = (
     <>
       {icon && <span className="ios-row__icon">{isIconName(icon) ? <Icon name={icon} size={22} /> : icon}</span>}
@@ -85,7 +87,7 @@ export function ListRow({ title, subtitle, value, icon, accessory: accessoryProp
     </>
   );
   const row = onClick ? (
-    <button type="button" className={cls} onClick={onClick} aria-pressed={selected !== undefined ? selected : accessory === 'check' ? true : undefined}>
+    <button type="button" className={cls} onClick={onClick} disabled={disabled} aria-pressed={selected !== undefined ? selected : accessory === 'check' ? true : undefined}>
       {inner}
     </button>
   ) : (
