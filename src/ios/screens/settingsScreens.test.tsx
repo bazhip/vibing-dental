@@ -149,6 +149,12 @@ describe('Settings tab screens', () => {
     expect(reminderSave).toHaveBeenCalledWith(expect.objectContaining({ subject: 'Time for a recheck' }));
   });
 
+  it('Recheck reminders names the app’s tabs, not the website’s My charts', () => {
+    pushScreen(<RemindersSettingsScreen />);
+    expect(screen.getByText(/Send a reminder for one patient from Patients or Rechecks/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/My charts|reload/);
+  });
+
   it('Practice settings: Save in the bar for a name edit; the screen stays after saving', async () => {
     const s = makeSettings();
     const { container } = pushScreen(<PracticeSettingsScreen />, s, 'Practice settings');

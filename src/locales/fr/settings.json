@@ -136,5 +136,9 @@
     "severalTeeth": "Touchez les numéros de dents dans la grille pour en sélectionner plusieurs, puis attribuez un même score à toutes.",
     "customize": "Chaque page propose Personnaliser dans son menu Plus : masquez des colonnes, choisissez ce qui s’affiche à côté des dents, et plus encore. Les réglages suivent votre compte sur tous vos appareils.",
     "leftOff": "À l’ouverture, ToothOps affiche Patients — sauf si la visite du jour est encore ouverte — et la visite du jour s’ouvre prête à être modifiée."
+  },
+  "reminders": {
+    "sendFrom": "Envoyez un rappel pour un patient depuis Patients ou Contrôles.",
+    "settingUp": "Votre clinique est en cours de configuration — revenez dans un instant."
   }
 }

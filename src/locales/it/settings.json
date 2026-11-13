@@ -136,5 +136,9 @@
     "severalTeeth": "Tocchi i numeri dei denti nella griglia per selezionarne più di uno, poi assegni un unico punteggio a tutti.",
     "customize": "Ogni pagina ha Personalizza nel suo menu Altro: nasconda colonne, scelga cosa mostrare accanto ai denti e altro ancora. Le impostazioni seguono il suo account su ogni dispositivo.",
     "leftOff": "All’apertura ToothOps mostra Pazienti — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
+  },
+  "reminders": {
+    "sendFrom": "Invii un promemoria per un paziente da Pazienti o Controlli.",
+    "settingUp": "La sua struttura è in fase di configurazione — ricontrolli tra un momento."
   }
 }

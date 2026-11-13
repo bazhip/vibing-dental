@@ -1692,6 +1692,14 @@
       "hash": "9539f5ae5214",
       "status": "machine"
     },
+    "settings:reminders.sendFrom": {
+      "hash": "36c7465391f4",
+      "status": "machine"
+    },
+    "settings:reminders.settingUp": {
+      "hash": "ca8a94852138",
+      "status": "machine"
+    },
     "settings:tour.back": {
       "hash": "76900f1bfd16",
       "status": "machine"
@@ -3524,6 +3532,14 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:reminders.sendFrom": {
+      "hash": "36c7465391f4",
+      "status": "machine"
+    },
+    "settings:reminders.settingUp": {
+      "hash": "ca8a94852138",
       "status": "machine"
     },
     "settings:tour.back": {
@@ -5360,6 +5376,14 @@
       "hash": "9539f5ae5214",
       "status": "machine"
     },
+    "settings:reminders.sendFrom": {
+      "hash": "36c7465391f4",
+      "status": "machine"
+    },
+    "settings:reminders.settingUp": {
+      "hash": "ca8a94852138",
+      "status": "machine"
+    },
     "settings:tour.back": {
       "hash": "76900f1bfd16",
       "status": "machine"
@@ -7192,6 +7216,14 @@
     },
     "settings:ownerReport.title": {
       "hash": "9539f5ae5214",
+      "status": "machine"
+    },
+    "settings:reminders.sendFrom": {
+      "hash": "36c7465391f4",
+      "status": "machine"
+    },
+    "settings:reminders.settingUp": {
+      "hash": "ca8a94852138",
       "status": "machine"
     },
     "settings:tour.back": {

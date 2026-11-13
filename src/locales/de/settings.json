@@ -136,5 +136,9 @@
     "severalTeeth": "Tippen Sie im Raster auf Zahnnummern, um mehrere auszuwählen, und vergeben Sie dann einen Score für alle.",
     "customize": "Jede Seite hat Anpassen in ihrem Menü „Mehr“: Spalten ausblenden, festlegen, was neben den Zähnen angezeigt wird, und mehr. Die Einstellungen folgen Ihrem Konto auf jedes Gerät.",
     "leftOff": "Beim Öffnen zeigt ToothOps die Patienten — es sei denn, der heutige Besuch ist noch geöffnet — und der heutige Besuch öffnet sich bereit zum Bearbeiten."
+  },
+  "reminders": {
+    "sendFrom": "Senden Sie eine Erinnerung für einen Patienten über Patienten oder Kontrollen.",
+    "settingUp": "Ihre Praxis wird eingerichtet — schauen Sie gleich noch einmal vorbei."
   }
 }

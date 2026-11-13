@@ -136,5 +136,9 @@
     "severalTeeth": "Tap tooth numbers in the grid to select several, then set one score on all of them.",
     "customize": "Every page has Customize in its More menu: hide columns, choose what shows beside the teeth, and more. Settings follow your account to every device.",
     "leftOff": "Opening ToothOps fresh shows Patients — unless today’s visit is still open — and today’s visit opens ready to edit."
+  },
+  "reminders": {
+    "sendFrom": "Send a reminder for one patient from Patients or Rechecks.",
+    "settingUp": "Your practice is being set up — check back in a moment."
   }
 }

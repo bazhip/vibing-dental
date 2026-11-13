@@ -23,6 +23,7 @@ interface RemindersModalProps {
  */
 export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, presentation = 'modal' }) => {
   const { t } = useTranslation();
+  const { t: ts } = useTranslation('settings');
   const asScreen = presentation === 'screen';
   const team = useTeam(open);
   const reminder = useReminderTemplate(team.practice?.id ?? '', open);
@@ -117,13 +118,13 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, p
           Email the pet owner when a recheck is due. Placeholders:
           {' '}<code>{'{{patient}}'}</code> <code>{'{{owner}}'}</code>{' '}
           <code>{'{{practice}}'}</code> <code>{'{{recheck_date}}'}</code>.
-          {' '}Send a reminder for one patient from <strong>My charts</strong>.
+          {' '}{asScreen ? ts('reminders.sendFrom') : <>Send a reminder for one patient from <strong>My charts</strong>.</>}
         </p>
 
         {!team.loaded ? (
           <p className="practice-logo-empty">Loading…</p>
         ) : !team.practice ? (
-          <p className="practice-logo-empty">Your practice is being set up — reload in a moment.</p>
+          <p className="practice-logo-empty">{asScreen ? ts('reminders.settingUp') : 'Your practice is being set up — reload in a moment.'}</p>
         ) : !isOwner ? (
           <p className="practice-logo-empty">Only a practice owner can change the reminder template.</p>
         ) : (
