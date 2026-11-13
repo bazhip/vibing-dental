@@ -3,6 +3,7 @@ import React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Sheet } from './Sheet';
 import { ContextMenu } from './ContextMenu';
+import { ScrollContainerContext } from './scrollContainer';
 
 /** Drag with pointer events from (y0) to (y1) on `el`, in a few steps. */
 function drag(el: Element, y0: number, y1: number) {
@@ -95,6 +96,51 @@ describe('Sheet', () => {
     expect(closeA).not.toHaveBeenCalled();
     rerender(<Two b />);
     expect(closeA).toHaveBeenCalledTimes(1);
+  });
+
+  it('a sheet opened from inside a sheet stacks on it; Escape closes only the top one', async () => {
+    const closeA = vi.fn();
+    const closeB = vi.fn();
+    function Nested({ b }: { b: boolean }) {
+      return (
+        <Sheet open onClose={closeA} title="A">
+          <p>A</p>
+          <Sheet open={b} onClose={closeB} title="B"><button>In B</button></Sheet>
+        </Sheet>
+      );
+    }
+    const { rerender } = render(<Nested b={false} />);
+    rerender(<Nested b />);
+    expect(closeA).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog', { name: 'B' })).toBeInTheDocument();
+    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' });
+    await waitFor(() => expect(closeB).toHaveBeenCalledTimes(1));
+    expect(closeA).not.toHaveBeenCalled();
+  });
+
+  it('Tab inside a stacked sheet stays in that sheet', () => {
+    render(
+      <Sheet open onClose={() => {}} title="A">
+        <button>In A</button>
+        <Sheet open onClose={() => {}} title="B"><button>In B</button></Sheet>
+      </Sheet>
+    );
+    const inB = screen.getByRole('button', { name: 'In B' });
+    inB.focus();
+    fireEvent.keyDown(inB, { key: 'Tab' });
+    const sheetB = screen.getByRole('dialog', { name: 'B' });
+    expect(sheetB.contains(document.activeElement)).toBe(true);
+  });
+
+  it('gives its body as the scroll container to what it contains', () => {
+    let seen: HTMLElement | null | undefined;
+    function Probe() {
+      const ref = React.useContext(ScrollContainerContext);
+      React.useEffect(() => { seen = ref?.current; });
+      return null;
+    }
+    render(<Sheet open onClose={() => {}} title="T"><Probe /></Sheet>);
+    expect(seen).toBe(body());
   });
 
   it('a drag that starts in a scrolled body scrolls the content, not the sheet', async () => {

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import i18n from '../../i18n';
 import { isNativeApp } from '../../native/platform';
 import { Icon } from '../../ios/icons';
-import { trapTab, useMediaQuery } from '../../ios/gesture';
+import { exitDelay, trapTab, useMediaQuery } from '../../ios/gesture';
 import './dialogs.css';
 
 /**
@@ -78,7 +78,19 @@ export interface ToastOptions {
 type DialogRequest =
   | { kind: 'confirm'; id: number; opts: ConfirmOptions; resolve: (v: boolean) => void }
   | { kind: 'prompt'; id: number; opts: PromptOptions; resolve: (v: string | null) => void }
-  | { kind: 'choose'; id: number; opts: ChoiceOptions; resolve: (v: string | null) => void };
+  | { kind: 'choose'; id: number; opts: ChoiceOptions; resolve: (v: string | null) => void }
+  | { kind: 'sheet'; id: number; render: (p: SheetPresentation<unknown>) => React.ReactNode; resolve: (v: unknown) => void; closing?: boolean };
+
+/** What presentSheet() hands its render function. */
+export interface SheetPresentation<T> {
+  /** Pass to <Sheet open>: false while the sheet slides away. */
+  open: boolean;
+  /** Resolve the promise (first call wins) and close the sheet. */
+  finish: (value: T) => void;
+}
+
+/** Matches the kit sheet's exit slide (src/ios/Sheet.tsx). */
+const SHEET_EXIT_MS = 380;
 
 interface ToastItem { id: number; message: string; opts: ToastOptions }
 
@@ -119,6 +131,25 @@ export function chooseDialog(opts: ChoiceOptions): Promise<string | null> {
   if (!host) return Promise.resolve(null);
   const h = host;
   return new Promise((resolve) => h.openDialog({ kind: 'choose', id: nextId++, opts, resolve }));
+}
+
+/**
+ * Show a one-off <Sheet> from plain code (e.g. a consent sheet before an
+ * action) through the mounted <DialogHost />. `render` gets `open` and
+ * `finish`; the promise resolves with the value passed to `finish`, or
+ * with `fallback` straight away when there's no host.
+ */
+export function presentSheet<T>(render: (p: SheetPresentation<T>) => React.ReactNode, fallback: T): Promise<T> {
+  if (!host) return Promise.resolve(fallback);
+  const h = host;
+  return new Promise<T>((resolve) =>
+    h.openDialog({
+      kind: 'sheet',
+      id: nextId++,
+      render: render as (p: SheetPresentation<unknown>) => React.ReactNode,
+      resolve: resolve as (v: unknown) => void,
+    })
+  );
 }
 
 export function toast(message: string, opts: ToastOptions = {}): void {
@@ -409,15 +440,27 @@ function NativeActionSheet({ req, onDone }: { req: Extract<DialogRequest, { kind
 
   const [pos, setPos] = React.useState<{ left: number; top: number } | null>(null);
   React.useLayoutEffect(() => {
-    if (layout !== 'popover' || !opts.anchor) return;
-    const a = opts.anchor instanceof Element ? opts.anchor.getBoundingClientRect() : opts.anchor;
-    const h = sheetRef.current?.getBoundingClientRect().height ?? 0;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const left = Math.max(POPOVER_EDGE, Math.min(a.left + a.width / 2 - POPOVER_WIDTH / 2, vw - POPOVER_WIDTH - POPOVER_EDGE));
-    const below = a.top + a.height + POPOVER_GAP;
-    const top = below + h <= vh - POPOVER_EDGE ? below : Math.max(POPOVER_EDGE, a.top - POPOVER_GAP - h);
-    setPos({ left, top });
+    if (layout !== 'popover' || !opts.anchor) return undefined;
+    const anchor = opts.anchor;
+    const place = () => {
+      const a = anchor instanceof Element ? anchor.getBoundingClientRect() : anchor;
+      const h = sheetRef.current?.getBoundingClientRect().height ?? 0;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const left = Math.max(POPOVER_EDGE, Math.min(a.left + a.width / 2 - POPOVER_WIDTH / 2, vw - POPOVER_WIDTH - POPOVER_EDGE));
+      const below = a.top + a.height + POPOVER_GAP;
+      const top = below + h <= vh - POPOVER_EDGE ? below : Math.max(POPOVER_EDGE, a.top - POPOVER_GAP - h);
+      setPos((p) => (p && p.left === left && p.top === top ? p : { left, top }));
+    };
+    place();
+    // Rotation / split-view resize moves the control: follow it (a fixed
+    // DOMRect can only be re-clamped to the new viewport).
+    window.addEventListener('resize', place);
+    window.addEventListener('orientationchange', place);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('orientationchange', place);
+    };
   }, [layout, opts.anchor]);
 
   const cancelLabel = opts.cancelLabel ?? i18n.t('actions.cancel');
@@ -522,9 +565,32 @@ export function DialogHost() {
     window.setTimeout(() => el?.focus?.(), 0);
   }, []);
 
+  // A presented sheet: resolve now, let it slide away, then drop it. The
+  // sheet puts focus back itself.
+  const finishSheet = React.useCallback((id: number, value: unknown) => {
+    let first = false;
+    setDialogs((d) =>
+      d.map((x) => {
+        if (x.id !== id || x.kind !== 'sheet' || x.closing) return x;
+        first = true;
+        x.resolve(value);
+        return { ...x, closing: true };
+      })
+    );
+    window.setTimeout(() => {
+      if (!first) return;
+      returnFocus.current.pop();
+      setDialogs((d) => d.filter((x) => x.id !== id));
+    }, exitDelay(SHEET_EXIT_MS));
+  }, []);
+  const sheets = dialogs.filter((x): x is Extract<DialogRequest, { kind: 'sheet' }> => x.kind === 'sheet');
+  const sheetLayer = sheets.map((x) => (
+    <React.Fragment key={x.id}>{x.render({ open: !x.closing, finish: (v) => finishSheet(x.id, v) })}</React.Fragment>
+  ));
+
   // Escape closes only the top dialog, and stops other handlers (an open
-  // modal underneath) from also closing.
-  const top = dialogs[dialogs.length - 1];
+  // modal underneath) from also closing. Sheets handle their own Escape.
+  const top = dialogs.filter((x) => x.kind !== 'sheet').pop();
   React.useEffect(() => {
     if (!top) return;
     const onKey = (e: KeyboardEvent) => {
@@ -542,6 +608,7 @@ export function DialogHost() {
   if (isNativeApp()) {
     return ReactDOM.createPortal(
       <>
+        {sheetLayer}
         {top?.kind === 'confirm' && <NativeConfirm key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
         {top?.kind === 'prompt' && <NativePrompt key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
         {top?.kind === 'choose' && <NativeActionSheet key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
@@ -557,6 +624,7 @@ export function DialogHost() {
 
   return ReactDOM.createPortal(
     <>
+      {sheetLayer}
       {top?.kind === 'confirm' && <ConfirmView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
       {top?.kind === 'prompt' && <PromptView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}
       {top?.kind === 'choose' && <ChoiceView key={top.id} req={top} onDone={(v) => finish(top.id, v)} />}

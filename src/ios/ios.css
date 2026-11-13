@@ -1040,8 +1040,12 @@
   position: absolute;
   inset: 0;
   z-index: 35;
-  background: var(--ios-scrim);
+  /* iPadOS dims only lightly behind an overlay sidebar (not a modal scrim). */
+  background: rgba(0, 0, 0, 0.1);
   animation: ios-fade-in 0.25s;
+}
+@media (prefers-color-scheme: dark) {
+  :where(html.native-ios) .ios-appshell__scrim { background: rgba(0, 0, 0, 0.28); }
 }
 
 /* Placeholder / empty-state text in a list. */

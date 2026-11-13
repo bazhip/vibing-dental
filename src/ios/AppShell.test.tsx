@@ -267,6 +267,37 @@ describe('AppShell (iPad portrait: overlay sidebar)', () => {
   });
 });
 
+describe('AppShell (iPad portrait: overlay sidebar is modal)', () => {
+  it('moves focus into the sidebar when shown; content behind is inert until it closes', () => {
+    mockWidth('portrait');
+    render(<Harness />);
+    const content = document.querySelector('.ios-appshell__content')!;
+    expect(content).not.toHaveAttribute('inert');
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    const aside = document.querySelector('.ios-appshell__sidebar')!;
+    expect(aside.contains(document.activeElement)).toBe(true);
+    expect(content).toHaveAttribute('inert');
+    fireEvent.click(document.querySelector('.ios-appshell__scrim')!);
+    expect(content).not.toHaveAttribute('inert');
+  });
+
+  it('Escape closes it from anywhere and returns focus to the sidebar button', () => {
+    mockWidth('portrait');
+    render(<Harness />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    (document.activeElement as HTMLElement).blur();
+    fireEvent.keyDown(document.body, { key: 'Escape' });
+    expect(document.querySelector('.ios-appshell')).toHaveClass('ios-appshell--sidebar-collapsed');
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Show sidebar' }));
+  });
+
+  it('the docked sidebar never makes the content inert', () => {
+    mockWidth('landscape');
+    render(<Harness />);
+    expect(document.querySelector('.ios-appshell__content')).not.toHaveAttribute('inert');
+  });
+});
+
 describe('AppShell (compact width on iPad: Slide Over / narrow split)', () => {
   it('falls back to the tab bar', () => {
     mockWidth('compact');
