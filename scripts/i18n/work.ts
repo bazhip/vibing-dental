@@ -38,7 +38,7 @@ export function findWork(c: Catalogs, m: Meta): { todo: WorkItem[]; remove: { ln
     const id = `${p.lng}|${p.key}`;
     if (todo.has(id)) continue;
     const [ns, key] = split(p.key);
-    const english = c.en[ns][key];
+    const english = c.en[ns][englishKeyFor(key, c.en[ns]) ?? key];
     const previous = c[p.lng]?.[ns]?.[key];
     todo.set(id, { lng: p.lng, key: p.key, english, ...(previous ? { previous } : {}) });
   }
@@ -71,10 +71,20 @@ export function applyTranslations(
   return { c: nc, m: nm, rejected };
 }
 
-/** Stamp current English hashes on existing translations. Returns keys refused for placeholder mismatch. */
-export function rehashMeta(c: Catalogs, m: Meta): { m: Meta; refused: string[] } {
+/**
+ * Stamp current English hashes on existing translations that have no meta entry, plus any key named
+ * explicitly as `lng:ns:key`. Other stale keys are reported, never stamped. Placeholder mismatches are refused.
+ */
+export function rehashMeta(
+  c: Catalogs,
+  m: Meta,
+  named: string[] = [],
+): { m: Meta; stamped: string[]; refused: string[]; stale: string[] } {
   const nm: Meta = structuredClone(m);
+  const stamped: string[] = [];
   const refused: string[] = [];
+  const stale: string[] = [];
+  const want = new Set(named);
   for (const [lng, nss] of Object.entries(c)) {
     if (lng === 'en') continue;
     for (const [ns, tr] of Object.entries(nss)) {
@@ -83,13 +93,21 @@ export function rehashMeta(c: Catalogs, m: Meta): { m: Meta; refused: string[] }
         const enKey = englishKeyFor(key, en);
         if (!enKey || text.trim() === '') continue;
         const id = `${ns}:${key}`;
+        const hash = hashEnglish(en[enKey]);
+        const existing = nm[lng]?.[id];
+        const isNamed = want.has(`${lng}:${id}`);
         if (!same(placeholders(text), placeholders(en[enKey]))) {
           refused.push(`${lng} ${id}`);
           continue;
         }
-        (nm[lng] ??= {})[id] = { hash: hashEnglish(en[enKey]), status: nm[lng]?.[id]?.status ?? 'machine' };
+        if (!isNamed && existing) {
+          if (existing.hash !== hash) stale.push(`${lng} ${id}`);
+          continue;
+        }
+        (nm[lng] ??= {})[id] = { hash, status: existing?.status ?? 'machine' };
+        stamped.push(`${lng} ${id}`);
       }
     }
   }
-  return { m: nm, refused };
+  return { m: nm, stamped, refused, stale };
 }

@@ -149,3 +149,33 @@ test('parseReply strips fences and validates shape', () => {
   expect(parseReply('nope')).toBeNull();
   expect(parseReply('["a"]')).toBeNull();
 });
+
+test('runTranslate fills fr n_many and handles a changed plural base without throwing', async () => {
+  const en = { common: { n_one: '{{count}} tooth', n_other: '{{count}} teeth' } };
+  const c: Catalogs = { en };
+  const m: Meta = {};
+  for (const l of LNGS) {
+    c[l] = { common: { n_one: 'un {{count}}', n_other: 'des {{count}}' } };
+    m[l] = {
+      'common:n_one': { hash: hashEnglish(en.common.n_one), status: 'machine' },
+      'common:n_other': { hash: hashEnglish(en.common.n_other), status: 'machine' },
+    };
+  }
+  c.fr.common.n_many = 'de {{count}}';
+  m.fr['common:n_many'] = { hash: 'old', status: 'machine' };
+  writeCatalogs(dir, c);
+  writeMeta(dir, m);
+  const seen: Record<string, string> = {};
+  const fake: Translator = async (l, items) => {
+    for (const i of items) if (l === 'fr') seen[i.key] = i.english;
+    return Object.fromEntries(items.map((i) => [i.key, `T ${i.english}`]));
+  };
+  const r = await runTranslate(dir, fake);
+  expect(r.failed).toEqual([]);
+  expect(seen['common:n_many']).toBe('{{count}} teeth');
+  // it/es need n_many too, filled; de does not get one
+  const out = loadCatalogs(dir);
+  expect(out.it.common.n_many).toBeDefined();
+  expect(out.de.common.n_many).toBeUndefined();
+  expect(checkCatalogs(out, loadMeta(dir))).toEqual([]);
+});

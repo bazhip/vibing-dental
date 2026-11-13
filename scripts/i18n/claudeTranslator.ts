@@ -26,7 +26,7 @@ export function systemPrompt(lng: string, glossary: GlossaryTerm[]): string {
     '- Keep {{placeholders}}, HTML tags, and codes (Triadan numbers, AVDC abbreviations) untouched.',
     '- Match the English register: short UI labels stay short.',
     '- Use formal address (vous / Sie / Lei / usted).',
-    '- When the English key ends in _one/_other, produce the i18next plural forms the target language needs; the item key is for the English form only, so translate each item independently.',
+    '- Translate each item independently. When an item key ends in a plural suffix (_one, _few, _many, _other), write the i18next plural form that suffix names, in the target language; the English text is the source for that item.',
     '- If an item has a "previous" translation, it is out of date: keep its wording where the English meaning is unchanged.',
     '',
     'Glossary:',

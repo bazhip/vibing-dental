@@ -63,20 +63,36 @@ export async function runTranslate(
   return { translated, removed: remove.length, failed };
 }
 
-export function runRehash(dir: string): { refused: string[] } {
+export function runRehash(dir: string, named: string[] = []) {
   const c = loadCatalogs(dir);
-  const { m, refused } = rehashMeta(c, loadMeta(dir));
-  writeMeta(dir, m);
-  return { refused };
+  const r = rehashMeta(c, loadMeta(dir), named);
+  writeMeta(dir, r.m);
+  return r;
 }
+
+const USAGE = `Usage: i18n:translate [--check | --rehash [lng:ns:key ...]]
+  (none)    translate missing/stale/empty keys with Claude (needs ANTHROPIC_API_KEY)
+  --check   exit 1 if there is work; no API call
+  --rehash  stamp hashes on translations with no meta entry, plus the keys named as lng:ns:key,
+            e.g. npm run i18n:translate -- --rehash fr:common:actions.save de:common:actions.save`;
 
 async function main() {
   const dir = 'src/locales';
   const args = process.argv.slice(2);
+  if (args.includes('--help')) {
+    console.log(USAGE);
+    return;
+  }
   if (args.includes('--rehash')) {
-    const { refused } = runRehash(dir);
-    for (const r of refused) console.error(`${r} placeholder mismatch (not rehashed)`);
-    process.exit(refused.length ? 1 : 0);
+    const named = args.slice(args.indexOf('--rehash') + 1).filter((a) => !a.startsWith('--'));
+    const { stamped, refused, stale } = runRehash(dir, named);
+    for (const k of stamped) console.log(`stamped ${k}`);
+    for (const k of refused) console.error(`${k} placeholder mismatch (not rehashed)`);
+    if (stale.length) {
+      for (const k of stale) console.error(`${k} stale (not rehashed)`);
+      console.error('to bless a stale key, name it: npm run i18n:translate -- --rehash <lng>:<ns>:<key>');
+    }
+    process.exit(refused.length || stale.length ? 1 : 0);
   }
   if (args.includes('--check')) {
     const { todo, remove } = findWork(loadCatalogs(dir), loadMeta(dir));

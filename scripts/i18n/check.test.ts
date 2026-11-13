@@ -57,3 +57,13 @@ test('pt is required for report only', () => {
   expect(checkCatalogs(c, {}).filter((p) => p.lng === 'pt')).toEqual([{ lng: 'pt', key: 'report:a', kind: 'missing' }]);
   expect(checkCatalogs({ en: { common: { a: 'Hi' } } }, {}).some((p) => p.lng === 'pt')).toBe(false);
 });
+
+test('required plural forms the language needs are reported missing (fr many), de needs none', () => {
+  const enP = { common: { n_one: '{{c}} tooth', n_other: '{{c}} teeth' } };
+  const c: Catalogs = { en: enP };
+  for (const l of ['fr', 'de', 'it', 'es']) c[l] = { common: { n_one: 'a {{c}}', n_other: 'b {{c}}' } };
+  const problems = checkCatalogs(c, metaFor(c));
+  expect(problems.filter((p) => p.lng === 'de')).toEqual([]);
+  expect(problems.filter((p) => p.lng === 'fr')).toEqual([{ lng: 'fr', key: 'common:n_many', kind: 'missing' }]);
+  expect(problems).toHaveLength(3);
+});

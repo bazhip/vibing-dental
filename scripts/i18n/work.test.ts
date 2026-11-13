@@ -70,3 +70,55 @@ test('rehashMeta stamps good keys and refuses placeholder mismatches', () => {
   expect(r.refused).toEqual(['de common:a']);
   expect(r.m.fr['common:a'].hash).toBe(hashEnglish(en.common.a));
 });
+
+test('rehashMeta stamps only keys without meta, plus explicitly named ones', () => {
+  const { c, m } = full();
+  delete m.fr['common:a']; // no meta: stamped
+  m.de['common:b'].hash = 'old'; // stale, unnamed: left alone
+  m.it['common:b'].hash = 'old'; // stale, named: stamped
+  const r = rehashMeta(c, m, ['it:common:b']);
+  expect(r.stamped.sort()).toEqual(['fr common:a', 'it common:b']);
+  expect(r.stale).toEqual(['de common:b']);
+  expect(r.m.de['common:b'].hash).toBe('old');
+  expect(r.m.it['common:b'].hash).toBe(hashEnglish('Bye'));
+  expect(r.m.fr['common:a'].hash).toBe(hashEnglish(en.common.a));
+});
+
+test('rehashMeta refuses a named key with placeholder mismatch', () => {
+  const { c, m } = full();
+  c.de.common.a = 'Hallo {{tier}}';
+  const r = rehashMeta(c, m, ['de:common:a']);
+  expect(r.refused).toEqual(['de common:a']);
+  expect(r.stamped).toEqual([]);
+});
+
+const enP = { common: { n_one: '{{count}} tooth', n_other: '{{count}} teeth' } };
+function plural(): { c: Catalogs; m: Meta } {
+  const c: Catalogs = { en: enP };
+  const m: Meta = {};
+  for (const l of LNGS) {
+    c[l] = { common: { n_one: 'un {{count}}', n_other: 'des {{count}}', ...(l === 'de' ? {} : { n_many: 'de {{count}}' }) } };
+    m[l] = {};
+    for (const k of Object.keys(c[l].common)) {
+      m[l][`common:${k}`] = { hash: hashEnglish(enP.common[k.endsWith('_one') ? 'n_one' : 'n_other']), status: 'machine' };
+    }
+  }
+  return { c, m };
+}
+
+test('stale target-only plural form resolves english via _other', () => {
+  const { c, m } = plural();
+  c.en.common.n_other = '{{count}} teeth!';
+  const w = findWork(c, m);
+  const many = w.todo.find((t) => t.lng === 'fr' && t.key === 'common:n_many')!;
+  expect(many.english).toBe('{{count}} teeth!');
+  expect(many.previous).toBe('de {{count}}');
+});
+
+test('applyTranslations works for a plural-only key', () => {
+  const { c, m } = plural();
+  const r = applyTranslations(c, m, 'fr', { 'common:n_many': 'X {{count}}' }, [
+    { lng: 'fr', key: 'common:n_many', english: '{{count}} teeth' },
+  ]);
+  expect(r.rejected).toEqual([]);
+});

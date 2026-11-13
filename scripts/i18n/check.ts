@@ -9,6 +9,19 @@ export type Problem = {
 
 const same = (a: string[], b: string[]) => a.length === b.length && a.every((x, i) => x === b[i]);
 
+/** Plural forms `lng` needs beyond English's, for every English base key with _one and _other. */
+function requiredPluralForms(lng: string, en: Record<string, string>): string[] {
+  const cats = new Intl.PluralRules(lng).resolvedOptions().pluralCategories.filter((c) => c !== 'zero');
+  const out: string[] = [];
+  for (const key of Object.keys(en)) {
+    if (!key.endsWith('_other')) continue;
+    const base = key.slice(0, -'_other'.length);
+    if (!(`${base}_one` in en)) continue;
+    for (const cat of cats) out.push(`${base}_${cat}`);
+  }
+  return out;
+}
+
 export function checkCatalogs(c: Catalogs, m: Meta): Problem[] {
   const problems: Problem[] = [];
   const enNs = c.en ?? {};
@@ -18,6 +31,9 @@ export function checkCatalogs(c: Catalogs, m: Meta): Problem[] {
       const tr = c[lng]?.[ns] ?? {};
       for (const key of Object.keys(en)) {
         if (!(key in tr)) problems.push({ lng, key: `${ns}:${key}`, kind: 'missing' });
+      }
+      for (const key of requiredPluralForms(lng, en)) {
+        if (!(key in tr) && !(key in en)) problems.push({ lng, key: `${ns}:${key}`, kind: 'missing' });
       }
       for (const [key, text] of Object.entries(tr)) {
         const id = `${ns}:${key}`;
