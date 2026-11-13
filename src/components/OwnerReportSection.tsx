@@ -67,8 +67,20 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   // into the same editable fields. Hand edits are only replaced after a
   // confirm, and the toast offers the previous text back.
   const [drafting, setDrafting] = React.useState(false);
+  // Set synchronously on the first click: the confirm and consent dialogs
+  // are awaited before `drafting` is set, so a fast double-click would
+  // otherwise start two drafts.
+  const busyRef = React.useRef(false);
   const writeWithAi = async () => {
-    if (drafting) return;
+    if (busyRef.current) return;
+    busyRef.current = true;
+    try {
+      await writeDraft();
+    } finally {
+      busyRef.current = false;
+    }
+  };
+  const writeDraft = async () => {
     if ((introEdited || homecareEdited) && !(await confirmDialog({
       title: 'Replace your edited text?',
       message: 'The AI draft replaces the opening summary and home care advice you edited. You can undo right after.',

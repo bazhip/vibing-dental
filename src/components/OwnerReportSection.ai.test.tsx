@@ -49,6 +49,29 @@ describe('OwnerReportSection — Write with AI and Customize', () => {
     expect(onOverrideChange).not.toHaveBeenCalled();
   });
 
+  it('a fast double-click writes one draft', async () => {
+    draftOwnerReport.mockResolvedValue({ intro: 'Bella did great.', homecare: 'Brush daily' });
+    const onOverrideChange = vi.fn();
+    render(<OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={onOverrideChange} onPreview={() => {}} aiEnabled />);
+    const button = screen.getByRole('button', { name: /Write with AI/ });
+    fireEvent.click(button);
+    fireEvent.click(button);
+    await waitFor(() => expect(onOverrideChange).toHaveBeenCalledWith('intro', 'Bella did great.'));
+    expect(draftOwnerReport).toHaveBeenCalledTimes(1);
+  });
+
+  it('a fast double-click over edited text asks once and writes one draft', async () => {
+    draftOwnerReport.mockResolvedValue({ intro: 'Bella did great.', homecare: 'Brush daily' });
+    const onOverrideChange = vi.fn();
+    render(<OwnerReportSection snapshot={snap} overrides={{ intro: 'My own words' }} onOverrideChange={onOverrideChange} onPreview={() => {}} aiEnabled />);
+    const button = screen.getByRole('button', { name: /Write with AI/ });
+    fireEvent.click(button);
+    fireEvent.click(button);
+    await waitFor(() => expect(onOverrideChange).toHaveBeenCalledWith('intro', 'Bella did great.'));
+    expect(confirmDialog).toHaveBeenCalledTimes(1);
+    expect(draftOwnerReport).toHaveBeenCalledTimes(1);
+  });
+
   it('app: declining the AI consent sends nothing', async () => {
     aiConsent.ensure.mockResolvedValue(false);
     const onOverrideChange = vi.fn();
