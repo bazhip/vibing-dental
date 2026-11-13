@@ -340,7 +340,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
-      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section });
+      const result = await extractChartActions({ delta, recentContext, context: contextRef.current, section, lng: voiceRef.current?.lng ?? 'en' });
       if (gen === sessionGenRef.current) applyResult(result);
     } catch (err) {
       console.error('[VoiceInputButton] chunk extraction failed', err);
@@ -441,6 +441,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         transcript,
         context: contextRef.current,
         rejected: rejectedRef.current,
+        lng: voiceRef.current?.lng ?? 'en',
       });
       if (!result.ran || gen !== sessionGenRef.current) return;
       finalCheckedSegmentsRef.current = segments.length;
@@ -532,7 +533,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const onSegment = React.useCallback((seg: FinalSegment) => {
     lastSpeechRef.current = performance.now();
     const flush = () => { processChunk(false).catch(console.error); };
-    const dangling = DANGLING_RE.test(normalizeTranscript(seg.text));
+    const dangling = DANGLING_RE.test(normalizeTranscript(seg.text, voiceRef.current?.lng ?? 'en'));
     window.clearTimeout(quietTimerRef.current);
     quietTimerRef.current = window.setTimeout(flush, dangling ? DANGLING_FLUSH_MS : QUIET_FLUSH_MS);
     if (maxTimerRef.current === undefined) {

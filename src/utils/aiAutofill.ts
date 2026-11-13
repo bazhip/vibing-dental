@@ -6,6 +6,8 @@ import { ApiError, LocalizedError } from './apiErrors';
 import { DENTAL_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
 import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
+import { chunkWorthSendingOther, isPerioOnlyOther, normalizeOther } from './voice/normalize';
+import type { AppLanguage } from '../i18n/config';
 import {
   PatientInfo,
   Species,
@@ -445,8 +447,10 @@ function buildStaticSystemPrompt(): string {
 
 // The English digit-word passes live in ./voice/numbers (shared with the
 // other languages' replaceSpokenNumbers); the order below is unchanged.
+// fr/de/it/es run the same passes with native words (./voice/normalize).
 
-export function normalizeTranscript(raw: string): string {
+export function normalizeTranscript(raw: string, lng: AppLanguage = 'en'): string {
+  if (lng !== 'en') return normalizeOther(raw, lng);
   let text = raw;
 
   // Deepgram's smart formatting runs findings together ("104GI2",
@@ -510,7 +514,8 @@ const FILLER_WORDS = new Set([
   'perfect', 'nice', 'so', 'and', 'oh',
 ]);
 
-export function chunkWorthSending(chunk: string): boolean {
+export function chunkWorthSending(chunk: string, lng: AppLanguage = 'en'): boolean {
+  if (lng !== 'en') return chunkWorthSendingOther(chunk, lng);
   const text = chunk.replace(/\bSpeaker \d+:\s*/gi, '').trim();
   if (text.length < 2) return /\d/.test(text);
   if (/\d/.test(text)) return true;
@@ -647,7 +652,7 @@ interface SectionScope {
   label: string;
   /** What the model may write on this page, in plain words. */
   guidance: string;
-  allows: (a: AiAction) => boolean;
+  allows: (a: AiAction, lng: AppLanguage) => boolean;
 }
 
 const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre');
@@ -655,12 +660,18 @@ const diagramOf = (a: AiAction) => (a.input.diagram === 'post' ? 'post' : 'pre')
 /** True when a comment holds nothing but periodontal scores ("GI 2, calc
  *  1, M3") — grid values the Charting page's mirror option already puts
  *  on the diagram, so a comment would duplicate them. */
-export function isPerioOnlyText(text: string): boolean {
-  const rest = text
-    .replace(/\b(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class|gingivitis|pocket|recession)\s*[-:=]?\s*\d+(?:\s*mm)?\b/gi, '')
-    .replace(/\b\d+\s*(?:mm|millimet(?:er|re)s?)\s*(?:pocket|recession)?\b/gi, '')
+export function isPerioOnlyText(text: string, lng: AppLanguage = 'en'): boolean {
+  if (lng !== 'en') return isPerioOnlyOther(text, lng, stripEnglishPerio);
+  const rest = stripEnglishPerio(text)
     .replace(/[\s,.;/]+/g, '');
   return text.trim().length > 0 && rest.length === 0;
+}
+
+/** Remove English perio scores and measurements ("GI 2", "calc 1", "5 mm pocket"). */
+function stripEnglishPerio(text: string): string {
+  return text
+    .replace(/\b(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class|gingivitis|pocket|recession)\s*[-:=]?\s*\d+(?:\s*mm)?\b/gi, '')
+    .replace(/\b\d+\s*(?:mm|millimet(?:er|re)s?)\s*(?:pocket|recession)?\b/gi, '');
 }
 
 const SECTION_SCOPES: Record<string, SectionScope> = {
@@ -686,12 +697,12 @@ const SECTION_SCOPES: Record<string, SectionScope> = {
       'set_tooth_mark/unset_tooth_mark with diagram=pre, mark=missing for missing teeth; ' +
       'and add_comment with diagram=pre for DIAGNOSIS findings that are not grid values (AVDC codes like T/FX, CCF, TR; fractures; resorption) — those go on the Diagnosis diagram. ' +
       'Never put periodontal values in a comment.',
-    allows: (a) =>
+    allows: (a, lng) =>
       a.name === 'set_tooth_field' ||
       ((a.name === 'set_tooth_mark' || a.name === 'unset_tooth_mark') &&
         diagramOf(a) === 'pre' &&
         (a.name === 'unset_tooth_mark' || a.input.mark === 'missing')) ||
-      (a.name === 'add_comment' && diagramOf(a) === 'pre' && !isPerioOnlyText(String(a.input.text ?? ''))),
+      (a.name === 'add_comment' && diagramOf(a) === 'pre' && !isPerioOnlyText(String(a.input.text ?? ''), lng)),
   },
   diagnosis: {
     label: 'Diagnosis diagram',
@@ -740,13 +751,13 @@ export function sectionLabel(section: string): string {
 /** What dictation may do on any page: everything except a diagram note
  *  holding only perio scores (those belong in the grid, which mirrors
  *  them onto the diagram itself). */
-export function actionAllowedAnywhere(a: AiAction): boolean {
-  return !(a.name === 'add_comment' && isPerioOnlyText(String(a.input.text ?? '')));
+export function actionAllowedAnywhere(a: AiAction, lng: AppLanguage = 'en'): boolean {
+  return !(a.name === 'add_comment' && isPerioOnlyText(String(a.input.text ?? ''), lng));
 }
 
-export function actionAllowedInSection(a: AiAction, section: string | undefined): boolean {
+export function actionAllowedInSection(a: AiAction, section: string | undefined, lng: AppLanguage = 'en'): boolean {
   const scope = section ? SECTION_SCOPES[section] : undefined;
-  return scope ? scope.allows(a) : true;
+  return scope ? scope.allows(a, lng) : true;
 }
 
 // ----- Caller --------------------------------------------------------------
@@ -766,6 +777,8 @@ export interface ExtractInput {
   /** Id of the chart section on screen — a tie-break hint only; findings
    *  go wherever they belong. */
   section?: string;
+  /** Dictation language (cleanup and filler filter). Defaults to 'en'. */
+  lng?: AppLanguage;
 }
 
 /** Something the vet should check: a best guess that was applied but may
@@ -792,8 +805,8 @@ export interface ExtractResult {
 
 /** Both transcript forms for the prompt: as transcribed, plus the regex
  *  cleanup when it changed anything. */
-function transcriptBlock(heading: string, raw: string): string {
-  const cleaned = normalizeTranscript(raw);
+function transcriptBlock(heading: string, raw: string, lng: AppLanguage): string {
+  const cleaned = normalizeTranscript(raw, lng);
   const trimmed = raw.replace(/\s+/g, ' ').trim();
   return cleaned === trimmed
     ? `${heading}:\n${trimmed}\n\n`
@@ -803,8 +816,8 @@ function transcriptBlock(heading: string, raw: string): string {
 /** The request body for one live chunk, or null when the chunk is pure
  *  filler. Pure — shared by the app and scripts/replay-transcript.ts. */
 export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
-  const { delta, recentContext, context, section } = input;
-  if (!chunkWorthSending(delta)) return null;
+  const { delta, recentContext, context, section, lng = 'en' } = input;
+  if (!chunkWorthSending(delta, lng)) return null;
   const scope = section ? SECTION_SCOPES[section] : undefined;
 
   const userText =
@@ -814,7 +827,7 @@ export function buildChunkRequest(input: ExtractInput): AutofillRequest | null {
         `If the new chunk completes, continues or corrects a finding that started here (e.g. a tooth number here, its values in the new chunk), emit the complete finding:\n` +
         `${recentContext.replace(/\s+/g, ' ').trim()}\n\n`
       : '') +
-    transcriptBlock('New transcript chunk to extract from', delta) +
+    transcriptBlock('New transcript chunk to extract from', delta, lng) +
     (scope
       ? `OPEN PAGE: the vet has the ${scope.label} page on screen. That doesn't limit anything — chart every finding where it belongs, ` +
         `whichever page it's on. Only when a finding could equally go in two places (e.g. a note for the Diagnosis or the Procedure diagram) prefer this page.\n\n`
@@ -854,6 +867,8 @@ export interface ReviewInput {
   context: ChartContext;
   /** Chart changes the vet rejected in review — never re-add them. */
   rejected: AiAction[];
+  /** Dictation language (filler filter). Defaults to 'en'. */
+  lng?: AppLanguage;
 }
 
 /**
@@ -863,7 +878,7 @@ export interface ReviewInput {
  */
 export function buildReviewRequest(input: ReviewInput): AutofillRequest | null {
   let transcript = input.transcript.trim();
-  if (!transcript || !chunkWorthSending(transcript)) return null;
+  if (!transcript || !chunkWorthSending(transcript, input.lng ?? 'en')) return null;
   let truncatedNote = '';
   if (transcript.length > REVIEW_TRANSCRIPT_MAX_CHARS) {
     transcript = transcript.slice(-REVIEW_TRANSCRIPT_MAX_CHARS);
@@ -973,7 +988,7 @@ export async function extractChartActions(
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  return { ...parseAutofillContent(content, actionAllowedAnywhere), ran: true };
+  return { ...parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en')), ran: true };
 }
 
 /**
@@ -986,7 +1001,7 @@ export async function reviewFullTranscript(input: ReviewInput): Promise<ExtractR
   if (!requestBody) return { actions: [], skipped: [], flags: [], ran: false };
   markDictationPromptUsed();
   const content = await sendAutofill(requestBody);
-  const result = parseAutofillContent(content, actionAllowedAnywhere);
+  const result = parseAutofillContent(content, (a) => actionAllowedAnywhere(a, input.lng ?? 'en'));
   return { ...result, flags: markFinalCheck(result), ran: true };
 }
 

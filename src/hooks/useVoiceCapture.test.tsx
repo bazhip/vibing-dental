@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { useVoiceCapture } from './useVoiceCapture';
+import i18n from '../i18n';
 
 // Fake Web Speech recognizer. jsdom has no MediaRecorder, so the hook
 // picks the browser transport and uses this.
@@ -97,5 +98,21 @@ describe('useVoiceCapture stop / resume / clear', () => {
     act(() => result.current.start());
     act(() => FakeRecognition.last!.say('new'));
     expect(result.current.allSegments().map((s) => s.text)).toEqual(['new']);
+  });
+});
+
+describe('useVoiceCapture session language', () => {
+  afterEach(async () => { await i18n.changeLanguage('en'); });
+
+  it('reports the app language read at start, for transcript cleanup', async () => {
+    const { result } = renderHook(() => useVoiceCapture());
+    expect(result.current.lng).toBe('en');
+    await act(async () => { await i18n.changeLanguage('fr'); });
+    act(() => result.current.start());
+    expect(result.current.lng).toBe('fr');
+    expect(FakeRecognition.last!.lang).toMatch(/^fr/);
+    // Switching mid-session keeps the session's language until the next start.
+    await act(async () => { await i18n.changeLanguage('de'); });
+    expect(result.current.lng).toBe('fr');
   });
 });

@@ -104,6 +104,9 @@ export interface VoiceCapture {
   startedAt: Date | null;
   /** Which transport will be used at the next `start()` call. */
   provider: VoiceProvider;
+  /** The app language the current (or most recent) session listens in —
+   *  read at each start/resume. Transcript cleanup uses the same one. */
+  lng: AppLanguage;
   /** True when the last session ended without the user pressing stop:
    *  the OS took the mic (iOS camera, a call), the page went to the
    *  background on a phone, or the connection dropped. Whatever was
@@ -150,6 +153,8 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   const [error, setError] = React.useState<string | null>(null);
   const [startedAt, setStartedAt] = React.useState<Date | null>(null);
   const [interrupted, setInterrupted] = React.useState(false);
+  const [lng, setLng] = React.useState<AppLanguage>(appLanguage);
+  const lngRef = React.useRef<AppLanguage>(lng);
 
   // Internal buffers — refs so callbacks don't have to re-bind.
   const finalRef = React.useRef('');
@@ -244,7 +249,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     const rec = new browserCtor();
     rec.continuous = true;
     rec.interimResults = true;
-    rec.lang = browserSpeechLang(appLanguage(), navigator.language);
+    rec.lang = browserSpeechLang(lngRef.current, navigator.language);
 
     rec.onresult = (event) => {
       let text = '';
@@ -325,7 +330,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
           if (holder.session && deepgramRef.current === holder.session) deepgramRef.current = null;
           handleSessionEnd(id);
         },
-      }, audioCtx, appLanguage());
+      }, audioCtx, lngRef.current);
       holder.session = session;
       // Stopped during the handshake: tear straight back down.
       if (stopRequestedRef.current || id !== sessionIdRef.current) {
@@ -358,6 +363,8 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     setInterrupted(false);
     setError(null);
     setStartedAt((prev) => prev ?? new Date());
+    lngRef.current = appLanguage();
+    setLng(lngRef.current);
     if (provider === 'deepgram') startDeepgram(id);
     else startBrowser(id);
   }, [provider, startBrowser, startDeepgram]);
@@ -453,6 +460,6 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
   return {
     supported, recording, ready, transcript, interim, start, clear, stop, setMuted, error,
     consumeFinalSegments, recentSegments, allSegments, startedAt,
-    provider, interrupted, resume, dismissInterruption,
+    provider, interrupted, resume, dismissInterruption, lng,
   };
 }

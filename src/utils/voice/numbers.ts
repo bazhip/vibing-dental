@@ -1,5 +1,5 @@
 import type { AppLanguage } from '../../i18n/config';
-import { nativeScoreTerms, SCORE_ABBREVIATIONS } from './terms';
+import { GERMAN_COMPOUND_ENDS, nativeScoreTerms, SCORE_ABBREVIATIONS, UNIT_WORDS } from './terms';
 import {
   CANINE_DECIDUOUS_TOOTH_DATA,
   CANINE_TOOTH_DATA,
@@ -71,7 +71,7 @@ export function englishDigitRuns(text: string): string {
 // same length) and replacements are spliced into the original, so case and
 // accents of everything else are kept. Word lists below are written folded.
 
-type OtherLanguage = Exclude<AppLanguage, 'en'>;
+export type OtherLanguage = Exclude<AppLanguage, 'en'>;
 
 interface LanguageNumbers {
   /** Words read digit by digit in a tooth number ("un zéro quatre"). */
@@ -87,8 +87,8 @@ interface LanguageNumbers {
   /** Score terms (folded alternation): the native terms from ./terms plus
    *  the English abbreviations vets say in every language. */
   scoreTerms: string;
-  /** Native terms that also count as the end of a compound word
-   *  (German "Zahnfleischtasche", "Lockerungsgrad"). */
+  /** Long clinical words that also count at the end of a compound word
+   *  (German "Zahnlockerungsgrad", "Oberkieferzahnstein"). */
   compoundEnds?: string;
   units: string;
 }
@@ -107,6 +107,8 @@ const nativeTermsAlt = (lng: OtherLanguage) =>
 /** Native terms from ./terms plus the English abbreviations. */
 const scoreTermsFor = (lng: OtherLanguage) =>
   `${nativeTermsAlt(lng)}|${alt(SCORE_ABBREVIATIONS.map((a) => fold(a)))}`;
+/** Folded alternation of the unit words from ./terms. */
+const unitsFor = (lng: OtherLanguage) => alt(UNIT_WORDS[lng].map((u) => escapeRe(fold(u))));
 
 const FR_SMALL = toMap('zero un deux trois quatre cinq six sept huit neuf dix onze douze treize quatorze quinze');
 const DE_SMALL = withValues(
@@ -137,7 +139,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     compound: `(?:(?<h>deux|trois|quatre|cinq|six|sept|huit)[\\s-]+)?cents?[\\s-]+(?<r>${remainderAlt(FR_SMALL)})`,
     hundreds: (h) => (h ? FR_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('fr'),
-    units: 'mm|millimetres?',
+    units: unitsFor('fr'),
   },
   de: {
     digits: digitsOf(DE_SMALL, 'null eins ein zwei zwo drei vier funf fuenf sechs sieben acht neun'),
@@ -147,8 +149,8 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     compound: `(?:(?<h>ein|zwei|zwo|drei|vier|funf|fuenf|sechs|sieben|acht)[\\s-]*)?hundert[\\s-]*(?:und[\\s-]*)?(?<r>${remainderAlt(DE_SMALL, ['einen'])})`,
     hundreds: (h) => (h ? DE_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('de'),
-    compoundEnds: nativeTermsAlt('de'),
-    units: 'mm|millimetern?',
+    compoundEnds: alt(GERMAN_COMPOUND_ENDS.map((t) => escapeRe(fold(t)))),
+    units: unitsFor('de'),
   },
   it: {
     digits: digitsOf(IT_SMALL, 'zero uno due tre quattro cinque sei sette otto nove'),
@@ -158,7 +160,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     compound: `(?:(?<h>due|tre|quattro|cinque|sei|sette|otto)\\s*)?cento?\\s*(?<r>${remainderAlt(IT_SMALL, ['un', 'una'])})`,
     hundreds: (h) => (h ? IT_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('it'),
-    units: 'mm|millimetr[oi]',
+    units: unitsFor('it'),
   },
   es: {
     digits: digitsOf(ES_SMALL, 'cero uno dos tres cuatro cinco seis siete ocho nueve'),
@@ -172,13 +174,13 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
       return { dos: 2, tres: 3, cuatro: 4, seis: 6, sete: 7, ocho: 8 }[h.slice(0, h.indexOf('cient'))] ?? 0;
     },
     scoreTerms: scoreTermsFor('es'),
-    units: 'mm|milimetros?',
+    units: unitsFor('es'),
   },
 };
 
 /** Lowercase and strip accents character by character, keeping the length
  *  so match indexes line up with the original text. */
-function fold(text: string): string {
+export function fold(text: string): string {
   let out = '';
   for (const ch of text) {
     const f = ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -189,12 +191,12 @@ function fold(text: string): string {
 
 // Word edges; a hyphen joined to a letter continues the word, so "quatre"
 // in "quatre-vingt-dix" or "deux" in "trente-deux" is not a number on its own.
-const NOT_BEFORE = '(?<![\\p{L}\\p{N}]|\\p{L}-)';
-const NOT_AFTER = '(?![\\p{L}\\p{N}]|-\\p{L})';
+export const NOT_BEFORE = '(?<![\\p{L}\\p{N}]|\\p{L}-)';
+export const NOT_AFTER = '(?![\\p{L}\\p{N}]|-\\p{L})';
 
 /** Run `re` over the folded text; splice `fn`'s result over each match in the
  *  original. `fn` returns null to leave a match as it was. */
-function replaceFolded(
+export function replaceFolded(
   text: string,
   re: RegExp,
   fn: (m: RegExpExecArray, folded: string) => string | null,
@@ -211,6 +213,20 @@ function replaceFolded(
   return out + text.slice(last);
 }
 
+/** Regex source (folded, for a `u`-flag regex) matching one score term for
+ *  `lng` at a word start: the native terms, the English abbreviations and,
+ *  in German, words ending in a long clinical term. */
+export function scoreTermPattern(lng: OtherLanguage): string {
+  const L = LANGS[lng];
+  const ends = L.compoundEnds ? `|\\p{L}*(?:${L.compoundEnds})` : '';
+  return `(?:${NOT_BEFORE}(?:${L.scoreTerms}${ends}))`;
+}
+
+/** Regex source (folded) of the unit words for `lng`. */
+export function unitPattern(lng: OtherLanguage): string {
+  return LANGS[lng].units;
+}
+
 /** Folded source of a caller-supplied term regex (accents stripped). */
 const termSource = (re: RegExp) => fold(re.source);
 
@@ -224,8 +240,8 @@ const termSource = (re: RegExp) => fold(re.source);
  *  3. a single number word 0–15 right before a unit ("cinq millimètres");
  *  4. runs of 2–3 digit words ("un zéro quatre", "eins null acht").
  * Accents and case are ignored; numerals pass through unchanged.
- * Score terms default to ./terms (German native terms also match as the end
- * of a compound word). `opts.scoreTerms` / `opts.unitTerms` replace the
+ * Score terms default to ./terms (German long clinical words also match as
+ * the end of a compound word). `opts.scoreTerms` / `opts.unitTerms` replace the
  * defaults; their sources are used as alternations inside a Unicode regex,
  * and an overriding score list matches at word starts only.
  */
@@ -240,9 +256,7 @@ export function replaceSpokenNumbers(
   // the folded copy keeps the same length as the text.
   text = text.normalize('NFC');
   const L = LANGS[lng];
-  const score = opts?.scoreTerms ? termSource(opts.scoreTerms) : L.scoreTerms;
-  const ends = opts?.scoreTerms ? undefined : L.compoundEnds;
-  const scoreTerm = `(?:${NOT_BEFORE}(?:${score})${ends ? `|\\p{L}(?:${ends})` : ''})`;
+  const scoreTerm = opts?.scoreTerms ? `(?:${NOT_BEFORE}(?:${termSource(opts.scoreTerms)}))` : scoreTermPattern(lng);
   const units = opts?.unitTerms ? termSource(opts.unitTerms) : L.units;
   const small = alt(Object.keys(L.small));
   const digits = alt(Object.keys(L.digits));
