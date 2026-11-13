@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GoogleSignInButton } from './GoogleSignInButton';
 import { AppleSignInButton, AppleSignInHint, showAppleSignIn } from './AppleSignInButton';
 import { confirmDialog } from './ui/dialogs';
@@ -31,6 +32,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
   email: initialEmail,
   onSignOut,
 }) => {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -55,12 +57,12 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
       const msg = authError.message ?? '';
       setError(
         code === 'invalid_credentials' || /invalid login credentials/i.test(msg)
-          ? 'Incorrect email or password.'
+          ? t('errors.invalidCredentials')
           : authError.status === 429 || /rate limit|too many/i.test(msg)
-            ? 'Too many attempts. Wait a minute and try again.'
+            ? t('errors.rateLimit', { ns: 'common' })
             : /fetch|network/i.test(msg)
-              ? 'Can’t reach ToothOps — check your connection and try again.'
-              : msg || 'Couldn’t sign in. Please try again.'
+              ? t('errors.network', { ns: 'common' })
+              : msg || t('errors.signInFailed')
       );
       setPassword('');
       return;
@@ -71,7 +73,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
   const fieldsEls = (
     <>
       <label className={app ? 'ios-field' : 'login-field'}>
-        <span className={app ? 'ios-field__label' : 'login-field__label'}>Email</span>
+        <span className={app ? 'ios-field__label' : 'login-field__label'}>{t('login.email')}</span>
         <input
           type="email"
           className={app ? 'ios-field__input' : 'login-input'}
@@ -82,7 +84,7 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
         />
       </label>
       <label className={app ? 'ios-field' : 'login-field'}>
-        <span className={app ? 'ios-field__label' : 'login-field__label'}>Password</span>
+        <span className={app ? 'ios-field__label' : 'login-field__label'}>{t('login.password')}</span>
         <input
           type="password"
           className={app ? 'ios-field__input' : 'login-input'}
@@ -101,16 +103,15 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
       className={app ? 'ios-auth-screen' : 'ai-settings-overlay'}
       role="dialog"
       aria-modal="true"
-      aria-label="Session expired — sign in to continue"
+      aria-label={t('expired.ariaLabel')}
     >
       <div className={app ? 'ios-auth-screen__content' : 'ai-settings-modal session-expired-modal'} ref={modalRef} tabIndex={-1}>
         <header className={app ? 'ios-auth-screen__header' : 'ai-settings-header'}>
-          <h2>Your session expired</h2>
+          <h2>{t('expired.title')}</h2>
         </header>
         <div className={app ? 'ios-auth-screen__body' : 'ai-settings-body'}>
           <p className={app ? 'ios-auth-screen__lead' : 'ai-settings-blurb'}>
-            Your chart is still here, saved on this device. Sign in again to
-            resume cloud saving and pick up where you left off.
+            {t('expired.blurb')}
           </p>
           <form onSubmit={handleSubmit} className={app ? 'login-form login-form--app' : 'login-form'}>
             {/* Google (and Apple on the web) redirect away and back — the
@@ -123,27 +124,27 @@ export const SessionExpiredOverlay: React.FC<SessionExpiredOverlayProps> = ({
                 <AppleSignInHint />
               </>
             )}
-            <div className="login-or">or sign in with email</div>
+            <div className="login-or">{t('expired.orWithEmail')}</div>
             {app ? <div className="ios-form-group">{fieldsEls}</div> : fieldsEls}
             {error && <div className="login-error" role="alert">{error}</div>}
             <button type="submit" className={app ? 'ios-button ios-button--filled' : 'login-button'} disabled={busy}>
-              {busy ? 'Signing in…' : 'Sign in and continue charting'}
+              {busy ? t('login.signingIn') : t('expired.submit')}
             </button>
             <button
               type="button"
               className={app ? 'ios-button ios-button--plain' : 'login-switch'}
               onClick={async () => {
                 if (await confirmDialog({
-                  title: 'Sign out and remove this chart?',
-                  message: 'The chart kept on this device is cleared. Anything not yet saved to the cloud is lost — sign in instead to keep it.',
-                  confirmLabel: 'Sign out and remove',
-                  cancelLabel: 'Keep chart',
+                  title: t('expired.confirmTitle'),
+                  message: t('expired.confirmMessage'),
+                  confirmLabel: t('expired.confirmLabel'),
+                  cancelLabel: t('expired.cancelLabel'),
                   danger: true,
                 })) onSignOut();
               }}
               disabled={busy}
             >
-              Sign out instead — leave this chart
+              {t('expired.signOutInstead')}
             </button>
           </form>
         </div>

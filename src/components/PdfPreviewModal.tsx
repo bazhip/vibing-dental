@@ -1,9 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveChartPdf } from '../native/saveFile';
-import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
 import { toast } from './ui/dialogs';
@@ -27,6 +28,9 @@ import {
   DiagramComment,
   DiagramStroke,
 } from '../types';
+
+// SF Symbol names (not text).
+const SQUARE_AND_ARROW_UP_ICON = 'square-and-arrow-up';
 
 /**
  * One snapshot of the chart that's enough to (re-)build a PDF in any
@@ -72,6 +76,7 @@ interface PdfPreviewModalProps {
 }
 
 export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose, snapshot, bare = false }) => {
+  const { t } = useTranslation('pdfui');
   // The document style is independent of the app UI. The last pick
   // (preset or custom color) is remembered on this device.
   const [styleId, setStyleIdState] = React.useState<string>(readSavedPdfStyle);
@@ -123,7 +128,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     let cancelled = false;
     setImages(null);
     setImageWarning(null);
-    const warn = "Couldn't load the chart's images, so they're not in this PDF. Close and reopen the preview to retry.";
+    const warn = i18n.t('preview.imagesFailed', { ns: 'pdfui' });
     (async () => {
       const items = await listChartAttachments(chartId);
       if (cancelled) return;
@@ -141,7 +146,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       }
       if (!cancelled) {
         if (out.some((img) => !img.jpegBytes)) {
-          setImageWarning('Some images could not be loaded. They show as blank boxes in the PDF.');
+          setImageWarning(i18n.t('preview.imagesPartial', { ns: 'pdfui' }));
         }
         setImages(out);
       }
@@ -191,7 +196,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       } catch (err) {
         if (!cancelled) {
           console.error(err);
-          setError('Couldn\'t build the preview. See console for details.');
+          setError(i18n.t('preview.buildFailed', { ns: 'pdfui' }));
         }
       } finally {
         if (!cancelled) setGenerating(false);
@@ -233,11 +238,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
     >
       {isNativeApp() ? (
         <>
-          <Icon name="square-and-arrow-up" size={17} />
-          {i18n.t('common:ios.sheets.documents.share')}
+          <Icon name={SQUARE_AND_ARROW_UP_ICON} size={17} />
+          {t('ios.sheets.documents.share', { ns: 'common' })}
         </>
       ) : (
-        'Download PDF'
+        t('preview.download')
       )}
     </button>
   );
@@ -265,7 +270,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
           <div className="pdf-preview-iframe-wrap">
             {(generating || (images === null && !error)) && (
               <div className="pdf-preview-status">
-                {images === null ? 'Loading images…' : 'Generating preview…'}
+                {images === null ? t('preview.loadingImages') : t('preview.generating')}
               </div>
             )}
             {error && !generating && (
@@ -275,11 +280,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
               <iframe
                 key={styleId}
                 src={pdfUrl}
-                title="Clinical chart preview"
+                title={t('preview.frameTitle')}
                 className="pdf-preview-iframe"
               />
             ) : pdfBlobRef.current && (
-              <PdfPagesPreview blob={pdfBlobRef.current} title="Clinical chart preview" />
+              <PdfPagesPreview blob={pdfBlobRef.current} title={t('preview.frameTitle')} />
             ))}
           </div>
         </div>
@@ -298,10 +303,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header">
           <div>
-            <h2 id="pdf-preview-title">Clinical chart</h2>
-            <p>For your records and referrals. Pick a style or your own color — the preview updates live.</p>
+            <h2 id="pdf-preview-title">{t('preview.title')}</h2>
+            <p>{t('preview.subtitle')}</p>
           </div>
-          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close preview">
+          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('preview.closeAria')}>
             ×
           </button>
         </header>

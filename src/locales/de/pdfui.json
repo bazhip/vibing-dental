@@ -1,0 +1,47 @@
+{
+  "style": {
+    "label": "PDF-Stil",
+    "done": "Fertig",
+    "custom": "Eigene Farbe",
+    "customShort": "Eigene",
+    "customDesc": "Eine Farbe Ihrer Wahl im Layout „{{layout}}“.",
+    "currentLayout": "aktuellen",
+    "chooseColor": "Eigene Farbe auswählen"
+  },
+  "presets": {
+    "clinic": { "name": "Klinik-Türkis", "description": "Passend zur App — türkise Kopfzeilen, rote Markierungen für Auffälliges, abgerundete Karten." },
+    "classic-blue": { "name": "Klassisches Blau", "description": "Traditionelles Blau von Krankenakten mit vollflächigen Abschnittsüberschriften." },
+    "slate": { "name": "Schiefer", "description": "Neutrales Graphit — druckt auch in Schwarzweiß gestochen scharf." },
+    "iris": { "name": "Iris", "description": "Dezente Indigo-Akzente und kompakte Überschriften in Großbuchstaben." },
+    "journal": { "name": "Journal", "description": "Serifen-Klassiker — tiefrote Akzente auf warmem Papier." }
+  },
+  "preview": {
+    "title": "Klinische Akte",
+    "subtitle": "Für Ihre Unterlagen und Überweisungen. Wählen Sie einen Stil oder Ihre eigene Farbe — die Vorschau aktualisiert sich live.",
+    "closeAria": "Vorschau schließen",
+    "download": "PDF herunterladen",
+    "loadingImages": "Bilder werden geladen…",
+    "generating": "Vorschau wird erstellt…",
+    "buildFailed": "Die Vorschau konnte nicht erstellt werden. Details finden Sie in der Konsole.",
+    "imagesFailed": "Die Bilder der Akte konnten nicht geladen werden und sind daher nicht in diesem PDF enthalten. Schließen Sie die Vorschau und öffnen Sie sie erneut, um es noch einmal zu versuchen.",
+    "imagesPartial": "Einige Bilder konnten nicht geladen werden. Sie erscheinen im PDF als leere Felder.",
+    "frameTitle": "Vorschau der klinischen Akte"
+  },
+  "link": {
+    "preparing": "Download-Link wird vorbereitet…",
+    "open": "Tippen, um das PDF herunterzuladen",
+    "copy": "Link kopieren",
+    "copied": "Link kopiert — fügen Sie ihn in Chrome ein, um das PDF herunterzuladen.",
+    "copyPrompt": "Kopieren Sie diesen Link und öffnen Sie ihn in Chrome:",
+    "note": "Der Browser dieser App kann das PDF nicht direkt speichern, deshalb gibt es hier einen Link, der es kann. Er funktioniert {{minutes}} Minuten lang — wenn nichts heruntergeladen wird, kopieren Sie ihn in Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, Seite {{n}} von {{total}}",
+    "failed": "Die Vorschau konnte nicht dargestellt werden — der Download funktioniert weiterhin."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox öffnet das PDF in einem neuen Tab — tippen Sie dort oben auf Herunterladen, um die Datei zu speichern.",
+    "inAppBrowser": "Der integrierte Browser dieser App kann Dateien nicht immer speichern. Tippen Sie auf Herunterladen, um einen Download-Link zu erhalten — oder öffnen Sie ToothOps in Chrome (Menü ⋮ → „Im Browser öffnen“).",
+    "inAppBrowserMessage": "Der integrierte Browser dieser App kann keine Dateien speichern. Öffnen Sie ToothOps in Chrome (Menü ⋮ → „Im Browser öffnen“), um das PDF herunterzuladen."
+  }
+}

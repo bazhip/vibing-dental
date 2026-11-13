@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import type { Step } from '../components/WalkthroughModal';
+import type { TourStep } from '../components/WalkthroughModal';
 
 /**
  * The product tour's steps in the iOS app. Same order and sections as the
@@ -15,8 +15,8 @@ type Key =
   | 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams'
   | 'codes' | 'treatment' | 'patients' | 'dictate' | 'settings' | 'share';
 
-export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): Step[] {
-  const step = (key: Key, rest: Omit<Step, 'title' | 'body'> = {}): Step => ({
+export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): TourStep[] {
+  const step = (key: Key, rest: Omit<TourStep, 'title' | 'body'> = {}): TourStep => ({
     ...rest,
     title: t(`tour.steps.${key}.title`),
     body: t(`tour.steps.${key}.body`),
@@ -24,7 +24,7 @@ export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): St
   return [
     step('welcome'),
     step('sections', { section: 'patient', target: '[data-app-tab="chart"] .ios-navbar__title-button', placement: 'bottom' }),
-    step('patient', { section: 'patient', target: 'input[placeholder="Enter patient name"]', placement: 'bottom' }),
+    step('patient', { section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' }),
     step('species', { section: 'patient', target: '.patient-form__selectors', placement: 'top' }),
     step('grid', { section: 'charting', target: '.dental-grid', placement: 'top' }),
     step('diagrams', { section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'bottom' }),

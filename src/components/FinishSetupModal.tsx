@@ -1,10 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { readString, writeString } from '../utils/storage';
 import { chooseDialog, friendlyError, toast } from './ui/dialogs';
-import { useTranslation } from 'react-i18next';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import './Login.css';
@@ -64,12 +64,12 @@ export const FinishSetupModal: React.FC<{
   profile: UseProfileReturn;
   onDone: () => void;
 }> = ({ need, profile, onDone }) => {
+  const { t } = useTranslation('onboarding');
   const [practiceName, setPracticeName] = React.useState(profile.practiceName);
   const [doctorName, setDoctorName] = React.useState(profile.doctorName || need.suggestedDoctor);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const native = isNativeApp();
-  const { t } = useTranslation();
   const modalRef = useModalFocus(!native);
   // Optional logo — offered alongside the practice name (a solo account's
   // own logo), never to team members, whose logo belongs to the practice.
@@ -91,7 +91,7 @@ export const FinishSetupModal: React.FC<{
   const save = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if ((need.practice && !practiceName.trim()) || (need.doctor && !doctorName.trim())) {
-      setError('Both names are needed — they appear on your charts.');
+      setError(t('finishSetup.namesNeeded'));
       return;
     }
     setBusy(true);
@@ -107,15 +107,15 @@ export const FinishSetupModal: React.FC<{
         try {
           await profile.uploadLogo(logoFile);
         } catch (err) {
-          toast(friendlyError(err, 'Your names are saved, but the logo couldn’t be uploaded — add it later in Practice settings.'), { kind: 'error' });
+          toast(friendlyError(err, t('finishSetup.logoFailed')), { kind: 'error' });
           onDone();
           return;
         }
       }
-      toast('You’re all set.', { kind: 'success' });
+      toast(t('finishSetup.allSet'), { kind: 'success' });
       onDone();
     } catch (err) {
-      setError(friendlyError(err, 'Could not save.'));
+      setError(friendlyError(err, t('finishSetup.saveFailed')));
     } finally {
       setBusy(false);
     }
@@ -123,10 +123,10 @@ export const FinishSetupModal: React.FC<{
 
   const blurb =
     need.practice && need.doctor
-      ? 'Your practice and doctor name appear on every chart you print.'
+      ? t('finishSetup.both')
       : need.practice
-        ? 'Your practice name appears on every chart you print.'
-        : 'Your doctor name appears on every chart you print.';
+        ? t('finishSetup.practiceOnly')
+        : t('finishSetup.doctorOnly');
 
   if (native) {
     // A sheet: Later (or swiping it away) hides it on this device, Save saves.
@@ -136,18 +136,18 @@ export const FinishSetupModal: React.FC<{
       <Sheet
         open
         onClose={later}
-        title="Finish setting up"
-        cancelLabel="Later"
-        doneLabel={busy ? t('ios.sheets.savingBusy') : t('actions.save')}
+        title={t('finishSetup.title')}
+        cancelLabel={t('finishSetup.later')}
+        doneLabel={busy ? t('finishSetup.saving') : t('finishSetup.save')}
         onDone={() => void save()}
         doneDisabled={busy}
         confirmDismiss={async () =>
           !busy &&
           (!dirty ||
             (await chooseDialog({
-              title: t('ios.sheets.discard.title'),
-              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
-              cancelLabel: t('ios.sheets.discard.keep'),
+              title: t('ios.sheets.discard.title', { ns: 'common' }),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard', { ns: 'common' }), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
             })) === 'discard')
         }
       >
@@ -156,7 +156,7 @@ export const FinishSetupModal: React.FC<{
           <div className="ios-form-group">
             {need.practice && (
               <label className="ios-field">
-                <span className="ios-field__label">Practice name</span>
+                <span className="ios-field__label">{t('finishSetup.practiceName')}</span>
                 <input
                   className="ios-field__input"
                   value={practiceName}
@@ -167,12 +167,12 @@ export const FinishSetupModal: React.FC<{
             )}
             {need.doctor && (
               <label className="ios-field">
-                <span className="ios-field__label">Doctor name</span>
+                <span className="ios-field__label">{t('finishSetup.doctorName')}</span>
                 <input
                   className="ios-field__input"
                   value={doctorName}
                   autoComplete="name"
-                  placeholder="e.g. Dr. Jane Smith"
+                  placeholder={t('finishSetup.doctorPlaceholder')}
                   onChange={(e) => setDoctorName(e.target.value)}
                 />
               </label>
@@ -180,19 +180,19 @@ export const FinishSetupModal: React.FC<{
             {offerLogo && (
               <label className="ios-field ios-field--file">
                 {logoPreview && <img src={logoPreview} alt="" className="ios-field__thumb" />}
-                <span className="ios-field__label">{logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}</span>
+                <span className="ios-field__label">{logoFile ? t('finishSetup.logoNamed', { name: logoFile.name }) : t('finishSetup.logoOptional')}</span>
                 <input
                   type="file"
                   className="ios-field__file"
                   accept="image/png,image/jpeg,image/webp"
-                  aria-label="Practice logo (optional)"
+                  aria-label={t('finishSetup.logoOptional')}
                   disabled={busy}
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
                 />
               </label>
             )}
           </div>
-          {offerLogo && <p className="ios-form-footer">Printed at the top of your charts. PNG, JPG or WebP.</p>}
+          {offerLogo && <p className="ios-form-footer">{t('finishSetup.logoHint')}</p>}
           {error && <p className="ios-form-error" role="alert">{error}</p>}
           {/* Return on the keyboard saves, like Save in the bar. */}
           <button type="submit" hidden tabIndex={-1} />
@@ -202,16 +202,16 @@ export const FinishSetupModal: React.FC<{
   }
 
   return (
-    <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label="Finish setting up">
+    <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-label={t('finishSetup.title')}>
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2>Finish setting up</h2>
+          <h2>{t('finishSetup.title')}</h2>
         </header>
         <form className="ai-settings-body" onSubmit={save}>
           <p className="ai-settings-blurb">{blurb}</p>
           {need.practice && (
             <label className="patient-form__label">
-              Practice name
+              {t('finishSetup.practiceName')}
               <input
                 className="patient-form__input"
                 value={practiceName}
@@ -222,12 +222,12 @@ export const FinishSetupModal: React.FC<{
           )}
           {need.doctor && (
             <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-              Doctor name
+              {t('finishSetup.doctorName')}
               <input
                 className="patient-form__input"
                 value={doctorName}
                 autoFocus={!need.practice}
-                placeholder="e.g. Dr. Jane Smith"
+                placeholder={t('finishSetup.doctorPlaceholder')}
                 onChange={(e) => setDoctorName(e.target.value)}
               />
             </label>
@@ -236,25 +236,25 @@ export const FinishSetupModal: React.FC<{
             <div className="finish-setup__logo">
               {logoPreview && <img src={logoPreview} alt="" className="finish-setup__logo-preview" />}
               <label className="login-logo-field">
-                <span>{logoFile ? `Logo: ${logoFile.name}` : 'Practice logo (optional)'}</span>
+                <span>{logoFile ? t('finishSetup.logoNamed', { name: logoFile.name }) : t('finishSetup.logoOptional')}</span>
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  aria-label="Practice logo (optional)"
+                  aria-label={t('finishSetup.logoOptional')}
                   disabled={busy}
                   onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
                 />
               </label>
-              <span className="patient-form__hint">Printed at the top of your charts. PNG, JPG or WebP.</span>
+              <span className="patient-form__hint">{t('finishSetup.logoHint')}</span>
             </div>
           )}
           {error && <div className="login-error settings-msg" role="alert">{error}</div>}
           <div className="practice-logo-actions" style={{ marginTop: '0.9rem' }}>
             <button type="button" className="diagram-view__action" onClick={later} disabled={busy}>
-              Later
+              {t('finishSetup.later')}
             </button>
             <button type="submit" className="entry-grid__button entry-grid__button--topbar" disabled={busy}>
-              {busy ? 'Saving…' : 'Save'}
+              {busy ? t('finishSetup.saving') : t('finishSetup.save')}
             </button>
           </div>
         </form>

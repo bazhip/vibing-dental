@@ -1,0 +1,68 @@
+{
+  "gotIt": "Ho capito",
+  "groups": {
+    "dictation": "Dettatura",
+    "charting": "Odontogramma",
+    "records": "Cartelle",
+    "ownerReport": "Referto per il proprietario",
+    "everyday": "Ogni giorno"
+  },
+  "intro": "Un grande giro di aggiornamenti, la maggior parte nati direttamente dai Suoi suggerimenti — grazie!",
+  "title": "Novità di ToothOps",
+  "dictateAnywhere": {
+    "title": "Detti da qualsiasi pagina",
+    "body": "Il pulsante ora si chiama 🎤 Detta. Descriva i Suoi reperti ovunque si trovi: ognuno finisce al posto giusto."
+  },
+  "finalCheck": {
+    "title": "Più precisa, con un controllo finale",
+    "body": "Riconosce i reperti spezzati da pause e le Sue correzioni. Quando tocca Stop, rilegge l’intera registrazione ed elenca in Da verificare tutto ciò su cui non era sicura."
+  },
+  "phones": {
+    "title": "Migliore sugli smartphone",
+    "body": "La dettatura si apre a schermo intero e mantiene lo schermo acceso mentre parla."
+  },
+  "understandsMore": {
+    "title": "Capisce di più",
+    "body": "«GE 3» per l’ingrossamento gengivale, profondità delle tasche per radice, il blocco mascellare caudale e i reperti radiografici."
+  },
+  "pocketPerRoot": {
+    "title": "Profondità della tasca per radice",
+    "body": "Odontogramma → Personalizza → Una per radice. I denti pluriradicolati hanno un riquadro etichettato per radice (M / D, oppure MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Imposti più denti contemporaneamente",
+    "body": "Faccia clic sui numeri dei denti nella griglia (Maiusc-clic per un intervallo), poi assegni un unico punteggio a tutti."
+  },
+  "makeItYours": {
+    "title": "Su misura per Lei",
+    "body": "Ogni pagina ha un pulsante Personalizza: nasconda colonne, scelga cosa mostrare accanto ai denti, cosa fa il tasto Spazio e altro. Le impostazioni seguono il Suo account su ogni dispositivo."
+  },
+  "radiographicFindings": {
+    "title": "Reperti radiografici",
+    "body": "Un riquadro dedicato nella pagina Immagini. Viene stampato nel PDF sopra il referto del trattamento."
+  },
+  "anesthesia": {
+    "title": "Anestesia",
+    "body": "Aggiunto il blocco mascellare caudale. Nasconda i blocchi che non usa e salvi il Suo anestetico abituale per inserirlo con un tocco."
+  },
+  "skipRecheck": {
+    "title": "Nascondere il campo del controllo",
+    "body": "Non usa i promemoria dei controlli? Paziente → Personalizza → Nascondi il campo Controllo previsto."
+  },
+  "writeWithAi": {
+    "title": "✨ Scrivi con l’IA",
+    "body": "Redige il riepilogo iniziale e i consigli per le cure a casa a partire dalla cartella, usando solo ciò che ha registrato. Lei lo rivede prima di stampare."
+  },
+  "customizeReport": {
+    "title": "Personalizzare il referto",
+    "body": "Ne modifichi layout, testo e lingua direttamente dalla pagina Referto per il proprietario."
+  },
+  "startsWhereLeft": {
+    "title": "Riparte da dove si era fermato",
+    "body": "All’apertura ToothOps mostra Le mie cartelle — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
+  },
+  "sendFeedback": {
+    "title": "Invii un feedback in due tocchi",
+    "body": "Impostazioni → Invia feedback, oppure Feedback nel pannello di dettatura (può allegare la trascrizione). Arriva direttamente a noi."
+  }
+}

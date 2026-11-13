@@ -16,6 +16,7 @@ import {
   formatAnestheticDrug,
 } from '../../types';
 import { ToothGridLayout, TOOTH_DATA_ROWS } from '../../constants/chartLayout';
+import { columnLabel } from '../../constants/columnDefinitions';
 import { PALETTE, ACTIVE } from './styles';
 import {
   PT_PER_IN,
@@ -783,7 +784,8 @@ export function drawToothGrid(
   for (let r = 0; r < TOOTH_DATA_ROWS.length; r++) {
     const dataRow = TOOTH_DATA_ROWS[r];
     const rowIdx = 2 + r;
-    drawCenteredText(page, dataRow.label, x, x + labelW, baselineForRow(rowIdx, labelSize), labelSize, fontBold, PALETTE.muted);
+    // The PDF stays English until it is translated (plan 3).
+    drawCenteredText(page, columnLabel(dataRow.key, 'en'), x, x + labelW, baselineForRow(rowIdx, labelSize), labelSize, fontBold, PALETTE.muted);
     const fieldKey = SUFFIX_TO_FIELD[dataRow.suffix];
     for (let i = 0; i < layout.teeth.length; i++) {
       const tooth = layout.teeth[i];

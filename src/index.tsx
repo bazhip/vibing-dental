@@ -31,6 +31,7 @@ const IosFixture =
   import.meta.env.DEV && isIosPreview() && new URLSearchParams(window.location.search).get('iosFixture')
     ? React.lazy(() => import('./ios/SheetFixtures'))
     : null;
+import { bootLanguage } from './i18n/bootLanguage';
 
 // react-data-grid leans on two features older browsers lack: ES2025 iterator
 // helpers (Chrome 122 / Firefox 131 / Safari 18.4) for rendering, and the `&`
@@ -69,7 +70,7 @@ const container = document.getElementById('root');
 if (!container) throw new Error('Failed to find the root element');
 
 const root = createRoot(container);
-root.render(
+const render = () => root.render(
   <React.StrictMode>
     <ErrorBoundary>
       {IosGallery ? (
@@ -92,3 +93,9 @@ root.render(
     <Analytics />
   </React.StrictMode>
 );
+
+// Non-English users: wait (briefly) for their catalogs so the first paint is
+// already in their language. English renders at once.
+const booting = bootLanguage();
+if (booting) void booting.then(render);
+else render();

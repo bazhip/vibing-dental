@@ -51,11 +51,13 @@ export function checkCatalogs(c: Catalogs, m: Meta): Problem[] {
       }
     }
   }
-  // Translations for namespaces English does not have are extra.
+  // Stray files are extra: a namespace English does not have, a language the
+  // namespace is not translated into (pt/common.json), or an unknown language (ja/).
   for (const [lng, nss] of Object.entries(c)) {
     if (lng === 'en') continue;
+    if (Object.keys(nss).length === 0) problems.push({ lng, key: '*', kind: 'extra' });
     for (const [ns, tr] of Object.entries(nss)) {
-      if (ns in enNs) continue;
+      if (ns in enNs && languagesFor(ns).includes(lng)) continue;
       for (const key of Object.keys(tr)) problems.push({ lng, key: `${ns}:${key}`, kind: 'extra' });
     }
   }

@@ -20,6 +20,10 @@ import { parseDicom, readEncapsulatedImageFrame, createJPEGBasicOffsetTable } fr
 import type { DataSet } from 'dicom-parser';
 
 import { DicomError } from './dicomSniff';
+import i18n from '../i18n';
+
+/** Messages shown to the user, in the active language. */
+const tm = () => i18n.getFixedT(null, 'media');
 
 export { DicomError };
 
@@ -71,7 +75,7 @@ export function grayscaleToRgba(p: GrayscaleParams, bytes: Uint8Array): Uint8Cla
   const n = p.width * p.height;
   const bytesPer = p.bitsAllocated / 8;
   if (bytes.byteLength < n * bytesPer) {
-    throw new DicomError('This DICOM file is truncated — the image data is incomplete.');
+    throw new DicomError(tm()('dicom.truncated'));
   }
   const read = sampleReader(p, bytes);
   const values = new Float64Array(n);
@@ -121,7 +125,7 @@ export function rgbToRgba(
 ): Uint8ClampedArray {
   const n = width * height;
   if (bytes.byteLength < n * 3) {
-    throw new DicomError('This DICOM file is truncated — the image data is incomplete.');
+    throw new DicomError(tm()('dicom.truncated'));
   }
   const out = new Uint8ClampedArray(n * 4);
   for (let i = 0; i < n; i++) {
@@ -146,30 +150,26 @@ function firstFloat(ds: DataSet, tag: string): number | undefined {
   return v === undefined || Number.isNaN(v) ? undefined : v;
 }
 
-const UNSUPPORTED =
-  "This DICOM file uses a compression format the browser can't open. " +
-  'Export it from your imaging software as uncompressed DICOM (or as a JPEG/PNG) and try again.';
-
 /** Parse a DICOM file and decode its first frame. Throws DicomError. */
 export function decodeDicom(bytes: Uint8Array): DecodedDicom {
   let ds: DataSet;
   try {
     ds = parseDicom(bytes);
   } catch {
-    throw new DicomError("Couldn't read that DICOM file — it may be damaged or not a DICOM image.");
+    throw new DicomError(tm()('dicom.unreadable'));
   }
 
   const pixel = ds.elements.x7fe00010;
-  if (!pixel) throw new DicomError('That DICOM file has no image in it.');
+  if (!pixel) throw new DicomError(tm()('dicom.noImage'));
 
   const ts = ds.string('x00020010')?.trim() ?? TS.implicitLE;
   const width = ds.uint16('x00280011') ?? 0;
   const height = ds.uint16('x00280010') ?? 0;
-  if (!width || !height) throw new DicomError('That DICOM file has no image dimensions.');
+  if (!width || !height) throw new DicomError(tm()('dicom.noDimensions'));
 
   if (ts === TS.jpegBaseline) {
     const fragments = pixel.fragments;
-    if (!fragments || fragments.length === 0) throw new DicomError(UNSUPPORTED);
+    if (!fragments || fragments.length === 0) throw new DicomError(tm()('dicom.unsupported'));
     const table =
       pixel.basicOffsetTable && pixel.basicOffsetTable.length
         ? pixel.basicOffsetTable
@@ -178,7 +178,7 @@ export function decodeDicom(bytes: Uint8Array): DecodedDicom {
     return { kind: 'jpeg', bytes: new Uint8Array(frame) };
   }
   if (ts !== TS.implicitLE && ts !== TS.explicitLE && ts !== TS.explicitBE) {
-    throw new DicomError(UNSUPPORTED);
+    throw new DicomError(tm()('dicom.unsupported'));
   }
 
   const samples = ds.uint16('x00280002') ?? 1;
@@ -188,20 +188,20 @@ export function decodeDicom(bytes: Uint8Array): DecodedDicom {
   const frameBytes = width * height * samples * bytesPerSample;
   const start = pixel.dataOffset;
   if (start + frameBytes > bytes.byteLength) {
-    throw new DicomError('This DICOM file is truncated — the image data is incomplete.');
+    throw new DicomError(tm()('dicom.truncated'));
   }
   const frame = bytes.subarray(start, start + frameBytes);
 
   if (samples === 3) {
-    if (bitsAllocated !== 8 || photometric !== 'RGB') throw new DicomError(UNSUPPORTED);
+    if (bitsAllocated !== 8 || photometric !== 'RGB') throw new DicomError(tm()('dicom.unsupported'));
     const planar = (ds.uint16('x00280006') ?? 0) === 1;
     return { kind: 'rgba', width, height, rgba: rgbToRgba(width, height, planar, frame) };
   }
   if (samples !== 1 || (bitsAllocated !== 8 && bitsAllocated !== 16)) {
-    throw new DicomError(UNSUPPORTED);
+    throw new DicomError(tm()('dicom.unsupported'));
   }
   if (photometric !== 'MONOCHROME1' && photometric !== 'MONOCHROME2') {
-    throw new DicomError(UNSUPPORTED);
+    throw new DicomError(tm()('dicom.unsupported'));
   }
 
   const rgba = grayscaleToRgba(
@@ -234,9 +234,9 @@ export async function renderDicomPreview(bytes: Uint8Array): Promise<Blob> {
   canvas.width = decoded.width;
   canvas.height = decoded.height;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new DicomError("Your browser couldn't render that DICOM image.");
+  if (!ctx) throw new DicomError(tm()('dicom.render'));
   ctx.putImageData(new ImageData(decoded.rgba as Uint8ClampedArray<ArrayBuffer>, decoded.width, decoded.height), 0, 0);
   const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/png'));
-  if (!blob) throw new DicomError("Your browser couldn't render that DICOM image.");
+  if (!blob) throw new DicomError(tm()('dicom.render'));
   return blob;
 }

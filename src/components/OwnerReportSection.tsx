@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast, confirmDialog } from './ui/dialogs';
 import { draftOwnerReport } from '../utils/ownerReportAi';
 import { ensureAiConsent } from '../native/aiConsent';
@@ -11,7 +12,6 @@ import {
   templateIntro,
 } from '../utils/ownerReport';
 import type { OwnerReportContext } from '../utils/ownerReportConfig';
-import { LOCALE_LABELS } from '../utils/ownerReportI18n';
 
 interface OwnerReportSectionProps {
   /** Live chart snapshot — the generated report content derives from it. */
@@ -48,6 +48,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   aiEnabled = false,
   onCustomize,
 }) => {
+  const { t } = useTranslation('reportui');
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
   // Prefills follow the chosen template (its intro / tips / language).
   const template = templateForSnapshot(snapshot, context);
@@ -56,7 +57,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   const homecareDefault = templateHomecareTips(template, values).join('\n');
   const templates = context?.config?.templates ?? [];
   const defaultTemplateId = context?.config?.defaultTemplateId;
-  const chosenKnown = !!overrides.templateId && templates.some((t) => t.id === overrides.templateId);
+  const chosenKnown = !!overrides.templateId && templates.some((tpl) => tpl.id === overrides.templateId);
 
   // '' is a deliberate customization ("print nothing here"), so edited
   // state is tracked by presence, not truthiness.
@@ -82,9 +83,9 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   };
   const writeDraft = async () => {
     if ((introEdited || homecareEdited) && !(await confirmDialog({
-      title: 'Replace your edited text?',
-      message: 'The AI draft replaces the opening summary and home care advice you edited. You can undo right after.',
-      confirmLabel: 'Write with AI',
+      title: t('section.replaceTitle'),
+      message: t('section.replaceMessage'),
+      confirmLabel: t('section.writeWithAi'),
     }))) return;
     // App only: one-time consent before chart text first goes to Anthropic.
     if (!(await ensureAiConsent())) return;
@@ -94,10 +95,10 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
       const before = { intro: overrides.intro ?? null, homecare: overrides.homecare ?? null };
       if (draft.intro) onOverrideChange('intro', draft.intro);
       if (draft.homecare) onOverrideChange('homecare', draft.homecare);
-      toast('Draft written — please read it over before printing.', {
+      toast(t('section.drafted'), {
         kind: 'success',
         action: {
-          label: 'Undo',
+          label: t('section.undo'),
           onClick: () => {
             onOverrideChange('intro', before.intro);
             onOverrideChange('homecare', before.homecare);
@@ -105,7 +106,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         },
       });
     } catch (err) {
-      toast(`Couldn’t write the draft. ${err instanceof Error ? err.message : ''}`.trim(), { kind: 'error' });
+      toast(t('section.draftFailed', { reason: err instanceof Error ? err.message : '' }).trim(), { kind: 'error' });
     } finally {
       setDrafting(false);
     }
@@ -132,13 +133,13 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
               // the wording back for a few seconds.
               const previous = value;
               onReset();
-              toast(`${label} reset to the generated text.`, {
+              toast(t('section.resetToast', { label }), {
                 kind: 'success',
-                action: { label: 'Undo', onClick: () => onChange(previous) },
+                action: { label: t('section.undo'), onClick: () => onChange(previous) },
               });
             }}
           >
-            Reset to generated
+            {t('section.reset')}
           </button>
         )}
       </span>
@@ -152,14 +153,43 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
     </label>
   );
 
+  const summaryBlock = block(
+    t('section.summaryLabel'),
+    t('section.summaryHint'),
+    overrides.intro ?? introDefault,
+    introEdited,
+    3,
+    (value) => onOverrideChange('intro', value),
+    () => onOverrideChange('intro', null)
+  );
+
+  const noteBlock = block(
+    t('section.noteLabel'),
+    t('section.noteHint'),
+    overrides.extraNotes ?? '',
+    false,
+    3,
+    (value) => onOverrideChange('extraNotes', value.trim() === '' ? null : value)
+  );
+
+  const homecareBlock = block(
+    t('section.homecareLabel'),
+    t('section.homecareHint'),
+    overrides.homecare ?? homecareDefault,
+    homecareEdited,
+    4,
+    (value) => onOverrideChange('homecare', value),
+    () => onOverrideChange('homecare', null)
+  );
+
   return (
     <div className="patient-form">
       <div className="patient-form__header">
-        <h2 className="patient-form__section-title">Owner Report</h2>
+        <h2 className="patient-form__section-title">{t('section.title')}</h2>
         <div className="owner-report__actions">
           {onCustomize && (
-            <button type="button" className="diagram-view__action" onClick={onCustomize} title="Change the report's layout, wording, language and sections">
-              Customize
+            <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('section.customizeTitle')}>
+              {t('section.customize')}
             </button>
           )}
           {aiEnabled && !readOnly && (
@@ -168,111 +198,81 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
               className="diagram-view__action owner-report__ai"
               onClick={writeWithAi}
               disabled={drafting}
-              title="Draft the opening summary and home care advice from this chart — you review before printing"
+              title={t('section.writeTitle')}
             >
-              {drafting ? 'Writing…' : '✨ Write with AI'}
+              {drafting ? t('section.writing') : t('section.writeWithAi')}
             </button>
           )}
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onPreview}>
-            Preview owner report
+            {t('section.previewButton')}
           </button>
         </div>
       </div>
 
       <p className="patient-form__hint">
-        A plain-English take-home version of this chart. The findings below
-        are generated automatically as you chart; the text blocks are
-        prefilled and editable, so you can put it together properly before
-        printing. Tag photos as Before/After in the Images section to
-        include them.
+        {t('section.intro')}
       </p>
 
       <fieldset className="sidebar-layout__fieldset" disabled={readOnly}>
       {templates.length > 1 && (
         <label className="patient-form__label owner-report__block">
-          Report template
+          {t('section.templateLabel')}
           <select
             className="patient-form__input"
             value={chosenKnown ? overrides.templateId : ''}
             onChange={(e) => onOverrideChange('templateId', e.target.value || null)}
           >
             <option value="">
-              Practice default ({templates.find((t) => t.id === defaultTemplateId)?.name ?? templates[0].name})
+              {t('section.practiceDefault', { name: (templates.find((tpl) => tpl.id === defaultTemplateId) ?? templates[0]).name })}
             </option>
-            {templates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-                {t.language !== 'en' ? ` · ${LOCALE_LABELS[t.language]}` : ''}
+            {templates.map((tpl) => (
+              <option key={tpl.id} value={tpl.id}>
+                {tpl.language !== 'en'
+                  ? t('section.templateOption', { name: tpl.name, language: t(`languages.${tpl.language}`) })
+                  : tpl.name}
               </option>
             ))}
           </select>
-          <span className="patient-form__hint">
-            Sets the layout, language, and default wording. Practice owners
-            manage templates in Practice settings.
-          </span>
+          <span className="patient-form__hint">{t('section.templateHint')}</span>
         </label>
       )}
 
-      {block(
-        'Opening summary',
-        'Prints under the header, before the findings.',
-        overrides.intro ?? introDefault,
-        introEdited,
-        3,
-        (value) => onOverrideChange('intro', value),
-        () => onOverrideChange('intro', null)
-      )}
+      {summaryBlock}
 
-      {block(
-        'A note from your veterinary team (optional)',
-        'Printed as its own section — anything specific to this patient.',
-        overrides.extraNotes ?? '',
-        false,
-        3,
-        (value) => onOverrideChange('extraNotes', value.trim() === '' ? null : value)
-      )}
+      {noteBlock}
 
-      {block(
-        'Home care advice',
-        'One tip per line — each prints as a bullet.',
-        overrides.homecare ?? homecareDefault,
-        homecareEdited,
-        4,
-        (value) => onOverrideChange('homecare', value),
-        () => onOverrideChange('homecare', null)
-      )}
+      {homecareBlock}
 
       <div className="owner-report__preview">
-        <h3 className="ai-settings-subhead">What will print (generated from the chart)</h3>
+        <h3 className="ai-settings-subhead">{t('section.printTitle')}</h3>
         {model.extracted.length > 0 && (
           <p className="owner-report__preview-line">
-            <strong>Removed this visit:</strong> {model.extracted.join(', ')}
+            <strong>{t('section.removedThisVisit')}</strong> {model.extracted.join(', ')}
           </p>
         )}
-        {model.teeth.filter((t) => t.notes.length > 0).length > 0 ? (
+        {model.teeth.filter((tooth) => tooth.notes.length > 0).length > 0 ? (
           <ul className="owner-report__preview-list">
-            {model.teeth.filter((t) => t.notes.length > 0).map((tooth) => (
+            {model.teeth.filter((tooth) => tooth.notes.length > 0).map((tooth) => (
               <li key={tooth.triadan}>
                 <strong>{tooth.layName}</strong>
-                {tooth.extracted ? ' — removed today' : ''}: {tooth.notes.join('; ')}
+                {tooth.extracted && <>{' '}{t('section.removedToday')}</>}: {tooth.notes.join('; ')}
               </li>
             ))}
           </ul>
         ) : (
           <p className="owner-report__preview-line">
-            No per-tooth findings recorded yet — the report will say so (in a
-            good way).
+            {t('section.noFindings')}
           </p>
         )}
         {model.examNotes.length > 0 && (
           <p className="owner-report__preview-line">
-            <strong>Exam notes:</strong>{' '}
+            <strong>{t('section.examNotes')}</strong>{' '}
             {model.examNotes.map((n) => `${n.area}${n.comment ? ` (${n.comment})` : ''}`).join(' · ')}
           </p>
         )}
         {model.recallDate && (
           <p className="owner-report__preview-line">
-            <strong>Recommended recheck:</strong> {model.recallDate}
+            <strong>{t('section.recheck')}</strong> {model.recallDate}
           </p>
         )}
       </div>

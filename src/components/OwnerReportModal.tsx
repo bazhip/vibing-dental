@@ -1,9 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { PdfLinkPanel, useInAppPdfLink } from './PdfLinkPanel';
 import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
-import i18n from '../i18n';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
 import { toast } from './ui/dialogs';
@@ -15,6 +16,9 @@ import { buildOwnerReportModel, hasSection, teethWithFindings } from '../utils/o
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 import { fetchAsJpeg } from '../utils/imageJpeg';
 import { buildOwnerReportPdfBytes, OwnerReportBranding, OwnerReportPhoto } from '../utils/ownerReportPdf';
+
+// SF Symbol names (not text).
+const SQUARE_AND_ARROW_UP_ICON = 'square-and-arrow-up';
 
 interface OwnerReportModalProps {
   open: boolean;
@@ -64,6 +68,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   species,
   config,
 }) => {
+  const { t } = useTranslation('reportui');
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
@@ -147,7 +152,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       } catch (err) {
         if (!cancelled) {
           console.error(err);
-          setError("Couldn't build the owner report. Retry in a moment.");
+          setError(i18n.t('modal.buildFailed', { ns: 'reportui' }));
         }
       } finally {
         if (!cancelled) setGenerating(false);
@@ -187,18 +192,18 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         <div className="pdf-preview-body">
           <aside className="pdf-preview-styles">
             <ul className="pdf-preview-notes">
-              <li>Findings written in plain English — no codes or jargon.</li>
+              <li>{t('modal.noteFindings')}</li>
               <li>
                 {!cloudActive
-                  ? 'Photos need a signed-in account.'
+                  ? t('modal.photosNeedAccount')
                   : taggedCount > 0
-                    ? `${taggedCount} before/after ${taggedCount === 1 ? 'photo' : 'photos'} included.`
-                    : 'Tag photos Before/After in Images to include them.'}
+                    ? t('modal.photosIncluded', { count: taggedCount })
+                    : t('modal.photosTag')}
               </li>
             </ul>
             {onEditWording && (
               <button type="button" className="pdf-preview-secondary" onClick={onEditWording}>
-                Edit the wording
+                {t('modal.editWording')}
               </button>
             )}
             <button
@@ -209,25 +214,25 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
             >
               {isNativeApp() ? (
                 <>
-                  <Icon name="square-and-arrow-up" size={17} />
-                  {i18n.t('common:ios.sheets.documents.share')}
+                  <Icon name={SQUARE_AND_ARROW_UP_ICON} size={17} />
+                  {t('ios.sheets.documents.share', { ns: 'common' })}
                 </>
               ) : (
-                'Download PDF'
+                t('modal.download')
               )}
             </button>
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
           </aside>
           <div className="pdf-preview-iframe-wrap">
-            {generating && <div className="pdf-preview-status">Generating the owner report…</div>}
+            {generating && <div className="pdf-preview-status">{t('modal.generating')}</div>}
             {error && !generating && (
               <div className="pdf-preview-status pdf-preview-status--error">{error}</div>
             )}
             {pdfUrl && !error && (canShowPdfInline() ? (
-              <iframe src={pdfUrl} title="Owner report preview" className="pdf-preview-iframe" />
+              <iframe src={pdfUrl} title={t('modal.previewTitle')} className="pdf-preview-iframe" />
             ) : pdfBlobRef.current && (
-              <PdfPagesPreview blob={pdfBlobRef.current} title="Owner report preview" />
+              <PdfPagesPreview blob={pdfBlobRef.current} title={t('modal.previewTitle')} />
             ))}
           </div>
         </div>
@@ -246,10 +251,10 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header">
           <div>
-            <h2 id="owner-report-title">Owner report</h2>
-            <p>The visit in plain English, for the owner to take home.</p>
+            <h2 id="owner-report-title">{t('modal.title')}</h2>
+            <p>{t('modal.subtitle')}</p>
           </div>
-          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close owner report">
+          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('modal.close')}>
             ×
           </button>
         </header>

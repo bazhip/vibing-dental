@@ -1,8 +1,9 @@
-// Opt-in literal-string lint: only files listed in src/i18n/extracted.json
-// (text fully moved into the catalogs) are checked. No style rules are enabled;
-// this project deliberately has no style linter.
+// Literal-string lint over every source file in src/i18n/lint-scope.json
+// (`files`), except its `exempt` entries, each of which states a reason. New
+// files are therefore linted by default. No style rules are enabled; this
+// project deliberately has no style linter.
 //
-// WHAT THE GUARANTEE COVERS (for a listed file, no more):
+// WHAT THE GUARANTEE COVERS (for a linted file, no more):
 //   1. JSX text (i18next/no-literal-string, mode 'jsx-only').
 //   2. The JSX attributes that carry text (title, placeholder, aria-label,
 //      alt, value on native tags; label and any other non-excluded attribute
@@ -12,11 +13,12 @@
 //      confirm / prompt, or given as title / message / label / confirmLabel /
 //      cancelLabel / placeholder in the options object of confirmDialog /
 //      promptDialog.
+//   4. No `t(...) + x` / `x + t(...)` concatenation (no-restricted-syntax).
 // NOT caught: any other non-JSX string, e.g. a const or a ternary of literals
 // that is rendered or passed on later. Those need human review.
 const tseslint = require('typescript-eslint');
 const i18next = require('eslint-plugin-i18next');
-const extracted = require('./src/i18n/extracted.json');
+const lintScope = require('./src/i18n/lint-scope.json');
 
 const HAS_LETTER = '/[A-Za-z\\u00C0-\\u024F]/';
 const TEXT_CALLS = 'toast|friendlyError|alert|confirm|prompt';
@@ -26,37 +28,30 @@ const LITERAL = `Literal[value=${HAS_LETTER}]`;
 const TEMPLATE = `TemplateLiteral:has(TemplateElement[value.raw=${HAS_LETTER}])`;
 const MESSAGE = 'User-facing text must come from t()';
 const restrict = (selector) => ({ selector, message: MESSAGE });
+const T_CALL = "CallExpression[callee.name='t']";
+const T_METHOD = "CallExpression[callee.property.name='t']";
 
 // Source files carry `// eslint-disable-next-line react-hooks/exhaustive-deps`
 // from before this project had a linter. The plugin isn't installed (and its
 // rules aren't wanted), so register an inert rule of that name so those
 // directives resolve instead of erroring.
 const reactHooksStub = { rules: { 'exhaustive-deps': { meta: { schema: [] }, create: () => ({}) } } };
+// Same for the `@typescript-eslint/no-explicit-any` directives (typescript-eslint's rules aren't enabled here).
+const tsEslintStub = { rules: { 'no-explicit-any': { meta: { schema: [] }, create: () => ({}) } } };
 
 module.exports = [
   {
-    // Test files and operator-only surfaces are exempt.
-    ignores: [
-      'build/**',
-      'docs/**',
-      'public/**',
-      '.superpowers/**',
-      '.claude/**',
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      'src/components/AdminPanel.tsx',
-      'src/components/AdminChartList.tsx',
-      'src/components/AdminChartViewer.tsx',
-    ],
+    // Exempt files (tests, operator-only surfaces, …): see lint-scope.json for why.
+    ignores: ['build/**', 'docs/**', 'public/**', '.superpowers/**', '.claude/**', ...lintScope.exempt.map((e) => e.pattern)],
   },
   {
-    files: extracted,
+    files: lintScope.files,
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     linterOptions: { reportUnusedDisableDirectives: 'off' },
-    plugins: { i18next, 'react-hooks': reactHooksStub },
+    plugins: { i18next, 'react-hooks': reactHooksStub, '@typescript-eslint': tsEslintStub },
     rules: {
       'i18next/no-literal-string': [
         'error',
@@ -65,7 +60,13 @@ module.exports = [
           // Attributes listed here are skipped; everything else (title,
           // placeholder, aria-label, alt, label) is checked.
           'jsx-attributes': {
-            exclude: ['className', 'data-testid', 'key', 'id', 'type', 'role', 'href'],
+            exclude: [
+              'className', 'data-testid', 'key', 'id', 'type', 'role', 'href',
+              // Component props that carry a mode or a callback, never text. A literal
+              // inside a handler still can't reach the user unnoticed: toast, friendlyError
+              // and the dialog helpers are checked by no-restricted-syntax below.
+              /^on[A-Z]/, 'cloud', 'kind', 'markMode', 'defaultTool', 'mode', 'initialAuth', 'tool', 'rowClass',
+            ],
           },
           // Only strings that contain a letter count as text.
           words: { exclude: [/^[^\p{L}]*$/u] },
@@ -80,6 +81,12 @@ module.exports = [
             `CallExpression[callee.name=/^(${DIALOG_CALLS})$/] > ObjectExpression > Property[key.name=/^(${DIALOG_TEXT_PROPS})$/] > ${text}`,
           ),
         ]),
+        // Sentences assembled from pieces can't be reordered by translators; use
+        // one key with {{placeholders}} instead.
+        ...[T_CALL, T_METHOD].map((call) => ({
+          selector: `BinaryExpression[operator='+'] > ${call}`,
+          message: 'Don’t concatenate translated text; use one key with {{placeholders}}',
+        })),
       ],
     },
   },

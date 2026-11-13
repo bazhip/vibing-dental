@@ -1,11 +1,15 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { friendlyError } from './ui/dialogs';
-import { useTranslation } from 'react-i18next';
 import { isNativeApp } from '../native/platform';
-import { Sheet } from '../ios/Sheet';
+import { Sheet, type SheetDetent } from '../ios/Sheet';
 import { List, ListSection, SwitchRow } from '../ios/List';
+
+/** The sheet opens at half height and can be pulled to full. */
+const HALF_OR_FULL: SheetDetent[] = ['medium', 'large'];
 
 interface JoinPracticeModalProps {
   token: string;
@@ -14,7 +18,7 @@ interface JoinPracticeModalProps {
 }
 
 async function callTeamApi<T>(body: Record<string, unknown>): Promise<T> {
-  if (!supabase) throw new Error('Cloud is not configured.');
+  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
   const { data, error } = await supabase.functions.invoke('team-api', { body });
   if (error) {
     let msg = error.message;
@@ -36,9 +40,10 @@ async function callTeamApi<T>(body: Record<string, unknown>): Promise<T> {
  */
 export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onDone }) => {
   const native = isNativeApp();
-  const { t } = useTranslation();
+  const { t } = useTranslation('onboarding');
   const ref = useModalFocus<HTMLDivElement>(!native);
-  const [practiceName, setPracticeName] = React.useState<string | null>(null);
+  const [loaded, setLoaded] = React.useState(false);
+  const [practiceName, setPracticeName] = React.useState('');
   const [alreadyMember, setAlreadyMember] = React.useState(false);
   const [shareExisting, setShareExisting] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -49,7 +54,8 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
     callTeamApi<{ practiceName: string; alreadyMember: boolean }>({ action: 'accept_invite', token, preview: true })
       .then((r) => {
         if (cancelled) return;
-        setPracticeName(r.practiceName || 'this practice');
+        setPracticeName(r.practiceName);
+        setLoaded(true);
         setAlreadyMember(r.alreadyMember);
       })
       .catch((e) => { if (!cancelled) setError(friendlyError(e)); });
@@ -68,29 +74,29 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
     }
   };
 
+  const name = practiceName || t('join.thisPractice');
+
   if (native) {
     // A sheet: Not now (or swiping it away) declines, Join accepts.
-    const canJoin = !!practiceName && !alreadyMember && !error;
+    const canJoin = loaded && !alreadyMember && !error;
     return (
       <Sheet
         open
         onClose={() => onDone(false)}
-        title={practiceName ? `Join ${practiceName}?` : 'Practice invitation'}
-        cancelLabel={alreadyMember || error ? t('actions.close') : 'Not now'}
-        doneLabel={canJoin ? (busy ? t('ios.sheets.joiningBusy') : t('ios.sheets.join.join')) : undefined}
+        title={loaded ? t('join.title', { practice: name }) : t('join.invitation')}
+        cancelLabel={alreadyMember || error ? t('actions.close', { ns: 'common' }) : t('join.notNow')}
+        doneLabel={canJoin ? (busy ? t('join.joining') : t('ios.sheets.join.join', { ns: 'common' })) : undefined}
         onDone={canJoin ? () => void accept() : undefined}
         doneDisabled={busy}
         confirmDismiss={() => !busy}
-        detents={['medium', 'large']}
+        detents={HALF_OR_FULL}
       >
         <div className="ios-form">
-          {!practiceName && !error && <p className="ios-form-text">Checking your invitation…</p>}
-          {practiceName && alreadyMember && <p className="ios-form-text">You’re already a member of {practiceName}.</p>}
+          {!loaded && !error && <p className="ios-form-text">{t('join.checking')}</p>}
+          {loaded && alreadyMember && <p className="ios-form-text">{t('join.alreadyMember', { practice: name })}</p>}
           {canJoin && (
             <p className="ios-form-text">
-              You’ve been invited to join <strong>{practiceName}</strong> on ToothOps. Members share the
-              practice’s charts, report templates and recheck list, and new charts you save are shared
-              with the team.
+              <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
             </p>
           )}
           {error && <p className="ios-form-error" role="alert">{error}</p>}
@@ -99,7 +105,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
           <List>
             <ListSection>
               <SwitchRow
-                title="Also share the charts I’ve already made"
+                title={t('join.shareExisting')}
                 checked={shareExisting}
                 onChange={setShareExisting}
                 disabled={busy}
@@ -115,21 +121,19 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
     <div className="ai-settings-overlay" role="dialog" aria-modal="true" aria-labelledby="join-title">
       <div className="ai-settings-modal" ref={ref} tabIndex={-1} style={{ maxWidth: '28rem' }}>
         <header className="ai-settings-header">
-          <h2 id="join-title">{practiceName ? `Join ${practiceName}?` : 'Practice invitation'}</h2>
+          <h2 id="join-title">{loaded ? t('join.title', { practice: name }) : t('join.invitation')}</h2>
         </header>
         <div className="ai-settings-body">
-          {!practiceName && !error && <p>Checking your invitation…</p>}
-          {practiceName && alreadyMember && <p>You’re already a member of {practiceName}.</p>}
-          {practiceName && !alreadyMember && (
+          {!loaded && !error && <p>{t('join.checking')}</p>}
+          {loaded && alreadyMember && <p>{t('join.alreadyMember', { practice: name })}</p>}
+          {loaded && !alreadyMember && (
             <>
               <p>
-                You’ve been invited to join <strong>{practiceName}</strong> on ToothOps. Members share the
-                practice’s charts, report templates and recheck list, and new charts you save are shared
-                with the team.
+                <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
               </p>
               <label className="dental-grid__option" style={{ marginTop: '0.75rem' }}>
                 <input type="checkbox" checked={shareExisting} onChange={(e) => setShareExisting(e.target.checked)} />
-                Also share the charts I’ve already made
+                {t('join.shareExisting')}
               </label>
             </>
           )}
@@ -137,11 +141,11 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
         </div>
         <footer className="ai-settings-footer">
           <button type="button" className="diagram-view__action" onClick={() => onDone(false)} disabled={busy}>
-            {alreadyMember || error ? 'Close' : 'Not now'}
+            {alreadyMember || error ? t('actions.close', { ns: 'common' }) : t('join.notNow')}
           </button>
-          {practiceName && !alreadyMember && !error && (
+          {loaded && !alreadyMember && !error && (
             <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={accept} disabled={busy}>
-              {busy ? 'Joining…' : `Join ${practiceName}`}
+              {busy ? t('join.joining') : t('join.joinButton', { practice: name })}
             </button>
           )}
         </footer>

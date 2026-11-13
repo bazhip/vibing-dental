@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { promptDialog, toast, friendlyError } from './ui/dialogs';
 import { useReportTemplates } from '../hooks/useReportTemplates';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
@@ -19,6 +20,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   cloudActive = true,
   practiceId = '',
 }) => {
+  const { t } = useTranslation('forms');
   const store = useReportTemplates(practiceId);
   const templatesOn = store.enabled && cloudActive;
   const [manageOpen, setManageOpen] = React.useState(false);
@@ -27,39 +29,39 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   // visit often stacks several procedures, and appending can never
   // destroy typed text.
   const insertTemplate = (id: string) => {
-    const t = store.templates.find((x) => x.id === id);
-    if (!t) return;
+    const tpl = store.templates.find((x) => x.id === id);
+    if (!tpl) return;
     const existing = value.trimEnd();
-    onChange(existing ? `${existing}\n\n${t.body}` : t.body);
+    onChange(existing ? `${existing}\n\n${tpl.body}` : tpl.body);
   };
 
   const saveCurrentAsTemplate = async () => {
     const name = await promptDialog({
-      title: 'Save as template',
-      message: 'Saves this report text so you can insert it into future charts.',
-      label: 'Template name',
-      placeholder: 'e.g. Routine cleaning',
-      confirmLabel: 'Save template',
-      validate: (v) => (v.trim() ? null : 'Give the template a name.'),
+      title: t('report.dialog.title'),
+      message: t('report.dialog.message'),
+      label: t('report.dialog.label'),
+      placeholder: t('report.dialog.placeholder'),
+      confirmLabel: t('report.dialog.confirm'),
+      validate: (v) => (v.trim() ? null : t('report.dialog.nameRequired')),
     });
     if (name === null) return;
     try {
       await store.create(name.trim(), value);
-      toast(`Template “${name.trim()}” saved.`, { kind: 'success' });
+      toast(t('report.saved', { name: name.trim() }), { kind: 'success' });
     } catch (e) {
-      toast(`Couldn’t save the template. ${friendlyError(e)}`, { kind: 'error' });
+      toast(t('report.saveFailed', { error: friendlyError(e) }), { kind: 'error' });
     }
   };
 
   return (
     <div className="patient-form">
       <div className="patient-form__header surgery-report__header">
-        <h2 className="patient-form__section-title">Treatment report</h2>
+        <h2 className="patient-form__section-title">{t('report.title')}</h2>
         {templatesOn && (
           <div className="surgery-report__template-bar">
             <select
               className="surgery-report__template-select"
-              aria-label="Insert a report template"
+              aria-label={t('report.insertAria')}
               value=""
               disabled={!store.loaded || store.templates.length === 0}
               onChange={(e) => {
@@ -69,14 +71,14 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
             >
               <option value="" disabled>
                 {!store.loaded
-                  ? 'Loading templates…'
+                  ? t('report.loading')
                   : store.templates.length === 0
-                  ? 'No templates yet'
-                  : 'Insert template…'}
+                  ? t('report.none')
+                  : t('report.insert')}
               </option>
-              {store.templates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name.trim() || 'Untitled'}
+              {store.templates.map((tpl) => (
+                <option key={tpl.id} value={tpl.id}>
+                  {tpl.name.trim() || t('report.untitled')}
                 </option>
               ))}
             </select>
@@ -85,24 +87,24 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
               className="diagram-view__action"
               onClick={saveCurrentAsTemplate}
               disabled={!value.trim()}
-              title="Save the current report text as a reusable template"
+              title={t('report.saveTitle')}
             >
-              Save as template
+              {t('report.save')}
             </button>
             <button
               type="button"
               className="diagram-view__action"
               onClick={() => setManageOpen(true)}
             >
-              Edit templates
+              {t('report.edit')}
             </button>
           </div>
         )}
       </div>
       <textarea
         className="patient-form__textarea surgery-report__textarea"
-        aria-label="Treatment report"
-        placeholder="Treatment and surgery details…"
+        aria-label={t('report.textareaAria')}
+        placeholder={t('report.placeholder')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />

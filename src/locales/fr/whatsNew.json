@@ -1,0 +1,68 @@
+{
+  "gotIt": "Compris",
+  "groups": {
+    "dictation": "Dictée",
+    "charting": "Schéma dentaire",
+    "records": "Dossiers",
+    "ownerReport": "Compte rendu pour le propriétaire",
+    "everyday": "Au quotidien"
+  },
+  "intro": "Une grande série de mises à jour, la plupart issues directement de vos retours — merci !",
+  "title": "Nouveautés de ToothOps",
+  "dictateAnywhere": {
+    "title": "Dictez depuis n’importe quelle page",
+    "body": "Le bouton s’appelle désormais 🎤 Dicter. Énoncez vos observations où que vous soyez : chacune arrive au bon endroit."
+  },
+  "finalCheck": {
+    "title": "Plus précise, avec une vérification finale",
+    "body": "Elle repère les observations réparties sur plusieurs pauses ainsi que vos corrections. Lorsque vous touchez Arrêter, elle relit tout l’enregistrement et liste sous À vérifier tout ce dont elle n’était pas sûre."
+  },
+  "phones": {
+    "title": "Mieux adaptée aux téléphones",
+    "body": "La dictée s’ouvre en plein écran et garde votre écran allumé pendant que vous parlez."
+  },
+  "understandsMore": {
+    "title": "Comprend davantage",
+    "body": "« GE 3 » pour l’accroissement gingival, les profondeurs de poche par racine, le bloc maxillaire caudal et les observations radiographiques."
+  },
+  "pocketPerRoot": {
+    "title": "Profondeur de poche par racine",
+    "body": "Schéma dentaire → Personnaliser → Une par racine. Les dents pluriradiculées ont une case libellée par racine (M / D, ou MB / MP / D)."
+  },
+  "severalTeeth": {
+    "title": "Saisir plusieurs dents à la fois",
+    "body": "Cliquez sur les numéros de dents dans la grille (Maj-clic pour une plage), puis attribuez un même score à toutes."
+  },
+  "makeItYours": {
+    "title": "À votre façon",
+    "body": "Chaque page a un bouton Personnaliser : masquez des colonnes, choisissez ce qui s’affiche à côté des dents, l’action de la touche Espace, et plus encore. Vos réglages suivent votre compte sur tous vos appareils."
+  },
+  "radiographicFindings": {
+    "title": "Observations radiographiques",
+    "body": "Une zone dédiée sur la page Images. Elle s’imprime sur le PDF au-dessus du compte rendu de traitement."
+  },
+  "anesthesia": {
+    "title": "Anesthésie",
+    "body": "Ajout du bloc maxillaire caudal. Masquez les blocs que vous n’utilisez pas et enregistrez votre anesthésique habituel pour le saisir d’un seul geste."
+  },
+  "skipRecheck": {
+    "title": "Masquer le champ de contrôle",
+    "body": "Vous n’utilisez pas les rappels de contrôle ? Patient → Personnaliser → Masquer le champ Contrôle prévu."
+  },
+  "writeWithAi": {
+    "title": "✨ Rédiger avec l’IA",
+    "body": "Rédige le résumé d’introduction et les conseils de soins à domicile à partir du dossier, en s’appuyant uniquement sur ce que vous avez saisi. Vous relisez avant d’imprimer."
+  },
+  "customizeReport": {
+    "title": "Personnaliser le compte rendu",
+    "body": "Modifiez sa mise en page, sa formulation et sa langue directement depuis la page Compte rendu pour le propriétaire."
+  },
+  "startsWhereLeft": {
+    "title": "Reprend là où vous vous étiez arrêté",
+    "body": "À l’ouverture, ToothOps affiche Mes dossiers — sauf si la visite du jour est encore ouverte — et la visite du jour s’ouvre prête à être modifiée."
+  },
+  "sendFeedback": {
+    "title": "Envoyer un avis en deux gestes",
+    "body": "Réglages → Envoyer un avis, ou Avis dans le panneau de dictée (il peut joindre votre transcription). Il nous parvient directement."
+  }
+}

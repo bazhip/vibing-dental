@@ -1,32 +1,38 @@
 import { DiagramComment, ToothData } from '../types';
 import { GRID_COLUMNS } from '../constants/columnDefinitions';
 import { isGridComment } from './gridComments';
+import i18n from '../i18n';
 
 /**
  * Helpers for By-tooth charting (click a tooth on the diagram, chart it
  * in a side panel). Pure so they can be unit-tested.
  */
 
-const ORDINALS = ['', '1st', '2nd', '3rd', '4th'];
-const TYPE_NAMES: Record<string, string> = { i: 'incisor', c: 'canine', p: 'premolar', m: 'molar' };
+const TYPE_KEYS = { i: 'incisor', c: 'canine', p: 'premolar', m: 'molar' } as const;
+const ORDINAL_KEYS = ['1', '2', '3', '4'] as const;
 
-/** Plain-English tooth name from its Triadan number and diagram label,
- *  e.g. 108 + "P4" → "Right maxillary 4th premolar". Spelled out so the
- *  person charting can double-check they're on the tooth they meant. */
-export function toothDisplayName(triadan: number, label: string): string {
+/** Tooth name in `lng` (the active language by default) from its Triadan
+ *  number and diagram label, e.g. 108 + "P4" → "Right maxillary 4th
+ *  premolar". Spelled out so the person charting can double-check they're
+ *  on the tooth they meant. Each language has its own word order and
+ *  agreement, so the whole phrase is one catalog template. */
+export function toothDisplayName(triadan: number, label: string, lng: string = i18n.language): string {
+  const t = i18n.getFixedT(lng, 'chart');
   const quadrant = Math.floor(triadan / 100);
   const deciduous = quadrant >= 5;
   const q = deciduous ? quadrant - 4 : quadrant;
-  const side = q === 1 || q === 4 ? 'Right' : 'Left';
-  const jaw = q === 1 || q === 2 ? 'maxillary' : 'mandibular';
+  const side = t(q === 1 || q === 4 ? 'toothName.side.right' : 'toothName.side.left');
+  const jaw = t(q === 1 || q === 2 ? 'toothName.jaw.maxillary' : 'toothName.jaw.mandibular');
   const m = /^([icpm])(\d)?$/i.exec(label.trim());
   let tooth = label;
   if (m) {
-    const type = TYPE_NAMES[m[1].toLowerCase()];
-    const ord = m[2] ? ORDINALS[Number(m[2])] ?? `${m[2]}th` : '';
-    tooth = ord ? `${ord} ${type}` : type;
+    const type = t(`toothName.type.${TYPE_KEYS[m[1].toLowerCase() as keyof typeof TYPE_KEYS]}`);
+    const n = ORDINAL_KEYS.find((k) => k === m[2]);
+    tooth = n ? t('toothName.ordinalTooth', { ordinal: t(`toothName.ordinal.${n}`), type }) : type;
   }
-  return `${side} ${jaw} ${deciduous ? 'deciduous ' : ''}${tooth}`;
+  const name = t(deciduous ? 'toothName.deciduous' : 'toothName.permanent', { side, jaw, tooth });
+  // Some languages put the tooth first; the name still starts with a capital.
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 /** Walk order for Previous/Next: one continuous lap of the mouth —

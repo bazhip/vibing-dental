@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../../i18n/format';
 import type { TFunction } from 'i18next';
 import { List, ListRow, ListSection, type ListRowProps } from '../List';
 import { SwipeRow, type SwipeAction } from '../SwipeRow';
@@ -53,15 +54,14 @@ export function useTabReload(tab: AppTab): { shown: boolean; token: string } {
   return { shown, token: token.current };
 }
 
-/** "Nov 11, 2026" for a YYYY-MM-DD date (the device's locale). */
+/** "Nov 11, 2026" for a YYYY-MM-DD date, in the active language. */
 export function formatChartDate(iso: string): string {
-  const d = parseLocalDate(iso);
-  return d ? d.toLocaleDateString(undefined, { dateStyle: 'medium' }) : iso;
+  return parseLocalDate(iso) ? formatDate(iso, 'medium') : iso;
 }
 
-/** "Nov 11, 2026" for a timestamp. */
+/** "Nov 11, 2026" for a timestamp, in the active language. */
 export function formatUpdated(ts: string): string {
-  return new Date(ts).toLocaleDateString(undefined, { dateStyle: 'medium' });
+  return formatDate(new Date(ts), 'medium');
 }
 
 /** The small coloured recheck label on a patient row. */

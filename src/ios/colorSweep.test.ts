@@ -39,6 +39,7 @@ const ALLOW: { re: RegExp; reason: string }[] = [
   { re: /\.pdf-style-swatch/, reason: 'PDF color choices show the literal color that will print' },
   { re: /\.imaging__thumb/, reason: 'radiographs sit on near-black in both schemes' },
   { re: /\.login-google/, reason: "Google's sign-in button branding (light button is allowed on dark)" },
+  { re: /\.sidebar-layout__nav--fade/, reason: 'the tab strip\'s edge fade is a mask: #000 is opacity, never a visible color' },
 ];
 
 // ---- tiny CSS walker ------------------------------------------------------

@@ -1,0 +1,92 @@
+{
+  "walkthrough": {
+    "aria": "Erste Schritte",
+    "progress": "{{current}} von {{total}}",
+    "skip": "Überspringen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Los geht’s",
+    "steps": {
+      "welcome": {
+        "title": "Willkommen bei ToothOps",
+        "body": "Eine Tour in 60 Sekunden: Hier finden Sie alles. Sie können sie jederzeit unter Einstellungen → Erste Schritte erneut abspielen."
+      },
+      "sections": {
+        "title": "Die acht Abschnitte",
+        "body": "Eine Zahnakte von oben nach unten. Arbeiten Sie die Abschnitte der Reihe nach ab oder springen Sie nach Belieben — alles wird automatisch gespeichert."
+      },
+      "patient": {
+        "title": "Patient & Besitzer",
+        "body": "Name, Kontaktdaten des Besitzers und Kontrolltermin. Zum Speichern ist nur der Name des Patienten erforderlich."
+      },
+      "species": {
+        "title": "Tierart & Gebiss",
+        "body": "Wählen Sie Katze oder Hund, dann Bleibend oder Milchzähne — das Zahnschema passt sich an."
+      },
+      "grid": {
+        "title": "Das Befundraster",
+        "body": "Messwerte pro Zahn. Tab springt nach rechts, Enter nach unten — erfassen Sie, ohne aufzusehen."
+      },
+      "diagrams": {
+        "title": "Schemata",
+        "body": "Klicken Sie auf einen Zahn, um ihn zu markieren; wechseln Sie zwischen Kommentar und Zeichnen und fügen Sie freie Notizen hinzu. Rückgängig mit ⌘Z."
+      },
+      "codes": {
+        "title": "Code-Referenz",
+        "body": "Durchsuchen Sie hier den gesamten AVDC-Code-Satz; er bleibt beim Scrollen neben dem Schema angeheftet."
+      },
+      "treatment": {
+        "title": "Behandlungsbericht & Vorlagen",
+        "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage aus der Auswahlliste ein — und speichern Sie neue Vorlagen zur Wiederverwendung."
+      },
+      "library": {
+        "title": "Meine Akten",
+        "body": "Öffnen Sie die Akten eines beliebigen Patienten (gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten klicken) oder beginnen Sie — für den angezeigten Patienten — einen neuen Besuch bzw. sehen Sie dessen Versionsverlauf ein. Neuer Patient, gleich daneben, beginnt eine leere Akte."
+      },
+      "dictate": {
+        "title": "Diktieren",
+        "body": "Tippen Sie auf Diktieren und sprechen Sie Ihre Befunde ein — auf jeder Seite. Jeder landet an der richtigen Stelle, und ein Live-Bereich zeigt jede Änderung, sodass Sie alles rückgängig machen können."
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "body": "Praxisname und Logo, Team, Vorlagen für Kontrollerinnerungen, Ihr Konto — und diese Tour."
+      },
+      "pdf": {
+        "title": "PDF ansehen & herunterladen",
+        "body": "Erstellen Sie das kundenfertige Akten-PDF mit Ihrem Logo, wann immer Sie so weit sind."
+      }
+    }
+  },
+  "finishSetup": {
+    "title": "Einrichtung abschließen",
+    "both": "Der Name Ihrer Praxis und der Name der Ärztin / des Arztes erscheinen auf jeder Akte, die Sie drucken.",
+    "practiceOnly": "Der Name Ihrer Praxis erscheint auf jeder Akte, die Sie drucken.",
+    "doctorOnly": "Der Name der Ärztin / des Arztes erscheint auf jeder Akte, die Sie drucken.",
+    "practiceName": "Praxisname",
+    "doctorName": "Name der Ärztin / des Arztes",
+    "doctorPlaceholder": "z. B. Dr. Jana Schmidt",
+    "logoOptional": "Praxislogo (optional)",
+    "logoNamed": "Logo: {{name}}",
+    "logoHint": "Wird oben auf Ihren Akten gedruckt. PNG, JPG oder WebP.",
+    "later": "Später",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "namesNeeded": "Beide Namen sind erforderlich — sie erscheinen auf Ihren Akten.",
+    "logoFailed": "Ihre Namen sind gespeichert, aber das Logo konnte nicht hochgeladen werden — fügen Sie es später in den Praxiseinstellungen hinzu.",
+    "allSet": "Alles bereit.",
+    "saveFailed": "Speichern nicht möglich."
+  },
+  "join": {
+    "title": "{{practice}} beitreten?",
+    "invitation": "Einladung in eine Praxis",
+    "checking": "Ihre Einladung wird geprüft…",
+    "thisPractice": "dieser Praxis",
+    "alreadyMember": "Sie sind bereits Mitglied von {{practice}}.",
+    "invited": "Sie wurden eingeladen, <strong>{{practice}}</strong> auf ToothOps beizutreten. Mitglieder teilen die Akten, Berichtsvorlagen und die Kontrollliste der Praxis, und neue Akten, die Sie speichern, werden mit dem Team geteilt.",
+    "shareExisting": "Auch die Akten teilen, die ich bereits angelegt habe",
+    "close": "Schließen",
+    "notNow": "Nicht jetzt",
+    "joining": "Beitritt läuft…",
+    "joinButton": "{{practice}} beitreten"
+  }
+}

@@ -33,10 +33,7 @@ interface DocumentsModalProps {
   };
 }
 
-const TABS: { id: DocumentTab; label: string; who: string }[] = [
-  { id: 'chart', label: 'Clinical chart', who: 'For your records and referrals — the full chart with codes.' },
-  { id: 'owner', label: 'Owner report', who: 'For the owner to take home — the visit in plain English.' },
-];
+const TABS: DocumentTab[] = ['chart', 'owner'];
 
 /**
  * One place for the documents a visit produces. Each tab is a full
@@ -47,6 +44,7 @@ const TABS: { id: DocumentTab; label: string; who: string }[] = [
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   open, onClose, initialTab, chartSnapshot, ownerReport,
 }) => {
+  const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
     try { return window.sessionStorage.getItem(TAB_KEY) === 'owner' ? 'owner' : 'chart'; } catch { return 'chart'; }
   };
@@ -55,7 +53,6 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   // forth doesn't regenerate a PDF each time.
   const [visited, setVisited] = React.useState<Set<DocumentTab>>(() => new Set([initialTab ?? readSaved()]));
   const closeRef = React.useRef<HTMLButtonElement>(null);
-  const { t: tc } = useTranslation();
   // iOS app: a kit sheet (grabber, swipe down, its own Escape and focus).
   const native = isNativeApp();
 
@@ -77,16 +74,18 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   if (!open && !native) return null;
 
-  const tabs = ownerReport ? TABS : TABS.filter((t) => t.id === 'chart');
+  const tabs = ownerReport ? TABS : TABS.filter((id) => id === 'chart');
   const active = ownerReport ? tab : 'chart';
   const select = (id: DocumentTab) => {
     setTab(id);
     setVisited((v) => new Set(v).add(id));
     try { window.sessionStorage.setItem(TAB_KEY, id); } catch { /* ignore */ }
   };
+  const chartVisited = visited.has('chart');
+  const ownerVisited = visited.has('owner');
   const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo;
   const subtitle = [patient?.patientName, patient?.date].filter(Boolean).join(' · ');
-  const current = tabs.find((t) => t.id === active)!;
+  const who = t(active === 'chart' ? 'documents.chartWho' : 'documents.ownerWho');
 
   const panels = (
     <>
@@ -97,7 +96,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
         aria-labelledby="documents-tab-chart"
         hidden={active !== 'chart'}
       >
-        {visited.has('chart') && <PdfPreviewModal open bare onClose={onClose} snapshot={chartSnapshot} />}
+        {chartVisited && <PdfPreviewModal open bare onClose={onClose} snapshot={chartSnapshot} />}
       </div>
       {ownerReport && (
         <div
@@ -107,7 +106,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           aria-labelledby="documents-tab-owner"
           hidden={active !== 'owner'}
         >
-          {visited.has('owner') && (
+          {ownerVisited && (
             <OwnerReportModal
               open
               bare
@@ -133,28 +132,28 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
     // Page-style sheet: the preview wants the room. The two documents are a
     // segmented control (same tab semantics as the website's tabs).
     return (
-      <Sheet open={open} onClose={onClose} title={tc('ios.sheets.documents.title')} className="ios-sheet--page documents-sheet">
+      <Sheet open={open} onClose={onClose} title={t('ios.sheets.documents.title', { ns: 'common' })} className="ios-sheet--page documents-sheet">
         <div className="documents-sheet__head">
           {subtitle && <p className="documents-sheet__subtitle">{subtitle}</p>}
           {tabs.length > 1 && (
-            <div className="ios-segmented" role="tablist" aria-label="Document">
-              {tabs.map((t) => (
+            <div className="ios-segmented" role="tablist" aria-label={t('documents.tablist')}>
+              {tabs.map((id) => (
                 <button
-                  key={t.id}
+                  key={id}
                   type="button"
                   role="tab"
-                  id={`documents-tab-${t.id}`}
-                  aria-selected={active === t.id}
-                  aria-controls={`documents-panel-${t.id}`}
-                  className={`ios-segmented__segment${active === t.id ? ' ios-segmented__segment--on' : ''}`}
-                  onClick={() => select(t.id)}
+                  id={`documents-tab-${id}`}
+                  aria-selected={active === id}
+                  aria-controls={`documents-panel-${id}`}
+                  className={`ios-segmented__segment${active === id ? ' ios-segmented__segment--on' : ''}`}
+                  onClick={() => select(id)}
                 >
-                  {t.label}
+                  {t(id === 'chart' ? 'documents.chartTab' : 'documents.ownerTab')}
                 </button>
               ))}
             </div>
           )}
-          <p className="documents-sheet__who">{current.who}</p>
+          <p className="documents-sheet__who">{who}</p>
         </div>
         {panels}
       </Sheet>
@@ -166,28 +165,28 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
       <div className="pdf-preview-modal documents-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header documents-modal__header">
           <div>
-            <h2 id="documents-title">Download PDFs{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
-            <p>{current.who}</p>
+            <h2 id="documents-title">{t('documents.title')}{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
+            <p>{who}</p>
           </div>
-          <button ref={closeRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close documents">
+          <button ref={closeRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('documents.close')}>
             ×
           </button>
         </header>
 
         {tabs.length > 1 && (
-          <div className="documents-modal__tabs" role="tablist" aria-label="Document">
-            {tabs.map((t) => (
+          <div className="documents-modal__tabs" role="tablist" aria-label={t('documents.tablist')}>
+            {tabs.map((id) => (
               <button
-                key={t.id}
+                key={id}
                 type="button"
                 role="tab"
-                id={`documents-tab-${t.id}`}
-                aria-selected={active === t.id}
-                aria-controls={`documents-panel-${t.id}`}
-                className={`documents-modal__tab${active === t.id ? ' documents-modal__tab--on' : ''}`}
-                onClick={() => select(t.id)}
+                id={`documents-tab-${id}`}
+                aria-selected={active === id}
+                aria-controls={`documents-panel-${id}`}
+                className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
+                onClick={() => select(id)}
               >
-                {t.label}
+                {t(id === 'chart' ? 'documents.chartTab' : 'documents.ownerTab')}
               </button>
             ))}
           </div>

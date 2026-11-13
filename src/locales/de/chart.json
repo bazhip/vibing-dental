@@ -1,4 +1,275 @@
 {
+  "codeGroups": {
+    "occlusion": "Okklusion",
+    "toothNumberEruption": "Zahnzahl & Durchbruch",
+    "developmental": "Entwicklungsanomalien",
+    "periodontal": "Parodontium",
+    "toothPathology": "Zahnpathologie",
+    "toothFracture": "Zahnfraktur",
+    "periapicalBone": "Periapikal & Knochen",
+    "trauma": "Trauma",
+    "softTissue": "Weichgewebe & Schleimhaut",
+    "immuneMediated": "Immunvermittelt",
+    "salivary": "Speicheldrüsen",
+    "headNosePharynx": "Kopf, Nase & Pharynx",
+    "masses": "Umfangsvermehrungen & Onkologie",
+    "jawTmj": "Kiefer, Kiefergelenk & kongenital",
+    "imaging": "Bildgebung & Diagnostik",
+    "periodontalTreatment": "Parodontalbehandlung",
+    "endodontics": "Endodontie",
+    "restorative": "Restaurative Zahnheilkunde & Prothetik",
+    "extractions": "Extraktionen",
+    "oralSurgery": "Oralchirurgie",
+    "oncologic": "Onkologische Therapie",
+    "jawRepair": "Kieferfraktur- & Kiefergelenkversorgung",
+    "orthodontics": "Kieferorthopädie"
+  },
+  "columns": {
+    "tooth": "Zahn",
+    "triadan": "Triadan",
+    "mobility": "Beweglichkeit",
+    "recession": "Rezession",
+    "pocket": "Tasche",
+    "furcation": "Furkation",
+    "hyperplasia": "Vergrößerung",
+    "calculus": "Zahnstein",
+    "gingivitis": "Gingivitis",
+    "pdstate": "PD-Stadium"
+  },
+  "customAnesthesia": {
+    "block": "Eigene Blockade",
+    "field": "Eigenes Feld",
+    "yes": "Ja"
+  },
+  "grid": {
+    "title": "Zahnschema",
+    "short": {
+      "mobility": "Bew",
+      "recession": "Rez",
+      "pocket": "Tasche",
+      "furcation": "Furk",
+      "hyperplasia": "Verg",
+      "calculus": "Stein",
+      "gingivitis": "Ging",
+      "pdstate": "Stad."
+    },
+    "pdstateTitle": "PD-Stadium",
+    "perRoot": "{{name}} (pro Wurzel)",
+    "missing": "Fehlend",
+    "triadanTooth": "Triadan · Zahn",
+    "cellAria": "Zahn {{triadan}} {{column}}",
+    "rootAria": "Zahn {{triadan}} Tasche, Wurzel {{root}}",
+    "setAll": {
+      "title": "{{name}} für alle Zähne festlegen",
+      "message": "Gilt für alle Zähne, die nicht als fehlend markiert sind. Lassen Sie das Feld leer, um die Spalte zu leeren.",
+      "messageRange": "Gilt für alle Zähne, die nicht als fehlend markiert sind. Verwenden Sie eine Zahl von {{min}} bis {{max}}. Lassen Sie das Feld leer, um die Spalte zu leeren.",
+      "confirm": "Auf alle anwenden",
+      "invalid": "{{name}} muss eine Zahl von {{min}} bis {{max}} sein.",
+      "applied": "{{name}} bei allen Zähnen auf {{value}} gesetzt.",
+      "cleared": "{{name}} bei allen Zähnen gelöscht."
+    },
+    "undo": "Rückgängig",
+    "clear": {
+      "title": "{{name}} bei allen Zähnen löschen?",
+      "message_one": "Entfernt {{count}} Wert aus der Spalte {{name}}.",
+      "message_other": "Entfernt {{count}} Werte aus der Spalte {{name}}.",
+      "confirm": "Spalte löschen"
+    },
+    "bulk": {
+      "toast_one": "{{name}} bei {{count}} Zahn auf {{value}} gesetzt.",
+      "toast_other": "{{name}} bei {{count}} Zähnen auf {{value}} gesetzt.",
+      "range": "Verwenden Sie {{min}}–{{max}}",
+      "region": "Wert für die ausgewählten Zähne festlegen",
+      "selected_one": "{{count}} Zahn ausgewählt",
+      "selected_other": "{{count}} Zähne ausgewählt",
+      "set": "Festlegen",
+      "column": "Zu setzende Spalte",
+      "to": "auf",
+      "value": "Wert",
+      "apply": "Anwenden",
+      "clearSelection": "Auswahl aufheben",
+      "tip": "Tipp: Klicken Sie auf Zahnnummern, um mehrere Zähne auszuwählen (Umschalt+Klick für einen Bereich), und legen Sie dann für alle einen Wert fest."
+    },
+    "missingCheck": {
+      "label": "Zahn {{triadan}} fehlt",
+      "labelCarried": "Zahn {{triadan}} fehlt (vom vorherigen Besuch übernommen)",
+      "titleCarried": "Zahn {{triadan}} fehlte oder war beim vorherigen Besuch bereits extrahiert — automatisch übernommen",
+      "titleUnmark": "Markierung „fehlt“ für Zahn {{triadan}} entfernen",
+      "titleMark": "Zahn {{triadan}} als fehlend markieren — streicht diese Zeile durch und füllt den Zahn im Diagnoseschema",
+      "prev": "vor."
+    },
+    "tooth": {
+      "title": "Klicken Sie, um diesen Zahn auszuwählen (Umschalt+Klick für einen Bereich) und für mehrere Zähne gleichzeitig einen Wert festzulegen"
+    },
+    "slot": {
+      "root": "Wurzel {{root}}",
+      "rootLast": "Wurzel {{root}} — letzter Besuch {{value}}"
+    },
+    "unsplit": {
+      "title": "Nicht nach Wurzeln aufgeteilt — zum Bearbeiten klicken (löschen Sie den Wert, um ein Feld pro Wurzel zu erhalten)",
+      "chip": "alle Wurzeln"
+    },
+    "lastVisit": "Letzter Besuch: {{value}}",
+    "lastVisitRef": "Letzter Besuch: {{value}} — nur zur Orientierung angezeigt, nicht übernommen",
+    "setAllHint": "{{name}} für alle Zähne auf einmal festlegen",
+    "options": {
+      "mirror": "Befunde im Diagnoseschema anzeigen",
+      "mirrorTitle": "Fügt im Diagnoseschema zu jedem erfassten Zahn einen Kommentar hinzu und hält ihn während der Erfassung aktuell. Ihre eigenen Kommentare bleiben unverändert.",
+      "pdf": "Tabelle ins PDF aufnehmen",
+      "pdfTitleOn": "Deaktivieren Sie die Option, um die Kiefertabellen nicht ins PDF zu übernehmen — das Diagnoseschema zeigt diese Befunde bereits und erhält mehr Platz.",
+      "pdfTitleOff": "Verfügbar, wenn die Befunde im Diagnoseschema angezeigt werden."
+    }
+  },
+  "toothChart": {
+    "legend": {
+      "label": "Legende des Schemas",
+      "charted": "Erfasst",
+      "planned": "Geplante Extraktion",
+      "extracted": "Extrahiert",
+      "missing": "Fehlend"
+    },
+    "clickTooth": "<strong>Klicken Sie auf einen Zahn</strong> im Schema, um ihn zu erfassen.",
+    "hint": "Alles, was Sie hier eingeben, füllt auch die Zahnschema-Tabelle sowie die Schemas Diagnose / Eingriff.",
+    "start": "Bei {{triadan}} beginnen →",
+    "prev": "Vorheriger Zahn",
+    "prevAria": "Vorheriger Zahn ({{triadan}})",
+    "next": "Nächster Zahn",
+    "nextAria": "Nächster Zahn ({{triadan}})",
+    "missingBefore": "Fehlt (vor diesem Besuch)",
+    "findings": "Befunde",
+    "rootAria": "Tasche, Wurzel {{root}}",
+    "expected": "Erwartet: {{range}}",
+    "diagnosisNote": "Diagnosenotiz",
+    "diagnosisPlaceholder": "z. B. Kronenfraktur, Pulpaexposition",
+    "extraction": "Extraktion",
+    "planExtract": "Extraktion planen",
+    "procedureNote": "Eingriffsnotiz",
+    "procedurePlaceholder": "z. B. chirurgische Extraktion, Lappen mit 5-0 verschlossen",
+    "plan": "Extraktionsplan",
+    "chipDone": "{{triadan}} — extrahiert",
+    "chipPending": "{{triadan}} — noch nicht als extrahiert markiert",
+    "allConfirmed": "Alle geplanten Extraktionen bestätigt.",
+    "confirmed": "{{done}} von {{total}} als extrahiert bestätigt.",
+    "markExtracted_one": "Als extrahiert markieren",
+    "markExtracted_other": "Alle {{count}} als extrahiert markieren"
+  },
+  "toothName": {
+    "side": {
+      "right": "rechts",
+      "left": "links"
+    },
+    "jaw": {
+      "maxillary": "Oberkiefer",
+      "mandibular": "Unterkiefer"
+    },
+    "type": {
+      "incisor": "Schneidezahn",
+      "canine": "Eckzahn",
+      "premolar": "Prämolar",
+      "molar": "Molar"
+    },
+    "ordinal": {
+      "1": "1.",
+      "2": "2.",
+      "3": "3.",
+      "4": "4."
+    },
+    "ordinalTooth": "{{ordinal}} {{type}}",
+    "permanent": "{{jaw}} {{side}}, {{tooth}}",
+    "deciduous": "{{jaw}} {{side}}, {{tooth}} (Milchzahn)"
+  },
+  "diagram": {
+    "label": {
+      "maxilla": "Oberkiefer",
+      "mandible": "Unterkiefer",
+      "right": "R",
+      "left": "L"
+    },
+    "aria": {
+      "select": "Zahnschema — wählen Sie einen Zahn zum Erfassen",
+      "extracted": "Zahnschema — Eingabe oder Leertaste auf einem Zahn schaltet „extrahiert“ um",
+      "missing": "Zahnschema — Eingabe oder Leertaste auf einem Zahn schaltet „fehlend“ um",
+      "default": "Zahnschema"
+    },
+    "tooth": {
+      "label": "Zahn {{triadan}}{{details}}",
+      "markedMissing": ", als fehlend markiert",
+      "markedExtracted": ", als extrahiert markiert",
+      "planned": ", Extraktion geplant",
+      "locked": " (vor diesem Besuch fehlend — gesperrt)"
+    },
+    "comment": {
+      "fromGrid": "Aus der Zahnschema-Tabelle — ändern Sie die Tabelle, um dies anzupassen",
+      "delete": "Kommentar löschen",
+      "placeholder": "Notizen...",
+      "resize": "Kommentargröße ändern"
+    }
+  },
+  "diagramView": {
+    "customize": "Anpassen",
+    "customizeTitle": "Neben den Zähnen angezeigte Befunde",
+    "toolGroup": "Schema-Werkzeug",
+    "markMissingTitle": "Tippen Sie auf einen Zahn, um ihn als fehlend zu markieren (erneut tippen zum Aufheben)",
+    "markExtractedTitle": "Tippen Sie auf einen Zahn, um ihn als extrahiert zu markieren (erneut tippen zum Aufheben)",
+    "markTitle": "Tippen Sie auf einen Zahn, um ihn als fehlend oder extrahiert zu markieren",
+    "markMissing": "Als fehlend markieren",
+    "markExtracted": "Als extrahiert markieren",
+    "mark": "Markieren",
+    "comment": "Kommentar",
+    "draw": "Zeichnen",
+    "historyGroup": "Rückgängig / Wiederholen",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "undoTitle": "Rückgängig ({{shortcut}})",
+    "redoTitle": "Wiederholen ({{shortcut}})",
+    "freeComment": "+ Freier Kommentar",
+    "numbers": "# Nummern",
+    "numbersTitle": "Triadan-Nummer jedes Zahns im Schema anzeigen (wird nicht ins PDF gedruckt)",
+    "zoomGroup": "Zoom",
+    "zoomOut": "Verkleinern",
+    "zoomIn": "Vergrößern",
+    "zoomReset": "Zoom zurücksetzen (an Breite anpassen)",
+    "zoomLevel": "Zoom {{percent}} Prozent — zurücksetzen und anpassen",
+    "textSize": {
+      "group": "Textgröße der Kommentare",
+      "glyph": "A",
+      "s": "S",
+      "m": "M",
+      "l": "L",
+      "xl": "XL",
+      "aria": "Textgröße der Kommentare {{size}}",
+      "title": "Textgröße der Kommentare: {{size}}"
+    },
+    "drawSettings": "Zeicheneinstellungen",
+    "strokeColor": "Strichfarbe",
+    "colors": {
+      "red": "rot",
+      "blue": "blau",
+      "green": "grün",
+      "amber": "Bernstein",
+      "charcoal": "Anthrazit"
+    },
+    "strokeColorAria": "Strichfarbe {{color}}",
+    "strokeWidth": "Strichstärke",
+    "strokeWidthValue": "{{width}} Pixel",
+    "clearStrokes": "Striche löschen",
+    "more": "Weitere Diagrammwerkzeuge",
+    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße"
+  },
+  "codeRef": {
+    "all": "Codes",
+    "diagnosisTitle": "Diagnosecodes",
+    "procedureTitle": "Eingriffscodes",
+    "searchLabel": "Codes oder Definitionen suchen",
+    "searchPlaceholder": "Codes oder Definitionen suchen…",
+    "diagnoses": "Diagnosen",
+    "procedures": "Eingriffe",
+    "noMatches": "Keine Treffer."
+  },
+  "scoreChips": {
+    "group": "{{name}}-Wert",
+    "clear": "{{name}} löschen"
+  },
   "menu": {
     "practiceSettingsHintApp": "Name, Logo und Team."
   },
@@ -7,17 +278,17 @@
     "cameraFailed": "Die Kamera konnte nicht geöffnet werden.",
     "cameraNoPhoto": "Die Kamera hat kein Foto geliefert.",
     "cameraReadFailed": "Das Foto konnte nicht gelesen werden ({{status}}).",
-    "limitReached_one": "Diese Karte hat ihr Limit von {{count}} Bild erreicht.",
-    "limitReached_other": "Diese Karte hat ihr Limit von {{count}} Bildern erreicht.",
+    "limitReached_one": "Diese Akte hat ihr Limit von {{count}} Bild erreicht.",
+    "limitReached_other": "Diese Akte hat ihr Limit von {{count}} Bildern erreicht.",
     "uploadsUnavailable": "Foto-Uploads sind für dieses Konto nicht verfügbar.",
     "formatsApp": "PNG, JPEG oder WEBP.",
     "dicomUnavailable": "DICOM-Uploads sind für dieses Konto nicht verfügbar. Exportieren Sie die Röntgenaufnahme als JPEG oder PNG, um sie hinzuzufügen."
   },
   "aiConsent": {
     "title": "KI-Dienste verwenden?",
-    "intro": "Zum Diktieren in eine Karte und für KI-Entwürfe sendet ToothOps Daten an zwei Dienste:",
+    "intro": "Zum Diktieren in eine Akte und für KI-Entwürfe sendet ToothOps Daten an zwei Dienste:",
     "deepgram": "<strong>Deepgram</strong> empfängt die Aufnahme Ihrer Stimme, während Sie diktieren, um sie in Text umzuwandeln.",
-    "anthropic": "<strong>Anthropic</strong> (Claude) empfängt das Diktat-Transkript und den Inhalt der Karte, etwa Patientendaten und Befunde, um die Karte auszufüllen oder den Bericht für den Tierhalter zu entwerfen.",
+    "anthropic": "<strong>Anthropic</strong> (Claude) empfängt das Diktat-Transkript und den Inhalt der Akte, etwa Patientendaten und Befunde, um die Akte auszufüllen oder den Bericht für den Tierhalter zu entwerfen.",
     "nothingSent": "Es wird nichts gesendet, solange Sie diese Funktionen nicht nutzen.",
     "allow": "Erlauben",
     "notNow": "Nicht jetzt"
@@ -109,7 +380,8 @@
       "addInterval": "Intervall hinzufügen"
     },
     "diagram": {
-      "numbers": "Nummern"
+      "numbers": "Nummern",
+      "freeComment": "Freier Kommentar"
     },
     "grid": {
       "tip": "Tipp: Tippen Sie auf Zahnnummern, um mehrere Zähne auszuwählen, und setzen Sie dann einen Wert für alle.",

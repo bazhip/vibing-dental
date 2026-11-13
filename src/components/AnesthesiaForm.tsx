@@ -24,6 +24,10 @@ import { isNativeApp } from '../native/platform';
 import { hapticSelection } from '../native/haptics';
 import { Icon } from '../ios/icons';
 
+// SF Symbol names (not text).
+const REMOVE_ICON = 'xmark';
+const ADD_ICON = 'plus';
+
 interface AnesthesiaFormProps {
   nerveBlocks: NerveBlocks;
   onNerveBlockChange: (key: NerveBlockSite, value: string) => void;
@@ -45,12 +49,15 @@ interface AnesthesiaFormProps {
   onCustomValuesChange?: (next: CustomAnesthesia) => void;
 }
 
+/** The dose unit: a unit symbol, not translated text. */
+const ML = 'mL';
+const SIDES = ['right', 'left'] as const;
+
 const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 const BLANK_DRUG: AnestheticDrug = { name: '', concentration: '' };
 
 interface BlockRow {
-  id: BlockRowId;
-  label: string;
+  id: Exclude<BlockRowId, 'other'>;
   rightKey: NerveBlockSite;
   leftKey: NerveBlockSite;
 }
@@ -59,10 +66,10 @@ interface BlockRow {
 // L/R rows — defined separately so the table layout doesn't have to
 // special-case it inside the BLOCK_ROWS map.
 const BLOCK_ROWS: BlockRow[] = [
-  { id: 'infraorbital',     label: 'Infraorbital',      rightKey: 'infraorbitalRight',     leftKey: 'infraorbitalLeft' },
-  { id: 'caudalMaxillary',  label: 'Caudal Maxillary',  rightKey: 'caudalMaxillaryRight',  leftKey: 'caudalMaxillaryLeft' },
-  { id: 'inferiorAlveolar', label: 'Inferior Alveolar', rightKey: 'inferiorAlveolarRight', leftKey: 'inferiorAlveolarLeft' },
-  { id: 'mental',           label: 'Mental',            rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
+  { id: 'infraorbital',     rightKey: 'infraorbitalRight',     leftKey: 'infraorbitalLeft' },
+  { id: 'caudalMaxillary',  rightKey: 'caudalMaxillaryRight',  leftKey: 'caudalMaxillaryLeft' },
+  { id: 'inferiorAlveolar', rightKey: 'inferiorAlveolarRight', leftKey: 'inferiorAlveolarLeft' },
+  { id: 'mental',           rightKey: 'mentalRight',           leftKey: 'mentalLeft' },
 ];
 
 export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
@@ -80,7 +87,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
 }) => {
   // The iOS app: switches for yes/no fields, icons instead of text glyphs.
   const native = isNativeApp();
-  const { t } = useTranslation('chart');
+  const { t } = useTranslation('forms');
   const customBlocks = blocksForForm(customBlockDefs, customValues);
   const customFields = fieldsForForm(customFieldDefs, customValues);
   const setCustomBlock = (row: CustomBlockValue) => onCustomValuesChange?.(setBlockValue(customValues, row));
@@ -163,17 +170,17 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   return (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">{native ? t('ios.form.nerveBlocks') : <>Anesthesia &mdash; Nerve Blocks</>}</h2>
+        <h2 className="dental-grid__title">{native ? t('ios.form.nerveBlocks', { ns: 'chart' }) : t('anesthesia.title')}</h2>
         {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title="Choose which nerve blocks show and your usual anesthetic">
-            Customize
+          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('anesthesia.customizeTitle')}>
+            {t('anesthesia.customize')}
           </button>
         )}
       </div>
 
       <div className="anesthesia-drug">
         <span className="anesthesia-drug__label" id="anesthesia-drug-label">
-          {rows.length > 1 ? 'Anesthetics' : 'Anesthetic'}
+          {rows.length > 1 ? t('anesthesia.anesthetics') : t('anesthesia.anesthetic')}
         </span>
         <div className="anesthesia-drug__stack">
           <ul className="anesthesia-drug__list" aria-labelledby="anesthesia-drug-label">
@@ -185,9 +192,9 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                   list="anesthesia-drug-options"
                   className="patient-form__input anesthesia-drug__input"
                   value={d.name}
-                  placeholder={usingDefault ? defaultDrug : 'Drug'}
+                  placeholder={usingDefault ? defaultDrug : t('anesthesia.drugPlaceholder')}
                   onChange={(e) => updateDrug(i, { name: e.target.value })}
-                  aria-label={`Anesthetic ${i + 1} name`}
+                  aria-label={t('anesthesia.nameAria', { n: i + 1 })}
                   aria-describedby="anesthesia-drug-hint"
                 />
                 <span className="anesthesia-unit anesthesia-drug__strength">
@@ -198,7 +205,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                     value={d.concentration}
                     placeholder={usingDefault ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
                     onChange={(e) => updateDrug(i, { concentration: e.target.value.replace(/%/g, '') })}
-                    aria-label={`Anesthetic ${i + 1} concentration (%)`}
+                    aria-label={t('anesthesia.concentrationAria', { n: i + 1 })}
                   />
                   <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
                 </span>
@@ -207,10 +214,10 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                     type="button"
                     className="anesthesia-drug__remove"
                     onClick={() => removeDrug(i)}
-                    aria-label={`Remove ${d.name.trim() || `anesthetic ${i + 1}`}`}
-                    title="Remove"
+                    aria-label={t('anesthesia.removeNamed', { name: d.name.trim() || t('anesthesia.anestheticN', { n: i + 1 }) })}
+                    title={t('anesthesia.remove')}
                   >
-                    {native ? <Icon name="xmark" size={14} /> : <>&times;</>}
+                    {native ? <Icon name={REMOVE_ICON} size={14} /> : <>&times;</>}
                   </button>
                 )}
               </li>
@@ -222,7 +229,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             ))}
           </datalist>
           <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
-            {native ? <Icon name="plus" size={16} /> : <span aria-hidden="true">+</span>} Add anesthetic
+            {native ? <Icon name={ADD_ICON} size={16} /> : <span aria-hidden="true">+</span>} {t('anesthesia.add')}
           </button>
           {usingDefault && usualDrug && (
             <button
@@ -230,7 +237,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
               className="anesthesia-drug__add anesthesia-drug__usual"
               onClick={() => onDrugsChange(() => [{ name: usualDrug.name, concentration: usualDrug.concentration }])}
             >
-              Use my usual: {formatAnestheticDrug(usualDrug)}
+              {t('anesthesia.useUsual', { drug: formatAnestheticDrug(usualDrug) })}
             </button>
           )}
         </div>
@@ -238,8 +245,8 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
             or not? Say what blank means. */}
         <span id="anesthesia-drug-hint" className="anesthesia-drug__hint">
           {rows.length > 1
-            ? 'Mixed together — the doses below are mL of the combined mix.'
-            : `Leave blank to chart ${DEFAULT_NERVE_BLOCK_CONCENTRATION}% ${defaultDrug} (the template default).`}
+            ? t('anesthesia.hintMixed')
+            : t('anesthesia.hintDefault', { concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION, drug: defaultDrug })}
         </span>
       </div>
 
@@ -247,13 +254,15 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
         <thead>
           <tr>
             <th></th>
-            <th>Right</th>
-            <th>Left</th>
+            <th>{t('anesthesia.right')}</th>
+            <th>{t('anesthesia.left')}</th>
           </tr>
         </thead>
         <tbody>
-          {BLOCK_ROWS.filter(rowShown).map(({ label, rightKey, leftKey }) => (
-            <tr key={label}>
+          {BLOCK_ROWS.filter(rowShown).map(({ id, rightKey, leftKey }) => {
+            const label = t(`anesthesia.blocks.${id}`);
+            return (
+            <tr key={id}>
               <td className="anesthesia-table__label">{label}</td>
               {([rightKey, leftKey] as const).map((key) => (
                 <td key={key}>
@@ -264,18 +273,19 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                       className="patient-form__input"
                       value={nerveBlocks[key]}
                       onChange={handleChange(key)}
-                      aria-label={`${label} ${key === rightKey ? 'right' : 'left'} (mL)`}
+                      aria-label={t(key === rightKey ? 'anesthesia.doseRight' : 'anesthesia.doseLeft', { block: label })}
                     />
-                    <span className="anesthesia-unit__suffix" aria-hidden="true">mL</span>
+                    <span className="anesthesia-unit__suffix" aria-hidden="true">{ML}</span>
                   </span>
                 </td>
               ))}
             </tr>
-          ))}
+            );
+          })}
           {customBlocks.map((b) => (
             <tr key={b.id} className="anesthesia-table__custom">
               <td className="anesthesia-table__label">{b.label}</td>
-              {(['right', 'left'] as const).map((side) => (
+              {SIDES.map((side) => (
                 <td key={side}>
                   <span className="anesthesia-unit">
                     <input
@@ -284,9 +294,9 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                       className="patient-form__input"
                       value={b[side]}
                       onChange={(e) => setCustomBlock({ ...b, [side]: e.target.value })}
-                      aria-label={`${b.label} ${side} (mL)`}
+                      aria-label={t(side === 'right' ? 'anesthesia.doseRight' : 'anesthesia.doseLeft', { block: b.label })}
                     />
-                    <span className="anesthesia-unit__suffix" aria-hidden="true">mL</span>
+                    <span className="anesthesia-unit__suffix" aria-hidden="true">{ML}</span>
                   </span>
                 </td>
               ))}
@@ -299,11 +309,11 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           the two dose columns it was a narrow strip on phones. */}
       {otherShown && (
         <label className="anesthesia-other">
-          <span className="anesthesia-other__label">Other</span>
+          <span className="anesthesia-other__label">{t('anesthesia.other')}</span>
           <textarea
             ref={otherRef}
             className="patient-form__input anesthesia-table__other"
-            aria-label="Other nerve blocks"
+            aria-label={t('anesthesia.otherAria')}
             rows={3}
             value={nerveBlocks.other}
             onChange={handleChange('other')}
@@ -313,7 +323,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
 
       {customFields.length > 0 && (
         <div className="anesthesia-custom">
-          <h3 className="ai-settings-subhead">Anesthesia record</h3>
+          <h3 className="ai-settings-subhead">{t('anesthesia.record')}</h3>
           <div className="anesthesia-custom__grid">
             {customFields.map(({ value: f, def }) => {
               const update = (value: string) => setCustomField({ ...f, value });

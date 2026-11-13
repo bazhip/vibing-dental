@@ -1,0 +1,274 @@
+{
+  "brand": "ToothOps Charting",
+  "brandTrial": "ToothOps Charting · Testversion",
+  "skipLink": "Zur Akte springen",
+  "sections": {
+    "patient": "Patient",
+    "exam": "Untersuchung",
+    "anesthesia": "Narkose",
+    "charting": "Zahnschema",
+    "diagnosis": "Diagnose",
+    "procedure": "Eingriff",
+    "images": "Bilder",
+    "treatment": "Behandlungsbericht",
+    "ownerReport": "Besitzerbericht",
+    "menuFallback": "Abschnitte",
+    "nav": "Abschnitte der Akte"
+  },
+  "species": {
+    "feline": "Katze",
+    "canine": "Hund",
+    "felineDeciduous": "Katze · Milchzähne",
+    "canineDeciduous": "Hund · Milchzähne"
+  },
+  "chartingView": {
+    "label": "Ansicht des Zahnschemas",
+    "grid": "Raster",
+    "tooth": "Pro Zahn",
+    "gridHint": "Tabelle mit den Messwerten jedes Zahns",
+    "toothHint": "Klicken Sie auf einen Zahn im nummerierten Schema und erfassen Sie ihn — Befunde, Notizen, geplante und bestätigte Extraktionen"
+  },
+  "customize": {
+    "label": "Anpassen",
+    "hint": "Taschen pro Wurzel, Spalten, Anzeige neben den Zähnen, PDF-Optionen"
+  },
+  "radiographic": {
+    "title": "Röntgenbefunde",
+    "placeholder": "z. B. 108: vertikaler Knochenabbau an der distalen Wurzel, Furkationsexposition. 307: Zahnresorption Typ 2.",
+    "hint": "Wird im PDF über dem Behandlungsbericht gedruckt."
+  },
+  "lock": {
+    "title": "Nur Ansicht — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen"
+  },
+  "topbar": {
+    "patientEmpty": "Noch kein Patient — legen Sie einen im Abschnitt Patient an",
+    "visitSwitchTitle": "Besuchsverlauf — {{n}} Besuche. Wählen Sie einen zum Ansehen.",
+    "visitSwitchLabel": "Besuchsverlauf — zwischen den {{n}} Besuchen dieses Patienten wechseln",
+    "undatedVisit": "Besuch ohne Datum",
+    "visitLatest": "{{date}} · neuester",
+    "visitEarlier": "{{date}} · früherer",
+    "editingShort": "Bearbeitung",
+    "editingTitle": "Gespeicherter Besuch wird bearbeitet — Änderungen werden automatisch gespeichert",
+    "signIn": "Anmelden",
+    "signInHint": "Sie haben bereits ein Praxiskonto? Melden Sie sich an",
+    "signUp": "Kostenloses Konto erstellen",
+    "signUpHint": "Legen Sie ein Praxiskonto an — Ihre Akten werden in der Cloud gespeichert und Ihre PDFs tragen Praxisnamen und Logo",
+    "myCharts": "Meine Akten",
+    "myChartsShort": "Akten",
+    "editChart": "Akte bearbeiten",
+    "editChartShort": "Bearbeiten",
+    "undo": "Änderungen rückgängig",
+    "undoTitle": "Diese Akte auf den Stand zurücksetzen, den sie hatte, als Sie Akte bearbeiten gewählt haben",
+    "doneEditing": "Bearbeitung beenden",
+    "viewOnlyChipTitle": "Nur Ansicht, damit ein gespeicherter Besuch nicht versehentlich geändert wird — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen",
+    "newPatient": "Neuer Patient",
+    "newPatientShort": "Neu",
+    "newPatientTitle": "Eine leere Akte für einen neuen Patienten beginnen",
+    "doneEditingShort": "Fertig"
+  },
+  "status": {
+    "srSaving": "Akte wird gespeichert",
+    "srSaved": "Akte gespeichert",
+    "srNotSaved": "Akte nicht gespeichert",
+    "saving": "Speichern …",
+    "notSavedRetry": "Nicht gespeichert — erneut versuchen",
+    "retryTitle": "Speichern dieser Akte erneut versuchen",
+    "notSaved": "Nicht gespeichert",
+    "viewOnly": "Nur Ansicht",
+    "viewOnlyTitle": "Gespeicherte Besuche öffnen sich nur zur Ansicht — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen",
+    "offline": "Offline — auf diesem Gerät gespeichert",
+    "offlineTitle": "Änderungen bleiben auf diesem Gerät erhalten und werden gespeichert, sobald Sie wieder online sind",
+    "needsName": "Patientennamen eintragen, um zu speichern",
+    "needsNameTitle": "Akten werden gespeichert, sobald der Patient einen Namen hat",
+    "saveTitle": "Vorerst auf diesem Gerät gespeichert — wird automatisch gespeichert, sobald Sie mit der Erfassung beginnen. Jetzt speichern, um es auf einem anderen Gerät zu öffnen.",
+    "unsaved": "Nicht gespeicherte Änderungen",
+    "unsavedTitle": "Wird automatisch gespeichert …",
+    "savedTitle": "In der Cloud gespeichert: {{when}}",
+    "local": "Nur auf diesem Gerät",
+    "localTitle": "Testakten bleiben in diesem Browser. Erstellen Sie ein kostenloses Konto, um in der Cloud zu speichern.",
+    "saveHint": "Tragen Sie vor dem Speichern einen Patientennamen ein — so finden Sie diese Akte wieder.",
+    "savedRich": "<word>Gespeichert · </word>{{when}}"
+  },
+  "otherTab": {
+    "text": "Diese Akte ist in einem anderen Tab oder Fenster geöffnet. Beide Tabs bearbeiten dieselbe Arbeitskopie — schließen Sie einen davon, damit Ihre Änderungen nicht überschrieben werden."
+  },
+  "footer": {
+    "feedback": "Fehler gefunden oder eine Idee? <a>Feedback senden</a>"
+  },
+  "fab": {
+    "preview": "PDF-Vorschau",
+    "download": "PDFs herunterladen",
+    "previewAria": "Vorschau und Download des Akten-PDFs",
+    "downloadAria": "Vorschau und Download der klinischen Akte und des Besitzerberichts"
+  },
+  "errors": {
+    "setting": "Diese Einstellung konnte nicht gespeichert werden. {{error}}",
+    "openVisit": "Dieser Besuch konnte nicht geöffnet werden. {{error}}",
+    "newVisit": "Ein neuer Besuch konnte nicht begonnen werden. {{error}}",
+    "signOut": "Abmelden war nicht möglich. {{error}}",
+    "preview": "Die Vorschau konnte noch nicht erstellt werden — die Schemata werden noch geladen. Versuchen Sie es gleich noch einmal.",
+    "damagedChart": "Diese Akte ist beschädigt und konnte nicht geöffnet werden.",
+    "pdfImport": "Dieses PDF konnte nicht gelesen werden. Verwenden Sie ein aus ToothOps heruntergeladenes Akten-PDF."
+  },
+  "toasts": {
+    "reverted": "Änderungen zurückgesetzt.",
+    "pdfImported": "Die Akte wurde aus dem PDF als neue Akte importiert.",
+    "pdfImportedNamed": "{{name}} wurde aus dem PDF als neue Akte importiert.",
+    "visitStarted": "Neuer Besuch begonnen.",
+    "visitStartedFor": "Neuer Besuch für {{name}} begonnen.",
+    "visitStartedCarried_one": "Neuer Besuch begonnen — {{count}} fehlender/extrahierter Zahn übernommen.",
+    "visitStartedCarried_other": "Neuer Besuch begonnen — {{count}} fehlende/extrahierte Zähne übernommen.",
+    "visitStartedForCarried_one": "Neuer Besuch für {{name}} begonnen — {{count}} fehlender/extrahierter Zahn übernommen.",
+    "visitStartedForCarried_other": "Neuer Besuch für {{name}} begonnen — {{count}} fehlende/extrahierte Zähne übernommen."
+  },
+  "revert": {
+    "title": "Änderungen zurücksetzen?",
+    "message": "Diese Akte wird auf den Stand zurückgesetzt, den sie hatte, als Sie Akte bearbeiten gewählt haben, und diese Version wird gespeichert.",
+    "confirm": "Änderungen zurücksetzen"
+  },
+  "todaysVisit": {
+    "message": "Den heutigen Besuch öffnen, statt einen zweiten zu beginnen?",
+    "confirm": "Heutigen Besuch öffnen",
+    "cancel": "Zweiten Besuch beginnen"
+  },
+  "historyRestoreHint": "Öffnen Sie diesen Besuch, um eine frühere Version wiederherzustellen.",
+  "feedbackMail": {
+    "doing": "Was ich gerade getan habe:",
+    "expected": "Was ich erwartet habe:",
+    "actual": "Was tatsächlich passiert ist:",
+    "involved": "Betroffene Tierart / betroffener Zahn / Abschnitt (falls zutreffend):",
+    "browser": "Browser und Gerät:",
+    "screenshot": "(Wenn möglich, hängen Sie einen Screenshot an — das hilft enorm.)"
+  },
+  "menu": {
+    "open": "Einstellungsmenü öffnen",
+    "trigger": "Einstellungen",
+    "signedInAs": "Angemeldet als <strong>{{email}}</strong>",
+    "heads": {
+      "practice": "Praxis",
+      "account": "Konto",
+      "admin": "Admin",
+      "app": "App"
+    },
+    "practiceSettings": {
+      "label": "Praxiseinstellungen",
+      "sub": "Name, Logo, Team und Abrechnung."
+    },
+    "reminders": {
+      "label": "Erinnerungen an Nachkontrollen",
+      "sub": "E-Mail-Vorlage für Besitzer und automatischer Versandplan."
+    },
+    "account": {
+      "label": "Kontoeinstellungen",
+      "sub": "Ihr Name als Tierarzt, Ihre E-Mail-Adresse und Ihr Passwort."
+    },
+    "admin": {
+      "label": "Admin-Bereich",
+      "sub": "Benutzer, Praxen und Tarife verwalten."
+    },
+    "chartSettings": {
+      "label": "Zahnschema-Einstellungen",
+      "sub": "Taschen pro Wurzel, Rasterspalten, Anzeige neben den Zähnen."
+    },
+    "feedback": {
+      "label": "Feedback senden",
+      "sub": "Melden Sie ein Problem oder schlagen Sie eine Idee vor — es kommt direkt bei uns an."
+    },
+    "whatsNew": {
+      "label": "Neuigkeiten",
+      "sub": "Die neuesten Funktionen und Verbesserungen."
+    },
+    "gettingStarted": {
+      "label": "Erste Schritte",
+      "sub": "Die Einführung in alle Teile der App erneut ansehen."
+    },
+    "homepage": {
+      "label": "Startseite",
+      "sub": "Produktseite ansehen — Ihre Akte bleibt hier erhalten."
+    },
+    "signOut": {
+      "label": "Abmelden",
+      "sub": "Beenden Sie Ihre Sitzung und kehren Sie zur Startseite zurück."
+    }
+  },
+  "trialSignIn": {
+    "title": "Anmelden und die Testakte löschen?",
+    "message": "Die Anmeldung bei einem bestehenden Konto löscht die Testakte auf diesem Gerät. Um sie zu behalten, laden Sie zuerst das PDF herunter — oder erstellen Sie stattdessen ein kostenloses Konto, das sie behält.",
+    "confirm": "Löschen und anmelden",
+    "cancel": "Weiter erfassen"
+  },
+  "speciesChange": {
+    "title": "Tierart oder Gebiss ändern?",
+    "messageGrid": "Katzen, Hunde und Milchzähne verwenden unterschiedliche Zahnnummerierungen, daher wird das Raster gelöscht. Patientendaten und Untersuchungsbefunde bleiben erhalten.",
+    "messageDiagram": "Katzen, Hunde und Milchzähne verwenden unterschiedliche Zahnnummerierungen, daher werden die Markierungen, Notizen und Zeichnungen im Schema gelöscht. Patientendaten und Untersuchungsbefunde bleiben erhalten.",
+    "messageBoth": "Katzen, Hunde und Milchzähne verwenden unterschiedliche Zahnnummerierungen, daher werden das Raster sowie die Markierungen, Notizen und Zeichnungen im Schema gelöscht. Patientendaten und Untersuchungsbefunde bleiben erhalten.",
+    "confirm": "Ändern und löschen"
+  },
+  "sync": {
+    "cloudNotConfigured": "Die Cloud ist nicht konfiguriert.",
+    "historyNotSetUp": "Der Aktenverlauf ist auf dem Server noch nicht eingerichtet.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an und speichern Sie dann — Ihre Akte ist weiterhin auf diesem Gerät vorhanden.",
+    "notAllowed": "Diese Akte konnte nicht in Ihrem Konto gespeichert werden. Wenden Sie sich an den Praxisinhaber, wenn das weiterhin passiert.",
+    "tooLarge": "Diese Akte ist zu groß zum Speichern (meist zu viele oder zu große Bilder). Entfernen Sie einen Anhang und versuchen Sie es erneut.",
+    "offline": "Der Server ist nicht erreichbar. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut — Ihre Akte ist auf diesem Gerät sicher.",
+    "saveFailed": "Speichern fehlgeschlagen: {{message}}. Ihre Akte ist auf diesem Gerät sicher — versuchen Sie es gleich noch einmal.",
+    "unknownError": "unbekannter Fehler",
+    "changedByOther": "Diese Akte wurde von jemand anderem geändert — öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
+    "notSavedConflict": "Nicht gespeichert — diese Akte wurde von jemand anderem geändert. Öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
+    "noPermission": "Sie haben keine Berechtigung, Änderungen an dieser Akte zu speichern. Fragen Sie den Praxisinhaber oder beginnen Sie einen neuen Besuch",
+    "conflict": {
+      "title": "Diese Akte wurde anderswo geändert",
+      "message": "Sie wurde um {{when}} gespeichert — von einem Teammitglied oder auf einem anderen Gerät —, nachdem Sie sie hier geöffnet haben. Wenn Sie jetzt speichern, werden diese Änderungen durch Ihre ersetzt.",
+      "confirm": "Durch meine ersetzen",
+      "cancel": "Ihre behalten"
+    },
+    "duplicate": {
+      "titleToday": "{{name}} hat heute bereits einen Besuch",
+      "titleOn": "{{name}} hat bereits einen Besuch am {{date}}",
+      "patient": "Dieser Patient",
+      "message": "Diese neue Akte wäre ein zweiter Besuch am selben Tag. Stattdessen den bestehenden Besuch öffnen oder beide behalten? Beim Öffnen gehen Ihre Eingaben in dieser neuen Akte verloren.",
+      "confirm": "Bestehenden Besuch öffnen",
+      "cancel": "Beide behalten"
+    },
+    "discard": {
+      "title": "Nicht gespeicherte Änderungen verwerfen?",
+      "openOther": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Trotzdem die andere Akte öffnen? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und andere Akte öffnen"
+      },
+      "restore": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Trotzdem diese Version wiederherstellen? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und diese Version wiederherstellen"
+      },
+      "signOut": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Trotzdem abmelden? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und abmelden"
+      },
+      "newVisit": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Trotzdem einen neuen Besuch beginnen? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und neuen Besuch beginnen"
+      },
+      "newPatient": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Trotzdem einen neuen Patienten beginnen? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und neuen Patienten beginnen"
+      },
+      "importPdf": {
+        "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Dieses PDF trotzdem importieren? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
+        "confirm": "Verwerfen und dieses PDF importieren"
+      }
+    }
+  },
+  "storage": {
+    "full": "Der Speicher dieses Browsers ist voll — die letzten Änderungen werden auf diesem Gerät möglicherweise nicht behalten. Speichern Sie die Akte oder laden Sie das PDF herunter."
+  },
+  "chartsMenu": {
+    "thisPatient": "Dieser Patient",
+    "newVisit": "Neuer Besuch",
+    "newVisitHint": "Ein neuer datierter Besuch — Identität und bereits fehlende Zähne werden übernommen.",
+    "history": "Versionsverlauf",
+    "historyHint": "Jede gespeicherte Version dieser Akte — wer sie gespeichert hat und wann.",
+    "allPatients": "Alle Patienten",
+    "openLibrary": "Meine Akten öffnen…",
+    "openLibraryHint": "Suchen und öffnen Sie die Akten eines beliebigen Patienten."
+  }
+}

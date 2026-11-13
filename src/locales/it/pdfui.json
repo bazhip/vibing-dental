@@ -1,0 +1,47 @@
+{
+  "style": {
+    "label": "Stile del PDF",
+    "done": "Fine",
+    "custom": "Colore personalizzato",
+    "customShort": "Personalizzato",
+    "customDesc": "Qualsiasi colore desideri, sul layout {{layout}}.",
+    "currentLayout": "attuale",
+    "chooseColor": "Scegli un colore personalizzato"
+  },
+  "presets": {
+    "clinic": { "name": "Turchese clinico", "description": "In linea con l’app — intestazioni turchesi, segnalazioni rosse per le anomalie, schede arrotondate." },
+    "classic-blue": { "name": "Blu classico", "description": "Il blu tradizionale delle cartelle cliniche, con intestazioni di sezione piene." },
+    "slate": { "name": "Ardesia", "description": "Grafite neutra — si stampa con nitidezza anche in bianco e nero." },
+    "iris": { "name": "Iris", "description": "Discreti accenti indaco e intestazioni compatte in maiuscolo." },
+    "journal": { "name": "Rivista", "description": "Classico con grazie — accenti rosso intenso su carta calda." }
+  },
+  "preview": {
+    "title": "Cartella clinica",
+    "subtitle": "Per i Suoi archivi e le lettere di rinvio. Scelga uno stile o il Suo colore — l’anteprima si aggiorna in tempo reale.",
+    "closeAria": "Chiudi l’anteprima",
+    "download": "Scarica il PDF",
+    "loadingImages": "Caricamento delle immagini…",
+    "generating": "Creazione dell’anteprima…",
+    "buildFailed": "Impossibile creare l’anteprima. Per i dettagli consulti la console.",
+    "imagesFailed": "Impossibile caricare le immagini della cartella, quindi non sono incluse in questo PDF. Chiuda e riapra l’anteprima per riprovare.",
+    "imagesPartial": "Alcune immagini non sono state caricate. Nel PDF compaiono come riquadri vuoti.",
+    "frameTitle": "Anteprima della cartella clinica"
+  },
+  "link": {
+    "preparing": "Preparazione di un link di download…",
+    "open": "Tocchi per scaricare il PDF",
+    "copy": "Copia il link",
+    "copied": "Link copiato — lo incolli in Chrome per scaricare.",
+    "copyPrompt": "Copi questo link e lo apra in Chrome:",
+    "note": "Il browser di questa app non può salvare direttamente il PDF, quindi ecco un link che può farlo. Funziona per {{minutes}} minuti — se non si scarica nulla, lo copi in Chrome."
+  },
+  "pages": {
+    "pageAria": "{{title}}, pagina {{n}} di {{total}}",
+    "failed": "Impossibile mostrare l’anteprima — il download funziona comunque."
+  },
+  "hints": {
+    "firefoxAndroid": "Firefox apre il PDF in una nuova scheda — tocchi Scarica in alto per salvare il file.",
+    "inAppBrowser": "Il browser integrato di questa app non sempre riesce a salvare i file. Tocchi Scarica per ottenere un link di download — oppure apra ToothOps in Chrome (menu ⋮ → «Apri nel browser»).",
+    "inAppBrowserMessage": "Il browser integrato di questa app non può salvare i file. Apra ToothOps in Chrome (menu ⋮ → «Apri nel browser») per scaricare il PDF."
+  }
+}

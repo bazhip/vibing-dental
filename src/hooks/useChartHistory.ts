@@ -1,5 +1,6 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
+import i18n from '../i18n';
 
 /**
  * A chart's history (public.chart_revisions): who saved each version and
@@ -33,7 +34,7 @@ export function useChartHistory(chartId: string, open: boolean) {
       .limit(200);
     if (err) {
       setError(/relation .*chart_revisions|does not exist/i.test(err.message)
-        ? 'Chart history isn’t set up on the server yet.'
+        ? i18n.t('sync.historyNotSetUp', { ns: 'app' })
         : err.message);
       setRevisions([]);
       return;
@@ -58,7 +59,7 @@ export function useChartHistory(chartId: string, open: boolean) {
   React.useEffect(() => { if (open) void load(); }, [open, load]);
 
   const loadData = React.useCallback(async (revisionId: number): Promise<unknown> => {
-    if (!supabase) throw new Error('Cloud is not configured.');
+    if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
     const { data, error: err } = await supabase.from('chart_revisions').select('data').eq('id', revisionId).single();
     if (err) throw new Error(err.message);
     return (data as { data: unknown }).data;

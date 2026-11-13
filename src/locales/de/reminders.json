@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "aria": "Erinnerungen an Nachkontrollen",
+    "title": "Erinnerungen an Nachkontrollen",
+    "blurb": "Senden Sie dem Tierbesitzer eine E-Mail, wenn eine Nachkontrolle fällig ist. Platzhalter:",
+    "blurbTail": "Eine Erinnerung für einen einzelnen Patienten senden Sie über <strong>Meine Akten</strong>.",
+    "loading": "Wird geladen …",
+    "notSetUp": "Ihre Praxis wird gerade eingerichtet — laden Sie die Seite in einem Moment neu.",
+    "ownerOnly": "Nur ein Praxisinhaber kann die Erinnerungsvorlage ändern.",
+    "auto": "Besitzer automatisch per E-Mail benachrichtigen",
+    "send": "Versand",
+    "lead": {
+      "onDate": "Am Tag der Nachkontrolle",
+      "days3": "3 Tage vorher",
+      "week1": "1 Woche vorher",
+      "weeks2": "2 Wochen vorher",
+      "month1": "1 Monat vorher"
+    },
+    "subject": "Betreff",
+    "message": "Nachricht",
+    "done": "Fertig",
+    "saving": "Wird gespeichert …",
+    "saved": "Erinnerungseinstellungen gespeichert.",
+    "saveFailed": "Die Erinnerungseinstellungen konnten nicht gespeichert werden.",
+    "noPractice": "Keine Praxis zum Speichern vorhanden.",
+    "discard": {
+      "title": "Änderungen an der Erinnerung verwerfen?",
+      "message": "Ihre Änderungen an den Erinnerungseinstellungen wurden nicht gespeichert.",
+      "confirm": "Verwerfen",
+      "cancel": "Weiter bearbeiten"
+    }
+  },
+  "composer": {
+    "aria": "Nachkontroll-Erinnerung senden",
+    "title": "Nachkontroll-Erinnerung senden",
+    "loading": "Wird geladen …",
+    "to": "An",
+    "toTitle": "Erinnerungen gehen an die in dieser Akte gespeicherte E-Mail-Adresse des Besitzers. Ändern Sie sie in der Akte, um sie zu wechseln.",
+    "toHint": "Geht an die E-Mail-Adresse des Besitzers in dieser Akte. Zum Ändern bearbeiten Sie die Besitzer-E-Mail in der Akte.",
+    "subject": "Betreff",
+    "message": "Nachricht",
+    "sent": "Erinnerung gesendet.",
+    "sendFailed": "Die Erinnerung konnte nicht gesendet werden.",
+    "send": "Erinnerung senden",
+    "sending": "Wird gesendet …"
+  }
+}

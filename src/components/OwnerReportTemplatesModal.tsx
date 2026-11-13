@@ -1,26 +1,28 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { PdfPagesPreview, canShowPdfInline } from './PdfPagesPreview';
 import { useModalFocus } from '../hooks/useModalFocus';
 import ReactDOM from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import { useStackLeaveGuard, useStackScreenOptions } from '../ios/Stack';
 import { confirmDialog } from './ui/dialogs';
 import { Sheet } from '../ios/Sheet';
 import {
   BuiltInSectionId,
   CustomReportSection,
-  DEFAULT_SECTION_TITLES,
   MAX_TEMPLATES,
   OwnerReportConfig,
   OwnerReportTemplate,
   PLACEHOLDERS,
   ReportSectionConfig,
-  SECTION_LABELS,
+  defaultSectionTitle,
   defaultTemplate,
   isCustomSection,
   newId,
   normalizeConfig,
+  placeholderTitle,
+  sectionLabel,
 } from '../utils/ownerReportConfig';
-import { LOCALE_LABELS, REPORT_LOCALES, ReportLocale, reportStrings } from '../utils/ownerReportI18n';
+import { REPORT_LOCALES, ReportLocale, appReportLocale, reportStrings } from '../utils/ownerReportI18n';
 import { buildOwnerReportModel } from '../utils/ownerReport';
 import { buildOwnerReportPdfBytes, OwnerReportBranding } from '../utils/ownerReportPdf';
 import { sampleOwnerReportSnapshot } from '../utils/ownerReportSample';
@@ -35,6 +37,10 @@ interface OwnerReportTemplatesModalProps {
   canEdit: boolean;
   /** Role still loading — suppress the read-only note until known. */
   roleKnown: boolean;
+  /** The practice's saved templates couldn't be loaded — what's shown is
+   *  only the built-in default, so saving is blocked (it would replace
+   *  the real templates). */
+  loadFailed?: boolean;
   branding: OwnerReportBranding;
   /** In the iOS app — 'screen': the editor only, as a pushed screen (Save
    *  in the navigation bar; Back asks before discarding); 'sheet': the
@@ -43,14 +49,7 @@ interface OwnerReportTemplatesModalProps {
   presentation?: 'modal' | 'screen' | 'sheet';
 }
 
-const PLACEHOLDER_HINTS: Record<(typeof PLACEHOLDERS)[number], string> = {
-  pet: 'Pet name',
-  owner: 'Owner name',
-  species: 'cat, dog…',
-  date: 'Visit date',
-  practice: 'Practice name',
-  doctor: 'Doctor',
-};
+const DATE_FORMATS = ['iso', 'long'] as const;
 
 type TextField = HTMLInputElement | HTMLTextAreaElement;
 
@@ -71,10 +70,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   onSave,
   canEdit,
   roleKnown,
+  loadFailed = false,
   branding,
   presentation = 'modal',
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('reportui');
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
   const [draft, setDraft] = React.useState<OwnerReportConfig>(() => clone(config));
@@ -98,11 +98,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const baseline = React.useMemo(() => JSON.stringify(config), [config]);
   const dirty = open && JSON.stringify(draft) !== baseline;
 
+  // The PDF behind previewUrl, for drawing it as pages where a frame can't show it.
+  const previewBlobRef = React.useRef<Blob | null>(null);
   const requestClose = React.useCallback(() => {
     if (busy) return;
-    if (dirty && !window.confirm('Discard your unsaved changes to the owner report templates?')) return;
+    if (dirty && !window.confirm(t('templates.discardConfirm'))) return;
     onClose();
-  }, [busy, dirty, onClose]);
+  }, [busy, dirty, onClose, t]);
 
   const closePreview = React.useCallback(() => {
     setPreviewUrl((url) => {
@@ -126,16 +128,16 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   // before discarding edits.
   const saveRef = React.useRef<() => Promise<void>>(async () => {});
   const confirmLeave = async () => !busy && (!dirty || (await confirmDialog({
-    title: 'Discard your unsaved changes to the owner report templates?',
-    confirmLabel: 'Discard',
-    cancelLabel: 'Keep editing',
+    title: t('templates.discardConfirm'),
+    confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
+    cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
     danger: true,
   })));
   useStackLeaveGuard(asScreen ? confirmLeave : null);
   useStackScreenOptions({
     trailing: asScreen && canEdit ? (
-      <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={() => void saveRef.current()} disabled={busy || !dirty}>
-        {t('actions.save')}
+      <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={() => void saveRef.current()} disabled={busy || !dirty || loadFailed}>
+        {t('actions.save', { ns: 'common' })}
       </button>
     ) : asScreen ? null : undefined,
   });
@@ -157,26 +159,26 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
   if (!open) return null;
 
-  const selected = draft.templates.find((t) => t.id === selectedId) ?? draft.templates[0];
+  const selected = draft.templates.find((tpl) => tpl.id === selectedId) ?? draft.templates[0];
   const strings = reportStrings(selected.language);
 
   // ---- Draft mutation helpers ---------------------------------------------
-  const updateTemplate = (patch: Partial<OwnerReportTemplate> | ((t: OwnerReportTemplate) => Partial<OwnerReportTemplate>)) => {
+  const updateTemplate = (patch: Partial<OwnerReportTemplate> | ((tpl: OwnerReportTemplate) => Partial<OwnerReportTemplate>)) => {
     setDraft((d) => ({
       ...d,
-      templates: d.templates.map((t) =>
-        t.id === selected.id ? { ...t, ...(typeof patch === 'function' ? patch(t) : patch) } : t
+      templates: d.templates.map((tpl) =>
+        tpl.id === selected.id ? { ...tpl, ...(typeof patch === 'function' ? patch(tpl) : patch) } : tpl
       ),
     }));
   };
   const updateSection = (id: string, patch: Partial<CustomReportSection>) => {
-    updateTemplate((t) => ({
-      sections: t.sections.map((s) => (s.id === id ? ({ ...s, ...patch } as ReportSectionConfig) : s)),
+    updateTemplate((tpl) => ({
+      sections: tpl.sections.map((s) => (s.id === id ? ({ ...s, ...patch } as ReportSectionConfig) : s)),
     }));
   };
   const moveSection = (index: number, delta: number) => {
-    updateTemplate((t) => {
-      const next = [...t.sections];
+    updateTemplate((tpl) => {
+      const next = [...tpl.sections];
       const target = index + delta;
       if (target < 0 || target >= next.length) return {};
       [next[index], next[target]] = [next[target], next[index]];
@@ -184,38 +186,38 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     });
   };
   const addCustomSection = () => {
-    updateTemplate((t) => ({
-      sections: [...t.sections, { id: newId('custom-'), enabled: true, title: '', body: '' }],
+    updateTemplate((tpl) => ({
+      sections: [...tpl.sections, { id: newId('custom-'), enabled: true, title: '', body: '' }],
     }));
   };
   const removeSection = (id: string) => {
-    updateTemplate((t) => ({ sections: t.sections.filter((s) => s.id !== id) }));
+    updateTemplate((tpl) => ({ sections: tpl.sections.filter((s) => s.id !== id) }));
   };
   const setLanguage = (language: ReportLocale) => {
-    updateTemplate((t) => ({
+    updateTemplate((tpl) => ({
       language,
       // Swap the header title along with the language unless it was customized.
-      title: t.title === reportStrings(t.language).defaultTitle ? reportStrings(language).defaultTitle : t.title,
+      title: tpl.title === reportStrings(tpl.language).defaultTitle ? reportStrings(language).defaultTitle : tpl.title,
     }));
   };
 
   const addTemplate = (base?: OwnerReportTemplate) => {
     if (draft.templates.length >= MAX_TEMPLATES) return;
     const fresh = base
-      ? { ...clone(base), id: newId('tpl-'), name: `${base.name} (copy)` }
-      : { ...defaultTemplate(), id: newId('tpl-'), name: 'New template' };
+      ? { ...clone(base), id: newId('tpl-'), name: t('templates.copyName', { name: base.name }) }
+      : { ...defaultTemplate(appReportLocale()), id: newId('tpl-'), name: t('templates.newName') };
     setDraft((d) => ({ ...d, templates: [...d.templates, fresh] }));
     setSelectedId(fresh.id);
   };
   const deleteTemplate = () => {
     if (draft.templates.length <= 1) return;
-    if (!window.confirm(`Delete the “${selected.name}” template? Charts that use it switch to the default.`)) return;
+    if (!window.confirm(t('templates.deleteConfirm', { name: selected.name }))) return;
     setDraft((d) => {
-      const templates = d.templates.filter((t) => t.id !== selected.id);
+      const templates = d.templates.filter((tpl) => tpl.id !== selected.id);
       const defaultTemplateId = d.defaultTemplateId === selected.id ? templates[0].id : d.defaultTemplateId;
       return { templates, defaultTemplateId };
     });
-    setSelectedId(draft.templates.find((t) => t.id !== selected.id)!.id);
+    setSelectedId(draft.templates.find((tpl) => tpl.id !== selected.id)!.id);
   };
 
   // ---- Placeholder chips -----------------------------------------------------
@@ -227,7 +229,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const insertToken = (token: string) => {
     const active = activeField.current;
     if (!active || !active.el.isConnected) {
-      updateTemplate((t) => ({ introTemplate: `${t.introTemplate}${token}` }));
+      updateTemplate((tpl) => ({ introTemplate: `${tpl.introTemplate}${token}` }));
       return;
     }
     const { el, set } = active;
@@ -247,16 +249,16 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
     try {
       const cleaned = normalizeConfig({
         ...draft,
-        templates: draft.templates.map((t) => ({
-          ...t,
-          name: t.name.trim() || 'Untitled template',
-          homecareTips: t.homecareTips.map((tip) => tip.trim()).filter(Boolean),
+        templates: draft.templates.map((tpl) => ({
+          ...tpl,
+          name: tpl.name.trim() || t('templates.untitled'),
+          homecareTips: tpl.homecareTips.map((tip) => tip.trim()).filter(Boolean),
         })),
       });
       await onSave(cleaned);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not save the templates.');
+      setError(e instanceof Error ? e.message : t('templates.saveFailed'));
     } finally {
       setBusy(false);
     }
@@ -274,11 +276,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
         doctorName: branding.doctorName,
       });
       const bytes = await buildOwnerReportPdfBytes(model, branding, []);
-      const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/pdf' }));
+      const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
+      previewBlobRef.current = blob;
+      const url = URL.createObjectURL(blob);
       setPreviewUrl(url);
     } catch (e) {
       console.error(e);
-      setError("Couldn't build the preview. Try again in a moment.");
+      setError(t('templates.previewFailed'));
     } finally {
       setPreviewBusy(false);
     }
@@ -288,23 +292,28 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   // wording for the template's language (pet-dependent headings show as
   // their {pet} placeholder, which custom headings also accept).
   const defaultHeading = (id: BuiltInSectionId) =>
-    selected.language === 'en' ? DEFAULT_SECTION_TITLES[id] : strings.headings[id]('{pet}');
+    selected.language === 'en' ? defaultSectionTitle(id) : strings.headings[id]('{pet}');
   const generatedTips = strings.homecareTips;
+  const introPlaceholder = strings.intro('{pet}');
 
   const previewOverlay = (
     <div className="pdf-preview-overlay report-templates__preview" onClick={closePreview} role="dialog" aria-modal="true" aria-labelledby="report-templates-preview-title">
       <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header">
           <div>
-            <h2 id="report-templates-preview-title">Preview · {selected.name}</h2>
-            <p>Sample visit. Real reports also include the mouth diagram and any before/after photos.</p>
+            <h2 id="report-templates-preview-title">{t('templates.previewHeading', { name: selected.name })}</h2>
+            <p>{t('templates.previewSubtitle')}</p>
           </div>
-          <button type="button" className="pdf-preview-close" onClick={closePreview} aria-label="Close preview" autoFocus>
+          <button type="button" className="pdf-preview-close" onClick={closePreview} aria-label={t('templates.previewClose')} autoFocus>
             ×
           </button>
         </header>
         <div className="pdf-preview-iframe-wrap">
-          <iframe src={previewUrl ?? undefined} title="Owner report template preview" className="pdf-preview-iframe" />
+          {/* Phones (Android Chrome, iOS) can't show a PDF in a frame —
+              draw its pages instead. */}
+          {canShowPdfInline() || !previewBlobRef.current
+            ? <iframe src={previewUrl ?? undefined} title={t('templates.previewFrame')} className="pdf-preview-iframe" />
+            : <PdfPagesPreview blob={previewBlobRef.current} title={t('templates.previewFrame')} />}
         </div>
       </div>
     </div>
@@ -313,20 +322,20 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const templatesEditor = (
     <>
       {/* ---- Template list ------------------------------------------- */}
-      <nav className="report-templates__list" aria-label="Templates">
+      <nav className="report-templates__list" aria-label={t('templates.listLabel')}>
         <ul>
-          {draft.templates.map((t) => (
-            <li key={t.id}>
+          {draft.templates.map((tpl) => (
+            <li key={tpl.id}>
               <button
                 type="button"
-                className={`report-templates__item${t.id === selected.id ? ' report-templates__item--on' : ''}`}
-                aria-current={t.id === selected.id ? 'true' : undefined}
-                onClick={() => setSelectedId(t.id)}
+                className={`report-templates__item${tpl.id === selected.id ? ' report-templates__item--on' : ''}`}
+                aria-current={tpl.id === selected.id ? 'true' : undefined}
+                onClick={() => setSelectedId(tpl.id)}
               >
-                <span className="report-templates__item-name">{t.name || 'Untitled template'}</span>
+                <span className="report-templates__item-name">{tpl.name || t('templates.untitled')}</span>
                 <span className="report-templates__item-meta">
-                  {t.id === draft.defaultTemplateId && <span className="report-templates__badge">Default</span>}
-                  {t.language !== 'en' && <span className="report-templates__lang">{t.language.toUpperCase()}</span>}
+                  {tpl.id === draft.defaultTemplateId && <span className="report-templates__badge">{t('templates.badgeDefault')}</span>}
+                  {tpl.language !== 'en' && <span className="report-templates__lang">{tpl.language.toUpperCase()}</span>}
                 </span>
               </button>
             </li>
@@ -335,18 +344,20 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
         {canEdit && (
           <div className="report-templates__list-actions">
             <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={draft.templates.length >= MAX_TEMPLATES}>
-              New
+              {t('templates.new')}
             </button>
             <button type="button" className="diagram-view__action" onClick={() => addTemplate(selected)} disabled={draft.templates.length >= MAX_TEMPLATES}>
-              Duplicate
+              {t('actions.duplicate', { ns: 'common' })}
             </button>
             <button
               type="button"
               className="diagram-view__action"
               onClick={() => setDraft((d) => ({ ...d, defaultTemplateId: selected.id }))}
               disabled={selected.id === draft.defaultTemplateId}
+              aria-label={t('templates.setDefault')}
             >
-              Set as default
+              <span className="report-templates__long">{t('templates.setDefault')}</span>
+              <span className="report-templates__short">{t('templates.setDefaultShort')}</span>
             </button>
             <button
               type="button"
@@ -354,7 +365,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               onClick={deleteTemplate}
               disabled={draft.templates.length <= 1}
             >
-              Delete
+              {t('actions.delete', { ns: 'common' })}
             </button>
           </div>
         )}
@@ -362,17 +373,22 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
       {/* ---- Editor ---------------------------------------------------- */}
       <div className="report-templates__editor">
+        {loadFailed && (
+          <p className="login-error" role="alert">
+            {t('templates.loadFailed')}
+          </p>
+        )}
         {roleKnown && !canEdit && (
           <p className="login-notice" role="status">
-            Only practice owners can edit. You can look through the templates and preview them.
+            {t('templates.readOnly')}
           </p>
         )}
         <fieldset className="report-templates__fieldset" disabled={!canEdit || busy}>
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Basics</h3>
+            <h3 className="ai-settings-subhead">{t('templates.basics')}</h3>
             <div className="report-templates__row">
               <label className="patient-form__label">
-                Template name
+                {t('templates.nameLabel')}
                 <input
                   type="text"
                   className="patient-form__input"
@@ -382,13 +398,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 />
               </label>
               <label className="patient-form__label">
-                Report title
+                {t('templates.titleLabel')}
                 <input
                   type="text"
                   className="patient-form__input"
                   value={selected.title}
                   maxLength={80}
-                  placeholder="No title"
+                  placeholder={t('templates.titlePlaceholder')}
                   onChange={(e) => updateTemplate({ title: e.target.value })}
                   {...track((v) => updateTemplate({ title: v }))}
                 />
@@ -396,32 +412,34 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             </div>
             <div className="report-templates__row">
               <label className="patient-form__label">
-                Report language
+                {t('templates.languageLabel')}
                 <select
                   className="patient-form__input"
                   value={selected.language}
                   onChange={(e) => setLanguage(e.target.value as ReportLocale)}
                 >
                   {REPORT_LOCALES.map((loc) => (
-                    <option key={loc} value={loc}>{LOCALE_LABELS[loc]}</option>
+                    <option key={loc} value={loc}>{t(`languages.${loc}`)}</option>
                   ))}
                 </select>
               </label>
               <label className="patient-form__label">
-                Dates
+                {t('templates.datesLabel')}
                 <select
                   className="patient-form__input"
                   value={selected.dateFormat}
                   onChange={(e) => updateTemplate({ dateFormat: e.target.value === 'long' ? 'long' : 'iso' })}
                 >
-                  <option value="iso">As charted (2026-07-19)</option>
-                  <option value="long">Written out, in the report language</option>
+                  {DATE_FORMATS.map((format) => (
+                    <option key={format} value={format}>
+                      {format === 'iso' ? t('templates.datesIso') : t('templates.datesLong')}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
             <p className="patient-form__hint">
-              The language applies to everything the report writes for you — headings,
-              findings, tooth names and default text. Text your team types prints as written.
+              {t('templates.languageHint')}
             </p>
             <label className="report-templates__check">
               <input
@@ -430,7 +448,13 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 onChange={(e) => updateTemplate({ showToothNumbers: e.target.checked })}
               />
               <span>
-                Show tooth numbers <span className="patient-form__hint">— “{strings.toothName(1, 4, false)} (104)” instead of “{strings.toothName(1, 4, false)}”</span>
+                {t('templates.showToothNumbers')}{' '}
+                <span className="patient-form__hint">
+                  {t('templates.toothNumbersExample', {
+                    with: `${strings.toothName(1, 4, false)} (104)`,
+                    without: strings.toothName(1, 4, false),
+                  })}
+                </span>
               </span>
             </label>
             <label className="report-templates__check">
@@ -440,20 +464,26 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                 onChange={(e) => updateTemplate({ showGrades: e.target.checked })}
               />
               <span>
-                Show grades and measurements <span className="patient-form__hint">— “{strings.fieldPhrases.calculus('2')}” instead of “{strings.fieldPlain.calculus}”</span>
+                {t('templates.showGrades')}{' '}
+                <span className="patient-form__hint">
+                  {t('templates.gradesExample', {
+                    with: strings.fieldPhrases.calculus('2'),
+                    without: strings.fieldPlain.calculus,
+                  })}
+                </span>
               </span>
             </label>
           </section>
 
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Opening summary</h3>
-            <div className="report-templates__chips" role="group" aria-label="Insert a placeholder">
+            <h3 className="ai-settings-subhead">{t('templates.summaryTitle')}</h3>
+            <div className="report-templates__chips" role="group" aria-label={t('templates.insertLabel')}>
               {PLACEHOLDERS.map((p) => (
                 <button
                   key={p}
                   type="button"
                   className="report-templates__chip"
-                  title={`Insert ${PLACEHOLDER_HINTS[p].toLowerCase()}`}
+                  title={placeholderTitle(p)}
                   // Keep focus (and the caret) in the field being edited.
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => insertToken(`{${p}}`)}
@@ -463,26 +493,24 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               ))}
             </div>
             <p className="patient-form__hint">
-              Click a placeholder to insert it into the field you’re editing (any text field
-              below). Capitalize it — {'{Pet}'} — to capitalize the value.
+              {t('templates.insertHelp')}
             </p>
             <textarea
               className="patient-form__input report-templates__textarea"
               rows={4}
-              aria-label="Opening summary template"
+              aria-label={t('templates.summaryAria')}
               value={selected.introTemplate}
-              placeholder={strings.intro('{pet}')}
+              placeholder={introPlaceholder}
               onChange={(e) => updateTemplate({ introTemplate: e.target.value })}
               {...track((v) => updateTemplate({ introTemplate: v }))}
             />
-            <span className="patient-form__hint">Leave empty to use the standard opening shown in grey.</span>
+            <span className="patient-form__hint">{t('templates.summaryEmpty')}</span>
           </section>
 
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Sections</h3>
+            <h3 className="ai-settings-subhead">{t('templates.sectionsTitle')}</h3>
             <p className="patient-form__hint">
-              Turn sections on or off, rename their headings, and set the print order. Sections
-              with nothing to say for a visit (no extractions, no photos…) are skipped automatically.
+              {t('templates.sectionsHint')}
             </p>
             <ol className="report-templates__sections">
               {selected.sections.map((section, index) => {
@@ -497,7 +525,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           onChange={(e) => updateSection(section.id, { enabled: e.target.checked })}
                         />
                         <span className="report-templates__section-name">
-                          {custom ? 'Custom text' : SECTION_LABELS[section.id as BuiltInSectionId]}
+                          {custom ? t('templates.customText') : sectionLabel(section.id as BuiltInSectionId)}
                         </span>
                       </label>
                       <span className="report-templates__section-actions">
@@ -506,8 +534,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           className="diagram-view__action report-templates__icon"
                           onClick={() => moveSection(index, -1)}
                           disabled={index === 0}
-                          aria-label="Move up"
-                          title="Move up"
+                          aria-label={t('templates.moveUp')}
+                          title={t('templates.moveUp')}
                         >
                           ↑
                         </button>
@@ -516,8 +544,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                           className="diagram-view__action report-templates__icon"
                           onClick={() => moveSection(index, 1)}
                           disabled={index === selected.sections.length - 1}
-                          aria-label="Move down"
-                          title="Move down"
+                          aria-label={t('templates.moveDown')}
+                          title={t('templates.moveDown')}
                         >
                           ↓
                         </button>
@@ -527,7 +555,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                             className="diagram-view__action diagram-view__action--danger"
                             onClick={() => removeSection(section.id)}
                           >
-                            Delete
+                            {t('actions.delete', { ns: 'common' })}
                           </button>
                         )}
                       </span>
@@ -535,10 +563,10 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                     <input
                       type="text"
                       className="patient-form__input"
-                      aria-label={custom ? 'Custom section heading' : `${SECTION_LABELS[section.id as BuiltInSectionId]} heading`}
+                      aria-label={custom ? t('templates.customHeadingAria') : t('templates.headingAria', { label: sectionLabel(section.id as BuiltInSectionId) })}
                       value={section.title}
                       maxLength={120}
-                      placeholder={custom ? 'Heading (optional)' : defaultHeading(section.id as BuiltInSectionId)}
+                      placeholder={custom ? t('templates.headingPlaceholder') : defaultHeading(section.id as BuiltInSectionId)}
                       onChange={(e) => updateSection(section.id, { title: e.target.value })}
                       {...track((v) => updateSection(section.id, { title: v }))}
                     />
@@ -546,9 +574,9 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                       <textarea
                         className="patient-form__input report-templates__textarea"
                         rows={3}
-                        aria-label="Section text"
+                        aria-label={t('templates.sectionTextAria')}
                         value={(section as CustomReportSection).body}
-                        placeholder="Text printed under the heading — e.g. pricing for your dental plans, or after-hours contact details."
+                        placeholder={t('templates.sectionTextPlaceholder')}
                         onChange={(e) => updateSection(section.id, { body: e.target.value })}
                         {...track((v) => updateSection(section.id, { body: v }))}
                       />
@@ -558,15 +586,15 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
               })}
             </ol>
             <button type="button" className="diagram-view__action" onClick={addCustomSection}>
-              + Add a custom text section
+              {t('templates.addCustom')}
             </button>
           </section>
 
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Home care tips</h3>
+            <h3 className="ai-settings-subhead">{t('templates.tipsTitle')}</h3>
             {selected.homecareTips.length === 0 ? (
               <>
-                <p className="patient-form__hint">Using the standard tips:</p>
+                <p className="patient-form__hint">{t('templates.tipsStandard')}</p>
                 <ul className="report-templates__default-tips">
                   {generatedTips.map((tip) => <li key={tip}>{tip}</li>)}
                 </ul>
@@ -575,7 +603,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                   className="diagram-view__action"
                   onClick={() => updateTemplate({ homecareTips: [...generatedTips] })}
                 >
-                  Customize these tips
+                  {t('templates.tipsCustomize')}
                 </button>
               </>
             ) : (
@@ -586,26 +614,26 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                       <input
                         type="text"
                         className="patient-form__input"
-                        aria-label={`Tip ${i + 1}`}
+                        aria-label={t('templates.tipAria', { n: i + 1 })}
                         value={tip}
                         onChange={(e) =>
-                          updateTemplate((t) => ({
-                            homecareTips: t.homecareTips.map((x, j) => (j === i ? e.target.value : x)),
+                          updateTemplate((tpl) => ({
+                            homecareTips: tpl.homecareTips.map((x, j) => (j === i ? e.target.value : x)),
                           }))
                         }
                         {...track((v) =>
-                          updateTemplate((t) => ({ homecareTips: t.homecareTips.map((x, j) => (j === i ? v : x)) }))
+                          updateTemplate((tpl) => ({ homecareTips: tpl.homecareTips.map((x, j) => (j === i ? v : x)) }))
                         )}
                       />
                       <button
                         type="button"
                         className="diagram-view__action diagram-view__action--danger"
-                        aria-label={`Remove tip ${i + 1}`}
+                        aria-label={t('templates.tipRemoveAria', { n: i + 1 })}
                         onClick={() =>
-                          updateTemplate((t) => ({ homecareTips: t.homecareTips.filter((_, j) => j !== i) }))
+                          updateTemplate((tpl) => ({ homecareTips: tpl.homecareTips.filter((_, j) => j !== i) }))
                         }
                       >
-                        Remove
+                        {t('templates.tipRemove')}
                       </button>
                     </li>
                   ))}
@@ -614,50 +642,50 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                   <button
                     type="button"
                     className="diagram-view__action"
-                    onClick={() => updateTemplate((t) => ({ homecareTips: [...t.homecareTips, ''] }))}
+                    onClick={() => updateTemplate((tpl) => ({ homecareTips: [...tpl.homecareTips, ''] }))}
                   >
-                    + Add tip
+                    {t('templates.tipAdd')}
                   </button>
                   <button
                     type="button"
                     className="diagram-view__action"
                     onClick={() => updateTemplate({ homecareTips: [] })}
                   >
-                    Use the standard tips
+                    {t('templates.tipsUseStandard')}
                   </button>
                 </div>
               </>
             )}
             <span className="patient-form__hint">
-              Each chart can still edit its own tips in the Owner Report section.
+              {t('templates.tipsPerChart')}
             </span>
           </section>
 
           <section className="ai-settings-section">
-            <h3 className="ai-settings-subhead">Closing and footer</h3>
+            <h3 className="ai-settings-subhead">{t('templates.closingTitle')}</h3>
             <label className="patient-form__label">
-              Closing note
+              {t('templates.closingLabel')}
               <textarea
                 className="patient-form__input report-templates__textarea"
                 rows={2}
                 value={selected.closingNote}
-                placeholder="e.g. Thank you for trusting us with {pet}'s care!"
+                placeholder={t('templates.closingPlaceholder')}
                 onChange={(e) => updateTemplate({ closingNote: e.target.value })}
                 {...track((v) => updateTemplate({ closingNote: v }))}
               />
             </label>
             <label className="patient-form__label">
-              Footer
+              {t('templates.footerLabel')}
               <input
                 type="text"
                 className="patient-form__input"
                 value={selected.footer}
                 maxLength={200}
-                placeholder="e.g. (555) 010-0100 · www.example-vet.com · Open Mon–Sat"
+                placeholder={t('templates.footerPlaceholder')}
                 onChange={(e) => updateTemplate({ footer: e.target.value })}
                 {...track((v) => updateTemplate({ footer: v }))}
               />
-              <span className="patient-form__hint">Printed in small type at the bottom of every page.</span>
+              <span className="patient-form__hint">{t('templates.footerHint')}</span>
             </label>
           </section>
         </fieldset>
@@ -674,7 +702,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
         {error && <div className="login-error report-templates__error" role="alert">{error}</div>}
         <div className="report-templates__screen-actions">
           <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy}>
-            {previewBusy ? 'Building preview…' : 'Preview with sample visit'}
+            {previewBusy ? t('templates.previewBuilding') : t('templates.previewSample')}
           </button>
         </div>
         {/* Outside the stack layer (it is transformed; fixed would follow it). */}
@@ -686,11 +714,11 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
       <Sheet
         open
         onClose={onClose}
-        title="Owner report templates"
-        cancelLabel={canEdit ? t('actions.cancel') : undefined}
-        doneLabel={canEdit ? t('actions.save') : undefined}
+        title={t('templates.title')}
+        cancelLabel={canEdit ? t('actions.cancel', { ns: 'common' }) : undefined}
+        doneLabel={canEdit ? t('actions.save', { ns: 'common' }) : undefined}
         onDone={canEdit ? () => void handleSave() : undefined}
-        doneDisabled={busy || !dirty}
+        doneDisabled={busy || !dirty || loadFailed}
         confirmDismiss={confirmLeave}
       >
         {content}
@@ -703,8 +731,8 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
       <div className="ai-settings-overlay" onClick={requestClose} role="dialog" aria-modal="true" aria-labelledby="report-templates-title">
         <div className="ai-settings-modal report-templates" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
           <header className="ai-settings-header">
-            <h2 id="report-templates-title">Owner report templates</h2>
-            <button type="button" className="pdf-preview-close" onClick={requestClose} aria-label="Close">
+            <h2 id="report-templates-title">{t('templates.title')}</h2>
+            <button type="button" className="pdf-preview-close" onClick={requestClose} aria-label={t('actions.close', { ns: 'common' })}>
               ×
             </button>
           </header>
@@ -715,27 +743,33 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
           {error && <div className="login-error report-templates__error" role="alert">{error}</div>}
           <footer className="ai-settings-footer report-templates__footer">
-            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy}>
-              {previewBusy ? 'Building preview…' : 'Preview with sample visit'}
+            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy} aria-label={previewBusy ? t('templates.previewBuilding') : t('templates.previewSample')}>
+              {previewBusy ? t('templates.previewBuilding') : (
+                <>
+                  <span className="report-templates__long">{t('templates.previewSample')}</span>
+                  <span className="report-templates__short">{t('templates.previewShort')}</span>
+                </>
+              )}
             </button>
             <span className="ai-settings-spacer" />
             {canEdit ? (
               <>
-                <button type="button" className="diagram-view__action" onClick={requestClose} disabled={busy}>
-                  Cancel
+                {/* Phones: × already closes (with the same unsaved-changes check). */}
+                <button type="button" className="diagram-view__action report-templates__cancel" onClick={requestClose} disabled={busy}>
+                  {t('actions.cancel', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
                   className="entry-grid__button entry-grid__button--topbar"
                   onClick={handleSave}
-                  disabled={busy || !dirty}
+                  disabled={busy || !dirty || loadFailed}
                 >
-                  {busy ? 'Saving…' : 'Save templates'}
+                  {busy ? t('templates.saving') : t('templates.save')}
                 </button>
               </>
             ) : (
               <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onClose}>
-                Close
+                {t('actions.close', { ns: 'common' })}
               </button>
             )}
           </footer>

@@ -1,9 +1,9 @@
 import React from 'react';
+import i18n from '../i18n';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { emailLinkOrigin } from '../native/authReturn';
 import { isNativeApp } from '../native/platform';
 import { friendlyError } from '../components/ui/dialogs';
-import i18n from '../i18n';
 
 /**
  * Practice (multi-doctor) membership for the signed-in user. All calls
@@ -51,7 +51,7 @@ export interface UseTeamReturn extends TeamState {
 }
 
 export async function call<T = Record<string, unknown>>(body: object): Promise<T> {
-  if (!supabase) throw new Error('Cloud is not configured.');
+  if (!supabase) throw new Error(i18n.t('sync.cloudNotConfigured', { ns: 'app' }));
   const { data, error } = await supabase.functions.invoke('team-api', { body });
   if (error) {
     try {
@@ -99,7 +99,7 @@ export function useTeam(open: boolean): UseTeamReturn {
       const data = await call<TeamState>({ action: 'get_team' });
       setState({ practice: data.practice, role: data.role, primaryOwnerId: data.primaryOwnerId ?? null, members: data.members ?? [] });
     } catch (e) {
-      setError(friendlyError(e, 'Could not load your team.'));
+      setError(friendlyError(e, i18n.t('practice.team.loadFailed', { ns: 'settings' })));
     } finally {
       setLoaded(true);
     }

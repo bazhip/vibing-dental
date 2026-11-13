@@ -204,7 +204,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
       )}
 
       {(show.pdfGrid || show.pdfImages) && (
-        <ListSection header={t('chart.pdf')}>
+        <ListSection header={t('chart.pdf.title')}>
           {show.pdfGrid && (
             <SwitchRow
               title={t('chart.pdfGrid')}

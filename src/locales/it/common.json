@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Annulla",
     "close": "Chiudi",
+    "copy": "Copia",
     "delete": "Elimina",
+    "dismiss": "Ignora",
     "duplicate": "Duplica",
     "edit": "Modifica",
+    "ok": "OK",
     "save": "Salva",
     "done": "Fine",
     "signOut": "Esci",
@@ -17,6 +20,9 @@
     "permission": "Non ha accesso a questo elemento.",
     "rateLimit": "Troppi tentativi. Attenda un minuto e riprovi.",
     "saveFile": "Impossibile salvare il file."
+  },
+  "language": {
+    "label": "Lingua"
   },
   "ios": {
     "back": "Indietro",

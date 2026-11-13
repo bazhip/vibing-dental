@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
 import { markExplicitSignOut } from '../utils/signOutIntent';
 import { friendlyError } from './ui/dialogs';
-import { LegalNotice } from './LegalNotice';
+import { LegalNotice, LEGAL_ACTION } from './LegalNotice';
 import { recordTermsAcceptance } from '../utils/terms';
 import './Login.css';
 
@@ -25,6 +26,7 @@ export const MIN_PASSWORD = 8;
  * password, which activates/recovers the account.
  */
 export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 'recovery' }) => {
+  const { t } = useTranslation('auth');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -50,11 +52,11 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
     e.preventDefault();
     if (!supabase) return;
     if (password.length < MIN_PASSWORD) {
-      setError(`Password must be at least ${MIN_PASSWORD} characters.`);
+      setError(t('errors.passwordMin', { min: MIN_PASSWORD }));
       return;
     }
     if (password !== confirm) {
-      setError('The two passwords don’t match.');
+      setError(t('reset.mismatch'));
       return;
     }
     setBusy(true);
@@ -62,7 +64,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
     const { error: updateError } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (updateError) {
-      setError(friendlyError(updateError, 'Could not set the password. Please try again.'));
+      setError(friendlyError(updateError, t('reset.setFailed')));
       return;
     }
     // Activating sits beside the terms notice — record it.
@@ -91,16 +93,20 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <h1>{mode === 'invite' ? 'Activate your account' : 'Set a new password'}</h1>
+          <h1>{mode === 'invite' ? t('reset.titleInvite') : t('reset.titleRecovery')}</h1>
           <p>
             {mode === 'invite'
-              ? 'You’ve been added to a practice on ToothOps — choose a password to finish.'
-              : 'You followed a password reset link — choose a new password.'}
+              ? t('reset.leadInvite')
+              : t('reset.leadRecovery')}
           </p>
           {email && (
             <p className="login-hint" style={{ marginTop: '0.5rem', textAlign: 'center' }}>
-              {mode === 'invite' ? 'Account for ' : 'Signing in as '}
-              <strong>{email}</strong>
+              <Trans
+                t={t}
+                i18nKey={mode === 'invite' ? 'reset.accountFor' : 'reset.signingInAs'}
+                values={{ email }}
+                components={{ strong: <strong /> }}
+              />
             </p>
           )}
         </div>
@@ -109,7 +115,7 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
               right account. */}
           {email && <input type="email" name="email" autoComplete="username" value={email} readOnly hidden />}
           <label className="login-field">
-            <span className="login-field__label">New password</span>
+            <span className="login-field__label">{t('reset.newPassword')}</span>
             <span className="login-password">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -127,18 +133,18 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
                 type="button"
                 className="login-password__toggle"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Hide passwords' : 'Show passwords'}
+                aria-label={showPassword ? t('reset.hidePasswords') : t('reset.showPasswords')}
                 aria-pressed={showPassword}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? t('login.hide') : t('login.show')}
               </button>
             </span>
           </label>
           <span className={`login-hint${password && password.length < MIN_PASSWORD ? ' login-hint--warn' : ''}`}>
-            At least {MIN_PASSWORD} characters{password ? ` · ${password.length}/${MIN_PASSWORD}` : ''}.
+            {password ? t('login.passwordHintCount', { min: MIN_PASSWORD, length: password.length }) : t('login.passwordHint', { min: MIN_PASSWORD })}
           </span>
           <label className="login-field">
-            <span className="login-field__label">Confirm new password</span>
+            <span className="login-field__label">{t('reset.confirmPassword')}</span>
             <input
               type={showPassword ? 'text' : 'password'}
               className="login-input"
@@ -152,11 +158,11 @@ export const ResetPassword: React.FC<ResetPasswordProps> = ({ onDone, mode = 're
           </label>
           {error && <div className="login-error" role="alert">{error}</div>}
           <button type="submit" className="login-button" disabled={busy}>
-            {busy ? 'Saving…' : mode === 'invite' ? 'Activate account' : 'Set password'}
+            {busy ? t('reset.saving') : mode === 'invite' ? t('reset.activate') : t('reset.setPassword')}
           </button>
-          {mode === 'invite' && <LegalNotice action="activating your account" />}
+          {mode === 'invite' && <LegalNotice action={LEGAL_ACTION.activating} />}
           <button type="button" className="login-switch" onClick={backToSignIn} disabled={busy}>
-            Back to sign in
+            {t('reset.backToSignIn')}
           </button>
         </form>
       </div>

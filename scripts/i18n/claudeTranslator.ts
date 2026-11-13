@@ -6,7 +6,7 @@ const MODEL = 'claude-sonnet-5-5';
 const LANGUAGE_NAMES: Record<string, string> = {
   fr: 'French (formal: vous)',
   de: 'German (formal: Sie)',
-  it: 'Italian (formal: Lei)',
+  it: 'Italian (formal: Lei, with the courtesy capital: Suo, Sua, Suoi, Sue)',
   es: 'Spanish (formal: usted)',
   pt: 'Portuguese (formal)',
 };

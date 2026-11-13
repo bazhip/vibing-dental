@@ -1,0 +1,134 @@
+{
+  "title": "Mes dossiers",
+  "unnamedPatient": "Patient sans nom",
+  "search": {
+    "placeholder": "Rechercher par nom ou numéro de patient…",
+    "aria": "Rechercher dans les dossiers"
+  },
+  "filters": {
+    "speciesAria": "Filtrer par espèce",
+    "allSpecies": "Toutes les espèces",
+    "doctorAria": "Filtrer par vétérinaire",
+    "allDoctors": "Tous les vétérinaires"
+  },
+  "importPdf": "Importer un PDF de dossier",
+  "importPdfTitle": "Ouvrir un PDF de dossier créé avec cette application pour continuer à le modifier",
+  "newPatient": "+ Nouveau patient",
+  "newPatientTitle": "Effacer le dossier en cours et commencer un tout nouveau patient",
+  "loading": "Chargement…",
+  "empty": "Aucun dossier enregistré pour l’instant — ils s’enregistrent automatiquement pendant que vous saisissez.",
+  "noMatch": {
+    "search": "Aucun patient ne correspond à cette recherche.",
+    "due": "Aucun patient n’a de contrôle à effectuer.",
+    "filters": "Aucun dossier ne correspond à ces filtres."
+  },
+  "table": {
+    "aria": "Patients",
+    "patient": "Patient",
+    "number": "N° patient",
+    "species": "Espèce",
+    "visits": "Visites",
+    "updated": "Modifié",
+    "recheck": "Contrôle"
+  },
+  "due": "À faire",
+  "dueCount": "À faire ({{n}})",
+  "dueTitle": "Afficher uniquement les patients dont le contrôle est à faire ou en retard",
+  "recall": {
+    "overdue": "{{date}} · en retard",
+    "today": "{{date}} · aujourd’hui"
+  },
+  "deciduousSuffix": "{{species}} · Dents déciduales",
+  "visits_one": "{{count}} visite",
+  "visits_many": "{{count}} visites",
+  "visits_other": "{{count}} visites",
+  "visitsExpand_one": "{{count}} visite — développer",
+  "visitsExpand_many": "{{count}} visites — développer",
+  "visitsExpand_other": "{{count}} visites — développer",
+  "openPatient": "Ouvrir {{name}}",
+  "visit": {
+    "undated": "Visite sans date",
+    "openDated": "Ouvrir la visite du {{date}}",
+    "openUndated": "Ouvrir la visite sans date",
+    "deleteDated": "Supprimer la visite du {{date}} de {{name}}",
+    "deleteUndated": "Supprimer la visite sans date de {{name}}",
+    "updated": "Modifié le {{when}}"
+  },
+  "actions": {
+    "reminder": "Rappel",
+    "reminderTitle": "Envoyer un rappel de contrôle à {{who}}",
+    "clearRecall": "Effacer le rappel de contrôle de {{name}}",
+    "clearRecallTitle": "Effacer le rappel de contrôle de {{name}} — par exemple après un contrôle qui n’a pas donné lieu à un nouveau dossier",
+    "newVisit": "+ Visite",
+    "newVisitTitle": "Commencer une nouvelle visite pour {{name}}",
+    "history": "Historique",
+    "historyChartTitle": "Qui a enregistré le dossier de {{name}}, et quand",
+    "historyVisitTitle": "Qui a enregistré cette visite, et quand",
+    "deleteChart": "Supprimer le dossier de {{name}}",
+    "loadMore": "Charger plus de dossiers"
+  },
+  "errors": {
+    "load": "Impossible de charger vos dossiers. {{error}}",
+    "loadMore": "Impossible de charger d’autres dossiers. {{error}}",
+    "open": "Impossible d’ouvrir ce dossier. {{error}}",
+    "delete": "Impossible de supprimer cette visite. {{error}}",
+    "clearRecall": "Impossible d’effacer ce contrôle. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Supprimer {{name}}{{when}} ?",
+    "titleUnnamed": "Supprimer ce dossier{{when}} ?",
+    "message": "Cette visite est supprimée du cloud pour tous les membres de votre cabinet. Cette action est irréversible.",
+    "confirm": "Supprimer la visite"
+  },
+  "clearDialog": {
+    "title": "Effacer le contrôle de {{name}} ?",
+    "message": "À utiliser lorsque le contrôle a eu lieu sans nouveau dossier, ou n’est plus nécessaire. Le patient disparaîtra de la liste « À faire ».",
+    "confirm": "Effacer le contrôle"
+  },
+  "history": {
+    "aria": "Historique du dossier",
+    "title": "Historique du dossier",
+    "titleWith": "Historique — {{label}}",
+    "openVisit": "Ouvrir cette visite",
+    "loading": "Chargement…",
+    "empty": "Aucune version enregistrée pour l’instant — l’historique commence au premier enregistrement.",
+    "pick": "Choisissez une version pour la voir.",
+    "loadingVersion": "Chargement de cette version…",
+    "current": "Actuelle",
+    "outside": "Une personne extérieure à votre cabinet",
+    "automatic": "ToothOps (automatique)",
+    "baseline": "Avant le début de l’historique · dernier enregistrement : {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Restaurer cette version",
+    "restoring": "Restauration…",
+    "restoreHint": "Choisissez « Modifier le dossier » pour restaurer une version antérieure.",
+    "loadFailed": "Impossible de charger cette version. {{error}}",
+    "restoreFailed": "Impossible de restaurer. {{error}}",
+    "restored": "Version restaurée.",
+    "confirmTitle": "Restaurer cette version ?",
+    "confirmMessage": "Le dossier revient à l’état enregistré {{when}}. La version actuelle reste dans l’historique : vous pourrez y revenir.",
+    "confirmButton": "Restaurer"
+  },
+  "templates": {
+    "aria": "Modèles de compte rendu",
+    "title": "Modèles de compte rendu",
+    "saved": "Modèles enregistrés",
+    "new": "Nouveau modèle",
+    "empty": "Aucun modèle pour l’instant — rédigez-en un ci-dessous et enregistrez-le, ou utilisez « Enregistrer comme modèle » dans la section Compte rendu de traitement.",
+    "untitled": "Sans titre",
+    "nameLabel": "Nom du modèle",
+    "namePlaceholder": "p. ex. Détartrage de routine (félin)",
+    "bodyLabel": "Texte du compte rendu",
+    "bodyPlaceholder": "Le texte du compte rendu inséré dans Compte rendu de traitement et de chirurgie…",
+    "nameRequired": "Donnez un nom au modèle — il l’identifie dans le menu d’insertion.",
+    "saveFailed": "Impossible d’enregistrer le modèle.",
+    "deleteFailed": "Impossible de supprimer le modèle.",
+    "cloudOff": "Le cloud n’est pas configuré.",
+    "deleteTitle": "Supprimer « {{name}} » ?",
+    "deleteMessage": "Ce modèle est supprimé pour tous les membres de votre cabinet. Cette action est irréversible.",
+    "deleteConfirm": "Supprimer le modèle",
+    "saving": "Enregistrement…",
+    "saveChanges": "Enregistrer les modifications",
+    "saveTemplate": "Enregistrer le modèle"
+  }
+}

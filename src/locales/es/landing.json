@@ -1,0 +1,203 @@
+{
+  "wordmark": "ToothOps Charting",
+  "nav": {
+    "pricing": "Precios",
+    "backToApp": "Volver a la aplicación",
+    "signIn": "Iniciar sesión",
+    "getStarted": "Empezar"
+  },
+  "hero": {
+    "eyebrow": "Odontograma veterinario nativo de IA",
+    "betaPill": "Beta gratuita",
+    "headlineLine1": "Basta con hablar.",
+    "headlineLine2": "El odontograma se rellena solo.",
+    "sub": "Dicte mientras trabaja y la IA escribe los hallazgos directamente en un odontograma Triadan de toda la boca: nomenclatura AVDC, mediciones diente por diente y los diagramas. Además, fotos y radiografías, historial de visitas de cada paciente, recordatorios de revisión y un PDF listo para el cliente, con su logotipo, en cuanto termine.",
+    "ctaTrial": "Empiece su prueba gratuita de {{days}} días",
+    "ctaFree": "Cree su cuenta gratuita",
+    "tryFree": "Pruébelo gratis, sin cuenta",
+    "openApp": "Abrir la aplicación de odontogramas",
+    "notePricing": "Planes desde {{price}}/mes · {{days}} días de prueba gratuita · cancele cuando quiera",
+    "noteTrial": "{{days}} días de prueba gratuita · cancele cuando quiera",
+    "noteBeta": "Gratis durante la beta · dictado por IA incluido · sin tarjeta",
+    "noteNoAccount": "la prueba sin cuenta no incluye el dictado por IA y estampa los PDF con la marca TRIAL"
+  },
+  "demo": {
+    "meta": "Felino · {{date}}",
+    "stepChart": "Odontograma",
+    "stepDiagram": "Diagrama",
+    "stepExport": "Exportar",
+    "colTooth": "Diente",
+    "colMobility": "Mov",
+    "colPocket": "Bol",
+    "colGingivitis": "Gin",
+    "captionChart": "Tab · Intro: se registra como en una hoja de cálculo",
+    "captionDiagram": "Márquelo una vez: cuadrícula, diagrama y PDF se mantienen sincronizados",
+    "captionExport": "Su logotipo, su línea de veterinario: en cada página",
+    "comment": "T/FX/CC — pulpa expuesta",
+    "voice": "«uno-cero-cuatro fractura de corona complicada, pulpa expuesta…»",
+    "pause": "❚❚ Pausar la animación",
+    "play": "▶ Reproducir la animación"
+  },
+  "features": {
+    "seeIt": "Verlo →",
+    "previous": "← Anterior",
+    "next": "Siguiente →",
+    "voiceResult1": "104 · comentario «FCC, pulpa expuesta»",
+    "voiceResult2": "104 · Estadio PD → PD3",
+    "voiceResult3": "Diagrama del procedimiento · 104 marcado para extracción",
+    "grid": {
+      "title": "Se registra como en una hoja de cálculo",
+      "blurb": "Cuadrículas Triadan de toda la boca para dentición felina, canina y decidua. Un clic para escribir y Tab, Intro o Espacio para recorrer una serie de valores dictados en voz alta.",
+      "lead": "La cuadrícula funciona como su equipo ya escribe: haga clic en cualquier celda y listo. Las profundidades de sondaje entran sin apartar la vista del paciente.",
+      "imageAlt": "La cuadrícula de registro con valores de gingivitis, cálculo, bolsa, furca y movilidad introducidos, y el diente 106 tachado como ausente",
+      "points": {
+        "p1": "Un solo clic pone la celda directamente en edición, sin dobles clics.",
+        "p2": "Tab, Intro y Espacio avanzan exactamente como en una hoja de cálculo, de modo que una serie dictada («3, 2, 4…») se introduce sin mirar.",
+        "p3": "Valores de toda la boca en una sola acción: establezca el cálculo o la gingivitis de todos los dientes desde el encabezado de la columna.",
+        "p4": "La casilla Ausente tacha la fila y rellena el diente en el diagrama: una única fuente de verdad.",
+        "p5": "En una visita de seguimiento, los valores de la vez anterior aparecen como pistas tenues en las celdas vacías: compare sin abrir el historial anterior.",
+        "p6": "Denticiones de gato, perro, cachorro y gatito, todas numeradas según Triadan."
+      }
+    },
+    "voice": {
+      "title": "Autocompletado por voz con IA, integrado",
+      "tag": "IA · Beta gratuita",
+      "blurb": "Diga «104 fractura de corona complicada» y el dato llega al diente correcto: transcrito y registrado mientras sus manos siguen en el paciente.",
+      "lead": "Dicte mientras trabaja: un modelo de voz de calidad médica transcribe y la IA coloca cada hallazgo en el diente, el diagrama y el campo correctos.",
+      "points": {
+        "p1": "Reconocimiento de voz con vocabulario médico, ajustado a la terminología dental veterinaria.",
+        "p2": "Los hallazgos llegan como entradas estructuradas —valores de la cuadrícula, marcas en los dientes, comentarios anclados— y no como un muro de texto.",
+        "p3": "Una transcripción en directo en la barra lateral muestra cada acción a medida que ocurre; cada una resalta el diente afectado.",
+        "p4": "Todo lo que escribe la IA pasa por el mismo sistema de deshacer que sus propias ediciones.",
+        "p5": "¿No está seguro de que le haya entendido bien? Marca el hallazgo y, tras una pausa, le dice «Revisar 109» al oído, nunca mientras usted habla.",
+        "p6": "Sin claves de API y sin configuración: gratis durante la beta."
+      }
+    },
+    "diagrams": {
+      "title": "Diagramas siempre sincronizados",
+      "blurb": "Los diagramas dentales de diagnóstico y de procedimiento siguen a la cuadrícula: tache un diente una vez y todo el historial lo sigue, del odontograma al PDF.",
+      "lead": "Dos diagramas anatómicos —primero los hallazgos, después los procedimientos— que nunca contradicen a la cuadrícula ni al documento impreso.",
+      "imageAlt": "El diagrama de diagnóstico con los dientes ausentes rellenos y los códigos AVDC —T/FX, T/FX/CCF, TR, AB, AT— anclados a cada diente",
+      "points": {
+        "p1": "Marque dientes como ausentes o extraídos con un clic (o con el teclado: todos los dientes son enfocables).",
+        "p2": "Los comentarios se anclan a un diente y se mantienen unidos a él; los comentarios libres pueden ir en cualquier sitio.",
+        "p3": "Dibujo a mano alzada en cinco colores para todo lo que un código no puede expresar.",
+        "p4": "Zoom y desplazamiento para bocas felinas con poco espacio.",
+        "p5": "Los dientes marcados como ausentes en Diagnóstico se bloquean en el diagrama de Procedimiento: no se puede volver a extraer lo que ya no está.",
+        "p6": "Cada diagrama tiene su propia pila de deshacer (⌘Z se aplica al último que haya tocado)."
+      }
+    },
+    "avdc": {
+      "title": "Habla AVDC",
+      "blurb": "El conjunto completo de abreviaturas AVDC en todo el programa, con una referencia consultable junto a los diagramas y una leyenda impresa en cada historial.",
+      "lead": "El registro se lee con claridad en cualquier mano: nomenclatura estándar de principio a fin, y la referencia siempre a un vistazo.",
+      "imageAlt": "El panel de referencia consultable de códigos AVDC",
+      "points": {
+        "p1": "Conjunto completo de abreviaturas AVDC para patologías y procedimientos.",
+        "p2": "Una referencia de códigos consultable junto a cada diagrama: sin pestaña aparte, y sigue disponible incluso en historiales bloqueados.",
+        "p3": "Cada código usado en el historial se imprime con su significado en una leyenda del PDF.",
+        "p4": "Autocompletado de códigos dentales en los campos de comentario mientras escribe."
+      }
+    },
+    "pdf": {
+      "title": "PDF listos para el cliente",
+      "blurb": "Un historial de dos páginas con su marca en cuanto termina; además, el propio PDF puede reimportarse más tarde para restaurar todo el historial.",
+      "lead": "Un toque convierte el historial en un documento cuidado con el nombre de su clínica, su línea de veterinario y su logotipo.",
+      "imageAlt": "El PDF generado del odontograma canino con diagramas, hallazgos de la exploración y tablas de las arcadas",
+      "points": {
+        "p1": "Dos páginas: diagramas, exploración oral, tablas completas de las arcadas, informe del tratamiento y leyenda de códigos.",
+        "p2": "Varios estilos de documento: elija en cada descarga y la vista previa se actualiza al instante.",
+        "p3": "El estado completo del historial va incrustado en el PDF: reimpórtelo más tarde y siga trabajando, incluso en otro equipo.",
+        "p4": "Informe para el propietario (beta): una versión aparte para llevar a casa, en lenguaje sencillo, con fotos del antes y el después; se genera automáticamente y se puede editar antes de imprimir."
+      }
+    },
+    "photos": {
+      "title": "Fotos y radiografías",
+      "blurb": "Adjunte fotos intraorales y radiografías dentales a cualquier historial, póngales un pie de foto y asocie cada una a un diente; se guardan de forma privada junto al registro.",
+      "lead": "Las imágenes están donde las buscará: en el historial, asociadas al diente que muestran.",
+      "points": {
+        "p1": "Fotos intraorales y radiografías, con pie de foto y asociadas a cada diente.",
+        "p2": "Almacenamiento privado con enlaces firmados de corta duración: las imágenes nunca son públicas.",
+        "p3": "Las fotos del móvil se reducen automáticamente para que los historiales sigan siendo rápidos.",
+        "p4": "Etiquete las fotos como Antes/Después para incluirlas en el informe para el propietario (beta)."
+      }
+    },
+    "history": {
+      "title": "Cada visita, un paciente",
+      "blurb": "Los historiales se agrupan por paciente, así que toda la historia de un animal que vuelve está a un clic, y esta visita empieza donde terminó la anterior.",
+      "lead": "Un paciente es una historia, no un montón de archivos. ToothOps mantiene las visitas juntas y arrastra lo que corresponde.",
+      "points": {
+        "p1": "Los historiales se agrupan por paciente; un selector de visitas en la barra superior permite cambiar de fecha.",
+        "p2": "Las nuevas visitas arrastran automáticamente los dientes extraídos y ausentes, marcados como «ant.» para que se lean como antecedente y no como hallazgo de hoy.",
+        "p3": "Las mediciones de la última visita aparecen como pistas mientras sondea, de modo que las tendencias saltan a la vista junto al sillón.",
+        "p4": "Cada guardado queda registrado —quién y cuándo— en el historial de cada registro.",
+        "p5": "Las visitas anteriores se abren en solo lectura hasta que se desbloquean a propósito, para que los registros no cambien por accidente; la visita de hoy sigue lista para editar."
+      }
+    },
+    "recall": {
+      "title": "Recordatorios integrados",
+      "blurb": "Fije una fecha de revisión mientras registra; la lista de pacientes señala quién está pendiente y quién está atrasado, para que la próxima limpieza dental no se pase.",
+      "lead": "El cumplimiento de las revisiones es donde se ganan los resultados dentales: la lista lleva la cuenta por usted.",
+      "points": {
+        "p1": "Una fecha de revisión en el historial incluye al paciente en la lista Pendientes, marcado como pendiente o atrasado.",
+        "p2": "Envíe al propietario un correo de recordatorio directamente desde la lista de pacientes.",
+        "p3": "¿La revisión se hizo sin un historial nuevo? Bórrela con un clic y el paciente sale de la lista.",
+        "p4": "Filtre la biblioteca por pacientes pendientes para planificar las llamadas de la semana."
+      }
+    },
+    "team": {
+      "title": "Todo su equipo, un solo historial",
+      "blurb": "Añada colegas a su clínica y todos comparten los mismos historiales, plantillas e imágenes: cuentas personales, no una contraseña compartida.",
+      "lead": "La clínica es la unidad: un conjunto de registros compartido, inicios de sesión individuales y el veterinario de cada visita registrado.",
+      "points": {
+        "p1": "Hasta cinco puestos por clínica (gratis durante la beta); cada miembro tiene su propio inicio de sesión.",
+        "p2": "Los historiales, las plantillas de informe, las imágenes y el logotipo de la clínica se comparten automáticamente.",
+        "p3": "Cada visita registra a su autor: filtre la biblioteca por veterinario.",
+        "p4": "Controles solo para el propietario para renombrar la clínica y gestionar el equipo."
+      }
+    },
+    "offline": {
+      "title": "En la nube y junto al sillón",
+      "blurb": "Cada historial se guarda automáticamente en la nube y conserva una copia local junto al sillón, así que una conexión caída nunca hace perder una boca.",
+      "lead": "El wifi de la clínica no forma parte de su protocolo anestésico. ToothOps da por hecho que la conexión se caerá y se prepara para ello.",
+      "points": {
+        "p1": "Cada pulsación se guarda localmente al instante: recargar a mitad de un procedimiento no pierde nada.",
+        "p2": "Los historiales nuevos se guardan automáticamente en la nube; los guardados fallidos se reintentan solos cuando vuelve la conexión.",
+        "p3": "Si su sesión caduca a mitad de un procedimiento, el historial sigue abierto: vuelva a iniciar sesión justo encima.",
+        "p4": "Las plantillas de informe reutilizables ahorran escribir en cada COHAT."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Precios mensuales sencillos",
+    "sub": "Todos los planes empiezan con {{days}} días de prueba gratuita. Cancele cuando quiera: guardamos sus historiales a salvo durante 30 días por si vuelve.",
+    "mostPopular": "El más popular",
+    "perMonth": "/mes",
+    "startTrial": "Empezar la prueba gratuita",
+    "contact": "¿Un equipo más grande? ¿Un grupo con varias sedes? ¿Un programa universitario? <a>Contáctenos</a> para conocer los precios a partir de 5 puestos."
+  },
+  "paper": {
+    "title": "El historial que sus clientes se llevan a casa",
+    "body": "Un clic convierte todo el procedimiento en un PDF limpio de dos páginas: su logotipo y su línea de veterinario arriba, las cuadrículas de toda la boca, ambos diagramas, los hallazgos de la exploración y una leyenda de cada código AVDC utilizado.",
+    "point1": "Cinco estilos de documento profesionales",
+    "point2": "La identidad del paciente en cada página",
+    "point3": "Reabra cualquier PDF en la aplicación: el historial viaja dentro",
+    "page1Label": "Ver la página uno del historial de ejemplo a tamaño completo",
+    "page1Zoom": "Página uno del historial de ejemplo, a tamaño completo",
+    "page1Alt": "Página uno de un PDF de odontograma generado: logotipo de la clínica y línea de veterinario, diagrama de diagnóstico con comentarios anclados, hallazgos de la exploración oral con comentarios, cuadrículas de sondaje Triadan parciales y una leyenda de los códigos AVDC utilizados",
+    "page2Label": "Ver la página dos del historial de ejemplo a tamaño completo",
+    "page2Zoom": "Página dos del historial de ejemplo, a tamaño completo",
+    "page2Alt": "Página dos del mismo historial: dosis de los bloqueos nerviosos, el diagrama del procedimiento con las extracciones marcadas, el informe del tratamiento y la cirugía, y los códigos de procedimiento utilizados"
+  },
+  "closer": {
+    "title": "¿Listo para dejar el portapapeles?"
+  },
+  "lightboxClose": "Cerrar la vista a tamaño completo",
+  "footer": {
+    "tagline": "ToothOps Charting — creado con dentistas veterinarios.",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "dpa": "DPA",
+    "contact": "Contacto"
+  }
+}

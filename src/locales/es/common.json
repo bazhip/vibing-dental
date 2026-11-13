@@ -2,9 +2,12 @@
   "actions": {
     "cancel": "Cancelar",
     "close": "Cerrar",
+    "copy": "Copiar",
     "delete": "Eliminar",
+    "dismiss": "Descartar",
     "duplicate": "Duplicar",
     "edit": "Editar",
+    "ok": "OK",
     "save": "Guardar",
     "done": "Hecho",
     "signOut": "Cerrar sesión",
@@ -13,10 +16,13 @@
   "errors": {
     "generic": "Algo salió mal. Inténtelo de nuevo.",
     "network": "No se puede conectar con ToothOps: revise su conexión e inténtelo de nuevo.",
-    "notFound": "No se encontró esa ficha; puede que se haya eliminado.",
+    "notFound": "No se encontró ese historial; puede que se haya eliminado.",
     "permission": "No tiene acceso a eso.",
     "rateLimit": "Demasiados intentos. Espere un minuto e inténtelo de nuevo.",
     "saveFile": "No se pudo guardar el archivo."
+  },
+  "language": {
+    "label": "Idioma"
   },
   "ios": {
     "back": "Atrás",

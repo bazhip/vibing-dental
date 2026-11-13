@@ -1,8 +1,8 @@
 import React from 'react';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
+import i18n from '../i18n';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
 import { isNativeApp } from '../native/platform';
-import i18n from '../i18n';
 
 /**
  * Photos and radiographs pinned to the active chart. Files live in the
@@ -76,6 +76,9 @@ const ATTACHMENT_LIMITS = {
 
 export const MAX_UPLOAD_BYTES = ATTACHMENT_LIMITS.maxUploadBytes;
 
+/** Messages shown to the user, in the active language. */
+const tm = () => i18n.getFixedT(null, 'media');
+
 const ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
 
 /**
@@ -95,18 +98,18 @@ export function uploadRejection(u: {
   if (u.dicom && !u.dicomEnabled) {
     return u.native
       ? i18n.t('chart:imaging.dicomUnavailable')
-      : 'DICOM uploads are included on paid plans. Export the radiograph as a JPEG or PNG to add it on the free plan.';
+      : tm()('upload.dicomPaid');
   }
   if (!u.dicom && !ALLOWED.includes(u.type)) {
-    return u.dicomEnabled ? 'Use a PNG, JPEG, WEBP or DICOM image.' : 'Use a PNG, JPEG, or WEBP image.';
+    return u.dicomEnabled ? tm()('upload.typeDicom') : tm()('upload.typePlain');
   }
   if (u.count >= u.maxImages) {
     return u.native
       ? i18n.t('chart:imaging.limitReached', { count: u.maxImages })
-      : `This chart already has the maximum of ${u.maxImages} images. Delete one to add another.`;
+      : tm()('upload.maxImages', { max: u.maxImages });
   }
   if (u.size > ATTACHMENT_LIMITS.hardMaxBytes) {
-    return `That image is too large (over ${Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024)} MB). Use a smaller file.`;
+    return tm()('upload.tooLarge', { mb: Math.round(ATTACHMENT_LIMITS.hardMaxBytes / 1024 / 1024) });
   }
   return null;
 }
@@ -170,7 +173,7 @@ async function dicomPreview(file: File): Promise<File> {
     blob = await renderDicomPreview(new Uint8Array(await file.arrayBuffer()));
   } catch (err) {
     if (err instanceof DicomError) throw err;
-    throw new Error("Couldn't read that DICOM file.");
+    throw new Error(tm()('upload.readDicom'));
   }
   const base = file.name.replace(/\.[^.]+$/, '') || 'radiograph';
   const ext = blob.type === 'image/jpeg' ? 'jpg' : 'png';
@@ -218,7 +221,7 @@ async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | nu
   const img = await decodeImage(file);
   if (!img) {
     if (file.size <= maxBytes) return { main: file, thumb: null };
-    throw new Error("Couldn't read that image to shrink it. Try saving it as a JPEG first.");
+    throw new Error(tm()('upload.cantRead'));
   }
   const longest = Math.max(img.width, img.height);
 
@@ -240,9 +243,7 @@ async function prepareUpload(file: File): Promise<{ main: File; thumb: Blob | nu
   };
   const blob = await encodeUnderLimit(encode, maxBytes);
   if (!blob) {
-    throw new Error(
-      `Couldn't shrink that image under ${Math.round(maxBytes / 1024 / 1024)} MB. Try a smaller file.`
-    );
+    throw new Error(tm()('upload.cantShrink', { mb: Math.round(maxBytes / 1024 / 1024) }));
   }
   const base = file.name.replace(/\.[^.]+$/, '') || 'image';
   return { main: new File([blob], `${base}.jpg`, { type: 'image/jpeg' }), thumb };
@@ -351,7 +352,8 @@ export function useAttachments(
 
   const upload = React.useCallback(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
-      if (!supabase) throw new Error('Cloud is not configured.');
+      // Messages are looked up when thrown: an upload can outlast a language switch.
+      if (!supabase) throw new Error(tm()('upload.noCloud'));
       const dicom = await isDicomFile(file);
       const rejection = uploadRejection({
         dicom,
@@ -369,7 +371,7 @@ export function useAttachments(
       const { main: toUpload, thumb } = await prepareUpload(source);
       const { data: sessionData } = await supabase.auth.getSession();
       const uid = sessionData.session?.user.id;
-      if (!uid) throw new Error('Sign in to add images.');
+      if (!uid) throw new Error(tm()('upload.signIn'));
       const id = crypto.randomUUID();
       const path = `${uid}/${chartId}/${id}.${extFor(toUpload.type)}`;
       const originalPath = dicom ? `${uid}/${chartId}/${id}.dcm` : null;
@@ -383,7 +385,7 @@ export function useAttachments(
           .upload(originalPath, file, { contentType: DICOM_MIME, upsert: false });
         if (origErr) {
           await supabase.storage.from('attachments').remove([path]).catch(() => undefined);
-          throw new Error(`Couldn't store the original DICOM file: ${origErr.message}`);
+          throw new Error(tm()('upload.originalFailed', { message: origErr.message }));
         }
       }
       if (thumb) {

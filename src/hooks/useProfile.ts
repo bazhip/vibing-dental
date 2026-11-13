@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { FREE_BETA } from '../constants/plans';
 import { call as callTeamApi } from './useTeam';
@@ -61,8 +62,14 @@ export interface UseProfileReturn extends PracticeProfile {
   /** The practice's owner report templates (normalized; the built-in
    *  default when the practice hasn't customized anything). */
   ownerReportConfig: OwnerReportConfig;
-  /** Owner-only: persist the templates (team-api) and update local state. */
+  /** Owner-only: persist the templates (team-api) and update local state.
+   *  Refuses (throws) when the saved templates failed to load, or when
+   *  they changed elsewhere since they were loaded — each save replaces
+   *  the whole set, so either case would silently wipe real templates. */
   saveOwnerReportConfig: (config: OwnerReportConfig) => Promise<void>;
+  /** The practice's saved templates couldn't be read; `ownerReportConfig`
+   *  is only the built-in default, and saving is blocked. */
+  ownerReportConfigLoadFailed: boolean;
   /** Signed URL of the uploaded practice logo, or '' when none. */
   logoUrl: string;
   update: (next: PracticeProfile) => Promise<void>;
@@ -98,7 +105,7 @@ async function normalizeToPng(file: File): Promise<Blob> {
     const img = new Image();
     await new Promise<void>((resolve, reject) => {
       img.onload = () => resolve();
-      img.onerror = () => reject(new Error('Could not read that image.'));
+      img.onerror = () => reject(new Error(i18n.t('logoErrors.unreadable', { ns: 'settings' })));
       img.src = url;
     });
     const scale = Math.min(1, LOGO_MAX_WIDTH / img.width);
@@ -106,12 +113,12 @@ async function normalizeToPng(file: File): Promise<Blob> {
     canvas.width = Math.max(1, Math.round(img.width * scale));
     canvas.height = Math.max(1, Math.round(img.height * scale));
     const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas unavailable');
+    if (!ctx) throw new Error(i18n.t('logoErrors.canvas', { ns: 'settings' }));
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob(resolve, 'image/png')
     );
-    if (!blob) throw new Error('Could not convert the image.');
+    if (!blob) throw new Error(i18n.t('logoErrors.convert', { ns: 'settings' }));
     return blob;
   } finally {
     URL.revokeObjectURL(url);
@@ -133,7 +140,7 @@ async function myPracticeId(userId: string): Promise<string> {
 export async function uploadPracticeLogo(file: File): Promise<string> {
   if (!supabase) return '';
   if (file.size > LOGO_MAX_UPLOAD_BYTES) {
-    throw new Error('That image is too large — logo files must be under 10 MB.');
+    throw new Error(i18n.t('logoErrors.tooLarge', { ns: 'settings' }));
   }
   const { data: sessionData } = await supabase.auth.getSession();
   const userId = sessionData.session?.user.id;
@@ -173,6 +180,12 @@ export function useProfile(): UseProfileReturn {
   const [billed, setBilled] = React.useState(false);
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
   const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
+  const [ownerReportConfigLoadFailed, setOwnerReportConfigLoadFailed] = React.useState(false);
+  const reportLoadFailedRef = React.useRef(false);
+  // Version of the saved templates this session loaded (null = unknown,
+  // e.g. before the version column existed) — sent with every save so a
+  // stale tab or device can't overwrite newer templates.
+  const reportRevRef = React.useRef<number | null>(null);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
@@ -203,6 +216,8 @@ export function useProfile(): UseProfileReturn {
       let billedSub = false;
       let ownerReportOn = false;
       let reportConfig: OwnerReportConfig | null = null;
+      let reportRev: number | null = null;
+      let reportLoadFailed = false;
       if (pid) {
         const { data: prac } = await supabase
           .from('practices')
@@ -225,14 +240,28 @@ export function useProfile(): UseProfileReturn {
         if (!featuresError) {
           ownerReportOn = !!(features as { owner_report_enabled?: boolean } | null)?.owner_report_enabled;
         }
-        // Same tolerance for the owner report templates column.
-        const { data: reportRow, error: reportError } = await supabase
+        // Owner report templates (+ their version). A failed read is NOT
+        // "no templates": it's remembered, and saving is blocked, so the
+        // built-in default shown meanwhile can never be saved over them.
+        let { data: reportRow, error: reportError } = await supabase
           .from('practices')
-          .select('owner_report_config')
+          .select('owner_report_config, owner_report_config_rev')
           .eq('id', pid)
           .maybeSingle();
+        if (reportError && /owner_report_config_rev/.test(reportError.message)) {
+          // Version column not added yet: read without it.
+          ({ data: reportRow, error: reportError } = await supabase
+            .from('practices')
+            .select('owner_report_config')
+            .eq('id', pid)
+            .maybeSingle());
+        }
         if (!reportError) {
-          reportConfig = normalizeConfig((reportRow as { owner_report_config?: unknown } | null)?.owner_report_config);
+          const row = reportRow as { owner_report_config?: unknown; owner_report_config_rev?: unknown } | null;
+          reportConfig = normalizeConfig(row?.owner_report_config);
+          reportRev = typeof row?.owner_report_config_rev === 'number' ? row.owner_report_config_rev : null;
+        } else {
+          reportLoadFailed = true;
         }
       }
       const signedUrl = await signedLogoUrl(effectiveLogoPath);
@@ -248,6 +277,9 @@ export function useProfile(): UseProfileReturn {
           setBilled(billedSub);
           setOwnerReportEnabled(ownerReportOn);
           if (reportConfig) setOwnerReportConfig(reportConfig);
+          reportRevRef.current = reportRev;
+          reportLoadFailedRef.current = reportLoadFailed;
+          setOwnerReportConfigLoadFailed(reportLoadFailed);
         }
         setLoaded(true);
       }
@@ -281,9 +313,19 @@ export function useProfile(): UseProfileReturn {
   const saveOwnerReportConfig = React.useCallback(async (config: OwnerReportConfig): Promise<void> => {
     const normalized = normalizeConfig(config);
     if (configByteSize(normalized) > MAX_CONFIG_BYTES) {
-      throw new Error('Those owner report settings are too large (50 KB max) — shorten some text or remove a template.');
+      throw new Error(i18n.t('logoErrors.reportTooLarge', { ns: 'settings' }));
     }
-    if (supabase) await callTeamApi({ action: 'set_owner_report_config', config: normalized });
+    if (reportLoadFailedRef.current) {
+      throw new Error('Your saved owner report templates didn’t load, so saving now could overwrite them. Reload the page and try again.');
+    }
+    if (supabase) {
+      const res = await callTeamApi<{ ok?: boolean; rev?: number }>({
+        action: 'set_owner_report_config',
+        config: normalized,
+        ...(reportRevRef.current !== null ? { expectedRev: reportRevRef.current } : {}),
+      });
+      if (typeof res?.rev === 'number') reportRevRef.current = res.rev;
+    }
     setOwnerReportConfig(normalized);
   }, []);
 
@@ -322,6 +364,7 @@ export function useProfile(): UseProfileReturn {
     dicomEnabled: PLAN_LIMITS[plan].dicom && billed,
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
+    ownerReportConfigLoadFailed,
     ownerReportConfig,
     saveOwnerReportConfig,
     logoUrl,

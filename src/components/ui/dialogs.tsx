@@ -1,10 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { isNativeApp } from '../../native/platform';
 import { Icon } from '../../ios/icons';
 import { exitDelay, trapTab, useMediaQuery } from '../../ios/gesture';
 import './dialogs.css';
+
+// SF Symbol names (not text).
+const CHECKMARK_CIRCLE_ICON = 'checkmark-circle';
+const EXCLAMATIONMARK_CIRCLE_ICON = 'exclamationmark-circle';
+const XMARK_ICON = 'xmark';
 
 /**
  * App-wide confirm / prompt dialogs and toasts, replacing the browser's
@@ -192,6 +198,7 @@ function useBackdropClose(onClose: () => void) {
 }
 
 function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'confirm' }>; onDone: (v: boolean) => void }) {
+  const { t } = useTranslation();
   const { opts } = req;
   const confirmRef = React.useRef<HTMLButtonElement>(null);
   const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -208,7 +215,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">
           <button ref={cancelRef} type="button" className="ui-btn ui-btn--secondary" onClick={() => onDone(false)}>
-            {opts.cancelLabel ?? 'Cancel'}
+            {opts.cancelLabel ?? t('actions.cancel')}
           </button>
           <button
             ref={confirmRef}
@@ -216,7 +223,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
             className={`ui-btn ${opts.danger ? 'ui-btn--danger' : 'ui-btn--primary'}`}
             onClick={() => onDone(true)}
           >
-            {opts.confirmLabel ?? 'OK'}
+            {opts.confirmLabel ?? t('actions.ok')}
           </button>
         </div>
       </div>
@@ -225,6 +232,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
 }
 
 function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prompt' }>; onDone: (v: string | null) => void }) {
+  const { t } = useTranslation();
   const { opts } = req;
   const [value, setValue] = React.useState(opts.defaultValue ?? '');
   const [error, setError] = React.useState<string | null>(null);
@@ -273,10 +281,10 @@ function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prom
         {error && <p className="ui-dialog__error" role="alert">{error}</p>}
         <div className="ui-dialog__actions">
           <button type="button" className="ui-btn ui-btn--secondary" onClick={() => onDone(null)}>
-            {opts.cancelLabel ?? (opts.readOnly ? 'Close' : 'Cancel')}
+            {opts.cancelLabel ?? (opts.readOnly ? t('actions.close') : t('actions.cancel'))}
           </button>
           <button type="submit" className="ui-btn ui-btn--primary">
-            {opts.confirmLabel ?? (opts.readOnly ? 'Copy' : 'OK')}
+            {opts.confirmLabel ?? (opts.readOnly ? t('actions.copy') : t('actions.ok'))}
           </button>
         </div>
       </form>
@@ -514,8 +522,8 @@ function NativeToast({ item, onDismiss }: { item: ToastItem; onDismiss: () => vo
   useAutoDismiss(item, onDismiss);
   return (
     <div className={`ios-toast ios-toast--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
-      {kind === 'success' && <Icon name="checkmark-circle" filled size={20} className="ios-toast__icon" />}
-      {kind === 'error' && <Icon name="exclamationmark-circle" filled size={20} className="ios-toast__icon" />}
+      {kind === 'success' && <Icon name={CHECKMARK_CIRCLE_ICON} filled size={20} className="ios-toast__icon" />}
+      {kind === 'error' && <Icon name={EXCLAMATIONMARK_CIRCLE_ICON} filled size={20} className="ios-toast__icon" />}
       <span className="ios-toast__msg">{item.message}</span>
       {item.opts.action && (
         <button
@@ -527,7 +535,7 @@ function NativeToast({ item, onDismiss }: { item: ToastItem; onDismiss: () => vo
         </button>
       )}
       <button type="button" className="ios-toast__close" onClick={onDismiss} aria-label={i18n.t('actions.close')}>
-        <Icon name="xmark" size={14} />
+        <Icon name={XMARK_ICON} size={14} />
       </button>
     </div>
   );
@@ -650,6 +658,7 @@ function useAutoDismiss(item: ToastItem, onDismiss: () => void) {
 }
 
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
+  const { t } = useTranslation();
   const kind = item.opts.kind ?? 'info';
   useAutoDismiss(item, onDismiss);
   return (
@@ -664,7 +673,7 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
           {item.opts.action.label}
         </button>
       )}
-      <button type="button" className="ui-toast__close" onClick={onDismiss} aria-label="Dismiss">×</button>
+      <button type="button" className="ui-toast__close" onClick={onDismiss} aria-label={t('actions.dismiss')}>×</button>
     </div>
   );
 }

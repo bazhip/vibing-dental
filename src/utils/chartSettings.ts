@@ -1,5 +1,6 @@
 import { DentalField } from '../types';
 import { AppLanguage, isAppLanguage } from '../i18n/config';
+import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 
 /**
@@ -9,25 +10,32 @@ import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs 
  * settings existed, so an empty or missing object changes nothing.
  */
 
-export const PERIO_FIELDS: { key: DentalField; label: string }[] = [
-  { key: 'mobility', label: 'Mobility' },
-  { key: 'recession', label: 'Recession' },
-  { key: 'pocket', label: 'Pocket' },
-  { key: 'furcation', label: 'Furcation' },
-  { key: 'hyperplasia', label: 'Enlargement' },
-  { key: 'calculus', label: 'Calculus' },
-  { key: 'gingivitis', label: 'Gingivitis' },
-  { key: 'pdstate', label: 'PD Stage' },
+// `label` is read through columnLabel each time, so it follows the language.
+const perioField = (key: DentalField & ColumnKey): { key: DentalField; readonly label: string } => ({
+  key,
+  get label() {
+    return columnLabel(key);
+  },
+});
+export const PERIO_FIELDS: { key: DentalField; readonly label: string }[] = [
+  perioField('mobility'),
+  perioField('recession'),
+  perioField('pocket'),
+  perioField('furcation'),
+  perioField('hyperplasia'),
+  perioField('calculus'),
+  perioField('gingivitis'),
+  perioField('pdstate'),
 ];
 const FIELD_KEYS = new Set<string>(PERIO_FIELDS.map((f) => f.key));
 
-/** Nerve block rows on the Anesthesia page (each R/L pair, plus Other). */
+/** Nerve block rows on the Anesthesia page (each R/L pair, plus Other). Names: settings:chart.anesthesia.blockNames. */
 export const BLOCK_ROW_OPTIONS = [
-  { id: 'infraorbital', label: 'Infraorbital' },
-  { id: 'caudalMaxillary', label: 'Caudal maxillary' },
-  { id: 'inferiorAlveolar', label: 'Inferior alveolar' },
-  { id: 'mental', label: 'Mental' },
-  { id: 'other', label: 'Other' },
+  { id: 'infraorbital' },
+  { id: 'caudalMaxillary' },
+  { id: 'inferiorAlveolar' },
+  { id: 'mental' },
+  { id: 'other' },
 ] as const;
 export type BlockRowId = (typeof BLOCK_ROW_OPTIONS)[number]['id'];
 const BLOCK_IDS = new Set<string>(BLOCK_ROW_OPTIONS.map((b) => b.id));

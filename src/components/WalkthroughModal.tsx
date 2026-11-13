@@ -13,100 +13,41 @@ interface WalkthroughModalProps {
   onNavigate?: (sectionId: string) => void;
 }
 
+type StepId = 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'library' | 'dictate' | 'settings' | 'pdf';
+
 export interface Step {
+  /** Catalog id: onboarding:walkthrough.steps.<id>.title / .body. */
+  id: StepId;
   /** Chart section to switch to before showing this step. */
   section?: string;
   /** CSS selector for the element to point at. Omit for a centered step. */
   target?: string;
-  title: string;
-  body: React.ReactNode;
   /** Preferred popover side relative to the target. */
   placement?: 'bottom' | 'top' | 'left' | 'right';
 }
 
-/** The tour's steps (also listed by the iOS app's Getting started screen). */
+/** A step ready to show: its place on screen plus its text in the active language. */
+export type TourStep = Omit<Step, 'id'> & { title: string; body: string };
+
+/** The website tour's steps (the app's are in src/ios/tourSteps.ts). */
 export function buildSteps(aiEnabled?: boolean): Step[] {
   const steps: Step[] = [
-    {
-      title: 'Welcome to ToothOps',
-      body: 'A 60-second tour of where everything lives. You can replay it any time from Settings → Getting started.',
-    },
-    {
-      target: '.sidebar-layout__nav',
-      placement: 'right',
-      title: 'The eight sections',
-      body: 'A dental record, top to bottom. Work down these in order or jump around — everything autosaves.',
-    },
-    {
-      section: 'patient',
-      target: 'input[placeholder="Enter patient name"]',
-      placement: 'bottom',
-      title: 'Patient & owner',
-      body: 'Name, owner contact, and the recheck date. Only the patient name is required to save.',
-    },
-    {
-      section: 'patient',
-      target: '.patient-form__selectors',
-      placement: 'top',
-      title: 'Species & dentition',
-      body: 'Pick Feline or Canine, then Permanent or Deciduous — the tooth layout follows.',
-    },
-    {
-      section: 'charting',
-      target: '.dental-grid',
-      placement: 'top',
-      title: 'The charting grid',
-      body: 'Per-tooth measurements. Tab moves across, Enter moves down — chart without looking up.',
-    },
-    {
-      section: 'diagnosis',
-      target: '.tooth-diagram-wrapper',
-      placement: 'right',
-      title: 'Diagrams',
-      body: 'Click a tooth to mark it; switch between Comment and Draw, add free notes. Undo with ⌘Z.',
-    },
-    {
-      section: 'diagnosis',
-      target: '.diagram-with-codes__codes',
-      placement: 'left',
-      title: 'Code reference',
-      body: 'Search the full AVDC code set here; it stays pinned beside the diagram as you scroll.',
-    },
-    {
-      section: 'treatment',
-      target: '.dental-grid-section',
-      placement: 'top',
-      title: 'Treatment report & templates',
-      body: 'Write the report, or insert a saved template from the dropdown — and save new ones to reuse.',
-    },
-    {
-      target: '[data-tour="library"]',
-      placement: 'bottom',
-      title: 'My charts',
-      body: 'Open any patient’s charts (saved visits open read-only until you Edit), or — for the patient on screen — start a new visit or see its version history. New patient, beside it, starts a blank chart.',
-    },
+    { id: 'welcome' },
+    { id: 'sections', target: '.sidebar-layout__nav', placement: 'right' },
+    { id: 'patient', section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' },
+    { id: 'species', section: 'patient', target: '.patient-form__selectors', placement: 'top' },
+    { id: 'grid', section: 'charting', target: '.dental-grid', placement: 'top' },
+    { id: 'diagrams', section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'right' },
+    { id: 'codes', section: 'diagnosis', target: '.diagram-with-codes__codes', placement: 'left' },
+    { id: 'treatment', section: 'treatment', target: '.dental-grid-section', placement: 'top' },
+    { id: 'library', target: '[data-tour="library"]', placement: 'bottom' },
   ];
   if (aiEnabled) {
-    steps.push({
-      target: '.voice-input',
-      placement: 'bottom',
-      title: 'Dictate',
-      body: 'Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything.',
-    });
+    steps.push({ id: 'dictate', target: '.voice-input', placement: 'bottom' });
   }
   steps.push(
-    {
-      target: '[data-tour="settings"] .chart-menu__trigger',
-      placement: 'bottom',
-      title: 'Settings',
-      body: 'Practice name & logo, team, recheck-reminder templates, your account — and this tour.',
-    },
-    {
-      target: '.fab-download',
-      placement: 'left',
-      title: 'Preview & download the PDF',
-      body: 'Build the client-ready chart PDF with your logo whenever you’re ready.',
-    }
+    { id: 'settings', target: '[data-tour="settings"] .chart-menu__trigger', placement: 'bottom' },
+    { id: 'pdf', target: '.fab-download', placement: 'left' },
   );
   return steps;
 }
@@ -115,10 +56,21 @@ const GAP = 12; // px between the spotlight and the popover
 const POP_W = 320;
 
 export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, onNavigate }) => {
-  const { t } = useTranslation('settings');
+  const { t } = useTranslation('onboarding');
+  const { t: tSettings } = useTranslation('settings');
   // The app's tour points at the app's chrome and speaks touch.
   const app = isNativeApp();
-  const steps = React.useMemo(() => (app ? buildAppSteps(t, aiEnabled) : buildSteps(aiEnabled)), [app, t, aiEnabled]);
+  const steps = React.useMemo<TourStep[]>(
+    () =>
+      app
+        ? buildAppSteps(tSettings, aiEnabled)
+        : buildSteps(aiEnabled).map(({ id, ...rest }) => ({
+            ...rest,
+            title: t(`walkthrough.steps.${id}.title`),
+            body: t(`walkthrough.steps.${id}.body`),
+          })),
+    [app, t, tSettings, aiEnabled],
+  );
   const [i, setI] = React.useState(0);
   const [rect, setRect] = React.useState<DOMRect | null>(null);
   const [tick, setTick] = React.useState(0); // forces re-measure
@@ -204,7 +156,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
   }
 
   return (
-    <div className="tour" role="dialog" aria-modal="true" aria-label="Getting started">
+    <div className="tour" role="dialog" aria-modal="true" aria-label={t('walkthrough.aria')}>
       {/* Spotlight: a transparent ring over the target with a huge shadow
           that dims everything else. When no target, a plain dimmer. */}
       {rect ? (
@@ -220,7 +172,7 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
       )}
 
       <div className="tour__pop" style={popStyle} ref={popRef} tabIndex={-1}>
-        <div className="tour__eyebrow">{app ? t('tour.progress', { n: i + 1, total: steps.length }) : <>{i + 1} of {steps.length}</>}</div>
+        <div className="tour__eyebrow">{t('walkthrough.progress', { current: i + 1, total: steps.length })}</div>
         <h3 className="tour__title">{step.title}</h3>
         <p className="tour__body">{step.body}</p>
         <div className="tour__foot">
@@ -228,15 +180,15 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
             {steps.map((_, n) => <span key={n} className={`tour__dot${n === i ? ' tour__dot--on' : ''}`} />)}
           </div>
           <div className="tour__nav">
-            <button type="button" className="tour__skip" onClick={onClose}>{app ? t('tour.skip') : 'Skip'}</button>
-            {i > 0 && <button type="button" className="diagram-view__action" onClick={() => setI((n) => n - 1)}>{app ? t('tour.back') : 'Back'}</button>}
+            <button type="button" className="tour__skip" onClick={onClose}>{t('walkthrough.skip')}</button>
+            {i > 0 && <button type="button" className="diagram-view__action" onClick={() => setI((n) => n - 1)}>{t('walkthrough.back')}</button>}
             <button
               ref={nextRef}
               type="button"
               className="entry-grid__button entry-grid__button--topbar"
               onClick={() => (last ? onClose() : setI((n) => n + 1))}
             >
-              {app ? (last ? t('tour.finish') : t('tour.next')) : last ? 'Get charting' : 'Next'}
+              {last ? t('walkthrough.finish') : t('walkthrough.next')}
             </button>
           </div>
         </div>

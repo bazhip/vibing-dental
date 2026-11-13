@@ -15,6 +15,8 @@ const signOutAndSweep = vi.hoisted(() => vi.fn(async () => undefined));
 vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIGIN: 'https://toothops.app/' }));
 vi.mock('../utils/signOutAndSweep', () => ({ signOutAndSweep }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth }, cloudEnabled: true }));
+// The account-language helper reads profiles; this file is about billing only.
+vi.mock('../i18n/AccountLanguage', () => ({ AccountLanguage: () => null }));
 vi.mock('../hooks/useBilling', async (orig) => ({
   ...(await orig<typeof import('../hooks/useBilling')>()),
   fetchBilling,

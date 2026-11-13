@@ -1,0 +1,132 @@
+{
+  "title": "My charts",
+  "unnamedPatient": "Unnamed patient",
+  "search": {
+    "placeholder": "Search by patient name or number…",
+    "aria": "Search charts"
+  },
+  "filters": {
+    "speciesAria": "Filter by species",
+    "allSpecies": "All species",
+    "doctorAria": "Filter by doctor",
+    "allDoctors": "All doctors"
+  },
+  "importPdf": "Import chart PDF",
+  "importPdfTitle": "Open a chart PDF made with this app to continue editing it",
+  "newPatient": "+ New patient",
+  "newPatientTitle": "Clear the working chart and start a brand-new patient",
+  "loading": "Loading…",
+  "empty": "No saved charts yet — they save automatically as you chart.",
+  "noMatch": {
+    "search": "No patients match that search.",
+    "due": "No patients are due for a recheck.",
+    "filters": "No charts match those filters."
+  },
+  "table": {
+    "aria": "Patients",
+    "patient": "Patient",
+    "number": "Patient #",
+    "species": "Species",
+    "visits": "Visits",
+    "updated": "Updated",
+    "recheck": "Recheck"
+  },
+  "due": "Due",
+  "dueCount": "Due ({{n}})",
+  "dueTitle": "Show only patients due or overdue for a recheck",
+  "recall": {
+    "overdue": "{{date}} · overdue",
+    "today": "{{date}} · today"
+  },
+  "deciduousSuffix": "{{species}} · Deciduous",
+  "visits_one": "{{count}} visit",
+  "visits_other": "{{count}} visits",
+  "visitsExpand_one": "{{count}} visit — expand",
+  "visitsExpand_other": "{{count}} visits — expand",
+  "openPatient": "Open {{name}}",
+  "visit": {
+    "undated": "Undated visit",
+    "openDated": "Open the {{date}} visit",
+    "openUndated": "Open the undated visit",
+    "deleteDated": "Delete the {{date}} visit for {{name}}",
+    "deleteUndated": "Delete the undated visit for {{name}}",
+    "updated": "Updated {{when}}"
+  },
+  "actions": {
+    "reminder": "Reminder",
+    "reminderTitle": "Send a recheck reminder to {{who}}",
+    "clearRecall": "Clear {{name}}'s recheck reminder",
+    "clearRecallTitle": "Clear {{name}}'s recheck reminder — e.g. after a recheck that didn't produce a new chart",
+    "newVisit": "+ Visit",
+    "newVisitTitle": "Start a new visit for {{name}}",
+    "history": "History",
+    "historyChartTitle": "Who saved {{name}}'s chart, and when",
+    "historyVisitTitle": "Who saved this visit, and when",
+    "deleteChart": "Delete chart for {{name}}",
+    "loadMore": "Load more charts"
+  },
+  "errors": {
+    "load": "Couldn’t load your charts. {{error}}",
+    "loadMore": "Couldn’t load more charts. {{error}}",
+    "open": "Couldn’t open that chart. {{error}}",
+    "delete": "Couldn’t delete that visit. {{error}}",
+    "clearRecall": "Couldn’t clear that recheck. {{error}}"
+  },
+  "deleteDialog": {
+    "title": "Delete {{name}}{{when}}?",
+    "titleUnnamed": "Delete this chart{{when}}?",
+    "message": "This visit is removed from the cloud for everyone in your practice. This can’t be undone.",
+    "confirm": "Delete visit"
+  },
+  "clearDialog": {
+    "title": "Clear {{name}}’s recheck?",
+    "message": "Use this when the recheck happened without a new chart, or isn’t needed. They’ll drop off the Due list.",
+    "confirm": "Clear recheck"
+  },
+  "history": {
+    "aria": "Chart history",
+    "title": "Chart history",
+    "titleWith": "History — {{label}}",
+    "openVisit": "Open this visit",
+    "loading": "Loading…",
+    "empty": "No saved versions yet — history starts with the first save.",
+    "pick": "Pick a version to see it.",
+    "loadingVersion": "Loading this version…",
+    "current": "Current",
+    "outside": "Someone outside your practice",
+    "automatic": "ToothOps (automatic)",
+    "baseline": "Before history began · last saved {{when}}",
+    "range": "{{start}} – {{end}}",
+    "restore": "Restore this version",
+    "restoring": "Restoring…",
+    "restoreHint": "Choose Edit chart to restore an earlier version.",
+    "loadFailed": "Couldn’t load that version. {{error}}",
+    "restoreFailed": "Couldn’t restore. {{error}}",
+    "restored": "Version restored.",
+    "confirmTitle": "Restore this version?",
+    "confirmMessage": "The chart goes back to how it was saved {{when}}. Today’s version stays in the history, so you can switch back.",
+    "confirmButton": "Restore"
+  },
+  "templates": {
+    "aria": "Report templates",
+    "title": "Report templates",
+    "saved": "Saved templates",
+    "new": "New template",
+    "empty": "No templates yet — write one below and save it, or use \"Save as template\" on the Treatment Report section.",
+    "untitled": "Untitled",
+    "nameLabel": "Template name",
+    "namePlaceholder": "e.g. Routine cleaning (feline)",
+    "bodyLabel": "Report text",
+    "bodyPlaceholder": "The report text inserted into Treatment & Surgery Report…",
+    "nameRequired": "Give the template a name — it labels it in the insert menu.",
+    "saveFailed": "Could not save the template.",
+    "deleteFailed": "Could not delete the template.",
+    "cloudOff": "Cloud is not configured.",
+    "deleteTitle": "Delete “{{name}}”?",
+    "deleteMessage": "This template is removed for everyone in your practice. This can’t be undone.",
+    "deleteConfirm": "Delete template",
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "saveTemplate": "Save template"
+  }
+}

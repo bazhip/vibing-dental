@@ -22,6 +22,7 @@
  */
 
 import { VOICE_KEYTERMS } from '../constants/voiceKeyterms';
+import i18n from '../i18n';
 
 export interface DeepgramSegment {
   text: string;
@@ -158,7 +159,7 @@ export async function startDeepgramSession(
   providedCtx?: AudioContext | null
 ): Promise<DeepgramSession> {
   const ctx = providedCtx ?? createCaptureContext();
-  if (!ctx) throw new Error('This browser cannot capture microphone audio.');
+  if (!ctx) throw new Error(i18n.t('errors.noCapture', { ns: 'voice' }));
 
   let stream: MediaStream;
   try {
@@ -276,7 +277,7 @@ export async function startDeepgramSession(
     }
     if (msg.type === 'Error') {
       const errMsg = msg as DgErrorMessage;
-      handlers.onError(errMsg.description || errMsg.message || 'Deepgram error');
+      handlers.onError(errMsg.description || errMsg.message || i18n.t('errors.deepgram', { ns: 'voice' }));
       return;
     }
     if (msg.type !== 'Results') return;
@@ -301,7 +302,7 @@ export async function startDeepgramSession(
   };
 
   ws.onerror = () => {
-    handlers.onError('Deepgram WebSocket error.');
+    handlers.onError(i18n.t('errors.deepgramSocket', { ns: 'voice' }));
     cleanup();
   };
 
@@ -310,7 +311,7 @@ export async function startDeepgramSession(
       // Most common cause of unsolicited close: bad token (1008/1011).
       // (A close during a graceful stop is Deepgram finishing normally.)
       if (!drainTimer && (event.code === 1008 || event.code === 1011)) {
-        handlers.onError('Deepgram rejected the connection — check the API key.');
+        handlers.onError(i18n.t('errors.deepgramRejected', { ns: 'voice' }));
       }
       cleanup();
     }
@@ -329,7 +330,7 @@ export async function startDeepgramSession(
     if (ctx.state !== 'running') await ctx.resume();
   } catch (err) {
     cleanup();
-    throw err instanceof Error ? err : new Error('Could not start audio capture.');
+    throw err instanceof Error ? err : new Error(i18n.t('errors.captureStart', { ns: 'voice' }));
   }
 
   // The OS can take the mic away mid-session (iOS camera, a phone call,

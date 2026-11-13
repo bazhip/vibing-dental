@@ -59,6 +59,7 @@ export function OwnerReportTemplatesScreen() {
       onSave={profile.saveOwnerReportConfig}
       canEdit={team.loaded && team.role === 'owner'}
       roleKnown={team.loaded}
+      loadFailed={profile.ownerReportConfigLoadFailed}
       branding={branding}
       presentation={SCREEN}
     />

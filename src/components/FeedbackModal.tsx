@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
-import { useTranslation } from 'react-i18next';
 import { chooseDialog, toast } from './ui/dialogs';
 import { useStackScreenOptions } from '../ios/Stack';
 import { Sheet } from '../ios/Sheet';
@@ -32,11 +33,7 @@ export interface FeedbackModalProps {
   presentation?: 'modal' | 'screen' | 'sheet';
 }
 
-const KIND_OPTIONS: { id: FeedbackKind; label: string }[] = [
-  { id: 'bug', label: 'Something’s wrong' },
-  { id: 'idea', label: 'Idea' },
-  { id: 'other', label: 'Other' },
-];
+const KIND_IDS: FeedbackKind[] = ['bug', 'idea', 'other'];
 
 export async function sendFeedback(payload: {
   kind: FeedbackKind;
@@ -44,7 +41,7 @@ export async function sendFeedback(payload: {
   transcript?: string;
   section?: string;
 }): Promise<void> {
-  if (!supabase) throw new Error('Feedback needs an account.');
+  if (!supabase) throw new Error(i18n.t('feedback.needsAccount', { ns: 'settings' }));
   const { data, error } = await supabase.functions.invoke('send-feedback', {
     body: {
       kind: payload.kind,
@@ -73,7 +70,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
   const shown = presentation ?? (isNativeApp() ? 'sheet' : 'modal');
   const asScreen = shown === 'screen';
   const asModal = shown === 'modal';
-  const { t } = useTranslation();
+  const { t } = useTranslation('settings');
   const modalRef = useModalFocus<HTMLFormElement>(asModal);
   const backdrop = useBackdropDismiss(onClose);
   const [kind, setKind] = React.useState<FeedbackKind>(initialKind);
@@ -101,32 +98,32 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
     setError('');
     try {
       await sendFeedback({ kind, message: message.trim(), transcript: attach ? transcript : undefined, section });
-      toast('Thanks! Your feedback was sent.', { kind: 'success' });
+      toast(t('feedback.sent'), { kind: 'success' });
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Couldn’t send. Please try again.');
+      setError(err instanceof Error ? err.message : t('feedback.sendFailed'));
       setSending(false);
     }
   };
 
   const feedbackBody = (
     <>
-      <div className="feedback-modal__kinds" role="radiogroup" aria-label="Type of feedback">
-        {KIND_OPTIONS.map((k) => (
+      <div className="feedback-modal__kinds" role="radiogroup" aria-label={t('feedback.kindsAria')}>
+        {KIND_IDS.map((id) => (
           <button
-            key={k.id}
+            key={id}
             type="button"
             role="radio"
-            aria-checked={kind === k.id}
-            className={`feedback-modal__kind${kind === k.id ? ' feedback-modal__kind--on' : ''}`}
-            onClick={() => setKind(k.id)}
+            aria-checked={kind === id}
+            className={`feedback-modal__kind${kind === id ? ' feedback-modal__kind--on' : ''}`}
+            onClick={() => setKind(id)}
           >
-            {k.label}
+            {t(`feedback.kinds.${id}`)}
           </button>
         ))}
       </div>
       <label className="patient-form__label">
-        {kind === 'bug' ? 'What happened?' : kind === 'idea' ? 'What would help?' : 'Your message'}
+        {kind === 'bug' ? t('feedback.promptBug') : kind === 'idea' ? t('feedback.promptIdea') : t('feedback.promptOther')}
         <textarea
           className="patient-form__input feedback-modal__message"
           value={message}
@@ -134,16 +131,16 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
           rows={6}
           maxLength={5000}
           autoFocus
-          placeholder={kind === 'bug' ? 'What you did, what you expected, what happened instead…' : ''}
+          placeholder={kind === 'bug' ? t('feedback.bugPlaceholder') : ''}
         />
       </label>
       {transcript?.trim() && (
         <label className="feedback-modal__attach">
           <input type="checkbox" checked={attach} onChange={(e) => setAttach(e.target.checked)} />
-          Include my dictation transcript
+          {t('feedback.attach')}
         </label>
       )}
-      <p className="feedback-modal__note">Goes straight to the ToothOps developer, who’ll reply to your email.</p>
+      <p className="feedback-modal__note">{t('feedback.note')}</p>
       {error && <p className="login-error" role="alert">{error}</p>}
     </>
   );
@@ -162,9 +159,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
       <Sheet
         open
         onClose={onClose}
-        title={t('ios.settings.feedback')}
-        cancelLabel={t('actions.cancel')}
-        doneLabel={sending ? t('ios.sheets.sendingBusy') : t('ios.sheets.reminder.send')}
+        title={t('ios.settings.feedback', { ns: 'common' })}
+        cancelLabel={t('actions.cancel', { ns: 'common' })}
+        doneLabel={sending ? t('ios.sheets.sendingBusy', { ns: 'common' }) : t('ios.sheets.reminder.send', { ns: 'common' })}
         onDone={() => void submit()}
         doneDisabled={sending || !message.trim()}
         confirmDismiss={async () =>
@@ -172,9 +169,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
           !sending &&
           (!message.trim() ||
             (await chooseDialog({
-              title: t('ios.sheets.discard.title'),
-              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard'), destructive: true }],
-              cancelLabel: t('ios.sheets.discard.keep'),
+              title: t('ios.sheets.discard.title', { ns: 'common' }),
+              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard', { ns: 'common' }), destructive: true }],
+              cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
             })) === 'discard')
         }
         className="feedback-sheet"
@@ -187,19 +184,19 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
   }
 
   return ReactDOM.createPortal(
-    <div className="ai-settings-overlay feedback-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label="Send feedback">
+    <div className="ai-settings-overlay feedback-overlay" {...backdrop} role="dialog" aria-modal="true" aria-label={t('feedback.title')}>
       <form className="ai-settings-modal feedback-modal" ref={modalRef} tabIndex={-1} onSubmit={submit}>
         <header className="ai-settings-header">
-          <h2>Send feedback</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label="Close" disabled={sending}>×</button>
+          <h2>{t('feedback.title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })} disabled={sending}>×</button>
         </header>
         <div className="ai-settings-body">
           {feedbackBody}
         </div>
         <footer className="ai-settings-footer">
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={sending}>Cancel</button>
+          <button type="button" className="diagram-view__action" onClick={onClose} disabled={sending}>{t('actions.cancel', { ns: 'common' })}</button>
           <button type="submit" className="entry-grid__button entry-grid__button--topbar" disabled={sending || !message.trim()}>
-            {sending ? 'Sending…' : 'Send'}
+            {sending ? t('feedback.sending') : t('feedback.send')}
           </button>
         </footer>
       </form>
@@ -210,10 +207,11 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
 
 /** Send in the navigation bar of the pushed Feedback screen. */
 function ScreenSendButton({ disabled, sending, onSend }: { disabled: boolean; sending: boolean; onSend: () => void }) {
+  const { t } = useTranslation('settings');
   useStackScreenOptions({
     trailing: (
       <button type="button" className="ios-glass-button ios-glass-button--prominent" onClick={onSend} disabled={disabled}>
-        {sending ? 'Sending…' : 'Send'}
+        {sending ? t('feedback.sending') : t('feedback.send')}
       </button>
     ),
   });

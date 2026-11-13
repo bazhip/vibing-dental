@@ -51,11 +51,11 @@
     "products": "Las dietas dentales, los premios masticables y los aditivos para el agua con el sello VOHC ayudan entre cepillados.",
     "warningSigns": "Esté atento al mal aliento, la salivación excesiva, la comida que se le cae o si se toca la boca con la pata; llámenos si nota algo."
   },
-  "intro": "{{pet}} recibió una evaluación y limpieza dental profesional bajo anestesia. Este informe explica lo que encontramos en un lenguaje sencillo; la ficha clínica completa con las mediciones está archivada y disponible en cualquier momento.",
+  "intro": "{{pet}} recibió una evaluación y limpieza dental profesional bajo anestesia. Este informe explica lo que encontramos en un lenguaje sencillo; el historial clínico completo con las mediciones está archivado y disponible en cualquier momento.",
   "legendFilled": "relleno = ausente antes de esta visita",
   "legendNumbers": "Los números corresponden a los hallazgos de abajo",
   "legendRemoved": "✕ rojo = extraído hoy",
-  "noProblems": "No se registraron problemas dentales en la ficha de esta visita: ¡excelentes noticias!",
+  "noProblems": "No se registraron problemas dentales en el historial de esta visita: ¡excelentes noticias!",
   "ourPractice": "nuestra clínica",
   "ownerLabel": "Propietario",
   "patientLabel": "Paciente",

@@ -242,3 +242,10 @@ export function formatReportDate(value: string, locale: ReportLocale, style: 'is
     return value;
   }
 }
+
+/** The user's app language as a report language: new templates start in it.
+ *  Falls back to English for app languages reports don't cover. */
+export function appReportLocale(): ReportLocale {
+  const lng = (i18n.language ?? 'en').split('-')[0];
+  return isReportLocale(lng) ? lng : 'en';
+}

@@ -462,3 +462,8 @@ html.native-ios .ios-chart-screen :is(.dental-grid__title, .patient-form__sectio
   overflow-wrap: anywhere;
 }
 html.native-ios .ios-chart-screen .radiographic-findings__title { font: 600 var(--ios-text-headline) / 1.3 var(--ios-font); }
+
+/* The website's compact diagram toolbar (a "⋯" pop-over keyed to the
+   diagram's width) doesn't apply in the app, which lays the toolbar out
+   as the grouped card above. No container, so those queries never match. */
+html.native-ios .diagram-view { container: none; }
