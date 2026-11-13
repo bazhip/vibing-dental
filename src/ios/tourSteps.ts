@@ -15,11 +15,24 @@ type Key =
   | 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams'
   | 'codes' | 'treatment' | 'patients' | 'dictate' | 'settings' | 'share';
 
+/** Steps worded exactly as the website's tour reuse its text
+ *  (onboarding:walkthrough.steps); the rest speak touch or name app-only
+ *  places (settings:tour.steps). */
+const WEB_TITLE: ReadonlySet<Key> = new Set(['welcome', 'sections', 'patient', 'species', 'grid', 'diagrams', 'codes', 'treatment', 'dictate', 'settings']);
+const WEB_BODY: ReadonlySet<Key> = new Set(['welcome', 'patient', 'species', 'dictate', 'settings']);
+type WebKey = 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'dictate' | 'settings';
+type AppTitleKey = 'patients' | 'share';
+type AppBodyKey = 'sections' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'patients' | 'share';
+
 export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): TourStep[] {
   const step = (key: Key, rest: Omit<TourStep, 'title' | 'body'> = {}): TourStep => ({
     ...rest,
-    title: t(`tour.steps.${key}.title`),
-    body: t(`tour.steps.${key}.body`),
+    title: WEB_TITLE.has(key)
+      ? t(`walkthrough.steps.${key as WebKey}.title`, { ns: 'onboarding' })
+      : t(`tour.steps.${key as AppTitleKey}.title`),
+    body: WEB_BODY.has(key)
+      ? t(`walkthrough.steps.${key as WebKey}.body`, { ns: 'onboarding' })
+      : t(`tour.steps.${key as AppBodyKey}.body`),
   });
   return [
     step('welcome'),

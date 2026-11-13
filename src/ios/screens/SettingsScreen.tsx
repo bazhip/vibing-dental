@@ -107,7 +107,7 @@ function SettingsList() {
         {s.trial && s.requestAccount && (
           <ListSection>
             <ListRow title={t('ios.settings.signIn')} onClick={() => s.requestAccount?.(SIGN_IN)} />
-            <ListRow title={t('ios.settings.createAccount')} onClick={() => s.requestAccount?.(SIGN_UP)} />
+            <ListRow title={t('topbar.signUp', { ns: 'app' })} onClick={() => s.requestAccount?.(SIGN_UP)} />
           </ListSection>
         )}
         {s.open.account && (
@@ -124,24 +124,24 @@ function SettingsList() {
         {s.open.practice && (
           <ListSection>
             <ListRow
-              title={t('ios.settings.practice')}
+              title={t('practice.title', { ns: 'settings' })}
               subtitle={s.profile.practiceName || undefined}
               accessory={CHEVRON}
-              onClick={open(ID.practice, t('ios.settings.practice'), () => <PracticeSettingsScreen />)}
+              onClick={open(ID.practice, t('practice.title', { ns: 'settings' }), () => <PracticeSettingsScreen />)}
             />
           </ListSection>
         )}
         <ListSection>
           <ListRow
-            title={t('ios.settings.chart')}
+            title={t('chart.title', { ns: 'settings' })}
             accessory={CHEVRON}
-            onClick={open(ID.chart, t('ios.settings.chart'), () => <ChartSettingsScreen />)}
+            onClick={open(ID.chart, t('chart.title', { ns: 'settings' }), () => <ChartSettingsScreen />)}
           />
           {s.open.reminders && (
             <ListRow
-              title={t('ios.settings.reminders')}
+              title={t('settings.title', { ns: 'reminders' })}
               accessory={CHEVRON}
-              onClick={open(ID.reminders, t('ios.settings.reminders'), () => <RemindersSettingsScreen />)}
+              onClick={open(ID.reminders, t('settings.title', { ns: 'reminders' }), () => <RemindersSettingsScreen />)}
             />
           )}
         </ListSection>
@@ -158,18 +158,18 @@ function SettingsList() {
           />
           {s.open.feedback && (
             <ListRow
-              title={t('ios.settings.feedback')}
+              title={t('feedback.title', { ns: 'settings' })}
               accessory={CHEVRON}
-              onClick={open(ID.feedback, t('ios.settings.feedback'), () => <FeedbackScreen />)}
+              onClick={open(ID.feedback, t('feedback.title', { ns: 'settings' }), () => <FeedbackScreen />)}
             />
           )}
         </ListSection>
         {s.open.admin && (
           <ListSection>
             <ListRow
-              title={t('ios.settings.admin')}
+              title={t('menu.admin.label', { ns: 'app' })}
               accessory={CHEVRON}
-              onClick={open(ID.admin, t('ios.settings.admin'), () => <AdminScreen />)}
+              onClick={open(ID.admin, t('menu.admin.label', { ns: 'app' }), () => <AdminScreen />)}
             />
           </ListSection>
         )}

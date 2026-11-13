@@ -105,33 +105,25 @@
   "ios": {
     "back": "Retour",
     "moreActions": "Plus d’actions",
-    "ok": "OK",
     "copy": "Copier",
     "moreActionsFor": "Plus d’actions pour {{title}}",
     "tabs": {
       "chart": "Schéma",
       "patients": "Patients",
       "rechecks": "Contrôles",
-      "settings": "Réglages"
+      "settings": "Paramètres"
     },
     "shell": {
       "appName": "ToothOps",
       "hideSidebar": "Masquer la barre latérale",
-      "showSidebar": "Afficher la barre latérale",
-      "chartSections": "Sections du dossier"
+      "showSidebar": "Afficher la barre latérale"
     },
     "settings": {
       "account": "Compte",
-      "practice": "Réglages de la clinique",
-      "chart": "Réglages du schéma",
-      "reminders": "Rappels de contrôle",
       "help": "Aide",
       "gettingStarted": "Prise en main",
       "whatsNew": "Nouveautés",
-      "feedback": "Envoyer un commentaire",
-      "admin": "Panneau d’administration",
       "signIn": "Se connecter",
-      "createAccount": "Créer un compte gratuit",
       "signOutTitle": "Se déconnecter de ToothOps ?"
     },
     "sheets": {

@@ -2764,28 +2764,8 @@
       "hash": "0d281b421b0e",
       "status": "machine"
     },
-    "chart:ios.live.notSaved": {
-      "hash": "41ba0daba89e",
-      "status": "machine"
-    },
-    "chart:ios.live.saved": {
-      "hash": "ede719fbb0c4",
-      "status": "machine"
-    },
-    "chart:ios.menu.chartSettings": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
     "chart:ios.menu.customize": {
       "hash": "764a6d9af28d",
-      "status": "machine"
-    },
-    "chart:ios.menu.editChart": {
-      "hash": "b2cc19cde314",
-      "status": "machine"
-    },
-    "chart:ios.menu.history": {
-      "hash": "84480475f027",
       "status": "machine"
     },
     "chart:ios.menu.newChart": {
@@ -2802,10 +2782,6 @@
     },
     "chart:ios.menu.saveNow": {
       "hash": "b7d0a349ffa8",
-      "status": "machine"
-    },
-    "chart:ios.menu.undoChanges": {
-      "hash": "ba06242948bf",
       "status": "machine"
     },
     "chart:ios.more": {
@@ -2828,18 +2804,6 @@
       "hash": "365b1f5f9a92",
       "status": "machine"
     },
-    "chart:ios.shareBoth": {
-      "hash": "c26bd1edc158",
-      "status": "machine"
-    },
-    "chart:ios.shareChart": {
-      "hash": "503dc94340a3",
-      "status": "machine"
-    },
-    "chart:ios.status.editing": {
-      "hash": "fab4539d26e0",
-      "status": "machine"
-    },
     "chart:ios.status.editingWith": {
       "hash": "7daed7fdc61b",
       "status": "machine"
@@ -2848,16 +2812,8 @@
       "hash": "23f0795abc63",
       "status": "machine"
     },
-    "chart:ios.status.needsName": {
-      "hash": "a35e9fedd34b",
-      "status": "machine"
-    },
     "chart:ios.status.notSaved": {
       "hash": "22b3467c1ba9",
-      "status": "machine"
-    },
-    "chart:ios.status.offline": {
-      "hash": "c6cf7048dc61",
       "status": "machine"
     },
     "chart:ios.status.onDevice": {
@@ -2868,16 +2824,8 @@
       "hash": "aa579b5d2708",
       "status": "machine"
     },
-    "chart:ios.status.saving": {
-      "hash": "23e39291d613",
-      "status": "machine"
-    },
     "chart:ios.status.unsaved": {
       "hash": "a710c2b90913",
-      "status": "machine"
-    },
-    "chart:ios.status.viewOnly": {
-      "hash": "9b4c6c8590e9",
       "status": "machine"
     },
     "chart:ios.status.viewOnlyDate": {
@@ -4996,28 +4944,8 @@
       "hash": "ba498a40d775",
       "status": "machine"
     },
-    "common:ios.ok": {
-      "hash": "565339bc4d33",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
-      "status": "machine"
-    },
-    "common:ios.settings.admin": {
-      "hash": "638343fec7c0",
-      "status": "machine"
-    },
-    "common:ios.settings.chart": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "common:ios.settings.createAccount": {
-      "hash": "db14ef13b269",
-      "status": "machine"
-    },
-    "common:ios.settings.feedback": {
-      "hash": "8235980b80ad",
       "status": "machine"
     },
     "common:ios.settings.gettingStarted": {
@@ -5026,14 +4954,6 @@
     },
     "common:ios.settings.help": {
       "hash": "b79cac926e0b",
-      "status": "machine"
-    },
-    "common:ios.settings.practice": {
-      "hash": "5269dfe53b4f",
-      "status": "machine"
-    },
-    "common:ios.settings.reminders": {
-      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "common:ios.settings.signIn": {
@@ -5086,10 +5006,6 @@
     },
     "common:ios.shell.appName": {
       "hash": "a4cb7d1f0451",
-      "status": "machine"
-    },
-    "common:ios.shell.chartSections": {
-      "hash": "3d6dc063a97a",
       "status": "machine"
     },
     "common:ios.shell.hideSidebar": {
@@ -7264,16 +7180,8 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
-    "patients:actions.clearRecheck": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
     "patients:actions.delete": {
       "hash": "e2d0a54968ea",
-      "status": "machine"
-    },
-    "patients:actions.history": {
-      "hash": "0e7696009337",
       "status": "machine"
     },
     "patients:actions.newVisit": {
@@ -7284,40 +7192,16 @@
       "hash": "ed077f3d8125",
       "status": "machine"
     },
-    "patients:actions.sendReminder": {
-      "hash": "a713c360cf7e",
-      "status": "machine"
-    },
     "patients:add.button": {
       "hash": "9fd728c66c9a",
-      "status": "machine"
-    },
-    "patients:add.importPdf": {
-      "hash": "45d4e1443a0a",
       "status": "machine"
     },
     "patients:add.newPatient": {
       "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "patients:confirmClear.confirm": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
-    "patients:confirmClear.message": {
-      "hash": "a850cdc55a41",
-      "status": "machine"
-    },
-    "patients:confirmClear.title": {
-      "hash": "2df645d7bc29",
-      "status": "machine"
-    },
     "patients:confirmDelete.confirm": {
       "hash": "fb93b6b80b25",
-      "status": "machine"
-    },
-    "patients:confirmDelete.message": {
-      "hash": "bd3695625393",
       "status": "machine"
     },
     "patients:confirmDelete.title": {
@@ -7332,26 +7216,6 @@
       "hash": "29786c80b08e",
       "status": "machine"
     },
-    "patients:errors.clear": {
-      "hash": "073745f517e4",
-      "status": "machine"
-    },
-    "patients:errors.delete": {
-      "hash": "736caf85167d",
-      "status": "machine"
-    },
-    "patients:errors.load": {
-      "hash": "b955908040bb",
-      "status": "machine"
-    },
-    "patients:errors.more": {
-      "hash": "30351355c2ef",
-      "status": "machine"
-    },
-    "patients:errors.open": {
-      "hash": "213a26c9862d",
-      "status": "machine"
-    },
     "patients:filter.allDoctors": {
       "hash": "16363e554725",
       "status": "machine"
@@ -7364,10 +7228,6 @@
       "hash": "06df7c654f2b",
       "status": "machine"
     },
-    "patients:filter.canine": {
-      "hash": "04ff0e09fef8",
-      "status": "machine"
-    },
     "patients:filter.doctor": {
       "hash": "24669ff48290",
       "status": "machine"
@@ -7378,10 +7238,6 @@
     },
     "patients:filter.dueCount": {
       "hash": "8f8e71b20da8",
-      "status": "machine"
-    },
-    "patients:filter.feline": {
-      "hash": "af57a7bf3645",
       "status": "machine"
     },
     "patients:filter.order": {
@@ -7434,22 +7290,6 @@
     },
     "patients:loadMore": {
       "hash": "ac8991ef0101",
-      "status": "machine"
-    },
-    "patients:loading": {
-      "hash": "ba3bbbe10d8b",
-      "status": "machine"
-    },
-    "patients:noMatch.due": {
-      "hash": "9eb2c6580a4a",
-      "status": "machine"
-    },
-    "patients:noMatch.filters": {
-      "hash": "7ff75f034437",
-      "status": "machine"
-    },
-    "patients:noMatch.search": {
-      "hash": "ca30ffff075b",
       "status": "machine"
     },
     "patients:recall.overdue": {
@@ -8884,10 +8724,6 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
-    "settings:chart.allSettings": {
-      "hash": "f8aea4c05e07",
-      "status": "machine"
-    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -8954,42 +8790,6 @@
     },
     "settings:chart.beside.title": {
       "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.besideTeeth": {
-      "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.block.caudalMaxillary": {
-      "hash": "f9a50a0273c1",
-      "status": "machine"
-    },
-    "settings:chart.block.inferiorAlveolar": {
-      "hash": "01ebd1a3a121",
-      "status": "machine"
-    },
-    "settings:chart.block.infraorbital": {
-      "hash": "ad29f7158c36",
-      "status": "machine"
-    },
-    "settings:chart.block.mental": {
-      "hash": "6b4efad88345",
-      "status": "machine"
-    },
-    "settings:chart.block.other": {
-      "hash": "f97e9da0e3b8",
-      "status": "machine"
-    },
-    "settings:chart.blocksNote": {
-      "hash": "0d37691bfd59",
-      "status": "machine"
-    },
-    "settings:chart.blocksShown": {
-      "hash": "17c1be1d8da5",
-      "status": "machine"
-    },
-    "settings:chart.byTooth": {
-      "hash": "749bea746040",
       "status": "machine"
     },
     "settings:chart.charting.byTooth": {
@@ -9068,76 +8868,16 @@
       "hash": "dcc839a4015c",
       "status": "machine"
     },
-    "settings:chart.columns": {
-      "hash": "53aade77cd69",
-      "status": "machine"
-    },
     "settings:chart.columnsFooter": {
       "hash": "db70ab83f8a2",
-      "status": "machine"
-    },
-    "settings:chart.drugLabel": {
-      "hash": "a726529c3b0c",
       "status": "machine"
     },
     "settings:chart.drugName": {
       "hash": "e7b552847955",
       "status": "machine"
     },
-    "settings:chart.drugPlaceholder": {
-      "hash": "d1da7e459904",
-      "status": "machine"
-    },
     "settings:chart.drugStrength": {
       "hash": "63ee3a1b965a",
-      "status": "machine"
-    },
-    "settings:chart.field.calculus": {
-      "hash": "a946456fce85",
-      "status": "machine"
-    },
-    "settings:chart.field.furcation": {
-      "hash": "9a53ee559d07",
-      "status": "machine"
-    },
-    "settings:chart.field.gingivitis": {
-      "hash": "1e439abdd5d2",
-      "status": "machine"
-    },
-    "settings:chart.field.hyperplasia": {
-      "hash": "4434bb35d2b7",
-      "status": "machine"
-    },
-    "settings:chart.field.mobility": {
-      "hash": "e8f000eec857",
-      "status": "machine"
-    },
-    "settings:chart.field.pdstate": {
-      "hash": "82d0ad7a5968",
-      "status": "machine"
-    },
-    "settings:chart.field.pocket": {
-      "hash": "c13c5a5f8381",
-      "status": "machine"
-    },
-    "settings:chart.field.recession": {
-      "hash": "30c058aa8f6e",
-      "status": "machine"
-    },
-    "settings:chart.grid": {
-      "hash": "0d7d12ac624c",
-      "status": "machine"
-    },
-    "settings:chart.hideRecheck": {
-      "hash": "870eeab81a9d",
-      "status": "machine"
-    },
-    "settings:chart.include": {
-      "hash": "7285576bdacf",
-      "status": "machine"
-    },
-    "settings:chart.mirror": {
-      "hash": "76e7aa7671bf",
       "status": "machine"
     },
     "settings:chart.mirrorHint": {
@@ -9161,10 +8901,6 @@
       "status": "machine"
     },
     "settings:chart.patient.title": {
-      "hash": "925285b9cb5b",
-      "status": "machine"
-    },
-    "settings:chart.patientPage": {
       "hash": "925285b9cb5b",
       "status": "machine"
     },
@@ -9192,56 +8928,16 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
-    "settings:chart.pdfGrid": {
-      "hash": "d89c86cc19fa",
-      "status": "machine"
-    },
     "settings:chart.pdfGridHint": {
       "hash": "ffaa20b6b53b",
-      "status": "machine"
-    },
-    "settings:chart.pdfImages": {
-      "hash": "eeb1e873130a",
       "status": "machine"
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
       "status": "machine"
     },
-    "settings:chart.perRoot": {
-      "hash": "89bb4af6e573",
-      "status": "machine"
-    },
-    "settings:chart.perRootHint": {
-      "hash": "9953c09e5d0a",
-      "status": "machine"
-    },
-    "settings:chart.perTooth": {
-      "hash": "e3b56159e026",
-      "status": "machine"
-    },
-    "settings:chart.pocketDepths": {
-      "hash": "36aaa91cbd69",
-      "status": "machine"
-    },
-    "settings:chart.scoreTap": {
-      "hash": "c9fd1f216e0d",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapFinding": {
-      "hash": "504cbd980a2c",
-      "status": "machine"
-    },
     "settings:chart.scoreTapFindingHint": {
       "hash": "f015bb86942b",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapStay": {
-      "hash": "79450bdfd35e",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapTooth": {
-      "hash": "3f16bc105f48",
       "status": "machine"
     },
     "settings:chart.scoreTapToothHint": {
@@ -9268,40 +8964,12 @@
       "hash": "ce39d45363ae",
       "status": "machine"
     },
-    "settings:chart.spaceKey": {
-      "hash": "87d1b68a0553",
-      "status": "machine"
-    },
-    "settings:chart.spaceMovesDown": {
-      "hash": "ee77c340d824",
-      "status": "machine"
-    },
     "settings:chart.spaceMovesDownHint": {
       "hash": "a3452a5c519b",
       "status": "machine"
     },
-    "settings:chart.spaceTypes": {
-      "hash": "97732d8c38d0",
-      "status": "machine"
-    },
-    "settings:chart.strengthLabel": {
-      "hash": "5d4f96ec79c2",
-      "status": "machine"
-    },
     "settings:chart.title": {
       "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "settings:chart.usualDrug": {
-      "hash": "b1800ffe72c7",
-      "status": "machine"
-    },
-    "settings:chart.usualDrugNote": {
-      "hash": "4884d1c50006",
-      "status": "machine"
-    },
-    "settings:chart.view": {
-      "hash": "dcc839a4015c",
       "status": "machine"
     },
     "settings:done": {
@@ -9406,10 +9074,6 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
-      "status": "machine"
-    },
-    "settings:ownerReport.title": {
-      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "settings:practice.clientLanguage.blurb": {
@@ -9756,40 +9420,12 @@
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
-    "settings:tour.steps.codes.title": {
-      "hash": "7ac8671549b6",
-      "status": "machine"
-    },
     "settings:tour.steps.diagrams.body": {
       "hash": "5654c9d37aa0",
       "status": "machine"
     },
-    "settings:tour.steps.diagrams.title": {
-      "hash": "2831192c95cb",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.body": {
-      "hash": "7e8aa6d8d174",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.title": {
-      "hash": "0b7004c8459a",
-      "status": "machine"
-    },
     "settings:tour.steps.grid.body": {
       "hash": "4530364843b3",
-      "status": "machine"
-    },
-    "settings:tour.steps.grid.title": {
-      "hash": "16619eaefdac",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.body": {
-      "hash": "7234711f1905",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.title": {
-      "hash": "61c4d4815cc2",
       "status": "machine"
     },
     "settings:tour.steps.patients.body": {
@@ -9804,18 +9440,6 @@
       "hash": "b042caed92d8",
       "status": "machine"
     },
-    "settings:tour.steps.sections.title": {
-      "hash": "3d2b9b585532",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.body": {
-      "hash": "492796b8f920",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.title": {
-      "hash": "74a883a037bc",
-      "status": "machine"
-    },
     "settings:tour.steps.share.body": {
       "hash": "a6483470e698",
       "status": "machine"
@@ -9824,28 +9448,8 @@
       "hash": "7f064fa77520",
       "status": "machine"
     },
-    "settings:tour.steps.species.body": {
-      "hash": "378848c7c4e8",
-      "status": "machine"
-    },
-    "settings:tour.steps.species.title": {
-      "hash": "5d476211b8d6",
-      "status": "machine"
-    },
     "settings:tour.steps.treatment.body": {
       "hash": "5cd9b1dee6d3",
-      "status": "machine"
-    },
-    "settings:tour.steps.treatment.title": {
-      "hash": "d69264e50431",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.title": {
-      "hash": "eb128161196d",
       "status": "machine"
     },
     "settings:whatsNew.customize": {
@@ -13302,28 +12906,8 @@
       "hash": "0d281b421b0e",
       "status": "machine"
     },
-    "chart:ios.live.notSaved": {
-      "hash": "41ba0daba89e",
-      "status": "machine"
-    },
-    "chart:ios.live.saved": {
-      "hash": "ede719fbb0c4",
-      "status": "machine"
-    },
-    "chart:ios.menu.chartSettings": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
     "chart:ios.menu.customize": {
       "hash": "764a6d9af28d",
-      "status": "machine"
-    },
-    "chart:ios.menu.editChart": {
-      "hash": "b2cc19cde314",
-      "status": "machine"
-    },
-    "chart:ios.menu.history": {
-      "hash": "84480475f027",
       "status": "machine"
     },
     "chart:ios.menu.newChart": {
@@ -13340,10 +12924,6 @@
     },
     "chart:ios.menu.saveNow": {
       "hash": "b7d0a349ffa8",
-      "status": "machine"
-    },
-    "chart:ios.menu.undoChanges": {
-      "hash": "ba06242948bf",
       "status": "machine"
     },
     "chart:ios.more": {
@@ -13366,18 +12946,6 @@
       "hash": "365b1f5f9a92",
       "status": "machine"
     },
-    "chart:ios.shareBoth": {
-      "hash": "c26bd1edc158",
-      "status": "machine"
-    },
-    "chart:ios.shareChart": {
-      "hash": "503dc94340a3",
-      "status": "machine"
-    },
-    "chart:ios.status.editing": {
-      "hash": "fab4539d26e0",
-      "status": "machine"
-    },
     "chart:ios.status.editingWith": {
       "hash": "7daed7fdc61b",
       "status": "machine"
@@ -13386,16 +12954,8 @@
       "hash": "23f0795abc63",
       "status": "machine"
     },
-    "chart:ios.status.needsName": {
-      "hash": "a35e9fedd34b",
-      "status": "machine"
-    },
     "chart:ios.status.notSaved": {
       "hash": "22b3467c1ba9",
-      "status": "machine"
-    },
-    "chart:ios.status.offline": {
-      "hash": "c6cf7048dc61",
       "status": "machine"
     },
     "chart:ios.status.onDevice": {
@@ -13406,16 +12966,8 @@
       "hash": "aa579b5d2708",
       "status": "machine"
     },
-    "chart:ios.status.saving": {
-      "hash": "23e39291d613",
-      "status": "machine"
-    },
     "chart:ios.status.unsaved": {
       "hash": "a710c2b90913",
-      "status": "machine"
-    },
-    "chart:ios.status.viewOnly": {
-      "hash": "9b4c6c8590e9",
       "status": "machine"
     },
     "chart:ios.status.viewOnlyDate": {
@@ -15550,28 +15102,8 @@
       "hash": "ba498a40d775",
       "status": "machine"
     },
-    "common:ios.ok": {
-      "hash": "565339bc4d33",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
-      "status": "machine"
-    },
-    "common:ios.settings.admin": {
-      "hash": "638343fec7c0",
-      "status": "machine"
-    },
-    "common:ios.settings.chart": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "common:ios.settings.createAccount": {
-      "hash": "db14ef13b269",
-      "status": "machine"
-    },
-    "common:ios.settings.feedback": {
-      "hash": "8235980b80ad",
       "status": "machine"
     },
     "common:ios.settings.gettingStarted": {
@@ -15580,14 +15112,6 @@
     },
     "common:ios.settings.help": {
       "hash": "b79cac926e0b",
-      "status": "machine"
-    },
-    "common:ios.settings.practice": {
-      "hash": "5269dfe53b4f",
-      "status": "machine"
-    },
-    "common:ios.settings.reminders": {
-      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "common:ios.settings.signIn": {
@@ -15640,10 +15164,6 @@
     },
     "common:ios.shell.appName": {
       "hash": "a4cb7d1f0451",
-      "status": "machine"
-    },
-    "common:ios.shell.chartSections": {
-      "hash": "3d6dc063a97a",
       "status": "machine"
     },
     "common:ios.shell.hideSidebar": {
@@ -17826,16 +17346,8 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
-    "patients:actions.clearRecheck": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
     "patients:actions.delete": {
       "hash": "e2d0a54968ea",
-      "status": "machine"
-    },
-    "patients:actions.history": {
-      "hash": "0e7696009337",
       "status": "machine"
     },
     "patients:actions.newVisit": {
@@ -17846,40 +17358,16 @@
       "hash": "ed077f3d8125",
       "status": "machine"
     },
-    "patients:actions.sendReminder": {
-      "hash": "a713c360cf7e",
-      "status": "machine"
-    },
     "patients:add.button": {
       "hash": "9fd728c66c9a",
-      "status": "machine"
-    },
-    "patients:add.importPdf": {
-      "hash": "45d4e1443a0a",
       "status": "machine"
     },
     "patients:add.newPatient": {
       "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "patients:confirmClear.confirm": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
-    "patients:confirmClear.message": {
-      "hash": "a850cdc55a41",
-      "status": "machine"
-    },
-    "patients:confirmClear.title": {
-      "hash": "2df645d7bc29",
-      "status": "machine"
-    },
     "patients:confirmDelete.confirm": {
       "hash": "fb93b6b80b25",
-      "status": "machine"
-    },
-    "patients:confirmDelete.message": {
-      "hash": "bd3695625393",
       "status": "machine"
     },
     "patients:confirmDelete.title": {
@@ -17894,26 +17382,6 @@
       "hash": "29786c80b08e",
       "status": "machine"
     },
-    "patients:errors.clear": {
-      "hash": "073745f517e4",
-      "status": "machine"
-    },
-    "patients:errors.delete": {
-      "hash": "736caf85167d",
-      "status": "machine"
-    },
-    "patients:errors.load": {
-      "hash": "b955908040bb",
-      "status": "machine"
-    },
-    "patients:errors.more": {
-      "hash": "30351355c2ef",
-      "status": "machine"
-    },
-    "patients:errors.open": {
-      "hash": "213a26c9862d",
-      "status": "machine"
-    },
     "patients:filter.allDoctors": {
       "hash": "16363e554725",
       "status": "machine"
@@ -17926,10 +17394,6 @@
       "hash": "06df7c654f2b",
       "status": "machine"
     },
-    "patients:filter.canine": {
-      "hash": "04ff0e09fef8",
-      "status": "machine"
-    },
     "patients:filter.doctor": {
       "hash": "24669ff48290",
       "status": "machine"
@@ -17940,10 +17404,6 @@
     },
     "patients:filter.dueCount": {
       "hash": "8f8e71b20da8",
-      "status": "machine"
-    },
-    "patients:filter.feline": {
-      "hash": "af57a7bf3645",
       "status": "machine"
     },
     "patients:filter.order": {
@@ -17996,22 +17456,6 @@
     },
     "patients:loadMore": {
       "hash": "ac8991ef0101",
-      "status": "machine"
-    },
-    "patients:loading": {
-      "hash": "ba3bbbe10d8b",
-      "status": "machine"
-    },
-    "patients:noMatch.due": {
-      "hash": "9eb2c6580a4a",
-      "status": "machine"
-    },
-    "patients:noMatch.filters": {
-      "hash": "7ff75f034437",
-      "status": "machine"
-    },
-    "patients:noMatch.search": {
-      "hash": "ca30ffff075b",
       "status": "machine"
     },
     "patients:recall.overdue": {
@@ -19454,10 +18898,6 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
-    "settings:chart.allSettings": {
-      "hash": "f8aea4c05e07",
-      "status": "machine"
-    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -19524,42 +18964,6 @@
     },
     "settings:chart.beside.title": {
       "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.besideTeeth": {
-      "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.block.caudalMaxillary": {
-      "hash": "f9a50a0273c1",
-      "status": "machine"
-    },
-    "settings:chart.block.inferiorAlveolar": {
-      "hash": "01ebd1a3a121",
-      "status": "machine"
-    },
-    "settings:chart.block.infraorbital": {
-      "hash": "ad29f7158c36",
-      "status": "machine"
-    },
-    "settings:chart.block.mental": {
-      "hash": "6b4efad88345",
-      "status": "machine"
-    },
-    "settings:chart.block.other": {
-      "hash": "f97e9da0e3b8",
-      "status": "machine"
-    },
-    "settings:chart.blocksNote": {
-      "hash": "0d37691bfd59",
-      "status": "machine"
-    },
-    "settings:chart.blocksShown": {
-      "hash": "17c1be1d8da5",
-      "status": "machine"
-    },
-    "settings:chart.byTooth": {
-      "hash": "749bea746040",
       "status": "machine"
     },
     "settings:chart.charting.byTooth": {
@@ -19638,76 +19042,16 @@
       "hash": "dcc839a4015c",
       "status": "machine"
     },
-    "settings:chart.columns": {
-      "hash": "53aade77cd69",
-      "status": "machine"
-    },
     "settings:chart.columnsFooter": {
       "hash": "db70ab83f8a2",
-      "status": "machine"
-    },
-    "settings:chart.drugLabel": {
-      "hash": "a726529c3b0c",
       "status": "machine"
     },
     "settings:chart.drugName": {
       "hash": "e7b552847955",
       "status": "machine"
     },
-    "settings:chart.drugPlaceholder": {
-      "hash": "d1da7e459904",
-      "status": "machine"
-    },
     "settings:chart.drugStrength": {
       "hash": "63ee3a1b965a",
-      "status": "machine"
-    },
-    "settings:chart.field.calculus": {
-      "hash": "a946456fce85",
-      "status": "machine"
-    },
-    "settings:chart.field.furcation": {
-      "hash": "9a53ee559d07",
-      "status": "machine"
-    },
-    "settings:chart.field.gingivitis": {
-      "hash": "1e439abdd5d2",
-      "status": "machine"
-    },
-    "settings:chart.field.hyperplasia": {
-      "hash": "4434bb35d2b7",
-      "status": "machine"
-    },
-    "settings:chart.field.mobility": {
-      "hash": "e8f000eec857",
-      "status": "machine"
-    },
-    "settings:chart.field.pdstate": {
-      "hash": "82d0ad7a5968",
-      "status": "machine"
-    },
-    "settings:chart.field.pocket": {
-      "hash": "c13c5a5f8381",
-      "status": "machine"
-    },
-    "settings:chart.field.recession": {
-      "hash": "30c058aa8f6e",
-      "status": "machine"
-    },
-    "settings:chart.grid": {
-      "hash": "0d7d12ac624c",
-      "status": "machine"
-    },
-    "settings:chart.hideRecheck": {
-      "hash": "870eeab81a9d",
-      "status": "machine"
-    },
-    "settings:chart.include": {
-      "hash": "7285576bdacf",
-      "status": "machine"
-    },
-    "settings:chart.mirror": {
-      "hash": "76e7aa7671bf",
       "status": "machine"
     },
     "settings:chart.mirrorHint": {
@@ -19731,10 +19075,6 @@
       "status": "machine"
     },
     "settings:chart.patient.title": {
-      "hash": "925285b9cb5b",
-      "status": "machine"
-    },
-    "settings:chart.patientPage": {
       "hash": "925285b9cb5b",
       "status": "machine"
     },
@@ -19762,56 +19102,16 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
-    "settings:chart.pdfGrid": {
-      "hash": "d89c86cc19fa",
-      "status": "machine"
-    },
     "settings:chart.pdfGridHint": {
       "hash": "ffaa20b6b53b",
-      "status": "machine"
-    },
-    "settings:chart.pdfImages": {
-      "hash": "eeb1e873130a",
       "status": "machine"
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
       "status": "machine"
     },
-    "settings:chart.perRoot": {
-      "hash": "89bb4af6e573",
-      "status": "machine"
-    },
-    "settings:chart.perRootHint": {
-      "hash": "9953c09e5d0a",
-      "status": "machine"
-    },
-    "settings:chart.perTooth": {
-      "hash": "e3b56159e026",
-      "status": "machine"
-    },
-    "settings:chart.pocketDepths": {
-      "hash": "36aaa91cbd69",
-      "status": "machine"
-    },
-    "settings:chart.scoreTap": {
-      "hash": "c9fd1f216e0d",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapFinding": {
-      "hash": "504cbd980a2c",
-      "status": "machine"
-    },
     "settings:chart.scoreTapFindingHint": {
       "hash": "f015bb86942b",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapStay": {
-      "hash": "79450bdfd35e",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapTooth": {
-      "hash": "3f16bc105f48",
       "status": "machine"
     },
     "settings:chart.scoreTapToothHint": {
@@ -19838,40 +19138,12 @@
       "hash": "ce39d45363ae",
       "status": "machine"
     },
-    "settings:chart.spaceKey": {
-      "hash": "87d1b68a0553",
-      "status": "machine"
-    },
-    "settings:chart.spaceMovesDown": {
-      "hash": "ee77c340d824",
-      "status": "machine"
-    },
     "settings:chart.spaceMovesDownHint": {
       "hash": "a3452a5c519b",
       "status": "machine"
     },
-    "settings:chart.spaceTypes": {
-      "hash": "97732d8c38d0",
-      "status": "machine"
-    },
-    "settings:chart.strengthLabel": {
-      "hash": "5d4f96ec79c2",
-      "status": "machine"
-    },
     "settings:chart.title": {
       "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "settings:chart.usualDrug": {
-      "hash": "b1800ffe72c7",
-      "status": "machine"
-    },
-    "settings:chart.usualDrugNote": {
-      "hash": "4884d1c50006",
-      "status": "machine"
-    },
-    "settings:chart.view": {
-      "hash": "dcc839a4015c",
       "status": "machine"
     },
     "settings:done": {
@@ -19976,10 +19248,6 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
-      "status": "machine"
-    },
-    "settings:ownerReport.title": {
-      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "settings:practice.clientLanguage.blurb": {
@@ -20326,40 +19594,12 @@
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
-    "settings:tour.steps.codes.title": {
-      "hash": "7ac8671549b6",
-      "status": "machine"
-    },
     "settings:tour.steps.diagrams.body": {
       "hash": "5654c9d37aa0",
       "status": "machine"
     },
-    "settings:tour.steps.diagrams.title": {
-      "hash": "2831192c95cb",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.body": {
-      "hash": "7e8aa6d8d174",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.title": {
-      "hash": "0b7004c8459a",
-      "status": "machine"
-    },
     "settings:tour.steps.grid.body": {
       "hash": "4530364843b3",
-      "status": "machine"
-    },
-    "settings:tour.steps.grid.title": {
-      "hash": "16619eaefdac",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.body": {
-      "hash": "7234711f1905",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.title": {
-      "hash": "61c4d4815cc2",
       "status": "machine"
     },
     "settings:tour.steps.patients.body": {
@@ -20374,18 +19614,6 @@
       "hash": "b042caed92d8",
       "status": "machine"
     },
-    "settings:tour.steps.sections.title": {
-      "hash": "3d2b9b585532",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.body": {
-      "hash": "492796b8f920",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.title": {
-      "hash": "74a883a037bc",
-      "status": "machine"
-    },
     "settings:tour.steps.share.body": {
       "hash": "a6483470e698",
       "status": "machine"
@@ -20394,28 +19622,8 @@
       "hash": "7f064fa77520",
       "status": "machine"
     },
-    "settings:tour.steps.species.body": {
-      "hash": "378848c7c4e8",
-      "status": "machine"
-    },
-    "settings:tour.steps.species.title": {
-      "hash": "5d476211b8d6",
-      "status": "machine"
-    },
     "settings:tour.steps.treatment.body": {
       "hash": "5cd9b1dee6d3",
-      "status": "machine"
-    },
-    "settings:tour.steps.treatment.title": {
-      "hash": "d69264e50431",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.title": {
-      "hash": "eb128161196d",
       "status": "machine"
     },
     "settings:whatsNew.customize": {
@@ -23896,28 +23104,8 @@
       "hash": "0d281b421b0e",
       "status": "machine"
     },
-    "chart:ios.live.notSaved": {
-      "hash": "41ba0daba89e",
-      "status": "machine"
-    },
-    "chart:ios.live.saved": {
-      "hash": "ede719fbb0c4",
-      "status": "machine"
-    },
-    "chart:ios.menu.chartSettings": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
     "chart:ios.menu.customize": {
       "hash": "764a6d9af28d",
-      "status": "machine"
-    },
-    "chart:ios.menu.editChart": {
-      "hash": "b2cc19cde314",
-      "status": "machine"
-    },
-    "chart:ios.menu.history": {
-      "hash": "84480475f027",
       "status": "machine"
     },
     "chart:ios.menu.newChart": {
@@ -23934,10 +23122,6 @@
     },
     "chart:ios.menu.saveNow": {
       "hash": "b7d0a349ffa8",
-      "status": "machine"
-    },
-    "chart:ios.menu.undoChanges": {
-      "hash": "ba06242948bf",
       "status": "machine"
     },
     "chart:ios.more": {
@@ -23960,18 +23144,6 @@
       "hash": "365b1f5f9a92",
       "status": "machine"
     },
-    "chart:ios.shareBoth": {
-      "hash": "c26bd1edc158",
-      "status": "machine"
-    },
-    "chart:ios.shareChart": {
-      "hash": "503dc94340a3",
-      "status": "machine"
-    },
-    "chart:ios.status.editing": {
-      "hash": "fab4539d26e0",
-      "status": "machine"
-    },
     "chart:ios.status.editingWith": {
       "hash": "7daed7fdc61b",
       "status": "machine"
@@ -23980,16 +23152,8 @@
       "hash": "23f0795abc63",
       "status": "machine"
     },
-    "chart:ios.status.needsName": {
-      "hash": "a35e9fedd34b",
-      "status": "machine"
-    },
     "chart:ios.status.notSaved": {
       "hash": "22b3467c1ba9",
-      "status": "machine"
-    },
-    "chart:ios.status.offline": {
-      "hash": "c6cf7048dc61",
       "status": "machine"
     },
     "chart:ios.status.onDevice": {
@@ -24000,16 +23164,8 @@
       "hash": "aa579b5d2708",
       "status": "machine"
     },
-    "chart:ios.status.saving": {
-      "hash": "23e39291d613",
-      "status": "machine"
-    },
     "chart:ios.status.unsaved": {
       "hash": "a710c2b90913",
-      "status": "machine"
-    },
-    "chart:ios.status.viewOnly": {
-      "hash": "9b4c6c8590e9",
       "status": "machine"
     },
     "chart:ios.status.viewOnlyDate": {
@@ -26144,28 +25300,8 @@
       "hash": "ba498a40d775",
       "status": "machine"
     },
-    "common:ios.ok": {
-      "hash": "565339bc4d33",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
-      "status": "machine"
-    },
-    "common:ios.settings.admin": {
-      "hash": "638343fec7c0",
-      "status": "machine"
-    },
-    "common:ios.settings.chart": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "common:ios.settings.createAccount": {
-      "hash": "db14ef13b269",
-      "status": "machine"
-    },
-    "common:ios.settings.feedback": {
-      "hash": "8235980b80ad",
       "status": "machine"
     },
     "common:ios.settings.gettingStarted": {
@@ -26174,14 +25310,6 @@
     },
     "common:ios.settings.help": {
       "hash": "b79cac926e0b",
-      "status": "machine"
-    },
-    "common:ios.settings.practice": {
-      "hash": "5269dfe53b4f",
-      "status": "machine"
-    },
-    "common:ios.settings.reminders": {
-      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "common:ios.settings.signIn": {
@@ -26234,10 +25362,6 @@
     },
     "common:ios.shell.appName": {
       "hash": "a4cb7d1f0451",
-      "status": "machine"
-    },
-    "common:ios.shell.chartSections": {
-      "hash": "3d6dc063a97a",
       "status": "machine"
     },
     "common:ios.shell.hideSidebar": {
@@ -28420,16 +27544,8 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
-    "patients:actions.clearRecheck": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
     "patients:actions.delete": {
       "hash": "e2d0a54968ea",
-      "status": "machine"
-    },
-    "patients:actions.history": {
-      "hash": "0e7696009337",
       "status": "machine"
     },
     "patients:actions.newVisit": {
@@ -28440,40 +27556,16 @@
       "hash": "ed077f3d8125",
       "status": "machine"
     },
-    "patients:actions.sendReminder": {
-      "hash": "a713c360cf7e",
-      "status": "machine"
-    },
     "patients:add.button": {
       "hash": "9fd728c66c9a",
-      "status": "machine"
-    },
-    "patients:add.importPdf": {
-      "hash": "45d4e1443a0a",
       "status": "machine"
     },
     "patients:add.newPatient": {
       "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "patients:confirmClear.confirm": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
-    "patients:confirmClear.message": {
-      "hash": "a850cdc55a41",
-      "status": "machine"
-    },
-    "patients:confirmClear.title": {
-      "hash": "2df645d7bc29",
-      "status": "machine"
-    },
     "patients:confirmDelete.confirm": {
       "hash": "fb93b6b80b25",
-      "status": "machine"
-    },
-    "patients:confirmDelete.message": {
-      "hash": "bd3695625393",
       "status": "machine"
     },
     "patients:confirmDelete.title": {
@@ -28488,26 +27580,6 @@
       "hash": "29786c80b08e",
       "status": "machine"
     },
-    "patients:errors.clear": {
-      "hash": "073745f517e4",
-      "status": "machine"
-    },
-    "patients:errors.delete": {
-      "hash": "736caf85167d",
-      "status": "machine"
-    },
-    "patients:errors.load": {
-      "hash": "b955908040bb",
-      "status": "machine"
-    },
-    "patients:errors.more": {
-      "hash": "30351355c2ef",
-      "status": "machine"
-    },
-    "patients:errors.open": {
-      "hash": "213a26c9862d",
-      "status": "machine"
-    },
     "patients:filter.allDoctors": {
       "hash": "16363e554725",
       "status": "machine"
@@ -28520,10 +27592,6 @@
       "hash": "06df7c654f2b",
       "status": "machine"
     },
-    "patients:filter.canine": {
-      "hash": "04ff0e09fef8",
-      "status": "machine"
-    },
     "patients:filter.doctor": {
       "hash": "24669ff48290",
       "status": "machine"
@@ -28534,10 +27602,6 @@
     },
     "patients:filter.dueCount": {
       "hash": "8f8e71b20da8",
-      "status": "machine"
-    },
-    "patients:filter.feline": {
-      "hash": "af57a7bf3645",
       "status": "machine"
     },
     "patients:filter.order": {
@@ -28590,22 +27654,6 @@
     },
     "patients:loadMore": {
       "hash": "ac8991ef0101",
-      "status": "machine"
-    },
-    "patients:loading": {
-      "hash": "ba3bbbe10d8b",
-      "status": "machine"
-    },
-    "patients:noMatch.due": {
-      "hash": "9eb2c6580a4a",
-      "status": "machine"
-    },
-    "patients:noMatch.filters": {
-      "hash": "7ff75f034437",
-      "status": "machine"
-    },
-    "patients:noMatch.search": {
-      "hash": "ca30ffff075b",
       "status": "machine"
     },
     "patients:recall.overdue": {
@@ -30048,10 +29096,6 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
-    "settings:chart.allSettings": {
-      "hash": "f8aea4c05e07",
-      "status": "machine"
-    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -30118,42 +29162,6 @@
     },
     "settings:chart.beside.title": {
       "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.besideTeeth": {
-      "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.block.caudalMaxillary": {
-      "hash": "f9a50a0273c1",
-      "status": "machine"
-    },
-    "settings:chart.block.inferiorAlveolar": {
-      "hash": "01ebd1a3a121",
-      "status": "machine"
-    },
-    "settings:chart.block.infraorbital": {
-      "hash": "ad29f7158c36",
-      "status": "machine"
-    },
-    "settings:chart.block.mental": {
-      "hash": "6b4efad88345",
-      "status": "machine"
-    },
-    "settings:chart.block.other": {
-      "hash": "f97e9da0e3b8",
-      "status": "machine"
-    },
-    "settings:chart.blocksNote": {
-      "hash": "0d37691bfd59",
-      "status": "machine"
-    },
-    "settings:chart.blocksShown": {
-      "hash": "17c1be1d8da5",
-      "status": "machine"
-    },
-    "settings:chart.byTooth": {
-      "hash": "749bea746040",
       "status": "machine"
     },
     "settings:chart.charting.byTooth": {
@@ -30232,76 +29240,16 @@
       "hash": "dcc839a4015c",
       "status": "machine"
     },
-    "settings:chart.columns": {
-      "hash": "53aade77cd69",
-      "status": "machine"
-    },
     "settings:chart.columnsFooter": {
       "hash": "db70ab83f8a2",
-      "status": "machine"
-    },
-    "settings:chart.drugLabel": {
-      "hash": "a726529c3b0c",
       "status": "machine"
     },
     "settings:chart.drugName": {
       "hash": "e7b552847955",
       "status": "machine"
     },
-    "settings:chart.drugPlaceholder": {
-      "hash": "d1da7e459904",
-      "status": "machine"
-    },
     "settings:chart.drugStrength": {
       "hash": "63ee3a1b965a",
-      "status": "machine"
-    },
-    "settings:chart.field.calculus": {
-      "hash": "a946456fce85",
-      "status": "machine"
-    },
-    "settings:chart.field.furcation": {
-      "hash": "9a53ee559d07",
-      "status": "machine"
-    },
-    "settings:chart.field.gingivitis": {
-      "hash": "1e439abdd5d2",
-      "status": "machine"
-    },
-    "settings:chart.field.hyperplasia": {
-      "hash": "4434bb35d2b7",
-      "status": "machine"
-    },
-    "settings:chart.field.mobility": {
-      "hash": "e8f000eec857",
-      "status": "machine"
-    },
-    "settings:chart.field.pdstate": {
-      "hash": "82d0ad7a5968",
-      "status": "machine"
-    },
-    "settings:chart.field.pocket": {
-      "hash": "c13c5a5f8381",
-      "status": "machine"
-    },
-    "settings:chart.field.recession": {
-      "hash": "30c058aa8f6e",
-      "status": "machine"
-    },
-    "settings:chart.grid": {
-      "hash": "0d7d12ac624c",
-      "status": "machine"
-    },
-    "settings:chart.hideRecheck": {
-      "hash": "870eeab81a9d",
-      "status": "machine"
-    },
-    "settings:chart.include": {
-      "hash": "7285576bdacf",
-      "status": "machine"
-    },
-    "settings:chart.mirror": {
-      "hash": "76e7aa7671bf",
       "status": "machine"
     },
     "settings:chart.mirrorHint": {
@@ -30325,10 +29273,6 @@
       "status": "machine"
     },
     "settings:chart.patient.title": {
-      "hash": "925285b9cb5b",
-      "status": "machine"
-    },
-    "settings:chart.patientPage": {
       "hash": "925285b9cb5b",
       "status": "machine"
     },
@@ -30356,56 +29300,16 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
-    "settings:chart.pdfGrid": {
-      "hash": "d89c86cc19fa",
-      "status": "machine"
-    },
     "settings:chart.pdfGridHint": {
       "hash": "ffaa20b6b53b",
-      "status": "machine"
-    },
-    "settings:chart.pdfImages": {
-      "hash": "eeb1e873130a",
       "status": "machine"
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
       "status": "machine"
     },
-    "settings:chart.perRoot": {
-      "hash": "89bb4af6e573",
-      "status": "machine"
-    },
-    "settings:chart.perRootHint": {
-      "hash": "9953c09e5d0a",
-      "status": "machine"
-    },
-    "settings:chart.perTooth": {
-      "hash": "e3b56159e026",
-      "status": "machine"
-    },
-    "settings:chart.pocketDepths": {
-      "hash": "36aaa91cbd69",
-      "status": "machine"
-    },
-    "settings:chart.scoreTap": {
-      "hash": "c9fd1f216e0d",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapFinding": {
-      "hash": "504cbd980a2c",
-      "status": "machine"
-    },
     "settings:chart.scoreTapFindingHint": {
       "hash": "f015bb86942b",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapStay": {
-      "hash": "79450bdfd35e",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapTooth": {
-      "hash": "3f16bc105f48",
       "status": "machine"
     },
     "settings:chart.scoreTapToothHint": {
@@ -30432,40 +29336,12 @@
       "hash": "ce39d45363ae",
       "status": "machine"
     },
-    "settings:chart.spaceKey": {
-      "hash": "87d1b68a0553",
-      "status": "machine"
-    },
-    "settings:chart.spaceMovesDown": {
-      "hash": "ee77c340d824",
-      "status": "machine"
-    },
     "settings:chart.spaceMovesDownHint": {
       "hash": "a3452a5c519b",
       "status": "machine"
     },
-    "settings:chart.spaceTypes": {
-      "hash": "97732d8c38d0",
-      "status": "machine"
-    },
-    "settings:chart.strengthLabel": {
-      "hash": "5d4f96ec79c2",
-      "status": "machine"
-    },
     "settings:chart.title": {
       "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "settings:chart.usualDrug": {
-      "hash": "b1800ffe72c7",
-      "status": "machine"
-    },
-    "settings:chart.usualDrugNote": {
-      "hash": "4884d1c50006",
-      "status": "machine"
-    },
-    "settings:chart.view": {
-      "hash": "dcc839a4015c",
       "status": "machine"
     },
     "settings:done": {
@@ -30570,10 +29446,6 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
-      "status": "machine"
-    },
-    "settings:ownerReport.title": {
-      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "settings:practice.clientLanguage.blurb": {
@@ -30920,40 +29792,12 @@
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
-    "settings:tour.steps.codes.title": {
-      "hash": "7ac8671549b6",
-      "status": "machine"
-    },
     "settings:tour.steps.diagrams.body": {
       "hash": "5654c9d37aa0",
       "status": "machine"
     },
-    "settings:tour.steps.diagrams.title": {
-      "hash": "2831192c95cb",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.body": {
-      "hash": "7e8aa6d8d174",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.title": {
-      "hash": "0b7004c8459a",
-      "status": "machine"
-    },
     "settings:tour.steps.grid.body": {
       "hash": "4530364843b3",
-      "status": "machine"
-    },
-    "settings:tour.steps.grid.title": {
-      "hash": "16619eaefdac",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.body": {
-      "hash": "7234711f1905",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.title": {
-      "hash": "61c4d4815cc2",
       "status": "machine"
     },
     "settings:tour.steps.patients.body": {
@@ -30968,18 +29812,6 @@
       "hash": "b042caed92d8",
       "status": "machine"
     },
-    "settings:tour.steps.sections.title": {
-      "hash": "3d2b9b585532",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.body": {
-      "hash": "492796b8f920",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.title": {
-      "hash": "74a883a037bc",
-      "status": "machine"
-    },
     "settings:tour.steps.share.body": {
       "hash": "a6483470e698",
       "status": "machine"
@@ -30988,28 +29820,8 @@
       "hash": "7f064fa77520",
       "status": "machine"
     },
-    "settings:tour.steps.species.body": {
-      "hash": "378848c7c4e8",
-      "status": "machine"
-    },
-    "settings:tour.steps.species.title": {
-      "hash": "5d476211b8d6",
-      "status": "machine"
-    },
     "settings:tour.steps.treatment.body": {
       "hash": "5cd9b1dee6d3",
-      "status": "machine"
-    },
-    "settings:tour.steps.treatment.title": {
-      "hash": "d69264e50431",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.title": {
-      "hash": "eb128161196d",
       "status": "machine"
     },
     "settings:whatsNew.customize": {
@@ -34490,28 +33302,8 @@
       "hash": "0d281b421b0e",
       "status": "machine"
     },
-    "chart:ios.live.notSaved": {
-      "hash": "41ba0daba89e",
-      "status": "machine"
-    },
-    "chart:ios.live.saved": {
-      "hash": "ede719fbb0c4",
-      "status": "machine"
-    },
-    "chart:ios.menu.chartSettings": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
     "chart:ios.menu.customize": {
       "hash": "764a6d9af28d",
-      "status": "machine"
-    },
-    "chart:ios.menu.editChart": {
-      "hash": "b2cc19cde314",
-      "status": "machine"
-    },
-    "chart:ios.menu.history": {
-      "hash": "84480475f027",
       "status": "machine"
     },
     "chart:ios.menu.newChart": {
@@ -34528,10 +33320,6 @@
     },
     "chart:ios.menu.saveNow": {
       "hash": "b7d0a349ffa8",
-      "status": "machine"
-    },
-    "chart:ios.menu.undoChanges": {
-      "hash": "ba06242948bf",
       "status": "machine"
     },
     "chart:ios.more": {
@@ -34554,18 +33342,6 @@
       "hash": "365b1f5f9a92",
       "status": "machine"
     },
-    "chart:ios.shareBoth": {
-      "hash": "c26bd1edc158",
-      "status": "machine"
-    },
-    "chart:ios.shareChart": {
-      "hash": "503dc94340a3",
-      "status": "machine"
-    },
-    "chart:ios.status.editing": {
-      "hash": "fab4539d26e0",
-      "status": "machine"
-    },
     "chart:ios.status.editingWith": {
       "hash": "7daed7fdc61b",
       "status": "machine"
@@ -34574,16 +33350,8 @@
       "hash": "23f0795abc63",
       "status": "machine"
     },
-    "chart:ios.status.needsName": {
-      "hash": "a35e9fedd34b",
-      "status": "machine"
-    },
     "chart:ios.status.notSaved": {
       "hash": "22b3467c1ba9",
-      "status": "machine"
-    },
-    "chart:ios.status.offline": {
-      "hash": "c6cf7048dc61",
       "status": "machine"
     },
     "chart:ios.status.onDevice": {
@@ -34594,16 +33362,8 @@
       "hash": "aa579b5d2708",
       "status": "machine"
     },
-    "chart:ios.status.saving": {
-      "hash": "23e39291d613",
-      "status": "machine"
-    },
     "chart:ios.status.unsaved": {
       "hash": "a710c2b90913",
-      "status": "machine"
-    },
-    "chart:ios.status.viewOnly": {
-      "hash": "9b4c6c8590e9",
       "status": "machine"
     },
     "chart:ios.status.viewOnlyDate": {
@@ -36738,28 +35498,8 @@
       "hash": "ba498a40d775",
       "status": "machine"
     },
-    "common:ios.ok": {
-      "hash": "565339bc4d33",
-      "status": "machine"
-    },
     "common:ios.settings.account": {
       "hash": "7e1b0d5641f2",
-      "status": "machine"
-    },
-    "common:ios.settings.admin": {
-      "hash": "638343fec7c0",
-      "status": "machine"
-    },
-    "common:ios.settings.chart": {
-      "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "common:ios.settings.createAccount": {
-      "hash": "db14ef13b269",
-      "status": "machine"
-    },
-    "common:ios.settings.feedback": {
-      "hash": "8235980b80ad",
       "status": "machine"
     },
     "common:ios.settings.gettingStarted": {
@@ -36768,14 +35508,6 @@
     },
     "common:ios.settings.help": {
       "hash": "b79cac926e0b",
-      "status": "machine"
-    },
-    "common:ios.settings.practice": {
-      "hash": "5269dfe53b4f",
-      "status": "machine"
-    },
-    "common:ios.settings.reminders": {
-      "hash": "ccc4d8df14b1",
       "status": "machine"
     },
     "common:ios.settings.signIn": {
@@ -36828,10 +35560,6 @@
     },
     "common:ios.shell.appName": {
       "hash": "a4cb7d1f0451",
-      "status": "machine"
-    },
-    "common:ios.shell.chartSections": {
-      "hash": "3d6dc063a97a",
       "status": "machine"
     },
     "common:ios.shell.hideSidebar": {
@@ -39014,16 +37742,8 @@
       "hash": "eb128161196d",
       "status": "machine"
     },
-    "patients:actions.clearRecheck": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
     "patients:actions.delete": {
       "hash": "e2d0a54968ea",
-      "status": "machine"
-    },
-    "patients:actions.history": {
-      "hash": "0e7696009337",
       "status": "machine"
     },
     "patients:actions.newVisit": {
@@ -39034,40 +37754,16 @@
       "hash": "ed077f3d8125",
       "status": "machine"
     },
-    "patients:actions.sendReminder": {
-      "hash": "a713c360cf7e",
-      "status": "machine"
-    },
     "patients:add.button": {
       "hash": "9fd728c66c9a",
-      "status": "machine"
-    },
-    "patients:add.importPdf": {
-      "hash": "45d4e1443a0a",
       "status": "machine"
     },
     "patients:add.newPatient": {
       "hash": "f081c1e0d14e",
       "status": "machine"
     },
-    "patients:confirmClear.confirm": {
-      "hash": "19488971a09b",
-      "status": "machine"
-    },
-    "patients:confirmClear.message": {
-      "hash": "a850cdc55a41",
-      "status": "machine"
-    },
-    "patients:confirmClear.title": {
-      "hash": "2df645d7bc29",
-      "status": "machine"
-    },
     "patients:confirmDelete.confirm": {
       "hash": "fb93b6b80b25",
-      "status": "machine"
-    },
-    "patients:confirmDelete.message": {
-      "hash": "bd3695625393",
       "status": "machine"
     },
     "patients:confirmDelete.title": {
@@ -39082,26 +37778,6 @@
       "hash": "29786c80b08e",
       "status": "machine"
     },
-    "patients:errors.clear": {
-      "hash": "073745f517e4",
-      "status": "machine"
-    },
-    "patients:errors.delete": {
-      "hash": "736caf85167d",
-      "status": "machine"
-    },
-    "patients:errors.load": {
-      "hash": "b955908040bb",
-      "status": "machine"
-    },
-    "patients:errors.more": {
-      "hash": "30351355c2ef",
-      "status": "machine"
-    },
-    "patients:errors.open": {
-      "hash": "213a26c9862d",
-      "status": "machine"
-    },
     "patients:filter.allDoctors": {
       "hash": "16363e554725",
       "status": "machine"
@@ -39114,10 +37790,6 @@
       "hash": "06df7c654f2b",
       "status": "machine"
     },
-    "patients:filter.canine": {
-      "hash": "04ff0e09fef8",
-      "status": "machine"
-    },
     "patients:filter.doctor": {
       "hash": "24669ff48290",
       "status": "machine"
@@ -39128,10 +37800,6 @@
     },
     "patients:filter.dueCount": {
       "hash": "8f8e71b20da8",
-      "status": "machine"
-    },
-    "patients:filter.feline": {
-      "hash": "af57a7bf3645",
       "status": "machine"
     },
     "patients:filter.order": {
@@ -39184,22 +37852,6 @@
     },
     "patients:loadMore": {
       "hash": "ac8991ef0101",
-      "status": "machine"
-    },
-    "patients:loading": {
-      "hash": "ba3bbbe10d8b",
-      "status": "machine"
-    },
-    "patients:noMatch.due": {
-      "hash": "9eb2c6580a4a",
-      "status": "machine"
-    },
-    "patients:noMatch.filters": {
-      "hash": "7ff75f034437",
-      "status": "machine"
-    },
-    "patients:noMatch.search": {
-      "hash": "ca30ffff075b",
       "status": "machine"
     },
     "patients:recall.overdue": {
@@ -40642,10 +39294,6 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
-    "settings:chart.allSettings": {
-      "hash": "f8aea4c05e07",
-      "status": "machine"
-    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -40712,42 +39360,6 @@
     },
     "settings:chart.beside.title": {
       "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.besideTeeth": {
-      "hash": "47240bf7cb7c",
-      "status": "machine"
-    },
-    "settings:chart.block.caudalMaxillary": {
-      "hash": "f9a50a0273c1",
-      "status": "machine"
-    },
-    "settings:chart.block.inferiorAlveolar": {
-      "hash": "01ebd1a3a121",
-      "status": "machine"
-    },
-    "settings:chart.block.infraorbital": {
-      "hash": "ad29f7158c36",
-      "status": "machine"
-    },
-    "settings:chart.block.mental": {
-      "hash": "6b4efad88345",
-      "status": "machine"
-    },
-    "settings:chart.block.other": {
-      "hash": "f97e9da0e3b8",
-      "status": "machine"
-    },
-    "settings:chart.blocksNote": {
-      "hash": "0d37691bfd59",
-      "status": "machine"
-    },
-    "settings:chart.blocksShown": {
-      "hash": "17c1be1d8da5",
-      "status": "machine"
-    },
-    "settings:chart.byTooth": {
-      "hash": "749bea746040",
       "status": "machine"
     },
     "settings:chart.charting.byTooth": {
@@ -40826,76 +39438,16 @@
       "hash": "dcc839a4015c",
       "status": "machine"
     },
-    "settings:chart.columns": {
-      "hash": "53aade77cd69",
-      "status": "machine"
-    },
     "settings:chart.columnsFooter": {
       "hash": "db70ab83f8a2",
-      "status": "machine"
-    },
-    "settings:chart.drugLabel": {
-      "hash": "a726529c3b0c",
       "status": "machine"
     },
     "settings:chart.drugName": {
       "hash": "e7b552847955",
       "status": "machine"
     },
-    "settings:chart.drugPlaceholder": {
-      "hash": "d1da7e459904",
-      "status": "machine"
-    },
     "settings:chart.drugStrength": {
       "hash": "63ee3a1b965a",
-      "status": "machine"
-    },
-    "settings:chart.field.calculus": {
-      "hash": "a946456fce85",
-      "status": "machine"
-    },
-    "settings:chart.field.furcation": {
-      "hash": "9a53ee559d07",
-      "status": "machine"
-    },
-    "settings:chart.field.gingivitis": {
-      "hash": "1e439abdd5d2",
-      "status": "machine"
-    },
-    "settings:chart.field.hyperplasia": {
-      "hash": "4434bb35d2b7",
-      "status": "machine"
-    },
-    "settings:chart.field.mobility": {
-      "hash": "e8f000eec857",
-      "status": "machine"
-    },
-    "settings:chart.field.pdstate": {
-      "hash": "82d0ad7a5968",
-      "status": "machine"
-    },
-    "settings:chart.field.pocket": {
-      "hash": "c13c5a5f8381",
-      "status": "machine"
-    },
-    "settings:chart.field.recession": {
-      "hash": "30c058aa8f6e",
-      "status": "machine"
-    },
-    "settings:chart.grid": {
-      "hash": "0d7d12ac624c",
-      "status": "machine"
-    },
-    "settings:chart.hideRecheck": {
-      "hash": "870eeab81a9d",
-      "status": "machine"
-    },
-    "settings:chart.include": {
-      "hash": "7285576bdacf",
-      "status": "machine"
-    },
-    "settings:chart.mirror": {
-      "hash": "76e7aa7671bf",
       "status": "machine"
     },
     "settings:chart.mirrorHint": {
@@ -40919,10 +39471,6 @@
       "status": "machine"
     },
     "settings:chart.patient.title": {
-      "hash": "925285b9cb5b",
-      "status": "machine"
-    },
-    "settings:chart.patientPage": {
       "hash": "925285b9cb5b",
       "status": "machine"
     },
@@ -40950,56 +39498,16 @@
       "hash": "1d393b0081b6",
       "status": "machine"
     },
-    "settings:chart.pdfGrid": {
-      "hash": "d89c86cc19fa",
-      "status": "machine"
-    },
     "settings:chart.pdfGridHint": {
       "hash": "ffaa20b6b53b",
-      "status": "machine"
-    },
-    "settings:chart.pdfImages": {
-      "hash": "eeb1e873130a",
       "status": "machine"
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
       "status": "machine"
     },
-    "settings:chart.perRoot": {
-      "hash": "89bb4af6e573",
-      "status": "machine"
-    },
-    "settings:chart.perRootHint": {
-      "hash": "9953c09e5d0a",
-      "status": "machine"
-    },
-    "settings:chart.perTooth": {
-      "hash": "e3b56159e026",
-      "status": "machine"
-    },
-    "settings:chart.pocketDepths": {
-      "hash": "36aaa91cbd69",
-      "status": "machine"
-    },
-    "settings:chart.scoreTap": {
-      "hash": "c9fd1f216e0d",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapFinding": {
-      "hash": "504cbd980a2c",
-      "status": "machine"
-    },
     "settings:chart.scoreTapFindingHint": {
       "hash": "f015bb86942b",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapStay": {
-      "hash": "79450bdfd35e",
-      "status": "machine"
-    },
-    "settings:chart.scoreTapTooth": {
-      "hash": "3f16bc105f48",
       "status": "machine"
     },
     "settings:chart.scoreTapToothHint": {
@@ -41026,40 +39534,12 @@
       "hash": "ce39d45363ae",
       "status": "machine"
     },
-    "settings:chart.spaceKey": {
-      "hash": "87d1b68a0553",
-      "status": "machine"
-    },
-    "settings:chart.spaceMovesDown": {
-      "hash": "ee77c340d824",
-      "status": "machine"
-    },
     "settings:chart.spaceMovesDownHint": {
       "hash": "a3452a5c519b",
       "status": "machine"
     },
-    "settings:chart.spaceTypes": {
-      "hash": "97732d8c38d0",
-      "status": "machine"
-    },
-    "settings:chart.strengthLabel": {
-      "hash": "5d4f96ec79c2",
-      "status": "machine"
-    },
     "settings:chart.title": {
       "hash": "dacea30cc5ef",
-      "status": "machine"
-    },
-    "settings:chart.usualDrug": {
-      "hash": "b1800ffe72c7",
-      "status": "machine"
-    },
-    "settings:chart.usualDrugNote": {
-      "hash": "4884d1c50006",
-      "status": "machine"
-    },
-    "settings:chart.view": {
-      "hash": "dcc839a4015c",
       "status": "machine"
     },
     "settings:done": {
@@ -41164,10 +39644,6 @@
     },
     "settings:logoErrors.unreadable": {
       "hash": "c00d5e3ab1fc",
-      "status": "machine"
-    },
-    "settings:ownerReport.title": {
-      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "settings:practice.clientLanguage.blurb": {
@@ -41514,40 +39990,12 @@
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
-    "settings:tour.steps.codes.title": {
-      "hash": "7ac8671549b6",
-      "status": "machine"
-    },
     "settings:tour.steps.diagrams.body": {
       "hash": "5654c9d37aa0",
       "status": "machine"
     },
-    "settings:tour.steps.diagrams.title": {
-      "hash": "2831192c95cb",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.body": {
-      "hash": "7e8aa6d8d174",
-      "status": "machine"
-    },
-    "settings:tour.steps.dictate.title": {
-      "hash": "0b7004c8459a",
-      "status": "machine"
-    },
     "settings:tour.steps.grid.body": {
       "hash": "4530364843b3",
-      "status": "machine"
-    },
-    "settings:tour.steps.grid.title": {
-      "hash": "16619eaefdac",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.body": {
-      "hash": "7234711f1905",
-      "status": "machine"
-    },
-    "settings:tour.steps.patient.title": {
-      "hash": "61c4d4815cc2",
       "status": "machine"
     },
     "settings:tour.steps.patients.body": {
@@ -41562,18 +40010,6 @@
       "hash": "b042caed92d8",
       "status": "machine"
     },
-    "settings:tour.steps.sections.title": {
-      "hash": "3d2b9b585532",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.body": {
-      "hash": "492796b8f920",
-      "status": "machine"
-    },
-    "settings:tour.steps.settings.title": {
-      "hash": "74a883a037bc",
-      "status": "machine"
-    },
     "settings:tour.steps.share.body": {
       "hash": "a6483470e698",
       "status": "machine"
@@ -41582,28 +40018,8 @@
       "hash": "7f064fa77520",
       "status": "machine"
     },
-    "settings:tour.steps.species.body": {
-      "hash": "378848c7c4e8",
-      "status": "machine"
-    },
-    "settings:tour.steps.species.title": {
-      "hash": "5d476211b8d6",
-      "status": "machine"
-    },
     "settings:tour.steps.treatment.body": {
       "hash": "5cd9b1dee6d3",
-      "status": "machine"
-    },
-    "settings:tour.steps.treatment.title": {
-      "hash": "d69264e50431",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
-      "status": "machine"
-    },
-    "settings:tour.steps.welcome.title": {
-      "hash": "eb128161196d",
       "status": "machine"
     },
     "settings:whatsNew.customize": {

@@ -38,7 +38,7 @@ export function PracticeSettingsScreen() {
   const s = useAppSettings();
   const { pop, push } = useStack();
   const openTemplates = () =>
-    push({ id: 'owner-report-templates', title: t('ownerReport.title', { ns: 'settings' }), render: () => <OwnerReportTemplatesScreen /> });
+    push({ id: 'owner-report-templates', title: t('practice.ownerReport.title', { ns: 'settings' }), render: () => <OwnerReportTemplatesScreen /> });
   return <PracticeSettingsModal open onClose={pop} profile={s.profile} presentation={SCREEN} onCustomizeReport={openTemplates} />;
 }
 

@@ -43,11 +43,16 @@ const ORDER_LABELS = {
   recall: { asc: 'filter.recallAsc', desc: 'filter.recallDesc' },
 } as const;
 const SORT_KEYS: SortKey[] = ['patient', 'updated', 'recall'];
-const SPECIES = [
-  { value: '', label: 'filter.allSpecies' },
-  { value: 'canine', label: 'filter.canine' },
-  { value: 'feline', label: 'filter.feline' },
-] as const;
+const SPECIES = ['', 'canine', 'feline'] as const;
+
+/** The library's message for each failure (the cause follows). */
+const LIBRARY_ERROR_KEYS = {
+  load: 'errors.load',
+  more: 'errors.loadMore',
+  open: 'errors.open',
+  delete: 'errors.delete',
+  clear: 'errors.clearRecall',
+} as const;
 
 export function PatientsScreen() {
   const { t } = useTranslation('patients');
@@ -92,12 +97,12 @@ function BarItems({ library, list, shown }: { library: AppLibrary; list: ListSta
       checked: list.sortDir === dir,
       onSelect: () => list.setSortOrder(list.sortKey, dir),
     })),
-    ...SPECIES.map((s, i) => ({
-      label: t(s.label),
+    ...SPECIES.map((value, i) => ({
+      label: value ? t(`species.${value}`, { ns: 'app' }) : t('filter.allSpecies'),
       section: i === 0 ? t('filter.species') : undefined,
       type: 'radio' as const,
-      checked: list.speciesFilter === s.value,
-      onSelect: () => list.setSpeciesFilter(s.value),
+      checked: list.speciesFilter === value,
+      onSelect: () => list.setSpeciesFilter(value),
     })),
     ...(doctors.size > 0
       ? [
@@ -119,7 +124,7 @@ function BarItems({ library, list, shown }: { library: AppLibrary; list: ListSta
   ];
   const addItems: MenuItem[] = [
     { label: t('add.newPatient'), icon: 'person-2', onSelect: () => void library.newPatient() },
-    { label: t('add.importPdf'), icon: 'doc-text', onSelect: () => pdfInput.current?.click() },
+    { label: t('importPdf', { ns: 'library' }), icon: 'doc-text', onSelect: () => pdfInput.current?.click() },
   ];
   const filtersOn = !!(list.speciesFilter || list.doctorFilter || list.dueOnly);
 
@@ -185,7 +190,7 @@ function PatientsList({ library }: { library: AppLibrary }) {
   const { error, setError } = list;
   React.useEffect(() => {
     if (!error || error.kind === 'load') return;
-    toast(t(`errors.${error.kind}`, { error: friendlyDetail(error.cause) }), { kind: 'error' });
+    toast(t(LIBRARY_ERROR_KEYS[error.kind], { ns: 'library', error: friendlyDetail(error.cause) }), { kind: 'error' });
     setError(null);
   }, [error, setError, t]);
 
@@ -199,18 +204,18 @@ function PatientsList({ library }: { library: AppLibrary }) {
   if (list.error?.kind === 'load') {
     body = (
       <>
-        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyDetail(list.error.cause) })}</p>
+        <p className="ios-empty" role="alert">{t('errors.load', { ns: 'library', error: friendlyDetail(list.error.cause) })}</p>
         <ListSection>
           <ListRow title={t('retry')} onClick={() => void list.refresh()} />
         </ListSection>
       </>
     );
   } else if (groups === null) {
-    body = <p className="ios-empty">{t('loading')}</p>;
+    body = <p className="ios-empty">{t('loading', { ns: 'library' })}</p>;
   } else if (groups.length === 0) {
     body = (
       <p className="ios-empty">
-        {!list.filtered ? t('empty') : list.query ? t('noMatch.search') : list.dueOnly ? t('noMatch.due') : t('noMatch.filters')}
+        {!list.filtered ? t('empty') : list.query ? t('noMatch.search', { ns: 'library' }) : list.dueOnly ? t('noMatch.due', { ns: 'library' }) : t('noMatch.filters', { ns: 'library' })}
       </p>
     );
   } else {
@@ -251,7 +256,7 @@ function PatientsList({ library }: { library: AppLibrary }) {
           );
         })}
         {list.hasMore && (
-          <ListRow title={list.loadingMore ? t('loading') : t('loadMore')} onClick={() => void list.loadMore()} />
+          <ListRow title={list.loadingMore ? t('loading', { ns: 'library' }) : t('loadMore')} onClick={() => void list.loadMore()} />
         )}
       </ListSection>
     );

@@ -160,7 +160,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
       <Sheet
         open
         onClose={onClose}
-        title={t('ios.settings.feedback', { ns: 'common' })}
+        title={t('feedback.title', { ns: 'settings' })}
         cancelLabel={t('actions.cancel', { ns: 'common' })}
         doneLabel={sending ? t('ios.sheets.sendingBusy', { ns: 'common' }) : t('ios.sheets.reminder.send', { ns: 'common' })}
         onDone={() => void submit()}

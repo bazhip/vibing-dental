@@ -102,7 +102,6 @@
   "ios": {
     "back": "Zurück",
     "moreActions": "Weitere Aktionen",
-    "ok": "OK",
     "copy": "Kopieren",
     "moreActionsFor": "Weitere Aktionen für {{title}}",
     "tabs": {
@@ -114,21 +113,14 @@
     "shell": {
       "appName": "ToothOps",
       "hideSidebar": "Seitenleiste ausblenden",
-      "showSidebar": "Seitenleiste einblenden",
-      "chartSections": "Abschnitte der Akte"
+      "showSidebar": "Seitenleiste einblenden"
     },
     "settings": {
       "account": "Konto",
-      "practice": "Praxiseinstellungen",
-      "chart": "Zahnschema-Einstellungen",
-      "reminders": "Kontrollerinnerungen",
       "help": "Hilfe",
       "gettingStarted": "Erste Schritte",
       "whatsNew": "Neuigkeiten",
-      "feedback": "Feedback senden",
-      "admin": "Adminbereich",
       "signIn": "Anmelden",
-      "createAccount": "Kostenloses Konto erstellen",
       "signOutTitle": "Von ToothOps abmelden?"
     },
     "sheets": {

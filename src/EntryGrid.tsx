@@ -1672,18 +1672,18 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       ...(hasSavedPatient
         ? [
             { label: t('ios.menu.newVisit', { ns: 'chart' }), icon: 'calendar-badge-clock' as const, onSelect: startNewVisitFromLatest },
-            { label: t('ios.menu.history', { ns: 'chart' }), icon: 'clock-arrow-circlepath' as const, onSelect: () => setHistoryFor({ id: chart.cloudChartId }) },
+            { label: t('history.title', { ns: 'library' }), icon: 'clock-arrow-circlepath' as const, onSelect: () => setHistoryFor({ id: chart.cloudChartId }) },
           ]
         : []),
-      ...(viewingSavedVisit ? [{ label: t('ios.menu.editChart', { ns: 'chart' }), icon: 'doc-text' as const, onSelect: unlockForEditing }] : []),
+      ...(viewingSavedVisit ? [{ label: t('topbar.editChart', { ns: 'app' }), icon: 'doc-text' as const, onSelect: unlockForEditing }] : []),
       ...(editingSavedVisit && unlockSnapshotChanged
-        ? [{ label: t('ios.menu.undoChanges', { ns: 'chart' }), icon: 'arrow-uturn-backward' as const, onSelect: () => { void revertUnlockedChanges(); } }]
+        ? [{ label: t('topbar.undo', { ns: 'app' }), icon: 'arrow-uturn-backward' as const, onSelect: () => { void revertUnlockedChanges(); } }]
         : []),
       ...(status.canSaveNow ? [{ label: t('ios.menu.saveNow', { ns: 'chart' }), icon: 'checkmark-circle' as const, onSelect: attemptSave }] : []),
       ...(status.retry ? [{ label: t('ios.menu.retrySave', { ns: 'chart' }), icon: 'arrow-uturn-forward' as const, onSelect: attemptSave }] : []),
       ...(customize ? [{ label: t('ios.menu.customize', { ns: 'chart', section: sectionLabel }), icon: 'gear' as const, onSelect: customize }] : []),
       // Always there, so the bar's trailing capsule keeps its shape.
-      { label: t('ios.menu.chartSettings', { ns: 'chart' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
+      { label: t('chart.title', { ns: 'settings' }), icon: 'line-3-horizontal-decrease' as const, onSelect: () => setChartSettingsOpen('all') },
     ];
     const chartTab = (
       <div className="ios-chart-screen">
@@ -1693,7 +1693,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={chartSectionLinks}
           activeSection={activeSection}
           onSection={goToSection}
-          shareLabel={ownerReportOn ? t('ios.shareBoth', { ns: 'chart' }) : t('ios.shareChart', { ns: 'chart' })}
+          shareLabel={ownerReportOn ? t('fab.downloadAria', { ns: 'app' }) : t('fab.previewAria', { ns: 'app' })}
           menu={moreMenu}
           onEdit={viewingSavedVisit ? unlockForEditing : undefined}
           onDone={editingSavedVisit ? () => { void doneEditing(); } : undefined}

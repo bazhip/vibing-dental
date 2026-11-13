@@ -175,61 +175,14 @@
       "imagesHint": "(4 pro Seite, nach der Akte)"
     },
     "noteDevice": "Auf diesem Gerät gespeichert. Änderungen gelten sofort.",
-    "allSettings": "Alle Zahnschema-Einstellungen",
-    "view": "Ansicht",
-    "grid": "Raster",
-    "byTooth": "Nach Zahn",
-    "pocketDepths": "Taschentiefen",
-    "perTooth": "Eine pro Zahn",
-    "perRoot": "Eine pro Wurzel",
-    "perRootHint": "M / D, oder MB / MP / D bei dreiwurzeligen Zähnen",
-    "spaceKey": "Leertaste im Raster",
-    "spaceMovesDown": "Springt zum nächsten Zahn",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",
-    "spaceTypes": "Fügt ein Leerzeichen ein",
-    "scoreTap": "Nach dem Tippen auf einen Wert im Raster",
-    "scoreTapFinding": "Zum nächsten Befund am selben Zahn",
     "scoreTapFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
-    "scoreTapTooth": "Zum nächsten Zahn",
     "scoreTapToothHint": "Um einen Befund im ganzen Maul zu bewerten",
-    "scoreTapStay": "Stehen bleiben",
-    "columns": "Spalten",
     "columnsFooter": "Spalten im Befundraster. Mindestens eine bleibt sichtbar.",
-    "field": {
-      "mobility": "Beweglichkeit",
-      "recession": "Rezession",
-      "pocket": "Tasche",
-      "furcation": "Furkation",
-      "hyperplasia": "Vergrößerung",
-      "calculus": "Zahnstein",
-      "gingivitis": "Gingivitis",
-      "pdstate": "PD-Stadium"
-    },
-    "besideTeeth": "Neben den Zähnen",
-    "mirror": "Befunde im Diagnose-Diagramm anzeigen",
     "mirrorHint": "Und im PDF",
-    "include": "Einbeziehen",
-    "blocksShown": "Angezeigte Nervenblockaden",
-    "blocksNote": "Eine ausgeblendete Blockade wird in einer Akte weiterhin angezeigt, wenn dort eine Dosis eingetragen ist.",
-    "block": {
-      "infraorbital": "Infraorbital",
-      "caudalMaxillary": "Kaudal maxillär",
-      "inferiorAlveolar": "Alveolaris inferior",
-      "mental": "Mentalis",
-      "other": "Andere"
-    },
-    "usualDrug": "Ihr übliches Lokalanästhetikum",
-    "usualDrugNote": "Wird mit einem Tipp angeboten, wenn in der Akte kein Anästhetikum eingetragen ist.",
     "drugName": "Wirkstoff",
     "drugStrength": "Konzentration",
-    "drugPlaceholder": "z. B. Bupivacain",
-    "drugLabel": "Übliches Lokalanästhetikum",
-    "strengthLabel": "Konzentration des üblichen Lokalanästhetikums (%)",
-    "patientPage": "Seite „Patient“",
-    "hideRecheck": "Feld „Kontrolle fällig“ ausblenden",
-    "pdfGrid": "Befundraster einbeziehen",
     "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
-    "pdfImages": "Bilder einbeziehen",
     "pdfImagesHint": "4 pro Seite, nach der Akte"
   },
   "feedback": {
@@ -252,9 +205,6 @@
     "send": "Senden",
     "sending": "Wird gesendet…"
   },
-  "ownerReport": {
-    "title": "Besitzerbericht"
-  },
   "gettingStarted": {
     "takeTour": "Rundgang starten",
     "tourFooter": "Ein kurzer Rundgang, wo in der Akte was zu finden ist.",
@@ -262,49 +212,24 @@
   },
   "tour": {
     "steps": {
-      "welcome": {
-        "title": "Willkommen bei ToothOps",
-        "body": "Eine 60-Sekunden-Tour, wo alles zu finden ist. Sie können sie jederzeit unter Einstellungen → Erste Schritte erneut starten."
-      },
       "sections": {
-        "title": "Die acht Abschnitte",
         "body": "Eine zahnärztliche Akte von oben nach unten. Tippen Sie auf den Titel der Akte, um zwischen den Abschnitten zu wechseln — alles wird automatisch gespeichert."
       },
-      "patient": {
-        "title": "Patient & Besitzer",
-        "body": "Name, Kontakt des Besitzers und das Kontrolldatum. Zum Speichern ist nur der Patientenname erforderlich."
-      },
-      "species": {
-        "title": "Tierart & Gebiss",
-        "body": "Wählen Sie Katze oder Hund, dann bleibendes Gebiss oder Milchgebiss — die Zahnanordnung passt sich an."
-      },
       "grid": {
-        "title": "Das Befundraster",
         "body": "Messwerte pro Zahn. Tippen Sie auf eine Zelle und geben Sie den Wert ein, oder tippen Sie auf einen Score — befunden, ohne aufzusehen."
       },
       "diagrams": {
-        "title": "Diagramme",
         "body": "Tippen Sie auf einen Zahn, um ihn zu markieren; wechseln Sie zwischen Kommentar und Zeichnen, fügen Sie freie Notizen hinzu. Widerrufen und Wiederholen finden Sie in der Symbolleiste des Diagramms."
       },
       "codes": {
-        "title": "Code-Referenz",
         "body": "Durchsuchen Sie hier den vollständigen AVDC-Codesatz, direkt beim Diagramm."
       },
       "treatment": {
-        "title": "Behandlungsbericht & Vorlagen",
         "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage ein — und speichern Sie neue zur Wiederverwendung."
       },
       "patients": {
         "title": "Patienten",
         "body": "Alle Besuche jedes Patienten. Gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten tippen. Kontrollen listet die Patienten auf, deren Kontrolle fällig ist."
-      },
-      "dictate": {
-        "title": "Diktieren",
-        "body": "Tippen Sie auf Diktieren und sprechen Sie Ihre Befunde — von jeder Seite aus. Jeder landet an der richtigen Stelle, und ein Live-Bereich zeigt jede Änderung, sodass Sie alles rückgängig machen können."
-      },
-      "settings": {
-        "title": "Einstellungen",
-        "body": "Praxisname & Logo, Team, Vorlagen für Kontrollerinnerungen, Ihr Konto — und diese Tour."
       },
       "share": {
         "title": "PDF teilen",

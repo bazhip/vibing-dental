@@ -53,25 +53,25 @@ export function chartStatus(i: ChartStatusInput, t: TFunction<'chart'>, fmt: Cha
   const live = !i.cloudEnabled
     ? ''
     : i.status === 'error'
-    ? i.saveError || t('ios.live.notSaved')
+    ? i.saveError || t('status.srNotSaved', { ns: 'app' })
     : i.status === 'saved' && i.announceSaved
-    ? t('ios.live.saved')
+    ? t('status.srSaved', { ns: 'app' })
     : i.status !== 'saving' && i.dirty && !i.online
-    ? t('ios.status.offline')
+    ? t('status.offline', { ns: 'app' })
     : '';
   const base = ((): Omit<ChartStatus, 'live'> => {
     if (!i.cloudEnabled) return { text: i.trial ? t('ios.status.onDevice') : '', tone: 'normal' };
-    if (i.status === 'saving') return { text: t('ios.status.saving'), tone: 'normal' };
+    if (i.status === 'saving') return { text: t('status.saving', { ns: 'app' }), tone: 'normal' };
     if (i.status === 'error') return { text: t('ios.status.notSaved'), tone: 'error', detail: i.saveError, retry: true };
     if (i.saveHint) return { text: t('ios.status.notSaved'), tone: 'error', detail: i.saveHint, retry: false };
     if (i.readOnly) {
       return {
-        text: i.viewingSavedVisit && i.visitDate ? t('ios.status.viewOnlyDate', { date: fmt.date(i.visitDate) }) : t('ios.status.viewOnly'),
+        text: i.viewingSavedVisit && i.visitDate ? t('ios.status.viewOnlyDate', { date: fmt.date(i.visitDate) }) : t('status.viewOnly', { ns: 'app' }),
         tone: 'normal',
       };
     }
-    if (i.dirty && !i.online) return { text: t('ios.status.offline'), tone: 'normal' };
-    if (i.dirty && !i.hasName) return { text: t('ios.status.needsName'), tone: 'normal' };
+    if (i.dirty && !i.online) return { text: t('status.offline', { ns: 'app' }), tone: 'normal' };
+    if (i.dirty && !i.hasName) return { text: t('status.needsName', { ns: 'app' }), tone: 'normal' };
     if (i.awaitingClinical) return { text: t('ios.status.keptOnDevice'), tone: 'normal', canSaveNow: true };
     if (i.dirty) return { text: t('ios.status.unsaved'), tone: 'normal' };
     if (i.lastSavedAt) return { text: t('ios.status.saved', { time: fmt.time(i.lastSavedAt) }), tone: 'normal' };
@@ -80,7 +80,7 @@ export function chartStatus(i: ChartStatusInput, t: TFunction<'chart'>, fmt: Cha
   if (i.editingSavedVisit) {
     return {
       ...base,
-      text: base.text ? t('ios.status.editingWith', { status: base.text }) : t('ios.status.editing'),
+      text: base.text ? t('ios.status.editingWith', { status: base.text }) : t('topbar.editingShort', { ns: 'app' }),
       live,
     };
   }

@@ -295,37 +295,22 @@
   },
   "ios": {
     "newChart": "Neue Akte",
-    "shareChart": "Vorschau und Download des Akten-PDFs",
-    "shareBoth": "Vorschau und Download der klinischen Akte und des Besitzerberichts",
     "more": "Mehr",
     "menu": {
       "newChart": "Neue Akte",
       "newVisit": "Neuer Besuch",
-      "history": "Aktenverlauf",
-      "editChart": "Akte bearbeiten",
-      "undoChanges": "Änderungen verwerfen",
       "saveNow": "Jetzt speichern",
       "retrySave": "Speichern erneut versuchen",
-      "customize": "Anpassen: {{section}}",
-      "chartSettings": "Zahnschema-Einstellungen"
+      "customize": "Anpassen: {{section}}"
     },
     "status": {
-      "saving": "Wird gespeichert…",
       "saved": "Gespeichert · {{time}}",
       "notSaved": "Nicht gespeichert",
-      "viewOnly": "Nur ansehen",
       "viewOnlyDate": "Nur ansehen · {{date}}",
-      "editing": "Bearbeitung",
       "editingWith": "Bearbeitung · {{status}}",
-      "offline": "Offline — auf diesem Gerät gespeichert",
-      "needsName": "Zum Speichern einen Patientennamen eingeben",
       "keptOnDevice": "Wird gespeichert, sobald Sie mit dem Befund beginnen",
       "unsaved": "Nicht gespeicherte Änderungen",
       "onDevice": "Nur auf diesem Gerät"
-    },
-    "live": {
-      "saved": "Akte gespeichert",
-      "notSaved": "Akte nicht gespeichert"
     },
     "notice": {
       "otherTab": "Diese Akte ist in einem anderen Fenster geöffnet. Beide bearbeiten dieselbe Arbeitskopie — schließen Sie eines, damit Ihre Änderungen nicht überschrieben werden.",

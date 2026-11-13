@@ -175,61 +175,14 @@
       "imagesHint": "(4 per page, after the chart)"
     },
     "noteDevice": "Saved on this device. Changes apply right away.",
-    "allSettings": "All chart settings",
-    "view": "View",
-    "grid": "Grid",
-    "byTooth": "By tooth",
-    "pocketDepths": "Pocket depths",
-    "perTooth": "One per tooth",
-    "perRoot": "One per root",
-    "perRootHint": "M / D, or MB / MP / D on three-rooted teeth",
-    "spaceKey": "Space key in the grid",
-    "spaceMovesDown": "Moves down to the next tooth",
     "spaceMovesDownHint": "Fast for calling out a run of depths",
-    "spaceTypes": "Types a space",
-    "scoreTap": "After tapping a score in the grid",
-    "scoreTapFinding": "Go to the next finding on the same tooth",
     "scoreTapFindingHint": "Mobility → recession → … for tooth-by-tooth exams",
-    "scoreTapTooth": "Go down to the next tooth",
     "scoreTapToothHint": "For scoring one finding across the mouth",
-    "scoreTapStay": "Stay put",
-    "columns": "Columns",
     "columnsFooter": "Columns shown in the charting grid. At least one stays on.",
-    "field": {
-      "mobility": "Mobility",
-      "recession": "Recession",
-      "pocket": "Pocket",
-      "furcation": "Furcation",
-      "hyperplasia": "Enlargement",
-      "calculus": "Calculus",
-      "gingivitis": "Gingivitis",
-      "pdstate": "PD Stage"
-    },
-    "besideTeeth": "Beside the teeth",
-    "mirror": "Show findings on the Diagnosis diagram",
     "mirrorHint": "And in the PDF",
-    "include": "Include",
-    "blocksShown": "Nerve blocks shown",
-    "blocksNote": "A hidden block still shows on a chart where it has a dose.",
-    "block": {
-      "infraorbital": "Infraorbital",
-      "caudalMaxillary": "Caudal maxillary",
-      "inferiorAlveolar": "Inferior alveolar",
-      "mental": "Mental",
-      "other": "Other"
-    },
-    "usualDrug": "Your usual anesthetic",
-    "usualDrugNote": "Offered as one tap on a chart with no anesthetic set.",
     "drugName": "Drug",
     "drugStrength": "Strength",
-    "drugPlaceholder": "e.g. Bupivacaine",
-    "drugLabel": "Usual anesthetic",
-    "strengthLabel": "Usual anesthetic strength (%)",
-    "patientPage": "Patient page",
-    "hideRecheck": "Hide the Recheck due field",
-    "pdfGrid": "Include the charting grid",
     "pdfGridHint": "Optional while findings are on the diagram",
-    "pdfImages": "Include images",
     "pdfImagesHint": "4 per page, after the chart"
   },
   "feedback": {
@@ -252,9 +205,6 @@
     "send": "Send",
     "sending": "Sending…"
   },
-  "ownerReport": {
-    "title": "Owner report"
-  },
   "gettingStarted": {
     "takeTour": "Take the tour",
     "tourFooter": "A short tour of where everything lives in the chart.",
@@ -262,49 +212,24 @@
   },
   "tour": {
     "steps": {
-      "welcome": {
-        "title": "Welcome to ToothOps",
-        "body": "A 60-second tour of where everything lives. You can replay it any time from Settings → Getting started."
-      },
       "sections": {
-        "title": "The eight sections",
         "body": "A dental record, top to bottom. Tap the chart’s title to jump between sections — everything autosaves."
       },
-      "patient": {
-        "title": "Patient & owner",
-        "body": "Name, owner contact, and the recheck date. Only the patient name is required to save."
-      },
-      "species": {
-        "title": "Species & dentition",
-        "body": "Pick Feline or Canine, then Permanent or Deciduous — the tooth layout follows."
-      },
       "grid": {
-        "title": "The charting grid",
         "body": "Per-tooth measurements. Tap a cell and type, or tap a score — chart without looking up."
       },
       "diagrams": {
-        "title": "Diagrams",
         "body": "Tap a tooth to mark it; switch between Comment and Draw, add free notes. Undo and Redo are in the diagram’s toolbar."
       },
       "codes": {
-        "title": "Code reference",
         "body": "Search the full AVDC code set here, right with the diagram."
       },
       "treatment": {
-        "title": "Treatment report & templates",
         "body": "Write the report, or insert a saved template — and save new ones to reuse."
       },
       "patients": {
         "title": "Patients",
         "body": "Every patient’s visits. Saved visits open read-only until you tap Edit. Rechecks lists the patients due for a recheck."
-      },
-      "dictate": {
-        "title": "Dictate",
-        "body": "Tap Dictate and talk through your findings — from any page. Each one lands in the right place, and a live panel shows every change so you can undo anything."
-      },
-      "settings": {
-        "title": "Settings",
-        "body": "Practice name & logo, team, recheck-reminder templates, your account — and this tour."
       },
       "share": {
         "title": "Share the PDF",

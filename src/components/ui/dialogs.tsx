@@ -377,7 +377,7 @@ function NativeConfirm({ req, onDone }: { req: Extract<DialogRequest, { kind: 'c
             className={`ios-alert__button ${opts.danger ? 'ios-alert__button--destructive' : 'ios-alert__button--default'}`}
             onClick={() => onDone(true)}
           >
-            {opts.confirmLabel ?? i18n.t('ios.ok')}
+            {opts.confirmLabel ?? i18n.t('actions.ok')}
           </button>
         </div>
       </div>
@@ -438,7 +438,7 @@ function NativePrompt({ req, onDone }: { req: Extract<DialogRequest, { kind: 'pr
             {opts.cancelLabel ?? (opts.readOnly ? i18n.t('actions.close') : i18n.t('actions.cancel'))}
           </button>
           <button type="submit" className="ios-alert__button ios-alert__button--default">
-            {opts.confirmLabel ?? (opts.readOnly ? i18n.t('ios.copy') : i18n.t('ios.ok'))}
+            {opts.confirmLabel ?? (opts.readOnly ? i18n.t('ios.copy') : i18n.t('actions.ok'))}
           </button>
         </div>
       </form>

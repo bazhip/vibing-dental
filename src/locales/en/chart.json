@@ -295,37 +295,22 @@
   },
   "ios": {
     "newChart": "New chart",
-    "shareChart": "Preview and download the chart PDF",
-    "shareBoth": "Preview and download the clinical chart and owner report",
     "more": "More",
     "menu": {
       "newChart": "New chart",
       "newVisit": "New visit",
-      "history": "Chart history",
-      "editChart": "Edit chart",
-      "undoChanges": "Undo changes",
       "saveNow": "Save now",
       "retrySave": "Retry saving",
-      "customize": "Customize {{section}}",
-      "chartSettings": "Chart settings"
+      "customize": "Customize {{section}}"
     },
     "status": {
-      "saving": "Saving…",
       "saved": "Saved · {{time}}",
       "notSaved": "Not saved",
-      "viewOnly": "View only",
       "viewOnlyDate": "View only · {{date}}",
-      "editing": "Editing",
       "editingWith": "Editing · {{status}}",
-      "offline": "Offline — saved on this device",
-      "needsName": "Add a patient name to save",
       "keptOnDevice": "Saves once you start charting",
       "unsaved": "Unsaved changes",
       "onDevice": "On this device only"
-    },
-    "live": {
-      "saved": "Chart saved",
-      "notSaved": "Chart not saved"
     },
     "notice": {
       "otherTab": "This chart is open in another window. Both edit the same working copy — close one to avoid overwriting your changes.",

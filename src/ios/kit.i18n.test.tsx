@@ -33,7 +33,7 @@ afterEach(cleanup);
 test('Sheet: its default Cancel / Done and the close button are translated', () => {
   render(
     <>
-      <Sheet open onClose={() => {}} title={t('ios.settings.chart')} onDone={() => {}}>
+      <Sheet open onClose={() => {}} title={t('ios.settings.whatsNew')} onDone={() => {}}>
         <p>{t('actions.save')}</p>
       </Sheet>
       <Sheet open onClose={() => {}} title={t('ios.tabs.patients')}>
@@ -73,7 +73,7 @@ test('NavBar, TabBar, lists, forms and the search field show only caller text', 
         ]}
       />
       <List>
-        <ListSection header={t('ios.tabs.settings')} footer={t('ios.settings.chart')}>
+        <ListSection header={t('ios.tabs.settings')} footer={t('ios.settings.whatsNew')}>
           <ListRow title={t('ios.tabs.chart')} subtitle={t('ios.tabs.patients')} value={t('actions.save')} accessory="chevron" onClick={() => {}} />
           <SwitchRow title={t('actions.edit')} checked onChange={() => {}} />
         </ListSection>

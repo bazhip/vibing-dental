@@ -300,37 +300,22 @@
   },
   "ios": {
     "newChart": "Nuova cartella",
-    "shareChart": "Anteprima e download del PDF della cartella",
-    "shareBoth": "Anteprima e download della cartella clinica e del referto per il proprietario",
     "more": "Altro",
     "menu": {
       "newChart": "Nuova cartella",
       "newVisit": "Nuova visita",
-      "history": "Cronologia della cartella",
-      "editChart": "Modifica cartella",
-      "undoChanges": "Annulla modifiche",
       "saveNow": "Salva ora",
       "retrySave": "Riprova a salvare",
-      "customize": "Personalizza: {{section}}",
-      "chartSettings": "Impostazioni dell’odontogramma"
+      "customize": "Personalizza: {{section}}"
     },
     "status": {
-      "saving": "Salvataggio…",
       "saved": "Salvato · {{time}}",
       "notSaved": "Non salvato",
-      "viewOnly": "Sola lettura",
       "viewOnlyDate": "Sola lettura · {{date}}",
-      "editing": "Modifica in corso",
       "editingWith": "Modifica in corso · {{status}}",
-      "offline": "Offline — salvato su questo dispositivo",
-      "needsName": "Inserisca il nome del paziente per salvare",
       "keptOnDevice": "Viene salvato appena inizia l’odontogramma",
       "unsaved": "Modifiche non salvate",
       "onDevice": "Solo su questo dispositivo"
-    },
-    "live": {
-      "saved": "Cartella salvata",
-      "notSaved": "Cartella non salvata"
     },
     "notice": {
       "otherTab": "Questa cartella è aperta in un’altra finestra. Entrambe modificano la stessa copia di lavoro — ne chiuda una per non sovrascrivere le Sue modifiche.",

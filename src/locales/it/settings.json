@@ -175,61 +175,14 @@
       "imagesHint": "(4 per pagina, dopo la cartella)"
     },
     "noteDevice": "Salvate su questo dispositivo. Le modifiche si applicano subito.",
-    "allSettings": "Tutte le impostazioni dell’odontogramma",
-    "view": "Vista",
-    "grid": "Griglia",
-    "byTooth": "Per dente",
-    "pocketDepths": "Profondità delle tasche",
-    "perTooth": "Una per dente",
-    "perRoot": "Una per radice",
-    "perRootHint": "M / D, oppure MB / MP / D sui denti a tre radici",
-    "spaceKey": "Barra spaziatrice nella griglia",
-    "spaceMovesDown": "Passa al dente successivo",
     "spaceMovesDownHint": "Veloce per dettare una serie di profondità",
-    "spaceTypes": "Inserisce uno spazio",
-    "scoreTap": "Dopo aver toccato un punteggio nella griglia",
-    "scoreTapFinding": "Passa al reperto successivo sullo stesso dente",
     "scoreTapFindingHint": "Mobilità → recessione → … per esami dente per dente",
-    "scoreTapTooth": "Scendi al dente successivo",
     "scoreTapToothHint": "Per valutare un reperto in tutta la bocca",
-    "scoreTapStay": "Resta qui",
-    "columns": "Colonne",
     "columnsFooter": "Colonne mostrate nella griglia dell’odontogramma. Almeno una resta attiva.",
-    "field": {
-      "mobility": "Mobilità",
-      "recession": "Recessione",
-      "pocket": "Tasca",
-      "furcation": "Forcazione",
-      "hyperplasia": "Ingrossamento",
-      "calculus": "Tartaro",
-      "gingivitis": "Gengivite",
-      "pdstate": "Stadio PD"
-    },
-    "besideTeeth": "Accanto ai denti",
-    "mirror": "Mostra i reperti sul diagramma Diagnosi",
     "mirrorHint": "E nel PDF",
-    "include": "Includi",
-    "blocksShown": "Blocchi nervosi mostrati",
-    "blocksNote": "Un blocco nascosto compare comunque in una cartella in cui è indicata una dose.",
-    "block": {
-      "infraorbital": "Infraorbitario",
-      "caudalMaxillary": "Mascellare caudale",
-      "inferiorAlveolar": "Alveolare inferiore",
-      "mental": "Mentale",
-      "other": "Altro"
-    },
-    "usualDrug": "Il Suo anestetico abituale",
-    "usualDrugNote": "Proposto con un tocco in una cartella senza anestetico impostato.",
     "drugName": "Farmaco",
     "drugStrength": "Concentrazione",
-    "drugPlaceholder": "ad es. Bupivacaina",
-    "drugLabel": "Anestetico abituale",
-    "strengthLabel": "Concentrazione dell’anestetico abituale (%)",
-    "patientPage": "Pagina Paziente",
-    "hideRecheck": "Nascondi il campo Controllo previsto",
-    "pdfGrid": "Includi la griglia dell’odontogramma",
     "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
-    "pdfImages": "Includi le immagini",
     "pdfImagesHint": "4 per pagina, dopo la cartella"
   },
   "feedback": {
@@ -252,9 +205,6 @@
     "send": "Invia",
     "sending": "Invio…"
   },
-  "ownerReport": {
-    "title": "Report per il proprietario"
-  },
   "gettingStarted": {
     "takeTour": "Fai il tour",
     "tourFooter": "Un breve tour per sapere dove si trova tutto nella cartella.",
@@ -262,49 +212,24 @@
   },
   "tour": {
     "steps": {
-      "welcome": {
-        "title": "Benvenuto in ToothOps",
-        "body": "Un tour di 60 secondi per sapere dove si trova tutto. Può ripeterlo in qualsiasi momento da Impostazioni → Per iniziare."
-      },
       "sections": {
-        "title": "Le otto sezioni",
         "body": "Una cartella dentale, dall’alto in basso. Tocchi il titolo della cartella per passare da una sezione all’altra — tutto si salva automaticamente."
       },
-      "patient": {
-        "title": "Paziente e proprietario",
-        "body": "Nome, contatti del proprietario e data del controllo. Per salvare è richiesto solo il nome del paziente."
-      },
-      "species": {
-        "title": "Specie e dentizione",
-        "body": "Scelga Felino o Canino, poi Permanente o Decidua — la disposizione dei denti si adegua."
-      },
       "grid": {
-        "title": "La griglia di registrazione",
         "body": "Misure dente per dente. Tocchi una cella e scriva, oppure tocchi un punteggio — registri senza alzare lo sguardo."
       },
       "diagrams": {
-        "title": "Diagrammi",
         "body": "Tocchi un dente per contrassegnarlo; passi da Commento a Disegno, aggiunga note libere. Annulla e Ripristina sono nella barra degli strumenti del diagramma."
       },
       "codes": {
-        "title": "Riferimento codici",
         "body": "Cerchi qui l’intero set di codici AVDC, proprio accanto al diagramma."
       },
       "treatment": {
-        "title": "Referto e modelli",
         "body": "Scriva il referto o inserisca un modello salvato — e ne salvi di nuovi da riutilizzare."
       },
       "patients": {
         "title": "Pazienti",
         "body": "Tutte le visite di ogni paziente. Le visite salvate si aprono in sola lettura finché non tocca Modifica. Controlli elenca i pazienti con un controllo in scadenza."
-      },
-      "dictate": {
-        "title": "Detta",
-        "body": "Tocchi Detta e descriva i Suoi reperti — da qualsiasi pagina. Ognuno finisce al posto giusto e un pannello in tempo reale mostra ogni modifica, così può annullare qualsiasi cosa."
-      },
-      "settings": {
-        "title": "Impostazioni",
-        "body": "Nome e logo della struttura, team, modelli di promemoria dei controlli, il Suo account — e questo tour."
       },
       "share": {
         "title": "Condividi il PDF",

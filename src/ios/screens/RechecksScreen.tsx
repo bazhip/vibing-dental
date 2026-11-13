@@ -89,14 +89,14 @@ export function RechecksScreen() {
   } else if (rows && !Array.isArray(rows)) {
     body = (
       <>
-        <p className="ios-empty" role="alert">{t('errors.load', { error: friendlyDetail(rows.error) })}</p>
+        <p className="ios-empty" role="alert">{t('errors.load', { ns: 'library', error: friendlyDetail(rows.error) })}</p>
         <ListSection>
           <ListRow title={t('retry')} onClick={() => setRetry((n) => n + 1)} />
         </ListSection>
       </>
     );
   } else if (!sections) {
-    body = <p className="ios-empty">{t('loading')}</p>;
+    body = <p className="ios-empty">{t('loading', { ns: 'library' })}</p>;
   } else if (sections.overdue.length === 0 && sections.today.length === 0) {
     body = (
       <div className="ios-empty ios-rechecks__empty">

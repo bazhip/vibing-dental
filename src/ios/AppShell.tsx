@@ -345,7 +345,7 @@ export function AppShell({
                       ) : null}
                     </button>
                     {tab === 'chart' && chartSections.length > 0 && (
-                      <div className="ios-appshell__subitems" role="group" aria-label={t('ios.shell.chartSections')}>
+                      <div className="ios-appshell__subitems" role="group" aria-label={t('sections.nav', { ns: 'app' })}>
                         {chartSections.map((s) => {
                           const current = activeTab === 'chart' && s.id === activeChartSection;
                           return (

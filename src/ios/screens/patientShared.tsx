@@ -77,9 +77,9 @@ export function RecallLabel({ recall, today }: { recall: string; today: string }
 
 export function confirmClearRecheck(t: PT, name: string): Promise<boolean> {
   return confirmDialog({
-    title: t('confirmClear.title', { name }),
-    message: t('confirmClear.message'),
-    confirmLabel: t('confirmClear.confirm'),
+    title: t('clearDialog.title', { ns: 'library', name }),
+    message: t('clearDialog.message', { ns: 'library' }),
+    confirmLabel: t('clearDialog.confirm', { ns: 'library' }),
   });
 }
 
@@ -89,7 +89,7 @@ export function confirmDeleteVisit(t: PT, v: CloudChartMeta, unnamedFallback: st
     title: v.chart_date
       ? t('confirmDelete.titleDated', { name, date: formatChartDate(v.chart_date) })
       : t('confirmDelete.title', { name }),
-    message: t('confirmDelete.message'),
+    message: t('deleteDialog.message', { ns: 'library' }),
     confirmLabel: t('confirmDelete.confirm'),
     danger: true,
   });
@@ -115,7 +115,7 @@ export async function clearPatientRecheck(
     await clearRecalls(ids);
     return true;
   } catch (e) {
-    toast(t('errors.clear', { error: friendlyDetail(e) }), { kind: 'error' });
+    toast(t('errors.clearRecall', { ns: 'library', error: friendlyDetail(e) }), { kind: 'error' });
     return false;
   } finally {
     onBusy?.(false);
@@ -135,16 +135,16 @@ export function patientActions(t: PT, library: AppLibrary, g: PatientGroup, onBu
   const reminder = g.ownerEmail && g.reminderChart ? g.reminderChart : null;
   const latest = g.visits[0];
   const out: PatientAction[] = [];
-  if (reminder) out.push({ key: 'reminder', label: t('actions.sendReminder'), icon: 'bell', run: () => library.sendReminder(reminder) });
+  if (reminder) out.push({ key: 'reminder', label: t('composer.send', { ns: 'reminders' }), icon: 'bell', run: () => library.sendReminder(reminder) });
   if (g.recall) {
     out.push({
       key: 'clear',
-      label: t('actions.clearRecheck'),
+      label: t('clearDialog.confirm', { ns: 'library' }),
       icon: 'checkmark-circle',
       run: () => void clearPatientRecheck(t, g, library.clearRecalls, onBusy),
     });
   }
-  out.push({ key: 'history', label: t('actions.history'), icon: HISTORY_ICON, run: () => library.openHistory(latest.id, historyLabel(t, g.name, latest)) });
+  out.push({ key: 'history', label: t('actions.history', { ns: 'library' }), icon: HISTORY_ICON, run: () => library.openHistory(latest.id, historyLabel(t, g.name, latest)) });
   return out;
 }
 
@@ -253,7 +253,7 @@ export function PatientVisitsScreen({ initial, filters, tab }: { initial: Patien
     try {
       await library.deleteChart(v.id);
     } catch (e) {
-      toast(t('errors.delete', { error: friendlyDetail(e) }), { kind: 'error' });
+      toast(t('errors.delete', { ns: 'library', error: friendlyDetail(e) }), { kind: 'error' });
     }
   };
 
@@ -272,7 +272,7 @@ export function PatientVisitsScreen({ initial, filters, tab }: { initial: Patien
           ];
           const menu: MenuItem[] = [
             { label: t('actions.open'), icon: OPEN_ICON, onSelect: () => open(v) },
-            { label: t('actions.history'), icon: HISTORY_ICON, onSelect: () => library.openHistory(v.id, historyLabel(t, name, v)) },
+            { label: t('actions.history', { ns: 'library' }), icon: HISTORY_ICON, onSelect: () => library.openHistory(v.id, historyLabel(t, name, v)) },
             { label: t('actions.delete'), icon: TRASH_ICON, destructive: true, onSelect: () => void remove(v) },
           ];
           return (

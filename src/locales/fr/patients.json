@@ -6,29 +6,16 @@
     "clear": "Effacer la recherche"
   },
   "signIn": "Connectez-vous pour voir vos dossiers enregistrés.",
-  "loading": "Chargement…",
   "unnamed": "Patient sans nom",
   "empty": "Aucun dossier enregistré pour le moment. Ils sont enregistrés automatiquement pendant que vous saisissez.",
-  "noMatch": {
-    "search": "Aucun patient ne correspond à cette recherche.",
-    "due": "Aucun patient n’a de contrôle à prévoir.",
-    "filters": "Aucun dossier ne correspond à ces filtres."
-  },
   "retry": "Réessayer",
   "loadMore": "Afficher plus",
-  "errors": {
-    "load": "Impossible de charger vos dossiers. {{error}}",
-    "more": "Impossible de charger d’autres dossiers. {{error}}",
-    "open": "Impossible d’ouvrir ce dossier. {{error}}",
-    "delete": "Impossible de supprimer cette visite. {{error}}",
-    "clear": "Impossible d’effacer ce contrôle. {{error}}"
-  },
   "filter": {
     "button": "Filtrer et trier",
     "sortBy": "Trier par",
     "sortPatient": "Nom",
     "sortUpdated": "Dernière modification",
-    "sortRecall": "Date de contrôle",
+    "sortRecall": "Date du contrôle",
     "order": "Ordre",
     "patientAsc": "De A à Z",
     "patientDesc": "De Z à A",
@@ -38,8 +25,6 @@
     "recallDesc": "Plus lointains d’abord",
     "species": "Espèce",
     "allSpecies": "Toutes les espèces",
-    "canine": "Canin",
-    "feline": "Félin",
     "doctor": "Vétérinaire",
     "allDoctors": "Tous les vétérinaires",
     "due": "Contrôle à prévoir",
@@ -47,8 +32,7 @@
   },
   "add": {
     "button": "Ajouter",
-    "newPatient": "Nouveau patient",
-    "importPdf": "Importer un PDF de dossier"
+    "newPatient": "Nouveau patient"
   },
   "row": {
     "number": "n° {{number}}",
@@ -63,22 +47,13 @@
     "upcoming": "Contrôle le {{date}}"
   },
   "actions": {
-    "sendReminder": "Envoyer un rappel",
-    "clearRecheck": "Effacer le contrôle",
-    "history": "Historique",
     "open": "Ouvrir",
     "delete": "Supprimer",
     "newVisit": "Nouvelle visite"
   },
-  "confirmClear": {
-    "title": "Effacer le contrôle de {{name}} ?",
-    "message": "À utiliser lorsque le contrôle a eu lieu sans nouveau dossier, ou n’est plus nécessaire. Le patient disparaîtra de la liste « À faire ».",
-    "confirm": "Effacer le contrôle"
-  },
   "confirmDelete": {
     "title": "Supprimer {{name}} ?",
     "titleDated": "Supprimer {{name}} ({{date}}) ?",
-    "message": "Cette visite sera supprimée du cloud pour toute votre clinique. Cette action est irréversible.",
     "confirm": "Supprimer la visite"
   },
   "visits": {

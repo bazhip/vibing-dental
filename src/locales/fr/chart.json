@@ -300,37 +300,22 @@
   },
   "ios": {
     "newChart": "Nouveau dossier",
-    "shareChart": "Aperçu et téléchargement du PDF du dossier",
-    "shareBoth": "Aperçu et téléchargement du dossier clinique et du compte rendu pour le propriétaire",
     "more": "Plus",
     "menu": {
       "newChart": "Nouveau dossier",
       "newVisit": "Nouvelle visite",
-      "history": "Historique du dossier",
-      "editChart": "Modifier le dossier",
-      "undoChanges": "Annuler les modifications",
       "saveNow": "Enregistrer maintenant",
       "retrySave": "Réessayer l’enregistrement",
-      "customize": "Personnaliser : {{section}}",
-      "chartSettings": "Réglages du schéma"
+      "customize": "Personnaliser : {{section}}"
     },
     "status": {
-      "saving": "Enregistrement…",
       "saved": "Enregistré · {{time}}",
       "notSaved": "Non enregistré",
-      "viewOnly": "Lecture seule",
       "viewOnlyDate": "Lecture seule · {{date}}",
-      "editing": "Modification",
       "editingWith": "Modification · {{status}}",
-      "offline": "Hors ligne — enregistré sur cet appareil",
-      "needsName": "Ajoutez un nom de patient pour enregistrer",
       "keptOnDevice": "S’enregistre dès que vous commencez le schéma",
       "unsaved": "Modifications non enregistrées",
       "onDevice": "Sur cet appareil uniquement"
-    },
-    "live": {
-      "saved": "Dossier enregistré",
-      "notSaved": "Dossier non enregistré"
     },
     "notice": {
       "otherTab": "Ce dossier est ouvert dans une autre fenêtre. Les deux modifient la même copie de travail — fermez-en une pour ne pas écraser vos modifications.",

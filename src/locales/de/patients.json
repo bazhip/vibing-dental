@@ -6,29 +6,16 @@
     "clear": "Suche löschen"
   },
   "signIn": "Melden Sie sich an, um Ihre gespeicherten Akten zu sehen.",
-  "loading": "Wird geladen …",
   "unnamed": "Patient ohne Namen",
   "empty": "Noch keine gespeicherten Akten. Sie werden beim Erfassen automatisch gespeichert.",
-  "noMatch": {
-    "search": "Keine Patienten entsprechen dieser Suche.",
-    "due": "Bei keinem Patienten ist eine Kontrolle fällig.",
-    "filters": "Keine Akte passt zu diesen Filtern."
-  },
   "retry": "Erneut versuchen",
   "loadMore": "Mehr laden",
-  "errors": {
-    "load": "Ihre Akten konnten nicht geladen werden. {{error}}",
-    "more": "Weitere Akten konnten nicht geladen werden. {{error}}",
-    "open": "Diese Akte konnte nicht geöffnet werden. {{error}}",
-    "delete": "Dieser Besuch konnte nicht gelöscht werden. {{error}}",
-    "clear": "Diese Kontrolle konnte nicht entfernt werden. {{error}}"
-  },
   "filter": {
     "button": "Filtern und sortieren",
     "sortBy": "Sortieren nach",
     "sortPatient": "Name",
     "sortUpdated": "Zuletzt geändert",
-    "sortRecall": "Kontrolldatum",
+    "sortRecall": "Kontrolltermin",
     "order": "Reihenfolge",
     "patientAsc": "A bis Z",
     "patientDesc": "Z bis A",
@@ -38,8 +25,6 @@
     "recallDesc": "Späteste zuerst",
     "species": "Tierart",
     "allSpecies": "Alle Tierarten",
-    "canine": "Hund",
-    "feline": "Katze",
     "doctor": "Tierarzt",
     "allDoctors": "Alle Tierärzte",
     "due": "Kontrolle fällig",
@@ -47,8 +32,7 @@
   },
   "add": {
     "button": "Hinzufügen",
-    "newPatient": "Neuer Patient",
-    "importPdf": "Akten-PDF importieren"
+    "newPatient": "Neuer Patient"
   },
   "row": {
     "number": "Nr. {{number}}",
@@ -62,22 +46,13 @@
     "upcoming": "Kontrolle am {{date}}"
   },
   "actions": {
-    "sendReminder": "Erinnerung senden",
-    "clearRecheck": "Kontrolle entfernen",
-    "history": "Verlauf",
     "open": "Öffnen",
     "delete": "Löschen",
     "newVisit": "Neuer Besuch"
   },
-  "confirmClear": {
-    "title": "Kontrolle für {{name}} entfernen?",
-    "message": "Nutzen Sie dies, wenn die Nachkontrolle ohne neue Akte stattgefunden hat oder nicht mehr nötig ist. Der Patient verschwindet dann aus der Liste „Fällig“.",
-    "confirm": "Kontrolle entfernen"
-  },
   "confirmDelete": {
     "title": "{{name}} löschen?",
     "titleDated": "{{name}} ({{date}}) löschen?",
-    "message": "Dieser Besuch wird für alle in Ihrer Praxis aus der Cloud entfernt. Dies kann nicht rückgängig gemacht werden.",
     "confirm": "Besuch löschen"
   },
   "visits": {

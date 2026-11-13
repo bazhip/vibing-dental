@@ -105,7 +105,6 @@
   "ios": {
     "back": "Indietro",
     "moreActions": "Altre azioni",
-    "ok": "OK",
     "copy": "Copia",
     "moreActionsFor": "Altre azioni per {{title}}",
     "tabs": {
@@ -117,21 +116,14 @@
     "shell": {
       "appName": "ToothOps",
       "hideSidebar": "Nascondi barra laterale",
-      "showSidebar": "Mostra barra laterale",
-      "chartSections": "Sezioni della cartella"
+      "showSidebar": "Mostra barra laterale"
     },
     "settings": {
       "account": "Account",
-      "practice": "Impostazioni della clinica",
-      "chart": "Impostazioni dell’odontogramma",
-      "reminders": "Promemoria dei controlli",
       "help": "Aiuto",
       "gettingStarted": "Per iniziare",
       "whatsNew": "Novità",
-      "feedback": "Invia un feedback",
-      "admin": "Pannello di amministrazione",
       "signIn": "Accedi",
-      "createAccount": "Crea un account gratuito",
       "signOutTitle": "Uscire da ToothOps?"
     },
     "sheets": {
