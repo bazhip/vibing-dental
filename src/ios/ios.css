@@ -1027,6 +1027,23 @@
   top: calc(4px + env(safe-area-inset-top, 0px));
   left: calc(16px + env(safe-area-inset-left, 0px));
 }
+/* iPad portrait: the sidebar floats over the content (hidden by default). */
+:where(html.native-ios) .ios-appshell--sidebar-overlay .ios-appshell__sidebar {
+  position: absolute;
+  z-index: 40;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  box-shadow: inset 0 0 0 0.5px var(--ios-glass-highlight), 0 12px 48px var(--ios-shadow);
+}
+:where(html.native-ios) .ios-appshell__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  background: var(--ios-scrim);
+  animation: ios-fade-in 0.25s;
+}
+
 /* Placeholder / empty-state text in a list. */
 :where(html.native-ios) .ios-empty {
   margin: 32px 16px;

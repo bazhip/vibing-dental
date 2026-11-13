@@ -50,5 +50,12 @@
         "description": "Serif print classic — deep red accents on warm paper."
       }
     }
+  },
+  "library": {
+    "openVisitFailed": "Couldn’t open that visit. {{error}}",
+    "newVisitFailed": "Couldn’t start a new visit. {{error}}",
+    "signOutFailed": "Couldn’t sign out. {{error}}",
+    "verbNewPatient": "Start a new patient",
+    "verbImportPdf": "Import this PDF"
   }
 }

@@ -9,9 +9,13 @@ import { ScrollContainerContext } from './scrollContainer';
 /**
  * The app's top level: four tabs (Chart, Patients, Rechecks, Settings).
  *
- * iPhone, and iPad in portrait / Slide Over: a floating tab bar at the
- * bottom. iPad regular width (REGULAR_WIDTH_QUERY): a collapsible sidebar
- * listing the four destinations, with the chart sections under Chart.
+ * Compact width (iPhone, iPad Slide Over / narrow split): a floating tab
+ * bar at the bottom. Regular width (REGULAR_WIDTH_QUERY, any full-screen
+ * iPad): a sidebar listing the four destinations, with the chart sections
+ * under Chart. Where there's room to dock it (DOCKED_SIDEBAR_QUERY, iPad
+ * landscape / 13" portrait) it sits beside the content and starts open;
+ * otherwise (iPad portrait) it starts hidden and the sidebar button shows
+ * it as an overlay over the content, which closes after a choice.
  *
  * Every tab body is the root of its own <Stack> and stays mounted the whole
  * time. Hidden tabs get `hidden` + `inert` (CSS keeps them laid out with
@@ -38,15 +42,17 @@ const TAB_ICONS: Record<AppTab, IconName> = {
 };
 const SIDEBAR_ICON: IconName = 'sidebar-left';
 
-/** iPad regular width: ≥1024pt, or ≥768pt in landscape. The height floor
+/** Regular width: every full-screen iPad (portrait 744pt and up). Below
+ *  ~700pt (Slide Over, narrow split view) it's compact. The height floor
  *  keeps phones in landscape (≤ 440pt tall) on the tab bar. */
-export const REGULAR_WIDTH_QUERY =
-  '(min-width: 1024px) and (min-height: 600px), (min-width: 768px) and (min-height: 600px) and (orientation: landscape)';
+export const REGULAR_WIDTH_QUERY = '(min-width: 700px) and (min-height: 600px)';
+/** Room to dock the sidebar beside the content (iPad landscape, 13" portrait). */
+export const DOCKED_SIDEBAR_QUERY = '(min-width: 1024px)';
 
-export function useRegularWidth(): boolean {
+export function useMediaQuery(q: string): boolean {
   const query = React.useMemo(
-    () => (typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(REGULAR_WIDTH_QUERY) : null),
-    []
+    () => (typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(q) : null),
+    [q]
   );
   const [regular, setRegular] = React.useState(() => !!query?.matches);
   React.useEffect(() => {
@@ -61,6 +67,12 @@ export function useRegularWidth(): boolean {
     return () => query.removeListener?.(onChange);
   }, [query]);
   return regular;
+}
+
+/** Imperative handle (AppShell `controllerRef`) for the screen that owns the shell. */
+export interface AppShellHandle {
+  /** Land on the Chart tab at its root (pops anything pushed on it). */
+  showChart(): void;
 }
 
 export interface AppShellApi {
@@ -105,6 +117,8 @@ export interface AppShellProps {
   onChartSection?(id: string): void;
   /** Red badge counts per tab (e.g. rechecks due). */
   badges?: Partial<Record<AppTab, number>>;
+  /** Receives showChart() — the one way to "land on the Chart tab". */
+  controllerRef?: React.Ref<AppShellHandle>;
 }
 
 /** What each tab's stack reports up to the shell. */
@@ -147,12 +161,20 @@ export function AppShell({
   activeChartSection,
   onChartSection,
   badges,
+  controllerRef,
 }: AppShellProps) {
   const { t } = useTranslation();
-  const regular = useRegularWidth();
-  const [collapsed, setCollapsed] = React.useState(false);
-  const sidebar = regular;
+  const sidebar = useMediaQuery(REGULAR_WIDTH_QUERY);
+  const docked = useMediaQuery(DOCKED_SIDEBAR_QUERY);
+  const overlay = sidebar && !docked;
+  // Docked: open until hidden. Overlay: hidden until shown. A rotation
+  // between the two goes back to that layout's default.
+  const [collapsedPref, setCollapsedPref] = React.useState<boolean | null>(null);
+  React.useEffect(() => setCollapsedPref(null), [docked]);
+  const collapsed = collapsedPref ?? overlay;
+  const setCollapsed = setCollapsedPref;
   const sidebarShown = sidebar && !collapsed;
+  const sidebarId = React.useId();
 
   const handles = React.useRef<Partial<Record<AppTab, TabHandle>>>({});
   const [depths, setDepths] = React.useState<Partial<Record<AppTab, number>>>({});
@@ -192,18 +214,24 @@ export function AppShell({
     if (tab !== activeRef.current) onTabChangeRef.current(tab);
   }, []);
 
+  /** The one "land on Chart" path: Chart tab, at its root. */
+  const showChart = React.useCallback(() => {
+    const h = handles.current.chart;
+    if (h && h.depth > 0) h.popToRoot();
+    goToTab('chart');
+  }, [goToTab]);
+  React.useImperativeHandle(controllerRef, () => ({ showChart }), [showChart]);
+
   const openChart = React.useCallback(
     async (id?: string) => {
       if (id !== undefined && onOpenChartRef.current) {
         const ok = await onOpenChartRef.current(id);
         if (ok === false) return false;
       }
-      const h = handles.current.chart;
-      if (h && h.depth > 0) h.popToRoot();
-      goToTab('chart');
+      showChart();
       return true;
     },
-    [goToTab]
+    [showChart]
   );
 
   const api = React.useMemo<AppShellApi>(
@@ -217,17 +245,17 @@ export function AppShell({
   const chooseSection = (id: string) => {
     const same = activeRef.current === 'chart' && id === activeChartSection;
     if (!same) hapticSelection();
-    const h = handles.current.chart;
-    if (h && h.depth > 0) h.popToRoot();
-    goToTab('chart');
+    showChart();
     onChartSection?.(id);
-    h?.scrollToTop(same);
+    handles.current.chart?.scrollToTop(same);
+    if (overlay) setCollapsed(true);
   };
 
   const shellClass = [
     'ios-appshell',
     sidebar ? 'ios-appshell--sidebar' : 'ios-appshell--tabbar',
     sidebar && collapsed ? 'ios-appshell--sidebar-collapsed' : '',
+    overlay ? 'ios-appshell--sidebar-overlay' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -235,11 +263,17 @@ export function AppShell({
   return (
     <AppShellContext.Provider value={api}>
       <div className={shellClass}>
+        {overlay && sidebarShown && (
+          // Tap outside the overlay sidebar to close it.
+          <div className="ios-appshell__scrim" aria-hidden="true" onClick={() => setCollapsed(true)} />
+        )}
         {sidebar && (
           <aside
+            id={sidebarId}
             className="ios-appshell__sidebar"
             aria-hidden={sidebarShown ? undefined : true}
             inert={sidebarShown ? undefined : true}
+            onKeyDown={overlay ? (e) => { if (e.key === 'Escape') setCollapsed(true); } : undefined}
           >
             <div className="ios-appshell__sidebar-head">
               <button
@@ -247,6 +281,7 @@ export function AppShell({
                 className="ios-glass-button ios-glass-button--icon ios-appshell__sidebar-toggle"
                 aria-label={t('ios.shell.hideSidebar')}
                 aria-expanded={true}
+                aria-controls={sidebarId}
                 onClick={() => setCollapsed(true)}
               >
                 <Icon name={SIDEBAR_ICON} size={22} />
@@ -265,6 +300,7 @@ export function AppShell({
                       onClick={() => {
                         if (!selected) hapticSelection();
                         selectTab(tab);
+                        if (overlay) setCollapsed(true);
                       }}
                     >
                       <Icon name={TAB_ICONS[tab]} size={22} filled={selected} />
@@ -329,6 +365,7 @@ export function AppShell({
             className="ios-glass-button ios-glass-button--icon ios-appshell__sidebar-reopen"
             aria-label={t('ios.shell.showSidebar')}
             aria-expanded={false}
+            aria-controls={sidebarId}
             onClick={() => setCollapsed(false)}
           >
             <Icon name={SIDEBAR_ICON} size={22} />

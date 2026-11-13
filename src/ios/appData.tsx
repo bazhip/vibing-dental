@@ -14,8 +14,17 @@ import type { SettingsSection } from '../components/ChartSettingsModal';
  * which also works from pushed Stack screens (they must read live data
  * through hooks, not values captured when they were pushed).
  *
- * Function identities are stable across renders; data fields change when
- * the underlying state does.
+ * Context values are referentially stable: function identities never
+ * change, and a new value object is provided only when one of its data
+ * fields changes. EntryGrid hands each tab a hoisted element, so a chart
+ * keystroke does NOT re-render the other tabs. Screens therefore must not
+ * rely on parent re-renders: read everything through these hooks (and
+ * useAppShell), and refetch lists when `libraryVersion` changes or when
+ * their tab becomes active (useAppShell().activeTab).
+ *
+ * "Lands on the Chart tab" below always means the shell's single path:
+ * Chart tab selected AND its stack popped to the root. To open a saved
+ * visit from a screen, call useAppShell().openChart(id).
  */
 
 /** Saved charts ("My charts"): the same operations ChartLibrary gets. */
@@ -23,11 +32,11 @@ export interface AppLibrary {
   /** Server-side listing: search, species, author, dueOnly (recheck date
    *  today or earlier), sort, pagination. */
   listCharts(query?: ChartListQuery): Promise<ChartListPage>;
-  /** Opens a saved visit in the chart (asks about unsaved changes) and
-   *  lands on the Chart tab. False when the user cancelled. Prefer
-   *  useAppShell().openChart(id), which does the same. */
-  openChart(id: string): Promise<boolean>;
-  /** Deletes one visit (the caller confirms first). */
+  /** Bumped whenever saved charts may have changed: a chart save (autosave
+   *  or Save), delete, clearRecalls, new visit, new patient. List screens
+   *  refetch when it changes (and when their tab becomes active). */
+  libraryVersion: number;
+  /** Deletes one visit (the caller confirms first). Bumps libraryVersion. */
   deleteChart(id: string): Promise<void>;
   /** "+ Visit": a new visit carrying identity + missing/extracted teeth
    *  from the patient's latest visit; lands on the Chart tab. False when
@@ -37,11 +46,13 @@ export interface AppLibrary {
   /** A blank chart for a new patient (asks about unsaved changes); lands
    *  on the Chart tab when it went ahead. */
   newPatient(): Promise<boolean>;
-  /** Import a ToothOps PDF into the chart; lands on the Chart tab. */
-  loadPdf(file: File): Promise<void>;
+  /** Import a ToothOps PDF into the chart (asks about unsaved changes);
+   *  lands on the Chart tab when it went ahead. */
+  loadPdf(file: File): Promise<boolean>;
   /** Opens today's reminder composer (ReminderModal) for a saved visit. */
   sendReminder(chart: CloudChartMeta): void;
-  /** Clears the recheck date on these visits (mirrors the open chart). */
+  /** Clears the recheck date on these visits (mirrors the open chart).
+   *  Bumps libraryVersion. */
   clearRecalls(chartIds: string[]): Promise<void>;
   /** Opens today's Chart history dialog for a visit (view-only, with
    *  "Open this visit", which lands on the Chart tab). */

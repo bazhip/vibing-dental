@@ -50,5 +50,12 @@
         "description": "Classico da stampa con caratteri graziati: accenti rosso scuro su carta calda."
       }
     }
+  },
+  "library": {
+    "openVisitFailed": "Impossibile aprire questa visita. {{error}}",
+    "newVisitFailed": "Impossibile iniziare una nuova visita. {{error}}",
+    "signOutFailed": "Impossibile uscire. {{error}}",
+    "verbNewPatient": "Iniziare un nuovo paziente",
+    "verbImportPdf": "Importare questo PDF"
   }
 }

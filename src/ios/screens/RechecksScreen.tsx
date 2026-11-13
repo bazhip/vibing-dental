@@ -15,7 +15,11 @@ export function RechecksScreen() {
   const { t } = useTranslation();
   const library = useAppLibrary();
   const shell = useAppShell();
-  const rows = useChartRows(library ? () => library.listCharts({ dueOnly: true, sortKey: 'recall', sortDir: 'asc', limit: 500 }) : null);
+  const rows = useChartRows(
+    library ? () => library.listCharts({ dueOnly: true, sortKey: 'recall', sortDir: 'asc', limit: 500 }) : null,
+    library?.libraryVersion ?? 0,
+    shell.activeTab === 'rechecks'
+  );
 
   return (
     <>

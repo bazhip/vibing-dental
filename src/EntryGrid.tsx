@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   PatientForm,
   DentalGrid,
@@ -51,7 +52,7 @@ import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
 import { isNativeApp } from './native/platform';
-import { AppShell, type AppTab } from './ios/AppShell';
+import { AppShell, type AppTab, type AppShellHandle } from './ios/AppShell';
 import { AppDataProvider, useStableFunctions, type AppLibrary, type AppSettings } from './ios/appData';
 import { PatientsScreen } from './ios/screens/PatientsScreen';
 import { RechecksScreen } from './ios/screens/RechecksScreen';
@@ -133,6 +134,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   onRequestAccount,
   onGoHome,
 }) => {
+  const { t: tc } = useTranslation('chart');
   const chart = useChartState();
   const profile = useProfile();
   const chartSettings = useChartSettings(profile.loaded);
@@ -186,6 +188,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const native = isNativeApp();
   // App shell tab. #/library (My charts on the web) is the Patients tab.
   const [appTab, setAppTab] = React.useState<AppTab>(() => (native && route.view === 'library' ? 'patients' : 'chart'));
+  // The one way to "land on the Chart tab": select it and pop its stack to
+  // the root (the shell's showChart; before the shell mounts, just select).
+  const shellRef = React.useRef<AppShellHandle>(null);
+  const landOnChart = React.useCallback(() => {
+    if (shellRef.current) shellRef.current.showChart();
+    else setAppTab('chart');
+  }, []);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
@@ -216,7 +225,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [navigate]);
   /** App: a chart section, shown in the Chart tab. */
   const showChartSection = (id: string) => {
-    setAppTab('chart');
+    landOnChart();
     goToSection(id);
   };
   // Inline reason a save was blocked (e.g. missing patient name).
@@ -393,7 +402,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // The app has no My charts dialog: "close the library after opening a
     // chart" means show the Chart tab.
     if (native) {
-      setAppTab('chart');
+      landOnChart();
       return;
     }
     if (libraryPushedRef.current) {
@@ -402,7 +411,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     } else {
       navigate(`#/chart/${chart.cloudChartId}`, { replace: true });
     }
-  }, [navigate, chart.cloudChartId, native]);
+  }, [navigate, chart.cloudChartId, native, landOnChart]);
 
   // Deep link support: arriving on #/chart/:id for a chart that isn't
   // the working one opens it from the cloud (same path as the library,
@@ -1148,9 +1157,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     });
   };
   // Start a blank chart (asks only when something would be lost).
-  const startNewPatient = async () => {
-    if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return;
+  const startNewPatient = async (): Promise<boolean> => {
+    if (!(await cloud.confirmDiscardIfDirty(tc('library.verbNewPatient')))) return false;
     chart.resetChart();
+    return true;
   };
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
@@ -1175,6 +1185,57 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     try { window.sessionStorage.removeItem(`chart.unlockSnapshot.${chart.cloudChartId}`); } catch { /* ignore */ }
     setEditUnlocked(false);
   };
+
+  // ----- Saved-chart actions ---------------------------------------------
+  // One copy for the web's My charts dialog and the app's tabs (the app
+  // adds "land on the Chart tab" on top). Stable identities.
+  // libraryVersion tells the app's list screens to refetch.
+  const [libraryVersion, setLibraryVersion] = React.useState(0);
+  // App only: the website has no list that needs it (no extra renders there).
+  const bumpLibrary = React.useCallback(() => {
+    if (native) setLibraryVersion((v) => v + 1);
+  }, [native]);
+  React.useEffect(() => {
+    if (cloud.lastSavedAt) bumpLibrary();
+  }, [cloud.lastSavedAt, bumpLibrary]);
+  const libraryCore = useStableFunctions({
+    deleteChart: async (id: string): Promise<void> => {
+      await cloud.deleteChart(id);
+      bumpLibrary();
+    },
+    /** Start a visit from the patient's latest; toasts failures. */
+    newVisit: async (latestChartId: string): Promise<boolean> => {
+      try {
+        if (!(await startVisitFromChart(latestChartId))) return false;
+      } catch (err) {
+        toast(tc('library.newVisitFailed', { error: friendlyError(err) }), { kind: 'error' });
+        return false;
+      }
+      bumpLibrary();
+      return true;
+    },
+    newPatient: async (): Promise<boolean> => {
+      if (!(await startNewPatient())) return false;
+      bumpLibrary();
+      return true;
+    },
+    loadPdf: async (file: File): Promise<boolean> => {
+      if (!(await cloud.confirmDiscardIfDirty(tc('library.verbImportPdf')))) return false;
+      await chart.loadFromPdf(file);
+      return true;
+    },
+    sendReminder: (c: CloudChartMeta) => setReminderTarget(c),
+    openHistory: (chartId: string, label: string) => setHistoryFor({ id: chartId, label, fromLibrary: true }),
+    clearRecalls: async (chartIds: string[]): Promise<void> => {
+      await cloud.clearRecalls(chartIds);
+      // If the working chart is one of them, mirror the clear
+      // locally — a later save must not resurrect the date.
+      if (chartIds.includes(chart.cloudChartId)) {
+        chart.handlePatientInfoChange('recallDate', '');
+      }
+      bumpLibrary();
+    },
+  });
 
   // Shared by the website page and the app shell (same order on the web).
   const otherTabBanner = otherTabWarning && (
@@ -1250,30 +1311,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         <ChartLibrary
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
-          onDelete={cloud.deleteChart}
+          onDelete={libraryCore.deleteChart}
           onNewVisit={async (latestChartId) => {
-            try {
-              // Cancelled at the unsaved-changes prompt → stay in the library.
-              if (await startVisitFromChart(latestChartId)) closeLibrary();
-            } catch (err) {
-              toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
-            }
+            // Cancelled at the unsaved-changes prompt → stay in the library.
+            if (await libraryCore.newVisit(latestChartId)) closeLibrary();
           }}
-          onSendReminder={(c) => setReminderTarget(c)}
-          onOpenHistory={(id, label) => setHistoryFor({ id, label, fromLibrary: true })}
-          onClearRecalls={async (chartIds) => {
-            await cloud.clearRecalls(chartIds);
-            // If the working chart is one of them, mirror the clear
-            // locally — a later save must not resurrect the date.
-            if (chartIds.includes(chart.cloudChartId)) {
-              chart.handlePatientInfoChange('recallDate', '');
-            }
-          }}
-          onNewPatient={startNewPatient}
-          onLoadPdf={async (file) => {
-            if (!(await cloud.confirmDiscardIfDirty('Import this PDF'))) return;
-            await chart.loadFromPdf(file);
-          }}
+          onSendReminder={libraryCore.sendReminder}
+          onOpenHistory={libraryCore.openHistory}
+          onClearRecalls={libraryCore.clearRecalls}
+          onNewPatient={async () => { await libraryCore.newPatient(); }}
+          onLoadPdf={async (file) => { await libraryCore.loadPdf(file); }}
           onClose={closeLibrary}
         />
       )}
@@ -1409,59 +1456,53 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   // ----- iOS app shell --------------------------------------------------
   // What the Patients / Rechecks / Settings tabs get from this component
-  // (src/ios/appData.tsx documents the contract). Functions keep one
-  // identity across renders (useStableFunctions) and land on the Chart tab
-  // when they put a different chart in front of the user.
-  const openChartInApp = async (id: string): Promise<boolean> => {
-    try {
-      if (!(await cloud.openChart(id))) return false;
-    } catch (err) {
-      toast(`Couldn’t open that visit. ${friendlyError(err)}`, { kind: 'error' });
-      return false;
-    }
-    setAppTab('chart');
-    return true;
-  };
-  const libraryFns = useStableFunctions({
+  // (src/ios/appData.tsx documents the contract). Context values are
+  // referentially stable, and every "lands on Chart" goes through
+  // landOnChart (Chart tab + its stack popped to the root).
+  const appFns = useStableFunctions({
     listCharts: cloud.listCharts,
-    openChart: openChartInApp,
-    deleteChart: cloud.deleteChart,
-    newVisit: async (latestChartId: string): Promise<boolean> => {
+    /** The shell's onOpenChart: opens the visit; the shell then lands on Chart. */
+    openChart: async (id: string): Promise<boolean> => {
       try {
-        if (!(await startVisitFromChart(latestChartId))) return false;
+        return await cloud.openChart(id);
       } catch (err) {
-        toast(`Couldn’t start a new visit. ${friendlyError(err)}`, { kind: 'error' });
+        toast(tc('library.openVisitFailed', { error: friendlyError(err) }), { kind: 'error' });
         return false;
       }
-      setAppTab('chart');
+    },
+    newVisit: async (latestChartId: string): Promise<boolean> => {
+      if (!(await libraryCore.newVisit(latestChartId))) return false;
+      landOnChart();
       return true;
     },
     newPatient: async (): Promise<boolean> => {
-      if (!(await cloud.confirmDiscardIfDirty('Start a new patient'))) return false;
-      chart.resetChart();
+      if (!(await libraryCore.newPatient())) return false;
       goToSection('patient');
-      setAppTab('chart');
+      landOnChart();
       return true;
     },
-    loadPdf: async (file: File): Promise<void> => {
-      if (!(await cloud.confirmDiscardIfDirty('Import this PDF'))) return;
-      await chart.loadFromPdf(file);
-      setAppTab('chart');
+    loadPdf: async (file: File): Promise<boolean> => {
+      if (!(await libraryCore.loadPdf(file))) return false;
+      landOnChart();
+      return true;
     },
-    sendReminder: (c: CloudChartMeta) => setReminderTarget(c),
-    clearRecalls: async (chartIds: string[]) => {
-      await cloud.clearRecalls(chartIds);
-      // Same as My charts: mirror the clear on the open chart so a later
-      // save doesn't bring the date back.
-      if (chartIds.includes(chart.cloudChartId)) chart.handlePatientInfoChange('recallDate', '');
-    },
-    openHistory: (chartId: string, label: string) => setHistoryFor({ id: chartId, label, fromLibrary: true }),
   });
   const appLibrary = React.useMemo<AppLibrary | null>(
-    () => (cloud.enabled ? { ...libraryFns, openChartId: chart.cloudChartId } : null),
-    // libraryFns' members never change identity.
+    () => (cloud.enabled ? {
+      listCharts: appFns.listCharts,
+      libraryVersion,
+      deleteChart: libraryCore.deleteChart,
+      newVisit: appFns.newVisit,
+      newPatient: appFns.newPatient,
+      loadPdf: appFns.loadPdf,
+      sendReminder: libraryCore.sendReminder,
+      clearRecalls: libraryCore.clearRecalls,
+      openHistory: libraryCore.openHistory,
+      openChartId: chart.cloudChartId,
+    } : null),
+    // appFns' / libraryCore's members never change identity.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [cloud.enabled, chart.cloudChartId]
+    [cloud.enabled, chart.cloudChartId, libraryVersion]
   );
   const settingsFns = useStableFunctions({
     setPref,
@@ -1476,7 +1517,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     feedback: () => setFeedback({}),
     admin: () => setAdminOpen(true),
     signOut: () => cloud.signOut().catch((err) => {
-      toast(`Couldn’t sign out. ${friendlyError(err)}`, { kind: 'error' });
+      toast(tc('library.signOutFailed', { error: friendlyError(err) }), { kind: 'error' });
     }),
     requestAccount: (mode: 'signup' | 'signin') => onRequestAccount?.(mode),
   });
@@ -1510,6 +1551,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [trial, cloud.enabled, isAdmin, canFeedback, profile, prefs, chartSettings.followsAccount, language, activeSection, !!onRequestAccount]);
 
+  // Hoisted elements: the other tabs don't re-render when the chart does
+  // (they read live data through context; see appData.tsx).
+  const tabScreens = React.useMemo(() => ({
+    patients: <PatientsScreen />,
+    rechecks: <RechecksScreen />,
+    settings: <SettingsScreen />,
+  }), []);
+  const sectionLinksKey = sections.map((x) => `${x.id}\u0000${x.label}`).join('\u0001');
+  const chartSectionLinks = React.useMemo(
+    () => sections.map(({ id, label }) => ({ id, label })),
+    // Only ids/labels matter here; `sections` itself is rebuilt every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sectionLinksKey]
+  );
+
   if (native) {
     return (
       <div className="entry-grid-app">
@@ -1517,8 +1573,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <AppShell
             activeTab={appTab}
             onTabChange={setAppTab}
-            onOpenChart={libraryFns.openChart}
-            chartSections={sections.map(({ id, label }) => ({ id, label }))}
+            controllerRef={shellRef}
+            onOpenChart={appFns.openChart}
+            chartSections={chartSectionLinks}
             activeChartSection={activeSection}
             onChartSection={goToSection}
             chart={
@@ -1529,9 +1586,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 {chartForm}
               </div>
             }
-            patients={<PatientsScreen />}
-            rechecks={<RechecksScreen />}
-            settings={<SettingsScreen />}
+            patients={tabScreens.patients}
+            rechecks={tabScreens.rechecks}
+            settings={tabScreens.settings}
           />
         </AppDataProvider>
         {/* Outside the shell's stacks (fixed position); Chart tab only. */}

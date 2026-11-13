@@ -310,7 +310,9 @@ export function useProfile(): UseProfileReturn {
     setLogoUrl('');
   }, []);
 
-  return {
+  // Memoised so consumers (the app's settings context) only see a new
+  // object when something actually changed.
+  return React.useMemo(() => ({
     ...profile,
     loaded,
     practiceId,
@@ -326,5 +328,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  };
+  }), [profile, loaded, practiceId, plan, billed, ownerReportEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

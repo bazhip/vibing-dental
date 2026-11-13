@@ -392,6 +392,26 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:library.newVisitFailed": {
+      "hash": "fb88294aa6e1",
+      "status": "machine"
+    },
+    "chart:library.openVisitFailed": {
+      "hash": "1b237868d2ee",
+      "status": "machine"
+    },
+    "chart:library.signOutFailed": {
+      "hash": "4068aa47bd4b",
+      "status": "machine"
+    },
+    "chart:library.verbImportPdf": {
+      "hash": "976f715aceab",
+      "status": "machine"
+    },
+    "chart:library.verbNewPatient": {
+      "hash": "ff4b1a5c0458",
+      "status": "machine"
+    },
     "chart:menu.practiceSettingsHintApp": {
       "hash": "09b95c15e19f",
       "status": "machine"
@@ -1332,6 +1352,26 @@
     },
     "chart:imaging.uploadsUnavailable": {
       "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:library.newVisitFailed": {
+      "hash": "fb88294aa6e1",
+      "status": "machine"
+    },
+    "chart:library.openVisitFailed": {
+      "hash": "1b237868d2ee",
+      "status": "machine"
+    },
+    "chart:library.signOutFailed": {
+      "hash": "4068aa47bd4b",
+      "status": "machine"
+    },
+    "chart:library.verbImportPdf": {
+      "hash": "976f715aceab",
+      "status": "machine"
+    },
+    "chart:library.verbNewPatient": {
+      "hash": "ff4b1a5c0458",
       "status": "machine"
     },
     "chart:menu.practiceSettingsHintApp": {
@@ -2276,6 +2316,26 @@
       "hash": "0e3a0e4d8b5f",
       "status": "machine"
     },
+    "chart:library.newVisitFailed": {
+      "hash": "fb88294aa6e1",
+      "status": "machine"
+    },
+    "chart:library.openVisitFailed": {
+      "hash": "1b237868d2ee",
+      "status": "machine"
+    },
+    "chart:library.signOutFailed": {
+      "hash": "4068aa47bd4b",
+      "status": "machine"
+    },
+    "chart:library.verbImportPdf": {
+      "hash": "976f715aceab",
+      "status": "machine"
+    },
+    "chart:library.verbNewPatient": {
+      "hash": "ff4b1a5c0458",
+      "status": "machine"
+    },
     "chart:menu.practiceSettingsHintApp": {
       "hash": "09b95c15e19f",
       "status": "machine"
@@ -3216,6 +3276,26 @@
     },
     "chart:imaging.uploadsUnavailable": {
       "hash": "0e3a0e4d8b5f",
+      "status": "machine"
+    },
+    "chart:library.newVisitFailed": {
+      "hash": "fb88294aa6e1",
+      "status": "machine"
+    },
+    "chart:library.openVisitFailed": {
+      "hash": "1b237868d2ee",
+      "status": "machine"
+    },
+    "chart:library.signOutFailed": {
+      "hash": "4068aa47bd4b",
+      "status": "machine"
+    },
+    "chart:library.verbImportPdf": {
+      "hash": "976f715aceab",
+      "status": "machine"
+    },
+    "chart:library.verbNewPatient": {
+      "hash": "ff4b1a5c0458",
       "status": "machine"
     },
     "chart:menu.practiceSettingsHintApp": {

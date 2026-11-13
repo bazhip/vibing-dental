@@ -50,5 +50,12 @@
         "description": "Klassischer Druck mit Serifenschrift – tiefrote Akzente auf warmem Papier."
       }
     }
+  },
+  "library": {
+    "openVisitFailed": "Dieser Besuch konnte nicht geöffnet werden. {{error}}",
+    "newVisitFailed": "Ein neuer Besuch konnte nicht begonnen werden. {{error}}",
+    "signOutFailed": "Abmelden fehlgeschlagen. {{error}}",
+    "verbNewPatient": "Neuen Patienten beginnen",
+    "verbImportPdf": "Dieses PDF importieren"
   }
 }

@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AppShell, useAppShell, type AppTab, REGULAR_WIDTH_QUERY } from './AppShell';
+import { AppShell, useAppShell, type AppTab, type AppShellHandle, REGULAR_WIDTH_QUERY, DOCKED_SIDEBAR_QUERY } from './AppShell';
 import { useStack } from './Stack';
 
 vi.mock('../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi.fn(), hapticImpact: vi.fn(), hapticSuccess: vi.fn() }));
@@ -11,10 +11,15 @@ afterEach(() => {
   window.matchMedia = realMatchMedia;
 });
 
-/** Pretend the window is (or isn't) iPad regular width. */
-function mockRegularWidth(regular: boolean) {
+type Width = 'compact' | 'portrait' | 'landscape';
+/** compact = iPhone / Slide Over; portrait = iPad portrait (regular, overlay
+ *  sidebar); landscape = iPad landscape (regular, docked sidebar). */
+function mockWidth(width: Width) {
+  const matching = new Set<string>(
+    width === 'compact' ? [] : width === 'portrait' ? [REGULAR_WIDTH_QUERY] : [REGULAR_WIDTH_QUERY, DOCKED_SIDEBAR_QUERY]
+  );
   window.matchMedia = ((q: string) => ({
-    matches: q === REGULAR_WIDTH_QUERY ? regular : false,
+    matches: matching.has(q),
     media: q,
     onchange: null,
     addListener() {},
@@ -27,7 +32,13 @@ function mockRegularWidth(regular: boolean) {
 
 function ChartBody() {
   const [text, setText] = React.useState('');
-  return <input aria-label="Chart field" value={text} onChange={(e) => setText(e.target.value)} />;
+  const { push } = useStack();
+  return (
+    <div>
+      <input aria-label="Chart field" value={text} onChange={(e) => setText(e.target.value)} />
+      <button onClick={() => push({ id: 'chart-detail', title: 'Detail', render: () => <p>Chart detail screen</p> })}>Push on chart</button>
+    </div>
+  );
 }
 
 function PatientsBody({ openId }: { openId?: string }) {
@@ -47,7 +58,9 @@ function Harness({
   onOpenChart,
   onChartSection,
   onTabChange,
+  controllerRef,
 }: {
+  controllerRef?: React.Ref<AppShellHandle>;
   initial?: AppTab;
   onOpenChart?: (id: string) => Promise<boolean | void> | boolean | void;
   onChartSection?: (id: string) => void;
@@ -62,6 +75,7 @@ function Harness({
         setTab(next);
       }}
       onOpenChart={onOpenChart}
+      controllerRef={controllerRef}
       chartSections={[
         { id: 'patient', label: 'Patient' },
         { id: 'charting', label: 'Charting' },
@@ -80,7 +94,7 @@ const panel = (tab: AppTab) => document.querySelector<HTMLElement>(`[data-app-ta
 
 describe('AppShell (iPhone)', () => {
   it('renders a tab bar with the four tabs and no sidebar', () => {
-    mockRegularWidth(false);
+    mockWidth('compact');
     render(<Harness />);
     const tabs = screen.getAllByRole('tab').map((t) => t.textContent);
     expect(tabs).toEqual(['Chart', 'Patients', 'Rechecks', 'Settings']);
@@ -89,7 +103,7 @@ describe('AppShell (iPhone)', () => {
   });
 
   it('keeps every tab mounted when switching, so state and pushed screens survive', async () => {
-    mockRegularWidth(false);
+    mockWidth('compact');
     render(<Harness />);
     fireEvent.change(screen.getByLabelText('Chart field'), { target: { value: 'Rex' } });
 
@@ -114,7 +128,7 @@ describe('AppShell (iPhone)', () => {
     // jsdom doesn't scroll; the scroll position lives on this element, which
     // must never be remounted (and the CSS keeps hidden panels laid out with
     // visibility, not display:none, which would reset scrollTop in WebKit).
-    mockRegularWidth(false);
+    mockWidth('compact');
     render(<Harness />);
     const chartLayer = panel('chart').querySelector<HTMLElement>('.ios-stack__layer');
     expect(chartLayer).not.toBeNull();
@@ -124,7 +138,7 @@ describe('AppShell (iPhone)', () => {
   });
 
   it('tapping the selected tab again pops its stack to the root', async () => {
-    mockRegularWidth(false);
+    mockWidth('compact');
     render(<Harness initial="patients" />);
     fireEvent.click(screen.getByRole('button', { name: 'Open visits' }));
     expect(screen.getByText('Visits screen')).toBeInTheDocument();
@@ -132,20 +146,35 @@ describe('AppShell (iPhone)', () => {
     await waitFor(() => expect(screen.queryByText('Visits screen')).toBeNull());
   });
 
-  it('openChart(id) from Patients opens the chart and lands on the Chart tab', async () => {
-    mockRegularWidth(false);
+  it('openChart(id) from Patients opens the chart and lands on the Chart tab at its root', async () => {
+    mockWidth('compact');
     const onOpenChart = vi.fn(async () => true);
-    render(<Harness initial="patients" onOpenChart={onOpenChart} />);
+    render(<Harness onOpenChart={onOpenChart} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Push on chart' }));
+    expect(screen.getByText('Chart detail screen')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: 'Patients' }));
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Open chart' }));
     });
     expect(onOpenChart).toHaveBeenCalledWith('c-42');
     expect(screen.getByRole('tab', { name: 'Chart' })).toHaveAttribute('aria-selected', 'true');
     expect(panel('chart')).not.toHaveAttribute('hidden');
+    await waitFor(() => expect(screen.queryByText('Chart detail screen')).toBeNull());
+  });
+
+  it('controllerRef.showChart() lands on the Chart tab and pops its stack', async () => {
+    mockWidth('compact');
+    const ref = React.createRef<AppShellHandle>();
+    render(<Harness controllerRef={ref} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Push on chart' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Settings' }));
+    act(() => ref.current!.showChart());
+    expect(screen.getByRole('tab', { name: 'Chart' })).toHaveAttribute('aria-selected', 'true');
+    await waitFor(() => expect(screen.queryByText('Chart detail screen')).toBeNull());
   });
 
   it('stays on Patients when opening the chart is cancelled', async () => {
-    mockRegularWidth(false);
+    mockWidth('compact');
     const onOpenChart = vi.fn(async () => false);
     render(<Harness initial="patients" onOpenChart={onOpenChart} />);
     await act(async () => {
@@ -164,9 +193,9 @@ describe('AppShell (iPhone)', () => {
   });
 });
 
-describe('AppShell (iPad regular width)', () => {
+describe('AppShell (iPad landscape: docked sidebar)', () => {
   it('renders a sidebar with the four destinations and the chart sections, and no tab bar', () => {
-    mockRegularWidth(true);
+    mockWidth('landscape');
     render(<Harness />);
     expect(screen.queryByRole('tablist')).toBeNull();
     const sidebar = screen.getByRole('navigation', { name: 'ToothOps' });
@@ -176,7 +205,7 @@ describe('AppShell (iPad regular width)', () => {
   });
 
   it('switches tabs from the sidebar and keeps tabs mounted', () => {
-    mockRegularWidth(true);
+    mockWidth('landscape');
     const onTabChange = vi.fn();
     render(<Harness onTabChange={onTabChange} />);
     fireEvent.click(screen.getByRole('button', { name: 'Rechecks' }));
@@ -187,7 +216,7 @@ describe('AppShell (iPad regular width)', () => {
   });
 
   it('a chart section in the sidebar goes to the Chart tab and that section', () => {
-    mockRegularWidth(true);
+    mockWidth('landscape');
     const onChartSection = vi.fn();
     render(<Harness initial="settings" onChartSection={onChartSection} />);
     fireEvent.click(screen.getByRole('button', { name: 'Charting' }));
@@ -195,13 +224,54 @@ describe('AppShell (iPad regular width)', () => {
     expect(panel('chart')).not.toHaveAttribute('hidden');
   });
 
-  it('the sidebar collapses and comes back', () => {
-    mockRegularWidth(true);
+  it('the sidebar collapses and comes back; both toggles control it', () => {
+    mockWidth('landscape');
     render(<Harness />);
+    const aside = document.querySelector('.ios-appshell__sidebar')!;
+    expect(aside.id).not.toBe('');
+    expect(screen.getByRole('button', { name: 'Hide sidebar' })).toHaveAttribute('aria-controls', aside.id);
     fireEvent.click(screen.getByRole('button', { name: 'Hide sidebar' }));
+    expect(screen.getByRole('button', { name: 'Show sidebar' })).toHaveAttribute('aria-controls', aside.id);
     expect(document.querySelector('.ios-appshell')).toHaveClass('ios-appshell--sidebar-collapsed');
     expect(screen.getByRole('navigation', { name: 'ToothOps', hidden: true }).closest('[inert]')).not.toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
     expect(document.querySelector('.ios-appshell')).not.toHaveClass('ios-appshell--sidebar-collapsed');
+  });
+});
+
+describe('AppShell (iPad portrait: overlay sidebar)', () => {
+  it('uses the sidebar (not the tab bar), hidden by default', () => {
+    mockWidth('portrait');
+    render(<Harness />);
+    expect(screen.queryByRole('tablist')).toBeNull();
+    const shell = document.querySelector('.ios-appshell')!;
+    expect(shell).toHaveClass('ios-appshell--sidebar', 'ios-appshell--sidebar-overlay', 'ios-appshell--sidebar-collapsed');
+    expect(document.querySelector('.ios-appshell__sidebar')).toHaveAttribute('inert');
+  });
+
+  it('the sidebar button shows it over the content; a choice or the scrim closes it', () => {
+    mockWidth('portrait');
+    const onTabChange = vi.fn();
+    render(<Harness onTabChange={onTabChange} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    const shell = document.querySelector('.ios-appshell')!;
+    expect(shell).not.toHaveClass('ios-appshell--sidebar-collapsed');
+    expect(document.querySelector('.ios-appshell__scrim')).not.toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Patients' }));
+    expect(onTabChange).toHaveBeenCalledWith('patients');
+    expect(shell).toHaveClass('ios-appshell--sidebar-collapsed');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show sidebar' }));
+    fireEvent.click(document.querySelector('.ios-appshell__scrim')!);
+    expect(shell).toHaveClass('ios-appshell--sidebar-collapsed');
+  });
+});
+
+describe('AppShell (compact width on iPad: Slide Over / narrow split)', () => {
+  it('falls back to the tab bar', () => {
+    mockWidth('compact');
+    render(<Harness />);
+    expect(screen.getByRole('tablist')).toBeInTheDocument();
+    expect(document.querySelector('.ios-appshell__sidebar')).toBeNull();
   });
 });

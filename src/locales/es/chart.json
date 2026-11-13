@@ -50,5 +50,12 @@
         "description": "Clásico impreso con serifa: acentos rojo oscuro sobre papel cálido."
       }
     }
+  },
+  "library": {
+    "openVisitFailed": "No se ha podido abrir esta visita. {{error}}",
+    "newVisitFailed": "No se ha podido iniciar una nueva visita. {{error}}",
+    "signOutFailed": "No se ha podido cerrar la sesión. {{error}}",
+    "verbNewPatient": "Iniciar un nuevo paciente",
+    "verbImportPdf": "Importar este PDF"
   }
 }

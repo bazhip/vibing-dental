@@ -17,7 +17,11 @@ export function PatientsScreen() {
   const { t } = useTranslation();
   const library = useAppLibrary();
   const shell = useAppShell();
-  const rows = useChartRows(library ? () => library.listCharts({ sortKey: 'updated', sortDir: 'desc', limit: 50 }) : null);
+  const rows = useChartRows(
+    library ? () => library.listCharts({ sortKey: 'updated', sortDir: 'desc', limit: 50 }) : null,
+    library?.libraryVersion ?? 0,
+    shell.activeTab === 'patients'
+  );
 
   return (
     <>
@@ -47,19 +51,24 @@ export function PatientsScreen() {
   );
 }
 
-/** Loads once (and again when the tab's library changes). */
-export function useChartRows(load: (() => Promise<{ rows: CloudChartMeta[] }>) | null): CloudChartMeta[] | 'error' | null {
+/** Loads while the tab is active: when it becomes active and whenever
+ *  `version` (AppLibrary.libraryVersion) changes. */
+export function useChartRows(
+  load: (() => Promise<{ rows: CloudChartMeta[] }>) | null,
+  version: number,
+  active: boolean
+): CloudChartMeta[] | 'error' | null {
   const [rows, setRows] = React.useState<CloudChartMeta[] | 'error' | null>(null);
   const loadRef = React.useRef(load);
   loadRef.current = load;
   const enabled = !!load;
   React.useEffect(() => {
-    if (!enabled) return undefined;
+    if (!enabled || !active) return undefined;
     let cancelled = false;
     loadRef.current?.()
       .then((page) => { if (!cancelled) setRows(page.rows); })
       .catch(() => { if (!cancelled) setRows('error'); });
     return () => { cancelled = true; };
-  }, [enabled]);
+  }, [enabled, version, active]);
   return rows;
 }

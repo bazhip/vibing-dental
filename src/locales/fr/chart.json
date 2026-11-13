@@ -50,5 +50,12 @@
         "description": "Classique de l’imprimé à empattements — accents rouge foncé sur papier chaud."
       }
     }
+  },
+  "library": {
+    "openVisitFailed": "Impossible d’ouvrir cette visite. {{error}}",
+    "newVisitFailed": "Impossible de commencer une nouvelle visite. {{error}}",
+    "signOutFailed": "Impossible de se déconnecter. {{error}}",
+    "verbNewPatient": "Commencer un nouveau patient",
+    "verbImportPdf": "Importer ce PDF"
   }
 }
