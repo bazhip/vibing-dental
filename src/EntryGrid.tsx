@@ -91,6 +91,11 @@ const FEEDBACK_MAILTO = `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
   ].join('\n')
 )}`;
 
+/** Sections shown side by side on wide screens: Charting (grid view)
+ *  with the Diagnosis diagram, so findings mirrored to the diagram show
+ *  up as they're typed. */
+const CHARTING_COMPANIONS: Record<string, string> = { charting: 'diagnosis' };
+
 /** Display names for the species toggle values, used in the patient banner. */
 const SPECIES_LABELS: Record<string, string> = {
   feline: 'Feline',
@@ -1576,6 +1581,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           sections={sections}
           activeId={activeSection}
           onActiveChange={goToSection}
+          // Wide screens (iPad landscape, desktop): the Diagnosis diagram
+          // sits beside the grid. By tooth already has its own diagram.
+          companions={chartingView === 'grid' ? CHARTING_COMPANIONS : undefined}
         />
       </form>
 

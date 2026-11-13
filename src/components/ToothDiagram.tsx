@@ -23,6 +23,11 @@ import {
   type ParsedDiagram,
   type SvgSubpath,
 } from './toothDiagram/parseSvg';
+import { createPenFilter } from './toothDiagram/penFilter';
+
+// One filter for the whole session: once Apple Pencil has drawn on any
+// diagram, finger/palm touches stop drawing on all of them.
+const penFilter = createPenFilter();
 
 export type DiagramTool = 'mark' | 'comment' | 'draw';
 
@@ -1018,12 +1023,19 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     };
   };
 
+  // The pointer that started the live stroke; other pointers (e.g. a palm
+  // landing mid-stroke) can't extend or end it.
+  const strokePointerIdRef = React.useRef<number | null>(null);
+
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
     if (tool !== 'draw' || readOnly) return;
+    if (!penFilter.accept(e.pointerType)) return;
+    if (liveStroke) return;
     const p = getSvgPoint(e);
     if (!p) return;
     e.preventDefault();
     (e.target as Element).setPointerCapture?.(e.pointerId);
+    strokePointerIdRef.current = e.pointerId;
     const id = `s${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const arch: 'maxilla' | 'mandible' = p.y < diagram.midlineY ? 'maxilla' : 'mandible';
     setLiveStroke({ id, arch, color: strokeColor, width: strokeWidth, points: [p] });
@@ -1031,12 +1043,16 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
 
   const handlePointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     if (tool !== 'draw' || !liveStroke) return;
+    if (!penFilter.accept(e.pointerType)) return;
+    if (strokePointerIdRef.current !== null && e.pointerId !== strokePointerIdRef.current) return;
     const p = getSvgPoint(e);
     if (!p) return;
     setLiveStroke((s) => (s ? { ...s, points: [...s.points, p] } : s));
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (strokePointerIdRef.current !== null && e.pointerId !== strokePointerIdRef.current) return;
+    strokePointerIdRef.current = null;
     if (liveStroke && liveStroke.points.length > 0) {
       onStrokesChange([...strokes, liveStroke]);
     }
@@ -1071,6 +1087,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       style={{ touchAction: tool === 'draw' ? 'none' : 'auto' }}
     >
       {/* Static base: the first `<path>` element's d attribute, drawn
