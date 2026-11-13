@@ -1,0 +1,105 @@
+# Auto-translate new/changed English strings on PRs, commit them back to the
+# PR branch, then run the i18n check, lint and tests.
+#
+# Loop prevention: runs are skipped when the head commit was made by
+# github-actions[bot] / "i18n: translate new strings". Also, pushes made with
+# the default GITHUB_TOKEN do not trigger new workflow runs, so the commit
+# below cannot retrigger this workflow; checks run in this same job instead.
+name: i18n
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: i18n-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  translate:
+    # Forks cannot get secrets or push back.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+
+      - name: Detect bot commit
+        id: bot
+        run: |
+          author="$(git log -1 --format=%an)"
+          subject="$(git log -1 --format=%s)"
+          if [ "$author" = "github-actions[bot]" ] || [[ "$subject" == "i18n: translate new strings"* ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Head commit is from the translate bot; skipping."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.bot.outputs.skip != 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        if: steps.bot.outputs.skip != 'true'
+        run: npm ci
+
+      - name: Detect translation work
+        if: steps.bot.outputs.skip != 'true'
+        id: work
+        run: |
+          if npm run --silent i18n:translate -- --check; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Require ANTHROPIC_API_KEY when there is work
+        if: steps.bot.outputs.skip != 'true' && steps.work.outputs.needed == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Translations are missing or stale but the ANTHROPIC_API_KEY secret is empty. Repo owner: add it under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Translate
+        if: steps.bot.outputs.skip != 'true' && steps.work.outputs.needed == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run i18n:translate
+
+      - name: Commit translations
+        if: steps.bot.outputs.skip != 'true'
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          if [ -n "$(git status --porcelain src/locales)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/locales
+            git commit -m "i18n: translate new strings"
+            git push origin "HEAD:refs/heads/$HEAD_REF"
+          else
+            echo "No translation changes."
+          fi
+
+      - name: i18n check
+        if: steps.bot.outputs.skip != 'true'
+        run: npm run i18n:check
+
+      - name: Lint
+        if: steps.bot.outputs.skip != 'true'
+        run: npm run lint
+
+      - name: Tests
+        if: steps.bot.outputs.skip != 'true'
+        run: npx vitest run
