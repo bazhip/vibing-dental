@@ -1,4 +1,5 @@
 import type { AppLanguage } from '../../i18n/config';
+import { nativeScoreTerms, SCORE_ABBREVIATIONS } from './terms';
 import {
   CANINE_DECIDUOUS_TOOTH_DATA,
   CANINE_TOOTH_DATA,
@@ -83,9 +84,12 @@ interface LanguageNumbers {
   /** Compound hundreds; groups `h` (hundreds word, absent = 100) and `r` (1–15). */
   compound: string;
   hundreds: (h: string | undefined) => number;
-  /** Score terms (folded alternation): glossary column terms, plus the
-   *  English abbreviations vets say in every language. */
+  /** Score terms (folded alternation): the native terms from ./terms plus
+   *  the English abbreviations vets say in every language. */
   scoreTerms: string;
+  /** Native terms that also count as the end of a compound word
+   *  (German "Zahnfleischtasche", "Lockerungsgrad"). */
+  compoundEnds?: string;
   units: string;
 }
 
@@ -95,45 +99,20 @@ const toMap = (list: string, start = 0) =>
 const alt = (keys: string[]) => [...keys].sort((a, b) => b.length - a.length).join('|');
 const withValues = (base: Record<string, number>, extra: Record<string, number>) => ({ ...base, ...extra });
 
-const ABBREVIATIONS = 'gi|ge|g|c|calc|m|f|pd';
-
-// Glossary-derived spoken forms of the perio grid columns and surfaces
-// (each word appears in the glossary term for its id; see numbers.test.ts),
-// plus the plain words for grade and class.
-export const SCORE_WORDS: Record<OtherLanguage, Record<string, string>> = {
-  fr: {
-    mobility: 'mobilité', recession: 'récession', pocket: 'poche', furcation: 'furcation',
-    calculus: 'calcul', gingivitis: 'gingivite', hyperplasia: 'accroissement', periodontal_stage: 'stade',
-    mesial: 'mésial', distal: 'distal', palatal: 'palatin', buccal: 'vestibulaire',
-  },
-  de: {
-    mobility: 'beweglichkeit', recession: 'rezession', pocket: 'tasche', furcation: 'furkation',
-    calculus: 'zahnstein', gingivitis: 'gingivitis', periodontal_stage: 'stadium',
-    mesial: 'mesial', distal: 'distal', palatal: 'palatinal', buccal: 'bukkal',
-  },
-  it: {
-    mobility: 'mobilità', recession: 'recessione', pocket: 'tasca', furcation: 'forcazione',
-    calculus: 'tartaro', gingivitis: 'gengivite', hyperplasia: 'ingrossamento', periodontal_stage: 'stadio',
-    mesial: 'mesiale', distal: 'distale', palatal: 'palatale', buccal: 'vestibolare',
-  },
-  es: {
-    mobility: 'movilidad', recession: 'recesión', pocket: 'bolsa', furcation: 'furca',
-    calculus: 'cálculo', gingivitis: 'gingivitis', hyperplasia: 'agrandamiento', periodontal_stage: 'estadio',
-    mesial: 'mesial', distal: 'distal', palatal: 'palatino', buccal: 'vestibular',
-  },
-};
-const GRADE_CLASS: Record<OtherLanguage, string> = {
-  fr: 'grade|classe', de: 'grad|klasse', it: 'grado|classe', es: 'grado|clase',
-};
-
-function scoreTermsFor(lng: OtherLanguage): string {
-  return [...Object.values(SCORE_WORDS[lng]).map(fold), GRADE_CLASS[lng], ABBREVIATIONS].join('|');
-}
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** Folded alternation of the native score terms (multi-word terms match any
+ *  run of spaces or hyphens between their words). */
+const nativeTermsAlt = (lng: OtherLanguage) =>
+  alt(nativeScoreTerms(lng).map((t) => escapeRe(fold(t)).replace(/\s+/g, '[\\s-]+')));
+/** Native terms from ./terms plus the English abbreviations. */
+const scoreTermsFor = (lng: OtherLanguage) =>
+  `${nativeTermsAlt(lng)}|${alt(SCORE_ABBREVIATIONS.map((a) => fold(a)))}`;
 
 const FR_SMALL = toMap('zero un deux trois quatre cinq six sept huit neuf dix onze douze treize quatorze quinze');
 const DE_SMALL = withValues(
   toMap('null eins zwei drei vier funf sechs sieben acht neun zehn elf zwolf dreizehn vierzehn funfzehn'),
-  { zwo: 2, ein: 1, einen: 1 },
+  // "zwo" for 2 (phone/dictation German); "ue"/"oe" spellings of ü/ö.
+  { zwo: 2, ein: 1, einen: 1, fuenf: 5, zwoelf: 12, fuenfzehn: 15 },
 );
 const IT_SMALL = withValues(
   toMap('zero uno due tre quattro cinque sei sette otto nove dieci undici dodici tredici quattordici quindici'),
@@ -161,13 +140,14 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     units: 'mm|millimetres?',
   },
   de: {
-    digits: digitsOf(DE_SMALL, 'null eins zwei zwo drei vier funf sechs sieben acht neun'),
+    digits: digitsOf(DE_SMALL, 'null eins ein zwei zwo drei vier funf fuenf sechs sieben acht neun'),
     small: DE_SMALL,
     articles: ['ein', 'einen'],
     // "hundertvier", "einhundertvier", "hundert vier", "hundertundvier", "zwohundertneun"
-    compound: `(?:(?<h>ein|zwei|zwo|drei|vier|funf|sechs|sieben|acht)[\\s-]*)?hundert[\\s-]*(?:und[\\s-]*)?(?<r>${remainderAlt(DE_SMALL, ['einen'])})`,
+    compound: `(?:(?<h>ein|zwei|zwo|drei|vier|funf|fuenf|sechs|sieben|acht)[\\s-]*)?hundert[\\s-]*(?:und[\\s-]*)?(?<r>${remainderAlt(DE_SMALL, ['einen'])})`,
     hundreds: (h) => (h ? DE_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('de'),
+    compoundEnds: nativeTermsAlt('de'),
     units: 'mm|millimetern?',
   },
   it: {
@@ -244,8 +224,10 @@ const termSource = (re: RegExp) => fold(re.source);
  *  3. a single number word 0–15 right before a unit ("cinq millimètres");
  *  4. runs of 2–3 digit words ("un zéro quatre", "eins null acht").
  * Accents and case are ignored; numerals pass through unchanged.
- * `opts.scoreTerms` / `opts.unitTerms` replace the built-in term lists; their
- * sources are used as alternations inside a Unicode regex.
+ * Score terms default to ./terms (German native terms also match as the end
+ * of a compound word). `opts.scoreTerms` / `opts.unitTerms` replace the
+ * defaults; their sources are used as alternations inside a Unicode regex,
+ * and an overriding score list matches at word starts only.
  */
 export function replaceSpokenNumbers(
   text: string,
@@ -254,18 +236,23 @@ export function replaceSpokenNumbers(
 ): string {
   if (lng === 'en') return englishDigitRuns(englishUnitWords(englishScoreWords(text)));
 
+  // Decomposed accents (NFD from some keyboards/STT) are composed first so
+  // the folded copy keeps the same length as the text.
+  text = text.normalize('NFC');
   const L = LANGS[lng];
   const score = opts?.scoreTerms ? termSource(opts.scoreTerms) : L.scoreTerms;
+  const ends = opts?.scoreTerms ? undefined : L.compoundEnds;
+  const scoreTerm = `(?:${NOT_BEFORE}(?:${score})${ends ? `|\\p{L}(?:${ends})` : ''})`;
   const units = opts?.unitTerms ? termSource(opts.unitTerms) : L.units;
   const small = alt(Object.keys(L.small));
   const digits = alt(Object.keys(L.digits));
-  const afterScore = `(?<=${NOT_BEFORE}(?:${score})[\\s,.-]+)`;
+  const afterScore = `(?<=${scoreTerm}[\\s,.-]+)`;
   const unitAhead = `[\\s-]*(?:${units})${NOT_AFTER}`;
 
   // What may follow an article-like word for it to count as a number.
   const numericNext = new RegExp(
     `^\\s*(?:$|[^\\p{L}\\s]|(?:${small}|${L.compound}|${units})${NOT_AFTER})`, 'iu');
-  const scoreBefore = new RegExp(`${NOT_BEFORE}(?:${score})[\\s,.-]+$`, 'iu');
+  const scoreBefore = new RegExp(`${scoreTerm}[\\s,.-]+$`, 'iu');
   const unitAfter = new RegExp(`^${unitAhead}`, 'iu');
 
   // 1. score term + single word
@@ -289,7 +276,9 @@ export function replaceSpokenNumbers(
   out = replaceFolded(out, new RegExp(`${NOT_BEFORE}(${small})(?=${unitAhead})`, 'giu'),
     (m) => String(L.small[m[1]]));
 
-  // 4. digit-by-digit runs
+  // 4. digit-by-digit runs. Like English, a 2-word run converts with no
+  // check, so "deux trois dents" becomes "23 dents" (a known false positive);
+  // Claude also sees the as-transcribed text and reasons from it.
   out = replaceFolded(
     out,
     new RegExp(`${NOT_BEFORE}(${digits})[\\s-]+(${digits})(?:[\\s-]+(${digits}))?${NOT_AFTER}`, 'giu'),

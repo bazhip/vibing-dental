@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { isTriadan, replaceSpokenNumbers, SCORE_WORDS } from './numbers';
-import glossary from '../../locales/glossary.json';
+import { isTriadan, replaceSpokenNumbers } from './numbers';
+import { nativeScoreTerms, SPOKEN_SYNONYMS } from './terms';
 import { normalizeTranscript } from '../aiAutofill';
 import snapshot from './__fixtures__/en-normalize-snapshot.json';
 import sampleTranscript from '../../../scripts/fixtures/sample-transcript.txt?raw';
@@ -218,16 +218,47 @@ describe('replaceSpokenNumbers — scores and units', () => {
     expect(replaceSpokenNumbers('trente-deux millimètres', 'fr')).toBe('trente-deux millimètres');
   });
 
-  it('takes native score words from the glossary', () => {
-    const fold = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    const terms = (glossary as { terms: Record<string, string>[] }).terms;
-    for (const [lng, byId] of Object.entries(SCORE_WORDS)) {
-      for (const [id, word] of Object.entries(byId)) {
-        const entry = terms.find((t) => t.id === id);
-        expect(entry, id).toBeDefined();
-        expect(fold(entry![lng]), `${lng} ${id}`).toContain(fold(word));
-      }
+  const TWO = { fr: 'deux', de: 'zwei', it: 'due', es: 'dos' } as const;
+  it.each(Object.entries(TWO))('%s: every glossary score term and synonym converts a following number', (lng, two) => {
+    const terms = nativeScoreTerms(lng as 'fr');
+    for (const s of SPOKEN_SYNONYMS[lng as 'fr']) expect(terms).toContain(s);
+    expect(terms.length).toBeGreaterThan(SPOKEN_SYNONYMS[lng as 'fr'].length);
+    for (const term of terms) {
+      expect(replaceSpokenNumbers(`${term} ${two}`, lng as 'fr'), term).toBe(`${term} 2`);
     }
+  });
+
+  it('reads the spoken synonyms by default', () => {
+    expect(replaceSpokenNumbers('tartre un', 'fr')).toBe('tartre 1');
+    expect(replaceSpokenNumbers('sarro dos', 'es')).toBe('sarro 2');
+    expect(replaceSpokenNumbers('Lockerungsgrad zwei', 'de')).toBe('Lockerungsgrad 2');
+  });
+});
+
+describe('replaceSpokenNumbers — German compounds and spellings', () => {
+  it.each([
+    ['Zahnbeweglichkeit zwei eins null vier', 'Zahnbeweglichkeit 2 104'],
+    ['Lockerungsgrad zwei', 'Lockerungsgrad 2'],
+    ['Parodontaltasche fünf Millimeter', 'Parodontaltasche 5 Millimeter'],
+    ['Zahnfleischtasche drei', 'Zahnfleischtasche 3'],
+    ['ein null vier', '104'],
+    ['ein-null-vier', '104'],
+    ['fuenfhundertacht', '508'],
+    ['eins null fuenf', '105'],
+    ['Tasche fuenf mm', 'Tasche 5 mm'],
+    ['Tasche zwoelf mm', 'Tasche 12 mm'],
+  ])('%s → %s', (input, expected) => {
+    expect(replaceSpokenNumbers(input, 'de')).toBe(expected);
+  });
+  it('does not treat a word ending in an abbreviation letter as a score term', () => {
+    expect(replaceSpokenNumbers('Kamm zwei', 'de')).toBe('Kamm zwei');
+  });
+});
+
+describe('replaceSpokenNumbers — Unicode', () => {
+  it('reads decomposed accents (NFD input)', () => {
+    expect(replaceSpokenNumbers('un ze\u0301ro quatre'.normalize('NFD'), 'fr')).toBe('104');
+    expect(replaceSpokenNumbers('mobilite\u0301 trois', 'fr')).toBe('mobilité 3');
   });
 });
 
@@ -259,7 +290,7 @@ function oldEnglishPasses(input: string): string {
 
 function englishInputs(): string[] {
   const lines = sampleTranscript.split('\n');
-  const literals = [...aiAutofillTestSource.matchAll(/'((?:[^'\\\n]|\\.)*)'/g)].map((m) => m[1].replace(/\\(.)/g, '$1'));
+  const literals = [...aiAutofillTestSource.matchAll(/'((?:[^'\\\n]|\\.)*)'/g)].map((m) => m[1].replace(/\\(.)/g, (_e, c: string) => (c === 'n' ? '\n' : c === 't' ? '\t' : c)));
   return [...new Set([...lines, ...lines.map((l) => l.replace(/^\[[^\]]*\]\s*/, '')), ...literals])];
 }
 
@@ -267,6 +298,7 @@ describe('replaceSpokenNumbers — en', () => {
   const inputs = englishInputs();
   it('collects the sample transcript and the aiAutofill test inputs', () => {
     expect(inputs.length).toBeGreaterThan(150);
+    expect(inputs).toContain('104 GI 2\n105 missing');
   });
   it('equals the old English passes on every input', () => {
     for (const input of inputs) expect(replaceSpokenNumbers(input, 'en'), input).toBe(oldEnglishPasses(input));

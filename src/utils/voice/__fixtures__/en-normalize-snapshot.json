@@ -802,5 +802,21 @@
   [
     "is warm for a few minutes after the prompt was used, then cold",
     "is warm for a few minutes after the prompt was used, then cold"
+  ],
+  [
+    "AS TRANSCRIBED:\none oh four GI two",
+    "AS TRANSCRIBED: 104 GI 2"
+  ],
+  [
+    "AUTO-CLEANED:\n104 GI 2",
+    "AUTO-CLEANED: 104 GI 2"
+  ],
+  [
+    "104 GI 2\n105 missing",
+    "104 GI 2 105 missing"
+  ],
+  [
+    "\n",
+    ""
   ]
 ]
