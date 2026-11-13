@@ -307,6 +307,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
                     className="diagram-view__action"
                     onClick={() => setDraft((d) => ({ ...d, defaultTemplateId: selected.id }))}
                     disabled={selected.id === draft.defaultTemplateId}
+                    aria-label="Set as default"
                   >
                     <span className="report-templates__long">Set as default</span>
                     <span className="report-templates__short">Set default</span>
@@ -629,7 +630,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
 
           {error && <div className="login-error report-templates__error" role="alert">{error}</div>}
           <footer className="ai-settings-footer report-templates__footer">
-            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy}>
+            <button type="button" className="diagram-view__action" onClick={handlePreview} disabled={previewBusy} aria-label={previewBusy ? 'Building preview…' : 'Preview with sample visit'}>
               {previewBusy ? 'Building preview…' : (
                 <>
                   <span className="report-templates__long">Preview with sample visit</span>
