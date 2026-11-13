@@ -67,6 +67,13 @@ export async function call<T = Record<string, unknown>>(body: object): Promise<T
   return data as T;
 }
 
+/** team-api's seat-limit refusals, word for word (the `add_member` case
+ *  in supabase/functions/team-api/index.ts — keep the two in step). */
+const SEAT_LIMIT_MESSAGES = new Set([
+  'Your Individual plan is single-user — switch to a Practice plan (up to 5 people) to add your team.',
+  'Practice plans include up to 5 team members — contact us about a larger plan.',
+]);
+
 /**
  * team-api's seat-limit refusals point at other plans ("switch to a
  * Practice plan", "contact us about a larger plan"). The app sells
@@ -74,7 +81,7 @@ export async function call<T = Record<string, unknown>>(body: object): Promise<T
  * message. Other errors pass through untouched.
  */
 export function appSafeTeamError(err: unknown, native: boolean = isNativeApp()): unknown {
-  if (native && err instanceof Error && /\bplans?\b/i.test(err.message)) {
+  if (native && err instanceof Error && SEAT_LIMIT_MESSAGES.has(err.message.trim())) {
     return new Error('This practice has reached its team member limit.');
   }
   return err;

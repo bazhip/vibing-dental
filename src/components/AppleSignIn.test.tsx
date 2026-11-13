@@ -73,6 +73,25 @@ describe('AppleSignInButton', () => {
     expect(auth.signInWithIdToken).not.toHaveBeenCalled();
   });
 
+  it('app: cancel is recognised by its code in any language', async () => {
+    native.value = true;
+    apple.authorize.mockRejectedValue(new Error('Der Vorgang konnte nicht abgeschlossen werden. (com.apple.AuthenticationServices.AuthorizationError Fehler 1001.)'));
+    const onError = vi.fn();
+    render(<AppleSignInButton onError={onError} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Continue with Apple' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Continue with Apple' })).toBeEnabled());
+    expect(onError).not.toHaveBeenCalled();
+  });
+
+  it('app: other Apple errors are reported even if they mention "cancel"', async () => {
+    native.value = true;
+    apple.authorize.mockRejectedValue(new Error('The request was cancelled. (com.apple.AuthenticationServices.AuthorizationError error 1000.)'));
+    const onError = vi.fn();
+    render(<AppleSignInButton onError={onError} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Continue with Apple' }));
+    await waitFor(() => expect(onError).toHaveBeenCalled());
+  });
+
   it('app: a real failure is reported', async () => {
     native.value = true;
     apple.authorize.mockResolvedValue({

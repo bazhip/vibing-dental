@@ -31,9 +31,13 @@ async function sha256Hex(text: string): Promise<string> {
   return toHex(new Uint8Array(digest));
 }
 
-/** Apple reports a dismissed sheet as ASAuthorizationError.canceled (1001);
- *  the plugin only passes the message through. */
-const isCancel = (e: unknown) => /\b1001\b|cancel/i.test(e instanceof Error ? e.message : String(e));
+/** Apple reports a dismissed sheet as ASAuthorizationError.canceled (1001).
+ *  The plugin rejects with only `error.localizedDescription`, e.g. "The
+ *  operation couldn’t be completed. (com.apple.AuthenticationServices.
+ *  AuthorizationError error 1001.)" — the word "error" is localized, the
+ *  domain and code aren't. Match that code only. */
+const isCancel = (e: unknown) =>
+  /AuthorizationError\D*\b1001\b/.test(e instanceof Error ? e.message : String(e));
 
 /**
  * "Continue with Apple". Web: Supabase OAuth redirect, like Google. App:

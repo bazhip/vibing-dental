@@ -23,4 +23,10 @@ describe('appSafeTeamError', () => {
     const err = new Error('That email is already on your team.');
     expect(appSafeTeamError(err, true)).toBe(err);
   });
+
+  it('app: errors that merely mention a plan are not rewritten', () => {
+    // Only team-api's two exact seat-limit messages are replaced.
+    const err = new Error('Could not load your plan details. Try again.');
+    expect(appSafeTeamError(err, true)).toBe(err);
+  });
 });
