@@ -3637,7 +3637,10 @@ button.save-status--manual:hover {
 .chart-settings__body { overflow-y: auto; min-height: 0; flex: 1 1 auto; gap: 1.25rem; }
 .chart-settings__group { display: flex; flex-direction: column; gap: 0.6rem; }
 .chart-settings__group + .chart-settings__group { border-top: 1px solid var(--border, #e2e8f0); padding-top: 1rem; }
-.chart-settings__field { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.chart-settings__field { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem;
+  /* Fieldsets default to min-content width, so one wide input pushed the
+     whole sheet sideways on phones. Let them shrink like any block. */
+  min-width: 0; min-inline-size: 0; }
 .chart-settings__field legend { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; padding: 0; }
 .chart-settings__field:disabled { opacity: 0.6; }
 .chart-settings__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.3rem 0.75rem; }
@@ -3701,7 +3704,7 @@ button.save-status--manual:hover {
 
 /* Chart settings: usual anesthetic row; Anesthesia page "use my usual". */
 .chart-settings__drug { display: flex; gap: 0.5rem; align-items: center; }
-.chart-settings__drug > input { flex: 1 1 auto; min-width: 0; }
+.chart-settings__drug > input { flex: 1 1 auto; min-width: 0; width: 100%; }
 .chart-settings__drug .anesthesia-unit { flex: 0 0 6rem; }
 .anesthesia-drug__usual { font-weight: 600; }
 
