@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseProfileReturn } from '../hooks/useProfile';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
@@ -38,6 +39,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   language = 'en',
   onLanguageChange,
 }) => {
+  const { t, i18n } = useTranslation('account');
   const [doctorName, setDoctorName] = React.useState(profile.doctorName);
   const [email, setEmail] = React.useState('');
   const [currentEmail, setCurrentEmail] = React.useState('');
@@ -80,23 +82,25 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     !!currentEmail && email.trim() !== currentEmail && email.trim() !== requestedEmail;
   const passwordDirty = newPassword !== '' || confirmPassword !== '';
   const unsaved = [
-    doctorDirty && 'doctor name',
-    emailDirty && 'email',
-    passwordDirty && 'password',
+    doctorDirty && t('unsaved.field.doctor'),
+    emailDirty && t('unsaved.field.email'),
+    passwordDirty && t('unsaved.field.password'),
   ].filter(Boolean) as string[];
 
   /** Close, asking first when something typed hasn't been saved. */
   const requestClose = React.useCallback(async () => {
     if (busy) return;
     if (unsaved.length > 0) {
-      const list = unsaved.length === 1
-        ? unsaved[0]
-        : `${unsaved.slice(0, -1).join(', ')} and ${unsaved[unsaved.length - 1]}`;
+      // en-GB joins "a, b and c" (no serial comma), matching the original English.
+      const list = new Intl.ListFormat(i18n.language === 'en' ? 'en-GB' : i18n.language, {
+        style: 'long',
+        type: 'conjunction',
+      }).format(unsaved);
       const discard = await confirmDialog({
-        title: 'Discard unsaved changes?',
-        message: `Your ${list} change${unsaved.length === 1 ? ' hasn’t' : 's haven’t'} been saved.`,
-        confirmLabel: 'Discard',
-        cancelLabel: 'Keep editing',
+        title: t('unsaved.title'),
+        message: t('unsaved.message', { list, count: unsaved.length }),
+        confirmLabel: t('unsaved.confirm'),
+        cancelLabel: t('unsaved.cancel'),
         danger: true,
       });
       if (!discard) return;
@@ -104,7 +108,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     onClose();
     // `unsaved` is derived from the deps below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busy, doctorDirty, emailDirty, passwordDirty, onClose]);
+  }, [busy, doctorDirty, emailDirty, passwordDirty, onClose, t, i18n.language]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -129,9 +133,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     setSectionError('doctor', '');
     try {
       await profile.update({ practiceName: profile.practiceName, doctorName: doctorName.trim() });
-      toast('Doctor name saved.', { kind: 'success' });
+      toast(t('doctor.saved'), { kind: 'success' });
     } catch (err) {
-      setSectionError('doctor', friendlyError(err, 'Could not save the doctor name.'));
+      setSectionError('doctor', friendlyError(err, t('doctor.saveFailed')));
     } finally {
       setBusy(null);
     }
@@ -142,7 +146,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     if (!supabase || busy || !emailDirty) return;
     const next = email.trim();
     if (!EMAIL_RE.test(next)) {
-      setSectionError('email', 'Enter a valid email address.');
+      setSectionError('email', t('email.invalid'));
       return;
     }
     setBusy('email');
@@ -151,9 +155,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       const { error } = await supabase.auth.updateUser({ email: next });
       if (error) throw error;
       setRequestedEmail(next);
-      toast('Confirmation emails sent.', { kind: 'success' });
+      toast(t('email.sent'), { kind: 'success' });
     } catch (err) {
-      setSectionError('email', friendlyError(err, 'Could not change the email.'));
+      setSectionError('email', friendlyError(err, t('email.changeFailed')));
     } finally {
       setBusy(null);
     }
@@ -163,11 +167,11 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     e.preventDefault();
     if (!supabase || busy) return;
     if (newPassword.length < MIN_PASSWORD) {
-      setSectionError('password', `Use at least ${MIN_PASSWORD} characters.`);
+      setSectionError('password', t('password.tooShort', { min: MIN_PASSWORD }));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setSectionError('password', 'The two passwords don’t match.');
+      setSectionError('password', t('password.mismatch'));
       return;
     }
     setBusy('password');
@@ -178,9 +182,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       setNewPassword('');
       setConfirmPassword('');
       setShowPassword(false);
-      toast('Password updated.', { kind: 'success' });
+      toast(t('password.updated'), { kind: 'success' });
     } catch (err) {
-      setSectionError('password', friendlyError(err, 'Could not update the password.'));
+      setSectionError('password', friendlyError(err, t('password.updateFailed')));
     } finally {
       setBusy(null);
     }
@@ -191,6 +195,11 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       <div className="login-error settings-msg" role="alert">{errors[section]}</div>
     ) : null;
 
+  // Rendered below; computed here so the section keys stay out of the JSX.
+  const doctorError = sectionError('doctor');
+  const emailError = sectionError('email');
+  const passwordError = sectionError('password');
+
   const tooShort = newPassword.length > 0 && newPassword.length < MIN_PASSWORD;
   const mismatch = confirmPassword.length > 0 && newPassword !== confirmPassword;
 
@@ -198,18 +207,18 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="account-settings-title">
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
-          <h2 id="account-settings-title">Account settings</h2>
-          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label="Close">
+          <h2 id="account-settings-title">{t('title')}</h2>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>
         <div className="ai-settings-body">
           {/* ---- Doctor name ------------------------------------------- */}
           <form className="ai-settings-section" onSubmit={saveDoctor}>
-            <h3 className="ai-settings-subhead">Doctor name</h3>
-            <p className="ai-settings-blurb">Printed under the logo on every chart you create.</p>
+            <h3 className="ai-settings-subhead">{t('doctor.heading')}</h3>
+            <p className="ai-settings-blurb">{t('doctor.blurb')}</p>
             <label className="patient-form__label">
-              Doctor name
+              {t('doctor.heading')}
               <input
                 ref={firstFieldRef}
                 type="text"
@@ -219,41 +228,39 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   setDoctorName(e.target.value);
                   setSectionError('doctor', '');
                 }}
-                placeholder="e.g. Dr. Jane Smith, DVM, DAVDC"
+                placeholder={t('doctor.placeholder')}
               />
             </label>
             <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
               <button type="submit" className="diagram-view__action" disabled={!!busy || !doctorDirty}>
-                {busy === 'doctor' ? 'Saving…' : 'Save doctor name'}
+                {busy === 'doctor' ? t('doctor.saving') : t('doctor.save')}
               </button>
             </div>
-            {sectionError('doctor')}
+            {doctorError}
           </form>
 
           {/* ---- Language ---------------------------------------------- */}
           {LANGUAGE_SWITCHING_ENABLED && (
             <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Language</h3>
-              <label className="patient-form__label">
-                Language
-                <select
-                  className="patient-form__input"
-                  value={language}
-                  onChange={(e) => isAppLanguage(e.target.value) && onLanguageChange?.(e.target.value)}
-                >
-                  {APP_LANGUAGES.map((l) => (
-                    <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>
-                  ))}
-                </select>
-              </label>
+              <h3 className="ai-settings-subhead" id="account-language-heading">{t('language.heading')}</h3>
+              <select
+                className="patient-form__input"
+                aria-labelledby="account-language-heading"
+                value={language}
+                onChange={(e) => isAppLanguage(e.target.value) && onLanguageChange?.(e.target.value)}
+              >
+                {APP_LANGUAGES.map((l) => (
+                  <option key={l} value={l}>{LANGUAGE_NAMES[l]}</option>
+                ))}
+              </select>
             </section>
           )}
 
           {/* ---- Email ------------------------------------------------- */}
           <form className="ai-settings-section" onSubmit={saveEmail} noValidate>
-            <h3 className="ai-settings-subhead">Email</h3>
+            <h3 className="ai-settings-subhead">{t('email.heading')}</h3>
             <label className="patient-form__label">
-              Sign-in email
+              {t('email.label')}
               <input
                 type="email"
                 className="patient-form__input"
@@ -267,32 +274,31 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             </label>
             <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
               <button type="submit" className="diagram-view__action" disabled={!!busy || !emailDirty}>
-                {busy === 'email' ? 'Sending…' : 'Change email'}
+                {busy === 'email' ? t('email.sending') : t('email.change')}
               </button>
             </div>
             {requestedEmail && (
               <div className="login-notice settings-msg" role="status">
-                Check your inbox — confirm the change from both {currentEmail} and {requestedEmail} to finish.
-                Until then, keep signing in with {currentEmail}.
+                {t('email.pending', { current: currentEmail, requested: requestedEmail })}
               </div>
             )}
-            {sectionError('email')}
+            {emailError}
           </form>
 
           {/* ---- Password ---------------------------------------------- */}
           <form className="ai-settings-section" onSubmit={savePassword} noValidate>
-            <h3 className="ai-settings-subhead">Password</h3>
+            <h3 className="ai-settings-subhead">{t('password.heading')}</h3>
             {/* Hidden username field so password managers file the new
                 password under the right account. */}
             <input type="text" name="username" autoComplete="username" value={currentEmail} readOnly hidden />
             <label className="patient-form__label">
-              New password
+              {t('password.newLabel')}
               <span className="settings-password">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   className="patient-form__input"
                   autoComplete="new-password"
-                  placeholder={`At least ${MIN_PASSWORD} characters`}
+                  placeholder={t('password.placeholder', { min: MIN_PASSWORD })}
                   value={newPassword}
                   aria-invalid={tooShort || undefined}
                   onChange={(e) => {
@@ -304,15 +310,15 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   type="button"
                   className="settings-password__toggle"
                   onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? 'Hide passwords' : 'Show passwords'}
+                  aria-label={showPassword ? t('password.hideAll') : t('password.showAll')}
                   aria-pressed={showPassword}
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? t('password.hide') : t('password.show')}
                 </button>
               </span>
             </label>
             <label className="patient-form__label" style={{ marginTop: '0.6rem' }}>
-              Confirm new password
+              {t('password.confirmLabel')}
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="patient-form__input"
@@ -328,8 +334,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             {(tooShort || mismatch) && (
               <p className="patient-form__hint settings-hint--warn">
                 {tooShort
-                  ? `At least ${MIN_PASSWORD} characters · ${newPassword.length}/${MIN_PASSWORD}`
-                  : 'The two passwords don’t match yet.'}
+                  ? t('password.hintShort', { min: MIN_PASSWORD, current: newPassword.length })
+                  : t('password.hintMismatch')}
               </p>
             )}
             <div className="practice-logo-actions" style={{ marginTop: '0.6rem' }}>
@@ -338,19 +344,16 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                 className="diagram-view__action"
                 disabled={!!busy || newPassword.length < MIN_PASSWORD || confirmPassword.length === 0}
               >
-                {busy === 'password' ? 'Updating…' : 'Update password'}
+                {busy === 'password' ? t('password.updating') : t('password.update')}
               </button>
             </div>
-            {sectionError('password')}
+            {passwordError}
           </form>
 
           {currentEmail && (
             <section className="ai-settings-section">
-              <h3 className="ai-settings-subhead">Delete account</h3>
-              <p className="patient-form__hint">
-                Permanently deletes your account, your private charts and their images.
-                Charts you shared with a practice stay with the practice.
-              </p>
+              <h3 className="ai-settings-subhead">{t('delete.heading')}</h3>
+              <p className="patient-form__hint">{t('delete.blurb')}</p>
               <div className="practice-logo-actions">
                 <button
                   type="button"
@@ -358,7 +361,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   disabled={!!busy}
                   onClick={() => void deleteMyAccount(currentEmail)}
                 >
-                  Delete account…
+                  {t('delete.button')}
                 </button>
               </div>
             </section>
@@ -371,7 +374,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             onClick={() => void requestClose()}
             disabled={!!busy}
           >
-            Done
+            {t('done')}
           </button>
         </footer>
       </div>

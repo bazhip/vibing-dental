@@ -1,0 +1,61 @@
+{
+  "title": "Kontoeinstellungen",
+  "doctor": {
+    "heading": "Tierarztname",
+    "blurb": "Wird bei jeder von Ihnen erstellten Karte unter dem Logo gedruckt.",
+    "placeholder": "z. B. Dr. Jana Schmidt, Dr. med. vet., DAVDC",
+    "save": "Tierarztnamen speichern",
+    "saving": "Wird gespeichert…",
+    "saved": "Tierarztname gespeichert.",
+    "saveFailed": "Der Tierarztname konnte nicht gespeichert werden."
+  },
+  "language": {
+    "heading": "Sprache"
+  },
+  "email": {
+    "heading": "E-Mail",
+    "label": "Anmelde-E-Mail",
+    "change": "E-Mail ändern",
+    "sending": "Wird gesendet…",
+    "invalid": "Geben Sie eine gültige E-Mail-Adresse ein.",
+    "sent": "Bestätigungs-E-Mails gesendet.",
+    "changeFailed": "Die E-Mail-Adresse konnte nicht geändert werden.",
+    "pending": "Prüfen Sie Ihren Posteingang: Bestätigen Sie die Änderung sowohl über {{current}} als auch über {{requested}}, um sie abzuschließen. Bis dahin melden Sie sich weiterhin mit {{current}} an."
+  },
+  "password": {
+    "heading": "Passwort",
+    "newLabel": "Neues Passwort",
+    "confirmLabel": "Neues Passwort bestätigen",
+    "placeholder": "Mindestens {{min}} Zeichen",
+    "hideAll": "Passwörter ausblenden",
+    "showAll": "Passwörter anzeigen",
+    "hide": "Ausblenden",
+    "show": "Anzeigen",
+    "hintShort": "Mindestens {{min}} Zeichen · {{current}}/{{min}}",
+    "hintMismatch": "Die beiden Passwörter stimmen noch nicht überein.",
+    "update": "Passwort aktualisieren",
+    "updating": "Wird aktualisiert…",
+    "tooShort": "Verwenden Sie mindestens {{min}} Zeichen.",
+    "mismatch": "Die beiden Passwörter stimmen nicht überein.",
+    "updated": "Passwort aktualisiert.",
+    "updateFailed": "Das Passwort konnte nicht aktualisiert werden."
+  },
+  "delete": {
+    "heading": "Konto löschen",
+    "blurb": "Löscht Ihr Konto, Ihre privaten Karten und deren Bilder dauerhaft. Karten, die Sie mit einer Praxis geteilt haben, bleiben bei der Praxis.",
+    "button": "Konto löschen…"
+  },
+  "done": "Fertig",
+  "unsaved": {
+    "title": "Nicht gespeicherte Änderungen verwerfen?",
+    "message_one": "Ihre Änderung an {{list}} wurde nicht gespeichert.",
+    "message_other": "Ihre Änderungen an {{list}} wurden nicht gespeichert.",
+    "confirm": "Verwerfen",
+    "cancel": "Weiter bearbeiten",
+    "field": {
+      "doctor": "Tierarztname",
+      "email": "E-Mail",
+      "password": "Passwort"
+    }
+  }
+}

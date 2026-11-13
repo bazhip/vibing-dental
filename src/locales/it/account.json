@@ -1,0 +1,62 @@
+{
+  "title": "Impostazioni dell’account",
+  "doctor": {
+    "heading": "Nome del veterinario",
+    "blurb": "Stampato sotto il logo su ogni cartella che crea.",
+    "placeholder": "ad es. Dr. Giulia Rossi, DVM, DAVDC",
+    "save": "Salva il nome del veterinario",
+    "saving": "Salvataggio…",
+    "saved": "Nome del veterinario salvato.",
+    "saveFailed": "Impossibile salvare il nome del veterinario."
+  },
+  "language": {
+    "heading": "Lingua"
+  },
+  "email": {
+    "heading": "E-mail",
+    "label": "E-mail di accesso",
+    "change": "Cambia e-mail",
+    "sending": "Invio…",
+    "invalid": "Inserisca un indirizzo e-mail valido.",
+    "sent": "E-mail di conferma inviate.",
+    "changeFailed": "Impossibile cambiare l’e-mail.",
+    "pending": "Controlli la posta in arrivo: confermi la modifica sia da {{current}} sia da {{requested}} per completarla. Fino ad allora continui ad accedere con {{current}}."
+  },
+  "password": {
+    "heading": "Password",
+    "newLabel": "Nuova password",
+    "confirmLabel": "Conferma la nuova password",
+    "placeholder": "Almeno {{min}} caratteri",
+    "hideAll": "Nascondi le password",
+    "showAll": "Mostra le password",
+    "hide": "Nascondi",
+    "show": "Mostra",
+    "hintShort": "Almeno {{min}} caratteri · {{current}}/{{min}}",
+    "hintMismatch": "Le due password non corrispondono ancora.",
+    "update": "Aggiorna la password",
+    "updating": "Aggiornamento…",
+    "tooShort": "Usi almeno {{min}} caratteri.",
+    "mismatch": "Le due password non corrispondono.",
+    "updated": "Password aggiornata.",
+    "updateFailed": "Impossibile aggiornare la password."
+  },
+  "delete": {
+    "heading": "Elimina l’account",
+    "blurb": "Elimina definitivamente il suo account, le sue cartelle private e le relative immagini. Le cartelle condivise con uno studio restano allo studio.",
+    "button": "Elimina l’account…"
+  },
+  "done": "Fine",
+  "unsaved": {
+    "title": "Scartare le modifiche non salvate?",
+    "message_one": "La sua modifica a {{list}} non è stata salvata.",
+    "message_many": "Le sue modifiche a {{list}} non sono state salvate.",
+    "message_other": "Le sue modifiche a {{list}} non sono state salvate.",
+    "confirm": "Scarta",
+    "cancel": "Continua a modificare",
+    "field": {
+      "doctor": "nome del veterinario",
+      "email": "e-mail",
+      "password": "password"
+    }
+  }
+}

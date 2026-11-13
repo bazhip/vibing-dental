@@ -11,7 +11,7 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
 };
 
 // Append new namespaces here (and in i18next.d.ts).
-export const NAMESPACES = ['common', 'report'] as const;
+export const NAMESPACES = ['common', 'report', 'account'] as const;
 
 // Flip to expose a language switcher in the UI.
 export const LANGUAGE_SWITCHING_ENABLED = false;

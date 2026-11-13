@@ -1,5 +1,185 @@
 {
   "de": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -322,6 +502,190 @@
     }
   },
   "es": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -644,6 +1008,190 @@
     }
   },
   "fr": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"
@@ -966,6 +1514,190 @@
     }
   },
   "it": {
+    "account:delete.blurb": {
+      "hash": "f5dca6f862cc",
+      "status": "machine"
+    },
+    "account:delete.button": {
+      "hash": "619e3be216f3",
+      "status": "machine"
+    },
+    "account:delete.heading": {
+      "hash": "a2e20a335700",
+      "status": "machine"
+    },
+    "account:doctor.blurb": {
+      "hash": "a295272f514f",
+      "status": "machine"
+    },
+    "account:doctor.heading": {
+      "hash": "a6aaf2842ffe",
+      "status": "machine"
+    },
+    "account:doctor.placeholder": {
+      "hash": "c27834daf7b5",
+      "status": "machine"
+    },
+    "account:doctor.save": {
+      "hash": "1d291d58b94c",
+      "status": "machine"
+    },
+    "account:doctor.saveFailed": {
+      "hash": "9483b290f136",
+      "status": "machine"
+    },
+    "account:doctor.saved": {
+      "hash": "de4ec7743988",
+      "status": "machine"
+    },
+    "account:doctor.saving": {
+      "hash": "23e39291d613",
+      "status": "machine"
+    },
+    "account:done": {
+      "hash": "11a6767d5674",
+      "status": "machine"
+    },
+    "account:email.change": {
+      "hash": "ff2ec2618b91",
+      "status": "machine"
+    },
+    "account:email.changeFailed": {
+      "hash": "7e7fed4cd588",
+      "status": "machine"
+    },
+    "account:email.heading": {
+      "hash": "969ccbd3cf63",
+      "status": "machine"
+    },
+    "account:email.invalid": {
+      "hash": "8a966af884a0",
+      "status": "machine"
+    },
+    "account:email.label": {
+      "hash": "d0b42cf69d22",
+      "status": "machine"
+    },
+    "account:email.pending": {
+      "hash": "debbfab95f39",
+      "status": "machine"
+    },
+    "account:email.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "account:email.sent": {
+      "hash": "b935ef11ca39",
+      "status": "machine"
+    },
+    "account:language.heading": {
+      "hash": "a4fe65264ef7",
+      "status": "machine"
+    },
+    "account:password.confirmLabel": {
+      "hash": "bf000421aeb3",
+      "status": "machine"
+    },
+    "account:password.heading": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "account:password.hide": {
+      "hash": "ac20a57bfde0",
+      "status": "machine"
+    },
+    "account:password.hideAll": {
+      "hash": "e0736499426e",
+      "status": "machine"
+    },
+    "account:password.hintMismatch": {
+      "hash": "2d8754c7f8d9",
+      "status": "machine"
+    },
+    "account:password.hintShort": {
+      "hash": "4c2008085e13",
+      "status": "machine"
+    },
+    "account:password.mismatch": {
+      "hash": "2f412aabb753",
+      "status": "machine"
+    },
+    "account:password.newLabel": {
+      "hash": "3dd9df4441fb",
+      "status": "machine"
+    },
+    "account:password.placeholder": {
+      "hash": "a95629e6c34c",
+      "status": "machine"
+    },
+    "account:password.show": {
+      "hash": "0df6f1cad36c",
+      "status": "machine"
+    },
+    "account:password.showAll": {
+      "hash": "0ab984b46165",
+      "status": "machine"
+    },
+    "account:password.tooShort": {
+      "hash": "03f5d8497e5b",
+      "status": "machine"
+    },
+    "account:password.update": {
+      "hash": "fe45b4014135",
+      "status": "machine"
+    },
+    "account:password.updateFailed": {
+      "hash": "6b9dc33f6e76",
+      "status": "machine"
+    },
+    "account:password.updated": {
+      "hash": "df01ff0dd6ed",
+      "status": "machine"
+    },
+    "account:password.updating": {
+      "hash": "dfe40efe921f",
+      "status": "machine"
+    },
+    "account:title": {
+      "hash": "a587aa1f4ffc",
+      "status": "machine"
+    },
+    "account:unsaved.cancel": {
+      "hash": "e76fd2add010",
+      "status": "machine"
+    },
+    "account:unsaved.confirm": {
+      "hash": "eb1a70e39274",
+      "status": "machine"
+    },
+    "account:unsaved.field.doctor": {
+      "hash": "7b6a2c294f8a",
+      "status": "machine"
+    },
+    "account:unsaved.field.email": {
+      "hash": "82244417f956",
+      "status": "machine"
+    },
+    "account:unsaved.field.password": {
+      "hash": "5e884898da28",
+      "status": "machine"
+    },
+    "account:unsaved.message_many": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.message_one": {
+      "hash": "15d6949bbf37",
+      "status": "machine"
+    },
+    "account:unsaved.message_other": {
+      "hash": "dc5a83b77d8b",
+      "status": "machine"
+    },
+    "account:unsaved.title": {
+      "hash": "470e7ee2a579",
+      "status": "machine"
+    },
     "common:actions.cancel": {
       "hash": "19766ed6ccb2",
       "status": "machine"

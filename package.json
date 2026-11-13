@@ -20,11 +20,12 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "npm run i18n:check && tsc --noEmit && vite build",
+    "build": "npm run i18n:check && npm run lint && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "replay": "tsx scripts/replay-transcript.ts",
+    "lint": "eslint",
     "i18n:check": "tsx scripts/i18n/check.ts",
     "i18n:translate": "tsx scripts/i18n/translate.ts"
   },
@@ -33,9 +34,12 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.14.0",
+    "eslint-plugin-i18next": "^6.1.5",
     "jsdom": "^29.1.1",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2",
     "vite": "^8.1.5",
     "vitest": "^4.1.10"
   }

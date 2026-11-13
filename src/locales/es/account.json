@@ -1,0 +1,62 @@
+{
+  "title": "Ajustes de la cuenta",
+  "doctor": {
+    "heading": "Nombre del veterinario",
+    "blurb": "Se imprime bajo el logotipo en cada ficha que cree.",
+    "placeholder": "p. ej. Dra. Juana Pérez, DVM, DAVDC",
+    "save": "Guardar el nombre del veterinario",
+    "saving": "Guardando…",
+    "saved": "Nombre del veterinario guardado.",
+    "saveFailed": "No se pudo guardar el nombre del veterinario."
+  },
+  "language": {
+    "heading": "Idioma"
+  },
+  "email": {
+    "heading": "Correo electrónico",
+    "label": "Correo electrónico de inicio de sesión",
+    "change": "Cambiar el correo electrónico",
+    "sending": "Enviando…",
+    "invalid": "Introduzca una dirección de correo electrónico válida.",
+    "sent": "Correos de confirmación enviados.",
+    "changeFailed": "No se pudo cambiar el correo electrónico.",
+    "pending": "Revise su bandeja de entrada: confirme el cambio desde {{current}} y desde {{requested}} para completarlo. Hasta entonces, siga iniciando sesión con {{current}}."
+  },
+  "password": {
+    "heading": "Contraseña",
+    "newLabel": "Contraseña nueva",
+    "confirmLabel": "Confirmar la contraseña nueva",
+    "placeholder": "Al menos {{min}} caracteres",
+    "hideAll": "Ocultar las contraseñas",
+    "showAll": "Mostrar las contraseñas",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "hintShort": "Al menos {{min}} caracteres · {{current}}/{{min}}",
+    "hintMismatch": "Las dos contraseñas aún no coinciden.",
+    "update": "Actualizar la contraseña",
+    "updating": "Actualizando…",
+    "tooShort": "Use al menos {{min}} caracteres.",
+    "mismatch": "Las dos contraseñas no coinciden.",
+    "updated": "Contraseña actualizada.",
+    "updateFailed": "No se pudo actualizar la contraseña."
+  },
+  "delete": {
+    "heading": "Eliminar la cuenta",
+    "blurb": "Elimina de forma permanente su cuenta, sus fichas privadas y sus imágenes. Las fichas que haya compartido con una clínica permanecen en la clínica.",
+    "button": "Eliminar la cuenta…"
+  },
+  "done": "Hecho",
+  "unsaved": {
+    "title": "¿Descartar los cambios sin guardar?",
+    "message_one": "Su cambio de {{list}} no se ha guardado.",
+    "message_many": "Sus cambios de {{list}} no se han guardado.",
+    "message_other": "Sus cambios de {{list}} no se han guardado.",
+    "confirm": "Descartar",
+    "cancel": "Seguir editando",
+    "field": {
+      "doctor": "nombre del veterinario",
+      "email": "correo electrónico",
+      "password": "contraseña"
+    }
+  }
+}

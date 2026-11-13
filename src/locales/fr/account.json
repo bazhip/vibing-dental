@@ -1,0 +1,62 @@
+{
+  "title": "Paramètres du compte",
+  "doctor": {
+    "heading": "Nom du vétérinaire",
+    "blurb": "Imprimé sous le logo sur chaque dossier que vous créez.",
+    "placeholder": "p. ex. Dr Jeanne Martin, DMV, DAVDC",
+    "save": "Enregistrer le nom du vétérinaire",
+    "saving": "Enregistrement…",
+    "saved": "Nom du vétérinaire enregistré.",
+    "saveFailed": "Impossible d’enregistrer le nom du vétérinaire."
+  },
+  "language": {
+    "heading": "Langue"
+  },
+  "email": {
+    "heading": "E-mail",
+    "label": "E-mail de connexion",
+    "change": "Modifier l’e-mail",
+    "sending": "Envoi…",
+    "invalid": "Saisissez une adresse e-mail valide.",
+    "sent": "E-mails de confirmation envoyés.",
+    "changeFailed": "Impossible de modifier l’e-mail.",
+    "pending": "Consultez votre boîte de réception : confirmez la modification depuis {{current}} et depuis {{requested}} pour la finaliser. D’ici là, continuez à vous connecter avec {{current}}."
+  },
+  "password": {
+    "heading": "Mot de passe",
+    "newLabel": "Nouveau mot de passe",
+    "confirmLabel": "Confirmer le nouveau mot de passe",
+    "placeholder": "Au moins {{min}} caractères",
+    "hideAll": "Masquer les mots de passe",
+    "showAll": "Afficher les mots de passe",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "hintShort": "Au moins {{min}} caractères · {{current}}/{{min}}",
+    "hintMismatch": "Les deux mots de passe ne correspondent pas encore.",
+    "update": "Mettre à jour le mot de passe",
+    "updating": "Mise à jour…",
+    "tooShort": "Utilisez au moins {{min}} caractères.",
+    "mismatch": "Les deux mots de passe ne correspondent pas.",
+    "updated": "Mot de passe mis à jour.",
+    "updateFailed": "Impossible de mettre à jour le mot de passe."
+  },
+  "delete": {
+    "heading": "Supprimer le compte",
+    "blurb": "Supprime définitivement votre compte, vos dossiers privés et leurs images. Les dossiers que vous avez partagés avec un cabinet restent au cabinet.",
+    "button": "Supprimer le compte…"
+  },
+  "done": "Terminé",
+  "unsaved": {
+    "title": "Abandonner les modifications non enregistrées ?",
+    "message_one": "Votre modification ({{list}}) n’a pas été enregistrée.",
+    "message_many": "Vos modifications ({{list}}) n’ont pas été enregistrées.",
+    "message_other": "Vos modifications ({{list}}) n’ont pas été enregistrées.",
+    "confirm": "Abandonner",
+    "cancel": "Continuer à modifier",
+    "field": {
+      "doctor": "nom du vétérinaire",
+      "email": "e-mail",
+      "password": "mot de passe"
+    }
+  }
+}
