@@ -1,5 +1,5 @@
 import { APP_LANGUAGES } from '../../i18n/config';
-import { voiceKeyterms, VOICE_KEYTERMS } from '../../constants/voiceKeyterms';
+import { capKeyterms, voiceKeyterms, VOICE_KEYTERMS } from '../../constants/voiceKeyterms';
 import { VOICE_STT, browserSpeechLang } from './sttConfig';
 
 describe('VOICE_STT', () => {
@@ -22,6 +22,12 @@ describe('voiceKeyterms', () => {
     // en is the frozen legacy list (byte-identical URL); its heuristic estimate is 545.
     if (lng !== 'en') expect(tokens).toBeLessThanOrEqual(500);
     expect(new Set(terms.map((t) => t.toLowerCase())).size).toBe(terms.length);
+  });
+  it('skips a term that would overflow the token cap and keeps shorter ones after it', () => {
+    const long = (c: string) => c.repeat(297); // 100 estimated tokens
+    const out = capKeyterms([long('a'), long('b'), long('c'), long('d'), 'x'.repeat(300), 'short', 'Short']);
+    expect(out).toEqual([long('a'), long('b'), long('c'), long('d'), 'short']);
+    expect(capKeyterms(Array.from({ length: 120 }, (_, i) => `t${i}`))).toHaveLength(100);
   });
   it('includes native glossary terms and English drug names', () => {
     expect(voiceKeyterms('fr')).toContain('parodontite');

@@ -177,6 +177,20 @@ describe('replaceSpokenNumbers — non-teeth', () => {
 
 describe('replaceSpokenNumbers — scores and units', () => {
   it.each([
+    ['fr', 'mobilité de deux', 'mobilité de 2'],
+    ['fr', 'mobilité de deux un zéro trois', 'mobilité de 2 103'],
+    ['fr', 'tartre de un peu partout', 'tartre de un peu partout'],
+    ['de', 'Lockerungsgrad von zwei', 'Lockerungsgrad von 2'],
+    ['de', 'Lockerungsgrad von zwei hundertvier', 'Lockerungsgrad von 2 104'],
+    ['it', 'mobilità di due', 'mobilità di 2'],
+    ['it', 'tasca da un lato', 'tasca da un lato'],
+    ['es', 'movilidad de dos', 'movilidad de 2'],
+    ['es', 'movilidad de dos uno cero tres', 'movilidad de 2 103'],
+  ])('%s score, link word, value: %s', (lng, input, expected) => {
+    expect(replaceSpokenNumbers(input, lng as 'fr')).toBe(expected);
+  });
+
+  it.each([
     ['fr', 'mobilité trois un zéro trois', 'mobilité 3 103'],
     ['de', 'Beweglichkeit drei eins null drei', 'Beweglichkeit 3 103'],
     ['it', 'mobilità tre uno zero tre', 'mobilità 3 103'],

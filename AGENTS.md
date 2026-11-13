@@ -27,3 +27,10 @@ Languages: en (source), fr, de, it, es. Owner reports also have pt. Language swi
 - Emails: edit `src/locales/<lng>/email.json` or `authEmail.json`, then run `npm run i18n:emails`. `i18n:check` fails if generated files are stale. Regenerated `supabase/templates/*.html` must be pasted into the Supabase dashboard by the owner (with the subjects in `supabase/templates/subjects.md`).
 - Client-facing defaults (owner-report templates, reminder text, anything a pet owner reads) use the practice client language (`usePracticeLanguage` / `clientLanguageOf`), not the user's app language.
 - New namespace: create `src/locales/<lng>/<ns>.json` for en/fr/de/it/es, append it to `NAMESPACES` in `src/i18n/config.ts`, and add it to `src/i18n/i18next.d.ts`.
+
+## Voice
+
+- The dictation language is the app language when a dictation starts; resuming keeps it while there is a transcript, and a new dictation (New, another chart) takes the current one. Pure voice functions take `lng: AppLanguage` explicitly and never read `i18n.language`.
+- English voice behaviour is frozen: the Deepgram URL, transcript cleanup, filters, prompt text and request bodies stay byte-identical (snapshot tests in `src/utils/voice/__fixtures__/`).
+- Adding a dictation language needs: a `VOICE_STT` entry in `src/utils/voice/sttConfig.ts` (and `BROWSER_SPEECH_LANG`), number words in `src/utils/voice/numbers.ts`, terms in `src/utils/voice/terms.ts` (score synonyms, units, slash words, spelled letters, fillers, link and "and" words; clinical terms come from `src/locales/glossary.json`), few-shot examples in `src/utils/voice/fewShot.ts`, and a fixture in `scripts/fixtures/voice/<lng>/` (`transcript.txt` + `expected.json`).
+- `npm test` runs the offline fixture checks. Live parity needs API keys and is run by the owner: `npm run replay -- --all-langs --expect`.

@@ -1203,6 +1203,12 @@ export function normalizeFieldValue(value: string): string {
     .trim();
 }
 
+/** A dose dictated with a decimal comma may reach a tool call as "0,3"
+ *  despite the prompt; the chart stores "0.3". Any language. */
+export function decimalPoint(value: string): string {
+  return value.replace(/^(\d+),(\d+)$/, '$1.$2');
+}
+
 /**
  * True when applying `action` wouldn't change the chart: the value is
  * already there, the mark already set, the note already on that tooth.
@@ -1237,10 +1243,10 @@ export function isNoopAction(action: AiAction, c: ChartContext): boolean {
       return !!cur && cur.status === str('status') && (!str('comment') || cur.comment === str('comment'));
     }
     case 'set_nerve_block':
-      return String(c.patientInfo.nerveBlocks?.[str('site') as NerveBlockSite] ?? '') === str('mL');
+      return String(c.patientInfo.nerveBlocks?.[str('site') as NerveBlockSite] ?? '') === decimalPoint(str('mL'));
     case 'set_anesthetic_drug': {
       const want = str('drug').trim().toLowerCase();
-      const conc = str('concentration').replace(/%/g, '').trim();
+      const conc = decimalPoint(str('concentration').replace(/%/g, '').trim());
       return (c.patientInfo.nerveBlocks?.drugs ?? []).some(
         (d) => d.name.trim().toLowerCase() === want && (!conc || d.concentration.trim() === conc)
       );
@@ -1343,12 +1349,12 @@ function applyOne(action: AiAction, h: ChartHandlers): boolean {
     }
     case 'set_nerve_block': {
       if (!NERVE_SITES.has(s('site'))) return false;
-      h.setNerveBlock(s('site') as NerveBlockSite, s('mL'));
+      h.setNerveBlock(s('site') as NerveBlockSite, decimalPoint(s('mL')));
       return true;
     }
     case 'set_anesthetic_drug': {
       if (!s('drug').trim()) return false;
-      h.setAnestheticDrug(s('drug').trim(), s('concentration').replace(/%/g, '').trim() || undefined);
+      h.setAnestheticDrug(s('drug').trim(), decimalPoint(s('concentration').replace(/%/g, '').trim()) || undefined);
       return true;
     }
     case 'set_patient_field': {

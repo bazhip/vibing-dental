@@ -1,5 +1,5 @@
 import type { AppLanguage } from '../../i18n/config';
-import { GERMAN_COMPOUND_ENDS, nativeScoreTerms, SCORE_ABBREVIATIONS, UNIT_WORDS } from './terms';
+import { GERMAN_COMPOUND_ENDS, nativeScoreTerms, SCORE_ABBREVIATIONS, SCORE_LINK_WORDS, UNIT_WORDS } from './terms';
 import {
   CANINE_DECIDUOUS_TOOTH_DATA,
   CANINE_TOOTH_DATA,
@@ -91,6 +91,8 @@ interface LanguageNumbers {
    *  (German "Zahnlockerungsgrad", "Oberkieferzahnstein"). */
   compoundEnds?: string;
   units: string;
+  /** Words between a score term and its value ("mobilité de deux"), folded. */
+  links: string;
 }
 
 const words = (list: string) => list.split(' ');
@@ -109,6 +111,8 @@ const scoreTermsFor = (lng: OtherLanguage) =>
   `${nativeTermsAlt(lng)}|${alt(SCORE_ABBREVIATIONS.map((a) => fold(a)))}`;
 /** Folded alternation of the unit words from ./terms. */
 const unitsFor = (lng: OtherLanguage) => alt(UNIT_WORDS[lng].map((u) => escapeRe(fold(u))));
+/** Folded alternation of the link words from ./terms. */
+const linksFor = (lng: OtherLanguage) => alt(SCORE_LINK_WORDS[lng].map((w) => escapeRe(fold(w))));
 
 const FR_SMALL = toMap('zero un deux trois quatre cinq six sept huit neuf dix onze douze treize quatorze quinze');
 const DE_SMALL = withValues(
@@ -140,6 +144,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     hundreds: (h) => (h ? FR_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('fr'),
     units: unitsFor('fr'),
+    links: linksFor('fr'),
   },
   de: {
     digits: digitsOf(DE_SMALL, 'null eins ein zwei zwo drei vier funf fuenf sechs sieben acht neun'),
@@ -151,6 +156,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     scoreTerms: scoreTermsFor('de'),
     compoundEnds: alt(GERMAN_COMPOUND_ENDS.map((t) => escapeRe(fold(t)))),
     units: unitsFor('de'),
+    links: linksFor('de'),
   },
   it: {
     digits: digitsOf(IT_SMALL, 'zero uno due tre quattro cinque sei sette otto nove'),
@@ -161,6 +167,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     hundreds: (h) => (h ? IT_SMALL[h] : 1),
     scoreTerms: scoreTermsFor('it'),
     units: unitsFor('it'),
+    links: linksFor('it'),
   },
   es: {
     digits: digitsOf(ES_SMALL, 'cero uno dos tres cuatro cinco seis siete ocho nueve'),
@@ -175,6 +182,7 @@ const LANGS: Record<OtherLanguage, LanguageNumbers> = {
     },
     scoreTerms: scoreTermsFor('es'),
     units: unitsFor('es'),
+    links: linksFor('es'),
   },
 };
 
@@ -233,7 +241,9 @@ const termSource = (re: RegExp) => fold(re.source);
 /**
  * Turn spoken numbers into digits. English runs the passes extracted from
  * normalizeTranscript (and ignores `opts`). Other languages, in order:
- *  1. a single number word 0–15 right after a score term ("mobilité trois");
+ *  1. a single number word 0–15 right after a score term ("mobilité trois"),
+ *     also with a link word between them ("mobilité de deux", "Lockerungsgrad
+ *     von zwei");
  *  2. compound hundreds ("cent quatre", "zweihundertneun", "centotto",
  *     "quinientos ocho") when the result is a valid Triadan tooth, is
  *     followed by a unit, or is preceded by a score term;
@@ -260,13 +270,14 @@ export function replaceSpokenNumbers(
   const units = opts?.unitTerms ? termSource(opts.unitTerms) : L.units;
   const small = alt(Object.keys(L.small));
   const digits = alt(Object.keys(L.digits));
-  const afterScore = `(?<=${scoreTerm}[\\s,.-]+)`;
+  const afterTerm = `${scoreTerm}[\\s,.-]+(?:(?:${L.links})\\s+)?`;
+  const afterScore = `(?<=${afterTerm})`;
   const unitAhead = `[\\s-]*(?:${units})${NOT_AFTER}`;
 
   // What may follow an article-like word for it to count as a number.
   const numericNext = new RegExp(
     `^\\s*(?:$|[^\\p{L}\\s]|(?:${small}|${L.compound}|${units})${NOT_AFTER})`, 'iu');
-  const scoreBefore = new RegExp(`${scoreTerm}[\\s,.-]+$`, 'iu');
+  const scoreBefore = new RegExp(`${afterTerm}$`, 'iu');
   const unitAfter = new RegExp(`^${unitAhead}`, 'iu');
 
   // 1. score term + single word

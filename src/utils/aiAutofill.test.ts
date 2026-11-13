@@ -1,5 +1,12 @@
 import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
-import { normalizeTranscript, chunkWorthSending, buildChunkRequest, buildReviewRequest, markFinalCheck, normalizeFieldValue, isPerioOnlyText, codeOnlyComment, dedupeActions } from './aiAutofill';
+import {
+  normalizeTranscript, chunkWorthSending, buildChunkRequest, buildReviewRequest, markFinalCheck, normalizeFieldValue,
+  isPerioOnlyText, codeOnlyComment, dedupeActions, applyAiActions, dictationCacheWarm, markDictationPromptUsed, buildStaticSystemPrompt,
+  invalidReason, type AiAction,
+} from './aiAutofill';
+import { findCodesInText } from '../constants/dentalCodes';
+import { NATIVE_FEW_SHOT } from './voice/fewShot';
+import enPromptSnapshot from './voice/__fixtures__/en-prompt-snapshot.json';
 
 describe('normalizeTranscript', () => {
   it('collapses spelled-out triadan numbers', () => {
@@ -231,6 +238,35 @@ describe('dedupeActions — the 105/104 repeat from a real run', () => {
   });
 });
 
+describe('decimal commas in doses (fr/de/it/es dictation)', () => {
+  const ctx = {
+    patientInfo: {
+      exam: {}, treatmentReport: '',
+      nerveBlocks: { infraorbitalRight: '0.3', drugs: [{ name: 'Bupivacaine', concentration: '0.5' }] },
+    },
+    species: 'canine', logo: 'none', toothData: [],
+    preMarks: {}, postMarks: {}, preComments: [], postComments: [],
+  } as never;
+
+  it('a dose written "0,5" dedupes against the 0.5 already on the chart', () => {
+    expect(dedupeActions([
+      { name: 'set_anesthetic_drug', input: { drug: 'Bupivacaine', concentration: '0,5' } },
+      { name: 'set_nerve_block', input: { site: 'infraorbitalRight', mL: '0,3' } },
+    ], ctx)).toEqual([]);
+  });
+
+  it('applies "0,3" / "0,5" as 0.3 / 0.5', () => {
+    const setNerveBlock = vi.fn();
+    const setAnestheticDrug = vi.fn();
+    applyAiActions([
+      { name: 'set_nerve_block', input: { site: 'mentalLeft', mL: '0,4' } },
+      { name: 'set_anesthetic_drug', input: { drug: 'Lidocaine', concentration: '0,5%' } },
+    ], { setNerveBlock, setAnestheticDrug } as never);
+    expect(setNerveBlock).toHaveBeenCalledWith('mentalLeft', '0.4');
+    expect(setAnestheticDrug).toHaveBeenCalledWith('Lidocaine', '0.5');
+  });
+});
+
 describe('real run 2 — Deepgram punctuation and homophones', () => {
   const raw = 'Speaker 0: 101GI2, calc 2102GI2, calc 2. Mobility one. 103GI1, Calc 1. 104. Fracture. 105. GI2. Calc. 3T slash FX slash CCF106 missing';
   it('rejoins a punctuated pause and turns spoken slashes into a code', () => {
@@ -249,7 +285,6 @@ describe('score run into the next tooth number', () => {
   });
 });
 
-import { findCodesInText } from '../constants/dentalCodes';
 describe('findCodesInText — one-letter codes', () => {
   it('ignores R/L/B/X used as words, counts them standing alone', () => {
     expect(findCodesInText('Mild ulceration R maxillary buccal mucosa').map((c) => c.code)).not.toContain('R');
@@ -294,7 +329,6 @@ describe('GE = gingival enlargement (the Enlargement column)', () => {
   });
 });
 
-import { buildReviewRequest as _brr } from './aiAutofill';
 describe('call type is labelled for usage logging', () => {
   it('live chunks and final checks carry their kind', () => {
     const ctx = {
@@ -307,11 +341,10 @@ describe('call type is labelled for usage logging', () => {
       preMarks: {}, preComments: [], postMarks: {}, postComments: [],
     };
     expect(buildChunkRequest({ delta: '104 GI 2', recentContext: '', context: ctx })!.kind).toBe('live');
-    expect(_brr({ transcript: '104 GI 2', context: ctx, rejected: [] })!.kind).toBe('review');
+    expect(buildReviewRequest({ transcript: '104 GI 2', context: ctx, rejected: [] })!.kind).toBe('review');
   });
 });
 
-import { dictationCacheWarm, markDictationPromptUsed } from './aiAutofill';
 
 describe('dictation prompt cache warmth', () => {
   it('is warm for a few minutes after the prompt was used, then cold', () => {
@@ -323,9 +356,6 @@ describe('dictation prompt cache warmth', () => {
   });
 });
 
-import enPromptSnapshot from './voice/__fixtures__/en-prompt-snapshot.json';
-import { buildStaticSystemPrompt, invalidReason, type AiAction } from './aiAutofill';
-import { NATIVE_FEW_SHOT } from './voice/fewShot';
 
 describe('dictation language in the AI prompt', () => {
   const ctx = {
@@ -365,6 +395,12 @@ describe('dictation language in the AI prompt', () => {
     // Everything English is still there.
     expect(fr).toContain(enPromptSnapshot.systemPrompt.slice(0, 200));
     expect(fr).not.toContain('[DE 1]');
+  });
+
+  it('shows a tooth number read digit by digit, and plural millilitres', () => {
+    expect(NATIVE_FEW_SHOT.it).toMatch(/"uno zero quattro [^"]+"[^\n]*\n→ set_tooth_mark\(diagram=pre, triadan=104/);
+    expect(NATIVE_FEW_SHOT.es).toMatch(/"uno cero cuatro [^"]+"[^\n]*\n→ set_tooth_mark\(diagram=pre, triadan=104/);
+    expect(NATIVE_FEW_SHOT.fr).toContain('zéro virgule trois millilitres de bupivacaïne');
   });
 
   it('uses the dictation language for the live and final-check system prompt', () => {

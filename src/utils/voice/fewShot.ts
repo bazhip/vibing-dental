@@ -60,7 +60,7 @@ const FR = `FRENCH EXAMPLES — same patterns, as French vets dictate.
 [FR 7] "muqueuse buccale anormale, légère ulcération sur la joue droite"
 → set_exam_finding(area=buccal, status=abnormal, comment="Légère ulcération sur la joue droite")
 
-[FR 8] "zéro virgule trois millilitre de bupivacaïne en infra-orbitaire droit" / "0,3 mL bupivacaïne infra-orbitaire droit"
+[FR 8] "zéro virgule trois millilitres de bupivacaïne en infra-orbitaire droit" / "0,3 mL bupivacaïne infra-orbitaire droit"
 → set_anesthetic_drug(drug=Bupivacaine)
 → set_nerve_block(site=infraorbitalRight, mL=0.3)
 
@@ -150,7 +150,7 @@ const IT = `ITALIAN EXAMPLES — same patterns, as Italian vets dictate.
 [IT 3] "duecentonove estratto" / "ho appena tolto il duecentonove" / "sto estraendo il duecentonove"
 → set_tooth_mark(diagram=post, triadan=209, mark=extracted)
 
-[IT 4] "centoquattro mancante all'esame" / "il centoquattro manca già"
+[IT 4] "centoquattro mancante all'esame" / "il centoquattro manca già" / "uno zero quattro mancante"
 → set_tooth_mark(diagram=pre, triadan=104, mark=missing)
 
 [IT 5] "lingua nella norma, palato nella norma"
@@ -202,7 +202,7 @@ const ES = `SPANISH EXAMPLES — same patterns, as Spanish-speaking vets dictate
 [ES 3] "doscientos nueve extraído" / "acabo de sacar el doscientos nueve" / "extrayendo el doscientos nueve"
 → set_tooth_mark(diagram=post, triadan=209, mark=extracted)
 
-[ES 4] "ciento cuatro ausente en la exploración" / "ya le falta el ciento cuatro"
+[ES 4] "ciento cuatro ausente en la exploración" / "ya le falta el ciento cuatro" / "uno cero cuatro ausente"
 → set_tooth_mark(diagram=pre, triadan=104, mark=missing)
 
 [ES 5] "lengua normal, paladar normal"

@@ -115,4 +115,30 @@ describe('useVoiceCapture session language', () => {
     await act(async () => { await i18n.changeLanguage('de'); });
     expect(result.current.lng).toBe('fr');
   });
+
+  it('resume keeps the session language mid-transcript; a fresh start takes the app language', async () => {
+    await act(async () => { await i18n.changeLanguage('fr'); });
+    const { result } = renderHook(() => useVoiceCapture());
+    act(() => result.current.start());
+    act(() => FakeRecognition.last!.say('cent quatre absente'));
+    act(() => result.current.stop());
+    await act(async () => { await i18n.changeLanguage('de'); });
+    act(() => result.current.resume());
+    expect(result.current.lng).toBe('fr');
+    expect(FakeRecognition.last!.lang).toMatch(/^fr/);
+    act(() => result.current.stop());
+    act(() => result.current.clear());
+    act(() => result.current.start());
+    expect(result.current.lng).toBe('de');
+    expect(FakeRecognition.last!.lang).toMatch(/^de/);
+  });
+
+  it('resume with nothing heard yet takes the current app language', async () => {
+    const { result } = renderHook(() => useVoiceCapture());
+    act(() => result.current.start());
+    act(() => result.current.stop());
+    await act(async () => { await i18n.changeLanguage('it'); });
+    act(() => result.current.resume());
+    expect(result.current.lng).toBe('it');
+  });
 });

@@ -8,7 +8,19 @@ import {
   unitPattern,
   type OtherLanguage,
 } from './numbers';
-import { FILLER_WORDS, SCORE_LINK_WORDS, SLASH_WORDS, SPELLED_LETTERS, UNIVERSAL_FILLERS } from './terms';
+import {
+  AND_WORDS,
+  DANGLING_ABBREVIATIONS,
+  FILLER_WORDS,
+  GERMAN_COMPOUND_ENDS,
+  nativeScoreTerms,
+  SCORE_GLOSSARY_IDS,
+  SCORE_LINK_WORDS,
+  SLASH_WORDS,
+  SPELLED_LETTERS,
+  SURFACE_GLOSSARY_IDS,
+  UNIVERSAL_FILLERS,
+} from './terms';
 
 // Transcript cleanup and filters for fr/de/it/es. English keeps its original
 // code in aiAutofill.ts; these mirror its passes with the native vocabulary
@@ -33,6 +45,7 @@ interface Patterns {
   fillerWords: Set<string>;
   perioScore: RegExp;
   perioMeasure: RegExp;
+  dangling: RegExp;
 }
 
 const cache = new Map<OtherLanguage, Patterns>();
@@ -48,6 +61,11 @@ function patterns(lng: OtherLanguage): Patterns {
   const fillers = [...FILLER_WORDS[lng], ...UNIVERSAL_FILLERS].map((w) => fold(w).replace(/[’']/g, "'"));
   const phrases = fillers.filter((w) => /[\s']/.test(w));
   const link = SCORE_LINK_WORDS[lng].length ? `(?:(?:${phraseAlt(SCORE_LINK_WORDS[lng])})\\s+)?` : '';
+  // Score words that leave a value pending at the end of an utterance:
+  // not the surface words, which can end a finding ("fracture distale").
+  const pendingIds = SCORE_GLOSSARY_IDS.filter((id) => !SURFACE_GLOSSARY_IDS.includes(id));
+  const pendingTerms = phraseAlt([...nativeScoreTerms(lng, pendingIds), ...DANGLING_ABBREVIATIONS]);
+  const compoundEnds = lng === 'de' ? `|\\p{L}*(?:${phraseAlt(GERMAN_COMPOUND_ENDS)})` : '';
   const p: Patterns = {
     // Only between two short code-like tokens ("T barra FX"), so ordinary
     // words stay: "fractura diagonal de la corona", "la barra".
@@ -65,6 +83,13 @@ function patterns(lng: OtherLanguage): Patterns {
     fillerWords: new Set(fillers.filter((w) => !/[\s']/.test(w))),
     perioScore: new RegExp(`${score}\\s*[-:=]?\\s*${link}\\d+(?:\\s*(?:${units}))?${NOT_AFTER}`, 'giu'),
     perioMeasure: new RegExp(`${NOT_BEFORE}\\d+\\s*(?:${units})${NOT_AFTER}`, 'giu'),
+    // Ends on a score word (maybe plus "de"/"von"), on "and", or on a bare
+    // tooth number — like English DANGLING_RE in VoiceInputButton.
+    dangling: new RegExp(
+      `(?:${NOT_BEFORE}(?:${pendingTerms}${compoundEnds})(?:\\s+(?:${phraseAlt(SCORE_LINK_WORDS[lng])}))?` +
+        `|${NOT_BEFORE}(?:${phraseAlt(AND_WORDS[lng])})|(?<!\\d)[1-8][0-1]\\d)\\s*[,.]?\\s*$`,
+      'u',
+    ),
   };
   cache.set(lng, p);
   return p;
@@ -123,4 +148,10 @@ export function isPerioOnlyOther(text: string, lng: OtherLanguage, english: (t: 
   const rest = english(folded.replace(p.perioScore, ' ').replace(p.perioMeasure, ' '))
     .replace(/[\s,.;/]+/g, '');
   return text.trim().length > 0 && rest.length === 0;
+}
+
+/** DANGLING_RE for fr/de/it/es: true when the (cleaned) utterance stops
+ *  mid-finding, so its value is probably coming in the next breath. */
+export function endsMidFindingOther(text: string, lng: OtherLanguage): boolean {
+  return patterns(lng).dangling.test(fold(text.normalize('NFC')));
 }

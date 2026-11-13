@@ -228,10 +228,10 @@ describe('German compound endings (carry-forward)', () => {
 // ----- chunkWorthSending ---------------------------------------------------
 
 const FILLER_ONLY: Record<Lng, string[]> = {
-  fr: ['euh, bon, d\'accord, merci', 'oui alors voilà', 'Speaker 1: ok merci', 'Bon. Donc. Et euh…', 'D’accord, oui, non'],
-  de: ['äh, also, ja, danke', 'okay gut', 'Speaker 1: ja so', 'Ähm, nein, und also…'],
-  it: ['ehm, allora, va bene, grazie', 'sì sì ok', 'Speaker 1: no, quindi', 'Va bene, grazie e allora'],
-  es: ['eh, bueno, vale, gracias', 'sí, entonces', 'Speaker 1: ok, no', 'Este… bueno, y vale'],
+  fr: ['euh, bon, d\'accord, merci', 'oui alors voilà', 'Speaker 1: ok merci', 'Bon. Donc. Et euh…', 'D’accord, oui, non', 'Hein ? Bon, d’accord'],
+  de: ['äh, also, ja, danke', 'okay gut', 'Speaker 1: ja so', 'Ähm, nein, und also…', 'Ähmm… öhm, ja'],
+  it: ['ehm, allora, va bene, grazie', 'sì sì ok', 'Speaker 1: no, quindi', 'Va bene, grazie e allora', 'Eh, allora, va bene'],
+  es: ['eh, bueno, vale, gracias', 'sí, entonces', 'Speaker 1: ok, no', 'Este… bueno, y vale', 'Mmm, ajá, vale'],
 };
 const REAL: Record<Lng, string[]> = {
   fr: ['504 fracturée', 'dent fracturée', 'et la suivante aussi', 'oui, tartre partout', 'barre oblique'],

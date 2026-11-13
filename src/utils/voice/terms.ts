@@ -17,6 +17,11 @@ export const SCORE_GLOSSARY_IDS = [
   'mesial', 'distal', 'palatal', 'buccal', 'lingual',
 ] as const;
 
+/** The tooth-surface ids in SCORE_GLOSSARY_IDS. A surface word can end a
+ *  complete finding ("fracture distale"), so it doesn't mean a value is
+ *  still coming. */
+export const SURFACE_GLOSSARY_IDS: readonly string[] = ['mesial', 'distal', 'palatal', 'buccal', 'lingual'];
+
 /** What vets actually say before a score that the glossary doesn't hold as a
  *  clinical value: short column labels, lay words and grade/class words. */
 export const SPOKEN_SYNONYMS: Record<AppLanguage, string[]> = {
@@ -69,10 +74,23 @@ export const SPOKEN_SYNONYMS: Record<AppLanguage, string[]> = {
 /** English abbreviations vets say in every language ("GI deux", "M zwei"). */
 export const SCORE_ABBREVIATIONS = ['GI', 'GE', 'G', 'C', 'calc', 'M', 'F', 'PD'];
 
-/** Native score terms for `lng`: the glossary clinical values for
- *  SCORE_GLOSSARY_IDS, then SPOKEN_SYNONYMS, de-duplicated. */
-export function nativeScoreTerms(lng: AppLanguage): string[] {
-  const fromGlossary = SCORE_GLOSSARY_IDS.map((id) => BY_ID.get(id)?.[lng]).filter((v): v is string => !!v);
+/** The abbreviations that, ending an utterance, mean its value is still
+ *  coming — the same ones as English DANGLING_RE in VoiceInputButton. */
+export const DANGLING_ABBREVIATIONS = ['GI', 'GE', 'G', 'calc', 'F', 'PD'];
+
+/** "and" at the end of an utterance: the vet is going on ("GI deux et"). */
+export const AND_WORDS: Record<AppLanguage, string[]> = {
+  en: [], // English keeps "and" in DANGLING_RE.
+  fr: ['et'],
+  de: ['und'],
+  it: ['e', 'ed'],
+  es: ['y', 'e'],
+};
+
+/** Native score terms for `lng`: the glossary clinical values for `ids`
+ *  (default SCORE_GLOSSARY_IDS), then SPOKEN_SYNONYMS, de-duplicated. */
+export function nativeScoreTerms(lng: AppLanguage, ids: readonly string[] = SCORE_GLOSSARY_IDS): string[] {
+  const fromGlossary = ids.map((id) => BY_ID.get(id)?.[lng]).filter((v): v is string => !!v);
   const seen = new Set<string>();
   return [...fromGlossary, ...SPOKEN_SYNONYMS[lng]].filter((t) => {
     const key = t.toLowerCase();
@@ -129,10 +147,10 @@ export const SPELLED_LETTERS: Record<AppLanguage, Record<string, string>> = {
  *  elided entries ("d'accord", "va bene") are matched as phrases. */
 export const FILLER_WORDS: Record<AppLanguage, string[]> = {
   en: [], // English keeps its own FILLER_WORDS set in aiAutofill.ts.
-  fr: ['euh', 'bon', 'voilà', "d'accord", 'ok', 'merci', 'oui', 'non', 'alors', 'donc', 'et'],
-  de: ['äh', 'ähm', 'also', 'okay', 'ja', 'nein', 'danke', 'gut', 'und', 'so'],
-  it: ['ehm', 'allora', 'ok', 'va bene', 'sì', 'no', 'grazie', 'quindi', 'e'],
-  es: ['eh', 'este', 'bueno', 'vale', 'ok', 'sí', 'no', 'gracias', 'entonces', 'y'],
+  fr: ['euh', 'hein', 'bon', 'voilà', "d'accord", 'ok', 'merci', 'oui', 'non', 'alors', 'donc', 'et'],
+  de: ['äh', 'ähm', 'ähmm', 'öhm', 'also', 'okay', 'ja', 'nein', 'danke', 'gut', 'und', 'so'],
+  it: ['eh', 'ehm', 'allora', 'ok', 'va bene', 'sì', 'no', 'grazie', 'quindi', 'e'],
+  es: ['eh', 'mmm', 'ajá', 'este', 'bueno', 'vale', 'ok', 'sí', 'no', 'gracias', 'entonces', 'y'],
 };
 
 /** Hesitation sounds and "ok" spellings STT writes in any language. */

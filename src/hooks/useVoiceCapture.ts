@@ -104,8 +104,9 @@ export interface VoiceCapture {
   startedAt: Date | null;
   /** Which transport will be used at the next `start()` call. */
   provider: VoiceProvider;
-  /** The app language the current (or most recent) session listens in —
-   *  read at each start/resume. Transcript cleanup uses the same one. */
+  /** The language the current (or most recent) dictation listens in: the
+   *  app language when it began. Resuming keeps it while there is a
+   *  transcript; transcript cleanup uses the same one. */
   lng: AppLanguage;
   /** True when the last session ended without the user pressing stop:
    *  the OS took the mic (iOS camera, a call), the page went to the
@@ -363,7 +364,10 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
     setInterrupted(false);
     setError(null);
     setStartedAt((prev) => prev ?? new Date());
-    lngRef.current = appLanguage();
+    // A dictation keeps one language: resuming mid-transcript stays in it
+    // even if the app language changed meanwhile. A fresh one (nothing
+    // heard yet, or after clear()/start()) takes the current app language.
+    if (allSegmentsRef.current.length === 0) lngRef.current = appLanguage();
     setLng(lngRef.current);
     if (provider === 'deepgram') startDeepgram(id);
     else startBrowser(id);

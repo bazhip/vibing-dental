@@ -142,7 +142,10 @@ const ENGLISH_CORE: string[] = [
   'maropitant', 'meloxicam', 'carprofen', 'gabapentin', 'isoflurane', 'sevoflurane',
 ];
 
-// VOICE_KEYTERMS entries whose glossary `en` value differs from the keyterm.
+// VOICE_KEYTERMS entries whose glossary `en` value differs from the keyterm,
+// mapped to the glossary id. Some ids equal the keyterm ("mobility") but are
+// still needed: the lookup without an alias goes by `en` value, and that is
+// "tooth mobility" / "furcation involvement", not the keyterm.
 const GLOSSARY_ALIAS: Record<string, string> = {
   'carnassial': 'carnassial_tooth',
   'mobility': 'mobility',
@@ -182,13 +185,20 @@ export function voiceKeyterms(lng: AppLanguage): string[] {
     const v = entry?.[lng];
     if (v) candidates.push(v);
   }
+  return capKeyterms(candidates);
+}
+
+/** De-duplicate (case-insensitively) and fit Deepgram's limits, in order.
+ *  A term that would overflow the token budget is skipped, so shorter
+ *  terms after it still get in. */
+export function capKeyterms(candidates: string[]): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   let tokens = 0;
   for (const term of candidates) {
+    if (out.length >= MAX_TERMS) break;
     const key = term.toLowerCase();
-    if (seen.has(key)) continue;
-    if (out.length >= MAX_TERMS || tokens + termTokens(term) > MAX_TOKENS) break;
+    if (seen.has(key) || tokens + termTokens(term) > MAX_TOKENS) continue;
     seen.add(key);
     out.push(term);
     tokens += termTokens(term);
