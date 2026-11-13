@@ -1,0 +1,97 @@
+{
+  "abnormalityNoted": "Auffälligkeit festgestellt",
+  "after": "Nachher",
+  "alreadyMissingLine": "Bereits vor diesem Besuch fehlend: {{list}}.",
+  "before": "Vorher",
+  "defaultTitle": "Bericht zum Zahnarztbesuch",
+  "examAreas": {
+    "buccal": "Mundschleimhaut",
+    "extraoral": "Extraoral / Gesicht",
+    "lymph": "Lymphknoten",
+    "palate": "Gaumen",
+    "pharynx": "Rachen / Mandeln",
+    "tongue": "Zunge"
+  },
+  "extractionsLead": "Diese Zähne waren nicht zu retten und wurden entfernt, damit sie keine Schmerzen oder Infektionen mehr verursachen:",
+  "fieldPhrases": {
+    "calculus": "Zahnsteinbildung (Grad {{value}})",
+    "furcation": "Knochenabbau zwischen den Wurzeln (Grad {{value}})",
+    "gingivitis": "Zahnfleischentzündung (Grad {{value}})",
+    "hyperplasia": "Zahnfleischwucherung ({{value}})",
+    "mobility": "lockerer Zahn (Beweglichkeit {{value}})",
+    "pdstate": "Parodontalerkrankung, Stadium {{value}}",
+    "pocket": "vertiefte Zahnfleischtasche ({{value}} mm)",
+    "recession": "Zahnfleischrückgang ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "Zahnsteinbildung",
+    "furcation": "Knochenabbau zwischen den Wurzeln",
+    "gingivitis": "Zahnfleischentzündung",
+    "hyperplasia": "Zahnfleischwucherung",
+    "mobility": "lockerer Zahn",
+    "pdstate": "Parodontalerkrankung",
+    "pocket": "vertiefte Zahnfleischtasche",
+    "recession": "Zahnfleischrückgang"
+  },
+  "headings": {
+    "alreadyMissing": "Bereits vor diesem Besuch fehlend",
+    "diagram_named": "Das Gebiss von {{pet}}",
+    "diagram_unnamed": "Das Gebiss Ihres Tieres",
+    "examNotes": "Weitere Untersuchungsbefunde",
+    "extractions": "Bei diesem Besuch entfernte Zähne",
+    "findings": "Unsere Befunde",
+    "homecare_named": "Zahnpflege für {{pet}} zu Hause",
+    "homecare_unnamed": "Zahnpflege für Ihr Tier zu Hause",
+    "photos": "Vorher und nachher",
+    "recheck": "Empfohlene Kontrolle",
+    "teamNote": "Eine Nachricht von Ihrem Tierarztteam"
+  },
+  "homecareTips": {
+    "brushing": "Tägliches Zähneputzen mit einer tiergerechten Zahnpasta ist das Wirksamste, was Sie tun können.",
+    "products": "Zahnpflegefutter, Kauartikel und Wasserzusätze mit VOHC-Siegel helfen zwischen dem Putzen.",
+    "warningSigns": "Achten Sie auf Mundgeruch, Sabbern, herausfallendes Futter oder Pfoteln am Maul – rufen Sie uns an, wenn Ihnen etwas auffällt."
+  },
+  "intro": "{{pet}} hatte eine professionelle Zahnuntersuchung und Zahnreinigung unter Narkose. Dieser Bericht erklärt unsere Befunde in einfachen Worten – die vollständige klinische Akte mit allen Messwerten liegt bei uns vor und ist jederzeit einsehbar.",
+  "legendFilled": "ausgefüllt = schon vorher fehlend",
+  "legendNumbers": "Die Nummern entsprechen den Befunden unten",
+  "legendRemoved": "rotes ✕ = heute entfernt",
+  "noProblems": "Bei diesem Besuch wurden keine Zahnprobleme festgestellt – eine tolle Nachricht!",
+  "ourPractice": "unsere Praxis",
+  "ownerLabel": "Besitzer",
+  "patientLabel": "Patient",
+  "preparedBy": {
+    "doctor": "Erstellt von {{doctor}}.",
+    "doctorAtPractice": "Erstellt von {{doctor}}, {{practice}}.",
+    "team": "Ihrem Tierarztteam"
+  },
+  "removedToday": "heute entfernt",
+  "species": {
+    "canine": "Hund",
+    "canine-deciduous": "Welpe",
+    "feline": "Katze",
+    "feline-deciduous": "Kätzchen"
+  },
+  "tooth": {
+    "deciduous": "(Milchzahn)",
+    "kinds": {
+      "canine": "Eckzahn",
+      "incisor": "Schneidezahn",
+      "molar": "Molar",
+      "premolar": "Prämolar"
+    },
+    "ordinals": {
+      "first": "erster",
+      "fourth": "vierter",
+      "second": "zweiter",
+      "third": "dritter"
+    },
+    "sides": {
+      "lowerLeft": "unterer linker",
+      "lowerRight": "unterer rechter",
+      "upperLeft": "oberer linker",
+      "upperRight": "oberer rechter"
+    }
+  },
+  "yourPet": "Ihr Tier",
+  "yourTeam": "Ihr Tierarztteam"
+}

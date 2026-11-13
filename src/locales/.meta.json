@@ -23,6 +23,298 @@
     "common:actions.save": {
       "hash": "1509f561f241",
       "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:preparedBy.team": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
     }
   },
   "es": {
@@ -48,6 +340,298 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:preparedBy.team": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
       "status": "machine"
     }
   },
@@ -75,6 +659,298 @@
     "common:actions.save": {
       "hash": "1509f561f241",
       "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:preparedBy.team": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
     }
   },
   "it": {
@@ -100,6 +976,592 @@
     },
     "common:actions.save": {
       "hash": "1509f561f241",
+      "status": "machine"
+    },
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:preparedBy.team": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    }
+  },
+  "pt": {
+    "report:abnormalityNoted": {
+      "hash": "b1882b154e90",
+      "status": "machine"
+    },
+    "report:after": {
+      "hash": "7b68fe551085",
+      "status": "machine"
+    },
+    "report:alreadyMissingLine": {
+      "hash": "c7d2dc23008d",
+      "status": "machine"
+    },
+    "report:before": {
+      "hash": "9bb725005055",
+      "status": "machine"
+    },
+    "report:defaultTitle": {
+      "hash": "b4005dfe0bb5",
+      "status": "machine"
+    },
+    "report:examAreas.buccal": {
+      "hash": "95041426ac74",
+      "status": "machine"
+    },
+    "report:examAreas.extraoral": {
+      "hash": "6baffb1fd1a6",
+      "status": "machine"
+    },
+    "report:examAreas.lymph": {
+      "hash": "3ce12ef2ef2a",
+      "status": "machine"
+    },
+    "report:examAreas.palate": {
+      "hash": "5f38e9becb32",
+      "status": "machine"
+    },
+    "report:examAreas.pharynx": {
+      "hash": "2b18f3a2f3ed",
+      "status": "machine"
+    },
+    "report:examAreas.tongue": {
+      "hash": "583338262d37",
+      "status": "machine"
+    },
+    "report:extractionsLead": {
+      "hash": "01def1b693b7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.calculus": {
+      "hash": "febaa7249110",
+      "status": "machine"
+    },
+    "report:fieldPhrases.furcation": {
+      "hash": "4b269f7f48c7",
+      "status": "machine"
+    },
+    "report:fieldPhrases.gingivitis": {
+      "hash": "66db3031eabb",
+      "status": "machine"
+    },
+    "report:fieldPhrases.hyperplasia": {
+      "hash": "0c0dbf56c4f0",
+      "status": "machine"
+    },
+    "report:fieldPhrases.mobility": {
+      "hash": "403c26b2a12b",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pdstate": {
+      "hash": "d9139ff6420a",
+      "status": "machine"
+    },
+    "report:fieldPhrases.pocket": {
+      "hash": "fd70cb1dc158",
+      "status": "machine"
+    },
+    "report:fieldPhrases.recession": {
+      "hash": "7ba4bfa0e833",
+      "status": "machine"
+    },
+    "report:fieldPlain.calculus": {
+      "hash": "f18b61eeff20",
+      "status": "machine"
+    },
+    "report:fieldPlain.furcation": {
+      "hash": "a4e830c539bb",
+      "status": "machine"
+    },
+    "report:fieldPlain.gingivitis": {
+      "hash": "4df4ca390ca8",
+      "status": "machine"
+    },
+    "report:fieldPlain.hyperplasia": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:fieldPlain.mobility": {
+      "hash": "d7c5a01f0ade",
+      "status": "machine"
+    },
+    "report:fieldPlain.pdstate": {
+      "hash": "a3baf5c05243",
+      "status": "machine"
+    },
+    "report:fieldPlain.pocket": {
+      "hash": "947f2ba29f8d",
+      "status": "machine"
+    },
+    "report:fieldPlain.recession": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:headings.alreadyMissing": {
+      "hash": "829e341379bc",
+      "status": "machine"
+    },
+    "report:headings.diagram_named": {
+      "hash": "10f29dd4b05b",
+      "status": "machine"
+    },
+    "report:headings.diagram_unnamed": {
+      "hash": "835c1bd4df40",
+      "status": "machine"
+    },
+    "report:headings.examNotes": {
+      "hash": "8fc53ad17581",
+      "status": "machine"
+    },
+    "report:headings.extractions": {
+      "hash": "5f03fc81cf91",
+      "status": "machine"
+    },
+    "report:headings.findings": {
+      "hash": "e669b2967d36",
+      "status": "machine"
+    },
+    "report:headings.homecare_named": {
+      "hash": "2e4c40d613c3",
+      "status": "machine"
+    },
+    "report:headings.homecare_unnamed": {
+      "hash": "a1ab283f2f81",
+      "status": "machine"
+    },
+    "report:headings.photos": {
+      "hash": "3c7206ad11e3",
+      "status": "machine"
+    },
+    "report:headings.recheck": {
+      "hash": "d9bf85c8e41f",
+      "status": "machine"
+    },
+    "report:headings.teamNote": {
+      "hash": "59ff34b53680",
+      "status": "machine"
+    },
+    "report:homecareTips.brushing": {
+      "hash": "df76ee9ea2b4",
+      "status": "machine"
+    },
+    "report:homecareTips.products": {
+      "hash": "06e37531a8ba",
+      "status": "machine"
+    },
+    "report:homecareTips.warningSigns": {
+      "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:intro": {
+      "hash": "160595ffa0ce",
+      "status": "machine"
+    },
+    "report:legendFilled": {
+      "hash": "6215559ae735",
+      "status": "machine"
+    },
+    "report:legendNumbers": {
+      "hash": "a83baa8b799a",
+      "status": "machine"
+    },
+    "report:legendRemoved": {
+      "hash": "8dfd20da3cf9",
+      "status": "machine"
+    },
+    "report:noProblems": {
+      "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:ourPractice": {
+      "hash": "368c1c0aa556",
+      "status": "machine"
+    },
+    "report:ownerLabel": {
+      "hash": "4b1b8aa3608a",
+      "status": "machine"
+    },
+    "report:patientLabel": {
+      "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:preparedBy.doctor": {
+      "hash": "48b9fb119e75",
+      "status": "machine"
+    },
+    "report:preparedBy.doctorAtPractice": {
+      "hash": "306ae73f70e1",
+      "status": "machine"
+    },
+    "report:preparedBy.team": {
+      "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "report:removedToday": {
+      "hash": "9c569b90d5d1",
+      "status": "machine"
+    },
+    "report:species.canine": {
+      "hash": "0eb129bf9459",
+      "status": "machine"
+    },
+    "report:species.canine-deciduous": {
+      "hash": "75822bc42933",
+      "status": "machine"
+    },
+    "report:species.feline": {
+      "hash": "48735c4fae42",
+      "status": "machine"
+    },
+    "report:species.feline-deciduous": {
+      "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:tooth.deciduous": {
+      "hash": "a3ca38ef0e85",
+      "status": "machine"
+    },
+    "report:tooth.kinds.canine": {
+      "hash": "036745224e7b",
+      "status": "machine"
+    },
+    "report:tooth.kinds.incisor": {
+      "hash": "fd84d3e3c195",
+      "status": "machine"
+    },
+    "report:tooth.kinds.molar": {
+      "hash": "0fc4c84a9858",
+      "status": "machine"
+    },
+    "report:tooth.kinds.premolar": {
+      "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.first": {
+      "hash": "a7937b64b8ca",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.fourth": {
+      "hash": "dc81b1d371a4",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.second": {
+      "hash": "16367aacb67a",
+      "status": "machine"
+    },
+    "report:tooth.ordinals.third": {
+      "hash": "b1e99324505b",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerLeft": {
+      "hash": "fae18399c005",
+      "status": "machine"
+    },
+    "report:tooth.sides.lowerRight": {
+      "hash": "63632dc59685",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperLeft": {
+      "hash": "7b598523ef3f",
+      "status": "machine"
+    },
+    "report:tooth.sides.upperRight": {
+      "hash": "ccfa9cfcfe25",
+      "status": "machine"
+    },
+    "report:yourPet": {
+      "hash": "ae77a70456bf",
+      "status": "machine"
+    },
+    "report:yourTeam": {
+      "hash": "3a0360fce6e0",
       "status": "machine"
     }
   }

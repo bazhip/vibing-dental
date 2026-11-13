@@ -1,0 +1,97 @@
+{
+  "abnormalityNoted": "anomalie constatée",
+  "after": "Après",
+  "alreadyMissingLine": "Déjà absentes avant cette visite : {{list}}.",
+  "before": "Avant",
+  "defaultTitle": "Compte rendu de la visite dentaire",
+  "examAreas": {
+    "buccal": "Muqueuse buccale",
+    "extraoral": "Extra-oral / face",
+    "lymph": "Nœuds lymphatiques",
+    "palate": "Palais",
+    "pharynx": "Pharynx / amygdales",
+    "tongue": "Langue"
+  },
+  "extractionsLead": "Ces dents ne pouvaient pas être sauvées et ont été extraites pour ne plus causer de douleur ni d’infection :",
+  "fieldPhrases": {
+    "calculus": "accumulation de tartre (grade {{value}})",
+    "furcation": "perte osseuse entre les racines (grade {{value}})",
+    "gingivitis": "inflammation des gencives (grade {{value}})",
+    "hyperplasia": "prolifération des gencives ({{value}})",
+    "mobility": "dent mobile (mobilité {{value}})",
+    "pdstate": "maladie parodontale, stade {{value}}",
+    "pocket": "poche gingivale approfondie ({{value}} mm)",
+    "recession": "rétraction des gencives ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "accumulation de tartre",
+    "furcation": "perte osseuse entre les racines",
+    "gingivitis": "inflammation des gencives",
+    "hyperplasia": "prolifération des gencives",
+    "mobility": "dent mobile",
+    "pdstate": "maladie parodontale",
+    "pocket": "poche gingivale approfondie",
+    "recession": "rétraction des gencives"
+  },
+  "headings": {
+    "alreadyMissing": "Déjà absentes avant cette visite",
+    "diagram_named": "La bouche de {{pet}}",
+    "diagram_unnamed": "La bouche de votre animal",
+    "examNotes": "Autres remarques de l’examen",
+    "extractions": "Dents extraites lors de cette visite",
+    "findings": "Ce que nous avons constaté",
+    "homecare_named": "Prendre soin des dents de {{pet}} à la maison",
+    "homecare_unnamed": "Prendre soin des dents de votre animal à la maison",
+    "photos": "Avant et après",
+    "recheck": "Prochain contrôle recommandé",
+    "teamNote": "Un mot de votre équipe vétérinaire"
+  },
+  "homecareTips": {
+    "brushing": "Le brossage quotidien des dents avec un dentifrice adapté aux animaux est la mesure la plus efficace.",
+    "products": "Les aliments dentaires, friandises à mâcher et additifs pour l’eau portant le label VOHC aident entre deux brossages.",
+    "warningSigns": "Surveillez la mauvaise haleine, l’hypersalivation, la nourriture qui tombe ou le grattage de la bouche — appelez-nous si vous remarquez quelque chose."
+  },
+  "intro": "{{pet}} a bénéficié d’un bilan et d’un détartrage dentaires professionnels sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
+  "legendFilled": "plein = absente avant cette visite",
+  "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",
+  "legendRemoved": "✕ rouge = extraite aujourd’hui",
+  "noProblems": "Aucun problème dentaire n’a été noté au dossier lors de cette visite — excellente nouvelle !",
+  "ourPractice": "notre clinique",
+  "ownerLabel": "Propriétaire",
+  "patientLabel": "Patient",
+  "preparedBy": {
+    "doctor": "Préparé par {{doctor}}.",
+    "doctorAtPractice": "Préparé par {{doctor}}, {{practice}}.",
+    "team": "votre équipe vétérinaire"
+  },
+  "removedToday": "extraite aujourd’hui",
+  "species": {
+    "canine": "Chien",
+    "canine-deciduous": "Chiot",
+    "feline": "Chat",
+    "feline-deciduous": "Chaton"
+  },
+  "tooth": {
+    "deciduous": "de lait",
+    "kinds": {
+      "canine": "canine",
+      "incisor": "incisive",
+      "molar": "molaire",
+      "premolar": "prémolaire"
+    },
+    "ordinals": {
+      "first": "première",
+      "fourth": "quatrième",
+      "second": "deuxième",
+      "third": "troisième"
+    },
+    "sides": {
+      "lowerLeft": "inférieure gauche",
+      "lowerRight": "inférieure droite",
+      "upperLeft": "supérieure gauche",
+      "upperRight": "supérieure droite"
+    }
+  },
+  "yourPet": "votre animal",
+  "yourTeam": "votre équipe vétérinaire"
+}

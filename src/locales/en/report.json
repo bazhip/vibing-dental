@@ -1,0 +1,97 @@
+{
+  "abnormalityNoted": "abnormality noted",
+  "after": "After",
+  "alreadyMissingLine": "Already missing before this visit: {{list}}.",
+  "before": "Before",
+  "defaultTitle": "Dental Visit Report",
+  "examAreas": {
+    "buccal": "Buccal mucosa",
+    "extraoral": "Extraoral / facial",
+    "lymph": "Lymph nodes",
+    "palate": "Palate",
+    "pharynx": "Pharynx / Tonsils",
+    "tongue": "Tongue"
+  },
+  "extractionsLead": "These teeth could not be saved and were removed so they no longer cause pain or infection:",
+  "fieldPhrases": {
+    "calculus": "tartar buildup (grade {{value}})",
+    "furcation": "bone loss between the roots (grade {{value}})",
+    "gingivitis": "gum inflammation (grade {{value}})",
+    "hyperplasia": "overgrown gum tissue ({{value}})",
+    "mobility": "loose tooth (mobility {{value}})",
+    "pdstate": "periodontal disease, stage {{value}}",
+    "pocket": "deepened gum pocket ({{value}} mm)",
+    "recession": "receding gums ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "tartar buildup",
+    "furcation": "bone loss between the roots",
+    "gingivitis": "gum inflammation",
+    "hyperplasia": "overgrown gum tissue",
+    "mobility": "loose tooth",
+    "pdstate": "periodontal disease",
+    "pocket": "deepened gum pocket",
+    "recession": "receding gums"
+  },
+  "headings": {
+    "alreadyMissing": "Already missing before this visit",
+    "diagram_named": "{{pet}}’s mouth",
+    "diagram_unnamed": "Your pet’s mouth",
+    "examNotes": "Other exam notes",
+    "extractions": "Teeth removed during this visit",
+    "findings": "What we found",
+    "homecare_named": "Caring for {{pet}}’s teeth at home",
+    "homecare_unnamed": "Caring for your pet’s teeth at home",
+    "photos": "Before & after",
+    "recheck": "Recommended recheck",
+    "teamNote": "A note from your veterinary team"
+  },
+  "homecareTips": {
+    "brushing": "Daily tooth brushing with a pet-safe toothpaste is the single most effective thing you can do.",
+    "products": "Dental diets, chews, and water additives with the VOHC seal help between brushings.",
+    "warningSigns": "Watch for bad breath, drooling, dropping food, or pawing at the mouth — call us if you notice any."
+  },
+  "intro": "{{pet}} had a professional dental assessment and cleaning under anesthesia. This report explains what we found in everyday language — the full clinical chart with measurements is on file and available any time.",
+  "legendFilled": "filled = missing before this visit",
+  "legendNumbers": "Numbers match the findings below",
+  "legendRemoved": "red ✕ = removed today",
+  "noProblems": "No dental problems were recorded on the chart for this visit — great news!",
+  "ourPractice": "our practice",
+  "ownerLabel": "Owner",
+  "patientLabel": "Patient",
+  "preparedBy": {
+    "doctor": "Prepared by {{doctor}}.",
+    "doctorAtPractice": "Prepared by {{doctor}}, {{practice}}.",
+    "team": "your veterinary team"
+  },
+  "removedToday": "removed today",
+  "species": {
+    "canine": "Dog",
+    "canine-deciduous": "Puppy",
+    "feline": "Cat",
+    "feline-deciduous": "Kitten"
+  },
+  "tooth": {
+    "deciduous": "baby",
+    "kinds": {
+      "canine": "canine tooth",
+      "incisor": "incisor",
+      "molar": "molar",
+      "premolar": "premolar"
+    },
+    "ordinals": {
+      "first": "first",
+      "fourth": "fourth",
+      "second": "second",
+      "third": "third"
+    },
+    "sides": {
+      "lowerLeft": "lower left",
+      "lowerRight": "lower right",
+      "upperLeft": "upper left",
+      "upperRight": "upper right"
+    }
+  },
+  "yourPet": "your pet",
+  "yourTeam": "your veterinary team"
+}

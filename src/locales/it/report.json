@@ -1,0 +1,97 @@
+{
+  "abnormalityNoted": "anomalia riscontrata",
+  "after": "Dopo",
+  "alreadyMissingLine": "Già mancanti prima di questa visita: {{list}}.",
+  "before": "Prima",
+  "defaultTitle": "Referto della visita odontoiatrica",
+  "examAreas": {
+    "buccal": "Mucosa orale",
+    "extraoral": "Extraorale / viso",
+    "lymph": "Linfonodi",
+    "palate": "Palato",
+    "pharynx": "Faringe / tonsille",
+    "tongue": "Lingua"
+  },
+  "extractionsLead": "Questi denti non potevano essere salvati e sono stati estratti perché non causino più dolore o infezioni:",
+  "fieldPhrases": {
+    "calculus": "accumulo di tartaro (grado {{value}})",
+    "furcation": "perdita di osso tra le radici (grado {{value}})",
+    "gingivitis": "infiammazione delle gengive (grado {{value}})",
+    "hyperplasia": "crescita eccessiva delle gengive ({{value}})",
+    "mobility": "dente che si muove (mobilità {{value}})",
+    "pdstate": "malattia parodontale, stadio {{value}}",
+    "pocket": "tasca gengivale profonda ({{value}} mm)",
+    "recession": "gengive che si ritirano ({{value}})"
+  },
+  "fieldPlain": {
+    "calculus": "accumulo di tartaro",
+    "furcation": "perdita di osso tra le radici",
+    "gingivitis": "infiammazione delle gengive",
+    "hyperplasia": "crescita eccessiva delle gengive",
+    "mobility": "dente che si muove",
+    "pdstate": "malattia parodontale",
+    "pocket": "tasca gengivale profonda",
+    "recession": "gengive che si ritirano"
+  },
+  "headings": {
+    "alreadyMissing": "Già mancanti prima di questa visita",
+    "diagram_named": "La bocca di {{pet}}",
+    "diagram_unnamed": "La bocca del suo animale",
+    "examNotes": "Altre osservazioni della visita",
+    "extractions": "Denti estratti durante questa visita",
+    "findings": "Cosa abbiamo riscontrato",
+    "homecare_named": "Come curare i denti di {{pet}} a casa",
+    "homecare_unnamed": "Come curare i denti del suo animale a casa",
+    "photos": "Prima e dopo",
+    "recheck": "Controllo consigliato",
+    "teamNote": "Un messaggio dal suo team veterinario"
+  },
+  "homecareTips": {
+    "brushing": "Spazzolare i denti ogni giorno con un dentifricio adatto agli animali è la cosa più efficace che può fare.",
+    "products": "Alimenti dentali, snack da masticare e additivi per l’acqua con il marchio VOHC aiutano tra uno spazzolamento e l’altro.",
+    "warningSigns": "Faccia attenzione ad alito cattivo, salivazione eccessiva, cibo che cade dalla bocca o se si tocca la bocca con la zampa — ci chiami se nota qualcosa."
+  },
+  "intro": "{{pet}} ha ricevuto una valutazione e una pulizia dentale professionale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
+  "legendFilled": "pieno = mancante prima di questa visita",
+  "legendNumbers": "I numeri corrispondono ai riscontri riportati sotto",
+  "legendRemoved": "✕ rosso = estratto oggi",
+  "noProblems": "In questa visita non sono stati registrati problemi dentali nella cartella — un’ottima notizia!",
+  "ourPractice": "la nostra clinica",
+  "ownerLabel": "Proprietario",
+  "patientLabel": "Paziente",
+  "preparedBy": {
+    "doctor": "Redatto da {{doctor}}.",
+    "doctorAtPractice": "Redatto da {{doctor}}, {{practice}}.",
+    "team": "il suo team veterinario"
+  },
+  "removedToday": "estratto oggi",
+  "species": {
+    "canine": "Cane",
+    "canine-deciduous": "Cucciolo",
+    "feline": "Gatto",
+    "feline-deciduous": "Gattino"
+  },
+  "tooth": {
+    "deciduous": "deciduo",
+    "kinds": {
+      "canine": "canino",
+      "incisor": "incisivo",
+      "molar": "molare",
+      "premolar": "premolare"
+    },
+    "ordinals": {
+      "first": "primo",
+      "fourth": "quarto",
+      "second": "secondo",
+      "third": "terzo"
+    },
+    "sides": {
+      "lowerLeft": "inferiore sinistro",
+      "lowerRight": "inferiore destro",
+      "upperLeft": "superiore sinistro",
+      "upperRight": "superiore destro"
+    }
+  },
+  "yourPet": "il suo animale",
+  "yourTeam": "il suo team veterinario"
+}
