@@ -183,7 +183,16 @@
     "drugName": "Drug",
     "drugStrength": "Strength",
     "pdfGridHint": "Optional while findings are on the diagram",
-    "pdfImagesHint": "4 per page, after the chart"
+    "pdfImagesHint": "4 per page, after the chart",
+    "quickCodes": {
+      "title": "Quick codes",
+      "note": "One-tap buttons for codes you chart often, such as T/SN (supernumerary tooth). They appear under the diagnosis note in By tooth and above the Diagnosis diagram.",
+      "remove": "Remove",
+      "removeAria": "Remove {{code}}",
+      "placeholder": "Code, e.g. T/SR",
+      "addAria": "Code to add",
+      "add": "Add"
+    }
   },
   "feedback": {
     "title": "Send feedback",

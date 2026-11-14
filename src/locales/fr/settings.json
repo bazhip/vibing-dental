@@ -183,7 +183,16 @@
     "drugName": "Médicament",
     "drugStrength": "Concentration",
     "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
-    "pdfImagesHint": "4 par page, après le dossier"
+    "pdfImagesHint": "4 par page, après le dossier",
+    "quickCodes": {
+      "title": "Codes rapides",
+      "note": "Des boutons en un geste pour les codes que vous notez souvent, comme T/SN (dent surnuméraire). Ils apparaissent sous la note de diagnostic en mode Par dent et au-dessus du schéma Diagnostic.",
+      "remove": "Retirer",
+      "removeAria": "Retirer {{code}}",
+      "placeholder": "Code, p. ex. T/SR",
+      "addAria": "Code à ajouter",
+      "add": "Ajouter"
+    }
   },
   "feedback": {
     "title": "Envoyer un commentaire",

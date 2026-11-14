@@ -13,6 +13,8 @@ import { DentalGrid } from './DentalGrid';
 import { ToothChartView } from './ToothChartView';
 import { DiagramView } from './DiagramView';
 import { ScoreChips } from './ScoreChips';
+import { QuickCodeChips } from './QuickCodeChips';
+import { QuickCodesEditor } from './QuickCodesEditor';
 import { CodeField } from './CodeField';
 import { CodeReferencePanel } from './CodeReferencePanel';
 import './ToothDiagram';
@@ -107,6 +109,7 @@ function ChartHarness({ planned = [] as number[], readOnly = false }) {
       plannedExtractions={planned}
       setPlannedExtraction={() => {}}
       pocketMode="root"
+      quickCodes={['T/SN', 'T/SR']}
     />
   );
 }
@@ -147,6 +150,7 @@ function DiagramHarness({ markMode, tool }: { markMode?: 'missing-only' | 'extra
       lockedTriadans={new Set([101])}
       markMode={markMode}
       defaultTool={tool}
+      quickCodes={['T/SN']}
     />
   );
 }
@@ -161,6 +165,26 @@ test.each([
   // The traced outline never loads here; comments, toolbar and labels still render.
   await waitFor(() => expect(container.querySelector('.diagram-comment')).not.toBeNull());
   expect(findUntranslated(container, [...ALLOW, 'Diagnosis', 'Fractured', 'Mobility 2', 'Free note', /^[A-Za-z0-9]+ \(\d{3}\)$/])).toEqual([]);
+});
+
+test('diagram quick-code strip, armed and idle, is translated', async () => {
+  const { container } = render(<DiagramHarness tool="comment" />);
+  await waitFor(() => expect(container.querySelector('.diagram-comment')).not.toBeNull());
+  const allow = [...ALLOW, 'Diagnosis', 'Fractured', 'Mobility 2', 'Free note', /^[A-Za-z0-9]+ \(\d{3}\)$/];
+  expect(screen.getByText(/⟦Tap a code, then a tooth/)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /T\/SN/ }));
+  expect(screen.getByText(/⟦Tap a tooth to add T\/SN/)).toBeInTheDocument();
+  expect(findUntranslated(container, allow)).toEqual([]);
+});
+
+test('quick-code chips and the quick-codes editor are translated', () => {
+  const { container } = render(
+    <>
+      <QuickCodeChips codes={['T/SN', 'OWN1']} isPressed={(c) => c === 'T/SN'} onPick={() => {}} />
+      <QuickCodesEditor codes={['T/SN', 'OWN1']} onChange={() => {}} />
+    </>,
+  );
+  expect(findUntranslated(container, ALLOW)).toEqual([]);
 });
 
 test('score chips and the code field popup are translated', () => {

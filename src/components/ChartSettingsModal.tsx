@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
+import { QuickCodesEditor } from './QuickCodesEditor';
 import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
@@ -192,6 +193,12 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 ))}
               </div>
             </fieldset>
+          </section>
+          )}
+
+          {show.quickCodes && (
+          <section className="chart-settings__group">
+            <QuickCodesEditor codes={prefs.quickCodes} onChange={(quickCodes) => onChange({ quickCodes })} />
           </section>
           )}
 

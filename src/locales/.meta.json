@@ -2972,6 +2972,22 @@
       "hash": "09b95c15e19f",
       "status": "machine"
     },
+    "chart:quickCodes.chipAria": {
+      "hash": "1989fdfdab66",
+      "status": "machine"
+    },
+    "chart:quickCodes.group": {
+      "hash": "73352d4a424f",
+      "status": "machine"
+    },
+    "chart:quickCodes.label": {
+      "hash": "1d1e6878bf75",
+      "status": "machine"
+    },
+    "chart:quickCodes.stampHint": {
+      "hash": "a80ef076f954",
+      "status": "machine"
+    },
     "chart:scoreChips.clear": {
       "hash": "d12fb7026312",
       "status": "machine"
@@ -9072,6 +9088,34 @@
       "hash": "f6ab8a491c9c",
       "status": "machine"
     },
+    "settings:chart.quickCodes.add": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.addAria": {
+      "hash": "a825b1ce4455",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.note": {
+      "hash": "b6553ecec712",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.placeholder": {
+      "hash": "6ebe2e2270d8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.removeAria": {
+      "hash": "740f78c0afe5",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.title": {
+      "hash": "73352d4a424f",
+      "status": "machine"
+    },
     "settings:chart.scoreTapFindingHint": {
       "hash": "f015bb86942b",
       "status": "machine"
@@ -13248,6 +13292,22 @@
     },
     "chart:menu.practiceSettingsHintApp": {
       "hash": "09b95c15e19f",
+      "status": "machine"
+    },
+    "chart:quickCodes.chipAria": {
+      "hash": "1989fdfdab66",
+      "status": "machine"
+    },
+    "chart:quickCodes.group": {
+      "hash": "73352d4a424f",
+      "status": "machine"
+    },
+    "chart:quickCodes.label": {
+      "hash": "1d1e6878bf75",
+      "status": "machine"
+    },
+    "chart:quickCodes.stampHint": {
+      "hash": "a80ef076f954",
       "status": "machine"
     },
     "chart:scoreChips.clear": {
@@ -19380,6 +19440,34 @@
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.add": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.addAria": {
+      "hash": "a825b1ce4455",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.note": {
+      "hash": "b6553ecec712",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.placeholder": {
+      "hash": "6ebe2e2270d8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.removeAria": {
+      "hash": "740f78c0afe5",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.title": {
+      "hash": "73352d4a424f",
       "status": "machine"
     },
     "settings:chart.scoreTapFindingHint": {
@@ -23584,6 +23672,22 @@
       "hash": "09b95c15e19f",
       "status": "machine"
     },
+    "chart:quickCodes.chipAria": {
+      "hash": "1989fdfdab66",
+      "status": "machine"
+    },
+    "chart:quickCodes.group": {
+      "hash": "73352d4a424f",
+      "status": "machine"
+    },
+    "chart:quickCodes.label": {
+      "hash": "1d1e6878bf75",
+      "status": "machine"
+    },
+    "chart:quickCodes.stampHint": {
+      "hash": "a80ef076f954",
+      "status": "machine"
+    },
     "chart:scoreChips.clear": {
       "hash": "d12fb7026312",
       "status": "machine"
@@ -29714,6 +29818,34 @@
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.add": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.addAria": {
+      "hash": "a825b1ce4455",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.note": {
+      "hash": "b6553ecec712",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.placeholder": {
+      "hash": "6ebe2e2270d8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.removeAria": {
+      "hash": "740f78c0afe5",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.title": {
+      "hash": "73352d4a424f",
       "status": "machine"
     },
     "settings:chart.scoreTapFindingHint": {
@@ -33918,6 +34050,22 @@
       "hash": "09b95c15e19f",
       "status": "machine"
     },
+    "chart:quickCodes.chipAria": {
+      "hash": "1989fdfdab66",
+      "status": "machine"
+    },
+    "chart:quickCodes.group": {
+      "hash": "73352d4a424f",
+      "status": "machine"
+    },
+    "chart:quickCodes.label": {
+      "hash": "1d1e6878bf75",
+      "status": "machine"
+    },
+    "chart:quickCodes.stampHint": {
+      "hash": "a80ef076f954",
+      "status": "machine"
+    },
     "chart:scoreChips.clear": {
       "hash": "d12fb7026312",
       "status": "machine"
@@ -40048,6 +40196,34 @@
     },
     "settings:chart.pdfImagesHint": {
       "hash": "f6ab8a491c9c",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.add": {
+      "hash": "9fd728c66c9a",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.addAria": {
+      "hash": "a825b1ce4455",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.note": {
+      "hash": "b6553ecec712",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.placeholder": {
+      "hash": "6ebe2e2270d8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.removeAria": {
+      "hash": "740f78c0afe5",
+      "status": "machine"
+    },
+    "settings:chart.quickCodes.title": {
+      "hash": "73352d4a424f",
       "status": "machine"
     },
     "settings:chart.scoreTapFindingHint": {

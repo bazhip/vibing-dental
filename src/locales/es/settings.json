@@ -183,7 +183,16 @@
     "drugName": "Fármaco",
     "drugStrength": "Concentración",
     "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
-    "pdfImagesHint": "4 por página, después del historial"
+    "pdfImagesHint": "4 por página, después del historial",
+    "quickCodes": {
+      "title": "Códigos rápidos",
+      "note": "Botones de un toque para los códigos que registra a menudo, como T/SN (diente supernumerario). Aparecen debajo de la nota de diagnóstico en la vista Por diente y encima del esquema de Diagnóstico.",
+      "remove": "Quitar",
+      "removeAria": "Quitar {{code}}",
+      "placeholder": "Código, p. ej. T/SR",
+      "addAria": "Código que añadir",
+      "add": "Añadir"
+    }
   },
   "feedback": {
     "title": "Enviar comentarios",

@@ -6,6 +6,8 @@ import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
 import { ScoreChips } from './ScoreChips';
 import { ToothDiagram } from './ToothDiagram';
+import { QuickCodeChips } from './QuickCodeChips';
+import { hasCode, stampQuickCode } from '../utils/quickCodes';
 import {
   FINDING_COLUMNS,
   findToothNote,
@@ -49,6 +51,8 @@ export interface ToothChartViewProps {
   /** Chart settings: measurements to leave out, one pocket box per root. */
   hiddenColumns?: DentalField[];
   pocketMode?: 'tooth' | 'root';
+  /** Chart settings: one-tap codes for the diagnosis note (T/SN, …). */
+  quickCodes?: string[];
 }
 
 const noop = () => {};
@@ -94,6 +98,7 @@ export function ToothChartView({
   headerAccessory,
   hiddenColumns,
   pocketMode = 'tooth',
+  quickCodes = [],
 }: ToothChartViewProps) {
   const { t } = useTranslation('chart');
   const diagram = TOOTH_DIAGRAMS[species];
@@ -342,6 +347,18 @@ export function ToothChartView({
                     }}
                   />
                 </label>
+                {/* Quick codes: tap to add to the diagnosis note, tap again to take out. */}
+                <QuickCodeChips
+                  className="tooth-chart__quick-codes"
+                  codes={quickCodes}
+                  disabled={readOnly}
+                  isPressed={(code) => hasCode(findToothNote(preComments, tooth.triadan)?.text ?? '', code)}
+                  onPick={(code) =>
+                    setPreComments((prev) =>
+                      stampQuickCode(prev, tooth.triadan, code, () => `c${Date.now()}_${Math.random().toString(36).slice(2, 7)}`)
+                    )
+                  }
+                />
 
                 <div className="tooth-chart__group-title">{t('toothChart.extraction')}</div>
                 <div className="tooth-chart__extraction">

@@ -183,7 +183,16 @@
     "drugName": "Wirkstoff",
     "drugStrength": "Konzentration",
     "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
-    "pdfImagesHint": "4 pro Seite, nach der Akte"
+    "pdfImagesHint": "4 pro Seite, nach der Akte",
+    "quickCodes": {
+      "title": "Schnellcodes",
+      "note": "Ein-Tipp-Schaltflächen für Codes, die Sie häufig erfassen, z. B. T/SN (überzähliger Zahn). Sie erscheinen unter der Diagnosenotiz in der Ansicht Pro Zahn und über dem Diagnose-Schema.",
+      "remove": "Entfernen",
+      "removeAria": "{{code}} entfernen",
+      "placeholder": "Code, z. B. T/SR",
+      "addAria": "Hinzuzufügender Code",
+      "add": "Hinzufügen"
+    }
   },
   "feedback": {
     "title": "Feedback senden",

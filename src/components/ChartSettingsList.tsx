@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
+import { QuickCodesEditor } from './QuickCodesEditor';
 import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
 import '../ios/settings.css';
@@ -130,6 +131,14 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
             ))}
           </ListSection>
         </>
+      )}
+
+      {show.quickCodes && (
+        <ListSection>
+          <div role="listitem" className="ios-list__item ios-cell-embed">
+            <QuickCodesEditor codes={prefs.quickCodes} onChange={(quickCodes) => onChange({ quickCodes })} />
+          </div>
+        </ListSection>
       )}
 
       {show.anesthesia && (

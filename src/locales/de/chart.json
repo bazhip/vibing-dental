@@ -334,5 +334,11 @@
       "tip": "Tipp: Tippen Sie auf Zahnnummern, um mehrere Zähne auszuwählen, und setzen Sie dann einen Wert für alle.",
       "pickTitle": "Tippen, um diesen Zahn auszuwählen und mehreren Zähnen gleichzeitig einen Wert zu geben"
     }
+  },
+  "quickCodes": {
+    "group": "Schnellcodes",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Tippen Sie auf einen Code, dann auf einen Zahn:",
+    "stampHint": "Tippen Sie auf einen Zahn, um {{code}} hinzuzufügen (erneut tippen zum Entfernen)"
   }
 }
