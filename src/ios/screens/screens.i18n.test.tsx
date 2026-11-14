@@ -82,6 +82,8 @@ const ALLOW: (string | RegExp)[] = [
   /^(Bella|Max|Coco)$/, /SoCal Vet/, /Dr (Jane Ng|Ames|Burke)/, /@vet\.com/, /^Ann\b/, /^JN$/, /^ToothOps$/,
   // Language names are shown in their own language.
   ...Object.values(LANGUAGE_NAMES),
+  // Dental codes (the default quick code) stay as codes.
+  'T/SN',
   // Reminder placeholders and the sample template.
   /^\{\{\w+\}\}$/, 'Recheck', 'Hello',
   // Owner report templates show the report's own language (English here) and its placeholders.

@@ -130,11 +130,13 @@ afterEach(async () => {
 const ALLOW: (string | RegExp)[] = [
   'Elm Vet', 'Dr Kaser', 'Dr. Ann Lee', 'Ann Lee', 'me@vet.com', 'joined@vet.com', 'pending@vet.com', 'second@vet.com',
   'boss@vet.com', 'a@b.co', 'logo.png', 'ToothOps', 'Bella', 'Stripe',
+  // Dental codes (the default quick code) stay as codes.
+  'T/SN',
   /^me@vet\.com|^joined@vet\.com|^pending@vet\.com|^second@vet\.com/,
   /^\d+\/\d+$/,
 ];
-// Drug names in the datalist are generic names, not interface text.
-const DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
+// Drug names, and the default quick code (a dental code), aren't translated.
+const DRUGS = ['T/SN', 'Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 describe('PracticeSettingsModal', () => {
   it('owners pick the pet-owner language; members see it read-only', async () => {

@@ -339,5 +339,11 @@
       "tip": "Consejo: toque los números de los dientes para seleccionar varios y luego asigne un mismo valor a todos.",
       "pickTitle": "Toque para seleccionar este diente y asignar un valor a varios a la vez"
     }
+  },
+  "quickCodes": {
+    "group": "Códigos rápidos",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Toque un código y luego un diente:",
+    "stampHint": "Toque un diente para añadir {{code}} (tóquelo de nuevo para quitarlo)"
   }
 }

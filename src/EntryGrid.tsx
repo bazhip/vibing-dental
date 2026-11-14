@@ -1020,6 +1020,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               headerAccessory={chartingHeaderAccessory}
               hiddenColumns={prefs.hiddenColumns}
               pocketMode={prefs.pocketMode}
+              quickCodes={prefs.quickCodes}
             />
           ) : (
           <DentalGrid
@@ -1068,6 +1069,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               strokes={chart.preDiagramStrokes}
               onStrokesChange={chart.setPreDiagramStrokes}
               markMode="missing-only"
+              quickCodes={prefs.quickCodes}
               defaultTool="comment"
               highlightTriadan={aiHighlightTriadan}
             />

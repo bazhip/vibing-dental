@@ -339,5 +339,11 @@
       "tip": "Astuce : touchez les numéros des dents pour en sélectionner plusieurs, puis attribuez une même valeur à toutes.",
       "pickTitle": "Touchez pour sélectionner cette dent et attribuer une valeur à plusieurs à la fois"
     }
+  },
+  "quickCodes": {
+    "group": "Codes rapides",
+    "chipAria": "{{code}} : {{definition}}",
+    "label": "Touchez un code, puis une dent :",
+    "stampHint": "Touchez une dent pour ajouter {{code}} (touchez-la à nouveau pour le retirer)"
   }
 }

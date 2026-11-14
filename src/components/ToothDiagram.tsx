@@ -13,6 +13,7 @@ import { CodeField } from './CodeField';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
 import { isGridComment } from '../utils/gridComments';
+import { stampQuickCode } from '../utils/quickCodes';
 // Pure helpers extracted from this component for testability.
 import {
   layoutComments,
@@ -46,7 +47,8 @@ const LABEL_KEYS = {
   L: 'diagram.label.left',
 } as const;
 
-export type DiagramTool = 'mark' | 'comment' | 'draw';
+/** 'stamp' adds (or takes back out) `stampCode` on the tapped tooth's comment. */
+export type DiagramTool = 'mark' | 'comment' | 'draw' | 'stamp';
 
 /** Which marks the user can cycle through on this diagram.
  *   - "missing-only": pre-surgery — toggles between clear and "missing".
@@ -85,6 +87,8 @@ interface ToothDiagramProps {
   strokes: DiagramStroke[];
   onStrokesChange: (strokes: DiagramStroke[]) => void;
   tool: DiagramTool;
+  /** The quick code the stamp tool adds (tool 'stamp'). */
+  stampCode?: string | null;
   strokeColor: string;
   strokeWidth: number;
   /** Triadans that are locked from user edits — used by the post-surgery
@@ -268,6 +272,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
   strokes,
   onStrokesChange,
   tool,
+  stampCode = null,
   strokeColor,
   strokeWidth,
   lockedTriadans,
@@ -687,6 +692,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       }
       const id = `c${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
       onCommentsChange([...comments, { id, text: '', anchorTriadan: triadan }]);
+    } else if (tool === 'stamp' && stampCode) {
+      // Arrives with text, so it doesn't grab focus (no keyboard on a tablet).
+      onCommentsChange(stampQuickCode(comments, triadan, stampCode, () => `c${Date.now()}_${Math.random().toString(36).slice(2, 7)}`));
     }
   };
 

@@ -76,6 +76,8 @@ const ALLOW: (string | RegExp)[] = [
   'Elm Vet', 'Bella', 'me@vet.com', 'Dr. Ann Lee', 'Dental', 'Recheck', 'Hello', 'Body',
   // Language names are shown in their own language; drug names and units aren't translated.
   ...Object.values(LANGUAGE_NAMES), 'Ropivacaine', 'mL',
+  // Dental codes (the default quick code) stay as codes.
+  'T/SN',
 ];
 
 beforeAll(async () => {

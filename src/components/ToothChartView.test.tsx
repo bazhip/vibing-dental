@@ -13,7 +13,7 @@ beforeAll(() => {
 });
 
 /** Stateful harness so functional updates land like they do in the app. */
-function Harness({ readOnly = false, initialPlanned = [] as number[] }) {
+function Harness({ readOnly = false, initialPlanned = [] as number[], quickCodes = [] as string[] }) {
   const [toothData, setToothData] = React.useState<ToothData[]>(getInitialToothData('canine'));
   const [preMarks, setPreMarks] = React.useState<ToothMarks>({});
   const [postMarks, setPostMarks] = React.useState<ToothMarks>({});
@@ -43,6 +43,7 @@ function Harness({ readOnly = false, initialPlanned = [] as number[] }) {
         setPostComments={(u) => setPost(u)}
         plannedExtractions={planned}
         setPlannedExtraction={(t, on) => setPlanned((p) => (on ? [...p.filter((x) => x !== t), t] : p.filter((x) => x !== t)))}
+        quickCodes={quickCodes}
       />
       <output data-testid="state">
         {JSON.stringify({ row: toothData.find((r) => r.triadan === 110), preMarks, postMarks, pre, post, planned })}
@@ -120,4 +121,32 @@ test('short-scale findings can be tapped: F2 sets furcation, tapping it again cl
   fireEvent.click(screen.getByRole('button', { name: 'F2' }));
   expect(state().row.furcation).toBe('');
   expect(screen.queryByRole('group', { name: 'Pocket score' })).toBeNull();
+});
+
+test('a quick code adds to the diagnosis note and a second tap takes it out', () => {
+  render(<Harness quickCodes={['T/SN']} />);
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  const chip = screen.getByRole('button', { name: 'T/SN: Supernumerary tooth' });
+  expect(chip).toHaveAttribute('aria-pressed', 'false');
+
+  fireEvent.click(chip);
+  expect(state().pre).toEqual([expect.objectContaining({ text: 'T/SN', anchorTriadan: 110 })]);
+  expect(chip).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByLabelText(/diagnosis note/i)).toHaveValue('T/SN');
+
+  // Typed text is kept around the code.
+  fireEvent.change(screen.getByLabelText(/diagnosis note/i), { target: { value: 'Rotated T/SN' } });
+  fireEvent.click(chip);
+  expect(state().pre).toEqual([expect.objectContaining({ text: 'Rotated', anchorTriadan: 110 })]);
+  expect(chip).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('quick codes are off on a view-only chart and absent when none are set', () => {
+  const { unmount } = render(<Harness readOnly quickCodes={['T/SN']} />);
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  expect(screen.getByRole('button', { name: 'T/SN: Supernumerary tooth' })).toBeDisabled();
+  unmount();
+  render(<Harness />);
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  expect(screen.queryByRole('group', { name: 'Quick codes' })).toBeNull();
 });

@@ -334,5 +334,11 @@
       "tip": "Tip: tap tooth numbers to select several teeth, then set one value on all of them.",
       "pickTitle": "Tap to select this tooth and set a value on several at once"
     }
+  },
+  "quickCodes": {
+    "group": "Quick codes",
+    "chipAria": "{{code}}: {{definition}}",
+    "label": "Tap a code, then a tooth:",
+    "stampHint": "Tap a tooth to add {{code}} (tap again to remove it)"
   }
 }

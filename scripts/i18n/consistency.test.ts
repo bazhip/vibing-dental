@@ -50,7 +50,7 @@ const ALLOW: [string[], string][] = [
   [["reportui:modal.title", "settings:practice.ownerReport.title", "whatsNew:groups.ownerReport", "media:documents.ownerTab"], MAIN],
   [["report:examAreas.pharynx", "forms:exam.items.pharynx"], MAIN],
   [["pdf:images.radiograph", "media:imaging.radiograph"], MAIN],
-  [["reportui:templates.tipRemove", "settings:practice.logo.remove", "settings:practice.team.remove", "settings:practice.team.removeConfirm", "media:imaging.remove", "forms:anesthesia.remove", "forms:customEditor.remove", "voice:panel.remove"], MAIN],
+  [["reportui:templates.tipRemove", "settings:practice.logo.remove", "settings:practice.team.remove", "settings:practice.team.removeConfirm", "media:imaging.remove", "forms:anesthesia.remove", "forms:customEditor.remove", "settings:chart.quickCodes.remove", "voice:panel.remove"], MAIN],
   [["chart:toothName.side.right", "forms:anesthesia.right"], MAIN],
   [["onboarding:finishSetup.saving", "reportui:templates.saving", "settings:saving", "app:status.saving", "reminders:settings.saving", "account:doctor.saving", "library:templates.saving", "auth:reset.saving"], MAIN],
   [["reportui:templates.nameLabel", "library:templates.nameLabel", "forms:report.dialog.label"], MAIN],

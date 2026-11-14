@@ -2,12 +2,14 @@ import { DentalField } from '../types';
 import { AppLanguage, isAppLanguage } from '../i18n/config';
 import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
+import { DEFAULT_QUICK_CODES, normalizeQuickCodes } from './quickCodes';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
  * device (profiles.chart_prefs); without an account they stay in this
  * browser. Every default reproduces the app as it was before these
- * settings existed, so an empty or missing object changes nothing.
+ * settings existed, so an empty or missing object changes nothing (except
+ * quick codes, which start with T/SN so the stamp is there to find).
  */
 
 // `label` is read through columnLabel each time, so it follows the language.
@@ -81,6 +83,8 @@ export interface ChartPrefs {
   customFields: CustomFieldDef[];
   /** The person's chosen language. null = follow the browser. */
   language: AppLanguage | null;
+  /** One-tap code stamps on the Diagnosis diagram (T/SN, …). */
+  quickCodes: string[];
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -100,6 +104,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   customBlocks: [],
   customFields: [],
   language: null,
+  quickCodes: DEFAULT_QUICK_CODES,
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -138,5 +143,6 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     customBlocks: Array.isArray(r.customBlocks) ? normalizeBlockDefs(r.customBlocks) : fallback.customBlocks,
     customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
     language: r.language === null ? null : isAppLanguage(r.language) ? r.language : fallback.language,
+    quickCodes: Array.isArray(r.quickCodes) ? normalizeQuickCodes(r.quickCodes) : fallback.quickCodes,
   };
 }

@@ -30,6 +30,8 @@ export function useChartSettingsModel(
   const show = {
     charting: showAll || only === 'charting',
     beside: showAll || only === 'charting' || only === 'diagnosis',
+    // By-tooth charting (Charting page) and the Diagnosis diagram use them.
+    quickCodes: showAll || only === 'charting' || only === 'diagnosis',
     anesthesia: showAll || only === 'anesthesia',
     patient: showAll || only === 'patient',
     pdfGrid: showAll || only === 'charting',

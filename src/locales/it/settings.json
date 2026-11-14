@@ -183,7 +183,16 @@
     "drugName": "Farmaco",
     "drugStrength": "Concentrazione",
     "pdfGridHint": "Facoltativa finché i reperti sono sul diagramma",
-    "pdfImagesHint": "4 per pagina, dopo la cartella"
+    "pdfImagesHint": "4 per pagina, dopo la cartella",
+    "quickCodes": {
+      "title": "Codici rapidi",
+      "note": "Pulsanti a un tocco per i codici che registra spesso, come T/SN (dente soprannumerario). Compaiono sotto la nota diagnostica nella vista Per dente e sopra lo schema Diagnosi.",
+      "remove": "Rimuovi",
+      "removeAria": "Rimuovi {{code}}",
+      "placeholder": "Codice, ad es. T/SR",
+      "addAria": "Codice da aggiungere",
+      "add": "Aggiungi"
+    }
   },
   "feedback": {
     "title": "Invia feedback",

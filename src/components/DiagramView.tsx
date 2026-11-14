@@ -10,6 +10,7 @@ import { useDiagramHistory } from '../hooks/useDiagramHistory';
 import { usePersistedState } from '../hooks/usePersistedState';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
+import { QuickCodeChips } from './QuickCodeChips';
 
 // SF Symbol names (not text).
 const ARROW_UTURN_BACKWARD_ICON = 'arrow-uturn-backward';
@@ -39,6 +40,8 @@ interface DiagramViewProps {
   highlightTriadan?: number | null;
   /** Locked (saved chart being viewed): keyboard undo is off. */
   readOnly?: boolean;
+  /** Quick codes to stamp on teeth (Chart settings); none = no strip. */
+  quickCodes?: string[];
 }
 
 export interface DiagramViewHandle {
@@ -78,12 +81,30 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   defaultTool = 'mark',
   highlightTriadan,
   readOnly = false,
+  quickCodes = [],
 }, ref) => {
   // The iOS app draws toolbar symbols as icons, not text glyphs.
   const native = isNativeApp();
   const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
-  const [tool, setTool] = React.useState<DiagramTool>(defaultTool);
+  const [tool, setToolState] = React.useState<DiagramTool>(defaultTool);
+  // The quick code the stamp tool adds; picking another tool drops it.
+  const [stampCode, setStampCode] = React.useState<string | null>(null);
+  const setTool = (next: DiagramTool) => {
+    setToolState(next);
+    if (next !== 'stamp') setStampCode(null);
+  };
+  // Tap a code to stamp with it; tap it again to go back to Comment.
+  const pickStamp = (code: string) => {
+    if (tool === 'stamp' && stampCode === code) {
+      setTool('comment');
+      return;
+    }
+    setToolState('stamp');
+    setStampCode(code);
+  };
+  // A code removed in settings can't stay armed.
+  const activeStamp = tool === 'stamp' && stampCode && quickCodes.includes(stampCode) ? stampCode : null;
   const [strokeColor, setStrokeColor] = React.useState<string>(STROKE_COLORS[0].value);
   const [strokeWidth, setStrokeWidth] = React.useState<number>(2.5);
   // Zoom scales the whole canvas (teeth, marks, comments) by widening
@@ -386,6 +407,13 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 
         </div>
 
+        {!readOnly && quickCodes.length > 0 && (
+          <div className="diagram-view__quick-codes">
+            <span className="diagram-view__quick-codes-label">{activeStamp ? t('quickCodes.stampHint', { code: activeStamp }) : t('quickCodes.label')}</span>
+            <QuickCodeChips codes={quickCodes} isPressed={(code) => code === activeStamp} onPick={pickStamp} />
+          </div>
+        )}
+
         <div
           className="diagram-view__canvas"
           style={{ ['--diagram-zoom' as string]: zoom }}
@@ -399,7 +427,8 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
           onCommentsChange={onCommentsChange}
           strokes={strokes}
           onStrokesChange={onStrokesChange}
-          tool={tool}
+          tool={activeStamp ? 'stamp' : tool === 'stamp' ? 'comment' : tool}
+          stampCode={activeStamp}
           strokeColor={strokeColor}
           strokeWidth={strokeWidth}
           lockedTriadans={lockedTriadans}
