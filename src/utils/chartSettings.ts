@@ -9,8 +9,7 @@ import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
  * Chart settings — per person. They follow the signed-in account on every
  * device (profiles.chart_prefs); without an account they stay in this
  * browser. Every default reproduces the app as it was before these
- * settings existed, so an empty or missing object changes nothing (except
- * quick codes, which start with T/SN so the stamp is there to find).
+ * settings existed, so an empty or missing object changes nothing.
  */
 
 // `label` is read through columnLabel each time, so it follows the language.

@@ -12,8 +12,8 @@ import { isGridComment } from './gridComments';
 
 export const MAX_QUICK_CODES = 12;
 export const MAX_QUICK_CODE_LENGTH = 16;
-/** Supernumerary tooth: the code vets asked for a button for. */
-export const DEFAULT_QUICK_CODES = ['T/SN'];
+/** None: every quick code is one the person adds in Customize. */
+export const DEFAULT_QUICK_CODES: string[] = [];
 
 const CATALOG_BY_UPPER = new Map(DENTAL_CODES.map((c) => [c.code.toUpperCase(), c.code]));
 
