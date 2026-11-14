@@ -205,7 +205,10 @@ const App: React.FC = () => {
         }
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
-        touchLastSeen();
+        // Not on TOKEN_REFRESHED: supabase-js refreshes on a timer in an
+        // open tab (and Chrome keeps doing it through a Mac's dark-wake
+        // sleep), so it isn't the person using the app.
+        if (event !== 'TOKEN_REFRESHED') touchLastSeen();
         flushPendingTerms(session.user.id);
         setSessionExpired(false);
         setIsAuthenticated(true);
@@ -239,6 +242,12 @@ const App: React.FC = () => {
       lastNudge = now;
       void client.auth.getSession(); // refreshes the token if it's near expiry
     };
+    // Clicking or typing is real use: keeps "Last active" current for
+    // someone who leaves the tab open all day.
+    const onInteract = () => {
+      if (isAuthedRef.current) touchLastSeen();
+      nudge();
+    };
     const onVisible = () => {
       if (document.visibilityState === 'visible') {
         if (isAuthedRef.current) touchLastSeen();
@@ -250,15 +259,15 @@ const App: React.FC = () => {
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('online', onVisible);
     window.addEventListener('focus', onVisible);
-    window.addEventListener('pointerdown', nudge, { passive: true });
-    window.addEventListener('keydown', nudge);
+    window.addEventListener('pointerdown', onInteract, { passive: true });
+    window.addEventListener('keydown', onInteract);
     return () => {
       sub.subscription.unsubscribe();
       document.removeEventListener('visibilitychange', onVisible);
       window.removeEventListener('online', onVisible);
       window.removeEventListener('focus', onVisible);
-      window.removeEventListener('pointerdown', nudge);
-      window.removeEventListener('keydown', nudge);
+      window.removeEventListener('pointerdown', onInteract);
+      window.removeEventListener('keydown', onInteract);
     };
   }, []);
 
