@@ -77,7 +77,7 @@ const ALLOW: (string | RegExp)[] = [
   // Language names are shown in their own language; drug names and units aren't translated.
   ...Object.values(LANGUAGE_NAMES), 'Ropivacaine', 'mL',
   // Dental codes (the default quick code) stay as codes.
-  'T/SN',
+  'T/SN', 'mg/mL',
 ];
 
 beforeAll(async () => {

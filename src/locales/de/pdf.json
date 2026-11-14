@@ -28,7 +28,11 @@
       "tongue": "Zunge",
       "palate": "Gaumen",
       "pharynx": "Pharynx/Tonsillen"
-    }
+    },
+    "additional": "Weitere Untersuchungsbereiche",
+    "alsoNormal": "Normal: {{areas}}",
+    "moreAreas_one": "+{{count}} weiterer Bereich in der App",
+    "moreAreas_other": "+{{count}} weitere Bereiche in der App"
   },
   "grid": {
     "maxilla": "Oberkiefer",

@@ -12,6 +12,7 @@ import { PatientForm } from './PatientForm';
 import { ExamForm } from './ExamForm';
 import { AnesthesiaForm } from './AnesthesiaForm';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
+import { ExamAreasEditor } from './ExamAreasEditor';
 import { SurgeryReportForm } from './SurgeryReportForm';
 import { ImagingSection } from './ImagingSection';
 import { DocumentsModal } from './DocumentsModal';
@@ -61,7 +62,7 @@ afterEach(async () => {
 // field/block names a user would have defined.
 const ALLOW: (string | RegExp)[] = [
   'Rex', 'Ann Lee', 'Dr. Sharma', 'Bupivacaine', 'Lidocaine', 'Ropivacaine', 'Major palatine', 'ET tube', 'ASA status',
-  'Premed note', 'Cleaning', 'Routine cleaning', 'Pre-op', 'mL', 'mm', 'DICOM', 'DICOM ↓', 'Gum swelling', 'Soft', 'Scaled and polished', 'I', 'II',
+  'Premed note', 'Cleaning', 'Routine cleaning', 'Pre-op', 'mL', 'mg/mL', 'mm', 'Buprenorphine', 'DICOM', 'DICOM ↓', 'Gum swelling', 'Soft', 'Scaled and polished', 'I', 'II',
   /^0\.5% Bupivacaine$/,
   /^Rex · \d{4}-\d{2}-\d{2}$/,
 ];
@@ -110,6 +111,36 @@ describe('ExamForm', () => {
     rerender(<ExamForm exam={done} onStatusChange={noop} onCommentChange={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
+
+  it('with custom areas (one abnormal) and Customize', () => {
+    const { container } = render(
+      <ExamForm
+        exam={EMPTY_EXAM_FINDINGS}
+        onStatusChange={noop}
+        onCommentChange={noop}
+        customRows={[
+          { id: 'x1', label: 'Lips', status: '', comment: '' },
+          { id: 'x2', label: 'Salivary ducts', status: 'abnormal', comment: 'Soft' },
+        ]}
+        onCustomChange={noop}
+        onCustomize={noop}
+      />,
+    );
+    expect(findUntranslated(container, [...ALLOW, 'Lips', 'Salivary ducts', /^⟦.*Salivary ducts.*⟧$/])).toEqual([]);
+  });
+});
+
+describe('ExamAreasEditor', () => {
+  it('empty, with areas, and once the preset is added', () => {
+    const noop = () => {};
+    const { container, unmount } = render(<ExamAreasEditor areas={[]} onChange={noop} />);
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: /⟦Add the full oral exam list⟧/ }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    unmount();
+    const second = render(<ExamAreasEditor areas={[{ id: 'x1', label: 'Lips' }]} onChange={noop} />);
+    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/])).toEqual([]);
+  });
 });
 
 describe('AnesthesiaForm', () => {
@@ -118,10 +149,12 @@ describe('AnesthesiaForm', () => {
   it('empty, with the usual drug offered, two drugs, and custom blocks and fields', () => {
     const { container, rerender } = render(<AnesthesiaForm nerveBlocks={EMPTY_NERVE_BLOCKS} {...props} usualDrug={{ name: 'Bupivacaine', concentration: '0.5' }} onCustomize={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
+    rerender(<AnesthesiaForm nerveBlocks={EMPTY_NERVE_BLOCKS} {...props} usualDrug={{ name: 'Bupivacaine', concentration: '0.5' }} usualAdjunct={{ name: 'Buprenorphine', concentration: '0.3 mg/mL' }} />);
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
     rerender(
       <AnesthesiaForm
         {...props}
-        nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, other: 'Soft', mentalRight: '0.2', drugs: [{ name: 'Bupivacaine', concentration: '0.5' }, { name: 'Lidocaine', concentration: '2' }] }}
+        nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, other: 'Soft', mentalRight: '0.2', drugs: [{ name: 'Bupivacaine', concentration: '0.5' }, { name: 'Buprenorphine', concentration: '0.3 mg/mL' }] }}
         customBlockDefs={[{ id: 'b1', label: 'Major palatine' }]}
         customFieldDefs={[
           { id: 'f1', label: 'ET tube', type: 'number', unit: 'mm' },

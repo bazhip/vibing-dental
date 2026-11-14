@@ -64,7 +64,8 @@
       "tongue": "lingua",
       "palate": "palato",
       "pharynx": "faringe / tonsille"
-    }
+    },
+    "customizeTitle": "Aggiunga le Sue aree d’esame"
   },
   "anesthesia": {
     "title": "Anestesia — Blocchi nervosi",

@@ -114,7 +114,8 @@
       "anesthesia": "Réglages de l’anesthésie",
       "charting": "Réglages du schéma dentaire",
       "diagnosis": "Réglages du diagnostic",
-      "images": "Réglages des images"
+      "images": "Réglages des images",
+      "exam": "Réglages de l’examen"
     },
     "noteAccount": "Rien que pour vous — ces réglages suivent votre compte sur tous vos appareils. Les modifications sont enregistrées immédiatement.",
     "noteBrowser": "Enregistrés dans ce navigateur. Les modifications s’appliquent immédiatement.",
@@ -161,7 +162,12 @@
       "usualNote": "Proposé en un geste sur un dossier sans anesthésique renseigné.",
       "drugPlaceholder": "p. ex. bupivacaïne",
       "drugAria": "Anesthésique habituel",
-      "strengthAria": "Concentration de l’anesthésique habituel (%)"
+      "strengthAria": "Concentration de l’anesthésique habituel (%)",
+      "adjunct": "Ajouté au mélange",
+      "adjunctNote": "Ajouté au mélange (facultatif), p. ex. buprénorphine ou dexmédétomidine. « Utiliser mon habituel » note alors les deux.",
+      "adjunctPlaceholder": "p. ex. buprénorphine",
+      "adjunctAria": "Produit habituel ajouté au mélange",
+      "adjunctStrengthAria": "Concentration du produit ajouté au mélange"
     },
     "patient": {
       "title": "Page Patient",
@@ -192,6 +198,24 @@
       "placeholder": "Code, p. ex. T/SR",
       "addAria": "Code à ajouter",
       "add": "Ajouter"
+    },
+    "exam": {
+      "title": "Examen",
+      "areas": "Vos zones d’examen",
+      "areasNote": "Ajoutées après les six zones intégrées, chacune avec Normal / Anormal et un commentaire. Seules les zones renseignées figurent sur le PDF.",
+      "areaPlaceholder": "p. ex. Lèvres",
+      "areaAria": "Nom de la zone d’examen {{n}}",
+      "areaN": "zone {{n}}",
+      "remove": "Retirer",
+      "removeAria": "Retirer {{name}}",
+      "add": "Ajouter une zone",
+      "addPreset": "Ajouter la liste complète de l’examen buccal",
+      "presets": {
+        "lips": "Lèvres / jonction cutanéo-muqueuse",
+        "gingiva": "Gencive / ligne mucogingivale",
+        "salivary": "Orifices des canaux salivaires",
+        "floor": "Plancher buccal / frein lingual"
+      }
     }
   },
   "feedback": {

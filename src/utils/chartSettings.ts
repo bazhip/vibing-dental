@@ -3,6 +3,7 @@ import { AppLanguage, isAppLanguage } from '../i18n/config';
 import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 import { DEFAULT_QUICK_CODES, normalizeQuickCodes } from './quickCodes';
+import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
@@ -75,6 +76,9 @@ export interface ChartPrefs {
   /** The person's usual anesthetic — offered as one tap on a chart with
    *  no anesthetic set. null = none. */
   usualDrug: { name: string; concentration: string } | null;
+  /** Added to the usual anesthetic in the block mix (buprenorphine,
+   *  dexmedetomidine, …), so "Use my usual" charts both. null = none. */
+  usualAdjunct: { name: string; concentration: string } | null;
   /** Id of the last "What's new" the person has seen ('' = none). */
   whatsNewSeen: string;
   /** The person's own nerve blocks (extra Right/Left mL rows). */
@@ -85,6 +89,8 @@ export interface ChartPrefs {
   language: AppLanguage | null;
   /** One-tap code stamps on the Diagnosis diagram (T/SN, …). */
   quickCodes: string[];
+  /** The person's own exam areas, after the six built-in ones. */
+  customExamAreas: CustomExamAreaDef[];
 }
 
 export const DEFAULT_CHART_PREFS: ChartPrefs = {
@@ -100,11 +106,13 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   scoreTapMoves: 'finding',
   hiddenBlocks: [],
   usualDrug: null,
+  usualAdjunct: null,
   whatsNewSeen: '',
   customBlocks: [],
   customFields: [],
   language: null,
   quickCodes: DEFAULT_QUICK_CODES,
+  customExamAreas: [],
 };
 
 const fieldList = (v: unknown, fallback: DentalField[]): DentalField[] =>
@@ -116,7 +124,7 @@ function usualDrugOf(v: unknown, fallback: ChartPrefs['usualDrug']): ChartPrefs[
   const d = v as { name?: unknown; concentration?: unknown };
   const name = typeof d.name === 'string' ? d.name.trim().slice(0, 60) : '';
   if (!name) return null;
-  return { name, concentration: typeof d.concentration === 'string' ? d.concentration.replace(/%/g, '').trim().slice(0, 10) : '' };
+  return { name, concentration: typeof d.concentration === 'string' ? d.concentration.replace(/%/g, '').trim().slice(0, 16) : '' };
 }
 
 /** Tolerant read of stored preferences; anything missing or invalid takes
@@ -139,10 +147,12 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
       ? (r.hiddenBlocks.filter((b) => typeof b === 'string' && BLOCK_IDS.has(b)) as BlockRowId[])
       : fallback.hiddenBlocks,
     usualDrug: usualDrugOf(r.usualDrug, fallback.usualDrug),
+    usualAdjunct: usualDrugOf(r.usualAdjunct, fallback.usualAdjunct),
     whatsNewSeen: typeof r.whatsNewSeen === 'string' ? r.whatsNewSeen.slice(0, 40) : fallback.whatsNewSeen,
     customBlocks: Array.isArray(r.customBlocks) ? normalizeBlockDefs(r.customBlocks) : fallback.customBlocks,
     customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
     language: r.language === null ? null : isAppLanguage(r.language) ? r.language : fallback.language,
     quickCodes: Array.isArray(r.quickCodes) ? normalizeQuickCodes(r.quickCodes) : fallback.quickCodes,
+    customExamAreas: Array.isArray(r.customExamAreas) ? normalizeExamAreaDefs(r.customExamAreas) : fallback.customExamAreas,
   };
 }

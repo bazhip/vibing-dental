@@ -28,7 +28,12 @@
       "tongue": "Langue",
       "palate": "Palais",
       "pharynx": "Pharynx/amygdales"
-    }
+    },
+    "additional": "Zones d’examen supplémentaires",
+    "alsoNormal": "Normal : {{areas}}",
+    "moreAreas_one": "+{{count}} autre zone dans l’application",
+    "moreAreas_many": "+{{count}} autres zones dans l’application",
+    "moreAreas_other": "+{{count}} autres zones dans l’application"
   },
   "grid": {
     "maxilla": "Arcade maxillaire",

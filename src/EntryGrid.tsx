@@ -51,7 +51,8 @@ import { ReminderModal } from './components/ReminderModal';
 import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import type { AppLanguage } from './i18n/config';
-import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
+import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, withDrugUnit, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
+import { customExamRows, setCustomExamValue } from './utils/customExam';
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
@@ -840,7 +841,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       chart.setNerveBlockDrugs((prev) => {
         const named = prev.filter((d) => d.name.trim());
         const i = named.findIndex((d) => d.name.trim().toLowerCase() === drug.toLowerCase());
-        const strength = concentration ?? (i >= 0 ? named[i].concentration : usualConcentration(drug));
+        const strength = concentration != null
+          ? withDrugUnit(drug, concentration)
+          : i >= 0 ? named[i].concentration : usualConcentration(drug);
         if (i < 0) return [...named, { name: drug, concentration: strength }];
         return named.map((d, j) => (j === i ? { ...d, concentration: strength } : d));
       });
@@ -967,6 +970,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           exam={chart.patientInfo.exam}
           onStatusChange={chart.handleExamStatusChange}
           onCommentChange={chart.handleExamCommentChange}
+          customRows={customExamRows(prefs.customExamAreas, chart.patientInfo.customExam)}
+          onCustomChange={(row, patch) =>
+            chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customExam: setCustomExamValue(prev.customExam, row, patch) }))
+          }
+          onCustomize={native ? undefined : () => setChartSettingsOpen('exam')}
         />
       ),
     },
@@ -981,6 +989,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           logo={chart.logo}
           hiddenBlocks={prefs.hiddenBlocks}
           usualDrug={prefs.usualDrug}
+          usualAdjunct={prefs.usualAdjunct}
           onCustomize={native ? undefined : () => setChartSettingsOpen('anesthesia')}
           customBlockDefs={prefs.customBlocks}
           customFieldDefs={prefs.customFields}

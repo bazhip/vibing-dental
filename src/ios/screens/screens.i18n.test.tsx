@@ -83,7 +83,7 @@ const ALLOW: (string | RegExp)[] = [
   // Language names are shown in their own language.
   ...Object.values(LANGUAGE_NAMES),
   // Dental codes (the default quick code) stay as codes.
-  'T/SN',
+  'T/SN', 'mg/mL',
   // Reminder placeholders and the sample template.
   /^\{\{\w+\}\}$/, 'Recheck', 'Hello',
   // Owner report templates show the report's own language (English here) and its placeholders.

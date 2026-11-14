@@ -114,7 +114,8 @@
       "anesthesia": "Impostazioni dell’anestesia",
       "charting": "Impostazioni dell’odontogramma",
       "diagnosis": "Impostazioni della diagnosi",
-      "images": "Impostazioni delle immagini"
+      "images": "Impostazioni delle immagini",
+      "exam": "Impostazioni dell’esame"
     },
     "noteAccount": "Solo per Lei — queste impostazioni seguono il Suo account su ogni dispositivo. Le modifiche vengono salvate subito.",
     "noteBrowser": "Salvate in questo browser. Le modifiche si applicano subito.",
@@ -161,7 +162,12 @@
       "usualNote": "Proposto con un tocco in una cartella senza anestetico impostato.",
       "drugPlaceholder": "ad es. bupivacaina",
       "drugAria": "Anestetico abituale",
-      "strengthAria": "Concentrazione dell’anestetico abituale (%)"
+      "strengthAria": "Concentrazione dell’anestetico abituale (%)",
+      "adjunct": "Aggiunto alla miscela",
+      "adjunctNote": "Aggiunto alla miscela (facoltativo), ad es. buprenorfina o dexmedetomidina. «Usa il mio abituale» registra allora entrambi.",
+      "adjunctPlaceholder": "ad es. buprenorfina",
+      "adjunctAria": "Farmaco abituale aggiunto alla miscela",
+      "adjunctStrengthAria": "Concentrazione del farmaco aggiunto alla miscela"
     },
     "patient": {
       "title": "Pagina Paziente",
@@ -192,6 +198,24 @@
       "placeholder": "Codice, ad es. T/SR",
       "addAria": "Codice da aggiungere",
       "add": "Aggiungi"
+    },
+    "exam": {
+      "title": "Esame",
+      "areas": "Le Sue aree d’esame",
+      "areasNote": "Aggiunte dopo le sei aree predefinite, ciascuna con Normale / Anormale e un commento. Nel PDF compaiono solo le aree compilate.",
+      "areaPlaceholder": "ad es. Labbra",
+      "areaAria": "Nome dell’area d’esame {{n}}",
+      "areaN": "area {{n}}",
+      "remove": "Rimuovi",
+      "removeAria": "Rimuovi {{name}}",
+      "add": "Aggiungi area",
+      "addPreset": "Aggiungi l’elenco completo dell’esame orale",
+      "presets": {
+        "lips": "Labbra / giunzione mucocutanea",
+        "gingiva": "Gengiva / linea mucogengivale",
+        "salivary": "Sbocchi dei dotti salivari",
+        "floor": "Pavimento della bocca / frenulo"
+      }
     }
   },
   "feedback": {

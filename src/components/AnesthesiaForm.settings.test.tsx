@@ -48,4 +48,42 @@ describe('AnesthesiaForm — chart settings', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Customize' }));
     expect(onCustomize).toHaveBeenCalled();
   });
+
+  it('offers the usual mix (anesthetic + adjunct) in one tap', () => {
+    const onDrugsChange = vi.fn();
+    render(
+      <AnesthesiaForm {...base} nerveBlocks={{ ...EMPTY_NERVE_BLOCKS }} onDrugsChange={onDrugsChange}
+        usualDrug={{ name: 'Bupivacaine', concentration: '0.5' }} usualAdjunct={{ name: 'Buprenorphine', concentration: '0.3 mg/mL' }} />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Use my usual: 0.5% Bupivacaine + 0.3 mg/mL Buprenorphine' }));
+    expect(onDrugsChange.mock.calls[0][0]([])).toEqual([
+      { name: 'Bupivacaine', concentration: '0.5' },
+      { name: 'Buprenorphine', concentration: '0.3 mg/mL' },
+    ]);
+  });
+
+  it('an adjunct row shows its strength in mg/mL and saves the unit', () => {
+    const onDrugsChange = vi.fn();
+    render(
+      <AnesthesiaForm {...base} onDrugsChange={onDrugsChange}
+        nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'Bupivacaine', concentration: '0.5' }, { name: 'Dexmedetomidine', concentration: '0.5 mg/mL' }] }} />,
+    );
+    const strength = screen.getByLabelText('Anesthetic 2 concentration (%)');
+    expect(strength).toHaveValue('0.5');
+    expect(strength.parentElement).toHaveTextContent('mg/mL');
+    fireEvent.change(strength, { target: { value: '0.1' } });
+    const prev = [{ name: 'Bupivacaine', concentration: '0.5' }, { name: 'Dexmedetomidine', concentration: '0.5 mg/mL' }];
+    expect(onDrugsChange.mock.calls[0][0](prev)[1]).toEqual({ name: 'Dexmedetomidine', concentration: '0.1 mg/mL' });
+  });
+
+  it('picking an adjunct pre-fills its stock strength', () => {
+    const onDrugsChange = vi.fn();
+    render(
+      <AnesthesiaForm {...base} onDrugsChange={onDrugsChange}
+        nerveBlocks={{ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'Bupivacaine', concentration: '0.5' }, { name: '', concentration: '' }] }} />,
+    );
+    fireEvent.change(screen.getByLabelText('Anesthetic 2 name'), { target: { value: 'Buprenorphine' } });
+    const prev = [{ name: 'Bupivacaine', concentration: '0.5' }, { name: '', concentration: '' }];
+    expect(onDrugsChange.mock.calls[0][0](prev)[1]).toEqual({ name: 'Buprenorphine', concentration: '0.3 mg/mL' });
+  });
 });

@@ -28,7 +28,12 @@
       "tongue": "Lingua",
       "palate": "Palato",
       "pharynx": "Faringe/tonsille"
-    }
+    },
+    "additional": "Altre aree d’esame",
+    "alsoNormal": "Normale: {{areas}}",
+    "moreAreas_one": "+{{count}} altra area nell’app",
+    "moreAreas_many": "+{{count}} altre aree nell’app",
+    "moreAreas_other": "+{{count}} altre aree nell’app"
   },
   "grid": {
     "maxilla": "Arcata mascellare",

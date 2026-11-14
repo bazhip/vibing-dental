@@ -1,5 +1,6 @@
 import React from 'react';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
+import { normalizeCustomExam } from '../utils/customExam';
 import { localDateISO } from '../utils/localDate';
 import { toast, confirmDialog } from '../components/ui/dialogs';
 import i18n from '../i18n';
@@ -187,6 +188,7 @@ export function normalizeSnapshot(s: ChartSnapshot): ChartSnapshot {
       treatmentReport: s.patientInfo.treatmentReport ?? '',
       radiographicFindings: s.patientInfo.radiographicFindings ?? '',
       ...(s.patientInfo.customAnesthesia ? { customAnesthesia: normalizeCustomAnesthesia(s.patientInfo.customAnesthesia) } : {}),
+      ...(s.patientInfo.customExam ? { customExam: normalizeCustomExam(s.patientInfo.customExam) } : {}),
       recallDate: s.patientInfo.recallDate ?? '',
       ownerName: s.patientInfo.ownerName ?? '',
       ownerPhone: s.patientInfo.ownerPhone ?? '',

@@ -64,7 +64,8 @@
       "tongue": "Zunge",
       "palate": "Gaumen",
       "pharynx": "Pharynx / Tonsillen"
-    }
+    },
+    "customizeTitle": "Eigene Untersuchungsbereiche hinzufügen"
   },
   "anesthesia": {
     "title": "Narkose — Nervenblockaden",
