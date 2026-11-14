@@ -28,7 +28,12 @@
       "tongue": "Lengua",
       "palate": "Paladar",
       "pharynx": "Faringe/amígdalas"
-    }
+    },
+    "additional": "Zonas de examen adicionales",
+    "alsoNormal": "Normal: {{areas}}",
+    "moreAreas_one": "+{{count}} zona más en la aplicación",
+    "moreAreas_many": "+{{count}} zonas más en la aplicación",
+    "moreAreas_other": "+{{count}} zonas más en la aplicación"
   },
   "grid": {
     "maxilla": "Arcada maxilar",

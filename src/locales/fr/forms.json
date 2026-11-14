@@ -64,7 +64,8 @@
       "tongue": "langue",
       "palate": "palais",
       "pharynx": "pharynx / amygdales"
-    }
+    },
+    "customizeTitle": "Ajouter vos propres zones d’examen"
   },
   "anesthesia": {
     "title": "Anesthésie — Blocs nerveux",

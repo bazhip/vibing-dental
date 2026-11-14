@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { List, ListRow, ListSection, SwitchRow } from '../ios/List';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
+import { ExamAreasEditor } from './ExamAreasEditor';
 import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
-import { USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 import '../ios/settings.css';
 import type { SettingsSection } from './ChartSettingsModal';
 
@@ -38,9 +40,13 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
   const { t } = useTranslation('settings');
   // Same rules as the web dialog; a pending usual-anesthetic edit is also
   // saved when the screen or sheet goes away without a blur (iOS Back).
-  const { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock } =
-    useChartSettingsModel(prefs, onChange, only, { saveDrugOnUnmount: true });
+  const {
+    showAll, show, shownColumns, toggleBlock,
+    drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug,
+    adjunctName, setAdjunctName, adjunctStrength, setAdjunctStrength, saveUsualAdjunct,
+  } = useChartSettingsModel(prefs, onChange, only, { saveDrugOnUnmount: true });
   const drugListId = React.useId();
+  const adjunctListId = React.useId();
 
   const note = followsAccount ? t('chart.noteAccount') : t('chart.noteDevice');
 
@@ -141,6 +147,14 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
         </ListSection>
       )}
 
+      {show.exam && (
+        <ListSection header={t('chart.exam.title')}>
+          <div role="listitem" className="ios-list__item ios-cell-embed">
+            <ExamAreasEditor areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+          </div>
+        </ListSection>
+      )}
+
       {show.anesthesia && (
         <>
           <ListSection header={t('chart.anesthesia.blocks')} footer={t('chart.anesthesia.blocksNote')}>
@@ -201,6 +215,46 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
             </div>
             <datalist id={drugListId}>
               {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
+            </datalist>
+          </ListSection>
+          <ListSection header={t('chart.anesthesia.adjunct')} footer={t('chart.anesthesia.adjunctNote')}>
+            <div role="listitem" className="ios-list__item">
+              <label className="ios-row ios-row--field">
+                <span className="ios-row__main">
+                  <span className="ios-row__title">{t('chart.drugName')}</span>
+                  <input
+                    type="text"
+                    list={adjunctListId}
+                    className="ios-row__input"
+                    placeholder={t('chart.anesthesia.adjunctPlaceholder')}
+                    aria-label={t('chart.anesthesia.adjunctAria')}
+                    value={adjunctName}
+                    onChange={(e) => setAdjunctName(e.target.value)}
+                    onBlur={saveUsualAdjunct}
+                  />
+                </span>
+              </label>
+            </div>
+            <div role="listitem" className="ios-list__item">
+              <label className="ios-row ios-row--field">
+                <span className="ios-row__main">
+                  <span className="ios-row__title">{t('chart.drugStrength')}</span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="ios-row__input"
+                    placeholder="0.3"
+                    aria-label={t('chart.anesthesia.adjunctStrengthAria')}
+                    value={adjunctStrength}
+                    onChange={(e) => setAdjunctStrength(e.target.value.replace(/%/g, ''))}
+                    onBlur={saveUsualAdjunct}
+                  />
+                  {!strengthHasUnit(adjunctStrength) && <span className="ios-row__suffix" aria-hidden="true">{adjunctName.trim() ? drugUnit(adjunctName) : drugUnit(ADJUNCT_DRUGS[0])}</span>}
+                </span>
+              </label>
+            </div>
+            <datalist id={adjunctListId}>
+              {USUAL_ADJUNCTS.map((d) => <option key={d} value={d} />)}
             </datalist>
           </ListSection>
         </>

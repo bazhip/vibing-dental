@@ -1309,6 +1309,9 @@
   padding-left: 0.7em;
   padding-right: 1.8em;
 }
+/* Adjuncts: room for the mg/mL suffix. */
+.anesthesia-drug__strength--wide { width: 7.5rem; }
+.anesthesia-drug__strength--wide .patient-form__input { padding-right: 3.6em; }
 
 .anesthesia-drug__remove {
   flex: none;
@@ -4337,3 +4340,7 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 @media (min-width: 601px) and (max-width: 900px) {
   .entry-grid-container { --section-menu-h: 3.5rem; }
 }
+
+/* Chart settings → Exam: your own areas. */
+.exam-areas__label { flex: 1 1 14rem; }
+.exam-areas__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }

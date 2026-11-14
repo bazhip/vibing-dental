@@ -72,14 +72,52 @@ export const DEFAULT_NERVE_BLOCK_DRUG: Record<'socal' | 'vca', string> = {
 /** Strength the template default (and legacy single-drug charts) printed. */
 export const DEFAULT_NERVE_BLOCK_CONCENTRATION = '0.5';
 
-/** Usual veterinary nerve-block strength (%) per drug, for pre-filling the
- *  concentration when a drug is picked. Unknown drugs get ''. */
+/** Drugs added to a local anesthetic in the block mix (not local
+ *  anesthetics themselves): their strength is in mg/mL, not %. Drug
+ *  names, not text. */
+export const ADJUNCT_DRUGS = ['Buprenorphine', 'Dexmedetomidine'];
+const ADJUNCT_UNIT = 'mg/mL';
+const ADJUNCT_KEYS = new Set(ADJUNCT_DRUGS.map((d) => d.toLowerCase()));
+
+/** Usual veterinary nerve-block strength per drug, for pre-filling the
+ *  concentration when a drug is picked: % for local anesthetics (a bare
+ *  number), the stock mg/mL for adjuncts. Unknown drugs get ''. */
 const USUAL_CONCENTRATION: Record<string, string> = {
   bupivacaine: '0.5',
   ropivacaine: '0.5',
   lidocaine: '2',
   mepivacaine: '2',
+  buprenorphine: `0.3 ${ADJUNCT_UNIT}`,
+  dexmedetomidine: `0.5 ${ADJUNCT_UNIT}`,
 };
+
+/** A strength that carries its own unit ("0.3 mg/mL") rather than a bare
+ *  number, which means %. */
+export function strengthHasUnit(concentration: string): boolean {
+  return /[^\d.,\s%]/.test(concentration.trim());
+}
+
+/** The unit a drug's strength box shows: mg/mL for adjuncts, % otherwise. */
+export function drugUnit(name: string): string {
+  return ADJUNCT_KEYS.has(name.trim().toLowerCase()) ? ADJUNCT_UNIT : '%';
+}
+
+/** A strength typed as a bare number, with the drug's unit attached when
+ *  that isn't % ("0.3" for buprenorphine → "0.3 mg/mL"). Strengths that
+ *  already carry a unit, and % strengths, are kept as typed. */
+export function withDrugUnit(name: string, concentration: string): string {
+  const c = concentration.trim();
+  const unit = drugUnit(name);
+  return c && unit !== '%' && !strengthHasUnit(c) ? `${c} ${unit}` : concentration;
+}
+
+/** What the strength box shows: the number, without the unit its suffix
+ *  already shows. */
+export function strengthForInput(name: string, concentration: string): string {
+  const unit = drugUnit(name);
+  const suffix = ` ${unit}`;
+  return unit !== '%' && concentration.endsWith(suffix) ? concentration.slice(0, -suffix.length) : concentration;
+}
 
 export function usualConcentration(name: string): string {
   return USUAL_CONCENTRATION[name.trim().toLowerCase()] ?? '';
@@ -99,9 +137,12 @@ export function effectiveNerveBlockDrugs(
     : [{ name: DEFAULT_NERVE_BLOCK_DRUG[logo], concentration: DEFAULT_NERVE_BLOCK_CONCENTRATION }];
 }
 
-/** "0.5% Bupivacaine" / "Bupivacaine" (no strength given). */
+/** "0.5% Bupivacaine" / "0.3 mg/mL Buprenorphine" / "Bupivacaine" (no
+ *  strength given). A bare number is a %. */
 export function formatAnestheticDrug(d: AnestheticDrug): string {
-  const c = d.concentration.trim().replace(/%$/, '');
+  const raw = d.concentration.trim();
+  if (strengthHasUnit(raw)) return `${raw} ${d.name.trim()}`;
+  const c = raw.replace(/%$/, '');
   return c ? `${c}% ${d.name.trim()}` : d.name.trim();
 }
 
@@ -153,6 +194,13 @@ export interface ExamFindings {
   tongue: ExamItemValue;
   palate: ExamItemValue;
   pharynx: ExamItemValue;
+}
+
+/** An answered custom exam area on a chart (see utils/customExam), with
+ *  its label captured so the chart reads correctly on its own. */
+export interface CustomExamValue extends ExamItemValue {
+  id: string;
+  label: string;
 }
 
 const emptyItem = (): ExamItemValue => ({ status: '', comment: '' });
@@ -229,6 +277,9 @@ export interface PatientInfo {
    *  carries its own label/type so the chart reads correctly for anyone,
    *  whatever fields they've defined. Optional: absent on older charts. */
   customAnesthesia?: CustomAnesthesia;
+  /** Answered custom exam areas (see utils/customExam). Optional: absent
+   *  on older charts and when none were answered. */
+  customExam?: CustomExamValue[];
   /** Next dental recheck due (yyyy-mm-dd), '' when none. Surfaced in the
    *  chart library as a recall reminder. */
   recallDate: string;

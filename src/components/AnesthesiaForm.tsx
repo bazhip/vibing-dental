@@ -9,6 +9,11 @@ import {
   DEFAULT_NERVE_BLOCK_CONCENTRATION,
   usualConcentration,
   formatAnestheticDrug,
+  ADJUNCT_DRUGS,
+  drugUnit,
+  strengthHasUnit,
+  strengthForInput,
+  withDrugUnit,
 } from '../types';
 import type { BlockRowId } from '../utils/chartSettings';
 import type { CustomAnesthesia, CustomBlockValue, CustomFieldValue } from '../types';
@@ -39,6 +44,9 @@ interface AnesthesiaFormProps {
   hiddenBlocks?: BlockRowId[];
   /** Chart settings: the person's usual anesthetic, offered in one tap. */
   usualDrug?: { name: string; concentration: string } | null;
+  /** Chart settings: added to the usual anesthetic in its mix (e.g.
+   *  buprenorphine), so "Use my usual" charts both. */
+  usualAdjunct?: { name: string; concentration: string } | null;
   /** Open Chart settings. */
   onCustomize?: () => void;
   /** The person's custom nerve blocks and fields (chart settings). */
@@ -53,7 +61,8 @@ interface AnesthesiaFormProps {
 const ML = 'mL';
 const SIDES = ['right', 'left'] as const;
 
-const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
+// Local anesthetics, then adjuncts mixed into blocks (drug names, not text).
+const COMMON_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine', ...ADJUNCT_DRUGS];
 const BLANK_DRUG: AnestheticDrug = { name: '', concentration: '' };
 
 interface BlockRow {
@@ -79,6 +88,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   logo,
   hiddenBlocks = [],
   usualDrug = null,
+  usualAdjunct = null,
   onCustomize,
   customBlockDefs = [],
   customFieldDefs = [],
@@ -126,6 +136,8 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
   // An empty list means "template default" — still show one blank row so
   // there's somewhere to type. Editing it materialises the list.
   const drugs = nerveBlocks.drugs ?? [];
+  // "Use my usual": the usual anesthetic plus what's added to it.
+  const usualMix = [usualDrug, usualAdjunct].filter((d): d is AnestheticDrug => !!d?.name.trim());
   const usingDefault = drugs.length === 0;
   const rows = usingDefault ? [BLANK_DRUG] : drugs;
 
@@ -138,6 +150,10 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
       // already typed a custom one.
       if (patch.name !== undefined && (!cur.concentration || cur.concentration === usualConcentration(cur.name))) {
         next.concentration = usualConcentration(patch.name);
+      } else if (patch.name !== undefined) {
+        // A typed number moves to the new drug's unit (0.3 → 0.3 mg/mL).
+        const typed = strengthForInput(cur.name, cur.concentration);
+        next.concentration = strengthHasUnit(typed) ? typed : withDrugUnit(patch.name, typed);
       }
       list[index] = next;
       return list;
@@ -197,18 +213,26 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
                   aria-label={t('anesthesia.nameAria', { n: i + 1 })}
                   aria-describedby="anesthesia-drug-hint"
                 />
-                <span className="anesthesia-unit anesthesia-drug__strength">
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    className="patient-form__input"
-                    value={d.concentration}
-                    placeholder={usingDefault ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
-                    onChange={(e) => updateDrug(i, { concentration: e.target.value.replace(/%/g, '') })}
-                    aria-label={t('anesthesia.concentrationAria', { n: i + 1 })}
-                  />
-                  <span className="anesthesia-unit__suffix" aria-hidden="true">%</span>
-                </span>
+                {(() => {
+                  // Local anesthetics in %, adjuncts in mg/mL; a strength
+                  // typed with its own unit shows no suffix.
+                  const shown = strengthForInput(d.name, d.concentration);
+                  const unit = drugUnit(d.name);
+                  return (
+                    <span className={`anesthesia-unit anesthesia-drug__strength${unit !== '%' ? ' anesthesia-drug__strength--wide' : ''}`}>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        className="patient-form__input"
+                        value={shown}
+                        placeholder={usingDefault ? DEFAULT_NERVE_BLOCK_CONCENTRATION : ''}
+                        onChange={(e) => updateDrug(i, { concentration: withDrugUnit(d.name, e.target.value.replace(/%/g, '')) })}
+                        aria-label={t('anesthesia.concentrationAria', { n: i + 1 })}
+                      />
+                      {!strengthHasUnit(shown) && <span className="anesthesia-unit__suffix" aria-hidden="true">{unit}</span>}
+                    </span>
+                  );
+                })()}
                 {rows.length > 1 && (
                   <button
                     type="button"
@@ -231,13 +255,13 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
           <button type="button" className="anesthesia-drug__add" onClick={addDrug}>
             {native ? <Icon name={ADD_ICON} size={16} /> : <span aria-hidden="true">+</span>} {t('anesthesia.add')}
           </button>
-          {usingDefault && usualDrug && (
+          {usingDefault && usualMix.length > 0 && (
             <button
               type="button"
               className="anesthesia-drug__add anesthesia-drug__usual"
-              onClick={() => onDrugsChange(() => [{ name: usualDrug.name, concentration: usualDrug.concentration }])}
+              onClick={() => onDrugsChange(() => usualMix.map((d) => ({ name: d.name, concentration: d.concentration })))}
             >
-              {t('anesthesia.useUsual', { drug: formatAnestheticDrug(usualDrug) })}
+              {t('anesthesia.useUsual', { drug: usualMix.map(formatAnestheticDrug).join(' + ') })}
             </button>
           )}
         </div>

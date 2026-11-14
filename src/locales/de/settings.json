@@ -114,7 +114,8 @@
       "anesthesia": "Narkose-Einstellungen",
       "charting": "Einstellungen für die Befunderfassung",
       "diagnosis": "Diagnose-Einstellungen",
-      "images": "Bilder-Einstellungen"
+      "images": "Bilder-Einstellungen",
+      "exam": "Untersuchungs-Einstellungen"
     },
     "noteAccount": "Nur für Sie — diese Einstellungen folgen Ihrem Konto auf jedes Gerät. Änderungen werden sofort gespeichert.",
     "noteBrowser": "In diesem Browser gespeichert. Änderungen gelten sofort.",
@@ -161,7 +162,12 @@
       "usualNote": "Wird mit einem Tipp angeboten, wenn in der Akte kein Anästhetikum eingetragen ist.",
       "drugPlaceholder": "z. B. Bupivacain",
       "drugAria": "Übliches Anästhetikum",
-      "strengthAria": "Konzentration des üblichen Anästhetikums (%)"
+      "strengthAria": "Konzentration des üblichen Anästhetikums (%)",
+      "adjunct": "Zur Mischung hinzugefügt",
+      "adjunctNote": "Zur Mischung hinzugefügt (optional), z. B. Buprenorphin oder Dexmedetomidin. „Mein übliches verwenden“ erfasst dann beides.",
+      "adjunctPlaceholder": "z. B. Buprenorphin",
+      "adjunctAria": "Übliches Medikament in der Mischung",
+      "adjunctStrengthAria": "Stärke des Medikaments in der Mischung"
     },
     "patient": {
       "title": "Patientenseite",
@@ -192,6 +198,24 @@
       "placeholder": "Code, z. B. T/SR",
       "addAria": "Hinzuzufügender Code",
       "add": "Hinzufügen"
+    },
+    "exam": {
+      "title": "Untersuchung",
+      "areas": "Ihre Untersuchungsbereiche",
+      "areasNote": "Werden nach den sechs festen Bereichen angezeigt, jeweils mit Normal / Auffällig und einem Kommentar. Nur beantwortete Bereiche erscheinen im PDF.",
+      "areaPlaceholder": "z. B. Lippen",
+      "areaAria": "Name des Untersuchungsbereichs {{n}}",
+      "areaN": "Bereich {{n}}",
+      "remove": "Entfernen",
+      "removeAria": "{{name}} entfernen",
+      "add": "Bereich hinzufügen",
+      "addPreset": "Vollständige Liste der Maulhöhlenuntersuchung hinzufügen",
+      "presets": {
+        "lips": "Lippen / mukokutaner Übergang",
+        "gingiva": "Gingiva / mukogingivale Grenzlinie",
+        "salivary": "Ausführungsgänge der Speicheldrüsen",
+        "floor": "Mundboden / Zungenbändchen"
+      }
     }
   },
   "feedback": {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExamFindings, ExamFinding, EXAM_ITEMS } from '../types';
+import { ExamFindings, ExamFinding, EXAM_ITEMS, CustomExamValue } from '../types';
 import { isNativeApp } from '../native/platform';
 import { FormGroup } from '../ios/Form';
 
@@ -11,6 +11,24 @@ interface ExamFormProps {
   exam: ExamFindings;
   onStatusChange: (key: keyof ExamFindings, value: ExamFinding) => void;
   onCommentChange: (key: keyof ExamFindings, value: string) => void;
+  /** The person's own areas, after the built-in ones (customExamRows). */
+  customRows?: CustomExamValue[];
+  /** Answer one custom area (the row carries its label). */
+  onCustomChange?: (row: CustomExamValue, patch: Partial<Pick<CustomExamValue, 'status' | 'comment'>>) => void;
+  /** Open this page's settings (Customize in the header). */
+  onCustomize?: () => void;
+}
+
+/** One exam row, built-in or custom, as both layouts render it. */
+interface Row {
+  id: string;
+  label: string;
+  /** The area name in running text (the placeholder). */
+  inline: string;
+  status: ExamFinding;
+  comment: string;
+  setStatus: (value: ExamFinding) => void;
+  setComment: (value: string) => void;
 }
 
 /** One-line-looking comment box that grows to show everything typed (or
@@ -55,9 +73,34 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   exam,
   onStatusChange,
   onCommentChange,
+  customRows = [],
+  onCustomChange,
+  onCustomize,
 }) => {
   const { t } = useTranslation('forms');
-  const unanswered = EXAM_ITEMS.filter(({ key }) => !exam[key].status);
+  const rows: Row[] = [
+    ...EXAM_ITEMS.map(({ key }): Row => ({
+      id: key,
+      label: t(`exam.items.${key}`),
+      inline: t(`exam.itemsInline.${key}`),
+      status: exam[key].status,
+      comment: exam[key].comment,
+      setStatus: (v) => onStatusChange(key, v),
+      setComment: (v) => onCommentChange(key, v),
+    })),
+    ...(onCustomChange
+      ? customRows.map((r): Row => ({
+          id: `custom-${r.id}`,
+          label: r.label,
+          inline: r.label,
+          status: r.status,
+          comment: r.comment,
+          setStatus: (status) => onCustomChange(r, { status }),
+          setComment: (comment) => onCustomChange(r, { comment }),
+        }))
+      : []),
+  ];
+  const unanswered = rows.filter((r) => !r.status);
   const header = (
     <div className="dental-grid__section-header">
       <h2 className="dental-grid__title">{t('exam.title')}</h2>
@@ -65,10 +108,16 @@ export const ExamForm: React.FC<ExamFormProps> = ({
         <button
           type="button"
           className="diagram-view__action"
-          onClick={() => unanswered.forEach(({ key }) => onStatusChange(key, 'normal'))}
+          // One custom answer per row: each call reads the chart's latest list.
+          onClick={() => unanswered.forEach((r) => r.setStatus('normal'))}
           title={t('exam.markTitle')}
         >
-          {unanswered.length === EXAM_ITEMS.length ? t('exam.markAllNormal') : t('exam.markRestNormal')}
+          {unanswered.length === rows.length ? t('exam.markAllNormal') : t('exam.markRestNormal')}
+        </button>
+      )}
+      {onCustomize && (
+        <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('exam.customizeTitle')}>
+          {t('anesthesia.customize')}
         </button>
       )}
     </div>
@@ -82,10 +131,9 @@ export const ExamForm: React.FC<ExamFormProps> = ({
       <div className="dental-grid-section exam-ios">
         {header}
         <FormGroup>
-          {EXAM_ITEMS.map(({ key }) => {
-            const label = t(`exam.items.${key}`);
-            const item = exam[key];
-            const groupName = `exam-${key}`;
+          {rows.map((item) => {
+            const { label } = item;
+            const groupName = `exam-${item.id}`;
             const answer = (value: 'normal' | 'abnormal') => (
               <label className={`ios-segmented__segment${item.status === value ? ' ios-segmented__segment--selected' : ''}${value === 'abnormal' ? ' ios-segmented__segment--abnormal' : ''}`}>
                 <input
@@ -93,15 +141,15 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                   className="ios-segmented__input"
                   name={groupName}
                   checked={item.status === value}
-                  onChange={() => onStatusChange(key, value)}
-                  onClick={() => { if (item.status === value) onStatusChange(key, ''); }}
+                  onChange={() => item.setStatus(value)}
+                  onClick={() => { if (item.status === value) item.setStatus(''); }}
                   aria-label={value === 'normal' ? t('exam.ariaNormal', { label }) : t('exam.ariaAbnormal', { label })}
                 />
                 {value === 'normal' ? t('exam.normal') : t('exam.abnormal')}
               </label>
             );
             return (
-              <React.Fragment key={key}>
+              <React.Fragment key={item.id}>
                 <div className={`ios-field exam-ios__row${item.status === 'abnormal' ? ' exam-ios__row--abnormal' : ''}`}>
                   <span className="ios-field__label">{label}</span>
                   <span className="ios-field__control">
@@ -113,7 +161,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                 </div>
                 {item.status === 'abnormal' && (
                   <div className="ios-field ios-field--stacked ios-field--bare exam-ios__comment">
-                    <CommentBox label={label} inline={t(`exam.itemsInline.${key}`)} value={item.comment} onChange={(v) => onCommentChange(key, v)} />
+                    <CommentBox label={label} inline={item.inline} value={item.comment} onChange={item.setComment} />
                   </div>
                 )}
               </React.Fragment>
@@ -138,14 +186,13 @@ export const ExamForm: React.FC<ExamFormProps> = ({
           </tr>
         </thead>
         <tbody>
-          {EXAM_ITEMS.map(({ key }) => {
-            const label = t(`exam.items.${key}`);
-            const item = exam[key];
-            const groupName = `exam-${key}`;
+          {rows.map((item) => {
+            const { label } = item;
+            const groupName = `exam-${item.id}`;
             const showComment = item.status === 'abnormal';
             return (
               <tr
-                key={key}
+                key={item.id}
                 className={showComment ? 'exam-table__row--abnormal' : undefined}
               >
                 <td className="anesthesia-table__label">{label}</td>
@@ -157,9 +204,9 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       type="radio"
                       name={groupName}
                       checked={item.status === 'normal'}
-                      onChange={() => onStatusChange(key, 'normal')}
+                      onChange={() => item.setStatus('normal')}
                       // Tapping the selected answer again clears it.
-                      onClick={() => { if (item.status === 'normal') onStatusChange(key, ''); }}
+                      onClick={() => { if (item.status === 'normal') item.setStatus(''); }}
                       aria-label={t('exam.ariaNormal', { label })}
                     />
                   </label>
@@ -170,8 +217,8 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                       type="radio"
                       name={groupName}
                       checked={item.status === 'abnormal'}
-                      onChange={() => onStatusChange(key, 'abnormal')}
-                      onClick={() => { if (item.status === 'abnormal') onStatusChange(key, ''); }}
+                      onChange={() => item.setStatus('abnormal')}
+                      onClick={() => { if (item.status === 'abnormal') item.setStatus(''); }}
                       aria-label={t('exam.ariaAbnormal', { label })}
                     />
                   </label>
@@ -180,9 +227,9 @@ export const ExamForm: React.FC<ExamFormProps> = ({
                   {showComment && (
                     <CommentBox
                       label={label}
-                      inline={t(`exam.itemsInline.${key}`)}
+                      inline={item.inline}
                       value={item.comment}
-                      onChange={(v) => onCommentChange(key, v)}
+                      onChange={item.setComment}
                     />
                   )}
                 </td>

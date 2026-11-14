@@ -243,6 +243,76 @@ describe('clinical chart PDF in another language', () => {
   });
 });
 
+describe('custom exam areas and block adjuncts', () => {
+  const customExam = [
+    { id: 'x1', label: 'Lips / mucocutaneous junction', status: 'normal' as const, comment: '' },
+    { id: 'x2', label: 'Salivary duct openings', status: 'abnormal' as const, comment: 'Ranula left sublingual' },
+  ];
+  // A typical nerve-block table (no custom blocks or long Other note).
+  const typical: PatientInfo = {
+    ...richPatient,
+    customAnesthesia: undefined,
+    nerveBlocks: { ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3', mentalLeft: '0.2', drugs: [{ name: 'Bupivacaine', concentration: '0.5' }, { name: 'Buprenorphine', concentration: '0.3 mg/mL' }] },
+  };
+  const withExtras: PatientInfo = { ...typical, customExam };
+  const [, teeth, species, logo, pre, post, styleId, layout] = SCENARIOS.vcaGrid;
+  const PAGE_H_IN = 8.5;
+  // The card must end above this (in from the top): the procedure diagram
+  // keeps its 2.2in minimum in the page-2 slot (1.75in + 4.70in tall).
+  const maxBottomY = (PAGE_H_IN - (1.75 + 4.70 - 2.2 - 0.15)) * 72;
+
+  it('prints answered custom areas in a page-2 card, and adjunct strengths in mg/mL', async () => {
+    const runs = (await captureText(withExtras, teeth, species, logo, pre, post, styleId, layout)).map((r) => r.t);
+    // Card titles may be upper-cased by the PDF style.
+    const card = runs.findIndex((r) => r.toLowerCase() === 'additional exam areas');
+    expect(card).toBeGreaterThan(runs.findIndex((r) => r.toLowerCase() === 'oral exam findings'));
+    const after = runs.slice(card).join(' ');
+    expect(after).toContain('Lips / mucocutaneous junction');
+    expect(after).toContain('Salivary duct openings');
+    expect(after).toContain('Ranula left sublingual');
+    expect(runs.join(' ')).toContain('0.3 mg/mL Buprenorphine');
+    expect(runs.join(' ')).not.toContain('mg/mL%');
+  });
+
+  it('no card when no custom area was answered (page 1 is as before)', async () => {
+    const runs = (await captureText({ ...richPatient, customExam: [] }, teeth, species, logo, pre, post, styleId, layout)).map((r) => r.t);
+    expect(runs.map((r) => r.toLowerCase())).not.toContain('additional exam areas');
+  });
+
+  const eight = Array.from({ length: 8 }, (_, i) => ({
+    id: `x${i}`, label: `Area ${i + 1}`, status: (i < 4 ? 'abnormal' : 'normal') as 'abnormal' | 'normal',
+    comment: i < 4 ? 'A long abnormal finding that wraps onto more than one line in the narrow page-two column' : '',
+  }));
+  const cardRuns = async (p: PatientInfo) => {
+    const runs = await captureText(p, teeth, species, logo, pre, post, styleId, layout);
+    const card = runs.findIndex((r) => r.t.toLowerCase() === 'additional exam areas');
+    expect(card).toBeGreaterThan(0);
+    return runs.slice(card + 1).filter((r) => /^(Area|A long|Normal:|\+\d)/.test(r.t));
+  };
+
+  it('a full set stays above the diagram: normal areas fold into one line', async () => {
+    const mostlyNormal = eight.map((a, i) => (i < 2 ? a : { ...a, status: 'normal' as const, comment: '' }));
+    const card = await cardRuns({ ...typical, customExam: mostlyNormal });
+    for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
+    const text = card.map((r) => r.t).join(' ');
+    expect(text).toContain('Normal: Area 3, Area 4, Area 5, Area 6, Area 7, Area 8');
+    expect(text).toContain('Area 1');
+    expect(text).toContain('Area 2');
+    expect(text).not.toMatch(/more areas? in the app/);
+  });
+
+  it('never runs into the diagram: what doesn\'t fit is counted', async () => {
+    for (const p of [typical, richPatient]) {
+      const card = await cardRuns({ ...p, customExam: eight });
+      for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
+      expect(card.map((r) => r.t).join(' ')).toMatch(/\+\d+ more areas? in the app/);
+    }
+    const card = await cardRuns({ ...richPatient, customExam: eight });
+    for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
+    expect(card.map((r) => r.t).join(' ')).toMatch(/\+\d+ more areas? in the app/);
+  });
+});
+
 describe('PDF round trip', () => {
   it('a PDF made in German loads back into the app', async () => {
     const [p, teeth, species, logo, pre, post, styleId, layout] = SCENARIOS.vcaGrid;

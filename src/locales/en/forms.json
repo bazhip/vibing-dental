@@ -64,7 +64,8 @@
       "tongue": "tongue",
       "palate": "palate",
       "pharynx": "pharynx / tonsils"
-    }
+    },
+    "customizeTitle": "Add your own exam areas"
   },
   "anesthesia": {
     "title": "Anesthesia — Nerve Blocks",

@@ -114,7 +114,8 @@
       "anesthesia": "Anesthesia settings",
       "charting": "Charting settings",
       "diagnosis": "Diagnosis settings",
-      "images": "Images settings"
+      "images": "Images settings",
+      "exam": "Exam settings"
     },
     "noteAccount": "Just for you — these follow your account on every device. Changes save right away.",
     "noteBrowser": "Saved in this browser. Changes apply right away.",
@@ -161,7 +162,12 @@
       "usualNote": "Offered as one tap on a chart with no anesthetic set.",
       "drugPlaceholder": "e.g. Bupivacaine",
       "drugAria": "Usual anesthetic",
-      "strengthAria": "Usual anesthetic strength (%)"
+      "strengthAria": "Usual anesthetic strength (%)",
+      "adjunct": "Added to the mix",
+      "adjunctNote": "Added to the mix (optional), e.g. buprenorphine or dexmedetomidine. “Use my usual” then charts both.",
+      "adjunctPlaceholder": "e.g. Buprenorphine",
+      "adjunctAria": "Usual drug added to the mix",
+      "adjunctStrengthAria": "Strength of the drug added to the mix"
     },
     "patient": {
       "title": "Patient page",
@@ -192,6 +198,24 @@
       "placeholder": "Code, e.g. T/SR",
       "addAria": "Code to add",
       "add": "Add"
+    },
+    "exam": {
+      "title": "Exam",
+      "areas": "Your exam areas",
+      "areasNote": "Added after the six built-in areas, each with Normal / Abnormal and a comment. Only the areas you answer print on the PDF.",
+      "areaPlaceholder": "e.g. Lips",
+      "areaAria": "Exam area {{n}} name",
+      "areaN": "area {{n}}",
+      "remove": "Remove",
+      "removeAria": "Remove {{name}}",
+      "add": "Add area",
+      "addPreset": "Add the full oral exam list",
+      "presets": {
+        "lips": "Lips / mucocutaneous junction",
+        "gingiva": "Gingiva / mucogingival line",
+        "salivary": "Salivary duct openings",
+        "floor": "Floor of mouth / frenulum"
+      }
     }
   },
   "feedback": {

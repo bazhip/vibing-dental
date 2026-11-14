@@ -5528,6 +5528,10 @@
       "hash": "44f5e3fbec57",
       "status": "machine"
     },
+    "forms:exam.customizeTitle": {
+      "hash": "82458a58bb7a",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -7604,6 +7608,14 @@
       "hash": "65b240c48fdc",
       "status": "machine"
     },
+    "pdf:exam.additional": {
+      "hash": "1c5ee74e3e79",
+      "status": "machine"
+    },
+    "pdf:exam.alsoNormal": {
+      "hash": "0a7359e06e14",
+      "status": "machine"
+    },
     "pdf:exam.comment": {
       "hash": "71772a68c6d1",
       "status": "machine"
@@ -7630,6 +7642,14 @@
     },
     "pdf:exam.items.tongue": {
       "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_one": {
+      "hash": "9d1e5626a572",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_other": {
+      "hash": "122f00a2eea5",
       "status": "machine"
     },
     "pdf:exam.normal": {
@@ -8876,6 +8896,26 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
+    "settings:chart.anesthesia.adjunct": {
+      "hash": "a68a0d0ab60a",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctAria": {
+      "hash": "b851d4c35b65",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctNote": {
+      "hash": "1b519d4933f5",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctPlaceholder": {
+      "hash": "3ed14e460a53",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctStrengthAria": {
+      "hash": "1b491a1ad575",
+      "status": "machine"
+    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -9032,6 +9072,62 @@
       "hash": "63ee3a1b965a",
       "status": "machine"
     },
+    "settings:chart.exam.add": {
+      "hash": "2a6b71dff6df",
+      "status": "machine"
+    },
+    "settings:chart.exam.addPreset": {
+      "hash": "d6c573918cf6",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaAria": {
+      "hash": "8cf9a8ef847e",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaN": {
+      "hash": "3f7580c6d524",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaPlaceholder": {
+      "hash": "832ddc65cd70",
+      "status": "machine"
+    },
+    "settings:chart.exam.areas": {
+      "hash": "d6e581f1dd3c",
+      "status": "machine"
+    },
+    "settings:chart.exam.areasNote": {
+      "hash": "e388aa1980f8",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.floor": {
+      "hash": "0c5953c02e59",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.gingiva": {
+      "hash": "9f60bc7a14b2",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.lips": {
+      "hash": "e125a237b76e",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.salivary": {
+      "hash": "ae17c95e77fe",
+      "status": "machine"
+    },
+    "settings:chart.exam.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.exam.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
     "settings:chart.mirrorHint": {
       "hash": "2a98b1f7b5ed",
       "status": "machine"
@@ -9134,6 +9230,10 @@
     },
     "settings:chart.sections.diagnosis": {
       "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sections.exam": {
+      "hash": "df45fcf47b9d",
       "status": "machine"
     },
     "settings:chart.sections.images": {
@@ -15866,6 +15966,10 @@
       "hash": "44f5e3fbec57",
       "status": "machine"
     },
+    "forms:exam.customizeTitle": {
+      "hash": "82458a58bb7a",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -17954,6 +18058,14 @@
       "hash": "65b240c48fdc",
       "status": "machine"
     },
+    "pdf:exam.additional": {
+      "hash": "1c5ee74e3e79",
+      "status": "machine"
+    },
+    "pdf:exam.alsoNormal": {
+      "hash": "0a7359e06e14",
+      "status": "machine"
+    },
     "pdf:exam.comment": {
       "hash": "71772a68c6d1",
       "status": "machine"
@@ -17980,6 +18092,18 @@
     },
     "pdf:exam.items.tongue": {
       "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_many": {
+      "hash": "122f00a2eea5",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_one": {
+      "hash": "9d1e5626a572",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_other": {
+      "hash": "122f00a2eea5",
       "status": "machine"
     },
     "pdf:exam.normal": {
@@ -19230,6 +19354,26 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
+    "settings:chart.anesthesia.adjunct": {
+      "hash": "a68a0d0ab60a",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctAria": {
+      "hash": "b851d4c35b65",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctNote": {
+      "hash": "1b519d4933f5",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctPlaceholder": {
+      "hash": "3ed14e460a53",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctStrengthAria": {
+      "hash": "1b491a1ad575",
+      "status": "machine"
+    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -19386,6 +19530,62 @@
       "hash": "63ee3a1b965a",
       "status": "machine"
     },
+    "settings:chart.exam.add": {
+      "hash": "2a6b71dff6df",
+      "status": "machine"
+    },
+    "settings:chart.exam.addPreset": {
+      "hash": "d6c573918cf6",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaAria": {
+      "hash": "8cf9a8ef847e",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaN": {
+      "hash": "3f7580c6d524",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaPlaceholder": {
+      "hash": "832ddc65cd70",
+      "status": "machine"
+    },
+    "settings:chart.exam.areas": {
+      "hash": "d6e581f1dd3c",
+      "status": "machine"
+    },
+    "settings:chart.exam.areasNote": {
+      "hash": "e388aa1980f8",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.floor": {
+      "hash": "0c5953c02e59",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.gingiva": {
+      "hash": "9f60bc7a14b2",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.lips": {
+      "hash": "e125a237b76e",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.salivary": {
+      "hash": "ae17c95e77fe",
+      "status": "machine"
+    },
+    "settings:chart.exam.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.exam.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
     "settings:chart.mirrorHint": {
       "hash": "2a98b1f7b5ed",
       "status": "machine"
@@ -19488,6 +19688,10 @@
     },
     "settings:chart.sections.diagnosis": {
       "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sections.exam": {
+      "hash": "df45fcf47b9d",
       "status": "machine"
     },
     "settings:chart.sections.images": {
@@ -26244,6 +26448,10 @@
       "hash": "44f5e3fbec57",
       "status": "machine"
     },
+    "forms:exam.customizeTitle": {
+      "hash": "82458a58bb7a",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -28332,6 +28540,14 @@
       "hash": "65b240c48fdc",
       "status": "machine"
     },
+    "pdf:exam.additional": {
+      "hash": "1c5ee74e3e79",
+      "status": "machine"
+    },
+    "pdf:exam.alsoNormal": {
+      "hash": "0a7359e06e14",
+      "status": "machine"
+    },
     "pdf:exam.comment": {
       "hash": "71772a68c6d1",
       "status": "machine"
@@ -28358,6 +28574,18 @@
     },
     "pdf:exam.items.tongue": {
       "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_many": {
+      "hash": "122f00a2eea5",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_one": {
+      "hash": "9d1e5626a572",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_other": {
+      "hash": "122f00a2eea5",
       "status": "machine"
     },
     "pdf:exam.normal": {
@@ -29608,6 +29836,26 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
+    "settings:chart.anesthesia.adjunct": {
+      "hash": "a68a0d0ab60a",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctAria": {
+      "hash": "b851d4c35b65",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctNote": {
+      "hash": "1b519d4933f5",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctPlaceholder": {
+      "hash": "3ed14e460a53",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctStrengthAria": {
+      "hash": "1b491a1ad575",
+      "status": "machine"
+    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -29764,6 +30012,62 @@
       "hash": "63ee3a1b965a",
       "status": "machine"
     },
+    "settings:chart.exam.add": {
+      "hash": "2a6b71dff6df",
+      "status": "machine"
+    },
+    "settings:chart.exam.addPreset": {
+      "hash": "d6c573918cf6",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaAria": {
+      "hash": "8cf9a8ef847e",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaN": {
+      "hash": "3f7580c6d524",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaPlaceholder": {
+      "hash": "832ddc65cd70",
+      "status": "machine"
+    },
+    "settings:chart.exam.areas": {
+      "hash": "d6e581f1dd3c",
+      "status": "machine"
+    },
+    "settings:chart.exam.areasNote": {
+      "hash": "e388aa1980f8",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.floor": {
+      "hash": "0c5953c02e59",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.gingiva": {
+      "hash": "9f60bc7a14b2",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.lips": {
+      "hash": "e125a237b76e",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.salivary": {
+      "hash": "ae17c95e77fe",
+      "status": "machine"
+    },
+    "settings:chart.exam.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.exam.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
     "settings:chart.mirrorHint": {
       "hash": "2a98b1f7b5ed",
       "status": "machine"
@@ -29866,6 +30170,10 @@
     },
     "settings:chart.sections.diagnosis": {
       "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sections.exam": {
+      "hash": "df45fcf47b9d",
       "status": "machine"
     },
     "settings:chart.sections.images": {
@@ -36622,6 +36930,10 @@
       "hash": "44f5e3fbec57",
       "status": "machine"
     },
+    "forms:exam.customizeTitle": {
+      "hash": "82458a58bb7a",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -38710,6 +39022,14 @@
       "hash": "65b240c48fdc",
       "status": "machine"
     },
+    "pdf:exam.additional": {
+      "hash": "1c5ee74e3e79",
+      "status": "machine"
+    },
+    "pdf:exam.alsoNormal": {
+      "hash": "0a7359e06e14",
+      "status": "machine"
+    },
     "pdf:exam.comment": {
       "hash": "71772a68c6d1",
       "status": "machine"
@@ -38736,6 +39056,18 @@
     },
     "pdf:exam.items.tongue": {
       "hash": "583338262d37",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_many": {
+      "hash": "122f00a2eea5",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_one": {
+      "hash": "9d1e5626a572",
+      "status": "machine"
+    },
+    "pdf:exam.moreAreas_other": {
+      "hash": "122f00a2eea5",
       "status": "machine"
     },
     "pdf:exam.normal": {
@@ -39986,6 +40318,26 @@
       "hash": "f8aea4c05e07",
       "status": "machine"
     },
+    "settings:chart.anesthesia.adjunct": {
+      "hash": "a68a0d0ab60a",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctAria": {
+      "hash": "b851d4c35b65",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctNote": {
+      "hash": "1b519d4933f5",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctPlaceholder": {
+      "hash": "3ed14e460a53",
+      "status": "machine"
+    },
+    "settings:chart.anesthesia.adjunctStrengthAria": {
+      "hash": "1b491a1ad575",
+      "status": "machine"
+    },
     "settings:chart.anesthesia.blockNames.caudalMaxillary": {
       "hash": "f9a50a0273c1",
       "status": "machine"
@@ -40142,6 +40494,62 @@
       "hash": "63ee3a1b965a",
       "status": "machine"
     },
+    "settings:chart.exam.add": {
+      "hash": "2a6b71dff6df",
+      "status": "machine"
+    },
+    "settings:chart.exam.addPreset": {
+      "hash": "d6c573918cf6",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaAria": {
+      "hash": "8cf9a8ef847e",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaN": {
+      "hash": "3f7580c6d524",
+      "status": "machine"
+    },
+    "settings:chart.exam.areaPlaceholder": {
+      "hash": "832ddc65cd70",
+      "status": "machine"
+    },
+    "settings:chart.exam.areas": {
+      "hash": "d6e581f1dd3c",
+      "status": "machine"
+    },
+    "settings:chart.exam.areasNote": {
+      "hash": "e388aa1980f8",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.floor": {
+      "hash": "0c5953c02e59",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.gingiva": {
+      "hash": "9f60bc7a14b2",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.lips": {
+      "hash": "e125a237b76e",
+      "status": "machine"
+    },
+    "settings:chart.exam.presets.salivary": {
+      "hash": "ae17c95e77fe",
+      "status": "machine"
+    },
+    "settings:chart.exam.remove": {
+      "hash": "c3812fc4acb8",
+      "status": "machine"
+    },
+    "settings:chart.exam.removeAria": {
+      "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.title": {
+      "hash": "02044af3237c",
+      "status": "machine"
+    },
     "settings:chart.mirrorHint": {
       "hash": "2a98b1f7b5ed",
       "status": "machine"
@@ -40244,6 +40652,10 @@
     },
     "settings:chart.sections.diagnosis": {
       "hash": "a5b1936acd11",
+      "status": "machine"
+    },
+    "settings:chart.sections.exam": {
+      "hash": "df45fcf47b9d",
       "status": "machine"
     },
     "settings:chart.sections.images": {

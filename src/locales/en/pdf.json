@@ -28,7 +28,11 @@
       "tongue": "Tongue",
       "palate": "Palate",
       "pharynx": "Pharynx/Tonsils"
-    }
+    },
+    "additional": "Additional Exam Areas",
+    "alsoNormal": "Normal: {{areas}}",
+    "moreAreas_one": "+{{count}} more area in the app",
+    "moreAreas_other": "+{{count}} more areas in the app"
   },
   "grid": {
     "maxilla": "Maxillary Arch",

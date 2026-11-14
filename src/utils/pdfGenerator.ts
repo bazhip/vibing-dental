@@ -28,12 +28,14 @@ import {
   LEGEND_BOXES_BY_PAGE,
   PATIENT_INFO_BOX,
   EXAM_TABLE_YTOP_IN,
+  NERVE_BLOCK_BOX,
 } from './pdf/layout';
 import { formatGeneratedAt, CARD_BAND_PT } from './pdf/draw';
 import {
   drawLogoAndHeader,
   drawPatientInfoBox,
   drawExamSection,
+  drawCustomExamCard,
   drawToothGrid,
   drawNerveBlockTable,
   treatmentCardText,
@@ -298,8 +300,16 @@ export async function buildDentalChartPDFBytes(
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const nbBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia, lng);
+  const tableBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia, lng);
   const baseSlot = DIAGRAM_SLOTS[species][1];
+  // The person's own exam areas don't fit on page 1: they get a card under
+  // the nerve blocks, kept short enough to leave the diagram its minimum.
+  const slotBottomIn = baseSlot.yTopIn + baseSlot.heightIn;
+  const nbBottomIn = drawCustomExamCard(
+    page2, patientInfo.customExam, regular, bold, tableBottomIn + 0.12,
+    NERVE_BLOCK_BOX.xIn, NERVE_BLOCK_BOX.labelColIn + 2 * NERVE_BLOCK_BOX.valueColIn,
+    slotBottomIn - 2.2 - 0.15, lng
+  ) ?? tableBottomIn;
   const minTopIn = nbBottomIn + 0.15;
   const postSlot =
     minTopIn > baseSlot.yTopIn

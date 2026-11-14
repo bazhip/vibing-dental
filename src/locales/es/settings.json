@@ -114,7 +114,8 @@
       "anesthesia": "Ajustes de anestesia",
       "charting": "Ajustes del odontograma",
       "diagnosis": "Ajustes del diagnóstico",
-      "images": "Ajustes de las imágenes"
+      "images": "Ajustes de las imágenes",
+      "exam": "Ajustes del examen"
     },
     "noteAccount": "Solo para usted — estos ajustes siguen a su cuenta en todos sus dispositivos. Los cambios se guardan al instante.",
     "noteBrowser": "Guardados en este navegador. Los cambios se aplican al instante.",
@@ -161,7 +162,12 @@
       "usualNote": "Se ofrece con un toque en un historial sin anestésico indicado.",
       "drugPlaceholder": "p. ej., bupivacaína",
       "drugAria": "Anestésico habitual",
-      "strengthAria": "Concentración del anestésico habitual (%)"
+      "strengthAria": "Concentración del anestésico habitual (%)",
+      "adjunct": "Añadido a la mezcla",
+      "adjunctNote": "Añadido a la mezcla (opcional), p. ej., buprenorfina o dexmedetomidina. «Usar mi habitual» registra entonces ambos.",
+      "adjunctPlaceholder": "p. ej., buprenorfina",
+      "adjunctAria": "Fármaco habitual añadido a la mezcla",
+      "adjunctStrengthAria": "Concentración del fármaco añadido a la mezcla"
     },
     "patient": {
       "title": "Página Paciente",
@@ -192,6 +198,24 @@
       "placeholder": "Código, p. ej. T/SR",
       "addAria": "Código que añadir",
       "add": "Añadir"
+    },
+    "exam": {
+      "title": "Examen",
+      "areas": "Sus zonas de examen",
+      "areasNote": "Se añaden después de las seis zonas predefinidas, cada una con Normal / Anormal y un comentario. Solo las zonas respondidas aparecen en el PDF.",
+      "areaPlaceholder": "p. ej., Labios",
+      "areaAria": "Nombre de la zona de examen {{n}}",
+      "areaN": "zona {{n}}",
+      "remove": "Quitar",
+      "removeAria": "Quitar {{name}}",
+      "add": "Añadir zona",
+      "addPreset": "Añadir la lista completa del examen oral",
+      "presets": {
+        "lips": "Labios / unión mucocutánea",
+        "gingiva": "Encía / línea mucogingival",
+        "salivary": "Desembocaduras de los conductos salivales",
+        "floor": "Suelo de la boca / frenillo"
+      }
     }
   },
   "feedback": {

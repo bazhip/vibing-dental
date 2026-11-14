@@ -64,7 +64,8 @@
       "tongue": "lengua",
       "palate": "paladar",
       "pharynx": "faringe / amígdalas"
-    }
+    },
+    "customizeTitle": "Añada sus propias zonas de examen"
   },
   "anesthesia": {
     "title": "Anestesia — Bloqueos nerviosos",

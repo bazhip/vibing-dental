@@ -5,11 +5,13 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
+import { ExamAreasEditor } from './ExamAreasEditor';
 import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ChartSettingsList } from './ChartSettingsList';
-import { USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { USUAL_ADJUNCTS, USUAL_DRUGS, toggleField, useChartSettingsModel } from './useChartSettingsModel';
+import { ADJUNCT_DRUGS, drugUnit, strengthHasUnit } from '../types';
 
 /**
  * Chart settings — per person: they follow your account to every device.
@@ -32,7 +34,7 @@ export interface ChartSettingsModalProps {
   section?: SettingsSection;
 }
 
-export type SettingsSection = 'patient' | 'anesthesia' | 'charting' | 'diagnosis' | 'images';
+export type SettingsSection = 'patient' | 'exam' | 'anesthesia' | 'charting' | 'diagnosis' | 'images';
 
 
 export const ChartSettingsModal: React.FC<ChartSettingsModalProps> = (props) =>
@@ -60,8 +62,11 @@ function ChartSettingsSheet({ onClose, prefs, followsAccount, onChange, section 
 const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs, followsAccount, onChange, section }) => {
   const { t } = useTranslation('settings');
   const [only, setOnly] = React.useState<SettingsSection | null>(section ?? null);
-  const { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock } =
-    useChartSettingsModel(prefs, onChange, only);
+  const {
+    showAll, show, shownColumns, toggleBlock,
+    drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug,
+    adjunctName, setAdjunctName, adjunctStrength, setAdjunctStrength, saveUsualAdjunct,
+  } = useChartSettingsModel(prefs, onChange, only);
   const modalRef = useModalFocus<HTMLDivElement>(true);
   const backdrop = useBackdropDismiss(onClose);
 
@@ -202,6 +207,13 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
           </section>
           )}
 
+          {show.exam && (
+          <section className="chart-settings__group">
+            <h3 className="ai-settings-subhead">{t('chart.exam.title')}</h3>
+            <ExamAreasEditor areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+          </section>
+          )}
+
           {show.anesthesia && (
           <section className="chart-settings__group">
             <h3 className="ai-settings-subhead">{t('chart.anesthesia.title')}</h3>
@@ -256,6 +268,35 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 </span>
                 <datalist id="chart-settings-drugs">
                   {USUAL_DRUGS.map((d) => <option key={d} value={d} />)}
+                </datalist>
+              </div>
+              <p className="chart-settings__note">{t('chart.anesthesia.adjunctNote')}</p>
+              <div className="chart-settings__drug">
+                <input
+                  type="text"
+                  list="chart-settings-adjuncts"
+                  className="patient-form__input"
+                  placeholder={t('chart.anesthesia.adjunctPlaceholder')}
+                  aria-label={t('chart.anesthesia.adjunctAria')}
+                  value={adjunctName}
+                  onChange={(e) => setAdjunctName(e.target.value)}
+                  onBlur={saveUsualAdjunct}
+                />
+                <span className="anesthesia-unit">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="patient-form__input"
+                    placeholder="0.3"
+                    aria-label={t('chart.anesthesia.adjunctStrengthAria')}
+                    value={adjunctStrength}
+                    onChange={(e) => setAdjunctStrength(e.target.value.replace(/%/g, ''))}
+                    onBlur={saveUsualAdjunct}
+                  />
+                  {!strengthHasUnit(adjunctStrength) && <span className="anesthesia-unit__suffix" aria-hidden="true">{adjunctName.trim() ? drugUnit(adjunctName) : drugUnit(ADJUNCT_DRUGS[0])}</span>}
+                </span>
+                <datalist id="chart-settings-adjuncts">
+                  {USUAL_ADJUNCTS.map((d) => <option key={d} value={d} />)}
                 </datalist>
               </div>
             </fieldset>

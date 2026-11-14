@@ -1,6 +1,7 @@
 import { PDFDocument, PDFFont, PDFForm, PDFImage, PDFPage } from 'pdf-lib';
 import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
+import { answeredCustomExam } from '../customExam';
 import type { CustomAnesthesia } from '../../types';
 import { DENTAL_CODES, DentalCode, findCodesInText, codeDefinition } from '../../constants/dentalCodes';
 import i18n from '../../i18n';
@@ -11,6 +12,8 @@ import {
   ToothData,
   DentalField,
   ExamFindings,
+  ExamFinding,
+  CustomExamValue,
   EXAM_ITEMS,
   NerveBlocks,
   effectiveNerveBlockDrugs,
@@ -537,18 +540,63 @@ export function compactExamGeometry(xIn: number, widthIn: number): ExamGeometry 
 type ExamRowLayout = {
   heightPt: number;
   comment: { lines: string[]; fontSize: number; lineHeight: number } | null;
+  /** Custom areas: the typed label fitted to the label column (it may
+   *  shrink and wrap to two lines). Built-in labels draw as they always have. */
+  label?: { lines: string[]; fontSize: number; lineHeight: number };
 };
 
-function computeExamLayouts(exam: ExamFindings, font: PDFFont, geo: ExamGeometry): ExamRowLayout[] {
+const EXAM_LABEL_SIZE = 9;
+const EXAM_RADIO_R = 4.2;
+
+/** Width left for a row label before the Normal radio. */
+const examLabelWidthPt = (geo: ExamGeometry) =>
+  (geo.normalCXIn - geo.xIn) * PT_PER_IN - 7 - EXAM_RADIO_R - 6;
+
+/** One printed exam row: a built-in area (label from the PDF catalog),
+ *  an answered custom one (its own label), or a `summary` line spanning
+ *  the card (custom areas all normal, folded together to save space). */
+type ExamPrintRow = { key: keyof ExamFindings | null; label: string; status: ExamFinding; comment: string; summary?: boolean };
+
+const builtInExamRows = (exam: ExamFindings): ExamPrintRow[] =>
+  EXAM_ITEMS.map(({ key }): ExamPrintRow => ({ key, label: '', ...exam[key] }));
+
+function computeExamLayouts(
+  rows: ExamPrintRow[],
+  font: PDFFont,
+  geo: ExamGeometry,
+  fontBold: PDFFont = font,
+  maxCommentLines = geo.commentBelow ? 3 : 2,
+): ExamRowLayout[] {
+  const rowsOut = computeCommentLayouts(rows, font, geo, maxCommentLines);
+  return rowsOut.map((layout, i) => {
+    const item = rows[i];
+    if (item.key) return layout;
+    if (item.summary) {
+      // Across the whole card, up to three lines.
+      const fit = fitTextToLines(item.label, font, geo.widthIn * PT_PER_IN - 14, 3, EXAM_LABEL_SIZE, 7);
+      const label = { ...fit, lineHeight: fit.fontSize * 1.15 };
+      return { heightPt: Math.max(EXAM_ROW_SHORT_IN * PT_PER_IN, fit.lines.length * label.lineHeight + 8), comment: null, label };
+    }
+    // Two lines in the standard card; the compact card's comment sits
+    // right under the label, so it keeps one (that column is wider).
+    const maxLines = geo.commentBelow ? 1 : 2;
+    const fit = fitTextToLines(item.label, item.status === 'abnormal' ? fontBold : font, examLabelWidthPt(geo), maxLines, EXAM_LABEL_SIZE, 7);
+    const label = { ...fit, lineHeight: fit.fontSize * 1.15 };
+    if (fit.lines.length < 2) return { ...layout, label };
+    // A two-line label needs a tall row.
+    return { ...layout, heightPt: Math.max(layout.heightPt, EXAM_ROW_TALL_IN * PT_PER_IN), label };
+  });
+}
+
+function computeCommentLayouts(rows: ExamPrintRow[], font: PDFFont, geo: ExamGeometry, maxCommentLines: number): ExamRowLayout[] {
   const commentWidthPt = geo.commentWidthIn * PT_PER_IN;
-  return EXAM_ITEMS.map(({ key }) => {
-    const item = exam[key];
-    if (item.status !== 'abnormal' || !item.comment.trim()) {
+  return rows.map((item) => {
+    if (item.summary || item.status !== 'abnormal' || !item.comment.trim()) {
       return { heightPt: EXAM_ROW_SHORT_IN * PT_PER_IN, comment: null };
     }
     const cleaned = item.comment.replace(/\s+/g, ' ').trim();
     const { lines, fontSize: cFontSize } = fitTextToLines(
-      cleaned, font, commentWidthPt, geo.commentBelow ? 3 : 2,
+      cleaned, font, commentWidthPt, maxCommentLines,
       EXAM_COMMENT_BOX.maxFontSizePt, EXAM_COMMENT_BOX.minFontSizePt
     );
     const lineHeight = cFontSize * EXAM_COMMENT_BOX.lineHeightFactor;
@@ -572,7 +620,7 @@ export function measureExamRowsIn(
 ): number {
   return (
     EXAM_HEAD_IN +
-    computeExamLayouts(exam, font, geo).reduce((acc, l) => acc + l.heightPt, 0) / PT_PER_IN
+    computeExamLayouts(builtInExamRows(exam), font, geo).reduce((acc, l) => acc + l.heightPt, 0) / PT_PER_IN
   );
 }
 
@@ -586,15 +634,85 @@ export function drawExamSection(
   lng = 'en'
 ): number {
   const t = pdfT(lng);
+  const rows = builtInExamRows(exam);
+  return drawExamCard(page, rows, computeExamLayouts(rows, font, geo, fontBold), font, fontBold, bodyTopIn, geo, t, t('exam.title'));
+}
+
+/**
+ * Page 2's "Additional exam areas" card: the answered custom areas
+ * (page 1 has no room for more rows), in the narrow left column under
+ * the nerve blocks. Kept within `maxBottomIn` (the procedure diagram
+ * needs the rest): if every area as its own row doesn't fit, the normal
+ * ones fold into one "Normal: …" line, and then comments shorten to one
+ * line. Returns the card's bottom (in from the page top), or null (and
+ * draws nothing) when no custom area was answered.
+ */
+export function drawCustomExamCard(
+  page: PDFPage,
+  custom: CustomExamValue[] | undefined,
+  font: PDFFont,
+  fontBold: PDFFont,
+  topIn: number,
+  xIn: number,
+  widthIn: number,
+  maxBottomIn: number,
+  lng = 'en'
+): number | null {
+  const answered = answeredCustomExam(custom);
+  if (answered.length === 0) return null;
+  const t = pdfT(lng);
+  const geo = compactExamGeometry(xIn, widthIn);
+  const asRow = (c: CustomExamValue): ExamPrintRow => ({ key: null, label: c.label, status: c.status, comment: c.comment });
+  const normals = answered.filter((c) => c.status === 'normal' && !c.comment.trim());
+  const folded: ExamPrintRow[] = [
+    ...answered.filter((c) => !normals.includes(c)).map(asRow),
+    ...(normals.length
+      ? [{ key: null, label: t('exam.alsoNormal', { areas: normals.map((c) => c.label).join(', ') }), status: 'normal' as const, comment: '', summary: true }]
+      : []),
+  ];
+  const bodyTopIn = topIn + CARD_BAND_PT / PT_PER_IN;
+  const room = (maxBottomIn - bodyTopIn) * PT_PER_IN - EXAM_HEAD_IN * PT_PER_IN;
+  const height = (rows: ExamPrintRow[], lines: number) =>
+    computeExamLayouts(rows, font, geo, fontBold, lines).reduce((acc, l) => acc + l.heightPt, 0);
+  const tries: [ExamPrintRow[], number][] = [[answered.map(asRow), 3], [folded, 3], [folded, 1]];
+  let pick: [ExamPrintRow[], number] | undefined = tries.find(([rows, lines]) => height(rows, lines) <= room);
+  if (!pick) {
+    // Still too tall: keep the rows that fit and say how many are left
+    // out (they're in the app, and in the PDF's round-trip copy).
+    const kept = [...folded];
+    let left = 0;
+    const more = (n: number): ExamPrintRow => ({ key: null, label: t('exam.moreAreas', { count: n }), status: '', comment: '', summary: true });
+    while (kept.length > 0 && height([...kept, more(left || 1)], 1) > room) {
+      const dropped = kept.pop()!;
+      left += dropped.summary ? normals.length : 1;
+    }
+    pick = [left ? [...kept, more(left)] : kept, 1];
+  }
+  const layouts = computeExamLayouts(pick[0], font, geo, fontBold, pick[1]);
+  return drawExamCard(page, pick[0], layouts, font, fontBold, bodyTopIn, geo, t, t('exam.additional'));
+}
+
+/** Draws an exam card (band, caption row, rows) with its top body edge at
+ *  `bodyTopIn`; returns its bottom edge (in from the page top). */
+function drawExamCard(
+  page: PDFPage,
+  rows: ExamPrintRow[],
+  layouts: ExamRowLayout[],
+  font: PDFFont,
+  fontBold: PDFFont,
+  bodyTopIn: number,
+  geo: ExamGeometry,
+  t: ReturnType<typeof pdfT>,
+  title: string
+): number {
   const { height: pageHeight } = page.getSize();
-  const fontSize = 9;
+  const fontSize = EXAM_LABEL_SIZE;
   const xPt = geo.xIn * PT_PER_IN;
   const sectionWidth = geo.widthIn * PT_PER_IN;
   const commentXPt = geo.commentXIn * PT_PER_IN;
 
   const bodyTopPt = pageHeight - bodyTopIn * PT_PER_IN;
 
-  const layouts = computeExamLayouts(exam, font, geo);
 
   // One card around the band + caption row + every exam row (heights
   // vary with comment wrapping, so the total is computed from the
@@ -603,14 +721,14 @@ export function drawExamSection(
   const rowsTotalH = layouts.reduce((acc, l) => acc + l.heightPt, 0);
   drawSectionCard(
     page, xPt, bodyTopPt + CARD_BAND_PT, sectionWidth,
-    CARD_BAND_PT + headPt + rowsTotalH, t('exam.title'), fontBold
+    CARD_BAND_PT + headPt + rowsTotalH, title, fontBold
   );
 
   // Column layout mirrors the app: label | Normal | Abnormal | Comment.
   const labelX = xPt + 7;
   const normalCX   = geo.normalCXIn * PT_PER_IN;
   const abnormalCX = geo.abnormalCXIn * PT_PER_IN;
-  const radioR = 4.2;
+  const radioR = EXAM_RADIO_R;
 
   // Caption row.
   const capSize = 6.5;
@@ -623,9 +741,8 @@ export function drawExamSection(
   hlineLight(page, xPt, xPt + sectionWidth, bodyTopPt - headPt);
 
   let cursorY = bodyTopPt - headPt;
-  for (let i = 0; i < EXAM_ITEMS.length; i++) {
-    const { key } = EXAM_ITEMS[i];
-    const item = exam[key];
+  for (let i = 0; i < rows.length; i++) {
+    const item = rows[i];
     const layout = layouts[i];
     const rowTopY = cursorY;
     const rowBottomY = cursorY - layout.heightPt;
@@ -646,12 +763,28 @@ export function drawExamSection(
       page.drawRectangle({ x: xPt + 0.6, y: rowBottomY, width: sectionWidth - 1.2, height: layout.heightPt, color: PALETTE.rowAlt });
     }
 
-    const labelText = t(`exam.items.${key}`);
-    page.drawText(labelText, {
-      x: labelX, y: labelY, size: fontSize,
-      font: abnormal ? fontBold : font,
-      color: abnormal ? PALETTE.danger : PALETTE.text,
-    });
+    const labelFont = abnormal ? fontBold : font;
+    const labelColor = abnormal ? PALETTE.danger : PALETTE.text;
+    if (item.summary && layout.label) {
+      // Folded normal areas: text across the card, no radios.
+      const { lines, fontSize: lSize, lineHeight } = layout.label;
+      lines.forEach((line, li) => {
+        page.drawText(line, { x: labelX, y: rowTopY - 4 - (li + 1) * lineHeight + (lineHeight - lSize) / 2, size: lSize, font, color: PALETTE.text });
+      });
+      cursorY = rowBottomY;
+      continue;
+    }
+    if (item.key) {
+      page.drawText(t(`exam.items.${item.key}`), { x: labelX, y: labelY, size: fontSize, font: labelFont, color: labelColor });
+    } else if (layout.label) {
+      // Custom labels are typed, so they can run long: shrunk and wrapped
+      // to fit before the radios (computeExamLayouts), centred on the row.
+      const { lines, fontSize: lSize, lineHeight } = layout.label;
+      const firstBaseline = rowMidY + ((lines.length - 1) * lineHeight) / 2 - lSize / 2 + 1.5;
+      lines.forEach((line, li) => {
+        page.drawText(line, { x: labelX, y: firstBaseline - li * lineHeight, size: lSize, font: labelFont, color: labelColor });
+      });
+    }
 
     // Radio pair under the Normal / Abnormal captions — abnormal carries
     // the clinical signal color, same language as the app.

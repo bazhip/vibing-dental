@@ -1,10 +1,13 @@
 import React from 'react';
 import type { DentalField } from '../types';
 import { BlockRowId, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { ADJUNCT_DRUGS, strengthForInput, withDrugUnit } from '../types';
 import type { SettingsSection } from './ChartSettingsModal';
 
 /** Anesthetics offered for "Your usual anesthetic" (drug names, not text). */
 export const USUAL_DRUGS = ['Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
+/** Offered for "Added to the mix" (drug names, not text). */
+export const USUAL_ADJUNCTS = ADJUNCT_DRUGS;
 
 /** Adds or removes `key` in a field list. */
 export const toggleField = (list: DentalField[], key: DentalField, on: boolean): DentalField[] =>
@@ -34,43 +37,61 @@ export function useChartSettingsModel(
     quickCodes: showAll || only === 'charting' || only === 'diagnosis',
     anesthesia: showAll || only === 'anesthesia',
     patient: showAll || only === 'patient',
+    exam: showAll || only === 'exam',
     pdfGrid: showAll || only === 'charting',
     pdfImages: showAll || only === 'images',
   };
   const shownColumns = PERIO_FIELDS.filter((f) => !prefs.hiddenColumns.includes(f.key));
 
-  // Usual anesthetic: typed locally, saved when a field loses focus (not
-  // on every keystroke).
-  const [drugName, setDrugNameState] = React.useState(prefs.usualDrug?.name ?? '');
-  const [drugStrength, setDrugStrengthState] = React.useState(prefs.usualDrug?.concentration ?? '');
-  // Edited since the last save: only then may unmount save the draft (an
-  // untouched or already-saved draft must not overwrite a newer usualDrug).
-  const drugDirty = React.useRef(false);
-  const setDrugName = (v: string) => {
-    drugDirty.current = true;
-    setDrugNameState(v);
-  };
-  const setDrugStrength = (v: string) => {
-    drugDirty.current = true;
-    setDrugStrengthState(v);
-  };
-  const saveUsualDrug = () => {
-    drugDirty.current = false;
-    const name = drugName.trim();
-    const next = name ? { name, concentration: drugStrength.replace(/%/g, '').trim() } : null;
-    if (JSON.stringify(next) !== JSON.stringify(prefs.usualDrug)) onChange({ usualDrug: next });
-  };
+  // Usual anesthetic, and what's added to it: typed locally, saved when a
+  // field loses focus (not on every keystroke).
+  const drug = useUsualDrugDraft(prefs.usualDrug, (usualDrug) => onChange({ usualDrug }));
+  const adjunct = useUsualDrugDraft(prefs.usualAdjunct, (usualAdjunct) => onChange({ usualAdjunct }));
   const toggleBlock = (id: BlockRowId, shown: boolean) =>
     onChange({ hiddenBlocks: shown ? prefs.hiddenBlocks.filter((b) => b !== id) : Array.from(new Set([...prefs.hiddenBlocks, id])) });
 
-  const latestSave = React.useRef(saveUsualDrug);
-  latestSave.current = saveUsualDrug;
+  const latestSaves = React.useRef([drug, adjunct]);
+  latestSaves.current = [drug, adjunct];
   React.useEffect(() => {
     if (!saveDrugOnUnmount) return undefined;
     return () => {
-      if (drugDirty.current) latestSave.current();
+      for (const d of latestSaves.current) if (d.dirty.current) d.save();
     };
   }, [saveDrugOnUnmount]);
 
-  return { showAll, show, shownColumns, drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug, toggleBlock };
+  const { name: drugName, setName: setDrugName, strength: drugStrength, setStrength: setDrugStrength, save: saveUsualDrug } = drug;
+  const { name: adjunctName, setName: setAdjunctName, strength: adjunctStrength, setStrength: setAdjunctStrength, save: saveUsualAdjunct } = adjunct;
+
+  return {
+    showAll, show, shownColumns, toggleBlock,
+    drugName, setDrugName, drugStrength, setDrugStrength, saveUsualDrug,
+    adjunctName, setAdjunctName, adjunctStrength, setAdjunctStrength, saveUsualAdjunct,
+  };
+}
+
+type UsualDrug = { name: string; concentration: string } | null;
+
+/** One usual-drug draft (name + strength). The strength box shows the
+ *  number; the drug's unit (mg/mL for adjuncts) is added when saved.
+ *  `dirty`: edited since the last save — only then may unmount save it (an
+ *  untouched or already-saved draft must not overwrite a newer value). */
+function useUsualDrugDraft(value: UsualDrug, onSave: (next: UsualDrug) => void) {
+  const [name, setNameState] = React.useState(value?.name ?? '');
+  const [strength, setStrengthState] = React.useState(value ? strengthForInput(value.name, value.concentration) : '');
+  const dirty = React.useRef(false);
+  const setName = (v: string) => {
+    dirty.current = true;
+    setNameState(v);
+  };
+  const setStrength = (v: string) => {
+    dirty.current = true;
+    setStrengthState(v);
+  };
+  const save = () => {
+    dirty.current = false;
+    const n = name.trim();
+    const next = n ? { name: n, concentration: withDrugUnit(n, strength.replace(/%/g, '').trim()) } : null;
+    if (JSON.stringify(next) !== JSON.stringify(value)) onSave(next);
+  };
+  return { name, setName, strength, setStrength, save, dirty };
 }

@@ -135,8 +135,8 @@ const ALLOW: (string | RegExp)[] = [
   /^me@vet\.com|^joined@vet\.com|^pending@vet\.com|^second@vet\.com/,
   /^\d+\/\d+$/,
 ];
-// Drug names, and the default quick code (a dental code), aren't translated.
-const DRUGS = ['T/SN', 'Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
+// Drug names and units, and the default quick code (a dental code), aren't translated.
+const DRUGS = ['T/SN', 'mg/mL', 'Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 describe('PracticeSettingsModal', () => {
   it('owners pick the pet-owner language; members see it read-only', async () => {
