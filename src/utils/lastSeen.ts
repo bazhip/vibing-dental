@@ -12,6 +12,8 @@ let lastTouch = 0;
  */
 export function touchLastSeen(now = Date.now()): void {
   if (!supabase || now - lastTouch < MIN_INTERVAL_MS) return;
+  // A background tab (or a sleeping laptop's) isn't someone using the app.
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
   lastTouch = now;
   void supabase.rpc('touch_last_seen').then(
     () => undefined,

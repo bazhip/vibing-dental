@@ -19,3 +19,13 @@ it('a failing call (e.g. migration not applied) is swallowed', async () => {
   expect(() => touchLastSeen(5_000_000)).not.toThrow();
   await Promise.resolve();
 });
+
+it('a hidden tab does not count as activity', () => {
+  const spy = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+  touchLastSeen(9_000_000);
+  expect(rpc).not.toHaveBeenCalled();
+  spy.mockReturnValue('visible');
+  touchLastSeen(9_000_000);
+  expect(rpc).toHaveBeenCalledTimes(1);
+  spy.mockRestore();
+});

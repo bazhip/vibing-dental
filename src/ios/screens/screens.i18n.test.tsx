@@ -15,7 +15,10 @@ vi.mock('../../native/haptics', () => ({ hapticSelection: vi.fn(), hapticTap: vi
 vi.mock('../../utils/supabaseClient', () => ({
   supabase: {
     functions: { invoke: vi.fn(async () => ({ data: null, error: new Error('offline') })) },
-    auth: { getUser: async () => ({ data: { user: { email: 'me@vet.com' } } }) },
+    auth: {
+      getUser: async () => ({ data: { user: { email: 'me@vet.com' } } }),
+      updateUser: async () => ({ data: { user: null }, error: null }),
+    },
   },
   cloudEnabled: true,
 }));
