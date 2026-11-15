@@ -3,27 +3,13 @@ import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import type { StoredRecordNote } from '../types';
-import type { InspectResult, ItemResult, SendResult } from '../extension/protocol';
-import { HEADING_KEYS, type RecordNote, type RecordNoteKey } from '../utils/recordNote';
-import {
-  buildSendItems,
-  splitStoredNote,
-  targetableFields,
-  type FieldInfo,
-  type PimsFieldMap,
-  type SourceKey,
-} from '../utils/pims/mapping';
-import { matchField } from '../extension/ezyvet/matchField';
-import { patientsMatch } from '../utils/pims/patientMatch';
-import { diagnose, inspect, ping, send } from '../utils/pims/extensionBridge';
+import type { RecordNote } from '../utils/recordNote';
+import { diagnose, inspect, ping, send, type PimsTransport } from '../utils/pims/extensionBridge';
 import { renderChartPicture } from '../utils/pims/chartPicture';
-import { markPimsSent } from '../utils/edgeFunctions';
-import { usePimsFieldMap } from '../hooks/usePimsFieldMap';
+import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
-import { supabase } from '../utils/supabaseClient';
-import { copyRichText } from '../utils/clipboard';
-import { errorText } from '../utils/apiErrors';
-import { confirmDialog, toast } from './ui/dialogs';
+import { MappingRows } from './pims/MappingRows';
+import { DiagnosticLink, SendResults } from './pims/SendResults';
 
 export interface SendToEzyvetDialogProps {
   open: boolean;
@@ -42,137 +28,36 @@ export interface SendToEzyvetDialogProps {
   onSent: (sentAt: string) => void;
 }
 
-type FailCode = Extract<ItemResult, { ok: false }>['code'] | 'picture_failed';
-type ResultRow = { fieldTitle: string; code: FailCode | null };
-
-/** Failures that may come after ezyVet already saved the field: the next Send asks first. */
-const MAYBE_WRITTEN: ReadonlySet<FailCode> = new Set<FailCode>([
-  'popup_not_closed',
-  'save_not_confirmed',
-  'save_button_not_found',
-  'extension_error',
-]);
-
-/** A per-field failure. Codes that are also whole-send refusals get a per-field text, which says
- *  to check ezyVet instead of trying again (trying again would resend the fields already written). */
-const rowErrorKey = (code: FailCode) =>
-  code === 'extension_error' || code === 'not_writable' || code === 'patient_changed'
-    ? (`pims:errors.item_${code}` as const)
-    : (`pims:errors.${code}` as const);
-
-type Phase =
-  | { kind: 'loading' }
-  | { kind: 'notInstalled' }
-  | { kind: 'error'; message: string; tabId?: number }
-  | { kind: 'ready'; info: InspectResult }
-  | { kind: 'results'; info: InspectResult; rows: ResultRow[]; stampFailed: boolean };
-
-/** Row key: a note section, the chart picture, or the whole edited note. */
-type RowKey = SourceKey | 'edited';
-
-const DONT_SEND = '';
-const MISSING = '\u0000missing';
-
-/** Choice shown in a row's select for the wanted title. */
-function selectValue(wanted: string | null, options: FieldInfo[]): string {
-  if (wanted == null) return DONT_SEND;
-  return matchField(wanted, options.map((f) => f.title)) ?? MISSING;
-}
+// Built here (not imported as `externalTransport`) from the bridge's own functions.
+const transport: PimsTransport = { ping, inspect, send, diagnose };
 
 /**
- * Documents → Record note → Send to ezyVet. Finds the open ezyVet consult
- * through the extension, shows where each part of the note goes (the vet's
- * saved map over the defaults), checks the patient and writes the note.
- * Nothing from the ezyVet page is stored or sent anywhere; the diagnostic
- * report only copies what the extension's `diagnose` returns.
+ * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the
+ * dialog around it.
  */
 export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   open, onClose, note, stored, chartSnapshot, chartId, patientName, sentAt, onSent,
 }) => {
-  const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
-  const { map, save, reset } = usePimsFieldMap();
+  const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
-  const idBase = React.useId();
-  const [phase, setPhase] = React.useState<Phase>({ kind: 'loading' });
-  const [edits, setEdits] = React.useState<PimsFieldMap>({});
-  const [editedField, setEditedField] = React.useState<string | null | undefined>(undefined);
-  const [sending, setSending] = React.useState(false);
-  const sendingRef = React.useRef(false);
-  const [fetchedSentAt, setFetchedSentAt] = React.useState<string | null>(null);
-  const [justSentAt, setJustSentAt] = React.useState<string | null>(null);
-  // Send waits for the send-date lookup, so a re-send always asks first.
-  const [sentAtSettled, setSentAtSettled] = React.useState(true);
-  const lastSentAt = justSentAt ?? sentAt ?? fetchedSentAt;
-
-  const load = React.useCallback(async () => {
-    setPhase({ kind: 'loading' });
-    const version = await ping();
-    if (!version) { setPhase({ kind: 'notInstalled' }); return; }
-    try {
-      setPhase({ kind: 'ready', info: await inspect() });
-    } catch (err) {
-      setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
-    }
-  }, [t]);
-
-  React.useEffect(() => {
-    if (!open) return;
-    setEdits({});
-    setEditedField(undefined);
-    setJustSentAt(null);
-    void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  // The last send date isn't loaded with the chart; read it here. Any
-  // failure (e.g. row-level security for a practice member) means unknown.
-  React.useEffect(() => {
-    setFetchedSentAt(null);
-    if (!open || !chartId || !supabase) { setSentAtSettled(true); return; }
-    setSentAtSettled(false);
-    let cancelled = false;
-    void (async () => {
-      try {
-        const { data, error } = await supabase!.from('charts').select('pims_sent_at').eq('id', chartId).maybeSingle();
-        if (cancelled || error) return;
-        setFetchedSentAt((data as { pims_sent_at?: string | null } | null)?.pims_sent_at ?? null);
-      } catch { /* unknown */ } finally {
-        if (!cancelled) setSentAtSettled(true);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [open, chartId]);
-
-  // What is sent: the generated note, the edited note split back into its
-  // sections, or (when the split fails) the edited note as one block.
-  const split = React.useMemo(() => (stored ? splitStoredNote(stored.text, note) : note), [stored, note]);
-  const sections = split?.sections ?? [];
+  const {
+    phase, rows, split, sending, sentAtSettled, lastSentAt, nothingToSend,
+    load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
+  } = usePimsSend({
+    transport,
+    note,
+    stored,
+    chartSnapshotPicture: async () =>
+      chartSnapshot ? renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : null,
+    hasChartPicture: !!chartSnapshot,
+    chartId,
+    patientName,
+    sentAt,
+    onSent,
+    open,
+  });
 
   if (!open) return null;
-
-  const formatDate = (iso: string) => {
-    const d = new Date(iso);
-    try {
-      return d.toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' });
-    } catch {
-      return d.toLocaleString();
-    }
-  };
-
-  const copyDiagnostic = async (tabId?: number) => {
-    try {
-      const report = JSON.stringify(await diagnose(tabId), null, 2);
-      const html = `<pre>${report.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
-      const outcome = await copyRichText(html, report, t('pims:actions.diagnosticPrompt'));
-      if (outcome !== 'prompt') toast(t('pims:actions.diagnosticCopied'), { kind: 'success' });
-    } catch (err) {
-      toast(errorText(err, t('pims:errors.extension_error')), { kind: 'error' });
-    }
-  };
-
-  const wantedFor = (key: SourceKey): string | null => (key in edits ? edits[key]! : map[key]) ?? null;
-  const editedWanted =
-    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : map.treatment ?? 'Plan';
 
   const header = (
     <header className="ai-settings-header">
@@ -182,11 +67,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     </header>
   );
 
-  const diagnosticLink = (tabId?: number) => (
-    <button type="button" className="pims-dialog__link" onClick={() => void copyDiagnostic(tabId)}>
-      {t('pims:actions.copyDiagnostic')}
-    </button>
-  );
+  const diagnosticLink = (tabId?: number) => <DiagnosticLink onCopy={() => void copyDiagnostic(tabId)} />;
 
   const retryButton = (
     <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={() => void load()}>
@@ -240,152 +121,16 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     const info = phase.info;
     const tab = info.tab!;
     const ezyvetName = info.status!.patientName;
-    const targets = targetableFields(info.fields);
-    const imageTargets = targets.filter((f) => f.acceptsImage);
-
-    type Row = { key: RowKey; label: string; options: FieldInfo[]; wanted: string | null };
-    const rows: Row[] = split
-      ? sections.map((s) => ({ key: s.key, label: t(HEADING_KEYS[s.key as RecordNoteKey]), options: targets, wanted: wantedFor(s.key) }))
-      : [{ key: 'edited', label: t('pims:rows.edited'), options: targets, wanted: editedWanted }];
-    if (chartSnapshot) rows.push({ key: 'chart', label: t('pims:rows.chart'), options: imageTargets, wanted: wantedFor('chart') });
-
-    const choose = (key: RowKey, value: string) => {
-      const next = value === DONT_SEND ? null : value;
-      if (key === 'edited') setEditedField(next);
-      else setEdits((e) => ({ ...e, [key]: next }));
-    };
-
-    const resetToDefaults = async () => {
-      setEdits({});
-      setEditedField(undefined);
-      try { await reset(); } catch (err) { toast(errorText(err, t('common:errors.generic')), { kind: 'error' }); }
-    };
-
-    const nothingToSend = rows.every((r) => r.wanted == null);
-
-    const doSend = async () => {
-      if (sendingRef.current) return;
-      sendingRef.current = true;
-      setSending(true);
-      try {
-        const changes = editedField !== undefined ? { ...edits, editedNote: editedField } : edits;
-        if (Object.keys(changes).length) {
-          // Saving the map must not stop the send.
-          try { await save(changes); } catch { /* the choices still apply to this send */ }
-        }
-        if (lastSentAt) {
-          const again = await confirmDialog({
-            title: t('pims:alreadySent.title', { date: formatDate(lastSentAt) }),
-            message: t('pims:alreadySent.message'),
-            confirmLabel: t('pims:alreadySent.confirm'),
-          });
-          if (!again) return;
-        }
-        if (!patientsMatch(patientName, ezyvetName)) {
-          const anyway = await confirmDialog({
-            title: t('pims:mismatch.title'),
-            message: t('pims:mismatch.message', {
-              chart: patientName.trim() || t('pims:mismatch.noName'),
-              ezyvet: ezyvetName?.trim() || t('pims:mismatch.unknown'),
-            }),
-            confirmLabel: t('pims:mismatch.sendAnyway'),
-          });
-          if (!anyway) return;
-        }
-
-        const effective = { ...map, ...edits } as Record<SourceKey, string | null>;
-        let pngDataUrl: string | null = null;
-        let pictureFailed = false;
-        // A chart target not on this page is reported, not rendered.
-        const chartMissing = !!chartSnapshot && selectValue(effective.chart, imageTargets) === MISSING;
-        if (chartSnapshot && effective.chart != null && !chartMissing) {
-          try {
-            pngDataUrl = await renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') });
-          } catch {
-            pictureFailed = true;
-          }
-        }
-        const { items, unresolved } = buildSendItems({
-          note: split ?? { editedText: stored!.text, field: editedWanted },
-          map: effective,
-          fields: info.fields,
-          pngDataUrl,
-        });
-
-        const rowsOut: ResultRow[] = [];
-        if (items.length) {
-          let result: SendResult;
-          try {
-            result = await send({
-              type: 'send',
-              tabId: tab.id,
-              expectedPatient: patientName,
-              confirmedEzyvetPatient: ezyvetName,
-              expectedConsult: info.status!.consult ?? null,
-              items,
-            });
-          } catch {
-            // Timed out or lost the extension mid-send: some fields may be
-            // written, so the next Send asks first.
-            const at = new Date().toISOString();
-            setJustSentAt(at);
-            onSent(at);
-            setPhase({ kind: 'error', message: t('pims:errors.maybe_sent'), tabId: tab.id });
-            return;
-          }
-          if (!result.ok) {
-            setPhase({ kind: 'error', message: t(`pims:errors.${result.code}`), tabId: tab.id });
-            return;
-          }
-          for (const r of result.results) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code });
-        }
-        for (const title of unresolved) rowsOut.push({ fieldTitle: title, code: 'field_not_found' });
-        if (chartMissing && !unresolved.includes(effective.chart!)) rowsOut.push({ fieldTitle: effective.chart!, code: 'field_not_found' });
-        if (pictureFailed) rowsOut.push({ fieldTitle: t('pims:rows.chart'), code: 'picture_failed' });
-
-        let stampFailed = false;
-        if (rowsOut.some((r) => r.code === null)) {
-          // Remember the send even when it can't be recorded on the chart.
-          let at = new Date().toISOString();
-          if (chartId) {
-            try {
-              at = (await markPimsSent(chartId)).sentAt;
-            } catch {
-              stampFailed = true;
-            }
-          }
-          setJustSentAt(at);
-          onSent(at);
-        } else if (rowsOut.some((r) => r.code !== null && MAYBE_WRITTEN.has(r.code))) {
-          // Nothing confirmed, but a field may have been saved: like a lost send, the next Send asks.
-          const at = new Date().toISOString();
-          setJustSentAt(at);
-          onSent(at);
-        }
-        setPhase({ kind: 'results', info, rows: rowsOut, stampFailed });
-      } finally {
-        sendingRef.current = false;
-        setSending(false);
-      }
-    };
 
     if (phase.kind === 'results') {
       body = (
         <>
-          <h3 className="pims-dialog__subtitle">{t('pims:results.title')}</h3>
-          <ul className="pims-dialog__results">
-            {phase.rows.map((r, i) => (
-              <li key={`${r.fieldTitle}-${i}`} className={r.code ? 'pims-dialog__result--failed' : 'pims-dialog__result--ok'}>
-                <strong>{r.fieldTitle}</strong>
-                {r.code
-                  ? <span>{t(rowErrorKey(r.code))}</span>
-                  : <span><span aria-hidden="true">✓ </span>{t('pims:results.sent')}</span>}
-              </li>
-            ))}
-          </ul>
-          {phase.stampFailed && <p className="login-error" role="alert">{t('pims:results.stampFailed')}</p>}
-          {lastSentAt && <p className="patient-form__hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
-          {diagnosticLink(tab.id)}
+          <SendResults
+            rows={phase.rows}
+            stampFailed={phase.stampFailed}
+            sentOn={lastSentAt ? formatDate(lastSentAt) : null}
+            onCopyDiagnostic={() => void copyDiagnostic(tab.id)}
+          />
         </>
       );
     } else {
@@ -400,27 +145,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           {lastSentAt && <p className="patient-form__hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
           {!split && <p className="record-note__stale" role="status">{t('pims:editedNotice')}</p>}
           <h3 className="pims-dialog__subtitle">{t('pims:rows.heading')}</h3>
-          <div className="pims-dialog__rows">
-            {rows.map((r) => {
-              const value = selectValue(r.wanted, r.options);
-              return (
-                <div key={r.key} className="pims-dialog__row">
-                  <label htmlFor={`${idBase}-${r.key}`}>{r.label}</label>
-                  <select
-                    id={`${idBase}-${r.key}`}
-                    className="patient-form__input"
-                    value={value}
-                    disabled={sending}
-                    onChange={(e) => choose(r.key, e.target.value)}
-                  >
-                    <option value={DONT_SEND}>{t('pims:rows.dontSend')}</option>
-                    {value === MISSING && <option value={MISSING}>{t('pims:rows.notOnPage', { title: r.wanted })}</option>}
-                    {r.options.map((f) => <option key={f.title} value={f.title}>{f.title}</option>)}
-                  </select>
-                </div>
-              );
-            })}
-          </div>
+          <MappingRows rows={rows} disabled={sending} onChoose={choose} />
         </>
       );
       footer = (

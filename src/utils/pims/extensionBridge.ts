@@ -103,3 +103,14 @@ export function diagnose(tabId?: number): Promise<DiagnoseResult> {
     DIAGNOSE_TIMEOUT_MS,
   );
 }
+
+/** What the send flow needs from the extension, so the page and the side panel can each supply their own. */
+export type PimsTransport = {
+  ping(): Promise<PingResult | null>;
+  inspect(): Promise<InspectResult>;
+  send(req: Extract<Request, { type: 'send' }>): Promise<SendResult>;
+  diagnose(tabId?: number): Promise<DiagnoseResult | null>;
+};
+
+/** The page talking to the extension through `externally_connectable`. */
+export const externalTransport: PimsTransport = { ping, inspect, send, diagnose };
