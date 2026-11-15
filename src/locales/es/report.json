@@ -51,6 +51,11 @@
     "products": "Las dietas dentales, los premios masticables y los aditivos para el agua con el sello VOHC ayudan entre cepillados.",
     "warningSigns": "Esté atento al mal aliento, la salivación excesiva, la comida que se le cae o si se toca la boca con la pata; llámenos si nota algo."
   },
+  "homecareTipsEquine": {
+    "checkups": "La mayoría de los caballos necesitan una revisión dental cada 6 a 12 meses; los caballos jóvenes y mayores pueden necesitar cuidados más frecuentes.",
+    "forage": "Ofrezca abundante forraje: el heno de fibra larga y el pastoreo mantienen un desgaste uniforme de los dientes.",
+    "warningSigns": "Esté atento a la comida que se le cae de la boca, la pérdida de peso, si come despacio, sacude la cabeza o se resiste al bocado, el mal aliento o la secreción nasal; llámenos si nota algo."
+  },
   "intro": "{{pet}} recibió una evaluación y limpieza dental profesional bajo anestesia. Este informe explica lo que encontramos en un lenguaje sencillo; el historial clínico completo con las mediciones está archivado y disponible en cualquier momento.",
   "legendFilled": "relleno = ausente antes de esta visita",
   "legendNumbers": "Los números corresponden a los hallazgos de abajo",

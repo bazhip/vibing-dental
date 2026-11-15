@@ -1,5 +1,5 @@
 import type { DiagramComment } from '../types';
-import { DENTAL_CODES } from '../constants/dentalCodes';
+import { ALL_CODES } from '../constants/dentalCodes';
 import { isGridComment } from './gridComments';
 
 /**
@@ -15,7 +15,7 @@ export const MAX_QUICK_CODE_LENGTH = 16;
 /** None: every quick code is one the person adds in Customize. */
 export const DEFAULT_QUICK_CODES: string[] = [];
 
-const CATALOG_BY_UPPER = new Map(DENTAL_CODES.map((c) => [c.code.toUpperCase(), c.code]));
+const CATALOG_BY_UPPER = new Map(ALL_CODES.map((c) => [c.code.toUpperCase(), c.code]));
 
 /** A typed code tidied up: trimmed, inner spaces removed, and spelled as
  *  in the AVDC catalog when it's one of those ("t/sn" → "T/SN"). Codes

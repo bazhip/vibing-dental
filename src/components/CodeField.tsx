@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { codeDefinition, codesMatchingPrefix, DentalCode } from '../constants/dentalCodes';
+import { CodeSpeciesContext } from './codeSpecies';
 
 /**
  * Drop-in replacement for <input> / <textarea> that pops a small suggestion
@@ -34,6 +35,7 @@ export const CodeField: React.FC<CodeFieldProps> = ({
 }) => {
   // Subscribe to language changes so an open popup re-renders its definitions.
   useTranslation('codes');
+  const species = React.useContext(CodeSpeciesContext);
   const inputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [suggestions, setSuggestions] = React.useState<DentalCode[]>([]);
@@ -54,7 +56,7 @@ export const CodeField: React.FC<CodeFieldProps> = ({
       setOpen(false);
       return;
     }
-    const next = codesMatchingPrefix(m[0]);
+    const next = codesMatchingPrefix(m[0], 8, species);
     if (next.length === 0) {
       setOpen(false);
       return;

@@ -51,6 +51,11 @@
     "products": "Zahnpflegefutter, Kauartikel und Wasserzusätze mit VOHC-Siegel helfen zwischen dem Putzen.",
     "warningSigns": "Achten Sie auf Mundgeruch, Sabbern, herausfallendes Futter oder Pfoteln am Maul – rufen Sie uns an, wenn Ihnen etwas auffällt."
   },
+  "homecareTipsEquine": {
+    "checkups": "Die meisten Pferde brauchen alle 6 bis 12 Monate eine Zahnkontrolle; junge und ältere Pferde oft häufiger.",
+    "forage": "Bieten Sie reichlich Raufutter an – langes Heu und Weidegang sorgen für einen gleichmäßigen Zahnabrieb.",
+    "warningSigns": "Achten Sie auf herausfallendes Futter, Gewichtsverlust, langsames Fressen, Kopfschlagen oder Widerstand gegen das Gebiss, Mundgeruch oder Nasenausfluss – rufen Sie uns an, wenn Ihnen etwas auffällt."
+  },
   "intro": "{{pet}} hatte eine professionelle Zahnuntersuchung und Zahnreinigung unter Narkose. Dieser Bericht erklärt unsere Befunde in einfachen Worten – die vollständige klinische Akte mit allen Messwerten liegt bei uns vor und ist jederzeit einsehbar.",
   "legendFilled": "ausgefüllt = schon vorher fehlend",
   "legendNumbers": "Die Nummern entsprechen den Befunden unten",

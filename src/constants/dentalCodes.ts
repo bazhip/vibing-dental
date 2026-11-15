@@ -3,14 +3,18 @@
  * small-animal set from the official AVDC "Abbreviations for use in Case
  * Logs" list (Nomenclature Committee; retrieved 2026-07-17 from
  * https://avdc.org/wp-content/uploads/2023/12/abbreviations-2.pdf).
- * Equine-only abbreviations (infundibular caries, diastema subtypes, pulp
- * horns, sinus entries, cheek-tooth extraction variants, shear mouth) and
- * purely anatomical entries are omitted — this chart is dog/cat.
+ * Purely anatomical entries are omitted. The equine-only abbreviations
+ * (infundibular caries, diastema subtypes, pulp horn defect, shear mouth,
+ * sinus entries, cheek-tooth extraction variants) are in
+ * EQUINE_CODE_GROUPS and only join the catalog on a horse chart — see
+ * codeGroupsFor(). DENTAL_CODES stays dog/cat: the voice prompt lists it
+ * and English voice behaviour is frozen.
  * One entry per code so the autocomplete and the "codes used" PDF legend
  * can match each individually.
  */
 
 import i18n from '../i18n';
+import type { Species } from '../types';
 import type chart from '../locales/en/chart.json';
 import type codes from '../locales/en/codes.json';
 
@@ -486,26 +490,81 @@ export const DENTAL_CODE_GROUPS: DentalCodeGroup[] = [
   ]),
 ];
 
+/** AVDC abbreviations that apply to horses only. */
+export const EQUINE_CODE_GROUPS: DentalCodeGroup[] = [
+  G('equine', [
+  D('CA/INF', 'Infundibular caries'),
+  D('CA/INF/M', 'Mesial infundibular caries'),
+  D('CA/INF/D', 'Distal infundibular caries'),
+  D('CA/PER', 'Peripheral caries'),
+  D('D', 'Diastema'),
+  D('D/O', 'Open diastema'),
+  D('D/V', 'Valve diastema'),
+  D('PH/D', 'Pulp horn defect'),
+  D('SHE', 'Shear mouth (increased occlusal angulation of the cheek teeth)'),
+  D('SIN/IN', 'Sinusitis'),
+  ]),
+  G('equineProcedures', [
+  P('D/ODY', 'Diastema odontoplasty (widening)'),
+  P('SIN/EN', 'Sinoscopy'),
+  P('SIN/TRP', 'Sinus trephination'),
+  P('SIN/LAV', 'Sinus lavage'),
+  P('SIN/F', 'Sinus flap'),
+  P('SIN/CF/F', 'Conchofrontal sinus flap'),
+  P('SIN/MX/F', 'Maxillary sinus flap'),
+  ]),
+  G('equineExtractions', [
+  P('XSS/RPL', 'Extraction after repulsion'),
+  P('XSS/APX/RPL', 'Extraction after apicoectomy and repulsion'),
+  P('XSS/BUC', 'Transbuccal extraction after buccotomy'),
+  P('XSS/BUC/ALV', 'Transbuccal extraction after buccotomy and alveolectomy'),
+  P('XSS/COM', 'Transbuccal extraction after commissurotomy'),
+  P('XSS/COM/ALV', 'Transbuccal extraction after commissurotomy and alveolectomy'),
+  P('XSS/MIB', 'Extraction via minimally invasive buccotomy'),
+  ]),
+];
+
 /** Flat list, in group order — everything downstream (autocomplete,
- *  text scanning, PDF legend) derives from this. */
+ *  text scanning, PDF legend) derives from this. Dog/cat only; use
+ *  codesFor(species) where a horse chart may be open. */
 export const DENTAL_CODES: DentalCode[] = DENTAL_CODE_GROUPS.flatMap(
   (g) => g.codes
 );
 
+export const EQUINE_CODES: DentalCode[] = EQUINE_CODE_GROUPS.flatMap((g) => g.codes);
+
+/** Every code in either catalog (definitions, spelling of quick codes). */
+export const ALL_CODES: DentalCode[] = [...DENTAL_CODES, ...EQUINE_CODES];
+
 export const CODES_BY_CODE: Record<string, DentalCode> = Object.fromEntries(
-  DENTAL_CODES.map((c) => [c.code, c])
+  ALL_CODES.map((c) => [c.code, c])
 );
 
+const EQUINE_GROUP_LIST = [...EQUINE_CODE_GROUPS, ...DENTAL_CODE_GROUPS];
+const EQUINE_CATALOG = EQUINE_GROUP_LIST.flatMap((g) => g.codes);
+
+/** The groups offered on a chart of this species: horse charts get the
+ *  equine groups first, then the shared list. */
+export function codeGroupsFor(species?: Species | string): DentalCodeGroup[] {
+  return species === 'equine' ? EQUINE_GROUP_LIST : DENTAL_CODE_GROUPS;
+}
+
+/** Flat catalog for a species, in group order. */
+export function codesFor(species?: Species | string): DentalCode[] {
+  return species === 'equine' ? EQUINE_CATALOG : DENTAL_CODES;
+}
+
+const byLength = (list: DentalCode[]) => [...list].sort((a, b) => b.code.length - a.code.length);
+
 /** Codes sorted longest-first so a substring scanner picks `T/FX` before `T`. */
-export const DENTAL_CODES_BY_LENGTH: DentalCode[] = [...DENTAL_CODES].sort(
-  (a, b) => b.code.length - a.code.length
-);
+export const DENTAL_CODES_BY_LENGTH: DentalCode[] = byLength(DENTAL_CODES);
+const EQUINE_CODES_BY_LENGTH: DentalCode[] = byLength(EQUINE_CATALOG);
 
 /** Find every code that occurs in a piece of free text. Codes are matched as
  *  whole tokens (left-bounded by start/non-code-char, right-bounded by
  *  end/non-code-char) so `PD3.` and `(T/FX)` both match while `MAL/15` does
  *  not match `MAL/1`. */
-export function findCodesInText(text: string): DentalCode[] {
+export function findCodesInText(text: string, species?: Species | string): DentalCode[] {
   if (!text) return [];
   const found = new Set<string>();
   // A "code char" is a letter, digit, slash, or asterisk — i.e. any
@@ -516,7 +575,7 @@ export function findCodesInText(text: string): DentalCode[] {
   // they stand alone as an entry: the whole note, or one item of a
   // comma/semicolon/line-separated list.
   const segments = new Set(text.split(/[\n,;]+/).map((seg) => seg.trim()));
-  for (const c of DENTAL_CODES_BY_LENGTH) {
+  for (const c of species === 'equine' ? EQUINE_CODES_BY_LENGTH : DENTAL_CODES_BY_LENGTH) {
     if (c.code.length === 1) {
       if (segments.has(c.code)) found.add(c.code);
       continue;
@@ -543,10 +602,10 @@ export function findCodesInText(text: string): DentalCode[] {
 /** Codes whose `code` starts with `prefix` (case-sensitive), in catalog
  *  order. CodeField's popup uses this: it opens on code-like tokens only,
  *  so definition matches (searchCodes) would just add noise there. */
-export function codesMatchingPrefix(prefix: string, limit = 8): DentalCode[] {
+export function codesMatchingPrefix(prefix: string, limit = 8, species?: Species | string): DentalCode[] {
   if (!prefix) return [];
   const out: DentalCode[] = [];
-  for (const c of DENTAL_CODES) {
+  for (const c of codesFor(species)) {
     if (c.code.startsWith(prefix)) {
       out.push(c);
       if (out.length >= limit) break;
@@ -568,19 +627,20 @@ export function codeDefinition(code: string, lng: string = i18n.language): strin
 /** Lower-case, accents stripped: "Périapical" and "periapical" compare equal. */
 const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
 
-const FOLDED_EN = new Map(DENTAL_CODES.map((c) => [c.code, fold(c.definition)]));
+const FOLDED_EN = new Map(ALL_CODES.map((c) => [c.code, fold(c.definition)]));
 
 /** Codes matching `query` by code, by definition in `lng`, or by English
  *  definition — so a French vet typing "fracture", or an English term or
  *  code, finds it. Case and accents are ignored. Ranked: exact code, code
  *  prefix, code substring, then definition matches; within a rank the
  *  catalog order is kept. An empty query matches every code. */
-export function searchCodes(query: string, lng: string = i18n.language): DentalCode[] {
+export function searchCodes(query: string, lng: string = i18n.language, species?: Species | string): DentalCode[] {
   const q = fold(query.trim());
-  if (!q) return [...DENTAL_CODES];
+  const list = codesFor(species);
+  if (!q) return [...list];
   const t = i18n.getFixedT(lng, 'codes');
   const ranked: Array<{ c: DentalCode; rank: number; i: number }> = [];
-  DENTAL_CODES.forEach((c, i) => {
+  list.forEach((c, i) => {
     const code = c.code.toLowerCase();
     let rank: number;
     if (code === q) rank = 0;

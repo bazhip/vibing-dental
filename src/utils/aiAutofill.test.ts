@@ -82,6 +82,16 @@ describe('buildChunkRequest', () => {
     expect(t).toContain('AUTO-CLEANED:\n104 GI 2');
   });
 
+  it('adds the equine codes and guidance on a horse chart only', () => {
+    const horse = text(buildChunkRequest({ delta: '109 hook', recentContext: '', context: { ...ctx, species: 'equine' as const } }));
+    expect(horse).toContain('EQUINE CHART');
+    expect(horse).toContain('CA/INF — Infundibular caries (diagnosis)');
+    expect(horse).toContain('Floating / reducing sharp enamel points is ODY');
+    const dog = text(buildChunkRequest({ delta: '109 hook', recentContext: '', context: ctx }));
+    expect(dog).not.toContain('EQUINE');
+    expect(dog).not.toContain('CA/INF');
+  });
+
   it('sends one copy when cleanup changes nothing', () => {
     const t = text(buildChunkRequest({ delta: '104 extracted', recentContext: '', context: ctx }));
     expect(t).not.toContain('AS TRANSCRIBED');

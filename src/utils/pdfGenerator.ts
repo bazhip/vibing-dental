@@ -190,6 +190,7 @@ export async function buildDentalChartPDFBytes(
     toothData,
     preCommentTexts:  preDiagram.state.comments.map((c)  => c.text),
     postCommentTexts: postDiagram.state.comments.map((c) => c.text),
+    species,
   });
   // Each legend shrinks to its codes and sits on the footer rule; the
   // diagram above it takes whatever height that leaves.

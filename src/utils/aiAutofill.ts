@@ -3,7 +3,7 @@ import { supabase } from './supabaseClient';
 import i18n from '../i18n';
 import { invokeFunction } from './edgeFunctions';
 import { ApiError, LocalizedError } from './apiErrors';
-import { DENTAL_CODES } from '../constants/dentalCodes';
+import { DENTAL_CODES, EQUINE_CODES } from '../constants/dentalCodes';
 import { pocketDepths } from './pocket';
 import { SCORE_TERMS, englishDigitRuns, englishScoreWords, englishUnitWords } from './voice/numbers';
 import { chunkWorthSendingOther, isPerioOnlyOther, normalizeOther } from './voice/normalize';
@@ -587,8 +587,19 @@ export function summarizeChart(c: ChartContext): string {
     if (drugs.length) parts.unshift(`drugs=${JSON.stringify(drugs.join(' + '))}`);
     lines.push(`nerveBlocks: ${parts.join(' ')}`);
   }
+  if (c.species === 'equine') lines.push(EQUINE_NOTE);
   return lines.join('\n');
 }
+
+/** Horse charts only (dog/cat requests stay byte-identical): the equine
+ *  AVDC codes, which aren't in the cached system prompt, and how to chart
+ *  the common equine findings that have no AVDC abbreviation. */
+const EQUINE_NOTE = [
+  'EQUINE CHART: the patient is a horse. Teeth are Triadan 01-11 per quadrant (05 = wolf tooth; 06-11 = cheek teeth P2-P4, M1-M3). Canines (04) and wolf teeth are often absent.',
+  'Extra AVDC codes for horses (use them like the codes in the system prompt):',
+  ...EQUINE_CODES.map((e) => `  ${e.code} — ${e.definition} (${e.kind})`),
+  'Hooks, ramps, waves, steps, sharp enamel points and overgrowths have no AVDC abbreviation: write them out in words as a comment on the tooth (e.g. "Hook"), or use T/EL (tooth elongation) when the vet says elongated. Floating / reducing sharp enamel points is ODY (odontoplasty); reducing a hook, ramp or step is CR/XP (crown reduction).',
+].join('\n');
 
 function markList(marks: ToothMarks, kind: 'missing' | 'extracted'): string {
   const ids = Object.entries(marks).filter(([, v]) => v === kind).map(([k]) => k);
