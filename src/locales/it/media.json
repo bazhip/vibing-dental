@@ -77,5 +77,19 @@
     "noDimensions": "Questo file DICOM non riporta le dimensioni dell’immagine.",
     "unsupported": "Questo file DICOM usa un formato di compressione che il browser non può aprire. Lo esporti dal Suo software di imaging come DICOM non compresso (o come JPEG/PNG) e riprovi.",
     "render": "Il browser non è riuscito a visualizzare questa immagine DICOM."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Procedura odontoiatrica",
+      "exam": "Esame del cavo orale",
+      "findings": "Reperti per dente",
+      "procedures": "Procedure",
+      "radiographs": "Reperti radiografici",
+      "recheck": "Controllo"
+    },
+    "alreadyMissing": "Già mancanti: {{teeth}}",
+    "extracted": "Estratti: {{teeth}}",
+    "otherNotes": "Altre note: {{text}}",
+    "doctor": "Medico veterinario"
   }
 }

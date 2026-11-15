@@ -77,5 +77,19 @@
     "noDimensions": "Diese DICOM-Datei enthält keine Bildabmessungen.",
     "unsupported": "Diese DICOM-Datei verwendet ein Komprimierungsformat, das der Browser nicht öffnen kann. Exportieren Sie sie aus Ihrer Bildgebungssoftware als unkomprimiertes DICOM (oder als JPEG/PNG) und versuchen Sie es erneut.",
     "render": "Ihr Browser konnte dieses DICOM-Bild nicht darstellen."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Zahnbehandlung",
+      "exam": "Untersuchung der Maulhöhle",
+      "findings": "Befunde pro Zahn",
+      "procedures": "Eingriffe",
+      "radiographs": "Röntgenbefunde",
+      "recheck": "Nachkontrolle"
+    },
+    "alreadyMissing": "Bereits fehlend: {{teeth}}",
+    "extracted": "Extrahiert: {{teeth}}",
+    "otherNotes": "Weitere Notizen: {{text}}",
+    "doctor": "Tierarzt/Tierärztin"
   }
 }

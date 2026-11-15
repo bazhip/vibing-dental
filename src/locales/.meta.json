@@ -7068,6 +7068,70 @@
       "hash": "cf6b6b3f1f71",
       "status": "machine"
     },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
     "media:upload.cantRead": {
       "hash": "481303711abc",
       "status": "machine"
@@ -17528,6 +17592,70 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -28028,6 +28156,70 @@
       "hash": "cf6b6b3f1f71",
       "status": "machine"
     },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
     "media:upload.cantRead": {
       "hash": "481303711abc",
       "status": "machine"
@@ -38524,6 +38716,70 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
       "status": "machine"
     },
     "media:upload.cantRead": {

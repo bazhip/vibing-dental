@@ -1,0 +1,209 @@
+import type { TFunction } from 'i18next';
+import {
+  ChartSnapshot,
+  DiagramComment,
+  EXAM_ITEMS,
+  ExamItemValue,
+  ToothData,
+  formatAnestheticDrug,
+} from '../types';
+
+/**
+ * Medical record note: the chart as a plain clinical note a vet pastes into
+ * their practice software. A pure function of the snapshot — it only
+ * restates what was charted, in the language of the `t` it is given.
+ */
+
+export interface RecordNoteSection {
+  heading: string;
+  lines: string[];
+}
+
+export interface RecordNote {
+  sections: RecordNoteSection[];
+}
+
+const GRID_FIELDS = [
+  'mobility', 'recession', 'pocket', 'furcation', 'hyperplasia', 'calculus', 'gingivitis', 'pdstate',
+] as const satisfies readonly (keyof ToothData)[];
+
+const BLOCK_SITES = [
+  ['infraorbital', 'infraorbitalRight', 'infraorbitalLeft'],
+  ['caudalMaxillary', 'caudalMaxillaryRight', 'caudalMaxillaryLeft'],
+  ['inferiorAlveolar', 'inferiorAlveolarRight', 'inferiorAlveolarLeft'],
+  ['mental', 'mentalRight', 'mentalLeft'],
+] as const;
+
+// Headings reuse the app's own labels where it has one, so the note says
+// "Anesthesia" / "Treatment report" exactly as the chart sections do.
+const HEADING_KEYS = {
+  header: 'media:recordNote.h.header',
+  anesthesia: 'app:sections.anesthesia',
+  exam: 'media:recordNote.h.exam',
+  findings: 'media:recordNote.h.findings',
+  procedures: 'media:recordNote.h.procedures',
+  radiographs: 'media:recordNote.h.radiographs',
+  treatment: 'forms:report.title',
+  recheck: 'media:recordNote.h.recheck',
+} as const;
+
+const clean = (s: string | undefined | null) => (s ?? '').trim();
+const textLines = (s: string | undefined) => clean(s).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+const isGridMirror = (c: DiagramComment) => c.id.startsWith('grid-');
+
+function commentsByTooth(comments: DiagramComment[]) {
+  const pinned = new Map<number, string[]>();
+  const unpinned: string[] = [];
+  for (const c of comments) {
+    const text = clean(c.text);
+    if (!text || isGridMirror(c)) continue;
+    if (c.anchorTriadan == null) unpinned.push(text);
+    else pinned.set(c.anchorTriadan, [...(pinned.get(c.anchorTriadan) ?? []), text]);
+  }
+  return { pinned, unpinned };
+}
+
+function speciesLabel(species: ChartSnapshot['species'], t: TFunction): string {
+  const [base, dentition] = species.split('-');
+  const name = t(`forms:patient.${base}`);
+  return dentition === 'deciduous' ? `${name} (${t('forms:patient.deciduous')})` : name;
+}
+
+function examLine(label: string, v: ExamItemValue | undefined, t: TFunction): string | null {
+  if (!v?.status) return null;
+  const status = t(v.status === 'normal' ? 'forms:exam.normal' : 'forms:exam.abnormal');
+  const comment = clean(v.comment);
+  return comment ? `${label}: ${status} — ${comment}` : `${label}: ${status}`;
+}
+
+export function buildRecordNote(snapshot: ChartSnapshot, t: TFunction): RecordNote {
+  const info = snapshot.patientInfo;
+  const sections: RecordNoteSection[] = [];
+  const add = (key: keyof typeof HEADING_KEYS, lines: (string | null | false | undefined)[]) => {
+    const kept = lines.filter((l): l is string => !!l);
+    if (kept.length) sections.push({ heading: t(HEADING_KEYS[key]), lines: kept });
+  };
+
+  // 1. Header
+  add('header', [
+    [clean(info.patientName), speciesLabel(snapshot.species, t)].filter(Boolean).join(' — '),
+    clean(info.patientNumber) && `${t('forms:patient.number')}: ${clean(info.patientNumber)}`,
+    clean(info.date),
+    clean(info.doctor) && `${t('media:recordNote.doctor')}: ${clean(info.doctor)}`,
+    clean(info.tech) && `${t('forms:patient.tech')}: ${clean(info.tech)}`,
+    clean(info.complaint) && `${t('forms:patient.complaint')}: ${clean(info.complaint)}`,
+  ]);
+
+  // 2. Anesthesia
+  const nb = info.nerveBlocks;
+  const blockLines = BLOCK_SITES.map(([site, r, l]) => {
+    const parts = [
+      clean(nb?.[r]) && `${t('forms:anesthesia.right')} ${clean(nb?.[r])}`,
+      clean(nb?.[l]) && `${t('forms:anesthesia.left')} ${clean(nb?.[l])}`,
+    ].filter(Boolean);
+    return parts.length ? `${t(`forms:anesthesia.blocks.${site}`)}: ${parts.join(', ')}` : null;
+  });
+  const drugs = (nb?.drugs ?? []).filter((d) => clean(d.name)).map(formatAnestheticDrug);
+  const custom = info.customAnesthesia;
+  add('anesthesia', [
+    drugs.length > 0 && drugs.join(' + '),
+    ...blockLines,
+    clean(nb?.other) && `${t('forms:anesthesia.other')}: ${clean(nb?.other)}`,
+    ...(custom?.blocks ?? []).map((b) => {
+      const parts = [
+        clean(b.right) && `${t('forms:anesthesia.right')} ${clean(b.right)}`,
+        clean(b.left) && `${t('forms:anesthesia.left')} ${clean(b.left)}`,
+      ].filter(Boolean);
+      return parts.length ? `${clean(b.label)}: ${parts.join(', ')}` : null;
+    }),
+    ...(custom?.fields ?? []).map((f) =>
+      clean(f.value) ? `${clean(f.label)}: ${clean(f.value)}${f.unit ? ` ${f.unit}` : ''}` : null),
+  ]);
+
+  // 3. Oral exam
+  add('exam', [
+    ...EXAM_ITEMS.map(({ key }) => examLine(t(`forms:exam.items.${key}`), info.exam?.[key], t)),
+    ...(info.customExam ?? []).map((c) => examLine(clean(c.label), c, t)),
+  ]);
+
+  // 4. Findings by tooth
+  const pre = commentsByTooth(snapshot.preComments ?? []);
+  const toothRows = new Map<number, string[]>();
+  const push = (triadan: number, part: string) => toothRows.set(triadan, [...(toothRows.get(triadan) ?? []), part]);
+  for (const tooth of snapshot.toothData) {
+    for (const f of GRID_FIELDS) {
+      const v = clean(tooth[f]);
+      if (v) push(tooth.triadan, `${t(`chart:columns.${f}`)} ${v}`);
+    }
+  }
+  for (const [triadan, texts] of pre.pinned) texts.forEach((x) => push(triadan, x));
+  const missing = Object.entries(snapshot.preMarks ?? {})
+    .filter(([, m]) => m === 'missing').map(([n]) => Number(n)).sort((a, b) => a - b);
+  add('findings', [
+    ...[...toothRows.keys()].sort((a, b) => a - b).map((n) => `${n}: ${toothRows.get(n)!.join('; ')}`),
+    missing.length > 0 && t('media:recordNote.alreadyMissing', { teeth: missing.join(', ') }),
+    pre.unpinned.length > 0 && t('media:recordNote.otherNotes', { text: pre.unpinned.join('; ') }),
+  ]);
+
+  // 5. Procedures
+  const post = commentsByTooth(snapshot.postComments ?? []);
+  const extracted = Object.entries(snapshot.postMarks ?? {})
+    .filter(([, m]) => m === 'extracted').map(([n]) => Number(n)).sort((a, b) => a - b);
+  add('procedures', [
+    extracted.length > 0 && t('media:recordNote.extracted', { teeth: extracted.join(', ') }),
+    ...[...post.pinned.keys()].sort((a, b) => a - b).map((n) => `${n}: ${post.pinned.get(n)!.join('; ')}`),
+    post.unpinned.length > 0 && t('media:recordNote.otherNotes', { text: post.unpinned.join('; ') }),
+  ]);
+
+  // 6–8. Free text and recheck
+  add('radiographs', textLines(info.radiographicFindings));
+  add('treatment', textLines(info.treatmentReport));
+  add('recheck', [clean(info.recallDate)]);
+
+  return { sections };
+}
+
+export function recordNoteText(note: RecordNote): string {
+  return note.sections
+    .map((s) => [s.heading.toLocaleUpperCase(), ...s.lines].join('\n'))
+    .join('\n\n');
+}
+
+const esc = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+export function recordNoteHtml(note: RecordNote): string {
+  return note.sections
+    .map((s) => `<p><strong>${esc(s.heading)}</strong>${s.lines.map((l) => `<br>${esc(l)}`).join('')}</p>`)
+    .join('');
+}
+
+/** Plain text (as typed or AI-written) → simple HTML for a rich paste. */
+export function plainTextToHtml(text: string): string {
+  return text
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.split('\n').map(esc).join('<br>')}</p>`)
+    .join('');
+}
+
+function hashStr(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return String(h >>> 0);
+}
+
+/** Fingerprint of the chart data the note is built from (never the
+ *  language), so a stored note can tell when the chart moved on. */
+export function recordNoteBasis(snapshot: ChartSnapshot): string {
+  const i = snapshot.patientInfo;
+  return hashStr(JSON.stringify([
+    snapshot.species,
+    i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
+    i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
+    i.radiographicFindings ?? '', i.treatmentReport, i.recallDate,
+    snapshot.toothData.map((td) => GRID_FIELDS.map((f) => td[f] ?? '')),
+    snapshot.preMarks, snapshot.postMarks,
+    (snapshot.preComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),
+    (snapshot.postComments ?? []).map((c) => [c.id, c.text, c.anchorTriadan]),
+  ]));
+}

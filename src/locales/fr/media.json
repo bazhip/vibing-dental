@@ -77,5 +77,19 @@
     "noDimensions": "Ce fichier DICOM n’indique pas les dimensions de l’image.",
     "unsupported": "Ce fichier DICOM utilise un format de compression que le navigateur ne peut pas ouvrir. Exportez-le depuis votre logiciel d’imagerie en DICOM non compressé (ou en JPEG/PNG) et réessayez.",
     "render": "Votre navigateur n’a pas pu afficher cette image DICOM."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Intervention dentaire",
+      "exam": "Examen bucco-dentaire",
+      "findings": "Observations par dent",
+      "procedures": "Interventions",
+      "radiographs": "Observations radiographiques",
+      "recheck": "Contrôle"
+    },
+    "alreadyMissing": "Déjà absentes : {{teeth}}",
+    "extracted": "Extraites : {{teeth}}",
+    "otherNotes": "Autres notes : {{text}}",
+    "doctor": "Vétérinaire"
   }
 }

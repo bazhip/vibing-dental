@@ -77,5 +77,19 @@
     "noDimensions": "That DICOM file has no image dimensions.",
     "unsupported": "This DICOM file uses a compression format the browser can't open. Export it from your imaging software as uncompressed DICOM (or as a JPEG/PNG) and try again.",
     "render": "Your browser couldn't render that DICOM image."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Dental procedure",
+      "exam": "Oral exam",
+      "findings": "Findings by tooth",
+      "procedures": "Procedures",
+      "radiographs": "Radiographic findings",
+      "recheck": "Recheck"
+    },
+    "alreadyMissing": "Already missing: {{teeth}}",
+    "extracted": "Extracted: {{teeth}}",
+    "otherNotes": "Other notes: {{text}}",
+    "doctor": "Veterinarian"
   }
 }
