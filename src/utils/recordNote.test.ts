@@ -1,7 +1,7 @@
 import i18n from '../i18n';
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, Species } from '../types';
 import { getInitialToothData } from '../constants';
-import { buildRecordNote, recordNoteBasis, recordNoteHtml, recordNoteText } from './recordNote';
+import { buildRecordNote, recordNoteBasis, recordNoteHtml, recordNoteT, recordNoteText } from './recordNote';
 
 function snap(over: Partial<ChartSnapshot> = {}, info: Partial<ChartSnapshot['patientInfo']> = {}): ChartSnapshot {
   const species: Species = over.species ?? 'canine';
@@ -21,7 +21,7 @@ function snap(over: Partial<ChartSnapshot> = {}, info: Partial<ChartSnapshot['pa
   };
 }
 
-const en = () => i18n.getFixedT('en');
+const en = () => recordNoteT('en');
 const section = (s: ChartSnapshot, heading: string) =>
   buildRecordNote(s, en()).sections.find((x) => x.heading === heading);
 

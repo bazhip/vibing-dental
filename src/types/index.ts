@@ -1,3 +1,4 @@
+import type { AppLanguage } from '../i18n/config';
 /**
  * Type definitions for the Dental Charting Application
  */
@@ -362,6 +363,16 @@ export type ImageRole = 'before' | 'after';
 /** Hand-edited overrides for the owner report. Every block starts
  *  auto-generated from the chart; a field is present here only when the
  *  team customized it (absent = keep using the generated text). */
+export interface StoredRecordNote {
+  text: string;
+  source: 'edited' | 'ai';
+  /** Language the note was written in. */
+  lng: AppLanguage;
+  /** recordNoteBasis() of the chart when the note was stored — a
+   *  different value now means the chart changed since. */
+  basedOn: string;
+}
+
 export interface OwnerReportOverrides {
   /** Opening summary paragraph. */
   intro?: string;
@@ -387,6 +398,9 @@ export interface ChartSnapshot {
   pdfExcludedImages?: string[];
   /** Hand-edited owner-report text blocks (absent fields = generated). */
   ownerReport?: OwnerReportOverrides;
+  /** The medical record note as the vet edited it or AI polished it.
+   *  Absent = generated live from the chart (src/utils/recordNote.ts). */
+  recordNote?: StoredRecordNote;
   /** Teeth flagged "plan to extract" while charting by tooth — a working
    *  checklist confirmed against the Procedure marks at the end. Absent
    *  on charts saved before the field existed (= none). */

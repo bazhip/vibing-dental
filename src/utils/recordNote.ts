@@ -1,4 +1,6 @@
 import type { TFunction } from 'i18next';
+import i18n from '../i18n';
+import type { AppLanguage } from '../i18n/config';
 import {
   ChartSnapshot,
   DiagramComment,
@@ -13,6 +15,14 @@ import {
  * their practice software. A pure function of the snapshot — it only
  * restates what was charted, in the language of the `t` it is given.
  */
+
+const NS = ['media', 'forms', 'chart', 'app'] as const;
+export type RecordNoteT = TFunction<typeof NS>;
+
+/** The fixed-language t the builder takes. */
+export function recordNoteT(lng: AppLanguage | string): RecordNoteT {
+  return i18n.getFixedT(lng, NS) as unknown as RecordNoteT;
+}
 
 export interface RecordNoteSection {
   heading: string;
@@ -63,20 +73,20 @@ function commentsByTooth(comments: DiagramComment[]) {
   return { pinned, unpinned };
 }
 
-function speciesLabel(species: ChartSnapshot['species'], t: TFunction): string {
-  const [base, dentition] = species.split('-');
+function speciesLabel(species: ChartSnapshot['species'], t: RecordNoteT): string {
+  const [base, dentition] = species.split('-') as ['canine' | 'feline' | 'equine', string | undefined];
   const name = t(`forms:patient.${base}`);
   return dentition === 'deciduous' ? `${name} (${t('forms:patient.deciduous')})` : name;
 }
 
-function examLine(label: string, v: ExamItemValue | undefined, t: TFunction): string | null {
+function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): string | null {
   if (!v?.status) return null;
   const status = t(v.status === 'normal' ? 'forms:exam.normal' : 'forms:exam.abnormal');
   const comment = clean(v.comment);
   return comment ? `${label}: ${status} — ${comment}` : `${label}: ${status}`;
 }
 
-export function buildRecordNote(snapshot: ChartSnapshot, t: TFunction): RecordNote {
+export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
   const sections: RecordNoteSection[] = [];
   const add = (key: keyof typeof HEADING_KEYS, lines: (string | null | false | undefined)[]) => {
