@@ -23,9 +23,9 @@ describe('useChartState record note', () => {
 
   it('applySnapshot restores it', () => {
     const { result } = renderHook(() => useChartState());
-    const snap = { ...result.current.getSnapshot(), recordNote: { ...note, source: 'ai' as const } };
+    const snap = { ...result.current.getSnapshot(), recordNote: { ...note, text: 'restored' } };
     act(() => result.current.applySnapshot(snap, 'c1'));
-    expect(result.current.recordNote).toEqual({ ...note, source: 'ai' });
+    expect(result.current.recordNote).toEqual({ ...note, text: 'restored' });
   });
 
   it('applySnapshot without it clears it', () => {

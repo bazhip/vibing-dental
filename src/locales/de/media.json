@@ -93,23 +93,13 @@
     "extracted": "Extrahiert: {{teeth}}",
     "otherNotes": "Weitere Notizen: {{text}}",
     "doctor": "Tierarzt/Tierärztin",
-    "aiEmpty": "Die KI hat keine Notiz geliefert. Bitte versuchen Sie es erneut.",
     "title": "Notiz für die Patientenakte",
     "hint": "Fügen Sie sie in die Akte des Patienten in Ihrer Praxissoftware ein. Änderungen werden mit der Akte gespeichert.",
     "copy": "Kopieren",
     "copied": "Notiz kopiert",
     "copyPrompt": "Kopieren Sie die Notiz:",
-    "polish": "Mit KI überarbeiten",
-    "polishing": "Wird überarbeitet…",
     "rebuild": "Aus der Akte neu erstellen",
     "stale": "Die Akte wurde geändert, seit diese Notiz bearbeitet wurde. Erstellen Sie sie neu, um die Änderungen zu übernehmen.",
-    "unlockHint": "Entsperren Sie die Akte, um diese Notiz zu bearbeiten. Kopieren ist weiterhin möglich.",
-    "aiFailed": "Die Notiz konnte nicht überarbeitet werden.",
-    "aiBadge": "Mit KI verfasst. Prüfen Sie sie vor dem Einfügen.",
-    "polishReplace": {
-      "title": "Ihre Änderungen ersetzen?",
-      "message": "Beim Überarbeiten wird aus der Akte eine neue Notiz erstellt. Alles, was Sie in die Notiz eingegeben haben, wird ersetzt.",
-      "confirm": "Ersetzen und überarbeiten"
-    }
+    "unlockHint": "Entsperren Sie die Akte, um diese Notiz zu bearbeiten. Kopieren ist weiterhin möglich."
   }
 }

@@ -365,7 +365,7 @@ export type ImageRole = 'before' | 'after';
  *  team customized it (absent = keep using the generated text). */
 export interface StoredRecordNote {
   text: string;
-  source: 'edited' | 'ai';
+  source: 'edited';
   /** Language the note was written in. */
   lng: AppLanguage;
   /** recordNoteBasis() of the chart when the note was stored — a
@@ -398,7 +398,7 @@ export interface ChartSnapshot {
   pdfExcludedImages?: string[];
   /** Hand-edited owner-report text blocks (absent fields = generated). */
   ownerReport?: OwnerReportOverrides;
-  /** The medical record note as the vet edited it or AI polished it.
+  /** The medical record note as the vet edited it.
    *  Absent = generated live from the chart (src/utils/recordNote.ts). */
   recordNote?: StoredRecordNote;
   /** Teeth flagged "plan to extract" while charting by tooth — a working
