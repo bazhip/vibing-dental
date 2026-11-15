@@ -55,7 +55,9 @@
     "ownerTab": "Owner report",
     "ownerWho": "For the owner to take home — the visit in plain English.",
     "close": "Close documents",
-    "tablist": "Document"
+    "tablist": "Document",
+    "noteTab": "Record note",
+    "noteWho": "For the patient’s medical record — paste it into your practice software."
   },
   "upload": {
     "noCloud": "Cloud is not configured.",

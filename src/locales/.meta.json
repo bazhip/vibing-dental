@@ -6864,6 +6864,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -17440,6 +17448,14 @@
     },
     "media:documents.close": {
       "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
       "status": "machine"
     },
     "media:documents.ownerTab": {
@@ -28056,6 +28072,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -38668,6 +38692,14 @@
     },
     "media:documents.close": {
       "hash": "43bef92ae98c",
+      "status": "machine"
+    },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
       "status": "machine"
     },
     "media:documents.ownerTab": {

@@ -55,7 +55,9 @@
     "ownerTab": "Informe para el propietario",
     "ownerWho": "Para que el propietario se lo lleve — la visita en lenguaje sencillo.",
     "close": "Cerrar los documentos",
-    "tablist": "Documento"
+    "tablist": "Documento",
+    "noteTab": "Nota clínica",
+    "noteWho": "Para la historia clínica del paciente — péguela en su software de gestión."
   },
   "upload": {
     "noCloud": "La nube no está configurada.",

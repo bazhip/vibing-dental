@@ -4,11 +4,12 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
-import type { ChartSnapshot, ImageRole } from '../types';
+import { RecordNotePanel } from './RecordNotePanel';
+import type { ChartSnapshot, ImageRole, StoredRecordNote } from '../types';
 import type { OwnerReportBranding } from '../utils/ownerReportPdf';
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
 
-export type DocumentTab = 'chart' | 'owner';
+export type DocumentTab = 'chart' | 'owner' | 'note';
 
 const TAB_KEY = 'documents.tab';
 
@@ -31,9 +32,27 @@ interface DocumentsModalProps {
     /** Practice owner report templates (omitted = built-in report). */
     config?: OwnerReportConfig;
   };
+  /** Medical record note to paste into the practice software (omitted =
+   *  no tab). Shown whether or not the owner report is on. */
+  recordNote?: {
+    snapshot: ChartSnapshot;
+    stored: StoredRecordNote | null;
+    onChange: (note: StoredRecordNote | null) => void;
+    readOnly: boolean;
+    aiEnabled: boolean;
+  };
 }
 
-const TABS: DocumentTab[] = ['chart', 'owner'];
+const TAB_LABEL: Record<DocumentTab, 'documents.chartTab' | 'documents.ownerTab' | 'documents.noteTab'> = {
+  chart: 'documents.chartTab',
+  owner: 'documents.ownerTab',
+  note: 'documents.noteTab',
+};
+const TAB_WHO: Record<DocumentTab, 'documents.chartWho' | 'documents.ownerWho' | 'documents.noteWho'> = {
+  chart: 'documents.chartWho',
+  owner: 'documents.ownerWho',
+  note: 'documents.noteWho',
+};
 
 /**
  * One place for the documents a visit produces. Each tab is a full
@@ -42,12 +61,17 @@ const TABS: DocumentTab[] = ['chart', 'owner'];
  * just the clinical chart.
  */
 export const DocumentsModal: React.FC<DocumentsModalProps> = ({
-  open, onClose, initialTab, chartSnapshot, ownerReport,
+  open, onClose, initialTab, chartSnapshot, ownerReport, recordNote,
 }) => {
   const { t } = useTranslation('media');
   const readSaved = (): DocumentTab => {
-    try { return window.sessionStorage.getItem(TAB_KEY) === 'owner' ? 'owner' : 'chart'; } catch { return 'chart'; }
+    try {
+      const saved = window.sessionStorage.getItem(TAB_KEY);
+      return saved === 'owner' || saved === 'note' ? saved : 'chart';
+    } catch { return 'chart'; }
   };
+  const tabs: DocumentTab[] = ['chart', ...(ownerReport ? ['owner' as const] : []), ...(recordNote ? ['note' as const] : [])];
+  const available = (id: DocumentTab) => tabs.includes(id);
   const [tab, setTab] = React.useState<DocumentTab>(() => initialTab ?? readSaved());
   // Previews mount on first visit and stay mounted, so flipping back and
   // forth doesn't regenerate a PDF each time.
@@ -58,7 +82,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   React.useEffect(() => {
     if (!open) return;
-    const next = ownerReport ? (initialTab ?? readSaved()) : 'chart';
+    const wanted = initialTab ?? readSaved();
+    const next = available(wanted) ? wanted : 'chart';
     setTab(next);
     setVisited(new Set([next]));
     closeRef.current?.focus();
@@ -74,8 +99,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   if (!open && !native) return null;
 
-  const tabs = ownerReport ? TABS : TABS.filter((id) => id === 'chart');
-  const active = ownerReport ? tab : 'chart';
+  const active = available(tab) ? tab : 'chart';
   const select = (id: DocumentTab) => {
     setTab(id);
     setVisited((v) => new Set(v).add(id));
@@ -83,9 +107,10 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   };
   const chartVisited = visited.has('chart');
   const ownerVisited = visited.has('owner');
+  const noteVisited = visited.has('note');
   const patient = chartSnapshot?.patientInfo ?? ownerReport?.snapshot.patientInfo;
   const subtitle = [patient?.patientName, patient?.date].filter(Boolean).join(' · ');
-  const who = t(active === 'chart' ? 'documents.chartWho' : 'documents.ownerWho');
+  const who = t(TAB_WHO[active]);
 
   const panels = (
     <>
@@ -125,6 +150,25 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
           )}
         </div>
       )}
+      {recordNote && (
+        <div
+          className="documents-modal__panel"
+          role="tabpanel"
+          id="documents-panel-note"
+          aria-labelledby="documents-tab-note"
+          hidden={active !== 'note'}
+        >
+          {noteVisited && (
+            <RecordNotePanel
+              snapshot={recordNote.snapshot}
+              stored={recordNote.stored}
+              onChange={recordNote.onChange}
+              readOnly={recordNote.readOnly}
+              aiEnabled={recordNote.aiEnabled}
+            />
+          )}
+        </div>
+      )}
     </>
   );
 
@@ -148,7 +192,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
                   className={`ios-segmented__segment${active === id ? ' ios-segmented__segment--on' : ''}`}
                   onClick={() => select(id)}
                 >
-                  {t(id === 'chart' ? 'documents.chartTab' : 'documents.ownerTab')}
+                  {t(TAB_LABEL[id])}
                 </button>
               ))}
             </div>
@@ -186,7 +230,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
                 className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
                 onClick={() => select(id)}
               >
-                {t(id === 'chart' ? 'documents.chartTab' : 'documents.ownerTab')}
+                {t(TAB_LABEL[id])}
               </button>
             ))}
           </div>

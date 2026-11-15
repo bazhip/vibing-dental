@@ -55,7 +55,9 @@
     "ownerTab": "Besitzerbericht",
     "ownerWho": "Für den Besitzer zum Mitnehmen — der Besuch in verständlicher Sprache.",
     "close": "Dokumente schließen",
-    "tablist": "Dokument"
+    "tablist": "Dokument",
+    "noteTab": "Aktennotiz",
+    "noteWho": "Für die Patientenakte — zum Einfügen in Ihre Praxissoftware."
   },
   "upload": {
     "noCloud": "Die Cloud ist nicht konfiguriert.",

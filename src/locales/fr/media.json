@@ -55,7 +55,9 @@
     "ownerTab": "Compte rendu propriétaire",
     "ownerWho": "À remettre au propriétaire — la visite en langage clair.",
     "close": "Fermer les documents",
-    "tablist": "Document"
+    "tablist": "Document",
+    "noteTab": "Note du dossier",
+    "noteWho": "Pour le dossier médical du patient — à coller dans votre logiciel de clinique."
   },
   "upload": {
     "noCloud": "Le cloud n’est pas configuré.",

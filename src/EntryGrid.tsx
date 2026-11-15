@@ -1469,6 +1469,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 goToSection(OWNER_REPORT_SECTION);
               },
             } : undefined}
+            recordNote={{
+              snapshot: chart.getSnapshot(),
+              stored: chart.recordNote,
+              onChange: chart.setRecordNote,
+              readOnly,
+              aiEnabled: profile.aiEnabled && !trial && cloud.enabled,
+            }}
           />
         </React.Suspense>
       )}

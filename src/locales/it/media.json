@@ -55,7 +55,9 @@
     "ownerTab": "Referto per il proprietario",
     "ownerWho": "Da consegnare al proprietario — la visita in un linguaggio semplice.",
     "close": "Chiudi i documenti",
-    "tablist": "Documento"
+    "tablist": "Documento",
+    "noteTab": "Nota di cartella",
+    "noteWho": "Per la cartella clinica del paziente — da incollare nel Suo gestionale."
   },
   "upload": {
     "noCloud": "Il cloud non è configurato.",
