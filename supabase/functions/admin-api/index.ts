@@ -75,6 +75,49 @@ async function chartCountRows(admin: any): Promise<ChartCountRow[]> {
   return Array.isArray(data) ? data : [];
 }
 
+/** AI usage summed per (account, model) in Postgres (see migration
+ *  20261124_admin_ai_usage_totals). Selecting raw ai_usage rows hit
+ *  PostgREST's max-rows cap, so totals stopped growing past 1000 calls.
+ *  Until that migration is applied, falls back to reading every row a
+ *  page at a time (correct, just slower). */
+type AiUsageTotal = {
+  user_id: string;
+  model: string;
+  calls: number;
+  input_tokens: number;
+  output_tokens: number;
+  cache_read_tokens: number;
+  cache_write_tokens: number;
+};
+// deno-lint-ignore no-explicit-any
+async function aiUsageTotals(admin: any): Promise<AiUsageTotal[]> {
+  const { data, error } = await admin.rpc('admin_ai_usage_totals');
+  if (!error) return Array.isArray(data) ? data : [];
+  const sums = new Map<string, AiUsageTotal>();
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data: rows, error: readError } = await admin
+      .from('ai_usage')
+      .select('id, user_id, model, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens')
+      .not('model', 'in', '(deepgram-token,reminder-email,feedback)')
+      .order('id', { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (readError) throw new Error(`Could not read AI usage: ${readError.message}`);
+    for (const r of rows ?? []) {
+      const key = `${r.user_id}|${r.model}`;
+      const cur = sums.get(key) ?? { user_id: r.user_id, model: r.model, calls: 0, input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, cache_write_tokens: 0 };
+      cur.calls += 1;
+      cur.input_tokens += r.input_tokens ?? 0;
+      cur.output_tokens += r.output_tokens ?? 0;
+      cur.cache_read_tokens += r.cache_read_tokens ?? 0;
+      cur.cache_write_tokens += r.cache_write_tokens ?? 0;
+      sums.set(key, cur);
+    }
+    if (!rows || rows.length < PAGE) break;
+  }
+  return Array.from(sums.values());
+}
+
 /** Profiles for the account list, with last_seen_at when the column
  *  exists (it ships via migration) — without it, fall back rather than
  *  lose practice names for every row. Returns the usual { data } shape. */
@@ -635,9 +678,9 @@ Deno.serve(async (req: Request) => {
       }
 
       case 'ai_usage': {
-        // Per-user token totals + a rough cost estimate. Rates are list
-        // $/million tokens. Cache writes are logged as input (billed ×1.25,
-        // so this slightly under-counts them).
+        // Per-user token totals + a cost estimate at list $/million tokens.
+        // input_tokens already includes cache writes at the input rate;
+        // writes are billed x1.25, so the extra quarter is added below.
         const RATES: Record<string, { in: number; out: number; cacheRead: number }> = {
           'claude-opus-5-5':   { in: 4,    out: 20,   cacheRead: 0.20 },
           'claude-sonnet-5-5': { in: 2,    out: 10,   cacheRead: 0.10 },
@@ -650,25 +693,20 @@ Deno.serve(async (req: Request) => {
           const k = Object.keys(RATES).find((r) => model.startsWith(r));
           return k ? RATES[k] : { in: 5, out: 25, cacheRead: 0.5 };
         };
-        const { data: rows } = await admin
-          .from('ai_usage')
-          .select('user_id, model, input_tokens, output_tokens, cache_read_tokens')
-          // Rate-limit bookkeeping rows aren't AI calls.
-          .not('model', 'in', '(deepgram-token,reminder-email,feedback)')
-          .limit(100000);
         const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
         let totalCost = 0;
-        for (const r of rows ?? []) {
+        for (const r of await aiUsageTotals(admin)) {
           const cur = byUser.get(r.user_id) ?? { input: 0, output: 0, cacheRead: 0, calls: 0, cost: 0 };
           const rt = rate(r.model);
           const cost =
             (r.input_tokens / 1e6) * rt.in +
+            (r.cache_write_tokens / 1e6) * rt.in * 0.25 +
             (r.output_tokens / 1e6) * rt.out +
             (r.cache_read_tokens / 1e6) * rt.cacheRead;
           cur.input += r.input_tokens;
           cur.output += r.output_tokens;
           cur.cacheRead += r.cache_read_tokens;
-          cur.calls += 1;
+          cur.calls += r.calls;
           cur.cost += cost;
           totalCost += cost;
           byUser.set(r.user_id, cur);

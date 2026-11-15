@@ -180,11 +180,19 @@ Deno.serve(async (req: Request) => {
   };
   // kind / cache_write_tokens come from a later migration: if they aren't
   // there yet, log the row without them rather than losing it.
-  admin
+  const logged = admin
     .from('ai_usage')
     .insert({ ...baseRow, kind, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
     .then(({ error }) => (error ? admin.from('ai_usage').insert(baseRow) : null))
     .then(() => {}, () => {});
+  // Once the response is sent the function can be shut down, taking an
+  // unfinished insert with it (the call is billed but never counted).
+  // waitUntil keeps it alive until the row is written without delaying
+  // the reply; without it, wait for the insert.
+  // deno-lint-ignore no-explicit-any
+  const runtime = (globalThis as any).EdgeRuntime;
+  if (typeof runtime?.waitUntil === 'function') runtime.waitUntil(logged);
+  else await logged;
 
   return json({ content: data.content ?? [], usage: data.usage ?? {}, model: data.model ?? model });
 });
