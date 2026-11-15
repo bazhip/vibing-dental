@@ -5,7 +5,7 @@ Writes ToothOps record notes into the open ezyVet consult. The web app sends mes
 worker receives them on `chrome.runtime.onMessageExternal` (types in `protocol.ts`), injects
 `ezyvet-page.js` into the ezyVet tab and calls `window.__toothopsEzyvet`.
 
-Permissions: `scripting` and host access to `https://*.ezyvet.com/*` only.
+Permissions: `scripting`, `sidePanel`, `identity` and host access to `https://*.ezyvet.com/*` only.
 
 ## Build and load
 
@@ -34,6 +34,32 @@ The build stamps `package.json` `version` into the manifest and into the code
 
 Name and description come from `src/locales/<lng>/pims.json` (`extension.name`,
 `extension.description`), generated into `_locales/<lng>/messages.json`.
+
+## Side panel
+
+Click the ToothOps toolbar icon to open the side panel (`src/extension/sidepanel/`). It lists the
+vet's recent charts, pins the one whose patient matches the open ezyVet consult ("Matches this
+consult", chosen among the charts already loaded, not the whole account), and sends a chart's record
+note and chart picture to that consult with the same mapping editor and patient check as the web
+dialog. It is read-only: edit charts in ToothOps.
+
+Sign-in methods: email and password, Google, and Apple. Apple shows only when the build has
+`VITE_APPLE_SIGNIN_WEB=true` (same flag as the web app). OAuth runs through
+`chrome.identity.launchWebAuthFlow` with the redirect URL `chrome.identity.getRedirectURL('auth')`.
+The session lives in the extension page's own `localStorage` (PKCE client), separate from the
+toothops.app session. Sign-out in the panel is local to the panel and does not sign out the web app.
+
+Both surfaces re-inspect the consult when Send is pressed. If the consult was switched inside ezyVet
+since the last check, the new target is shown with a "consult changed" notice and nothing is sent.
+The panel also re-inspects when it regains focus or becomes visible, keeping mapping choices.
+
+### Owner setup for panel sign-in
+
+1. Supabase, Authentication, URL Configuration, Redirect URLs: add both
+   - `https://mkbapeaolbnpalaibokekppiciejijim.chromiumapp.org/auth` (dev extension id), and
+   - `https://<store extension id>.chromiumapp.org/auth` (once the store item exists).
+2. Google: nothing new in Google Cloud (Supabase is the OAuth client).
+3. Apple: configure the Supabase Apple provider for web, and build with `VITE_APPLE_SIGNIN_WEB=true`.
 
 ## Signing key and extension id
 
@@ -103,3 +129,13 @@ Check these first (highest risk):
 - [ ] One item fails (for example a mapped field the consult lacks): the other items are still written and the failure is listed per field.
 - [ ] Restart the service worker (chrome://extensions, Service worker, Stop) and send again: it still works.
 - [ ] Copy diagnostic report contains selector hit counts, state, field titles and kinds, editor flags, version and last failure codes, and no patient, client or note text.
+
+### Side panel checklist on real ezyVet
+
+- [ ] Panel opens from the toolbar icon; sign in with password, then Google (and Apple if enabled) completes and returns to the chart list.
+- [ ] Pinned match: with a consult for patient X open, the chart for X is pinned as "Matches this consult"; with a different or no matching patient, nothing is pinned.
+- [ ] Send from the panel: pick a chart, map fields, Send; reload the consult and check each field (including the chart picture) holds the text.
+- [ ] Consult switched inside ezyVet (no tab change), then Send: the panel shows the "consult changed" notice with the new target and writes nothing.
+- [ ] Focus refresh: switch to ezyVet and back to the panel; the target refreshes but mapping choices already made are kept.
+- [ ] Sign-out: the panel returns to sign-in and the web app stays signed in.
+- [ ] Expired session: leave the panel signed in until the session expires (or revoke it in Supabase); the panel asks to sign in again instead of showing an error loop.
