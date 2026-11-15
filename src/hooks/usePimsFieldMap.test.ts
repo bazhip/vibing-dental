@@ -2,24 +2,27 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 const update = vi.hoisted(() => vi.fn());
-const stored = vi.hoisted(() => ({ value: null as unknown }));
+const stored = vi.hoisted(() => ({ value: null as unknown, hang: false }));
 vi.mock('../utils/supabaseClient', () => {
-  const eq = (result: unknown) => ({ eq: () => ({ maybeSingle: async () => result }) });
+  const eq = (result: () => unknown) => ({
+    eq: () => ({ maybeSingle: () => (stored.hang ? new Promise(() => {}) : Promise.resolve(result())) }),
+  });
   return {
     cloudEnabled: true,
     supabase: {
       auth: { getSession: async () => ({ data: { session: { user: { id: 'u1' } } } }) },
       from: () => ({
-        select: () => eq({ data: { pims_field_map: stored.value }, error: null }),
+        select: () => eq(() => ({ data: { pims_field_map: stored.value }, error: null })),
         update: (patch: unknown) => ({ eq: async () => { update(patch); return { error: null }; } }),
       }),
     },
   };
 });
 
-import { usePimsFieldMap } from './usePimsFieldMap';
+import { LOAD_WAIT_MS, usePimsFieldMap } from './usePimsFieldMap';
 
-beforeEach(() => { update.mockReset(); stored.value = null; });
+beforeEach(() => { update.mockReset(); stored.value = null; stored.hang = false; });
+afterEach(() => { vi.useRealTimers(); });
 
 describe('usePimsFieldMap', () => {
   it('defaults then saves the merged saved map, not the effective one', async () => {
@@ -56,6 +59,20 @@ describe('usePimsFieldMap', () => {
     expect(result.current.map.chart).toBe('Discharge Summary');
     await act(async () => { await result.current.save({ editedNote: null }); });
     expect(update).toHaveBeenLastCalledWith({ pims_field_map: { editedNote: null } });
+  });
+
+  it('a hung load does not block a save for more than the wait limit', async () => {
+    vi.useFakeTimers();
+    stored.hang = true;
+    const { result } = renderHook(() => usePimsFieldMap());
+    let done = false;
+    let saving!: Promise<void>;
+    act(() => { saving = result.current.save({ chart: null }).then(() => { done = true; }); });
+    await act(async () => { await vi.advanceTimersByTimeAsync(LOAD_WAIT_MS - 1); });
+    expect(done).toBe(false);
+    await act(async () => { await vi.advanceTimersByTimeAsync(1); await saving; });
+    expect(done).toBe(true);
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: { chart: null } });
   });
 
   it('reset clears saved map', async () => {

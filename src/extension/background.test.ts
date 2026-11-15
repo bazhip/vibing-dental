@@ -129,6 +129,12 @@ describe('background', () => {
       ok: false,
       code: 'patient_changed',
     });
+    // No readable record id: the next consult in the same view slot would look the same.
+    const blank = { viewId: '1', recordId: '' };
+    state.status = { state: 'writable', patientName: null, consult: blank };
+    expect(
+      await handleExternal(sendMsg({ confirmedEzyvetPatient: null, expectedConsult: blank }), okSender, deps),
+    ).toEqual({ ok: false, code: 'patient_changed' });
     state.status = { state: 'writable', patientName: null, consult: { viewId: '2', recordId: '4521' } };
     expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toEqual({
       ok: false,

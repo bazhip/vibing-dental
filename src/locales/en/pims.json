@@ -66,7 +66,7 @@
     "timeout": "The extension didn’t answer in time. Check the ezyVet tab and try again.",
     "no_tab": "The ezyVet tab was closed. Open the consult in ezyVet and try again.",
     "not_writable": "The consult can’t be written to any more (locked, closed or no longer on the Medical tab). Open the consult’s Medical tab and try again.",
-    "patient_changed": "A different patient is now open in ezyVet, so nothing more was sent. Open the right consult and try again.",
+    "patient_changed": "A different patient or consult is now open in ezyVet, so nothing more was sent. Open the right consult and try again.",
     "field_not_found": "This field isn’t on the consult page. Choose another field under Where it goes.",
     "editor_not_found": "ToothOps couldn’t find this field’s text box. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
     "popup_not_found": "This field’s editing window didn’t open. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
@@ -80,6 +80,6 @@
     "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again.",
     "item_extension_error": "Something went wrong while writing this field. Check the field in ezyVet before sending again.",
     "item_not_writable": "The consult stopped accepting changes (locked, closed or no longer on the Medical tab), so this field wasn’t sent. Check the consult in ezyVet before sending again.",
-    "item_patient_changed": "A different patient was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
+    "item_patient_changed": "A different patient or consult was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
   }
 }

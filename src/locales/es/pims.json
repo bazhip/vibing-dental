@@ -66,7 +66,7 @@
     "timeout": "La extensión no respondió a tiempo. Revise la pestaña de ezyVet y vuelva a intentarlo.",
     "no_tab": "Se cerró la pestaña de ezyVet. Abra la consulta en ezyVet y vuelva a intentarlo.",
     "not_writable": "Ya no se puede escribir en la consulta (bloqueada, cerrada o ya no está en la pestaña Medical). Abra la pestaña Medical de la consulta y vuelva a intentarlo.",
-    "patient_changed": "Ahora hay otro paciente abierto en ezyVet, así que no se envió nada más. Abra la consulta correcta y vuelva a intentarlo.",
+    "patient_changed": "Ahora hay otro paciente u otra consulta abierta en ezyVet, así que no se envió nada más. Abra la consulta correcta y vuelva a intentarlo.",
     "field_not_found": "Este campo no está en la página de la consulta. Elija otro campo en Destino.",
     "editor_not_found": "ToothOps no encontró el cuadro de texto de este campo. Revise el campo en ezyVet antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
     "popup_not_found": "No se abrió la ventana de edición de este campo. Revise el campo en ezyVet antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
@@ -80,6 +80,6 @@
     "maybe_sent": "Es posible que algunos campos ya se hayan escrito. Revise la consulta en ezyVet antes de volver a enviar.",
     "item_extension_error": "Algo falló al escribir este campo. Revise el campo en ezyVet antes de volver a enviar.",
     "item_not_writable": "La consulta dejó de aceptar cambios (bloqueada, cerrada o ya no está en la pestaña Medical), así que este campo no se envió. Revise la consulta en ezyVet antes de volver a enviar.",
-    "item_patient_changed": "Se abrió otro paciente en ezyVet, así que este campo no se envió. Revise la consulta en ezyVet antes de volver a enviar."
+    "item_patient_changed": "Se abrió otro paciente u otra consulta en ezyVet, así que este campo no se envió. Revise la consulta en ezyVet antes de volver a enviar."
   }
 }

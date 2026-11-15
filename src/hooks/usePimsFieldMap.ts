@@ -16,6 +16,9 @@ export interface UsePimsFieldMapReturn {
   reset: () => Promise<void>;
 }
 
+/** How long a write waits for the stored map before going ahead (a hung load must not block a send). */
+export const LOAD_WAIT_MS = 3_000;
+
 const SAVED_KEYS = [...Object.keys(DEFAULT_EZYVET_MAP), 'editedNote'] as (keyof PimsFieldMap)[];
 
 function asSaved(value: unknown): PimsFieldMap | null {
@@ -66,14 +69,20 @@ export function usePimsFieldMap(): UsePimsFieldMapReturn {
     }
   }, []);
 
+  const loadedOrTimeout = React.useCallback(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<void>((resolve) => { timer = setTimeout(resolve, LOAD_WAIT_MS); });
+    return Promise.race([loadedRef.current, timeout]).finally(() => clearTimeout(timer));
+  }, []);
+
   const save = React.useCallback(async (next: PimsFieldMap) => {
-    await loadedRef.current;
+    await loadedOrTimeout();
     await write({ ...savedRef.current, ...next });
-  }, [write]);
+  }, [write, loadedOrTimeout]);
   const reset = React.useCallback(async () => {
-    await loadedRef.current;
+    await loadedOrTimeout();
     await write(null);
-  }, [write]);
+  }, [write, loadedOrTimeout]);
   const map = React.useMemo(() => effectiveMap(saved), [saved]);
 
   return { map, save, reset };

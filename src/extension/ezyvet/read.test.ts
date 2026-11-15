@@ -47,6 +47,12 @@ describe('ezyVet read side', () => {
     document.getElementById('rform1')!.className = '';
     expect(status()).toMatchObject({ state: 'writable', consult: { viewId: '1', recordId: '77' } });
   });
+  it('a tagged consult pane without a record id is not writable', () => {
+    document.getElementById('rtab1details')!.setAttribute('data-record-class', 'Consult');
+    document.getElementById('rform1')!.className = '';
+    expect(status()).toEqual({ state: 'notConsult', patientName: null, consult: null });
+    expect(listFields()).toEqual([]);
+  });
   it('patientName is null when the header is missing', () => {
     document.querySelector('.consultHeader')!.remove();
     expect(status().patientName).toBeNull();

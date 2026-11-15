@@ -75,7 +75,9 @@ const sameConsult = (a: ConsultId | null | undefined, b: ConsultId | null): bool
 async function refusal(msg: SendRequest, deps: Deps): Promise<Refusal | null> {
   const status = await deps.page.status(msg.tabId);
   if (status.state !== 'writable') return 'not_writable';
-  if (!sameConsult(msg.expectedConsult, status.consult ?? null)) return 'patient_changed';
+  // A consult without a readable record id can't be identified: never write to it.
+  if (!status.consult || status.consult.recordId === '') return 'patient_changed';
+  if (!sameConsult(msg.expectedConsult, status.consult)) return 'patient_changed';
   const confirmed = msg.confirmedEzyvetPatient;
   const same =
     confirmed !== null && status.patientName !== null

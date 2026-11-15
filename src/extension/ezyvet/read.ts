@@ -68,8 +68,10 @@ function consultPane(doc: Document): { pane: Element; id: string; recordId: stri
   const tagged = taggedElement(pane);
   if (tagged) {
     if (tagged.getAttribute('data-record-class') !== 'Consult') return null;
-    const recordId = formRecordId(doc, id) ?? tagged.getAttribute('data-record-id') ?? '';
-    return { pane, id, recordId };
+    // A consult whose record id can't be read can't be told apart from the next consult opened in
+    // the same view slot, so it is never writable.
+    const recordId = formRecordId(doc, id) ?? (tagged.getAttribute('data-record-id') || null);
+    return recordId === null ? null : { pane, id, recordId };
   }
   const recordId = formRecordId(doc, id);
   return recordId === null ? null : { pane, id, recordId };

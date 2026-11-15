@@ -66,7 +66,7 @@
     "timeout": "L’estensione non ha risposto in tempo. Controlli la scheda di ezyVet e riprovi.",
     "no_tab": "La scheda di ezyVet è stata chiusa. Apra la consultazione in ezyVet e riprovi.",
     "not_writable": "Non è più possibile scrivere nella consultazione (bloccata, chiusa o non più sulla scheda Medical). Apra la scheda Medical della consultazione e riprovi.",
-    "patient_changed": "In ezyVet ora è aperto un altro paziente, quindi non è stato inviato altro. Apra la consultazione giusta e riprovi.",
+    "patient_changed": "In ezyVet ora è aperto un altro paziente o un’altra consultazione, quindi non è stato inviato altro. Apra la consultazione giusta e riprovi.",
     "field_not_found": "Questo campo non è presente nella pagina della consultazione. Scelga un altro campo in Destinazione.",
     "editor_not_found": "ToothOps non ha trovato la casella di testo di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
     "popup_not_found": "La finestra di modifica di questo campo non si è aperta. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
@@ -80,6 +80,6 @@
     "maybe_sent": "Alcuni campi potrebbero essere già stati compilati. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
     "item_extension_error": "Si è verificato un problema durante la scrittura di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
     "item_not_writable": "La consultazione non accetta più modifiche (bloccata, chiusa o non più sulla scheda Medical), quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
-    "item_patient_changed": "In ezyVet è stato aperto un altro paziente, quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo."
+    "item_patient_changed": "In ezyVet è stato aperto un altro paziente o un’altra consultazione, quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo."
   }
 }

@@ -66,7 +66,7 @@
     "timeout": "Die Erweiterung hat nicht rechtzeitig geantwortet. Prüfen Sie den ezyVet-Tab und versuchen Sie es erneut.",
     "no_tab": "Der ezyVet-Tab wurde geschlossen. Öffnen Sie die Konsultation in ezyVet und versuchen Sie es erneut.",
     "not_writable": "In die Konsultation kann nicht mehr geschrieben werden (gesperrt, geschlossen oder nicht mehr im Tab Medical). Öffnen Sie den Tab Medical der Konsultation und versuchen Sie es erneut.",
-    "patient_changed": "In ezyVet ist jetzt ein anderer Patient geöffnet, daher wurde nichts weiter gesendet. Öffnen Sie die richtige Konsultation und versuchen Sie es erneut.",
+    "patient_changed": "In ezyVet ist jetzt ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde nichts weiter gesendet. Öffnen Sie die richtige Konsultation und versuchen Sie es erneut.",
     "field_not_found": "Dieses Feld ist nicht auf der Konsultationsseite. Wählen Sie unter „Ziel“ ein anderes Feld.",
     "editor_not_found": "ToothOps hat das Textfeld dieses Felds nicht gefunden. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
     "popup_not_found": "Das Bearbeitungsfenster dieses Felds hat sich nicht geöffnet. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
@@ -80,6 +80,6 @@
     "maybe_sent": "Einige Felder wurden möglicherweise bereits beschrieben. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden.",
     "item_extension_error": "Beim Schreiben dieses Felds ist ein Fehler aufgetreten. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
     "item_not_writable": "Die Konsultation nimmt keine Änderungen mehr an (gesperrt, geschlossen oder nicht mehr im Tab Medical), daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden.",
-    "item_patient_changed": "In ezyVet wurde ein anderer Patient geöffnet, daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden."
+    "item_patient_changed": "In ezyVet wurde ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden."
   }
 }

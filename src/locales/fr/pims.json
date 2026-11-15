@@ -66,7 +66,7 @@
     "timeout": "L’extension n’a pas répondu à temps. Vérifiez l’onglet ezyVet, puis réessayez.",
     "no_tab": "L’onglet ezyVet a été fermé. Ouvrez la consultation dans ezyVet et réessayez.",
     "not_writable": "Il n’est plus possible d’écrire dans la consultation (verrouillée, fermée ou plus sur l’onglet Medical). Ouvrez l’onglet Medical de la consultation et réessayez.",
-    "patient_changed": "Un autre patient est maintenant ouvert dans ezyVet, rien de plus n’a donc été envoyé. Ouvrez la bonne consultation et réessayez.",
+    "patient_changed": "Un autre patient ou une autre consultation est maintenant ouvert dans ezyVet, rien de plus n’a donc été envoyé. Ouvrez la bonne consultation et réessayez.",
     "field_not_found": "Ce champ ne figure pas sur la page de la consultation. Choisissez un autre champ sous Destination.",
     "editor_not_found": "ToothOps n’a pas trouvé la zone de texte de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
     "popup_not_found": "La fenêtre de saisie de ce champ ne s’est pas ouverte. Vérifiez le champ dans ezyVet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
@@ -80,6 +80,6 @@
     "maybe_sent": "Certains champs ont peut-être déjà été remplis. Vérifiez la consultation dans ezyVet avant de renvoyer.",
     "item_extension_error": "Un problème est survenu pendant l’écriture de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer.",
     "item_not_writable": "La consultation n’accepte plus de modifications (verrouillée, fermée ou plus sur l’onglet Medical), ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer.",
-    "item_patient_changed": "Un autre patient a été ouvert dans ezyVet, ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer."
+    "item_patient_changed": "Un autre patient ou une autre consultation a été ouvert dans ezyVet, ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer."
   }
 }
