@@ -189,12 +189,73 @@ export const FELINE_DECIDUOUS_TOOTH_DATA: ToothData[] = [
 ];
 
 /**
+ * Equine (adult horse) tooth data — 44 positions, Triadan 01-11 per
+ * quadrant: I1-I3, C (often absent in mares), P1 = the wolf tooth (05,
+ * often absent), P2-P4, M1-M3. All positions are listed; a tooth that
+ * isn't there is marked missing on the chart, as for the other species.
+ */
+export const EQUINE_TOOTH_DATA: ToothData[] = [
+  // Upper right quadrant (101-111)
+  { tooth: 'I1', triadan: 101 },
+  { tooth: 'I2', triadan: 102 },
+  { tooth: 'I3', triadan: 103 },
+  { tooth: 'C', triadan: 104 },
+  { tooth: 'P1', triadan: 105 },
+  { tooth: 'P2', triadan: 106 },
+  { tooth: 'P3', triadan: 107 },
+  { tooth: 'P4', triadan: 108 },
+  { tooth: 'M1', triadan: 109 },
+  { tooth: 'M2', triadan: 110 },
+  { tooth: 'M3', triadan: 111 },
+
+  // Lower right quadrant (401-411)
+  { tooth: 'I1', triadan: 401 },
+  { tooth: 'I2', triadan: 402 },
+  { tooth: 'I3', triadan: 403 },
+  { tooth: 'C', triadan: 404 },
+  { tooth: 'P1', triadan: 405 },
+  { tooth: 'P2', triadan: 406 },
+  { tooth: 'P3', triadan: 407 },
+  { tooth: 'P4', triadan: 408 },
+  { tooth: 'M1', triadan: 409 },
+  { tooth: 'M2', triadan: 410 },
+  { tooth: 'M3', triadan: 411 },
+
+  // Upper left quadrant (201-211)
+  { tooth: 'I1', triadan: 201 },
+  { tooth: 'I2', triadan: 202 },
+  { tooth: 'I3', triadan: 203 },
+  { tooth: 'C', triadan: 204 },
+  { tooth: 'P1', triadan: 205 },
+  { tooth: 'P2', triadan: 206 },
+  { tooth: 'P3', triadan: 207 },
+  { tooth: 'P4', triadan: 208 },
+  { tooth: 'M1', triadan: 209 },
+  { tooth: 'M2', triadan: 210 },
+  { tooth: 'M3', triadan: 211 },
+
+  // Lower left quadrant (301-311)
+  { tooth: 'I1', triadan: 301 },
+  { tooth: 'I2', triadan: 302 },
+  { tooth: 'I3', triadan: 303 },
+  { tooth: 'C', triadan: 304 },
+  { tooth: 'P1', triadan: 305 },
+  { tooth: 'P2', triadan: 306 },
+  { tooth: 'P3', triadan: 307 },
+  { tooth: 'P4', triadan: 308 },
+  { tooth: 'M1', triadan: 309 },
+  { tooth: 'M2', triadan: 310 },
+  { tooth: 'M3', triadan: 311 },
+];
+
+/**
  * Get initial tooth data based on species
  */
 export function getInitialToothData(species: Species): ToothData[] {
   if (species === 'canine') return CANINE_TOOTH_DATA;
   if (species === 'canine-deciduous') return CANINE_DECIDUOUS_TOOTH_DATA;
   if (species === 'feline-deciduous') return FELINE_DECIDUOUS_TOOTH_DATA;
+  if (species === 'equine') return EQUINE_TOOTH_DATA;
   return FELINE_TOOTH_DATA;
 }
 

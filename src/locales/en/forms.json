@@ -35,7 +35,8 @@
     "feline": "Feline",
     "dentition": "Dentition",
     "permanent": "Permanent",
-    "deciduous": "Deciduous"
+    "deciduous": "Deciduous",
+    "equine": "Equine"
   },
   "exam": {
     "title": "Exam",

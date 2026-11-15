@@ -70,7 +70,8 @@
     "canine": "Hund",
     "canine-deciduous": "Welpe",
     "feline": "Katze",
-    "feline-deciduous": "Kätzchen"
+    "feline-deciduous": "Kätzchen",
+    "equine": "Pferd"
   },
   "tooth": {
     "deciduous": "(Milchzahn)",

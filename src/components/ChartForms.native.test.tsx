@@ -78,7 +78,7 @@ describe('PatientForm', () => {
     expect(screen.getByRole('combobox', { name: /common interval/ }).querySelector('option')!.textContent).toBe('+ interval');
     expect(container.querySelector('.ios-form__group')).toBeNull();
     expect(container.querySelectorAll('.patient-form__row').length).toBe(4);
-    expect(container.querySelectorAll('.species-tab').length).toBe(4);
+    expect(container.querySelectorAll('.species-tab').length).toBe(5); // canine, feline, equine + permanent, deciduous
     expect(container.querySelector('.patient-form__header .diagram-view__action')).toBeNull();
   });
 });

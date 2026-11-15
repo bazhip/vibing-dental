@@ -70,7 +70,8 @@
     "canine": "Perro",
     "canine-deciduous": "Cachorro",
     "feline": "Gato",
-    "feline-deciduous": "Gatito"
+    "feline-deciduous": "Gatito",
+    "equine": "Caballo"
   },
   "tooth": {
     "deciduous": "de leche",

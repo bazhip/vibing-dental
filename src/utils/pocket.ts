@@ -30,6 +30,9 @@ export function rootLabels(species: Species, triadan: number): string[] {
   const pos = triadan % 100;
   const upper = q === 1 || q === 2;
   const feline = species.startsWith('feline');
+  // Horse cheek teeth are hypsodont (no furcation to probe per root):
+  // one pocket box per tooth.
+  if (species === 'equine') return [];
 
   if (pos <= 5) return []; // incisors, canine, P1
   if (feline) {

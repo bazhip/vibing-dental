@@ -9,6 +9,7 @@ import { usePersistedState } from './usePersistedState';
 import { UseChartStateReturn, clearChartStorage } from './useChartState';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
 import { LocalizedError } from '../utils/apiErrors';
+import { speciesBase, speciesDentition } from '../utils/species';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -46,7 +47,7 @@ export interface ChartListQuery {
   /** Case-insensitive substring match over patient name/number and
    *  owner name/phone. */
   search?: string;
-  /** 'canine' | 'feline'. */
+  /** 'canine' | 'feline' | 'equine'. */
   species?: string;
   /** Visit author (user id). */
   createdBy?: string;
@@ -297,8 +298,8 @@ export function useCloudSync(
       const snap: ChartSnapshot = JSON.parse(json);
       // The snapshot's `species` is the combined layout key (e.g.
       // 'canine-deciduous'); the row stores species + dentition split out.
-      const speciesBase = snap.species.startsWith('canine') ? 'canine' : 'feline';
-      const dentition = snap.species.endsWith('deciduous') ? 'deciduous' : 'permanent';
+      const base = speciesBase(snap.species);
+      const dentition = speciesDentition(snap.species);
       const row = (rowId: string) => ({
         id: rowId,
         patient_name: snap.patientInfo.patientName,
@@ -306,7 +307,7 @@ export function useCloudSync(
         owner_name: snap.patientInfo.ownerName ?? '',
         owner_phone: snap.patientInfo.ownerPhone ?? '',
         owner_email: snap.patientInfo.ownerEmail ?? '',
-        species: speciesBase,
+        species: base,
         dentition,
         chart_date: snap.patientInfo.date,
         recall_date: snap.patientInfo.recallDate ?? '',
@@ -426,8 +427,8 @@ export function useCloudSync(
     } catch {
       return true; // can't check (offline etc.) — never block a save on it
     }
-    const speciesBase = snap.species.startsWith('canine') ? 'canine' : 'feline';
-    const same = visits.find((v) => v.id !== id && v.chart_date === p.date && v.species === speciesBase);
+    const base = speciesBase(snap.species);
+    const same = visits.find((v) => v.id !== id && v.chart_date === p.date && v.species === base);
     dupAnsweredRef.current = id;
     if (!same) return true;
     const t = i18n.getFixedT(null, 'app');

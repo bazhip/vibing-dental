@@ -153,7 +153,7 @@ const EXAM_AREAS = [
   'extraoral', 'lymph', 'buccal', 'tongue', 'palate', 'pharynx',
 ] as const satisfies readonly (keyof ExamFindings)[];
 
-const SPECIES_KEYS = ['feline', 'canine', 'feline-deciduous', 'canine-deciduous'] as const;
+const SPECIES_KEYS = ['feline', 'canine', 'feline-deciduous', 'canine-deciduous', 'equine'] as const;
 
 const HOMECARE_TIP_KEYS = ['brushing', 'products', 'warningSigns'] as const;
 

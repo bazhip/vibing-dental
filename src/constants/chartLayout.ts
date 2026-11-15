@@ -186,6 +186,57 @@ export const FELINE_DECIDUOUS_MANDIBLE_TEETH: ChartTooth[] = [
   { triadan: 708, abbr: 'p4' },
 ];
 
+// Horse: 11 positions per quadrant (P1 = wolf tooth), 22 per arch.
+export const EQUINE_MAXILLA_TEETH: ChartTooth[] = [
+  { triadan: 111, abbr: 'M3' },
+  { triadan: 110, abbr: 'M2' },
+  { triadan: 109, abbr: 'M1' },
+  { triadan: 108, abbr: 'P4' },
+  { triadan: 107, abbr: 'P3' },
+  { triadan: 106, abbr: 'P2' },
+  { triadan: 105, abbr: 'P1' },
+  { triadan: 104, abbr: 'C' },
+  { triadan: 103, abbr: 'I3' },
+  { triadan: 102, abbr: 'I2' },
+  { triadan: 101, abbr: 'I1' },
+  { triadan: 201, abbr: 'I1' },
+  { triadan: 202, abbr: 'I2' },
+  { triadan: 203, abbr: 'I3' },
+  { triadan: 204, abbr: 'C' },
+  { triadan: 205, abbr: 'P1' },
+  { triadan: 206, abbr: 'P2' },
+  { triadan: 207, abbr: 'P3' },
+  { triadan: 208, abbr: 'P4' },
+  { triadan: 209, abbr: 'M1' },
+  { triadan: 210, abbr: 'M2' },
+  { triadan: 211, abbr: 'M3' },
+];
+
+export const EQUINE_MANDIBLE_TEETH: ChartTooth[] = [
+  { triadan: 411, abbr: 'M3' },
+  { triadan: 410, abbr: 'M2' },
+  { triadan: 409, abbr: 'M1' },
+  { triadan: 408, abbr: 'P4' },
+  { triadan: 407, abbr: 'P3' },
+  { triadan: 406, abbr: 'P2' },
+  { triadan: 405, abbr: 'P1' },
+  { triadan: 404, abbr: 'C' },
+  { triadan: 403, abbr: 'I3' },
+  { triadan: 402, abbr: 'I2' },
+  { triadan: 401, abbr: 'I1' },
+  { triadan: 301, abbr: 'I1' },
+  { triadan: 302, abbr: 'I2' },
+  { triadan: 303, abbr: 'I3' },
+  { triadan: 304, abbr: 'C' },
+  { triadan: 305, abbr: 'P1' },
+  { triadan: 306, abbr: 'P2' },
+  { triadan: 307, abbr: 'P3' },
+  { triadan: 308, abbr: 'P4' },
+  { triadan: 309, abbr: 'M1' },
+  { triadan: 310, abbr: 'M2' },
+  { triadan: 311, abbr: 'M3' },
+];
+
 // Tooth grids are 5.50in wide (matching the exam table above) and pushed
 // down so the mandible bottom sits just above the page-1 footer rule
 // (mandible bottom ≈ 8.00in; footer rule at 8.10in). Each grid is 1.30in
@@ -248,6 +299,20 @@ export const TOOTH_GRID_LAYOUTS: Record<Species, { maxilla: ToothGridLayout; man
       labelColIn: 0.50, toothColIn: 0.4167,   // 5.00 / 12 ≈ 0.417
       rowHeightIn: 0.13, fieldWidthIn: 0.387, fieldHeightIn: 0.115,
       teeth: FELINE_DECIDUOUS_MANDIBLE_TEETH,
+    },
+  },
+  equine: {
+    maxilla: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 5.10,
+      labelColIn: 0.50, toothColIn: 0.227,    // 5.00 / 22 ≈ 0.227
+      rowHeightIn: 0.13, fieldWidthIn: 0.202, fieldHeightIn: 0.115,
+      teeth: EQUINE_MAXILLA_TEETH,
+    },
+    mandible: {
+      pageIndex: 0, xIn: 5.10, yTopIn: 6.70,
+      labelColIn: 0.50, toothColIn: 0.227,    // 5.00 / 22 ≈ 0.227
+      rowHeightIn: 0.13, fieldWidthIn: 0.202, fieldHeightIn: 0.115,
+      teeth: EQUINE_MANDIBLE_TEETH,
     },
   },
 };

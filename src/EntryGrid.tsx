@@ -67,6 +67,7 @@ import { useRechecksDue } from './ios/screens/useRechecksDue';
 import { ChartNavBar, ChartNotice } from './ios/chart/ChartNavBar';
 import { chartStatus } from './ios/chart/chartStatus';
 import type { MenuItem } from './ios/ContextMenu';
+import { speciesBase } from './utils/species';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -128,6 +129,7 @@ const SPECIES_KEYS = {
   canine: 'species.canine',
   'feline-deciduous': 'species.felineDeciduous',
   'canine-deciduous': 'species.canineDeciduous',
+  equine: 'species.equine',
 } as const;
 
 /**
@@ -640,7 +642,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // Already seen today? Offer that visit rather than a second one —
     // same-day restarts were the main source of duplicate records.
     try {
-      const sp = snap.species.startsWith('canine') ? 'canine' : 'feline';
+      const sp = speciesBase(snap.species);
       const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
       const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       if (todays) {

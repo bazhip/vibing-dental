@@ -4,7 +4,8 @@
       "canine": "Schéma dentaire canin",
       "canineDeciduous": "Schéma dentaire canin (dents déciduales)",
       "feline": "Schéma dentaire félin",
-      "felineDeciduous": "Schéma dentaire félin (dents déciduales)"
+      "felineDeciduous": "Schéma dentaire félin (dents déciduales)",
+      "equine": "Schéma dentaire équin"
     },
     "subtitle": "Évaluation parodontale et plan de traitement",
     "tech": "Auxiliaire : {{name}}"
