@@ -1,0 +1,41 @@
+// ezyVet selectors, taken from the reference table in the design spec. Unverified on a live
+// page: when one breaks, the diagnostic report's `selectorHits` (keyed by these constant names)
+// shows which one stopped matching. Keep every selector here so there is one place to fix.
+
+export const RIGHT_PANE = '#rightpane';
+export const ACTIVE_PANE = '#rightpane .rtabdetails.active[id^="rtab"]';
+export const ACTIVE_SUBTAB_DETAILS = '#rightpane .rtabdetails.active .subTab-details.active';
+export const LOCKED_TOOLBAR = '.theTabsToolbar div[title="Locked"]';
+export const COMBINED_VIEW_BUTTON = '[data-testid="GotoStandardView"]';
+// Best guess (the real selector is unknown): the patient link in the active pane's header.
+export const PATIENT_NAME = '#rightpane .rtabdetails.active .consultHeader a.patientLink';
+
+export const SECTION_CONTENT = '.sectionContent';
+export const NOTE_SECTION_TITLE = 'h2';
+export const NOTE_EDITABLE = '[contenteditable="true"]';
+export const NOTE_EDITOR_CONTAINER = '.lexical-editor-container';
+export const NOTE_ADD_BUTTON = '.add-note-button svg[aria-label="Add Note"]';
+export const POPUP_TITLE = 'div.sectionContent .inputSection .inputSectionTitle';
+export const POPUP_ADD_BUTTON = '.addButton.clickable';
+export const ADD_CLIENT_COMMUNICATION = '.addButton[data-testid="AddClientCommunication"]';
+export const DISCHARGE_ADD_BUTTON = '.inputSectionTitle .addButton[data-testid="AddDischargeSummary"]';
+/** Class prefix of the Discharge Summary `.sectionContent`; popup discovery skips these. */
+export const DISCHARGE_SECTION_CLASS_PREFIX = 'DischargeSummaries';
+
+/** Static selectors reported by `diagnostics().selectorHits`, keyed by constant name. */
+export const REPORTED_SELECTORS: Record<string, string> = {
+  RIGHT_PANE,
+  ACTIVE_PANE,
+  ACTIVE_SUBTAB_DETAILS,
+  LOCKED_TOOLBAR,
+  COMBINED_VIEW_BUTTON,
+  PATIENT_NAME,
+  SECTION_CONTENT,
+  NOTE_EDITABLE,
+  NOTE_EDITOR_CONTAINER,
+  NOTE_ADD_BUTTON,
+  POPUP_TITLE,
+  POPUP_ADD_BUTTON,
+  ADD_CLIENT_COMMUNICATION,
+  DISCHARGE_ADD_BUTTON,
+};
