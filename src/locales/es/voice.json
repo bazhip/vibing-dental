@@ -96,6 +96,7 @@
     "remove": "Quitar",
     "sending": "enviando…",
     "showInChart": "Mostrar en el historial",
+    "speaker": "Hablante {{n}}",
     "transcript": "Transcripción"
   },
   "peek": {

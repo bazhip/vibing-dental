@@ -10428,6 +10428,10 @@
       "hash": "8265db19b60d",
       "status": "machine"
     },
+    "voice:panel.speaker": {
+      "hash": "82314436cef2",
+      "status": "machine"
+    },
     "voice:panel.transcript": {
       "hash": "721164f0dc70",
       "status": "machine"
@@ -21232,6 +21236,10 @@
     },
     "voice:panel.showInChart": {
       "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.speaker": {
+      "hash": "82314436cef2",
       "status": "machine"
     },
     "voice:panel.transcript": {
@@ -32060,6 +32068,10 @@
       "hash": "8265db19b60d",
       "status": "machine"
     },
+    "voice:panel.speaker": {
+      "hash": "82314436cef2",
+      "status": "machine"
+    },
     "voice:panel.transcript": {
       "hash": "721164f0dc70",
       "status": "machine"
@@ -42884,6 +42896,10 @@
     },
     "voice:panel.showInChart": {
       "hash": "8265db19b60d",
+      "status": "machine"
+    },
+    "voice:panel.speaker": {
+      "hash": "82314436cef2",
       "status": "machine"
     },
     "voice:panel.transcript": {

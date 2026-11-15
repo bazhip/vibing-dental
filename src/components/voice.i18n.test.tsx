@@ -117,6 +117,28 @@ describe('VoiceInputButton', () => {
     expect(screen.getAllByRole('button', { name: 'Arrêter' }).length).toBeGreaterThan(0);
     await i18n.changeLanguage('en');
   }, 15000);
+
+  it('shows each speaker on their own line with a translated, colour-coded name', async () => {
+    await restoreLocale();
+    await loadLanguage('fr');
+    await i18n.changeLanguage('fr');
+    window.sessionStorage.setItem('ai.introSeen', '1');
+    render(<VoiceInputButton {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dicter/ }));
+    act(() => FakeRecognition.last!.say('Speaker 0: 104 fracturée Speaker 1: noté'));
+    const turns = await waitFor(() => {
+      const rows = document.body.querySelectorAll('.ai-sidebar__turn--speaker');
+      expect(rows.length).toBe(2);
+      return rows;
+    });
+    expect(turns[0]).toHaveClass('ai-sidebar__turn--s0');
+    expect(turns[1]).toHaveClass('ai-sidebar__turn--s1');
+    expect(turns[0].querySelector('.ai-sidebar__speaker')).toHaveTextContent('Intervenant 1');
+    expect(turns[1].querySelector('.ai-sidebar__speaker')).toHaveTextContent('Intervenant 2');
+    expect(turns[0]).toHaveTextContent('104 fracturée');
+    expect(document.body.querySelector('.ai-sidebar__transcript')).not.toHaveTextContent('Speaker 0');
+    await i18n.changeLanguage('en');
+  }, 15000);
 });
 
 describe('switching language while dictating', () => {
