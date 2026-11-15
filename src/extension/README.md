@@ -1,20 +1,34 @@
 # ToothOps for ezyVet (Chrome extension)
 
-Writes ToothOps record notes into the open ezyVet consult. The web app talks to the
-background worker over `chrome.runtime.sendMessageExternal` (`protocol.ts`); the worker
-injects `ezyvet-page.js` into the ezyVet tab and calls `window.__toothopsEzyvet`.
+Writes ToothOps record notes into the open ezyVet consult. The web app sends messages with
+`chrome.runtime.sendMessage(EXTENSION_ID, …)` (`src/utils/pims/extensionBridge.ts`); the
+worker receives them on `chrome.runtime.onMessageExternal` (types in `protocol.ts`), injects
+`ezyvet-page.js` into the ezyVet tab and calls `window.__toothopsEzyvet`.
+
+Permissions: `scripting` and host access to `https://*.ezyvet.com/*` only.
 
 ## Build and load
 
 ```
-npm run build:extension      # writes build-extension/ (git-ignored)
+npm run build:extension      # dev build: writes build-extension/ (git-ignored)
 ```
+
+The dev build also accepts messages from `http://localhost:5173` (manifest
+`externally_connectable` and `ALLOWED_ORIGINS` in `protocol.ts`). The store build
+(`npm run package:extension`, below) sets `VITE_PIMS_STORE_BUILD=1`, which leaves the
+localhost origin out of both, so the published extension answers `https://toothops.app` only.
 
 1. Open `chrome://extensions`, switch on Developer mode, choose Load unpacked, pick `build-extension/`.
 2. The id shown must equal `DEV_EXTENSION_ID` in `src/extension/extensionId.ts`.
 3. Run the web app on `http://localhost:5173` (or production) and use Send to ezyVet.
 
 PR previews cannot reach the extension: `externally_connectable` needs exact hosts.
+
+The Send to ezyVet button only shows when Chrome exposes `chrome.runtime.sendMessage` to the
+page, which it does only when an installed extension lists the site in `externally_connectable`.
+So a vet without the extension never sees the button, and the dialog's "not responding"
+explainer is reached only when the extension is installed but doesn't answer (disabled,
+crashed, or a cold service worker slower than the 500 ms + 1.5 s pings).
 The build stamps `package.json` `version` into the manifest and into the code
 (`VITE_EXTENSION_VERSION`, see `src/extension/version.ts`).
 
@@ -44,7 +58,7 @@ When the Chrome Web Store item exists, replace `key` with the store's key and up
 Listing text, permission justifications, privacy answers and the screenshot shot list are in [docs/chrome-web-store-listing.md](../../docs/chrome-web-store-listing.md).
 
 1. Register a Chrome Web Store developer account (one-time fee) at https://chrome.google.com/webstore/devconsole.
-2. Run `npm run package:extension`. It builds and writes `build-extension.zip` with the manifest `key` removed (the store rejects `key`). The unpacked `build-extension/` keeps it for local dev.
+2. Run `npm run package:extension`. It makes a store build in a temporary folder (no localhost origin in the manifest or the code; the script fails if `localhost` appears) and writes `build-extension.zip` with the manifest `key` removed (the store rejects `key`). The unpacked `build-extension/` keeps both for local dev.
 3. Upload the zip as a new item.
 4. Set visibility to Unlisted.
 5. Fill in the listing, Privacy practices and screenshots from the doc, and append the extension section to the privacy policy (`public/privacy.html`) first.
@@ -53,11 +67,22 @@ Listing text, permission justifications, privacy answers and the screenshot shot
 
 ## Manual checklist on real ezyVet
 
-jsdom cannot prove that ezyVet saved. The Send to ezyVet button stays behind
-`practices.pims_send_enabled` until this has passed on a real consult at least once.
-The page fixtures are synthetic (built from reference selectors), so every selector is unverified.
+jsdom cannot prove that ezyVet saved. During the free beta the Send to ezyVet button is on for
+every practice (`FREE_BETA || practices.pims_send_enabled`, owner decision), so the writable-consult
+check, the patient and consult check and the diagnostic report are what protect vets until this
+checklist has passed on a real consult. The page fixtures are synthetic (built from reference
+selectors), so every selector is unverified.
 
 Use a test patient. For each step note pass/fail, and attach Copy diagnostic report on a failure.
+
+Check these first (highest risk):
+
+- [ ] Patient name selector: Inspect reads the consult's patient name (`PATIENT_NAME` in `ezyvet/selectors.ts` is a guess). If it reads nothing, the dialog always asks Send anyway, and the consult id (view id + record id) alone guards against writing to another consult.
+- [ ] Note writes report success without confirming that ezyVet saved: after every send, reload the consult and check each field really holds the text.
+- [ ] HugeRTE keeps the chart picture: in Discharge Summary (and the email body), the `data:` URI image is still there after Save & Close and a reload, not stripped or replaced by a broken image.
+- [ ] Long send and service-worker lifetime: a multi-field send with the chart picture finishes, and one that approaches the web app's 120 s timeout either completes or ends with "some fields may already have been written" (no silent half-send). Chrome may stop an idle worker after 30 s; a send keeps it busy, but check it is not cut off.
+- [ ] Cold service worker: stop the worker (chrome://extensions, Service worker, Stop), then open Send to ezyVet: the second ping (1.5 s) wakes it and the dialog loads, not the "not responding" explainer.
+- [ ] Failed popup write: after a failure such as `popup_not_closed` or `save_not_confirmed`, check whether a half-open popup is left on the consult, and that the next Send asks first.
 
 - [ ] Extension loads unpacked with no manifest errors; the id equals `DEV_EXTENSION_ID`.
 - [ ] Ping: the web app detects the extension and shows its version.
@@ -72,9 +97,9 @@ Use a test patient. For each step note pass/fail, and attach Copy diagnostic rep
 - [ ] Locked consult: status reads locked, no fields are offered, and Send is refused (`not_writable`).
 - [ ] Combined view: status reads combined, no fields offered, Send refused.
 - [ ] Not on a consult / not on the Medical tab: the matching state is shown and Send is refused.
-- [ ] Wrong patient: with a different patient open, the dialog shows both names and needs Send anyway; if the patient changes between the check and Send, the send is refused (`patient_changed`) and nothing is written.
+- [ ] Wrong patient: with a different patient open, the dialog shows both names and needs Send anyway (names match on whole words: "Bella" matches "Bella Smith", "Max" does not match "Maxine"); if another consult is opened between the check and Send, or between two fields, the rest is refused (`patient_changed`).
 - [ ] Two ezyVet tabs open: the dialog names the tab that will be used, and it is the active tab of the focused window.
-- [ ] Sending twice: the second send replaces or appends as designed and does not duplicate or corrupt the first.
+- [ ] Sending twice: the dialog asks first ("Sending again adds a second copy"); the second send adds a second copy and does not corrupt the first.
 - [ ] One item fails (for example a mapped field the consult lacks): the other items are still written and the failure is listed per field.
 - [ ] Restart the service worker (chrome://extensions, Service worker, Stop) and send again: it still works.
 - [ ] Copy diagnostic report contains selector hit counts, state, field titles and kinds, editor flags, version and last failure codes, and no patient, client or note text.

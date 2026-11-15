@@ -42,9 +42,8 @@ Requirements: a ToothOps account, Google Chrome, and ezyVet open in a tab. The e
 **Permission justifications**
 
 - `scripting`: Used to run a small content script in the user's open ezyVet tab, to read the names of the consult's note fields and the patient name, and to insert the note text and chart image into the fields the user selected. Runs only in response to a request from toothops.app.
-- `storage`: Keeps small technical state local to the browser (for example, which ezyVet tab was last used and recent error codes) so the extension keeps working after Chrome restarts its service worker. No clinical text is stored. NOTE: no code currently calls chrome.storage; see Owner decisions.
 - Host permission `https://*.ezyvet.com/*`: ezyVet is hosted on a per-practice subdomain of ezyvet.com, so the extension needs access to those pages to find the open consult and write into it. It does not request access to any other site.
-- `externally_connectable` (`https://toothops.app/*`; `http://localhost:5173/*` for local development only): Lets the ToothOps web app send messages to the extension (check status, list fields, send a note). No other site can talk to the extension. Remove the localhost entry from the manifest if the reviewer objects to it; the store build can ship with toothops.app only.
+- `externally_connectable` (`https://toothops.app/*`): Lets the ToothOps web app send messages to the extension (check status, list fields, send a note). No other site can talk to the extension. (The local development origin is only in the unpacked dev build; `npm run package:extension` builds the store zip without it.)
 - Remote code: No. All code is in the package; nothing is loaded or evaluated from the network.
 
 **Data usage disclosure (what the extension handles)**
@@ -67,7 +66,7 @@ Description for the reviewer: The extension handles clinical note text and a cha
 
 The ToothOps for ezyVet Chrome extension writes record notes created in ToothOps into the ezyVet consult you have open. When you choose Send to ezyVet, the extension reads the patient name and the list of note fields on your open ezyVet consult, and inserts the note text and chart image you selected into the fields you chose. This happens inside your browser, between your ToothOps tab and your ezyVet tab.
 
-The extension does not send any information to ToothOps, to us, or to any third party, and it does not collect analytics. It does not read or store the contents of your ezyVet records beyond what is needed for a send in progress. It keeps only small technical settings and recent error codes in Chrome's local extension storage, which contain no patient, client or note text. It runs only on ezyvet.com pages and only responds to requests from toothops.app. We do not sell the information the extension handles, use it for advertising or unrelated purposes, or load remote code. Removing the extension from Chrome deletes its local storage. Information you save in ToothOps itself is covered by the rest of this policy.
+The extension does not send any information to ToothOps, to us, or to any third party, and it does not collect analytics. It does not read or store the contents of your ezyVet records beyond what is needed for a send in progress. It stores nothing in the browser: the only state it keeps is the failure codes of the last send, in memory, which contain no patient, client or note text and are gone when Chrome stops the extension's background worker. It runs only on ezyvet.com pages and only responds to requests from toothops.app. We do not sell the information the extension handles, use it for advertising or unrelated purposes, or load remote code. Information you save in ToothOps itself is covered by the rest of this policy.
 
 ## Screenshots (1280x800, PNG or JPEG, 24-bit, no alpha; 1 to 5)
 
@@ -82,8 +81,8 @@ Also needed: a 440x280 small promo tile (required by the dashboard; use the teal
 
 ## Owner decisions
 
-- `storage` is declared in the manifest but nothing in src/extension uses it, and the store rejects or delays items with unused permissions. Either remove it from the manifest (and the assertion in background.test.ts) or keep it and use the justification above. Removing is safer.
-- Keep `http://localhost:5173/*` in the shipped `externally_connectable`, or strip it for the store build.
+- Decided: the unused `storage` permission was removed; the manifest asks for `scripting` only.
+- Decided: the store build (`npm run package:extension`) ships `externally_connectable` and the background's allowed origins with `https://toothops.app` only.
 - Health information box on the data usage form (see above).
 - Add the extension section to `public/privacy.html` and deploy before submitting.
 - Support contact for the dashboard: bazhip@gmail.com is what the privacy page uses.

@@ -92,9 +92,9 @@ There is no ezyVet API involved. The extension runs code inside the vet's own lo
 - `vite.extension.config.ts` builds to `build-extension/`. Script: `npm run build:extension`. It is not part of `npm run build` or the Vercel deploy, but `npm test` covers its code.
 - **Fixed extension id.** The manifest carries a `key` so the id is the same in development and the Web Store; the web app needs to know it (`VITE_EXTENSION_ID`, defaulting to the store id).
 - **Manifest:**
-  - `permissions: ["scripting", "storage"]`, plus `"sidePanel"` in phase 2.
+  - `permissions: ["scripting"]`, plus `"sidePanel"` in phase 2. *(`storage` dropped: nothing uses it.)*
   - `host_permissions: ["https://*.ezyvet.com/*"]`. In phase 2, add the Supabase project URL if needed.
-  - `externally_connectable.matches: ["https://toothops.app/*", "http://localhost:5173/*"]`.
+  - `externally_connectable.matches: ["https://toothops.app/*", "http://localhost:5173/*"]` in the dev build. The store build (`npm run package:extension`, `VITE_PIMS_STORE_BUILD=1`) ships `https://toothops.app/*` only, in the manifest and in the background's allowed origins.
   - No `debugger`, `cookies`, `tabs` or `nativeMessaging`. `scripting` with host permissions is enough to find and inject into ezyVet tabs via `chrome.tabs.query({ url })`.
 - **Manifest name and description** come from Chrome's `_locales/<lng>/messages.json`, generated at extension build from `src/locales/<lng>/pims.json` (`extension.name`, `extension.description`). *(Builder call.)*
 
@@ -146,7 +146,7 @@ A saved mapping stores ezyVet field titles as text. At send time, each title is 
   - **Which tab:** among `https://*.ezyvet.com/*` tabs, prefer the active tab of the last-focused window; otherwise the most recently accessed (`lastAccessed`).
   - **No tab:** `tab: null`.
   - **More than one candidate:** the response says so, and the web app shows which tab (by title) it will use. *(Builder call.)*
-- **`send`** `{ tabId, expectedPatient, items[] }`: re-inspect the tab, then compare the patient (§6). Then write the items **one at a time in order**, focusing the ezyVet tab first (ezyVet's save hooks need a real page). Returns per-item results.
+- **`send`** `{ tabId, expectedPatient, confirmedEzyvetPatient, expectedConsult, items[] }`: re-inspect the tab, then compare the consult and patient (§6). Then write the items **one at a time in order**, focusing the ezyVet tab first (ezyVet's save hooks need a real page). Returns per-item results.
 
 `protocol.ts` exports the message and result types. The web app imports them, so both sides stay in step.
 
@@ -182,7 +182,9 @@ History and Assessment get nothing by default. The header default and sending th
 
 ### 6. Patient check
 
-`send` compares `expectedPatient` (the chart's `patientName`) with the ezyVet `patientName`. Both are normalised: case-folded, accents removed, whitespace collapsed. They match when either name contains the other, because ezyVet may add the owner surname.
+The dialog compares the chart's `patientName` with the ezyVet `patientName`. Both are normalised: case-folded, accents removed, punctuation and whitespace collapsed. They match when every word of the shorter name is a whole word of the longer one, because ezyVet may add the owner surname ("Bella" matches "Bella Smith"; "Max" does not match "Maxine").
+
+Before each item, the background re-checks against what inspect saw: the consult id (`status().consult`: view id from `rtab<N>details` and record id from `Consult<N>Form` or `data-record-id`) must be the same, and when both the confirmed and the current ezyVet names are known they must be equal once normalised. Otherwise the rest is refused with `patient_changed`. The consult id carries the check when the patient name can't be read.
 
 - On a mismatch, or when the ezyVet name can't be read, the web app shows a confirmation naming both ("ToothOps chart: Bella · ezyVet consult: Max"). Sending needs an explicit **Send anyway**.
 - A chart with no patient name always asks.
