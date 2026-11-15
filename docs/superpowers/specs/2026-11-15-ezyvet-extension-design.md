@@ -184,7 +184,7 @@ History and Assessment get nothing by default. The header default and sending th
 
 The dialog compares the chart's `patientName` with the ezyVet `patientName`. Both are normalised: case-folded, accents removed, punctuation and whitespace collapsed. They match when every word of the shorter name is a whole word of the longer one, because ezyVet may add the owner surname ("Bella" matches "Bella Smith"; "Max" does not match "Maxine").
 
-Before each item, the background re-checks against what inspect saw: the consult id (`status().consult`: view id from `rtab<N>details` and record id from `Consult<N>Form` or `data-record-id`) must be the same, and when both the confirmed and the current ezyVet names are known they must be equal once normalised. Otherwise the rest is refused with `patient_changed`. The consult id carries the check when the patient name can't be read.
+Before each item, the background re-checks against what inspect saw: the consult id (`status().consult`: view id from `rtab<N>details` and record id from `Consult<N>Form` or `data-record-id`; a consult with neither is not writable) must be the same, and when both the confirmed and the current ezyVet names are known they must be equal once normalised. Otherwise the rest is refused with `patient_changed`. The consult id carries the check when the patient name can't be read.
 
 - On a mismatch, or when the ezyVet name can't be read, the web app shows a confirmation naming both ("ToothOps chart: Bella · ezyVet consult: Max"). Sending needs an explicit **Send anyway**.
 - A chart with no patient name always asks.
