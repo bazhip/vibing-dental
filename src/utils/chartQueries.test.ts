@@ -18,6 +18,7 @@ vi.mock('./supabaseClient', () => {
 });
 
 import { listChartsPage, loadChartSnapshot } from './chartQueries';
+import { LocalizedError } from './apiErrors';
 
 beforeEach(() => { db.calls.length = 0; db.rows = []; });
 
@@ -68,9 +69,15 @@ describe('loadChartSnapshot', () => {
     expect((await loadChartSnapshot('c1')).pimsSentAt).toBeNull();
   });
 
-  it('throws a translated error for unreadable or damaged charts', async () => {
-    db.single = { data: null, error: { message: 'boom' } };
-    await expect(loadChartSnapshot('c1')).rejects.toThrow(/damaged/);
+  it('a Supabase error is a load failure, not a damaged chart', async () => {
+    db.single = { data: null, error: { message: 'Failed to fetch' } };
+    const err = await loadChartSnapshot('c1').then(() => null, (e: unknown) => e as Error);
+    expect(err).toBeInstanceOf(LocalizedError);
+    expect(err?.message).toMatch(/Couldn.t open that visit/);
+    expect(err?.message).not.toMatch(/damaged/);
+  });
+
+  it('throws a translated error for a damaged snapshot', async () => {
     db.single = { data: { data: { nope: true }, pims_sent_at: null }, error: null };
     await expect(loadChartSnapshot('c1')).rejects.toThrow(/damaged/);
   });

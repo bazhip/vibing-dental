@@ -97,6 +97,21 @@
     "header": {
       "signedInAs": "Signed in as {{email}}",
       "signOut": "Sign out"
+    },
+    "list": {
+      "unnamed": "(no patient name)",
+      "matches": "Matches this consult",
+      "matchCount": "{{matches}} charts match this patient. Showing the most recent.",
+      "searchLabel": "Search charts",
+      "searchPlaceholder": "Search by patient, owner or number",
+      "empty": "No charts found.",
+      "loading": "Loading charts…",
+      "loadMore": "Load more"
+    },
+    "chart": {
+      "back": "← Back to charts",
+      "loading": "Opening the chart…",
+      "noteLabel": "Record note"
     }
   }
 }

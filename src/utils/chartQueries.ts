@@ -4,6 +4,7 @@ import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
 import { supabase } from './supabaseClient';
 import { localDateISO } from './localDate';
 import { LocalizedError } from './apiErrors';
+import { friendlyDetail } from '../components/ui/dialogs';
 
 /** Chart queries shared by the cloud-sync hook and the extension side panel. */
 
@@ -109,7 +110,9 @@ export async function loadChartSnapshot(
     .select('data, pims_sent_at')
     .eq('id', id)
     .single();
-  if (error || !data) throw new LocalizedError(t('errors.damagedChart'));
+  // A Supabase or network failure says so; "damaged" is only for a snapshot that won't parse.
+  if (error) throw new LocalizedError(t('errors.openVisit', { error: friendlyDetail(new Error(error.message)) }));
+  if (!data) throw new LocalizedError(t('errors.damagedChart'));
   const row = data as { data: unknown; pims_sent_at?: string | null };
   if (!isChartSnapshot(row.data)) throw new LocalizedError(t('errors.damagedChart'));
   return { snapshot: normalizeSnapshot(row.data), pimsSentAt: row.pims_sent_at ?? null };

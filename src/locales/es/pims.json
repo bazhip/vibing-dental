@@ -97,6 +97,21 @@
     "header": {
       "signedInAs": "Sesión iniciada como {{email}}",
       "signOut": "Cerrar sesión"
+    },
+    "list": {
+      "unnamed": "(sin nombre de paciente)",
+      "matches": "Coincide con esta consulta",
+      "matchCount": "{{matches}} historiales coinciden con este paciente. Se muestra el más reciente.",
+      "searchLabel": "Buscar historiales",
+      "searchPlaceholder": "Busque por paciente, propietario o número",
+      "empty": "No se encontró ningún historial.",
+      "loading": "Cargando historiales…",
+      "loadMore": "Cargar más"
+    },
+    "chart": {
+      "back": "← Volver a los historiales",
+      "loading": "Abriendo el historial…",
+      "noteLabel": "Nota clínica"
     }
   }
 }

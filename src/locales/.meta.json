@@ -8364,12 +8364,56 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
     "pims:panel.header.signOut": {
       "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "pims:panel.header.signedInAs": {
       "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
       "status": "machine"
     },
     "pims:panel.notConnected": {
@@ -19454,12 +19498,56 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
     "pims:panel.header.signOut": {
       "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "pims:panel.header.signedInAs": {
       "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
       "status": "machine"
     },
     "pims:panel.notConnected": {
@@ -30572,12 +30660,56 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
     "pims:panel.header.signOut": {
       "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "pims:panel.header.signedInAs": {
       "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
       "status": "machine"
     },
     "pims:panel.notConnected": {
@@ -41690,12 +41822,56 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
     "pims:panel.header.signOut": {
       "hash": "48f0d3d397d4",
       "status": "machine"
     },
     "pims:panel.header.signedInAs": {
       "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
       "status": "machine"
     },
     "pims:panel.notConnected": {

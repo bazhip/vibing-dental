@@ -97,6 +97,21 @@
     "header": {
       "signedInAs": "Accesso effettuato come {{email}}",
       "signOut": "Esci"
+    },
+    "list": {
+      "unnamed": "(nessun nome del paziente)",
+      "matches": "Corrisponde a questa visita",
+      "matchCount": "{{matches}} cartelle corrispondono a questo paziente. Viene mostrata la più recente.",
+      "searchLabel": "Cerca nelle cartelle",
+      "searchPlaceholder": "Cerchi per paziente, proprietario o numero",
+      "empty": "Nessuna cartella trovata.",
+      "loading": "Caricamento delle cartelle…",
+      "loadMore": "Carica altri"
+    },
+    "chart": {
+      "back": "← Torna alle cartelle",
+      "loading": "Apertura della cartella…",
+      "noteLabel": "Nota di cartella"
     }
   }
 }

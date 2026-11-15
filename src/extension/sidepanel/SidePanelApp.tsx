@@ -4,6 +4,11 @@ import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../../utils/supabaseClient';
 import { SignIn } from './SignIn';
 import { usePanelLanguage } from './panelLanguage';
+import { ChartList } from './ChartList';
+import { ChartSend } from './ChartSend';
+import { useConsultInspect } from './useConsultInspect';
+import { DialogHost } from '../../components/ui/dialogs';
+import type { CloudChartMeta } from '../../utils/chartQueries';
 
 /** The side panel: sign-in, or the signed-in shell. Its session is its own (extension-page
  *  storage), separate from the ToothOps web app's. */
@@ -11,7 +16,10 @@ export function SidePanelApp(): React.ReactElement {
   const { t } = useTranslation(['pims', 'auth']);
   // undefined = not known yet; null = signed out.
   const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [picked, setPicked] = useState<CloudChartMeta | null>(null);
   usePanelLanguage(session?.user.id ?? null);
+  // Only asked once signed in (the extension is only contacted for a signed-in vet).
+  const inspect = useConsultInspect(!!session);
 
   useEffect(() => {
     if (!supabase) return;
@@ -32,7 +40,10 @@ export function SidePanelApp(): React.ReactElement {
           {t('pims:panel.header.signOut')}
         </button>
       </header>
-      <main className="sp-main" />
+      <main className="sp-main">
+        {picked ? <ChartSend chart={picked} onBack={() => setPicked(null)} /> : <ChartList inspect={inspect} onPick={setPicked} />}
+      </main>
+      <DialogHost />
     </div>
   );
 }

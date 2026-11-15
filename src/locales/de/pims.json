@@ -97,6 +97,21 @@
     "header": {
       "signedInAs": "Angemeldet als {{email}}",
       "signOut": "Abmelden"
+    },
+    "list": {
+      "unnamed": "(kein Patientenname)",
+      "matches": "Passt zu dieser Konsultation",
+      "matchCount": "{{matches}} Akten passen zu diesem Patienten. Die neueste wird angezeigt.",
+      "searchLabel": "Akten durchsuchen",
+      "searchPlaceholder": "Nach Patient, Besitzer oder Nummer suchen",
+      "empty": "Keine Akten gefunden.",
+      "loading": "Akten werden geladen…",
+      "loadMore": "Mehr laden"
+    },
+    "chart": {
+      "back": "← Zurück zu den Akten",
+      "loading": "Akte wird geöffnet…",
+      "noteLabel": "Aktennotiz"
     }
   }
 }

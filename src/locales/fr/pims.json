@@ -97,6 +97,21 @@
     "header": {
       "signedInAs": "Connecté en tant que {{email}}",
       "signOut": "Se déconnecter"
+    },
+    "list": {
+      "unnamed": "(aucun nom de patient)",
+      "matches": "Correspond à cette consultation",
+      "matchCount": "{{matches}} dossiers correspondent à ce patient. Le plus récent est affiché.",
+      "searchLabel": "Rechercher dans les dossiers",
+      "searchPlaceholder": "Rechercher par patient, propriétaire ou numéro",
+      "empty": "Aucun dossier trouvé.",
+      "loading": "Chargement des dossiers…",
+      "loadMore": "Afficher plus"
+    },
+    "chart": {
+      "back": "← Retour aux dossiers",
+      "loading": "Ouverture du dossier…",
+      "noteLabel": "Note du dossier"
     }
   }
 }
