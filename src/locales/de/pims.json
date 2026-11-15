@@ -2,5 +2,9 @@
   "extension": {
     "name": "ToothOps für ezyVet",
     "description": "Überträgt Ihre ToothOps-Patientenakteneinträge in die geöffnete ezyVet-Konsultation."
+  },
+  "errors": {
+    "extension_error": "ToothOps konnte die ezyVet-Erweiterung nicht erreichen. Prüfen Sie, ob sie installiert und aktiviert ist, und versuchen Sie es erneut.",
+    "timeout": "Die Erweiterung hat nicht rechtzeitig geantwortet. Prüfen Sie den ezyVet-Tab und versuchen Sie es erneut."
   }
 }

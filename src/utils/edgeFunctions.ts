@@ -25,3 +25,8 @@ export async function invokeFunction<T = Record<string, unknown>>(name: string, 
   }
   return data as T;
 }
+
+/** Stamp a chart as sent to the practice's PIMS (mark-pims-sent). */
+export async function markPimsSent(chartId: string): Promise<{ sentAt: string }> {
+  return invokeFunction<{ sentAt: string }>('mark-pims-sent', { chartId });
+}

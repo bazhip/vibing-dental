@@ -8192,6 +8192,14 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "44784045e4ed",
       "status": "machine"
@@ -19000,6 +19008,14 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
       "status": "machine"
     },
     "pims:extension.description": {
@@ -29840,6 +29856,14 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
     "pims:extension.description": {
       "hash": "44784045e4ed",
       "status": "machine"
@@ -40676,6 +40700,14 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
       "status": "machine"
     },
     "pims:extension.description": {

@@ -2,5 +2,9 @@
   "extension": {
     "name": "ToothOps for ezyVet",
     "description": "Writes your ToothOps record notes into the open ezyVet consult."
+  },
+  "errors": {
+    "extension_error": "ToothOps couldn’t reach the ezyVet extension. Check that it is installed and enabled, then try again.",
+    "timeout": "The extension didn’t answer in time. Check the ezyVet tab and try again."
   }
 }

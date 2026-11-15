@@ -2,5 +2,9 @@
   "extension": {
     "name": "ToothOps per ezyVet",
     "description": "Scrive le Sue note di cartella ToothOps nella consultazione ezyVet aperta."
+  },
+  "errors": {
+    "extension_error": "ToothOps non è riuscito a raggiungere l’estensione ezyVet. Verifichi che sia installata e attiva, poi riprovi.",
+    "timeout": "L’estensione non ha risposto in tempo. Controlli la scheda di ezyVet e riprovi."
   }
 }
