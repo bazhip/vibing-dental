@@ -68,12 +68,27 @@ describe('buildSendItems', () => {
     expect(buildSendItems({ note: { editedText: 'x', field: 'Plan' }, map: effectiveMap(null), fields, pngDataUrl: null }).items[0])
       .toMatchObject({ fieldTitle: 'Plan', text: 'x', html: '<p>x</p>' });
   });
+  it('edited note plus picture to the same field is one item', () => {
+    const { items } = buildSendItems({ note: { editedText: 'x', field: 'Discharge Summary' }, map: effectiveMap(null), fields, pngDataUrl: PNG });
+    expect(items).toEqual([expect.objectContaining({ fieldTitle: 'Discharge Summary', text: 'x', pngDataUrl: PNG })]);
+  });
   it('edited note without a field yields no item', () => {
     expect(buildSendItems({ note: { editedText: 'x', field: null }, map: effectiveMap(null), fields, pngDataUrl: null }).items).toEqual([]);
   });
 });
 
 describe('splitStoredNote', () => {
+  it('returns null when text precedes the first heading', () => {
+    expect(splitStoredNote(`typed above\n${recordNoteText(canineNote)}`, canineNote)).toBeNull();
+  });
+  it('allows blank lines before the first heading', () => {
+    expect(splitStoredNote(`\n\n${recordNoteText(canineNote)}`, canineNote)).toEqual(canineNote);
+  });
+  it('preserves edited body text', () => {
+    const edited = recordNoteText(canineNote).replace('No lesions', 'Lesions seen');
+    const r = splitStoredNote(edited, canineNote)!;
+    expect(r.sections.find((x) => x.key === 'radiographs')!.lines).toEqual(['Lesions seen']);
+  });
   it('round trip', () => expect(splitStoredNote(recordNoteText(canineNote), canineNote)).toEqual(canineNote));
   it('fails on renamed heading', () => {
     expect(splitStoredNote(recordNoteText(canineNote).replace('PROCEDURES', 'WORK DONE'), canineNote)).toBeNull();

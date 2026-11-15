@@ -54,6 +54,8 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
     starts.push(at);
     from = at + 1;
   }
+  // Text typed above the first heading would be lost: let the caller send the note whole.
+  if (starts.length > 0 && lines.slice(0, starts[0]).some((l) => l.trim() !== '')) return null;
   generated.sections.forEach((s, i) => {
     const end = i + 1 < starts.length ? starts[i + 1] : lines.length;
     let body = lines.slice(starts[i] + 1, end);
@@ -112,17 +114,13 @@ export function buildSendItems(args: {
 
   const out: SendItem[] = [
     ...items,
-    ...groups.map((g): SendItem => {
-      const item: SendItem = {
-        fieldTitle: g.fieldTitle,
-        text: g.sections.map(recordNoteSectionText).join('\n\n'),
-        html: g.sections.map(recordNoteSectionHtml).join(''),
-      };
-      if (chartOk && chartField!.title === g.fieldTitle) item.pngDataUrl = pngDataUrl!;
-      return item;
-    }),
+    ...groups.map((g): SendItem => ({
+      fieldTitle: g.fieldTitle,
+      text: g.sections.map(recordNoteSectionText).join('\n\n'),
+      html: g.sections.map(recordNoteSectionHtml).join(''),
+    })),
   ];
-  if (chartOk && !out.some((i) => i.fieldTitle === chartField!.title && i.pngDataUrl)) {
+  if (chartOk) {
     const existing = out.find((i) => i.fieldTitle === chartField!.title);
     if (existing) existing.pngDataUrl = pngDataUrl!;
     else out.push({ fieldTitle: chartField!.title, pngDataUrl: pngDataUrl! });
