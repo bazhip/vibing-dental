@@ -1493,6 +1493,13 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               stored: chart.recordNote,
               onChange: chart.setRecordNote,
               readOnly,
+              pims: {
+                enabled: profile.pimsSendEnabled,
+                chartId: cloud.enabled ? chart.cloudChartId : null,
+                patientName: chart.patientInfo.patientName,
+                // Not loaded with the chart: the Send dialog reads it.
+                sentAt: null,
+              },
             }}
           />
         </React.Suspense>

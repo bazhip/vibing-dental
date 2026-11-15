@@ -3,8 +3,79 @@
     "name": "ToothOps pour ezyVet",
     "description": "Inscrit vos notes de dossier ToothOps dans la consultation ezyVet ouverte."
   },
+  "dialog": {
+    "open": "Envoyer vers ezyVet",
+    "title": "Envoyer vers ezyVet",
+    "loading": "Recherche d’ezyVet…",
+    "retry": "Réessayer",
+    "sentOn": "Envoyé vers ezyVet le {{date}}."
+  },
+  "install": {
+    "title": "Installez l’extension ToothOps pour ezyVet",
+    "body": "L’envoi vers ezyVet nécessite l’extension ToothOps pour ezyVet dans Chrome. Contactez l’assistance ToothOps pour obtenir le lien d’installation, puis rechargez cette page."
+  },
+  "noTab": "Ouvrez la consultation dans ezyVet, puis réessayez.",
+  "severalTabs": "Plusieurs onglets ezyVet sont ouverts. Onglet utilisé : {{title}}",
+  "target": "ezyVet : {{patient}} — {{title}}",
+  "targetNoPatient": "ezyVet : {{title}}",
+  "state": {
+    "notConsult": "L’onglet ezyVet n’affiche pas de consultation. Ouvrez la consultation du patient, puis réessayez.",
+    "notMedicalTab": "Ouvrez l’onglet Medical de la consultation, puis réessayez.",
+    "locked": "Cette consultation est verrouillée dans ezyVet. Ouvrez une consultation non verrouillée, puis réessayez.",
+    "combined": "ezyVet est en vue Combined. Passez en vue Standard, puis réessayez."
+  },
+  "rows": {
+    "heading": "Destination",
+    "chart": "Image du schéma dentaire",
+    "edited": "Note modifiée →",
+    "dontSend": "Ne pas envoyer",
+    "notOnPage": "{{title}} (absent de cette page)",
+    "reset": "Rétablir les valeurs par défaut"
+  },
+  "editedNotice": "La note a été modifiée et ne peut plus être redécoupée en sections. Elle sera envoyée d’un seul bloc.",
+  "picture": {
+    "pre": "Schéma dentaire préopératoire",
+    "post": "Schéma dentaire postopératoire"
+  },
+  "actions": {
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "copyDiagnostic": "Copier le rapport de diagnostic",
+    "diagnosticCopied": "Rapport de diagnostic copié. Collez-le dans votre message à l’assistance ToothOps.",
+    "diagnosticPrompt": "Copiez le rapport de diagnostic"
+  },
+  "mismatch": {
+    "title": "Patient différent ?",
+    "message": "Dossier ToothOps : {{chart}} · Consultation ezyVet : {{ezyvet}}",
+    "unknown": "(nom introuvable)",
+    "noName": "(aucun nom de patient)",
+    "sendAnyway": "Envoyer quand même"
+  },
+  "alreadySent": {
+    "title": "Déjà envoyé le {{date}}. Envoyer à nouveau ?",
+    "message": "Un nouvel envoi ajoute une deuxième copie dans ezyVet.",
+    "confirm": "Envoyer à nouveau"
+  },
+  "results": {
+    "title": "Résultats",
+    "sent": "Envoyé",
+    "stampFailed": "Envoyé, mais ToothOps n’a pas pu enregistrer la date d’envoi sur ce dossier."
+  },
   "errors": {
     "extension_error": "ToothOps n’a pas pu joindre l’extension ezyVet. Vérifiez qu’elle est installée et activée, puis réessayez.",
-    "timeout": "L’extension n’a pas répondu à temps. Vérifiez l’onglet ezyVet, puis réessayez."
+    "timeout": "L’extension n’a pas répondu à temps. Vérifiez l’onglet ezyVet, puis réessayez.",
+    "no_tab": "L’onglet ezyVet a été fermé. Ouvrez la consultation dans ezyVet et réessayez.",
+    "not_writable": "Il n’est plus possible d’écrire dans la consultation (verrouillée, fermée ou plus sur l’onglet Medical). Ouvrez l’onglet Medical de la consultation et réessayez.",
+    "patient_changed": "Un autre patient est maintenant ouvert dans ezyVet, rien de plus n’a donc été envoyé. Ouvrez la bonne consultation et réessayez.",
+    "field_not_found": "Ce champ ne figure pas sur la page de la consultation. Choisissez un autre champ sous Destination.",
+    "editor_not_found": "ToothOps n’a pas trouvé la zone de texte de ce champ. Ouvrez l’onglet Medical de la consultation et réessayez. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
+    "popup_not_found": "La fenêtre de saisie de ce champ ne s’est pas ouverte. Réessayez. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
+    "popup_not_closed": "La fenêtre de saisie de ce champ ne s’est pas fermée après l’enregistrement. Vérifiez le champ dans ezyVet avant de renvoyer.",
+    "save_button_not_found": "ToothOps n’a pas trouvé le bouton d’enregistrement de ce champ. Vérifiez le champ dans ezyVet, puis réessayez.",
+    "save_not_confirmed": "ezyVet n’a pas confirmé l’enregistrement. Vérifiez le champ dans ezyVet avant de renvoyer.",
+    "no_preferred_email": "Le client n’a pas d’adresse e-mail préférée dans ezyVet. Ajoutez-en une ou choisissez un autre champ.",
+    "image_not_accepted": "Ce champ n’accepte pas les images. Choisissez Discharge Summary ou un autre champ qui les accepte.",
+    "invalid_image": "L’image du schéma dentaire n’a pas pu être préparée. Réessayez.",
+    "picture_failed": "ToothOps n’a pas pu dessiner l’image du schéma dentaire ; elle n’a donc pas été envoyée."
   }
 }

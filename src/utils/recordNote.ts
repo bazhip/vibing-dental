@@ -48,7 +48,7 @@ const BLOCK_SITES = [
 
 // Headings reuse the app's own labels where it has one, so the note says
 // "Anesthesia" / "Treatment report" exactly as the chart sections do.
-const HEADING_KEYS = {
+export const HEADING_KEYS = {
   header: 'media:recordNote.h.header',
   anesthesia: 'app:sections.anesthesia',
   exam: 'media:recordNote.h.exam',
