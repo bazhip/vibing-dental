@@ -38,9 +38,16 @@ export type Deps = {
 };
 
 export type Sender = { origin?: string };
+/** Who sent an internal (`chrome.runtime.onMessage`) message. */
+export type InternalSender = { id?: string; url?: string };
 
 const isAllowedOrigin = (origin: string | undefined): boolean =>
   !!origin && (ALLOWED_ORIGINS as readonly string[]).includes(origin);
+
+/** Only this extension's own pages (the side panel). Content scripts share the extension id but
+ *  report the web page's URL, and other extensions or pages have another id: all refused. */
+export const isOwnExtensionPage = (sender: InternalSender, runtimeId: string): boolean =>
+  !!runtimeId && sender.id === runtimeId && !!sender.url?.startsWith(`chrome-extension://${runtimeId}/`);
 
 export function pickEzyvetTab(tabs: EzyvetTab[]): { tab: EzyvetTab | null; candidates: number } {
   const focused = tabs.find((t) => t.active && t.focusedWindow);
@@ -138,15 +145,27 @@ async function diagnose(tabId: number | undefined, deps: Deps): Promise<Diagnose
   }
 }
 
-export async function handleExternal(
-  msg: Request,
-  sender: Sender,
-  deps: Deps,
-): Promise<PingResult | InspectResult | SendResult | DiagnoseResult | undefined> {
+type Response = PingResult | InspectResult | SendResult | DiagnoseResult | undefined;
+
+/** A message from the ToothOps web app (`externally_connectable`). */
+export async function handleExternal(msg: Request, sender: Sender, deps: Deps): Promise<Response> {
   if (!isAllowedOrigin(sender.origin)) {
     console.warn('ToothOps extension: ignoring message from', sender.origin);
     return undefined;
   }
+  return dispatch(msg, deps);
+}
+
+/** A message from the extension's own side panel: the same requests as the web app. */
+export async function handleInternal(msg: Request, sender: InternalSender, runtimeId: string, deps: Deps): Promise<Response> {
+  if (!isOwnExtensionPage(sender, runtimeId)) {
+    console.warn('ToothOps extension: ignoring internal message from', sender.id);
+    return undefined;
+  }
+  return dispatch(msg, deps);
+}
+
+function dispatch(msg: Request, deps: Deps): Promise<Response> | Response {
   switch (msg?.type) {
     case 'ping':
       return { version: deps.version };
@@ -212,20 +231,40 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
 
 const KNOWN_TYPES = ['ping', 'inspect', 'send', 'diagnose'];
 
-if (typeof chrome !== 'undefined' && chrome.runtime?.onMessageExternal) {
-  const deps = createChromeDeps(chrome);
-  chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
-    if (!isAllowedOrigin(sender.origin)) {
-      console.warn('ToothOps extension: ignoring message from', sender.origin);
-      return false;
-    }
-    if (!KNOWN_TYPES.includes(msg?.type)) return false;
-    handleExternal(msg, sender, deps).then(
-      (res) => {
-        if (res !== undefined) sendResponse(res);
-      },
-      () => sendResponse({ ok: false, code: 'extension_error' }),
-    );
-    return true; // keep the channel open for the async response
-  });
+/** Answers `msg` with `handle` (async) when the sender is `accepted` and the type is known. */
+function respond(
+  accepted: boolean,
+  msg: Request,
+  handle: () => Promise<Response>,
+  sendResponse: (res: unknown) => void,
+): boolean {
+  if (!accepted || !KNOWN_TYPES.includes(msg?.type)) return false;
+  handle().then(
+    (res) => {
+      if (res !== undefined) sendResponse(res);
+    },
+    () => sendResponse({ ok: false, code: 'extension_error' }),
+  );
+  return true; // keep the channel open for the async response
 }
+
+/** Registers the listeners. Exported for tests; runs below when loaded as the service worker. */
+export function installListeners(api: ChromeApi, deps: Deps = createChromeDeps(api)): void {
+  api.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
+    const ok = isAllowedOrigin(sender.origin);
+    if (!ok) console.warn('ToothOps extension: ignoring message from', sender.origin);
+    return respond(ok, msg, () => handleExternal(msg, sender, deps), sendResponse);
+  });
+  api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    const ok = isOwnExtensionPage(sender, api.runtime.id);
+    if (!ok) console.warn('ToothOps extension: ignoring internal message from', sender.id);
+    return respond(ok, msg, () => handleInternal(msg, sender, api.runtime.id, deps), sendResponse);
+  });
+  // The toolbar button opens the side panel.
+  const openPanelOnClick = () =>
+    void api.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => undefined);
+  api.runtime.onInstalled.addListener(openPanelOnClick);
+  api.runtime.onStartup.addListener(openPanelOnClick);
+}
+
+if (typeof chrome !== 'undefined' && chrome.runtime?.onMessageExternal) installListeners(chrome);

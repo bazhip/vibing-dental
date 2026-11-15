@@ -2,7 +2,9 @@
 //   node scripts/build-extension.mjs                 dev build (unpacked): allows http://localhost:5173
 //   node scripts/build-extension.mjs --store <dir>   store build into <dir>: toothops.app only
 import { build } from 'vite';
+import react from '@vitejs/plugin-react';
 import { cpSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const storeAt = process.argv.indexOf('--store');
@@ -27,6 +29,23 @@ const lib = (entry, formats, name, fileName, emptyOutDir) => ({
 
 await build(lib('src/extension/ezyvet/page.ts', ['iife'], 'ToothopsEzyvet', 'ezyvet-page.js', false));
 await build(lib('src/extension/background.ts', ['es'], undefined, 'background.js', false));
+// The side panel: a React app (ES modules) with its own HTML entry, written as sidepanel.html +
+// assets/. Vite loads .env from the repo root, so VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are
+// inlined; without them the panel says the build isn't connected to ToothOps.
+await build({
+  ...common,
+  root: resolve('src/extension/sidepanel'),
+  envDir: resolve('.'),
+  base: './',
+  plugins: [react()],
+  build: {
+    outDir: resolve(out),
+    emptyOutDir: false,
+    // The panel bundles the i18n catalogs and the Supabase client; size is not a concern here.
+    chunkSizeWarningLimit: 4096,
+    rollupOptions: { input: resolve('src/extension/sidepanel/sidepanel.html') },
+  },
+});
 
 const manifest = JSON.parse(readFileSync('src/extension/manifest.json', 'utf8'));
 manifest.version = pkg.version;

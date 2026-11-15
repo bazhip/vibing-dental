@@ -1,0 +1,38 @@
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { Session } from '@supabase/supabase-js';
+import { supabase } from '../../utils/supabaseClient';
+import { SignIn } from './SignIn';
+import { usePanelLanguage } from './panelLanguage';
+
+/** The side panel: sign-in, or the signed-in shell. Its session is its own (extension-page
+ *  storage), separate from the ToothOps web app's. */
+export function SidePanelApp(): React.ReactElement {
+  const { t } = useTranslation(['pims', 'auth']);
+  // undefined = not known yet; null = signed out.
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  usePanelLanguage(session?.user.id ?? null);
+
+  useEffect(() => {
+    if (!supabase) return;
+    // Every change arrives here, starting with INITIAL_SESSION. A refresh that fails (expired
+    // session, signed out elsewhere) ends as SIGNED_OUT with no session: back to sign-in.
+    const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next ?? null));
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  if (!supabase) return <p className="sp-notice">{t('pims:panel.notConnected')}</p>;
+  if (session === undefined) return <p className="sp-notice">{t('auth:loading')}</p>;
+  if (!session) return <SignIn />;
+  return (
+    <div className="sp-shell">
+      <header className="sp-header">
+        <span className="sp-header__email">{t('pims:panel.header.signedInAs', { email: session.user.email ?? '' })}</span>
+        <button type="button" className="sp-link" onClick={() => void supabase!.auth.signOut({ scope: 'local' })}>
+          {t('pims:panel.header.signOut')}
+        </button>
+      </header>
+      <main className="sp-main" />
+    </div>
+  );
+}

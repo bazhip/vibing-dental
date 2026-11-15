@@ -8364,6 +8364,50 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
     "pims:picture.post": {
       "hash": "56cebba37b70",
       "status": "machine"
@@ -19408,6 +19452,50 @@
     },
     "pims:noTab": {
       "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
       "status": "machine"
     },
     "pims:picture.post": {
@@ -30484,6 +30572,50 @@
       "hash": "373bbd122107",
       "status": "machine"
     },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
     "pims:picture.post": {
       "hash": "56cebba37b70",
       "status": "machine"
@@ -41556,6 +41688,50 @@
     },
     "pims:noTab": {
       "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
       "status": "machine"
     },
     "pims:picture.post": {

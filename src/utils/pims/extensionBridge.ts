@@ -34,74 +34,75 @@ class BridgeFailure extends Error {
   }
 }
 
-function raw<T>(message: Request, timeoutMs: number): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const rt = runtime();
-    if (!rt?.sendMessage) {
-      reject(new BridgeFailure('extension_error'));
-      return;
-    }
-    let done = false;
-    const timer = setTimeout(() => {
-      if (done) return;
-      done = true;
-      reject(new BridgeFailure('timeout'));
-    }, timeoutMs);
-    const finish = (fn: () => void) => {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      fn();
-    };
-    try {
-      rt.sendMessage(EXTENSION_ID, message, (response) => {
-        // Reading lastError marks it handled; do it before anything else.
-        const failed = rt.lastError;
-        finish(() => (failed || response === undefined ? reject(new BridgeFailure('extension_error')) : resolve(response as T)));
-      });
-    } catch {
-      finish(() => reject(new BridgeFailure('extension_error')));
-    }
-  });
-}
+/** One way to message the background worker: a `sendMessage` taking just the message and a
+ *  callback, and the `lastError` Chrome sets when that callback reports a failure. */
+export type RuntimeChannel = {
+  sendMessage(message: Request, callback: (response?: unknown) => void): void;
+  readonly lastError?: { message?: string };
+};
 
-async function call<T>(message: Request, timeoutMs: number): Promise<T> {
-  try {
-    return await raw<T>(message, timeoutMs);
-  } catch (err) {
-    if (err instanceof BridgeFailure) {
-      throw new LocalizedError(i18n.t(err.kind === 'timeout' ? 'pims:errors.timeout' : 'pims:errors.extension_error'));
-    }
-    throw err;
+/** The send flow's transport over `channel` (read on every call; undefined = not available). */
+export function createTransport(channel: () => RuntimeChannel | undefined): PimsTransport {
+  function raw<T>(message: Request, timeoutMs: number): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const ch = channel();
+      if (!ch) {
+        reject(new BridgeFailure('extension_error'));
+        return;
+      }
+      let done = false;
+      const timer = setTimeout(() => {
+        if (done) return;
+        done = true;
+        reject(new BridgeFailure('timeout'));
+      }, timeoutMs);
+      const finish = (fn: () => void) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        fn();
+      };
+      try {
+        ch.sendMessage(message, (response) => {
+          // Reading lastError marks it handled; do it before anything else.
+          const failed = ch.lastError;
+          finish(() => (failed || response === undefined ? reject(new BridgeFailure('extension_error')) : resolve(response as T)));
+        });
+      } catch {
+        finish(() => reject(new BridgeFailure('extension_error')));
+      }
+    });
   }
-}
 
-/** The extension's version, or null when it isn't installed or doesn't
- *  answer (500 ms, then 1.5 s for a cold service worker). */
-export async function ping(): Promise<PingResult | null> {
-  for (const timeoutMs of PING_TIMEOUTS_MS) {
+  async function call<T>(message: Request, timeoutMs: number): Promise<T> {
     try {
-      return await raw<PingResult>({ type: 'ping' }, timeoutMs);
-    } catch { /* retry once, then give up */ }
+      return await raw<T>(message, timeoutMs);
+    } catch (err) {
+      if (err instanceof BridgeFailure) {
+        throw new LocalizedError(i18n.t(err.kind === 'timeout' ? 'pims:errors.timeout' : 'pims:errors.extension_error'));
+      }
+      throw err;
+    }
   }
-  return null;
-}
 
-export function inspect(): Promise<InspectResult> {
-  return call<InspectResult>({ type: 'inspect' }, INSPECT_TIMEOUT_MS);
-}
-
-/** A `{ ok: false, code }` reply is returned, not thrown. */
-export function send(req: Extract<Request, { type: 'send' }>): Promise<SendResult> {
-  return call<SendResult>(req, SEND_TIMEOUT_MS);
-}
-
-/** The page's structure report and the failure codes of the last send. */
-export function diagnose(tabId?: number): Promise<DiagnoseResult> {
-  return call<DiagnoseResult>(
-    tabId === undefined ? { type: 'diagnose' } : { type: 'diagnose', tabId },
-    DIAGNOSE_TIMEOUT_MS,
-  );
+  return {
+    /** The extension's version, or null when it isn't installed or doesn't
+     *  answer (500 ms, then 1.5 s for a cold service worker). */
+    async ping() {
+      for (const timeoutMs of PING_TIMEOUTS_MS) {
+        try {
+          return await raw<PingResult>({ type: 'ping' }, timeoutMs);
+        } catch { /* retry once, then give up */ }
+      }
+      return null;
+    },
+    inspect: () => call<InspectResult>({ type: 'inspect' }, INSPECT_TIMEOUT_MS),
+    /** A `{ ok: false, code }` reply is returned, not thrown. */
+    send: (req) => call<SendResult>(req, SEND_TIMEOUT_MS),
+    /** The page's structure report and the failure codes of the last send. */
+    diagnose: (tabId) =>
+      call<DiagnoseResult>(tabId === undefined ? { type: 'diagnose' } : { type: 'diagnose', tabId }, DIAGNOSE_TIMEOUT_MS),
+  };
 }
 
 /** What the send flow needs from the extension, so the page and the side panel can each supply their own. */
@@ -113,4 +114,15 @@ export type PimsTransport = {
 };
 
 /** The page talking to the extension through `externally_connectable`. */
-export const externalTransport: PimsTransport = { ping, inspect, send, diagnose };
+export const externalTransport: PimsTransport = createTransport(() => {
+  const rt = runtime();
+  if (!rt?.sendMessage) return undefined;
+  return {
+    sendMessage: (message, callback) => rt.sendMessage!(EXTENSION_ID, message, callback),
+    get lastError() {
+      return rt.lastError;
+    },
+  };
+});
+
+export const { ping, inspect, send, diagnose } = externalTransport;

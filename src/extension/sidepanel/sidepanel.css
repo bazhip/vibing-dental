@@ -1,0 +1,29 @@
+:root {
+  --sp-accent: #0c6b63;
+  --sp-text: #1d2b2a;
+  --sp-muted: #5b6b69;
+  --sp-border: #d5dedd;
+  --sp-error: #b42318;
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  color: var(--sp-text);
+}
+body { margin: 0; }
+.sp-notice { padding: 16px; color: var(--sp-muted); }
+.sp-signin { display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.sp-title { font-size: 18px; margin: 0; }
+.sp-lead { margin: 0; color: var(--sp-muted); }
+.sp-form { display: flex; flex-direction: column; gap: 10px; }
+.sp-field { display: flex; flex-direction: column; gap: 4px; font-weight: 500; }
+.sp-field input { font: inherit; padding: 8px; border: 1px solid var(--sp-border); border-radius: 6px; }
+.sp-error { margin: 0; color: var(--sp-error); }
+.sp-primary, .sp-secondary { font: inherit; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+.sp-primary { background: var(--sp-accent); color: #fff; border: 1px solid var(--sp-accent); }
+.sp-secondary { background: #fff; color: var(--sp-text); border: 1px solid var(--sp-border); }
+.sp-primary:disabled, .sp-secondary:disabled { opacity: 0.6; cursor: default; }
+.sp-or { margin: 0; text-align: center; color: var(--sp-muted); }
+.sp-links { display: flex; justify-content: space-between; gap: 8px; }
+.sp-link { font: inherit; background: none; border: none; padding: 0; color: var(--sp-accent); cursor: pointer; text-decoration: underline; }
+.sp-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--sp-border); }
+.sp-header__email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sp-muted); }

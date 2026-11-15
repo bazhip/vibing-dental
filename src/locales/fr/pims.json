@@ -81,5 +81,22 @@
     "item_extension_error": "Un problème est survenu pendant l’écriture de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer.",
     "item_not_writable": "La consultation n’accepte plus de modifications (verrouillée, fermée ou plus sur l’onglet Medical), ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer.",
     "item_patient_changed": "Un autre patient ou une autre consultation a été ouvert dans ezyVet, ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer."
+  },
+  "panel": {
+    "notConnected": "Cette version n’est pas connectée à ToothOps.",
+    "signIn": {
+      "title": "Connectez-vous à ToothOps",
+      "lead": "Envoyez les notes de vos dossiers ToothOps dans la consultation ezyVet ouverte.",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "busy": "Connexion…",
+      "or": "ou",
+      "createAccount": "Créer un compte",
+      "forgotPassword": "Mot de passe oublié ?"
+    },
+    "header": {
+      "signedInAs": "Connecté en tant que {{email}}",
+      "signOut": "Se déconnecter"
+    }
   }
 }

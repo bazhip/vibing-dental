@@ -81,5 +81,22 @@
     "item_extension_error": "Something went wrong while writing this field. Check the field in ezyVet before sending again.",
     "item_not_writable": "The consult stopped accepting changes (locked, closed or no longer on the Medical tab), so this field wasn’t sent. Check the consult in ezyVet before sending again.",
     "item_patient_changed": "A different patient or consult was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
+  },
+  "panel": {
+    "notConnected": "This build isn’t connected to ToothOps.",
+    "signIn": {
+      "title": "Sign in to ToothOps",
+      "lead": "Send record notes from your ToothOps charts into the open ezyVet consult.",
+      "password": "Password",
+      "submit": "Sign in",
+      "busy": "Signing in…",
+      "or": "or",
+      "createAccount": "Create an account",
+      "forgotPassword": "Forgot password?"
+    },
+    "header": {
+      "signedInAs": "Signed in as {{email}}",
+      "signOut": "Sign out"
+    }
   }
 }

@@ -81,5 +81,22 @@
     "item_extension_error": "Si è verificato un problema durante la scrittura di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
     "item_not_writable": "La consultazione non accetta più modifiche (bloccata, chiusa o non più sulla scheda Medical), quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
     "item_patient_changed": "In ezyVet è stato aperto un altro paziente o un’altra consultazione, quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo."
+  },
+  "panel": {
+    "notConnected": "Questa versione non è collegata a ToothOps.",
+    "signIn": {
+      "title": "Acceda a ToothOps",
+      "lead": "Invii le note delle Sue cartelle ToothOps nella consultazione ezyVet aperta.",
+      "password": "Password",
+      "submit": "Accedi",
+      "busy": "Accesso in corso…",
+      "or": "oppure",
+      "createAccount": "Crea un account",
+      "forgotPassword": "Password dimenticata?"
+    },
+    "header": {
+      "signedInAs": "Accesso effettuato come {{email}}",
+      "signOut": "Esci"
+    }
   }
 }

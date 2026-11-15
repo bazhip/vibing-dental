@@ -81,5 +81,22 @@
     "item_extension_error": "Beim Schreiben dieses Felds ist ein Fehler aufgetreten. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
     "item_not_writable": "Die Konsultation nimmt keine Änderungen mehr an (gesperrt, geschlossen oder nicht mehr im Tab Medical), daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden.",
     "item_patient_changed": "In ezyVet wurde ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden."
+  },
+  "panel": {
+    "notConnected": "Diese Version ist nicht mit ToothOps verbunden.",
+    "signIn": {
+      "title": "Bei ToothOps anmelden",
+      "lead": "Senden Sie die Einträge Ihrer ToothOps-Akten in die geöffnete ezyVet-Konsultation.",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "busy": "Anmeldung läuft…",
+      "or": "oder",
+      "createAccount": "Konto erstellen",
+      "forgotPassword": "Passwort vergessen?"
+    },
+    "header": {
+      "signedInAs": "Angemeldet als {{email}}",
+      "signOut": "Abmelden"
+    }
   }
 }

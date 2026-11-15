@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { createHash } from 'node:crypto';
 import manifest from './manifest.json';
 import { DEV_EXTENSION_ID } from './extensionId';
-import { handleExternal, pickEzyvetTab, type Deps, type EzyvetTab } from './background';
+import { handleExternal, handleInternal, installListeners, pickEzyvetTab, type Deps, type EzyvetTab } from './background';
 import { ALLOWED_ORIGINS, allowedOrigins, type Request } from './protocol';
 import type { SendItem } from '../utils/pims/mapping';
 
@@ -256,11 +256,82 @@ describe('background', () => {
   });
 });
 
+describe('internal messages', () => {
+  const ID = 'abcdefghijklmnopabcdefghijklmnop';
+  const panel = { id: ID, url: `chrome-extension://${ID}/sidepanel.html` };
+
+  it('internal messages accepted only from own extension pages', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { deps } = makeDeps();
+    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev' });
+    const refused = [
+      { id: 'otherextensionidotherextensionid', url: `chrome-extension://otherextensionidotherextensionid/x.html` },
+      { id: 'otherextensionidotherextensionid', url: panel.url },
+      // A content script: our id, but the web page's URL.
+      { id: ID, url: 'https://clinic.ezyvet.com/' },
+      { id: ID, url: `chrome-extension://${ID}evil/sidepanel.html` },
+      { id: ID },
+      { url: panel.url },
+    ];
+    for (const sender of refused) expect(await handleInternal({ type: 'ping' }, sender, ID, deps)).toBeUndefined();
+    // An empty runtime id never matches.
+    expect(await handleInternal({ type: 'ping' }, { id: '', url: 'chrome-extension:///' }, '', deps)).toBeUndefined();
+    warn.mockRestore();
+  });
+
+  it('the panel reaches the same send logic as the web app', async () => {
+    const { deps } = makeDeps();
+    expect(await handleInternal(sendMsg(), panel, ID, deps)).toEqual(await handleExternal(sendMsg(), okSender, makeDeps().deps));
+    expect(deps.page.write).toHaveBeenCalledWith(1, a);
+  });
+
+  function fakeChrome() {
+    const ev = () => {
+      const listeners: ((...args: unknown[]) => unknown)[] = [];
+      return { listeners, addListener: (l: (...args: unknown[]) => unknown) => listeners.push(l) };
+    };
+    return {
+      runtime: { id: ID, onMessage: ev(), onMessageExternal: ev(), onInstalled: ev(), onStartup: ev() },
+      sidePanel: { setPanelBehavior: vi.fn(async () => undefined) },
+    };
+  }
+
+  it('the listener answers the panel and ignores content scripts', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const api = fakeChrome();
+    installListeners(api as unknown as typeof chrome, makeDeps().deps);
+    const [listener] = api.runtime.onMessage.listeners;
+    const reply = vi.fn();
+    expect(listener({ type: 'ping' }, panel, reply)).toBe(true);
+    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev' }));
+    const ignored = vi.fn();
+    expect(listener({ type: 'ping' }, { id: ID, url: 'https://clinic.ezyvet.com/' }, ignored)).toBe(false);
+    expect(listener({ type: 'unknown' }, panel, ignored)).toBe(false);
+    expect(ignored).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it('the toolbar button opens the side panel on install and startup', () => {
+    const api = fakeChrome();
+    installListeners(api as unknown as typeof chrome, makeDeps().deps);
+    api.runtime.onInstalled.listeners[0]();
+    api.runtime.onStartup.listeners[0]();
+    expect(api.sidePanel.setPanelBehavior).toHaveBeenCalledTimes(2);
+    expect(api.sidePanel.setPanelBehavior).toHaveBeenCalledWith({ openPanelOnActionClick: true });
+  });
+});
+
 describe('manifest', () => {
   it('has the exact permissions and hosts', () => {
-    expect(manifest.permissions).toEqual(['scripting']);
+    expect(manifest.permissions).toEqual(['scripting', 'sidePanel', 'identity']);
     expect(manifest.host_permissions).toEqual(['https://*.ezyvet.com/*']);
     expect(manifest.externally_connectable.matches).toEqual(['https://toothops.app/*', 'http://localhost:5173/*']);
+  });
+
+  it('has the side panel and a toolbar action', () => {
+    expect(manifest.side_panel).toEqual({ default_path: 'sidepanel.html' });
+    expect(manifest.action.default_title).toBe('__MSG_extName__');
+    expect(manifest.action.default_icon).toEqual(manifest.icons);
   });
 
   it('the store build allows toothops.app only; the dev build adds the local server', async () => {
