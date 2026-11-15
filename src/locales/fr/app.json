@@ -19,7 +19,8 @@
     "feline": "Félin",
     "canine": "Canin",
     "felineDeciduous": "Félin · Dents déciduales",
-    "canineDeciduous": "Canin · Dents déciduales"
+    "canineDeciduous": "Canin · Dents déciduales",
+    "equine": "Équin"
   },
   "chartingView": {
     "label": "Affichage du schéma dentaire",

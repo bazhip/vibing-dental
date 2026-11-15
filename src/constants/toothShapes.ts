@@ -9,6 +9,7 @@
  */
 
 import { Species } from '../types';
+import { EQUINE_TEETH } from './equineTeeth';
 
 export type ToothType = 'incisor' | 'canine' | 'premolar' | 'carnassial' | 'molar';
 
@@ -56,6 +57,22 @@ export interface SpeciesDiagram {
   labels: Array<{ text: string; x: number; y: number; fontSize: number }>;
   /** Clean straight replacement for the hand-drawn midline dashes. */
   midlineDash: { x1: number; x2: number; y: number };
+  /** Set when the artwork is stroked line art (equine) rather than
+   *  filled outline rings: the outline is drawn as a stroke of this
+   *  width, and every tooth carries a closed hitShape. */
+  outlineStroke?: number;
+  /** Comment gutter each side of the drawing, in diagram units, when
+   *  the default (30% of the width) would leave a narrow drawing much
+   *  taller on screen than the dog/cat charts. Screen only: the PDF
+   *  crops to the drawing and its comments. */
+  sidePad?: number;
+  /** Teeth smaller than this circle get an invisible tap circle of this
+   *  radius (diagram units) — for small, isolated teeth (horse canines
+   *  and wolf teeth) that are otherwise a few pixels across. */
+  minHitRadius?: number;
+  /** Canines stand apart from the incisors (horse), so their numbers go
+   *  beside the tooth instead of on the front-teeth arc. */
+  frontArcIncisorsOnly?: boolean;
 }
 
 /**
@@ -263,6 +280,14 @@ const felineDeciduousTeeth: ToothShape[] = [
   { triadan: 808, label: "p4", type: "premolar", cx: 167, cy: 715, rx: 31.7, ry: 45.7, rotation: 0 },
 ];
 
+// ============================================================
+// EQUINE — SVG 482×1276 (occlusal view), stroked line art. Tooth
+// shapes are generated (scripts/diagrams/equine-teeth.py). The lower
+// arch is drawn cheek teeth first (411 at the top) with the incisors at
+// the bottom, as in the source artwork.
+// ============================================================
+const EQUINE_CX = 241.35;
+
 export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
   canine: {
     imageSrc: '/diagrams/canine.png',
@@ -331,5 +356,26 @@ export const TOOTH_DIAGRAMS: Record<Species, SpeciesDiagram> = {
       { text: 'L', x: 672, y: 540, fontSize: 32 },
     ],
     midlineDash: { x1: 48, x2: 645, y: 540 },
+  },
+  equine: {
+    imageSrc: '/diagrams/equine.png',
+    width: 482,
+    height: 1276,
+    midlineY: 632,
+    teeth: EQUINE_TEETH,
+    cropBounds: { minY: 20, maxY: 1262 },
+    labelCulls: [],
+    labels: [
+      { text: 'Maxilla',  x: EQUINE_CX, y: 490, fontSize: 24 },
+      { text: 'Mandible', x: EQUINE_CX, y: 770, fontSize: 24 },
+      { text: 'R', x: 38,  y: 632, fontSize: 32 },
+      { text: 'L', x: 445, y: 632, fontSize: 32 },
+    ],
+    midlineDash: { x1: 62, x2: 421, y: 632 },
+    outlineStroke: 1.8,
+    // Gives the same on-screen aspect as the canine chart (≈0.93).
+    sidePad: 470,
+    minHitRadius: 18,
+    frontArcIncisorsOnly: true,
   },
 };

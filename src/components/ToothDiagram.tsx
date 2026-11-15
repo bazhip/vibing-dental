@@ -599,7 +599,8 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
       // The front of the mouth — incisors and canines — reads as one arc
       // (104 103 102 101 | 201 202 203 204); a canine label beside its
       // tooth would collide with the ends of an incisor-only arc.
-      const front = jaw.filter((t) => t.type === 'incisor' || t.type === 'canine');
+      // A horse's canines sit well behind the incisors: label them beside the tooth.
+      const front = jaw.filter((t) => t.type === 'incisor' || (t.type === 'canine' && !diagram.frontArcIncisorsOnly));
       arcLabelPositions(front, outward, { w: labelW, h: labelH, gap: 12 })
         .forEach((pos, triadan) => arcPos.set(triadan, pos));
     }
@@ -615,7 +616,7 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
     return seeds.map((s, i) => ({ triadan: s.triadan, ...spread[i] }));
   }, [parsed, showNumbers, diagram, renderInfoByTriadan]);
 
-  const sidePad = diagram.width * SIDE_PAD_RATIO;
+  const sidePad = diagram.sidePad ?? diagram.width * SIDE_PAD_RATIO;
   const topPad = diagram.height * TOP_PAD_RATIO;
   const bottomPad = diagram.height * BOTTOM_PAD_RATIO;
   const viewBoxX = -sidePad;
@@ -1127,6 +1128,9 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
           d={parsed.outlineD}
           fillRule="evenodd"
           className="tooth-diagram__outline"
+          // Stroked line art (equine): inline style beats the class's
+          // fill (here and in the PDF rasterizer's stylesheet).
+          style={diagram.outlineStroke ? { fill: 'none', stroke: '#1a202c', strokeWidth: diagram.outlineStroke, strokeLinejoin: 'round' } : undefined}
         />
       )}
 
@@ -1251,6 +1255,12 @@ export const ToothDiagram = React.forwardRef<ToothDiagramHandle, ToothDiagramPro
                   />
                 </g>
               )}
+
+              {/* Bigger invisible tap target for a tiny tooth. */}
+              {diagram.minHitRadius &&
+                Math.max(bbox.maxX - bbox.minX, bbox.maxY - bbox.minY) < diagram.minHitRadius * 2 && (
+                  <circle cx={bbox.cx} cy={bbox.cy} r={diagram.minHitRadius} fill="transparent" data-export-skip="true" />
+                )}
 
               {/* Hit area + hover tint. */}
               {renderShape(HOVER_CLASS)}

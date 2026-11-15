@@ -4,7 +4,8 @@
       "canine": "Odontogramma canino",
       "canineDeciduous": "Odontogramma canino (denti decidui)",
       "feline": "Odontogramma felino",
-      "felineDeciduous": "Odontogramma felino (denti decidui)"
+      "felineDeciduous": "Odontogramma felino (denti decidui)",
+      "equine": "Odontogramma equino"
     },
     "subtitle": "Valutazione parodontale e piano di trattamento",
     "tech": "Assistente: {{name}}"

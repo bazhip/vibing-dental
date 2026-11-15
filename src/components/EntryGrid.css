@@ -836,6 +836,11 @@
   box-shadow: 0 1px 3px var(--ios-shadow, rgba(23, 35, 46, 0.2));
 }
 
+.species-tab:disabled {
+  opacity: 0.45;
+  pointer-events: none; /* no hover tint on an option that can't be picked */
+}
+
 .species-tab--active:hover {
   background: var(--primary);
   color: var(--ios-on-tint, white);

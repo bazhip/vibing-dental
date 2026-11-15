@@ -237,6 +237,7 @@ export async function drawLogoAndHeader(
     'canine-deciduous': t('header.title.canineDeciduous'),
     feline: t('header.title.feline'),
     'feline-deciduous': t('header.title.felineDeciduous'),
+    equine: t('header.title.equine'),
   };
   const titleText = SPECIES_TITLES[species];
   const subtitleText = t('header.subtitle');

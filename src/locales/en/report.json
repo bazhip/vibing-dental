@@ -70,7 +70,8 @@
     "canine": "Dog",
     "canine-deciduous": "Puppy",
     "feline": "Cat",
-    "feline-deciduous": "Kitten"
+    "feline-deciduous": "Kitten",
+    "equine": "Horse"
   },
   "tooth": {
     "deciduous": "baby",

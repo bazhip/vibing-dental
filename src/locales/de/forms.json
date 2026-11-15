@@ -35,7 +35,8 @@
     "feline": "Katze",
     "dentition": "Gebiss",
     "permanent": "Bleibend",
-    "deciduous": "Milchgebiss"
+    "deciduous": "Milchgebiss",
+    "equine": "Pferd"
   },
   "exam": {
     "title": "Untersuchung",

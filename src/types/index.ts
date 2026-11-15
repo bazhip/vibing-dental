@@ -296,13 +296,16 @@ export const DEFAULT_VCA_DOCTOR = '';
  * Species / dentition type for dental charts. The `-deciduous` variants are
  * the primary dentitions: `canine-deciduous` = 28-tooth puppy (no P1, no
  * molars); `feline-deciduous` = 26-tooth kitten (as canine-deciduous but
- * the lower jaw also has no p2). Triadan quadrants 5-8.
+ * the lower jaw also has no p2). Triadan quadrants 5-8. `equine` = the
+ * adult horse, 44 positions (101-111 per quadrant: I1-I3, C, wolf tooth
+ * P1 at 05, P2-P4, M1-M3); canines and wolf teeth are often absent.
  */
 export type Species =
   | 'feline'
   | 'canine'
   | 'canine-deciduous'
-  | 'feline-deciduous';
+  | 'feline-deciduous'
+  | 'equine';
 
 /**
  * Per-tooth visual mark on the interactive diagram.

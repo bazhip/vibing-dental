@@ -4,6 +4,7 @@ import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
 import { isNativeApp } from '../native/platform';
+import { combineSpecies, hasDeciduousChart, speciesBase, speciesDentition, type Dentition, type SpeciesBase } from '../utils/species';
 import { FormField, FormGroup, Segmented } from '../ios/Form';
 
 interface PatientFormProps {
@@ -42,15 +43,14 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   };
 
   // The one Species value carries both axes; the UI splits them into a
-  // species picker (feline/canine) and a dentition picker (permanent/
-  // deciduous) so neither list is a four-way combo.
-  const base: 'feline' | 'canine' = species.startsWith('canine') ? 'canine' : 'feline';
-  const dentition: 'permanent' | 'deciduous' = species.endsWith('deciduous') ? 'deciduous' : 'permanent';
-  const combine = (b: 'feline' | 'canine', d: 'permanent' | 'deciduous'): Species =>
-    (d === 'deciduous' ? `${b}-deciduous` : b) as Species;
+  // species picker (canine/feline/equine) and a dentition picker
+  // (permanent/deciduous) so neither list is a combo of every pair.
+  const base = speciesBase(species);
+  const dentition = speciesDentition(species);
+  const deciduousOk = hasDeciduousChart(base);
 
-  const handleBaseChange = (b: 'feline' | 'canine') => onSpeciesChange(combine(b, dentition));
-  const handleDentitionChange = (d: 'permanent' | 'deciduous') => onSpeciesChange(combine(base, d));
+  const handleBaseChange = (b: SpeciesBase) => onSpeciesChange(combineSpecies(b, dentition));
+  const handleDentitionChange = (d: Dentition) => onSpeciesChange(combineSpecies(base, d));
   const native = isNativeApp();
   // Quick-pick: common recheck intervals, counted from the visit date
   // (falling back to today). Selecting one fills the date field; it can
@@ -375,6 +375,15 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             >
               {t('patient.feline')}
             </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={base === 'equine'}
+              className={`species-tab ${base === 'equine' ? 'species-tab--active' : ''}`}
+              onClick={() => handleBaseChange('equine')}
+            >
+              {t('patient.equine')}
+            </button>
           </div>
         </div>
 
@@ -401,6 +410,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               role="radio"
               aria-checked={dentition === 'deciduous'}
               className={`species-tab ${dentition === 'deciduous' ? 'species-tab--active' : ''}`}
+              // No foal chart: the horse chart is adult teeth only.
+              disabled={!deciduousOk}
               onClick={() => handleDentitionChange('deciduous')}
             >
               {t('patient.deciduous')}
