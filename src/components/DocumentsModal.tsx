@@ -31,6 +31,10 @@ interface DocumentsModalProps {
     onEditWording: () => void;
     /** Practice owner report templates (omitted = built-in report). */
     config?: OwnerReportConfig;
+    /** Email to owner (see OwnerReportModal). */
+    ownerEmail?: string;
+    ensureSaved?: () => Promise<boolean>;
+    onEditPatient?: () => void;
   };
   /** Medical record note to paste into the practice software (omitted =
    *  no tab). Shown whether or not the owner report is on. */
@@ -146,6 +150,9 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
               diagramSvg={chartSnapshot?.postSvg}
               species={chartSnapshot?.species}
               config={ownerReport.config}
+              ownerEmail={ownerReport.ownerEmail}
+              ensureSaved={ownerReport.ensureSaved}
+              onEditPatient={ownerReport.onEditPatient}
             />
           )}
         </div>

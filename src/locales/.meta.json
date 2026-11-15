@@ -3176,6 +3176,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -8512,6 +8520,54 @@
       "hash": "3a0360fce6e0",
       "status": "machine"
     },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
+      "status": "machine"
+    },
     "reportui:languages.de": {
       "hash": "cd0a5a7df7be",
       "status": "machine"
@@ -13756,6 +13812,14 @@
     },
     "chart:toothName.type.premolar": {
       "hash": "81e9512353d9",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
       "status": "machine"
     },
     "client:reminder.body": {
@@ -19120,6 +19184,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -24396,6 +24508,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -29758,6 +29878,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -35034,6 +35202,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -40398,6 +40574,54 @@
       "hash": "3a0360fce6e0",
       "status": "machine"
     },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
+      "status": "machine"
+    },
     "reportui:languages.de": {
       "hash": "cd0a5a7df7be",
       "status": "machine"
@@ -42448,6 +42672,14 @@
     }
   },
   "pt": {
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"

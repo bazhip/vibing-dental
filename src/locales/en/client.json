@@ -12,5 +12,9 @@
     "buccalComment": "Mild redness along the left cheek",
     "extraNotes": "Soft food for the next 10 days while the extraction site heals.",
     "postComment": "Small chip on the tip — smooth, no treatment needed"
+  },
+  "ownerReportEmail": {
+    "subject": "Dental report for {{pet}}",
+    "body": "Hi {{owner}},\n\nAttached is {{pet}}’s dental report from today’s visit. Please contact us with any questions.\n\nThank you,\n{{practice}}"
   }
 }

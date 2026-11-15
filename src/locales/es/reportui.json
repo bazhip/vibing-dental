@@ -145,5 +145,19 @@
     "de": "Deutsch (alemán)",
     "it": "Italiano",
     "pt": "Português (portugués)"
+  },
+  "email": {
+    "button": "Enviar al propietario",
+    "needAccount": "Guarde el historial en su cuenta para enviar el informe por correo electrónico.",
+    "noEmailTitle": "Este historial no tiene correo electrónico del propietario",
+    "noEmail": "Añada el correo electrónico del propietario en la sección Paciente y luego envíe el informe.",
+    "addEmail": "Añadir correo del propietario",
+    "saveFirst": "Guarde el historial antes de enviar el informe por correo electrónico.",
+    "title": "Enviar el informe al propietario",
+    "toHint": "Se envía al correo electrónico del propietario guardado en este historial. Las respuestas le llegarán a usted.",
+    "attachment": "Adjunto: {{filename}}",
+    "send": "Enviar informe",
+    "sent": "Informe enviado a {{email}}",
+    "sendFailed": "No se ha podido enviar el informe."
   }
 }

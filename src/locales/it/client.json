@@ -12,5 +12,9 @@
     "buccalComment": "Lieve arrossamento lungo la guancia sinistra",
     "extraNotes": "Cibo morbido per i prossimi 10 giorni, finché la sede dell'estrazione non è guarita.",
     "postComment": "Piccola scheggiatura sulla punta — liscia, nessun trattamento necessario"
+  },
+  "ownerReportEmail": {
+    "subject": "Referto dentale di {{pet}}",
+    "body": "Gentile {{owner}},\n\nin allegato trova il referto dentale di {{pet}} relativo alla visita di oggi. Per qualsiasi domanda, non esiti a contattarci.\n\nGrazie,\n{{practice}}"
   }
 }

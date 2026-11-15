@@ -7,7 +7,8 @@ import { savePdf, downloadHint } from '../utils/savePdf';
 import { saveFile } from '../native/saveFile';
 import { isNativeApp } from '../native/platform';
 import { Icon } from '../ios/icons';
-import { toast } from './ui/dialogs';
+import { chooseDialog, toast } from './ui/dialogs';
+import { OwnerReportEmailModal } from './OwnerReportEmailModal';
 import { ChartSnapshot, ImageRole, Species } from '../types';
 import { diagramSvgToPng, type DiagramPin } from '../utils/svgToPng';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
@@ -42,6 +43,13 @@ interface OwnerReportModalProps {
   /** Practice owner report templates; the chart's chosen (or the
    *  default) template drives the layout. Omitted = built-in report. */
   config?: OwnerReportConfig;
+  /** Email to owner: the chart's owner email as typed (blank = ask to add
+   *  one), a save that must succeed first (the server reads the saved
+   *  email), and a jump to the Patient section. Omit ensureSaved = no
+   *  Email button. */
+  ownerEmail?: string;
+  ensureSaved?: () => Promise<boolean>;
+  onEditPatient?: () => void;
 }
 
 /** Longest edge for photos embedded in the report — keeps a report with
@@ -67,8 +75,12 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   diagramSvg,
   species,
   config,
+  ownerEmail = '',
+  ensureSaved,
+  onEditPatient,
 }) => {
   const { t } = useTranslation('reportui');
+  const [emailOpen, setEmailOpen] = React.useState(false);
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
@@ -167,10 +179,32 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, attachments.loaded, snapshot, imageRoles, diagramSvg, species, config]);
 
+  const reportFilename = () => {
+    const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    return `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
+  };
+
+  const handleEmail = async () => {
+    if (!ownerEmail.trim()) {
+      const choice = await chooseDialog({
+        title: t('email.noEmailTitle'),
+        message: t('email.noEmail'),
+        choices: [{ value: 'add', label: t('email.addEmail') }],
+        cancelLabel: t('actions.cancel', { ns: 'common' }),
+      });
+      if (choice === 'add') onEditPatient?.();
+      return;
+    }
+    if (!ensureSaved || !(await ensureSaved())) {
+      toast(t('email.saveFirst'), { kind: 'error' });
+      return;
+    }
+    setEmailOpen(true);
+  };
+
   const handleDownload = () => {
     if (!pdfUrl) return;
-    const sanitize = (value: string) => value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const filename = `${sanitize(snapshot.patientInfo.patientName) || 'patient'}_owner_report_${snapshot.patientInfo.date}.pdf`;
+    const filename = reportFilename();
     if (!pdfBlobRef.current) return;
     const blob = pdfBlobRef.current;
     // In the iOS app the PDF goes to the native share sheet (Save to Files,
@@ -221,6 +255,17 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
                 t('modal.download')
               )}
             </button>
+            {ensureSaved && (
+              <button
+                type="button"
+                className="pdf-preview-secondary"
+                onClick={() => void handleEmail()}
+                disabled={!cloudActive || !pdfUrl || generating}
+                title={!cloudActive ? t('email.needAccount') : undefined}
+              >
+                {t('email.button')}
+              </button>
+            )}
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
           </aside>
@@ -238,28 +283,45 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         </div>
   );
 
-  if (bare) return body;
+  const emailDialog = ensureSaved && (
+    <OwnerReportEmailModal
+      open={emailOpen}
+      onClose={() => setEmailOpen(false)}
+      chartId={chartId}
+      practiceId={practiceId}
+      practiceName={branding.practiceName}
+      toEmail={ownerEmail.trim()}
+      patientName={snapshot.patientInfo.patientName}
+      ownerName={snapshot.patientInfo.ownerName}
+      getPdf={() => (pdfBlobRef.current ? { blob: pdfBlobRef.current, filename: reportFilename() } : null)}
+    />
+  );
+
+  if (bare) return <>{body}{emailDialog}</>;
 
   return (
-    <div
-      className="pdf-preview-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="owner-report-title"
-    >
-      <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="pdf-preview-header">
-          <div>
-            <h2 id="owner-report-title">{t('modal.title')}</h2>
-            <p>{t('modal.subtitle')}</p>
-          </div>
-          <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('modal.close')}>
-            ×
-          </button>
-        </header>
-        {body}
+    <>
+      <div
+        className="pdf-preview-overlay"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="owner-report-title"
+      >
+        <div className="pdf-preview-modal" onClick={(e) => e.stopPropagation()}>
+          <header className="pdf-preview-header">
+            <div>
+              <h2 id="owner-report-title">{t('modal.title')}</h2>
+              <p>{t('modal.subtitle')}</p>
+            </div>
+            <button ref={closeButtonRef} type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('modal.close')}>
+              ×
+            </button>
+          </header>
+          {body}
+        </div>
       </div>
-    </div>
+      {emailDialog}
+    </>
   );
 };

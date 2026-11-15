@@ -12,5 +12,9 @@
     "buccalComment": "Leichte Rötung entlang der linken Wange",
     "extraNotes": "In den nächsten 10 Tagen weiches Futter, bis die Extraktionsstelle verheilt ist.",
     "postComment": "Kleiner Abbruch an der Spitze — glatt, keine Behandlung nötig"
+  },
+  "ownerReportEmail": {
+    "subject": "Zahnbericht für {{pet}}",
+    "body": "Guten Tag {{owner}},\n\nanbei erhalten Sie den Zahnbericht von {{pet}} zum heutigen Besuch. Bei Fragen melden Sie sich gerne bei uns.\n\nVielen Dank,\n{{practice}}"
   }
 }
