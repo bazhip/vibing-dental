@@ -304,15 +304,16 @@ async function writeEmail(doc: Document, win: Window, titleNode: Element, item: 
   // Only the client's preferred address, never another one: the address field must end up
   // holding exactly that address.
   const preferred = box.querySelector(S.PREFERRED_ADDRESS);
-  const address = (preferred?.textContent ?? '').trim().toLowerCase();
+  const preferredText = (preferred?.textContent ?? '').trim();
+  const tokens = preferredText.match(/\S+@\S+/g) ?? [];
+  const address = (tokens.length === 1 ? tokens[0] : preferredText).toLowerCase();
   if (!preferred || !address) {
     closePopup(box);
     throw new Fail('no_preferred_email');
   }
   click(preferred);
   const matches = () => {
-    const v = to.value.trim().toLowerCase();
-    return v !== '' && address.includes(v);
+    return address !== '' && to.value.trim().toLowerCase() === address;
   };
   if (!(await waitFor(doc, matches))) {
     closePopup(box);
@@ -349,10 +350,17 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
   });
   if (!ed) throw new Fail('editor_not_found');
   fillHugeRte(ed, richContent(item));
+  // Save & Close of the NEW document only: the nearest ancestor of its editor that holds one.
+  // Another open document's button is never a candidate unless it is the only one around us.
+  const visibleSaves = (root: Element) =>
+    S.DISCHARGE_SAVE_CLOSE.flatMap((sel) => Array.from(root.querySelectorAll(sel))).filter(
+      (b, i, all) => all.indexOf(b) === i && isVisible(b),
+    );
   let save: Element | undefined;
-  for (const sel of S.DISCHARGE_SAVE_CLOSE) {
-    save = Array.from(doc.querySelectorAll(sel)).find(isVisible);
-    if (save) break;
+  for (let n: Element | null = (ed.getContainer?.() ?? ed.iframeElement ?? null)?.parentElement ?? null; n && !save; n = n.parentElement) {
+    const found = visibleSaves(n);
+    if (found.length > 1) break;
+    save = found[0];
   }
   if (!save) throw new Fail('save_button_not_found');
   const button = save;

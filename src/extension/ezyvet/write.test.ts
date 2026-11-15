@@ -263,7 +263,7 @@ describe('write', () => {
       expect(saved).toBe('hi');
     });
 
-    function emailPopup(withPreferred: boolean, opts: { toValue?: string } = {}) {
+    function emailPopup(withPreferred: boolean, opts: { toValue?: string; preferred?: string } = {}) {
       const ed = fakeHugeRte();
       let closed = false;
       let saved = false;
@@ -283,7 +283,7 @@ describe('write', () => {
             'beforeend',
             '<input name="communicationdata_to">' +
               '<span class="other">other@x.com</span>' +
-              (withPreferred ? '<span class="preferredMethod">pref@x.com</span>' : '') +
+              (withPreferred ? `<span class="preferredMethod">${opts.preferred ?? 'pref@x.com'}</span>` : '') +
               '<input type="radio" value="Pending">',
           );
           box.querySelector('.preferredMethod')?.addEventListener('click', () => {
@@ -311,6 +311,13 @@ describe('write', () => {
       expect(state().closed).toBe(true);
       expect(state().saved).toBe(false);
       expect(ed.content).toBe('');
+    });
+
+    it('email: To holding only part of the preferred address is rejected', async () => {
+      const { state } = emailPopup(true, { toValue: 'smith@vet.com', preferred: 'jo.smith@vet.com' });
+      expect(await write({ fieldTitle: 'Client Communication > Email', text: 'a' })).toEqual({ ok: false, code: 'no_preferred_email' });
+      expect(state().closed).toBe(true);
+      expect(state().saved).toBe(false);
     });
 
     it('email: a stale active editor elsewhere is left untouched', async () => {
@@ -419,6 +426,29 @@ describe('write', () => {
       expect((await write({ fieldTitle: 'Discharge Summary', text: 'x' })).ok).toBe(true);
       expect(saved).toBe(true);
       expect(staleClick).not.toHaveBeenCalled();
+    });
+
+    it('clicks the new document\'s Save & Close, not another open document\'s', async () => {
+      const other = document.createElement('div');
+      other.innerHTML = '<button data-testid="Save&Close_DischargeSummary"></button>';
+      pane().prepend(other);
+      const otherClick = vi.fn();
+      other.querySelector('button')!.addEventListener('click', otherClick);
+      const ed = fakeHugeRte();
+      addButtonOf('AddDischargeSummary').addEventListener('click', () => {
+        const doc = document.createElement('div');
+        pane().appendChild(doc);
+        doc.innerHTML = '<button data-testid="Save&Close_DischargeSummary"></button>';
+        doc.querySelector('button')!.addEventListener('click', function () {
+          saved = true;
+          this.remove();
+        });
+        ed.mount(doc);
+      });
+      let saved = false;
+      expect((await write({ fieldTitle: 'Discharge Summary', text: 'x' })).ok).toBe(true);
+      expect(saved).toBe(true);
+      expect(otherClick).not.toHaveBeenCalled();
     });
 
     it('does not click an unrelated pre-existing Cancel', async () => {
