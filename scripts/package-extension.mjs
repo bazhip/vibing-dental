@@ -20,7 +20,7 @@ try {
   const STRICT = ['manifest.json', 'background.js', 'ezyvet-page.js'];
   const files = readdirSync(stage, { recursive: true, withFileTypes: true })
     .filter((e) => e.isFile() && /\.(js|mjs|html|css|json)$/.test(e.name))
-    .map((e) => relative(stage, join(e.parentPath, e.name)));
+    .map((e) => relative(stage, join(e.parentPath ?? e.path, e.name)));
   for (const f of STRICT) if (!files.includes(f)) throw new Error(`store build: ${f} is missing`);
   if (!files.includes('sidepanel.html')) throw new Error('store build: sidepanel.html is missing');
   for (const f of files) {

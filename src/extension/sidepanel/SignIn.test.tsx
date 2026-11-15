@@ -40,6 +40,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
   cleanup();
+  vi.unstubAllEnvs();
   delete (navigator as { languages?: unknown }).languages;
   vi.unstubAllGlobals();
   await i18n.changeLanguage('en');
@@ -121,11 +122,19 @@ describe('side panel sign-in', () => {
   });
 
   it('Apple sign-in goes through the same flow', async () => {
+    vi.stubEnv('VITE_APPLE_SIGNIN_WEB', 'true');
     fake.auth.signInWithOAuth.mockResolvedValue({ data: { url: 'https://project.supabase.co/authorize' }, error: null });
     identity.launchWebAuthFlow.mockRejectedValue(new Error('The user did not approve access.'));
     await signedOut();
     fireEvent.click(screen.getByRole('button', { name: 'Continue with Apple' }));
     await waitFor(() => expect(fake.auth.signInWithOAuth).toHaveBeenCalledWith(expect.objectContaining({ provider: 'apple' })));
+  });
+
+  it('Apple is hidden unless the build enables it, as on the website', async () => {
+    vi.stubEnv('VITE_APPLE_SIGNIN_WEB', '');
+    await signedOut();
+    expect(screen.queryByRole('button', { name: 'Continue with Apple' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeInTheDocument();
   });
 
   it('create an account and forgot password open toothops.app in a new tab', async () => {

@@ -6,6 +6,7 @@ import { supabase } from '../../utils/supabaseClient';
 import { LocalizedError } from '../../utils/apiErrors';
 import { friendlyError } from '../../components/ui/dialogs';
 import { WEB_ORIGIN } from '../../native/platform';
+import { showAppleSignIn } from '../../utils/appleSignIn';
 import { signInWithProvider } from './oauth';
 
 type Busy = 'password' | 'google' | 'apple' | null;
@@ -83,9 +84,12 @@ export function SignIn(): React.ReactElement {
       <button type="button" className="sp-secondary" disabled={busy !== null} onClick={() => void run('google', () => signInWithProvider('google'))}>
         {busy === 'google' ? t('auth:google.opening') : t('auth:google.continue')}
       </button>
-      <button type="button" className="sp-secondary" disabled={busy !== null} onClick={() => void run('apple', () => signInWithProvider('apple'))}>
-        {busy === 'apple' ? t('account:auth.apple.busy') : t('account:auth.apple.continue')}
-      </button>
+      {/* Same switch as the website: Apple only once its web provider is configured. */}
+      {showAppleSignIn() && (
+        <button type="button" className="sp-secondary" disabled={busy !== null} onClick={() => void run('apple', () => signInWithProvider('apple'))}>
+          {busy === 'apple' ? t('account:auth.apple.busy') : t('account:auth.apple.continue')}
+        </button>
+      )}
       <div className="sp-links">
         <button type="button" className="sp-link" onClick={openWebsite}>
           {t('pims:panel.signIn.createAccount')}

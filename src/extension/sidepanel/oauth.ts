@@ -3,8 +3,9 @@ import i18n from '../../i18n';
 import { supabase } from '../../utils/supabaseClient';
 import { LocalizedError } from '../../utils/apiErrors';
 
-// Closing the provider window (or declining) rejects launchWebAuthFlow with one of these.
-const CANCELLED = /did not approve|cancel/i;
+// Closing the provider window (or declining) rejects launchWebAuthFlow with Chrome's
+// "The user did not approve access." (or a "User cancelled" / "canceled" variant).
+const CANCELLED = /^(the user did not approve access\.?|user cancell?ed\b.*|cancell?ed\.?)$/i;
 
 const incomplete = () => new LocalizedError(i18n.t('account:auth.incomplete'));
 
@@ -25,6 +26,9 @@ export async function signInWithProvider(provider: 'google' | 'apple'): Promise<
   if (error) throw error;
   if (!data?.url) throw incomplete();
 
+  // If the panel closes mid-flow, this page (and the promise below) is gone: the auth window
+  // may still finish, but nothing exchanges the code, so no session is created and the panel
+  // opens signed out next time. The PKCE verifier left in storage is replaced by the next attempt.
   let returned: string | undefined;
   try {
     returned = await chrome.identity.launchWebAuthFlow({ url: data.url, interactive: true });

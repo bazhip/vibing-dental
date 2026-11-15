@@ -37,7 +37,7 @@ describe('signInWithProvider', () => {
   });
 
   it('cancelled OAuth stays on sign-in', async () => {
-    for (const message of ['The user did not approve access.', 'User cancelled the sign-in.']) {
+    for (const message of ['The user did not approve access.', 'User cancelled the sign-in.', 'canceled']) {
       identity.launchWebAuthFlow.mockRejectedValueOnce(new Error(message));
       await expect(signInWithProvider('apple')).resolves.toBeUndefined();
     }
@@ -45,6 +45,13 @@ describe('signInWithProvider', () => {
     identity.launchWebAuthFlow.mockResolvedValueOnce(`${REDIRECT}?error=access_denied&error_description=declined`);
     await expect(signInWithProvider('google')).resolves.toBeUndefined();
     expect(auth.exchangeCodeForSession).not.toHaveBeenCalled();
+  });
+
+  it('other window failures are errors, even if they mention cancelling', async () => {
+    for (const message of ['Authorization page could not be loaded.', 'Request to the provider was cancelled by the server']) {
+      identity.launchWebAuthFlow.mockRejectedValueOnce(new Error(message));
+      await expect(signInWithProvider('google')).rejects.toBeInstanceOf(LocalizedError);
+    }
   });
 
   it('a provider error in the returned URL fails with a translated message', async () => {
