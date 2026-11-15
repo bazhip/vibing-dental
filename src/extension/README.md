@@ -39,6 +39,18 @@ A test checks that the manifest key and `DEV_EXTENSION_ID` agree.
 When the Chrome Web Store item exists, replace `key` with the store's key and update
 `DEV_EXTENSION_ID` (and the web app's `VITE_EXTENSION_ID`).
 
+## Publishing
+
+Listing text, permission justifications, privacy answers and the screenshot shot list are in [docs/chrome-web-store-listing.md](../../docs/chrome-web-store-listing.md).
+
+1. Register a Chrome Web Store developer account (one-time fee) at https://chrome.google.com/webstore/devconsole.
+2. Run `npm run package:extension`. It builds and writes `build-extension.zip` with the manifest `key` removed (the store rejects `key`). The unpacked `build-extension/` keeps it for local dev.
+3. Upload the zip as a new item.
+4. Set visibility to Unlisted.
+5. Fill in the listing, Privacy practices and screenshots from the doc, and append the extension section to the privacy policy (`public/privacy.html`) first.
+6. After approval, copy the store's public key (item Package tab) into `key` in `manifest.json`, update `DEV_EXTENSION_ID`, and set `VITE_EXTENSION_ID` on Vercel to the store item id.
+7. Send the store URL so the in-app install link can be switched on.
+
 ## Manual checklist on real ezyVet
 
 jsdom cannot prove that ezyVet saved. The Send to ezyVet button stays behind

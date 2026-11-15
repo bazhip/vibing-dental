@@ -29,3 +29,4 @@ yarn-error.log*
 # ezyVet extension
 build-extension/
 extension-key.pem
+build-extension.zip

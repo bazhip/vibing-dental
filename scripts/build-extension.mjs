@@ -24,6 +24,8 @@ const manifest = JSON.parse(readFileSync('src/extension/manifest.json', 'utf8'))
 manifest.version = pkg.version;
 writeFileSync(`${out}/manifest.json`, JSON.stringify(manifest, null, 2) + '\n');
 
+cpSync('src/extension/icons', `${out}/icons`, { recursive: true });
+
 for (const lng of LANGS) {
   const { extension } = JSON.parse(readFileSync(`src/locales/${lng}/pims.json`, 'utf8'));
   const dir = `${out}/_locales/${lng}`;
