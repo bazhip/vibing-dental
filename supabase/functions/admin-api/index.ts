@@ -341,7 +341,13 @@ Deno.serve(async (req: Request) => {
           chartCountRows(admin),
           listAllUsers(admin),
         ]);
-        let pracRes = await admin.from('practices').select(`${BASE_COLS}, owner_report_enabled`).order('created_at', { ascending: true });
+        // pims_send_enabled (20261125) is optional the same way: retry
+        // without it, then without owner_report_enabled as well.
+        const FLAG_COLS = ['owner_report_enabled', 'pims_send_enabled'];
+        let pracRes = await admin.from('practices').select(`${BASE_COLS}, ${FLAG_COLS.join(', ')}`).order('created_at', { ascending: true });
+        if (pracRes.error && /pims_send_enabled/.test(pracRes.error.message)) {
+          pracRes = await admin.from('practices').select(`${BASE_COLS}, owner_report_enabled`).order('created_at', { ascending: true });
+        }
         if (pracRes.error && /owner_report_enabled/.test(pracRes.error.message)) {
           pracRes = await admin.from('practices').select(BASE_COLS).order('created_at', { ascending: true });
         }
@@ -403,6 +409,7 @@ Deno.serve(async (req: Request) => {
             frozenAt: p.frozen_at ?? null,
             hasStripe: !!p.stripe_subscription_id,
             ownerReportEnabled: !!p.owner_report_enabled,
+            pimsSendEnabled: !!p.pims_send_enabled,
           });
         }
         return json({ practices });
@@ -427,6 +434,7 @@ Deno.serve(async (req: Request) => {
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);
         const FEATURE_COLUMNS: Record<string, string> = {
           owner_report: 'owner_report_enabled',
+          pims_send: 'pims_send_enabled',
         };
         const column = FEATURE_COLUMNS[feature];
         if (!column) return json({ error: `unknown feature: ${feature}` }, 400);

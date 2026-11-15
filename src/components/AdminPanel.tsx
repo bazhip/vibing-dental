@@ -154,6 +154,7 @@ interface AdminPractice {
   /** Feature flag: owner-facing report PDF (beta). Absent until the
    *  admin-api's list_practices includes it — treated as off. */
   ownerReportEnabled?: boolean;
+  pimsSendEnabled?: boolean;
 }
 
 interface BillingOverviewRow {
@@ -651,6 +652,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
         action: 'set_feature',
         practiceId: selectedPractice.id,
         feature: 'owner_report',
+        enabled,
+      });
+      await refresh();
+    });
+  };
+
+  const handleSetPimsSend = (enabled: boolean) => {
+    if (!selectedPractice) return;
+    run(enabled ? 'Send to PIMS enabled for this practice.' : 'Send to PIMS disabled.', async () => {
+      await adminCall({
+        action: 'set_feature',
+        practiceId: selectedPractice.id,
+        feature: 'pims_send',
         enabled,
       });
       await refresh();
@@ -1171,6 +1185,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
                 {FREE_BETA
                   ? 'Owner-facing take-home PDF — on for everyone during the free beta; this switch takes over when the beta ends.'
                   : 'Owner-facing take-home PDF (beta) — off by default for every practice.'}
+              </span>
+            </div>
+            <div className="admin-panel__plan-toggle" role="group" aria-label="Send to PIMS flag">
+              <button
+                type="button"
+                className={selectedPractice.pimsSendEnabled ? 'admin-panel__plan-opt admin-panel__plan-opt--on' : 'admin-panel__plan-opt'}
+                aria-pressed={!!selectedPractice.pimsSendEnabled}
+                onClick={() => handleSetPimsSend(!selectedPractice.pimsSendEnabled)}
+                disabled={busy}
+              >
+                Send to PIMS: {selectedPractice.pimsSendEnabled ? 'on' : 'off'}
+              </button>
+              <span className="admin-panel__plan-note">
+                Record note sent into ezyVet via the Chrome extension (beta) — off by default for every practice.
               </span>
             </div>
           </div>
