@@ -207,7 +207,7 @@ History and Assessment get nothing by default. The header default and sending th
 - **Results:** a list with ✓ or the failure message for each field.
   - If any write succeeded and the chart is saved to the cloud, record it in `charts.pims_sent_at` (migration, nullable timestamptz). The dialog then shows "Sent to ezyVet on …".
   - **Recording must not look like a chart edit.** `charts_touch_updated_at` bumps `updated_at` on every update, and `useCloudSync` compares `updated_at` to detect someone else's change. So:
-    - Use a `security definer` RPC, `mark_chart_sent_to_pims(chart_id)`. It allows anyone who can read the chart (creator or practice member), sets `pims_sent_at = now()`, and nothing else.
+    - Use a small edge function, `mark-pims-sent { chartId }`. It allows the chart's creator or a member of its practice (the same check as `send-owner-report`; practice-chart access is enforced in edge functions, not row-level security), sets `pims_sent_at = now()` with the service role, and nothing else.
     - Change `touch_updated_at` for `charts` so an update that changes only `pims_sent_at` (or `owner_report_sent_at`) keeps `updated_at`.
     - *(My call. It also fixes the same latent issue for `owner_report_sent_at`.)*
   - Sending again asks for confirmation, because it adds a second copy.
@@ -219,7 +219,7 @@ History and Assessment get nothing by default. The header default and sending th
 - **Opening.** `chrome.sidePanel` opens from the toolbar icon. The side panel is a small React app (`src/extension/sidepanel/`) using the repo's i18n setup, in the language from the vet's profile.
 - **Login.** The Supabase client with a `chrome.storage.local` auth storage adapter. The same sign-in methods as the web app; the builder checks which ones work in an extension page. A link opens toothops.app for sign-up and password reset.
 - **Charts list.** The vet's recent charts (owned and practice charts, newest first, about 20) with search by patient name. When the active ezyVet tab is a writable consult, the chart whose patient matches (§6 rule) is pinned at the top as "Matches this consult".
-- **Sending.** Picking a chart shows its record note (the stored note, or `buildRecordNote` for the profile language). Then the same mapping editor, patient check and send flow as phase 1, calling the writer directly instead of through external messaging. It also records `pims_sent_at` through the same RPC.
+- **Sending.** Picking a chart shows its record note (the stored note, or `buildRecordNote` for the profile language). Then the same mapping editor, patient check and send flow as phase 1, calling the writer directly instead of through external messaging. It also records `pims_sent_at` through the same edge function.
 - **The chart picture.** Mount the two diagrams off-screen, read-only, from the saved chart data, exactly as `AdminChartViewer.tsx` already does (`ToothDiagram` with the snapshot's marks, comments and strokes, `readOnly`, no-op handlers, and the same effective post-op marks). Take their `getSvgElement()` and call the shared `renderChartPicture`. The diagram is pure vector SVG with no image assets, so this costs one React component tree.
 - **Read-only.** No editing in the side panel. Edit in ToothOps.
 - **Reuse.** Phase 2 reuses phase 1's dialog pieces (mapping editor, results list) as shared components.
@@ -279,7 +279,7 @@ The owner has no ezyVet consult available now. So:
 - Mapping saved per vet, not per practice.
 - Client Communication → Email not offered as a target.
 - Text and picture to the same field become one document, image last.
-- `pims_sent_at` recorded through an RPC without bumping `updated_at`.
+- `pims_sent_at` recorded through an edge function without bumping `updated_at`.
 - No `innerHTML` fallback for note fields.
 - Edited notes that can't be split back go as one block (default Plan).
 - One stacked pre/post image.
