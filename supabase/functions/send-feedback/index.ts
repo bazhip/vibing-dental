@@ -21,7 +21,7 @@ const CORS = {
 const json = (b: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { 'Content-Type': 'application/json', ...CORS } });
 
-const FEEDBACK_TO = Deno.env.get('FEEDBACK_TO') ?? 'bazhip@gmail.com';
+const FEEDBACK_TO = Deno.env.get('FEEDBACK_TO') ?? 'admin@toothops.app';
 const FROM = 'ToothOps Feedback <noreply@toothops.app>';
 const KINDS: Record<string, string> = { bug: 'Problem', idea: 'Idea', other: 'Feedback' };
 const MAX_MESSAGE = 5_000;
