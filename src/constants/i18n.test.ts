@@ -2,7 +2,7 @@ import i18n from '../i18n';
 import { APP_LANGUAGES } from '../i18n/config';
 import { installPseudoLocale, restoreLocale } from '../i18n/testing/pseudo';
 import glossary from '../locales/glossary.json';
-import { DENTAL_CODES, DENTAL_CODE_GROUPS, codeDefinition, codesMatchingPrefix, searchCodes } from './dentalCodes';
+import { ALL_CODES, DENTAL_CODES, DENTAL_CODE_GROUPS, EQUINE_CODE_GROUPS, codeDefinition, codesMatchingPrefix, searchCodes } from './dentalCodes';
 import { gridCommentTexts } from '../utils/gridComments';
 import type { ToothData } from '../types';
 import { GRID_COLUMNS, columnLabel } from './columnDefinitions';
@@ -15,9 +15,9 @@ const WRAPPED = /^⟦.*⟧$/s;
 const codesOf = (list: { code: string }[]) => list.map((c) => c.code);
 
 describe('code definitions', () => {
-  it('every DENTAL_CODES code has a definition in each language', () => {
+  it('every code (dog/cat and equine) has a definition in each language', () => {
     for (const lng of APP_LANGUAGES) {
-      const missing = DENTAL_CODES.filter((c) => {
+      const missing = ALL_CODES.filter((c) => {
         const v: unknown = i18n.getResource(lng, 'codes', c.code);
         return typeof v !== 'string' || !v.trim();
       });
@@ -26,7 +26,7 @@ describe('code definitions', () => {
   });
 
   it('the English catalog is the DENTAL_CODES definition verbatim', () => {
-    const differs = DENTAL_CODES.filter((c) => i18n.getResource('en', 'codes', c.code) !== c.definition);
+    const differs = ALL_CODES.filter((c) => i18n.getResource('en', 'codes', c.code) !== c.definition);
     expect(codesOf(differs)).toEqual([]);
   });
 
@@ -87,8 +87,8 @@ describe('pseudo-locale', () => {
     const texts: string[] = [
       ...GRID_COLUMNS.map((c) => c.name),
       ...TOOTH_DATA_ROWS.map((r) => columnLabel(r.key)),
-      ...DENTAL_CODE_GROUPS.map((g) => g.name),
-      ...DENTAL_CODES.map((c) => codeDefinition(c.code)),
+      ...[...EQUINE_CODE_GROUPS, ...DENTAL_CODE_GROUPS].map((g) => g.name),
+      ...ALL_CODES.map((c) => codeDefinition(c.code)),
       ...PLANS.flatMap((p) => [p.name, p.tagline, ...p.features, planName(p.key), planTagline(p.key), ...planFeatures(p.key)]),
       WHATS_NEW.title,
       WHATS_NEW.intro,

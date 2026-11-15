@@ -103,7 +103,7 @@ export function buildOwnerReportAiRequest(snapshot: ChartSnapshot, context?: Own
     '',
     'PRACTICE DEFAULT WORDING (tone and length reference only — not facts about this patient):',
     `Summary: ${templateIntro(snapshot, template, values)}`,
-    `Home care: ${templateHomecareTips(template, values).join(' | ')}`,
+    `Home care: ${templateHomecareTips(template, values, snapshot.species).join(' | ')}`,
   ].join('\n');
   return {
     max_tokens: 2048,

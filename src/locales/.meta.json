@@ -2168,6 +2168,18 @@
       "hash": "af9cd09b7401",
       "status": "machine"
     },
+    "chart:codeGroups.equine": {
+      "hash": "39745db98890",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineExtractions": {
+      "hash": "cdd10727a1e0",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineProcedures": {
+      "hash": "f7af36929655",
+      "status": "machine"
+    },
     "chart:codeGroups.extractions": {
       "hash": "81ff9ea7137f",
       "status": "machine"
@@ -3304,6 +3316,22 @@
       "hash": "49d896986080",
       "status": "machine"
     },
+    "codes:CA/INF": {
+      "hash": "e76f0e3ceb67",
+      "status": "machine"
+    },
+    "codes:CA/INF/D": {
+      "hash": "3917beae0f09",
+      "status": "machine"
+    },
+    "codes:CA/INF/M": {
+      "hash": "7d33e2d29dc8",
+      "status": "machine"
+    },
+    "codes:CA/PER": {
+      "hash": "b2ddc93f9cf6",
+      "status": "machine"
+    },
     "codes:CB": {
       "hash": "4bc308437b81",
       "status": "machine"
@@ -3494,6 +3522,22 @@
     },
     "codes:CUS": {
       "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:D": {
+      "hash": "914bc1d9e378",
+      "status": "machine"
+    },
+    "codes:D/O": {
+      "hash": "94e4176d8fc9",
+      "status": "machine"
+    },
+    "codes:D/ODY": {
+      "hash": "2b9287a83187",
+      "status": "machine"
+    },
+    "codes:D/V": {
+      "hash": "3bb265902bb7",
       "status": "machine"
     },
     "codes:DC": {
@@ -4288,6 +4332,10 @@
       "hash": "837ec7475685",
       "status": "machine"
     },
+    "codes:PH/D": {
+      "hash": "6eef2e635962",
+      "status": "machine"
+    },
     "codes:PHA/IN": {
       "hash": "f92bf81784ee",
       "status": "machine"
@@ -4470,6 +4518,38 @@
     },
     "codes:SG/X": {
       "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SHE": {
+      "hash": "315bf35aa4bd",
+      "status": "machine"
+    },
+    "codes:SIN/CF/F": {
+      "hash": "dd212a5ee566",
+      "status": "machine"
+    },
+    "codes:SIN/EN": {
+      "hash": "7b0f16ca49d5",
+      "status": "machine"
+    },
+    "codes:SIN/F": {
+      "hash": "de669b2ec6e6",
+      "status": "machine"
+    },
+    "codes:SIN/IN": {
+      "hash": "0d4495f4481d",
+      "status": "machine"
+    },
+    "codes:SIN/LAV": {
+      "hash": "d7e278846bda",
+      "status": "machine"
+    },
+    "codes:SIN/MX/F": {
+      "hash": "35310aad7332",
+      "status": "machine"
+    },
+    "codes:SIN/TRP": {
+      "hash": "7ed9fd62c241",
       "status": "machine"
     },
     "codes:SR": {
@@ -4714,6 +4794,34 @@
     },
     "codes:XSS": {
       "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:XSS/APX/RPL": {
+      "hash": "4a3b99793ed7",
+      "status": "machine"
+    },
+    "codes:XSS/BUC": {
+      "hash": "57d7d04a3ec1",
+      "status": "machine"
+    },
+    "codes:XSS/BUC/ALV": {
+      "hash": "066483e8b48f",
+      "status": "machine"
+    },
+    "codes:XSS/COM": {
+      "hash": "75f66b569d95",
+      "status": "machine"
+    },
+    "codes:XSS/COM/ALV": {
+      "hash": "6fa972a6e435",
+      "status": "machine"
+    },
+    "codes:XSS/MIB": {
+      "hash": "732e7ceebaad",
+      "status": "machine"
+    },
+    "codes:XSS/RPL": {
+      "hash": "926aa02f2162",
       "status": "machine"
     },
     "codes:ZYG/X": {
@@ -8238,6 +8346,18 @@
     },
     "report:homecareTips.warningSigns": {
       "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.checkups": {
+      "hash": "31ec6a7b1311",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.forage": {
+      "hash": "8d539704338c",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.warningSigns": {
+      "hash": "4c0912a6e80e",
       "status": "machine"
     },
     "report:intro": {
@@ -12590,6 +12710,18 @@
       "hash": "af9cd09b7401",
       "status": "machine"
     },
+    "chart:codeGroups.equine": {
+      "hash": "39745db98890",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineExtractions": {
+      "hash": "cdd10727a1e0",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineProcedures": {
+      "hash": "f7af36929655",
+      "status": "machine"
+    },
     "chart:codeGroups.extractions": {
       "hash": "81ff9ea7137f",
       "status": "machine"
@@ -13746,6 +13878,22 @@
       "hash": "49d896986080",
       "status": "machine"
     },
+    "codes:CA/INF": {
+      "hash": "e76f0e3ceb67",
+      "status": "machine"
+    },
+    "codes:CA/INF/D": {
+      "hash": "3917beae0f09",
+      "status": "machine"
+    },
+    "codes:CA/INF/M": {
+      "hash": "7d33e2d29dc8",
+      "status": "machine"
+    },
+    "codes:CA/PER": {
+      "hash": "b2ddc93f9cf6",
+      "status": "machine"
+    },
     "codes:CB": {
       "hash": "4bc308437b81",
       "status": "machine"
@@ -13936,6 +14084,22 @@
     },
     "codes:CUS": {
       "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:D": {
+      "hash": "914bc1d9e378",
+      "status": "machine"
+    },
+    "codes:D/O": {
+      "hash": "94e4176d8fc9",
+      "status": "machine"
+    },
+    "codes:D/ODY": {
+      "hash": "2b9287a83187",
+      "status": "machine"
+    },
+    "codes:D/V": {
+      "hash": "3bb265902bb7",
       "status": "machine"
     },
     "codes:DC": {
@@ -14730,6 +14894,10 @@
       "hash": "837ec7475685",
       "status": "machine"
     },
+    "codes:PH/D": {
+      "hash": "6eef2e635962",
+      "status": "machine"
+    },
     "codes:PHA/IN": {
       "hash": "f92bf81784ee",
       "status": "machine"
@@ -14912,6 +15080,38 @@
     },
     "codes:SG/X": {
       "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SHE": {
+      "hash": "315bf35aa4bd",
+      "status": "machine"
+    },
+    "codes:SIN/CF/F": {
+      "hash": "dd212a5ee566",
+      "status": "machine"
+    },
+    "codes:SIN/EN": {
+      "hash": "7b0f16ca49d5",
+      "status": "machine"
+    },
+    "codes:SIN/F": {
+      "hash": "de669b2ec6e6",
+      "status": "machine"
+    },
+    "codes:SIN/IN": {
+      "hash": "0d4495f4481d",
+      "status": "machine"
+    },
+    "codes:SIN/LAV": {
+      "hash": "d7e278846bda",
+      "status": "machine"
+    },
+    "codes:SIN/MX/F": {
+      "hash": "35310aad7332",
+      "status": "machine"
+    },
+    "codes:SIN/TRP": {
+      "hash": "7ed9fd62c241",
       "status": "machine"
     },
     "codes:SR": {
@@ -15156,6 +15356,34 @@
     },
     "codes:XSS": {
       "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:XSS/APX/RPL": {
+      "hash": "4a3b99793ed7",
+      "status": "machine"
+    },
+    "codes:XSS/BUC": {
+      "hash": "57d7d04a3ec1",
+      "status": "machine"
+    },
+    "codes:XSS/BUC/ALV": {
+      "hash": "066483e8b48f",
+      "status": "machine"
+    },
+    "codes:XSS/COM": {
+      "hash": "75f66b569d95",
+      "status": "machine"
+    },
+    "codes:XSS/COM/ALV": {
+      "hash": "6fa972a6e435",
+      "status": "machine"
+    },
+    "codes:XSS/MIB": {
+      "hash": "732e7ceebaad",
+      "status": "machine"
+    },
+    "codes:XSS/RPL": {
+      "hash": "926aa02f2162",
       "status": "machine"
     },
     "codes:ZYG/X": {
@@ -18708,6 +18936,18 @@
     },
     "report:homecareTips.warningSigns": {
       "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.checkups": {
+      "hash": "31ec6a7b1311",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.forage": {
+      "hash": "8d539704338c",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.warningSigns": {
+      "hash": "4c0912a6e80e",
       "status": "machine"
     },
     "report:intro": {
@@ -23088,6 +23328,18 @@
       "hash": "af9cd09b7401",
       "status": "machine"
     },
+    "chart:codeGroups.equine": {
+      "hash": "39745db98890",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineExtractions": {
+      "hash": "cdd10727a1e0",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineProcedures": {
+      "hash": "f7af36929655",
+      "status": "machine"
+    },
     "chart:codeGroups.extractions": {
       "hash": "81ff9ea7137f",
       "status": "machine"
@@ -24244,6 +24496,22 @@
       "hash": "49d896986080",
       "status": "machine"
     },
+    "codes:CA/INF": {
+      "hash": "e76f0e3ceb67",
+      "status": "machine"
+    },
+    "codes:CA/INF/D": {
+      "hash": "3917beae0f09",
+      "status": "machine"
+    },
+    "codes:CA/INF/M": {
+      "hash": "7d33e2d29dc8",
+      "status": "machine"
+    },
+    "codes:CA/PER": {
+      "hash": "b2ddc93f9cf6",
+      "status": "machine"
+    },
     "codes:CB": {
       "hash": "4bc308437b81",
       "status": "machine"
@@ -24434,6 +24702,22 @@
     },
     "codes:CUS": {
       "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:D": {
+      "hash": "914bc1d9e378",
+      "status": "machine"
+    },
+    "codes:D/O": {
+      "hash": "94e4176d8fc9",
+      "status": "machine"
+    },
+    "codes:D/ODY": {
+      "hash": "2b9287a83187",
+      "status": "machine"
+    },
+    "codes:D/V": {
+      "hash": "3bb265902bb7",
       "status": "machine"
     },
     "codes:DC": {
@@ -25228,6 +25512,10 @@
       "hash": "837ec7475685",
       "status": "machine"
     },
+    "codes:PH/D": {
+      "hash": "6eef2e635962",
+      "status": "machine"
+    },
     "codes:PHA/IN": {
       "hash": "f92bf81784ee",
       "status": "machine"
@@ -25410,6 +25698,38 @@
     },
     "codes:SG/X": {
       "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SHE": {
+      "hash": "315bf35aa4bd",
+      "status": "machine"
+    },
+    "codes:SIN/CF/F": {
+      "hash": "dd212a5ee566",
+      "status": "machine"
+    },
+    "codes:SIN/EN": {
+      "hash": "7b0f16ca49d5",
+      "status": "machine"
+    },
+    "codes:SIN/F": {
+      "hash": "de669b2ec6e6",
+      "status": "machine"
+    },
+    "codes:SIN/IN": {
+      "hash": "0d4495f4481d",
+      "status": "machine"
+    },
+    "codes:SIN/LAV": {
+      "hash": "d7e278846bda",
+      "status": "machine"
+    },
+    "codes:SIN/MX/F": {
+      "hash": "35310aad7332",
+      "status": "machine"
+    },
+    "codes:SIN/TRP": {
+      "hash": "7ed9fd62c241",
       "status": "machine"
     },
     "codes:SR": {
@@ -25654,6 +25974,34 @@
     },
     "codes:XSS": {
       "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:XSS/APX/RPL": {
+      "hash": "4a3b99793ed7",
+      "status": "machine"
+    },
+    "codes:XSS/BUC": {
+      "hash": "57d7d04a3ec1",
+      "status": "machine"
+    },
+    "codes:XSS/BUC/ALV": {
+      "hash": "066483e8b48f",
+      "status": "machine"
+    },
+    "codes:XSS/COM": {
+      "hash": "75f66b569d95",
+      "status": "machine"
+    },
+    "codes:XSS/COM/ALV": {
+      "hash": "6fa972a6e435",
+      "status": "machine"
+    },
+    "codes:XSS/MIB": {
+      "hash": "732e7ceebaad",
+      "status": "machine"
+    },
+    "codes:XSS/RPL": {
+      "hash": "926aa02f2162",
       "status": "machine"
     },
     "codes:ZYG/X": {
@@ -29206,6 +29554,18 @@
     },
     "report:homecareTips.warningSigns": {
       "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.checkups": {
+      "hash": "31ec6a7b1311",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.forage": {
+      "hash": "8d539704338c",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.warningSigns": {
+      "hash": "4c0912a6e80e",
       "status": "machine"
     },
     "report:intro": {
@@ -33586,6 +33946,18 @@
       "hash": "af9cd09b7401",
       "status": "machine"
     },
+    "chart:codeGroups.equine": {
+      "hash": "39745db98890",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineExtractions": {
+      "hash": "cdd10727a1e0",
+      "status": "machine"
+    },
+    "chart:codeGroups.equineProcedures": {
+      "hash": "f7af36929655",
+      "status": "machine"
+    },
     "chart:codeGroups.extractions": {
       "hash": "81ff9ea7137f",
       "status": "machine"
@@ -34742,6 +35114,22 @@
       "hash": "49d896986080",
       "status": "machine"
     },
+    "codes:CA/INF": {
+      "hash": "e76f0e3ceb67",
+      "status": "machine"
+    },
+    "codes:CA/INF/D": {
+      "hash": "3917beae0f09",
+      "status": "machine"
+    },
+    "codes:CA/INF/M": {
+      "hash": "7d33e2d29dc8",
+      "status": "machine"
+    },
+    "codes:CA/PER": {
+      "hash": "b2ddc93f9cf6",
+      "status": "machine"
+    },
     "codes:CB": {
       "hash": "4bc308437b81",
       "status": "machine"
@@ -34932,6 +35320,22 @@
     },
     "codes:CUS": {
       "hash": "b485f82e9736",
+      "status": "machine"
+    },
+    "codes:D": {
+      "hash": "914bc1d9e378",
+      "status": "machine"
+    },
+    "codes:D/O": {
+      "hash": "94e4176d8fc9",
+      "status": "machine"
+    },
+    "codes:D/ODY": {
+      "hash": "2b9287a83187",
+      "status": "machine"
+    },
+    "codes:D/V": {
+      "hash": "3bb265902bb7",
       "status": "machine"
     },
     "codes:DC": {
@@ -35726,6 +36130,10 @@
       "hash": "837ec7475685",
       "status": "machine"
     },
+    "codes:PH/D": {
+      "hash": "6eef2e635962",
+      "status": "machine"
+    },
     "codes:PHA/IN": {
       "hash": "f92bf81784ee",
       "status": "machine"
@@ -35908,6 +36316,38 @@
     },
     "codes:SG/X": {
       "hash": "b97e28c5d170",
+      "status": "machine"
+    },
+    "codes:SHE": {
+      "hash": "315bf35aa4bd",
+      "status": "machine"
+    },
+    "codes:SIN/CF/F": {
+      "hash": "dd212a5ee566",
+      "status": "machine"
+    },
+    "codes:SIN/EN": {
+      "hash": "7b0f16ca49d5",
+      "status": "machine"
+    },
+    "codes:SIN/F": {
+      "hash": "de669b2ec6e6",
+      "status": "machine"
+    },
+    "codes:SIN/IN": {
+      "hash": "0d4495f4481d",
+      "status": "machine"
+    },
+    "codes:SIN/LAV": {
+      "hash": "d7e278846bda",
+      "status": "machine"
+    },
+    "codes:SIN/MX/F": {
+      "hash": "35310aad7332",
+      "status": "machine"
+    },
+    "codes:SIN/TRP": {
+      "hash": "7ed9fd62c241",
       "status": "machine"
     },
     "codes:SR": {
@@ -36152,6 +36592,34 @@
     },
     "codes:XSS": {
       "hash": "dc6e3980619e",
+      "status": "machine"
+    },
+    "codes:XSS/APX/RPL": {
+      "hash": "4a3b99793ed7",
+      "status": "machine"
+    },
+    "codes:XSS/BUC": {
+      "hash": "57d7d04a3ec1",
+      "status": "machine"
+    },
+    "codes:XSS/BUC/ALV": {
+      "hash": "066483e8b48f",
+      "status": "machine"
+    },
+    "codes:XSS/COM": {
+      "hash": "75f66b569d95",
+      "status": "machine"
+    },
+    "codes:XSS/COM/ALV": {
+      "hash": "6fa972a6e435",
+      "status": "machine"
+    },
+    "codes:XSS/MIB": {
+      "hash": "732e7ceebaad",
+      "status": "machine"
+    },
+    "codes:XSS/RPL": {
+      "hash": "926aa02f2162",
       "status": "machine"
     },
     "codes:ZYG/X": {
@@ -39706,6 +40174,18 @@
       "hash": "148f1187feb9",
       "status": "machine"
     },
+    "report:homecareTipsEquine.checkups": {
+      "hash": "31ec6a7b1311",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.forage": {
+      "hash": "8d539704338c",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.warningSigns": {
+      "hash": "4c0912a6e80e",
+      "status": "machine"
+    },
     "report:intro": {
       "hash": "160595ffa0ce",
       "status": "machine"
@@ -42086,6 +42566,18 @@
     },
     "report:homecareTips.warningSigns": {
       "hash": "148f1187feb9",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.checkups": {
+      "hash": "31ec6a7b1311",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.forage": {
+      "hash": "8d539704338c",
+      "status": "machine"
+    },
+    "report:homecareTipsEquine.warningSigns": {
+      "hash": "4c0912a6e80e",
       "status": "machine"
     },
     "report:intro": {

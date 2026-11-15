@@ -327,3 +327,11 @@ describe('report languages', () => {
     }
   });
 });
+
+it('a horse chart gets the equine home-care tips, not brushing and chews', () => {
+  const snap = { ...baseSnapshot(), species: 'equine' as const, toothData: getInitialToothData('equine') };
+  const model = buildOwnerReportModel(snap);
+  expect(model.homecareTips).toEqual(reportStrings('en').homecareTipsEquine);
+  expect(model.homecareTips.join(' ')).not.toMatch(/brush|VOHC/i);
+  expect(model.speciesLabel).toBe('Horse');
+});

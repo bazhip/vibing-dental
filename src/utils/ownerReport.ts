@@ -133,12 +133,13 @@ export function templateIntro(
     : generatedIntro(snapshot.patientInfo.patientName, template.language);
 }
 
-/** The template's home-care tips, or the language's defaults when blank. */
-export function templateHomecareTips(template: OwnerReportTemplate, values: PlaceholderValues): string[] {
+/** The template's home-care tips, or the language's defaults when blank
+ *  (the horse set for an equine chart). */
+export function templateHomecareTips(template: OwnerReportTemplate, values: PlaceholderValues, species?: string): string[] {
   const tips = template.homecareTips.map((t) => t.trim()).filter(Boolean);
-  return tips.length > 0
-    ? tips.map((t) => fillPlaceholders(t, values))
-    : reportStrings(template.language).homecareTips;
+  if (tips.length > 0) return tips.map((t) => fillPlaceholders(t, values));
+  const strings = reportStrings(template.language);
+  return species === 'equine' ? strings.homecareTipsEquine : strings.homecareTips;
 }
 
 export interface BuildOwnerReportOptions extends OwnerReportContext {
@@ -227,7 +228,7 @@ export function buildOwnerReportModel(
   // Hand-edited blocks win over the template; the template wins over
   // the generated text; absent = generated.
   const overrides = snapshot.ownerReport ?? {};
-  const homecareSource = overrides.homecare ?? templateHomecareTips(template, values).join('\n');
+  const homecareSource = overrides.homecare ?? templateHomecareTips(template, values, snapshot.species).join('\n');
   const patientName = snapshot.patientInfo.patientName;
 
   const sections: OwnerReportRenderSection[] = [];

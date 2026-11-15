@@ -51,6 +51,11 @@
     "products": "Les aliments dentaires, friandises à mâcher et additifs pour l’eau portant le label VOHC aident entre deux brossages.",
     "warningSigns": "Surveillez la mauvaise haleine, l’hypersalivation, la nourriture qui tombe ou le grattage de la bouche — appelez-nous si vous remarquez quelque chose."
   },
+  "homecareTipsEquine": {
+    "checkups": "La plupart des chevaux ont besoin d’un contrôle dentaire tous les 6 à 12 mois ; les jeunes chevaux et les chevaux âgés peuvent nécessiter des soins plus fréquents.",
+    "forage": "Offrez beaucoup de fourrage : le foin à brins longs et le pâturage favorisent une usure régulière des dents.",
+    "warningSigns": "Surveillez la nourriture qui tombe de la bouche, la perte de poids, une mastication lente, les mouvements de tête ou la résistance au mors, la mauvaise haleine ou un jetage nasal — appelez-nous si vous remarquez quelque chose."
+  },
   "intro": "{{pet}} a bénéficié d’un bilan et d’un détartrage dentaires professionnels sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
   "legendFilled": "plein = absente avant cette visite",
   "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",

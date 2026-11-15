@@ -68,6 +68,7 @@ import { ChartNavBar, ChartNotice } from './ios/chart/ChartNavBar';
 import { chartStatus } from './ios/chart/chartStatus';
 import type { MenuItem } from './ios/ContextMenu';
 import { speciesBase } from './utils/species';
+import { CodeSpeciesContext } from './components/codeSpecies';
 import './components/EntryGrid.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
@@ -1775,6 +1776,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }
 
   return (
+    <CodeSpeciesContext.Provider value={chart.species}>
     <div className="entry-grid-container" ref={containerRef}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
       <a className="skip-link" href="#chart-form">
@@ -2111,6 +2113,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </span>
       </footer>
     </div>
+    </CodeSpeciesContext.Provider>
   );
 };
 

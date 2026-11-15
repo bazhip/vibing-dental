@@ -55,7 +55,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   const template = templateForSnapshot(snapshot, context);
   const values = placeholderValuesFor(snapshot, context, template);
   const introDefault = templateIntro(snapshot, template, values);
-  const homecareDefault = templateHomecareTips(template, values).join('\n');
+  const homecareDefault = templateHomecareTips(template, values, snapshot.species).join('\n');
   const templates = context?.config?.templates ?? [];
   const defaultTemplateId = context?.config?.defaultTemplateId;
   const chosenKnown = !!overrides.templateId && templates.some((tpl) => tpl.id === overrides.templateId);

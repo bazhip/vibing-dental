@@ -51,6 +51,11 @@
     "products": "Alimenti dentali, snack da masticare e additivi per l’acqua con il marchio VOHC aiutano tra uno spazzolamento e l’altro.",
     "warningSigns": "Faccia attenzione ad alito cattivo, salivazione eccessiva, cibo che cade dalla bocca o se si tocca la bocca con la zampa — ci chiami se nota qualcosa."
   },
+  "homecareTipsEquine": {
+    "checkups": "La maggior parte dei cavalli ha bisogno di un controllo dentale ogni 6–12 mesi; i cavalli giovani e anziani possono richiedere cure più frequenti.",
+    "forage": "Offra abbondante foraggio: il fieno a fibra lunga e il pascolo mantengono un’usura uniforme dei denti.",
+    "warningSigns": "Faccia attenzione a cibo che cade dalla bocca, perdita di peso, masticazione lenta, scuotimento della testa o resistenza all’imboccatura, alito cattivo o scolo nasale — ci chiami se nota qualcosa."
+  },
   "intro": "{{pet}} ha ricevuto una valutazione e una pulizia dentale professionale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
   "legendFilled": "pieno = mancante prima di questa visita",
   "legendNumbers": "I numeri corrispondono ai riscontri riportati sotto",

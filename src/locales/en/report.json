@@ -51,6 +51,11 @@
     "products": "Dental diets, chews, and water additives with the VOHC seal help between brushings.",
     "warningSigns": "Watch for bad breath, drooling, dropping food, or pawing at the mouth — call us if you notice any."
   },
+  "homecareTipsEquine": {
+    "checkups": "Most horses need a dental check every 6 to 12 months; young and older horses may need more frequent care.",
+    "forage": "Allow plenty of forage — long-stem hay and grazing keep the teeth wearing evenly.",
+    "warningSigns": "Watch for dropping feed, weight loss, slow eating, head tossing or resistance to the bit, bad breath or nasal discharge — call us if you notice any."
+  },
   "intro": "{{pet}} had a professional dental assessment and cleaning under anesthesia. This report explains what we found in everyday language — the full clinical chart with measurements is on file and available any time.",
   "legendFilled": "filled = missing before this visit",
   "legendNumbers": "Numbers match the findings below",
