@@ -91,6 +91,18 @@
     "extracted": "Extraídos: {{teeth}}",
     "otherNotes": "Otras notas: {{text}}",
     "doctor": "Veterinario",
-    "aiEmpty": "La IA no ha devuelto ninguna nota. Inténtelo de nuevo."
+    "aiEmpty": "La IA no ha devuelto ninguna nota. Inténtelo de nuevo.",
+    "title": "Nota para la historia clínica",
+    "hint": "Péguela en el historial del paciente en su software de gestión. Los cambios se guardan con el historial.",
+    "copy": "Copiar",
+    "copied": "Nota copiada",
+    "copyPrompt": "Copie la nota:",
+    "polish": "Mejorar con IA",
+    "polishing": "Mejorando…",
+    "rebuild": "Regenerar desde el historial",
+    "stale": "El historial ha cambiado desde que se editó esta nota. Regenérela para incluir los cambios.",
+    "unlockHint": "Desbloquee el historial para editar esta nota. Puede seguir copiándola.",
+    "aiFailed": "No se ha podido mejorar la nota.",
+    "aiBadge": "Redactada con IA. Revísela antes de pegarla."
   }
 }

@@ -91,6 +91,18 @@
     "extracted": "Extracted: {{teeth}}",
     "otherNotes": "Other notes: {{text}}",
     "doctor": "Veterinarian",
-    "aiEmpty": "The AI didn’t return a note. Try again."
+    "aiEmpty": "The AI didn’t return a note. Try again.",
+    "title": "Medical record note",
+    "hint": "Paste this into the patient’s record in your practice software. Edits are saved with the chart.",
+    "copy": "Copy",
+    "copied": "Note copied",
+    "copyPrompt": "Copy the note:",
+    "polish": "Polish with AI",
+    "polishing": "Polishing…",
+    "rebuild": "Rebuild from chart",
+    "stale": "The chart changed since this note was edited. Rebuild it to include the changes.",
+    "unlockHint": "Unlock the chart to edit this note. You can still copy it.",
+    "aiFailed": "Couldn’t polish the note.",
+    "aiBadge": "Written with AI. Check it before you paste it."
   }
 }

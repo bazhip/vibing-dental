@@ -91,6 +91,18 @@
     "extracted": "Estratti: {{teeth}}",
     "otherNotes": "Altre note: {{text}}",
     "doctor": "Medico veterinario",
-    "aiEmpty": "L’IA non ha restituito alcuna nota. Riprovi."
+    "aiEmpty": "L’IA non ha restituito alcuna nota. Riprovi.",
+    "title": "Nota per la cartella clinica",
+    "hint": "La incolli nella cartella del paziente nel Suo gestionale. Le modifiche vengono salvate con la cartella.",
+    "copy": "Copia",
+    "copied": "Nota copiata",
+    "copyPrompt": "Copi la nota:",
+    "polish": "Migliora con l’IA",
+    "polishing": "Miglioramento…",
+    "rebuild": "Rigenera dalla cartella",
+    "stale": "La cartella è cambiata da quando questa nota è stata modificata. La rigeneri per includere le modifiche.",
+    "unlockHint": "Sblocchi la cartella per modificare questa nota. Può comunque copiarla.",
+    "aiFailed": "Impossibile migliorare la nota.",
+    "aiBadge": "Scritta con l’IA. La controlli prima di incollarla."
   }
 }

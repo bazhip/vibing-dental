@@ -91,6 +91,18 @@
     "extracted": "Extraites : {{teeth}}",
     "otherNotes": "Autres notes : {{text}}",
     "doctor": "Vétérinaire",
-    "aiEmpty": "L’IA n’a renvoyé aucune note. Veuillez réessayer."
+    "aiEmpty": "L’IA n’a renvoyé aucune note. Veuillez réessayer.",
+    "title": "Note pour le dossier médical",
+    "hint": "Collez-la dans le dossier du patient de votre logiciel de clinique. Les modifications sont enregistrées avec le dossier.",
+    "copy": "Copier",
+    "copied": "Note copiée",
+    "copyPrompt": "Copiez la note :",
+    "polish": "Améliorer avec l’IA",
+    "polishing": "Amélioration…",
+    "rebuild": "Régénérer depuis le dossier",
+    "stale": "Le dossier a changé depuis la modification de cette note. Régénérez-la pour inclure les changements.",
+    "unlockHint": "Déverrouillez le dossier pour modifier cette note. Vous pouvez toujours la copier.",
+    "aiFailed": "Impossible d’améliorer la note.",
+    "aiBadge": "Rédigée avec l’IA. Vérifiez-la avant de la coller."
   }
 }

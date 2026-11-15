@@ -7072,12 +7072,32 @@
       "hash": "fbe27b8e4327",
       "status": "machine"
     },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
     "media:recordNote.aiEmpty": {
       "hash": "5db3e0745dfe",
       "status": "machine"
     },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
     "media:recordNote.alreadyMissing": {
       "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
       "status": "machine"
     },
     "media:recordNote.doctor": {
@@ -7120,6 +7140,10 @@
       "hash": "64fbcb2e386c",
       "status": "machine"
     },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
     "media:recordNote.left": {
       "hash": "58eb9032e3bb",
       "status": "machine"
@@ -7132,8 +7156,32 @@
       "hash": "b0c3fe8b055e",
       "status": "machine"
     },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
     "media:recordNote.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -17602,12 +17650,32 @@
       "hash": "fbe27b8e4327",
       "status": "machine"
     },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
     "media:recordNote.aiEmpty": {
       "hash": "5db3e0745dfe",
       "status": "machine"
     },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
     "media:recordNote.alreadyMissing": {
       "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
       "status": "machine"
     },
     "media:recordNote.doctor": {
@@ -17650,6 +17718,10 @@
       "hash": "64fbcb2e386c",
       "status": "machine"
     },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
     "media:recordNote.left": {
       "hash": "58eb9032e3bb",
       "status": "machine"
@@ -17662,8 +17734,32 @@
       "hash": "b0c3fe8b055e",
       "status": "machine"
     },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
     "media:recordNote.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -28168,12 +28264,32 @@
       "hash": "fbe27b8e4327",
       "status": "machine"
     },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
     "media:recordNote.aiEmpty": {
       "hash": "5db3e0745dfe",
       "status": "machine"
     },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
     "media:recordNote.alreadyMissing": {
       "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
       "status": "machine"
     },
     "media:recordNote.doctor": {
@@ -28216,6 +28332,10 @@
       "hash": "64fbcb2e386c",
       "status": "machine"
     },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
     "media:recordNote.left": {
       "hash": "58eb9032e3bb",
       "status": "machine"
@@ -28228,8 +28348,32 @@
       "hash": "b0c3fe8b055e",
       "status": "machine"
     },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
     "media:recordNote.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -38734,12 +38878,32 @@
       "hash": "fbe27b8e4327",
       "status": "machine"
     },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
     "media:recordNote.aiEmpty": {
       "hash": "5db3e0745dfe",
       "status": "machine"
     },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
     "media:recordNote.alreadyMissing": {
       "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
       "status": "machine"
     },
     "media:recordNote.doctor": {
@@ -38782,6 +38946,10 @@
       "hash": "64fbcb2e386c",
       "status": "machine"
     },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
     "media:recordNote.left": {
       "hash": "58eb9032e3bb",
       "status": "machine"
@@ -38794,8 +38962,32 @@
       "hash": "b0c3fe8b055e",
       "status": "machine"
     },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
     "media:recordNote.right": {
       "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
