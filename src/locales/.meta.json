@@ -7192,6 +7192,18 @@
       "hash": "2c76fba515d0",
       "status": "machine"
     },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
     "media:recordNote.polishing": {
       "hash": "a17e71fcbcff",
       "status": "machine"
@@ -17848,6 +17860,18 @@
     },
     "media:recordNote.polish": {
       "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
       "status": "machine"
     },
     "media:recordNote.polishing": {
@@ -28544,6 +28568,18 @@
       "hash": "2c76fba515d0",
       "status": "machine"
     },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
     "media:recordNote.polishing": {
       "hash": "a17e71fcbcff",
       "status": "machine"
@@ -39236,6 +39272,18 @@
     },
     "media:recordNote.polish": {
       "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
       "status": "machine"
     },
     "media:recordNote.polishing": {

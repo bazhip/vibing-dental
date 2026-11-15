@@ -12,7 +12,7 @@ import {
 } from '../utils/recordNote';
 import { copyRichText } from '../utils/clipboard';
 import { polishRecordNote } from '../utils/recordNoteAi';
-import { friendlyError, toast } from './ui/dialogs';
+import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 
 interface RecordNotePanelProps {
   snapshot: ChartSnapshot;
@@ -42,8 +42,11 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
   const text = stored?.text ?? recordNoteText(note);
   const stale = !!stored && stored.basedOn !== basis;
 
+  // A fresh build (Polish) is based on the chart as it is now; a hand edit
+  // keeps the basis it had, so editing a stale note doesn't hide that the
+  // chart moved on since.
   const store = (value: string, source: StoredRecordNote['source']) =>
-    onChange({ text: value, source, lng, basedOn: basis });
+    onChange({ text: value, source, lng, basedOn: source === 'edited' && stored ? stored.basedOn : basis });
 
   const copy = async () => {
     const html = stored ? plainTextToHtml(stored.text) : recordNoteHtml(note);
@@ -52,6 +55,14 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
   };
 
   const polish = async () => {
+    // Polish rewrites the note built from the chart (so it can't add facts),
+    // which replaces anything typed into it — ask first.
+    if (stored?.source === 'edited' && !(await confirmDialog({
+      title: t('recordNote.polishReplace.title'),
+      message: t('recordNote.polishReplace.message'),
+      confirmLabel: t('recordNote.polishReplace.confirm'),
+      danger: true,
+    }))) return;
     setBusy(true);
     try {
       store(await polishRecordNote(snapshot, lng), 'ai');

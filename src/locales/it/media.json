@@ -105,6 +105,11 @@
     "stale": "La cartella è cambiata da quando questa nota è stata modificata. La rigeneri per includere le modifiche.",
     "unlockHint": "Sblocchi la cartella per modificare questa nota. Può comunque copiarla.",
     "aiFailed": "Impossibile migliorare la nota.",
-    "aiBadge": "Scritta con l’IA. La controlli prima di incollarla."
+    "aiBadge": "Scritta con l’IA. La controlli prima di incollarla.",
+    "polishReplace": {
+      "title": "Sostituire le Sue modifiche?",
+      "message": "Il miglioramento scrive una nuova nota a partire dalla cartella. Tutto ciò che ha digitato nella nota verrà sostituito.",
+      "confirm": "Sostituisci e migliora"
+    }
   }
 }

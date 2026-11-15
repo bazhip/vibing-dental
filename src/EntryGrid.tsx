@@ -530,8 +530,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Email to owner: the server sends to the chart's *saved* owner email,
   // so the chart must be saved as shown first. Read through a ref — the
   // save updates cloud state between the call and the check.
-  const cloudRef = React.useRef(cloud);
-  cloudRef.current = cloud;
+  const cloudRef = React.useRef({ ...cloud, chartId: chart.cloudChartId });
+  cloudRef.current = { ...cloud, chartId: chart.cloudChartId };
   const ensureSavedForEmail = React.useCallback(
     () => (trial ? Promise.resolve(false) : ensureChartSaved(() => cloudRef.current, () => { explicitSaveRef.current = true; })),
     [trial],

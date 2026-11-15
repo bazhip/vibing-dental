@@ -11,7 +11,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
 import { renderBrandedEmail } from '../_shared/email.ts';
-import { decodePdf, sanitizeFilename } from '../_shared/ownerReportEmail.ts';
+import { decodePdf, emailParagraphs, fromHeader, sanitizeFilename, senderPractice, type SenderPractice } from '../_shared/ownerReportEmail.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -61,38 +61,39 @@ Deno.serve(async (req: Request) => {
     .maybeSingle();
   if (!chart) return json(apiError('chart_gone'), 404);
 
-  let allowed = chart.created_by === caller.id;
-  if (!allowed && chart.practice_id) {
+  let isMember = false;
+  if (chart.practice_id) {
     const { data: mem } = await admin
       .from('practice_members')
       .select('user_id')
       .eq('practice_id', chart.practice_id)
       .eq('user_id', caller.id)
       .maybeSingle();
-    allowed = !!mem;
+    isMember = !!mem;
   }
-  if (!allowed) return json(apiError('chart_forbidden'), 403);
+  if (chart.created_by !== caller.id && !isMember) return json(apiError('chart_forbidden'), 403);
 
   // Recipient is the chart's saved owner email — never a client value.
   const to = (chart.owner_email ?? '').trim();
   if (!isEmail(to)) return json(apiError('no_owner_email'), 400);
 
-  // From-name and email language: the chart's practice, else the caller's.
-  let practice: { name?: string; client_language?: string } | null = null;
-  if (chart.practice_id) {
+  // From-name and email language: the chart's practice (members only),
+  // else the caller's own practice.
+  let chartPractice: SenderPractice | null = null;
+  if (chart.practice_id && isMember) {
     const { data } = await admin.from('practices').select('name, client_language').eq('id', chart.practice_id).maybeSingle();
-    practice = data;
+    chartPractice = data;
   }
-  if (!practice?.name?.trim()) {
+  let ownPractice: SenderPractice | null = null;
+  if (!chartPractice?.name?.trim()) {
     const { data: mem } = await admin
       .from('practice_members')
       .select('practices(name, client_language)')
       .eq('user_id', caller.id)
       .limit(1);
-    const p = mem?.[0]?.practices as { name?: string; client_language?: string } | undefined;
-    if (p) practice = p;
+    ownPractice = (mem?.[0]?.practices as SenderPractice | undefined) ?? null;
   }
-  const fromName = (practice?.name?.trim() || 'ToothOps').replace(/[\r\n]+/g, ' ').slice(0, 100);
+  const practice = senderPractice(chartPractice, isMember, ownPractice);
   const lng = practice?.client_language || 'en';
 
   // Abuse guard: cap report emails per account per day.
@@ -105,7 +106,7 @@ Deno.serve(async (req: Request) => {
   if (!key) return json(apiError('email_not_configured'), 500);
 
   const { html } = renderBrandedEmail(
-    { preheader: subject, title: subject, paragraphs: text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean) },
+    { preheader: subject, title: subject, paragraphs: emailParagraphs(text) },
     lng,
   );
   const replyTo = caller.email && isEmail(caller.email) ? caller.email : undefined;
@@ -114,10 +115,10 @@ Deno.serve(async (req: Request) => {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: `${fromName} <noreply@toothops.app>`,
+      from: fromHeader(practice?.name ?? ''),
       to: [to],
       ...(replyTo ? { reply_to: replyTo } : {}),
-      subject,
+      subject: subject.replace(/[\r\n]+/g, ' '),
       text,
       html,
       attachments: [{ filename, content: pdfBase64 }],

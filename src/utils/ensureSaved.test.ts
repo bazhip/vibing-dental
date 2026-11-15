@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 import { ensureChartSaved, type SaveState } from './ensureSaved';
 
 function cloud(over: Partial<SaveState>, after?: Partial<SaveState>) {
-  let state: SaveState = { enabled: true, dirty: false, lastSavedAt: '2026-11-14T10:00:00Z', saveNow: vi.fn(async () => {}), ...over };
+  let state: SaveState = { chartId: 'a', enabled: true, dirty: false, lastSavedAt: '2026-11-14T10:00:00Z', saveNow: vi.fn(async () => {}), ...over };
   if (after) {
     const save = vi.fn(async () => { state = { ...state, ...after }; });
     state.saveNow = save;
@@ -40,6 +40,11 @@ describe('ensureChartSaved', () => {
 
   it('fails without cloud sync', async () => {
     await expect(ensureChartSaved(cloud({ enabled: false }).get)).resolves.toBe(false);
+  });
+
+  it('fails when the save swapped in a different chart', async () => {
+    const c = cloud({ dirty: true, chartId: 'a' }, { dirty: false, chartId: 'b' });
+    await expect(ensureChartSaved(c.get)).resolves.toBe(false);
   });
 
   it('tells the caller a deliberate save is happening', async () => {

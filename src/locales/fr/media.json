@@ -105,6 +105,11 @@
     "stale": "Le dossier a changé depuis la modification de cette note. Régénérez-la pour inclure les changements.",
     "unlockHint": "Déverrouillez le dossier pour modifier cette note. Vous pouvez toujours la copier.",
     "aiFailed": "Impossible d’améliorer la note.",
-    "aiBadge": "Rédigée avec l’IA. Vérifiez-la avant de la coller."
+    "aiBadge": "Rédigée avec l’IA. Vérifiez-la avant de la coller.",
+    "polishReplace": {
+      "title": "Remplacer vos modifications ?",
+      "message": "L’amélioration rédige une nouvelle note à partir du dossier. Tout ce que vous avez saisi dans la note sera remplacé.",
+      "confirm": "Remplacer et améliorer"
+    }
   }
 }

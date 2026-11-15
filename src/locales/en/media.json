@@ -105,6 +105,11 @@
     "stale": "The chart changed since this note was edited. Rebuild it to include the changes.",
     "unlockHint": "Unlock the chart to edit this note. You can still copy it.",
     "aiFailed": "Couldn’t polish the note.",
-    "aiBadge": "Written with AI. Check it before you paste it."
+    "aiBadge": "Written with AI. Check it before you paste it.",
+    "polishReplace": {
+      "title": "Replace your edits?",
+      "message": "Polish writes a new note from the chart. Anything you typed into the note will be replaced.",
+      "confirm": "Replace and polish"
+    }
   }
 }

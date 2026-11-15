@@ -5,6 +5,9 @@ export interface SaveState {
   /** '' = the chart has never reached the cloud. */
   lastSavedAt: string;
   saveNow: () => Promise<void>;
+  /** The chart on screen; a different one after the save means the save
+   *  swapped charts (e.g. "open the existing visit") — not ready. */
+  chartId?: string;
 }
 
 /**
@@ -16,6 +19,7 @@ export interface SaveState {
  */
 export async function ensureChartSaved(get: () => SaveState, onDeliberateSave?: () => void): Promise<boolean> {
   if (!get().enabled) return false;
+  const chartBefore = get().chartId;
   if (get().dirty || !get().lastSavedAt) {
     onDeliberateSave?.();
     try {
@@ -27,5 +31,5 @@ export async function ensureChartSaved(get: () => SaveState, onDeliberateSave?: 
     await new Promise((resolve) => setTimeout(resolve, 0));
   }
   const after = get();
-  return !after.dirty && !!after.lastSavedAt;
+  return !after.dirty && !!after.lastSavedAt && after.chartId === chartBefore;
 }

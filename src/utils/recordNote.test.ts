@@ -82,6 +82,14 @@ describe('record note builder', () => {
     expect(section(s, 'Anesthesia')!.lines.join('\n')).toContain('0.5% Bupivacaine');
   });
 
+  it('names the template default anesthetic when blocks are charted without a drug', () => {
+    const s = snap({}, { nerveBlocks: { ...EMPTY_NERVE_BLOCKS, mentalLeft: '0.1' } });
+    expect(section(s, 'Anesthesia')!.lines[0]).toBe('0.5% Bupivacaine');
+    const vca = snap({ logo: 'vca' }, { nerveBlocks: { ...EMPTY_NERVE_BLOCKS, mentalLeft: '0.1' } });
+    expect(section(vca, 'Anesthesia')!.lines[0]).toBe('0.5% Ropivacaine');
+    expect(recordNoteBasis(vca)).not.toBe(recordNoteBasis({ ...vca, logo: 'socal' }));
+  });
+
   it('escapes html', () => {
     const html = recordNoteHtml(buildRecordNote(snap({}, { treatmentReport: '<b>&' }), en()));
     expect(html).toContain('&lt;b&gt;&amp;');

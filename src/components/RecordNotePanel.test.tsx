@@ -6,7 +6,9 @@ import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, ChartSnapshot, StoredRecordNot
 const mocks = vi.hoisted(() => ({
   copy: vi.fn(async () => 'rich' as const),
   polish: vi.fn(async () => 'Prose'),
+  confirm: vi.fn(async () => true),
 }));
+vi.mock('./ui/dialogs', async (orig) => ({ ...(await orig<typeof import('./ui/dialogs')>()), confirmDialog: mocks.confirm }));
 vi.mock('../utils/clipboard', () => ({ copyRichText: mocks.copy }));
 vi.mock('../utils/recordNoteAi', () => ({ polishRecordNote: mocks.polish }));
 
@@ -32,7 +34,7 @@ function setup(over: Partial<React.ComponentProps<typeof RecordNotePanel>> = {})
 const textarea = () => screen.getByRole('textbox') as HTMLTextAreaElement;
 
 describe('RecordNotePanel', () => {
-  beforeEach(() => { mocks.copy.mockClear(); mocks.polish.mockClear(); });
+  beforeEach(() => { mocks.copy.mockClear(); mocks.polish.mockClear(); mocks.confirm.mockClear(); });
 
   it('shows the note generated from the chart', () => {
     setup();
@@ -79,6 +81,30 @@ describe('RecordNotePanel', () => {
     const { onChange } = setup();
     fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ text: 'Prose', source: 'ai' })));
+  });
+
+  it('editing a stale note keeps it stale', () => {
+    const stored: StoredRecordNote = { text: 'Old note', source: 'ai', lng: 'en', basedOn: 'old' };
+    const { onChange } = setup({ stored });
+    fireEvent.change(textarea(), { target: { value: 'Old note, typo fixed' } });
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ source: 'edited', basedOn: 'old' }));
+  });
+
+  it('polish asks before replacing hand edits', async () => {
+    mocks.confirm.mockResolvedValueOnce(false);
+    const stored: StoredRecordNote = { text: 'My additions', source: 'edited', lng: 'en', basedOn: 'old' };
+    const { onChange } = setup({ stored });
+    fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalled());
+    expect(mocks.polish).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('polish does not ask when nothing was hand-edited', async () => {
+    setup();
+    fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
+    await waitFor(() => expect(mocks.polish).toHaveBeenCalled());
+    expect(mocks.confirm).not.toHaveBeenCalled();
   });
 
   it('hides polish without AI', () => {

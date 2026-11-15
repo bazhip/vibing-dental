@@ -7,6 +7,7 @@ import {
   EXAM_ITEMS,
   ExamItemValue,
   ToothData,
+  effectiveNerveBlockDrugs,
   formatAnestheticDrug,
 } from '../types';
 
@@ -113,7 +114,11 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
     ].filter(Boolean);
     return parts.length ? `${t(`forms:anesthesia.blocks.${site}`)}: ${parts.join(', ')}` : null;
   });
-  const drugs = (nb?.drugs ?? []).filter((d) => clean(d.name)).map(formatAnestheticDrug);
+  // As on the chart PDF: blocks charted without a drug use the template's
+  // default anesthetic (an empty drug list means "the default").
+  const anyBlock = blockLines.some(Boolean) || !!clean(nb?.other);
+  const drugs = (anyBlock && nb ? effectiveNerveBlockDrugs(nb, snapshot.logo) : (nb?.drugs ?? []).filter((d) => clean(d.name)))
+    .map(formatAnestheticDrug);
   const custom = info.customAnesthesia;
   add('anesthesia', [
     drugs.length > 0 && drugs.join(' + '),
@@ -207,7 +212,7 @@ function hashStr(s: string): string {
 export function recordNoteBasis(snapshot: ChartSnapshot): string {
   const i = snapshot.patientInfo;
   return hashStr(JSON.stringify([
-    snapshot.species,
+    snapshot.species, snapshot.logo,
     i.patientName, i.patientNumber, i.date, i.doctor, i.tech, i.complaint,
     i.nerveBlocks, i.customAnesthesia ?? null, i.exam, i.customExam ?? null,
     i.radiographicFindings ?? '', i.treatmentReport, i.recallDate,
