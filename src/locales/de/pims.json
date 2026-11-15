@@ -113,5 +113,8 @@
       "loading": "Akte wird geöffnet…",
       "noteLabel": "Aktennotiz"
     }
+  },
+  "send": {
+    "targetChanged": "Die ezyVet-Konsultation hat sich geändert. Prüfen Sie das Ziel und klicken Sie erneut auf Senden."
   }
 }

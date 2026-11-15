@@ -18,8 +18,8 @@ export function SidePanelApp(): React.ReactElement {
   const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [picked, setPicked] = useState<CloudChartMeta | null>(null);
   usePanelLanguage(session?.user.id ?? null);
-  // Only asked once signed in (the extension is only contacted for a signed-in vet).
-  const inspect = useConsultInspect(!!session);
+  // Only asked in the list: once signed in, and not while a chart is open (ChartSend inspects itself).
+  const inspect = useConsultInspect(!!session && !picked);
 
   useEffect(() => {
     if (!supabase) return;

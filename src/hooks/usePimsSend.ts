@@ -38,6 +38,19 @@ export type PimsPhase =
   | { kind: 'ready'; info: InspectResult }
   | { kind: 'results'; info: InspectResult; rows: ResultRow[]; stampFailed: boolean };
 
+/** Did the consult the vet was looking at change since `a` was inspected? */
+function targetChanged(a: InspectResult, b: InspectResult): boolean {
+  const sa = a.status;
+  const sb = b.status;
+  return (
+    a.tab?.id !== b.tab?.id ||
+    (sa?.state === 'writable') !== (sb?.state === 'writable') ||
+    (sa?.patientName ?? null) !== (sb?.patientName ?? null) ||
+    (sa?.consult?.viewId ?? null) !== (sb?.consult?.viewId ?? null) ||
+    (sa?.consult?.recordId ?? null) !== (sb?.consult?.recordId ?? null)
+  );
+}
+
 export interface UsePimsSendOptions {
   transport: PimsTransport;
   /** The generated note (in `stored.lng` when there is a stored note, so it can be split). */
@@ -73,6 +86,8 @@ export function usePimsSend({
   const [edits, setEdits] = React.useState<PimsFieldMap>({});
   const [editedField, setEditedField] = React.useState<string | null | undefined>(undefined);
   const [sending, setSending] = React.useState(false);
+  // Set when Send found a different consult than the one on screen (and sent nothing).
+  const [changedTarget, setChangedTarget] = React.useState(false);
   const sendingRef = React.useRef(false);
   const [fetchedSentAt, setFetchedSentAt] = React.useState<string | null>(null);
   const [justSentAt, setJustSentAt] = React.useState<string | null>(null);
@@ -82,6 +97,7 @@ export function usePimsSend({
 
   const load = React.useCallback(async () => {
     setPhase({ kind: 'loading' });
+    setChangedTarget(false);
     const version = await transport.ping();
     if (!version) { setPhase({ kind: 'notInstalled' }); return; }
     try {
@@ -177,11 +193,26 @@ export function usePimsSend({
 
   const doSend = async () => {
     if (phase.kind !== 'ready' || !info?.tab || sendingRef.current) return;
-    const tab = info.tab;
-    const ezyvetName = info.status!.patientName;
     sendingRef.current = true;
     setSending(true);
     try {
+      // Look again first: the vet may have switched consults in ezyVet since this screen loaded.
+      let fresh: InspectResult;
+      try {
+        fresh = await transport.inspect();
+      } catch (err) {
+        setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
+        return;
+      }
+      if (targetChanged(info, fresh)) {
+        setPhase({ kind: 'ready', info: fresh });
+        setChangedTarget(true);
+        return;
+      }
+      setChangedTarget(false);
+      const info2 = fresh;
+      const tab = info2.tab!;
+      const ezyvetName = info2.status!.patientName;
       const changes = editedField !== undefined ? { ...edits, editedNote: editedField } : edits;
       if (Object.keys(changes).length) {
         // Saving the map must not stop the send.
@@ -222,7 +253,7 @@ export function usePimsSend({
       const { items, unresolved } = buildSendItems({
         note: split ?? { editedText: stored!.text, field: editedWanted },
         map: effective,
-        fields: info.fields,
+        fields: info2.fields,
         pngDataUrl,
       });
 
@@ -235,7 +266,7 @@ export function usePimsSend({
             tabId: tab.id,
             expectedPatient: patientName,
             confirmedEzyvetPatient: ezyvetName,
-            expectedConsult: info.status!.consult ?? null,
+            expectedConsult: info2.status!.consult ?? null,
             items,
           });
         } catch {
@@ -276,7 +307,7 @@ export function usePimsSend({
         setJustSentAt(at);
         onSent(at);
       }
-      setPhase({ kind: 'results', info, rows: rowsOut, stampFailed });
+      setPhase({ kind: 'results', info: info2, rows: rowsOut, stampFailed });
     } finally {
       sendingRef.current = false;
       setSending(false);
@@ -284,7 +315,7 @@ export function usePimsSend({
   };
 
   return {
-    phase, rows, split, sending, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   };
 }

@@ -88,7 +88,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
   const patientName = snapshot.patientInfo.patientName || chart.patient_name;
 
   const {
-    phase, rows, split, sending, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport: internalTransport,
@@ -102,9 +102,10 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
     onSent: setSentAt,
   });
 
-  // The vet moved to another tab or consult: look again, unless a send is under way or showing results.
+  // The vet moved to another tab or came back to the panel: look again, unless a send (or its
+  // confirmations) is under way or the results are showing.
   useActiveTabChange(() => {
-    if (phase.kind === 'ready' && !sending) void load();
+    if ((phase.kind === 'ready' || phase.kind === 'error') && !sending) void load();
   });
 
   const retry = (
@@ -170,6 +171,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
         {!split && <p className="sp-hint" role="status">{t('pims:editedNotice')}</p>}
         <h3 className="sp-subtitle">{t('pims:rows.heading')}</h3>
         <MappingRows rows={rows} disabled={sending} onChoose={choose} />
+        {changedTarget && <p className="sp-hint" role="status">{t('pims:send.targetChanged')}</p>}
         <div className="sp-actions">
           <button type="button" className="sp-secondary" onClick={() => void resetToDefaults()} disabled={sending}>
             {t('pims:rows.reset')}

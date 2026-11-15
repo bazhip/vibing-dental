@@ -113,5 +113,8 @@
       "loading": "Ouverture du dossier…",
       "noteLabel": "Note du dossier"
     }
+  },
+  "send": {
+    "targetChanged": "La consultation ezyVet a changé. Vérifiez la cible, puis cliquez de nouveau sur Envoyer."
   }
 }

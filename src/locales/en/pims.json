@@ -113,5 +113,8 @@
       "loading": "Opening the chart…",
       "noteLabel": "Record note"
     }
+  },
+  "send": {
+    "targetChanged": "The ezyVet consult changed. Check the target and press Send again."
   }
 }

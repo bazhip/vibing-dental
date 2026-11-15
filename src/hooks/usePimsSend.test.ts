@@ -52,7 +52,8 @@ describe('usePimsSend', () => {
     const { calls, picture, onSent, hook } = setup();
     await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
     await act(async () => { await hook.result.current.doSend(); });
-    expect(calls).toEqual(['ping', 'inspect', 'send']);
+    // Send looks again before anything else, so a consult switch is caught.
+    expect(calls).toEqual(['ping', 'inspect', 'inspect', 'send']);
     expect(hook.result.current.phase.kind).toBe('results');
     expect(onSent).toHaveBeenCalledTimes(1);
     // The default map sends the chart picture to Discharge Summary, which accepts images.

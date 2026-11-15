@@ -3,8 +3,7 @@ import i18n from '../i18n';
 import { isChartSnapshot, normalizeSnapshot } from '../hooks/useChartState';
 import { supabase } from './supabaseClient';
 import { localDateISO } from './localDate';
-import { LocalizedError } from './apiErrors';
-import { friendlyDetail } from '../components/ui/dialogs';
+import { LocalizedError, detailText } from './apiErrors';
 
 /** Chart queries shared by the cloud-sync hook and the extension side panel. */
 
@@ -104,14 +103,14 @@ export async function loadChartSnapshot(
   id: string,
 ): Promise<{ snapshot: ChartSnapshot; pimsSentAt: string | null }> {
   const t = i18n.getFixedT(null, 'app');
-  if (!supabase) throw new LocalizedError(t('errors.damagedChart'));
+  if (!supabase) throw new LocalizedError(i18n.t('panel.notConnected', { ns: 'pims' }));
   const { data, error } = await supabase
     .from('charts')
     .select('data, pims_sent_at')
     .eq('id', id)
     .single();
   // A Supabase or network failure says so; "damaged" is only for a snapshot that won't parse.
-  if (error) throw new LocalizedError(t('errors.openVisit', { error: friendlyDetail(new Error(error.message)) }));
+  if (error) throw new LocalizedError(t('errors.openVisit', { error: detailText(new Error(error.message)) }));
   if (!data) throw new LocalizedError(t('errors.damagedChart'));
   const row = data as { data: unknown; pims_sent_at?: string | null };
   if (!isChartSnapshot(row.data)) throw new LocalizedError(t('errors.damagedChart'));

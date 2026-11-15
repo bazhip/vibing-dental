@@ -41,7 +41,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
   const {
-    phase, rows, split, sending, sentAtSettled, lastSentAt, nothingToSend,
+    phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
     load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport,
@@ -146,6 +146,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           {!split && <p className="record-note__stale" role="status">{t('pims:editedNotice')}</p>}
           <h3 className="pims-dialog__subtitle">{t('pims:rows.heading')}</h3>
           <MappingRows rows={rows} disabled={sending} onChoose={choose} />
+          {changedTarget && <p className="record-note__stale" role="status">{t('pims:send.targetChanged')}</p>}
         </>
       );
       footer = (

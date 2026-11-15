@@ -128,4 +128,31 @@ describe('ChartSend', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
+
+  it('a different patient at send time sends nothing, shows the new target and the notice', async () => {
+    open();
+    const btn = await screen.findByRole('button', { name: 'Send' });
+    await waitFor(() => expect(btn).toBeEnabled());
+    mocks.transport.inspect.mockResolvedValue(info('Max'));
+    await act(async () => { fireEvent.click(btn); });
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+    // Pressing Send again, now that the target is on screen, goes ahead (after the mismatch check).
+    await send();
+    expect(mocks.confirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('a consult switch inside ezyVet at send time is caught even for the same patient name', async () => {
+    open();
+    const btn = await screen.findByRole('button', { name: 'Send' });
+    await waitFor(() => expect(btn).toBeEnabled());
+    const other = info('Bella');
+    other.status!.consult = { viewId: '3', recordId: '9999' };
+    mocks.transport.inspect.mockResolvedValue(other);
+    await act(async () => { fireEvent.click(btn); });
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
+  });
 });

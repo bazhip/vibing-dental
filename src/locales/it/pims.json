@@ -113,5 +113,8 @@
       "loading": "Apertura della cartella…",
       "noteLabel": "Nota di cartella"
     }
+  },
+  "send": {
+    "targetChanged": "La visita in ezyVet è cambiata. Verifichi la destinazione e prema di nuovo Invia."
   }
 }

@@ -8496,6 +8496,10 @@
       "hash": "e240e635ff6d",
       "status": "machine"
     },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "264c8154322a",
       "status": "machine"
@@ -19628,6 +19632,10 @@
     },
     "pims:rows.reset": {
       "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
       "status": "machine"
     },
     "pims:severalTabs": {
@@ -30792,6 +30800,10 @@
       "hash": "e240e635ff6d",
       "status": "machine"
     },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
     "pims:severalTabs": {
       "hash": "264c8154322a",
       "status": "machine"
@@ -41952,6 +41964,10 @@
     },
     "pims:rows.reset": {
       "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
       "status": "machine"
     },
     "pims:severalTabs": {

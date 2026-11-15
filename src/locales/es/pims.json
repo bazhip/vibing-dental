@@ -113,5 +113,8 @@
       "loading": "Abriendo el historial…",
       "noteLabel": "Nota clínica"
     }
+  },
+  "send": {
+    "targetChanged": "La consulta de ezyVet ha cambiado. Compruebe el destino y pulse Enviar de nuevo."
   }
 }
