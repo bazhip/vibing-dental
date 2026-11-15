@@ -43,12 +43,14 @@
     "lint": "eslint src",
     "i18n:check": "tsx scripts/i18n/check.ts",
     "i18n:translate": "tsx scripts/i18n/translate.ts",
+    "build:extension": "node scripts/build-extension.mjs",
     "i18n:emails": "tsx scripts/i18n/gen-email-strings.ts && tsx scripts/i18n/gen-auth-templates.ts"
   },
   "devDependencies": {
     "@capacitor/assets": "^4.0.0",
     "@capacitor/cli": "^7.6.10",
     "@testing-library/jest-dom": "^6.9.1",
+    "@types/chrome": "^0.3.7",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",

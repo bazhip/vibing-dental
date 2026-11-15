@@ -8192,6 +8192,14 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
     "reminders:composer.aria": {
       "hash": "e2d7c7b08a15",
       "status": "machine"
@@ -18992,6 +19000,14 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
       "status": "machine"
     },
     "reminders:composer.aria": {
@@ -29824,6 +29840,14 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
     "reminders:composer.aria": {
       "hash": "e2d7c7b08a15",
       "status": "machine"
@@ -40652,6 +40676,14 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
       "status": "machine"
     },
     "reminders:composer.aria": {
