@@ -1,5 +1,5 @@
 import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import i18n from '../i18n';
 import type { InspectResult, SendResult } from '../extension/protocol';
@@ -105,7 +105,10 @@ beforeEach(() => {
   mocks.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] } satisfies SendResult);
   mocks.markPimsSent.mockResolvedValue({ sentAt: '2026-11-15T10:00:00Z' });
   mocks.confirm.mockResolvedValue(true);
-  mocks.diagnose.mockResolvedValue({ version: 'dev', state: 'writable', selectorHits: {}, fields: [], hasJaxmanager: true, hasHugerte: false, hasLexical: true });
+  mocks.diagnose.mockResolvedValue({
+    diagnostics: { version: 'dev', state: 'writable', selectorHits: {}, fields: [], hasJaxmanager: true, hasHugerte: false, hasLexical: true },
+    lastCodes: ['save_not_confirmed'],
+  });
 });
 afterEach(cleanup);
 
@@ -226,6 +229,72 @@ describe('SendToEzyvetDialog', () => {
     expect(mocks.send).toHaveBeenCalledTimes(1);
     finish({ ok: true, results: [] });
     await screen.findByText(t('pims:results.title'));
+  });
+
+  it('the close button is disabled during a pending send', async () => {
+    let finish!: (r: SendResult) => void;
+    mocks.send.mockReturnValue(new Promise<SendResult>((r) => { finish = r; }));
+    const { el, props } = dlg();
+    render(el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await screen.findByRole('button', { name: t('pims:actions.sending') });
+    const close = screen.getByRole('button', { name: t('common:actions.close') });
+    expect(close).toBeDisabled();
+    fireEvent.click(close);
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(props.onClose).not.toHaveBeenCalled();
+    finish({ ok: true, results: [] });
+    await screen.findByText(t('pims:results.title'));
+    for (const b of screen.getAllByRole('button', { name: t('common:actions.close') })) expect(b).not.toBeDisabled();
+  });
+
+  it('a second click before the re-render does not send twice', async () => {
+    render(dlg().el);
+    await screen.findByText(t('pims:rows.heading'));
+    const b = sendButton();
+    await act(async () => { b.click(); b.click(); });
+    await screen.findByText(t('pims:results.title'));
+    expect(mocks.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('a send that fails mid-way says fields may be written and the next Send asks first', async () => {
+    mocks.send.mockRejectedValueOnce(new Error('timeout'));
+    const { el, props } = dlg();
+    render(el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    expect(await screen.findByText(t('pims:errors.maybe_sent'))).toBeInTheDocument();
+    expect(props.onSent).toHaveBeenCalledTimes(1);
+    expect(mocks.markPimsSent).not.toHaveBeenCalled();
+    mocks.confirm.mockResolvedValueOnce(false);
+    fireEvent.click(screen.getByRole('button', { name: t('pims:dialog.retry') }));
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ confirmLabel: t('pims:alreadySent.confirm') });
+    expect(mocks.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('Send waits for the send-date lookup', async () => {
+    let settle!: (v: { data: unknown; error: null }) => void;
+    const maybeSingle = vi.fn(() => new Promise((r) => { settle = r; }));
+    mocks.supabase = { from: () => ({ select: () => ({ eq: () => ({ maybeSingle }) }) }) };
+    render(dlg().el);
+    await screen.findByText(t('pims:rows.heading'));
+    expect(sendButton()).toBeDisabled();
+    await act(async () => { settle({ data: { pims_sent_at: null }, error: null }); });
+    expect(sendButton()).not.toBeDisabled();
+  });
+
+  it('a chart target not on this page is reported and not rendered', async () => {
+    mocks.saved = { chart: 'Attachments' };
+    render(dlg({ chartSnapshot: snap }).el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await screen.findByText(t('pims:results.title'));
+    expect(mocks.render).not.toHaveBeenCalled();
+    expect(screen.getByText('Attachments').closest('li')).toHaveTextContent(t('pims:errors.field_not_found'));
   });
 
   it('results list and stamp', async () => {
@@ -365,7 +434,10 @@ describe('SendToEzyvetDialog', () => {
     await waitFor(() => expect(mocks.copy).toHaveBeenCalled());
     expect(mocks.diagnose).toHaveBeenCalledWith(7);
     const [, text] = mocks.copy.mock.calls[0] as unknown as [string, string];
-    expect(JSON.parse(text)).toMatchObject({ state: 'writable', hasLexical: true });
+    expect(JSON.parse(text)).toEqual({
+      diagnostics: { version: 'dev', state: 'writable', selectorHits: {}, fields: [], hasJaxmanager: true, hasHugerte: false, hasLexical: true },
+      lastCodes: ['save_not_confirmed'],
+    });
   });
 });
 
@@ -390,6 +462,25 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     render(panel({ pims }));
     fireEvent.click(button()!);
     expect(await screen.findByRole('dialog', { name: t('pims:dialog.title') })).toBeInTheDocument();
+  });
+
+  it('remembers a send without a cloud chart, so reopening asks first', async () => {
+    mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex' }));
+    render(panel({ pims: { ...pims, chartId: null } }));
+    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
+    await screen.findByText(t('pims:results.title'));
+    expect(mocks.markPimsSent).not.toHaveBeenCalled();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+    fireEvent.click(screen.getAllByRole('button', { name: t('common:actions.close') })[0]);
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    mocks.confirm.mockResolvedValueOnce(false);
+    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ confirmLabel: t('pims:alreadySent.confirm') });
+    expect(mocks.send).toHaveBeenCalledTimes(1);
   });
 
   it('button hidden when practice flag is off or in native app', () => {

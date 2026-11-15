@@ -95,10 +95,10 @@ export function send(req: Extract<Request, { type: 'send' }>): Promise<SendResul
   return call<SendResult>(req, SEND_TIMEOUT_MS);
 }
 
-export async function diagnose(tabId?: number): Promise<DiagnoseResult['diagnostics']> {
-  const res = await call<DiagnoseResult>(
+/** The page's structure report and the failure codes of the last send. */
+export function diagnose(tabId?: number): Promise<DiagnoseResult> {
+  return call<DiagnoseResult>(
     tabId === undefined ? { type: 'diagnose' } : { type: 'diagnose', tabId },
     DIAGNOSE_TIMEOUT_MS,
   );
-  return res.diagnostics;
 }

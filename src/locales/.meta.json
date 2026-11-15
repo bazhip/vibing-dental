@@ -8268,6 +8268,10 @@
       "hash": "2a4ad2155dd0",
       "status": "machine"
     },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
     "pims:errors.no_preferred_email": {
       "hash": "9c4631ef9139",
       "status": "machine"
@@ -19296,6 +19300,10 @@
     },
     "pims:errors.invalid_image": {
       "hash": "2a4ad2155dd0",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
       "status": "machine"
     },
     "pims:errors.no_preferred_email": {
@@ -30356,6 +30364,10 @@
       "hash": "2a4ad2155dd0",
       "status": "machine"
     },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
     "pims:errors.no_preferred_email": {
       "hash": "9c4631ef9139",
       "status": "machine"
@@ -41412,6 +41424,10 @@
     },
     "pims:errors.invalid_image": {
       "hash": "2a4ad2155dd0",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
       "status": "machine"
     },
     "pims:errors.no_preferred_email": {

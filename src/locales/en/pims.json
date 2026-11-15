@@ -76,6 +76,7 @@
     "no_preferred_email": "The client has no preferred email address in ezyVet. Add one, or choose another field.",
     "image_not_accepted": "This field doesn’t accept pictures. Choose Discharge Summary or another field that does.",
     "invalid_image": "The chart picture couldn’t be prepared. Try again.",
-    "picture_failed": "ToothOps couldn’t draw the chart picture, so it wasn’t sent."
+    "picture_failed": "ToothOps couldn’t draw the chart picture, so it wasn’t sent.",
+    "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again."
   }
 }

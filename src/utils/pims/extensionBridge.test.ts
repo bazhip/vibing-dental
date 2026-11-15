@@ -92,9 +92,9 @@ describe('extensionBridge', () => {
     expect(fast).toEqual({ ok: false, code: 'patient_changed' });
   });
 
-  it('diagnose unwraps diagnostics', async () => {
-    sendMessage.mockImplementation(answer({ diagnostics: null, lastCodes: [] }));
-    expect(await diagnose(3)).toBeNull();
+  it('diagnose returns the diagnostics and the last send codes', async () => {
+    sendMessage.mockImplementation(answer({ diagnostics: null, lastCodes: ['editor_not_found'] }));
+    expect(await diagnose(3)).toEqual({ diagnostics: null, lastCodes: ['editor_not_found'] });
     expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'diagnose', tabId: 3 });
   });
 });

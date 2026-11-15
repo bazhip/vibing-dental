@@ -76,6 +76,7 @@
     "no_preferred_email": "El cliente no tiene una dirección de correo electrónico preferida en ezyVet. Añada una o elija otro campo.",
     "image_not_accepted": "Este campo no acepta imágenes. Elija Discharge Summary u otro campo que las acepte.",
     "invalid_image": "No se pudo preparar la imagen del odontograma. Vuelva a intentarlo.",
-    "picture_failed": "ToothOps no pudo dibujar la imagen del odontograma, así que no se envió."
+    "picture_failed": "ToothOps no pudo dibujar la imagen del odontograma, así que no se envió.",
+    "maybe_sent": "Es posible que algunos campos ya se hayan escrito. Revise la consulta en ezyVet antes de volver a enviar."
   }
 }

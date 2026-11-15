@@ -85,6 +85,8 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   const sendingRef = React.useRef(false);
   const [fetchedSentAt, setFetchedSentAt] = React.useState<string | null>(null);
   const [justSentAt, setJustSentAt] = React.useState<string | null>(null);
+  // Send waits for the send-date lookup, so a re-send always asks first.
+  const [sentAtSettled, setSentAtSettled] = React.useState(true);
   const lastSentAt = justSentAt ?? sentAt ?? fetchedSentAt;
 
   const load = React.useCallback(async () => {
@@ -111,14 +113,17 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   // failure (e.g. row-level security for a practice member) means unknown.
   React.useEffect(() => {
     setFetchedSentAt(null);
-    if (!open || !chartId || !supabase) return;
+    if (!open || !chartId || !supabase) { setSentAtSettled(true); return; }
+    setSentAtSettled(false);
     let cancelled = false;
     void (async () => {
       try {
         const { data, error } = await supabase!.from('charts').select('pims_sent_at').eq('id', chartId).maybeSingle();
         if (cancelled || error) return;
         setFetchedSentAt((data as { pims_sent_at?: string | null } | null)?.pims_sent_at ?? null);
-      } catch { /* unknown */ }
+      } catch { /* unknown */ } finally {
+        if (!cancelled) setSentAtSettled(true);
+      }
     })();
     return () => { cancelled = true; };
   }, [open, chartId]);
@@ -156,7 +161,8 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   const header = (
     <header className="ai-settings-header">
       <h2>{t('pims:dialog.title')}</h2>
-      <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('common:actions.close')}>×</button>
+      {/* Not while sending: a reopened dialog wouldn't know a write is still running. */}
+      <button type="button" className="pdf-preview-close" onClick={onClose} disabled={sending} aria-label={t('common:actions.close')}>×</button>
     </header>
   );
 
@@ -178,7 +184,12 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   );
 
   if (phase.kind === 'loading') {
-    body = <p className="pims-dialog__status" role="status">{t('pims:dialog.loading')}</p>;
+    body = (
+      <div className="pims-dialog__loading" role="status">
+        <div className="app-loading__spinner" aria-hidden="true" />
+        <p>{t('pims:dialog.loading')}</p>
+      </div>
+    );
   } else if (phase.kind === 'notInstalled') {
     // The Web Store link goes here once the extension is published.
     body = (
@@ -266,7 +277,9 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
         const effective = { ...map, ...edits } as Record<SourceKey, string | null>;
         let pngDataUrl: string | null = null;
         let pictureFailed = false;
-        if (chartSnapshot && effective.chart != null) {
+        // A chart target not on this page is reported, not rendered.
+        const chartMissing = !!chartSnapshot && selectValue(effective.chart, imageTargets) === MISSING;
+        if (chartSnapshot && effective.chart != null && !chartMissing) {
           try {
             pngDataUrl = await renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') });
           } catch {
@@ -291,8 +304,13 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
               confirmedEzyvetPatient: ezyvetName,
               items,
             });
-          } catch (err) {
-            setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')), tabId: tab.id });
+          } catch {
+            // Timed out or lost the extension mid-send: some fields may be
+            // written, so the next Send asks first.
+            const at = new Date().toISOString();
+            setJustSentAt(at);
+            onSent(at);
+            setPhase({ kind: 'error', message: t('pims:errors.maybe_sent'), tabId: tab.id });
             return;
           }
           if (!result.ok) {
@@ -302,17 +320,22 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           for (const r of result.results) rowsOut.push({ fieldTitle: r.fieldTitle, code: r.result.ok ? null : r.result.code });
         }
         for (const title of unresolved) rowsOut.push({ fieldTitle: title, code: 'field_not_found' });
+        if (chartMissing && !unresolved.includes(effective.chart!)) rowsOut.push({ fieldTitle: effective.chart!, code: 'field_not_found' });
         if (pictureFailed) rowsOut.push({ fieldTitle: t('pims:rows.chart'), code: 'picture_failed' });
 
         let stampFailed = false;
-        if (chartId && rowsOut.some((r) => r.code === null)) {
-          try {
-            const { sentAt: at } = await markPimsSent(chartId);
-            setJustSentAt(at);
-            onSent(at);
-          } catch {
-            stampFailed = true;
+        if (rowsOut.some((r) => r.code === null)) {
+          // Remember the send even when it can't be recorded on the chart.
+          let at = new Date().toISOString();
+          if (chartId) {
+            try {
+              at = (await markPimsSent(chartId)).sentAt;
+            } catch {
+              stampFailed = true;
+            }
           }
+          setJustSentAt(at);
+          onSent(at);
         }
         setPhase({ kind: 'results', info, rows: rowsOut, stampFailed });
       } finally {
@@ -387,7 +410,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
             type="button"
             className="entry-grid__button entry-grid__button--topbar"
             onClick={() => void doSend()}
-            disabled={sending || nothingToSend}
+            disabled={sending || nothingToSend || !sentAtSettled}
           >
             {sending ? t('pims:actions.sending') : t('pims:actions.send')}
           </button>

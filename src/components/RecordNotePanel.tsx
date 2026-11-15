@@ -78,7 +78,6 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
     if (outcome !== 'prompt') toast(t('recordNote.copied'), { kind: 'success' });
   };
 
-
   return (
     <div className="pdf-preview-body record-note">
       <aside className="pdf-preview-styles">
@@ -105,16 +104,16 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
       </aside>
       {canSend && pims && sendOpen && (
         <SendToEzyvetDialog
-            open
-            onClose={() => setSendOpen(false)}
-            note={sendNote}
-            stored={stored}
-            chartSnapshot={chartSnapshot}
-            chartId={pims.chartId}
-            patientName={pims.patientName}
-            sentAt={sentAt ?? pims.sentAt}
-            onSent={setSentAt}
-          />
+          open
+          onClose={() => setSendOpen(false)}
+          note={sendNote}
+          stored={stored}
+          chartSnapshot={chartSnapshot}
+          chartId={pims.chartId}
+          patientName={pims.patientName}
+          sentAt={sentAt ?? pims.sentAt}
+          onSent={setSentAt}
+        />
       )}
       <textarea
         className="record-note__text"
