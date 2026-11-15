@@ -2,11 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   codeDefinition,
-  DENTAL_CODE_GROUPS,
+  codeGroupsFor,
   DentalCode,
   DentalCodeGroup,
   searchCodes,
 } from '../constants/dentalCodes';
+import { CodeSpeciesContext } from './codeSpecies';
 
 /**
  * Always-visible collapsible search panel that lists every dental shorthand
@@ -24,6 +25,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
   const [query, setQuery] = React.useState('');
   // Definitions and group names follow the active language.
   const { t, i18n } = useTranslation('chart');
+  const species = React.useContext(CodeSpeciesContext);
   const cardRef = React.useRef<HTMLDivElement>(null);
 
   // Sidebar mode only (the card is position:sticky there): keep the top
@@ -81,12 +83,12 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
   // drop out entirely (including their header).
   const language = i18n.language;
   const filteredGroups = React.useMemo(() => {
-    const hits = new Set(searchCodes(query, language));
-    return DENTAL_CODE_GROUPS
+    const hits = new Set(searchCodes(query, language, species));
+    return codeGroupsFor(species)
       .filter((g) => (kind ? g.kind === kind : true))
       .map((g) => ({ id: g.id, name: g.name, kind: g.kind, codes: g.codes.filter((c) => hits.has(c)) }))
       .filter((g) => g.codes.length > 0);
-  }, [query, kind, language]);
+  }, [query, kind, language, species]);
 
   return (
     <div className="dental-grid-section">

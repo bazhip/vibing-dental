@@ -22,7 +22,10 @@
     "oralSurgery": "Cirugía oral",
     "oncologic": "Terapia oncológica",
     "jawRepair": "Fracturas maxilares y ATM",
-    "orthodontics": "Ortodoncia"
+    "orthodontics": "Ortodoncia",
+    "equine": "Hallazgos equinos",
+    "equineProcedures": "Procedimientos equinos",
+    "equineExtractions": "Extracción de dientes yugales"
   },
   "columns": {
     "tooth": "Diente",

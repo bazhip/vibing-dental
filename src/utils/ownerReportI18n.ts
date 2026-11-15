@@ -50,6 +50,8 @@ export interface ReportStrings {
   headings: Record<BuiltInSectionId, (pet: string) => string>;
   intro: (pet: string) => string;
   homecareTips: string[];
+  /** Defaults for a horse (no brushing or chews). */
+  homecareTipsEquine: string[];
   fieldPhrases: Record<DentalField, (value: string) => string>;
   fieldPlain: Record<DentalField, string>;
   /** Lay tooth name without the Triadan number, capitalized. */
@@ -156,6 +158,7 @@ const EXAM_AREAS = [
 const SPECIES_KEYS = ['feline', 'canine', 'feline-deciduous', 'canine-deciduous', 'equine'] as const;
 
 const HOMECARE_TIP_KEYS = ['brushing', 'products', 'warningSigns'] as const;
+const EQUINE_HOMECARE_TIP_KEYS = ['checkups', 'forage', 'warningSigns'] as const;
 
 function buildStrings(locale: ReportLocale): ReportStrings {
   const t: TFunction<'report'> = i18n.getFixedT(locale, 'report');
@@ -178,6 +181,7 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     // Without a name the sentence opens with the capitalized "your pet".
     intro: (pet) => t('intro', { pet: pet || cap(yourPet) }),
     homecareTips: HOMECARE_TIP_KEYS.map((k) => t(`homecareTips.${k}`)),
+    homecareTipsEquine: EQUINE_HOMECARE_TIP_KEYS.map((k) => t(`homecareTipsEquine.${k}`)),
     fieldPhrases: map(DENTAL_FIELDS, (f) => (value: string) => t(`fieldPhrases.${f}`, { value })),
     fieldPlain: map(DENTAL_FIELDS, (f) => t(`fieldPlain.${f}`)),
     toothName: (quadrant, position, deciduous) => {

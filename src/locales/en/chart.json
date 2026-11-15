@@ -22,7 +22,10 @@
     "oralSurgery": "Oral surgery",
     "oncologic": "Oncologic therapy",
     "jawRepair": "Jaw fracture & TMJ repair",
-    "orthodontics": "Orthodontics"
+    "orthodontics": "Orthodontics",
+    "equine": "Equine findings",
+    "equineProcedures": "Equine procedures",
+    "equineExtractions": "Cheek-tooth extraction"
   },
   "columns": {
     "tooth": "Tooth",

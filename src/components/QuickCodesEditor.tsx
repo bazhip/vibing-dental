@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DENTAL_CODES, codeDefinition } from '../constants/dentalCodes';
+import { ALL_CODES, codeDefinition } from '../constants/dentalCodes';
 import { MAX_QUICK_CODES, MAX_QUICK_CODE_LENGTH, canonicalQuickCode } from '../utils/quickCodes';
 
 /**
@@ -68,7 +68,7 @@ export const QuickCodesEditor: React.FC<{
             <span aria-hidden="true">+</span> {t('chart.quickCodes.add')}
           </button>
           <datalist id={listId}>
-            {DENTAL_CODES.map((c) => (
+            {ALL_CODES.map((c) => (
               <option key={c.code} value={c.code} label={codeDefinition(c.code)} />
             ))}
           </datalist>

@@ -3,7 +3,7 @@ import { parseRootPockets } from '../pocket';
 import { filledBlocks, fieldLines } from '../customAnesthesia';
 import { answeredCustomExam } from '../customExam';
 import type { CustomAnesthesia } from '../../types';
-import { DENTAL_CODES, DentalCode, findCodesInText, codeDefinition } from '../../constants/dentalCodes';
+import { DentalCode, findCodesInText, codeDefinition, codesFor } from '../../constants/dentalCodes';
 import i18n from '../../i18n';
 import {
   PatientInfo,
@@ -69,17 +69,23 @@ const pdfT = (lng: string) => i18n.getFixedT(lng, 'pdf');
 
 /** Codes referenced anywhere in `texts`, deduped, sorted in DENTAL_CODES order. */
 export function codesIn(...texts: Array<string | undefined>): DentalCode[] {
+  return codesInFor(undefined, texts);
+}
+
+/** codesIn for a chart of `species` (a horse chart also finds the equine
+ *  codes, listed first as in its reference panel). */
+export function codesInFor(species: Species | undefined, texts: Array<string | undefined>): DentalCode[] {
   const seen = new Set<string>();
   const result: DentalCode[] = [];
   for (const text of texts) {
     if (!text) continue;
-    for (const c of findCodesInText(text)) {
+    for (const c of findCodesInText(text, species)) {
       if (seen.has(c.code)) continue;
       seen.add(c.code);
       result.push(c);
     }
   }
-  const indexOf = new Map<string, number>(DENTAL_CODES.map((c, i) => [c.code, i]));
+  const indexOf = new Map<string, number>(codesFor(species).map((c, i) => [c.code, i]));
   result.sort((a, b) => (indexOf.get(a.code) ?? 0) - (indexOf.get(b.code) ?? 0));
   return result;
 }
@@ -89,11 +95,13 @@ interface CollectInput {
   toothData: ToothData[];
   preCommentTexts: string[];
   postCommentTexts: string[];
+  /** Horse charts also pick up the equine codes. */
+  species?: Species;
 }
 /** Codes used per page. Page 1: chief complaint, tooth grid, pre comments,
  *  exam comments. Page 2: treatment report + post comments. */
 export function collectUsedCodesByPage({
-  patientInfo, toothData, preCommentTexts, postCommentTexts,
+  patientInfo, toothData, preCommentTexts, postCommentTexts, species,
 }: CollectInput): { page1: DentalCode[]; page2: DentalCode[] } {
   const toothFields: string[] = [];
   for (const t of toothData) {
@@ -107,8 +115,8 @@ export function collectUsedCodesByPage({
     .filter((v) => v.status === 'abnormal')
     .map((v) => v.comment);
   return {
-    page1: codesIn(patientInfo.complaint, ...toothFields, ...preCommentTexts, ...examComments),
-    page2: codesIn(patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", ...postCommentTexts),
+    page1: codesInFor(species, [patientInfo.complaint, ...toothFields, ...preCommentTexts, ...examComments]),
+    page2: codesInFor(species, [patientInfo.treatmentReport, patientInfo.radiographicFindings ?? "", ...postCommentTexts]),
   };
 }
 

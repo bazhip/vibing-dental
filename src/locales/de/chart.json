@@ -22,7 +22,10 @@
     "oralSurgery": "Oralchirurgie",
     "oncologic": "Onkologische Therapie",
     "jawRepair": "Kieferfraktur- & Kiefergelenkversorgung",
-    "orthodontics": "Kieferorthopädie"
+    "orthodontics": "Kieferorthopädie",
+    "equine": "Befunde Pferd",
+    "equineProcedures": "Eingriffe Pferd",
+    "equineExtractions": "Backenzahnextraktion"
   },
   "columns": {
     "tooth": "Zahn",
