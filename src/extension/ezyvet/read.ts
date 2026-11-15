@@ -20,7 +20,7 @@ export type Diagnostics = {
 // We instead treat an element as visible unless it or an ancestor has the `hidden` attribute or
 // inline `display: none`. (Real ezyVet hides duplicate copies this way or via CSS classes; a CSS-only
 // hide is not detected here, which only matters for choosing between duplicate titles.)
-function isVisible(el: Element): boolean {
+export function isVisible(el: Element): boolean {
   for (let n: Element | null = el; n; n = n.parentElement) {
     if (n.hasAttribute('hidden')) return false;
     if ((n as HTMLElement).style?.display === 'none') return false;

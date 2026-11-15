@@ -22,6 +22,29 @@ export const DISCHARGE_ADD_BUTTON = '.inputSectionTitle .addButton[data-testid="
 /** Class prefix of the Discharge Summary `.sectionContent`; popup discovery skips these. */
 export const DISCHARGE_SECTION_CLASS_PREFIX = 'DischargeSummaries';
 
+// Writing side. All unverified: reference.
+export const ADD_NOTE_BUTTON = '.add-note-button'; // unverified: reference
+export const FORMBOX = '[id^="formbox"]'; // unverified: reference
+export const POPUP_FORM_INTERNAL = '.popupFormInternal'; // unverified: reference
+export const POPUP_SAVE_BUTTON = '[id^="saveRecord"]'; // unverified: reference
+export const POPUP_CLOSE_BUTTON = '.closeButton'; // unverified: reference
+export const POPUP_TEXTAREA = 'textarea'; // unverified: reference
+export const CONTACT_EMAIL = '.clickable.contactMethodSelectionItem[title="Email"]'; // unverified: reference
+export const CONTACT_IN_PERSON = '.clickable.contactMethodSelectionItem[title="In Person"]'; // unverified: reference
+export const IN_PERSON_TEXTAREA = 'textarea[name="communicationdata_content"]'; // unverified: reference
+export const IN_PERSON_ADD = '[data-testid="Add"]'; // unverified: reference
+export const EMAIL_TO_INPUT = 'input[name="communicationdata_to"]'; // unverified: reference
+export const PREFERRED_ADDRESS = '.preferredMethod'; // unverified: reference
+export const EMAIL_STATUS_PENDING = 'input[type="radio"][value="Pending"]'; // unverified: reference
+export const TEMPLATE_CHOOSER_CANCEL = '[data-testid="Cancel"]'; // unverified: reference
+// `&` is written as the CSS escape `\26 ` (same selector; jsdom's engine mis-parses a literal `&`).
+export const DISCHARGE_SAVE_CLOSE = [
+  '[data-testid="Save\\26 Close_DischargeSummary"]',
+  '[data-testid^="Save\\26 Close"]',
+  '[id^="saveAndCloseButton"]',
+]; // unverified: reference
+export const COVER_BLOCK = '#coverblock'; // unverified: reference
+
 /** Static selectors reported by `diagnostics().selectorHits`, keyed by constant name. */
 export const REPORTED_SELECTORS: Record<string, string> = {
   RIGHT_PANE,
