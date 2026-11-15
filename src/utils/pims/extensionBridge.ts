@@ -14,7 +14,8 @@ type ChromeWindow = Window & { chrome?: { runtime?: ChromeRuntime } };
 
 export const EXTENSION_ID: string = import.meta.env.VITE_EXTENSION_ID ?? DEV_EXTENSION_ID;
 
-const PING_TIMEOUT_MS = 500;
+// The second ping waits longer: Chrome may be starting a stopped service worker.
+const PING_TIMEOUTS_MS = [500, 1_500];
 const INSPECT_TIMEOUT_MS = 5_000;
 const DIAGNOSE_TIMEOUT_MS = 5_000;
 // A multi-field send waits on one ezyVet save per field.
@@ -75,12 +76,12 @@ async function call<T>(message: Request, timeoutMs: number): Promise<T> {
   }
 }
 
-/** The extension's version, or null when it isn't installed (or doesn't
- *  answer within 500 ms, twice). */
+/** The extension's version, or null when it isn't installed or doesn't
+ *  answer (500 ms, then 1.5 s for a cold service worker). */
 export async function ping(): Promise<PingResult | null> {
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (const timeoutMs of PING_TIMEOUTS_MS) {
     try {
-      return await raw<PingResult>({ type: 'ping' }, PING_TIMEOUT_MS);
+      return await raw<PingResult>({ type: 'ping' }, timeoutMs);
     } catch { /* retry once, then give up */ }
   }
   return null;

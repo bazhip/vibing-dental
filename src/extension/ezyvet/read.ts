@@ -36,35 +36,50 @@ function viewId(pane: Element): string | null {
   return /^rtab(\d+)details$/.exec(pane.id)?.[1] ?? null;
 }
 
-function isConsultPane(doc: Document, pane: Element, id: string): boolean {
-  // Newer markup: data-record-class on the pane or on its wrapper directly under #rightpane.
-  let tagged: string | null = pane.getAttribute('data-record-class');
-  if (tagged === null) {
-    let n: Element | null = pane;
-    while (n && n.parentElement && n.parentElement.id !== 'rightpane') n = n.parentElement;
-    if (n && n.parentElement) tagged = n.getAttribute('data-record-class');
-  }
-  if (tagged !== null) return tagged === 'Consult';
-  // Legacy: #rform<N> has a class like Consult4521Form (RecordClass Consult, RecordId > 0).
-  const form = doc.getElementById(`rform${id}`);
-  if (!form) return false;
-  return Array.from(form.classList).some((c) => {
-    const m = /^Consult(\d+)Form$/.exec(c);
-    return m !== null && Number(m[1]) > 0;
-  });
+/** The element carrying `data-record-class`: the pane or its wrapper directly under #rightpane. */
+function taggedElement(pane: Element): Element | null {
+  if (pane.hasAttribute('data-record-class')) return pane;
+  let n: Element | null = pane;
+  while (n && n.parentElement && n.parentElement.id !== 'rightpane') n = n.parentElement;
+  return n && n.parentElement && n.hasAttribute('data-record-class') ? n : null;
 }
 
-function consultPane(doc: Document): { pane: Element; id: string } | null {
+/** The consult record id from `#rform<N>`'s class (e.g. Consult4521Form: RecordId > 0), or null. */
+function formRecordId(doc: Document, id: string): string | null {
+  const form = doc.getElementById(`rform${id}`);
+  if (!form) return null;
+  for (const c of Array.from(form.classList)) {
+    const m = /^Consult(\d+)Form$/.exec(c);
+    if (m !== null && Number(m[1]) > 0) return m[1];
+  }
+  return null;
+}
+
+/** Which consult is open: its view id and record id. The background re-checks it before every
+ *  write, because the patient name selector may read nothing on real ezyVet. */
+export type ConsultId = { viewId: string; recordId: string };
+
+function consultPane(doc: Document): { pane: Element; id: string; recordId: string } | null {
   const pane = activePane(doc);
   if (!pane) return null;
   const id = viewId(pane);
-  if (id === null || !isConsultPane(doc, pane, id)) return null;
-  return { pane, id };
+  if (id === null) return null;
+  // Newer markup: data-record-class on the pane or its wrapper. Legacy: the #rform<N> class.
+  const tagged = taggedElement(pane);
+  if (tagged) {
+    if (tagged.getAttribute('data-record-class') !== 'Consult') return null;
+    const recordId = formRecordId(doc, id) ?? tagged.getAttribute('data-record-id') ?? '';
+    return { pane, id, recordId };
+  }
+  const recordId = formRecordId(doc, id);
+  return recordId === null ? null : { pane, id, recordId };
 }
 
-export function status(doc: Document = document): { state: EzyvetState; patientName: string | null } {
+export type Status = { state: EzyvetState; patientName: string | null; consult: ConsultId | null };
+
+export function status(doc: Document = document): Status {
   const consult = consultPane(doc);
-  if (!consult) return { state: 'notConsult', patientName: null };
+  if (!consult) return { state: 'notConsult', patientName: null, consult: null };
   const name = doc.querySelector(S.PATIENT_NAME)?.textContent?.replace(/\s+/g, ' ').trim() || null;
   // Order: the combined view and a locked consult are reported before the sub-tab check, since the
   // combined view has no Medical sub-tab and a locked consult is not writable whichever tab is open.
@@ -73,7 +88,7 @@ export function status(doc: Document = document): { state: EzyvetState; patientN
   else if (doc.querySelector(S.LOCKED_TOOLBAR)) state = 'locked';
   else if (doc.getElementById(`subTab${consult.id}-Medical`)?.classList.contains('active')) state = 'writable';
   else state = 'notMedicalTab';
-  return { state, patientName: name };
+  return { state, patientName: name, consult: { viewId: consult.id, recordId: consult.recordId } };
 }
 
 function cleanTitle(raw: string): string {

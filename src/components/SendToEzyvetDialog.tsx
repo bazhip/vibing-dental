@@ -45,6 +45,21 @@ export interface SendToEzyvetDialogProps {
 type FailCode = Extract<ItemResult, { ok: false }>['code'] | 'picture_failed';
 type ResultRow = { fieldTitle: string; code: FailCode | null };
 
+/** Failures that may come after ezyVet already saved the field: the next Send asks first. */
+const MAYBE_WRITTEN: ReadonlySet<FailCode> = new Set<FailCode>([
+  'popup_not_closed',
+  'save_not_confirmed',
+  'save_button_not_found',
+  'extension_error',
+]);
+
+/** A per-field failure. Codes that are also whole-send refusals get a per-field text, which says
+ *  to check ezyVet instead of trying again (trying again would resend the fields already written). */
+const rowErrorKey = (code: FailCode) =>
+  code === 'extension_error' || code === 'not_writable' || code === 'patient_changed'
+    ? (`pims:errors.item_${code}` as const)
+    : (`pims:errors.${code}` as const);
+
 type Phase =
   | { kind: 'loading' }
   | { kind: 'notInstalled' }
@@ -156,7 +171,8 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   };
 
   const wantedFor = (key: SourceKey): string | null => (key in edits ? edits[key]! : map[key]) ?? null;
-  const editedWanted = editedField !== undefined ? editedField : map.treatment ?? 'Plan';
+  const editedWanted =
+    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : map.treatment ?? 'Plan';
 
   const header = (
     <header className="ai-settings-header">
@@ -191,6 +207,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
       </div>
     );
   } else if (phase.kind === 'notInstalled') {
+    // Reached when Chrome exposes the extension bridge but the extension didn't answer the ping.
     // The Web Store link goes here once the extension is published.
     body = (
       <>
@@ -198,6 +215,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
         <p>{t('pims:install.body')}</p>
       </>
     );
+    footer = <>{footer}{retryButton}</>;
   } else if (phase.kind === 'error') {
     body = (
       <>
@@ -250,9 +268,10 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
       sendingRef.current = true;
       setSending(true);
       try {
-        if (Object.keys(edits).length) {
+        const changes = editedField !== undefined ? { ...edits, editedNote: editedField } : edits;
+        if (Object.keys(changes).length) {
           // Saving the map must not stop the send.
-          try { await save(edits); } catch { /* the choices still apply to this send */ }
+          try { await save(changes); } catch { /* the choices still apply to this send */ }
         }
         if (lastSentAt) {
           const again = await confirmDialog({
@@ -302,6 +321,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
               tabId: tab.id,
               expectedPatient: patientName,
               confirmedEzyvetPatient: ezyvetName,
+              expectedConsult: info.status!.consult ?? null,
               items,
             });
           } catch {
@@ -336,6 +356,11 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           }
           setJustSentAt(at);
           onSent(at);
+        } else if (rowsOut.some((r) => r.code !== null && MAYBE_WRITTEN.has(r.code))) {
+          // Nothing confirmed, but a field may have been saved: like a lost send, the next Send asks.
+          const at = new Date().toISOString();
+          setJustSentAt(at);
+          onSent(at);
         }
         setPhase({ kind: 'results', info, rows: rowsOut, stampFailed });
       } finally {
@@ -353,7 +378,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
               <li key={`${r.fieldTitle}-${i}`} className={r.code ? 'pims-dialog__result--failed' : 'pims-dialog__result--ok'}>
                 <strong>{r.fieldTitle}</strong>
                 {r.code
-                  ? <span>{t(`pims:errors.${r.code}`)}</span>
+                  ? <span>{t(rowErrorKey(r.code))}</span>
                   : <span><span aria-hidden="true">✓ </span>{t('pims:results.sent')}</span>}
               </li>
             ))}

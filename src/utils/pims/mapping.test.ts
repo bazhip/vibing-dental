@@ -90,9 +90,17 @@ describe('splitStoredNote', () => {
     expect(r.sections.find((x) => x.key === 'radiographs')!.lines).toEqual(['Lesions seen']);
   });
   it('round trip', () => expect(splitStoredNote(recordNoteText(canineNote), canineNote)).toEqual(canineNote));
+  it('keeps the edited text when the generated note has no sections', () => {
+    expect(splitStoredNote('Typed by hand', { sections: [] })).toBeNull();
+    expect(splitStoredNote(' \n ', { sections: [] })).toEqual({ sections: [] });
+  });
   it('fails on renamed heading', () => {
     expect(splitStoredNote(recordNoteText(canineNote).replace('PROCEDURES', 'WORK DONE'), canineNote)).toBeNull();
   });
 });
 
 it('saved null overrides default', () => expect(effectiveMap({ chart: null }).chart).toBeNull());
+it('effectiveMap keeps the saved edited-note destination', () => {
+  expect(effectiveMap({ editedNote: 'Assessment' })).toMatchObject({ editedNote: 'Assessment', treatment: 'Plan' });
+  expect(effectiveMap(null).editedNote).toBeUndefined();
+});

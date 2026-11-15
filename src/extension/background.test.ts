@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import manifest from './manifest.json';
 import { DEV_EXTENSION_ID } from './extensionId';
 import { handleExternal, pickEzyvetTab, type Deps, type EzyvetTab } from './background';
-import type { Request } from './protocol';
+import { ALLOWED_ORIGINS, allowedOrigins, type Request } from './protocol';
 import type { SendItem } from '../utils/pims/mapping';
 
 const okSender = { origin: 'https://toothops.app' };
@@ -13,8 +13,10 @@ const a: SendItem = { fieldTitle: 'Plan', text: 'a' };
 const b: SendItem = { fieldTitle: 'Diagnosis', text: 'b' };
 
 type FakeDeps = Deps & { page: Deps['page'] & { statusValue: unknown } };
+const consult = { viewId: '1', recordId: '4521' };
+const otherConsult = { viewId: '1', recordId: '9999' };
 function makeDeps(tabs: EzyvetTab[] = [tab(1, { active: true, focusedWindow: true })]) {
-  const state = { status: { state: 'writable', patientName: 'Bella' } as unknown };
+  const state = { status: { state: 'writable', patientName: 'Bella', consult } as unknown };
   const deps = {
     version: 'dev',
     lastCodes: [],
@@ -34,6 +36,7 @@ const sendMsg = (o: Partial<Extract<Request, { type: 'send' }>> = {}): Request =
   tabId: 1,
   expectedPatient: 'Bella',
   confirmedEzyvetPatient: 'Bella',
+  expectedConsult: consult,
   items: [a],
   ...o,
 });
@@ -74,18 +77,18 @@ describe('background', () => {
       status: { state: 'writable' },
       fields: [{ title: 'Plan' }],
     });
-    state.status = { state: 'locked', patientName: 'Bella' };
+    state.status = { state: 'locked', patientName: 'Bella', consult };
     expect(await handleExternal({ type: 'inspect' }, okSender, deps)).toMatchObject({ fields: [] });
   });
 
   it('background.send re-checks status and patient', async () => {
     const { deps, state } = makeDeps();
-    state.status = { state: 'writable', patientName: 'Max' };
+    state.status = { state: 'writable', patientName: 'Max', consult };
     expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: 'Bella' }), okSender, deps)).toEqual({
       ok: false,
       code: 'patient_changed',
     });
-    state.status = { state: 'locked', patientName: 'Bella' };
+    state.status = { state: 'locked', patientName: 'Bella', consult };
     expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: 'Bella' }), okSender, deps)).toEqual({
       ok: false,
       code: 'not_writable',
@@ -95,20 +98,55 @@ describe('background', () => {
 
   it('send compares unconfirmed names strictly', async () => {
     const { deps, state } = makeDeps();
-    state.status = { state: 'writable', patientName: null };
+    state.status = { state: 'writable', patientName: null, consult };
     expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toMatchObject({ ok: true });
-    state.status = { state: 'writable', patientName: 'Bella' };
+    state.status = { state: 'writable', patientName: 'Bella', consult };
     expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toEqual({
       ok: false,
       code: 'patient_changed',
     });
   });
 
-  it('send focuses the tab and tolerates an owner suffix on the patient name', async () => {
+  it('send focuses the tab and compares the confirmed ezyVet name exactly once normalised', async () => {
     const { deps, state } = makeDeps();
-    state.status = { state: 'writable', patientName: 'Bella Smith' };
+    state.status = { state: 'writable', patientName: '  bella ', consult };
     expect(await handleExternal(sendMsg(), okSender, deps)).toMatchObject({ ok: true });
     expect(deps.focusTab).toHaveBeenCalledWith(1);
+    // The confirmed name is the one ezyVet showed at inspect: no substring leeway.
+    state.status = { state: 'writable', patientName: 'Bella Smith', consult };
+    expect(await handleExternal(sendMsg(), okSender, deps)).toEqual({ ok: false, code: 'patient_changed' });
+  });
+
+  it('send refuses another consult even when no patient name can be read', async () => {
+    const { deps, state } = makeDeps();
+    state.status = { state: 'writable', patientName: null, consult: otherConsult };
+    expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toEqual({
+      ok: false,
+      code: 'patient_changed',
+    });
+    state.status = { state: 'writable', patientName: null, consult: null };
+    expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toEqual({
+      ok: false,
+      code: 'patient_changed',
+    });
+    state.status = { state: 'writable', patientName: null, consult: { viewId: '2', recordId: '4521' } };
+    expect(await handleExternal(sendMsg({ confirmedEzyvetPatient: null }), okSender, deps)).toEqual({
+      ok: false,
+      code: 'patient_changed',
+    });
+    expect(deps.page.write).not.toHaveBeenCalled();
+  });
+
+  it('send stops when the consult changes after the first item', async () => {
+    const { deps, state } = makeDeps();
+    state.status = { state: 'writable', patientName: null, consult };
+    deps.page.write = vi.fn(async () => {
+      state.status = { state: 'writable', patientName: null, consult: otherConsult };
+      return { ok: true } as const;
+    });
+    const r = await handleExternal(sendMsg({ confirmedEzyvetPatient: null, items: [a, b] }), okSender, deps);
+    expect(r).toMatchObject({ ok: true, results: [{ result: { ok: true } }, { result: { code: 'patient_changed' } }] });
+    expect(deps.page.write).toHaveBeenCalledTimes(1);
   });
 
   it('send reports no_tab when the tab is unreachable', async () => {
@@ -165,7 +203,7 @@ describe('background', () => {
   it('send stops when the patient changes after the first item', async () => {
     const { deps, state } = makeDeps();
     deps.page.write = vi.fn(async () => {
-      state.status = { state: 'writable', patientName: 'Max' };
+      state.status = { state: 'writable', patientName: 'Max', consult };
       return { ok: true } as const;
     });
     const r = await handleExternal(sendMsg({ items: [a, b, a] }), okSender, deps);
@@ -183,7 +221,7 @@ describe('background', () => {
   it('send marks remaining items not_writable when the consult locks mid-send', async () => {
     const { deps, state } = makeDeps();
     deps.page.write = vi.fn(async () => {
-      state.status = { state: 'locked', patientName: 'Bella' };
+      state.status = { state: 'locked', patientName: 'Bella', consult };
       return { ok: true } as const;
     });
     const r = await handleExternal(sendMsg({ items: [a, b] }), okSender, deps);
@@ -192,7 +230,7 @@ describe('background', () => {
 
   it('refusals are recorded in lastCodes', async () => {
     const { deps, state } = makeDeps();
-    state.status = { state: 'locked', patientName: 'Bella' };
+    state.status = { state: 'locked', patientName: 'Bella', consult };
     await handleExternal(sendMsg(), okSender, deps);
     expect(deps.lastCodes).toEqual(['not_writable']);
   });
@@ -214,9 +252,23 @@ describe('background', () => {
 
 describe('manifest', () => {
   it('has the exact permissions and hosts', () => {
-    expect(manifest.permissions).toEqual(['scripting', 'storage']);
+    expect(manifest.permissions).toEqual(['scripting']);
     expect(manifest.host_permissions).toEqual(['https://*.ezyvet.com/*']);
     expect(manifest.externally_connectable.matches).toEqual(['https://toothops.app/*', 'http://localhost:5173/*']);
+  });
+
+  it('the store build allows toothops.app only; the dev build adds the local server', async () => {
+    expect(allowedOrigins(null)).toEqual(['https://toothops.app']);
+    expect(ALLOWED_ORIGINS).toEqual(['https://toothops.app', 'http://localhost:5173']);
+    vi.stubEnv('VITE_PIMS_STORE_BUILD', '1');
+    vi.resetModules();
+    try {
+      const store = await import('./protocol');
+      expect(store.ALLOWED_ORIGINS).toEqual(['https://toothops.app']);
+      expect(store.ALLOWED_ORIGINS.some((o) => o.includes('localhost'))).toBe(false);
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 
   it('key hashes to DEV_EXTENSION_ID', () => {

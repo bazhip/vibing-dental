@@ -9,8 +9,12 @@ import {
 } from '../recordNote';
 
 export type SourceKey = RecordNoteKey | 'chart';
-/** `null` = don't send. */
-export type PimsFieldMap = Partial<Record<SourceKey, string | null>>;
+/** `null` = don't send. `editedNote` is where a note that can't be split goes (unset = the
+ *  treatment field's choice). */
+export type PimsFieldMap = Partial<Record<SourceKey, string | null>> & { editedNote?: string | null };
+
+/** The defaults with the saved choices over them. */
+export type EffectiveFieldMap = Record<SourceKey, string | null> & { editedNote?: string | null };
 
 export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   header: null,
@@ -24,7 +28,7 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   chart: 'Discharge Summary',
 };
 
-export function effectiveMap(saved: PimsFieldMap | null): Record<SourceKey, string | null> {
+export function effectiveMap(saved: PimsFieldMap | null): EffectiveFieldMap {
   return { ...DEFAULT_EZYVET_MAP, ...(saved ?? {}) };
 }
 
@@ -43,6 +47,8 @@ export type SendItem = { fieldTitle: string; text?: string; html?: string; pngDa
 /** Re-split a stored (possibly edited) note on its generated headings.
  *  Null unless every generated heading is found, in order. */
 export function splitStoredNote(text: string, generated: RecordNote): RecordNote | null {
+  // No headings to split on: the edited text would be lost, so the caller sends it whole.
+  if (generated.sections.length === 0) return text.trim() === '' ? { sections: [] } : null;
   const lines = text.split(/\r?\n/);
   const sections: RecordNoteSection[] = [];
   let from = 0;
@@ -55,7 +61,7 @@ export function splitStoredNote(text: string, generated: RecordNote): RecordNote
     from = at + 1;
   }
   // Text typed above the first heading would be lost: let the caller send the note whole.
-  if (starts.length > 0 && lines.slice(0, starts[0]).some((l) => l.trim() !== '')) return null;
+  if (lines.slice(0, starts[0]).some((l) => l.trim() !== '')) return null;
   generated.sections.forEach((s, i) => {
     const end = i + 1 < starts.length ? starts[i + 1] : lines.length;
     let body = lines.slice(starts[i] + 1, end);

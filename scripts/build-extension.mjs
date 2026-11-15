@@ -1,13 +1,21 @@
 // Builds the Chrome extension into build-extension/. Not part of `npm run build`.
+//   node scripts/build-extension.mjs                 dev build (unpacked): allows http://localhost:5173
+//   node scripts/build-extension.mjs --store <dir>   store build into <dir>: toothops.app only
 import { build } from 'vite';
 import { cpSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-const out = 'build-extension';
+const storeAt = process.argv.indexOf('--store');
+const store = storeAt >= 0;
+const out = store ? process.argv[storeAt + 1] : 'build-extension';
+if (!out) throw new Error('--store needs an output directory');
 const LANGS = ['en', 'fr', 'de', 'it', 'es'];
+const DEV_ONLY_MATCH = 'http://localhost:5173/*';
 
 // src/extension/version.ts reads this at build time.
 process.env.VITE_EXTENSION_VERSION = pkg.version;
+// src/extension/protocol.ts: the store build leaves the local dev origin out of ALLOWED_ORIGINS.
+process.env.VITE_PIMS_STORE_BUILD = store ? '1' : '';
 
 rmSync(out, { recursive: true, force: true });
 
@@ -22,6 +30,9 @@ await build(lib('src/extension/background.ts', ['es'], undefined, 'background.js
 
 const manifest = JSON.parse(readFileSync('src/extension/manifest.json', 'utf8'));
 manifest.version = pkg.version;
+if (store) {
+  manifest.externally_connectable.matches = manifest.externally_connectable.matches.filter((m) => m !== DEV_ONLY_MATCH);
+}
 writeFileSync(`${out}/manifest.json`, JSON.stringify(manifest, null, 2) + '\n');
 
 cpSync('src/extension/icons', `${out}/icons`, { recursive: true });
@@ -36,4 +47,4 @@ for (const lng of LANGS) {
   };
   writeFileSync(`${dir}/messages.json`, JSON.stringify(messages, null, 2) + '\n');
 }
-console.log(`Built ${out} (version ${pkg.version})`);
+console.log(`Built ${out} (version ${pkg.version}${store ? ', store build' : ''})`);

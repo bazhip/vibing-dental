@@ -11,8 +11,8 @@
     "sentOn": "Sent to ezyVet on {{date}}."
   },
   "install": {
-    "title": "Install the ToothOps for ezyVet extension",
-    "body": "Sending to ezyVet needs the ToothOps for ezyVet extension in Chrome. Contact ToothOps support for the install link, then reload this page."
+    "title": "The ToothOps for ezyVet extension isn’t responding",
+    "body": "Make sure the ToothOps for ezyVet extension is installed and enabled in Chrome, then try again. If you don’t have it yet, contact ToothOps support for the install link."
   },
   "noTab": "Open the consult in ezyVet, then try again.",
   "severalTabs": "Several ezyVet tabs are open. Using: {{title}}",
@@ -68,15 +68,18 @@
     "not_writable": "The consult can’t be written to any more (locked, closed or no longer on the Medical tab). Open the consult’s Medical tab and try again.",
     "patient_changed": "A different patient is now open in ezyVet, so nothing more was sent. Open the right consult and try again.",
     "field_not_found": "This field isn’t on the consult page. Choose another field under Where it goes.",
-    "editor_not_found": "ToothOps couldn’t find this field’s text box. Open the consult’s Medical tab and try again. If it keeps failing, copy the diagnostic report for ToothOps support.",
-    "popup_not_found": "This field’s editing window didn’t open. Try again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "editor_not_found": "ToothOps couldn’t find this field’s text box. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "popup_not_found": "This field’s editing window didn’t open. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
     "popup_not_closed": "This field’s editing window didn’t close after saving. Check the field in ezyVet before sending again.",
-    "save_button_not_found": "ToothOps couldn’t find the Save button for this field. Check the field in ezyVet, then try again.",
+    "save_button_not_found": "ToothOps couldn’t find the Save button for this field. Check the field in ezyVet before sending again.",
     "save_not_confirmed": "ezyVet didn’t confirm the save. Check the field in ezyVet before sending again.",
     "no_preferred_email": "The client has no preferred email address in ezyVet. Add one, or choose another field.",
     "image_not_accepted": "This field doesn’t accept pictures. Choose Discharge Summary or another field that does.",
-    "invalid_image": "The chart picture couldn’t be prepared. Try again.",
+    "invalid_image": "The chart picture couldn’t be prepared. Check the field in ezyVet before sending again.",
     "picture_failed": "ToothOps couldn’t draw the chart picture, so it wasn’t sent.",
-    "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again."
+    "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again.",
+    "item_extension_error": "Something went wrong while writing this field. Check the field in ezyVet before sending again.",
+    "item_not_writable": "The consult stopped accepting changes (locked, closed or no longer on the Medical tab), so this field wasn’t sent. Check the consult in ezyVet before sending again.",
+    "item_patient_changed": "A different patient was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
   }
 }

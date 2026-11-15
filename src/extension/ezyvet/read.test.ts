@@ -13,11 +13,11 @@ describe('ezyVet read side', () => {
   beforeEach(() => load('consult-medical.html'));
 
   it('writable consult on Medical tab', () => {
-    expect(status()).toEqual({ state: 'writable', patientName: 'Testdog' });
+    expect(status()).toEqual({ state: 'writable', patientName: 'Testdog', consult: { viewId: '1', recordId: '4521' } });
   });
   it('patient record is notConsult', () => {
     load('patient-record.html');
-    expect(status()).toEqual({ state: 'notConsult', patientName: null });
+    expect(status()).toEqual({ state: 'notConsult', patientName: null, consult: null });
   });
   it('locked', () => {
     load('consult-locked.html');
@@ -35,6 +35,17 @@ describe('ezyVet read side', () => {
   it('data-record-class other than Consult is notConsult', () => {
     document.getElementById('rtab1details')!.setAttribute('data-record-class', 'Animal');
     expect(status().state).toBe('notConsult');
+  });
+  it('consult id follows the open consult record', () => {
+    document.getElementById('rform1')!.className = 'Consult9999Form';
+    expect(status().consult).toEqual({ viewId: '1', recordId: '9999' });
+  });
+  it('tagged pane without an rform class takes data-record-id', () => {
+    const pane = document.getElementById('rtab1details')!;
+    pane.setAttribute('data-record-class', 'Consult');
+    pane.setAttribute('data-record-id', '77');
+    document.getElementById('rform1')!.className = '';
+    expect(status()).toMatchObject({ state: 'writable', consult: { viewId: '1', recordId: '77' } });
   });
   it('patientName is null when the header is missing', () => {
     document.querySelector('.consultHeader')!.remove();

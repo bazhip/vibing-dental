@@ -39,6 +39,25 @@ describe('usePimsFieldMap', () => {
     await waitFor(() => expect(result.current.map.chart).toBe('Notes'));
   });
 
+  it('a save made before the stored map loads merges into it', async () => {
+    stored.value = { chart: 'Notes' };
+    const { result } = renderHook(() => usePimsFieldMap());
+    // Called immediately, while the session and profile reads are still pending.
+    await act(async () => { await result.current.save({ treatment: 'Assessment' }); });
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: { chart: 'Notes', treatment: 'Assessment' } });
+    expect(result.current.map).toMatchObject({ chart: 'Notes', treatment: 'Assessment' });
+  });
+
+  it('keeps the edited-note destination and drops unknown keys', async () => {
+    stored.value = { editedNote: 'Assessment', bogus: 'x', chart: 3 };
+    const { result } = renderHook(() => usePimsFieldMap());
+    await waitFor(() => expect(result.current.map.editedNote).toBe('Assessment'));
+    expect(result.current.map.chart).toBe('Discharge Summary');
+    await act(async () => { await result.current.save({ editedNote: null }); });
+    expect(update).toHaveBeenLastCalledWith({ pims_field_map: { editedNote: null } });
+  });
+
   it('reset clears saved map', async () => {
     stored.value = { chart: 'Notes' };
     const { result } = renderHook(() => usePimsFieldMap());

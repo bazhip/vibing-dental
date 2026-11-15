@@ -8249,7 +8249,7 @@
       "status": "machine"
     },
     "pims:errors.editor_not_found": {
-      "hash": "af8261cf6352",
+      "hash": "c13f9bdfbd7e",
       "status": "machine"
     },
     "pims:errors.extension_error": {
@@ -8265,7 +8265,19 @@
       "status": "machine"
     },
     "pims:errors.invalid_image": {
-      "hash": "2a4ad2155dd0",
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "46689b9fbd16",
       "status": "machine"
     },
     "pims:errors.maybe_sent": {
@@ -8297,11 +8309,11 @@
       "status": "machine"
     },
     "pims:errors.popup_not_found": {
-      "hash": "30eb1efdc0e6",
+      "hash": "e0087eb12f0a",
       "status": "machine"
     },
     "pims:errors.save_button_not_found": {
-      "hash": "310ea3599085",
+      "hash": "ff3b7d3ebfcc",
       "status": "machine"
     },
     "pims:errors.save_not_confirmed": {
@@ -8321,11 +8333,11 @@
       "status": "machine"
     },
     "pims:install.body": {
-      "hash": "8b968b8f86cd",
+      "hash": "2b7be7e4ac26",
       "status": "machine"
     },
     "pims:install.title": {
-      "hash": "c2c6ae42b7f9",
+      "hash": "482f64f603ca",
       "status": "machine"
     },
     "pims:mismatch.message": {
@@ -19283,7 +19295,7 @@
       "status": "machine"
     },
     "pims:errors.editor_not_found": {
-      "hash": "af8261cf6352",
+      "hash": "c13f9bdfbd7e",
       "status": "machine"
     },
     "pims:errors.extension_error": {
@@ -19299,7 +19311,19 @@
       "status": "machine"
     },
     "pims:errors.invalid_image": {
-      "hash": "2a4ad2155dd0",
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "46689b9fbd16",
       "status": "machine"
     },
     "pims:errors.maybe_sent": {
@@ -19331,11 +19355,11 @@
       "status": "machine"
     },
     "pims:errors.popup_not_found": {
-      "hash": "30eb1efdc0e6",
+      "hash": "e0087eb12f0a",
       "status": "machine"
     },
     "pims:errors.save_button_not_found": {
-      "hash": "310ea3599085",
+      "hash": "ff3b7d3ebfcc",
       "status": "machine"
     },
     "pims:errors.save_not_confirmed": {
@@ -19355,11 +19379,11 @@
       "status": "machine"
     },
     "pims:install.body": {
-      "hash": "8b968b8f86cd",
+      "hash": "2b7be7e4ac26",
       "status": "machine"
     },
     "pims:install.title": {
-      "hash": "c2c6ae42b7f9",
+      "hash": "482f64f603ca",
       "status": "machine"
     },
     "pims:mismatch.message": {
@@ -30345,7 +30369,7 @@
       "status": "machine"
     },
     "pims:errors.editor_not_found": {
-      "hash": "af8261cf6352",
+      "hash": "c13f9bdfbd7e",
       "status": "machine"
     },
     "pims:errors.extension_error": {
@@ -30361,7 +30385,19 @@
       "status": "machine"
     },
     "pims:errors.invalid_image": {
-      "hash": "2a4ad2155dd0",
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "46689b9fbd16",
       "status": "machine"
     },
     "pims:errors.maybe_sent": {
@@ -30393,11 +30429,11 @@
       "status": "machine"
     },
     "pims:errors.popup_not_found": {
-      "hash": "30eb1efdc0e6",
+      "hash": "e0087eb12f0a",
       "status": "machine"
     },
     "pims:errors.save_button_not_found": {
-      "hash": "310ea3599085",
+      "hash": "ff3b7d3ebfcc",
       "status": "machine"
     },
     "pims:errors.save_not_confirmed": {
@@ -30417,11 +30453,11 @@
       "status": "machine"
     },
     "pims:install.body": {
-      "hash": "8b968b8f86cd",
+      "hash": "2b7be7e4ac26",
       "status": "machine"
     },
     "pims:install.title": {
-      "hash": "c2c6ae42b7f9",
+      "hash": "482f64f603ca",
       "status": "machine"
     },
     "pims:mismatch.message": {
@@ -41407,7 +41443,7 @@
       "status": "machine"
     },
     "pims:errors.editor_not_found": {
-      "hash": "af8261cf6352",
+      "hash": "c13f9bdfbd7e",
       "status": "machine"
     },
     "pims:errors.extension_error": {
@@ -41423,7 +41459,19 @@
       "status": "machine"
     },
     "pims:errors.invalid_image": {
-      "hash": "2a4ad2155dd0",
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "46689b9fbd16",
       "status": "machine"
     },
     "pims:errors.maybe_sent": {
@@ -41455,11 +41503,11 @@
       "status": "machine"
     },
     "pims:errors.popup_not_found": {
-      "hash": "30eb1efdc0e6",
+      "hash": "e0087eb12f0a",
       "status": "machine"
     },
     "pims:errors.save_button_not_found": {
-      "hash": "310ea3599085",
+      "hash": "ff3b7d3ebfcc",
       "status": "machine"
     },
     "pims:errors.save_not_confirmed": {
@@ -41479,11 +41527,11 @@
       "status": "machine"
     },
     "pims:install.body": {
-      "hash": "8b968b8f86cd",
+      "hash": "2b7be7e4ac26",
       "status": "machine"
     },
     "pims:install.title": {
-      "hash": "c2c6ae42b7f9",
+      "hash": "482f64f603ca",
       "status": "machine"
     },
     "pims:mismatch.message": {

@@ -11,8 +11,8 @@
     "sentOn": "Inviato a ezyVet il {{date}}."
   },
   "install": {
-    "title": "Installi l’estensione ToothOps per ezyVet",
-    "body": "Per inviare a ezyVet serve l’estensione ToothOps per ezyVet in Chrome. Contatti l’assistenza ToothOps per il link di installazione, poi ricarichi questa pagina."
+    "title": "L’estensione ToothOps per ezyVet non risponde",
+    "body": "Verifichi che l’estensione ToothOps per ezyVet sia installata e attiva in Chrome, poi riprovi. Se non l’ha ancora, contatti l’assistenza ToothOps per il link di installazione."
   },
   "noTab": "Apra la consultazione in ezyVet, poi riprovi.",
   "severalTabs": "Sono aperte più schede di ezyVet. Scheda usata: {{title}}",
@@ -68,15 +68,18 @@
     "not_writable": "Non è più possibile scrivere nella consultazione (bloccata, chiusa o non più sulla scheda Medical). Apra la scheda Medical della consultazione e riprovi.",
     "patient_changed": "In ezyVet ora è aperto un altro paziente, quindi non è stato inviato altro. Apra la consultazione giusta e riprovi.",
     "field_not_found": "Questo campo non è presente nella pagina della consultazione. Scelga un altro campo in Destinazione.",
-    "editor_not_found": "ToothOps non ha trovato la casella di testo di questo campo. Apra la scheda Medical della consultazione e riprovi. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
-    "popup_not_found": "La finestra di modifica di questo campo non si è aperta. Riprovi. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
+    "editor_not_found": "ToothOps non ha trovato la casella di testo di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
+    "popup_not_found": "La finestra di modifica di questo campo non si è aperta. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
     "popup_not_closed": "La finestra di modifica di questo campo non si è chiusa dopo il salvataggio. Controlli il campo in ezyVet prima di inviare di nuovo.",
-    "save_button_not_found": "ToothOps non ha trovato il pulsante di salvataggio di questo campo. Controlli il campo in ezyVet, poi riprovi.",
+    "save_button_not_found": "ToothOps non ha trovato il pulsante di salvataggio di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
     "save_not_confirmed": "ezyVet non ha confermato il salvataggio. Controlli il campo in ezyVet prima di inviare di nuovo.",
     "no_preferred_email": "Il cliente non ha un indirizzo email preferito in ezyVet. Ne aggiunga uno o scelga un altro campo.",
     "image_not_accepted": "Questo campo non accetta immagini. Scelga Discharge Summary o un altro campo che le accetti.",
-    "invalid_image": "Non è stato possibile preparare l’immagine dell’odontogramma. Riprovi.",
+    "invalid_image": "Non è stato possibile preparare l’immagine dell’odontogramma. Controlli il campo in ezyVet prima di inviare di nuovo.",
     "picture_failed": "ToothOps non è riuscito a disegnare l’immagine dell’odontogramma, quindi non è stata inviata.",
-    "maybe_sent": "Alcuni campi potrebbero essere già stati compilati. Controlli la consultazione in ezyVet prima di inviare di nuovo."
+    "maybe_sent": "Alcuni campi potrebbero essere già stati compilati. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
+    "item_extension_error": "Si è verificato un problema durante la scrittura di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "item_not_writable": "La consultazione non accetta più modifiche (bloccata, chiusa o non più sulla scheda Medical), quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
+    "item_patient_changed": "In ezyVet è stato aperto un altro paziente, quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo."
   }
 }

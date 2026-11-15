@@ -46,11 +46,23 @@ describe('extensionBridge', () => {
     expect(sendMessage).toHaveBeenCalledTimes(2);
   });
 
-  it('ping null when it never answers', async () => {
+  it('ping null when it never answers, after 500 ms then 1.5 s', async () => {
     sendMessage.mockImplementation(neverAnswers);
-    const p = ping();
-    await vi.advanceTimersByTimeAsync(1000);
+    let settled = false;
+    const p = ping().then((v) => { settled = true; return v; });
+    await vi.advanceTimersByTimeAsync(1_999);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
     expect(await p).toBeNull();
+  });
+
+  it('the second ping waits for a cold service worker', async () => {
+    let cb!: Cb;
+    sendMessage.mockImplementationOnce(neverAnswers).mockImplementationOnce((_id, _m, c) => { cb = c; });
+    const p = ping();
+    await vi.advanceTimersByTimeAsync(500 + 1_200);
+    cb({ version: '1.0.0' });
+    expect(await p).toEqual({ version: '1.0.0' });
   });
 
   it('unavailable in native app, and without chrome.runtime', () => {
@@ -82,13 +94,13 @@ describe('extensionBridge', () => {
 
   it('send waits up to 120 s and returns { ok:false } as-is', async () => {
     sendMessage.mockImplementation(neverAnswers);
-    const slow = send({ type: 'send', tabId: 1, expectedPatient: 'Rex', confirmedEzyvetPatient: null, items: [] }).catch((e) => e);
+    const slow = send({ type: 'send', tabId: 1, expectedPatient: 'Rex', confirmedEzyvetPatient: null, expectedConsult: null, items: [] }).catch((e) => e);
     await vi.advanceTimersByTimeAsync(119_000);
     sendMessage.mockImplementation(answer({ ok: false, code: 'patient_changed' }));
     await vi.advanceTimersByTimeAsync(1000);
     expect(await slow).toBeInstanceOf(LocalizedError);
 
-    const fast = await send({ type: 'send', tabId: 1, expectedPatient: 'Rex', confirmedEzyvetPatient: null, items: [] });
+    const fast = await send({ type: 'send', tabId: 1, expectedPatient: 'Rex', confirmedEzyvetPatient: null, expectedConsult: null, items: [] });
     expect(fast).toEqual({ ok: false, code: 'patient_changed' });
   });
 

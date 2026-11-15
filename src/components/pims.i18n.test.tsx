@@ -38,7 +38,7 @@ const PAGE_TEXT = ['Plan', 'Physical Exam', 'Discharge Summary', 'Assessment'];
 const writable: InspectResult = {
   tab: { id: 1, title: 'Consult — ezyVet' },
   candidates: 2,
-  status: { state: 'writable', patientName: 'Bella' },
+  status: { state: 'writable', patientName: 'Bella', consult: { viewId: '1', recordId: '1' } },
   fields: [
     { title: 'Physical Exam', kind: 'note', acceptsImage: false },
     { title: 'Plan', kind: 'note', acceptsImage: false },
@@ -120,6 +120,8 @@ describe('Send to ezyVet dialog (pseudo-locale)', () => {
       results: [
         { fieldTitle: 'Plan', result: { ok: true } },
         { fieldTitle: 'Discharge Summary', result: { ok: false, code: 'save_not_confirmed' } },
+        { fieldTitle: 'Physical Exam', result: { ok: false, code: 'extension_error' } },
+        { fieldTitle: 'Assessment', result: { ok: false, code: 'patient_changed' } },
       ],
     });
     renderDialog();

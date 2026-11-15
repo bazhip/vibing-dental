@@ -61,7 +61,11 @@ function writableWith(over: { state?: 'writable' | 'locked' | 'notConsult'; pati
   return {
     tab: { id: 7, title: 'Consult — ezyVet' },
     candidates: over.candidates ?? 1,
-    status: { state: over.state ?? 'writable', patientName: over.patientName === undefined ? 'Bella Smith' : over.patientName },
+    status: {
+      state: over.state ?? 'writable',
+      patientName: over.patientName === undefined ? 'Bella Smith' : over.patientName,
+      consult: { viewId: '3', recordId: '4521' },
+    },
     fields: FIELDS,
   };
 }
@@ -120,6 +124,10 @@ describe('SendToEzyvetDialog', () => {
     expect(screen.getByText(t('pims:install.body'))).toBeInTheDocument();
     expect(screen.queryByRole('link')).toBeNull();
     expect(mocks.inspect).not.toHaveBeenCalled();
+    // A cold or disabled extension can answer on a retry.
+    mocks.ping.mockResolvedValue({ version: '1.0.0' });
+    fireEvent.click(screen.getByRole('button', { name: t('pims:dialog.retry') }));
+    await screen.findByText(t('pims:rows.heading'));
   });
 
   it('no tab offers retry', async () => {
@@ -189,6 +197,16 @@ describe('SendToEzyvetDialog', () => {
     expect(select('Findings by tooth').value).toBe(DEFAULT_EZYVET_MAP.findings);
   });
 
+  it('a name that only shares letters with the chart name asks (whole words only)', async () => {
+    mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Bellatrix Smith' }));
+    mocks.confirm.mockResolvedValueOnce(false);
+    render(dlg().el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ confirmLabel: t('pims:mismatch.sendAnyway') });
+  });
+
   it('mismatch needs Send anyway', async () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Max' }));
     mocks.confirm.mockResolvedValueOnce(false);
@@ -205,7 +223,12 @@ describe('SendToEzyvetDialog', () => {
 
     fireEvent.click(sendButton());
     await waitFor(() => expect(mocks.send).toHaveBeenCalledTimes(1));
-    expect(mocks.send.mock.calls[0][0]).toMatchObject({ tabId: 7, expectedPatient: 'Bella', confirmedEzyvetPatient: 'Max' });
+    expect(mocks.send.mock.calls[0][0]).toMatchObject({
+      tabId: 7,
+      expectedPatient: 'Bella',
+      confirmedEzyvetPatient: 'Max',
+      expectedConsult: { viewId: '3', recordId: '4521' },
+    });
   });
 
   it('an unreadable ezyVet name also asks', async () => {
@@ -319,6 +342,50 @@ describe('SendToEzyvetDialog', () => {
     expect(screen.getByRole('button', { name: t('pims:actions.copyDiagnostic') })).toBeInTheDocument();
   });
 
+  it.each(['popup_not_closed', 'save_not_confirmed', 'save_button_not_found', 'extension_error'] as const)(
+    'a %s failure may have saved: the next Send asks first, nothing is stamped',
+    async (code) => {
+      mocks.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: false, code } }] });
+      const { el, props } = dlg();
+      render(el);
+      await screen.findByText(t('pims:rows.heading'));
+      fireEvent.click(sendButton());
+      await screen.findByText(t('pims:results.title'));
+      expect(props.onSent).toHaveBeenCalledTimes(1);
+      expect(mocks.markPimsSent).not.toHaveBeenCalled();
+      // The results page shows the remembered send date.
+      expect(screen.getByText((_, el) => el?.tagName === 'P' && /ezyVet/.test(el.textContent ?? '') && el.className === 'patient-form__hint')).toBeInTheDocument();
+    },
+  );
+
+  it('a per-field failure says to check ezyVet, not to try again', async () => {
+    mocks.send.mockResolvedValue({
+      ok: true,
+      results: [
+        { fieldTitle: 'Plan', result: { ok: false, code: 'extension_error' } },
+        { fieldTitle: 'History', result: { ok: false, code: 'patient_changed' } },
+        { fieldTitle: 'Physical Exam', result: { ok: false, code: 'not_writable' } },
+      ],
+    });
+    render(dlg().el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    const list = await screen.findByRole('list');
+    expect(within(list).getByText('Plan').closest('li')).toHaveTextContent(t('pims:errors.item_extension_error'));
+    expect(within(list).getByText('History').closest('li')).toHaveTextContent(t('pims:errors.item_patient_changed'));
+    expect(within(list).getByText('Physical Exam').closest('li')).toHaveTextContent(t('pims:errors.item_not_writable'));
+  });
+
+  it('a field that surely failed (e.g. field_not_found) does not count as sent', async () => {
+    mocks.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: false, code: 'field_not_found' } }] });
+    const { el, props } = dlg();
+    render(el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await screen.findByText(t('pims:results.title'));
+    expect(props.onSent).not.toHaveBeenCalled();
+  });
+
   it('unresolved titles are reported as field_not_found and nothing is stamped when all fail', async () => {
     mocks.saved = { findings: 'Assessment', treatment: null };
     mocks.send.mockResolvedValue({ ok: true, results: [] });
@@ -390,6 +457,27 @@ describe('SendToEzyvetDialog', () => {
     expect(mocks.send.mock.calls[0][0].items).toEqual([
       expect.objectContaining({ fieldTitle: 'Plan', text: stored.text }),
     ]);
+    expect(mocks.save).not.toHaveBeenCalled();
+  });
+
+  it('the edited-note destination is saved and used next time', async () => {
+    const stored: StoredRecordNote = {
+      text: 'Typed from scratch',
+      source: 'edited', lng: 'en', basedOn: 'x',
+    };
+    const first = render(dlg({ stored }).el);
+    await screen.findByText(t('pims:editedNotice'));
+    fireEvent.change(select(t('pims:rows.edited')), { target: { value: 'History' } });
+    fireEvent.click(sendButton());
+    await waitFor(() => expect(mocks.send).toHaveBeenCalled());
+    expect(mocks.save).toHaveBeenCalledWith({ editedNote: 'History' });
+    expect(mocks.send.mock.calls[0][0].items).toEqual([expect.objectContaining({ fieldTitle: 'History' })]);
+    first.unmount();
+
+    mocks.saved = { editedNote: 'History' };
+    render(dlg({ stored }).el);
+    await screen.findByText(t('pims:editedNotice'));
+    expect(select(t('pims:rows.edited')).value).toBe('History');
   });
 
   it('already sent asks first', async () => {

@@ -1198,7 +1198,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
                 Send to PIMS: {selectedPractice.pimsSendEnabled ? 'on' : 'off'}
               </button>
               <span className="admin-panel__plan-note">
-                Record note sent into ezyVet via the Chrome extension (beta) — off by default for every practice.
+                {FREE_BETA
+                  ? 'Record note sent into ezyVet via the Chrome extension — on for everyone during the free beta, so this switch has no effect until the beta ends.'
+                  : 'Record note sent into ezyVet via the Chrome extension (beta) — off by default for every practice.'}
               </span>
             </div>
           </div>

@@ -2,9 +2,9 @@
 // MV3 service worker. Logic lives in exported functions that take their `chrome` access as `deps`,
 // so it is testable. Chrome may stop and restart the worker at any time: nothing here needs
 // in-memory state to be correct (`lastCodes` is diagnostic only).
-import { patientsMatch } from '../utils/pims/patientMatch';
+import { normaliseName } from '../utils/pims/patientMatch';
 import type { FieldInfo, SendItem } from '../utils/pims/mapping';
-import type { Diagnostics, EzyvetState } from './ezyvet/read';
+import type { ConsultId, Diagnostics, Status } from './ezyvet/read';
 import type { WriteCode, WriteResult } from './ezyvet/write';
 import {
   ALLOWED_ORIGINS,
@@ -20,11 +20,9 @@ import { EXTENSION_VERSION } from './version';
 /** A tab plus whether it is the active tab of the last-focused window. */
 export type EzyvetTab = chrome.tabs.Tab & { focusedWindow?: boolean };
 
-type PageStatus = { state: EzyvetState; patientName: string | null };
-
 /** Calls into `window.__toothopsEzyvet` of one tab (injecting it first). Reject = tab unreachable. */
 export type PageApi = {
-  status(tabId: number): Promise<PageStatus>;
+  status(tabId: number): Promise<Status>;
   listFields(tabId: number): Promise<FieldInfo[]>;
   write(tabId: number, item: SendItem): Promise<WriteResult>;
   diagnostics(tabId: number): Promise<Diagnostics>;
@@ -68,14 +66,20 @@ async function inspect(deps: Deps): Promise<InspectResult> {
 type SendRequest = Extract<Request, { type: 'send' }>;
 type Refusal = 'not_writable' | 'patient_changed';
 
-/** Is the consult still writable and still the confirmed patient? Null = yes. */
+const sameConsult = (a: ConsultId | null | undefined, b: ConsultId | null): boolean =>
+  a == null ? b === null : b !== null && a.viewId === b.viewId && a.recordId === b.recordId;
+
+/** Is the consult still writable and still the one seen at inspect, with the same patient name?
+ *  Null = yes. The consult id carries the check when the patient name can't be read; names, when
+ *  both are known, must be equal once normalised (no substring leeway here). */
 async function refusal(msg: SendRequest, deps: Deps): Promise<Refusal | null> {
   const status = await deps.page.status(msg.tabId);
   if (status.state !== 'writable') return 'not_writable';
+  if (!sameConsult(msg.expectedConsult, status.consult ?? null)) return 'patient_changed';
   const confirmed = msg.confirmedEzyvetPatient;
   const same =
     confirmed !== null && status.patientName !== null
-      ? patientsMatch(confirmed, status.patientName)
+      ? normaliseName(confirmed) === normaliseName(status.patientName)
       : confirmed === status.patientName;
   return same ? null : 'patient_changed';
 }
