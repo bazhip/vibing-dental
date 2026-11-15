@@ -13,10 +13,9 @@ describe('Record note panel (pseudo-locale)', () => {
     const { container } = render(
       <RecordNotePanel
         snapshot={snapshot}
-        stored={{ text: 'Typed by the vet', source: 'ai', lng: 'en', basedOn: 'old' }}
+        stored={{ text: 'Typed by the vet', source: 'edited', lng: 'en', basedOn: 'old' }}
         onChange={() => {}}
         readOnly
-        aiEnabled
       />,
     );
     // The stored note is the vet's own text, not UI copy.
