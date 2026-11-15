@@ -139,7 +139,7 @@ export interface UseChartStateReturn {
   /** Set an owner-report block; null restores the generated text. */
   setOwnerReportOverride: (field: keyof OwnerReportOverrides, value: string | null) => void;
 
-  /** Edited / AI-polished record note (null = generated from the chart). */
+  /** Hand-edited record note (null = generated from the chart). */
   recordNote: StoredRecordNote | null;
   setRecordNote: (note: StoredRecordNote | null) => void;
 }

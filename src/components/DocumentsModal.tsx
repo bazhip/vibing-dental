@@ -43,7 +43,6 @@ interface DocumentsModalProps {
     stored: StoredRecordNote | null;
     onChange: (note: StoredRecordNote | null) => void;
     readOnly: boolean;
-    aiEnabled: boolean;
   };
 }
 
@@ -171,7 +170,6 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
               stored={recordNote.stored}
               onChange={recordNote.onChange}
               readOnly={recordNote.readOnly}
-              aiEnabled={recordNote.aiEnabled}
             />
           )}
         </div>

@@ -43,7 +43,7 @@ describe('DocumentsModal', () => {
 
 const recordNote = {
   snapshot: { patientInfo: { patientName: 'Biscuit', date: '2026-11-11' } } as never,
-  stored: null, onChange: vi.fn(), readOnly: false, aiEnabled: false,
+  stored: null, onChange: vi.fn(), readOnly: false,
 };
 
 describe('DocumentsModal — record note tab', () => {

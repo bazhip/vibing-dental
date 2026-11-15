@@ -5,12 +5,8 @@ import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS, ChartSnapshot, StoredRecordNot
 
 const mocks = vi.hoisted(() => ({
   copy: vi.fn(async () => 'rich' as const),
-  polish: vi.fn(async () => 'Prose'),
-  confirm: vi.fn(async () => true),
 }));
-vi.mock('./ui/dialogs', async (orig) => ({ ...(await orig<typeof import('./ui/dialogs')>()), confirmDialog: mocks.confirm }));
 vi.mock('../utils/clipboard', () => ({ copyRichText: mocks.copy }));
-vi.mock('../utils/recordNoteAi', () => ({ polishRecordNote: mocks.polish }));
 
 import { RecordNotePanel } from './RecordNotePanel';
 
@@ -27,14 +23,14 @@ const snapshot: ChartSnapshot = {
 
 function setup(over: Partial<React.ComponentProps<typeof RecordNotePanel>> = {}) {
   const onChange = vi.fn();
-  render(<RecordNotePanel snapshot={snapshot} stored={null} onChange={onChange} readOnly={false} aiEnabled {...over} />);
+  render(<RecordNotePanel snapshot={snapshot} stored={null} onChange={onChange} readOnly={false} {...over} />);
   return { onChange };
 }
 
 const textarea = () => screen.getByRole('textbox') as HTMLTextAreaElement;
 
 describe('RecordNotePanel', () => {
-  beforeEach(() => { mocks.copy.mockClear(); mocks.polish.mockClear(); mocks.confirm.mockClear(); });
+  beforeEach(() => { mocks.copy.mockClear(); });
 
   it('shows the note generated from the chart', () => {
     setup();
@@ -67,48 +63,28 @@ describe('RecordNotePanel', () => {
   });
 
   it('locked chart: copy only', async () => {
-    const stored: StoredRecordNote = { text: 'Old', source: 'ai', lng: 'en', basedOn: 'old' };
+    const stored: StoredRecordNote = { text: 'Old', source: 'edited', lng: 'en', basedOn: 'old' };
     setup({ readOnly: true, stored });
     expect(textarea().readOnly).toBe(true);
-    expect(screen.getByRole('button', { name: /polish with ai/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /rebuild from chart/i })).toBeDisabled();
     expect(screen.getByText(/unlock the chart/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /^copy$/i }));
     await waitFor(() => expect(mocks.copy).toHaveBeenCalled());
   });
 
-  it('polish stores the AI note', async () => {
-    const { onChange } = setup();
-    fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ text: 'Prose', source: 'ai' })));
-  });
 
   it('editing a stale note keeps it stale', () => {
-    const stored: StoredRecordNote = { text: 'Old note', source: 'ai', lng: 'en', basedOn: 'old' };
+    const stored: StoredRecordNote = { text: 'Old note', source: 'edited', lng: 'en', basedOn: 'old' };
     const { onChange } = setup({ stored });
     fireEvent.change(textarea(), { target: { value: 'Old note, typo fixed' } });
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ source: 'edited', basedOn: 'old' }));
   });
 
-  it('polish asks before replacing hand edits', async () => {
-    mocks.confirm.mockResolvedValueOnce(false);
-    const stored: StoredRecordNote = { text: 'My additions', source: 'edited', lng: 'en', basedOn: 'old' };
-    const { onChange } = setup({ stored });
-    fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
-    await waitFor(() => expect(mocks.confirm).toHaveBeenCalled());
-    expect(mocks.polish).not.toHaveBeenCalled();
-    expect(onChange).not.toHaveBeenCalled();
-  });
 
-  it('polish does not ask when nothing was hand-edited', async () => {
-    setup();
-    fireEvent.click(screen.getByRole('button', { name: /polish with ai/i }));
-    await waitFor(() => expect(mocks.polish).toHaveBeenCalled());
-    expect(mocks.confirm).not.toHaveBeenCalled();
-  });
 
-  it('hides polish without AI', () => {
-    setup({ aiEnabled: false });
-    expect(screen.queryByRole('button', { name: /polish with ai/i })).toBeNull();
+  it('has no AI polish (the note only restates the chart)', () => {
+    // Even a host that still passes the old AI flag gets no Polish button.
+    setup({ aiEnabled: true } as never);
+    expect(screen.queryByRole('button', { name: /polish/i })).toBeNull();
   });
 });

@@ -1492,7 +1492,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               stored: chart.recordNote,
               onChange: chart.setRecordNote,
               readOnly,
-              aiEnabled: profile.aiEnabled && !trial && cloud.enabled,
             }}
           />
         </React.Suspense>
