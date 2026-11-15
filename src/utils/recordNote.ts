@@ -26,6 +26,7 @@ export function recordNoteT(lng: AppLanguage | string): RecordNoteT {
 }
 
 export interface RecordNoteSection {
+  key: RecordNoteKey;
   heading: string;
   lines: string[];
 }
@@ -57,6 +58,10 @@ const HEADING_KEYS = {
   treatment: 'forms:report.title',
   recheck: 'media:recordNote.h.recheck',
 } as const;
+
+export type RecordNoteKey = keyof typeof HEADING_KEYS;
+/** Section keys in note order. */
+export const RECORD_NOTE_KEYS = Object.keys(HEADING_KEYS) as RecordNoteKey[];
 
 const clean = (s: string | undefined | null) => (s ?? '').trim();
 const textLines = (s: string | undefined) => clean(s).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
@@ -90,9 +95,9 @@ function examLine(label: string, v: ExamItemValue | undefined, t: RecordNoteT): 
 export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): RecordNote {
   const info = snapshot.patientInfo;
   const sections: RecordNoteSection[] = [];
-  const add = (key: keyof typeof HEADING_KEYS, lines: (string | null | false | undefined)[]) => {
+  const add = (key: RecordNoteKey, lines: (string | null | false | undefined)[]) => {
     const kept = lines.filter((l): l is string => !!l);
-    if (kept.length) sections.push({ heading: t(HEADING_KEYS[key]), lines: kept });
+    if (kept.length) sections.push({ key, heading: t(HEADING_KEYS[key]), lines: kept });
   };
 
   // 1. Header
@@ -178,19 +183,23 @@ export function buildRecordNote(snapshot: ChartSnapshot, t: RecordNoteT): Record
   return { sections };
 }
 
+export function recordNoteSectionText(s: RecordNoteSection): string {
+  return [s.heading.toLocaleUpperCase(), ...s.lines].join('\n');
+}
+
 export function recordNoteText(note: RecordNote): string {
-  return note.sections
-    .map((s) => [s.heading.toLocaleUpperCase(), ...s.lines].join('\n'))
-    .join('\n\n');
+  return note.sections.map(recordNoteSectionText).join('\n\n');
 }
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+export function recordNoteSectionHtml(s: RecordNoteSection): string {
+  return `<p><strong>${esc(s.heading)}</strong>${s.lines.map((l) => `<br>${esc(l)}`).join('')}</p>`;
+}
+
 export function recordNoteHtml(note: RecordNote): string {
-  return note.sections
-    .map((s) => `<p><strong>${esc(s.heading)}</strong>${s.lines.map((l) => `<br>${esc(l)}`).join('')}</p>`)
-    .join('');
+  return note.sections.map(recordNoteSectionHtml).join('');
 }
 
 /** Plain text (as typed or AI-written) → simple HTML for a rich paste. */
