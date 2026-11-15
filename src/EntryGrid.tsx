@@ -93,7 +93,7 @@ const DocumentsModal = lazyWithReload(() =>
  */
 // The subject stays English: it is read by whoever triages the report.
 function feedbackMailto(t: TFunction<'app'>): string {
-  return `mailto:bazhip@gmail.com?subject=${encodeURIComponent(
+  return `mailto:admin@toothops.app?subject=${encodeURIComponent(
     'ToothOps Charting — feedback / bug report'
   )}&body=${encodeURIComponent(
     [
