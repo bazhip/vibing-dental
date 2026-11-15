@@ -117,6 +117,19 @@ function openOnClick(testid: string, html: string, onOpen?: (box: HTMLElement) =
   });
 }
 
+/** A Save & Close that appears in the pane when the add button is clicked, like a new document's. */
+function saveAndClose(onClick?: () => void, closes = true) {
+  addButtonOf('AddDischargeSummary').addEventListener('click', () => {
+    const btn = document.createElement('button');
+    btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
+    pane().appendChild(btn);
+    btn.addEventListener('click', () => {
+      onClick?.();
+      if (closes) btn.remove();
+    });
+  });
+}
+
 let jaxRequest: ReturnType<typeof vi.fn>;
 const noSubmit = (e: Event) => e.preventDefault();
 beforeEach(() => {
@@ -348,17 +361,6 @@ describe('write', () => {
   });
 
   describe('discharge summary', () => {
-    function saveAndClose(onClick?: () => void) {
-      const btn = document.createElement('button');
-      btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
-      document.body.appendChild(btn);
-      btn.addEventListener('click', () => {
-        onClick?.();
-        btn.remove();
-      });
-      return btn;
-    }
-
     function openDoc(ed: FakeHuge) {
       addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
     }
@@ -451,6 +453,17 @@ describe('write', () => {
       expect(otherClick).not.toHaveBeenCalled();
     });
 
+    it('save_button_not_found when only another document has a Save & Close', async () => {
+      const other = document.createElement('button');
+      other.setAttribute('data-testid', 'Save&Close_DischargeSummary');
+      pane().prepend(other);
+      const otherClick = vi.fn();
+      other.addEventListener('click', otherClick);
+      openDoc(fakeHugeRte());
+      expect(await write({ fieldTitle: 'Discharge Summary', text: 'x' })).toEqual({ ok: false, code: 'save_button_not_found' });
+      expect(otherClick).not.toHaveBeenCalled();
+    });
+
     it('does not click an unrelated pre-existing Cancel', async () => {
       const ed = fakeHugeRte();
       openDoc(ed);
@@ -467,9 +480,7 @@ describe('write', () => {
     it('save_not_confirmed when the dialog stays', async () => {
       const ed0 = fakeHugeRte();
       openDoc(ed0);
-      const btn = document.createElement('button');
-      btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
-      document.body.appendChild(btn);
+      saveAndClose(undefined, false);
       expect(await write({ fieldTitle: 'Discharge Summary', text: 'x' })).toEqual({ ok: false, code: 'save_not_confirmed' });
     });
 
@@ -497,12 +508,9 @@ describe('write', () => {
     const ed = fakeHugeRte();
     const cb = vi.fn();
     addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
-    const btn = document.createElement('button');
-    btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
-    document.body.appendChild(btn);
+    saveAndClose();
     addButtonOf('AddDischargeSummary').addEventListener('click', () => {
       jax.request('get/templateFillData.php?x', '', null, cb);
-      btn.addEventListener('click', () => btn.remove());
     });
     await write({ fieldTitle: 'Discharge Summary', text: 'x' });
     expect(orig).not.toHaveBeenCalled();
@@ -515,10 +523,7 @@ describe('write', () => {
     delete w.jaxmanager;
     const ed = fakeHugeRte();
     addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
-    const btn = document.createElement('button');
-    btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
-    btn.addEventListener('click', () => btn.remove());
-    document.body.appendChild(btn);
+    saveAndClose();
     expect(await write({ fieldTitle: 'Discharge Summary', text: 'x' })).toEqual({ ok: true, guardSkipped: true });
   });
 });

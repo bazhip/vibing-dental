@@ -333,6 +333,7 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
   const before = new Set(allHugeRte(win));
   const oldCancels = new Set(doc.querySelectorAll(S.TEMPLATE_CHOOSER_CANCEL));
   const boxesBefore = new Set(visibleFormboxes(doc));
+  const savesBefore = new Set(S.DISCHARGE_SAVE_CLOSE.flatMap((sel) => Array.from(doc.querySelectorAll(sel))));
   click(target);
   const inScope = (el: Element) =>
     !!doc.querySelector(S.ACTIVE_PANE)?.contains(el) || visibleFormboxes(doc).some((f) => !boxesBefore.has(f) && f.contains(el));
@@ -350,18 +351,12 @@ async function writeDischargeSummary(doc: Document, win: Window, titleNode: Elem
   });
   if (!ed) throw new Fail('editor_not_found');
   fillHugeRte(ed, richContent(item));
-  // Save & Close of the NEW document only: the nearest ancestor of its editor that holds one.
-  // Another open document's button is never a candidate unless it is the only one around us.
-  const visibleSaves = (root: Element) =>
-    S.DISCHARGE_SAVE_CLOSE.flatMap((sel) => Array.from(root.querySelectorAll(sel))).filter(
-      (b, i, all) => all.indexOf(b) === i && isVisible(b),
-    );
-  let save: Element | undefined;
-  for (let n: Element | null = (ed.getContainer?.() ?? ed.iframeElement ?? null)?.parentElement ?? null; n && !save; n = n.parentElement) {
-    const found = visibleSaves(n);
-    if (found.length > 1) break;
-    save = found[0];
-  }
+  // Save & Close of the NEW document only: a visible button that did not exist before our click
+  // and sits in the pane or the new formbox. Exactly one, else we don't guess.
+  const fresh = Array.from(new Set(S.DISCHARGE_SAVE_CLOSE.flatMap((sel) => Array.from(doc.querySelectorAll(sel))))).filter(
+    (b) => !savesBefore.has(b) && isVisible(b) && inScope(b),
+  );
+  const save = fresh.length === 1 ? fresh[0] : undefined;
   if (!save) throw new Fail('save_button_not_found');
   const button = save;
   click(button);
