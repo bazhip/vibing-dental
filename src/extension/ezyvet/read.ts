@@ -114,7 +114,7 @@ export function listFieldElements(doc: Document = document): Found[] {
 
   for (const t of root.querySelectorAll(S.POPUP_TITLE)) {
     if (!t.querySelector(S.POPUP_ADD_BUTTON)) continue;
-    if (inDischargeSection(t)) continue;
+    if (inDischargeSection(t) || t.querySelector(S.DISCHARGE_ADD_BUTTON)) continue;
     const title = cleanTitle(directText(t));
     if (!title) continue;
     if (t.querySelector(S.ADD_CLIENT_COMMUNICATION)) {

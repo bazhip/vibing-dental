@@ -61,9 +61,24 @@ describe('ezyVet read side', () => {
     expect(titles).toHaveLength(8);
   });
   it('strips counts from titles', () => expect(listFields().map((f) => f.title)).not.toContain('Plan (2)'));
-  it('prefers the visible duplicate', () => {
+  it('prefers the visible duplicate (hidden copy comes first)', () => {
+    const plans = Array.from(document.querySelectorAll('.sectionContent')).filter((s) =>
+      s.querySelector('h2')?.textContent?.startsWith('Plan'),
+    );
+    expect(plans).toHaveLength(2);
+    expect(plans[0].hasAttribute('hidden')).toBe(true);
     const plan = listFieldElements().find((f) => f.title === 'Plan')!;
-    expect(plan.node.querySelector('h2')!.hasAttribute('hidden')).toBe(false);
+    expect(plan.node).toBe(plans[1]);
+  });
+  it('lists Discharge Summary once even when its section has no DischargeSummaries class', () => {
+    document.querySelector('.sectionContent[class*="DischargeSummaries"]')!.className = 'sectionContent';
+    const hits = listFields().filter((f) => /discharge/i.test(f.title));
+    expect(hits).toEqual([{ title: 'Discharge Summary', kind: 'dischargeSummary', acceptsImage: true }]);
+  });
+  it('locked on the Medical tab reports locked', () => {
+    load('consult-locked.html');
+    expect(document.getElementById('subTab1-Medical')!.classList.contains('active')).toBe(true);
+    expect(status().state).toBe('locked');
   });
   it('no fields outside the active consult', () => {
     load('patient-record.html');
