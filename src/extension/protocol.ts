@@ -29,8 +29,12 @@ export type InspectResult = {
   fields: FieldInfo[];
 };
 
+export type ItemResult =
+  | WriteResult
+  | { ok: false; code: 'extension_error' | 'patient_changed' | 'not_writable' };
+
 export type SendResult =
-  | { ok: false; code: 'not_writable' | 'patient_changed' | 'no_tab' }
-  | { ok: true; results: { fieldTitle: string; result: WriteResult }[] };
+  | { ok: false; code: 'not_writable' | 'patient_changed' | 'no_tab' | 'extension_error' }
+  | { ok: true; results: { fieldTitle: string; result: ItemResult }[] };
 
 export type DiagnoseResult = { diagnostics: Diagnostics | null; lastCodes: WriteCode[] };

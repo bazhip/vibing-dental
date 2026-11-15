@@ -10,6 +10,7 @@ import {
   ALLOWED_ORIGINS,
   type DiagnoseResult,
   type InspectResult,
+  type ItemResult,
   type PingResult,
   type Request,
   type SendResult,
@@ -64,33 +65,56 @@ async function inspect(deps: Deps): Promise<InspectResult> {
   }
 }
 
-async function send(msg: Extract<Request, { type: 'send' }>, deps: Deps): Promise<SendResult> {
-  const { tabId } = msg;
-  let status: PageStatus;
-  try {
-    await deps.focusTab(tabId);
-    status = await deps.page.status(tabId);
-  } catch {
-    return { ok: false, code: 'no_tab' };
-  }
-  if (status.state !== 'writable') return { ok: false, code: 'not_writable' };
-  const { confirmedEzyvetPatient: confirmed } = msg;
+type SendRequest = Extract<Request, { type: 'send' }>;
+type Refusal = 'not_writable' | 'patient_changed';
+
+/** Is the consult still writable and still the confirmed patient? Null = yes. */
+async function refusal(msg: SendRequest, deps: Deps): Promise<Refusal | null> {
+  const status = await deps.page.status(msg.tabId);
+  if (status.state !== 'writable') return 'not_writable';
+  const confirmed = msg.confirmedEzyvetPatient;
   const same =
     confirmed !== null && status.patientName !== null
       ? patientsMatch(confirmed, status.patientName)
       : confirmed === status.patientName;
-  if (!same) return { ok: false, code: 'patient_changed' };
+  return same ? null : 'patient_changed';
+}
 
+async function send(msg: SendRequest, deps: Deps): Promise<SendResult> {
   deps.lastCodes.length = 0;
-  const results: { fieldTitle: string; result: WriteResult }[] = [];
+  const refuse = <C extends 'not_writable' | 'patient_changed' | 'no_tab' | 'extension_error'>(code: C) => {
+    deps.lastCodes.push(code as WriteCode);
+    return { ok: false, code } as const;
+  };
+  if (typeof msg.tabId !== 'number' || !Array.isArray(msg.items)) return refuse('extension_error');
+  const { tabId } = msg;
+  let first: Refusal | null;
+  try {
+    await deps.focusTab(tabId);
+    first = await refusal(msg, deps);
+  } catch {
+    return refuse('no_tab');
+  }
+  if (first) return refuse(first);
+
+  const results: { fieldTitle: string; result: ItemResult }[] = [];
+  let stopped: Refusal | null = null;
   for (const item of msg.items) {
-    let result: WriteResult;
-    try {
-      result = await deps.page.write(tabId, item);
-    } catch {
-      result = { ok: false, code: 'not_writable' };
+    let result: ItemResult;
+    if (stopped) {
+      result = { ok: false, code: stopped };
+    } else {
+      try {
+        // The patient or consult can change between items: check before each write.
+        stopped = await refusal(msg, deps);
+        result = stopped
+          ? { ok: false, code: stopped }
+          : ((await deps.page.write(tabId, item)) ?? { ok: false, code: 'extension_error' });
+      } catch {
+        result = { ok: false, code: 'extension_error' };
+      }
     }
-    if (!result.ok) deps.lastCodes.push(result.code);
+    if (!result.ok) deps.lastCodes.push(result.code as WriteCode);
     results.push({ fieldTitle: item.fieldTitle, result });
   }
   return { ok: true, results };
@@ -135,17 +159,26 @@ export async function handleExternal(
 
 type ChromeApi = typeof chrome;
 
+// A page function that threw (or a missing page API) leaves `result` undefined: treat as failure.
+function resultOf<T>(res: { result?: unknown } | undefined): T {
+  if (res?.result === undefined) {
+    // eslint-disable-next-line no-restricted-syntax -- dev-only: caught by the callers and reported as extension_error
+    throw new Error('page call returned no result');
+  }
+  return res.result as T;
+}
+
 export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): Deps {
   // Inject (idempotent: the page script reinstalls only when the version differs), then call in.
   const call = async <T>(tabId: number, func: () => unknown): Promise<T> => {
     await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func });
-    return res?.result as T;
+    return resultOf<T>(res);
   };
   const callWith = async <T, A>(tabId: number, func: (a: A) => unknown, arg: A): Promise<T> => {
     await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func, args: [arg] });
-    return res?.result as T;
+    return resultOf<T>(res);
   };
   return {
     version: EXTENSION_VERSION,
@@ -171,14 +204,21 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
   };
 }
 
+const KNOWN_TYPES = ['ping', 'inspect', 'send', 'diagnose'];
+
 if (typeof chrome !== 'undefined' && chrome.runtime?.onMessageExternal) {
   const deps = createChromeDeps(chrome);
   chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
+    if (!isAllowedOrigin(sender.origin)) {
+      console.warn('ToothOps extension: ignoring message from', sender.origin);
+      return false;
+    }
+    if (!KNOWN_TYPES.includes(msg?.type)) return false;
     handleExternal(msg, sender, deps).then(
       (res) => {
         if (res !== undefined) sendResponse(res);
       },
-      () => undefined,
+      () => sendResponse({ ok: false, code: 'extension_error' }),
     );
     return true; // keep the channel open for the async response
   });

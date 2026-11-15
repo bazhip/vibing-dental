@@ -137,6 +137,73 @@ describe('background', () => {
     });
   });
 
+  it('send survives a write that returns nothing and keeps earlier results', async () => {
+    const { deps } = makeDeps();
+    deps.page.write = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true })
+      .mockResolvedValueOnce(undefined)
+      .mockResolvedValueOnce({ ok: true });
+    const c: SendItem = { fieldTitle: 'C', text: 'c' };
+    expect(await handleExternal(sendMsg({ items: [a, b, c] }), okSender, deps)).toEqual({
+      ok: true,
+      results: [
+        { fieldTitle: a.fieldTitle, result: { ok: true } },
+        { fieldTitle: b.fieldTitle, result: { ok: false, code: 'extension_error' } },
+        { fieldTitle: 'C', result: { ok: true } },
+      ],
+    });
+  });
+
+  it('a throwing write is extension_error and the loop continues', async () => {
+    const { deps } = makeDeps();
+    deps.page.write = vi.fn().mockRejectedValueOnce(new Error('x')).mockResolvedValueOnce({ ok: true });
+    const r = await handleExternal(sendMsg({ items: [a, b] }), okSender, deps);
+    expect(r).toMatchObject({ ok: true, results: [{ result: { code: 'extension_error' } }, { result: { ok: true } }] });
+  });
+
+  it('send stops when the patient changes after the first item', async () => {
+    const { deps, state } = makeDeps();
+    deps.page.write = vi.fn(async () => {
+      state.status = { state: 'writable', patientName: 'Max' };
+      return { ok: true } as const;
+    });
+    const r = await handleExternal(sendMsg({ items: [a, b, a] }), okSender, deps);
+    expect(r).toEqual({
+      ok: true,
+      results: [
+        { fieldTitle: a.fieldTitle, result: { ok: true } },
+        { fieldTitle: b.fieldTitle, result: { ok: false, code: 'patient_changed' } },
+        { fieldTitle: a.fieldTitle, result: { ok: false, code: 'patient_changed' } },
+      ],
+    });
+    expect(deps.page.write).toHaveBeenCalledTimes(1);
+  });
+
+  it('send marks remaining items not_writable when the consult locks mid-send', async () => {
+    const { deps, state } = makeDeps();
+    deps.page.write = vi.fn(async () => {
+      state.status = { state: 'locked', patientName: 'Bella' };
+      return { ok: true } as const;
+    });
+    const r = await handleExternal(sendMsg({ items: [a, b] }), okSender, deps);
+    expect(r).toMatchObject({ ok: true, results: [{ result: { ok: true } }, { result: { code: 'not_writable' } }] });
+  });
+
+  it('refusals are recorded in lastCodes', async () => {
+    const { deps, state } = makeDeps();
+    state.status = { state: 'locked', patientName: 'Bella' };
+    await handleExternal(sendMsg(), okSender, deps);
+    expect(deps.lastCodes).toEqual(['not_writable']);
+  });
+
+  it('rejects a malformed send', async () => {
+    const { deps } = makeDeps();
+    const bad = { type: 'send', tabId: 'x', items: 'nope' } as unknown as Request;
+    expect(await handleExternal(bad, okSender, deps)).toEqual({ ok: false, code: 'extension_error' });
+    expect(deps.page.status).not.toHaveBeenCalled();
+  });
+
   it('diagnose with no tab or after a restart has empty codes', async () => {
     expect(await handleExternal({ type: 'diagnose' }, okSender, makeDeps([]).deps)).toEqual({
       diagnostics: null,
