@@ -107,6 +107,22 @@ export function usePimsSend({
     }
   }, [t, transport]);
 
+  /** A quiet look at the ezyVet tab (no loading screen, no ping): keeps the mapping choices, updates the
+   *  target in place, and flags a change. For the panel gaining focus or the active tab changing. */
+  const refreshTarget = async () => {
+    if (phase.kind !== 'ready' || sendingRef.current) return;
+    const before = phase.info;
+    let fresh: InspectResult;
+    try {
+      fresh = await transport.inspect();
+    } catch {
+      return; // Quiet: Send looks again and reports a failure itself.
+    }
+    if (sendingRef.current) return;
+    if (targetChanged(before, fresh)) setChangedTarget(true);
+    setPhase((p) => (p.kind === 'ready' ? { kind: 'ready', info: fresh } : p));
+  };
+
   React.useEffect(() => {
     if (!open) return;
     setEdits({});
@@ -316,6 +332,6 @@ export function usePimsSend({
 
   return {
     phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
-    load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
+    load, refreshTarget, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   };
 }

@@ -155,4 +155,32 @@ describe('ChartSend', () => {
     expect(mocks.transport.send).not.toHaveBeenCalled();
     expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
   });
+
+  it('a focus re-inspect is quiet: no loading, no ping, mapping choices kept', async () => {
+    open();
+    await screen.findByRole('button', { name: 'Send' });
+    const select = screen.getAllByRole('combobox')[0] as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: '' } });
+    const chosen = select.value;
+    mocks.transport.ping.mockClear();
+    let seenLoading = false;
+    const obs = new MutationObserver(() => { if (screen.queryByText('Looking for ezyVet…')) seenLoading = true; });
+    obs.observe(document.body, { childList: true, subtree: true });
+    await act(async () => { mocks.tab.activated!(); });
+    obs.disconnect();
+    await waitFor(() => expect(mocks.transport.inspect).toHaveBeenCalledTimes(2));
+    expect(seenLoading).toBe(false);
+    expect(mocks.transport.ping).not.toHaveBeenCalled();
+    expect((screen.getAllByRole('combobox')[0] as HTMLSelectElement).value).toBe(chosen);
+    expect(screen.queryByText(/The ezyVet consult changed/)).toBeNull();
+  });
+
+  it('a focus re-inspect with a changed patient updates the target and shows the notice', async () => {
+    open();
+    await screen.findByRole('button', { name: 'Send' });
+    mocks.transport.inspect.mockResolvedValue(info('Max'));
+    await act(async () => { mocks.tab.activated!(); });
+    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+  });
 });

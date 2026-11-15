@@ -89,7 +89,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
 
   const {
     phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
-    load, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
+    load, refreshTarget, choose, resetToDefaults, doSend, copyDiagnostic, formatDate,
   } = usePimsSend({
     transport: internalTransport,
     note,
@@ -102,10 +102,12 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
     onSent: setSentAt,
   });
 
-  // The vet moved to another tab or came back to the panel: look again, unless a send (or its
+  // The vet moved to another tab or came back to the panel: look again (quietly, keeping the mapping choices), unless a send (or its
   // confirmations) is under way or the results are showing.
   useActiveTabChange(() => {
-    if ((phase.kind === 'ready' || phase.kind === 'error') && !sending) void load();
+    if (sending) return;
+    if (phase.kind === 'ready') void refreshTarget();
+    else if (phase.kind === 'error') void load();
   });
 
   const retry = (

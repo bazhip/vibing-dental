@@ -77,6 +77,19 @@ describe('loadChartSnapshot', () => {
     expect(err?.message).not.toMatch(/damaged/);
   });
 
+  it('a network error reads as the translated network message in another language', async () => {
+    const i18n = (await import('../i18n')).default;
+    await i18n.changeLanguage('fr');
+    try {
+      db.single = { data: null, error: { message: 'Failed to fetch' } };
+      const err = await loadChartSnapshot('c1').then(() => null, (e: unknown) => e as Error);
+      expect(err?.message).toContain(i18n.t('errors.network', { ns: 'common' }));
+      expect(err?.message).not.toMatch(/Failed to fetch|Details/);
+    } finally {
+      await i18n.changeLanguage('en');
+    }
+  });
+
   it('throws a translated error for a damaged snapshot', async () => {
     db.single = { data: { data: { nope: true }, pims_sent_at: null }, error: null };
     await expect(loadChartSnapshot('c1')).rejects.toThrow(/damaged/);
