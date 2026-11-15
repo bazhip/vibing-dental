@@ -257,7 +257,7 @@ The owner has no ezyVet consult available now. So:
   - the extension version and the failure codes from the last send.
 
   It holds no patient, client or note text; titles of ezyVet fields are the only page strings. A vet at a pilot practice can paste it into a support message, and that is enough to fix a broken selector.
-- **Release gate.** The extension is published **unlisted** and the **Send to ezyVet** button stays behind a per-practice flag (`practices.pims_send_enabled`, default false, set by an admin) until the manual checklist has passed on real ezyVet at least once. The button's install link appears only where the flag is on.
+- **Release gate.** The extension is published **unlisted**. The **Send to ezyVet** button follows a per-practice flag (`practices.pims_send_enabled`, default false, set by an admin), except that **during the free beta it is on for everyone** (`FREE_BETA || pims_send_enabled`, like the owner report). *(Owner decision, 2026-11-15; this replaces "off until the real-ezyVet checklist passes".)* The writable-consult check, the patient check and the diagnostic report are what protect vets while the selectors are unverified.
 
 ## Left to the builder
 
@@ -283,5 +283,5 @@ The owner has no ezyVet consult available now. So:
 - No `innerHTML` fallback for note fields.
 - Edited notes that can't be split back go as one block (default Plan).
 - One stacked pre/post image.
-- Release behind a per-practice flag, unlisted, until real-ezyVet checks pass.
+- Unlisted extension; per-practice flag, on for everyone during the free beta (owner decision).
 - PR previews can't reach the extension (Chrome's `externally_connectable` needs exact hosts). Test on localhost and production. Until the Web Store item exists, a locally generated `key` fixes the id; the owner creates the item and the builder swaps in its key.
