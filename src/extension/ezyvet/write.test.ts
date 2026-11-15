@@ -22,7 +22,8 @@ class FakeParagraph {
     this.children.push(t);
   }
 }
-function fakeLexical(el: Element) {
+function fakeLexical(el: Element, opts: { swallow?: boolean } = {}) {
+  const swallow = !!opts.swallow;
   const paragraphs: FakeParagraph[] = [];
   const root = {
     clear: () => (paragraphs.length = 0),
@@ -35,7 +36,9 @@ function fakeLexical(el: Element) {
     ]),
     update: vi.fn((fn: () => void, opts?: unknown) => {
       editor.lastOpts = opts;
+      if (swallow) return; // like Lexical routing an error to onError
       fn();
+      el.innerHTML = paragraphs.map((p) => `<p>${p.children.map((c) => c.text).join('')}</p>`).join('');
     }),
     lastOpts: undefined as unknown,
     getEditorState: () => ({ _nodeMap: new Map([['root', root]]) }),
@@ -66,6 +69,17 @@ function fakeHugeRte() {
     dirty: false,
     events: [] as string[],
     saved: false,
+    container: document.createElement('div'),
+    getContainer() {
+      return ed.container;
+    },
+    /** Make the editor exist, inside `parent`, as ezyVet does when a popup or document opens. */
+    mount(parent: Element) {
+      parent.appendChild(ed.container);
+      const h = hugeGlobal();
+      h.editors.push(ed);
+      h.activeEditor = ed;
+    },
     setContent(h: string) {
       ed.content = h;
     },
@@ -81,9 +95,14 @@ function fakeHugeRte() {
       ed.dirty = d;
     },
   };
-  w.hugerte = { activeEditor: ed };
   return ed;
 }
+type FakeHuge = ReturnType<typeof fakeHugeRte>;
+function hugeGlobal() {
+  const g = (w.hugerte ??= { editors: [], activeEditor: null }) as { editors: FakeHuge[]; activeEditor: FakeHuge | null };
+  return g;
+}
+const pane = () => document.querySelector('#rtab1details')!;
 
 function addButtonOf(testid: string): HTMLElement {
   return document.querySelector(`[data-testid="${testid}"]`) as HTMLElement;
@@ -159,6 +178,25 @@ describe('write', () => {
       expect(lex!.paragraphs).toEqual(['x']);
     });
 
+    it('an entry holding only an image is not chosen or cleared', async () => {
+      const plan = planSection();
+      const el = addEmptyEntry(plan);
+      el.innerHTML = '<img src="x.png">';
+      const lex = fakeLexical(el);
+      expect(await write({ fieldTitle: 'Plan', text: 'a' })).toEqual({ ok: false, code: 'editor_not_found' });
+      expect(lex.editor.update).not.toHaveBeenCalled();
+      expect(el.innerHTML).toBe('<img src="x.png">');
+    });
+
+    it('fails when Lexical swallows an error inside update', async () => {
+      const plan = planSection();
+      fakeLexical(addEmptyEntry(plan), { swallow: true });
+      const events: string[] = [];
+      document.addEventListener('pointerdown', (e) => events.push(e.type));
+      expect(await write({ fieldTitle: 'Plan', text: 'a' })).toEqual({ ok: false, code: 'editor_not_found' });
+      expect(events).toEqual([]);
+    });
+
     it('image refused before touching the page', async () => {
       const spy = vi.fn();
       document.body.addEventListener('click', spy);
@@ -225,7 +263,8 @@ describe('write', () => {
       expect(saved).toBe('hi');
     });
 
-    function emailPopup(withPreferred: boolean, ed = fakeHugeRte()) {
+    function emailPopup(withPreferred: boolean, opts: { toValue?: string } = {}) {
+      const ed = fakeHugeRte();
       let closed = false;
       let saved = false;
       let pendingClicked = false;
@@ -247,7 +286,11 @@ describe('write', () => {
               (withPreferred ? '<span class="preferredMethod">pref@x.com</span>' : '') +
               '<input type="radio" value="Pending">',
           );
-          box.querySelector('.preferredMethod')?.addEventListener('click', () => (preferredClicked = true));
+          box.querySelector('.preferredMethod')?.addEventListener('click', () => {
+            preferredClicked = true;
+            box.querySelector<HTMLInputElement>('input[name="communicationdata_to"]')!.value = opts.toValue ?? 'pref@x.com';
+          });
+          ed.mount(box);
           box.querySelector('input[type="radio"]')!.addEventListener('click', () => (pendingClicked = true));
         });
       });
@@ -260,6 +303,25 @@ describe('write', () => {
       expect(r.ok).toBe(true);
       expect(ed.content).toBe('<p>a&lt;b</p><p>c</p>');
       expect(state()).toEqual({ closed: false, saved: true, pendingClicked: true, preferredClicked: true });
+    });
+
+    it('email: address field not holding the preferred address closes the popup', async () => {
+      const { ed, state } = emailPopup(true, { toValue: 'other@x.com' });
+      expect(await write({ fieldTitle: 'Client Communication > Email', text: 'a' })).toEqual({ ok: false, code: 'no_preferred_email' });
+      expect(state().closed).toBe(true);
+      expect(state().saved).toBe(false);
+      expect(ed.content).toBe('');
+    });
+
+    it('email: a stale active editor elsewhere is left untouched', async () => {
+      const stale = fakeHugeRte();
+      stale.mount(pane());
+      stale.content = 'OTHER PATIENT DOC';
+      const { ed } = emailPopup(true);
+      expect((await write({ fieldTitle: 'Client Communication > Email', text: 'a' })).ok).toBe(true);
+      expect(stale.content).toBe('OTHER PATIENT DOC');
+      expect(stale.dirty).toBe(false);
+      expect(ed.content).toBe('<p>a</p>');
     });
 
     it('email: no preferred address closes the popup', async () => {
@@ -290,8 +352,13 @@ describe('write', () => {
       return btn;
     }
 
+    function openDoc(ed: FakeHuge) {
+      addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
+    }
+
     it('text then image in one document', async () => {
       const ed = fakeHugeRte();
+      openDoc(ed);
       saveAndClose();
       const r = await write({ fieldTitle: 'Discharge Summary', html: '<p>t</p>', pngDataUrl: PNG });
       expect(r.ok).toBe(true);
@@ -303,6 +370,7 @@ describe('write', () => {
 
     it('image only', async () => {
       const ed = fakeHugeRte();
+      openDoc(ed);
       saveAndClose();
       await write({ fieldTitle: 'Discharge Summary', pngDataUrl: PNG });
       expect(ed.content).toBe(`<p><img src="${PNG}"></p>`);
@@ -310,7 +378,6 @@ describe('write', () => {
 
     it('cancels the template chooser first', async () => {
       const ed = fakeHugeRte();
-      delete w.hugerte;
       saveAndClose();
       let cancelled = false;
       addButtonOf('AddDischargeSummary').addEventListener('click', () => {
@@ -319,7 +386,7 @@ describe('write', () => {
         c.addEventListener('click', () => {
           cancelled = true;
           c.remove();
-          w.hugerte = { activeEditor: ed };
+          ed.mount(pane());
         });
         document.body.appendChild(c);
       });
@@ -328,8 +395,48 @@ describe('write', () => {
       expect(ed.content).toBe('<p>x</p>');
     });
 
+    it('stale active editor from an open document is left untouched', async () => {
+      const stale = fakeHugeRte();
+      stale.mount(pane());
+      stale.content = 'OTHER';
+      saveAndClose();
+      expect(await write({ fieldTitle: 'Discharge Summary', text: 'x' })).toEqual({ ok: false, code: 'editor_not_found' });
+      expect(stale.content).toBe('OTHER');
+      expect(stale.dirty).toBe(false);
+    });
+
+    it('uses the visible Save & Close, not a stale hidden one', async () => {
+      const ed = fakeHugeRte();
+      openDoc(ed);
+      const stale = document.createElement('button');
+      stale.setAttribute('data-testid', 'Save&Close_DischargeSummary');
+      stale.hidden = true;
+      document.body.prepend(stale);
+      const staleClick = vi.fn();
+      stale.addEventListener('click', staleClick);
+      let saved = false;
+      saveAndClose(() => (saved = true));
+      expect((await write({ fieldTitle: 'Discharge Summary', text: 'x' })).ok).toBe(true);
+      expect(saved).toBe(true);
+      expect(staleClick).not.toHaveBeenCalled();
+    });
+
+    it('does not click an unrelated pre-existing Cancel', async () => {
+      const ed = fakeHugeRte();
+      openDoc(ed);
+      saveAndClose();
+      const cancel = document.createElement('button');
+      cancel.setAttribute('data-testid', 'Cancel');
+      const spy = vi.fn();
+      cancel.addEventListener('click', spy);
+      document.body.appendChild(cancel);
+      expect((await write({ fieldTitle: 'Discharge Summary', text: 'x' })).ok).toBe(true);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
     it('save_not_confirmed when the dialog stays', async () => {
-      fakeHugeRte();
+      const ed0 = fakeHugeRte();
+      openDoc(ed0);
       const btn = document.createElement('button');
       btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
       document.body.appendChild(btn);
@@ -359,6 +466,7 @@ describe('write', () => {
     const orig = jax.request;
     const ed = fakeHugeRte();
     const cb = vi.fn();
+    addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
     const btn = document.createElement('button');
     btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
     document.body.appendChild(btn);
@@ -375,7 +483,8 @@ describe('write', () => {
 
   it('reports guardSkipped without jaxmanager', async () => {
     delete w.jaxmanager;
-    fakeHugeRte();
+    const ed = fakeHugeRte();
+    addButtonOf('AddDischargeSummary').addEventListener('click', () => ed.mount(pane()));
     const btn = document.createElement('button');
     btn.setAttribute('data-testid', 'Save&Close_DischargeSummary');
     btn.addEventListener('click', () => btn.remove());

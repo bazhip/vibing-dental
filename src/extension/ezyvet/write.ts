@@ -93,7 +93,12 @@ function click(el: Element) {
 
 // ---------- Lexical note fields ----------
 
-type LexicalNodeLike = { append: (...n: unknown[]) => unknown; clear?: () => unknown };
+type LexicalNodeLike = {
+  append: (...n: unknown[]) => unknown;
+  clear?: () => unknown;
+  getChildrenSize?: () => number;
+  getFirstChild?: () => LexicalNodeLike | null;
+};
 type LexicalEditorLike = {
   _nodes: Map<string, { klass: new (text?: string) => LexicalNodeLike }>;
   update: (fn: () => void, opts?: { discrete?: boolean }) => void;
@@ -102,10 +107,19 @@ type LexicalEditorLike = {
 };
 type EditableEl = Element & { __lexicalEditor?: LexicalEditorLike };
 
+// Structurally empty: no children, or one <p> holding at most a <br>. Anything else (an image,
+// a rule, an embed, stray text) is content we must never clear.
+function isStructurallyEmpty(el: Element): boolean {
+  if (el.childNodes.length === 0) return true;
+  if (el.childNodes.length !== 1) return false;
+  const only = el.firstChild as Element;
+  if (only.nodeType !== 1 || only.tagName !== 'P') return false;
+  const kids = Array.from(only.childNodes);
+  return kids.length === 0 || (kids.length === 1 && (kids[0] as Element).tagName === 'BR');
+}
+
 function emptyEditors(section: Element): EditableEl[] {
-  return Array.from(section.querySelectorAll(S.NOTE_EDITABLE)).filter(
-    (el) => (el.textContent ?? '').trim() === '',
-  ) as EditableEl[];
+  return (Array.from(section.querySelectorAll(S.NOTE_EDITABLE)) as EditableEl[]).filter(isStructurallyEmpty);
 }
 
 function pointerdown(el: Element) {
@@ -119,7 +133,7 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
     const add = section.querySelector(S.ADD_NOTE_BUTTON);
     if (!add) throw new Fail('editor_not_found');
     click(add);
-    entry = (await waitFor(doc, () => emptyEditors(section)[0])) ?? undefined;
+    entry = (await waitFor(doc, () => emptyEditors(section).find((e) => e.__lexicalEditor))) ?? undefined;
   }
   const editor = entry?.__lexicalEditor;
   if (!entry || !editor) throw new Fail('editor_not_found');
@@ -128,19 +142,38 @@ async function writeNote(doc: Document, section: Element, item: SendItem) {
   if (!paragraph || !text) throw new Fail('editor_not_found');
 
   const lines = (item.text ?? '').split(/\r?\n/);
-  editor.update(
-    () => {
-      const root = (editor._pendingEditorState ?? editor.getEditorState())._nodeMap.get('root');
-      if (!root) throw new Fail('editor_not_found');
-      root.clear?.(); // only ever an empty entry, so nothing existing is lost
-      for (const line of lines) {
-        const p = new paragraph();
-        if (line !== '') p.append(new text(line));
-        root.append(p);
-      }
-    },
-    { discrete: true },
-  );
+  let failed = false;
+  try {
+    editor.update(
+      () => {
+        const root = (editor._pendingEditorState ?? editor.getEditorState())._nodeMap.get('root');
+        if (!root) {
+          failed = true;
+          return;
+        }
+        // Never clear a root that holds more than one empty paragraph.
+        const size = root.getChildrenSize?.();
+        const first = root.getFirstChild?.();
+        if ((size ?? 0) > 1 || (size === 1 && (first?.getChildrenSize?.() ?? 0) > 0)) {
+          failed = true;
+          return;
+        }
+        root.clear?.();
+        for (const line of lines) {
+          const p = new paragraph();
+          if (line !== '') p.append(new text(line));
+          root.append(p);
+        }
+      },
+      { discrete: true },
+    );
+  } catch {
+    failed = true;
+  }
+  // Lexical may route errors inside update to onError and carry on, so confirm the lines landed
+  // before arming ezyVet's save.
+  const landed = lines.filter((l) => l.trim() !== '').every((l) => (entry!.textContent ?? '').includes(l.trim()));
+  if (failed || !landed) throw new Fail('editor_not_found');
 
   // ezyVet saves an entry on a pointerdown outside it, once armed by one inside it.
   pointerdown(entry);
@@ -223,6 +256,8 @@ async function writeInPerson(doc: Document, titleNode: Element, text: string) {
 type HugeRteEditor = {
   initialized?: boolean;
   setContent: (html: string) => void;
+  getContainer?: () => Element | null;
+  iframeElement?: Element | null;
   focus?: () => void;
   fire?: (name: string) => void;
   save?: () => void;
@@ -230,11 +265,23 @@ type HugeRteEditor = {
 };
 type HugeRteGlobal = { activeEditor?: HugeRteEditor | null; editors?: HugeRteEditor[] };
 
-function currentHugeRte(win: Window): HugeRteEditor | null {
+function allHugeRte(win: Window): HugeRteEditor[] {
   const h = (win as Window & { hugerte?: HugeRteGlobal }).hugerte;
-  if (!h) return null;
-  const ed = h.activeEditor ?? h.editors?.[h.editors.length - 1] ?? null;
-  return ed && ed.initialized !== false ? ed : null;
+  if (!h) return [];
+  const list = [...(h.editors ?? [])];
+  if (h.activeEditor && !list.includes(h.activeEditor)) list.push(h.activeEditor);
+  return list;
+}
+
+/** An editor that did not exist before the click, is initialised, and lives inside `scope`.
+ *  Anything older (another document, another record tab) is never touched. */
+function newHugeRte(win: Window, before: Set<HugeRteEditor>, scope: (el: Element) => boolean): HugeRteEditor | null {
+  for (const ed of allHugeRte(win)) {
+    if (before.has(ed) || ed.initialized !== true) continue;
+    const container = ed.getContainer?.() ?? ed.iframeElement ?? null;
+    if (container && scope(container)) return ed;
+  }
+  return null;
 }
 
 function fillHugeRte(ed: HugeRteEditor, html: string) {
@@ -247,22 +294,33 @@ function fillHugeRte(ed: HugeRteEditor, html: string) {
 }
 
 async function writeEmail(doc: Document, win: Window, titleNode: Element, item: SendItem) {
+  const before = new Set(allHugeRte(win));
   const box = await openPopup(doc, titleNode);
   const method = box.querySelector(S.CONTACT_EMAIL);
   if (!method) throw new Fail('popup_not_found');
   click(method);
-  const to = await waitFor(doc, () => box.querySelector(S.EMAIL_TO_INPUT));
+  const to = await waitFor(doc, () => box.querySelector<HTMLInputElement>(S.EMAIL_TO_INPUT));
   if (!to) throw new Fail('popup_not_found');
-  // Only the client's preferred address, never another one.
+  // Only the client's preferred address, never another one: the address field must end up
+  // holding exactly that address.
   const preferred = box.querySelector(S.PREFERRED_ADDRESS);
-  if (!preferred) {
+  const address = (preferred?.textContent ?? '').trim().toLowerCase();
+  if (!preferred || !address) {
     closePopup(box);
     throw new Fail('no_preferred_email');
   }
   click(preferred);
+  const matches = () => {
+    const v = to.value.trim().toLowerCase();
+    return v !== '' && address.includes(v);
+  };
+  if (!(await waitFor(doc, matches))) {
+    closePopup(box);
+    throw new Fail('no_preferred_email');
+  }
   const pending = box.querySelector(S.EMAIL_STATUS_PENDING);
   if (pending) click(pending);
-  const ed = await waitFor(doc, () => currentHugeRte(win));
+  const ed = await waitFor(doc, () => newHugeRte(win, before, (c) => box.contains(c)));
   if (!ed) throw new Fail('editor_not_found');
   fillHugeRte(ed, richContent(item));
   await saveAndConfirm(doc, box, S.POPUP_SAVE_BUTTON, 'popup_not_closed');
@@ -271,18 +329,29 @@ async function writeEmail(doc: Document, win: Window, titleNode: Element, item: 
 async function writeDischargeSummary(doc: Document, win: Window, titleNode: Element, item: SendItem) {
   const target = addTarget(titleNode);
   if (!target) throw new Fail('popup_not_found');
+  const before = new Set(allHugeRte(win));
+  const oldCancels = new Set(doc.querySelectorAll(S.TEMPLATE_CHOOSER_CANCEL));
+  const boxesBefore = new Set(visibleFormboxes(doc));
   click(target);
-  // A template chooser may come first; cancel it, then wait for the editor.
+  const inScope = (el: Element) =>
+    !!doc.querySelector(S.ACTIVE_PANE)?.contains(el) || visibleFormboxes(doc).some((f) => !boxesBefore.has(f) && f.contains(el));
+  // A template chooser may come first. Cancel only one that appeared after our click, once.
+  let cancelled = false;
   const ed = await waitFor(doc, () => {
-    const cancel = doc.querySelector(S.TEMPLATE_CHOOSER_CANCEL);
-    if (cancel && isVisible(cancel)) click(cancel);
-    return currentHugeRte(win);
+    if (!cancelled) {
+      const cancel = Array.from(doc.querySelectorAll(S.TEMPLATE_CHOOSER_CANCEL)).find((c) => !oldCancels.has(c) && isVisible(c));
+      if (cancel) {
+        cancelled = true;
+        click(cancel);
+      }
+    }
+    return newHugeRte(win, before, inScope);
   });
   if (!ed) throw new Fail('editor_not_found');
   fillHugeRte(ed, richContent(item));
-  let save: Element | null = null;
+  let save: Element | undefined;
   for (const sel of S.DISCHARGE_SAVE_CLOSE) {
-    save = doc.querySelector(sel);
+    save = Array.from(doc.querySelectorAll(sel)).find(isVisible);
     if (save) break;
   }
   if (!save) throw new Fail('save_button_not_found');

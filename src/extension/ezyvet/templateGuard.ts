@@ -33,8 +33,9 @@ export async function withTemplateGuard<T>(
     return { result: await fn(), guardSkipped: true };
   }
   const original = jax.request;
+  let active = true; // a wrapper left behind after we finish is inert
   const guarded = function (this: unknown, ...args: unknown[]) {
-    if (typeof args[0] === 'string' && args[0].includes(TEMPLATE_URL)) {
+    if (active && typeof args[0] === 'string' && args[0].includes(TEMPLATE_URL)) {
       emptyTemplateReply(w, args[3]);
       return undefined;
     }
@@ -44,6 +45,7 @@ export async function withTemplateGuard<T>(
   try {
     return { result: await fn(), guardSkipped: false };
   } finally {
+    active = false;
     if (jax.request === guarded) jax.request = original;
   }
 }

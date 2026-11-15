@@ -46,6 +46,18 @@ describe('withTemplateGuard', () => {
     expect(w.jaxmanager.request).toBe(orig);
   });
 
+  it('a wrapper left behind after the guard ends is inert', async () => {
+    const orig = vi.fn();
+    w.jaxmanager = { request: orig };
+    const jax = w.jaxmanager as { request: (...a: unknown[]) => void };
+    await withTemplateGuard(window, async () => {
+      const guarded = jax.request;
+      jax.request = (...a: unknown[]) => guarded(...a); // someone re-wraps it, so it can't be restored
+    });
+    jax.request('get/templateFillData.php?id=1', '', null, vi.fn());
+    expect(orig).toHaveBeenCalledWith('get/templateFillData.php?id=1', '', null, expect.any(Function));
+  });
+
   it('skipped without jaxmanager', async () => {
     expect((await withTemplateGuard(window, async () => 1)).guardSkipped).toBe(true);
   });
