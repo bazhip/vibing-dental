@@ -14,6 +14,7 @@ import { useWakeLock } from '../hooks/useWakeLock';
 import { needsAiConsent, ensureAiConsent } from '../native/aiConsent';
 import type { AppLanguage } from '../i18n/config';
 import { endsMidFindingOther } from '../utils/voice/normalize';
+import { transcriptTurns } from '../utils/voice/transcriptTurns';
 import {
   extractChartActions,
   reviewFullTranscript,
@@ -665,6 +666,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, [error]);
 
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
+  const transcriptView = transcriptTurns(voice.allSegments().map((s) => s.text), voice.interim);
   const hasSession = transcriptText.length > 0 || activity.length > 0 || reviews.length > 0;
 
   // Locked mid-dictation (Done editing): stop listening.
@@ -1013,11 +1015,25 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
 
               <div className="ai-sidebar__section-label">{t('panel.transcript')}</div>
               <div className="ai-sidebar__transcript" ref={transcriptScroll.ref} onScroll={transcriptScroll.onScroll} aria-live="polite">
-                {transcriptText || voice.interim ? (
-                  <>
-                    {transcriptText}
-                    {voice.interim && <span className="ai-sidebar__interim"> {voice.interim}</span>}
-                  </>
+                {transcriptView.turns.length > 0 ? (
+                  transcriptView.turns.map((turn, i) => (
+                    <p
+                      key={i}
+                      className={
+                        transcriptView.multiSpeaker && turn.speaker != null
+                          ? `ai-sidebar__turn ai-sidebar__turn--speaker ai-sidebar__turn--s${turn.speaker % 4}`
+                          : 'ai-sidebar__turn'
+                      }
+                    >
+                      {transcriptView.multiSpeaker && turn.speaker != null && (
+                        <span className="ai-sidebar__speaker">{t('panel.speaker', { n: turn.speaker + 1 })}</span>
+                      )}
+                      <span className="ai-sidebar__turn-text">
+                        {turn.text}
+                        {turn.interim && <span className="ai-sidebar__interim">{turn.text ? ' ' : ''}{turn.interim}</span>}
+                      </span>
+                    </p>
+                  ))
                 ) : (
                   <span className="ai-sidebar__empty">
                     {connecting

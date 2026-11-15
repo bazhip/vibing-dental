@@ -554,6 +554,28 @@
   white-space: pre-wrap;
 }
 .ai-sidebar__interim { color: var(--text-muted, #94a3b8); }
+/* One line per speaker turn (or per pause when only one voice is heard). */
+.ai-sidebar__turn { margin: 0 0 0.35em; white-space: pre-wrap; }
+.ai-sidebar__turn:last-child { margin-bottom: 0; }
+.ai-sidebar__turn--speaker {
+  --speaker: var(--primary, #0c6b63);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.55em;
+  align-items: baseline;
+  padding-left: 0.5em;
+  border-left: 3px solid var(--speaker);
+}
+.ai-sidebar__turn--s1 { --speaker: #b45309; }
+.ai-sidebar__turn--s2 { --speaker: #7c3aed; }
+.ai-sidebar__turn--s3 { --speaker: #be185d; }
+.ai-sidebar__speaker {
+  color: var(--speaker);
+  font-weight: 700;
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+.ai-sidebar__turn-text { min-width: 0; }
 .ai-sidebar__activity {
   flex: 1 1 auto;
   min-height: 4rem;
