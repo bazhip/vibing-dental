@@ -248,23 +248,30 @@ const App: React.FC = () => {
       if (isAuthedRef.current) touchLastSeen();
       nudge();
     };
-    const onVisible = () => {
+    const renew = () => {
       if (document.visibilityState === 'visible') {
-        if (isAuthedRef.current) touchLastSeen();
         client.auth.startAutoRefresh();
         lastNudge = 0;
         nudge();
       }
     };
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && isAuthedRef.current) touchLastSeen();
+      renew();
+    };
+    // Reconnecting renews the session but isn't use: a sleeping Mac's dark
+    // wake reconnects Wi-Fi and fires 'online' while Chrome still reports
+    // the tab visible, which made closed laptops look active.
+    const onOnline = renew;
     document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('online', onVisible);
+    window.addEventListener('online', onOnline);
     window.addEventListener('focus', onVisible);
     window.addEventListener('pointerdown', onInteract, { passive: true });
     window.addEventListener('keydown', onInteract);
     return () => {
       sub.subscription.unsubscribe();
       document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('online', onVisible);
+      window.removeEventListener('online', onOnline);
       window.removeEventListener('focus', onVisible);
       window.removeEventListener('pointerdown', onInteract);
       window.removeEventListener('keydown', onInteract);

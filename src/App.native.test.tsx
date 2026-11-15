@@ -52,6 +52,7 @@ import { writeString } from './utils/storage';
 import { readBillingCache, saveBillingCache } from './native/billingCache';
 import { markExplicitSignOut } from './utils/signOutIntent';
 import type { BillingInfo } from './hooks/useBilling';
+import { touchLastSeen } from './utils/lastSeen';
 
 const cachedInfo = { status: 'active', role: 'owner', practice: { id: 'p1', name: 'A Vet' } } as unknown as BillingInfo;
 type AuthCb = (event: string, session: unknown) => void;
@@ -209,5 +210,23 @@ describe('App routing on the web (unchanged)', () => {
     render(<App />);
     expect(await screen.findByText('CHART')).toBeInTheDocument();
     expect(entryGridProps.current?.onGoHome).toEqual(expect.any(Function));
+  });
+});
+
+describe('"Last active"', () => {
+  it('a reconnect alone (a sleeping laptop waking in the background) is not use; focus and clicks are', async () => {
+    flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    const touch = vi.mocked(touchLastSeen);
+    touch.mockClear();
+    auth.getSession.mockClear();
+    act(() => { window.dispatchEvent(new Event('online')); });
+    expect(touch).not.toHaveBeenCalled();
+    expect(auth.getSession).toHaveBeenCalled(); // still renews the session
+    act(() => { window.dispatchEvent(new Event('focus')); });
+    expect(touch).toHaveBeenCalledTimes(1);
+    act(() => { window.dispatchEvent(new Event('pointerdown')); });
+    expect(touch).toHaveBeenCalledTimes(2);
   });
 });
