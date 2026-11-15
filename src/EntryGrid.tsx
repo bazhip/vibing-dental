@@ -30,6 +30,7 @@ import { useAppLanguage } from './i18n/useAppLanguage';
 import { formatDate, formatDateTime, formatMonthDay, formatTime } from './i18n/format';
 import type { ChartPrefs } from './utils/chartSettings';
 import { useChartState } from './hooks/useChartState';
+import { ensureChartSaved } from './utils/ensureSaved';
 import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
@@ -526,6 +527,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // marks itself, and the next 'saved' it reaches is announced until the
   // following save starts.
   const explicitSaveRef = React.useRef(false);
+  // Email to owner: the server sends to the chart's *saved* owner email,
+  // so the chart must be saved as shown first. Read through a ref — the
+  // save updates cloud state between the call and the check.
+  const cloudRef = React.useRef({ ...cloud, chartId: chart.cloudChartId });
+  cloudRef.current = { ...cloud, chartId: chart.cloudChartId };
+  const ensureSavedForEmail = React.useCallback(
+    () => (trial ? Promise.resolve(false) : ensureChartSaved(() => cloudRef.current, () => { explicitSaveRef.current = true; })),
+    [trial],
+  );
   const [announceSaved, setAnnounceSaved] = React.useState(false);
   React.useEffect(() => {
     if (cloud.status === 'saving') setAnnounceSaved(false);
@@ -1443,6 +1453,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       <span aria-hidden="true">⤓</span> {ownerReportOn ? t('fab.download') : t('fab.preview')}
     </button>
   );
+  // Owner report → "Add owner email": close Documents, open the Patient section.
+  const editPatientFromDocuments = () => {
+    setPreviewOpen(false);
+    goToSection('patient');
+  };
   const dialogsAfterForm = (
     <>
       {previewSnapshot && (
@@ -1468,7 +1483,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 setPreviewOpen(false);
                 goToSection(OWNER_REPORT_SECTION);
               },
+              ownerEmail: chart.patientInfo.ownerEmail,
+              ensureSaved: ensureSavedForEmail,
+              onEditPatient: editPatientFromDocuments,
             } : undefined}
+            recordNote={{
+              snapshot: chart.getSnapshot(),
+              stored: chart.recordNote,
+              onChange: chart.setRecordNote,
+              readOnly,
+              aiEnabled: profile.aiEnabled && !trial && cloud.enabled,
+            }}
           />
         </React.Suspense>
       )}

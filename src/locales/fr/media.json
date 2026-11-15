@@ -55,7 +55,9 @@
     "ownerTab": "Compte rendu propriétaire",
     "ownerWho": "À remettre au propriétaire — la visite en langage clair.",
     "close": "Fermer les documents",
-    "tablist": "Document"
+    "tablist": "Document",
+    "noteTab": "Note du dossier",
+    "noteWho": "Pour le dossier médical du patient — à coller dans votre logiciel de clinique."
   },
   "upload": {
     "noCloud": "Le cloud n’est pas configuré.",
@@ -77,5 +79,37 @@
     "noDimensions": "Ce fichier DICOM n’indique pas les dimensions de l’image.",
     "unsupported": "Ce fichier DICOM utilise un format de compression que le navigateur ne peut pas ouvrir. Exportez-le depuis votre logiciel d’imagerie en DICOM non compressé (ou en JPEG/PNG) et réessayez.",
     "render": "Votre navigateur n’a pas pu afficher cette image DICOM."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Intervention dentaire",
+      "exam": "Examen bucco-dentaire",
+      "findings": "Observations par dent",
+      "procedures": "Interventions",
+      "radiographs": "Observations radiographiques",
+      "recheck": "Contrôle"
+    },
+    "alreadyMissing": "Déjà absentes : {{teeth}}",
+    "extracted": "Extraites : {{teeth}}",
+    "otherNotes": "Autres notes : {{text}}",
+    "doctor": "Vétérinaire",
+    "aiEmpty": "L’IA n’a renvoyé aucune note. Veuillez réessayer.",
+    "title": "Note pour le dossier médical",
+    "hint": "Collez-la dans le dossier du patient de votre logiciel de clinique. Les modifications sont enregistrées avec le dossier.",
+    "copy": "Copier",
+    "copied": "Note copiée",
+    "copyPrompt": "Copiez la note :",
+    "polish": "Améliorer avec l’IA",
+    "polishing": "Amélioration…",
+    "rebuild": "Régénérer depuis le dossier",
+    "stale": "Le dossier a changé depuis la modification de cette note. Régénérez-la pour inclure les changements.",
+    "unlockHint": "Déverrouillez le dossier pour modifier cette note. Vous pouvez toujours la copier.",
+    "aiFailed": "Impossible d’améliorer la note.",
+    "aiBadge": "Rédigée avec l’IA. Vérifiez-la avant de la coller.",
+    "polishReplace": {
+      "title": "Remplacer vos modifications ?",
+      "message": "L’amélioration rédige une nouvelle note à partir du dossier. Tout ce que vous avez saisi dans la note sera remplacé.",
+      "confirm": "Remplacer et améliorer"
+    }
   }
 }

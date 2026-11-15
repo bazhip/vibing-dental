@@ -56,6 +56,9 @@ const REVIEW_SETTINGS: Record<string, ModelSettings> = {
   'claude-opus-4-8':   { extra: { thinking: { type: 'adaptive' }, output_config: { effort: 'medium' } }, thinks: true, fallbacks: false },
 };
 const LIVE_MAX_CHARS = 120_000;
+// ai_usage rows that aren't AI calls (voice tokens, emails): left out of
+// the AI rate limits so sending reminders or reports never blocks AI.
+const NON_AI_USAGE = '("deepgram-token","reminder-email","owner-report-email")';
 const REVIEW_MAX_CHARS = 400_000;
 
 Deno.serve(async (req: Request) => {
@@ -90,7 +93,7 @@ Deno.serve(async (req: Request) => {
   const review = body.mode === 'review';
   // Which feature this call is for — logged with usage so cost can be
   // split by feature. Unknown values are dropped.
-  const KINDS = ['live', 'review', 'owner_report', 'warmup'];
+  const KINDS = ['live', 'review', 'owner_report', 'record_note', 'warmup'];
   const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
   if (!review && raw.length > LIVE_MAX_CHARS) return json(apiError('request_too_large'), 413);
   const msgs = body.messages;
@@ -99,8 +102,8 @@ Deno.serve(async (req: Request) => {
   }
   const since = (ms: number) => new Date(Date.now() - ms).toISOString();
   const [{ count: perMinute }, { count: perDay }] = await Promise.all([
-    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(60_000)),
-    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).neq('model', 'deepgram-token').gte('created_at', since(86_400_000)),
+    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE).gte('created_at', since(60_000)),
+    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE).gte('created_at', since(86_400_000)),
   ]);
   if ((perMinute ?? 0) >= 40) return json(apiError('ai_rate_limit'), 429);
   if ((perDay ?? 0) >= 2000) return json(apiError('ai_daily_limit'), 429);

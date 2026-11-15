@@ -12,5 +12,9 @@
     "buccalComment": "Leve enrojecimiento a lo largo de la mejilla izquierda",
     "extraNotes": "Comida blanda durante los próximos 10 días, mientras cicatriza la zona de la extracción.",
     "postComment": "Pequeña astilla en la punta — lisa, no requiere tratamiento"
+  },
+  "ownerReportEmail": {
+    "subject": "Informe dental de {{pet}}",
+    "body": "Hola, {{owner}}:\n\nAdjuntamos el informe dental de {{pet}} de la visita de hoy. No dude en ponerse en contacto con nosotros si tiene alguna pregunta.\n\nGracias,\n{{practice}}"
   }
 }

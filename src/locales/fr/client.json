@@ -12,5 +12,9 @@
     "buccalComment": "Légère rougeur le long de la joue gauche",
     "extraNotes": "Alimentation molle pendant les 10 prochains jours, le temps que le site d'extraction cicatrise.",
     "postComment": "Petit éclat à la pointe — lisse, aucun traitement nécessaire"
+  },
+  "ownerReportEmail": {
+    "subject": "Compte rendu dentaire de {{pet}}",
+    "body": "Bonjour {{owner}},\n\nVous trouverez ci-joint le compte rendu dentaire de {{pet}} suite à la visite d’aujourd’hui. N’hésitez pas à nous contacter pour toute question.\n\nMerci,\n{{practice}}"
   }
 }

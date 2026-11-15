@@ -95,7 +95,11 @@
       "voice_not_configured": "La trascrizione vocale non è ancora configurata.",
       "voice_token_failed": "Impossibile ottenere un token di trascrizione: {{detail}}",
       "voice_unreadable": "Deepgram ha restituito una risposta illeggibile.",
-      "voice_no_token": "Deepgram non ha restituito alcun token."
+      "voice_no_token": "Deepgram non ha restituito alcun token.",
+      "report_chart_required": "Salvi la cartella prima di inviare il referto via email.",
+      "attachment_invalid": "Impossibile leggere il file del referto. Riprovi.",
+      "attachment_too_large": "Il referto è troppo grande per l’invio via email (max 10 MB). Rimuova alcune foto e riprovi.",
+      "daily_owner_report_limit": "Limite giornaliero di invio referti raggiunto (100). Riprovi domani."
     },
     "saveFile": "Impossibile salvare il file."
   },

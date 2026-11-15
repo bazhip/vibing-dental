@@ -144,5 +144,19 @@
     "de": "Deutsch",
     "it": "Italiano (Italienisch)",
     "pt": "Português (Portugiesisch)"
+  },
+  "email": {
+    "button": "An Besitzer senden",
+    "needAccount": "Speichern Sie die Akte in Ihrem Konto, um den Bericht per E-Mail zu senden.",
+    "noEmailTitle": "Keine E-Mail-Adresse des Besitzers in dieser Akte",
+    "noEmail": "Tragen Sie die E-Mail-Adresse des Besitzers im Bereich Patient ein und senden Sie dann den Bericht.",
+    "addEmail": "E-Mail des Besitzers hinzufügen",
+    "saveFirst": "Speichern Sie die Akte, bevor Sie den Bericht per E-Mail senden.",
+    "title": "Besitzerbericht per E-Mail senden",
+    "toHint": "Geht an die in dieser Akte gespeicherte E-Mail-Adresse des Besitzers. Antworten gehen an Sie.",
+    "attachment": "Anhang: {{filename}}",
+    "send": "Bericht senden",
+    "sent": "Bericht an {{email}} gesendet",
+    "sendFailed": "Der Bericht konnte nicht gesendet werden."
   }
 }

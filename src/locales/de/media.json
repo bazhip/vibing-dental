@@ -55,7 +55,9 @@
     "ownerTab": "Besitzerbericht",
     "ownerWho": "Für den Besitzer zum Mitnehmen — der Besuch in verständlicher Sprache.",
     "close": "Dokumente schließen",
-    "tablist": "Dokument"
+    "tablist": "Dokument",
+    "noteTab": "Aktennotiz",
+    "noteWho": "Für die Patientenakte — zum Einfügen in Ihre Praxissoftware."
   },
   "upload": {
     "noCloud": "Die Cloud ist nicht konfiguriert.",
@@ -77,5 +79,37 @@
     "noDimensions": "Diese DICOM-Datei enthält keine Bildabmessungen.",
     "unsupported": "Diese DICOM-Datei verwendet ein Komprimierungsformat, das der Browser nicht öffnen kann. Exportieren Sie sie aus Ihrer Bildgebungssoftware als unkomprimiertes DICOM (oder als JPEG/PNG) und versuchen Sie es erneut.",
     "render": "Ihr Browser konnte dieses DICOM-Bild nicht darstellen."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Zahnbehandlung",
+      "exam": "Untersuchung der Maulhöhle",
+      "findings": "Befunde pro Zahn",
+      "procedures": "Eingriffe",
+      "radiographs": "Röntgenbefunde",
+      "recheck": "Nachkontrolle"
+    },
+    "alreadyMissing": "Bereits fehlend: {{teeth}}",
+    "extracted": "Extrahiert: {{teeth}}",
+    "otherNotes": "Weitere Notizen: {{text}}",
+    "doctor": "Tierarzt/Tierärztin",
+    "aiEmpty": "Die KI hat keine Notiz geliefert. Bitte versuchen Sie es erneut.",
+    "title": "Notiz für die Patientenakte",
+    "hint": "Fügen Sie sie in die Akte des Patienten in Ihrer Praxissoftware ein. Änderungen werden mit der Akte gespeichert.",
+    "copy": "Kopieren",
+    "copied": "Notiz kopiert",
+    "copyPrompt": "Kopieren Sie die Notiz:",
+    "polish": "Mit KI überarbeiten",
+    "polishing": "Wird überarbeitet…",
+    "rebuild": "Aus der Akte neu erstellen",
+    "stale": "Die Akte wurde geändert, seit diese Notiz bearbeitet wurde. Erstellen Sie sie neu, um die Änderungen zu übernehmen.",
+    "unlockHint": "Entsperren Sie die Akte, um diese Notiz zu bearbeiten. Kopieren ist weiterhin möglich.",
+    "aiFailed": "Die Notiz konnte nicht überarbeitet werden.",
+    "aiBadge": "Mit KI verfasst. Prüfen Sie sie vor dem Einfügen.",
+    "polishReplace": {
+      "title": "Ihre Änderungen ersetzen?",
+      "message": "Beim Überarbeiten wird aus der Akte eine neue Notiz erstellt. Alles, was Sie in die Notiz eingegeben haben, wird ersetzt.",
+      "confirm": "Ersetzen und überarbeiten"
+    }
   }
 }

@@ -144,5 +144,19 @@
     "de": "Deutsch (German)",
     "it": "Italiano (Italian)",
     "pt": "Português (Portuguese)"
+  },
+  "email": {
+    "button": "Email to owner",
+    "needAccount": "Save the chart to your account to email the report.",
+    "noEmailTitle": "No owner email on this chart",
+    "noEmail": "Add the owner’s email in the Patient section, then email the report.",
+    "addEmail": "Add owner email",
+    "saveFirst": "Save the chart before emailing the report.",
+    "title": "Email the owner report",
+    "toHint": "Goes to the owner email saved on this chart. Replies come to you.",
+    "attachment": "Attached: {{filename}}",
+    "send": "Send report",
+    "sent": "Report sent to {{email}}",
+    "sendFailed": "Couldn’t send the report."
   }
 }

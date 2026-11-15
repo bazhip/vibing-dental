@@ -55,7 +55,9 @@
     "ownerTab": "Referto per il proprietario",
     "ownerWho": "Da consegnare al proprietario — la visita in un linguaggio semplice.",
     "close": "Chiudi i documenti",
-    "tablist": "Documento"
+    "tablist": "Documento",
+    "noteTab": "Nota di cartella",
+    "noteWho": "Per la cartella clinica del paziente — da incollare nel Suo gestionale."
   },
   "upload": {
     "noCloud": "Il cloud non è configurato.",
@@ -77,5 +79,37 @@
     "noDimensions": "Questo file DICOM non riporta le dimensioni dell’immagine.",
     "unsupported": "Questo file DICOM usa un formato di compressione che il browser non può aprire. Lo esporti dal Suo software di imaging come DICOM non compresso (o come JPEG/PNG) e riprovi.",
     "render": "Il browser non è riuscito a visualizzare questa immagine DICOM."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Procedura odontoiatrica",
+      "exam": "Esame del cavo orale",
+      "findings": "Reperti per dente",
+      "procedures": "Procedure",
+      "radiographs": "Reperti radiografici",
+      "recheck": "Controllo"
+    },
+    "alreadyMissing": "Già mancanti: {{teeth}}",
+    "extracted": "Estratti: {{teeth}}",
+    "otherNotes": "Altre note: {{text}}",
+    "doctor": "Medico veterinario",
+    "aiEmpty": "L’IA non ha restituito alcuna nota. Riprovi.",
+    "title": "Nota per la cartella clinica",
+    "hint": "La incolli nella cartella del paziente nel Suo gestionale. Le modifiche vengono salvate con la cartella.",
+    "copy": "Copia",
+    "copied": "Nota copiata",
+    "copyPrompt": "Copi la nota:",
+    "polish": "Migliora con l’IA",
+    "polishing": "Miglioramento…",
+    "rebuild": "Rigenera dalla cartella",
+    "stale": "La cartella è cambiata da quando questa nota è stata modificata. La rigeneri per includere le modifiche.",
+    "unlockHint": "Sblocchi la cartella per modificare questa nota. Può comunque copiarla.",
+    "aiFailed": "Impossibile migliorare la nota.",
+    "aiBadge": "Scritta con l’IA. La controlli prima di incollarla.",
+    "polishReplace": {
+      "title": "Sostituire le Sue modifiche?",
+      "message": "Il miglioramento scrive una nuova nota a partire dalla cartella. Tutto ciò che ha digitato nella nota verrà sostituito.",
+      "confirm": "Sostituisci e migliora"
+    }
   }
 }

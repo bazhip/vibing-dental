@@ -92,7 +92,11 @@
       "voice_not_configured": "Voice transcription is not configured yet.",
       "voice_token_failed": "Could not mint a transcription token: {{detail}}",
       "voice_unreadable": "Deepgram returned an unreadable response.",
-      "voice_no_token": "Deepgram did not return a token."
+      "voice_no_token": "Deepgram did not return a token.",
+      "report_chart_required": "Save the chart before emailing the report.",
+      "attachment_invalid": "The report file couldn’t be read. Try again.",
+      "attachment_too_large": "The report is too large to email (max 10 MB). Remove some photos and try again.",
+      "daily_owner_report_limit": "Daily report email limit reached (100). Try again tomorrow."
     },
     "saveFile": "Couldn't save the file."
   },

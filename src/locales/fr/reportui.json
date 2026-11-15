@@ -145,5 +145,19 @@
     "de": "Deutsch (allemand)",
     "it": "Italiano (italien)",
     "pt": "Português (portugais)"
+  },
+  "email": {
+    "button": "Envoyer au propriétaire",
+    "needAccount": "Enregistrez le dossier dans votre compte pour envoyer le compte rendu par e-mail.",
+    "noEmailTitle": "Aucune adresse e-mail de propriétaire dans ce dossier",
+    "noEmail": "Ajoutez l’adresse e-mail du propriétaire dans la section Patient, puis envoyez le compte rendu.",
+    "addEmail": "Ajouter l’e-mail du propriétaire",
+    "saveFirst": "Enregistrez le dossier avant d’envoyer le compte rendu par e-mail.",
+    "title": "Envoyer le compte rendu au propriétaire",
+    "toHint": "Envoyé à l’adresse e-mail du propriétaire enregistrée dans ce dossier. Les réponses vous parviendront.",
+    "attachment": "Pièce jointe : {{filename}}",
+    "send": "Envoyer le compte rendu",
+    "sent": "Compte rendu envoyé à {{email}}",
+    "sendFailed": "Impossible d’envoyer le compte rendu."
   }
 }

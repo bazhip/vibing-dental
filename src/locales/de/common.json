@@ -92,7 +92,11 @@
       "voice_not_configured": "Die Sprachtranskription ist noch nicht eingerichtet.",
       "voice_token_failed": "Es konnte kein Transkriptions-Token erstellt werden: {{detail}}",
       "voice_unreadable": "Deepgram hat eine unlesbare Antwort geliefert.",
-      "voice_no_token": "Deepgram hat kein Token zurückgegeben."
+      "voice_no_token": "Deepgram hat kein Token zurückgegeben.",
+      "report_chart_required": "Speichern Sie die Akte, bevor Sie den Bericht per E-Mail senden.",
+      "attachment_invalid": "Die Berichtsdatei konnte nicht gelesen werden. Bitte versuchen Sie es erneut.",
+      "attachment_too_large": "Der Bericht ist zu groß für den E-Mail-Versand (max. 10 MB). Entfernen Sie einige Fotos und versuchen Sie es erneut.",
+      "daily_owner_report_limit": "Tageslimit für Berichts-E-Mails erreicht (100). Versuchen Sie es morgen erneut."
     },
     "saveFile": "Die Datei konnte nicht gespeichert werden."
   },

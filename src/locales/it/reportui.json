@@ -145,5 +145,19 @@
     "de": "Deutsch (tedesco)",
     "it": "Italiano",
     "pt": "Português (portoghese)"
+  },
+  "email": {
+    "button": "Invia al proprietario",
+    "needAccount": "Salvi la cartella nel Suo account per inviare il referto via email.",
+    "noEmailTitle": "Nessun indirizzo email del proprietario in questa cartella",
+    "noEmail": "Aggiunga l’indirizzo email del proprietario nella sezione Paziente, poi invii il referto.",
+    "addEmail": "Aggiungi email del proprietario",
+    "saveFirst": "Salvi la cartella prima di inviare il referto via email.",
+    "title": "Invia il referto al proprietario",
+    "toHint": "Viene inviato all’indirizzo email del proprietario salvato in questa cartella. Le risposte arriveranno a Lei.",
+    "attachment": "Allegato: {{filename}}",
+    "send": "Invia referto",
+    "sent": "Referto inviato a {{email}}",
+    "sendFailed": "Impossibile inviare il referto."
   }
 }

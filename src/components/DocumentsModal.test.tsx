@@ -6,6 +6,7 @@ vi.mock('../native/platform', () => ({ isNativeApp: () => flags.native, WEB_ORIG
 
 vi.mock('./PdfPreviewModal', () => ({ PdfPreviewModal: () => <div>chart-preview</div> }));
 vi.mock('./OwnerReportModal', () => ({ OwnerReportModal: () => <div>owner-preview</div> }));
+vi.mock('./RecordNotePanel', () => ({ RecordNotePanel: () => <div>note-panel</div> }));
 
 import { DocumentsModal } from './DocumentsModal';
 
@@ -37,6 +38,34 @@ describe('DocumentsModal', () => {
   it('opens on the requested tab', () => {
     render(<DocumentsModal open onClose={vi.fn()} initialTab="owner" chartSnapshot={chartSnapshot} ownerReport={ownerReport} />);
     expect(screen.getByRole('tab', { name: 'Owner report' })).toHaveAttribute('aria-selected', 'true');
+  });
+});
+
+const recordNote = {
+  snapshot: { patientInfo: { patientName: 'Biscuit', date: '2026-11-11' } } as never,
+  stored: null, onChange: vi.fn(), readOnly: false, aiEnabled: false,
+};
+
+describe('DocumentsModal — record note tab', () => {
+  it('has a record note tab even without the owner report', () => {
+    render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} recordNote={recordNote} />);
+    expect(screen.getAllByRole('tab')).toHaveLength(2);
+    fireEvent.click(screen.getByRole('tab', { name: 'Record note' }));
+    expect(screen.getByRole('tab', { name: 'Record note' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText('note-panel')).toBeInTheDocument();
+  });
+
+  it('shows three tabs with the owner report', () => {
+    render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} ownerReport={ownerReport} recordNote={recordNote} />);
+    expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Clinical chart', 'Owner report', 'Record note']);
+  });
+
+  it('remembers the record note tab', () => {
+    const { unmount } = render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} recordNote={recordNote} />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Record note' }));
+    unmount();
+    render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} recordNote={recordNote} />);
+    expect(screen.getByRole('tab', { name: 'Record note' })).toHaveAttribute('aria-selected', 'true');
   });
 });
 

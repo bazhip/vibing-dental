@@ -858,7 +858,7 @@ export interface AutofillRequest {
    *  model more thinking and output room for it. */
   mode?: 'review';
   /** Which feature the call is for — logged with usage (ai_usage.kind). */
-  kind?: 'live' | 'review' | 'owner_report' | 'warmup';
+  kind?: 'live' | 'review' | 'owner_report' | 'record_note' | 'warmup';
   system: Array<{ type: 'text'; text: string; cache_control?: { type: 'ephemeral' } }>;
   tools: Anthropic.Messages.Tool[];
   messages: Array<{ role: 'user'; content: Array<{ type: 'text'; text: string }> }>;

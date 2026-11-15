@@ -1584,3 +1584,28 @@
   color: var(--primary, #0c6b63); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer;
 }
 .pdf-style-sheet .pdf-style-list { gap: 6px; }
+
+/* Documents → Record note: the note sits where the PDF preview does. */
+.record-note__text {
+  flex: 1 1 auto;
+  min-height: 60vh;
+  min-height: 60dvh;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+  resize: vertical;
+}
+.record-note__text[readonly] { background: var(--ios-fill, rgba(15, 23, 42, 0.05)); }
+.record-note__stale {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--ios-warning-fill, #fef3c7);
+  color: var(--ios-warning-label, #78350f);
+  font-size: 13px;
+}

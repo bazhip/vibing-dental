@@ -55,7 +55,9 @@
     "ownerTab": "Owner report",
     "ownerWho": "For the owner to take home — the visit in plain English.",
     "close": "Close documents",
-    "tablist": "Document"
+    "tablist": "Document",
+    "noteTab": "Record note",
+    "noteWho": "For the patient’s medical record — paste it into your practice software."
   },
   "upload": {
     "noCloud": "Cloud is not configured.",
@@ -77,5 +79,37 @@
     "noDimensions": "That DICOM file has no image dimensions.",
     "unsupported": "This DICOM file uses a compression format the browser can't open. Export it from your imaging software as uncompressed DICOM (or as a JPEG/PNG) and try again.",
     "render": "Your browser couldn't render that DICOM image."
+  },
+  "recordNote": {
+    "h": {
+      "header": "Dental procedure",
+      "exam": "Oral exam",
+      "findings": "Findings by tooth",
+      "procedures": "Procedures",
+      "radiographs": "Radiographic findings",
+      "recheck": "Recheck"
+    },
+    "alreadyMissing": "Already missing: {{teeth}}",
+    "extracted": "Extracted: {{teeth}}",
+    "otherNotes": "Other notes: {{text}}",
+    "doctor": "Veterinarian",
+    "aiEmpty": "The AI didn’t return a note. Try again.",
+    "title": "Medical record note",
+    "hint": "Paste this into the patient’s record in your practice software. Edits are saved with the chart.",
+    "copy": "Copy",
+    "copied": "Note copied",
+    "copyPrompt": "Copy the note:",
+    "polish": "Polish with AI",
+    "polishing": "Polishing…",
+    "rebuild": "Rebuild from chart",
+    "stale": "The chart changed since this note was edited. Rebuild it to include the changes.",
+    "unlockHint": "Unlock the chart to edit this note. You can still copy it.",
+    "aiFailed": "Couldn’t polish the note.",
+    "aiBadge": "Written with AI. Check it before you paste it.",
+    "polishReplace": {
+      "title": "Replace your edits?",
+      "message": "Polish writes a new note from the chart. Anything you typed into the note will be replaced.",
+      "confirm": "Replace and polish"
+    }
   }
 }

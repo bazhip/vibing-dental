@@ -3176,6 +3176,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -4812,6 +4820,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -4842,6 +4858,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -4982,6 +5002,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -6864,6 +6888,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -7066,6 +7098,134 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
+    "media:recordNote.aiEmpty": {
+      "hash": "5db3e0745dfe",
+      "status": "machine"
+    },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -8370,6 +8530,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -13618,6 +13826,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -15254,6 +15470,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -15284,6 +15508,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -15432,6 +15660,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -17326,6 +17558,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -17528,6 +17768,134 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
+    "media:recordNote.aiEmpty": {
+      "hash": "5db3e0745dfe",
+      "status": "machine"
+    },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -18840,6 +19208,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -24116,6 +24532,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -25752,6 +26176,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -25782,6 +26214,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -25930,6 +26366,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -27824,6 +28264,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -28026,6 +28474,134 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
+    "media:recordNote.aiEmpty": {
+      "hash": "5db3e0745dfe",
+      "status": "machine"
+    },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -29338,6 +29914,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -34614,6 +35238,14 @@
       "hash": "81e9512353d9",
       "status": "machine"
     },
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"
@@ -36250,6 +36882,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -36280,6 +36920,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -36428,6 +37072,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -38322,6 +38970,14 @@
       "hash": "43bef92ae98c",
       "status": "machine"
     },
+    "media:documents.noteTab": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "media:documents.noteWho": {
+      "hash": "c08d854e975f",
+      "status": "machine"
+    },
     "media:documents.ownerTab": {
       "hash": "9539f5ae5214",
       "status": "machine"
@@ -38524,6 +39180,134 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:recordNote.abnormal": {
+      "hash": "fbe27b8e4327",
+      "status": "machine"
+    },
+    "media:recordNote.aiBadge": {
+      "hash": "cf0461098b96",
+      "status": "machine"
+    },
+    "media:recordNote.aiEmpty": {
+      "hash": "5db3e0745dfe",
+      "status": "machine"
+    },
+    "media:recordNote.aiFailed": {
+      "hash": "01e5c3e7cc80",
+      "status": "machine"
+    },
+    "media:recordNote.alreadyMissing": {
+      "hash": "faa33c65d891",
+      "status": "machine"
+    },
+    "media:recordNote.copied": {
+      "hash": "92bb2996b9b2",
+      "status": "machine"
+    },
+    "media:recordNote.copy": {
+      "hash": "e21f935f11d7",
+      "status": "machine"
+    },
+    "media:recordNote.copyPrompt": {
+      "hash": "42b5381185f4",
+      "status": "machine"
+    },
+    "media:recordNote.doctor": {
+      "hash": "38d6a38c0cd1",
+      "status": "machine"
+    },
+    "media:recordNote.extracted": {
+      "hash": "52e601abc907",
+      "status": "machine"
+    },
+    "media:recordNote.h.anesthesia": {
+      "hash": "1a4ca81992c0",
+      "status": "machine"
+    },
+    "media:recordNote.h.exam": {
+      "hash": "47df1ebe796d",
+      "status": "machine"
+    },
+    "media:recordNote.h.findings": {
+      "hash": "f3f3bfe656d3",
+      "status": "machine"
+    },
+    "media:recordNote.h.header": {
+      "hash": "8567c5651088",
+      "status": "machine"
+    },
+    "media:recordNote.h.procedures": {
+      "hash": "a3ecb35d5ec1",
+      "status": "machine"
+    },
+    "media:recordNote.h.radiographs": {
+      "hash": "765d13d0fbd7",
+      "status": "machine"
+    },
+    "media:recordNote.h.recheck": {
+      "hash": "1f47d8366934",
+      "status": "machine"
+    },
+    "media:recordNote.h.treatment": {
+      "hash": "64fbcb2e386c",
+      "status": "machine"
+    },
+    "media:recordNote.hint": {
+      "hash": "20e778869323",
+      "status": "machine"
+    },
+    "media:recordNote.left": {
+      "hash": "58eb9032e3bb",
+      "status": "machine"
+    },
+    "media:recordNote.normal": {
+      "hash": "a7248eeb45eb",
+      "status": "machine"
+    },
+    "media:recordNote.otherNotes": {
+      "hash": "b0c3fe8b055e",
+      "status": "machine"
+    },
+    "media:recordNote.polish": {
+      "hash": "2c76fba515d0",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.confirm": {
+      "hash": "4c6626af7940",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.message": {
+      "hash": "72731b7dfac1",
+      "status": "machine"
+    },
+    "media:recordNote.polishReplace.title": {
+      "hash": "48ff3e19425d",
+      "status": "machine"
+    },
+    "media:recordNote.polishing": {
+      "hash": "a17e71fcbcff",
+      "status": "machine"
+    },
+    "media:recordNote.rebuild": {
+      "hash": "9cb7651a8386",
+      "status": "machine"
+    },
+    "media:recordNote.right": {
+      "hash": "883361d5d682",
+      "status": "machine"
+    },
+    "media:recordNote.stale": {
+      "hash": "3038515daa42",
+      "status": "machine"
+    },
+    "media:recordNote.title": {
+      "hash": "6b8bc4f98fdc",
+      "status": "machine"
+    },
+    "media:recordNote.unlockHint": {
+      "hash": "5432510aa141",
       "status": "machine"
     },
     "media:upload.cantRead": {
@@ -39836,6 +40620,54 @@
     },
     "report:yourTeam": {
       "hash": "3a0360fce6e0",
+      "status": "machine"
+    },
+    "reportui:email.addEmail": {
+      "hash": "b18645b3053d",
+      "status": "machine"
+    },
+    "reportui:email.attachment": {
+      "hash": "6c92f2232c8c",
+      "status": "machine"
+    },
+    "reportui:email.button": {
+      "hash": "c5d9ac86079f",
+      "status": "machine"
+    },
+    "reportui:email.needAccount": {
+      "hash": "53af1f453dac",
+      "status": "machine"
+    },
+    "reportui:email.noEmail": {
+      "hash": "a454545709dd",
+      "status": "machine"
+    },
+    "reportui:email.noEmailTitle": {
+      "hash": "555f194d82a7",
+      "status": "machine"
+    },
+    "reportui:email.saveFirst": {
+      "hash": "9dcd96af64de",
+      "status": "machine"
+    },
+    "reportui:email.send": {
+      "hash": "a44d35311325",
+      "status": "machine"
+    },
+    "reportui:email.sendFailed": {
+      "hash": "04fcdad05ac2",
+      "status": "machine"
+    },
+    "reportui:email.sent": {
+      "hash": "b78acfc9ec2c",
+      "status": "machine"
+    },
+    "reportui:email.title": {
+      "hash": "ee28e14f1e4f",
+      "status": "machine"
+    },
+    "reportui:email.toHint": {
+      "hash": "58036f1fc87f",
       "status": "machine"
     },
     "reportui:languages.de": {
@@ -41888,6 +42720,14 @@
     }
   },
   "pt": {
+    "client:ownerReportEmail.body": {
+      "hash": "aba65be512b0",
+      "status": "machine"
+    },
+    "client:ownerReportEmail.subject": {
+      "hash": "92655ff80809",
+      "status": "machine"
+    },
     "client:reminder.body": {
       "hash": "c4a83ab8c917",
       "status": "machine"

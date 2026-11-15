@@ -24,6 +24,7 @@ import {
   ChartSnapshot,
   ImageRole,
   OwnerReportOverrides,
+  StoredRecordNote,
 } from '../types';
 import { usePersistedState } from './usePersistedState';
 import { readJson, writeJson } from '../utils/storage';
@@ -137,6 +138,10 @@ export interface UseChartStateReturn {
   ownerReport: OwnerReportOverrides;
   /** Set an owner-report block; null restores the generated text. */
   setOwnerReportOverride: (field: keyof OwnerReportOverrides, value: string | null) => void;
+
+  /** Edited / AI-polished record note (null = generated from the chart). */
+  recordNote: StoredRecordNote | null;
+  setRecordNote: (note: StoredRecordNote | null) => void;
 }
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
@@ -437,6 +442,7 @@ export function useChartState(): UseChartStateReturn {
   // Hand-edited owner-report blocks. A field exists only when customized
   // — the report generator falls back to generated text otherwise.
   const [ownerReport, setOwnerReport] = usePersistedState<OwnerReportOverrides>('chart.ownerReport', 1, {});
+  const [recordNote, setRecordNote] = usePersistedState<StoredRecordNote | null>('chart.recordNote', 1, null);
   const setOwnerReportOverride = React.useCallback(
     (field: keyof OwnerReportOverrides, value: string | null) => {
       setOwnerReport((prev) => {
@@ -508,6 +514,7 @@ export function useChartState(): UseChartStateReturn {
     setImageRoles({}); // image tags belong to the prior visit's images
     setPdfExcludedImages([]);
     setOwnerReport({}); // report edits are visit-specific
+    setRecordNote(null);
     setPlannedExtractions([]);
     setPatientInfo(blankPatientInfo(keep));
     if (identity) {
@@ -544,6 +551,8 @@ export function useChartState(): UseChartStateReturn {
     // Omitted when empty so charts that never use the plan keep the exact
     // serialized shape (and saved hash) they had before the field existed.
     ...(plannedExtractions.length ? { plannedExtractions } : {}),
+    // Same: absent unless the note was edited, so existing hashes hold.
+    ...(recordNote ? { recordNote } : {}),
     patientInfo,
     toothData,
     species,
@@ -555,7 +564,7 @@ export function useChartState(): UseChartStateReturn {
     postComments: postDiagramComments,
     postStrokes: postDiagramStrokes,
   }), [
-    imageRoles, pdfExcludedImages, ownerReport, plannedExtractions, patientInfo, toothData, species, logo,
+    imageRoles, pdfExcludedImages, ownerReport, recordNote, plannedExtractions, patientInfo, toothData, species, logo,
     preToothMarks, preDiagramComments, preDiagramStrokes,
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
@@ -570,6 +579,7 @@ export function useChartState(): UseChartStateReturn {
     setImageRoles(snapshot.imageRoles ?? {});
     setPdfExcludedImages(Array.isArray(snapshot.pdfExcludedImages) ? snapshot.pdfExcludedImages : []);
     setOwnerReport(snapshot.ownerReport ?? {});
+    setRecordNote(snapshot.recordNote ?? null);
     setPlannedExtractions(
       Array.isArray(snapshot.plannedExtractions)
         ? snapshot.plannedExtractions.filter((t): t is number => typeof t === 'number')
@@ -625,6 +635,7 @@ export function useChartState(): UseChartStateReturn {
       setImageRoles({}); // attachments (and their tags) don't travel in the PDF stash
       setPdfExcludedImages([]);
       setOwnerReport({}); // report edits don't either
+      setRecordNote(null);
       setPlannedExtractions([]); // nor the extraction plan
       setPatientInfo(normalizeSnapshot({ patientInfo: parsed.patientInfo } as ChartSnapshot).patientInfo);
       setSpecies(parsed.species);
@@ -708,5 +719,8 @@ export function useChartState(): UseChartStateReturn {
 
     ownerReport,
     setOwnerReportOverride,
+
+    recordNote,
+    setRecordNote,
   };
 }
