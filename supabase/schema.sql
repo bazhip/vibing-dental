@@ -254,6 +254,7 @@ alter table public.practices add column if not exists logo_path text not null de
 -- lead_days before recall_date when practices.reminder_auto is on).
 alter table public.charts add column if not exists owner_email text not null default '';
 alter table public.charts add column if not exists reminder_sent_at timestamptz;
+alter table public.charts add column if not exists owner_report_sent_at timestamptz;
 alter table public.practices add column if not exists reminder_subject text not null default '';
 alter table public.practices add column if not exists reminder_body text not null default '';
 alter table public.practices add column if not exists reminder_auto boolean not null default false;

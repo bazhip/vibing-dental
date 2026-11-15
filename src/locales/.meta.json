@@ -4812,6 +4812,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -4842,6 +4850,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -4982,6 +4994,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -15378,6 +15394,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -15408,6 +15432,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -15556,6 +15584,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -26000,6 +26032,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -26030,6 +26070,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -26178,6 +26222,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {
@@ -36622,6 +36670,14 @@
       "hash": "760730f7502e",
       "status": "machine"
     },
+    "common:errors.api.attachment_invalid": {
+      "hash": "932804b86100",
+      "status": "machine"
+    },
+    "common:errors.api.attachment_too_large": {
+      "hash": "860bcb9e5f7f",
+      "status": "machine"
+    },
     "common:errors.api.billing_not_configured": {
       "hash": "b4fe565333e8",
       "status": "machine"
@@ -36652,6 +36708,10 @@
     },
     "common:errors.api.confirm_practice_name": {
       "hash": "08c9312c1098",
+      "status": "machine"
+    },
+    "common:errors.api.daily_owner_report_limit": {
+      "hash": "224ad6d38755",
       "status": "machine"
     },
     "common:errors.api.daily_reminder_limit": {
@@ -36800,6 +36860,10 @@
     },
     "common:errors.api.remove_primary_owner": {
       "hash": "445e075f1c10",
+      "status": "machine"
+    },
+    "common:errors.api.report_chart_required": {
+      "hash": "9dcd96af64de",
       "status": "machine"
     },
     "common:errors.api.report_config_no_templates": {

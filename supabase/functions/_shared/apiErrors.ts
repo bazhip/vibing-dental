@@ -84,6 +84,12 @@ export const API_ERRORS = {
   email_not_configured: () => 'Email is not configured.',
   email_failed: (p: { detail: string }) => `Email failed: ${p.detail}`,
 
+  // send-owner-report
+  report_chart_required: () => 'Save the chart before emailing the report.',
+  attachment_invalid: () => 'The report file couldn’t be read. Try again.',
+  attachment_too_large: () => 'The report is too large to email (max 10 MB). Remove some photos and try again.',
+  daily_owner_report_limit: () => 'Daily report email limit reached (100). Try again tomorrow.',
+
   // ai-autofill
   ai_not_configured: () => 'AI is not configured yet.',
   request_too_large: () => 'Request too large.',
