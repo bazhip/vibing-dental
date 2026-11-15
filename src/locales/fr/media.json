@@ -90,6 +90,7 @@
     "alreadyMissing": "Déjà absentes : {{teeth}}",
     "extracted": "Extraites : {{teeth}}",
     "otherNotes": "Autres notes : {{text}}",
-    "doctor": "Vétérinaire"
+    "doctor": "Vétérinaire",
+    "aiEmpty": "L’IA n’a renvoyé aucune note. Veuillez réessayer."
   }
 }

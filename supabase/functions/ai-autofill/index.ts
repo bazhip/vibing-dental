@@ -90,7 +90,7 @@ Deno.serve(async (req: Request) => {
   const review = body.mode === 'review';
   // Which feature this call is for — logged with usage so cost can be
   // split by feature. Unknown values are dropped.
-  const KINDS = ['live', 'review', 'owner_report', 'warmup'];
+  const KINDS = ['live', 'review', 'owner_report', 'record_note', 'warmup'];
   const kind = typeof body.kind === 'string' && KINDS.includes(body.kind) ? body.kind : '';
   if (!review && raw.length > LIVE_MAX_CHARS) return json(apiError('request_too_large'), 413);
   const msgs = body.messages;

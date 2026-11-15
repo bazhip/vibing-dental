@@ -90,6 +90,7 @@
     "alreadyMissing": "Bereits fehlend: {{teeth}}",
     "extracted": "Extrahiert: {{teeth}}",
     "otherNotes": "Weitere Notizen: {{text}}",
-    "doctor": "Tierarzt/Tierärztin"
+    "doctor": "Tierarzt/Tierärztin",
+    "aiEmpty": "Die KI hat keine Notiz geliefert. Bitte versuchen Sie es erneut."
   }
 }
