@@ -7,7 +7,7 @@ interface ErrorBoundaryState {
   stack: string;
 }
 
-const FEEDBACK_EMAIL = 'bazhip@gmail.com';
+const FEEDBACK_EMAIL = 'admin@toothops.app';
 
 /** The email goes to the developer, so the report stays in English whatever the UI language. */
 function crashMailto(message: string, stack: string): string {

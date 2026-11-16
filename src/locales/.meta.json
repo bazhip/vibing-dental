@@ -2732,6 +2732,10 @@
       "hash": "5b98701e1f8c",
       "status": "machine"
     },
+    "chart:grid.perSite": {
+      "hash": "5601ab6beb7f",
+      "status": "machine"
+    },
     "chart:grid.rootAria": {
       "hash": "812bd1e56f2b",
       "status": "machine"
@@ -2800,12 +2804,24 @@
       "hash": "a29ea413d311",
       "status": "machine"
     },
+    "chart:grid.siteAria": {
+      "hash": "67beb9c95bc3",
+      "status": "machine"
+    },
     "chart:grid.slot.root": {
       "hash": "b35308714f01",
       "status": "machine"
     },
     "chart:grid.slot.rootLast": {
       "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.slot.site": {
+      "hash": "9c989f799e7b",
+      "status": "machine"
+    },
+    "chart:grid.slot.siteLast": {
+      "hash": "913029e78fa2",
       "status": "machine"
     },
     "chart:grid.title": {
@@ -2830,6 +2846,14 @@
     },
     "chart:grid.unsplit.title": {
       "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.chip": {
+      "hash": "1442913384c3",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.title": {
+      "hash": "9d45652d9d8a",
       "status": "machine"
     },
     "chart:imaging.cameraFailed": {
@@ -3122,6 +3146,10 @@
     },
     "chart:toothChart.rootAria": {
       "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.siteAria": {
+      "hash": "6acfb59d6c09",
       "status": "machine"
     },
     "chart:toothChart.start": {
@@ -9704,6 +9732,14 @@
       "hash": "9953c09e5d0a",
       "status": "machine"
     },
+    "settings:chart.charting.pocketSite": {
+      "hash": "0512656854f6",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSiteHint": {
+      "hash": "fe19d3336452",
+      "status": "machine"
+    },
     "settings:chart.charting.pocketTooth": {
       "hash": "e3b56159e026",
       "status": "machine"
@@ -13850,6 +13886,10 @@
       "hash": "5b98701e1f8c",
       "status": "machine"
     },
+    "chart:grid.perSite": {
+      "hash": "5601ab6beb7f",
+      "status": "machine"
+    },
     "chart:grid.rootAria": {
       "hash": "812bd1e56f2b",
       "status": "machine"
@@ -13918,12 +13958,24 @@
       "hash": "a29ea413d311",
       "status": "machine"
     },
+    "chart:grid.siteAria": {
+      "hash": "67beb9c95bc3",
+      "status": "machine"
+    },
     "chart:grid.slot.root": {
       "hash": "b35308714f01",
       "status": "machine"
     },
     "chart:grid.slot.rootLast": {
       "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.slot.site": {
+      "hash": "9c989f799e7b",
+      "status": "machine"
+    },
+    "chart:grid.slot.siteLast": {
+      "hash": "913029e78fa2",
       "status": "machine"
     },
     "chart:grid.title": {
@@ -13948,6 +14000,14 @@
     },
     "chart:grid.unsplit.title": {
       "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.chip": {
+      "hash": "1442913384c3",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.title": {
+      "hash": "9d45652d9d8a",
       "status": "machine"
     },
     "chart:imaging.cameraFailed": {
@@ -14248,6 +14308,10 @@
     },
     "chart:toothChart.rootAria": {
       "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.siteAria": {
+      "hash": "6acfb59d6c09",
       "status": "machine"
     },
     "chart:toothChart.start": {
@@ -20860,6 +20924,14 @@
     },
     "settings:chart.charting.pocketRootHint": {
       "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSite": {
+      "hash": "0512656854f6",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSiteHint": {
+      "hash": "fe19d3336452",
       "status": "machine"
     },
     "settings:chart.charting.pocketTooth": {
@@ -25032,6 +25104,10 @@
       "hash": "5b98701e1f8c",
       "status": "machine"
     },
+    "chart:grid.perSite": {
+      "hash": "5601ab6beb7f",
+      "status": "machine"
+    },
     "chart:grid.rootAria": {
       "hash": "812bd1e56f2b",
       "status": "machine"
@@ -25100,12 +25176,24 @@
       "hash": "a29ea413d311",
       "status": "machine"
     },
+    "chart:grid.siteAria": {
+      "hash": "67beb9c95bc3",
+      "status": "machine"
+    },
     "chart:grid.slot.root": {
       "hash": "b35308714f01",
       "status": "machine"
     },
     "chart:grid.slot.rootLast": {
       "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.slot.site": {
+      "hash": "9c989f799e7b",
+      "status": "machine"
+    },
+    "chart:grid.slot.siteLast": {
+      "hash": "913029e78fa2",
       "status": "machine"
     },
     "chart:grid.title": {
@@ -25130,6 +25218,14 @@
     },
     "chart:grid.unsplit.title": {
       "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.chip": {
+      "hash": "1442913384c3",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.title": {
+      "hash": "9d45652d9d8a",
       "status": "machine"
     },
     "chart:imaging.cameraFailed": {
@@ -25430,6 +25526,10 @@
     },
     "chart:toothChart.rootAria": {
       "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.siteAria": {
+      "hash": "6acfb59d6c09",
       "status": "machine"
     },
     "chart:toothChart.start": {
@@ -32042,6 +32142,14 @@
     },
     "settings:chart.charting.pocketRootHint": {
       "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSite": {
+      "hash": "0512656854f6",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSiteHint": {
+      "hash": "fe19d3336452",
       "status": "machine"
     },
     "settings:chart.charting.pocketTooth": {
@@ -36214,6 +36322,10 @@
       "hash": "5b98701e1f8c",
       "status": "machine"
     },
+    "chart:grid.perSite": {
+      "hash": "5601ab6beb7f",
+      "status": "machine"
+    },
     "chart:grid.rootAria": {
       "hash": "812bd1e56f2b",
       "status": "machine"
@@ -36282,12 +36394,24 @@
       "hash": "a29ea413d311",
       "status": "machine"
     },
+    "chart:grid.siteAria": {
+      "hash": "67beb9c95bc3",
+      "status": "machine"
+    },
     "chart:grid.slot.root": {
       "hash": "b35308714f01",
       "status": "machine"
     },
     "chart:grid.slot.rootLast": {
       "hash": "ecc8b88c24cd",
+      "status": "machine"
+    },
+    "chart:grid.slot.site": {
+      "hash": "9c989f799e7b",
+      "status": "machine"
+    },
+    "chart:grid.slot.siteLast": {
+      "hash": "913029e78fa2",
       "status": "machine"
     },
     "chart:grid.title": {
@@ -36312,6 +36436,14 @@
     },
     "chart:grid.unsplit.title": {
       "hash": "d29ce515d4f8",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.chip": {
+      "hash": "1442913384c3",
+      "status": "machine"
+    },
+    "chart:grid.unsplitSites.title": {
+      "hash": "9d45652d9d8a",
       "status": "machine"
     },
     "chart:imaging.cameraFailed": {
@@ -36612,6 +36744,10 @@
     },
     "chart:toothChart.rootAria": {
       "hash": "6bca16f4ca9f",
+      "status": "machine"
+    },
+    "chart:toothChart.siteAria": {
+      "hash": "6acfb59d6c09",
       "status": "machine"
     },
     "chart:toothChart.start": {
@@ -43224,6 +43360,14 @@
     },
     "settings:chart.charting.pocketRootHint": {
       "hash": "9953c09e5d0a",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSite": {
+      "hash": "0512656854f6",
+      "status": "machine"
+    },
+    "settings:chart.charting.pocketSiteHint": {
+      "hash": "fe19d3336452",
       "status": "machine"
     },
     "settings:chart.charting.pocketTooth": {

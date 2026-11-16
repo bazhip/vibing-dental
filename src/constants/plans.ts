@@ -106,7 +106,7 @@ export const PAID_SIGNUP = false;
 export const FREE_BETA = !PAID_SIGNUP;
 export const FREE_BETA_SEATS = 5;
 
-export const CONTACT_EMAIL = 'bazhip@gmail.com';
+export const CONTACT_EMAIL = 'admin@toothops.app';
 
 export const PLANS: PlanDef[] = [
   plan({

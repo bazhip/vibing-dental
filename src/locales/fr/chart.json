@@ -58,10 +58,12 @@
     },
     "pdstateTitle": "Stade PD",
     "perRoot": "{{name}} (par racine)",
+    "perSite": "{{name}} (par site)",
     "missing": "Absente",
     "triadanTooth": "Triadan · Dent",
     "cellAria": "Dent {{triadan}} {{column}}",
     "rootAria": "Dent {{triadan}} poche, racine {{root}}",
+    "siteAria": "Dent {{triadan}} poche, site {{site}}",
     "setAll": {
       "title": "Définir {{name}} pour toutes les dents",
       "message": "S’applique à toutes les dents non marquées comme absentes. Laissez vide pour effacer la colonne.",
@@ -109,11 +111,17 @@
     },
     "slot": {
       "root": "Racine {{root}}",
-      "rootLast": "Racine {{root}} — dernière visite {{value}}"
+      "rootLast": "Racine {{root}} — dernière visite {{value}}",
+      "site": "Site {{site}}",
+      "siteLast": "Site {{site}} — dernière visite {{value}}"
     },
     "unsplit": {
       "title": "Non réparti par racine — cliquez pour modifier (effacez-le pour obtenir une case par racine)",
       "chip": "toutes racines"
+    },
+    "unsplitSites": {
+      "title": "Non réparti par site — cliquez pour modifier (effacez la valeur pour obtenir une case par site)",
+      "chip": "sans site"
     },
     "lastVisit": "Dernière visite : {{value}}",
     "lastVisitRef": "Dernière visite : {{value}} — affichée à titre indicatif, non reportée",
@@ -144,6 +152,7 @@
     "missingBefore": "Absente (avant cette visite)",
     "findings": "Observations",
     "rootAria": "Poche, racine {{root}}",
+    "siteAria": "Poche, site {{site}}",
     "expected": "Attendu : {{range}}",
     "diagnosisNote": "Note de diagnostic",
     "diagnosisPlaceholder": "p. ex. couronne fracturée, exposition pulpaire",

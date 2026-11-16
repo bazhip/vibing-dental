@@ -431,7 +431,7 @@ export const Landing: React.FC<LandingProps> = ({
           <a href="/privacy">{t('footer.privacy')}</a>
           <a href="/terms">{t('footer.terms')}</a>
           <a href="/dpa">{t('footer.dpa')}</a>
-          <a href="mailto:bazhip@gmail.com">{t('footer.contact')}</a>
+          <a href="mailto:admin@toothops.app">{t('footer.contact')}</a>
         </span>
         <EnglishGoverns className="landing__footer-note" />
       </footer>

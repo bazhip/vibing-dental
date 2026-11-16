@@ -77,5 +77,5 @@ Supabase project, edge functions, email (Resend), and scheduled jobs.
 
 ## Feedback
 
-Bugs and ideas: email bazhip@gmail.com (the in-app footer link pre-fills a
+Bugs and ideas: email admin@toothops.app (the in-app footer link pre-fills a
 report template).

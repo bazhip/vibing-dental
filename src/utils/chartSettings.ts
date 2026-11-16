@@ -4,6 +4,7 @@ import { ColumnKey, columnLabel } from '../constants/columnDefinitions';
 import { CustomBlockDef, CustomFieldDef, normalizeBlockDefs, normalizeFieldDefs } from './customAnesthesia';
 import { DEFAULT_QUICK_CODES, normalizeQuickCodes } from './quickCodes';
 import { CustomExamAreaDef, normalizeExamAreaDefs } from './customExam';
+import type { PocketMode } from './pocket';
 
 /**
  * Chart settings — per person. They follow the signed-in account on every
@@ -46,8 +47,9 @@ export type ScoreTapMove = 'finding' | 'tooth' | 'stay';
 const SCORE_TAP_MOVES = new Set<string>(['finding', 'tooth', 'stay']);
 
 export interface ChartPrefs {
-  /** 'tooth' = one pocket box per tooth; 'root' = one per root. */
-  pocketMode: 'tooth' | 'root';
+  /** 'tooth' = one pocket box per tooth; 'root' = one per root;
+   *  'site' = six per tooth (MB / B / DB / ML / L / DL). */
+  pocketMode: PocketMode;
   /** Charting grid columns that are hidden. */
   hiddenColumns: DentalField[];
   /** Grid values written beside the teeth (Diagnosis diagram + PDF). */
@@ -132,7 +134,7 @@ function usualDrugOf(v: unknown, fallback: ChartPrefs['usualDrug']): ChartPrefs[
 export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT_CHART_PREFS): ChartPrefs {
   const r = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>) : {};
   return {
-    pocketMode: r.pocketMode === 'root' || r.pocketMode === 'tooth' ? r.pocketMode : fallback.pocketMode,
+    pocketMode: r.pocketMode === 'root' || r.pocketMode === 'tooth' || r.pocketMode === 'site' ? r.pocketMode : fallback.pocketMode,
     hiddenColumns: fieldList(r.hiddenColumns, fallback.hiddenColumns),
     besideTeeth: fieldList(r.besideTeeth, fallback.besideTeeth),
     mirrorToDiagnosis: bool(r.mirrorToDiagnosis, fallback.mirrorToDiagnosis),

@@ -58,10 +58,12 @@
     },
     "pdstateTitle": "Stadio PD",
     "perRoot": "{{name}} (per radice)",
+    "perSite": "{{name}} (per sito)",
     "missing": "Mancante",
     "triadanTooth": "Triadan · Dente",
     "cellAria": "Dente {{triadan}} {{column}}",
     "rootAria": "Dente {{triadan}} tasca, radice {{root}}",
+    "siteAria": "Dente {{triadan}} tasca, sito {{site}}",
     "setAll": {
       "title": "Imposta {{name}} per tutti i denti",
       "message": "Si applica a tutti i denti non contrassegnati come mancanti. Lasci vuoto il campo per svuotare la colonna.",
@@ -109,11 +111,17 @@
     },
     "slot": {
       "root": "Radice {{root}}",
-      "rootLast": "Radice {{root}} — ultima visita {{value}}"
+      "rootLast": "Radice {{root}} — ultima visita {{value}}",
+      "site": "Sito {{site}}",
+      "siteLast": "Sito {{site}} — ultima visita {{value}}"
     },
     "unsplit": {
       "title": "Non suddiviso per radice — faccia clic per modificare (lo cancelli per ottenere un riquadro per radice)",
       "chip": "tutte le radici"
+    },
+    "unsplitSites": {
+      "title": "Non suddiviso per sito — clicchi per modificare (cancelli il valore per avere una casella per sito)",
+      "chip": "senza sito"
     },
     "lastVisit": "Ultima visita: {{value}}",
     "lastVisitRef": "Ultima visita: {{value}} — mostrata come riferimento, non riportata",
@@ -144,6 +152,7 @@
     "missingBefore": "Mancante (prima di questa visita)",
     "findings": "Reperti",
     "rootAria": "Tasca, radice {{root}}",
+    "siteAria": "Tasca, sito {{site}}",
     "expected": "Previsto: {{range}}",
     "diagnosisNote": "Nota diagnostica",
     "diagnosisPlaceholder": "ad es. corona fratturata, esposizione pulpare",

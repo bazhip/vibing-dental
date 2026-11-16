@@ -58,10 +58,12 @@
     },
     "pdstateTitle": "PD-Stadium",
     "perRoot": "{{name}} (pro Wurzel)",
+    "perSite": "{{name}} (pro Messstelle)",
     "missing": "Fehlend",
     "triadanTooth": "Triadan · Zahn",
     "cellAria": "Zahn {{triadan}} {{column}}",
     "rootAria": "Zahn {{triadan}} Tasche, Wurzel {{root}}",
+    "siteAria": "Zahn {{triadan}} Tasche, Messstelle {{site}}",
     "setAll": {
       "title": "{{name}} für alle Zähne festlegen",
       "message": "Gilt für alle Zähne, die nicht als fehlend markiert sind. Lassen Sie das Feld leer, um die Spalte zu leeren.",
@@ -106,11 +108,17 @@
     },
     "slot": {
       "root": "Wurzel {{root}}",
-      "rootLast": "Wurzel {{root}} — letzter Besuch {{value}}"
+      "rootLast": "Wurzel {{root}} — letzter Besuch {{value}}",
+      "site": "Messstelle {{site}}",
+      "siteLast": "Messstelle {{site}} — letzter Besuch {{value}}"
     },
     "unsplit": {
       "title": "Nicht nach Wurzeln aufgeteilt — zum Bearbeiten klicken (löschen Sie den Wert, um ein Feld pro Wurzel zu erhalten)",
       "chip": "alle Wurzeln"
+    },
+    "unsplitSites": {
+      "title": "Nicht nach Messstelle aufgeteilt — zum Bearbeiten klicken (Wert löschen, um ein Feld pro Messstelle zu erhalten)",
+      "chip": "ohne Messstelle"
     },
     "lastVisit": "Letzter Besuch: {{value}}",
     "lastVisitRef": "Letzter Besuch: {{value}} — nur zur Orientierung angezeigt, nicht übernommen",
@@ -141,6 +149,7 @@
     "missingBefore": "Fehlt (vor diesem Besuch)",
     "findings": "Befunde",
     "rootAria": "Tasche, Wurzel {{root}}",
+    "siteAria": "Tasche, Messstelle {{site}}",
     "expected": "Erwartet: {{range}}",
     "diagnosisNote": "Diagnosenotiz",
     "diagnosisPlaceholder": "z. B. Kronenfraktur, Pulpaexposition",

@@ -58,10 +58,12 @@
     },
     "pdstateTitle": "PD State",
     "perRoot": "{{name}} (per root)",
+    "perSite": "{{name}} (per site)",
     "missing": "Missing",
     "triadanTooth": "Triadan · Tooth",
     "cellAria": "Tooth {{triadan}} {{column}}",
     "rootAria": "Tooth {{triadan}} pocket, {{root}} root",
+    "siteAria": "Tooth {{triadan}} pocket, {{site}} site",
     "setAll": {
       "title": "Set {{name}} for every tooth",
       "message": "Applies to every tooth not marked missing. Leave it empty to clear the column.",
@@ -106,11 +108,17 @@
     },
     "slot": {
       "root": "{{root}} root",
-      "rootLast": "{{root}} root — last visit {{value}}"
+      "rootLast": "{{root}} root — last visit {{value}}",
+      "site": "{{site}} site",
+      "siteLast": "{{site}} site — last visit {{value}}"
     },
     "unsplit": {
       "title": "Not split by root — click to edit (clear it to get a box per root)",
       "chip": "all roots"
+    },
+    "unsplitSites": {
+      "title": "Not split by site — click to edit (clear it to get a box per site)",
+      "chip": "not by site"
     },
     "lastVisit": "Last visit: {{value}}",
     "lastVisitRef": "Last visit: {{value}} — shown for reference, not carried forward",
@@ -141,6 +149,7 @@
     "missingBefore": "Missing (before this visit)",
     "findings": "Findings",
     "rootAria": "Pocket, {{root}} root",
+    "siteAria": "Pocket, {{site}} site",
     "expected": "Expected {{range}}",
     "diagnosisNote": "Diagnosis note",
     "diagnosisPlaceholder": "e.g. Fractured crown, pulp exposure",
