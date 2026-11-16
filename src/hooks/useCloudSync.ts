@@ -1,7 +1,7 @@
 import React from 'react';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
-import { confirmDialog } from '../components/ui/dialogs';
+import { chooseDialog, confirmDialog } from '../components/ui/dialogs';
 import i18n from '../i18n';
 import { formatDate, formatTime } from '../i18n/format';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
@@ -103,11 +103,18 @@ function hasContent(s: ChartSnapshot): boolean {
  *  and owner details (and the presenting complaint) are what gets filled
  *  in ahead of a visit, so they don't start autosave on their own — a
  *  chart reaches the cloud by itself once charting begins, or when the
- *  user presses Save. */
+ *  user presses Save.
+ *
+ *  Pre-op "missing" marks don't count either: "+ New visit" pre-marks the
+ *  teeth already gone at the last visit, and counting those autosaved an
+ *  untouched visit the moment it was started. Started by mistake, that
+ *  left an empty same-day duplicate beside the real chart, listed as the
+ *  patient's latest visit. */
 export function hasClinicalContent(s: ChartSnapshot): boolean {
   if (!hasContent(s)) return false;
   const p = s.patientInfo;
-  const identityOnly = { ...s, patientInfo: { ...p, patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', complaint: '' } };
+  const preMarks = Object.fromEntries(Object.entries(s.preMarks ?? {}).filter(([, mark]) => mark !== 'missing'));
+  const identityOnly = { ...s, preMarks, patientInfo: { ...p, patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', complaint: '' } };
   return hasContent(identityOnly as ChartSnapshot);
 }
 
@@ -371,7 +378,7 @@ export function useCloudSync(
   const dupCheckingRef = React.useRef(false);
   const skipNextDuplicateCheck = React.useCallback(() => { skipDupOnceRef.current = true; }, []);
   const openChartRef = React.useRef<(id: string, opts?: { force?: boolean; skipConfirm?: boolean }) => Promise<boolean>>(async () => false);
-  /** True = go ahead and save; false = don't (the user opened the other visit). */
+  /** True = go ahead and save; false = don't (the user opened the other visit, or dismissed the question). */
   const passDuplicateCheck = async (snap: ChartSnapshot, id: string): Promise<boolean> => {
     if (!supabase || openedExistingRef.current || lastSavedRef.current.chartId === id || dupAnsweredRef.current === id) return true;
     if (skipDupOnceRef.current) {
@@ -392,16 +399,25 @@ export function useCloudSync(
     if (!same) return true;
     const t = i18n.getFixedT(null, 'app');
     const name = (p.patientName ?? '').trim() || t('sync.duplicate.patient');
-    const openIt = await confirmDialog({
+    // Three answers, not yes/no: as a confirm, dismissing (Escape, a click
+    // outside) meant "Keep both" and saved the duplicate. Dismissed now =
+    // not saved, and the next save asks again.
+    const choice = await chooseDialog({
       title: same.chart_date === todayIso()
         ? t('sync.duplicate.titleToday', { name })
         : t('sync.duplicate.titleOn', { name, date: formatDate(same.chart_date) }),
       message: t('sync.duplicate.message'),
-      confirmLabel: t('sync.duplicate.confirm'),
-      cancelLabel: t('sync.duplicate.cancel'),
-      danger: true,
+      choices: [
+        { value: 'keep', label: t('sync.duplicate.cancel') },
+        // Opening it discards this chart's entries: red.
+        { value: 'open', label: t('sync.duplicate.confirm'), destructive: true },
+      ],
     });
-    if (!openIt) return true;
+    if (choice === null) {
+      dupAnsweredRef.current = '';
+      return false;
+    }
+    if (choice !== 'open') return true;
     await openChartRef.current(same.id, { force: true, skipConfirm: true });
     return false;
   };
