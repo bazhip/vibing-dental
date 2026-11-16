@@ -1,6 +1,7 @@
 // IIFE entry injected into the ezyVet tab (world MAIN). Installs the page API once per version.
 import { EXTENSION_VERSION } from '../version';
 import { diagnostics, listFields, status } from './read';
+import { consultPatientNumber, listAppointments } from './appointments';
 import { write } from './write';
 
 export type ToothopsEzyvet = {
@@ -9,6 +10,8 @@ export type ToothopsEzyvet = {
   listFields: typeof listFields;
   write: typeof write;
   diagnostics: typeof diagnostics;
+  listAppointments: typeof listAppointments;
+  consultPatientNumber: typeof consultPatientNumber;
 };
 
 declare global {
@@ -18,5 +21,13 @@ declare global {
 }
 
 if (window.__toothopsEzyvet?.version !== EXTENSION_VERSION) {
-  window.__toothopsEzyvet = { version: EXTENSION_VERSION, status, listFields, write, diagnostics };
+  window.__toothopsEzyvet = {
+    version: EXTENSION_VERSION,
+    status,
+    listFields,
+    write,
+    diagnostics,
+    listAppointments,
+    consultPatientNumber,
+  };
 }
