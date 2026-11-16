@@ -16,7 +16,7 @@ vi.mock('./internalTransport', () => ({
 vi.mock('../../utils/chartQueries', () => ({ chartsForPatients: m.chartsForPatients }));
 vi.mock('../../utils/localDate', () => ({ localDateISO: () => m.today.value }));
 
-import { TodaysPatients } from './TodaysPatients';
+import { START_LOCK_MS, TodaysPatients } from './TodaysPatients';
 
 const appt = (id: string, start: string, patientName: string, patientNumber: string, ownerName: string, vet: string | null = 'Dr Lee'): Appointment => ({
   appointmentId: id, start, patientName, patientNumber, ownerName, vet,
@@ -138,18 +138,85 @@ describe('TodaysPatients', () => {
     await screen.findByText('Bella');
     const [bella, max, rex] = screen.getAllByTestId('today-row');
 
-    fireEvent.click(within(bella).getByRole('button', { name: 'Start chart' }));
-    await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Bella', patientNumber: '1', ownerName: 'Smith, Jane', latestChartId: null }));
+    // Each successful hand-over locks the start buttons for START_LOCK_MS.
+    const unlock = async () => {
+      await act(async () => { vi.advanceTimersByTime(START_LOCK_MS); });
+    };
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      fireEvent.click(within(bella).getByRole('button', { name: 'Start chart' }));
+      await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Bella', patientNumber: '1', ownerName: 'Smith, Jane', latestChartId: null }));
+      await unlock();
 
-    fireEvent.click(within(max).getByRole('button', { name: 'New visit' }));
-    await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Max', patientNumber: '2', ownerName: 'Jones, Tom', latestChartId: 'old2' }));
+      fireEvent.click(within(max).getByRole('button', { name: 'New visit' }));
+      await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Max', patientNumber: '2', ownerName: 'Jones, Tom', latestChartId: 'old2' }));
+      await unlock();
 
-    fireEvent.click(within(rex).getByRole('button', { name: 'Open chart' }));
-    expect(tabsCreate).toHaveBeenCalledWith({ url: `${WEB_APP_ORIGIN}/#/chart/today3` });
+      fireEvent.click(within(rex).getByRole('button', { name: 'Open chart' }));
+      expect(tabsCreate).toHaveBeenCalledWith({ url: `${WEB_APP_ORIGIN}/#/chart/today3` });
 
-    fireEvent.click(within(rex).getByRole('button', { name: 'Start new chart' }));
-    await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Rex', patientNumber: '3', ownerName: 'Brown, Ann', latestChartId: null }));
+      fireEvent.click(within(rex).getByRole('button', { name: 'Start new chart' }));
+      await waitFor(() => expect(m.startChart).toHaveBeenLastCalledWith({ userId: 'u1', patientName: 'Rex', patientNumber: '3', ownerName: 'Brown, Ann', latestChartId: null }));
+      expect(screen.queryByText("Couldn’t open ToothOps. Try again.")).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('turns every start button off while a hand-over is pending and for a moment after it opens ToothOps', async () => {
+    m.appointments.mockResolvedValue(ok([
+      appt('1', '2026-11-16T09:00:00', 'Bella', '1', 'Smith, Jane'),
+      appt('2', '2026-11-16T09:30:00', 'Max', '2', 'Jones, Tom'),
+      appt('3', '2026-11-16T10:00:00', 'Rex', '3', 'Brown, Ann'),
+    ]));
+    m.chartsForPatients.mockResolvedValue([chart('old2', '2', '2026-10-01'), chart('today3', '3', '2026-11-16')]);
+    let resolve!: (r: { ok: boolean }) => void;
+    m.startChart.mockImplementation(() => new Promise((r) => { resolve = r; }));
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      render(<TodaysPatients userId="u1" />);
+      await screen.findByText('Bella');
+      const startButtons = () => [
+        screen.getByRole('button', { name: 'Start chart' }),
+        screen.getByRole('button', { name: 'New visit' }),
+        screen.getByRole('button', { name: 'Start new chart' }),
+      ];
+      const start = startButtons()[0];
+      fireEvent.click(start);
+      fireEvent.click(start); // a double click
+      expect(m.startChart).toHaveBeenCalledTimes(1);
+      for (const b of startButtons()) expect(b).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Open chart' })).toBeEnabled();
+      fireEvent.click(screen.getByRole('button', { name: 'New visit' }));
+      expect(m.startChart).toHaveBeenCalledTimes(1);
+
+      await act(async () => { resolve({ ok: true }); });
+      for (const b of startButtons()) expect(b).toBeDisabled();
+      await act(async () => { vi.advanceTimersByTime(START_LOCK_MS - 100); });
+      for (const b of startButtons()) expect(b).toBeDisabled();
+      await act(async () => { vi.advanceTimersByTime(100); });
+      for (const b of startButtons()) expect(b).toBeEnabled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a failed hand-over turns the start buttons back on at once; a newer click clears the old failure', async () => {
+    m.appointments.mockResolvedValue(ok([appt('1', '2026-11-16T09:00:00', 'Bella', '1', 'Smith, Jane')]));
+    m.startChart.mockResolvedValueOnce({ ok: false });
+    render(<TodaysPatients userId="u1" />);
+    const start = await screen.findByRole('button', { name: 'Start chart' });
+    fireEvent.click(start);
+    expect(await screen.findByText("Couldn’t open ToothOps. Try again.")).toBeInTheDocument();
+    expect(start).toBeEnabled();
+
+    let resolve!: (r: { ok: boolean }) => void;
+    m.startChart.mockImplementationOnce(() => new Promise((r) => { resolve = r; }));
+    fireEvent.click(start);
     expect(screen.queryByText("Couldn’t open ToothOps. Try again.")).toBeNull();
+    await act(async () => { resolve({ ok: true }); });
+    expect(screen.queryByText("Couldn’t open ToothOps. Try again.")).toBeNull();
+    expect(m.startChart).toHaveBeenCalledTimes(2);
   });
 
   it('a failed hand-over says so', async () => {

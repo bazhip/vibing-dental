@@ -6,6 +6,9 @@ import type { Appointment } from '../ezyvet/appointments';
 import { internalTransport } from './internalTransport';
 import { useTodaysAppointments, type TodayRow } from './useTodaysAppointments';
 
+/** After a hand-over opens ToothOps, the start buttons stay off this long (no second tab on a double click). */
+export const START_LOCK_MS = 3000;
+
 const KNOWN_ERRORS = new Set(['no_dashboard', 'no_date_input', 'no_calendar_refresh']);
 
 function formatTime(iso: string, lng: string): string {
@@ -23,13 +26,39 @@ export const TodaysPatients: React.FC<{ userId: string }> = ({ userId }) => {
   const { t, i18n } = useTranslation('pims');
   const { state, refresh, navigated } = useTodaysAppointments(userId);
   const [startFailed, setStartFailed] = React.useState(false);
+  // While a hand-over is pending, and for START_LOCK_MS after it opened
+  // ToothOps, every start button is off. Only the latest request's answer counts.
+  const [starting, setStartingState] = React.useState(false);
+  const startingRef = React.useRef(false); // two clicks in one tick both see the old state
+  const setStarting = (v: boolean) => {
+    startingRef.current = v;
+    setStartingState(v);
+  };
+  const requestRef = React.useRef(0);
+  const unlockTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  React.useEffect(() => () => clearTimeout(unlockTimer.current), []);
 
   const start = (appt: Appointment, latestChartId: string | null) => {
+    if (startingRef.current) return;
+    const id = ++requestRef.current;
+    clearTimeout(unlockTimer.current);
+    setStarting(true);
     setStartFailed(false);
     const handover: Handover = { userId, patientName: appt.patientName, patientNumber: appt.patientNumber, ownerName: appt.ownerName, latestChartId };
+    const failed = () => {
+      if (id !== requestRef.current) return;
+      setStartFailed(true);
+      setStarting(false);
+    };
     internalTransport.startChart(handover).then(
-      (r) => { if (!r.ok) setStartFailed(true); },
-      () => setStartFailed(true),
+      (r) => {
+        if (id !== requestRef.current) return;
+        if (!r.ok) return failed();
+        unlockTimer.current = setTimeout(() => {
+          if (id === requestRef.current) setStarting(false);
+        }, START_LOCK_MS);
+      },
+      failed,
     );
   };
   const open = (chartId: string) => void chrome.tabs.create({ url: `${WEB_APP_ORIGIN}/#/chart/${chartId}` });
@@ -44,14 +73,14 @@ export const TodaysPatients: React.FC<{ userId: string }> = ({ userId }) => {
         {action.kind === 'open' && (
           <>
             <button type="button" className="sp-secondary" onClick={() => open(action.chart.id)}>{t('panel.today.open')}</button>
-            <button type="button" className="sp-link" onClick={() => start(appt, null)}>{t('panel.today.startAnyway')}</button>
+            <button type="button" className="sp-link" disabled={starting} onClick={() => start(appt, null)}>{t('panel.today.startAnyway')}</button>
           </>
         )}
         {action.kind === 'newVisit' && (
-          <button type="button" className="sp-secondary" onClick={() => start(appt, action.latest.id)}>{t('panel.today.newVisit')}</button>
+          <button type="button" className="sp-secondary" disabled={starting} onClick={() => start(appt, action.latest.id)}>{t('panel.today.newVisit')}</button>
         )}
         {action.kind === 'start' && (
-          <button type="button" className="sp-secondary" onClick={() => start(appt, null)}>{t('panel.today.start')}</button>
+          <button type="button" className="sp-secondary" disabled={starting} onClick={() => start(appt, null)}>{t('panel.today.start')}</button>
         )}
       </span>
     </li>

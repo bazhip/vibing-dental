@@ -1249,6 +1249,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     startVisitFromChart,
     fillPatient: ({ patientName, patientNumber, ownerName }) =>
       chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
+    fillNumberIfBlank: (patientNumber) =>
+      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() ? prev : { ...prev, patientNumber })),
     isChartBlank: () => !chart.patientInfo.patientName?.trim() && !chart.patientInfo.patientNumber?.trim(),
   });
   const unlockForEditing = () => {

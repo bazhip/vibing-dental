@@ -23,6 +23,7 @@ function setup(over: Partial<Parameters<typeof useEzyvetHandover>[0]> = {}) {
     }),
     startVisitFromChart: vi.fn(async () => true),
     fillPatient: vi.fn(),
+    fillNumberIfBlank: vi.fn(),
     isChartBlank: vi.fn(() => true),
     ...over,
   };
@@ -89,13 +90,34 @@ describe('useEzyvetHandover', () => {
     expect(toastKeys()).toEqual([]);
   });
 
-  it('never fills a stash into a chart that already has a patient', async () => {
+  it('never fills a stash into a chart that already has a patient, and says so', async () => {
     stashPatient(stashed);
     const opts = setup({ isChartBlank: vi.fn(() => false) });
     await run(opts);
     expect(opts.fillPatient).not.toHaveBeenCalled();
     expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
-    expect(toastKeys()).toEqual([]);
+    expect(toastKeys()).toEqual([FAILED]);
+  });
+
+  it('checks the chart is blank after the account check, with the latest callbacks', async () => {
+    stashPatient(stashed);
+    let resolveUser!: (id: string) => void;
+    const first = setup({
+      getUserId: vi.fn(() => new Promise<string | null>((r) => { resolveUser = r; })),
+      isChartBlank: vi.fn(() => true),
+    });
+    const later = { ...first, isChartBlank: vi.fn(() => false), fillPatient: vi.fn() };
+    const { rerender } = renderHook((o: Parameters<typeof useEzyvetHandover>[0]) => useEzyvetHandover(o), {
+      initialProps: first,
+    });
+    // The chart restores (gets a patient) while the account check is pending.
+    rerender(later);
+    await act(async () => { resolveUser('u1'); });
+    expect(first.isChartBlank).not.toHaveBeenCalled();
+    expect(later.isChartBlank).toHaveBeenCalled();
+    expect(first.fillPatient).not.toHaveBeenCalled();
+    expect(later.fillPatient).not.toHaveBeenCalled();
+    expect(toastKeys()).toEqual([FAILED]);
   });
 
   it('never fills a stash picked by another account', async () => {
@@ -114,7 +136,19 @@ describe('useEzyvetHandover', () => {
     expect(opts.startVisitFromChart).toHaveBeenCalledWith('c9');
     expect(opts.startNewPatient).not.toHaveBeenCalled();
     expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
-    expect(toastKeys()).toEqual([FILLED]);
+    // startVisitFromChart toasts on its own.
+    expect(toastKeys()).toEqual([]);
+    expect(opts.fillNumberIfBlank).toHaveBeenCalledWith('123');
+  });
+
+  it('does not touch the patient number of a declined visit', async () => {
+    window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
+    const opts = setup({
+      take: vi.fn(async () => ({ handover: { ...handover, latestChartId: 'c9' } })),
+      startVisitFromChart: vi.fn(async () => false),
+    });
+    await run(opts);
+    expect(opts.fillNumberIfBlank).not.toHaveBeenCalled();
   });
 
   it('says nothing when the new visit is declined', async () => {
