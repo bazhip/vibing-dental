@@ -104,11 +104,15 @@ export async function loadChartSnapshot(
 ): Promise<{ snapshot: ChartSnapshot; pimsSentAt: string | null }> {
   const t = i18n.getFixedT(null, 'app');
   if (!supabase) throw new LocalizedError(i18n.t('panel.notConnected', { ns: 'pims' }));
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('charts')
     .select('data, pims_sent_at')
     .eq('id', id)
     .single();
+  // Before the pims_send migration is applied the column doesn't exist; load the chart without it.
+  if (error && /pims_sent_at/.test(error.message)) {
+    ({ data, error } = await supabase.from('charts').select('data').eq('id', id).single());
+  }
   // A Supabase or network failure says so; "damaged" is only for a snapshot that won't parse.
   if (error) throw new LocalizedError(t('errors.openVisit', { error: describeError(new Error(error.message), i18n.t('errors.generic', { ns: 'common' }), detailOnly) }));
   if (!data) throw new LocalizedError(t('errors.damagedChart'));

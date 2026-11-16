@@ -5,6 +5,7 @@ const db = vi.hoisted(() => ({
   calls: [] as Array<[string, ...unknown[]]>,
   rows: [] as unknown[],
   single: { data: null as unknown, error: null as { message: string } | null },
+  singleQueue: [] as Array<{ data: unknown; error: { message: string } | null }>,
 }));
 vi.mock('./supabaseClient', () => {
   const q: Record<string, unknown> = {};
@@ -12,7 +13,7 @@ vi.mock('./supabaseClient', () => {
   Object.assign(q, {
     select: rec('select'), or: rec('or'), eq: rec('eq'), gt: rec('gt'), lte: rec('lte'), order: rec('order'),
     range: async (...args: unknown[]) => { db.calls.push(['range', ...args]); return { data: db.rows, error: null }; },
-    single: async () => db.single,
+    single: async () => db.singleQueue.shift() ?? db.single,
   });
   return { supabase: { from: (t: string) => { db.calls.push(['from', t]); return q; } }, cloudEnabled: true };
 });
@@ -20,7 +21,7 @@ vi.mock('./supabaseClient', () => {
 import { listChartsPage, loadChartSnapshot } from './chartQueries';
 import { LocalizedError } from './apiErrors';
 
-beforeEach(() => { db.calls.length = 0; db.rows = []; });
+beforeEach(() => { db.calls.length = 0; db.rows = []; db.singleQueue = []; });
 
 describe('listChartsPage', () => {
   it('searches the four columns (LIKE-escaped), orders and pages', async () => {
@@ -62,6 +63,17 @@ describe('loadChartSnapshot', () => {
     expect(out.snapshot.patientInfo.patientName).toBe('Bella');
     expect(out.snapshot.preMarks).toEqual({});
     expect(out.snapshot.patientInfo.complaint).toBe('');
+  });
+
+  it('loads the chart without pims_sent_at before the migration adds the column', async () => {
+    db.singleQueue = [
+      { data: null, error: { message: 'column charts.pims_sent_at does not exist' } },
+      { data: { data: rawData }, error: null },
+    ];
+    const out = await loadChartSnapshot('c1');
+    expect(db.calls).toContainEqual(['select', 'data']);
+    expect(out.pimsSentAt).toBeNull();
+    expect(out.snapshot.patientInfo.patientName).toBe('Bella');
   });
 
   it('null pims_sent_at when never sent', async () => {
