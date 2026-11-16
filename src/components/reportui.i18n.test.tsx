@@ -191,6 +191,19 @@ describe('OwnerReportSection', () => {
     return [...text, /^Biscuit/, ...[...container.querySelectorAll('textarea')].map((t) => t.value)];
   };
 
+  it('mouth-wide summary lines and other findings in the preview', () => {
+    const snap = sampleOwnerReportSnapshot();
+    snap.toothData = snap.toothData.map((t) => ({ ...t, gingivitis: '2' }));
+    snap.preComments = [{ id: 'n1', text: 'OM, left buccal mucosa', anchorTriadan: null, x: 0, y: 0, width: 100, height: 40 }];
+    const model = buildOwnerReportModel(snap);
+    expect(model.summaryLines.length).toBeGreaterThan(0);
+    const { container } = render(
+      <OwnerReportSection snapshot={snap} overrides={{}} onOverrideChange={noop} onPreview={noop} context={{ config: defaultConfig() }} />,
+    );
+    expect(screen.getByText('⟦Other findings⟧')).toBeInTheDocument();
+    expect(findUntranslated(container, [...previewAllow(container, snap), ...model.summaryLines, ...model.otherFindings])).toEqual([]);
+  });
+
   it('with findings, an edited text, a second template, and AI on', () => {
     const context = { config: twoTemplates(), practiceName: 'Elm Vet', doctorName: 'Dr Kaser' };
     const { container, rerender } = render(

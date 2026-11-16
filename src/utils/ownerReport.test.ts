@@ -6,7 +6,7 @@ import {
   teethWithFindings,
 } from './ownerReport';
 import { DEFAULT_TEMPLATE, defaultTemplate, normalizeConfig } from './ownerReportConfig';
-import { buildOwnerReportPdfBytes, pdfSafe } from './ownerReportPdf';
+import { buildOwnerReportPdfBytes, findingsLayout, nothingFound, pdfSafe } from './ownerReportPdf';
 import { ChartSnapshot, EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 import { getInitialToothData } from '../constants';
 import { REPORT_LOCALES, reportStrings } from './ownerReportI18n';
@@ -434,6 +434,35 @@ describe('concise findings', () => {
     const model = buildOwnerReportModel(canine(fields));
     expect(model.summaryLines).toEqual(['Gum inflammation on some teeth (mild)']);
     expect(JSON.stringify(model)).not.toContain('NaN');
+  });
+
+  it('the printed findings: summary lines, then numbered teeth, then other findings', () => {
+    const model = buildOwnerReportModel(biopsyVisit());
+    const layout = findingsLayout(model, true);
+    expect(layout.print).toBe(true);
+    expect(layout.summary).toEqual(model.summaryLines);
+    expect(layout.teeth.map((t) => t.label)).toEqual([
+      '1.  Upper right canine tooth (104)', '2.  Upper right second premolar (106)', '3.  Upper right third premolar (107)',
+      '4.  Upper left first premolar (205)', '5.  Lower right second premolar (406)',
+    ]);
+    expect(layout.other).toEqual({ heading: 'Other findings', lines: model.otherFindings });
+    expect(nothingFound(model)).toBe(false);
+  });
+
+  it('a chart whose only content is a note with no tooth still prints findings', () => {
+    const snap = canine({});
+    snap.preComments = [comment('n1', 'OM, left buccal mucosa', null)];
+    const model = buildOwnerReportModel(snap);
+    expect(findingsLayout(model, false).print).toBe(true);
+    expect(findingsLayout(model, false).teeth).toEqual([]);
+    expect(nothingFound(model)).toBe(false);
+  });
+
+  it('an all-zero chart prints "nothing found"', () => {
+    const snap = canine(Object.fromEntries(getInitialToothData('canine').map((t) => [t.triadan, { gingivitis: '0' }])));
+    const model = buildOwnerReportModel(snap);
+    expect(findingsLayout(model, false).print).toBe(false);
+    expect(nothingFound(model)).toBe(true);
   });
 
   it('auto-copied grid comments never reach the owner report', () => {

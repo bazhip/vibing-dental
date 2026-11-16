@@ -251,6 +251,11 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
             <strong>{t('section.removedThisVisit')}</strong> {model.extracted.join(', ')}
           </p>
         )}
+        {model.summaryLines.length > 0 && (
+          <ul className="owner-report__preview-list">
+            {model.summaryLines.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        )}
         {model.teeth.filter((tooth) => tooth.notes.length > 0).length > 0 ? (
           <ul className="owner-report__preview-list">
             {model.teeth.filter((tooth) => tooth.notes.length > 0).map((tooth) => (
@@ -260,9 +265,15 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
               </li>
             ))}
           </ul>
-        ) : (
+        ) : model.summaryLines.length === 0 && model.otherFindings.length === 0 && (
           <p className="owner-report__preview-line">
             {t('section.noFindings')}
+          </p>
+        )}
+        {model.otherFindings.length > 0 && (
+          <p className="owner-report__preview-line">
+            <strong>{t('section.otherFindings')}</strong>{' '}
+            {model.otherFindings.join(' · ')}
           </p>
         )}
         {model.examNotes.length > 0 && (
