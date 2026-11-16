@@ -254,7 +254,7 @@
         "body": "Per-tooth measurements. Tap a cell and type, or tap a score — chart without looking up."
       },
       "diagrams": {
-        "body": "Tap a tooth to mark it; switch between Comment and Draw, add free notes. Undo and Redo are in the diagram’s toolbar."
+        "body": "Tap a tooth to mark it, add comments or draw a note. Search AVDC codes beside Diagnosis and Procedure. Undo and Redo are in the diagram’s toolbar."
       },
       "codes": {
         "body": "Search the full AVDC code set here, right with the diagram."
@@ -269,6 +269,12 @@
       "share": {
         "title": "Share the PDF",
         "body": "Build the client-ready chart PDF with your logo, then share or save it whenever you’re ready."
+      },
+      "byTooth": {
+        "body": "Switch to By tooth and tap a tooth on the diagram. Record its measurements, diagnosis and procedure together, then move to the next tooth. Grid and By tooth share the same findings."
+      },
+      "customize": {
+        "body": "Open the chart’s More menu and choose Customize for the page you’re on. Set up columns, pocket depths per tooth, root or site, quick codes and more. Signed in, your preferences follow your account."
       }
     }
   },

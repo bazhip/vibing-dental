@@ -254,7 +254,7 @@
         "body": "Medidas por diente. Toque una celda y escriba, o toque una puntuación — registre sin levantar la vista."
       },
       "diagrams": {
-        "body": "Toque un diente para marcarlo; cambie entre Comentario y Dibujo, añada notas libres. Deshacer y Rehacer están en la barra de herramientas del diagrama."
+        "body": "Toque un diente para marcarlo, añada comentarios o dibuje una nota. Busque códigos AVDC junto a Diagnóstico y Procedimiento. Deshacer y Rehacer están en la barra de herramientas del diagrama."
       },
       "codes": {
         "body": "Busque aquí el conjunto completo de códigos AVDC, junto al diagrama."
@@ -269,6 +269,12 @@
       "share": {
         "title": "Compartir el PDF",
         "body": "Genere el PDF del historial listo para el cliente con su logotipo y compártalo o guárdelo cuando quiera."
+      },
+      "byTooth": {
+        "body": "Cambie a Por diente y toque un diente del diagrama. Registre sus medidas, diagnóstico y procedimiento juntos y pase al siguiente. Cuadrícula y Por diente comparten los mismos hallazgos."
+      },
+      "customize": {
+        "body": "Abra el menú Más del historial y elija Personalizar para la página actual. Configure columnas, profundidades de bolsa por diente, raíz o sitio, códigos rápidos y más. Al iniciar sesión, sus preferencias siguen su cuenta."
       }
     }
   },

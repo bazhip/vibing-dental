@@ -7532,6 +7532,14 @@
       "hash": "28d03596d24e",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.byTooth.body": {
+      "hash": "530560f78599",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.byTooth.title": {
+      "hash": "3b3f685ef2f9",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.codes.body": {
       "hash": "6f6137d0bc48",
       "status": "machine"
@@ -7540,8 +7548,16 @@
       "hash": "7ac8671549b6",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.customize.body": {
+      "hash": "fee999b56078",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.customize.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.diagrams.body": {
-      "hash": "5150793df816",
+      "hash": "a5fbbf30395d",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.diagrams.title": {
@@ -7557,11 +7573,19 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.body": {
-      "hash": "2f7d89964525",
+      "hash": "73c37ee4e9ea",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.title": {
-      "hash": "16619eaefdac",
+      "hash": "3bcbfc75110c",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.body": {
+      "hash": "51b75d535369",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.title": {
+      "hash": "2be0baba5494",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
@@ -7572,8 +7596,16 @@
       "hash": "ff4314efd66b",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.ownerReport.body": {
+      "hash": "1f20a029a19a",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.ownerReport.title": {
+      "hash": "f442f610bd84",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.patient.body": {
-      "hash": "7234711f1905",
+      "hash": "57e34fb7db4f",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.patient.title": {
@@ -7589,11 +7621,11 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.body": {
-      "hash": "df0a79b34fa0",
+      "hash": "e87b5a67284e",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.title": {
-      "hash": "3d2b9b585532",
+      "hash": "c09d7d2efdd9",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.settings.body": {
@@ -7621,7 +7653,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
+      "hash": "5206b14e48a0",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.title": {
@@ -10504,12 +10536,20 @@
       "hash": "23e39291d613",
       "status": "machine"
     },
+    "settings:tour.steps.byTooth.body": {
+      "hash": "4a907b144613",
+      "status": "machine"
+    },
     "settings:tour.steps.codes.body": {
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
+    "settings:tour.steps.customize.body": {
+      "hash": "f1c3a67ad057",
+      "status": "machine"
+    },
     "settings:tour.steps.diagrams.body": {
-      "hash": "5654c9d37aa0",
+      "hash": "7b6c5eeedb49",
       "status": "machine"
     },
     "settings:tour.steps.grid.body": {
@@ -18790,6 +18830,14 @@
       "hash": "28d03596d24e",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.byTooth.body": {
+      "hash": "530560f78599",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.byTooth.title": {
+      "hash": "3b3f685ef2f9",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.codes.body": {
       "hash": "6f6137d0bc48",
       "status": "machine"
@@ -18798,8 +18846,16 @@
       "hash": "7ac8671549b6",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.customize.body": {
+      "hash": "fee999b56078",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.customize.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.diagrams.body": {
-      "hash": "5150793df816",
+      "hash": "a5fbbf30395d",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.diagrams.title": {
@@ -18815,11 +18871,19 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.body": {
-      "hash": "2f7d89964525",
+      "hash": "73c37ee4e9ea",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.title": {
-      "hash": "16619eaefdac",
+      "hash": "3bcbfc75110c",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.body": {
+      "hash": "51b75d535369",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.title": {
+      "hash": "2be0baba5494",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
@@ -18830,8 +18894,16 @@
       "hash": "ff4314efd66b",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.ownerReport.body": {
+      "hash": "1f20a029a19a",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.ownerReport.title": {
+      "hash": "f442f610bd84",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.patient.body": {
-      "hash": "7234711f1905",
+      "hash": "57e34fb7db4f",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.patient.title": {
@@ -18847,11 +18919,11 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.body": {
-      "hash": "df0a79b34fa0",
+      "hash": "e87b5a67284e",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.title": {
-      "hash": "3d2b9b585532",
+      "hash": "c09d7d2efdd9",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.settings.body": {
@@ -18879,7 +18951,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
+      "hash": "5206b14e48a0",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.title": {
@@ -21778,12 +21850,20 @@
       "hash": "23e39291d613",
       "status": "machine"
     },
+    "settings:tour.steps.byTooth.body": {
+      "hash": "4a907b144613",
+      "status": "machine"
+    },
     "settings:tour.steps.codes.body": {
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
+    "settings:tour.steps.customize.body": {
+      "hash": "f1c3a67ad057",
+      "status": "machine"
+    },
     "settings:tour.steps.diagrams.body": {
-      "hash": "5654c9d37aa0",
+      "hash": "7b6c5eeedb49",
       "status": "machine"
     },
     "settings:tour.steps.grid.body": {
@@ -30088,6 +30168,14 @@
       "hash": "28d03596d24e",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.byTooth.body": {
+      "hash": "530560f78599",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.byTooth.title": {
+      "hash": "3b3f685ef2f9",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.codes.body": {
       "hash": "6f6137d0bc48",
       "status": "machine"
@@ -30096,8 +30184,16 @@
       "hash": "7ac8671549b6",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.customize.body": {
+      "hash": "fee999b56078",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.customize.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.diagrams.body": {
-      "hash": "5150793df816",
+      "hash": "a5fbbf30395d",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.diagrams.title": {
@@ -30113,11 +30209,19 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.body": {
-      "hash": "2f7d89964525",
+      "hash": "73c37ee4e9ea",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.title": {
-      "hash": "16619eaefdac",
+      "hash": "3bcbfc75110c",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.body": {
+      "hash": "51b75d535369",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.title": {
+      "hash": "2be0baba5494",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
@@ -30128,8 +30232,16 @@
       "hash": "ff4314efd66b",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.ownerReport.body": {
+      "hash": "1f20a029a19a",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.ownerReport.title": {
+      "hash": "f442f610bd84",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.patient.body": {
-      "hash": "7234711f1905",
+      "hash": "57e34fb7db4f",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.patient.title": {
@@ -30145,11 +30257,11 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.body": {
-      "hash": "df0a79b34fa0",
+      "hash": "e87b5a67284e",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.title": {
-      "hash": "3d2b9b585532",
+      "hash": "c09d7d2efdd9",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.settings.body": {
@@ -30177,7 +30289,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
+      "hash": "5206b14e48a0",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.title": {
@@ -33076,12 +33188,20 @@
       "hash": "23e39291d613",
       "status": "machine"
     },
+    "settings:tour.steps.byTooth.body": {
+      "hash": "4a907b144613",
+      "status": "machine"
+    },
     "settings:tour.steps.codes.body": {
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
+    "settings:tour.steps.customize.body": {
+      "hash": "f1c3a67ad057",
+      "status": "machine"
+    },
     "settings:tour.steps.diagrams.body": {
-      "hash": "5654c9d37aa0",
+      "hash": "7b6c5eeedb49",
       "status": "machine"
     },
     "settings:tour.steps.grid.body": {
@@ -41386,6 +41506,14 @@
       "hash": "28d03596d24e",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.byTooth.body": {
+      "hash": "530560f78599",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.byTooth.title": {
+      "hash": "3b3f685ef2f9",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.codes.body": {
       "hash": "6f6137d0bc48",
       "status": "machine"
@@ -41394,8 +41522,16 @@
       "hash": "7ac8671549b6",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.customize.body": {
+      "hash": "fee999b56078",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.customize.title": {
+      "hash": "34ca8a4540f5",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.diagrams.body": {
-      "hash": "5150793df816",
+      "hash": "a5fbbf30395d",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.diagrams.title": {
@@ -41411,11 +41547,19 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.body": {
-      "hash": "2f7d89964525",
+      "hash": "73c37ee4e9ea",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.grid.title": {
-      "hash": "16619eaefdac",
+      "hash": "3bcbfc75110c",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.body": {
+      "hash": "51b75d535369",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.images.title": {
+      "hash": "2be0baba5494",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.library.body": {
@@ -41426,8 +41570,16 @@
       "hash": "ff4314efd66b",
       "status": "machine"
     },
+    "onboarding:walkthrough.steps.ownerReport.body": {
+      "hash": "1f20a029a19a",
+      "status": "machine"
+    },
+    "onboarding:walkthrough.steps.ownerReport.title": {
+      "hash": "f442f610bd84",
+      "status": "machine"
+    },
     "onboarding:walkthrough.steps.patient.body": {
-      "hash": "7234711f1905",
+      "hash": "57e34fb7db4f",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.patient.title": {
@@ -41443,11 +41595,11 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.body": {
-      "hash": "df0a79b34fa0",
+      "hash": "e87b5a67284e",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.sections.title": {
-      "hash": "3d2b9b585532",
+      "hash": "c09d7d2efdd9",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.settings.body": {
@@ -41475,7 +41627,7 @@
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.body": {
-      "hash": "cebdbaab22cd",
+      "hash": "5206b14e48a0",
       "status": "machine"
     },
     "onboarding:walkthrough.steps.welcome.title": {
@@ -44374,12 +44526,20 @@
       "hash": "23e39291d613",
       "status": "machine"
     },
+    "settings:tour.steps.byTooth.body": {
+      "hash": "4a907b144613",
+      "status": "machine"
+    },
     "settings:tour.steps.codes.body": {
       "hash": "4cddcfe468c0",
       "status": "machine"
     },
+    "settings:tour.steps.customize.body": {
+      "hash": "f1c3a67ad057",
+      "status": "machine"
+    },
     "settings:tour.steps.diagrams.body": {
-      "hash": "5654c9d37aa0",
+      "hash": "7b6c5eeedb49",
       "status": "machine"
     },
     "settings:tour.steps.grid.body": {

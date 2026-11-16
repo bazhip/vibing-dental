@@ -9,27 +9,27 @@
     "steps": {
       "welcome": {
         "title": "Bienvenue dans ToothOps",
-        "body": "Une visite de 60 secondes pour découvrir où se trouve chaque chose. Vous pouvez la revoir à tout moment depuis Paramètres → Prise en main."
+        "body": "Prenez vos repères et adaptez la saisie à votre façon de travailler. Vous pouvez revoir cette courte visite à tout moment depuis Paramètres → Prise en main."
       },
       "sections": {
-        "title": "Les huit sections",
-        "body": "Un dossier dentaire, de haut en bas. Parcourez-les dans l’ordre ou passez de l’une à l’autre — tout est enregistré automatiquement."
+        "title": "Toute la visite au même endroit",
+        "body": "Du premier examen au compte rendu de traitement, suivez les sections dans l’ordre ou passez à celle dont vous avez besoin. Le dossier s’enregistre au fil de votre saisie."
       },
       "patient": {
         "title": "Patient et propriétaire",
-        "body": "Nom, coordonnées du propriétaire et date de contrôle. Seul le nom du patient est obligatoire pour enregistrer."
+        "body": "Commencez par le nom du patient, puis ajoutez les coordonnées du propriétaire à votre rythme. Choisissez ici l’espèce et la dentition : les dents s’adaptent automatiquement."
       },
       "species": {
         "title": "Espèce et dentition",
         "body": "Choisissez Félin ou Canin, puis Permanente ou Déciduale — le schéma des dents s’adapte."
       },
       "grid": {
-        "title": "La grille de mesures",
-        "body": "Mesures dent par dent. Tab avance vers la droite, Entrée vers le bas — saisissez sans quitter l’écran des yeux."
+        "title": "Saisissez à votre façon",
+        "body": "Vous préférez une vue de toute la bouche ? Utilisez la grille pour saisir mesures et scores. Tab avance vers la droite et Entrée vers le bas. Sélectionnez plusieurs numéros de dents pour leur attribuer le même score."
       },
       "diagrams": {
         "title": "Schémas",
-        "body": "Cliquez sur une dent pour la marquer ; basculez entre Commentaire et Dessin, ajoutez des notes libres. Annulez avec ⌘Z."
+        "body": "Cliquez sur une dent pour la marquer, ajoutez des commentaires ou dessinez une note. Les pages Diagnostic et Intervention proposent les codes AVDC avec recherche à côté du schéma. Annulez avec ⌘Z."
       },
       "codes": {
         "title": "Référence des codes",
@@ -54,6 +54,22 @@
       "pdf": {
         "title": "Aperçu et téléchargement du PDF",
         "body": "Générez le PDF du dossier, prêt à remettre au client et orné de votre logo, dès que vous le souhaitez."
+      },
+      "byTooth": {
+        "title": "Une dent à la fois",
+        "body": "Passez à Par dent et cliquez sur une dent du schéma. Consignez ses mesures, son diagnostic et son intervention au même endroit, puis passez à la suivante. Grille et Par dent partagent les mêmes observations."
+      },
+      "customize": {
+        "title": "À votre façon",
+        "body": "Personnaliser est disponible dans Patient, Examen, Anesthésie, Schéma dentaire, Diagnostic et Images. Choisissez les colonnes, les profondeurs de poche par dent, racine ou site, les codes rapides et plus encore. Une fois connecté, vos préférences suivent votre compte."
+      },
+      "images": {
+        "title": "Photos et radiographies",
+        "body": "Conservez les images avec la visite et ajoutez ici vos observations radiographiques. Choisissez les images à inclure dans le PDF du dossier."
+      },
+      "ownerReport": {
+        "title": "Un compte rendu à emporter",
+        "body": "Le Compte rendu pour le propriétaire offre aux familles un résumé clair et des conseils de soins à domicile. Relisez-le avant de le partager et utilisez Personnaliser pour adapter la mise en page, le texte et la langue du client à votre cabinet."
       }
     }
   },
