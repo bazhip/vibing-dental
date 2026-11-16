@@ -54,6 +54,8 @@ export interface ReportStrings {
   homecareTipsEquine: string[];
   fieldPhrases: Record<DentalField, (value: string) => string>;
   fieldPlain: Record<DentalField, string>;
+  /** Owner-friendly phrase for an AVDC code (curated list), or null. */
+  plainCode: (code: string) => string | null;
   /** Lay tooth name without the Triadan number, capitalized. */
   toothName: (quadrant: number, position: number, deciduous: boolean) => string;
   species: Record<string, string>;
@@ -184,6 +186,13 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     homecareTipsEquine: EQUINE_HOMECARE_TIP_KEYS.map((k) => t(`homecareTipsEquine.${k}`)),
     fieldPhrases: map(DENTAL_FIELDS, (f) => (value: string) => t(`fieldPhrases.${f}`, { value })),
     fieldPlain: map(DENTAL_FIELDS, (f) => t(`fieldPlain.${f}`)),
+    // Keys are AVDC codes ("T/FX/CCF"); the catalog is typed from English,
+    // so look up through a loose key.
+    plainCode: (code) => {
+      const key = `plainCodes.${code}`;
+      if (!i18n.exists(key, { ns: 'report', lng: locale })) return null;
+      return (t as unknown as (k: string) => string)(key);
+    },
     toothName: (quadrant, position, deciduous) => {
       const { kind, ordinal } = toothType(position);
       const sideKey = SIDE_KEYS[quadrant as keyof typeof SIDE_KEYS];
