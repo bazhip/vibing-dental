@@ -44,6 +44,9 @@ import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
 import { lazyWithReload, whenIdle } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
+import { useEzyvetHandover } from './hooks/useEzyvetHandover';
+import { takePendingPatient } from './utils/pims/extensionBridge';
+import { supabase } from './utils/supabaseClient';
 import { ChartLibrary } from './components/ChartLibrary';
 import { OwnerReportSection } from './components/OwnerReportSection';
 import { ToothChartView } from './components/ToothChartView';
@@ -1233,6 +1236,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     chart.resetChart();
     return true;
   };
+  // A patient picked in the ToothOps for ezyVet side panel: start their
+  // chart once signed in (the flag waits in sessionStorage until then).
+  useEzyvetHandover({
+    enabled: !trial && cloud.enabled,
+    getUserId: async () => (await supabase?.auth.getSession())?.data.session?.user.id ?? null,
+    take: takePendingPatient,
+    startNewPatient,
+    startVisitFromChart,
+    fillPatient: ({ patientName, patientNumber, ownerName }) =>
+      chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
+  });
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
     setEditUnlocked(true);

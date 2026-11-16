@@ -143,5 +143,10 @@
   },
   "send": {
     "targetChanged": "The ezyVet consult changed. Check the target and press Send again."
+  },
+  "handover": {
+    "filled": "Patient details filled in from ezyVet.",
+    "failed": "Couldn’t get the patient from ezyVet. Fill in the details.",
+    "otherUser": "This patient was picked in the extension as another user. Sign in with the same account in both."
   }
 }

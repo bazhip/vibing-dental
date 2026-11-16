@@ -143,5 +143,10 @@
   },
   "send": {
     "targetChanged": "Die ezyVet-Konsultation hat sich geändert. Prüfen Sie das Ziel und klicken Sie erneut auf Senden."
+  },
+  "handover": {
+    "filled": "Patientendaten aus ezyVet übernommen.",
+    "failed": "Der Patient konnte nicht aus ezyVet abgerufen werden. Bitte geben Sie die Daten ein.",
+    "otherUser": "Dieser Patient wurde in der Erweiterung mit einem anderen Konto ausgewählt. Melden Sie sich in beiden mit demselben Konto an."
   }
 }

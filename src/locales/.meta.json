@@ -8380,6 +8380,18 @@
       "hash": "6472d27a91a6",
       "status": "machine"
     },
+    "pims:handover.failed": {
+      "hash": "02562e06eb28",
+      "status": "machine"
+    },
+    "pims:handover.filled": {
+      "hash": "0156b9533c69",
+      "status": "machine"
+    },
+    "pims:handover.otherUser": {
+      "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
     "pims:install.body": {
       "hash": "2b7be7e4ac26",
       "status": "machine"
@@ -19664,6 +19676,18 @@
     },
     "pims:extension.name": {
       "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:handover.failed": {
+      "hash": "02562e06eb28",
+      "status": "machine"
+    },
+    "pims:handover.filled": {
+      "hash": "0156b9533c69",
+      "status": "machine"
+    },
+    "pims:handover.otherUser": {
+      "hash": "b9df5a17bc09",
       "status": "machine"
     },
     "pims:install.body": {
@@ -30984,6 +31008,18 @@
       "hash": "6472d27a91a6",
       "status": "machine"
     },
+    "pims:handover.failed": {
+      "hash": "02562e06eb28",
+      "status": "machine"
+    },
+    "pims:handover.filled": {
+      "hash": "0156b9533c69",
+      "status": "machine"
+    },
+    "pims:handover.otherUser": {
+      "hash": "b9df5a17bc09",
+      "status": "machine"
+    },
     "pims:install.body": {
       "hash": "2b7be7e4ac26",
       "status": "machine"
@@ -42300,6 +42336,18 @@
     },
     "pims:extension.name": {
       "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:handover.failed": {
+      "hash": "02562e06eb28",
+      "status": "machine"
+    },
+    "pims:handover.filled": {
+      "hash": "0156b9533c69",
+      "status": "machine"
+    },
+    "pims:handover.otherUser": {
+      "hash": "b9df5a17bc09",
       "status": "machine"
     },
     "pims:install.body": {

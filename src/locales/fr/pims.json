@@ -144,5 +144,10 @@
   },
   "send": {
     "targetChanged": "La consultation ezyVet a changé. Vérifiez la cible, puis cliquez de nouveau sur Envoyer."
+  },
+  "handover": {
+    "filled": "Informations du patient remplies depuis ezyVet.",
+    "failed": "Impossible de récupérer le patient depuis ezyVet. Veuillez saisir les informations.",
+    "otherUser": "Ce patient a été choisi dans l’extension avec un autre compte. Connectez-vous avec le même compte dans les deux."
   }
 }
