@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // The iOS app with saved charts (cloud sync mocked): the paths from the
 // Patients / Rechecks / Settings tabs into EntryGrid's state.
@@ -109,6 +109,7 @@ vi.mock('./ios/screens/SettingsScreen', async (importOriginal) => {
 
 import EntryGrid from './EntryGrid';
 import { DialogHost } from './components/ui/dialogs';
+import { localDateISO } from './utils/localDate';
 
 beforeAll(() => {
   window.ResizeObserver = window.ResizeObserver ?? class { observe() {} unobserve() {} disconnect() {} };
@@ -191,6 +192,50 @@ describe('EntryGrid in the app, with saved charts', () => {
     await pushOnChartThenPatients();
     await act(async () => fireEvent.click(screen.getByRole('button', { name: label })));
     await expectLandedOnChartRoot();
+  });
+
+  describe('New visit when the patient already has a visit today', () => {
+    beforeEach(() => {
+      cloud.listPatientVisits.mockResolvedValue([{ id: 'today-1', chart_date: localDateISO(), species: 'canine' }] as never);
+    });
+    afterEach(() => { cloud.listPatientVisits.mockResolvedValue([]); });
+    const ask = async () => {
+      await renderApp();
+      act(() => fireEvent.click(tab('Patients')));
+      await act(async () => fireEvent.click(screen.getByRole('button', { name: 'New visit' })));
+      return screen.findByRole('alertdialog', { name: 'Rex already has a visit today' });
+    };
+
+    it('Cancel starts nothing: no second visit, today’s visit not opened', async () => {
+      const dialog = await ask();
+      await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' })));
+      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+      expect(cloud.openChart).not.toHaveBeenCalled();
+      expect(tab('Patients')).toHaveAttribute('aria-selected', 'true');
+    });
+
+    it('Escape starts nothing either', async () => {
+      await ask();
+      await act(async () => fireEvent.keyDown(window, { key: 'Escape' }));
+      await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+      expect(cloud.openChart).not.toHaveBeenCalled();
+    });
+
+    it('“Open today’s visit” opens it', async () => {
+      const dialog = await ask();
+      await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Open today’s visit' })));
+      expect(cloud.openChart).toHaveBeenCalledWith('today-1', { skipConfirm: true });
+      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+    });
+
+    it('“Start a second visit” starts one only when chosen', async () => {
+      const dialog = await ask();
+      await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Start a second visit' })));
+      expect(cloud.skipNextDuplicateCheck).toHaveBeenCalled();
+      expect(cloud.openChart).not.toHaveBeenCalled();
+      await expectLandedOnChartRoot();
+    });
   });
 
   it('“Open this visit” in Chart history lands on the Chart tab, popped to its root', async () => {

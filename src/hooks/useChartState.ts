@@ -384,9 +384,23 @@ export function useChartState(): UseChartStateReturn {
 
   // ----- Cloud sync -------------------------------------------------------
 
+  // With no stored id, the chart on screen started on an empty store (first
+  // use, "+ New patient", sign-in), so any save recorded since then was
+  // this chart's: keep that id. Otherwise mint one.
   const [cloudChartId, setCloudChartId] = usePersistedState<string>(
-    'chart.cloudId', 1, () => generateChartId()
+    'chart.cloudId', 1,
+    () => readJson<{ chartId?: string }>('chart.lastSaved', 1, {}).chartId || generateChartId()
   );
+  // Persist the id at once. usePersistedState doesn't write its initial
+  // value, so a new chart's id lived only in memory while its content was
+  // stored: every page load (Google sign-in redirect, a phone reloading a
+  // background tab) minted another id, and the next save copied the chart
+  // into a duplicate record instead of updating it.
+  React.useEffect(() => {
+    writeJson('chart.cloudId', 1, cloudChartId);
+    // Mount only; later changes are written by usePersistedState.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // Bumps when a DIFFERENT chart is put on screen (new visit, opened
   // from the library, loaded from a PDF) — not when the sync re-ids the
   // same chart after a refused save. Per-chart UI state (the AI

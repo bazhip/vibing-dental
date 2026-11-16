@@ -35,7 +35,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
-import { toast, friendlyDetail, confirmDialog } from './components/ui/dialogs';
+import { toast, friendlyDetail, confirmDialog, chooseDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -658,13 +658,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       const todays = visits.find((v) => v.chart_date === localDateISO() && v.species === sp);
       if (todays) {
         const who = snap.patientInfo.patientName?.trim() || t('sync.duplicate.patient');
-        const openIt = await confirmDialog({
+        // Three answers, not yes/no: dismissing (Cancel, Escape, a click
+        // outside) must start nothing. As a confirm, a dismissal meant
+        // "Start a second visit" — which then autosaved an empty duplicate
+        // beside the morning's chart.
+        const choice = await chooseDialog({
           title: t('sync.duplicate.titleToday', { name: who }),
           message: t('todaysVisit.message'),
-          confirmLabel: t('todaysVisit.confirm'),
-          cancelLabel: t('todaysVisit.cancel'),
+          choices: [
+            { value: 'second', label: t('todaysVisit.cancel') },
+            { value: 'open', label: t('todaysVisit.confirm') },
+          ],
         });
-        if (openIt) {
+        if (choice === null) return false;
+        if (choice === 'open') {
           // Unsaved changes were already confirmed above.
           await cloud.openChart(todays.id, { skipConfirm: true });
           goToSection('patient');

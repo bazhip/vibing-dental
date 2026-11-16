@@ -47,7 +47,8 @@ vi.mock('../utils/supabaseClient', () => {
 });
 
 const confirm = vi.hoisted(() => vi.fn(async () => false));
-vi.mock('../components/ui/dialogs', () => ({ confirmDialog: confirm, toast: vi.fn(), friendlyError: (e: unknown) => String(e) }));
+const choose = vi.hoisted(() => vi.fn(async (): Promise<string | null> => 'keep'));
+vi.mock('../components/ui/dialogs', () => ({ confirmDialog: confirm, chooseDialog: choose, toast: vi.fn(), friendlyError: (e: unknown) => String(e) }));
 
 // This test environment has no working localStorage (as in GoogleSignIn.test).
 const store = new Map<string, string>();
@@ -88,6 +89,7 @@ beforeEach(() => {
   store.clear();
   db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0;
   confirm.mockReset(); confirm.mockResolvedValue(false);
+  choose.mockReset(); choose.mockResolvedValue('keep');
   vi.useFakeTimers();
 });
 afterEach(() => vi.useRealTimers());
@@ -98,6 +100,25 @@ describe('hasClinicalContent', () => {
   it('ignores patient and owner details; counts charting', () => {
     expect(hasClinicalContent(snap({}))).toBe(false);
     expect(hasClinicalContent(snap({ exam: true }))).toBe(true);
+  });
+
+  it('ignores teeth carried forward as missing (a new visit nobody has charted yet)', () => {
+    const carried = { ...snap({}), preMarks: { 305: 'missing', 405: 'missing' } } as unknown as ChartSnapshot;
+    expect(hasClinicalContent(carried)).toBe(false);
+    const examined = { ...snap({ exam: true }), preMarks: { 305: 'missing' } } as unknown as ChartSnapshot;
+    expect(hasClinicalContent(examined)).toBe(true);
+    const extracted = { ...snap({}), preMarks: { 305: 'missing' }, postMarks: { 108: 'extracted' } } as unknown as ChartSnapshot;
+    expect(hasClinicalContent(extracted)).toBe(true);
+  });
+});
+
+describe('new visit started from a saved chart', () => {
+  it('does not autosave until charting starts', async () => {
+    const carried = { ...snap({}), preMarks: { 305: 'missing', 405: 'missing' } } as unknown as ChartSnapshot;
+    const { result } = renderHook(() => useCloudSync(fakeChart(carried)));
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+    expect(result.current.awaitingClinical).toBe(true);
   });
 });
 
@@ -159,24 +180,38 @@ describe('same-day duplicate guard', () => {
     db.visits = [sameDay];
     renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
     await flush();
-    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(choose).toHaveBeenCalledTimes(1);
     expect(db.upserts).toHaveLength(1);
   });
 
   it('"Open existing visit" opens it instead of saving a duplicate', async () => {
     db.visits = [sameDay];
-    confirm.mockResolvedValue(true);
+    choose.mockResolvedValue('open');
     renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
     await flush();
     expect(db.upserts).toHaveLength(0);
     expect(db.opened).toEqual(['older']);
   });
 
+  it('dismissing the question saves nothing, and the next save asks again', async () => {
+    db.visits = [sameDay];
+    choose.mockResolvedValue(null);
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await flush();
+    expect(choose).toHaveBeenCalledTimes(1);
+    expect(db.upserts).toHaveLength(0);
+
+    choose.mockResolvedValue('keep');
+    await act(async () => { await result.current.saveNow(); });
+    expect(choose).toHaveBeenCalledTimes(2);
+    expect(db.upserts).toHaveLength(1);
+  });
+
   it("doesn't ask for a different visit date", async () => {
     db.visits = [{ ...sameDay, chart_date: '2026-11-01' }];
     renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
     await flush();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(choose).not.toHaveBeenCalled();
     expect(db.upserts).toHaveLength(1);
   });
 
@@ -185,7 +220,7 @@ describe('same-day duplicate guard', () => {
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
     act(() => result.current.skipNextDuplicateCheck());
     await act(async () => { await result.current.saveNow(); });
-    expect(confirm).not.toHaveBeenCalled();
+    expect(choose).not.toHaveBeenCalled();
     expect(db.upserts).toHaveLength(1);
   });
 });
