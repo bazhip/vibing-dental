@@ -6,7 +6,7 @@ import { supabase } from './supabaseClient';
  * updated" date) whenever public/terms.html, privacy.html or dpa.html
  * change materially, so acceptances record which text was agreed to.
  */
-export const TERMS_VERSION = '2026-11-12';
+export const TERMS_VERSION = '2026-11-16';
 
 /**
  * Acceptance is by notice ("By signing in you agree to…") — no checkbox.

@@ -11,10 +11,10 @@
 //   customer.subscription.created/updated/deleted → sync status + plan
 // Payment failures arrive as subscription.updated (status past_due).
 //
-// Freeze lifecycle: any non-paying status (past_due, canceled, unpaid,
-// …) stamps frozen_at; the app locks the practice out but keeps its
-// data. Recovering to active/trialing clears the stamp. The daily
-// purge_lapsed_practices() cron deletes practices frozen for 30+ days.
+// Lapsed subscriptions: any non-paying status (past_due, canceled,
+// unpaid, …) stamps frozen_at ("lapsed since"); recovering to
+// active/trialing clears it. A lapsed practice is simply on the free plan:
+// nothing is locked or deleted for non-payment.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import Stripe from 'npm:stripe@18.5.0';
@@ -55,7 +55,8 @@ Deno.serve(async (req: Request) => {
     return json({ error: 'unknown event' }, 400);
   }
 
-  // Statuses that stop access — they start the 30-day freeze clock.
+  // Non-paying statuses: the practice drops to the free plan (stamps
+  // frozen_at, informational).
   const FROZEN_STATUSES = ['past_due', 'canceled', 'unpaid', 'incomplete_expired', 'paused'];
 
   // supabase-js returns { error } instead of throwing: without this, a
@@ -86,9 +87,9 @@ Deno.serve(async (req: Request) => {
       update.plan = def.tier;
       update.account_type = def.accountType;
     }
-    // Freeze bookkeeping: paying again clears the clock; entering a
-    // non-paying status starts it (but never restarts an already-running
-    // one — the 30 days count from the FIRST failure).
+    // "Lapsed since" bookkeeping: paying again clears it; entering a
+    // non-paying status sets it (but never moves an existing stamp — it
+    // records the FIRST failure).
     if (['active', 'trialing'].includes(sub.status)) update.frozen_at = null;
 
     const practiceId = sub.metadata?.practice_id ?? '';

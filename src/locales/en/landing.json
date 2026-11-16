@@ -170,7 +170,7 @@
   },
   "pricing": {
     "title": "Simple monthly pricing",
-    "sub": "Every plan starts with a {{days}}-day free trial. Cancel anytime — we keep your charts safe for 30 days in case you come back.",
+    "sub": "Every plan starts with a {{days}}-day free trial. Cancel anytime — you move to the free plan and keep all your charts.",
     "mostPopular": "Most popular",
     "perMonth": "/mo",
     "startTrial": "Start free trial",

@@ -22,6 +22,12 @@ vi.mock('../utils/supabaseClient', () => ({
     }),
   },
 }));
+// The paywall only shows for never-subscribed accounts with paid signup on
+// (a lapsed plan is the free plan and goes straight in).
+vi.mock('../constants/plans', async (orig) => ({
+  ...(await orig<typeof import('../constants/plans')>()),
+  PAID_SIGNUP: true,
+}));
 vi.mock('../hooks/useBilling', async (orig) => ({
   ...(await orig<typeof import('../hooks/useBilling')>()),
   fetchBilling,
@@ -39,16 +45,16 @@ vi.stubGlobal('localStorage', {
 
 import { BillingGate } from './BillingGate';
 
-const frozen: BillingInfo = {
-  practice: { id: 'p1', name: 'Elm Vet' }, role: 'owner', plan: 'basic', accountType: 'individual', status: 'canceled',
-  periodEnd: null, frozenAt: '2026-11-01T00:00:00Z', seats: 1, memberCount: 1, hasStripe: true, ownerEmail: 'boss@vet.com',
+const neverSubscribed: BillingInfo = {
+  practice: { id: 'p1', name: 'Elm Vet' }, role: 'owner', plan: 'basic', accountType: 'individual', status: 'none',
+  periodEnd: null, frozenAt: null, seats: 1, memberCount: 1, hasStripe: false, ownerEmail: 'boss@vet.com',
   intendedPlan: 'individual_basic',
 };
 
 beforeEach(() => {
   store.clear();
   account.prefs = null;
-  fetchBilling.mockResolvedValue(frozen);
+  fetchBilling.mockResolvedValue(neverSubscribed);
 });
 afterEach(async () => {
   vi.restoreAllMocks();

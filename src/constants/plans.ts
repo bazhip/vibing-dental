@@ -95,8 +95,10 @@ export const PRICING_PUBLIC = false;
 /** Feature flag: paid signup. While false, new accounts land on the FREE
  *  plan (single user, AI dictation, 10 images per chart) — signup hides the plan pickers
  *  and the BillingGate lets never-subscribed accounts straight in. All
- *  the Stripe machinery (checkout, webhook, portal, freeze/purge) stays
- *  live for existing subscriptions; flip to true to resume selling. */
+ *  the Stripe machinery (checkout, webhook, portal) stays live for
+ *  existing subscriptions; flip to true to resume selling. A lapsed
+ *  subscription always drops to the free plan — never a lock-out or
+ *  deletion. */
 export const PAID_SIGNUP = false;
 
 /** Free beta: while paid signup is off, every account gets AI dictation,

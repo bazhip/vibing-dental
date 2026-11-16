@@ -1,17 +1,14 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
-import { formatDateTime } from '../i18n/format';
 import { AccountLanguage } from '../i18n/AccountLanguage';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { PLANS, PlanKey, CONTACT_EMAIL, TRIAL_DAYS, planByKey, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
 import {
   BillingInfo,
   ACCESS_STATUSES,
-  deletionDate,
   fetchBilling,
   startCheckout,
-  openBillingPortal,
 } from '../hooks/useBilling';
 import { isNativeApp } from '../native/platform';
 import { readBillingCache, saveBillingCache } from '../native/billingCache';
@@ -25,12 +22,13 @@ interface BillingGateProps {
 }
 
 /**
- * Stands between sign-in and the charting app: renders its children only
- * when the caller's practice has an active subscription (or trial or
- * comp). Anything else — including a failed payment — freezes the
- * account: the owner gets the recovery path (fix the card via the
- * portal, or resubscribe), members get a note to nudge their owner, and
- * both see the 30-day keep-your-data deadline before the purge.
+ * Stands between sign-in and the charting app. Billing never locks anyone
+ * out of their charts and never deletes anything: a subscription that
+ * lapsed (cancelled, failed payment, unpaid…) just drops the practice to
+ * the free plan, and its owner can subscribe again from Practice settings.
+ * The only screen here is for accounts that never subscribed, and only
+ * when paid signup is on: owners choose a plan, members are told to ask
+ * their owner.
  *
  * Handles the round-trip back from Checkout too: ?billing=success polls
  * until the webhook lands, ?billing=canceled just clears the flag.
@@ -177,31 +175,19 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  // Paid signup is off: never-subscribed accounts ARE the free plan —
-  // straight in (single-user + no-image limits come from useProfile).
-  // Lapsed paid subscriptions still hit the recovery paths below.
-  if (!PAID_SIGNUP && info.status === 'none') {
+  // A lapsed subscription (cancelled, failed payment, unpaid, …) is the
+  // free plan, never a lock-out: straight in, with free-plan limits from
+  // useProfile and the way back in Practice settings. Same for accounts
+  // that never subscribed while paid signup is off.
+  if (info.status !== 'none' || !PAID_SIGNUP) {
     return <>{children}</>;
   }
 
+  // Never subscribed, paid signup on, from here.
   // The app sells nothing and links to no billing — one neutral screen.
   if (isNativeApp()) return <InactivePlan />;
 
-  // Frozen or never-subscribed from here on. Data survives 30 days from
-  // the freeze; say so wherever we block someone.
-  const deleteAt = deletionDate(info);
-  const freezeNote = deleteAt ? (
-    <p className="billing-gate__freeze" role="alert">
-      <Trans
-        t={t}
-        i18nKey={info.role === 'owner' ? 'gate.freezeOwner' : 'gate.freezeMember'}
-        values={{ date: formatDateTime(deleteAt, i18n.language, { year: 'numeric', month: 'numeric', day: 'numeric' }) }}
-        components={{ strong: <strong /> }}
-      />
-    </p>
-  ) : null;
-
-  // Members can't fix it — point them at the owner.
+  // Members can't subscribe — point them at the owner.
   if (info.role !== 'owner') {
     return blocking(
       <div className="billing-gate">
@@ -210,45 +196,10 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
           <p className="billing-gate__sub">
             <Trans
               t={t}
-              i18nKey={info.status === 'past_due' ? 'gate.memberPastDue' : info.status === 'none' ? 'gate.memberNone' : 'gate.memberEnded'}
+              i18nKey="gate.memberNone"
               values={{ owner: info.ownerEmail || t('gate.yourOwner') }}
               components={{ strong: <strong /> }}
             />
-          </p>
-          {freezeNote}
-          <SignOutLink />
-        </div>
-      </div>
-    );
-  }
-
-  // A failed payment keeps the subscription alive in Stripe — the fix is
-  // a new card in the portal, not a new checkout.
-  if (info.status === 'past_due' && info.hasStripe) {
-    return blocking(
-      <div className="billing-gate">
-        <div className="billing-gate__panel billing-gate__panel--narrow">
-          <h1>{t('gate.failedTitle')}</h1>
-          <p className="billing-gate__sub">{t('gate.failedBody')}</p>
-          {freezeNote}
-          {error && <div className="login-error" role="alert">{error}</div>}
-          <button
-            type="button"
-            className="billing-gate__cta"
-            disabled={busy}
-            onClick={() => {
-              setBusy(true);
-              setError('');
-              openBillingPortal().catch((e) => {
-                setError(e instanceof Error ? e.message : t('gate.portalFailed'));
-                setBusy(false);
-              });
-            }}
-          >
-            {busy ? t('gate.opening') : t('gate.updateCard')}
-          </button>
-          <p className="billing-gate__contact">
-            <Trans t={t} i18nKey="gate.trouble" components={{ a: <a href={`mailto:${CONTACT_EMAIL}?subject=ToothOps%20billing`} /> }} />
           </p>
           <SignOutLink />
         </div>
@@ -274,10 +225,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     <div className="billing-gate">
       <div className="billing-gate__panel">
         <h1>{t('gate.chooseTitle')}</h1>
-        <p className="billing-gate__sub">
-          {info.status === 'none' ? t('gate.trialSub', { days: TRIAL_DAYS }) : t('gate.endedSub')}
-        </p>
-        {freezeNote}
+        <p className="billing-gate__sub">{t('gate.trialSub', { days: TRIAL_DAYS })}</p>
 
         <div className="billing-gate__plans">
           {PLANS.map((p) => (

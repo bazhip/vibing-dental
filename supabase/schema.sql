@@ -326,14 +326,12 @@ alter table public.practices add column if not exists billing_period_end timesta
 create index if not exists practices_stripe_customer_idx
   on public.practices (stripe_customer_id) where stripe_customer_id <> '';
 
--- Freeze → purge lifecycle. Entering a non-paying status (past_due,
--- canceled, unpaid, …) stamps frozen_at (set by the stripe-webhook
--- function); the app locks the practice out but keeps its data. Paying
--- again clears the stamp. After 30 days frozen, the daily pg_cron job
--- 'daily-billing-purge' permanently deletes the practice: member
--- accounts (cascades profiles/charts/templates/attachment rows), their
--- storage objects, and the practice row. Admin accounts are never
--- deleted; comped practices never freeze.
+-- Lapsed subscriptions. Entering a non-paying status (past_due, canceled,
+-- unpaid, …) stamps frozen_at (set by the stripe-webhook function); paying
+-- again clears it. It's informational ("lapsed since"): the practice simply
+-- drops to the free plan. Non-payment NEVER locks anyone out or deletes
+-- anything (migration 20261127_no_billing_purge removed the old 30-day
+-- purge job). Comped practices never lapse.
 alter table public.practices add column if not exists frozen_at timestamptz;
 
 -- Language the practice writes to pet owners in (owner-report defaults, client
@@ -341,44 +339,7 @@ alter table public.practices add column if not exists frozen_at timestamptz;
 alter table public.practices add column if not exists client_language text
   check (client_language is null or client_language in ('en','fr','de','it','es','pt'));
 
-create or replace function public.purge_lapsed_practices()
-returns void
-language plpgsql
-security definer set search_path = public as $$
-declare
-  prac record;
-begin
-  for prac in
-    select id from public.practices
-    where subscription_status in ('past_due', 'canceled', 'unpaid', 'incomplete_expired', 'paused')
-      and frozen_at is not null
-      and frozen_at < now() - interval '30 days'
-  loop
-    -- Storage first (not FK-cascaded): member attachment folders +
-    -- practice/member logo folders.
-    delete from storage.objects o
-      where o.bucket_id = 'attachments'
-        and (storage.foldername(o.name))[1] in (
-          select m.user_id::text from public.practice_members m where m.practice_id = prac.id);
-    delete from storage.objects o
-      where o.bucket_id = 'logos'
-        and ((storage.foldername(o.name))[1] = prac.id::text
-          or (storage.foldername(o.name))[1] in (
-            select m.user_id::text from public.practice_members m where m.practice_id = prac.id));
-    -- Member accounts (never admins) — cascades all their rows.
-    delete from auth.users u
-      where u.id in (select m.user_id from public.practice_members m where m.practice_id = prac.id)
-        and coalesce(u.raw_app_meta_data ->> 'role', '') <> 'admin';
-    -- The practice itself (usually already gone via the owner cascade).
-    delete from public.practices where id = prac.id;
-  end loop;
-end $$;
-
--- pg_cron (idempotent re-schedule):
---   select cron.unschedule('daily-billing-purge') where exists
---     (select 1 from cron.job where jobname = 'daily-billing-purge');
---   select cron.schedule('daily-billing-purge', '30 3 * * *',
---     'select public.purge_lapsed_practices()');
+-- (No purge_lapsed_practices / daily-billing-purge: see the note above.)
 
 -- send_due_reminders() (migrations 20261123_send_due_reminders_safety.sql,
 -- 20261126_send_due_reminders_window.sql): nightly auto-reminder job (security

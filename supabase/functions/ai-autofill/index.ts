@@ -100,17 +100,37 @@ Deno.serve(async (req: Request) => {
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
     return json(apiError('unsupported_request'), 400);
   }
-  const since = (ms: number) => new Date(Date.now() - ms).toISOString();
-  const [{ count: perMinute }, { count: perDay }] = await Promise.all([
-    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE).gte('created_at', since(60_000)),
-    admin.from('ai_usage').select('id', { count: 'exact', head: true }).eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE).gte('created_at', since(86_400_000)),
-  ]);
-  if ((perMinute ?? 0) >= 40) return json(apiError('ai_rate_limit'), 429);
-  if ((perDay ?? 0) >= 2000) return json(apiError('ai_daily_limit'), 429);
-
   // The model is a site setting, not client-chosen.
   const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
   const model = cfg?.ai_model || DEFAULT_MODEL;
+
+  // Rate limits. Reserve the usage row FIRST, then count this user's calls
+  // up to and including it: counting before the call and logging after
+  // let any number of parallel requests through (each saw an old count).
+  // Over a limit, the reservation is removed so it doesn't count.
+  let reserved = await admin.from('ai_usage')
+    .insert({ user_id: caller.id, practice_id: practiceId, model, kind })
+    .select('id, created_at').single();
+  if (reserved.error) {
+    // Database without the `kind` column yet (later migration).
+    reserved = await admin.from('ai_usage')
+      .insert({ user_id: caller.id, practice_id: practiceId, model })
+      .select('id, created_at').single();
+  }
+  // Usage log unavailable (database hiccup): don't break dictation over
+  // it — run the call unmetered, as the old count-then-log check did.
+  const usageId = reserved.error || !reserved.data ? null : (reserved.data.id as string);
+  const releaseUsage = () =>
+    usageId ? admin.from('ai_usage').delete().eq('id', usageId).then(() => {}, () => {}) : Promise.resolve();
+  if (usageId) {
+    const since = (ms: number) => new Date(Date.now() - ms).toISOString();
+    const callsSince = (ms: number) => admin.from('ai_usage').select('id', { count: 'exact', head: true })
+      .eq('user_id', caller.id).not('model', 'in', NON_AI_USAGE)
+      .gte('created_at', since(ms)).lte('created_at', reserved.data!.created_at);
+    const [{ count: perMinute }, { count: perDay }] = await Promise.all([callsSince(60_000), callsSince(86_400_000)]);
+    if ((perMinute ?? 0) > 40) { await releaseUsage(); return json(apiError('ai_rate_limit'), 429); }
+    if ((perDay ?? 0) > 2000) { await releaseUsage(); return json(apiError('ai_daily_limit'), 429); }
+  }
 
   const settings: ModelSettings =
     (review ? REVIEW_SETTINGS[model] : MODEL_SETTINGS[model]) ?? { extra: {}, thinks: false, fallbacks: false };
@@ -142,16 +162,24 @@ Deno.serve(async (req: Request) => {
     headers,
     body: JSON.stringify(payload),
   });
-  let resp = await send();
-  // If the fallback option itself is rejected (beta changes, unsupported
-  // combination), don't break autofill over it — retry once without.
-  if (resp.status === 400 && settings.fallbacks) {
-    delete payload.fallbacks;
-    delete headers['anthropic-beta'];
+  let resp: Response;
+  try {
     resp = await send();
+    // If the fallback option itself is rejected (beta changes, unsupported
+    // combination), don't break autofill over it — retry once without.
+    if (resp.status === 400 && settings.fallbacks) {
+      delete payload.fallbacks;
+      delete headers['anthropic-beta'];
+      resp = await send();
+    }
+  } catch (e) {
+    // Network failure: nothing billed — release the reservation.
+    await releaseUsage();
+    return json(apiError('ai_failed', { detail: e instanceof Error ? e.message : String(e) }), 502);
   }
   const text = await resp.text();
-  if (!resp.ok) return json(apiError('ai_failed', { detail: text }), 502);
+  // Nothing billed: don't count it.
+  if (!resp.ok) { await releaseUsage(); return json(apiError('ai_failed', { detail: text }), 502); }
 
   let data: {
     content?: unknown;
@@ -166,14 +194,14 @@ Deno.serve(async (req: Request) => {
   try {
     data = JSON.parse(text);
   } catch {
+    await releaseUsage();
     return json(apiError('ai_unreadable'), 502);
   }
 
-  // Log usage (best-effort — never fail the call over telemetry).
+  // Fill in the reserved usage row (best-effort — never fail the call
+  // over telemetry).
   const u = data.usage ?? {};
   const baseRow = {
-    user_id: caller.id,
-    practice_id: practiceId,
     // The model that actually served it (differs after a fallback).
     model: data.model ?? model,
     // Cache writes are billed like input (×1.25) — count them as input.
@@ -181,13 +209,14 @@ Deno.serve(async (req: Request) => {
     output_tokens: u.output_tokens ?? 0,
     cache_read_tokens: u.cache_read_input_tokens ?? 0,
   };
-  // kind / cache_write_tokens come from a later migration: if they aren't
-  // there yet, log the row without them rather than losing it.
-  const logged = admin
-    .from('ai_usage')
-    .insert({ ...baseRow, kind, cache_write_tokens: u.cache_creation_input_tokens ?? 0 })
-    .then(({ error }) => (error ? admin.from('ai_usage').insert(baseRow) : null))
-    .then(() => {}, () => {});
+  // cache_write_tokens comes from a later migration: if it isn't there
+  // yet, record the row without it rather than losing the counts.
+  // (No reservation — the log was down — means insert the row now.)
+  const logged = (usageId
+    ? admin.from('ai_usage').update({ ...baseRow, cache_write_tokens: u.cache_creation_input_tokens ?? 0 }).eq('id', usageId)
+      .then(({ error }) => (error ? admin.from('ai_usage').update(baseRow).eq('id', usageId) : null))
+    : admin.from('ai_usage').insert({ ...baseRow, user_id: caller.id, practice_id: practiceId, kind })
+  ).then(() => {}, () => {});
   // Once the response is sent the function can be shut down, taking an
   // unfinished insert with it (the call is billed but never counted).
   // waitUntil keeps it alive until the row is written without delaying

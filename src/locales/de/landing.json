@@ -170,7 +170,7 @@
   },
   "pricing": {
     "title": "Einfache monatliche Preise",
-    "sub": "Jeder Tarif beginnt mit {{days}} Tagen kostenloser Testphase. Jederzeit kündbar – wir bewahren Ihre Akten 30 Tage lang sicher auf, falls Sie zurückkommen.",
+    "sub": "Jeder Tarif beginnt mit {{days}} Tagen kostenloser Testphase. Jederzeit kündbar – Sie wechseln in den kostenlosen Tarif und behalten alle Ihre Akten.",
     "mostPopular": "Am beliebtesten",
     "perMonth": "/Monat",
     "startTrial": "Kostenlos testen",

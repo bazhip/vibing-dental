@@ -174,19 +174,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Frozen-account note: data kept until the purge date. */
-.billing-gate__freeze {
-  margin: 0 auto 1.2rem;
-  max-width: 36rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--ios-warning-fill, #fdf3e7);
-  border: 1px solid var(--ios-warning-border, #ecd9bd);
-  border-radius: var(--radius);
-  color: var(--ios-warning-label, #7a4a12);
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
 @media (max-width: 900px) {
   .billing-gate__plans { grid-template-columns: 1fr 1fr; }
 }
