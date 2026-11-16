@@ -249,8 +249,16 @@ alter table public.attachments        add column if not exists original_path tex
 -- SECURITY DEFINER membership checks used in row policies (see migrations
 -- team_access / team_access_row_policies for the full policy definitions):
 --   is_member_of(pid), is_owner_of(pid)
--- charts/report_templates/attachments select|update|delete USING:
---   created_by = auth.uid() OR public.is_member_of(practice_id)
+-- charts/report_templates/attachments select|update|delete USING
+-- (migration 20261128_access_follows_membership: a creator keeps access
+-- only while the row is private or they're still a member):
+--   (created_by = auth.uid() AND (practice_id IS NULL OR public.is_member_of(practice_id)))
+--   OR public.is_member_of(practice_id)
+-- Also there: profiles.practice_id is server-set only (trigger
+-- profiles_protect_practice_id); current_user_has_billed_subscription()
+-- checks practice_members; the own-folder storage policy excludes files
+-- behind a practice's attachment rows once you're not a member
+-- (attachment_file_locked).
 -- insert WITH CHECK:
 --   created_by = auth.uid() AND (practice_id IS NULL OR public.is_member_of(practice_id))
 -- Managed server-side by the team-api edge function (owner-gated).
