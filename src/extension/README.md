@@ -5,7 +5,7 @@ Writes ToothOps record notes into the open ezyVet consult. The web app sends mes
 worker receives them on `chrome.runtime.onMessageExternal` (types in `protocol.ts`), injects
 `ezyvet-page.js` into the ezyVet tab and calls `window.__toothopsEzyvet`.
 
-Permissions: `scripting`, `sidePanel`, `identity` and host access to `https://*.ezyvet.com/*` only.
+Permissions: `scripting`, `sidePanel`, `identity`, `storage` and host access to `https://*.ezyvet.com/*` only.
 
 ## Build and load
 

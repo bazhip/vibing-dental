@@ -77,11 +77,17 @@ function consultPane(doc: Document): { pane: Element; id: string; recordId: stri
   return recordId === null ? null : { pane, id, recordId };
 }
 
-export type Status = { state: EzyvetState; patientName: string | null; consult: ConsultId | null };
+/** `patientNumber` is filled in by the background (from the consult tooltip); `status()` leaves it null. */
+export type Status = {
+  state: EzyvetState;
+  patientName: string | null;
+  patientNumber: string | null;
+  consult: ConsultId | null;
+};
 
 export function status(doc: Document = document): Status {
   const consult = consultPane(doc);
-  if (!consult) return { state: 'notConsult', patientName: null, consult: null };
+  if (!consult) return { state: 'notConsult', patientName: null, patientNumber: null, consult: null };
   const name = doc.querySelector(S.PATIENT_NAME)?.textContent?.replace(/\s+/g, ' ').trim() || null;
   // Order: the combined view and a locked consult are reported before the sub-tab check, since the
   // combined view has no Medical sub-tab and a locked consult is not writable whichever tab is open.
@@ -90,7 +96,7 @@ export function status(doc: Document = document): Status {
   else if (doc.querySelector(S.LOCKED_TOOLBAR)) state = 'locked';
   else if (doc.getElementById(`subTab${consult.id}-Medical`)?.classList.contains('active')) state = 'writable';
   else state = 'notMedicalTab';
-  return { state, patientName: name, consult: { viewId: consult.id, recordId: consult.recordId } };
+  return { state, patientName: name, patientNumber: null, consult: { viewId: consult.id, recordId: consult.recordId } };
 }
 
 function cleanTitle(raw: string): string {

@@ -48,6 +48,7 @@ Requirements: a ToothOps account, Google Chrome, and ezyVet open in a tab. Tooth
 - `scripting`: Used to run a small content script in the user's open ezyVet tab, to read the names of the consult's note fields and the patient name, and to insert the note text and chart image into the fields the user selected. It runs in response to a request from toothops.app or from the extension's own side panel. While the side panel is open, the panel also checks the open consult automatically (when the panel gains focus or becomes visible, the active tab changes, or the ezyVet tab finishes loading) to show the current target; it writes only when the user presses Send.
 - `sidePanel`: Shows the extension's side panel (chart list and send flow) beside the page when the user clicks the toolbar icon.
 - `identity`: Used only for `chrome.identity.launchWebAuthFlow`, so the user can sign in to their ToothOps account with Google or Apple in the side panel. The returned PKCE code is used only to sign in to ToothOps.
+- `storage`: Used only for `chrome.storage.session`, to hold the patient the user picked in the side panel for up to 2 minutes, in memory only, until the ToothOps tab it opened takes it. Nothing is written to disk, and the entry is removed as soon as ToothOps reads it.
 - Host permission `https://*.ezyvet.com/*`: ezyVet is hosted on a per-practice subdomain of ezyvet.com, so the extension needs access to those pages to find the open consult and write into it. It does not request access to any other site.
 - `externally_connectable` (`https://toothops.app/*`): Lets the ToothOps web app send messages to the extension (check status, list fields, send a note). No other site can talk to the extension. (The local development origin is only in the unpacked dev build; `npm run package:extension` builds the store zip without it.)
 - Remote code: No. All code is in the package; nothing is loaded or evaluated from the network.
@@ -89,8 +90,8 @@ Also needed: a 440x280 small promo tile (required by the dashboard; use the teal
 
 ## Owner decisions
 
-- Decided: the unused `storage` permission was removed; the manifest asks for `scripting`, `sidePanel` and `identity` (the latter two for the side panel, phase 2).
-- The side panel session lives in the extension page's `localStorage`, so no `storage` permission is needed.
+- Decided: the manifest asks for `scripting`, `sidePanel`, `identity` and `storage` (`sidePanel` and `identity` for the side panel, phase 2; `storage` only for `chrome.storage.session`, which holds the Start chart hand-over in memory for up to 2 minutes). It shows no install warning.
+- The side panel's sign-in session lives in the extension page's `localStorage`, not in `chrome.storage`.
 - Decided: the store build (`npm run package:extension`) ships `externally_connectable` and the background's allowed origins with `https://toothops.app` only.
 - Health information box on the data usage form (see above).
 - Add the extension section to `public/privacy.html` and deploy before submitting.

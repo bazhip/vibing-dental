@@ -64,6 +64,7 @@ function writableWith(over: { state?: 'writable' | 'locked' | 'notConsult'; pati
     status: {
       state: over.state ?? 'writable',
       patientName: over.patientName === undefined ? 'Bella Smith' : over.patientName,
+      patientNumber: null,
       consult: { viewId: '3', recordId: '4521' },
     },
     fields: FIELDS,

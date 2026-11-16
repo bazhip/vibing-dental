@@ -19,7 +19,7 @@ import { usePimsSend } from './usePimsSend';
 const info: InspectResult = {
   tab: { id: 7, title: 'Consult' },
   candidates: 1,
-  status: { state: 'writable', patientName: 'Bella Smith', consult: { viewId: '3', recordId: '4521' } },
+  status: { state: 'writable', patientName: 'Bella Smith', patientNumber: null, consult: { viewId: '3', recordId: '4521' } },
   fields: [
     { title: 'Plan', kind: 'note', acceptsImage: false },
     { title: 'Discharge Summary', kind: 'dischargeSummary', acceptsImage: true },

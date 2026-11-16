@@ -16,7 +16,7 @@ const chart = (id: string, name: string, updated: string, owner = 'Jane Owner'):
 const writable = (patientName: string | null): InspectResult => ({
   tab: { id: 1, title: 'Consult' },
   candidates: 1,
-  status: { state: 'writable', patientName, consult: { viewId: '1', recordId: '2' } },
+  status: { state: 'writable', patientName, patientNumber: null, consult: { viewId: '1', recordId: '2' } },
   fields: [],
 });
 
@@ -108,7 +108,7 @@ describe('ChartList', () => {
   });
 
   it('no pin without a patient name, a match, a writable consult or an inspect', async () => {
-    const locked: InspectResult = { ...writable('Bella'), status: { state: 'locked', patientName: 'Bella', consult: null } };
+    const locked: InspectResult = { ...writable('Bella'), status: { state: 'locked', patientName: 'Bella', patientNumber: null, consult: null } };
     for (const inspect of [writable(null), writable('Rex'), locked, null]) {
       const { unmount } = render(<ChartList inspect={inspect} onPick={vi.fn()} />);
       await flush();

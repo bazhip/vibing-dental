@@ -38,7 +38,7 @@ const PAGE_TEXT = ['Plan', 'Physical Exam', 'Discharge Summary', 'Assessment'];
 const writable: InspectResult = {
   tab: { id: 1, title: 'Consult — ezyVet' },
   candidates: 2,
-  status: { state: 'writable', patientName: 'Bella', consult: { viewId: '1', recordId: '1' } },
+  status: { state: 'writable', patientName: 'Bella', patientNumber: null, consult: { viewId: '1', recordId: '1' } },
   fields: [
     { title: 'Physical Exam', kind: 'note', acceptsImage: false },
     { title: 'Plan', kind: 'note', acceptsImage: false },
