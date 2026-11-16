@@ -104,37 +104,50 @@ export async function listAppointments(
   partial?: Partial<PageDeps>,
 ): Promise<AppointmentsResult> {
   const { doc, fetchTooltip, wait } = defaults(partial);
-  if (!doc.querySelector(S.DASHBOARD_ACTIVE)) {
-    if (!opts.navigate) return { ok: false, code: 'not_on_calendar' };
-    const button = doc.querySelector<HTMLElement>(S.DASHBOARD_BUTTON);
-    if (!button) return { ok: false, code: 'no_dashboard' };
-    button.click();
-    if (!(await pollFor(wait, () => doc.querySelector(S.DASHBOARD_ACTIVE)))) return { ok: false, code: 'no_dashboard' };
-  }
+  if (!opts.navigate) {
+    // Read only a calendar already showing this day in Day view; never move the vet's tab.
+    const input = doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT);
+    const onDay = doc.querySelector(S.DASHBOARD_ACTIVE) && input?.value === date && doc.querySelector(S.DAY_VIEW_ACTIVE);
+    if (!onDay) return { ok: false, code: 'not_on_calendar' };
+  } else {
+    if (!doc.querySelector(S.DASHBOARD_ACTIVE)) {
+      const button = doc.querySelector<HTMLElement>(S.DASHBOARD_BUTTON);
+      if (!button) return { ok: false, code: 'no_dashboard' };
+      button.click();
+      if (!(await pollFor(wait, () => doc.querySelector(S.DASHBOARD_ACTIVE)))) return { ok: false, code: 'no_dashboard' };
+    }
 
-  const input = doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT);
-  if (!input) return { ok: false, code: 'no_date_input' };
-  if (input.value !== date) {
-    const refresh = (doc.defaultView as (Window & { calendarRefresh?: unknown }) | null)?.calendarRefresh;
-    if (typeof refresh !== 'function') return { ok: false, code: 'no_calendar_refresh' };
-    input.value = date;
-    refresh();
-    await wait(AFTER_REFRESH_MS);
-  }
+    const input = doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT);
+    if (!input) return { ok: false, code: 'no_date_input' };
+    if (input.value !== date) {
+      const refresh = (doc.defaultView as (Window & { calendarRefresh?: unknown }) | null)?.calendarRefresh;
+      if (typeof refresh !== 'function') return { ok: false, code: 'no_calendar_refresh' };
+      input.value = date;
+      refresh();
+      await wait(AFTER_REFRESH_MS);
+    }
 
-  if (!doc.querySelector(S.DAY_VIEW_ACTIVE)) {
-    const day = doc.querySelector<HTMLElement>(S.DAY_VIEW_BUTTON);
-    if (day) {
-      day.click();
-      await wait(AFTER_DAY_MS);
+    if (!doc.querySelector(S.DAY_VIEW_ACTIVE)) {
+      const day = doc.querySelector<HTMLElement>(S.DAY_VIEW_BUTTON);
+      if (day) {
+        day.click();
+        await wait(AFTER_DAY_MS);
+      }
     }
   }
 
   await pollFor(wait, () => doc.querySelector(S.APPOINTMENT_BLOCK));
   const columns = Array.from(doc.querySelectorAll(S.CALENDAR_COLUMN_NAMES)).map((e) => (e.textContent ?? '').trim());
+  // ezyVet can draw one appointment as several blocks (e.g. more than one column): the first wins.
+  const seen = new Set<string>();
   const blocks = Array.from(doc.querySelectorAll<HTMLElement>(S.APPOINTMENT_BLOCK)).filter((b) => {
     const animal = b.getAttribute('data-animal');
-    return animal !== null && animal !== '' && animal !== '0';
+    if (animal === null || animal === '' || animal === '0') return false;
+    const id = b.getAttribute('data-appointment');
+    if (!id) return true;
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
   });
 
   const results: ({ appt: Appointment } | { fail: Failure })[] = new Array(blocks.length);

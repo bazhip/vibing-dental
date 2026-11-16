@@ -130,26 +130,27 @@ describe('extensionBridge', () => {
     expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'startChart', handover });
   });
 
-  it('takePendingPatient is null after two lastError replies', async () => {
+  it('takePendingPatient is null after a lastError reply, without retrying', async () => {
     sendMessage.mockImplementation(lastError('Unknown request'));
     expect(await takePendingPatient()).toBeNull();
-    expect(sendMessage).toHaveBeenCalledTimes(2);
+    expect(sendMessage).toHaveBeenCalledTimes(1);
     expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'takePendingPatient' });
   });
 
-  it('takePendingPatient returns the result when the second attempt answers', async () => {
-    sendMessage.mockImplementationOnce(lastError('x')).mockImplementationOnce(answer({ handover: null }));
+  it('takePendingPatient returns the answer', async () => {
+    sendMessage.mockImplementation(answer({ handover: null }));
     expect(await takePendingPatient()).toEqual({ handover: null });
-    expect(sendMessage).toHaveBeenCalledTimes(2);
+    expect(sendMessage).toHaveBeenCalledTimes(1);
   });
 
-  it('takePendingPatient waits 1.5 s then 3 s', async () => {
+  it('takePendingPatient asks once and waits 5 s (a retry could find the entry already taken)', async () => {
     sendMessage.mockImplementation(neverAnswers);
     let settled = false;
     const p = takePendingPatient().then((v) => { settled = true; return v; });
-    await vi.advanceTimersByTimeAsync(4_499);
+    await vi.advanceTimersByTimeAsync(4_999);
     expect(settled).toBe(false);
     await vi.advanceTimersByTimeAsync(1);
     expect(await p).toBeNull();
+    expect(sendMessage).toHaveBeenCalledTimes(1);
   });
 });

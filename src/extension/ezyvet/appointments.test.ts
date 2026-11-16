@@ -20,8 +20,8 @@ function dashboard(opts: { blocks?: string[]; cols?: string[]; date?: string; da
       ${opts.cols ? opts.cols.map((c) => `<div class="sep"><span>${c}</span></div>`).join('') : ''}
       ${(opts.blocks ?? []).join('')}
     </div></div>
-    <div id="calendarSideList"><input name="currentdate" value="${opts.date ?? '2000-01-01'}"></div>
-    <div id="timespanSelector"><div class="${opts.dayActive ? 'active' : ''}"><span data-text="Day"></span></div></div>`;
+    <div id="calendarSideList"><input name="currentdate" value="${opts.date ?? DATE}"></div>
+    <div id="timespanSelector"><div class="${opts.dayActive ?? true ? 'active' : ''}"><span data-text="Day"></span></div></div>`;
 }
 const good = (over: Block = {}): string =>
   block({ 'data-record-id': '55', 'data-appointment': '900', 'data-animal': '3', 'data-start': '34200', 'data-col': '2', ...over });
@@ -80,9 +80,9 @@ describe('listAppointments', () => {
     const r = await listAppointments(DATE, { navigate: true }, deps);
     expect(r.ok).toBe(true);
   });
-  it('sets the date and calls calendarRefresh once', async () => {
-    dashboard();
-    await listAppointments(DATE, { navigate: false }, deps);
+  it('sets the date and calls calendarRefresh once when navigating', async () => {
+    dashboard({ date: '2000-01-01' });
+    await listAppointments(DATE, { navigate: true }, deps);
     expect((document.querySelector('[name="currentdate"]') as HTMLInputElement).value).toBe(DATE);
     expect(refresh()).toHaveBeenCalledTimes(1);
   });
@@ -91,24 +91,64 @@ describe('listAppointments', () => {
     await listAppointments(DATE, { navigate: false }, deps);
     expect(refresh()).not.toHaveBeenCalled();
   });
-  it('reports no_calendar_refresh and no_date_input', async () => {
-    dashboard();
+  it('reports no_calendar_refresh and no_date_input when navigating', async () => {
+    dashboard({ date: '2000-01-01' });
     delete (window as unknown as { calendarRefresh?: () => void }).calendarRefresh;
-    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'no_calendar_refresh' });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'no_calendar_refresh' });
     document.querySelector('[name="currentdate"]')!.remove();
-    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'no_date_input' });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'no_date_input' });
   });
-  it('clicks Day only when it is not active', async () => {
+  it('clicks Day only when it is not active, when navigating', async () => {
     dashboard({ dayActive: false });
     const click = vi.fn();
     document.querySelector('[data-text="Day"]')!.addEventListener('click', click);
-    await listAppointments(DATE, { navigate: false }, deps);
+    await listAppointments(DATE, { navigate: true }, deps);
     expect(click).toHaveBeenCalledTimes(1);
     dashboard({ dayActive: true });
     const click2 = vi.fn();
     document.querySelector('[data-text="Day"]')!.addEventListener('click', click2);
-    await listAppointments(DATE, { navigate: false }, deps);
+    await listAppointments(DATE, { navigate: true }, deps);
     expect(click2).not.toHaveBeenCalled();
+  });
+  it('without navigate, leaves a calendar on another date untouched', async () => {
+    dashboard({ date: '2000-01-01', blocks: [good()] });
+    const day = vi.fn();
+    document.querySelector('[data-text="Day"]')!.addEventListener('click', day);
+    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+    expect((document.querySelector('[name="currentdate"]') as HTMLInputElement).value).toBe('2000-01-01');
+    expect(refresh()).not.toHaveBeenCalled();
+    expect(day).not.toHaveBeenCalled();
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('without navigate, leaves a Week view untouched', async () => {
+    dashboard({ dayActive: false, blocks: [good()] });
+    const day = vi.fn();
+    document.querySelector('[data-text="Day"]')!.addEventListener('click', day);
+    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+    expect(day).not.toHaveBeenCalled();
+    expect(refresh()).not.toHaveBeenCalled();
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('without navigate, a missing date input is not_on_calendar', async () => {
+    dashboard();
+    document.querySelector('[name="currentdate"]')!.remove();
+    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+  });
+  it('lists an appointment shown in two blocks once (first wins)', async () => {
+    dashboard({
+      blocks: [
+        good({ 'data-record-id': '55', 'data-start': '34200' }),
+        good({ 'data-record-id': '56', 'data-start': '36000' }),
+        good({ 'data-record-id': '57', 'data-appointment': '901' }),
+      ],
+      cols: ['Dr Ng', 'Dr Lee'],
+    });
+    const r = await listAppointments(DATE, { navigate: false }, deps);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.appointments.map((a) => a.appointmentId)).toEqual(['900', '901']);
+    expect(r.appointments[0].start).toBe(new Date(2026, 10, 16, 9, 30).toISOString());
+    expect(fetchTooltip.mock.calls.map((c) => c[1])).toEqual(['55', '57']);
   });
   it('skips blocks without an animal', async () => {
     dashboard({ date: DATE, blocks: [good({ 'data-animal': '0' }), good({ 'data-animal': undefined })] });
@@ -145,9 +185,9 @@ describe('listAppointments', () => {
       date: DATE,
       blocks: [
         good({ 'data-record-id': '1', 'data-appointment': undefined }),
-        good({ 'data-record-id': '2' }),
-        good({ 'data-record-id': '3' }),
-        good({ 'data-record-id': '4', 'data-start': undefined }),
+        good({ 'data-record-id': '2', 'data-appointment': '902' }),
+        good({ 'data-record-id': '3', 'data-appointment': '903' }),
+        good({ 'data-record-id': '4', 'data-appointment': '904', 'data-start': undefined }),
       ],
     });
     fetchTooltip.mockImplementation(async (_c, id) => {

@@ -18,11 +18,12 @@ export const EXTENSION_ID: string = import.meta.env.VITE_EXTENSION_ID ?? DEV_EXT
 const PING_TIMEOUTS_MS = [500, 1_500];
 const INSPECT_TIMEOUT_MS = 5_000;
 const DIAGNOSE_TIMEOUT_MS = 5_000;
-// A multi-field send waits on one ezyVet save per field.
 const APPOINTMENTS_TIMEOUT_MS = 30_000;
 const START_CHART_TIMEOUT_MS = 5_000;
-// The second attempt waits longer: Chrome may be starting a stopped service worker.
-const TAKE_PENDING_TIMEOUTS_MS = [1_500, 3_000];
+// One attempt, long enough for Chrome to start a stopped service worker: a timed-out first
+// attempt may still have taken the one-use entry, so a retry would only get null.
+const TAKE_PENDING_TIMEOUT_MS = 5_000;
+// A multi-field send waits on one ezyVet save per field.
 const SEND_TIMEOUT_MS = 120_000;
 
 const runtime = (): ChromeRuntime | undefined => (window as ChromeWindow).chrome?.runtime;
@@ -113,12 +114,11 @@ export function createTransport(channel: () => RuntimeChannel | undefined): Pims
     /** The hand-over stored for this tab, or null when the extension doesn't answer or
      *  doesn't know the request (an older extension). */
     async takePendingPatient() {
-      for (const timeoutMs of TAKE_PENDING_TIMEOUTS_MS) {
-        try {
-          return await raw<TakePendingResult>({ type: 'takePendingPatient' }, timeoutMs);
-        } catch { /* retry once, then give up */ }
+      try {
+        return await raw<TakePendingResult>({ type: 'takePendingPatient' }, TAKE_PENDING_TIMEOUT_MS);
+      } catch {
+        return null;
       }
-      return null;
     },
   };
 }

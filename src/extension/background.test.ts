@@ -379,6 +379,14 @@ describe('patient hand-over', () => {
     expect(store.has('pending:42')).toBe(false);
   });
 
+  it('a hand-over stamped in the future (clock went back) is expired', async () => {
+    const { deps, store, clock } = makeDeps();
+    await handleInternal(start(), panel, ID, deps);
+    clock.now -= 1;
+    expect(await handleExternal(take, webTab(42), deps)).toEqual({ handover: null });
+    expect(store.has('pending:42')).toBe(false);
+  });
+
   it('startChart and takePendingPatient sweep expired hand-overs for other tabs', async () => {
     const { deps, store, clock } = makeDeps();
     store.set('pending:7', { handover, at: clock.now - HANDOVER_TTL_MS - 1 });

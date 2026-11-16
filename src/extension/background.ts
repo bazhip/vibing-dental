@@ -120,7 +120,8 @@ const pendingKey = (tabId: number) => `${PENDING_PREFIX}${tabId}`;
 
 const isFresh = (entry: unknown, now: number): entry is PendingEntry => {
   const at = (entry as Partial<PendingEntry> | null)?.at;
-  return typeof at === 'number' && now - at <= HANDOVER_TTL_MS;
+  // A future `at` (the clock went back) counts as expired too.
+  return typeof at === 'number' && now - at >= 0 && now - at <= HANDOVER_TTL_MS;
 };
 
 /** Removes every expired hand-over, so one whose tab never asked for it lives no longer than the
