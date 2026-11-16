@@ -2,29 +2,38 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InspectResult } from '../protocol';
 import { listChartsPage, type CloudChartMeta } from '../../utils/chartQueries';
-import { patientsMatch, patientsMatchStrict } from '../../utils/pims/patientMatch';
+import { patientsMatch, patientsMatchStrict, samePatientNumber } from '../../utils/pims/patientMatch';
 import { friendlyError } from '../../components/ui/dialogs';
 
 export const PAGE_SIZE = 20;
 export const SEARCH_DEBOUNCE_MS = 300;
 
 export interface ConsultMatches {
-  /** Charts whose patient is the consult's (`patientsMatchStrict`): pinned as "Matches this consult". */
+  /** Charts whose patient is the consult's (the same patient number, or with no number to compare,
+   *  `patientsMatchStrict`): pinned as "Matches this consult". */
   exact: CloudChartMeta[];
-  /** Charts that only share whole words with it (`patientsMatch`): offered as a possible match. */
+  /** Charts with no number to compare that only share whole words with it (`patientsMatch`): offered
+   *  as a possible match. */
   possible: CloudChartMeta[];
 }
 
-/** The charts that match the writable consult's patient, most recent first. No match is possible
- *  without a patient name or a writable consult. */
+/** The charts that match the writable consult's patient, most recent first. When the chart and the
+ *  consult both have a patient number, the number decides: equal is exact whatever the names, and a
+ *  different number is in neither list. Otherwise the names decide, so nothing matches without a
+ *  patient name. No match is possible without a writable consult. */
 export function consultMatches(charts: CloudChartMeta[], info: InspectResult | null): ConsultMatches {
-  const none = { exact: [], possible: [] };
-  if (!info?.tab || info.status?.state !== 'writable') return none;
-  const name = info.status.patientName;
-  if (!name) return none;
+  const exact: CloudChartMeta[] = [];
+  const possible: CloudChartMeta[] = [];
+  if (!info?.tab || info.status?.state !== 'writable') return { exact, possible };
+  const { patientName: name, patientNumber: number } = info.status;
   const sorted = [...charts].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
-  const exact = sorted.filter((c) => patientsMatchStrict(c.patient_name, c.owner_name, name));
-  const possible = sorted.filter((c) => !exact.includes(c) && patientsMatch(c.patient_name, name));
+  for (const c of sorted) {
+    const byNumber = samePatientNumber(c.patient_number, number);
+    if (byNumber === true) exact.push(c);
+    else if (byNumber === false || !name) continue;
+    else if (patientsMatchStrict(c.patient_name, c.owner_name, name)) exact.push(c);
+    else if (patientsMatch(c.patient_name, name)) possible.push(c);
+  }
   return { exact, possible };
 }
 

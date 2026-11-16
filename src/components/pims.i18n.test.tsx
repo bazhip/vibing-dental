@@ -19,6 +19,9 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   inspect: mocks.inspect,
   send: mocks.send,
   diagnose: vi.fn(),
+  appointments: vi.fn(),
+  startChart: vi.fn(),
+  takePendingPatient: vi.fn(),
   extensionAvailable: () => true,
 }));
 vi.mock('../hooks/usePimsFieldMap', () => ({
@@ -38,7 +41,7 @@ const PAGE_TEXT = ['Plan', 'Physical Exam', 'Discharge Summary', 'Assessment'];
 const writable: InspectResult = {
   tab: { id: 1, title: 'Consult — ezyVet' },
   candidates: 2,
-  status: { state: 'writable', patientName: 'Bella', consult: { viewId: '1', recordId: '1' } },
+  status: { state: 'writable', patientName: 'Bella', patientNumber: null, consult: { viewId: '1', recordId: '1' } },
   fields: [
     { title: 'Physical Exam', kind: 'note', acceptsImage: false },
     { title: 'Plan', kind: 'note', acceptsImage: false },
@@ -63,6 +66,7 @@ function renderDialog(over: Partial<React.ComponentProps<typeof SendToEzyvetDial
       chartSnapshot={{ species: 'canine' } as unknown as PreviewSnapshot}
       chartId="c1"
       patientName="Bella"
+      patientNumber=""
       sentAt="2026-11-01T09:00:00Z"
       onSent={() => {}}
       {...over}

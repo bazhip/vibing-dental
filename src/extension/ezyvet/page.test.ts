@@ -11,7 +11,17 @@ describe('page entry', () => {
     await import('./page');
     const api = window.__toothopsEzyvet!;
     expect(api.version).toBe(EXTENSION_VERSION);
-    expect(Object.keys(api).sort()).toEqual(['diagnostics', 'listFields', 'status', 'version', 'write']);
+    expect(Object.keys(api).sort()).toEqual([
+      'consultPatientNumber',
+      'diagnostics',
+      'listAppointments',
+      'listFields',
+      'status',
+      'version',
+      'write',
+    ]);
+    expect(typeof api.listAppointments).toBe('function');
+    expect(typeof api.consultPatientNumber).toBe('function');
     vi.resetModules();
     await import('./page');
     expect(window.__toothopsEzyvet).toBe(api);

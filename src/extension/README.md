@@ -5,7 +5,7 @@ Writes ToothOps record notes into the open ezyVet consult. The web app sends mes
 worker receives them on `chrome.runtime.onMessageExternal` (types in `protocol.ts`), injects
 `ezyvet-page.js` into the ezyVet tab and calls `window.__toothopsEzyvet`.
 
-Permissions: `scripting`, `sidePanel`, `identity` and host access to `https://*.ezyvet.com/*` only.
+Permissions: `scripting`, `sidePanel`, `identity`, `storage` and host access to `https://*.ezyvet.com/*` only.
 
 ## Build and load
 
@@ -77,6 +77,30 @@ sent. While open, the panel also re-inspects (debounced 300 ms, keeping mapping 
 regains focus or becomes visible, when the active tab changes, and when the ezyVet tab it last
 inspected (or a tab Chrome reports as an ezyVet page) finishes loading. A refresh that shows the
 consult seen at load again clears the notice.
+
+### Today's patients
+
+With the panel signed in, a Today's patients block sits above the charts list. It reads the ezyVet
+calendar (`ezyvet/appointments.ts`) and each appointment's tooltip for the patient name, patient
+number, owner and vet. If the ezyVet tab is already on the calendar the list fills in by itself;
+otherwise (another section, another date, or Week view) the panel leaves the tab alone and the
+Load button switches it to today's Day view first. An appointment drawn as more than one block is
+listed once. Each row offers Open chart,
+New visit or Start chart, depending on the practice's charts for that patient.
+
+A block without a vet column keeps the patient with no vet. A block without a record id counts as
+unreadable and is reported in the failure line.
+
+Not built (deferred from the spec): a separate Copy diagnostic report for appointments. The
+calendar selector hit counts are in the existing diagnostic report.
+
+Start chart opens `https://toothops.app/#/chart/patient?from=ezyvet`. The URL carries no patient
+data. The worker keeps the details in `chrome.storage.session` (in memory; the `storage` permission
+shows no install warning), keyed by the new tab. The web app asks for them once with
+`takePendingPatient`: they are returned only within 2 minutes, and cleared once used, when the tab
+closes, or on the next Start chart or take. They are always gone when the browser closes. The web app
+fills the patient details only after the discard question is confirmed, only into a blank chart, and
+only when signed in as the same account as the panel.
 
 ### Owner setup for panel sign-in
 
@@ -166,3 +190,18 @@ Check these first (highest risk):
 - [ ] Focus refresh: switch to ezyVet and back to the panel; the target refreshes but mapping choices already made are kept.
 - [ ] Sign-out: the panel returns to sign-in, the web app stays signed in, and signing in again (or as another user) shows the chart list, not the chart that was open. Sign out is greyed out during a send.
 - [ ] Expired session: leave the panel signed in until the session expires (or revoke it in Supabase); the panel asks to sign in again instead of showing an error loop.
+
+### Today's patients checklist on real ezyVet
+
+- [ ] **High risk:** the bracketed tooltip number equals the patient number ezyVet shows on the patient record.
+- [ ] With ezyVet on the calendar, the list fills in by itself when the panel opens.
+- [ ] From another page, the Load button switches the tab to the calendar and loads the list; the tab ends on the calendar.
+- [ ] Known limitation: after the panel changes the calendar date it waits 1.5 s; if ezyVet refreshes more slowly, the previous day's blocks could be read. After a Load from another day, check the list shows today's patients.
+- [ ] Empty day: the panel says there are no patients on today's schedule.
+- [ ] An appointment without a patient is skipped.
+- [ ] A block without a vet still lists the patient, with no vet.
+- [ ] Start chart opens ToothOps and fills patient name, owner and patient number (after the discard question, if the open chart has unsaved work).
+- [ ] Expired hand-over: click Start chart, wait over 2 minutes before the tab loads or reload it, and the fallback toast appears.
+- [ ] Open chart for a patient with a chart dated today opens that chart; New visit for an older chart starts a visit from it.
+- [ ] Signed in as another account in the web app: nothing is filled in and the toast says to use the same account.
+- [ ] Consult number read on send: with a consult open, the patient numbers on both sides decide "Different patient?" and the prompt names both.

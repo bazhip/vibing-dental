@@ -6,17 +6,17 @@ import type { CloudChartMeta } from '../../utils/chartQueries';
 const list = vi.hoisted(() => ({ fn: vi.fn() }));
 vi.mock('../../utils/chartQueries', () => ({ listChartsPage: list.fn }));
 
-import { ChartList } from './ChartList';
+import { ChartList, consultMatches } from './ChartList';
 
 const chart = (id: string, name: string, updated: string, owner = 'Jane Owner'): CloudChartMeta => ({
   id, patient_name: name, patient_number: '', owner_name: owner, owner_phone: '', owner_email: '',
   species: 'canine', dentition: '', chart_date: '2026-11-01', recall_date: '', updated_at: updated, created_by: 'u1',
 });
 
-const writable = (patientName: string | null): InspectResult => ({
+const writable = (patientName: string | null, patientNumber: string | null = null): InspectResult => ({
   tab: { id: 1, title: 'Consult' },
   candidates: 1,
-  status: { state: 'writable', patientName, consult: { viewId: '1', recordId: '2' } },
+  status: { state: 'writable', patientName, patientNumber, consult: { viewId: '1', recordId: '2' } },
   fields: [],
 });
 
@@ -108,7 +108,7 @@ describe('ChartList', () => {
   });
 
   it('no pin without a patient name, a match, a writable consult or an inspect', async () => {
-    const locked: InspectResult = { ...writable('Bella'), status: { state: 'locked', patientName: 'Bella', consult: null } };
+    const locked: InspectResult = { ...writable('Bella'), status: { state: 'locked', patientName: 'Bella', patientNumber: null, consult: null } };
     for (const inspect of [writable(null), writable('Rex'), locked, null]) {
       const { unmount } = render(<ChartList inspect={inspect} onPick={vi.fn()} />);
       await flush();
@@ -123,5 +123,35 @@ describe('ChartList', () => {
     render(<ChartList inspect={null} onPick={vi.fn()} />);
     await flush();
     expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+});
+
+describe('consultMatches by patient number', () => {
+  const numbered = (id: string, name: string, number: string, updated = '2026-11-10') =>
+    ({ ...chart(id, name, updated), patient_number: number });
+
+  it('an equal number is exact even when the names differ', () => {
+    const c = numbered('a', 'Bella', '00123');
+    expect(consultMatches([c], writable('Max Jones', '123'))).toEqual({ exact: [c], possible: [] });
+  });
+
+  it('an equal number is exact even when ezyVet shows no name', () => {
+    const c = numbered('a', 'Bella', '123');
+    expect(consultMatches([c], writable(null, '123'))).toEqual({ exact: [c], possible: [] });
+  });
+
+  it('a different number is in neither list, even when the names match strictly', () => {
+    const c = numbered('a', 'Bella', '124');
+    expect(consultMatches([c], writable('Bella', '123'))).toEqual({ exact: [], possible: [] });
+    expect(consultMatches([c], writable('Bella Smith', '123'))).toEqual({ exact: [], possible: [] });
+  });
+
+  it('a missing number on either side keeps the name rules', () => {
+    const noNumber = numbered('a', 'Bella', '');
+    const numberedChart = numbered('b', 'Bella', '123', '2026-11-09');
+    expect(consultMatches([noNumber], writable('Bella', '123')).exact).toEqual([noNumber]);
+    expect(consultMatches([numberedChart], writable('Bella', null)).exact).toEqual([numberedChart]);
+    expect(consultMatches([numberedChart], writable('Bella Smith', '')).possible).toEqual([numberedChart]);
+    expect(consultMatches([noNumber], writable(null, '123'))).toEqual({ exact: [], possible: [] });
   });
 });

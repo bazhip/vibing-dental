@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Anderer Patient?",
     "message": "ToothOps-Akte: {{chart}} · ezyVet-Konsultation: {{ezyvet}}",
+    "messageNumbers": "Die Akte gehört zu {{chart}} (Nr. {{chartNumber}}), aber ezyVet zeigt {{ezyvet}} (Nr. {{ezyvetNumber}}).",
     "unknown": "(Name nicht gefunden)",
     "noName": "(kein Patientenname)",
     "sendAnyway": "Trotzdem senden"
@@ -116,9 +117,36 @@
       "flagLoading": "Es wird geprüft, ob das Senden für Ihre Praxis aktiviert ist…",
       "flagFailed": "Es konnte nicht geprüft werden, ob das Senden an ezyVet für Ihre Praxis aktiviert ist.",
       "sendOff": "Das Senden an ezyVet ist für Ihre Praxis nicht aktiviert."
+    },
+    "today": {
+      "title": "Heutige Patienten (ezyVet)",
+      "refresh": "Aktualisieren",
+      "load": "Heutige Patienten laden",
+      "loadHint": "Dabei wechselt Ihr ezyVet-Tab zum Kalender.",
+      "noTab": "Öffnen Sie ezyVet, um die heutigen Patienten zu sehen.",
+      "empty": "Keine Patienten im heutigen ezyVet-Terminplan.",
+      "failed_one": "{{count}} Termin konnte nicht gelesen werden.",
+      "failed_other": "{{count}} Termine konnten nicht gelesen werden.",
+      "start": "Akte anlegen",
+      "open": "Akte öffnen",
+      "newVisit": "Neuer Besuch",
+      "startAnyway": "Neue Akte anlegen",
+      "loading": "Heutige Patienten werden geladen…",
+      "errors": {
+        "no_dashboard": "Das ezyVet-Dashboard wurde nicht gefunden.",
+        "no_date_input": "Das Datum im ezyVet-Kalender konnte nicht eingestellt werden.",
+        "no_calendar_refresh": "Der ezyVet-Kalender reagiert nicht. Laden Sie ezyVet neu und versuchen Sie es erneut.",
+        "unknown": "Der heutige ezyVet-Terminplan konnte nicht gelesen werden."
+      },
+      "startFailed": "ToothOps konnte nicht geöffnet werden. Bitte versuchen Sie es erneut."
     }
   },
   "send": {
     "targetChanged": "Die ezyVet-Konsultation hat sich geändert. Prüfen Sie das Ziel und klicken Sie erneut auf Senden."
+  },
+  "handover": {
+    "filled": "Patientendaten aus ezyVet übernommen.",
+    "failed": "Der Patient konnte nicht aus ezyVet abgerufen werden. Bitte geben Sie die Daten ein.",
+    "otherUser": "Dieser Patient wurde in der Erweiterung mit einem anderen Konto ausgewählt. Melden Sie sich in beiden mit demselben Konto an."
   }
 }

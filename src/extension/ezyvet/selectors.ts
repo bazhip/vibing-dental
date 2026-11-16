@@ -45,6 +45,15 @@ export const DISCHARGE_SAVE_CLOSE = [
 ]; // unverified: reference
 export const COVER_BLOCK = '#coverblock'; // unverified: reference
 
+// Calendar (Dashboard) side. All unverified: reference.
+export const DASHBOARD_ACTIVE = '#rightpane .dashboard.active'; // unverified: reference
+export const DASHBOARD_BUTTON = '#dashboardSectionButton'; // unverified: reference
+export const CALENDAR_DATE_INPUT = '#calendarSideList [name="currentdate"]'; // unverified: reference
+export const DAY_VIEW_ACTIVE = '#timespanSelector .active [data-text="Day"]'; // unverified: reference
+export const DAY_VIEW_BUTTON = '#timespanSelector [data-text="Day"]'; // unverified: reference
+export const APPOINTMENT_BLOCK = 'div[id^="appt"]'; // unverified: reference
+export const CALENDAR_COLUMN_NAMES = 'div.sep span'; // unverified: reference
+
 /** Static selectors reported by `diagnostics().selectorHits`, keyed by constant name. */
 export const REPORTED_SELECTORS: Record<string, string> = {
   RIGHT_PANE,
@@ -61,4 +70,9 @@ export const REPORTED_SELECTORS: Record<string, string> = {
   POPUP_ADD_BUTTON,
   ADD_CLIENT_COMMUNICATION,
   DISCHARGE_ADD_BUTTON,
+  DASHBOARD_ACTIVE,
+  CALENDAR_DATE_INPUT,
+  DAY_VIEW_ACTIVE,
+  APPOINTMENT_BLOCK,
+  CALENDAR_COLUMN_NAMES,
 };

@@ -105,6 +105,7 @@
   "errors": {
     "setting": "Diese Einstellung konnte nicht gespeichert werden. {{error}}",
     "openVisit": "Dieser Besuch konnte nicht geöffnet werden. {{error}}",
+    "loadCharts": "Die Akten konnten nicht geladen werden. {{error}}",
     "newVisit": "Ein neuer Besuch konnte nicht begonnen werden. {{error}}",
     "signOut": "Abmelden war nicht möglich. {{error}}",
     "preview": "Die Vorschau konnte noch nicht erstellt werden — die Schemata werden noch geladen. Versuchen Sie es gleich noch einmal.",

@@ -30,6 +30,9 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   inspect: mocks.inspect,
   send: mocks.send,
   diagnose: mocks.diagnose,
+  appointments: vi.fn(),
+  startChart: vi.fn(),
+  takePendingPatient: vi.fn(),
   extensionAvailable: mocks.available,
 }));
 vi.mock('../hooks/usePimsFieldMap', () => ({
@@ -57,13 +60,14 @@ const FIELDS = [
   { title: 'Discharge Summary', kind: 'dischargeSummary' as const, acceptsImage: true },
 ];
 
-function writableWith(over: { state?: 'writable' | 'locked' | 'notConsult'; patientName?: string | null; candidates?: number } = {}): InspectResult {
+function writableWith(over: { state?: 'writable' | 'locked' | 'notConsult'; patientName?: string | null; patientNumber?: string | null; candidates?: number } = {}): InspectResult {
   return {
     tab: { id: 7, title: 'Consult — ezyVet' },
     candidates: over.candidates ?? 1,
     status: {
       state: over.state ?? 'writable',
       patientName: over.patientName === undefined ? 'Bella Smith' : over.patientName,
+      patientNumber: over.patientNumber ?? null,
       consult: { viewId: '3', recordId: '4521' },
     },
     fields: FIELDS,
@@ -89,6 +93,7 @@ function dlg(over: Partial<React.ComponentProps<typeof SendToEzyvetDialog>> = {}
     chartSnapshot: null,
     chartId: 'chart-1',
     patientName: 'Bella',
+    patientNumber: '',
     sentAt: null,
     onSent: vi.fn(),
     ...over,
@@ -229,6 +234,28 @@ describe('SendToEzyvetDialog', () => {
       confirmedEzyvetPatient: 'Max',
       expectedConsult: { viewId: '3', recordId: '4521' },
     });
+  });
+
+  it('different patient numbers ask with both numbers, even when the names match', async () => {
+    mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Bella', patientNumber: '124' }));
+    mocks.confirm.mockResolvedValueOnce(false);
+    render(dlg({ patientNumber: '123' }).el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({
+      message: t('pims:mismatch.messageNumbers', { chart: 'Bella', chartNumber: '123', ezyvet: 'Bella', ezyvetNumber: '124' }),
+    });
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+
+  it('equal patient numbers send without asking, even when the names differ', async () => {
+    mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Max', patientNumber: '123' }));
+    render(dlg({ patientNumber: '0123' }).el);
+    await screen.findByText(t('pims:rows.heading'));
+    fireEvent.click(sendButton());
+    await waitFor(() => expect(mocks.send).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm).not.toHaveBeenCalled();
   });
 
   it('a consult switched in ezyVet before Send: shows the new target and the notice, and sends nothing', async () => {
@@ -555,7 +582,7 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     preMarks: {}, preComments: [], preStrokes: [],
     postMarks: {}, postComments: [], postStrokes: [],
   };
-  const pims = { enabled: true, chartId: 'c1', patientName: 'Rex', sentAt: null };
+  const pims = { enabled: true, chartId: 'c1', patientName: 'Rex', patientNumber: '', sentAt: null };
   const panel = (over: Partial<React.ComponentProps<typeof RecordNotePanel>> = {}) => (
     <RecordNotePanel snapshot={snapshot} stored={null} onChange={() => {}} readOnly={false} {...over} />
   );
@@ -584,6 +611,17 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
     expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ confirmLabel: t('pims:alreadySent.confirm') });
     expect(mocks.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes the chart patient number to the send check', async () => {
+    mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex', patientNumber: '9' }));
+    mocks.confirm.mockResolvedValueOnce(false);
+    render(panel({ pims: { ...pims, patientNumber: '7' } }));
+    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ title: t('pims:mismatch.title') });
+    expect(mocks.send).not.toHaveBeenCalled();
   });
 
   it('button hidden when practice flag is off or in native app', () => {

@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Different patient?",
     "message": "ToothOps chart: {{chart}} · ezyVet consult: {{ezyvet}}",
+    "messageNumbers": "The chart is for {{chart}} (number {{chartNumber}}), but ezyVet shows {{ezyvet}} (number {{ezyvetNumber}}).",
     "unknown": "(name not found)",
     "noName": "(no patient name)",
     "sendAnyway": "Send anyway"
@@ -116,9 +117,36 @@
       "flagLoading": "Checking whether sending is on for your practice…",
       "flagFailed": "Couldn’t check whether sending to ezyVet is turned on for your practice.",
       "sendOff": "Sending to ezyVet isn’t turned on for your practice."
+    },
+    "today": {
+      "title": "Today’s patients (ezyVet)",
+      "refresh": "Refresh",
+      "load": "Load today’s patients",
+      "loadHint": "This switches your ezyVet tab to the calendar.",
+      "noTab": "Open ezyVet to see today’s patients.",
+      "empty": "No patients on today’s ezyVet schedule.",
+      "failed_one": "{{count}} appointment couldn’t be read.",
+      "failed_other": "{{count}} appointments couldn’t be read.",
+      "start": "Start chart",
+      "open": "Open chart",
+      "newVisit": "New visit",
+      "startAnyway": "Start new chart",
+      "loading": "Loading today’s patients…",
+      "errors": {
+        "no_dashboard": "Couldn’t find ezyVet’s Dashboard.",
+        "no_date_input": "Couldn’t set the date on ezyVet’s calendar.",
+        "no_calendar_refresh": "ezyVet’s calendar didn’t respond. Reload ezyVet and try again.",
+        "unknown": "Couldn’t read today’s ezyVet schedule."
+      },
+      "startFailed": "Couldn’t open ToothOps. Try again."
     }
   },
   "send": {
     "targetChanged": "The ezyVet consult changed. Check the target and press Send again."
+  },
+  "handover": {
+    "filled": "Patient details filled in from ezyVet.",
+    "failed": "Couldn’t get the patient from ezyVet. Fill in the details.",
+    "otherUser": "This patient was picked in the extension as another user. Sign in with the same account in both."
   }
 }

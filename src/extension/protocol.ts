@@ -1,6 +1,7 @@
 // Message types shared by the web app and the extension's background worker.
 // Plain TypeScript only: the web app imports this file, so no `chrome` types here.
 import type { FieldInfo, SendItem } from '../utils/pims/mapping';
+import type { AppointmentsResult } from './ezyvet/appointments';
 import type { ConsultId, Diagnostics, EzyvetState, Status } from './ezyvet/read';
 import type { WriteCode, WriteResult } from './ezyvet/write';
 
@@ -16,7 +17,13 @@ export function allowedOrigins(devOrigin: string | null): readonly string[] {
 
 export const ALLOWED_ORIGINS = allowedOrigins(DEV_ORIGIN);
 
-export type { ConsultId, Diagnostics, EzyvetState, FieldInfo, SendItem, Status, WriteCode, WriteResult };
+/** Where Start chart opens ToothOps: the dev origin in the unpacked dev build, else https://toothops.app. */
+export const WEB_APP_ORIGIN: string = DEV_ORIGIN ?? 'https://toothops.app';
+
+/** How long a Start chart hand-over waits for the opened ToothOps tab to take it. */
+export const HANDOVER_TTL_MS = 120_000;
+
+export type { AppointmentsResult, ConsultId, Diagnostics, EzyvetState, FieldInfo, SendItem, Status, WriteCode, WriteResult };
 
 export type Request =
   | { type: 'ping' }
@@ -30,7 +37,26 @@ export type Request =
       expectedConsult: ConsultId | null;
       items: SendItem[];
     }
-  | { type: 'diagnose'; tabId?: number };
+  | { type: 'diagnose'; tabId?: number }
+  /** Side panel only. */
+  | { type: 'appointments'; date: string; navigate: boolean }
+  /** Side panel only. */
+  | { type: 'startChart'; handover: Handover }
+  /** Web app only: the hand-over stored for the sender's own tab. */
+  | { type: 'takePendingPatient' };
+
+/** The patient picked in the side panel, held for the ToothOps tab that Start chart opened. */
+export type Handover = {
+  userId: string;
+  patientName: string;
+  patientNumber: string;
+  ownerName: string;
+  latestChartId: string | null;
+};
+
+export type AppointmentsResponse = { tab: { id: number; title: string } | null; result: AppointmentsResult | null };
+export type StartChartResult = { ok: boolean };
+export type TakePendingResult = { handover: Handover | null };
 
 export type PingResult = { version: string };
 

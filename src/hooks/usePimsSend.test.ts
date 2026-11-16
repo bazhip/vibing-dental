@@ -19,7 +19,7 @@ import { usePimsSend } from './usePimsSend';
 const info: InspectResult = {
   tab: { id: 7, title: 'Consult' },
   candidates: 1,
-  status: { state: 'writable', patientName: 'Bella Smith', consult: { viewId: '3', recordId: '4521' } },
+  status: { state: 'writable', patientName: 'Bella Smith', patientNumber: null, consult: { viewId: '3', recordId: '4521' } },
   fields: [
     { title: 'Plan', kind: 'note', acceptsImage: false },
     { title: 'Discharge Summary', kind: 'dischargeSummary', acceptsImage: true },
@@ -28,22 +28,28 @@ const info: InspectResult = {
 
 const note: RecordNote = { sections: [{ key: 'treatment', heading: 'Treatment report', lines: ['Done'] }] };
 
-function setup(opts: { patientMatcher?: (c: string, e: string | null) => boolean } = {}) {
+function setup(
+  opts: { patientMatcher?: (c: string, e: string | null) => boolean; patientNumber?: string; inspected?: InspectResult } = {},
+) {
+  const { inspected = info, ...hookOpts } = opts;
   const calls: string[] = [];
   const transport: PimsTransport = {
     ping: vi.fn(async () => { calls.push('ping'); return { version: '1.0.0' }; }),
-    inspect: vi.fn(async () => { calls.push('inspect'); return info; }),
+    inspect: vi.fn(async () => { calls.push('inspect'); return inspected; }),
     send: vi.fn(async () => {
       calls.push('send');
       return { ok: true as const, results: [{ fieldTitle: 'Plan', result: { ok: true as const } }] };
     }),
     diagnose: vi.fn(async () => null),
+    appointments: vi.fn(),
+    startChart: vi.fn(),
+    takePendingPatient: vi.fn(),
   };
   const picture = vi.fn(async () => 'data:image/png;base64,AAAA');
   const onSent = vi.fn();
   const hook = renderHook(() => usePimsSend({
     transport, note, stored: null, chartSnapshotPicture: picture, hasChartPicture: true,
-    chartId: null, patientName: 'Bella', sentAt: null, onSent, ...opts,
+    chartId: null, patientName: 'Bella', patientNumber: '', sentAt: null, onSent, ...hookOpts,
   }));
   return { transport, calls, picture, onSent, hook };
 }
@@ -92,6 +98,40 @@ describe('usePimsSend', () => {
     expect(strict).toHaveBeenCalledWith('Bella', 'Bella Smith');
     expect(dialogs.confirm).toHaveBeenCalledTimes(1);
     expect((dialogs.confirm.mock.calls[0][0] as { title: string }).title).toBe('Different patient?');
+  });
+
+  it('equal patient numbers send without asking, even when the names differ', async () => {
+    dialogs.confirm.mockClear();
+    const max: InspectResult = { ...info, status: { ...info.status!, patientName: 'Max Jones', patientNumber: '123' } };
+    const { transport, hook } = setup({ patientNumber: '00123', inspected: max });
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(dialogs.confirm).not.toHaveBeenCalled();
+    expect(transport.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('different patient numbers ask with both numbers, even when the names match', async () => {
+    dialogs.confirm.mockClear();
+    dialogs.confirm.mockResolvedValueOnce(false);
+    const other: InspectResult = { ...info, status: { ...info.status!, patientName: 'Bella', patientNumber: '124' } };
+    const { transport, hook } = setup({ patientNumber: '123', inspected: other });
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(dialogs.confirm).toHaveBeenCalledTimes(1);
+    const opts = dialogs.confirm.mock.calls[0][0] as { title: string; message: string };
+    expect(opts.title).toBe('Different patient?');
+    expect(opts.message).toBe('The chart is for Bella (number 123), but ezyVet shows Bella (number 124).');
+    expect(transport.send).not.toHaveBeenCalled();
+  });
+
+  it('a chart without a number falls back to the name check and its message', async () => {
+    dialogs.confirm.mockClear();
+    const max: InspectResult = { ...info, status: { ...info.status!, patientName: 'Max', patientNumber: '123' } };
+    const { hook } = setup({ patientNumber: '  ', inspected: max });
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(dialogs.confirm).toHaveBeenCalledTimes(1);
+    expect((dialogs.confirm.mock.calls[0][0] as { message: string }).message).not.toContain('number');
   });
 
   it('a quiet refresh: an older inspect landing last is ignored', async () => {

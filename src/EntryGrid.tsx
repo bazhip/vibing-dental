@@ -44,6 +44,9 @@ import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
 import { lazyWithReload, whenIdle } from './utils/lazyWithReload';
 import { useHashRoute } from './hooks/useHashRoute';
+import { useEzyvetHandover } from './hooks/useEzyvetHandover';
+import { takePendingPatient } from './utils/pims/extensionBridge';
+import { supabase } from './utils/supabaseClient';
 import { ChartLibrary } from './components/ChartLibrary';
 import { OwnerReportSection } from './components/OwnerReportSection';
 import { ToothChartView } from './components/ToothChartView';
@@ -1228,11 +1231,28 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     });
   };
   // Start a blank chart (asks only when something would be lost).
-  const startNewPatient = async (): Promise<boolean> => {
+  // `beforeReset` runs only once discarding is agreed (the ezyVet hand-over
+  // stashes its patient there, so a cancelled question leaves nothing behind).
+  const startNewPatient = async (beforeReset?: () => void): Promise<boolean> => {
     if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return false;
+    beforeReset?.();
     chart.resetChart();
     return true;
   };
+  // A patient picked in the ToothOps for ezyVet side panel: start their
+  // chart once signed in (the flag waits in sessionStorage until then).
+  useEzyvetHandover({
+    enabled: !trial && cloud.enabled,
+    getUserId: async () => (await supabase?.auth.getSession())?.data.session?.user.id ?? null,
+    take: takePendingPatient,
+    startNewPatient,
+    startVisitFromChart,
+    fillPatient: ({ patientName, patientNumber, ownerName }) =>
+      chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
+    fillNumberIfBlank: (patientNumber) =>
+      chart.setPatientInfo((prev: PatientInfo) => (prev.patientNumber?.trim() ? prev : { ...prev, patientNumber })),
+    isChartBlank: () => !chart.patientInfo.patientName?.trim() && !chart.patientInfo.patientNumber?.trim(),
+  });
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
     setEditUnlocked(true);
@@ -1505,6 +1525,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 enabled: profile.pimsSendEnabled,
                 chartId: cloud.enabled ? chart.cloudChartId : null,
                 patientName: chart.patientInfo.patientName,
+                patientNumber: chart.patientInfo.patientNumber,
                 // Not loaded with the chart: the Send dialog reads it.
                 sentAt: null,
               },
@@ -2093,7 +2114,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <button
               type="button"
               className="chart-menu__trigger topbar-library-btn topbar-new-patient"
-              onClick={startNewPatient}
+              onClick={() => void startNewPatient()}
               aria-label={t('topbar.newPatient')}
               title={t('topbar.newPatientTitle')}
             >

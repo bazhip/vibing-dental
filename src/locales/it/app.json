@@ -105,6 +105,7 @@
   "errors": {
     "setting": "Impossibile salvare questa impostazione. {{error}}",
     "openVisit": "Impossibile aprire questa visita. {{error}}",
+    "loadCharts": "Impossibile caricare le cartelle. {{error}}",
     "newVisit": "Impossibile avviare una nuova visita. {{error}}",
     "signOut": "Impossibile uscire. {{error}}",
     "preview": "Impossibile creare l’anteprima per ora — i diagrammi sono ancora in caricamento. Riprovi tra un momento.",

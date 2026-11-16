@@ -17,6 +17,7 @@ import { initAuthReturn } from './native/authReturn';
 import { initIosFeel, hideSplashAfterFirstRender } from './native/iosFeel';
 import { isIosPreview } from './ios/preview';
 import { bootLanguage } from './i18n/bootLanguage';
+import { captureFromEzyvet } from './utils/pims/ezyvetHandover';
 
 // DEV-only: `?iosPreview=1&iosGallery=1` renders the iOS component kit
 // gallery instead of the app. The constant DEV check drops it (and its
@@ -43,6 +44,10 @@ initNativeShell();
 // App only: finish sign-ins that come back through toothops://auth-callback.
 initAuthReturn();
 initIosFeel();
+// Opened by the ToothOps for ezyVet extension (#/chart/patient?from=ezyvet):
+// the hash router doesn't know the query, so strip it before anything reads
+// the route and remember it for this tab (src/hooks/useEzyvetHandover.ts).
+captureFromEzyvet();
 
 // Suppress the benign "ResizeObserver loop" message the data grid's
 // resize observers can trigger — non-actionable, and dev-overlay tooling

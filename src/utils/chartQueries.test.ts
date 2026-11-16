@@ -4,6 +4,7 @@ import { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } from '../types';
 const db = vi.hoisted(() => ({
   calls: [] as Array<[string, ...unknown[]]>,
   rows: [] as unknown[],
+  rangeQueue: [] as Array<{ data: unknown; error: { message: string } | null }>,
   single: { data: null as unknown, error: null as { message: string } | null },
   singleQueue: [] as Array<{ data: unknown; error: { message: string } | null }>,
 }));
@@ -11,17 +12,17 @@ vi.mock('./supabaseClient', () => {
   const q: Record<string, unknown> = {};
   const rec = (name: string) => (...args: unknown[]) => { db.calls.push([name, ...args]); return q; };
   Object.assign(q, {
-    select: rec('select'), or: rec('or'), eq: rec('eq'), in: rec('in'), gt: rec('gt'), lte: rec('lte'), order: rec('order'),
-    range: async (...args: unknown[]) => { db.calls.push(['range', ...args]); return { data: db.rows, error: null }; },
+    select: rec('select'), or: rec('or'), eq: rec('eq'), in: rec('in'), ilike: rec('ilike'), gt: rec('gt'), lte: rec('lte'), order: rec('order'),
+    range: async (...args: unknown[]) => { db.calls.push(['range', ...args]); return db.rangeQueue.shift() ?? { data: db.rows, error: null }; },
     single: async () => db.singleQueue.shift() ?? db.single,
   });
   return { supabase: { from: (t: string) => { db.calls.push(['from', t]); return q; } }, cloudEnabled: true };
 });
 
-import { listChartsPage, loadChartSnapshot, blankSupersededRecalls } from './chartQueries';
+import { chartsForPatients, listChartsPage, loadChartSnapshot, blankSupersededRecalls } from './chartQueries';
 import { LocalizedError } from './apiErrors';
 
-beforeEach(() => { db.calls.length = 0; db.rows = []; db.singleQueue = []; });
+beforeEach(() => { db.calls.length = 0; db.rows = []; db.singleQueue = []; db.rangeQueue = []; });
 
 describe('listChartsPage', () => {
   it('searches the four columns (LIKE-escaped), orders and pages', async () => {
@@ -138,5 +139,28 @@ describe('blankSupersededRecalls', () => {
   it('a visit on the same day, or earlier, does not supersede it', () => {
     const out = blankSupersededRecalls([v('a', '7', 'Rex', '2026-10-01')], [v('same', '7', 'Rex', '2026-10-01'), v('before', '7', 'Rex', '2026-09-01')]);
     expect(due(out)).toEqual(['a']);
+  });
+});
+
+describe('chartsForPatients', () => {
+  it('returns [] without a request for no patients', async () => {
+    expect(await chartsForPatients([])).toEqual([]);
+    expect(db.calls).toEqual([]);
+  });
+
+  it('queries numbers in chunks of 80 and each distinct name (LIKE-escaped), de-duplicated by id', async () => {
+    db.rows = [{ id: 'a' }, { id: 'b' }];
+    const patients = Array.from({ length: 81 }, (_, i) => ({ patientNumber: String(i + 1), patientName: i < 2 ? '50%_Bella' : `P${i}` }));
+    const rows = await chartsForPatients(patients);
+    expect(db.calls.filter((c) => c[0] === 'in').map((c) => (c[2] as string[]).length)).toEqual([80, 1]);
+    expect(db.calls).toContainEqual(['ilike', 'patient_name', '50\\%\\_Bella']);
+    expect(db.calls.filter((c) => c[0] === 'ilike')).toHaveLength(80);
+    expect(db.calls).toContainEqual(['range', 0, 999]);
+    expect(rows.map((r) => (r as { id: string }).id)).toEqual(['a', 'b']);
+  });
+
+  it('throws a LocalizedError when a request fails', async () => {
+    db.rangeQueue = [{ data: null, error: { message: 'boom' } }];
+    await expect(chartsForPatients([{ patientNumber: '1', patientName: 'Bella' }])).rejects.toBeInstanceOf(LocalizedError);
   });
 });

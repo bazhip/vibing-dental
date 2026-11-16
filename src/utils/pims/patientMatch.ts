@@ -59,3 +59,34 @@ export function patientsMatchStrict(chartName: string, ownerName: string | null 
   const surname = ownerSurname(ownerName);
   return surname.length > 0 && sameWords([...chart, ...surname], ezyvet);
 }
+
+/** A patient number as compared: trimmed, case-folded, and leading zeros dropped from an all-digit
+ *  value ("00123" is "123"; "000" is "0"). Empty when there is no number. */
+function normaliseNumber(n: string | null | undefined): string {
+  const s = (n ?? '').trim().toLowerCase();
+  return /^\d+$/.test(s) ? s.replace(/^0+(?=\d)/, '') : s;
+}
+
+/** Are these the same patient number? `null` when either is empty: an empty number never matches,
+ *  and never rules a patient out either. */
+export function samePatientNumber(a: string | null | undefined, b: string | null | undefined): boolean | null {
+  const x = normaliseNumber(a);
+  const y = normaliseNumber(b);
+  if (!x || !y) return null;
+  return x === y;
+}
+
+/**
+ * Is the patient open in ezyVet the chart's patient? When both patient numbers are known they decide
+ * (equal numbers are the same patient whatever the names; different numbers are a different patient
+ * even with equal names). Otherwise `nameRule` decides from the names.
+ */
+export function pimsPatientMatch(
+  chart: { name: string; number: string },
+  ezyvet: { name: string | null; number: string | null },
+  nameRule: (chartName: string, ezyvetName: string | null) => boolean,
+): 'same' | 'different' {
+  const byNumber = samePatientNumber(chart.number, ezyvet.number);
+  if (byNumber !== null) return byNumber ? 'same' : 'different';
+  return nameRule(chart.name, ezyvet.name) ? 'same' : 'different';
+}

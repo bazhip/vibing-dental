@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "¿Otro paciente?",
     "message": "Historial de ToothOps: {{chart}} · Consulta de ezyVet: {{ezyvet}}",
+    "messageNumbers": "El historial es de {{chart}} (n.º {{chartNumber}}), pero ezyVet muestra {{ezyvet}} (n.º {{ezyvetNumber}}).",
     "unknown": "(nombre no encontrado)",
     "noName": "(sin nombre de paciente)",
     "sendAnyway": "Enviar de todos modos"
@@ -116,9 +117,37 @@
       "flagLoading": "Comprobando si el envío está activado para su clínica…",
       "flagFailed": "No se ha podido comprobar si el envío a ezyVet está activado para su clínica.",
       "sendOff": "El envío a ezyVet no está activado para su clínica."
+    },
+    "today": {
+      "title": "Pacientes de hoy (ezyVet)",
+      "refresh": "Actualizar",
+      "load": "Cargar los pacientes de hoy",
+      "loadHint": "Su pestaña de ezyVet cambiará al calendario.",
+      "noTab": "Abra ezyVet para ver los pacientes de hoy.",
+      "empty": "No hay pacientes en la agenda de ezyVet de hoy.",
+      "failed_one": "No se pudo leer {{count}} cita.",
+      "failed_many": "No se pudieron leer {{count}} citas.",
+      "failed_other": "No se pudieron leer {{count}} citas.",
+      "start": "Crear historial",
+      "open": "Abrir historial",
+      "newVisit": "Nueva visita",
+      "startAnyway": "Crear un historial nuevo",
+      "loading": "Cargando los pacientes de hoy…",
+      "errors": {
+        "no_dashboard": "No se encontró el panel (Dashboard) de ezyVet.",
+        "no_date_input": "No se pudo fijar la fecha en el calendario de ezyVet.",
+        "no_calendar_refresh": "El calendario de ezyVet no responde. Vuelva a cargar ezyVet e inténtelo de nuevo.",
+        "unknown": "No se pudo leer la agenda de ezyVet de hoy."
+      },
+      "startFailed": "No se pudo abrir ToothOps. Inténtelo de nuevo."
     }
   },
   "send": {
     "targetChanged": "La consulta de ezyVet ha cambiado. Compruebe el destino y pulse Enviar de nuevo."
+  },
+  "handover": {
+    "filled": "Datos del paciente completados desde ezyVet.",
+    "failed": "No se pudo obtener el paciente de ezyVet. Introduzca los datos.",
+    "otherUser": "Este paciente se eligió en la extensión con otra cuenta. Inicie sesión con la misma cuenta en ambas."
   }
 }

@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Patient différent ?",
     "message": "Dossier ToothOps : {{chart}} · Consultation ezyVet : {{ezyvet}}",
+    "messageNumbers": "Le dossier concerne {{chart}} (n° {{chartNumber}}), mais ezyVet affiche {{ezyvet}} (n° {{ezyvetNumber}}).",
     "unknown": "(nom introuvable)",
     "noName": "(aucun nom de patient)",
     "sendAnyway": "Envoyer quand même"
@@ -116,9 +117,37 @@
       "flagLoading": "Vérification de l’activation de l’envoi pour votre cabinet…",
       "flagFailed": "Impossible de vérifier si l’envoi vers ezyVet est activé pour votre cabinet.",
       "sendOff": "L’envoi vers ezyVet n’est pas activé pour votre cabinet."
+    },
+    "today": {
+      "title": "Patients du jour (ezyVet)",
+      "refresh": "Actualiser",
+      "load": "Charger les patients du jour",
+      "loadHint": "Votre onglet ezyVet passera au calendrier.",
+      "noTab": "Ouvrez ezyVet pour voir les patients du jour.",
+      "empty": "Aucun patient au planning ezyVet d’aujourd’hui.",
+      "failed_one": "{{count}} rendez-vous n’a pas pu être lu.",
+      "failed_many": "{{count}} rendez-vous n’ont pas pu être lus.",
+      "failed_other": "{{count}} rendez-vous n’ont pas pu être lus.",
+      "start": "Créer un dossier",
+      "open": "Ouvrir le dossier",
+      "newVisit": "Nouvelle visite",
+      "startAnyway": "Créer un nouveau dossier",
+      "loading": "Chargement des patients du jour…",
+      "errors": {
+        "no_dashboard": "Le tableau de bord (Dashboard) d’ezyVet est introuvable.",
+        "no_date_input": "Impossible de régler la date dans le calendrier d’ezyVet.",
+        "no_calendar_refresh": "Le calendrier d’ezyVet ne répond pas. Rechargez ezyVet et réessayez.",
+        "unknown": "Impossible de lire le planning ezyVet d’aujourd’hui."
+      },
+      "startFailed": "Impossible d’ouvrir ToothOps. Veuillez réessayer."
     }
   },
   "send": {
     "targetChanged": "La consultation ezyVet a changé. Vérifiez la cible, puis cliquez de nouveau sur Envoyer."
+  },
+  "handover": {
+    "filled": "Informations du patient remplies depuis ezyVet.",
+    "failed": "Impossible de récupérer le patient depuis ezyVet. Veuillez saisir les informations.",
+    "otherUser": "Ce patient a été choisi dans l’extension avec un autre compte. Connectez-vous avec le même compte dans les deux."
   }
 }

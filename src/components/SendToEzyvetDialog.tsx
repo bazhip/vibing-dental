@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import type { StoredRecordNote } from '../types';
 import type { RecordNote } from '../utils/recordNote';
-import { diagnose, inspect, ping, send, type PimsTransport } from '../utils/pims/extensionBridge';
+import { appointments, diagnose, inspect, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
 import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -23,20 +23,22 @@ export interface SendToEzyvetDialogProps {
   /** Cloud chart id (null = not saved to the cloud: nothing is stamped). */
   chartId: string | null;
   patientName: string;
+  /** The chart's patient number ('' = none). */
+  patientNumber: string;
   /** When the chart was last sent (null = unknown; the dialog looks it up). */
   sentAt: string | null;
   onSent: (sentAt: string) => void;
 }
 
 // Built here (not imported as `externalTransport`) from the bridge's own functions.
-const transport: PimsTransport = { ping, inspect, send, diagnose };
+const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient };
 
 /**
  * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the
  * dialog around it.
  */
 export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
-  open, onClose, note, stored, chartSnapshot, chartId, patientName, sentAt, onSent,
+  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent,
 }) => {
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
@@ -52,6 +54,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     hasChartPicture: !!chartSnapshot,
     chartId,
     patientName,
+    patientNumber,
     sentAt,
     onSent,
     open,

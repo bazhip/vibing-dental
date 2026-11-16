@@ -13,11 +13,11 @@ describe('ezyVet read side', () => {
   beforeEach(() => load('consult-medical.html'));
 
   it('writable consult on Medical tab', () => {
-    expect(status()).toEqual({ state: 'writable', patientName: 'Testdog', consult: { viewId: '1', recordId: '4521' } });
+    expect(status()).toEqual({ state: 'writable', patientName: 'Testdog', patientNumber: null, consult: { viewId: '1', recordId: '4521' } });
   });
   it('patient record is notConsult', () => {
     load('patient-record.html');
-    expect(status()).toEqual({ state: 'notConsult', patientName: null, consult: null });
+    expect(status()).toEqual({ state: 'notConsult', patientName: null, patientNumber: null, consult: null });
   });
   it('locked', () => {
     load('consult-locked.html');
@@ -50,7 +50,7 @@ describe('ezyVet read side', () => {
   it('a tagged consult pane without a record id is not writable', () => {
     document.getElementById('rtab1details')!.setAttribute('data-record-class', 'Consult');
     document.getElementById('rform1')!.className = '';
-    expect(status()).toEqual({ state: 'notConsult', patientName: null, consult: null });
+    expect(status()).toEqual({ state: 'notConsult', patientName: null, patientNumber: null, consult: null });
     expect(listFields()).toEqual([]);
   });
   it('patientName is null when the header is missing', () => {
