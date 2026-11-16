@@ -83,11 +83,16 @@ consult seen at load again clears the notice.
 With the panel signed in, a Today's patients block sits above the charts list. It reads the ezyVet
 calendar (`ezyvet/appointments.ts`) and each appointment's tooltip for the patient name, patient
 number, owner and vet. If the ezyVet tab is already on the calendar the list fills in by itself;
-otherwise the Load button switches the tab to the calendar first. Each row offers Open chart,
+otherwise (another section, another date, or Week view) the panel leaves the tab alone and the
+Load button switches it to today's Day view first. An appointment drawn as more than one block is
+listed once. Each row offers Open chart,
 New visit or Start chart, depending on the practice's charts for that patient.
 
 A block without a vet column keeps the patient with no vet. A block without a record id counts as
 unreadable and is reported in the failure line.
+
+Not built (deferred from the spec): a separate Copy diagnostic report for appointments. The
+calendar selector hit counts are in the existing diagnostic report.
 
 Start chart opens `https://toothops.app/#/chart/patient?from=ezyvet`. The URL carries no patient
 data. The worker keeps the details in `chrome.storage.session` (in memory; the `storage` permission

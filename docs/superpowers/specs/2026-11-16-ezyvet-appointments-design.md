@@ -77,7 +77,7 @@ Owner decision (2026-11-16): ship number filling and number matching as designed
 
 Exposed on `window.__toothopsEzyvet` as `listAppointments(date: string, opts: { navigate: boolean })` (`yyyy-MM-dd`, the panel always passes today).
 
-1. With `navigate: false` and the Dashboard not active → `{ ok: false, code: 'not_on_calendar' }` without touching the page. Otherwise, if the Dashboard isn't active, click `#dashboardSectionButton` and wait (5 s) for the date input. Missing button → `{ ok: false, code: 'no_dashboard' }`.
+1. With `navigate: false`, read only when the Dashboard is active, the date input already shows `date` and Day view is active; otherwise → `{ ok: false, code: 'not_on_calendar' }` without touching the page (no date change, no `calendarRefresh`, no Day click). With `navigate: true`, if the Dashboard isn't active, click `#dashboardSectionButton` and wait (5 s) for the date input. Missing button → `{ ok: false, code: 'no_dashboard' }`.
 2. Day view and date as in the reference. Missing date input → `no_date_input`. Use ezyVet's `calendarRefresh` only if it's a function; else `no_calendar_refresh`.
 3. Wait (5 s) for `div[id^="appt"]`. None → `{ ok: true, appointments: [], failures: [] }` (an empty day is not an error).
 4. For blocks with a patient, fetch the tooltip, at most 4 at a time. Parse the HTML with `DOMParser` (never insert it into the page).
@@ -151,6 +151,7 @@ A new pure function `pimsPatientMatch(chart, status)` in `src/utils/pims/patient
 ### 6. Diagnostics and checklist
 
 - `diagnostics().selectorHits` adds the calendar selectors; the panel's **Copy diagnostic report** for appointments includes failure codes and counts only.
+  - *As built:* the panel's per-appointments **Copy diagnostic report** is deferred (not built). The calendar selector hit counts are in the existing diagnostic report; the panel shows the count of unreadable appointments.
 - README checklist adds: list fills in by itself when ezyVet is on the calendar; Load button moves the tab and loads; empty day; appointment without a patient skipped; ezyVet tab ends on the calendar; Start chart fills the three fields; expired hand-over (wait 2 minutes) shows the fallback toast; Open chart for an existing chart; **the bracketed tooltip number equals the patient number ezyVet shows on the patient record**; consult number read on send.
 
 ## Left to the builder
