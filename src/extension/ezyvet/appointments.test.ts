@@ -164,10 +164,17 @@ describe('listAppointments', () => {
     ]);
     expect(JSON.stringify(r)).not.toContain('Bella');
   });
-  it('reports no_data_col when a block has no column', async () => {
-    dashboard({ date: DATE, blocks: [good({ 'data-col': undefined })] });
+  it('keeps an appointment with vet null when data-col is missing', async () => {
+    dashboard({ date: DATE, blocks: [good({ 'data-col': undefined })], cols: ['Dr Ng'] });
     const r = await listAppointments(DATE, { navigate: false }, deps);
-    expect(r.ok && r.failures.map((f) => f.code)).toEqual(['no_data_col']);
+    expect(r.ok && r.appointments.map((x) => x.vet)).toEqual([null]);
+    expect(r.ok && r.failures).toEqual([]);
+  });
+  it('fails a block without a record id and does not fetch', async () => {
+    dashboard({ date: DATE, blocks: [good({ 'data-record-id': undefined })] });
+    const r = await listAppointments(DATE, { navigate: false }, deps);
+    expect(r.ok && r.failures.map((f) => f.code)).toEqual(['no_appointment_id']);
+    expect(fetchTooltip).not.toHaveBeenCalled();
   });
   it('runs at most 4 tooltip fetches at once', async () => {
     dashboard({ date: DATE, blocks: Array.from({ length: 10 }, (_, i) => good({ 'data-record-id': String(i), 'data-appointment': String(i) })) });

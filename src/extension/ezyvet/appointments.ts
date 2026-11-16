@@ -11,7 +11,6 @@ export type Appointment = {
   vet: string | null;
 };
 export type AppointmentFailureCode =
-  | 'no_data_col'
   | 'no_appointment_id'
   | 'tooltip_empty'
   | 'tooltip_not_parsed'
@@ -152,12 +151,12 @@ export async function listAppointments(
     const startsAt = seconds === null ? null : startIso(date, seconds);
     const fail = (code: AppointmentFailureCode) => ({ fail: { code, startsAt } });
     const col = Number(b.getAttribute('data-col'));
-    if (!b.getAttribute('data-col') || !Number.isInteger(col) || col < 1) return fail('no_data_col');
+    const recordId = b.getAttribute('data-record-id');
     const appointmentId = b.getAttribute('data-appointment');
-    if (!appointmentId) return fail('no_appointment_id');
+    if (!appointmentId || !recordId) return fail('no_appointment_id');
     let html: string;
     try {
-      html = await fetchTooltip('Appointment', b.getAttribute('data-record-id') ?? '');
+      html = await fetchTooltip('Appointment', recordId);
     } catch {
       return fail('tooltip_fetch_failed');
     }
@@ -171,7 +170,7 @@ export async function listAppointments(
         patientName: tip.patientName,
         patientNumber: tip.patientNumber,
         ownerName: tip.ownerName,
-        vet: columns[col - 1] || null,
+        vet: (Number.isInteger(col) && col >= 1 ? columns[col - 1] : null) || null,
       },
     };
   };
