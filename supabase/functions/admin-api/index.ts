@@ -10,6 +10,7 @@
 // hashes.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { AI_FEATURES, ALLOWED_AI_MODELS, isAiFeature, resolveAiModels } from '../_shared/aiModels.ts';
 import { cancelPracticeSubscription } from '../_shared/deletion.ts';
 
 type Json = Record<string, unknown>;
@@ -661,7 +662,7 @@ Deno.serve(async (req: Request) => {
       }
 
       case 'get_ai_config': {
-        const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
+        const { data: cfg } = await admin.from('app_config').select('*').eq('id', 1).maybeSingle();
         const key = Deno.env.get('ANTHROPIC_API_KEY');
         let models: Array<{ id: string; displayName: string }> = [];
         if (key) {
@@ -678,19 +679,28 @@ Deno.serve(async (req: Request) => {
             }
           } catch { /* leave models empty */ }
         }
-        return json({ model: cfg?.ai_model ?? 'claude-sonnet-5-5', models, configured: !!key });
+        // featureModels: the model each feature uses now (defaults filled in).
+        return json({ featureModels: resolveAiModels(cfg?.ai_models), models, configured: !!key });
       }
 
       case 'set_ai_model': {
+        // body.feature: 'live' | 'review' | 'owner_report'.
+        const feature = body.feature;
+        if (!isAiFeature(feature)) return json({ error: `unknown feature: ${String(feature)}` }, 400);
         const model = typeof body.model === 'string' ? body.model.trim() : '';
         if (!model) return json({ error: 'missing model' }, 400);
         // Only models ai-autofill has tuned request settings for
         // (MODEL_SETTINGS there; AI_MODEL_CHOICES in the app).
-        const ALLOWED = ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5', 'claude-opus-4-8'];
-        if (!ALLOWED.includes(model)) return json({ error: `unsupported model: ${model}` }, 400);
-        const { error } = await admin.from('app_config').update({ ai_model: model, updated_at: new Date().toISOString() }).eq('id', 1);
+        if (!ALLOWED_AI_MODELS.includes(model)) return json({ error: `unsupported model: ${model}` }, 400);
+        const { data: cfg, error: readError } = await admin.from('app_config').select('*').eq('id', 1).maybeSingle();
+        if (readError) throw readError;
+        if (!cfg || !('ai_models' in cfg)) {
+          return json({ error: 'app_config.ai_models is missing — apply migration 20261128_ai_models_per_feature first.' }, 409);
+        }
+        const next = { ...resolveAiModels(cfg.ai_models), [feature]: model };
+        const { error } = await admin.from('app_config').update({ ai_models: next, updated_at: new Date().toISOString() }).eq('id', 1);
         if (error) throw error;
-        return json({ ok: true });
+        return json({ ok: true, featureModels: next });
       }
 
       case 'ai_usage': {
@@ -709,16 +719,18 @@ Deno.serve(async (req: Request) => {
           const k = Object.keys(RATES).find((r) => model.startsWith(r));
           return k ? RATES[k] : { in: 5, out: 25, cacheRead: 0.5 };
         };
+        const costOf = (r: Pick<AiUsageTotal, 'model' | 'input_tokens' | 'output_tokens' | 'cache_read_tokens' | 'cache_write_tokens'>) => {
+          const rt = rate(r.model);
+          return (r.input_tokens / 1e6) * rt.in +
+            ((r.cache_write_tokens ?? 0) / 1e6) * rt.in * 0.25 +
+            (r.output_tokens / 1e6) * rt.out +
+            (r.cache_read_tokens / 1e6) * rt.cacheRead;
+        };
         const byUser = new Map<string, { input: number; output: number; cacheRead: number; calls: number; cost: number }>();
         let totalCost = 0;
         for (const r of await aiUsageTotals(admin)) {
           const cur = byUser.get(r.user_id) ?? { input: 0, output: 0, cacheRead: 0, calls: 0, cost: 0 };
-          const rt = rate(r.model);
-          const cost =
-            (r.input_tokens / 1e6) * rt.in +
-            (r.cache_write_tokens / 1e6) * rt.in * 0.25 +
-            (r.output_tokens / 1e6) * rt.out +
-            (r.cache_read_tokens / 1e6) * rt.cacheRead;
+          const cost = costOf(r);
           cur.input += r.input_tokens;
           cur.output += r.output_tokens;
           cur.cacheRead += r.cache_read_tokens;
@@ -740,7 +752,30 @@ Deno.serve(async (req: Request) => {
             estCostUsd: Math.round(v.cost * 100) / 100,
           }))
           .sort((a, b) => b.estCostUsd - a.estCostUsd);
-        return json({ users, totalEstCostUsd: Math.round(totalCost * 100) / 100 });
+        // Last 30 days split by feature and model, so the admin can see where
+        // the money goes. Empty until migration 20261128 is applied.
+        const FEATURE_DAYS = 30;
+        const byFeature: Array<{ feature: string; model: string; calls: number; inputTokens: number; outputTokens: number; cacheReadTokens: number; estCostUsd: number; costPerCallUsd: number }> = [];
+        const { data: featureRows, error: featureError } = await admin.rpc('admin_ai_usage_by_feature', {
+          since: new Date(Date.now() - FEATURE_DAYS * 86_400_000).toISOString(),
+        });
+        if (!featureError && Array.isArray(featureRows)) {
+          for (const r of featureRows as Array<AiUsageTotal & { kind: string }>) {
+            const cost = costOf(r);
+            byFeature.push({
+              feature: r.kind,
+              model: r.model,
+              calls: r.calls,
+              inputTokens: r.input_tokens,
+              outputTokens: r.output_tokens,
+              cacheReadTokens: r.cache_read_tokens,
+              estCostUsd: Math.round(cost * 100) / 100,
+              costPerCallUsd: r.calls ? Math.round((cost / r.calls) * 100_000) / 100_000 : 0,
+            });
+          }
+          byFeature.sort((a, b) => b.estCostUsd - a.estCostUsd);
+        }
+        return json({ users, totalEstCostUsd: Math.round(totalCost * 100) / 100, byFeature, featureDays: FEATURE_DAYS, features: AI_FEATURES });
       }
 
       case 'ai_balance': {

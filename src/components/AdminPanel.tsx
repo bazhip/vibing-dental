@@ -2,7 +2,7 @@ import React from 'react';
 import { AdminChartViewer } from './AdminChartViewer';
 import { AdminChartList, type AdminChartMeta } from './AdminChartList';
 import { SortButton, dateValue, sortRows, useTableSort, type SortState } from '../utils/tableSort';
-import { AI_MODEL_CHOICES } from '../constants/aiModels';
+import { AI_FEATURE_INFO, AI_MODEL_CHOICES, type AiFeature } from '../constants/aiModels';
 import { FREE_BETA, FREE_BETA_SEATS } from '../constants/plans';
 import { PLAN_LIMITS } from '../hooks/useProfile';
 
@@ -176,6 +176,21 @@ interface AiUsageRow {
   estCostUsd: number;
 }
 
+interface AiFeatureUsageRow {
+  feature: string;
+  model: string;
+  calls: number;
+  inputTokens: number;
+  outputTokens: number;
+  cacheReadTokens: number;
+  estCostUsd: number;
+  costPerCallUsd: number;
+}
+
+const modelLabel = (id: string) => AI_MODEL_CHOICES.find((c) => c.id === id)?.label ?? id;
+const featureLabel = (id: string) =>
+  AI_FEATURE_INFO.find((f) => f.id === id)?.label ?? (id === 'warmup' ? 'Cache warm-ups (live)' : id);
+
 /** Downscale any image to a ≤600px PNG and return raw base64 (no data:
  *  prefix) — matches the logos bucket's PNG-only rule. */
 async function toPngBase64(file: File): Promise<string> {
@@ -264,7 +279,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
   const [billingTax, setBillingTax] = React.useState<boolean | null>(null);
   const [setupNote, setSetupNote] = React.useState('');
   // AI tab state.
-  const [aiModel, setAiModel] = React.useState('');
+  const [aiFeatureModels, setAiFeatureModels] = React.useState<Partial<Record<AiFeature, string>>>({});
+  const [aiByFeature, setAiByFeature] = React.useState<AiFeatureUsageRow[] | null>(null);
+  const [aiFeatureDays, setAiFeatureDays] = React.useState(30);
   const [aiModels, setAiModels] = React.useState<Array<{ id: string; displayName: string }>>([]);
   const [aiConfigured, setAiConfigured] = React.useState(false);
   const [aiUsage, setAiUsage] = React.useState<AiUsageRow[] | null>(null);
@@ -397,12 +414,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
 
   const loadAi = React.useCallback(async () => {
     try {
-      const cfg = await adminCall<{ model: string; models: Array<{ id: string; displayName: string }>; configured: boolean }>({ action: 'get_ai_config' });
-      setAiModel(cfg.model);
+      const cfg = await adminCall<{
+        featureModels: Partial<Record<AiFeature, string>>;
+        models: Array<{ id: string; displayName: string }>;
+        configured: boolean;
+      }>({ action: 'get_ai_config' });
+      setAiFeatureModels(cfg.featureModels ?? {});
       setAiModels(cfg.models ?? []);
       setAiConfigured(cfg.configured);
-      const usage = await adminCall<{ users: AiUsageRow[]; totalEstCostUsd: number }>({ action: 'ai_usage' });
+      const usage = await adminCall<{ users: AiUsageRow[]; totalEstCostUsd: number; byFeature?: AiFeatureUsageRow[]; featureDays?: number }>({ action: 'ai_usage' });
       setAiUsage(usage.users ?? []);
+      setAiByFeature(usage.byFeature ?? []);
+      setAiFeatureDays(usage.featureDays ?? 30);
       setAiTotalCost(usage.totalEstCostUsd ?? 0);
       const bal = await adminCall<{ deepgram: string | null; note: string }>({ action: 'ai_balance' });
       setAiBalance(bal);
@@ -721,11 +744,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
     return <span className={cls}>{status === 'none' ? 'unbilled' : status.replace(/_/g, ' ')}</span>;
   };
 
-  const handleSetModel = (model: string) => {
+  const handleSetModel = (feature: AiFeature, model: string) => {
     if (!model) return;
-    run('AI model updated.', async () => {
-      await adminCall({ action: 'set_ai_model', model });
-      setAiModel(model);
+    const label = AI_FEATURE_INFO.find((f) => f.id === feature)?.label ?? feature;
+    run(`${label} now uses ${modelLabel(model)}.`, async () => {
+      const r = await adminCall<{ featureModels?: Partial<Record<AiFeature, string>> }>({ action: 'set_ai_model', feature, model });
+      setAiFeatureModels((cur) => r.featureModels ?? { ...cur, [feature]: model });
     });
   };
 
@@ -1415,41 +1439,92 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
 
       {tab === 'ai' && (
         <section className="admin-panel__ai">
-          {/* Model — chosen live from what the account can use. */}
+          {/* Model per feature — chosen from what the account can use. */}
           <div className="admin-panel__ai-block">
-            <h3 className="ai-settings-subhead">Extraction model</h3>
+            <h3 className="ai-settings-subhead">Models</h3>
             {!aiConfigured && (
               <p className="login-error" role="alert">
                 ANTHROPIC_API_KEY isn't set as an edge-function secret yet — AI autofill is off until it is.
               </p>
             )}
-            <label className="patient-form__label">
-              Model used for voice autofill
-              <select
-                className="patient-form__input"
-                value={aiModel}
-                onChange={(e) => handleSetModel(e.target.value)}
-                disabled={busy || !aiConfigured}
-              >
-                {aiModel && !AI_MODEL_CHOICES.some((c) => c.id === aiModel) && (
-                  <option value={aiModel}>{aiModel} (current — not tuned)</option>
-                )}
-                {AI_MODEL_CHOICES.map((c) => {
-                  // Grey out models this API key can't use (when the
-                  // live list loaded at all).
-                  const unavailable = aiModels.length > 0 && !aiModels.some((m) => m.id === c.id);
-                  return (
-                    <option key={c.id} value={c.id} disabled={unavailable}>
-                      {c.label} — {c.speed}, {c.costPerHour}{unavailable ? ' (not on this account)' : ''}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
+            {AI_FEATURE_INFO.map((f) => {
+              const current = aiFeatureModels[f.id] ?? '';
+              return (
+                <div key={f.id} className="admin-panel__ai-feature">
+                  <label className="patient-form__label">
+                    {f.label}
+                    <select
+                      className="patient-form__input"
+                      value={current}
+                      onChange={(e) => handleSetModel(f.id, e.target.value)}
+                      disabled={busy || !aiConfigured}
+                      aria-label={`Model for ${f.label}`}
+                    >
+                      {current && !AI_MODEL_CHOICES.some((c) => c.id === current) && (
+                        <option value={current}>{current} (current — not tuned)</option>
+                      )}
+                      {AI_MODEL_CHOICES.map((c) => {
+                        // Grey out models this API key can't use (when the
+                        // live list loaded at all).
+                        const unavailable = aiModels.length > 0 && !aiModels.some((m) => m.id === c.id);
+                        const cost = f.id === 'live' ? `${c.costPerHour} dictating` : `${c.price} per M tokens`;
+                        return (
+                          <option key={c.id} value={c.id} disabled={unavailable}>
+                            {c.label} — {c.speed}, {cost}{unavailable ? ' (not on this account)' : ''}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </label>
+                  <p className="patient-form__hint">
+                    {f.hint}{' '}
+                    {AI_MODEL_CHOICES.find((c) => c.id === current)?.note ?? ''}
+                  </p>
+                </div>
+              );
+            })}
             <p className="patient-form__hint">
-              {AI_MODEL_CHOICES.find((c) => c.id === aiModel)?.note ?? 'Pick a model above.'}{' '}
-              Applies to every practice. Costs are rough estimates for an hour of continuous dictation.
+              Applies to every practice from the next call. Per-hour costs are rough estimates for continuous dictation; per-token prices are list input / output.
             </p>
+          </div>
+
+          {/* Where the money goes. */}
+          <div className="admin-panel__ai-block">
+            <h3 className="ai-settings-subhead">Spend by feature (last {aiFeatureDays} days)</h3>
+            {aiByFeature === null ? (
+              <p className="chart-library__empty">Loading…</p>
+            ) : aiByFeature.length === 0 ? (
+              <p className="practice-logo-empty">No AI usage in this period (or migration 20261128 isn't applied yet).</p>
+            ) : (
+              <table className="admin-panel__usage-table">
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Model</th>
+                    <th>Calls</th>
+                    <th>Input</th>
+                    <th>Output</th>
+                    <th>Cache</th>
+                    <th>Per call</th>
+                    <th>Est. cost</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {aiByFeature.map((r) => (
+                    <tr key={`${r.feature}|${r.model}`}>
+                      <td>{featureLabel(r.feature)}</td>
+                      <td>{modelLabel(r.model)}</td>
+                      <td>{r.calls.toLocaleString()}</td>
+                      <td>{r.inputTokens.toLocaleString()}</td>
+                      <td>{r.outputTokens.toLocaleString()}</td>
+                      <td>{r.cacheReadTokens.toLocaleString()}</td>
+                      <td>${r.costPerCallUsd.toFixed(4)}</td>
+                      <td>${r.estCostUsd.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           {/* Credit / balance. */}
