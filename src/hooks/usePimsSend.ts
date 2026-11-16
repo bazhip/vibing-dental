@@ -69,6 +69,9 @@ export interface UsePimsSendOptions {
   onSent: (sentAt: string) => void;
   /** Loads and resets when this turns true. Default true. */
   open?: boolean;
+  /** Does the ezyVet patient count as the chart's patient (no confirmation)? Default `patientsMatch`
+   *  (whole words of the shorter name); the side panel passes a stricter rule. */
+  patientMatcher?: (chartName: string, ezyvetName: string | null) => boolean;
 }
 
 /**
@@ -79,6 +82,7 @@ export interface UsePimsSendOptions {
  */
 export function usePimsSend({
   transport, note, stored, chartSnapshotPicture, hasChartPicture, chartId, patientName, sentAt, onSent, open = true,
+  patientMatcher = patientsMatch,
 }: UsePimsSendOptions) {
   const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const { map, save, reset } = usePimsFieldMap();
@@ -89,6 +93,10 @@ export function usePimsSend({
   // Set when Send found a different consult than the one on screen (and sent nothing).
   const [changedTarget, setChangedTarget] = React.useState(false);
   const sendingRef = React.useRef(false);
+  // The target the vet saw when the screen loaded: a refresh that shows it again clears the notice.
+  const loadedInfo = React.useRef<InspectResult | null>(null);
+  // Only the newest quiet refresh may update the screen; load and Send make older ones void.
+  const refreshId = React.useRef(0);
   const [fetchedSentAt, setFetchedSentAt] = React.useState<string | null>(null);
   const [justSentAt, setJustSentAt] = React.useState<string | null>(null);
   // Send waits for the send-date lookup, so a re-send always asks first.
@@ -96,12 +104,16 @@ export function usePimsSend({
   const lastSentAt = justSentAt ?? sentAt ?? fetchedSentAt;
 
   const load = React.useCallback(async () => {
+    refreshId.current++;
+    loadedInfo.current = null;
     setPhase({ kind: 'loading' });
     setChangedTarget(false);
     const version = await transport.ping();
     if (!version) { setPhase({ kind: 'notInstalled' }); return; }
     try {
-      setPhase({ kind: 'ready', info: await transport.inspect() });
+      const first = await transport.inspect();
+      loadedInfo.current = first;
+      setPhase({ kind: 'ready', info: first });
     } catch (err) {
       setPhase({ kind: 'error', message: errorText(err, t('pims:errors.extension_error')) });
     }
@@ -111,15 +123,18 @@ export function usePimsSend({
    *  target in place, and flags a change. For the panel gaining focus or the active tab changing. */
   const refreshTarget = async () => {
     if (phase.kind !== 'ready' || sendingRef.current) return;
-    const before = phase.info;
+    const id = ++refreshId.current;
+    const seen = loadedInfo.current ?? phase.info;
     let fresh: InspectResult;
     try {
       fresh = await transport.inspect();
     } catch {
       return; // Quiet: Send looks again and reports a failure itself.
     }
-    if (sendingRef.current) return;
-    if (targetChanged(before, fresh)) setChangedTarget(true);
+    // An older inspect that lands after a newer one (or after a load or a Send started) is ignored.
+    if (id !== refreshId.current || sendingRef.current) return;
+    // Back on the consult the vet saw at load: the notice goes.
+    setChangedTarget(targetChanged(seen, fresh));
     setPhase((p) => (p.kind === 'ready' ? { kind: 'ready', info: fresh } : p));
   };
 
@@ -210,6 +225,7 @@ export function usePimsSend({
   const doSend = async () => {
     if (phase.kind !== 'ready' || !info?.tab || sendingRef.current) return;
     sendingRef.current = true;
+    refreshId.current++;
     setSending(true);
     try {
       // Look again first: the vet may have switched consults in ezyVet since this screen loaded.
@@ -242,7 +258,7 @@ export function usePimsSend({
         });
         if (!again) return;
       }
-      if (!patientsMatch(patientName, ezyvetName)) {
+      if (!patientMatcher(patientName, ezyvetName)) {
         const anyway = await confirmDialog({
           title: t('pims:mismatch.title'),
           message: t('pims:mismatch.message', {
@@ -265,6 +281,8 @@ export function usePimsSend({
         } catch {
           pictureFailed = true;
         }
+        // No picture for a row that targets a field is a failure to report, not a silent skip.
+        if (!pngDataUrl) pictureFailed = true;
       }
       const { items, unresolved } = buildSendItems({
         note: split ?? { editedText: stored!.text, field: editedWanted },

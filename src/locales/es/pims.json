@@ -106,12 +106,16 @@
       "searchPlaceholder": "Busque por paciente, propietario o número",
       "empty": "No se encontró ningún historial.",
       "loading": "Cargando historiales…",
-      "loadMore": "Cargar más"
+      "loadMore": "Cargar más",
+      "possible": "Posible coincidencia con el paciente de ezyVet {{patient}}"
     },
     "chart": {
       "back": "← Volver a los historiales",
       "loading": "Abriendo el historial…",
-      "noteLabel": "Nota clínica"
+      "noteLabel": "Nota clínica",
+      "flagLoading": "Comprobando si el envío está activado para su clínica…",
+      "flagFailed": "No se ha podido comprobar si el envío a ezyVet está activado para su clínica.",
+      "sendOff": "El envío a ezyVet no está activado para su clínica."
     }
   },
   "send": {

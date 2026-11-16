@@ -4,7 +4,7 @@ import { internalTransport } from './internalTransport';
 import { useActiveTabChange } from './useActiveTabChange';
 
 /** What the active ezyVet tab shows now (null = unknown or no extension answer). Re-inspected on
- *  mount and whenever the active tab changes. */
+ *  mount and (debounced) whenever the active tab changes. */
 export function useConsultInspect(enabled: boolean): InspectResult | null {
   const [info, setInfo] = useState<InspectResult | null>(null);
   const latest = useRef(0);
@@ -22,6 +22,6 @@ export function useConsultInspect(enabled: boolean): InspectResult | null {
   }, [enabled, refresh]);
   useActiveTabChange(() => {
     if (enabled) refresh();
-  });
+  }, info?.tab?.id ?? null);
   return info;
 }

@@ -106,12 +106,16 @@
       "searchPlaceholder": "Cerchi per paziente, proprietario o numero",
       "empty": "Nessuna cartella trovata.",
       "loading": "Caricamento delle cartelle…",
-      "loadMore": "Carica altri"
+      "loadMore": "Carica altri",
+      "possible": "Possibile corrispondenza con il paziente ezyVet {{patient}}"
     },
     "chart": {
       "back": "← Torna alle cartelle",
       "loading": "Apertura della cartella…",
-      "noteLabel": "Nota di cartella"
+      "noteLabel": "Nota di cartella",
+      "flagLoading": "Verifica dell’attivazione dell’invio per il Suo studio…",
+      "flagFailed": "Impossibile verificare se l’invio a ezyVet è attivo per il Suo studio.",
+      "sendOff": "L’invio a ezyVet non è attivo per il Suo studio."
     }
   },
   "send": {

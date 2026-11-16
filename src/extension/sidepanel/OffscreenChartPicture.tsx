@@ -64,6 +64,9 @@ export function useOffscreenChartPicture(snapshot: ChartSnapshot | null): Offscr
     );
   }, [snapshot, t]);
 
+  // showNumbers={false} below is belt and braces, not a requirement: the tooth-number labels are a
+  // [data-export-skip] group, and diagramSvgToPng (via renderChartPicture) removes every
+  // [data-export-skip] node from its clone, so they never reach the PNG either way. Off saves rendering them.
   const element = (
     <div aria-hidden="true" style={OFFSCREEN_STYLE} data-testid="offscreen-chart-picture">
       {snapshot && (

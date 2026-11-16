@@ -8,8 +8,8 @@ vi.mock('../../utils/chartQueries', () => ({ listChartsPage: list.fn }));
 
 import { ChartList } from './ChartList';
 
-const chart = (id: string, name: string, updated: string): CloudChartMeta => ({
-  id, patient_name: name, patient_number: '', owner_name: 'Owner', owner_phone: '', owner_email: '',
+const chart = (id: string, name: string, updated: string, owner = 'Jane Owner'): CloudChartMeta => ({
+  id, patient_name: name, patient_number: '', owner_name: owner, owner_phone: '', owner_email: '',
   species: 'canine', dentition: '', chart_date: '2026-11-01', recall_date: '', updated_at: updated, created_by: 'u1',
 });
 
@@ -63,26 +63,46 @@ describe('ChartList', () => {
     expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ id: 'b' }));
   });
 
-  it('pins the chart matching a writable consult', async () => {
-    render(<ChartList inspect={writable('Bella Smith')} onPick={vi.fn()} />);
+  it('pins the chart whose name equals the consult patient', async () => {
+    render(<ChartList inspect={writable('Bella')} onPick={vi.fn()} />);
     await flush();
     const pin = screen.getByTestId('pinned-match');
     expect(pin).toHaveTextContent('Matches this consult');
     expect(pin).toHaveTextContent('Bella');
     expect(pin).not.toHaveTextContent('charts match');
+    expect(screen.queryByTestId('possible-match')).toBeNull();
   });
 
-  it('pins the most recent of several matches and shows a count', async () => {
+  it('pins a chart whose name plus the owner surname is the ezyVet name', async () => {
+    list.fn.mockResolvedValue({ rows: [chart('a', 'Bella', '2026-11-10', 'Mrs Jane Smith')], hasMore: false });
+    render(<ChartList inspect={writable('Smith, Bella')} onPick={vi.fn()} />);
+    await flush();
+    expect(screen.getByTestId('pinned-match')).toHaveTextContent('Bella');
+  });
+
+  it('a one-word name that only subset-matches is a possible match, not a pin, with the ezyVet name shown', async () => {
+    // Owner surname Owner, ezyVet says Smith: probably another Bella.
+    render(<ChartList inspect={writable('Bella Smith')} onPick={vi.fn()} />);
+    await flush();
+    expect(screen.queryByTestId('pinned-match')).toBeNull();
+    const maybe = screen.getByTestId('possible-match');
+    expect(maybe).toHaveTextContent('Possible match for ezyVet patient Bella Smith');
+    expect(maybe).not.toHaveTextContent('Matches this consult');
+    expect(maybe).toHaveTextContent('Bella');
+  });
+
+  it('pins the most recent of several exact matches and shows a count', async () => {
     list.fn.mockResolvedValue({
-      rows: [chart('old', 'Bella', '2026-10-01'), chart('new', 'Bella Jones', '2026-11-12')],
+      rows: [chart('old', 'Bella', '2026-10-01'), chart('new', 'Bella', '2026-11-12'), chart('loose', 'Bella Jones', '2026-11-14')],
       hasMore: false,
     });
     const onPick = vi.fn();
     render(<ChartList inspect={writable('Bella')} onPick={onPick} />);
     await flush();
     const pin = screen.getByTestId('pinned-match');
-    expect(pin).toHaveTextContent('Bella Jones');
     expect(pin).toHaveTextContent('2 charts match this patient');
+    expect(pin).not.toHaveTextContent('Bella Jones');
+    expect(screen.queryByTestId('possible-match')).toBeNull();
     fireEvent.click(pin.querySelector('button')!);
     expect(onPick).toHaveBeenCalledWith(expect.objectContaining({ id: 'new' }));
   });
@@ -93,6 +113,7 @@ describe('ChartList', () => {
       const { unmount } = render(<ChartList inspect={inspect} onPick={vi.fn()} />);
       await flush();
       expect(screen.queryByTestId('pinned-match')).toBeNull();
+      expect(screen.queryByTestId('possible-match')).toBeNull();
       unmount();
     }
   });

@@ -20,7 +20,7 @@ vi.mock('../../utils/supabaseClient', () => ({
 }));
 const pims = vi.hoisted(() => {
   const chart = {
-    id: 'c1', patient_name: 'Bella', patient_number: '', owner_name: 'Owner', owner_phone: '', owner_email: '',
+    id: 'c1', patient_name: 'Bella', patient_number: '', owner_name: 'Jane Smith', owner_phone: '', owner_email: '',
     species: 'canine', dentition: '', chart_date: '2026-11-01', recall_date: '', updated_at: '2026-11-10', created_by: 'u1',
   };
   const info = {
@@ -107,7 +107,7 @@ describe('side panel (pseudo-locale)', () => {
     render(<SidePanelApp />);
     await emit('INITIAL_SESSION', { user: { id: 'u1', email: 'vet@clinic.test' } });
     expect(document.querySelector('.sp-header')).not.toBeNull();
-    expect(findUntranslated(document.body, [/vet@clinic\.test/, /Bella/, /Owner/, /2026/])).toEqual([]);
+    expect(findUntranslated(document.body, [/vet@clinic\.test/, /Bella/, /Jane Smith/, /2026/])).toEqual([]);
   });
 
   it('not connected', () => {
@@ -120,7 +120,7 @@ describe('side panel (pseudo-locale)', () => {
     render(<ChartList inspect={pims.info as never} onPick={() => undefined} />);
     await screen.findByTestId('pinned-match');
     expect(screen.getByRole('button', { name: /Load more/ })).toBeInTheDocument();
-    expect(findUntranslated(document.body, [/Bella/, /Owner/, /2026/])).toEqual([]);
+    expect(findUntranslated(document.body, [/Bella/, /Jane Smith/, /2026/])).toEqual([]);
   });
 
   it('chart list, nothing pinned', async () => {
@@ -128,11 +128,11 @@ describe('side panel (pseudo-locale)', () => {
     await screen.findByRole('searchbox');
     await waitFor(() => expect(document.querySelector('.sp-chart')).not.toBeNull());
     expect(screen.queryByTestId('pinned-match')).toBeNull();
-    expect(findUntranslated(document.body, [/Bella/, /Owner/, /2026/])).toEqual([]);
+    expect(findUntranslated(document.body, [/Bella/, /Jane Smith/, /2026/])).toEqual([]);
   });
 
   it('chart view and results', async () => {
-    render(<ChartSend chart={pims.chart as never} onBack={() => undefined} />);
+    render(<ChartSend chart={pims.chart as never} onBack={() => undefined} sendFlag="on" />);
     await waitFor(() => expect(document.querySelector('.sp-primary')).not.toBeNull());
     const send = document.querySelector('.sp-primary') as HTMLButtonElement;
     expect(document.querySelector('textarea')).not.toBeNull();
@@ -142,5 +142,19 @@ describe('side panel (pseudo-locale)', () => {
     await act(async () => { fireEvent.click(send); });
     await waitFor(() => expect(document.querySelector('.pims-dialog__results')).not.toBeNull());
     expect(findUntranslated(document.body, [/Bella/, /Plan/, /Smith/])).toEqual([]);
+  });
+
+  it('chart list with a possible (not exact) match', async () => {
+    const loose = { ...pims.info, status: { ...pims.info.status, patientName: 'Bella Jones' } };
+    render(<ChartList inspect={loose as never} onPick={() => undefined} />);
+    await screen.findByTestId('possible-match');
+    expect(findUntranslated(document.body, [/Bella/, /Jones/, /Jane Smith/, /2026/])).toEqual([]);
+  });
+
+  it.each(['off', 'error', 'loading'] as const)('chart view with the practice flag %s', async (flag) => {
+    render(<ChartSend chart={pims.chart as never} onBack={() => undefined} sendFlag={flag} />);
+    await waitFor(() => expect(document.querySelector('textarea')).not.toBeNull());
+    expect(document.querySelector('.sp-primary')).toBeNull();
+    expect(findUntranslated(document.body, [/Bella/, /Scaled/])).toEqual([]);
   });
 });

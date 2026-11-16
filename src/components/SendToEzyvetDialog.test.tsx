@@ -231,6 +231,21 @@ describe('SendToEzyvetDialog', () => {
     });
   });
 
+  it('a consult switched in ezyVet before Send: shows the new target and the notice, and sends nothing', async () => {
+    render(dlg().el);
+    await screen.findByText(t('pims:target', { patient: 'Bella Smith', title: 'Consult — ezyVet' }));
+    const other = writableWith({ patientName: 'Max' });
+    other.status!.consult = { viewId: '3', recordId: '9999' };
+    mocks.inspect.mockResolvedValue(other);
+    fireEvent.click(sendButton());
+    expect(await screen.findByText(t('pims:send.targetChanged'))).toBeInTheDocument();
+    expect(screen.getByText(t('pims:target', { patient: 'Max', title: 'Consult — ezyVet' }))).toBeInTheDocument();
+    expect(mocks.send).not.toHaveBeenCalled();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+    expect(mocks.markPimsSent).not.toHaveBeenCalled();
+    await waitFor(() => expect(sendButton()).not.toBeDisabled());
+  });
+
   it('an unreadable ezyVet name also asks', async () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: null }));
     render(dlg().el);

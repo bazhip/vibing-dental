@@ -19,3 +19,43 @@ export function patientsMatch(chartName: string, ezyvetName: string | null): boo
   const words = new Set(longer);
   return shorter.every((w) => words.has(w));
 }
+
+const words = (s: string): string[] => normaliseName(s).split(' ').filter(Boolean);
+
+/** Titles dropped from the front of an owner name before its surname is taken. */
+const OWNER_TITLES = new Set(['mr', 'mrs', 'ms', 'miss', 'mx', 'dr', 'prof', 'sir', 'dame', 'mme', 'mlle', 'm', 'herr', 'frau', 'sig', 'sra', 'sr', 'srta']);
+
+/** The owner's surname as words: the part before the comma in "Smith, Jane", else the last word
+ *  ("Mrs Jane Smith" gives "smith"). Empty when there is no owner name. */
+export function ownerSurname(ownerName: string | null | undefined): string[] {
+  if (!ownerName) return [];
+  const comma = ownerName.indexOf(',');
+  const part = withoutTitles(words(comma >= 0 ? ownerName.slice(0, comma) : ownerName));
+  if (comma >= 0) return part;
+  return part.length ? [part[part.length - 1]] : [];
+}
+
+function withoutTitles(w: string[]): string[] {
+  const out = [...w];
+  while (out.length > 1 && OWNER_TITLES.has(out[0])) out.shift();
+  return out;
+}
+
+const sameWords = (a: string[], b: string[]): boolean =>
+  a.length === b.length && [...a].sort().join(' ') === [...b].sort().join(' ');
+
+/**
+ * The side panel's stricter check (it proposes a chart itself, so a loose match could suggest the
+ * wrong patient): the names are equal once normalised, or the chart's patient name plus the owner's
+ * surname has exactly the ezyVet name's words ("Bella" + owner "Jane Smith" = "Bella Smith" or
+ * "Smith, Bella"). "Bella" alone does not match "Bella Jones".
+ */
+export function patientsMatchStrict(chartName: string, ownerName: string | null | undefined, ezyvetName: string | null): boolean {
+  if (!ezyvetName) return false;
+  const chart = words(chartName);
+  const ezyvet = words(ezyvetName);
+  if (!chart.length || !ezyvet.length) return false;
+  if (chart.join(' ') === ezyvet.join(' ')) return true;
+  const surname = ownerSurname(ownerName);
+  return surname.length > 0 && sameWords([...chart, ...surname], ezyvet);
+}

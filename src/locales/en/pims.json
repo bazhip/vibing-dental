@@ -106,12 +106,16 @@
       "searchPlaceholder": "Search by patient, owner or number",
       "empty": "No charts found.",
       "loading": "Loading charts…",
-      "loadMore": "Load more"
+      "loadMore": "Load more",
+      "possible": "Possible match for ezyVet patient {{patient}}"
     },
     "chart": {
       "back": "← Back to charts",
       "loading": "Opening the chart…",
-      "noteLabel": "Record note"
+      "noteLabel": "Record note",
+      "flagLoading": "Checking whether sending is on for your practice…",
+      "flagFailed": "Couldn’t check whether sending to ezyVet is turned on for your practice.",
+      "sendOff": "Sending to ezyVet isn’t turned on for your practice."
     }
   },
   "send": {

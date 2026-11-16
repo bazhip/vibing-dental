@@ -8368,12 +8368,24 @@
       "hash": "d1915d48235a",
       "status": "machine"
     },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
     "pims:panel.chart.loading": {
       "hash": "e37edcc60198",
       "status": "machine"
     },
     "pims:panel.chart.noteLabel": {
       "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
       "status": "machine"
     },
     "pims:panel.header.signOut": {
@@ -8402,6 +8414,10 @@
     },
     "pims:panel.list.matches": {
       "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
       "status": "machine"
     },
     "pims:panel.list.searchLabel": {
@@ -19506,12 +19522,24 @@
       "hash": "d1915d48235a",
       "status": "machine"
     },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
     "pims:panel.chart.loading": {
       "hash": "e37edcc60198",
       "status": "machine"
     },
     "pims:panel.chart.noteLabel": {
       "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
       "status": "machine"
     },
     "pims:panel.header.signOut": {
@@ -19540,6 +19568,10 @@
     },
     "pims:panel.list.matches": {
       "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
       "status": "machine"
     },
     "pims:panel.list.searchLabel": {
@@ -30672,12 +30704,24 @@
       "hash": "d1915d48235a",
       "status": "machine"
     },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
     "pims:panel.chart.loading": {
       "hash": "e37edcc60198",
       "status": "machine"
     },
     "pims:panel.chart.noteLabel": {
       "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
       "status": "machine"
     },
     "pims:panel.header.signOut": {
@@ -30706,6 +30750,10 @@
     },
     "pims:panel.list.matches": {
       "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
       "status": "machine"
     },
     "pims:panel.list.searchLabel": {
@@ -41838,12 +41886,24 @@
       "hash": "d1915d48235a",
       "status": "machine"
     },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
     "pims:panel.chart.loading": {
       "hash": "e37edcc60198",
       "status": "machine"
     },
     "pims:panel.chart.noteLabel": {
       "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
       "status": "machine"
     },
     "pims:panel.header.signOut": {
@@ -41872,6 +41932,10 @@
     },
     "pims:panel.list.matches": {
       "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
       "status": "machine"
     },
     "pims:panel.list.searchLabel": {

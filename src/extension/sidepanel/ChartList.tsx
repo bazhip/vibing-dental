@@ -2,21 +2,30 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InspectResult } from '../protocol';
 import { listChartsPage, type CloudChartMeta } from '../../utils/chartQueries';
-import { patientsMatch } from '../../utils/pims/patientMatch';
+import { patientsMatch, patientsMatchStrict } from '../../utils/pims/patientMatch';
 import { friendlyError } from '../../components/ui/dialogs';
 
 export const PAGE_SIZE = 20;
 export const SEARCH_DEBOUNCE_MS = 300;
 
+export interface ConsultMatches {
+  /** Charts whose patient is the consult's (`patientsMatchStrict`): pinned as "Matches this consult". */
+  exact: CloudChartMeta[];
+  /** Charts that only share whole words with it (`patientsMatch`): offered as a possible match. */
+  possible: CloudChartMeta[];
+}
+
 /** The charts that match the writable consult's patient, most recent first. No match is possible
  *  without a patient name or a writable consult. */
-export function consultMatches(charts: CloudChartMeta[], info: InspectResult | null): CloudChartMeta[] {
-  if (!info?.tab || info.status?.state !== 'writable') return [];
+export function consultMatches(charts: CloudChartMeta[], info: InspectResult | null): ConsultMatches {
+  const none = { exact: [], possible: [] };
+  if (!info?.tab || info.status?.state !== 'writable') return none;
   const name = info.status.patientName;
-  if (!name) return [];
-  return charts
-    .filter((c) => patientsMatch(c.patient_name, name))
-    .sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+  if (!name) return none;
+  const sorted = [...charts].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+  const exact = sorted.filter((c) => patientsMatchStrict(c.patient_name, c.owner_name, name));
+  const possible = sorted.filter((c) => !exact.includes(c) && patientsMatch(c.patient_name, name));
+  return { exact, possible };
 }
 
 interface ChartListProps {
@@ -26,7 +35,7 @@ interface ChartListProps {
 }
 
 /** The practice's charts, newest first: search, 20 per page, and the chart that matches the open
- *  ezyVet consult pinned at the top. */
+ *  ezyVet consult pinned at the top (or, failing an exact match, a possible match beside the ezyVet name). */
 export const ChartList: React.FC<ChartListProps> = ({ inspect, onPick }) => {
   const { t } = useTranslation(['pims', 'common']);
   const [query, setQuery] = React.useState('');
@@ -65,8 +74,11 @@ export const ChartList: React.FC<ChartListProps> = ({ inspect, onPick }) => {
     void fetchPage(search, 0);
   }, [search, fetchPage]);
 
-  const matches = consultMatches(rows, inspect);
-  const pinned = matches[0] ?? null;
+  const { exact, possible } = consultMatches(rows, inspect);
+  const pinned = exact[0] ?? null;
+  // Only when nothing matches exactly; picking it still asks before sending (the panel's strict check).
+  const maybe = pinned ? null : possible[0] ?? null;
+  const ezyvetName = inspect?.status?.patientName ?? '';
 
   const row = (c: CloudChartMeta) => (
     <li key={c.id}>
@@ -83,7 +95,13 @@ export const ChartList: React.FC<ChartListProps> = ({ inspect, onPick }) => {
         <div className="sp-pinned" data-testid="pinned-match">
           <h2 className="sp-section">{t('pims:panel.list.matches')}</h2>
           <ul className="sp-charts">{row(pinned)}</ul>
-          {matches.length > 1 && <p className="sp-hint">{t('pims:panel.list.matchCount', { matches: matches.length })}</p>}
+          {exact.length > 1 && <p className="sp-hint">{t('pims:panel.list.matchCount', { matches: exact.length })}</p>}
+        </div>
+      )}
+      {maybe && (
+        <div className="sp-possible" data-testid="possible-match">
+          <p className="sp-hint">{t('pims:panel.list.possible', { patient: ezyvetName })}</p>
+          <ul className="sp-charts">{row(maybe)}</ul>
         </div>
       )}
       <input

@@ -7,6 +7,7 @@ import { clientLanguageOf } from './usePracticeLanguage';
 import { appReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportConfig, configByteSize, defaultConfig, normalizeConfig, MAX_CONFIG_BYTES } from '../utils/ownerReportConfig';
 import { LocalizedError } from '../utils/apiErrors';
+import { pimsSendAllowed } from '../utils/pims/sendFlag';
 
 /**
  * The signed-in user's practice profile (collected at signup, editable in
@@ -397,7 +398,7 @@ export function useProfile(): UseProfileReturn {
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
     // Free beta: Send to PIMS is on for everyone too.
-    pimsSendEnabled: FREE_BETA || pimsSendEnabled,
+    pimsSendEnabled: pimsSendAllowed(pimsSendEnabled),
     ownerReportConfigLoadFailed,
     ownerReportConfig,
     saveOwnerReportConfig,

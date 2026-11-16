@@ -15,14 +15,15 @@ describe('useConsultInspect', () => {
     renderHook(() => useConsultInspect(true));
     await waitFor(() => expect(t.inspect).toHaveBeenCalledTimes(1));
     await act(async () => { window.dispatchEvent(new Event('focus')); });
-    expect(t.inspect).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(t.inspect).toHaveBeenCalledTimes(2));
     await act(async () => { document.dispatchEvent(new Event('visibilitychange')); });
-    expect(t.inspect).toHaveBeenCalledTimes(3);
+    await waitFor(() => expect(t.inspect).toHaveBeenCalledTimes(3));
   });
 
   it('does nothing while disabled', async () => {
     renderHook(() => useConsultInspect(false));
     await act(async () => { window.dispatchEvent(new Event('focus')); });
+    await new Promise((r) => setTimeout(r, 350));
     expect(t.inspect).not.toHaveBeenCalled();
   });
 });

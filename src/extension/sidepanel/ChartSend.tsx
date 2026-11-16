@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CloudChartMeta } from '../../utils/chartQueries';
 import { loadChartSnapshot } from '../../utils/chartQueries';
-import { buildRecordNote, recordNoteT, recordNoteText } from '../../utils/recordNote';
+import { buildRecordNote, recordNoteBasis, recordNoteT, recordNoteText } from '../../utils/recordNote';
 import type { AppLanguage } from '../../i18n/config';
 import type { ChartSnapshot } from '../../types';
 import { usePimsSend } from '../../hooks/usePimsSend';
@@ -12,10 +12,28 @@ import { friendlyError } from '../../components/ui/dialogs';
 import { internalTransport } from './internalTransport';
 import { useOffscreenChartPicture } from './OffscreenChartPicture';
 import { useActiveTabChange } from './useActiveTabChange';
+import { patientsMatchStrict } from '../../utils/pims/patientMatch';
+import type { PimsSendFlag } from './usePimsSendFlag';
 
 interface ChartSendProps {
   chart: CloudChartMeta;
   onBack: () => void;
+  /** Whether the practice may send (anything but 'on' shows a notice and no Send). */
+  sendFlag: PimsSendFlag;
+  onRetrySendFlag?: () => void;
+  /** When this panel session last sent (or may have sent) this chart; outlives this screen, so a
+   *  send that never reached pims_sent_at still asks first after Back. */
+  knownSentAt?: string | null;
+  onSent?: (sentAt: string) => void;
+  /** True while a send (or its confirmations) is running. */
+  onBusyChange?: (busy: boolean) => void;
+}
+
+/** The later of two ISO dates (either may be missing). */
+function later(a: string | null | undefined, b: string | null | undefined): string | null {
+  if (!a) return b ?? null;
+  if (!b) return a;
+  return Date.parse(a) >= Date.parse(b) ? a : b;
 }
 
 type Loaded =
@@ -24,7 +42,9 @@ type Loaded =
   | { kind: 'ready'; snapshot: ChartSnapshot; pimsSentAt: string | null };
 
 /** The picked chart: its record note (read only) and the send to the open ezyVet consult. */
-export const ChartSend: React.FC<ChartSendProps> = ({ chart, onBack }) => {
+export const ChartSend: React.FC<ChartSendProps> = ({
+  chart, onBack, sendFlag, onRetrySendFlag, knownSentAt = null, onSent, onBusyChange,
+}) => {
   const { t } = useTranslation(['pims', 'common']);
   const [loaded, setLoaded] = React.useState<Loaded>({ kind: 'loading' });
   const [attempt, setAttempt] = React.useState(0);
@@ -46,7 +66,16 @@ export const ChartSend: React.FC<ChartSendProps> = ({ chart, onBack }) => {
 
   if (loaded.kind === 'ready') {
     return (
-      <ChartSendReady chart={chart} snapshot={loaded.snapshot} pimsSentAt={loaded.pimsSentAt} back={back} />
+      <ChartSendReady
+        chart={chart}
+        snapshot={loaded.snapshot}
+        initialSentAt={later(knownSentAt, loaded.pimsSentAt)}
+        back={back}
+        sendFlag={sendFlag}
+        onRetrySendFlag={onRetrySendFlag}
+        onSent={onSent}
+        onBusyChange={onBusyChange}
+      />
     );
   }
   return (
@@ -70,12 +99,18 @@ export const ChartSend: React.FC<ChartSendProps> = ({ chart, onBack }) => {
 interface ReadyProps {
   chart: CloudChartMeta;
   snapshot: ChartSnapshot;
-  pimsSentAt: string | null;
+  initialSentAt: string | null;
   back: (disabled?: boolean) => React.ReactNode;
+  sendFlag: PimsSendFlag;
+  onRetrySendFlag?: () => void;
+  onSent?: (sentAt: string) => void;
+  onBusyChange?: (busy: boolean) => void;
 }
 
-const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, back }) => {
-  const { t, i18n } = useTranslation(['pims', 'common']);
+const ChartSendReady: React.FC<ReadyProps> = ({
+  chart, snapshot, initialSentAt, back, sendFlag, onRetrySendFlag, onSent, onBusyChange,
+}) => {
+  const { t, i18n } = useTranslation(['pims', 'media', 'common']);
   const lng = i18n.language as AppLanguage;
   const stored = snapshot.recordNote ?? null;
   // The stored note is split on its headings in the language it was written in.
@@ -83,9 +118,23 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
     () => buildRecordNote(snapshot, recordNoteT(stored?.lng ?? lng)),
     [snapshot, stored, lng],
   );
+  // Same rule as the Record note panel: the chart changed since the note was edited.
+  const stale = !!stored && stored.basedOn !== recordNoteBasis(snapshot);
   const picture = useOffscreenChartPicture(snapshot);
-  const [sentAt, setSentAt] = React.useState<string | null>(pimsSentAt);
+  const [sentAt, setSentAt] = React.useState<string | null>(initialSentAt);
   const patientName = snapshot.patientInfo.patientName || chart.patient_name;
+  const ownerName = snapshot.patientInfo.ownerName || chart.owner_name;
+  const canSend = sendFlag === 'on';
+  // The panel proposed this chart itself, so only an exact name (or name + owner surname) skips the
+  // "Different patient?" confirmation.
+  const patientMatcher = React.useCallback(
+    (chartName: string, ezyvetName: string | null) => patientsMatchStrict(chartName, ownerName, ezyvetName),
+    [ownerName],
+  );
+  const handleSent = (at: string) => {
+    setSentAt(at);
+    onSent?.(at);
+  };
 
   const {
     phase, rows, split, sending, changedTarget, sentAtSettled, lastSentAt, nothingToSend,
@@ -99,23 +148,41 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
     chartId: chart.id,
     patientName,
     sentAt,
-    onSent: setSentAt,
+    onSent: handleSent,
+    open: canSend,
+    patientMatcher,
   });
+
+  const busy = React.useRef(onBusyChange);
+  busy.current = onBusyChange;
+  React.useEffect(() => { busy.current?.(sending); }, [sending]);
+  React.useEffect(() => () => busy.current?.(false), []);
 
   // The vet moved to another tab or came back to the panel: look again (quietly, keeping the mapping choices), unless a send (or its
   // confirmations) is under way or the results are showing.
   useActiveTabChange(() => {
-    if (sending) return;
+    if (sending || !canSend) return;
     if (phase.kind === 'ready') void refreshTarget();
     else if (phase.kind === 'error') void load();
-  });
+  }, phase.kind === 'ready' || phase.kind === 'results' ? phase.info.tab?.id ?? null : null);
 
   const retry = (
     <button type="button" className="sp-secondary" onClick={() => void load()}>{t('pims:dialog.retry')}</button>
   );
 
   let body: React.ReactNode;
-  if (phase.kind === 'loading') {
+  if (sendFlag === 'loading') {
+    body = <p className="sp-hint" role="status">{t('pims:panel.chart.flagLoading')}</p>;
+  } else if (sendFlag === 'error') {
+    body = (
+      <>
+        <p className="sp-error" role="alert">{t('pims:panel.chart.flagFailed')}</p>
+        <button type="button" className="sp-secondary" onClick={() => onRetrySendFlag?.()}>{t('pims:dialog.retry')}</button>
+      </>
+    );
+  } else if (sendFlag === 'off') {
+    body = <p className="sp-hint" role="status">{t('pims:panel.chart.sendOff')}</p>;
+  } else if (phase.kind === 'loading') {
     body = <p className="sp-hint" role="status">{t('pims:dialog.loading')}</p>;
   } else if (phase.kind === 'notInstalled') {
     body = (
@@ -196,6 +263,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({ chart, snapshot, pimsSentAt, bac
       {back(sending)}
       <h2 className="sp-section">{patientName}</h2>
       {lastSentAt && <p className="sp-hint">{t('pims:dialog.sentOn', { date: formatDate(lastSentAt) })}</p>}
+      {stale && <p className="sp-hint" role="status">{t('media:recordNote.stale')}</p>}
       <textarea
         className="sp-note"
         readOnly

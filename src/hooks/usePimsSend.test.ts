@@ -10,7 +10,8 @@ vi.mock('./usePimsFieldMap', () => ({
 }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
 vi.mock('../utils/edgeFunctions', () => ({ markPimsSent: vi.fn(async () => ({ sentAt: '2026-11-15T10:00:00Z' })) }));
-vi.mock('../components/ui/dialogs', () => ({ confirmDialog: vi.fn(async () => true), toast: vi.fn() }));
+const dialogs = vi.hoisted(() => ({ confirm: vi.fn(async (_o: unknown) => true) }));
+vi.mock('../components/ui/dialogs', () => ({ confirmDialog: dialogs.confirm, toast: vi.fn() }));
 vi.mock('../utils/clipboard', () => ({ copyRichText: vi.fn(async () => 'rich') }));
 
 import { usePimsSend } from './usePimsSend';
@@ -27,7 +28,7 @@ const info: InspectResult = {
 
 const note: RecordNote = { sections: [{ key: 'treatment', heading: 'Treatment report', lines: ['Done'] }] };
 
-function setup() {
+function setup(opts: { patientMatcher?: (c: string, e: string | null) => boolean } = {}) {
   const calls: string[] = [];
   const transport: PimsTransport = {
     ping: vi.fn(async () => { calls.push('ping'); return { version: '1.0.0' }; }),
@@ -42,7 +43,7 @@ function setup() {
   const onSent = vi.fn();
   const hook = renderHook(() => usePimsSend({
     transport, note, stored: null, chartSnapshotPicture: picture, hasChartPicture: true,
-    chartId: null, patientName: 'Bella', sentAt: null, onSent,
+    chartId: null, patientName: 'Bella', sentAt: null, onSent, ...opts,
   }));
   return { transport, calls, picture, onSent, hook };
 }
@@ -67,5 +68,58 @@ describe('usePimsSend', () => {
     await act(async () => { await hook.result.current.doSend(); });
     expect(transport.send).toHaveBeenCalledTimes(1);
     expect(picture).not.toHaveBeenCalled();
+  });
+
+  it('a picture callback that returns null for a targeted chart row is reported as picture_failed', async () => {
+    const { transport, picture, hook } = setup();
+    picture.mockResolvedValue(null as never);
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    await act(async () => { await hook.result.current.doSend(); });
+    const phase = hook.result.current.phase;
+    expect(phase.kind).toBe('results');
+    if (phase.kind !== 'results') return;
+    expect(phase.rows).toContainEqual({ fieldTitle: 'Chart picture', code: 'picture_failed' });
+    // The rest still went.
+    expect(transport.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the patient matcher it is given for the mismatch confirmation', async () => {
+    dialogs.confirm.mockClear();
+    const strict = vi.fn(() => false);
+    const { hook } = setup({ patientMatcher: strict });
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(strict).toHaveBeenCalledWith('Bella', 'Bella Smith');
+    expect(dialogs.confirm).toHaveBeenCalledTimes(1);
+    expect((dialogs.confirm.mock.calls[0][0] as { title: string }).title).toBe('Different patient?');
+  });
+
+  it('a quiet refresh: an older inspect landing last is ignored', async () => {
+    const { transport, hook } = setup();
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    const max: InspectResult = { ...info, status: { ...info.status!, patientName: 'Max' } };
+    let resolveSlow!: (r: InspectResult) => void;
+    vi.mocked(transport.inspect)
+      .mockImplementationOnce(() => new Promise<InspectResult>((r) => { resolveSlow = r; }))
+      .mockImplementationOnce(async () => info);
+    let slow!: Promise<void>;
+    act(() => { slow = hook.result.current.refreshTarget(); });
+    await act(async () => { await hook.result.current.refreshTarget(); });
+    await act(async () => { resolveSlow(max); await slow; });
+    const phase = hook.result.current.phase;
+    expect(phase.kind === 'ready' && phase.info.status?.patientName).toBe('Bella Smith');
+    expect(hook.result.current.changedTarget).toBe(false);
+  });
+
+  it('a quiet refresh back to the consult seen at load clears the notice', async () => {
+    const { transport, hook } = setup();
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    const max: InspectResult = { ...info, status: { ...info.status!, patientName: 'Max' } };
+    vi.mocked(transport.inspect).mockResolvedValueOnce(max);
+    await act(async () => { await hook.result.current.refreshTarget(); });
+    expect(hook.result.current.changedTarget).toBe(true);
+    vi.mocked(transport.inspect).mockResolvedValueOnce(info);
+    await act(async () => { await hook.result.current.refreshTarget(); });
+    expect(hook.result.current.changedTarget).toBe(false);
   });
 });

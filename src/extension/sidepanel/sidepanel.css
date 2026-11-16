@@ -47,3 +47,4 @@ body { margin: 0; }
 .sp-chartview .pims-dialog__results { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .sp-chartview .pims-dialog__result--failed span { color: var(--sp-error); }
 .sp-chartview .pims-dialog__link { font: inherit; background: none; border: none; padding: 0; color: var(--sp-accent); cursor: pointer; text-decoration: underline; align-self: flex-start; }
+.sp-possible { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed var(--sp-border); border-radius: 8px; }

@@ -106,12 +106,16 @@
       "searchPlaceholder": "Rechercher par patient, propriétaire ou numéro",
       "empty": "Aucun dossier trouvé.",
       "loading": "Chargement des dossiers…",
-      "loadMore": "Afficher plus"
+      "loadMore": "Afficher plus",
+      "possible": "Correspondance possible avec le patient ezyVet {{patient}}"
     },
     "chart": {
       "back": "← Retour aux dossiers",
       "loading": "Ouverture du dossier…",
-      "noteLabel": "Note du dossier"
+      "noteLabel": "Note du dossier",
+      "flagLoading": "Vérification de l’activation de l’envoi pour votre cabinet…",
+      "flagFailed": "Impossible de vérifier si l’envoi vers ezyVet est activé pour votre cabinet.",
+      "sendOff": "L’envoi vers ezyVet n’est pas activé pour votre cabinet."
     }
   },
   "send": {

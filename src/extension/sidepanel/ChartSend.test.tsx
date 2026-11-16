@@ -33,6 +33,7 @@ vi.mock('./useActiveTabChange', () => ({
 
 import { normalizeSnapshot } from '../../hooks/useChartState';
 import { ChartSend } from './ChartSend';
+import { recordNoteBasis } from '../../utils/recordNote';
 
 const chart: CloudChartMeta = {
   id: 'c1', patient_name: 'Bella', patient_number: '', owner_name: 'O', owner_phone: '', owner_email: '',
@@ -54,14 +55,22 @@ const info = (patientName: string | null): InspectResult => ({
   fields: [{ title: 'Plan', kind: 'note', acceptsImage: false }],
 });
 
-function open(opts: { stored?: boolean; ezyvet?: string | null; chartName?: string; sentAt?: string | null } = {}) {
-  const snapshot = normalizeSnapshot(rawData(opts.chartName ?? 'Bella') as never);
-  if (opts.stored) snapshot.recordNote = { text: 'My edited note', source: 'edited', lng: 'en', basedOn: 'x' };
+type OpenOpts = {
+  stored?: boolean; fresh?: boolean; ezyvet?: string | null; chartName?: string; ownerName?: string; sentAt?: string | null;
+} & Partial<React.ComponentProps<typeof ChartSend>>;
+
+function open({ stored, fresh, ezyvet, chartName, ownerName, sentAt, ...props }: OpenOpts = {}) {
+  const opts = { stored, ezyvet, chartName, sentAt };
+  const snapshot = normalizeSnapshot(rawData(chartName ?? 'Bella') as never);
+  if (ownerName !== undefined) snapshot.patientInfo.ownerName = ownerName;
+  if (opts.stored) {
+    snapshot.recordNote = { text: 'My edited note', source: 'edited', lng: 'en', basedOn: fresh ? recordNoteBasis(snapshot) : 'x' };
+  }
   mocks.load.mockResolvedValue({ snapshot, pimsSentAt: opts.sentAt ?? null });
   mocks.transport.ping.mockResolvedValue({ version: '1' });
   mocks.transport.inspect.mockResolvedValue(info(opts.ezyvet === undefined ? 'Bella' : opts.ezyvet));
   mocks.transport.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] });
-  return render(<ChartSend chart={chart} onBack={vi.fn()} />);
+  return render(<ChartSend chart={chart} onBack={vi.fn()} sendFlag="on" {...props} />);
 }
 
 beforeEach(() => {
@@ -124,7 +133,7 @@ describe('ChartSend', () => {
 
   it('a load failure says so, not "damaged", and offers retry', async () => {
     mocks.load.mockRejectedValue(new Error('Failed to fetch'));
-    render(<ChartSend chart={chart} onBack={vi.fn()} />);
+    render(<ChartSend chart={chart} onBack={vi.fn()} sendFlag="on" />);
     expect(await screen.findByRole('alert')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
   });
@@ -182,5 +191,70 @@ describe('ChartSend', () => {
     await act(async () => { mocks.tab.activated!(); });
     expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
     expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+  });
+
+  it('a stored note edited before the chart changed shows the stale notice', async () => {
+    open({ stored: true });
+    expect(await screen.findByText(/The chart changed since this note was edited/)).toBeInTheDocument();
+  });
+
+  it('no stale notice for an up-to-date stored note or a generated one', async () => {
+    const { unmount } = open({ stored: true, fresh: true });
+    await screen.findByRole('button', { name: 'Send' });
+    expect(screen.queryByText(/The chart changed since this note was edited/)).toBeNull();
+    unmount();
+    open();
+    await screen.findByRole('button', { name: 'Send' });
+    expect(screen.queryByText(/The chart changed since this note was edited/)).toBeNull();
+  });
+
+  it('a one-word chart name that only subset-matches the ezyVet name asks first (strict panel check)', async () => {
+    mocks.confirm.mockResolvedValue(false);
+    open({ ezyvet: 'Bella Smith', ownerName: 'Jane Jones' });
+    await send();
+    expect(mocks.confirm).toHaveBeenCalledTimes(1);
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · ezyVet consult: Bella Smith' });
+    expect(mocks.transport.send).not.toHaveBeenCalled();
+  });
+
+  it('chart name plus owner surname equal to the ezyVet name sends without asking', async () => {
+    open({ ezyvet: 'Bella Smith', ownerName: 'Jane Smith' });
+    await send();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+    expect(mocks.transport.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('practice flag off: a notice and no Send, and ezyVet is not touched', async () => {
+    open({ sendFlag: 'off' });
+    expect(await screen.findByText('Sending to ezyVet isn’t turned on for your practice.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    expect(mocks.transport.ping).not.toHaveBeenCalled();
+    expect(mocks.transport.inspect).not.toHaveBeenCalled();
+  });
+
+  it('practice flag lookup failed: treated as off, with a retry', async () => {
+    const onRetrySendFlag = vi.fn();
+    open({ sendFlag: 'error', onRetrySendFlag });
+    expect(await screen.findByRole('alert')).toHaveTextContent('Couldn’t check whether sending to ezyVet is turned on');
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(onRetrySendFlag).toHaveBeenCalledTimes(1);
+  });
+
+  it('a sent date remembered by the panel (later than pims_sent_at) makes Send ask first', async () => {
+    open({ sentAt: null, knownSentAt: '2026-11-15T09:30:00Z' });
+    await send();
+    expect((mocks.confirm.mock.calls[0][0] as { title: string }).title).toContain('Already sent on');
+  });
+
+  it('reports a maybe-sent send to the panel and says when it is busy', async () => {
+    const onSent = vi.fn();
+    const onBusyChange = vi.fn();
+    open({ onSent, onBusyChange });
+    mocks.transport.send.mockRejectedValue(new Error('timeout'));
+    await send();
+    expect(onSent).toHaveBeenCalledTimes(1);
+    expect(onBusyChange).toHaveBeenCalledWith(true);
+    expect(onBusyChange).toHaveBeenLastCalledWith(false);
   });
 });
