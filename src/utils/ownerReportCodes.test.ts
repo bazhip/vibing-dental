@@ -46,4 +46,20 @@ describe('ownerFriendlyText', () => {
       for (const k of keys) expect(p[k]?.trim(), `${lng} ${k}`).toBeTruthy();
     }
   });
+
+  it('a one-letter code is replaced only where it is the whole list item', () => {
+    expect(ownerFriendlyText('X, X-ray taken', 'en')).toBe(`${plain.X}, X-ray taken`);
+  });
+
+  it('phrases read naturally inside a note (no clause that repeats the note)', () => {
+    const out = ownerFriendlyText('OM rostral mandible, B/I sent', 'en');
+    expect(out.match(/\bsent\b/g) ?? []).toHaveLength(1);
+  });
+
+  it('report-language terms follow the glossary and the catalog dialect', () => {
+    const p = (cat: unknown) => (cat as { plainCodes: Record<string, string> }).plainCodes;
+    expect(p(de).X).toContain('entfernt');
+    expect(p(pt)['T/FX/CCF']).toContain('quebrado');
+    expect(JSON.stringify(p(pt))).not.toMatch(/partido|destartariza|já não está/);
+  });
 });

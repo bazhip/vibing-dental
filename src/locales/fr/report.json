@@ -125,9 +125,9 @@
     "GR": "rétraction des gencives",
     "GH": "prolifération des gencives",
     "OM": "une masse dans la bouche",
-    "B": "une biopsie (un petit échantillon de tissu envoyé au laboratoire)",
-    "B/I": "une biopsie (un petit échantillon de la masse envoyé au laboratoire)",
-    "B/E": "la masse a été retirée et envoyée au laboratoire",
+    "B": "une biopsie (échantillon de tissu pour le laboratoire)",
+    "B/I": "une biopsie (échantillon de la masse pour le laboratoire)",
+    "B/E": "le retrait de la masse pour analyse au laboratoire",
     "X": "dent extraite",
     "XS": "dent extraite en plusieurs parties",
     "XSS": "dent extraite chirurgicalement",
@@ -150,8 +150,8 @@
     "mild": "léger",
     "moderate": "modéré",
     "severe": "sévère",
-    "single": " (stade {{level}})",
-    "range": " (stade {{from}} à {{to}})"
+    "single": " (degré {{level}})",
+    "range": " (degré {{from}} à {{to}})"
   },
   "otherFindings": "Autres observations"
 }

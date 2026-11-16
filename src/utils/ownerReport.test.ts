@@ -429,10 +429,10 @@ describe('concise findings', () => {
     expect(model.summaryLines).toEqual(['Gum inflammation on most teeth', 'Tartar on some teeth']);
   });
 
-  it('a non-numeric grade counts toward the threshold but adds no severity', () => {
+  it('a suffixed grade ("2+") counts by its number, never "NaN"', () => {
     const fields = Object.fromEntries(getInitialToothData('canine').slice(0, 6).map((t, i) => [t.triadan, { gingivitis: i === 0 ? '2+' : '1' }]));
     const model = buildOwnerReportModel(canine(fields));
-    expect(model.summaryLines).toEqual(['Gum inflammation on some teeth (mild)']);
+    expect(model.summaryLines).toEqual(['Gum inflammation on some teeth (mild to moderate)']);
     expect(JSON.stringify(model)).not.toContain('NaN');
   });
 
@@ -463,6 +463,55 @@ describe('concise findings', () => {
     const model = buildOwnerReportModel(snap);
     expect(findingsLayout(model, false).print).toBe(false);
     expect(nothingFound(model)).toBe(true);
+  });
+
+  it('a severe tooth written "3+" stays visible', () => {
+    const fields: Record<number, Record<string, string>> = {};
+    getInitialToothData('canine').slice(0, 30).forEach((t) => { fields[t.triadan] = { gingivitis: '1' }; });
+    fields[108] = { gingivitis: '3+' };
+    const model = buildOwnerReportModel(canine(fields));
+    expect(model.teeth.find((t) => t.triadan === 108)?.notes).toContain('gum inflammation (grade 3+)');
+  });
+
+  it('decimal and suffixed grades count by their number', () => {
+    const fields: Record<number, Record<string, string>> = {};
+    getInitialToothData('canine').slice(0, 30).forEach((t) => { fields[t.triadan] = { gingivitis: '2.5' }; });
+    expect(buildOwnerReportModel(canine(fields)).summaryLines[0]).toBe('Gum inflammation on many teeth (severe)');
+  });
+
+  it('values that are zero in another spelling ("00", "0.0") are not findings', () => {
+    const snap = canine(Object.fromEntries(getInitialToothData('canine').map((t, i) => [t.triadan, { gingivitis: i % 2 ? '00' : '0.0' }])));
+    const model = buildOwnerReportModel(snap);
+    expect(model.summaryLines).toEqual([]);
+    expect(nothingFound(model)).toBe(true);
+  });
+
+  it('a grade that has no number at all leaves out the severity words', () => {
+    const fields = Object.fromEntries(getInitialToothData('canine').slice(0, 8).map((t, i) => [t.triadan, { gingivitis: i === 0 ? 'mild' : '2' }]));
+    expect(buildOwnerReportModel(canine(fields)).summaryLines).toEqual(['Gum inflammation on some teeth']);
+  });
+
+  it('teeth removed today or already missing do not count toward a mouth-wide line', () => {
+    const removed = getInitialToothData('canine').slice(0, 8).map((t) => t.triadan);
+    const snap = canine(Object.fromEntries(removed.map((t) => [t, { gingivitis: '2' }])));
+    snap.postMarks = Object.fromEntries(removed.map((t) => [t, 'extracted' as const]));
+    const model = buildOwnerReportModel(snap);
+    expect(model.summaryLines).toEqual([]);
+    expect(model.teeth.find((t) => t.triadan === removed[0])!.notes).toContain('gum inflammation (grade 2)');
+  });
+
+  it('per-root zero pockets are not findings', () => {
+    const snap = canine({});
+    snap.toothData = snap.toothData.map((t) => ({ ...t, pocket: 'M0 D0' }));
+    const model = buildOwnerReportModel(snap);
+    expect(teethWithFindings(model)).toEqual([]);
+    expect(nothingFound(model)).toBe(true);
+  });
+
+  it('French severity words use "degré", not the periodontal "stade"', () => {
+    const template = { ...defaultTemplate('fr') };
+    const model = buildOwnerReportModel(biopsyVisit(), { template });
+    expect(model.summaryLines[0]).toMatch(/\(degré /);
   });
 
   it('auto-copied grid comments never reach the owner report', () => {
