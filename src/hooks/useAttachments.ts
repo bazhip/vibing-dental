@@ -51,6 +51,8 @@ export interface UseAttachmentsReturn {
   updateCaption: (id: string, caption: string) => Promise<void>;
   /** Relabel an image as a photo or a radiograph. */
   updateKind: (id: string, kind: AttachmentKind) => Promise<void>;
+  /** Pin an image to a tooth (Triadan number), or unpin it with null. */
+  updateTooth: (id: string, triadan: number | null) => Promise<void>;
   remove: (id: string) => Promise<void>;
 }
 
@@ -281,20 +283,38 @@ async function signAll(
  *  fails. Used by the hook and by the PDF preview, which needs a fresh
  *  list each time it opens. */
 export async function listChartAttachments(chartId: string): Promise<Attachment[] | null> {
-  if (!supabase || !chartId) return null;
-  const query = (cols: string) =>
-    supabase!
+  if (!chartId) return null;
+  return listAttachmentsForCharts([chartId]);
+}
+
+/** Charts per attachments query — keeps the request URL short. */
+const CHART_CHUNK = 80;
+
+/** Attachments of several charts (e.g. a patient's earlier visits),
+ *  oldest first, with fresh signed URLs. Null when cloud is off or a
+ *  query fails; rows the caller can't read are simply not returned. */
+export async function listAttachmentsForCharts(chartIds: string[]): Promise<Attachment[] | null> {
+  const client = supabase;
+  const ids = [...new Set(chartIds.filter(Boolean))];
+  if (!client || ids.length === 0) return client ? [] : null;
+  const base = 'id, chart_id, path, caption, kind, tooth_triadan, created_at';
+  const query = (cols: string, part: string[]) =>
+    client
       .from('attachments')
       .select(cols)
-      .eq('chart_id', chartId)
+      .in('chart_id', part)
       .order('created_at', { ascending: true });
-  const base = 'id, chart_id, path, caption, kind, tooth_triadan, created_at';
-  // original_path ships via migration; a database without it degrades to
-  // "no DICOM originals" rather than losing every image.
-  let { data, error } = await query(`${base}, original_path`);
-  if (error) ({ data, error } = await query(base));
-  if (error) return null;
-  const rows = (data ?? []) as unknown as AttachmentRow[];
+  const rows: AttachmentRow[] = [];
+  for (let i = 0; i < ids.length; i += CHART_CHUNK) {
+    const part = ids.slice(i, i + CHART_CHUNK);
+    // original_path ships via migration; a database without it degrades to
+    // "no DICOM originals" rather than losing every image.
+    let { data, error } = await query(`${base}, original_path`, part);
+    if (error) ({ data, error } = await query(base, part));
+    if (error) return null;
+    rows.push(...((data ?? []) as unknown as AttachmentRow[]));
+  }
+  if (ids.length > CHART_CHUNK) rows.sort((a, b) => a.created_at.localeCompare(b.created_at));
   const originals = rows.filter((r) => r.original_path).map((r) => ({ path: r.original_path as string }));
   // Separate signing call for thumbnails: older images have none, and a
   // missing thumbnail must never cost the full image its URL.
@@ -418,7 +438,8 @@ export function useAttachments(
         id,
         chart_id: chartId,
         path,
-        kind,
+        // A DICOM file is a radiograph, whatever the picker was set to.
+        kind: dicom ? 'xray' : kind,
         caption: caption.trim(),
         practice_id: practiceForImage,
         ...(originalPath ? { original_path: originalPath } : {}),
@@ -441,6 +462,17 @@ export function useAttachments(
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, kind } : it)));
     const { error } = await supabase.from('attachments').update({ kind }).eq('id', id);
     if (error) throw new Error(error.message);
+  }, []);
+
+  const updateTooth = React.useCallback(async (id: string, triadan: number | null): Promise<void> => {
+    if (!supabase) return;
+    const previous = itemsRef.current.find((it) => it.id === id)?.toothTriadan ?? null;
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, toothTriadan: triadan } : it)));
+    const { error } = await supabase.from('attachments').update({ tooth_triadan: triadan }).eq('id', id);
+    if (error) {
+      setItems((prev) => prev.map((it) => (it.id === id ? { ...it, toothTriadan: previous } : it)));
+      throw new Error(error.message);
+    }
   }, []);
 
   const remove = React.useCallback(
@@ -468,6 +500,7 @@ export function useAttachments(
     upload,
     updateCaption,
     updateKind,
+    updateTooth,
     remove,
   };
 }

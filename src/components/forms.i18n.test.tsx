@@ -223,7 +223,7 @@ describe('ImagingSection', () => {
   };
   const store = (over: Partial<UseAttachmentsReturn> = {}): UseAttachmentsReturn => ({
     enabled: true, loaded: true, items: [photo], maxImages: 5, dicomEnabled: true,
-    upload: vi.fn(), updateCaption: vi.fn(), updateKind: vi.fn(), remove: vi.fn(), ...over,
+    upload: vi.fn(), updateCaption: vi.fn(), updateKind: vi.fn(), updateTooth: vi.fn(), remove: vi.fn(), ...over,
   });
   const noop = () => {};
 
@@ -260,14 +260,16 @@ describe('ImagingSection', () => {
     const { container } = render(<ImagingSection chartId="c" cloudActive />);
     const file = new File([new Uint8Array(300)], 'scan.dcm', { type: 'application/dicom' });
     fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [file] } });
-    const alert = await screen.findByRole('alert');
-    expect(alert.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    // Upload failures are listed per file, under the uploader.
+    await waitFor(() => expect(container.querySelector('.imaging__queue-item--failed')).not.toBeNull());
+    const failed = container.querySelector('.imaging__queue-item--failed .imaging__queue-status')!;
+    expect(failed.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
+    expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
     const caption = screen.getByLabelText('⟦Caption⟧');
     fireEvent.change(caption, { target: { value: 'New' } });
     fireEvent.blur(caption);
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/caption/));
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
   });
 });
 

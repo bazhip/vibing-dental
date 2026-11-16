@@ -7032,6 +7032,50 @@
       "hash": "bef72e37aee3",
       "status": "machine"
     },
+    "media:history.empty": {
+      "hash": "7dc2f06f4139",
+      "status": "machine"
+    },
+    "media:history.failed": {
+      "hash": "153c8c5803a8",
+      "status": "machine"
+    },
+    "media:history.hide": {
+      "hash": "e52cc6e5633c",
+      "status": "machine"
+    },
+    "media:history.imageCount_one": {
+      "hash": "9ee7a5815f0d",
+      "status": "machine"
+    },
+    "media:history.imageCount_other": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.loading": {
+      "hash": "a0d946f18418",
+      "status": "machine"
+    },
+    "media:history.openVisit": {
+      "hash": "41d7004d884c",
+      "status": "machine"
+    },
+    "media:history.retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "media:history.show_one": {
+      "hash": "1367a9ab6da3",
+      "status": "machine"
+    },
+    "media:history.show_other": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -7116,6 +7160,18 @@
       "hash": "28e33d8579ed",
       "status": "machine"
     },
+    "media:imaging.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "media:imaging.dropHint": {
+      "hash": "88c8bc1e61a7",
+      "status": "machine"
+    },
+    "media:imaging.dropPasteHint": {
+      "hash": "f9a8dae9d3d7",
+      "status": "machine"
+    },
     "media:imaging.empty": {
       "hash": "dc9d70506f60",
       "status": "machine"
@@ -7158,6 +7214,14 @@
     },
     "media:imaging.missing": {
       "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.openViewer": {
+      "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.pastedName": {
+      "hash": "bce5b478a5fa",
       "status": "machine"
     },
     "media:imaging.pdfOption": {
@@ -7208,6 +7272,22 @@
       "hash": "be7e2f201293",
       "status": "machine"
     },
+    "media:imaging.toothAria": {
+      "hash": "bfe93ced3e89",
+      "status": "machine"
+    },
+    "media:imaging.toothFailed": {
+      "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothNone": {
+      "hash": "4c7316541bc0",
+      "status": "machine"
+    },
+    "media:imaging.toothTitle": {
+      "hash": "441d29bcc94c",
+      "status": "machine"
+    },
     "media:imaging.typeAria": {
       "hash": "a77e1c4782f4",
       "status": "machine"
@@ -7218,6 +7298,10 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:imaging.waiting": {
+      "hash": "612ffc5ce9d4",
       "status": "machine"
     },
     "media:recordNote.abnormal": {
@@ -7390,6 +7474,122 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "media:viewer.brightness": {
+      "hash": "ec811d30a89c",
+      "status": "machine"
+    },
+    "media:viewer.close": {
+      "hash": "7b25a882e9bc",
+      "status": "machine"
+    },
+    "media:viewer.contrast": {
+      "hash": "08795ba031bc",
+      "status": "machine"
+    },
+    "media:viewer.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "media:viewer.dicomColor": {
+      "hash": "c5a3780f52d8",
+      "status": "machine"
+    },
+    "media:viewer.dicomFailed": {
+      "hash": "a2dfc975a4c5",
+      "status": "machine"
+    },
+    "media:viewer.dicomLoading": {
+      "hash": "c59b03c9d654",
+      "status": "machine"
+    },
+    "media:viewer.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "media:viewer.downloadDicom": {
+      "hash": "01ea43960f6a",
+      "status": "machine"
+    },
+    "media:viewer.fit": {
+      "hash": "9f872ed43d00",
+      "status": "machine"
+    },
+    "media:viewer.flip": {
+      "hash": "2449d137ea15",
+      "status": "machine"
+    },
+    "media:viewer.invert": {
+      "hash": "7e04f2ffb933",
+      "status": "machine"
+    },
+    "media:viewer.level": {
+      "hash": "1709305c9fa9",
+      "status": "machine"
+    },
+    "media:viewer.missing": {
+      "hash": "29861f96a1e9",
+      "status": "machine"
+    },
+    "media:viewer.next": {
+      "hash": "a4903f732746",
+      "status": "machine"
+    },
+    "media:viewer.previous": {
+      "hash": "f0a859a7ecd7",
+      "status": "machine"
+    },
+    "media:viewer.reset": {
+      "hash": "daee7606b339",
+      "status": "machine"
+    },
+    "media:viewer.resetWindow": {
+      "hash": "4c3ac40fc7bd",
+      "status": "machine"
+    },
+    "media:viewer.rotateLeft": {
+      "hash": "54c46b33d809",
+      "status": "machine"
+    },
+    "media:viewer.rotateRight": {
+      "hash": "9938c21d2ced",
+      "status": "machine"
+    },
+    "media:viewer.title": {
+      "hash": "ba0b6b597391",
+      "status": "machine"
+    },
+    "media:viewer.tools": {
+      "hash": "18b3f5465aa1",
+      "status": "machine"
+    },
+    "media:viewer.window": {
+      "hash": "19734a1b58ca",
+      "status": "machine"
+    },
+    "media:viewer.windowHint": {
+      "hash": "7f5236fbe8a4",
+      "status": "machine"
+    },
+    "media:viewer.windowLevel": {
+      "hash": "ae93936e7385",
+      "status": "machine"
+    },
+    "media:viewer.windowLevelTitle": {
+      "hash": "35ce940a93da",
+      "status": "machine"
+    },
+    "media:viewer.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "media:viewer.zoomLevel": {
+      "hash": "d578795404de",
+      "status": "machine"
+    },
+    "media:viewer.zoomOut": {
+      "hash": "bc7b631a689b",
       "status": "machine"
     },
     "onboarding:finishSetup.allSet": {
@@ -8018,6 +8218,10 @@
     },
     "pdf:images.titleRange": {
       "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:images.tooth": {
+      "hash": "f8c0e7334d3d",
       "status": "machine"
     },
     "pdf:patient.complaint": {
@@ -18290,6 +18494,58 @@
       "hash": "bef72e37aee3",
       "status": "machine"
     },
+    "media:history.empty": {
+      "hash": "7dc2f06f4139",
+      "status": "machine"
+    },
+    "media:history.failed": {
+      "hash": "153c8c5803a8",
+      "status": "machine"
+    },
+    "media:history.hide": {
+      "hash": "e52cc6e5633c",
+      "status": "machine"
+    },
+    "media:history.imageCount_many": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.imageCount_one": {
+      "hash": "9ee7a5815f0d",
+      "status": "machine"
+    },
+    "media:history.imageCount_other": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.loading": {
+      "hash": "a0d946f18418",
+      "status": "machine"
+    },
+    "media:history.openVisit": {
+      "hash": "41d7004d884c",
+      "status": "machine"
+    },
+    "media:history.retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "media:history.show_many": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.show_one": {
+      "hash": "1367a9ab6da3",
+      "status": "machine"
+    },
+    "media:history.show_other": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -18374,6 +18630,18 @@
       "hash": "28e33d8579ed",
       "status": "machine"
     },
+    "media:imaging.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "media:imaging.dropHint": {
+      "hash": "88c8bc1e61a7",
+      "status": "machine"
+    },
+    "media:imaging.dropPasteHint": {
+      "hash": "f9a8dae9d3d7",
+      "status": "machine"
+    },
     "media:imaging.empty": {
       "hash": "dc9d70506f60",
       "status": "machine"
@@ -18416,6 +18684,14 @@
     },
     "media:imaging.missing": {
       "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.openViewer": {
+      "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.pastedName": {
+      "hash": "bce5b478a5fa",
       "status": "machine"
     },
     "media:imaging.pdfOption": {
@@ -18466,6 +18742,22 @@
       "hash": "be7e2f201293",
       "status": "machine"
     },
+    "media:imaging.toothAria": {
+      "hash": "bfe93ced3e89",
+      "status": "machine"
+    },
+    "media:imaging.toothFailed": {
+      "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothNone": {
+      "hash": "4c7316541bc0",
+      "status": "machine"
+    },
+    "media:imaging.toothTitle": {
+      "hash": "441d29bcc94c",
+      "status": "machine"
+    },
     "media:imaging.typeAria": {
       "hash": "a77e1c4782f4",
       "status": "machine"
@@ -18476,6 +18768,10 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:imaging.waiting": {
+      "hash": "612ffc5ce9d4",
       "status": "machine"
     },
     "media:recordNote.abnormal": {
@@ -18648,6 +18944,122 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "media:viewer.brightness": {
+      "hash": "ec811d30a89c",
+      "status": "machine"
+    },
+    "media:viewer.close": {
+      "hash": "7b25a882e9bc",
+      "status": "machine"
+    },
+    "media:viewer.contrast": {
+      "hash": "08795ba031bc",
+      "status": "machine"
+    },
+    "media:viewer.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "media:viewer.dicomColor": {
+      "hash": "c5a3780f52d8",
+      "status": "machine"
+    },
+    "media:viewer.dicomFailed": {
+      "hash": "a2dfc975a4c5",
+      "status": "machine"
+    },
+    "media:viewer.dicomLoading": {
+      "hash": "c59b03c9d654",
+      "status": "machine"
+    },
+    "media:viewer.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "media:viewer.downloadDicom": {
+      "hash": "01ea43960f6a",
+      "status": "machine"
+    },
+    "media:viewer.fit": {
+      "hash": "9f872ed43d00",
+      "status": "machine"
+    },
+    "media:viewer.flip": {
+      "hash": "2449d137ea15",
+      "status": "machine"
+    },
+    "media:viewer.invert": {
+      "hash": "7e04f2ffb933",
+      "status": "machine"
+    },
+    "media:viewer.level": {
+      "hash": "1709305c9fa9",
+      "status": "machine"
+    },
+    "media:viewer.missing": {
+      "hash": "29861f96a1e9",
+      "status": "machine"
+    },
+    "media:viewer.next": {
+      "hash": "a4903f732746",
+      "status": "machine"
+    },
+    "media:viewer.previous": {
+      "hash": "f0a859a7ecd7",
+      "status": "machine"
+    },
+    "media:viewer.reset": {
+      "hash": "daee7606b339",
+      "status": "machine"
+    },
+    "media:viewer.resetWindow": {
+      "hash": "4c3ac40fc7bd",
+      "status": "machine"
+    },
+    "media:viewer.rotateLeft": {
+      "hash": "54c46b33d809",
+      "status": "machine"
+    },
+    "media:viewer.rotateRight": {
+      "hash": "9938c21d2ced",
+      "status": "machine"
+    },
+    "media:viewer.title": {
+      "hash": "ba0b6b597391",
+      "status": "machine"
+    },
+    "media:viewer.tools": {
+      "hash": "18b3f5465aa1",
+      "status": "machine"
+    },
+    "media:viewer.window": {
+      "hash": "19734a1b58ca",
+      "status": "machine"
+    },
+    "media:viewer.windowHint": {
+      "hash": "7f5236fbe8a4",
+      "status": "machine"
+    },
+    "media:viewer.windowLevel": {
+      "hash": "ae93936e7385",
+      "status": "machine"
+    },
+    "media:viewer.windowLevelTitle": {
+      "hash": "35ce940a93da",
+      "status": "machine"
+    },
+    "media:viewer.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "media:viewer.zoomLevel": {
+      "hash": "d578795404de",
+      "status": "machine"
+    },
+    "media:viewer.zoomOut": {
+      "hash": "bc7b631a689b",
       "status": "machine"
     },
     "onboarding:finishSetup.allSet": {
@@ -19284,6 +19696,10 @@
     },
     "pdf:images.titleRange": {
       "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:images.tooth": {
+      "hash": "f8c0e7334d3d",
       "status": "machine"
     },
     "pdf:patient.complaint": {
@@ -29588,6 +30004,58 @@
       "hash": "bef72e37aee3",
       "status": "machine"
     },
+    "media:history.empty": {
+      "hash": "7dc2f06f4139",
+      "status": "machine"
+    },
+    "media:history.failed": {
+      "hash": "153c8c5803a8",
+      "status": "machine"
+    },
+    "media:history.hide": {
+      "hash": "e52cc6e5633c",
+      "status": "machine"
+    },
+    "media:history.imageCount_many": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.imageCount_one": {
+      "hash": "9ee7a5815f0d",
+      "status": "machine"
+    },
+    "media:history.imageCount_other": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.loading": {
+      "hash": "a0d946f18418",
+      "status": "machine"
+    },
+    "media:history.openVisit": {
+      "hash": "41d7004d884c",
+      "status": "machine"
+    },
+    "media:history.retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "media:history.show_many": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.show_one": {
+      "hash": "1367a9ab6da3",
+      "status": "machine"
+    },
+    "media:history.show_other": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -29672,6 +30140,18 @@
       "hash": "28e33d8579ed",
       "status": "machine"
     },
+    "media:imaging.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "media:imaging.dropHint": {
+      "hash": "88c8bc1e61a7",
+      "status": "machine"
+    },
+    "media:imaging.dropPasteHint": {
+      "hash": "f9a8dae9d3d7",
+      "status": "machine"
+    },
     "media:imaging.empty": {
       "hash": "dc9d70506f60",
       "status": "machine"
@@ -29714,6 +30194,14 @@
     },
     "media:imaging.missing": {
       "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.openViewer": {
+      "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.pastedName": {
+      "hash": "bce5b478a5fa",
       "status": "machine"
     },
     "media:imaging.pdfOption": {
@@ -29764,6 +30252,22 @@
       "hash": "be7e2f201293",
       "status": "machine"
     },
+    "media:imaging.toothAria": {
+      "hash": "bfe93ced3e89",
+      "status": "machine"
+    },
+    "media:imaging.toothFailed": {
+      "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothNone": {
+      "hash": "4c7316541bc0",
+      "status": "machine"
+    },
+    "media:imaging.toothTitle": {
+      "hash": "441d29bcc94c",
+      "status": "machine"
+    },
     "media:imaging.typeAria": {
       "hash": "a77e1c4782f4",
       "status": "machine"
@@ -29774,6 +30278,10 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:imaging.waiting": {
+      "hash": "612ffc5ce9d4",
       "status": "machine"
     },
     "media:recordNote.abnormal": {
@@ -29946,6 +30454,122 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "media:viewer.brightness": {
+      "hash": "ec811d30a89c",
+      "status": "machine"
+    },
+    "media:viewer.close": {
+      "hash": "7b25a882e9bc",
+      "status": "machine"
+    },
+    "media:viewer.contrast": {
+      "hash": "08795ba031bc",
+      "status": "machine"
+    },
+    "media:viewer.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "media:viewer.dicomColor": {
+      "hash": "c5a3780f52d8",
+      "status": "machine"
+    },
+    "media:viewer.dicomFailed": {
+      "hash": "a2dfc975a4c5",
+      "status": "machine"
+    },
+    "media:viewer.dicomLoading": {
+      "hash": "c59b03c9d654",
+      "status": "machine"
+    },
+    "media:viewer.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "media:viewer.downloadDicom": {
+      "hash": "01ea43960f6a",
+      "status": "machine"
+    },
+    "media:viewer.fit": {
+      "hash": "9f872ed43d00",
+      "status": "machine"
+    },
+    "media:viewer.flip": {
+      "hash": "2449d137ea15",
+      "status": "machine"
+    },
+    "media:viewer.invert": {
+      "hash": "7e04f2ffb933",
+      "status": "machine"
+    },
+    "media:viewer.level": {
+      "hash": "1709305c9fa9",
+      "status": "machine"
+    },
+    "media:viewer.missing": {
+      "hash": "29861f96a1e9",
+      "status": "machine"
+    },
+    "media:viewer.next": {
+      "hash": "a4903f732746",
+      "status": "machine"
+    },
+    "media:viewer.previous": {
+      "hash": "f0a859a7ecd7",
+      "status": "machine"
+    },
+    "media:viewer.reset": {
+      "hash": "daee7606b339",
+      "status": "machine"
+    },
+    "media:viewer.resetWindow": {
+      "hash": "4c3ac40fc7bd",
+      "status": "machine"
+    },
+    "media:viewer.rotateLeft": {
+      "hash": "54c46b33d809",
+      "status": "machine"
+    },
+    "media:viewer.rotateRight": {
+      "hash": "9938c21d2ced",
+      "status": "machine"
+    },
+    "media:viewer.title": {
+      "hash": "ba0b6b597391",
+      "status": "machine"
+    },
+    "media:viewer.tools": {
+      "hash": "18b3f5465aa1",
+      "status": "machine"
+    },
+    "media:viewer.window": {
+      "hash": "19734a1b58ca",
+      "status": "machine"
+    },
+    "media:viewer.windowHint": {
+      "hash": "7f5236fbe8a4",
+      "status": "machine"
+    },
+    "media:viewer.windowLevel": {
+      "hash": "ae93936e7385",
+      "status": "machine"
+    },
+    "media:viewer.windowLevelTitle": {
+      "hash": "35ce940a93da",
+      "status": "machine"
+    },
+    "media:viewer.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "media:viewer.zoomLevel": {
+      "hash": "d578795404de",
+      "status": "machine"
+    },
+    "media:viewer.zoomOut": {
+      "hash": "bc7b631a689b",
       "status": "machine"
     },
     "onboarding:finishSetup.allSet": {
@@ -30582,6 +31206,10 @@
     },
     "pdf:images.titleRange": {
       "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:images.tooth": {
+      "hash": "f8c0e7334d3d",
       "status": "machine"
     },
     "pdf:patient.complaint": {
@@ -40886,6 +41514,58 @@
       "hash": "bef72e37aee3",
       "status": "machine"
     },
+    "media:history.empty": {
+      "hash": "7dc2f06f4139",
+      "status": "machine"
+    },
+    "media:history.failed": {
+      "hash": "153c8c5803a8",
+      "status": "machine"
+    },
+    "media:history.hide": {
+      "hash": "e52cc6e5633c",
+      "status": "machine"
+    },
+    "media:history.imageCount_many": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.imageCount_one": {
+      "hash": "9ee7a5815f0d",
+      "status": "machine"
+    },
+    "media:history.imageCount_other": {
+      "hash": "7520b3b85e97",
+      "status": "machine"
+    },
+    "media:history.loading": {
+      "hash": "a0d946f18418",
+      "status": "machine"
+    },
+    "media:history.openVisit": {
+      "hash": "41d7004d884c",
+      "status": "machine"
+    },
+    "media:history.retry": {
+      "hash": "d8b8392e2c54",
+      "status": "machine"
+    },
+    "media:history.show_many": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.show_one": {
+      "hash": "1367a9ab6da3",
+      "status": "machine"
+    },
+    "media:history.show_other": {
+      "hash": "460979de75f8",
+      "status": "machine"
+    },
+    "media:history.undated": {
+      "hash": "a8b719f0af60",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -40970,6 +41650,18 @@
       "hash": "28e33d8579ed",
       "status": "machine"
     },
+    "media:imaging.dismiss": {
+      "hash": "48845bff334a",
+      "status": "machine"
+    },
+    "media:imaging.dropHint": {
+      "hash": "88c8bc1e61a7",
+      "status": "machine"
+    },
+    "media:imaging.dropPasteHint": {
+      "hash": "f9a8dae9d3d7",
+      "status": "machine"
+    },
     "media:imaging.empty": {
       "hash": "dc9d70506f60",
       "status": "machine"
@@ -41012,6 +41704,14 @@
     },
     "media:imaging.missing": {
       "hash": "6105d6cc76af",
+      "status": "machine"
+    },
+    "media:imaging.openViewer": {
+      "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.pastedName": {
+      "hash": "bce5b478a5fa",
       "status": "machine"
     },
     "media:imaging.pdfOption": {
@@ -41062,6 +41762,22 @@
       "hash": "be7e2f201293",
       "status": "machine"
     },
+    "media:imaging.toothAria": {
+      "hash": "bfe93ced3e89",
+      "status": "machine"
+    },
+    "media:imaging.toothFailed": {
+      "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothNone": {
+      "hash": "4c7316541bc0",
+      "status": "machine"
+    },
+    "media:imaging.toothTitle": {
+      "hash": "441d29bcc94c",
+      "status": "machine"
+    },
     "media:imaging.typeAria": {
       "hash": "a77e1c4782f4",
       "status": "machine"
@@ -41072,6 +41788,10 @@
     },
     "media:imaging.usage": {
       "hash": "cf6b6b3f1f71",
+      "status": "machine"
+    },
+    "media:imaging.waiting": {
+      "hash": "612ffc5ce9d4",
       "status": "machine"
     },
     "media:recordNote.abnormal": {
@@ -41244,6 +41964,122 @@
     },
     "media:upload.typePlain": {
       "hash": "6a8d6452d8f6",
+      "status": "machine"
+    },
+    "media:viewer.brightness": {
+      "hash": "ec811d30a89c",
+      "status": "machine"
+    },
+    "media:viewer.close": {
+      "hash": "7b25a882e9bc",
+      "status": "machine"
+    },
+    "media:viewer.contrast": {
+      "hash": "08795ba031bc",
+      "status": "machine"
+    },
+    "media:viewer.count": {
+      "hash": "8510491e2987",
+      "status": "machine"
+    },
+    "media:viewer.dicomColor": {
+      "hash": "c5a3780f52d8",
+      "status": "machine"
+    },
+    "media:viewer.dicomFailed": {
+      "hash": "a2dfc975a4c5",
+      "status": "machine"
+    },
+    "media:viewer.dicomLoading": {
+      "hash": "c59b03c9d654",
+      "status": "machine"
+    },
+    "media:viewer.download": {
+      "hash": "d6eafe823591",
+      "status": "machine"
+    },
+    "media:viewer.downloadDicom": {
+      "hash": "01ea43960f6a",
+      "status": "machine"
+    },
+    "media:viewer.fit": {
+      "hash": "9f872ed43d00",
+      "status": "machine"
+    },
+    "media:viewer.flip": {
+      "hash": "2449d137ea15",
+      "status": "machine"
+    },
+    "media:viewer.invert": {
+      "hash": "7e04f2ffb933",
+      "status": "machine"
+    },
+    "media:viewer.level": {
+      "hash": "1709305c9fa9",
+      "status": "machine"
+    },
+    "media:viewer.missing": {
+      "hash": "29861f96a1e9",
+      "status": "machine"
+    },
+    "media:viewer.next": {
+      "hash": "a4903f732746",
+      "status": "machine"
+    },
+    "media:viewer.previous": {
+      "hash": "f0a859a7ecd7",
+      "status": "machine"
+    },
+    "media:viewer.reset": {
+      "hash": "daee7606b339",
+      "status": "machine"
+    },
+    "media:viewer.resetWindow": {
+      "hash": "4c3ac40fc7bd",
+      "status": "machine"
+    },
+    "media:viewer.rotateLeft": {
+      "hash": "54c46b33d809",
+      "status": "machine"
+    },
+    "media:viewer.rotateRight": {
+      "hash": "9938c21d2ced",
+      "status": "machine"
+    },
+    "media:viewer.title": {
+      "hash": "ba0b6b597391",
+      "status": "machine"
+    },
+    "media:viewer.tools": {
+      "hash": "18b3f5465aa1",
+      "status": "machine"
+    },
+    "media:viewer.window": {
+      "hash": "19734a1b58ca",
+      "status": "machine"
+    },
+    "media:viewer.windowHint": {
+      "hash": "7f5236fbe8a4",
+      "status": "machine"
+    },
+    "media:viewer.windowLevel": {
+      "hash": "ae93936e7385",
+      "status": "machine"
+    },
+    "media:viewer.windowLevelTitle": {
+      "hash": "35ce940a93da",
+      "status": "machine"
+    },
+    "media:viewer.zoomIn": {
+      "hash": "0e47f09a748f",
+      "status": "machine"
+    },
+    "media:viewer.zoomLevel": {
+      "hash": "d578795404de",
+      "status": "machine"
+    },
+    "media:viewer.zoomOut": {
+      "hash": "bc7b631a689b",
       "status": "machine"
     },
     "onboarding:finishSetup.allSet": {
@@ -41880,6 +42716,10 @@
     },
     "pdf:images.titleRange": {
       "hash": "6817287330b6",
+      "status": "machine"
+    },
+    "pdf:images.tooth": {
+      "hash": "f8c0e7334d3d",
       "status": "machine"
     },
     "pdf:patient.complaint": {

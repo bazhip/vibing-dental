@@ -76,6 +76,7 @@
     "titleRange": "Bilder & Röntgenaufnahmen ({{range}} von {{total}})",
     "failed": "Bild konnte nicht geladen werden",
     "photo": "Foto",
-    "radiograph": "Röntgenaufnahme"
+    "radiograph": "Röntgenaufnahme",
+    "tooth": "Zahn {{triadan}}"
   }
 }

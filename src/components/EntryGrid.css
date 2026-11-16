@@ -3236,6 +3236,112 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 .imaging__formats { margin: 0.35rem 0 0; }
 .imaging__delete { align-self: flex-start; }
 
+/* Drag-and-drop target: the whole Images section. */
+.imaging { position: relative; }
+.imaging--dragging { outline: 2px dashed var(--primary); outline-offset: 4px; border-radius: 10px; }
+.imaging__drop-hint {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--surface, #fff) 85%, transparent);
+  color: var(--primary); font-weight: 700; pointer-events: none; border-radius: 10px;
+}
+/* Per-file upload status. */
+.imaging__queue { list-style: none; margin: 0.5rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.imaging__queue-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.3rem 0.55rem; border: 1px solid var(--border); border-radius: var(--radius-sm, 8px);
+  font-size: 0.85rem;
+}
+.imaging__queue-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40%; }
+.imaging__queue-status { flex: 1; color: var(--text-muted); }
+.imaging__queue-item--failed { border-color: var(--danger, #dc2626); }
+.imaging__queue-item--failed .imaging__queue-status { color: var(--danger, #dc2626); }
+.imaging__queue-dismiss { border: 0; background: none; cursor: pointer; color: inherit; font: inherit; }
+.imaging__thumb-link { position: relative; }
+.imaging__tooth-badge {
+  position: absolute; top: 6px; left: 6px;
+  padding: 0.05rem 0.4rem; border-radius: 999px;
+  background: rgba(15, 23, 42, 0.8); color: #fff; font-size: 0.72rem; font-weight: 700;
+}
+.imaging__tooth-select {
+  align-self: stretch;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--surface, #fff);
+  font: inherit; font-size: 0.8rem; color: var(--text);
+}
+
+/* Image history: the patient's images from other visits, by date. */
+.image-history { margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+.image-history__body { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 1rem; }
+.image-history__visit-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; margin-bottom: 0.5rem; }
+.image-history__date { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.image-history__open { margin-left: auto; }
+.image-history__grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.6rem;
+}
+.image-history__item { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.image-history__thumb-btn {
+  position: relative; display: block; padding: 0; border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; cursor: zoom-in; background: none;
+}
+.image-history__label { font-size: 0.78rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.image-history__retry { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+.image-viewer__date { color: #9ca3af; }
+
+/* Full-screen image viewer. */
+.image-viewer {
+  position: fixed; inset: 0; z-index: 1200;
+  display: flex; flex-direction: column;
+  background: #05080f; color: #e5e7eb;
+  outline: none;
+}
+.image-viewer button, .image-viewer__download {
+  border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.06);
+  color: inherit; font: inherit; font-size: 0.85rem;
+  padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; text-decoration: none;
+}
+.image-viewer button:hover, .image-viewer__download:hover { background: rgba(255, 255, 255, 0.14); }
+.image-viewer button[aria-pressed="true"] { background: rgba(96, 165, 250, 0.35); border-color: rgba(96, 165, 250, 0.7); }
+.image-viewer button:disabled { opacity: 0.5; cursor: default; }
+.image-viewer__bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;
+  padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+.image-viewer__info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; min-width: 0; }
+.image-viewer__count { color: #9ca3af; font-variant-numeric: tabular-nums; }
+.image-viewer__kind { font-weight: 700; }
+.image-viewer__tooth { padding: 0.05rem 0.45rem; border-radius: 999px; background: rgba(255, 255, 255, 0.12); font-size: 0.8rem; }
+.image-viewer__caption { color: #d1d5db; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40vw; }
+.image-viewer__tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; }
+.image-viewer__zoom { min-width: 3.5em; text-align: center; font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+.image-viewer__adjust {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem;
+  padding: 0.4rem 0.75rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.image-viewer__adjust label { display: inline-flex; align-items: center; gap: 0.4rem; }
+.image-viewer__adjust input[type="range"] { width: 9rem; accent-color: #60a5fa; }
+.image-viewer__hint { color: #9ca3af; font-size: 0.8rem; }
+.image-viewer__error { color: #fca5a5; }
+.image-viewer__stage {
+  position: relative; flex: 1; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; touch-action: none; user-select: none;
+}
+.image-viewer__stage:active { cursor: grabbing; }
+.image-viewer__frame { max-width: 100%; max-height: 100%; display: flex; transform-origin: center; will-change: transform; }
+.image-viewer__media { max-width: 100vw; max-height: calc(100vh - 7rem); max-height: calc(100dvh - 7rem); object-fit: contain; display: block; }
+.image-viewer__missing { color: #9ca3af; }
+.image-viewer .image-viewer__nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  font-size: 2rem; line-height: 1; padding: 0.4rem 0.7rem; border-radius: 999px;
+}
+.image-viewer__nav--prev { left: 0.75rem; }
+.image-viewer__nav--next { right: 0.75rem; }
+
 /* Team panel */
 .team__members {
   list-style: none;
