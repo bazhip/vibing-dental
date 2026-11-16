@@ -17,6 +17,8 @@ const db = vi.hoisted(() => ({
   gate: null as Promise<void> | null,
   /** Only upserts of this id wait for the gate ('' = all). */
   gateId: '',
+  /** Rows a chart delete reports as deleted ([] = row security refused it). */
+  deletedRows: [{ id: 'x' }] as unknown[],
 }));
 vi.mock('../utils/supabaseClient', () => {
   const builder = () => {
@@ -25,7 +27,8 @@ vi.mock('../utils/supabaseClient', () => {
     const chain = () => q;
     Object.assign(q, {
       select: (cols?: string) => { if (cols === 'id') q.__existCheck = true; return q; },
-      order: chain, limit: chain, ilike: chain, delete: chain, update: chain,
+      order: chain, limit: chain, ilike: chain, update: chain,
+      delete: () => { q.__delete = true; return q; },
       eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
       maybeSingle: async () => {
         if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) await db.gate;
@@ -44,7 +47,7 @@ vi.mock('../utils/supabaseClient', () => {
         return q;
       },
       then: (resolve: (v: unknown) => void) => {
-        const go = () => resolve({ data: db.visits, error: null });
+        const go = () => resolve({ data: q.__delete ? db.deletedRows : db.visits, error: null });
         if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) void db.gate.then(go);
         else go();
       },
@@ -56,6 +59,9 @@ vi.mock('../utils/supabaseClient', () => {
     supabase: { from: builder, auth: { getSession: async () => ({ data: { session: { user: { id: 'u1' } } } }) } },
   };
 });
+
+const removeAttachments = vi.hoisted(() => vi.fn(async (_client: unknown, _chartId: string) => {}));
+vi.mock('../utils/chartAttachments', () => ({ removeChartAttachments: removeAttachments }));
 
 const confirm = vi.hoisted(() => vi.fn(async () => false));
 const choose = vi.hoisted(() => vi.fn(async (): Promise<string | null> => 'keep'));
@@ -98,7 +104,7 @@ const fakeChart = (s: ChartSnapshot, id = 'chart-1') => ({
 
 beforeEach(() => {
   store.clear();
-  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = '';
+  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = ''; db.deletedRows = [{ id: 'x' }];
   confirm.mockReset(); confirm.mockResolvedValue(false);
   choose.mockReset(); choose.mockResolvedValue('keep');
   vi.useFakeTimers();
@@ -469,5 +475,30 @@ describe('the "already answered" skip for a new visit', () => {
     act(() => result.current.skipDuplicateCheckFor('abandoned-visit'));
     await flush();
     expect(choose).toHaveBeenCalledTimes(1); // still asked
+  });
+});
+
+describe('deleting a chart', () => {
+  it('also removes its images, after the chart row is gone', async () => {
+    removeAttachments.mockClear();
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }), 'open-1')));
+    await act(async () => { await result.current.deleteChart('other-chart'); });
+    expect(removeAttachments).toHaveBeenCalledWith(expect.anything(), 'other-chart');
+  });
+
+  it('a delete row security refused (nothing deleted) fails, and leaves the images alone', async () => {
+    removeAttachments.mockClear();
+    db.deletedRows = [];
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }), 'open-1')));
+    await expect(result.current.deleteChart('other-chart')).rejects.toThrow('permission to delete');
+    expect(removeAttachments).not.toHaveBeenCalled();
+  });
+
+  it('a failed image cleanup does not fail the delete', async () => {
+    removeAttachments.mockRejectedValueOnce(new Error('storage down'));
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }), 'open-1')));
+    await expect(act(async () => { await result.current.deleteChart('other-chart'); })).resolves.not.toThrow();
+    spy.mockRestore();
   });
 });

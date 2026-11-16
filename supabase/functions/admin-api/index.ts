@@ -10,6 +10,7 @@
 // hashes.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { cancelPracticeSubscription } from '../_shared/deletion.ts';
 
 type Json = Record<string, unknown>;
 
@@ -299,9 +300,12 @@ Deno.serve(async (req: Request) => {
               error: `This account is the primary owner of "${owned.name || 'a practice'}" with ${others} other member${others === 1 ? '' : 's'} — transfer ownership (Practices tab → Make owner) before deleting it.`,
             }, 400);
           }
-          // Sole member: the practice row goes with them — un-share
-          // record pointers and drop its logo first (mirrors
-          // delete_practice) so nothing dangles.
+          // Sole member: the practice row goes with them. Cancel its Stripe
+          // subscription first (it would keep billing a practice that no
+          // longer exists; throws, stopping here, if it can't be
+          // cancelled), then un-share record pointers and drop its logo
+          // (mirrors delete_practice) so nothing dangles.
+          await cancelPracticeSubscription(admin, owned.id);
           await admin.from('charts').update({ practice_id: null }).eq('practice_id', owned.id);
           await admin.from('report_templates').update({ practice_id: null }).eq('practice_id', owned.id);
           await admin.from('attachments').update({ practice_id: null }).eq('practice_id', owned.id);
@@ -498,8 +502,12 @@ Deno.serve(async (req: Request) => {
       case 'delete_practice': {
         const practiceId = typeof body.practiceId === 'string' ? body.practiceId : '';
         if (!practiceId) return json({ error: 'missing practiceId' }, 400);
-        // Un-share the practice's records (keep them, owned by creators),
-        // clear member pointers, then drop the practice + memberships.
+        // Cancel the Stripe subscription first: deleting the row never told
+        // Stripe, so the card kept being charged. Throws (and stops) if it
+        // can't be cancelled. Then un-share the practice's records (keep
+        // them, owned by creators), clear member pointers, and drop the
+        // practice + memberships.
+        await cancelPracticeSubscription(admin, practiceId);
         await admin.from('charts').update({ practice_id: null }).eq('practice_id', practiceId);
         await admin.from('report_templates').update({ practice_id: null }).eq('practice_id', practiceId);
         await admin.from('attachments').update({ practice_id: null }).eq('practice_id', practiceId);

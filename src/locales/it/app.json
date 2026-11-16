@@ -219,6 +219,7 @@
     "changedByOther": "Questa cartella è stata modificata da qualcun altro: la riapra da Le mie cartelle per vedere la sua versione",
     "notSavedConflict": "Non salvato: questa cartella è stata modificata da qualcun altro. La riapra da Le mie cartelle per vedere la sua versione",
     "noPermission": "Non ha l’autorizzazione per salvare modifiche a questa cartella. Lo chieda al titolare dello studio o avvii una nuova visita",
+    "noDeletePermission": "Non ha l’autorizzazione per eliminare questa cartella. Lo chieda al titolare dello studio.",
     "practiceUnknown": "I dati del Suo studio non sono ancora stati caricati, quindi questa nuova cartella non può essere salvata nello studio. Controlli la connessione e ricarichi la pagina — la Sua cartella è ancora su questo dispositivo",
     "conflict": {
       "title": "Questa cartella è stata modificata altrove",

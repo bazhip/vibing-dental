@@ -219,6 +219,7 @@
     "changedByOther": "Otra persona ha modificado este historial: ábralo de nuevo desde Mis historiales para ver su versión",
     "notSavedConflict": "No guardado: otra persona ha modificado este historial. Ábralo de nuevo desde Mis historiales para ver su versión",
     "noPermission": "No tiene permiso para guardar cambios en este historial. Pregunte al propietario de la clínica o inicie una nueva visita",
+    "noDeletePermission": "No tiene permiso para eliminar este historial. Pregunte al propietario de la clínica.",
     "practiceUnknown": "Los datos de su clínica aún no se han cargado, así que este historial nuevo no puede guardarse en la clínica. Compruebe su conexión y vuelva a cargar la página — su historial sigue en este dispositivo",
     "conflict": {
       "title": "Este historial se modificó en otro lugar",

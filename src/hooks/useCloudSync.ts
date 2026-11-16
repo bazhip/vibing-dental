@@ -9,6 +9,7 @@ import { usePersistedState } from './usePersistedState';
 import { writeJson } from '../utils/storage';
 import { CHART_STORAGE_REWRITE_EVENT, UseChartStateReturn, clearChartStorage } from './useChartState';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
+import { removeChartAttachments } from '../utils/chartAttachments';
 import { LocalizedError } from '../utils/apiErrors';
 import {
   CHART_META_COLUMNS,
@@ -635,8 +636,16 @@ export function useCloudSync(
 
   const deleteChart = React.useCallback(async (id: string): Promise<void> => {
     if (!supabase) return;
-    const { error } = await supabase.from('charts').delete().eq('id', id);
+    const { data: deleted, error } = await supabase.from('charts').delete().eq('id', id).select('id');
     if (error) throw new Error(error.message);
+    // Row security makes a forbidden delete a silent no-op: say so, and
+    // never clean up the images of a chart that still exists.
+    if (!deleted?.length) throw new LocalizedError(i18n.t('sync.noDeletePermission', { ns: 'app' }));
+    // Its images too (they reference the chart by id only). The chart is
+    // already gone, so a failure here only leaves files behind, as before.
+    await removeChartAttachments(supabase, id).catch((err) => {
+      console.error('Chart deleted, but its images could not all be removed', err);
+    });
     // Deleted the chart that's open: it now exists only on this screen.
     // Give it a fresh identity and mark it unsaved, so it neither looks
     // saved nor silently re-creates the deleted record.

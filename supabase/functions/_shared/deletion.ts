@@ -86,9 +86,14 @@ export async function cancelPracticeSubscription(admin: Admin, practiceId: strin
     await stripe.subscriptions.cancel(subId);
   } catch (e) {
     // Already gone on Stripe's side — nothing left to bill.
-    if ((e as { code?: string })?.code === 'resource_missing') return;
-    throw new Error(`Couldn’t cancel the subscription: ${e instanceof Error ? e.message : String(e)}`);
+    if ((e as { code?: string })?.code !== 'resource_missing') {
+      throw new Error(`Couldn’t cancel the subscription: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }
+  // Record it now (the webhook would, later): if a later deletion step
+  // fails, a retry then skips the cancel instead of asking Stripe to cancel
+  // an already-cancelled subscription.
+  await admin.from('practices').update({ subscription_status: 'canceled' }).eq('id', practiceId);
 }
 
 /**

@@ -896,6 +896,10 @@
       "hash": "05870b4b840a",
       "status": "machine"
     },
+    "app:sync.noDeletePermission": {
+      "hash": "d110e65f006e",
+      "status": "machine"
+    },
     "app:sync.noPermission": {
       "hash": "e48bdf574b48",
       "status": "machine"
@@ -12024,6 +12028,10 @@
     },
     "app:sync.historyNotSetUp": {
       "hash": "05870b4b840a",
+      "status": "machine"
+    },
+    "app:sync.noDeletePermission": {
+      "hash": "d110e65f006e",
       "status": "machine"
     },
     "app:sync.noPermission": {
@@ -23256,6 +23264,10 @@
       "hash": "05870b4b840a",
       "status": "machine"
     },
+    "app:sync.noDeletePermission": {
+      "hash": "d110e65f006e",
+      "status": "machine"
+    },
     "app:sync.noPermission": {
       "hash": "e48bdf574b48",
       "status": "machine"
@@ -34484,6 +34496,10 @@
     },
     "app:sync.historyNotSetUp": {
       "hash": "05870b4b840a",
+      "status": "machine"
+    },
+    "app:sync.noDeletePermission": {
+      "hash": "d110e65f006e",
       "status": "machine"
     },
     "app:sync.noPermission": {
