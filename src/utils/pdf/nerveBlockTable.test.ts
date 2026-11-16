@@ -36,13 +36,13 @@ describe('nerve-block anesthetics', () => {
   });
 
   it('keeps the single-drug table the same height and grows for a mix', async () => {
-    const single = await tableBottom({ ...EMPTY_NERVE_BLOCKS });
-    const one = await tableBottom({ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'Bupivacaine', concentration: '0.5' }] });
+    const used = { ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3', mentalLeft: '0.2' };
+    const single = await tableBottom(used);
+    const one = await tableBottom({ ...used, drugs: [{ name: 'Bupivacaine', concentration: '0.5' }] });
     expect(one).toBeCloseTo(single, 5);
 
     const three = await tableBottom({
-      ...EMPTY_NERVE_BLOCKS,
-      infraorbitalRight: '0.3', mentalLeft: '0.2',
+      ...used,
       drugs: [
         { name: 'Bupivacaine', concentration: '0.5' },
         { name: 'Lidocaine', concentration: '2' },
@@ -52,7 +52,7 @@ describe('nerve-block anesthetics', () => {
     expect(three).toBeGreaterThan(single);
 
     const many = await tableBottom({
-      ...EMPTY_NERVE_BLOCKS,
+      ...used,
       drugs: ['Bupivacaine', 'Lidocaine', 'Ropivacaine', 'Mepivacaine', 'Dexmedetomidine', 'Buprenorphine']
         .map((name) => ({ name, concentration: '0.5' })),
     });
@@ -60,15 +60,23 @@ describe('nerve-block anesthetics', () => {
   });
 });
 
-describe('caudal maxillary block', () => {
-  it('keeps the original table height when unused, adds a row when used', async () => {
-    const base = await tableBottom({ ...EMPTY_NERVE_BLOCKS });
-    const used = await tableBottom({ ...EMPTY_NERVE_BLOCKS, caudalMaxillaryRight: '0.3' });
-    expect(used).toBeGreaterThan(base);
-    expect(await tableBottom({ ...EMPTY_NERVE_BLOCKS, caudalMaxillaryRight: '', caudalMaxillaryLeft: '' })).toBe(base);
+describe('only the blocks given are printed', () => {
+  it('leaves the card out when nothing was given', async () => {
+    const top = await tableBottom({ ...EMPTY_NERVE_BLOCKS, drugs: [{ name: 'Nocita', concentration: '13.3' }] });
+    expect(top).toBe(await tableBottom({ ...EMPTY_NERVE_BLOCKS, mentalRight: '  ', other: ' ' }));
+    expect(await tableBottom({ ...EMPTY_NERVE_BLOCKS, other: 'Infiltrative block' })).toBeGreaterThan(top);
   });
 
-  it('old charts load with the new sites blank', () => {
+  it('adds one row per block given, and the Other row only with text', async () => {
+    const one = await tableBottom({ ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3' });
+    const two = await tableBottom({ ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3', mentalLeft: '0.2' });
+    const caudal = await tableBottom({ ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3', caudalMaxillaryLeft: '0.2' });
+    expect(two).toBeGreaterThan(one);
+    expect(caudal).toBeCloseTo(two, 5);
+    expect(await tableBottom({ ...EMPTY_NERVE_BLOCKS, infraorbitalRight: '0.3', other: 'Note' })).toBeGreaterThan(one);
+  });
+
+  it('old charts load with the caudal maxillary sites blank', () => {
     const nb = normalizeNerveBlocks({ infraorbitalRight: '0.2' });
     expect(nb.caudalMaxillaryRight).toBe('');
     expect(nb.caudalMaxillaryLeft).toBe('');
@@ -76,33 +84,16 @@ describe('caudal maxillary block', () => {
   });
 });
 
-describe('nerve block rows hidden in chart settings', () => {
-  async function bottomWith(nb: NerveBlocks, hidden: string[]): Promise<number> {
-    const doc = await PDFDocument.create();
-    const page = doc.addPage([612, 792]);
-    const bold = await doc.embedFont(StandardFonts.HelveticaBold);
-    const regular = await doc.embedFont(StandardFonts.Helvetica);
-    return drawNerveBlockTable(page, nb, bold, regular, false, hidden);
-  }
-  it('drops a hidden row only while it is empty', async () => {
-    const all = await bottomWith({ ...EMPTY_NERVE_BLOCKS }, []);
-    const fewer = await bottomWith({ ...EMPTY_NERVE_BLOCKS }, ['mental', 'inferiorAlveolar']);
-    expect(fewer).toBeLessThan(all);
-    const withDose = await bottomWith({ ...EMPTY_NERVE_BLOCKS, mentalRight: '0.2' }, ['mental', 'inferiorAlveolar']);
-    expect(withDose).toBeGreaterThan(fewer); // mental comes back
-  });
-});
-
 describe('custom nerve blocks and fields in the PDF', () => {
-  async function bottomWithCustom(custom: Parameters<typeof drawNerveBlockTable>[6]): Promise<number> {
+  async function bottomWithCustom(custom: Parameters<typeof drawNerveBlockTable>[5]): Promise<number> {
     const doc = await PDFDocument.create();
     const page = doc.addPage([612, 792]);
     const bold = await doc.embedFont(StandardFonts.HelveticaBold);
     const regular = await doc.embedFont(StandardFonts.Helvetica);
-    return drawNerveBlockTable(page, { ...EMPTY_NERVE_BLOCKS }, bold, regular, false, [], custom);
+    return drawNerveBlockTable(page, { ...EMPTY_NERVE_BLOCKS }, bold, regular, false, custom);
   }
   it('unchanged without custom values; filled blocks add rows and fields add lines', async () => {
-    const base = await bottomWithCustom(undefined);
+    const base = await bottomWithCustom(undefined); // nothing given: no card
     expect(await bottomWithCustom({ blocks: [{ id: 'b', label: 'Empty', right: '', left: '' }], fields: [] })).toBe(base);
     const withBlock = await bottomWithCustom({ blocks: [{ id: 'b', label: 'Major palatine', right: '0.2', left: '' }], fields: [] });
     expect(withBlock).toBeGreaterThan(base);

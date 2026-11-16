@@ -173,7 +173,7 @@ const SCENARIOS: Record<string, Scenario> = {
     plainPatient, richTeeth, 'feline-deciduous', 'socal',
     diagram({ comments: [{ id: 'c1', text: manyCodes, anchorTriadan: null }] }),
     diagram(),
-    'clinic', { includeGrid: false, hiddenBlocks: ['infraorbital'], images: [{ jpegBytes: null, caption: 'Left lateral', kind: 'photo' }] },
+    'clinic', { includeGrid: false, images: [{ jpegBytes: null, caption: 'Left lateral', kind: 'photo' }] },
   ],
   // Image pages counting across pages.
   images: [
@@ -279,10 +279,13 @@ describe('custom exam areas and block adjuncts', () => {
     expect(runs.map((r) => r.toLowerCase())).not.toContain('additional exam areas');
   });
 
-  const eight = Array.from({ length: 8 }, (_, i) => ({
-    id: `x${i}`, label: `Area ${i + 1}`, status: (i < 4 ? 'abnormal' : 'normal') as 'abnormal' | 'normal',
-    comment: i < 4 ? 'A long abnormal finding that wraps onto more than one line in the narrow page-two column' : '',
+  const areas = (n: number, abnormal: number) => Array.from({ length: n }, (_, i) => ({
+    id: `x${i}`, label: `Area ${i + 1}`, status: (i < abnormal ? 'abnormal' : 'normal') as 'abnormal' | 'normal',
+    comment: i < abnormal ? 'A long abnormal finding that wraps onto more than one line in the narrow page-two column' : '',
   }));
+  const eight = areas(8, 4);
+  // Enough that it overflows even when the nerve-block card is short.
+  const tooMany = areas(12, 10);
   const cardRuns = async (p: PatientInfo) => {
     const runs = await captureText(p, teeth, species, logo, pre, post, styleId, layout);
     const card = runs.findIndex((r) => r.t.toLowerCase() === 'additional exam areas');
@@ -303,7 +306,7 @@ describe('custom exam areas and block adjuncts', () => {
 
   it('never runs into the diagram: what doesn\'t fit is counted', async () => {
     for (const p of [typical, richPatient]) {
-      const card = await cardRuns({ ...p, customExam: eight });
+      const card = await cardRuns({ ...p, customExam: tooMany });
       for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
       expect(card.map((r) => r.t).join(' ')).toMatch(/\+\d+ more areas? in the app/);
     }

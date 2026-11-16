@@ -922,7 +922,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           strokes:  chart.postDiagramStrokes,
         },
         includeGrid: !mirrorToDiagnosis || pdfIncludeGrid,
-        hiddenBlocks: prefs.hiddenBlocks,
         imagesChartId:
           pdfIncludeImages && cloud.enabled && !trial ? chart.cloudChartId : undefined,
         pdfExcludedImages: chart.pdfExcludedImages,

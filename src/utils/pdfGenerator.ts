@@ -116,9 +116,6 @@ export interface PdfLayoutOptions {
    *  Empty / absent → no image pages. Not round-tripped through the
    *  stash: the images live in cloud storage with the chart. */
   images?: PdfImage[];
-  /** Nerve block rows the person hides (chart settings) — left out of
-   *  the table when empty. */
-  hiddenBlocks?: readonly string[];
   /** Language the document's labels print in (headings, legends, column
    *  headers, code definitions). Typed text prints as stored. Default 'en'. */
   lng?: AppLanguage;
@@ -301,7 +298,7 @@ export async function buildDentalChartPDFBytes(
   // The nerve-block table grows to fit a long "Other" note; push the diagram
   // beneath it (keeping its bottom fixed above the codes legend) so the two
   // never overlap.
-  const tableBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', layoutOptions.hiddenBlocks ?? [], patientInfo.customAnesthesia, lng);
+  const tableBottomIn = drawNerveBlockTable(page2, patientInfo.nerveBlocks, bold, regular, logo === 'vca', patientInfo.customAnesthesia, lng);
   const baseSlot = DIAGRAM_SLOTS[species][1];
   // The person's own exam areas don't fit on page 1: they get a card under
   // the nerve blocks, kept short enough to leave the diagram its minimum.
