@@ -46,6 +46,7 @@
     "removedToday": "— removed today",
     "noFindings": "No per-tooth findings recorded yet — the report will say so (in a good way).",
     "examNotes": "Exam notes:",
+    "otherFindings": "Other findings",
     "recheck": "Recommended recheck:"
   },
   "templates": {

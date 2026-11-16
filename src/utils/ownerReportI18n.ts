@@ -38,6 +38,11 @@ export function isReportLocale(v: unknown): v is ReportLocale {
   return typeof v === 'string' && (REPORT_LOCALES as readonly string[]).includes(v);
 }
 
+/** Periodontal fields that can be summarised mouth-wide, in print order. */
+export const SUMMARY_FIELDS = ['gingivitis', 'calculus', 'recession', 'hyperplasia'] as const;
+export type SummaryField = (typeof SUMMARY_FIELDS)[number];
+export type SummaryExtent = 'most' | 'many' | 'some';
+
 export interface ReportStrings {
   /** BCP-47 tag for Intl date formatting. */
   intlLocale: string;
@@ -54,6 +59,15 @@ export interface ReportStrings {
   homecareTipsEquine: string[];
   fieldPhrases: Record<DentalField, (value: string) => string>;
   fieldPlain: Record<DentalField, string>;
+  /** One mouth-wide line: "Gum inflammation on most teeth (mild to moderate)".
+   *  `severity` is '' or the output of severitySingle/severityRange. */
+  summaryLine: (field: SummaryField, extent: SummaryExtent, severity: string) => string;
+  severityWord: (level: 1 | 2 | 3) => string;
+  severitySingle: (level: string) => string;
+  severityRange: (from: string, to: string) => string;
+  otherFindingsHeading: string;
+  /** Owner-friendly phrase for an AVDC code (curated list), or null. */
+  plainCode: (code: string) => string | null;
   /** Lay tooth name without the Triadan number, capitalized. */
   toothName: (quadrant: number, position: number, deciduous: boolean) => string;
   species: Record<string, string>;
@@ -184,6 +198,18 @@ function buildStrings(locale: ReportLocale): ReportStrings {
     homecareTipsEquine: EQUINE_HOMECARE_TIP_KEYS.map((k) => t(`homecareTipsEquine.${k}`)),
     fieldPhrases: map(DENTAL_FIELDS, (f) => (value: string) => t(`fieldPhrases.${f}`, { value })),
     fieldPlain: map(DENTAL_FIELDS, (f) => t(`fieldPlain.${f}`)),
+    summaryLine: (field, extent, severity) => t(`summary.${field}`, { extent: t(`extent.${extent}`), severity }),
+    severityWord: (level) => t(level === 1 ? 'severity.mild' : level === 2 ? 'severity.moderate' : 'severity.severe'),
+    severitySingle: (level) => t('severity.single', { level }),
+    severityRange: (from, to) => t('severity.range', { from, to }),
+    otherFindingsHeading: t('otherFindings'),
+    // Keys are AVDC codes ("T/FX/CCF"); the catalog is typed from English,
+    // so look up through a loose key.
+    plainCode: (code) => {
+      const key = `plainCodes.${code}`;
+      if (!i18n.exists(key, { ns: 'report', lng: locale })) return null;
+      return (t as unknown as (k: string) => string)(key);
+    },
     toothName: (quadrant, position, deciduous) => {
       const { kind, ordinal } = toothType(position);
       const sideKey = SIDE_KEYS[quadrant as keyof typeof SIDE_KEYS];

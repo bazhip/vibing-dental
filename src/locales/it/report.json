@@ -56,7 +56,7 @@
     "forage": "Offra abbondante foraggio: il fieno a fibra lunga e il pascolo mantengono un’usura uniforme dei denti.",
     "warningSigns": "Faccia attenzione a cibo che cade dalla bocca, perdita di peso, masticazione lenta, scuotimento della testa o resistenza all’imboccatura, alito cattivo o scolo nasale — ci chiami se nota qualcosa."
   },
-  "intro": "{{pet}} ha ricevuto una valutazione e una pulizia dentale professionale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
+  "intro": "{{pet}} ha ricevuto una visita e un trattamento dentale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
   "legendFilled": "pieno = mancante prima di questa visita",
   "legendNumbers": "I numeri corrispondono ai riscontri riportati sotto",
   "legendRemoved": "✕ rosso = estratto oggi",
@@ -100,5 +100,58 @@
     }
   },
   "yourPet": "il Suo animale",
-  "yourTeam": "il Suo team veterinario"
+  "yourTeam": "il Suo team veterinario",
+  "plainCodes": {
+    "T/FX": "un dente rotto",
+    "T/FX/EI": "un'incrinatura dello smalto",
+    "T/FX/EF": "un dente scheggiato (solo smalto)",
+    "T/FX/UCF": "un dente rotto (il nervo non è esposto)",
+    "T/FX/CCF": "un dente rotto con il nervo esposto",
+    "T/FX/UCRF": "un dente rotto fin sotto la gengiva (il nervo non è esposto)",
+    "T/FX/CCRF": "un dente rotto fin sotto la gengiva, con il nervo esposto",
+    "T/FX/RF": "una radice del dente fratturata",
+    "T/PE": "il nervo del dente è esposto",
+    "T/NV": "un dente non più vitale",
+    "TR": "riassorbimento dentale (l'organismo distrugge il dente)",
+    "T/A": "un dente perso in seguito a un trauma",
+    "T/U": "un dente che non è spuntato dalla gengiva",
+    "T/I": "un dente bloccato sotto la gengiva",
+    "DT": "un dente da latte",
+    "AT": "usura dovuta allo sfregamento dei denti tra loro",
+    "AB": "usura dovuta al masticare oggetti duri",
+    "E/D": "un difetto dello smalto",
+    "E/H": "smalto sottile o malformato",
+    "CA": "una carie",
+    "GR": "gengive che si ritirano",
+    "GH": "crescita eccessiva delle gengive",
+    "OM": "una massa in bocca",
+    "B": "una biopsia (campione di tessuto per il laboratorio)",
+    "B/I": "una biopsia (campione della massa per il laboratorio)",
+    "B/E": "la rimozione della massa per l'analisi di laboratorio",
+    "X": "dente estratto",
+    "XS": "dente estratto in più parti",
+    "XSS": "dente estratto chirurgicamente",
+    "RCT": "trattamento canalare",
+    "VPT": "trattamento per mantenere vitale il dente",
+    "PRO": "pulizia professionale (detartrasi e lucidatura)"
+  },
+  "summary": {
+    "gingivitis": "Infiammazione delle gengive su {{extent}}{{severity}}",
+    "calculus": "Tartaro su {{extent}}{{severity}}",
+    "recession": "Recessione gengivale su {{extent}}",
+    "hyperplasia": "Gengiva ingrossata su {{extent}}"
+  },
+  "extent": {
+    "most": "la maggior parte dei denti",
+    "many": "molti denti",
+    "some": "alcuni denti"
+  },
+  "severity": {
+    "mild": "lieve",
+    "moderate": "moderato",
+    "severe": "grave",
+    "single": " (grado {{level}})",
+    "range": " (grado da {{from}} a {{to}})"
+  },
+  "otherFindings": "Altri riscontri"
 }

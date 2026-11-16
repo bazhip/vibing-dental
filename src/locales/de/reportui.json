@@ -46,6 +46,7 @@
     "removedToday": "— heute entfernt",
     "noFindings": "Noch keine Befunde pro Zahn erfasst — der Bericht sagt das auch (auf positive Weise).",
     "examNotes": "Untersuchungsbefunde:",
+    "otherFindings": "Weitere Befunde",
     "recheck": "Empfohlene Kontrolle:"
   },
   "templates": {

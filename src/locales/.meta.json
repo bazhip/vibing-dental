@@ -9044,6 +9044,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -9181,7 +9193,7 @@
       "status": "machine"
     },
     "report:intro": {
-      "hash": "160595ffa0ce",
+      "hash": "8af4c2b10f6a",
       "status": "machine"
     },
     "report:legendFilled": {
@@ -9200,6 +9212,10 @@
       "hash": "d4fc585cd5af",
       "status": "machine"
     },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
+      "status": "machine"
+    },
     "report:ourPractice": {
       "hash": "368c1c0aa556",
       "status": "machine"
@@ -9210,6 +9226,134 @@
     },
     "report:patientLabel": {
       "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:plainCodes.AB": {
+      "hash": "36866d39fd32",
+      "status": "machine"
+    },
+    "report:plainCodes.AT": {
+      "hash": "cbdc16b39ab1",
+      "status": "machine"
+    },
+    "report:plainCodes.B": {
+      "hash": "af9247c533c7",
+      "status": "machine"
+    },
+    "report:plainCodes.B/E": {
+      "hash": "9cc48f40b89c",
+      "status": "machine"
+    },
+    "report:plainCodes.B/I": {
+      "hash": "1b41dd12f669",
+      "status": "machine"
+    },
+    "report:plainCodes.CA": {
+      "hash": "8a1789e888b1",
+      "status": "machine"
+    },
+    "report:plainCodes.DT": {
+      "hash": "33f8b01f9e7d",
+      "status": "machine"
+    },
+    "report:plainCodes.E/D": {
+      "hash": "80f7f6dee0e2",
+      "status": "machine"
+    },
+    "report:plainCodes.E/H": {
+      "hash": "0ed7a97c6224",
+      "status": "machine"
+    },
+    "report:plainCodes.GH": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:plainCodes.GR": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:plainCodes.OM": {
+      "hash": "4e8adda1f083",
+      "status": "machine"
+    },
+    "report:plainCodes.PRO": {
+      "hash": "e953f462f8d0",
+      "status": "machine"
+    },
+    "report:plainCodes.RCT": {
+      "hash": "06606bd930e9",
+      "status": "machine"
+    },
+    "report:plainCodes.T/A": {
+      "hash": "a414a9524732",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX": {
+      "hash": "5b2330cd238d",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCF": {
+      "hash": "50af25d4222e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCRF": {
+      "hash": "469f54207878",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EF": {
+      "hash": "02ea86db189e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EI": {
+      "hash": "134b8892ea41",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/RF": {
+      "hash": "ae684b42e19a",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCF": {
+      "hash": "05dfef83a38f",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCRF": {
+      "hash": "726490288023",
+      "status": "machine"
+    },
+    "report:plainCodes.T/I": {
+      "hash": "f6ca163dfd54",
+      "status": "machine"
+    },
+    "report:plainCodes.T/NV": {
+      "hash": "3410c27fed7b",
+      "status": "machine"
+    },
+    "report:plainCodes.T/PE": {
+      "hash": "3db5834f0a38",
+      "status": "machine"
+    },
+    "report:plainCodes.T/U": {
+      "hash": "25c1053300ed",
+      "status": "machine"
+    },
+    "report:plainCodes.TR": {
+      "hash": "ce00b4964c1b",
+      "status": "machine"
+    },
+    "report:plainCodes.VPT": {
+      "hash": "8a0fb7eb48b4",
+      "status": "machine"
+    },
+    "report:plainCodes.X": {
+      "hash": "58a58e04a894",
+      "status": "machine"
+    },
+    "report:plainCodes.XS": {
+      "hash": "9de76b0bb3ab",
+      "status": "machine"
+    },
+    "report:plainCodes.XSS": {
+      "hash": "cee91c858777",
       "status": "machine"
     },
     "report:preparedBy.byTeam": {
@@ -9232,6 +9376,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -9250,6 +9414,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -9506,6 +9686,10 @@
     },
     "reportui:section.noteLabel": {
       "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "reportui:section.practiceDefault": {
@@ -20526,6 +20710,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -20663,7 +20859,7 @@
       "status": "machine"
     },
     "report:intro": {
-      "hash": "160595ffa0ce",
+      "hash": "8af4c2b10f6a",
       "status": "machine"
     },
     "report:legendFilled": {
@@ -20682,6 +20878,10 @@
       "hash": "d4fc585cd5af",
       "status": "machine"
     },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
+      "status": "machine"
+    },
     "report:ourPractice": {
       "hash": "368c1c0aa556",
       "status": "machine"
@@ -20692,6 +20892,134 @@
     },
     "report:patientLabel": {
       "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:plainCodes.AB": {
+      "hash": "36866d39fd32",
+      "status": "machine"
+    },
+    "report:plainCodes.AT": {
+      "hash": "cbdc16b39ab1",
+      "status": "machine"
+    },
+    "report:plainCodes.B": {
+      "hash": "af9247c533c7",
+      "status": "machine"
+    },
+    "report:plainCodes.B/E": {
+      "hash": "9cc48f40b89c",
+      "status": "machine"
+    },
+    "report:plainCodes.B/I": {
+      "hash": "1b41dd12f669",
+      "status": "machine"
+    },
+    "report:plainCodes.CA": {
+      "hash": "8a1789e888b1",
+      "status": "machine"
+    },
+    "report:plainCodes.DT": {
+      "hash": "33f8b01f9e7d",
+      "status": "machine"
+    },
+    "report:plainCodes.E/D": {
+      "hash": "80f7f6dee0e2",
+      "status": "machine"
+    },
+    "report:plainCodes.E/H": {
+      "hash": "0ed7a97c6224",
+      "status": "machine"
+    },
+    "report:plainCodes.GH": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:plainCodes.GR": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:plainCodes.OM": {
+      "hash": "4e8adda1f083",
+      "status": "machine"
+    },
+    "report:plainCodes.PRO": {
+      "hash": "e953f462f8d0",
+      "status": "machine"
+    },
+    "report:plainCodes.RCT": {
+      "hash": "06606bd930e9",
+      "status": "machine"
+    },
+    "report:plainCodes.T/A": {
+      "hash": "a414a9524732",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX": {
+      "hash": "5b2330cd238d",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCF": {
+      "hash": "50af25d4222e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCRF": {
+      "hash": "469f54207878",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EF": {
+      "hash": "02ea86db189e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EI": {
+      "hash": "134b8892ea41",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/RF": {
+      "hash": "ae684b42e19a",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCF": {
+      "hash": "05dfef83a38f",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCRF": {
+      "hash": "726490288023",
+      "status": "machine"
+    },
+    "report:plainCodes.T/I": {
+      "hash": "f6ca163dfd54",
+      "status": "machine"
+    },
+    "report:plainCodes.T/NV": {
+      "hash": "3410c27fed7b",
+      "status": "machine"
+    },
+    "report:plainCodes.T/PE": {
+      "hash": "3db5834f0a38",
+      "status": "machine"
+    },
+    "report:plainCodes.T/U": {
+      "hash": "25c1053300ed",
+      "status": "machine"
+    },
+    "report:plainCodes.TR": {
+      "hash": "ce00b4964c1b",
+      "status": "machine"
+    },
+    "report:plainCodes.VPT": {
+      "hash": "8a0fb7eb48b4",
+      "status": "machine"
+    },
+    "report:plainCodes.X": {
+      "hash": "58a58e04a894",
+      "status": "machine"
+    },
+    "report:plainCodes.XS": {
+      "hash": "9de76b0bb3ab",
+      "status": "machine"
+    },
+    "report:plainCodes.XSS": {
+      "hash": "cee91c858777",
       "status": "machine"
     },
     "report:preparedBy.byTeam": {
@@ -20714,6 +21042,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -20732,6 +21080,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -20992,6 +21356,10 @@
     },
     "reportui:section.noteLabel": {
       "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "reportui:section.practiceDefault": {
@@ -32036,6 +32404,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -32173,7 +32553,7 @@
       "status": "machine"
     },
     "report:intro": {
-      "hash": "160595ffa0ce",
+      "hash": "8af4c2b10f6a",
       "status": "machine"
     },
     "report:legendFilled": {
@@ -32192,6 +32572,10 @@
       "hash": "d4fc585cd5af",
       "status": "machine"
     },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
+      "status": "machine"
+    },
     "report:ourPractice": {
       "hash": "368c1c0aa556",
       "status": "machine"
@@ -32202,6 +32586,134 @@
     },
     "report:patientLabel": {
       "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:plainCodes.AB": {
+      "hash": "36866d39fd32",
+      "status": "machine"
+    },
+    "report:plainCodes.AT": {
+      "hash": "cbdc16b39ab1",
+      "status": "machine"
+    },
+    "report:plainCodes.B": {
+      "hash": "af9247c533c7",
+      "status": "machine"
+    },
+    "report:plainCodes.B/E": {
+      "hash": "9cc48f40b89c",
+      "status": "machine"
+    },
+    "report:plainCodes.B/I": {
+      "hash": "1b41dd12f669",
+      "status": "machine"
+    },
+    "report:plainCodes.CA": {
+      "hash": "8a1789e888b1",
+      "status": "machine"
+    },
+    "report:plainCodes.DT": {
+      "hash": "33f8b01f9e7d",
+      "status": "machine"
+    },
+    "report:plainCodes.E/D": {
+      "hash": "80f7f6dee0e2",
+      "status": "machine"
+    },
+    "report:plainCodes.E/H": {
+      "hash": "0ed7a97c6224",
+      "status": "machine"
+    },
+    "report:plainCodes.GH": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:plainCodes.GR": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:plainCodes.OM": {
+      "hash": "4e8adda1f083",
+      "status": "machine"
+    },
+    "report:plainCodes.PRO": {
+      "hash": "e953f462f8d0",
+      "status": "machine"
+    },
+    "report:plainCodes.RCT": {
+      "hash": "06606bd930e9",
+      "status": "machine"
+    },
+    "report:plainCodes.T/A": {
+      "hash": "a414a9524732",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX": {
+      "hash": "5b2330cd238d",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCF": {
+      "hash": "50af25d4222e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCRF": {
+      "hash": "469f54207878",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EF": {
+      "hash": "02ea86db189e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EI": {
+      "hash": "134b8892ea41",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/RF": {
+      "hash": "ae684b42e19a",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCF": {
+      "hash": "05dfef83a38f",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCRF": {
+      "hash": "726490288023",
+      "status": "machine"
+    },
+    "report:plainCodes.T/I": {
+      "hash": "f6ca163dfd54",
+      "status": "machine"
+    },
+    "report:plainCodes.T/NV": {
+      "hash": "3410c27fed7b",
+      "status": "machine"
+    },
+    "report:plainCodes.T/PE": {
+      "hash": "3db5834f0a38",
+      "status": "machine"
+    },
+    "report:plainCodes.T/U": {
+      "hash": "25c1053300ed",
+      "status": "machine"
+    },
+    "report:plainCodes.TR": {
+      "hash": "ce00b4964c1b",
+      "status": "machine"
+    },
+    "report:plainCodes.VPT": {
+      "hash": "8a0fb7eb48b4",
+      "status": "machine"
+    },
+    "report:plainCodes.X": {
+      "hash": "58a58e04a894",
+      "status": "machine"
+    },
+    "report:plainCodes.XS": {
+      "hash": "9de76b0bb3ab",
+      "status": "machine"
+    },
+    "report:plainCodes.XSS": {
+      "hash": "cee91c858777",
       "status": "machine"
     },
     "report:preparedBy.byTeam": {
@@ -32224,6 +32736,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -32242,6 +32774,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -32502,6 +33050,10 @@
     },
     "reportui:section.noteLabel": {
       "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "reportui:section.practiceDefault": {
@@ -43546,6 +44098,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -43683,7 +44247,7 @@
       "status": "machine"
     },
     "report:intro": {
-      "hash": "160595ffa0ce",
+      "hash": "8af4c2b10f6a",
       "status": "machine"
     },
     "report:legendFilled": {
@@ -43702,6 +44266,10 @@
       "hash": "d4fc585cd5af",
       "status": "machine"
     },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
+      "status": "machine"
+    },
     "report:ourPractice": {
       "hash": "368c1c0aa556",
       "status": "machine"
@@ -43712,6 +44280,134 @@
     },
     "report:patientLabel": {
       "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:plainCodes.AB": {
+      "hash": "36866d39fd32",
+      "status": "machine"
+    },
+    "report:plainCodes.AT": {
+      "hash": "cbdc16b39ab1",
+      "status": "machine"
+    },
+    "report:plainCodes.B": {
+      "hash": "af9247c533c7",
+      "status": "machine"
+    },
+    "report:plainCodes.B/E": {
+      "hash": "9cc48f40b89c",
+      "status": "machine"
+    },
+    "report:plainCodes.B/I": {
+      "hash": "1b41dd12f669",
+      "status": "machine"
+    },
+    "report:plainCodes.CA": {
+      "hash": "8a1789e888b1",
+      "status": "machine"
+    },
+    "report:plainCodes.DT": {
+      "hash": "33f8b01f9e7d",
+      "status": "machine"
+    },
+    "report:plainCodes.E/D": {
+      "hash": "80f7f6dee0e2",
+      "status": "machine"
+    },
+    "report:plainCodes.E/H": {
+      "hash": "0ed7a97c6224",
+      "status": "machine"
+    },
+    "report:plainCodes.GH": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:plainCodes.GR": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:plainCodes.OM": {
+      "hash": "4e8adda1f083",
+      "status": "machine"
+    },
+    "report:plainCodes.PRO": {
+      "hash": "e953f462f8d0",
+      "status": "machine"
+    },
+    "report:plainCodes.RCT": {
+      "hash": "06606bd930e9",
+      "status": "machine"
+    },
+    "report:plainCodes.T/A": {
+      "hash": "a414a9524732",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX": {
+      "hash": "5b2330cd238d",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCF": {
+      "hash": "50af25d4222e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCRF": {
+      "hash": "469f54207878",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EF": {
+      "hash": "02ea86db189e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EI": {
+      "hash": "134b8892ea41",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/RF": {
+      "hash": "ae684b42e19a",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCF": {
+      "hash": "05dfef83a38f",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCRF": {
+      "hash": "726490288023",
+      "status": "machine"
+    },
+    "report:plainCodes.T/I": {
+      "hash": "f6ca163dfd54",
+      "status": "machine"
+    },
+    "report:plainCodes.T/NV": {
+      "hash": "3410c27fed7b",
+      "status": "machine"
+    },
+    "report:plainCodes.T/PE": {
+      "hash": "3db5834f0a38",
+      "status": "machine"
+    },
+    "report:plainCodes.T/U": {
+      "hash": "25c1053300ed",
+      "status": "machine"
+    },
+    "report:plainCodes.TR": {
+      "hash": "ce00b4964c1b",
+      "status": "machine"
+    },
+    "report:plainCodes.VPT": {
+      "hash": "8a0fb7eb48b4",
+      "status": "machine"
+    },
+    "report:plainCodes.X": {
+      "hash": "58a58e04a894",
+      "status": "machine"
+    },
+    "report:plainCodes.XS": {
+      "hash": "9de76b0bb3ab",
+      "status": "machine"
+    },
+    "report:plainCodes.XSS": {
+      "hash": "cee91c858777",
       "status": "machine"
     },
     "report:preparedBy.byTeam": {
@@ -43734,6 +44430,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -43752,6 +44468,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -44012,6 +44744,10 @@
     },
     "reportui:section.noteLabel": {
       "hash": "ce636ac3390d",
+      "status": "machine"
+    },
+    "reportui:section.otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "reportui:section.practiceDefault": {
@@ -46008,6 +46744,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -46145,7 +46893,7 @@
       "status": "machine"
     },
     "report:intro": {
-      "hash": "160595ffa0ce",
+      "hash": "8af4c2b10f6a",
       "status": "machine"
     },
     "report:legendFilled": {
@@ -46164,6 +46912,10 @@
       "hash": "d4fc585cd5af",
       "status": "machine"
     },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
+      "status": "machine"
+    },
     "report:ourPractice": {
       "hash": "368c1c0aa556",
       "status": "machine"
@@ -46174,6 +46926,134 @@
     },
     "report:patientLabel": {
       "hash": "835043ec8e6b",
+      "status": "machine"
+    },
+    "report:plainCodes.AB": {
+      "hash": "36866d39fd32",
+      "status": "machine"
+    },
+    "report:plainCodes.AT": {
+      "hash": "cbdc16b39ab1",
+      "status": "machine"
+    },
+    "report:plainCodes.B": {
+      "hash": "af9247c533c7",
+      "status": "machine"
+    },
+    "report:plainCodes.B/E": {
+      "hash": "9cc48f40b89c",
+      "status": "machine"
+    },
+    "report:plainCodes.B/I": {
+      "hash": "1b41dd12f669",
+      "status": "machine"
+    },
+    "report:plainCodes.CA": {
+      "hash": "8a1789e888b1",
+      "status": "machine"
+    },
+    "report:plainCodes.DT": {
+      "hash": "33f8b01f9e7d",
+      "status": "machine"
+    },
+    "report:plainCodes.E/D": {
+      "hash": "80f7f6dee0e2",
+      "status": "machine"
+    },
+    "report:plainCodes.E/H": {
+      "hash": "0ed7a97c6224",
+      "status": "machine"
+    },
+    "report:plainCodes.GH": {
+      "hash": "c7ee0a7eaef5",
+      "status": "machine"
+    },
+    "report:plainCodes.GR": {
+      "hash": "4951dfeaf6e9",
+      "status": "machine"
+    },
+    "report:plainCodes.OM": {
+      "hash": "4e8adda1f083",
+      "status": "machine"
+    },
+    "report:plainCodes.PRO": {
+      "hash": "e953f462f8d0",
+      "status": "machine"
+    },
+    "report:plainCodes.RCT": {
+      "hash": "06606bd930e9",
+      "status": "machine"
+    },
+    "report:plainCodes.T/A": {
+      "hash": "a414a9524732",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX": {
+      "hash": "5b2330cd238d",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCF": {
+      "hash": "50af25d4222e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/CCRF": {
+      "hash": "469f54207878",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EF": {
+      "hash": "02ea86db189e",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/EI": {
+      "hash": "134b8892ea41",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/RF": {
+      "hash": "ae684b42e19a",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCF": {
+      "hash": "05dfef83a38f",
+      "status": "machine"
+    },
+    "report:plainCodes.T/FX/UCRF": {
+      "hash": "726490288023",
+      "status": "machine"
+    },
+    "report:plainCodes.T/I": {
+      "hash": "f6ca163dfd54",
+      "status": "machine"
+    },
+    "report:plainCodes.T/NV": {
+      "hash": "3410c27fed7b",
+      "status": "machine"
+    },
+    "report:plainCodes.T/PE": {
+      "hash": "3db5834f0a38",
+      "status": "machine"
+    },
+    "report:plainCodes.T/U": {
+      "hash": "25c1053300ed",
+      "status": "machine"
+    },
+    "report:plainCodes.TR": {
+      "hash": "ce00b4964c1b",
+      "status": "machine"
+    },
+    "report:plainCodes.VPT": {
+      "hash": "8a0fb7eb48b4",
+      "status": "machine"
+    },
+    "report:plainCodes.X": {
+      "hash": "58a58e04a894",
+      "status": "machine"
+    },
+    "report:plainCodes.XS": {
+      "hash": "9de76b0bb3ab",
+      "status": "machine"
+    },
+    "report:plainCodes.XSS": {
+      "hash": "cee91c858777",
       "status": "machine"
     },
     "report:preparedBy.byTeam": {
@@ -46196,6 +47076,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -46214,6 +47114,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {

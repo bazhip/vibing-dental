@@ -55,7 +55,9 @@ const SYSTEM = [
   '2. homecare — 3–6 short tips specific to THIS visit (e.g. soft food and no chew toys after extractions, brushing for gum disease, the recheck if one is set). Fall back to standard home dental care only where the chart gives nothing specific.',
   '',
   'STRICT RULES (this goes to a client):',
-  '- Use ONLY facts in the chart below. Never add diagnoses, causes, prognoses, medications, doses, prices or timelines that aren\'t there.',
+  '- Use ONLY facts in the chart below. Never invent anything: no diagnoses, causes, prognoses, medications, doses, prices or timelines that aren\'t there.',
+  '- Lead with the main reason for the visit and what was done (the reason for visit and the treatment report say what it was) — not with routine findings.',
+  '- When the notes say samples were sent to the lab, say the results are pending (e.g. a biopsy, cytology or histopathology) and that the practice will be in touch.',
   '- If something isn\'t in the chart (e.g. no extractions, no recheck date), don\'t mention it — never guess.',
   '- Don\'t list every tooth; the report already lists each tooth\'s findings below the summary. Summarize instead.',
   '- Don\'t contradict the chart. Don\'t promise outcomes.',
@@ -77,9 +79,13 @@ export function ownerReportFacts(snapshot: ChartSnapshot, context?: OwnerReportC
     info.complaint?.trim() ? `Reason for visit: ${info.complaint.trim()}` : '',
     model.extracted.length ? `Teeth removed at this visit: ${model.extracted.join(', ')}` : 'Teeth removed at this visit: none',
     model.alreadyMissing.length ? `Teeth already missing before this visit: ${model.alreadyMissing.join(', ')}` : '',
+    model.summaryLines.length ? `Mouth-wide findings:\n${model.summaryLines.map((l) => `- ${l}`).join('\n')}` : '',
+    model.otherFindings.length ? `Other findings:\n${model.otherFindings.map((l) => `- ${l}`).join('\n')}` : '',
     model.teeth.filter((t) => t.notes.length).length
       ? `Findings by tooth:\n${model.teeth.filter((t) => t.notes.length).map((t) => `- ${t.layName}${t.extracted ? ' (removed today)' : ''}: ${t.notes.join('; ')}`).join('\n')}`
-      : 'Findings by tooth: none recorded (healthy)',
+      : model.summaryLines.length || model.otherFindings.length
+        ? 'Findings by tooth: none beyond the above'
+        : 'Findings by tooth: none recorded (healthy)',
     model.examNotes.length
       ? `Oral exam — abnormal areas: ${model.examNotes.map((n) => `${n.area}${n.comment ? ` (${n.comment})` : ''}`).join('; ')}`
       : 'Oral exam: nothing abnormal recorded',
