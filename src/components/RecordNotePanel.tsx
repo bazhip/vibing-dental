@@ -24,6 +24,8 @@ export interface RecordNotePims {
   /** Cloud chart id, to record when it was sent (null = not saved to the cloud). */
   chartId: string | null;
   patientName: string;
+  /** The chart's patient number ('' = none). */
+  patientNumber: string;
   /** Last sent (null = unknown; the dialog looks it up). */
   sentAt: string | null;
 }
@@ -111,6 +113,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
           chartSnapshot={chartSnapshot}
           chartId={pims.chartId}
           patientName={pims.patientName}
+          patientNumber={pims.patientNumber}
           sentAt={sentAt ?? pims.sentAt}
           onSent={setSentAt}
         />

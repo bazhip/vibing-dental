@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Paziente diverso?",
     "message": "Cartella ToothOps: {{chart}} · Consultazione ezyVet: {{ezyvet}}",
+    "messageNumbers": "La cartella è di {{chart}} (n. {{chartNumber}}), ma ezyVet mostra {{ezyvet}} (n. {{ezyvetNumber}}).",
     "unknown": "(nome non trovato)",
     "noName": "(nessun nome del paziente)",
     "sendAnyway": "Invia comunque"

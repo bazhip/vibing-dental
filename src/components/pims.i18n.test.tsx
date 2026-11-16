@@ -66,6 +66,7 @@ function renderDialog(over: Partial<React.ComponentProps<typeof SendToEzyvetDial
       chartSnapshot={{ species: 'canine' } as unknown as PreviewSnapshot}
       chartId="c1"
       patientName="Bella"
+      patientNumber=""
       sentAt="2026-11-01T09:00:00Z"
       onSent={() => {}}
       {...over}

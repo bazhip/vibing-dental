@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "¿Otro paciente?",
     "message": "Historial de ToothOps: {{chart}} · Consulta de ezyVet: {{ezyvet}}",
+    "messageNumbers": "El historial es de {{chart}} (n.º {{chartNumber}}), pero ezyVet muestra {{ezyvet}} (n.º {{ezyvetNumber}}).",
     "unknown": "(nombre no encontrado)",
     "noName": "(sin nombre de paciente)",
     "sendAnyway": "Enviar de todos modos"

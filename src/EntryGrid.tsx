@@ -1505,6 +1505,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 enabled: profile.pimsSendEnabled,
                 chartId: cloud.enabled ? chart.cloudChartId : null,
                 patientName: chart.patientInfo.patientName,
+                patientNumber: chart.patientInfo.patientNumber,
                 // Not loaded with the chart: the Send dialog reads it.
                 sentAt: null,
               },

@@ -123,10 +123,11 @@ const ChartSendReady: React.FC<ReadyProps> = ({
   const picture = useOffscreenChartPicture(snapshot);
   const [sentAt, setSentAt] = React.useState<string | null>(initialSentAt);
   const patientName = snapshot.patientInfo.patientName || chart.patient_name;
+  const patientNumber = snapshot.patientInfo.patientNumber || chart.patient_number || '';
   const ownerName = snapshot.patientInfo.ownerName || chart.owner_name;
   const canSend = sendFlag === 'on';
-  // The panel proposed this chart itself, so only an exact name (or name + owner surname) skips the
-  // "Different patient?" confirmation.
+  // The panel proposed this chart itself, so without two patient numbers to compare only an exact
+  // name (or name + owner surname) skips the "Different patient?" confirmation.
   const patientMatcher = React.useCallback(
     (chartName: string, ezyvetName: string | null) => patientsMatchStrict(chartName, ownerName, ezyvetName),
     [ownerName],
@@ -147,6 +148,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
     hasChartPicture: picture.hasDiagrams,
     chartId: chart.id,
     patientName,
+    patientNumber,
     sentAt,
     onSent: handleSent,
     open: canSend,

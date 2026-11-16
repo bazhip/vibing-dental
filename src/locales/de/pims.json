@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Anderer Patient?",
     "message": "ToothOps-Akte: {{chart}} · ezyVet-Konsultation: {{ezyvet}}",
+    "messageNumbers": "Die Akte gehört zu {{chart}} (Nr. {{chartNumber}}), aber ezyVet zeigt {{ezyvet}} (Nr. {{ezyvetNumber}}).",
     "unknown": "(Name nicht gefunden)",
     "noName": "(kein Patientenname)",
     "sendAnyway": "Trotzdem senden"

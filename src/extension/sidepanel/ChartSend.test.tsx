@@ -48,18 +48,18 @@ const rawData = (patientName: string) => ({
   toothData: [], species: 'canine', logo: 'socal',
 });
 
-const info = (patientName: string | null): InspectResult => ({
+const info = (patientName: string | null, patientNumber: string | null = null): InspectResult => ({
   tab: { id: 7, title: 'Consult' },
   candidates: 1,
-  status: { state: 'writable', patientName, patientNumber: null, consult: { viewId: '3', recordId: '4521' } },
+  status: { state: 'writable', patientName, patientNumber, consult: { viewId: '3', recordId: '4521' } },
   fields: [{ title: 'Plan', kind: 'note', acceptsImage: false }],
 });
 
 type OpenOpts = {
-  stored?: boolean; fresh?: boolean; ezyvet?: string | null; chartName?: string; ownerName?: string; sentAt?: string | null;
+  stored?: boolean; fresh?: boolean; ezyvet?: string | null; ezyvetNumber?: string | null; chartName?: string; ownerName?: string; sentAt?: string | null;
 } & Partial<React.ComponentProps<typeof ChartSend>>;
 
-function open({ stored, fresh, ezyvet, chartName, ownerName, sentAt, ...props }: OpenOpts = {}) {
+function open({ stored, fresh, ezyvet, ezyvetNumber = null, chartName, ownerName, sentAt, ...props }: OpenOpts = {}) {
   const opts = { stored, ezyvet, chartName, sentAt };
   const snapshot = normalizeSnapshot(rawData(chartName ?? 'Bella') as never);
   if (ownerName !== undefined) snapshot.patientInfo.ownerName = ownerName;
@@ -68,7 +68,7 @@ function open({ stored, fresh, ezyvet, chartName, ownerName, sentAt, ...props }:
   }
   mocks.load.mockResolvedValue({ snapshot, pimsSentAt: opts.sentAt ?? null });
   mocks.transport.ping.mockResolvedValue({ version: '1' });
-  mocks.transport.inspect.mockResolvedValue(info(opts.ezyvet === undefined ? 'Bella' : opts.ezyvet));
+  mocks.transport.inspect.mockResolvedValue(info(opts.ezyvet === undefined ? 'Bella' : opts.ezyvet, ezyvetNumber));
   mocks.transport.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] });
   return render(<ChartSend chart={chart} onBack={vi.fn()} sendFlag="on" {...props} />);
 }
@@ -222,6 +222,25 @@ describe('ChartSend', () => {
     await send();
     expect(mocks.confirm).not.toHaveBeenCalled();
     expect(mocks.transport.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('the chart patient number equal to ezyVet\'s sends without asking, even with another name', async () => {
+    // The chart's patient number is '1'.
+    open({ ezyvet: 'Max', ezyvetNumber: '001' });
+    await send();
+    expect(mocks.confirm).not.toHaveBeenCalled();
+    expect(mocks.transport.send).toHaveBeenCalledTimes(1);
+  });
+
+  it('a different patient number asks first, even with the same name', async () => {
+    mocks.confirm.mockResolvedValue(false);
+    open({ ezyvet: 'Bella', ezyvetNumber: '2' });
+    await send();
+    expect(mocks.confirm).toHaveBeenCalledTimes(1);
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({
+      message: 'The chart is for Bella (number 1), but ezyVet shows Bella (number 2).',
+    });
+    expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
   it('practice flag off: a notice and no Send, and ezyVet is not touched', async () => {

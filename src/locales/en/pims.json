@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Different patient?",
     "message": "ToothOps chart: {{chart}} · ezyVet consult: {{ezyvet}}",
+    "messageNumbers": "The chart is for {{chart}} (number {{chartNumber}}), but ezyVet shows {{ezyvet}} (number {{ezyvetNumber}}).",
     "unknown": "(name not found)",
     "noName": "(no patient name)",
     "sendAnyway": "Send anyway"

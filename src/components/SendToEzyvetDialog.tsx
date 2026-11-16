@@ -23,6 +23,8 @@ export interface SendToEzyvetDialogProps {
   /** Cloud chart id (null = not saved to the cloud: nothing is stamped). */
   chartId: string | null;
   patientName: string;
+  /** The chart's patient number ('' = none). */
+  patientNumber: string;
   /** When the chart was last sent (null = unknown; the dialog looks it up). */
   sentAt: string | null;
   onSent: (sentAt: string) => void;
@@ -36,7 +38,7 @@ const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, 
  * dialog around it.
  */
 export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
-  open, onClose, note, stored, chartSnapshot, chartId, patientName, sentAt, onSent,
+  open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent,
 }) => {
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
   const modalRef = useModalFocus(open);
@@ -52,6 +54,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
     hasChartPicture: !!chartSnapshot,
     chartId,
     patientName,
+    patientNumber,
     sentAt,
     onSent,
     open,

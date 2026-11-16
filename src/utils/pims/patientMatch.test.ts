@@ -1,4 +1,4 @@
-import { normaliseName, ownerSurname, patientsMatch, patientsMatchStrict } from './patientMatch';
+import { normaliseName, ownerSurname, patientsMatch, patientsMatchStrict, pimsPatientMatch, samePatientNumber } from './patientMatch';
 
 it.each([
   ['Bella', 'Bella Smith', true],
@@ -51,4 +51,46 @@ describe('patientsMatchStrict', () => {
     ['', 'Jane Smith', 'Smith', false],
   ])('%s (owner %s) vs %s', (chart, owner, ezyvet, ok) =>
     expect(patientsMatchStrict(chart, owner, ezyvet as string | null)).toBe(ok));
+});
+
+describe('samePatientNumber', () => {
+  it.each([
+    ['00123', ' 123 ', true],
+    ['123', '124', false],
+    ['0', '000', true],
+    ['0', '00123', false],
+    ['AB12', 'ab12', true],
+    [' AB12 ', 'ab12', true],
+    ['0AB12', 'AB12', false],
+    ['', '123', null],
+    ['123', '  ', null],
+    [null, '1', null],
+    ['1', undefined, null],
+    ['', '', null],
+  ])('%s vs %s', (a, b, out) => expect(samePatientNumber(a as string | null, b as string | null)).toBe(out));
+});
+
+describe('pimsPatientMatch', () => {
+  const nameRule = vi.fn(patientsMatch);
+  beforeEach(() => nameRule.mockClear());
+
+  it('equal numbers are the same patient even when the names differ', () => {
+    expect(pimsPatientMatch({ name: 'Bella', number: '00123' }, { name: 'Max', number: '123' }, nameRule)).toBe('same');
+    expect(nameRule).not.toHaveBeenCalled();
+  });
+
+  it('different numbers are a different patient even when the names are equal', () => {
+    expect(pimsPatientMatch({ name: 'Bella', number: '123' }, { name: 'Bella', number: '124' }, nameRule)).toBe('different');
+    expect(nameRule).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['', '123'],
+    ['123', null],
+    ['  ', ''],
+  ])('a missing number (%s / %s) leaves it to the name rule', (chartNumber, ezyvetNumber) => {
+    expect(pimsPatientMatch({ name: 'Bella', number: chartNumber }, { name: 'Bella Smith', number: ezyvetNumber }, nameRule)).toBe('same');
+    expect(pimsPatientMatch({ name: 'Bella', number: chartNumber }, { name: 'Max', number: ezyvetNumber }, nameRule)).toBe('different');
+    expect(nameRule).toHaveBeenCalledWith('Bella', 'Bella Smith');
+  });
 });

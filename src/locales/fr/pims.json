@@ -47,6 +47,7 @@
   "mismatch": {
     "title": "Patient différent ?",
     "message": "Dossier ToothOps : {{chart}} · Consultation ezyVet : {{ezyvet}}",
+    "messageNumbers": "Le dossier concerne {{chart}} (n° {{chartNumber}}), mais ezyVet affiche {{ezyvet}} (n° {{ezyvetNumber}}).",
     "unknown": "(nom introuvable)",
     "noName": "(aucun nom de patient)",
     "sendAnyway": "Envoyer quand même"

@@ -11,7 +11,7 @@ import {
   type SourceKey,
 } from '../utils/pims/mapping';
 import { DONT_SEND, MISSING, selectValue, type MappingRow, type RowKey } from '../utils/pims/rowChoice';
-import { patientsMatch } from '../utils/pims/patientMatch';
+import { patientsMatch, pimsPatientMatch, samePatientNumber } from '../utils/pims/patientMatch';
 import type { PimsTransport } from '../utils/pims/extensionBridge';
 import { markPimsSent } from '../utils/edgeFunctions';
 import { usePimsFieldMap } from './usePimsFieldMap';
@@ -64,13 +64,17 @@ export interface UsePimsSendOptions {
   /** Cloud chart id (null = not saved to the cloud: nothing is stamped). */
   chartId: string | null;
   patientName: string;
+  /** The chart's patient number ('' = none). When ezyVet's is known too, the numbers decide the
+   *  patient check instead of the names. */
+  patientNumber: string;
   /** When the chart was last sent (null = unknown; the hook looks it up). */
   sentAt: string | null;
   onSent: (sentAt: string) => void;
   /** Loads and resets when this turns true. Default true. */
   open?: boolean;
-  /** Does the ezyVet patient count as the chart's patient (no confirmation)? Default `patientsMatch`
-   *  (whole words of the shorter name); the side panel passes a stricter rule. */
+  /** Without two patient numbers to compare: does the ezyVet patient count as the chart's patient
+   *  (no confirmation)? Default `patientsMatch` (whole words of the shorter name); the side panel
+   *  passes a stricter rule. */
   patientMatcher?: (chartName: string, ezyvetName: string | null) => boolean;
 }
 
@@ -81,7 +85,7 @@ export interface UsePimsSendOptions {
  * the transport's `diagnose` returns.
  */
 export function usePimsSend({
-  transport, note, stored, chartSnapshotPicture, hasChartPicture, chartId, patientName, sentAt, onSent, open = true,
+  transport, note, stored, chartSnapshotPicture, hasChartPicture, chartId, patientName, patientNumber, sentAt, onSent, open = true,
   patientMatcher = patientsMatch,
 }: UsePimsSendOptions) {
   const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
@@ -245,6 +249,7 @@ export function usePimsSend({
       const info2 = fresh;
       const tab = info2.tab!;
       const ezyvetName = info2.status!.patientName;
+      const ezyvetNumber = info2.status!.patientNumber;
       const changes = editedField !== undefined ? { ...edits, editedNote: editedField } : edits;
       if (Object.keys(changes).length) {
         // Saving the map must not stop the send.
@@ -258,13 +263,23 @@ export function usePimsSend({
         });
         if (!again) return;
       }
-      if (!patientMatcher(patientName, ezyvetName)) {
+      const match = pimsPatientMatch(
+        { name: patientName, number: patientNumber },
+        { name: ezyvetName, number: ezyvetNumber },
+        patientMatcher,
+      );
+      if (match === 'different') {
+        const names = {
+          chart: patientName.trim() || t('pims:mismatch.noName'),
+          ezyvet: ezyvetName?.trim() || t('pims:mismatch.unknown'),
+        };
+        // Both numbers known (and so different): show them, they are what the check went on.
+        const message = samePatientNumber(patientNumber, ezyvetNumber) === false
+          ? t('pims:mismatch.messageNumbers', { ...names, chartNumber: patientNumber.trim(), ezyvetNumber: ezyvetNumber!.trim() })
+          : t('pims:mismatch.message', names);
         const anyway = await confirmDialog({
           title: t('pims:mismatch.title'),
-          message: t('pims:mismatch.message', {
-            chart: patientName.trim() || t('pims:mismatch.noName'),
-            ezyvet: ezyvetName?.trim() || t('pims:mismatch.unknown'),
-          }),
+          message,
           confirmLabel: t('pims:mismatch.sendAnyway'),
         });
         if (!anyway) return;
