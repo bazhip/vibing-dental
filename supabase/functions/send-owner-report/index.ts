@@ -10,6 +10,7 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
+import { canAccessChart } from '../_shared/chartAccess.ts';
 import { renderBrandedEmail } from '../_shared/email.ts';
 import { decodePdf, emailParagraphs, fromHeader, sanitizeFilename, senderPractice, type SenderPractice } from '../_shared/ownerReportEmail.ts';
 
@@ -61,17 +62,8 @@ Deno.serve(async (req: Request) => {
     .maybeSingle();
   if (!chart) return json(apiError('chart_gone'), 404);
 
-  let isMember = false;
-  if (chart.practice_id) {
-    const { data: mem } = await admin
-      .from('practice_members')
-      .select('user_id')
-      .eq('practice_id', chart.practice_id)
-      .eq('user_id', caller.id)
-      .maybeSingle();
-    isMember = !!mem;
-  }
-  if (chart.created_by !== caller.id && !isMember) return json(apiError('chart_forbidden'), 403);
+  const { allowed, isMember } = await canAccessChart(admin, chart, caller.id);
+  if (!allowed) return json(apiError('chart_forbidden'), 403);
 
   // Recipient is the chart's saved owner email — never a client value.
   const to = (chart.owner_email ?? '').trim();

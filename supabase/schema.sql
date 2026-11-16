@@ -88,10 +88,24 @@ begin
   return new;
 end $$;
 
+-- Stamping a sent-at column isn't an edit: keep updated_at
+-- (migration 20261125_pims_send).
+create or replace function public.charts_touch_updated_at_fn()
+returns trigger language plpgsql as $$
+begin
+  if (to_jsonb(new) - '{pims_sent_at,owner_report_sent_at,updated_at}'::text[])
+     = (to_jsonb(old) - '{pims_sent_at,owner_report_sent_at,updated_at}'::text[]) then
+    new.updated_at = old.updated_at;
+  else
+    new.updated_at = now();
+  end if;
+  return new;
+end $$;
+
 drop trigger if exists charts_touch_updated_at on public.charts;
 create trigger charts_touch_updated_at
   before update on public.charts
-  for each row execute function public.touch_updated_at();
+  for each row execute function public.charts_touch_updated_at_fn();
 
 drop trigger if exists profiles_touch_updated_at on public.profiles;
 create trigger profiles_touch_updated_at
@@ -255,6 +269,10 @@ alter table public.practices add column if not exists logo_path text not null de
 alter table public.charts add column if not exists owner_email text not null default '';
 alter table public.charts add column if not exists reminder_sent_at timestamptz;
 alter table public.charts add column if not exists owner_report_sent_at timestamptz;
+-- Send to PIMS (migration 20261125_pims_send).
+alter table public.charts add column if not exists pims_sent_at timestamptz;
+alter table public.profiles add column if not exists pims_field_map jsonb;
+alter table public.practices add column if not exists pims_send_enabled boolean not null default false;
 alter table public.practices add column if not exists reminder_subject text not null default '';
 alter table public.practices add column if not exists reminder_body text not null default '';
 alter table public.practices add column if not exists reminder_auto boolean not null default false;

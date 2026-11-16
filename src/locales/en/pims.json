@@ -1,0 +1,124 @@
+{
+  "extension": {
+    "name": "ToothOps for ezyVet",
+    "description": "Writes your ToothOps record notes into the open ezyVet consult."
+  },
+  "dialog": {
+    "open": "Send to ezyVet",
+    "title": "Send to ezyVet",
+    "loading": "Looking for ezyVet…",
+    "retry": "Retry",
+    "sentOn": "Sent to ezyVet on {{date}}."
+  },
+  "install": {
+    "title": "The ToothOps for ezyVet extension isn’t responding",
+    "body": "Make sure the ToothOps for ezyVet extension is installed and enabled in Chrome, then try again. If you don’t have it yet, contact ToothOps support for the install link."
+  },
+  "noTab": "Open the consult in ezyVet, then try again.",
+  "severalTabs": "Several ezyVet tabs are open. Using: {{title}}",
+  "target": "ezyVet: {{patient}} — {{title}}",
+  "targetNoPatient": "ezyVet: {{title}}",
+  "state": {
+    "notConsult": "The ezyVet tab isn’t showing a consult. Open the patient’s consult, then try again.",
+    "notMedicalTab": "Open the Medical tab of the consult, then try again.",
+    "locked": "This consult is locked in ezyVet. Open an unlocked consult, then try again.",
+    "combined": "ezyVet is in Combined view. Switch to Standard view, then try again."
+  },
+  "rows": {
+    "heading": "Where it goes",
+    "chart": "Chart picture",
+    "edited": "Edited note →",
+    "dontSend": "Don’t send",
+    "notOnPage": "{{title}} (not on this page)",
+    "reset": "Reset to defaults"
+  },
+  "editedNotice": "The note was edited, so it can’t be split back into its sections. It will be sent as one block.",
+  "picture": {
+    "pre": "Pre-op chart",
+    "post": "Post-op chart"
+  },
+  "actions": {
+    "send": "Send",
+    "sending": "Sending…",
+    "copyDiagnostic": "Copy diagnostic report",
+    "diagnosticCopied": "Diagnostic report copied. Paste it into your message to ToothOps support.",
+    "diagnosticPrompt": "Copy the diagnostic report"
+  },
+  "mismatch": {
+    "title": "Different patient?",
+    "message": "ToothOps chart: {{chart}} · ezyVet consult: {{ezyvet}}",
+    "unknown": "(name not found)",
+    "noName": "(no patient name)",
+    "sendAnyway": "Send anyway"
+  },
+  "alreadySent": {
+    "title": "Already sent on {{date}}. Send again?",
+    "message": "Sending again adds a second copy in ezyVet.",
+    "confirm": "Send again"
+  },
+  "results": {
+    "title": "Results",
+    "sent": "Sent",
+    "stampFailed": "Sent, but ToothOps couldn’t record the send date on this chart."
+  },
+  "errors": {
+    "extension_error": "ToothOps couldn’t reach the ezyVet extension. Check that it is installed and enabled, then try again.",
+    "timeout": "The extension didn’t answer in time. Check the ezyVet tab and try again.",
+    "no_tab": "The ezyVet tab was closed. Open the consult in ezyVet and try again.",
+    "not_writable": "The consult can’t be written to any more (locked, closed or no longer on the Medical tab). Open the consult’s Medical tab and try again.",
+    "patient_changed": "A different patient or consult is now open in ezyVet, so nothing more was sent. Open the right consult and try again.",
+    "field_not_found": "This field isn’t on the consult page. Choose another field under Where it goes.",
+    "editor_not_found": "ToothOps couldn’t find this field’s text box. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "popup_not_found": "This field’s editing window didn’t open. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "popup_not_closed": "This field’s editing window didn’t close after saving. Check the field in ezyVet before sending again.",
+    "save_button_not_found": "ToothOps couldn’t find the Save button for this field. Check the field in ezyVet before sending again.",
+    "save_not_confirmed": "ezyVet didn’t confirm the save. Check the field in ezyVet before sending again.",
+    "no_preferred_email": "The client has no preferred email address in ezyVet. Add one, or choose another field.",
+    "image_not_accepted": "This field doesn’t accept pictures. Choose Discharge Summary or another field that does.",
+    "invalid_image": "The chart picture couldn’t be prepared. Check the field in ezyVet before sending again.",
+    "picture_failed": "ToothOps couldn’t draw the chart picture, so it wasn’t sent.",
+    "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again.",
+    "item_extension_error": "Something went wrong while writing this field. Check the field in ezyVet before sending again.",
+    "item_not_writable": "The consult stopped accepting changes (locked, closed or no longer on the Medical tab), so this field wasn’t sent. Check the consult in ezyVet before sending again.",
+    "item_patient_changed": "A different patient or consult was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
+  },
+  "panel": {
+    "notConnected": "This build isn’t connected to ToothOps.",
+    "signIn": {
+      "title": "Sign in to ToothOps",
+      "lead": "Send record notes from your ToothOps charts into the open ezyVet consult.",
+      "password": "Password",
+      "submit": "Sign in",
+      "busy": "Signing in…",
+      "or": "or",
+      "createAccount": "Create an account",
+      "forgotPassword": "Forgot password?"
+    },
+    "header": {
+      "signedInAs": "Signed in as {{email}}",
+      "signOut": "Sign out"
+    },
+    "list": {
+      "unnamed": "(no patient name)",
+      "matches": "Matches this consult",
+      "matchCount": "{{matches}} charts match this patient. Showing the most recent.",
+      "searchLabel": "Search charts",
+      "searchPlaceholder": "Search by patient, owner or number",
+      "empty": "No charts found.",
+      "loading": "Loading charts…",
+      "loadMore": "Load more",
+      "possible": "Possible match for ezyVet patient {{patient}}"
+    },
+    "chart": {
+      "back": "← Back to charts",
+      "loading": "Opening the chart…",
+      "noteLabel": "Record note",
+      "flagLoading": "Checking whether sending is on for your practice…",
+      "flagFailed": "Couldn’t check whether sending to ezyVet is turned on for your practice.",
+      "sendOff": "Sending to ezyVet isn’t turned on for your practice."
+    }
+  },
+  "send": {
+    "targetChanged": "The ezyVet consult changed. Check the target and press Send again."
+  }
+}

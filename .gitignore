@@ -25,3 +25,8 @@ yarn-error.log*
 
 # Claude Code local worktrees/agent state
 .claude/
+
+# ezyVet extension
+build-extension/
+extension-key.pem
+build-extension.zip

@@ -102,3 +102,19 @@ export function errorText(err: unknown, fallback: string): string {
   const msg = err instanceof Error ? err.message : '';
   return msg ? withDetail(msg) : fallback;
 }
+
+/** Known failure patterns (network, not found, permission, rate limit) get their own message;
+ *  already-translated errors show as-is; any other raw text goes through `wrapRaw`. */
+export function describeError(err: unknown, fallback: string, wrapRaw: (detail: string) => string): string {
+  const msg = err instanceof Error ? err.message : typeof err === 'string' ? err : '';
+  if (!msg) return fallback;
+  // Coded server errors are matched on their English text, as before codes.
+  const probe = err instanceof ApiError ? err.serverMessage : msg;
+  const common = (key: string) => looseT(key, { ns: 'common' });
+  if (/failed to fetch|network|load failed/i.test(probe)) return common('errors.network');
+  if (/JSON object requested|multiple \(or no\) rows|PGRST116/i.test(probe)) return common('errors.notFound');
+  if (/permission denied|row-level security|42501/i.test(probe)) return common('errors.permission');
+  if (/rate limit|too many/i.test(probe)) return common('errors.rateLimit');
+  if (err instanceof LocalizedError) return msg;
+  return wrapRaw(msg);
+}

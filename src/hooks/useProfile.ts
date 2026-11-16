@@ -7,6 +7,7 @@ import { clientLanguageOf } from './usePracticeLanguage';
 import { appReportLocale } from '../utils/ownerReportI18n';
 import { OwnerReportConfig, configByteSize, defaultConfig, normalizeConfig, MAX_CONFIG_BYTES } from '../utils/ownerReportConfig';
 import { LocalizedError } from '../utils/apiErrors';
+import { pimsSendAllowed } from '../utils/pims/sendFlag';
 
 /**
  * The signed-in user's practice profile (collected at signup, editable in
@@ -62,6 +63,10 @@ export interface UseProfileReturn extends PracticeProfile {
   /** Owner-report feature flag — per practice, admin-controlled, off by
    *  default (practices.owner_report_enabled). */
   ownerReportEnabled: boolean;
+  /** Send-to-PIMS (ezyVet extension) flag — per practice, admin-controlled,
+   *  off by default (practices.pims_send_enabled); on for everyone during
+   *  the free beta. */
+  pimsSendEnabled: boolean;
   /** The practice's owner report templates (normalized; the built-in
    *  default when the practice hasn't customized anything). */
   ownerReportConfig: OwnerReportConfig;
@@ -182,6 +187,7 @@ export function useProfile(): UseProfileReturn {
   // Off until the profile proves a real subscription (no flash of DICOM).
   const [billed, setBilled] = React.useState(false);
   const [ownerReportEnabled, setOwnerReportEnabled] = React.useState(false);
+  const [pimsSendEnabled, setPimsSendEnabled] = React.useState(false);
   const [ownerReportConfig, setOwnerReportConfig] = React.useState<OwnerReportConfig>(defaultConfig);
   const [ownerReportConfigLoadFailed, setOwnerReportConfigLoadFailed] = React.useState(false);
   const reportLoadFailedRef = React.useRef(false);
@@ -218,6 +224,7 @@ export function useProfile(): UseProfileReturn {
       let practicePlan: PracticePlan = 'free';
       let billedSub = false;
       let ownerReportOn = false;
+      let pimsSendOn = false;
       let reportConfig: OwnerReportConfig | null = null;
       let reportRev: number | null = null;
       let reportLoadFailed = false;
@@ -242,6 +249,16 @@ export function useProfile(): UseProfileReturn {
           .maybeSingle();
         if (!featuresError) {
           ownerReportOn = !!(features as { owner_report_enabled?: boolean } | null)?.owner_report_enabled;
+        }
+        // Same tolerance for the PIMS flag (its own query, so a missing
+        // column can't take the owner-report flag down with it).
+        const { data: pimsRow, error: pimsError } = await supabase
+          .from('practices')
+          .select('pims_send_enabled')
+          .eq('id', pid)
+          .maybeSingle();
+        if (!pimsError) {
+          pimsSendOn = !!(pimsRow as { pims_send_enabled?: boolean } | null)?.pims_send_enabled;
         }
         // Owner report templates (+ their version). A failed read is NOT
         // "no templates": it's remembered, and saving is blocked, so the
@@ -291,6 +308,7 @@ export function useProfile(): UseProfileReturn {
           setPlan(practicePlan);
           setBilled(billedSub);
           setOwnerReportEnabled(ownerReportOn);
+          setPimsSendEnabled(pimsSendOn);
           if (reportConfig) setOwnerReportConfig(reportConfig);
           reportRevRef.current = reportRev;
           reportLoadFailedRef.current = reportLoadFailed;
@@ -379,6 +397,8 @@ export function useProfile(): UseProfileReturn {
     dicomEnabled: PLAN_LIMITS[plan].dicom && billed,
     // Free beta: the owner report is on for everyone.
     ownerReportEnabled: FREE_BETA || ownerReportEnabled,
+    // Free beta: Send to PIMS is on for everyone too.
+    pimsSendEnabled: pimsSendAllowed(pimsSendEnabled),
     ownerReportConfigLoadFailed,
     ownerReportConfig,
     saveOwnerReportConfig,
@@ -386,5 +406,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  }), [profile, loaded, practiceId, plan, billed, ownerReportEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
+  }), [profile, loaded, practiceId, plan, billed, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

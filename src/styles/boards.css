@@ -1609,3 +1609,19 @@
   color: var(--ios-warning-label, #78350f);
   font-size: 13px;
 }
+
+/* Documents → Record note → Send to ezyVet. */
+.pims-dialog__subtitle { margin: 12px 0 6px; font-size: 0.95rem; font-weight: 700; }
+.pims-dialog__loading { display: flex; align-items: center; gap: 12px; }
+.pims-dialog__loading p { margin: 0; }
+.pims-dialog__target { margin: 0 0 6px; font-weight: 600; }
+.pims-dialog__rows { display: grid; gap: 8px; }
+.pims-dialog__row { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 1.4fr); gap: 10px; align-items: center; font-size: 14px; }
+.pims-dialog__results { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.pims-dialog__results li { display: grid; gap: 2px; font-size: 14px; }
+.pims-dialog__result--ok span { color: var(--primary, #0c6b63); }
+.pims-dialog__result--failed span { color: var(--danger, #b91c1c); }
+.pims-dialog__link {
+  margin-top: 12px; padding: 0; border: 0; background: none;
+  color: var(--primary, #0c6b63); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer;
+}

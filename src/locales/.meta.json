@@ -8220,6 +8220,358 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:actions.copyDiagnostic": {
+      "hash": "dbe41a516e7e",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticCopied": {
+      "hash": "fbba11cdab34",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticPrompt": {
+      "hash": "7c13eb0cd16a",
+      "status": "machine"
+    },
+    "pims:actions.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "pims:actions.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "pims:alreadySent.confirm": {
+      "hash": "feead925e260",
+      "status": "machine"
+    },
+    "pims:alreadySent.message": {
+      "hash": "ce7489513465",
+      "status": "machine"
+    },
+    "pims:alreadySent.title": {
+      "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:dialog.loading": {
+      "hash": "c83e37513e35",
+      "status": "machine"
+    },
+    "pims:dialog.open": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:dialog.retry": {
+      "hash": "942087cc2d41",
+      "status": "machine"
+    },
+    "pims:dialog.sentOn": {
+      "hash": "a29347acd7bf",
+      "status": "machine"
+    },
+    "pims:dialog.title": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:editedNotice": {
+      "hash": "7941aa65aa6d",
+      "status": "machine"
+    },
+    "pims:errors.editor_not_found": {
+      "hash": "c13f9bdfbd7e",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.field_not_found": {
+      "hash": "2929c907b6fa",
+      "status": "machine"
+    },
+    "pims:errors.image_not_accepted": {
+      "hash": "5649d52cbb29",
+      "status": "machine"
+    },
+    "pims:errors.invalid_image": {
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "0a1df4e7acc2",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
+    "pims:errors.no_preferred_email": {
+      "hash": "9c4631ef9139",
+      "status": "machine"
+    },
+    "pims:errors.no_tab": {
+      "hash": "4f1f827e8615",
+      "status": "machine"
+    },
+    "pims:errors.not_writable": {
+      "hash": "87c6180d485d",
+      "status": "machine"
+    },
+    "pims:errors.patient_changed": {
+      "hash": "dc2673b506d5",
+      "status": "machine"
+    },
+    "pims:errors.picture_failed": {
+      "hash": "a3ac15e0ac4f",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_closed": {
+      "hash": "491abe8a4104",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_found": {
+      "hash": "e0087eb12f0a",
+      "status": "machine"
+    },
+    "pims:errors.save_button_not_found": {
+      "hash": "ff3b7d3ebfcc",
+      "status": "machine"
+    },
+    "pims:errors.save_not_confirmed": {
+      "hash": "bcd134916363",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:install.body": {
+      "hash": "2b7be7e4ac26",
+      "status": "machine"
+    },
+    "pims:install.title": {
+      "hash": "482f64f603ca",
+      "status": "machine"
+    },
+    "pims:mismatch.message": {
+      "hash": "a8c14f308637",
+      "status": "machine"
+    },
+    "pims:mismatch.noName": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:mismatch.sendAnyway": {
+      "hash": "3bdd9831a45e",
+      "status": "machine"
+    },
+    "pims:mismatch.title": {
+      "hash": "29e07bbea3c1",
+      "status": "machine"
+    },
+    "pims:mismatch.unknown": {
+      "hash": "ed2d66dbb44f",
+      "status": "machine"
+    },
+    "pims:noTab": {
+      "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "pims:picture.post": {
+      "hash": "56cebba37b70",
+      "status": "machine"
+    },
+    "pims:picture.pre": {
+      "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.sent": {
+      "hash": "c16bc82bf1f0",
+      "status": "machine"
+    },
+    "pims:results.stampFailed": {
+      "hash": "39657dc8700a",
+      "status": "machine"
+    },
+    "pims:results.title": {
+      "hash": "219c4a6c86a7",
+      "status": "machine"
+    },
+    "pims:rows.chart": {
+      "hash": "4f9f697c8c73",
+      "status": "machine"
+    },
+    "pims:rows.dontSend": {
+      "hash": "016ecc54076f",
+      "status": "machine"
+    },
+    "pims:rows.edited": {
+      "hash": "867587727d8f",
+      "status": "machine"
+    },
+    "pims:rows.heading": {
+      "hash": "4d1ca74fb716",
+      "status": "machine"
+    },
+    "pims:rows.notOnPage": {
+      "hash": "473e362815e3",
+      "status": "machine"
+    },
+    "pims:rows.reset": {
+      "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
+    "pims:severalTabs": {
+      "hash": "264c8154322a",
+      "status": "machine"
+    },
+    "pims:state.combined": {
+      "hash": "250a29a62dfa",
+      "status": "machine"
+    },
+    "pims:state.locked": {
+      "hash": "087bb8a8de0a",
+      "status": "machine"
+    },
+    "pims:state.notConsult": {
+      "hash": "211f7974dd25",
+      "status": "machine"
+    },
+    "pims:state.notMedicalTab": {
+      "hash": "a2a29287ad2a",
+      "status": "machine"
+    },
+    "pims:target": {
+      "hash": "3c86d36e37b4",
+      "status": "machine"
+    },
+    "pims:targetNoPatient": {
+      "hash": "06d96c6345b0",
+      "status": "machine"
+    },
     "reminders:composer.aria": {
       "hash": "e2d7c7b08a15",
       "status": "machine"
@@ -19056,6 +19408,358 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:actions.copyDiagnostic": {
+      "hash": "dbe41a516e7e",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticCopied": {
+      "hash": "fbba11cdab34",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticPrompt": {
+      "hash": "7c13eb0cd16a",
+      "status": "machine"
+    },
+    "pims:actions.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "pims:actions.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "pims:alreadySent.confirm": {
+      "hash": "feead925e260",
+      "status": "machine"
+    },
+    "pims:alreadySent.message": {
+      "hash": "ce7489513465",
+      "status": "machine"
+    },
+    "pims:alreadySent.title": {
+      "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:dialog.loading": {
+      "hash": "c83e37513e35",
+      "status": "machine"
+    },
+    "pims:dialog.open": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:dialog.retry": {
+      "hash": "942087cc2d41",
+      "status": "machine"
+    },
+    "pims:dialog.sentOn": {
+      "hash": "a29347acd7bf",
+      "status": "machine"
+    },
+    "pims:dialog.title": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:editedNotice": {
+      "hash": "7941aa65aa6d",
+      "status": "machine"
+    },
+    "pims:errors.editor_not_found": {
+      "hash": "c13f9bdfbd7e",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.field_not_found": {
+      "hash": "2929c907b6fa",
+      "status": "machine"
+    },
+    "pims:errors.image_not_accepted": {
+      "hash": "5649d52cbb29",
+      "status": "machine"
+    },
+    "pims:errors.invalid_image": {
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "0a1df4e7acc2",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
+    "pims:errors.no_preferred_email": {
+      "hash": "9c4631ef9139",
+      "status": "machine"
+    },
+    "pims:errors.no_tab": {
+      "hash": "4f1f827e8615",
+      "status": "machine"
+    },
+    "pims:errors.not_writable": {
+      "hash": "87c6180d485d",
+      "status": "machine"
+    },
+    "pims:errors.patient_changed": {
+      "hash": "dc2673b506d5",
+      "status": "machine"
+    },
+    "pims:errors.picture_failed": {
+      "hash": "a3ac15e0ac4f",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_closed": {
+      "hash": "491abe8a4104",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_found": {
+      "hash": "e0087eb12f0a",
+      "status": "machine"
+    },
+    "pims:errors.save_button_not_found": {
+      "hash": "ff3b7d3ebfcc",
+      "status": "machine"
+    },
+    "pims:errors.save_not_confirmed": {
+      "hash": "bcd134916363",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:install.body": {
+      "hash": "2b7be7e4ac26",
+      "status": "machine"
+    },
+    "pims:install.title": {
+      "hash": "482f64f603ca",
+      "status": "machine"
+    },
+    "pims:mismatch.message": {
+      "hash": "a8c14f308637",
+      "status": "machine"
+    },
+    "pims:mismatch.noName": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:mismatch.sendAnyway": {
+      "hash": "3bdd9831a45e",
+      "status": "machine"
+    },
+    "pims:mismatch.title": {
+      "hash": "29e07bbea3c1",
+      "status": "machine"
+    },
+    "pims:mismatch.unknown": {
+      "hash": "ed2d66dbb44f",
+      "status": "machine"
+    },
+    "pims:noTab": {
+      "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "pims:picture.post": {
+      "hash": "56cebba37b70",
+      "status": "machine"
+    },
+    "pims:picture.pre": {
+      "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.sent": {
+      "hash": "c16bc82bf1f0",
+      "status": "machine"
+    },
+    "pims:results.stampFailed": {
+      "hash": "39657dc8700a",
+      "status": "machine"
+    },
+    "pims:results.title": {
+      "hash": "219c4a6c86a7",
+      "status": "machine"
+    },
+    "pims:rows.chart": {
+      "hash": "4f9f697c8c73",
+      "status": "machine"
+    },
+    "pims:rows.dontSend": {
+      "hash": "016ecc54076f",
+      "status": "machine"
+    },
+    "pims:rows.edited": {
+      "hash": "867587727d8f",
+      "status": "machine"
+    },
+    "pims:rows.heading": {
+      "hash": "4d1ca74fb716",
+      "status": "machine"
+    },
+    "pims:rows.notOnPage": {
+      "hash": "473e362815e3",
+      "status": "machine"
+    },
+    "pims:rows.reset": {
+      "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
+    "pims:severalTabs": {
+      "hash": "264c8154322a",
+      "status": "machine"
+    },
+    "pims:state.combined": {
+      "hash": "250a29a62dfa",
+      "status": "machine"
+    },
+    "pims:state.locked": {
+      "hash": "087bb8a8de0a",
+      "status": "machine"
+    },
+    "pims:state.notConsult": {
+      "hash": "211f7974dd25",
+      "status": "machine"
+    },
+    "pims:state.notMedicalTab": {
+      "hash": "a2a29287ad2a",
+      "status": "machine"
+    },
+    "pims:target": {
+      "hash": "3c86d36e37b4",
+      "status": "machine"
+    },
+    "pims:targetNoPatient": {
+      "hash": "06d96c6345b0",
       "status": "machine"
     },
     "reminders:composer.aria": {
@@ -29924,6 +30628,358 @@
       "hash": "7d8c5907e52b",
       "status": "machine"
     },
+    "pims:actions.copyDiagnostic": {
+      "hash": "dbe41a516e7e",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticCopied": {
+      "hash": "fbba11cdab34",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticPrompt": {
+      "hash": "7c13eb0cd16a",
+      "status": "machine"
+    },
+    "pims:actions.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "pims:actions.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "pims:alreadySent.confirm": {
+      "hash": "feead925e260",
+      "status": "machine"
+    },
+    "pims:alreadySent.message": {
+      "hash": "ce7489513465",
+      "status": "machine"
+    },
+    "pims:alreadySent.title": {
+      "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:dialog.loading": {
+      "hash": "c83e37513e35",
+      "status": "machine"
+    },
+    "pims:dialog.open": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:dialog.retry": {
+      "hash": "942087cc2d41",
+      "status": "machine"
+    },
+    "pims:dialog.sentOn": {
+      "hash": "a29347acd7bf",
+      "status": "machine"
+    },
+    "pims:dialog.title": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:editedNotice": {
+      "hash": "7941aa65aa6d",
+      "status": "machine"
+    },
+    "pims:errors.editor_not_found": {
+      "hash": "c13f9bdfbd7e",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.field_not_found": {
+      "hash": "2929c907b6fa",
+      "status": "machine"
+    },
+    "pims:errors.image_not_accepted": {
+      "hash": "5649d52cbb29",
+      "status": "machine"
+    },
+    "pims:errors.invalid_image": {
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "0a1df4e7acc2",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
+    "pims:errors.no_preferred_email": {
+      "hash": "9c4631ef9139",
+      "status": "machine"
+    },
+    "pims:errors.no_tab": {
+      "hash": "4f1f827e8615",
+      "status": "machine"
+    },
+    "pims:errors.not_writable": {
+      "hash": "87c6180d485d",
+      "status": "machine"
+    },
+    "pims:errors.patient_changed": {
+      "hash": "dc2673b506d5",
+      "status": "machine"
+    },
+    "pims:errors.picture_failed": {
+      "hash": "a3ac15e0ac4f",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_closed": {
+      "hash": "491abe8a4104",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_found": {
+      "hash": "e0087eb12f0a",
+      "status": "machine"
+    },
+    "pims:errors.save_button_not_found": {
+      "hash": "ff3b7d3ebfcc",
+      "status": "machine"
+    },
+    "pims:errors.save_not_confirmed": {
+      "hash": "bcd134916363",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:install.body": {
+      "hash": "2b7be7e4ac26",
+      "status": "machine"
+    },
+    "pims:install.title": {
+      "hash": "482f64f603ca",
+      "status": "machine"
+    },
+    "pims:mismatch.message": {
+      "hash": "a8c14f308637",
+      "status": "machine"
+    },
+    "pims:mismatch.noName": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:mismatch.sendAnyway": {
+      "hash": "3bdd9831a45e",
+      "status": "machine"
+    },
+    "pims:mismatch.title": {
+      "hash": "29e07bbea3c1",
+      "status": "machine"
+    },
+    "pims:mismatch.unknown": {
+      "hash": "ed2d66dbb44f",
+      "status": "machine"
+    },
+    "pims:noTab": {
+      "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "pims:picture.post": {
+      "hash": "56cebba37b70",
+      "status": "machine"
+    },
+    "pims:picture.pre": {
+      "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.sent": {
+      "hash": "c16bc82bf1f0",
+      "status": "machine"
+    },
+    "pims:results.stampFailed": {
+      "hash": "39657dc8700a",
+      "status": "machine"
+    },
+    "pims:results.title": {
+      "hash": "219c4a6c86a7",
+      "status": "machine"
+    },
+    "pims:rows.chart": {
+      "hash": "4f9f697c8c73",
+      "status": "machine"
+    },
+    "pims:rows.dontSend": {
+      "hash": "016ecc54076f",
+      "status": "machine"
+    },
+    "pims:rows.edited": {
+      "hash": "867587727d8f",
+      "status": "machine"
+    },
+    "pims:rows.heading": {
+      "hash": "4d1ca74fb716",
+      "status": "machine"
+    },
+    "pims:rows.notOnPage": {
+      "hash": "473e362815e3",
+      "status": "machine"
+    },
+    "pims:rows.reset": {
+      "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
+    "pims:severalTabs": {
+      "hash": "264c8154322a",
+      "status": "machine"
+    },
+    "pims:state.combined": {
+      "hash": "250a29a62dfa",
+      "status": "machine"
+    },
+    "pims:state.locked": {
+      "hash": "087bb8a8de0a",
+      "status": "machine"
+    },
+    "pims:state.notConsult": {
+      "hash": "211f7974dd25",
+      "status": "machine"
+    },
+    "pims:state.notMedicalTab": {
+      "hash": "a2a29287ad2a",
+      "status": "machine"
+    },
+    "pims:target": {
+      "hash": "3c86d36e37b4",
+      "status": "machine"
+    },
+    "pims:targetNoPatient": {
+      "hash": "06d96c6345b0",
+      "status": "machine"
+    },
     "reminders:composer.aria": {
       "hash": "e2d7c7b08a15",
       "status": "machine"
@@ -40788,6 +41844,358 @@
     },
     "pdfui:style.label": {
       "hash": "7d8c5907e52b",
+      "status": "machine"
+    },
+    "pims:actions.copyDiagnostic": {
+      "hash": "dbe41a516e7e",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticCopied": {
+      "hash": "fbba11cdab34",
+      "status": "machine"
+    },
+    "pims:actions.diagnosticPrompt": {
+      "hash": "7c13eb0cd16a",
+      "status": "machine"
+    },
+    "pims:actions.send": {
+      "hash": "f6f4688ff23d",
+      "status": "machine"
+    },
+    "pims:actions.sending": {
+      "hash": "b8ed5279e897",
+      "status": "machine"
+    },
+    "pims:alreadySent.confirm": {
+      "hash": "feead925e260",
+      "status": "machine"
+    },
+    "pims:alreadySent.message": {
+      "hash": "ce7489513465",
+      "status": "machine"
+    },
+    "pims:alreadySent.title": {
+      "hash": "c1752f79ae24",
+      "status": "machine"
+    },
+    "pims:dialog.loading": {
+      "hash": "c83e37513e35",
+      "status": "machine"
+    },
+    "pims:dialog.open": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:dialog.retry": {
+      "hash": "942087cc2d41",
+      "status": "machine"
+    },
+    "pims:dialog.sentOn": {
+      "hash": "a29347acd7bf",
+      "status": "machine"
+    },
+    "pims:dialog.title": {
+      "hash": "4926c4323a3c",
+      "status": "machine"
+    },
+    "pims:editedNotice": {
+      "hash": "7941aa65aa6d",
+      "status": "machine"
+    },
+    "pims:errors.editor_not_found": {
+      "hash": "c13f9bdfbd7e",
+      "status": "machine"
+    },
+    "pims:errors.extension_error": {
+      "hash": "83029a081606",
+      "status": "machine"
+    },
+    "pims:errors.field_not_found": {
+      "hash": "2929c907b6fa",
+      "status": "machine"
+    },
+    "pims:errors.image_not_accepted": {
+      "hash": "5649d52cbb29",
+      "status": "machine"
+    },
+    "pims:errors.invalid_image": {
+      "hash": "07e2af998b89",
+      "status": "machine"
+    },
+    "pims:errors.item_extension_error": {
+      "hash": "6ca4a0447e77",
+      "status": "machine"
+    },
+    "pims:errors.item_not_writable": {
+      "hash": "b2e01c330baf",
+      "status": "machine"
+    },
+    "pims:errors.item_patient_changed": {
+      "hash": "0a1df4e7acc2",
+      "status": "machine"
+    },
+    "pims:errors.maybe_sent": {
+      "hash": "45627ca00db9",
+      "status": "machine"
+    },
+    "pims:errors.no_preferred_email": {
+      "hash": "9c4631ef9139",
+      "status": "machine"
+    },
+    "pims:errors.no_tab": {
+      "hash": "4f1f827e8615",
+      "status": "machine"
+    },
+    "pims:errors.not_writable": {
+      "hash": "87c6180d485d",
+      "status": "machine"
+    },
+    "pims:errors.patient_changed": {
+      "hash": "dc2673b506d5",
+      "status": "machine"
+    },
+    "pims:errors.picture_failed": {
+      "hash": "a3ac15e0ac4f",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_closed": {
+      "hash": "491abe8a4104",
+      "status": "machine"
+    },
+    "pims:errors.popup_not_found": {
+      "hash": "e0087eb12f0a",
+      "status": "machine"
+    },
+    "pims:errors.save_button_not_found": {
+      "hash": "ff3b7d3ebfcc",
+      "status": "machine"
+    },
+    "pims:errors.save_not_confirmed": {
+      "hash": "bcd134916363",
+      "status": "machine"
+    },
+    "pims:errors.timeout": {
+      "hash": "577ad45feae8",
+      "status": "machine"
+    },
+    "pims:extension.description": {
+      "hash": "44784045e4ed",
+      "status": "machine"
+    },
+    "pims:extension.name": {
+      "hash": "6472d27a91a6",
+      "status": "machine"
+    },
+    "pims:install.body": {
+      "hash": "2b7be7e4ac26",
+      "status": "machine"
+    },
+    "pims:install.title": {
+      "hash": "482f64f603ca",
+      "status": "machine"
+    },
+    "pims:mismatch.message": {
+      "hash": "a8c14f308637",
+      "status": "machine"
+    },
+    "pims:mismatch.noName": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:mismatch.sendAnyway": {
+      "hash": "3bdd9831a45e",
+      "status": "machine"
+    },
+    "pims:mismatch.title": {
+      "hash": "29e07bbea3c1",
+      "status": "machine"
+    },
+    "pims:mismatch.unknown": {
+      "hash": "ed2d66dbb44f",
+      "status": "machine"
+    },
+    "pims:noTab": {
+      "hash": "373bbd122107",
+      "status": "machine"
+    },
+    "pims:panel.chart.back": {
+      "hash": "d1915d48235a",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagFailed": {
+      "hash": "095b56ebbed3",
+      "status": "machine"
+    },
+    "pims:panel.chart.flagLoading": {
+      "hash": "044a7786f675",
+      "status": "machine"
+    },
+    "pims:panel.chart.loading": {
+      "hash": "e37edcc60198",
+      "status": "machine"
+    },
+    "pims:panel.chart.noteLabel": {
+      "hash": "b3e012490052",
+      "status": "machine"
+    },
+    "pims:panel.chart.sendOff": {
+      "hash": "eab1965d1f2b",
+      "status": "machine"
+    },
+    "pims:panel.header.signOut": {
+      "hash": "48f0d3d397d4",
+      "status": "machine"
+    },
+    "pims:panel.header.signedInAs": {
+      "hash": "26c8ec3ed77f",
+      "status": "machine"
+    },
+    "pims:panel.list.empty": {
+      "hash": "9ecdd8b13ae7",
+      "status": "machine"
+    },
+    "pims:panel.list.loadMore": {
+      "hash": "ac8991ef0101",
+      "status": "machine"
+    },
+    "pims:panel.list.loading": {
+      "hash": "957edecd5f09",
+      "status": "machine"
+    },
+    "pims:panel.list.matchCount": {
+      "hash": "3655256a12f3",
+      "status": "machine"
+    },
+    "pims:panel.list.matches": {
+      "hash": "dd61c0b6ea49",
+      "status": "machine"
+    },
+    "pims:panel.list.possible": {
+      "hash": "94aae0c72df9",
+      "status": "machine"
+    },
+    "pims:panel.list.searchLabel": {
+      "hash": "369f52077b05",
+      "status": "machine"
+    },
+    "pims:panel.list.searchPlaceholder": {
+      "hash": "f01599b205c7",
+      "status": "machine"
+    },
+    "pims:panel.list.unnamed": {
+      "hash": "5f3250eddc44",
+      "status": "machine"
+    },
+    "pims:panel.notConnected": {
+      "hash": "4bdfe7366175",
+      "status": "machine"
+    },
+    "pims:panel.signIn.busy": {
+      "hash": "8b9d3de8ae00",
+      "status": "machine"
+    },
+    "pims:panel.signIn.createAccount": {
+      "hash": "86033f75a4c0",
+      "status": "machine"
+    },
+    "pims:panel.signIn.forgotPassword": {
+      "hash": "30c1d8d3e912",
+      "status": "machine"
+    },
+    "pims:panel.signIn.lead": {
+      "hash": "28510c5c8c28",
+      "status": "machine"
+    },
+    "pims:panel.signIn.or": {
+      "hash": "7175517a370b",
+      "status": "machine"
+    },
+    "pims:panel.signIn.password": {
+      "hash": "e7cf3ef4f17c",
+      "status": "machine"
+    },
+    "pims:panel.signIn.submit": {
+      "hash": "bfd402b2f6f3",
+      "status": "machine"
+    },
+    "pims:panel.signIn.title": {
+      "hash": "53bebd11ce79",
+      "status": "machine"
+    },
+    "pims:picture.post": {
+      "hash": "56cebba37b70",
+      "status": "machine"
+    },
+    "pims:picture.pre": {
+      "hash": "888401626a4f",
+      "status": "machine"
+    },
+    "pims:results.sent": {
+      "hash": "c16bc82bf1f0",
+      "status": "machine"
+    },
+    "pims:results.stampFailed": {
+      "hash": "39657dc8700a",
+      "status": "machine"
+    },
+    "pims:results.title": {
+      "hash": "219c4a6c86a7",
+      "status": "machine"
+    },
+    "pims:rows.chart": {
+      "hash": "4f9f697c8c73",
+      "status": "machine"
+    },
+    "pims:rows.dontSend": {
+      "hash": "016ecc54076f",
+      "status": "machine"
+    },
+    "pims:rows.edited": {
+      "hash": "867587727d8f",
+      "status": "machine"
+    },
+    "pims:rows.heading": {
+      "hash": "4d1ca74fb716",
+      "status": "machine"
+    },
+    "pims:rows.notOnPage": {
+      "hash": "473e362815e3",
+      "status": "machine"
+    },
+    "pims:rows.reset": {
+      "hash": "e240e635ff6d",
+      "status": "machine"
+    },
+    "pims:send.targetChanged": {
+      "hash": "9c704d39b93b",
+      "status": "machine"
+    },
+    "pims:severalTabs": {
+      "hash": "264c8154322a",
+      "status": "machine"
+    },
+    "pims:state.combined": {
+      "hash": "250a29a62dfa",
+      "status": "machine"
+    },
+    "pims:state.locked": {
+      "hash": "087bb8a8de0a",
+      "status": "machine"
+    },
+    "pims:state.notConsult": {
+      "hash": "211f7974dd25",
+      "status": "machine"
+    },
+    "pims:state.notMedicalTab": {
+      "hash": "a2a29287ad2a",
+      "status": "machine"
+    },
+    "pims:target": {
+      "hash": "3c86d36e37b4",
+      "status": "machine"
+    },
+    "pims:targetNoPatient": {
+      "hash": "06d96c6345b0",
       "status": "machine"
     },
     "reminders:composer.aria": {

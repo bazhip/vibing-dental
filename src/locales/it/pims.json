@@ -1,0 +1,124 @@
+{
+  "extension": {
+    "name": "ToothOps per ezyVet",
+    "description": "Scrive le Sue note di cartella ToothOps nella consultazione ezyVet aperta."
+  },
+  "dialog": {
+    "open": "Invia a ezyVet",
+    "title": "Invia a ezyVet",
+    "loading": "Ricerca di ezyVet…",
+    "retry": "Riprova",
+    "sentOn": "Inviato a ezyVet il {{date}}."
+  },
+  "install": {
+    "title": "L’estensione ToothOps per ezyVet non risponde",
+    "body": "Verifichi che l’estensione ToothOps per ezyVet sia installata e attiva in Chrome, poi riprovi. Se non l’ha ancora, contatti l’assistenza ToothOps per il link di installazione."
+  },
+  "noTab": "Apra la consultazione in ezyVet, poi riprovi.",
+  "severalTabs": "Sono aperte più schede di ezyVet. Scheda usata: {{title}}",
+  "target": "ezyVet: {{patient}} — {{title}}",
+  "targetNoPatient": "ezyVet: {{title}}",
+  "state": {
+    "notConsult": "La scheda di ezyVet non mostra una consultazione. Apra la consultazione del paziente, poi riprovi.",
+    "notMedicalTab": "Apra la scheda Medical della consultazione, poi riprovi.",
+    "locked": "Questa consultazione è bloccata in ezyVet. Apra una consultazione non bloccata, poi riprovi.",
+    "combined": "ezyVet è nella vista Combined. Passi alla vista Standard, poi riprovi."
+  },
+  "rows": {
+    "heading": "Destinazione",
+    "chart": "Immagine dell’odontogramma",
+    "edited": "Nota modificata →",
+    "dontSend": "Non inviare",
+    "notOnPage": "{{title}} (non presente in questa pagina)",
+    "reset": "Ripristina i valori predefiniti"
+  },
+  "editedNotice": "La nota è stata modificata e non può più essere divisa in sezioni. Verrà inviata come un unico blocco.",
+  "picture": {
+    "pre": "Odontogramma preoperatorio",
+    "post": "Odontogramma postoperatorio"
+  },
+  "actions": {
+    "send": "Invia",
+    "sending": "Invio…",
+    "copyDiagnostic": "Copia il rapporto diagnostico",
+    "diagnosticCopied": "Rapporto diagnostico copiato. Lo incolli nel Suo messaggio all’assistenza ToothOps.",
+    "diagnosticPrompt": "Copi il rapporto diagnostico"
+  },
+  "mismatch": {
+    "title": "Paziente diverso?",
+    "message": "Cartella ToothOps: {{chart}} · Consultazione ezyVet: {{ezyvet}}",
+    "unknown": "(nome non trovato)",
+    "noName": "(nessun nome del paziente)",
+    "sendAnyway": "Invia comunque"
+  },
+  "alreadySent": {
+    "title": "Già inviato il {{date}}. Inviare di nuovo?",
+    "message": "Un nuovo invio aggiunge una seconda copia in ezyVet.",
+    "confirm": "Invia di nuovo"
+  },
+  "results": {
+    "title": "Risultati",
+    "sent": "Inviato",
+    "stampFailed": "Inviato, ma ToothOps non è riuscito a registrare la data di invio su questa cartella."
+  },
+  "errors": {
+    "extension_error": "ToothOps non è riuscito a raggiungere l’estensione ezyVet. Verifichi che sia installata e attiva, poi riprovi.",
+    "timeout": "L’estensione non ha risposto in tempo. Controlli la scheda di ezyVet e riprovi.",
+    "no_tab": "La scheda di ezyVet è stata chiusa. Apra la consultazione in ezyVet e riprovi.",
+    "not_writable": "Non è più possibile scrivere nella consultazione (bloccata, chiusa o non più sulla scheda Medical). Apra la scheda Medical della consultazione e riprovi.",
+    "patient_changed": "In ezyVet ora è aperto un altro paziente o un’altra consultazione, quindi non è stato inviato altro. Apra la consultazione giusta e riprovi.",
+    "field_not_found": "Questo campo non è presente nella pagina della consultazione. Scelga un altro campo in Destinazione.",
+    "editor_not_found": "ToothOps non ha trovato la casella di testo di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
+    "popup_not_found": "La finestra di modifica di questo campo non si è aperta. Controlli il campo in ezyVet prima di inviare di nuovo. Se l’errore persiste, copi il rapporto diagnostico per l’assistenza ToothOps.",
+    "popup_not_closed": "La finestra di modifica di questo campo non si è chiusa dopo il salvataggio. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "save_button_not_found": "ToothOps non ha trovato il pulsante di salvataggio di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "save_not_confirmed": "ezyVet non ha confermato il salvataggio. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "no_preferred_email": "Il cliente non ha un indirizzo email preferito in ezyVet. Ne aggiunga uno o scelga un altro campo.",
+    "image_not_accepted": "Questo campo non accetta immagini. Scelga Discharge Summary o un altro campo che le accetti.",
+    "invalid_image": "Non è stato possibile preparare l’immagine dell’odontogramma. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "picture_failed": "ToothOps non è riuscito a disegnare l’immagine dell’odontogramma, quindi non è stata inviata.",
+    "maybe_sent": "Alcuni campi potrebbero essere già stati compilati. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
+    "item_extension_error": "Si è verificato un problema durante la scrittura di questo campo. Controlli il campo in ezyVet prima di inviare di nuovo.",
+    "item_not_writable": "La consultazione non accetta più modifiche (bloccata, chiusa o non più sulla scheda Medical), quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo.",
+    "item_patient_changed": "In ezyVet è stato aperto un altro paziente o un’altra consultazione, quindi questo campo non è stato inviato. Controlli la consultazione in ezyVet prima di inviare di nuovo."
+  },
+  "panel": {
+    "notConnected": "Questa versione non è collegata a ToothOps.",
+    "signIn": {
+      "title": "Acceda a ToothOps",
+      "lead": "Invii le note delle Sue cartelle ToothOps nella consultazione ezyVet aperta.",
+      "password": "Password",
+      "submit": "Accedi",
+      "busy": "Accesso in corso…",
+      "or": "oppure",
+      "createAccount": "Crea un account",
+      "forgotPassword": "Password dimenticata?"
+    },
+    "header": {
+      "signedInAs": "Accesso effettuato come {{email}}",
+      "signOut": "Esci"
+    },
+    "list": {
+      "unnamed": "(nessun nome del paziente)",
+      "matches": "Corrisponde a questa visita",
+      "matchCount": "{{matches}} cartelle corrispondono a questo paziente. Viene mostrata la più recente.",
+      "searchLabel": "Cerca nelle cartelle",
+      "searchPlaceholder": "Cerchi per paziente, proprietario o numero",
+      "empty": "Nessuna cartella trovata.",
+      "loading": "Caricamento delle cartelle…",
+      "loadMore": "Carica altri",
+      "possible": "Possibile corrispondenza con il paziente ezyVet {{patient}}"
+    },
+    "chart": {
+      "back": "← Torna alle cartelle",
+      "loading": "Apertura della cartella…",
+      "noteLabel": "Nota di cartella",
+      "flagLoading": "Verifica dell’attivazione dell’invio per il Suo studio…",
+      "flagFailed": "Impossibile verificare se l’invio a ezyVet è attivo per il Suo studio.",
+      "sendOff": "L’invio a ezyVet non è attivo per il Suo studio."
+    }
+  },
+  "send": {
+    "targetChanged": "La visita in ezyVet è cambiata. Verifichi la destinazione e prema di nuovo Invia."
+  }
+}

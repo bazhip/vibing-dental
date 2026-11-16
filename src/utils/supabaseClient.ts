@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { isNativeApp } from '../native/platform';
+import { isExtensionPage } from './extensionPage';
 
 /**
  * Shared Supabase client. Configured via build-time env vars:
@@ -21,10 +22,12 @@ const anonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY;
 // In the app, auth flows finish in the system browser and come back
 // through `toothops://auth-callback` (src/native/authReturn.ts), which
 // exchanges a PKCE code — there's no auth data in the app's own URL.
+// The Chrome extension's side panel likewise finishes OAuth through
+// chrome.identity with a PKCE code (src/extension/sidepanel/oauth.ts).
 // The web client is configured exactly as before.
 export const supabase: SupabaseClient | null =
   url && anonKey
-    ? isNativeApp()
+    ? isNativeApp() || isExtensionPage()
       ? createClient(url, anonKey, { auth: { flowType: 'pkce', detectSessionInUrl: false } })
       : createClient(url, anonKey)
     : null;

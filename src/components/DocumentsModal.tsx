@@ -4,7 +4,7 @@ import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
-import { RecordNotePanel } from './RecordNotePanel';
+import { RecordNotePanel, type RecordNotePims } from './RecordNotePanel';
 import type { ChartSnapshot, ImageRole, StoredRecordNote } from '../types';
 import type { OwnerReportBranding } from '../utils/ownerReportPdf';
 import type { OwnerReportConfig } from '../utils/ownerReportConfig';
@@ -43,6 +43,8 @@ interface DocumentsModalProps {
     stored: StoredRecordNote | null;
     onChange: (note: StoredRecordNote | null) => void;
     readOnly: boolean;
+    /** Send to ezyVet (omitted = no button). */
+    pims?: RecordNotePims;
   };
 }
 
@@ -170,6 +172,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
               stored={recordNote.stored}
               onChange={recordNote.onChange}
               readOnly={recordNote.readOnly}
+              pims={recordNote.pims}
+              chartSnapshot={chartSnapshot}
             />
           )}
         </div>

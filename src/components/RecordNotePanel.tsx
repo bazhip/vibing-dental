@@ -11,7 +11,22 @@ import {
   recordNoteText,
 } from '../utils/recordNote';
 import { copyRichText } from '../utils/clipboard';
+import { extensionAvailable } from '../utils/pims/extensionBridge';
 import { toast } from './ui/dialogs';
+import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
+import { SendToEzyvetDialog } from './SendToEzyvetDialog';
+
+
+/** Send to ezyVet (Chrome extension). Omitted = no button. */
+export interface RecordNotePims {
+  /** The practice has Send to ezyVet on. */
+  enabled: boolean;
+  /** Cloud chart id, to record when it was sent (null = not saved to the cloud). */
+  chartId: string | null;
+  patientName: string;
+  /** Last sent (null = unknown; the dialog looks it up). */
+  sentAt: string | null;
+}
 
 interface RecordNotePanelProps {
   snapshot: ChartSnapshot;
@@ -20,6 +35,9 @@ interface RecordNotePanelProps {
   onChange: (note: StoredRecordNote | null) => void;
   /** Saved chart not unlocked: copy only. */
   readOnly: boolean;
+  pims?: RecordNotePims;
+  /** Live diagrams, for the chart picture sent to ezyVet. */
+  chartSnapshot?: PreviewSnapshot | null;
 }
 
 /**
@@ -29,7 +47,7 @@ interface RecordNotePanelProps {
  * the chart has changed since.
  */
 export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
-  snapshot, stored, onChange, readOnly,
+  snapshot, stored, onChange, readOnly, pims, chartSnapshot = null,
 }) => {
   const { t, i18n } = useTranslation('media');
   const lng = i18n.language as AppLanguage;
@@ -44,12 +62,21 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
   const edit = (value: string) =>
     onChange({ text: value, source: 'edited', lng, basedOn: stored ? stored.basedOn : basis });
 
+  // Desktop Chrome with the extension's bridge, never the iOS app.
+  const canSend = !!pims?.enabled && extensionAvailable();
+  const [sendOpen, setSendOpen] = React.useState(false);
+  const [sentAt, setSentAt] = React.useState<string | null>(null);
+  // An edited note is split on its headings in the language it was written in.
+  const sendNote = React.useMemo(
+    () => (stored && stored.lng !== lng ? buildRecordNote(snapshot, recordNoteT(stored.lng)) : note),
+    [stored, lng, snapshot, note],
+  );
+
   const copy = async () => {
     const html = stored ? plainTextToHtml(stored.text) : recordNoteHtml(note);
     const outcome = await copyRichText(html, text, t('recordNote.copyPrompt'));
     if (outcome !== 'prompt') toast(t('recordNote.copied'), { kind: 'success' });
   };
-
 
   return (
     <div className="pdf-preview-body record-note">
@@ -69,7 +96,25 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
         <button type="button" className="pdf-preview-download" onClick={copy}>
           {t('recordNote.copy')}
         </button>
+        {canSend && pims && (
+          <button type="button" className="pdf-preview-secondary" onClick={() => setSendOpen(true)}>
+            {t('dialog.open', { ns: 'pims' })}
+          </button>
+        )}
       </aside>
+      {canSend && pims && sendOpen && (
+        <SendToEzyvetDialog
+          open
+          onClose={() => setSendOpen(false)}
+          note={sendNote}
+          stored={stored}
+          chartSnapshot={chartSnapshot}
+          chartId={pims.chartId}
+          patientName={pims.patientName}
+          sentAt={sentAt ?? pims.sentAt}
+          onSent={setSentAt}
+        />
+      )}
       <textarea
         className="record-note__text"
         aria-label={t('recordNote.title')}
