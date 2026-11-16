@@ -42,6 +42,7 @@ export type SessionStore = {
   get(key: string): Promise<unknown>;
   set(key: string, value: unknown): Promise<void>;
   remove(key: string): Promise<void>;
+  getAll(): Promise<Record<string, unknown>>;
 };
 
 export type Deps = {
@@ -114,11 +115,27 @@ async function appointments(date: string, navigate: boolean, deps: Deps): Promis
 }
 
 type PendingEntry = { handover: Handover; at: number };
-const pendingKey = (tabId: number) => `pending:${tabId}`;
+const PENDING_PREFIX = 'pending:';
+const pendingKey = (tabId: number) => `${PENDING_PREFIX}${tabId}`;
+
+const isFresh = (entry: unknown, now: number): entry is PendingEntry => {
+  const at = (entry as Partial<PendingEntry> | null)?.at;
+  return typeof at === 'number' && now - at <= HANDOVER_TTL_MS;
+};
+
+/** Removes every expired hand-over, so one whose tab never asked for it lives no longer than the
+ *  TTL past the next Start chart or take (closing the tab removes it at once: installListeners). */
+async function sweepExpired(deps: Deps): Promise<void> {
+  const now = deps.now();
+  const all = await deps.session.getAll();
+  const stale = Object.keys(all).filter((k) => k.startsWith(PENDING_PREFIX) && !isFresh(all[k], now));
+  await Promise.all(stale.map((k) => deps.session.remove(k)));
+}
 
 /** Opens ToothOps and holds the hand-over for that tab only, so two quick clicks can't swap
  *  patients. The URL carries no patient data. */
 async function startChart(handover: Handover, deps: Deps): Promise<StartChartResult> {
+  await sweepExpired(deps);
   const tabId = await deps.openTab(`${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
   if (tabId === undefined) return { ok: false };
   const entry: PendingEntry = { handover, at: deps.now() };
@@ -129,13 +146,13 @@ async function startChart(handover: Handover, deps: Deps): Promise<StartChartRes
 /** The hand-over for the sender's own tab: one use, and only within HANDOVER_TTL_MS. */
 async function takePendingPatient(sender: Sender, deps: Deps): Promise<TakePendingResult> {
   const tabId = sender.tab?.id;
+  await sweepExpired(deps);
   if (typeof tabId !== 'number') return { handover: null };
   const key = pendingKey(tabId);
-  const entry = (await deps.session.get(key)) as PendingEntry | undefined;
-  if (!entry) return { handover: null };
+  const entry = await deps.session.get(key);
+  if (entry === undefined) return { handover: null };
   await deps.session.remove(key);
-  const fresh = typeof entry.at === 'number' && deps.now() - entry.at <= HANDOVER_TTL_MS;
-  return { handover: fresh ? entry.handover : null };
+  return { handover: isFresh(entry, deps.now()) ? entry.handover : null };
 }
 
 type SendRequest = Extract<Request, { type: 'send' }>;
@@ -338,6 +355,7 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       get: async (key) => (await api.storage.session.get(key))[key],
       set: (key, value) => api.storage.session.set({ [key]: value }),
       remove: (key) => api.storage.session.remove(key),
+      getAll: () => api.storage.session.get(null),
     },
     now: () => Date.now(),
   };
@@ -378,6 +396,10 @@ export function installListeners(api: ChromeApi, deps: Deps = createChromeDeps(a
     const ok = isOwnExtensionPage(sender, api.runtime.id);
     if (!ok) console.warn('ToothOps extension: ignoring internal message from', sender.id);
     return respond(ok, INTERNAL_TYPES, msg, () => handleInternal(msg, sender, api.runtime.id, deps), sendResponse);
+  });
+  // A closed tab can never take its hand-over: drop it now rather than at the next sweep.
+  api.tabs.onRemoved.addListener((tabId) => {
+    deps.session.remove(pendingKey(tabId)).catch(() => undefined);
   });
   // The toolbar button opens the side panel.
   const openPanelOnClick = () =>

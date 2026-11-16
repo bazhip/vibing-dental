@@ -37,6 +37,7 @@ function makeDeps(tabs: EzyvetTab[] = [tab(1, { active: true, focusedWindow: tru
       get: vi.fn(async (k: string) => store.get(k)),
       set: vi.fn(async (k: string, v: unknown) => void store.set(k, v)),
       remove: vi.fn(async (k: string) => void store.delete(k)),
+      getAll: vi.fn(async () => Object.fromEntries(store)),
     },
     now: vi.fn(() => clock.now),
   } as unknown as FakeDeps;
@@ -378,6 +379,22 @@ describe('patient hand-over', () => {
     expect(store.has('pending:42')).toBe(false);
   });
 
+  it('startChart and takePendingPatient sweep expired hand-overs for other tabs', async () => {
+    const { deps, store, clock } = makeDeps();
+    store.set('pending:7', { handover, at: clock.now - HANDOVER_TTL_MS - 1 });
+    store.set('pending:8', { handover, at: clock.now });
+    store.set('other', 'kept');
+    await handleInternal(start(), panel, ID, deps);
+    expect(store.has('pending:7')).toBe(false);
+    expect(store.has('pending:8')).toBe(true);
+    expect(store.get('other')).toBe('kept');
+
+    store.set('pending:9', { handover, at: clock.now - HANDOVER_TTL_MS - 1 });
+    expect(await handleExternal(take, webTab(42), deps)).toEqual({ handover });
+    expect(store.has('pending:9')).toBe(false);
+    expect(store.has('pending:8')).toBe(true);
+  });
+
   it('a sender without a tab id gets nothing', async () => {
     const { deps, store } = makeDeps();
     await handleInternal(start(), panel, ID, deps);
@@ -427,6 +444,7 @@ describe('internal messages', () => {
     };
     return {
       runtime: { id: ID, onMessage: ev(), onMessageExternal: ev(), onInstalled: ev(), onStartup: ev() },
+      tabs: { onRemoved: ev() },
       sidePanel: { setPanelBehavior: vi.fn(async () => undefined) },
     };
   }
@@ -470,6 +488,17 @@ describe('internal messages', () => {
     expect(ignored).not.toHaveBeenCalled();
     expect(deps.openTab).toHaveBeenCalledTimes(1);
     warn.mockRestore();
+  });
+
+  it('closing a tab removes its hand-over', async () => {
+    const api = fakeChrome();
+    const { deps, store, clock } = makeDeps();
+    installListeners(api as unknown as typeof chrome, deps);
+    store.set('pending:42', { handover, at: clock.now });
+    store.set('pending:43', { handover, at: clock.now });
+    api.tabs.onRemoved.listeners[0](42, {});
+    await vi.waitFor(() => expect(store.has('pending:42')).toBe(false));
+    expect(store.has('pending:43')).toBe(true);
   });
 
   it('the toolbar button opens the side panel on install and startup', () => {
