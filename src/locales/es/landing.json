@@ -170,7 +170,7 @@
   },
   "pricing": {
     "title": "Precios mensuales sencillos",
-    "sub": "Todos los planes empiezan con {{days}} días de prueba gratuita. Cancele cuando quiera: guardamos sus historiales a salvo durante 30 días por si vuelve.",
+    "sub": "Todos los planes empiezan con {{days}} días de prueba gratuita. Cancele cuando quiera: pasa al plan gratuito y conserva todos sus historiales.",
     "mostPopular": "El más popular",
     "perMonth": "/mes",
     "startTrial": "Empezar la prueba gratuita",

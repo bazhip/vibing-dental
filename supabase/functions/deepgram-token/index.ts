@@ -31,35 +31,54 @@ Deno.serve(async (req: Request) => {
   // Free beta: voice autofill is open to every signed-in account (no
   // plan check). Signed-in only — anonymous trial users get no token.
 
-  // Abuse guard: each dictation start mints one token; cap per user.
-  const { count: recent } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
-    .eq('user_id', caller.id).eq('model', 'deepgram-token')
-    .gte('created_at', new Date(Date.now() - 3_600_000).toISOString());
-  if ((recent ?? 0) >= 60) return json(apiError('dictation_rate_limit'), 429);
-
   const master = Deno.env.get('DEEPGRAM_API_KEY');
   if (!master) return json(apiError('voice_not_configured'), 503);
+
+  // Abuse guard: each dictation start mints one token; cap per user.
+  // Log the mint FIRST, then count this user's mints up to and including
+  // it: counting before and logging after let parallel requests through.
+  const { data: reserved, error: reserveError } = await admin.from('ai_usage')
+    .insert({ user_id: caller.id, model: 'deepgram-token', input_tokens: 0, output_tokens: 0 })
+    .select('id, created_at').single();
+  // Usage log unavailable (database hiccup): don't break dictation over
+  // it — mint unmetered, as the old count-then-log check did.
+  const reservation = reserveError || !reserved ? null : reserved;
+  const release = () =>
+    reservation ? admin.from('ai_usage').delete().eq('id', reservation.id).then(() => {}, () => {}) : Promise.resolve();
+  if (reservation) {
+    const { count: recent } = await admin.from('ai_usage').select('id', { count: 'exact', head: true })
+      .eq('user_id', caller.id).eq('model', 'deepgram-token')
+      .gte('created_at', new Date(Date.now() - 3_600_000).toISOString())
+      .lte('created_at', reservation.created_at);
+    if ((recent ?? 0) > 60) { await release(); return json(apiError('dictation_rate_limit'), 429); }
+  }
 
   // Deepgram's temporary-token grant: works with a standard API key (no
   // keys:write scope needed) and returns a short-lived bearer token the
   // browser uses to open the streaming socket.
-  const grantResp = await fetch('https://api.deepgram.com/v1/auth/grant', {
-    method: 'POST',
-    headers: { Authorization: `Token ${master}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ ttl_seconds: TTL_SECONDS }),
-  });
+  let grantResp: Response;
+  try {
+    grantResp = await fetch('https://api.deepgram.com/v1/auth/grant', {
+      method: 'POST',
+      headers: { Authorization: `Token ${master}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ ttl_seconds: TTL_SECONDS }),
+    });
+  } catch (e) {
+    // Network failure: no token issued — release the reservation.
+    await release();
+    return json(apiError('voice_token_failed', { detail: e instanceof Error ? e.message : String(e) }), 502);
+  }
   const grantText = await grantResp.text();
-  if (!grantResp.ok) return json(apiError('voice_token_failed', { detail: grantText }), 502);
+  // No token issued: don't count it.
+  if (!grantResp.ok) { await release(); return json(apiError('voice_token_failed', { detail: grantText }), 502); }
   let grant: { access_token?: string; expires_in?: number };
   try {
     grant = JSON.parse(grantText);
   } catch {
+    await release();
     return json(apiError('voice_unreadable'), 502);
   }
-  if (!grant.access_token) return json(apiError('voice_no_token'), 502);
-
-  // Log the mint (rate limiting + admin visibility). Best-effort.
-  await admin.from('ai_usage').insert({ user_id: caller.id, model: 'deepgram-token', input_tokens: 0, output_tokens: 0 }).then(() => {}, () => {});
+  if (!grant.access_token) { await release(); return json(apiError('voice_no_token'), 502); }
 
   // `kind: bearer` tells the client which WebSocket sub-protocol to use.
   return json({ token: grant.access_token, kind: 'bearer', expiresInSeconds: grant.expires_in ?? TTL_SECONDS });

@@ -145,39 +145,41 @@ describe('BillingGate in the app', () => {
   });
 
   it('a fresh check overrides the cache', async () => {
+    flags.paid = true;
     saveBillingCache(billing({ status: 'active' }), Date.now() - DAY, 'u1');
-    fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
+    fetchBilling.mockResolvedValue(billing({ status: 'none' }));
     renderGate();
     expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
     expect(screen.queryByText('charting app')).toBeNull();
   });
 
-  it('owner with a canceled plan: neutral screen, sign out only, no billing UI', async () => {
+  // Billing never locks anyone out: a lapsed plan is the free plan.
+  it('a lapsed plan (cancelled, past due, unpaid), owner or member: straight in', async () => {
+    for (const info of [
+      billing({ status: 'canceled' }),
+      billing({ status: 'past_due', hasStripe: true }),
+      billing({ status: 'unpaid', role: 'member' }),
+    ]) {
+      fetchBilling.mockResolvedValue(info);
+      const { unmount } = renderGate();
+      expect(await screen.findByText('charting app')).toBeInTheDocument();
+      expect(screen.queryByText("Your plan isn't active")).toBeNull();
+      unmount();
+    }
+  });
+
+  it('a lapsed plan stays in even with paid signup on', async () => {
+    flags.paid = true;
     fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
     renderGate();
-    expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
-    expect(screen.getByText('Manage it at toothops.app.')).toBeInTheDocument();
-    expect(screen.getAllByRole('button').map((b) => b.textContent)).toEqual(['Sign out']);
-    expectNoBillingUi();
+    expect(await screen.findByText('charting app')).toBeInTheDocument();
   });
 
-  it('past due with Stripe, and members: the same neutral screen', async () => {
-    fetchBilling.mockResolvedValue(billing({ status: 'past_due', hasStripe: true }));
-    const { unmount } = renderGate();
-    expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
-    expectNoBillingUi();
-    unmount();
-    fetchBilling.mockResolvedValue(billing({ status: 'canceled', role: 'member' }));
-    renderGate();
-    expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
-    expectNoBillingUi();
-  });
-
-  it('offline with a fresh cached canceled plan: the neutral screen', async () => {
+  it('offline with a fresh cached canceled plan: straight in', async () => {
     saveBillingCache(billing({ status: 'canceled' }), Date.now() - DAY, 'u1');
     fetchBilling.mockRejectedValue(new Error('Failed to fetch'));
     renderGate();
-    expect(await screen.findByText("Your plan isn't active")).toBeInTheDocument();
+    expect(await screen.findByText('charting app')).toBeInTheDocument();
   });
 
   it('paid signup off + never subscribed: straight in (unchanged)', async () => {
@@ -197,7 +199,8 @@ describe('BillingGate in the app', () => {
 
 describe('BillingGate sign out', () => {
   it('the inactive-plan screen signs out through signOutAndSweep', async () => {
-    fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
+    flags.paid = true;
+    fetchBilling.mockResolvedValue(billing({ status: 'none' }));
     renderGate();
     fireEvent.click(await screen.findByRole('button', { name: 'Sign out' }));
     expect(signOutAndSweep).toHaveBeenCalledTimes(1);
@@ -214,16 +217,24 @@ describe('BillingGate sign out', () => {
   });
 });
 
-describe('BillingGate on the web (unchanged)', () => {
+describe('BillingGate on the web', () => {
   beforeEach(() => {
     flags.native = false;
   });
 
-  it('owner with a canceled plan still gets the plan chooser', async () => {
+  it('a lapsed plan goes straight in (free plan), even with paid signup on', async () => {
+    flags.paid = true;
     fetchBilling.mockResolvedValue(billing({ status: 'canceled' }));
     renderGate();
+    expect(await screen.findByText('charting app')).toBeInTheDocument();
+    expect(screen.queryByText('Choose your plan')).toBeNull();
+  });
+
+  it('paid signup on + never subscribed: the plan chooser', async () => {
+    flags.paid = true;
+    fetchBilling.mockResolvedValue(billing({ status: 'none' }));
+    renderGate();
     expect(await screen.findByText('Choose your plan')).toBeInTheDocument();
-    expect(screen.queryByText("Your plan isn't active")).toBeNull();
   });
 
   it('does not cache, and does not use a cache when the check fails', async () => {

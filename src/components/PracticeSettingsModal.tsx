@@ -8,7 +8,7 @@ import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { cloudEnabled } from '../utils/supabaseClient';
 import { isNativeApp } from '../native/platform';
-import { BillingInfo, fetchBilling, openBillingPortal, changePlan } from '../hooks/useBilling';
+import { BillingInfo, fetchBilling, openBillingPortal, changePlan, startCheckout } from '../hooks/useBilling';
 import {
   PLANS,
   PlanKey,
@@ -390,6 +390,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     }
   };
 
+  // A lapsed subscription is the free plan; this is the way back.
+  const handleResubscribe = (b: BillingInfo) => {
+    setBillingBusy(true);
+    setBillingError('');
+    startCheckout(planKeyFor(b.accountType, b.plan)).catch((err) => {
+      setBillingError(friendlyError(err, t('gate.checkoutFailed', { ns: 'billing' })));
+      setBillingBusy(false);
+    });
+  };
+
   const handleOpenPortal = () => {
     setBillingBusy(true);
     setBillingError('');
@@ -414,6 +424,9 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   );
 
   const liveSubscription = !!billing && LIVE_STATUSES.includes(billing.status);
+  // Cancelled, unpaid, expired…: on the free plan, data kept. Not
+  // 'incomplete' (a checkout still confirming) — that isn't over.
+  const lapsed = !!billing && !liveSubscription && !['none', 'comped', 'incomplete'].includes(billing.status);
   const onFreeBeta = FREE_BETA && !!billing && !liveSubscription && billing.status !== 'comped';
 
   const statusText = (b: BillingInfo) => {
@@ -728,6 +741,22 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
                     {t('settings.history', { ns: 'billing' })}
                   </button>
                 </div>
+              )}
+              {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
+            </>
+          ) : lapsed ? (
+            <>
+              <p className="ai-settings-blurb">{t('settings.lapsed', { ns: 'billing' })}</p>
+              {billing.role === 'owner' ? (
+                <div className="practice-logo-actions">
+                  <button type="button" className="diagram-view__action" disabled={billingBusy} onClick={() => handleResubscribe(billing)}>
+                    {billingBusy ? t('gate.openingCheckout', { ns: 'billing' }) : t('settings.resubscribe', { ns: 'billing' })}
+                  </button>
+                </div>
+              ) : (
+                <p className="patient-form__hint">
+                  {t('settings.managedBy', { ns: 'billing', owner: billing.ownerEmail || t('settings.theOwner', { ns: 'billing' }) })}
+                </p>
               )}
               {billingError && <div className="login-error settings-msg" role="alert">{billingError}</div>}
             </>

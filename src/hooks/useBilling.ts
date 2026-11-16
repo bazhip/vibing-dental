@@ -18,8 +18,8 @@ export interface BillingInfo {
   accountType: 'individual' | 'practice';
   status: string;
   periodEnd: string | null;
-  /** Set when the practice entered a non-paying status — data is kept
-   *  (frozen) for 30 days from here, then deleted by the daily purge. */
+  /** When the practice's subscription lapsed (it's on the free plan since).
+   *  Informational only: lapsing never locks anyone out or deletes data. */
   frozenAt: string | null;
   seats: number;
   memberCount: number;
@@ -29,22 +29,9 @@ export interface BillingInfo {
   intendedPlan: PlanKey;
 }
 
-/** Statuses that let the practice into the app. Anything else —
- *  including past_due — freezes the account: data is kept for 30 days
- *  (see frozenAt) and the gate shows the recovery path. */
+/** Statuses of a live paid (or comped) plan. Anything else is the free
+ *  plan: a lapsed subscription never locks anyone out or deletes data. */
 export const ACCESS_STATUSES = ['active', 'trialing', 'comped'];
-
-/** How long a frozen practice's data is kept before the daily purge
- *  deletes it (mirrors purge_lapsed_practices in the database). */
-export const FREEZE_GRACE_DAYS = 30;
-
-/** The date a frozen practice will be deleted, or null when not frozen. */
-export function deletionDate(info: BillingInfo): Date | null {
-  if (!info.frozenAt) return null;
-  const d = new Date(info.frozenAt);
-  d.setDate(d.getDate() + FREEZE_GRACE_DAYS);
-  return d;
-}
 
 async function call<T = Record<string, unknown>>(body: object): Promise<T> {
   return invokeFunction<T>('billing-api', body);

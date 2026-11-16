@@ -170,7 +170,7 @@
   },
   "pricing": {
     "title": "Une tarification mensuelle simple",
-    "sub": "Chaque formule commence par un essai gratuit de {{days}} jours. Résiliable à tout moment — nous conservons vos dossiers en sécurité pendant 30 jours, au cas où vous reviendriez.",
+    "sub": "Chaque formule commence par un essai gratuit de {{days}} jours. Résiliable à tout moment — vous passez à la formule gratuite et conservez tous vos dossiers.",
     "mostPopular": "La plus choisie",
     "perMonth": "/mois",
     "startTrial": "Commencer l’essai gratuit",

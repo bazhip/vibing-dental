@@ -39,6 +39,17 @@ vi.mock('../hooks/usePracticeLanguage', () => ({
   usePracticeLanguage: () => ({ language: langMock.language, explicit: false, loaded: true, save: langMock.save }),
 }));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
+// Paid signup off by default (as shipped); tests turn it on to reach the
+// paywall or the paid billing views.
+const planFlags = vi.hoisted(() => ({ paid: false }));
+vi.mock('../constants/plans', async (orig) => {
+  const real = await orig<typeof import('../constants/plans')>();
+  return {
+    ...real,
+    get PAID_SIGNUP() { return planFlags.paid; },
+    get FREE_BETA() { return !planFlags.paid; },
+  };
+});
 vi.mock('../hooks/useBilling', async (orig) => ({
   ...(await orig<typeof import('../hooks/useBilling')>()),
   fetchBilling: billingMock.fetchBilling,
@@ -188,6 +199,21 @@ describe('PracticeSettingsModal', () => {
     expect(findUntranslated(container, [...ALLOW, 'Elm Vet 2'])).toEqual([]);
   });
 
+  it('a lapsed plan (paid signup on): on the free plan, with Subscribe again for the owner', async () => {
+    planFlags.paid = true;
+    try {
+      billingMock.info = billing({ status: 'canceled', hasStripe: true, frozenAt: '2026-11-01T00:00:00Z' });
+      billingMock.startCheckout.mockResolvedValue(undefined); // navigates away for real
+      const { container } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
+      await screen.findByText(/^⟦Your subscription has ended/);
+      fireEvent.click(screen.getByRole('button', { name: '⟦Subscribe again⟧' }));
+      await waitFor(() => expect(billingMock.startCheckout).toHaveBeenCalledWith('individual_basic'));
+      expect(findUntranslated(container, ALLOW)).toEqual([]);
+    } finally {
+      planFlags.paid = false;
+    }
+  });
+
   it('every billing status', async () => {
     for (const status of ['active', 'past_due', 'canceled', 'comped']) {
       billingMock.info = billing({ status, hasStripe: true, periodEnd: '2026-12-01T00:00:00Z' });
@@ -289,41 +315,44 @@ describe('ChartSettingsModal', () => {
 describe('BillingGate', () => {
   const gate = () => render(<BillingGate><div data-testid="app" /></BillingGate>);
   const ALLOWED_GATE: (string | RegExp)[] = [...ALLOW, 'Sign out'];
+  afterEach(() => { planFlags.paid = false; });
 
-  it('owner of a frozen account chooses a plan', async () => {
-    billingMock.info = billing({ status: 'canceled', frozenAt: '2026-11-01T00:00:00Z', hasStripe: true });
+  it('a never-subscribed owner chooses a plan (paid signup on)', async () => {
+    planFlags.paid = true;
+    billingMock.info = billing({ status: 'none' });
     const { container } = gate();
     await screen.findByRole('heading', { name: '⟦Choose your plan⟧' });
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     expect(screen.getAllByText(/^⟦\$\d+⟧/).length).toBeGreaterThan(0);
   });
 
-  it('a never-subscribed owner is offered the trial', async () => {
+  it('a never-subscribed account passes straight through while paid signup is off', async () => {
     window.history.replaceState({}, '', '/?x=1');
-    // PAID_SIGNUP is off, so a never-subscribed account passes straight through:
     billingMock.info = billing({ status: 'none' });
     gate();
     await screen.findByTestId('app');
   });
 
-  it('a member of a frozen practice, for each reason', async () => {
-    for (const status of ['past_due', 'none', 'canceled']) {
-      billingMock.info = billing({ role: 'member', status, frozenAt: status === 'none' ? null : '2026-11-01T00:00:00Z' });
-      if (status === 'none') continue; // passes through while paid signup is off
-      const { container, unmount } = gate();
-      await screen.findByRole('heading', { name: /needs a subscription/ });
-      expect(findUntranslated(container, ALLOW)).toEqual([]);
-      unmount();
-    }
+  it('a never-subscribed member is pointed at the owner (paid signup on)', async () => {
+    planFlags.paid = true;
+    billingMock.info = billing({ role: 'member', status: 'none' });
+    const { container } = gate();
+    await screen.findByRole('heading', { name: /needs a subscription/ });
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
 
-  it('a failed payment, with the portal error', async () => {
-    billingMock.info = billing({ status: 'past_due', hasStripe: true, frozenAt: '2026-11-01T00:00:00Z' });
-    billingMock.openBillingPortal.mockRejectedValue(new Error('Stripe is down'));
-    const { container } = gate();
-    fireEvent.click(await screen.findByRole('button', { name: '⟦Update payment method⟧' }));
-    await screen.findByText('Stripe is down');
-    expect(findUntranslated(container, [...ALLOW, 'Stripe is down'])).toEqual([]);
+  it('a lapsed plan goes straight in on the free plan, owner or member, whatever the reason', async () => {
+    planFlags.paid = true;
+    for (const info of [
+      billing({ status: 'past_due', hasStripe: true, frozenAt: '2026-11-01T00:00:00Z' }),
+      billing({ status: 'canceled', frozenAt: '2026-11-01T00:00:00Z' }),
+      billing({ role: 'member', status: 'unpaid', frozenAt: '2026-11-01T00:00:00Z' }),
+    ]) {
+      billingMock.info = info;
+      const { unmount } = gate();
+      await screen.findByTestId('app');
+      unmount();
+    }
   });
 
   it('a failed load, and finalizing a checkout', async () => {
@@ -339,10 +368,11 @@ describe('BillingGate', () => {
   });
 
   it('prices follow the language, in dollars', async () => {
+    planFlags.paid = true;
     await loadLanguage('fr');
     await i18n.changeLanguage('fr');
     expect(formatPlanPrice(20)).toMatch(/^20\s\$/);
-    billingMock.info = billing({ status: 'canceled', frozenAt: '2026-11-01T00:00:00Z', hasStripe: true });
+    billingMock.info = billing({ status: 'none' });
     gate();
     await screen.findByRole('heading', { name: 'Choisissez votre formule' });
     expect(screen.getAllByText(/^20\s\$/).length).toBeGreaterThan(0);

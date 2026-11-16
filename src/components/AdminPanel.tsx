@@ -1217,8 +1217,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
               )}
               {selectedPractice.frozenAt && (
                 <span className="admin-panel__plan-note">
-                  frozen — purge deletes it{' '}
-                  {new Date(new Date(selectedPractice.frozenAt).getTime() + 30 * 86400000).toLocaleDateString()}
+                  lapsed {new Date(selectedPractice.frozenAt).toLocaleDateString()} — on the free plan, data kept
                 </span>
               )}
               {selectedPractice.hasStripe ? (
