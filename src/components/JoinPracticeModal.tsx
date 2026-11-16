@@ -34,7 +34,10 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
   const [leavingPractice, setLeavingPractice] = React.useState('');
   const [alreadyMember, setAlreadyMember] = React.useState(false);
   const [shareExisting, setShareExisting] = React.useState(false);
+  // The invite couldn't be read (bad/expired link): nothing to join.
   const [error, setError] = React.useState('');
+  // Joining failed (network, server): shown, and Join can be retried.
+  const [joinError, setJoinError] = React.useState('');
   const [busy, setBusy] = React.useState(false);
 
   React.useEffect(() => {
@@ -53,12 +56,12 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
 
   const accept = async () => {
     setBusy(true);
-    setError('');
+    setJoinError('');
     try {
       await callTeamApi({ action: 'accept_invite', token, shareExisting });
       onDone(true);
     } catch (e) {
-      setError(friendlyError(e));
+      setJoinError(friendlyError(e));
       setBusy(false);
     }
   };
@@ -89,7 +92,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
             </p>
           )}
           {canJoin && leavingPractice && <p className="ios-form-text">{t('join.leaves', { practice: leavingPractice })}</p>}
-          {error && <p className="ios-form-error" role="alert">{error}</p>}
+          {(error || joinError) && <p className="ios-form-error" role="alert">{error || joinError}</p>}
         </div>
         {canJoin && (
           <List>
@@ -128,7 +131,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
               </label>
             </>
           )}
-          {error && <p className="login-error" role="alert">{error}</p>}
+          {(error || joinError) && <p className="login-error" role="alert">{error || joinError}</p>}
         </div>
         <footer className="ai-settings-footer">
           <button type="button" className="diagram-view__action" onClick={() => onDone(false)} disabled={busy}>

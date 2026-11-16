@@ -72,9 +72,15 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
 
   React.useEffect(() => {
     if (!open || native) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Capture phase + stop: this composer sits on top of My charts, and one
+    // Escape closed both.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopImmediatePropagation();
+      onClose();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [open, onClose, native]);
 
   if (!open && !native) return null;

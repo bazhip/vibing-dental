@@ -12,6 +12,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { AI_FEATURES, ALLOWED_AI_MODELS, isAiFeature, resolveAiModels } from '../_shared/aiModels.ts';
 import { cancelPracticeSubscription } from '../_shared/deletion.ts';
+import { freshInviteLink, isPendingAccount, markInviteRevoked, resetInviteState, safeAppUrl } from '../_shared/pendingInvites.ts';
 
 type Json = Record<string, unknown>;
 
@@ -29,9 +30,18 @@ async function inviteViaResend(admin: any, email: string, practiceName: string, 
   if (error || !link?.user || !link?.properties?.action_link) {
     return { user: null, error: error?.message ?? 'Could not create the invite.' };
   }
+  await sendInviteEmail(admin, email, practiceName, link.properties.action_link);
+  return { user: link.user, error: null };
+}
+
+/** The (English, operator-sent) "you've been added" email with a
+ *  set-password link. True when Resend accepted it. */
+// deno-lint-ignore no-explicit-any
+async function sendInviteEmail(admin: any, email: string, practiceName: string, actionLink: string): Promise<boolean> {
   const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
-  if (key) {
-    await fetch('https://api.resend.com/emails', {
+  if (!key) return false;
+  try {
+    const resp = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -40,12 +50,14 @@ async function inviteViaResend(admin: any, email: string, practiceName: string, 
         subject: `You've been added to ${practiceName || 'a practice'} on ToothOps`,
         text:
           `You've been added to ${practiceName || 'a practice'} on ToothOps.\n\n` +
-          `Set your password to activate your account:\n${link.properties.action_link}\n\n` +
+          `Set your password to activate your account:\n${actionLink}\n\n` +
           `If you weren't expecting this, you can ignore this email.`,
       }),
-    }).catch(() => {});
+    });
+    return resp.ok;
+  } catch {
+    return false;
   }
-  return { user: link.user, error: null };
 }
 
 /** Every auth user, paged (listUsers caps a page at 1000). One sweep
@@ -556,6 +568,9 @@ Deno.serve(async (req: Request) => {
         if (!practiceId || !userId) return json({ error: 'missing ids' }, 400);
         await admin.from('practice_members').delete().eq('practice_id', practiceId).eq('user_id', userId);
         await admin.from('profiles').update({ practice_id: null }).eq('id', userId).eq('practice_id', practiceId);
+        // Pending invitee removed before activating: stop reminder emails.
+        const { data: removed } = await admin.auth.admin.getUserById(userId);
+        if (isPendingAccount(removed?.user)) await markInviteRevoked(admin, removed.user);
         return json({ ok: true });
       }
 
@@ -575,6 +590,8 @@ Deno.serve(async (req: Request) => {
           invited = true;
         }
         await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: target.id, role: 'member' });
+        // Re-adding a pending invitee (e.g. removed earlier): reminders resume.
+        if (!invited && isPendingAccount(target)) await resetInviteState(admin, target);
         if (invited) {
           await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
           await admin.from('practices').delete().eq('owner', target.id).neq('id', practiceId);
@@ -600,16 +617,15 @@ Deno.serve(async (req: Request) => {
         const email = (u?.user?.email ?? '').toLowerCase();
         if (!u?.user || !email) return json({ error: 'Could not find that account.' }, 404);
         if (u.user.email_confirmed_at) return json({ error: 'That account is already active — no invite to resend.' }, 400);
-        // Invite links only mint for brand-new accounts, so recreate the
-        // never-activated account and re-run the invite. Pending accounts
-        // own nothing; the membership + profile rows are re-created here.
+        // Fresh set-password link for the same account. (This used to delete
+        // the account and re-invite: if that failed, the person was gone.)
         const { data: pracRow } = await admin.from('practices').select('name').eq('id', practiceId).maybeSingle();
-        await admin.auth.admin.deleteUser(userId);
-        const inv = await inviteViaResend(admin, email, pracRow?.name ?? '', redirectTo);
-        if (inv.error || !inv.user) return json({ error: `Couldn't resend the invite: ${inv.error ?? 'unknown'}` }, 502);
-        await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: inv.user.id, role: 'member' });
-        await admin.from('profiles').upsert({ id: inv.user.id, practice_id: practiceId });
-        await admin.from('practices').delete().eq('owner', inv.user.id).neq('id', practiceId);
+        const link = await freshInviteLink(admin, email, safeAppUrl(redirectTo));
+        if (!link) return json({ error: "Couldn't create a new invite link." }, 502);
+        const sent = await sendInviteEmail(admin, email, pracRow?.name ?? '', link);
+        if (!sent) return json({ error: "Couldn't send the invite email." }, 502);
+        // Start the invite over (else the expiry job could delete the account).
+        await resetInviteState(admin, u.user);
         return json({ ok: true });
       }
 

@@ -107,6 +107,16 @@ vi.mock('./ios/screens/SettingsScreen', async (importOriginal) => {
   };
 });
 
+// PDF import: a readable ToothOps PDF by default; a test can make it fail.
+const pdf = vi.hoisted(() => ({ fail: false }));
+vi.mock('./utils/pdfGenerator', async (orig) => ({
+  ...(await orig<typeof import('./utils/pdfGenerator')>()),
+  parseDentalChartPDF: async () => {
+    if (pdf.fail) throw new Error('not a ToothOps PDF');
+    return { patientInfo: { patientName: 'Rex', patientNumber: '7', date: '2026-11-10' }, toothData: [], species: 'canine', logo: 'socal' };
+  },
+}));
+
 import EntryGrid from './EntryGrid';
 import { DialogHost } from './components/ui/dialogs';
 import { localDateISO } from './utils/localDate';
@@ -236,6 +246,18 @@ describe('EntryGrid in the app, with saved charts', () => {
       expect(cloud.openChart).not.toHaveBeenCalled();
       await expectLandedOnChartRoot();
     });
+  });
+
+  it('a PDF that can’t be imported stays on Patients (nothing changed)', async () => {
+    pdf.fail = true;
+    try {
+      await renderApp();
+      act(() => fireEvent.click(tab('Patients')));
+      await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Load PDF' })));
+      expect(tab('Patients')).toHaveAttribute('aria-selected', 'true');
+    } finally {
+      pdf.fail = false;
+    }
   });
 
   it('“Open this visit” in Chart history lands on the Chart tab, popped to its root', async () => {

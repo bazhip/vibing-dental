@@ -231,13 +231,27 @@ export function PatientVisitsScreen({ initial, filters, tab }: { initial: Patien
 
   const name = group?.name ?? initial.name;
   const latest = group?.visits[0];
+  // One new visit per tap: a double tap on a slow connection ran it twice
+  // (stacked questions, two visits started).
+  const startingRef = React.useRef(false);
+  const [starting, setStarting] = React.useState(false);
+  const startNewVisit = (id: string) => {
+    if (!library || startingRef.current) return;
+    startingRef.current = true;
+    setStarting(true);
+    void library.newVisit(id).finally(() => {
+      startingRef.current = false;
+      setStarting(false);
+    });
+  };
   const newVisit = library && latest
     ? (
       <button
         type="button"
         className="ios-glass-button ios-glass-button--icon"
         aria-label={t('actions.newVisit')}
-        onClick={() => void library.newVisit(latest.id)}
+        disabled={starting}
+        onClick={() => startNewVisit(latest.id)}
       >
         <Icon name={PLUS_ICON} />
       </button>
@@ -252,6 +266,9 @@ export function PatientVisitsScreen({ initial, filters, tab }: { initial: Patien
     if (!(await confirmDeleteVisit(t, v, name))) return;
     try {
       await library.deleteChart(v.id);
+      // Gone now, whether or not the list's refresh succeeds (a failed
+      // refresh left the deleted visit listed, and opening it failed).
+      setGroup((g) => (g ? { ...g, visits: g.visits.filter((x) => x.id !== v.id) } : g));
     } catch (e) {
       toast(t('errors.delete', { ns: 'library', error: friendlyDetail(e) }), { kind: 'error' });
     }

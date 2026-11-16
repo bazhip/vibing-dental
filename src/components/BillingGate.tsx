@@ -13,6 +13,7 @@ import {
 import { isNativeApp } from '../native/platform';
 import { readBillingCache, saveBillingCache } from '../native/billingCache';
 import { getSessionTolerant } from '../native/offlineSession';
+import { friendlyError } from './ui/dialogs';
 import { InactivePlan } from './InactivePlan';
 import { SignOutLink } from './SignOutLink';
 import './BillingGate.css';
@@ -86,7 +87,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
           setInfo(cached);
           return;
         }
-        setLoadError(e instanceof Error ? e.message : i18n.t('gate.checkFailed', { ns: 'billing' }));
+        setLoadError(friendlyError(e, i18n.t('gate.checkFailed', { ns: 'billing' })));
       });
     return () => {
       cancelled = true;
@@ -216,7 +217,7 @@ export const BillingGate: React.FC<BillingGateProps> = ({ children }) => {
     try {
       await startCheckout(selected); // navigates away on success
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('gate.checkoutFailed'));
+      setError(friendlyError(e, t('gate.checkoutFailed')));
       setBusy(false);
     }
   };

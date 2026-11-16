@@ -1,7 +1,7 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import i18n from '../i18n';
-import { LocalizedError } from '../utils/apiErrors';
+import { LocalizedError, describeError, withDetail } from '../utils/apiErrors';
 
 /**
  * A chart's history (public.chart_revisions): who saved each version and
@@ -36,7 +36,7 @@ export function useChartHistory(chartId: string, open: boolean) {
     if (err) {
       setError(/relation .*chart_revisions|does not exist/i.test(err.message)
         ? i18n.t('sync.historyNotSetUp', { ns: 'app' })
-        : err.message);
+        : describeError(new Error(err.message), i18n.t('errors.generic', { ns: 'common' }), withDetail));
       setRevisions([]);
       return;
     }

@@ -66,9 +66,15 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
 
   React.useEffect(() => {
     if (!open || native) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !busy && onClose();
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    // Capture phase + stop: this composer sits on top of the Documents
+    // dialog, and one Escape closed both (even mid-send).
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopImmediatePropagation();
+      if (!busy) onClose();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
   }, [open, onClose, native, busy]);
 
   if (!open && !native) return null;

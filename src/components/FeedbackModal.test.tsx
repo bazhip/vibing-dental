@@ -3,7 +3,12 @@ import { vi } from 'vitest';
 
 const invoke = vi.fn();
 vi.mock('../utils/supabaseClient', () => ({ supabase: { functions: { invoke: (...a: unknown[]) => invoke(...a) } } }));
-vi.mock('./ui/dialogs', () => ({ toast: vi.fn() }));
+const choose = vi.hoisted(() => vi.fn(async (): Promise<string | null> => 'discard'));
+vi.mock('./ui/dialogs', async (orig) => ({
+  ...(await orig<typeof import('./ui/dialogs')>()),
+  toast: vi.fn(),
+  chooseDialog: choose,
+}));
 
 import { FeedbackModal } from './FeedbackModal';
 
@@ -50,5 +55,26 @@ describe('FeedbackModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Send' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Please try again tomorrow.');
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('the website form asks before dropping a typed message (Cancel, ×, Escape)', async () => {
+    const onClose = vi.fn();
+    render(<FeedbackModal onClose={onClose} presentation="modal" />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'half a bug report' } });
+    choose.mockResolvedValueOnce(null); // Keep Editing
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(choose).toHaveBeenCalledTimes(1));
+    expect(onClose).not.toHaveBeenCalled();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1)); // Discard
+  });
+
+  it('closes straight away with nothing typed', async () => {
+    choose.mockClear();
+    const onClose = vi.fn();
+    render(<FeedbackModal onClose={onClose} presentation="modal" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    expect(choose).not.toHaveBeenCalled();
   });
 });
