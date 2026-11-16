@@ -19,6 +19,9 @@ vi.mock('../utils/pims/extensionBridge', () => ({
   inspect: mocks.inspect,
   send: mocks.send,
   diagnose: vi.fn(),
+  appointments: vi.fn(),
+  startChart: vi.fn(),
+  takePendingPatient: vi.fn(),
   extensionAvailable: () => true,
 }));
 vi.mock('../hooks/usePimsFieldMap', () => ({

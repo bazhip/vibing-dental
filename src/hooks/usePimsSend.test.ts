@@ -38,6 +38,9 @@ function setup(opts: { patientMatcher?: (c: string, e: string | null) => boolean
       return { ok: true as const, results: [{ fieldTitle: 'Plan', result: { ok: true as const } }] };
     }),
     diagnose: vi.fn(async () => null),
+    appointments: vi.fn(),
+    startChart: vi.fn(),
+    takePendingPatient: vi.fn(),
   };
   const picture = vi.fn(async () => 'data:image/png;base64,AAAA');
   const onSent = vi.fn();

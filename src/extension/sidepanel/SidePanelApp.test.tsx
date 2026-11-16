@@ -37,7 +37,7 @@ vi.mock('../../constants/plans', async (orig) => ({
 
 const mocks = vi.hoisted(() => ({
   confirm: vi.fn(async (_o: unknown) => true),
-  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn() },
+  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn() },
 }));
 vi.mock('./internalTransport', () => ({ internalTransport: mocks.transport }));
 vi.mock('./OffscreenChartPicture', () => ({

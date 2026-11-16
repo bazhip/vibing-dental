@@ -3,7 +3,8 @@ import { vi } from 'vitest';
 const native = vi.hoisted(() => vi.fn(() => false));
 vi.mock('../../native/platform', () => ({ isNativeApp: native }));
 
-import { extensionAvailable, ping, inspect, send, diagnose, EXTENSION_ID } from './extensionBridge';
+import { extensionAvailable, ping, inspect, send, diagnose, appointments, startChart, takePendingPatient, EXTENSION_ID } from './extensionBridge';
+import i18n from '../../i18n';
 import { LocalizedError } from '../apiErrors';
 
 type Cb = (response?: unknown) => void;
@@ -108,5 +109,47 @@ describe('extensionBridge', () => {
     sendMessage.mockImplementation(answer({ diagnostics: null, lastCodes: ['editor_not_found'] }));
     expect(await diagnose(3)).toEqual({ diagnostics: null, lastCodes: ['editor_not_found'] });
     expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'diagnose', tabId: 3 });
+  });
+  it('appointments sends the exact request and times out after 30 s with the timeout message', async () => {
+    sendMessage.mockImplementation(answer({ tab: null, result: null }));
+    expect(await appointments('2026-11-16', false)).toEqual({ tab: null, result: null });
+    expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'appointments', date: '2026-11-16', navigate: false });
+
+    sendMessage.mockImplementation(neverAnswers);
+    const slow = appointments('2026-11-16', true).catch((e) => e);
+    await vi.advanceTimersByTimeAsync(30_000);
+    const err = await slow;
+    expect(err).toBeInstanceOf(LocalizedError);
+    expect((err as Error).message).toBe(i18n.t('pims:errors.timeout'));
+  });
+
+  it('startChart sends the handover', async () => {
+    const handover = { userId: 'u', patientName: 'Rex', patientNumber: '1', ownerName: 'Al', latestChartId: null };
+    sendMessage.mockImplementation(answer({ ok: true }));
+    expect(await startChart(handover)).toEqual({ ok: true });
+    expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'startChart', handover });
+  });
+
+  it('takePendingPatient is null after two lastError replies', async () => {
+    sendMessage.mockImplementation(lastError('Unknown request'));
+    expect(await takePendingPatient()).toBeNull();
+    expect(sendMessage).toHaveBeenCalledTimes(2);
+    expect(sendMessage.mock.calls[0][1]).toEqual({ type: 'takePendingPatient' });
+  });
+
+  it('takePendingPatient returns the result when the second attempt answers', async () => {
+    sendMessage.mockImplementationOnce(lastError('x')).mockImplementationOnce(answer({ handover: null }));
+    expect(await takePendingPatient()).toEqual({ handover: null });
+    expect(sendMessage).toHaveBeenCalledTimes(2);
+  });
+
+  it('takePendingPatient waits 1.5 s then 3 s', async () => {
+    sendMessage.mockImplementation(neverAnswers);
+    let settled = false;
+    const p = takePendingPatient().then((v) => { settled = true; return v; });
+    await vi.advanceTimersByTimeAsync(4_499);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(await p).toBeNull();
   });
 });

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import type { StoredRecordNote } from '../types';
 import type { RecordNote } from '../utils/recordNote';
-import { diagnose, inspect, ping, send, type PimsTransport } from '../utils/pims/extensionBridge';
+import { appointments, diagnose, inspect, ping, send, startChart, takePendingPatient, type PimsTransport } from '../utils/pims/extensionBridge';
 import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -29,7 +29,7 @@ export interface SendToEzyvetDialogProps {
 }
 
 // Built here (not imported as `externalTransport`) from the bridge's own functions.
-const transport: PimsTransport = { ping, inspect, send, diagnose };
+const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient };
 
 /**
  * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the

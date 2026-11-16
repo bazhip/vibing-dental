@@ -8,7 +8,7 @@ import { effectiveMap } from '../../utils/pims/mapping';
 const mocks = vi.hoisted(() => ({
   load: vi.fn(),
   confirm: vi.fn(async (_o: unknown) => true),
-  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn() },
+  transport: { ping: vi.fn(), inspect: vi.fn(), send: vi.fn(), diagnose: vi.fn(), appointments: vi.fn(), startChart: vi.fn(), takePendingPatient: vi.fn() },
   tab: { activated: null as null | (() => void) },
 }));
 vi.mock('../../utils/chartQueries', () => ({ loadChartSnapshot: mocks.load }));

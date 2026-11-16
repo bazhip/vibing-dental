@@ -37,6 +37,9 @@ const pims = vi.hoisted(() => {
       inspect: async () => info,
       send: async () => ({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] }),
       diagnose: async () => null,
+      appointments: async () => ({ tab: null, result: null }),
+      startChart: async () => ({ ok: true }),
+      takePendingPatient: async () => null,
     },
   };
 });

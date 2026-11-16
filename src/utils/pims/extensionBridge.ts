@@ -2,7 +2,7 @@ import i18n from '../../i18n';
 import { LocalizedError } from '../apiErrors';
 import { isNativeApp } from '../../native/platform';
 import { DEV_EXTENSION_ID } from '../../extension/extensionId';
-import type { DiagnoseResult, InspectResult, PingResult, Request, SendResult } from '../../extension/protocol';
+import type { AppointmentsResponse, DiagnoseResult, Handover, InspectResult, PingResult, Request, SendResult, StartChartResult, TakePendingResult } from '../../extension/protocol';
 
 /** Minimal shape of the part of `chrome.runtime` the page can see when an
  *  extension lists this origin in `externally_connectable`. */
@@ -19,6 +19,10 @@ const PING_TIMEOUTS_MS = [500, 1_500];
 const INSPECT_TIMEOUT_MS = 5_000;
 const DIAGNOSE_TIMEOUT_MS = 5_000;
 // A multi-field send waits on one ezyVet save per field.
+const APPOINTMENTS_TIMEOUT_MS = 30_000;
+const START_CHART_TIMEOUT_MS = 5_000;
+// The second attempt waits longer: Chrome may be starting a stopped service worker.
+const TAKE_PENDING_TIMEOUTS_MS = [1_500, 3_000];
 const SEND_TIMEOUT_MS = 120_000;
 
 const runtime = (): ChromeRuntime | undefined => (window as ChromeWindow).chrome?.runtime;
@@ -102,6 +106,20 @@ export function createTransport(channel: () => RuntimeChannel | undefined): Pims
     /** The page's structure report and the failure codes of the last send. */
     diagnose: (tabId) =>
       call<DiagnoseResult>(tabId === undefined ? { type: 'diagnose' } : { type: 'diagnose', tabId }, DIAGNOSE_TIMEOUT_MS),
+    /** The day's appointments read from the ezyVet calendar tab. */
+    appointments: (date, navigate) =>
+      call<AppointmentsResponse>({ type: 'appointments', date, navigate }, APPOINTMENTS_TIMEOUT_MS),
+    startChart: (handover) => call<StartChartResult>({ type: 'startChart', handover }, START_CHART_TIMEOUT_MS),
+    /** The hand-over stored for this tab, or null when the extension doesn't answer or
+     *  doesn't know the request (an older extension). */
+    async takePendingPatient() {
+      for (const timeoutMs of TAKE_PENDING_TIMEOUTS_MS) {
+        try {
+          return await raw<TakePendingResult>({ type: 'takePendingPatient' }, timeoutMs);
+        } catch { /* retry once, then give up */ }
+      }
+      return null;
+    },
   };
 }
 
@@ -111,6 +129,9 @@ export type PimsTransport = {
   inspect(): Promise<InspectResult>;
   send(req: Extract<Request, { type: 'send' }>): Promise<SendResult>;
   diagnose(tabId?: number): Promise<DiagnoseResult | null>;
+  appointments(date: string, navigate: boolean): Promise<AppointmentsResponse>;
+  startChart(handover: Handover): Promise<StartChartResult>;
+  takePendingPatient(): Promise<TakePendingResult | null>;
 };
 
 /** The page talking to the extension through `externally_connectable`. */
@@ -125,4 +146,4 @@ export const externalTransport: PimsTransport = createTransport(() => {
   };
 });
 
-export const { ping, inspect, send, diagnose } = externalTransport;
+export const { ping, inspect, send, diagnose, appointments, startChart, takePendingPatient } = externalTransport;
