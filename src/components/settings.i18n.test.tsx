@@ -358,7 +358,8 @@ describe('BillingGate', () => {
   it('a failed load, and finalizing a checkout', async () => {
     billingMock.fetchBilling.mockRejectedValue(new Error('Offline'));
     const a = gate();
-    await screen.findByText('Offline');
+    // Raw text is wrapped in a translated sentence, not shown bare.
+    await screen.findByText(/^⟦.*Offline/);
     expect(findUntranslated(a.container, [...ALLOW, 'Offline'])).toEqual([]);
     a.unmount();
     window.history.replaceState({}, '', '/?billing=success');
@@ -464,7 +465,8 @@ describe('FeedbackModal', () => {
     render(<FeedbackModal onClose={() => {}} />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'hello' } });
     fireEvent.click(screen.getByRole('button', { name: '⟦Send⟧' }));
-    await screen.findByText('Mail is down');
+    // Raw text is wrapped in a translated sentence, not shown bare.
+    await screen.findByText(/^⟦.*Mail is down/);
     expect(findUntranslated(document.body, [...ALLOW, 'hello', 'Mail is down'])).toEqual([]);
     invoke.mockResolvedValue({ data: { ok: true }, error: null });
     fireEvent.click(screen.getByRole('button', { name: '⟦Send⟧' }));

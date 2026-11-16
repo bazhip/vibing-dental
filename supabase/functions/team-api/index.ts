@@ -12,6 +12,8 @@ import { chooseInviteLanguage, joinRequestEmail, teamInviteEmail } from '../_sha
 import type { EmailLanguage } from '../_shared/emailStrings.ts';
 import { purgeAccount, purgePractice } from '../_shared/deletion.ts';
 import { apiError } from '../_shared/apiErrors.ts';
+import { emailLanguage } from '../_shared/emailStrings.ts';
+import { findAuthUserByEmail, freshInviteLink, isPendingAccount, markInviteRevoked, resetInviteState, safeAppUrl } from '../_shared/pendingInvites.ts';
 
 /** A to-one embed (`practices(...)` on practice_members) arrives as an
  *  object at runtime, but supabase-js types it as an array; accept both. */
@@ -94,19 +96,6 @@ async function verifyInvite(token: string): Promise<{ p: string; u: string; e: n
   }
 }
 
-/** Only send people back to our own app (no open redirects in emails). */
-function safeAppUrl(redirectTo?: string): string {
-  const fallback = 'https://toothops.app/';
-  if (!redirectTo) return fallback;
-  try {
-    const u = new URL(redirectTo);
-    const okHost = u.hostname === 'toothops.app' || u.hostname === 'localhost' || u.hostname === '127.0.0.1' ||
-      /^vibing-dental[a-z0-9-]*\.vercel\.app$/.test(u.hostname);
-    return okHost ? `${u.origin}${u.pathname}` : fallback;
-  } catch {
-    return fallback;
-  }
-}
 
 // deno-lint-ignore no-explicit-any
 async function sendJoinRequest(admin: any, email: string, practiceName: string, link: string, lang: EmailLanguage) {
@@ -116,13 +105,47 @@ async function sendJoinRequest(admin: any, email: string, practiceName: string, 
   await sendBrandedEmail(key, email, m.subject, m.email, lang);
 }
 
+/** Email a pending account a fresh set-password link to join the
+ *  practice. Language: the one stored on the invite, else the inviter's. */
+// deno-lint-ignore no-explicit-any
+async function sendFreshInvite(admin: any, user: any, practiceName: string, appUrl: string, inviterLang: unknown): Promise<boolean> {
+  const email = (user.email ?? '').toLowerCase();
+  const link = email ? await freshInviteLink(admin, email, appUrl) : null;
+  if (!link) return false;
+  const key = Deno.env.get('RESEND_API_KEY') ?? (await admin.rpc('get_resend_key')).data;
+  if (!key) return false;
+  const stored = (user.user_metadata as Record<string, unknown> | undefined)?.language;
+  const lang = stored ? emailLanguage(stored) : chooseInviteLanguage(null, inviterLang);
+  const m = teamInviteEmail(lang, practiceName, link);
+  const sent = await sendBrandedEmail(key, email, m.subject, m.email, lang);
+  if (sent) await resetInviteState(admin, user);
+  return sent;
+}
+
 // deno-lint-ignore no-explicit-any
 // `inviterLang` is the inviter's app language: the email uses the invitee's
 // saved language when they have an account with one, else this.
 async function addOrInviteMember(admin: any, practiceId: string, practiceName: string, email: string, redirectTo: string | undefined, inviterLang: unknown) {
-  const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-  let target = list.users.find((u: { email?: string }) => (u.email ?? '').toLowerCase() === email);
+  let target = await findAuthUserByEmail(admin, email);
   let invited = false;
+  // A team invitee who was removed before activating, now invited again: a
+  // join request is no use to them (they can't sign in yet), so put them
+  // back on a team and send a fresh set-password link. Only for exactly
+  // that case — an invite this flow revoked, and no team at all now — so a
+  // stranger's unconfirmed signup or another practice's pending invitee is
+  // never added without asking (they get the join request below).
+  if (target && isPendingAccount(target) && target.app_metadata?.invite_revoked_at) {
+    const { count: memberships } = await admin.from('practice_members').select('user_id', { count: 'exact', head: true })
+      .eq('user_id', target.id);
+    const { count: owned } = await admin.from('practices').select('id', { count: 'exact', head: true }).eq('owner', target.id);
+    if (!memberships && !owned) {
+      const sent = await sendFreshInvite(admin, target, practiceName, safeAppUrl(redirectTo), inviterLang);
+      if (!sent) return { status: 502, body: apiError('invite_failed', { detail: 'could not send the invite' }) };
+      await admin.from('practice_members').upsert({ practice_id: practiceId, user_id: target.id, role: 'member' });
+      await admin.from('profiles').upsert({ id: target.id, practice_id: practiceId });
+      return { status: 200, body: { ok: true, invited: true } };
+    }
+  }
   if (target) {
     // Existing account: ask, don't add.
     const { data: existing } = await admin.from('practice_members').select('user_id')
@@ -304,13 +327,12 @@ Deno.serve(async (req: Request) => {
         const email = (u?.user?.email ?? '').toLowerCase();
         if (!u?.user || !email) return json(apiError('account_not_found'), 404);
         if (u.user.email_confirmed_at) return json(apiError('account_already_active'), 400);
-        // Invite links only mint for brand-new accounts, so recreate the
-        // never-activated account and re-run the invite flow. Pending
-        // accounts own nothing; membership + profile are re-created by
-        // addOrInviteMember.
-        await admin.auth.admin.deleteUser(userId);
-        const result = await addOrInviteMember(admin, m.practiceId, m.practice?.name ?? '', email, redirectTo, body.lang);
-        return json(result.body, result.status);
+        // Fresh set-password link for the same account. (This used to delete
+        // the account and re-invite: if the new invite then failed, the
+        // person had silently vanished from the team.)
+        const sent = await sendFreshInvite(admin, u.user, m.practice?.name ?? '', safeAppUrl(redirectTo), body.lang);
+        if (!sent) return json(apiError('invite_failed', { detail: 'could not send the invite' }), 502);
+        return json({ ok: true, invited: true });
       }
 
       case 'remove_member': {
@@ -320,6 +342,11 @@ Deno.serve(async (req: Request) => {
         if (userId === m.practice.owner) return json(apiError('remove_primary_owner'), 400);
         await admin.from('practice_members').delete().eq('practice_id', m.practiceId).eq('user_id', userId);
         await admin.from('profiles').update({ practice_id: null }).eq('id', userId).eq('practice_id', m.practiceId);
+        // A pending invitee removed before activating: stop the reminder
+        // emails (without a membership they'd look like a self-signup and
+        // get "confirm your signup" emails indefinitely).
+        const { data: removed } = await admin.auth.admin.getUserById(userId);
+        if (isPendingAccount(removed?.user)) await markInviteRevoked(admin, removed.user);
         return json({ ok: true });
       }
 

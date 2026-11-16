@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { confirmDialog } from './ui/dialogs';
+import { confirmDialog, friendlyError } from './ui/dialogs';
 import { errorText } from '../utils/apiErrors';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole } from '../types';
@@ -106,7 +106,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     try {
       file = await takePhoto();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('imaging.cameraFailed', { ns: 'chart' }));
+      setError(friendlyError(err, t('imaging.cameraFailed', { ns: 'chart' })));
       return;
     }
     if (file) await addFiles([file]);

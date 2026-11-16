@@ -1,6 +1,7 @@
 import React from 'react';
 import { supabase } from '../utils/supabaseClient';
 import i18n from '../i18n';
+import { describeError, withDetail } from '../utils/apiErrors';
 import { isAppLanguage, type AppLanguage } from '../i18n/config';
 import { browserSpeechLang } from '../utils/voice/sttConfig';
 import {
@@ -350,7 +351,7 @@ export function useVoiceCapture({ onStop, onSegment }: UseVoiceCaptureOptions = 
       } else if (name === 'NotFoundError') {
         setError(i18n.t('errors.noMic', { ns: 'voice' }));
       } else {
-        setError(err instanceof Error ? err.message : i18n.t('errors.sessionStart', { ns: 'voice' }));
+        setError(describeError(err, i18n.t('errors.sessionStart', { ns: 'voice' }), withDetail));
       }
       setRecording(false);
     }

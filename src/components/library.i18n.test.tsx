@@ -265,7 +265,7 @@ describe('ReportTemplatesModal', () => {
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     rerender(<ReportTemplatesModal open onClose={() => {}} store={store([{ id: 't1', name: 'Routine cleaning', body: 'x' }, { id: 't2', name: ' ', body: 'Quarterly note' }])} />);
     fireEvent.click(screen.getByText('⟦Untitled⟧'));
-    expect(screen.getByRole('button', { name: '⟦Save changes⟧' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: '⟦Save changes⟧' })).toBeInTheDocument();
     expect(findUntranslated(container, ALLOW)).toEqual([]);
   });
 
@@ -274,7 +274,7 @@ describe('ReportTemplatesModal', () => {
     const s = store([{ id: 't1', name: 'Routine cleaning', body: 'x' }]);
     render(<ReportTemplatesModal open onClose={() => {}} store={s} />);
     fireEvent.click(screen.getByText('Routine cleaning'));
-    fireEvent.click(screen.getByRole('button', { name: '⟦Delete⟧' }));
+    fireEvent.click(await screen.findByRole('button', { name: '⟦Delete⟧' }));
     await waitFor(() => expect(confirmDialog).toHaveBeenCalledWith(expect.objectContaining({
       title: '⟦Delete “Routine cleaning”?⟧', confirmLabel: '⟦Delete template⟧',
     })));

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { confirmDialog, toast } from './ui/dialogs';
+import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { useTeam } from '../hooks/useTeam';
 import { useReminderTemplate } from '../hooks/useReminderTemplate';
 import { useModalFocus } from '../hooks/useModalFocus';
@@ -105,7 +105,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, p
       // The screen stays; the dialog closes.
       if (!asScreen) onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('settings.saveFailed'));
+      setError(friendlyError(e, t('settings.saveFailed')));
     } finally {
       setBusy(false);
     }
@@ -181,7 +181,7 @@ export const RemindersModal: React.FC<RemindersModalProps> = ({ open, onClose, p
       <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>{t('settings.title')}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>

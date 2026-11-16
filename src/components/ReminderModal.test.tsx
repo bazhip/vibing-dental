@@ -139,3 +139,22 @@ describe('ReminderModal — iOS app', () => {
     expect(await screen.findByText('Reminder sent.')).toBeInTheDocument();
   });
 });
+
+describe('ReminderModal — Escape', () => {
+  it('closes only the composer, not the dialog underneath (My charts)', () => {
+    const onClose = vi.fn();
+    const underneath = vi.fn();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') underneath(); };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', onKey);
+    try {
+      render(<ReminderModal open onClose={onClose} {...props} />);
+      fireEvent.keyDown(document, { key: 'Escape' });
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(underneath).not.toHaveBeenCalled();
+    } finally {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('keydown', onKey);
+    }
+  });
+});

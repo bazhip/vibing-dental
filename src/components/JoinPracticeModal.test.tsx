@@ -53,3 +53,17 @@ describe('JoinPracticeModal — iOS app', () => {
     await waitFor(() => expect(onDone).toHaveBeenCalledWith(false));
   });
 });
+
+describe('JoinPracticeModal — a failed join', () => {
+  it('shows the error and can be retried (the Join button stays)', async () => {
+    flags.native = false;
+    const onDone = vi.fn();
+    invoke.mockImplementationOnce(async () => ({ data: { practiceName: 'SoCal Vet', alreadyMember: false }, error: null })) // preview
+      .mockImplementationOnce((async () => ({ data: { error: 'Server busy' }, error: null })) as never); // first join
+    render(<JoinPracticeModal token="t1" onDone={onDone} />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Join SoCal Vet' }));
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Join SoCal Vet' }));
+    await waitFor(() => expect(onDone).toHaveBeenCalledWith(true));
+  });
+});

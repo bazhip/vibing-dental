@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { confirmDialog } from './ui/dialogs';
+import { confirmDialog, friendlyError } from './ui/dialogs';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
@@ -34,6 +34,25 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const nameRef = React.useRef<HTMLInputElement>(null);
+  // What's saved (or the starting draft): edits against it are unsaved and
+  // must not be dropped silently by closing, picking another template or
+  // starting a new one.
+  const [baseline, setBaseline] = React.useState({ name: '', body: '' });
+  const dirty = name !== baseline.name || body !== baseline.body;
+  const dirtyRef = React.useRef(dirty);
+  dirtyRef.current = dirty;
+  const confirmDiscard = React.useCallback(async () => !dirtyRef.current || confirmDialog({
+    title: t('ios.sheets.discard.title', { ns: 'common' }),
+    confirmLabel: t('ios.sheets.discard.discard', { ns: 'common' }),
+    cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
+    danger: true,
+  }), [t]);
+  const busyRef = React.useRef(false);
+  const requestClose = React.useCallback(async () => {
+    if (busyRef.current) return; // not mid-save
+    if (await confirmDiscard()) onClose();
+  }, [confirmDiscard, onClose]);
+  busyRef.current = busy;
 
   // Re-seed each open: start on a fresh draft (prefilled from the
   // current report so "save what I just wrote" is one click away).
@@ -42,6 +61,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
       setSelectedId(null);
       setName('');
       setBody(draftBody);
+      setBaseline({ name: '', body: draftBody });
       setError('');
       nameRef.current?.focus();
     }
@@ -51,27 +71,33 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   React.useEffect(() => {
     if (!open || asSheet) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') void requestClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose, asSheet]);
+  }, [open, requestClose, asSheet]);
 
   if (!open) return null;
 
-  const pick = (tpl: ReportTemplate) => {
+  const pick = async (tpl: ReportTemplate) => {
+    if (tpl.id === selectedId || !(await confirmDiscard())) return;
     setSelectedId(tpl.id);
     setName(tpl.name);
     setBody(tpl.body);
+    setBaseline({ name: tpl.name, body: tpl.body });
     setError('');
   };
 
-  const startNew = () => {
+  const clearToNew = () => {
     setSelectedId(null);
     setName('');
     setBody('');
+    setBaseline({ name: '', body: '' });
     setError('');
     nameRef.current?.focus();
+  };
+  const startNew = async () => {
+    if (await confirmDiscard()) clearToNew();
   };
 
   const handleSave = async () => {
@@ -88,8 +114,11 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
         const created = await store.create(name.trim(), body);
         setSelectedId(created.id);
       }
+      // What was saved; anything typed during the save stays (and is unsaved).
+      setName((n) => (n === name ? name.trim() : n));
+      setBaseline({ name: name.trim(), body });
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('templates.saveFailed'));
+      setError(friendlyError(e, t('templates.saveFailed')));
     } finally {
       setBusy(false);
     }
@@ -107,9 +136,9 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
     setError('');
     try {
       await store.remove(selectedId);
-      startNew();
+      clearToNew();
     } catch (e) {
-      setError(e instanceof Error ? e.message : t('templates.deleteFailed'));
+      setError(friendlyError(e, t('templates.deleteFailed')));
     } finally {
       setBusy(false);
     }
@@ -120,7 +149,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
       <section className="ai-settings-section">
         <div className="report-templates__list-head">
           <span className="patient-form__label">{t('templates.saved')}</span>
-          <button type="button" className="diagram-view__action" onClick={startNew} disabled={busy}>
+          <button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
             {t('templates.new')}
           </button>
         </div>
@@ -139,7 +168,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
                       ? 'report-templates__item report-templates__item--active'
                       : 'report-templates__item'
                   }
-                  onClick={() => pick(tpl)}
+                  onClick={() => void pick(tpl)}
                   disabled={busy}
                 >
                   {tpl.name.trim() || t('templates.untitled')}
@@ -187,6 +216,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
         doneLabel={busy ? t('templates.saving') : selectedId ? t('templates.saveChanges') : t('templates.saveTemplate')}
         onDone={() => void handleSave()}
         doneDisabled={busy}
+        confirmDismiss={confirmDiscard}
       >
         <div className="ios-settings-page">
           {templatesBody}
@@ -208,11 +238,11 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   }
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
+    <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
       <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>{t('templates.title')}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>
@@ -230,7 +260,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
               {t('actions.delete', { ns: 'common' })}
             </button>
           )}
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={busy}>
+          <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={busy}>
             {t('actions.close', { ns: 'common' })}
           </button>
           <button

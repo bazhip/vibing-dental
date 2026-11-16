@@ -1309,8 +1309,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     },
     loadPdf: async (file: File): Promise<boolean> => {
       if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return false;
-      await chart.loadFromPdf(file);
-      return true;
+      // A failed import changed nothing (and said so): don't move to it.
+      return chart.loadFromPdf(file);
     },
     sendReminder: (c: CloudChartMeta) => setReminderTarget(c),
     openHistory: (chartId: string, label: string) => setHistoryFor({ id: chartId, label, fromLibrary: true }),

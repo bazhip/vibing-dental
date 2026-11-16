@@ -281,3 +281,37 @@ describe('PatientsScreen', () => {
     await waitFor(() => expect(library.newPatient).toHaveBeenCalled());
   });
 });
+
+describe('Patient visits screen: safer actions', () => {
+  beforeAll(() => {
+    window.ResizeObserver = window.ResizeObserver ?? class { observe() {} unobserve() {} disconnect() {} };
+  });
+
+  it('a double tap on New visit starts one visit', async () => {
+    let finish!: () => void;
+    const library = fakeLibrary(ROWS, '2026-11-13', { newVisit: vi.fn(() => new Promise<boolean>((r) => { finish = () => r(true); })) });
+    renderShell(library, 'patients');
+    const p = panel('patients');
+    fireEvent.click(await within(p).findByRole('button', { name: /^Max/ }));
+    await within(p).findAllByRole('button', { name: /Updated/ });
+    const plus = within(p).getByRole('button', { name: 'New visit' });
+    fireEvent.click(plus);
+    fireEvent.click(plus);
+    expect(library.newVisit).toHaveBeenCalledTimes(1);
+    await act(async () => finish());
+  });
+
+  it('a deleted visit leaves the list even if the refresh fails', async () => {
+    const library = fakeLibrary(ROWS);
+    renderShell(library, 'patients');
+    const p = panel('patients');
+    fireEvent.click(await within(p).findByRole('button', { name: /^Max/ }));
+    await within(p).findAllByRole('button', { name: /Updated/ });
+    (library.listCharts as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('offline'));
+    const mores = () => within(p).getAllByRole('button', { name: /^More actions for/ }).filter((b) => b.closest('.ios-visits'));
+    fireEvent.click(mores()[1]);
+    fireEvent.click(within(mores()[1].closest('.ios-swiperow')!.querySelector('.ios-swiperow__actions') as HTMLElement).getByRole('button', { name: 'Delete' }));
+    await act(async () => fireEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Delete visit' })));
+    await waitFor(() => expect(mores()).toHaveLength(1));
+  });
+});

@@ -79,6 +79,10 @@ Deno.serve(async (req: Request) => {
       // the test; use when the account was created/invited instead.
       const startedAt = u.invited_at ?? u.created_at;
       const meta = (u.app_metadata ?? {}) as Record<string, unknown>;
+      // Removed from the team before activating: no more emails. (Without a
+      // membership they'd otherwise look like a self-signup and get
+      // "confirm your signup" emails indefinitely.)
+      if (meta.invite_revoked_at) { note('invite_revoked'); continue; }
       const count = typeof meta.invite_reminders === 'number' ? meta.invite_reminders : 0;
       if (count >= SCHEDULE_DAYS.length) {
         // Expire invites whose final reminder warned about it.

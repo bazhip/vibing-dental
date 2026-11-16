@@ -86,7 +86,9 @@ export interface UseChartStateReturn {
 
   // ----- Whole-chart actions ------------------------------------------
   /** Read a previously-downloaded chart PDF and overwrite local state. */
-  loadFromPdf: (file: File) => Promise<void>;
+  /** Restore a chart from a ToothOps PDF. False when it couldn't (already
+   *  toasted): nothing changed. */
+  loadFromPdf: (file: File) => Promise<boolean>;
   /** Wipe all chart-related localStorage and reload — preserves auth +
    *  board selection (different key prefix). New patient. */
   resetChart: () => void;
@@ -665,7 +667,7 @@ export function useChartState(): UseChartStateReturn {
 
   // ----- Whole-chart actions -------------------------------------------
 
-  const loadFromPdf = async (file: File): Promise<void> => {
+  const loadFromPdf = async (file: File): Promise<boolean> => {
     try {
       // Loaded on demand — the PDF engine (pdf-lib) stays out of the
       // main bundle until someone actually opens a chart PDF.
@@ -725,9 +727,11 @@ export function useChartState(): UseChartStateReturn {
       }
       const name = parsed.patientInfo.patientName.trim();
       toast(name ? i18n.t('toasts.pdfImportedNamed', { ns: 'app', name }) : i18n.t('toasts.pdfImported', { ns: 'app' }), { kind: 'success' });
+      return true;
     } catch (error) {
       toast(i18n.t('errors.pdfImport', { ns: 'app' }), { kind: 'error' });
       console.error(error);
+      return false;
     }
   };
 

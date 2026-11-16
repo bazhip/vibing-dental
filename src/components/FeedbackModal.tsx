@@ -5,7 +5,7 @@ import i18n from '../i18n';
 import { supabase } from '../utils/supabaseClient';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
-import { chooseDialog, toast } from './ui/dialogs';
+import { chooseDialog, friendlyError, toast } from './ui/dialogs';
 import { useStackScreenOptions } from '../ios/Stack';
 import { Sheet } from '../ios/Sheet';
 import { isNativeApp } from '../native/platform';
@@ -73,12 +73,26 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
   const asModal = shown === 'modal';
   const { t } = useTranslation('settings');
   const modalRef = useModalFocus<HTMLFormElement>(asModal);
-  const backdrop = useBackdropDismiss(onClose);
   const [kind, setKind] = React.useState<FeedbackKind>(initialKind);
   const [message, setMessage] = React.useState('');
   const [attach, setAttach] = React.useState(!!transcript?.trim());
   const [sending, setSending] = React.useState(false);
   const [error, setError] = React.useState('');
+  // A typed message is never dropped without asking (as the app's sheet
+  // already did); not while sending, the result would land on nothing.
+  const messageRef = React.useRef(message);
+  messageRef.current = message;
+  const confirmDiscard = React.useCallback(async () =>
+    !messageRef.current.trim() ||
+    (await chooseDialog({
+      title: t('ios.sheets.discard.title', { ns: 'common' }),
+      choices: [{ value: 'discard', label: t('ios.sheets.discard.discard', { ns: 'common' }), destructive: true }],
+      cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
+    })) === 'discard', [t]);
+  const requestClose = React.useCallback(async () => {
+    if (await confirmDiscard()) onClose();
+  }, [confirmDiscard, onClose]);
+  const backdrop = useBackdropDismiss(() => { if (!sending) void requestClose(); });
 
   React.useEffect(() => {
     // The sheet handles Escape itself.
@@ -86,11 +100,11 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || sending) return;
       e.stopImmediatePropagation();
-      onClose();
+      void requestClose();
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose, sending, asModal]);
+  }, [requestClose, sending, asModal]);
 
   const submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -102,7 +116,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
       toast(t('feedback.sent'), { kind: 'success' });
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('feedback.sendFailed'));
+      setError(friendlyError(err, t('feedback.sendFailed')));
       setSending(false);
     }
   };
@@ -167,13 +181,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
         doneDisabled={sending || !message.trim()}
         confirmDismiss={async () =>
           // Not while sending: the result would land on a closed sheet.
-          !sending &&
-          (!message.trim() ||
-            (await chooseDialog({
-              title: t('ios.sheets.discard.title', { ns: 'common' }),
-              choices: [{ value: 'discard', label: t('ios.sheets.discard.discard', { ns: 'common' }), destructive: true }],
-              cancelLabel: t('ios.sheets.discard.keep', { ns: 'common' }),
-            })) === 'discard')
+          !sending && (await confirmDiscard())
         }
         className="feedback-sheet"
       >
@@ -189,13 +197,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose, section, 
       <form className="ai-settings-modal feedback-modal" ref={modalRef} tabIndex={-1} onSubmit={submit}>
         <header className="ai-settings-header">
           <h2>{t('feedback.title')}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })} disabled={sending}>×</button>
+          <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })} disabled={sending}>×</button>
         </header>
         <div className="ai-settings-body">
           {feedbackBody}
         </div>
         <footer className="ai-settings-footer">
-          <button type="button" className="diagram-view__action" onClick={onClose} disabled={sending}>{t('actions.cancel', { ns: 'common' })}</button>
+          <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={sending}>{t('actions.cancel', { ns: 'common' })}</button>
           <button type="submit" className="entry-grid__button entry-grid__button--topbar" disabled={sending || !message.trim()}>
             {sending ? t('feedback.sending') : t('feedback.send')}
           </button>
