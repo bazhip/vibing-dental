@@ -105,6 +105,7 @@
   "errors": {
     "setting": "Couldn’t save that setting. {{error}}",
     "openVisit": "Couldn’t open that visit. {{error}}",
+    "loadCharts": "Couldn’t load the charts. {{error}}",
     "newVisit": "Couldn’t start a new visit. {{error}}",
     "signOut": "Couldn’t sign out. {{error}}",
     "preview": "Couldn’t build the preview yet — the diagrams are still loading. Try again in a moment.",

@@ -105,6 +105,7 @@
   "errors": {
     "setting": "No se pudo guardar ese ajuste. {{error}}",
     "openVisit": "No se pudo abrir esa visita. {{error}}",
+    "loadCharts": "No se pudieron cargar los historiales. {{error}}",
     "newVisit": "No se pudo iniciar una nueva visita. {{error}}",
     "signOut": "No se pudo cerrar la sesión. {{error}}",
     "preview": "Aún no se pudo crear la vista previa: los diagramas siguen cargando. Inténtelo de nuevo en un momento.",

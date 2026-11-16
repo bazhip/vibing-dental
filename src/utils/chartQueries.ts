@@ -109,6 +109,30 @@ async function visitsOfPatients(due: CloudChartMeta[]): Promise<CloudChartMeta[]
   return out;
 }
 
+/** The practice's charts for these patients (the extension side panel's "today's appointments").
+ *  Matches by patient number, and by exact case-insensitive name for charts that may have no number.
+ *  De-duplicated by id. */
+export async function chartsForPatients(patients: { patientNumber: string; patientName: string }[]): Promise<CloudChartMeta[]> {
+  if (!supabase || patients.length === 0) return [];
+  const client = supabase;
+  const nums = [...new Set(patients.map((p) => p.patientNumber.trim()).filter(Boolean))];
+  const names = [...new Set(patients.map((p) => p.patientName.trim()).filter(Boolean))];
+  const chunks = <T,>(xs: T[]) => Array.from({ length: Math.ceil(xs.length / IN_CHUNK) }, (_, i) => xs.slice(i * IN_CHUNK, (i + 1) * IN_CHUNK));
+  const results = await Promise.all([
+    ...chunks(nums).map((part) => client.from('charts').select(CHART_META_COLUMNS).in('patient_number', part).range(0, 999)),
+    ...names.map((name) => client.from('charts').select(CHART_META_COLUMNS).ilike('patient_name', escapeLike(name)).range(0, 999)),
+  ]);
+  const byId = new Map<string, CloudChartMeta>();
+  for (const r of results) {
+    if (r.error) {
+      const t = i18n.getFixedT(null, 'app');
+      throw new LocalizedError(t('errors.loadCharts', { error: describeError(new Error(r.error.message), i18n.t('errors.generic', { ns: 'common' }), detailOnly) }));
+    }
+    for (const c of (r.data ?? []) as CloudChartMeta[]) byId.set(c.id, c);
+  }
+  return [...byId.values()];
+}
+
 /** One page of the practice's charts: search, filters, order and paging all run in Postgres. */
 export async function listChartsPage(q: ChartListQuery = {}): Promise<ChartListPage> {
   if (!supabase) return { rows: [], hasMore: false };

@@ -105,6 +105,7 @@
   "errors": {
     "setting": "Impossible d’enregistrer ce réglage. {{error}}",
     "openVisit": "Impossible d’ouvrir cette visite. {{error}}",
+    "loadCharts": "Impossible de charger les dossiers. {{error}}",
     "newVisit": "Impossible de démarrer une nouvelle visite. {{error}}",
     "signOut": "Impossible de se déconnecter. {{error}}",
     "preview": "Impossible de générer l’aperçu pour l’instant — les schémas sont encore en cours de chargement. Réessayez dans un instant.",

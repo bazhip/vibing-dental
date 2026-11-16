@@ -404,6 +404,10 @@
       "hash": "2a9c659d62f8",
       "status": "machine"
     },
+    "app:errors.loadCharts": {
+      "hash": "d106f0f91501",
+      "status": "machine"
+    },
     "app:errors.newVisit": {
       "hash": "fb88294aa6e1",
       "status": "machine"
@@ -11540,6 +11544,10 @@
     },
     "app:errors.damagedChart": {
       "hash": "2a9c659d62f8",
+      "status": "machine"
+    },
+    "app:errors.loadCharts": {
+      "hash": "d106f0f91501",
       "status": "machine"
     },
     "app:errors.newVisit": {
@@ -22780,6 +22788,10 @@
       "hash": "2a9c659d62f8",
       "status": "machine"
     },
+    "app:errors.loadCharts": {
+      "hash": "d106f0f91501",
+      "status": "machine"
+    },
     "app:errors.newVisit": {
       "hash": "fb88294aa6e1",
       "status": "machine"
@@ -34016,6 +34028,10 @@
     },
     "app:errors.damagedChart": {
       "hash": "2a9c659d62f8",
+      "status": "machine"
+    },
+    "app:errors.loadCharts": {
+      "hash": "d106f0f91501",
       "status": "machine"
     },
     "app:errors.newVisit": {
