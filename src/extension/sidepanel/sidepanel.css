@@ -48,3 +48,9 @@ body { margin: 0; }
 .sp-chartview .pims-dialog__result--failed span { color: var(--sp-error); }
 .sp-chartview .pims-dialog__link { font: inherit; background: none; border: none; padding: 0; color: var(--sp-accent); cursor: pointer; text-decoration: underline; align-self: flex-start; }
 .sp-possible { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed var(--sp-border); border-radius: 8px; }
+.sp-today { display: flex; flex-direction: column; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--sp-border); }
+.sp-today__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sp-appt { cursor: default; }
+.sp-appt__time { font-variant-numeric: tabular-nums; margin-right: 4px; }
+.sp-appt__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 4px; }
+.sp-appt__actions .sp-secondary { padding: 4px 10px; }

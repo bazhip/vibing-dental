@@ -37,8 +37,8 @@ const pims = vi.hoisted(() => {
       inspect: async () => info,
       send: async () => ({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] }),
       diagnose: async () => null,
-      appointments: async () => ({ tab: null, result: null }),
-      startChart: async () => ({ ok: true }),
+      appointments: async (): Promise<unknown> => ({ tab: null, result: null }),
+      startChart: async () => ({ ok: false }),
       takePendingPatient: async () => null,
     },
   };
@@ -52,10 +52,15 @@ vi.mock('../../hooks/usePimsFieldMap', () => ({
 }));
 vi.mock('../../utils/edgeFunctions', () => ({ markPimsSent: async () => ({ sentAt: '2026-11-15T10:00:00Z' }) }));
 vi.mock('../../utils/chartQueries', async () => {
+  const { localDateISO } = await import('../../utils/localDate');
   const { EMPTY_EXAM_FINDINGS, EMPTY_NERVE_BLOCKS } = await import('../../types');
   const { normalizeSnapshot } = await import('../../hooks/useChartState');
   return {
     listChartsPage: async () => ({ rows: [pims.chart], hasMore: true }),
+    chartsForPatients: async () => [
+      { ...pims.chart, id: 'today', patient_number: '1', chart_date: localDateISO() },
+      { ...pims.chart, id: 'old', patient_number: '2', chart_date: '2026-01-01' },
+    ],
     loadChartSnapshot: async () => ({
       snapshot: normalizeSnapshot({
         patientInfo: {
@@ -76,6 +81,7 @@ import { SidePanelApp } from './SidePanelApp';
 import { SignIn } from './SignIn';
 import { ChartList } from './ChartList';
 import { ChartSend } from './ChartSend';
+import { TodaysPatients } from './TodaysPatients';
 
 beforeEach(async () => {
   fake.current = fake.client;
@@ -152,6 +158,42 @@ describe('side panel (pseudo-locale)', () => {
     render(<ChartList inspect={loose as never} onPick={() => undefined} />);
     await screen.findByTestId('possible-match');
     expect(findUntranslated(document.body, [/Bella/, /Jones/, /Jane Smith/, /2026/])).toEqual([]);
+  });
+
+  describe('today\'s patients', () => {
+    const tab = { id: 3, title: 'ezyVet' };
+    const appt = (n: string, name: string, start: string) => ({ appointmentId: n, start, patientName: name, patientNumber: n, ownerName: 'Smith, Jane', vet: 'Dr Lee' });
+    const allow = [/Bella/, /Max/, /Rex/, /Smith, Jane/, /Dr Lee/, /\d{1,2}[:.h]\d{2}/, /AM|PM/];
+    afterEach(() => { pims.transport.appointments = async () => ({ tab: null, result: null }); });
+
+    it.each([
+      ['no ezyVet tab', { tab: null, result: null }],
+      ['not on the calendar', { tab, result: { ok: false, code: 'not_on_calendar' } }],
+      ['an error', { tab, result: { ok: false, code: 'no_calendar_refresh' } }],
+      ['an empty day', { tab, result: { ok: true, appointments: [], failures: [] } }],
+    ])('%s', async (_label, answer) => {
+      pims.transport.appointments = async () => answer;
+      render(<TodaysPatients userId="u1" />);
+      await waitFor(() => expect(screen.queryByRole('status')).toBeNull());
+      expect(findUntranslated(document.body, allow)).toEqual([]);
+    });
+
+    it('rows with every action, unread appointments and a failed hand-over', async () => {
+      pims.transport.appointments = async () => ({
+        tab,
+        result: {
+          ok: true,
+          appointments: [appt('1', 'Bella', '2026-11-16T09:00:00'), appt('2', 'Max', '2026-11-16T09:30:00'), appt('3', 'Rex', '2026-11-16T10:00:00')],
+          failures: [{ code: 'tooltip_empty', startsAt: null }, { code: 'tooltip_empty', startsAt: null }],
+        },
+      });
+      render(<TodaysPatients userId="u1" />);
+      await waitFor(() => expect(document.querySelectorAll('.sp-appt')).toHaveLength(3));
+      expect(document.querySelectorAll('.sp-appt__actions button')).toHaveLength(4);
+      fireEvent.click(document.querySelector('.sp-appt__actions .sp-link') as HTMLButtonElement);
+      await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
+      expect(findUntranslated(document.body, allow)).toEqual([]);
+    });
   });
 
   it.each(['off', 'error', 'loading'] as const)('chart view with the practice flag %s', async (flag) => {

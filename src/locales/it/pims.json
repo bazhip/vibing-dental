@@ -117,6 +117,29 @@
       "flagLoading": "Verifica dell’attivazione dell’invio per il Suo studio…",
       "flagFailed": "Impossibile verificare se l’invio a ezyVet è attivo per il Suo studio.",
       "sendOff": "L’invio a ezyVet non è attivo per il Suo studio."
+    },
+    "today": {
+      "title": "Pazienti di oggi (ezyVet)",
+      "refresh": "Aggiorna",
+      "load": "Carica i pazienti di oggi",
+      "loadHint": "La Sua scheda ezyVet passerà al calendario.",
+      "noTab": "Apra ezyVet per vedere i pazienti di oggi.",
+      "empty": "Nessun paziente nell’agenda ezyVet di oggi.",
+      "failed_one": "Non è stato possibile leggere {{count}} appuntamento.",
+      "failed_many": "Non è stato possibile leggere {{count}} appuntamenti.",
+      "failed_other": "Non è stato possibile leggere {{count}} appuntamenti.",
+      "start": "Crea cartella",
+      "open": "Apri cartella",
+      "newVisit": "Nuova visita",
+      "startAnyway": "Crea nuova cartella",
+      "loading": "Caricamento dei pazienti di oggi…",
+      "errors": {
+        "no_dashboard": "Impossibile trovare la Dashboard di ezyVet.",
+        "no_date_input": "Impossibile impostare la data nel calendario di ezyVet.",
+        "no_calendar_refresh": "Il calendario di ezyVet non risponde. Ricarichi ezyVet e riprovi.",
+        "unknown": "Impossibile leggere l’agenda ezyVet di oggi."
+      },
+      "startFailed": "Impossibile aprire ToothOps. Riprovi."
     }
   },
   "send": {
