@@ -8840,6 +8840,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -8994,6 +9006,10 @@
     },
     "report:noProblems": {
       "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "report:ourPractice": {
@@ -9156,6 +9172,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -9174,6 +9210,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -20238,6 +20290,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -20392,6 +20456,10 @@
     },
     "report:noProblems": {
       "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "report:ourPractice": {
@@ -20554,6 +20622,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -20572,6 +20660,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -31664,6 +31768,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -31818,6 +31934,10 @@
     },
     "report:noProblems": {
       "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "report:ourPractice": {
@@ -31980,6 +32100,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -31998,6 +32138,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -43090,6 +43246,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -43244,6 +43412,10 @@
     },
     "report:noProblems": {
       "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "report:ourPractice": {
@@ -43406,6 +43578,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -43424,6 +43616,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {
@@ -45680,6 +45888,18 @@
       "hash": "583338262d37",
       "status": "machine"
     },
+    "report:extent.many": {
+      "hash": "964b84d73309",
+      "status": "machine"
+    },
+    "report:extent.most": {
+      "hash": "5ea922398c8d",
+      "status": "machine"
+    },
+    "report:extent.some": {
+      "hash": "f4cbc6215f1d",
+      "status": "machine"
+    },
     "report:extractionsLead": {
       "hash": "01def1b693b7",
       "status": "machine"
@@ -45834,6 +46054,10 @@
     },
     "report:noProblems": {
       "hash": "d4fc585cd5af",
+      "status": "machine"
+    },
+    "report:otherFindings": {
+      "hash": "8ddf56a09077",
       "status": "machine"
     },
     "report:ourPractice": {
@@ -45996,6 +46220,26 @@
       "hash": "9c569b90d5d1",
       "status": "machine"
     },
+    "report:severity.mild": {
+      "hash": "8290c5837387",
+      "status": "machine"
+    },
+    "report:severity.moderate": {
+      "hash": "dff22754ace5",
+      "status": "machine"
+    },
+    "report:severity.range": {
+      "hash": "3fcc4c6b8295",
+      "status": "machine"
+    },
+    "report:severity.severe": {
+      "hash": "3bb61db1bc03",
+      "status": "machine"
+    },
+    "report:severity.single": {
+      "hash": "ff4a6aa8a081",
+      "status": "machine"
+    },
     "report:species.canine": {
       "hash": "0eb129bf9459",
       "status": "machine"
@@ -46014,6 +46258,22 @@
     },
     "report:species.feline-deciduous": {
       "hash": "12d6736f4d23",
+      "status": "machine"
+    },
+    "report:summary.calculus": {
+      "hash": "c76aa862b29f",
+      "status": "machine"
+    },
+    "report:summary.gingivitis": {
+      "hash": "d7aa7f09db4d",
+      "status": "machine"
+    },
+    "report:summary.hyperplasia": {
+      "hash": "de748e3154b2",
+      "status": "machine"
+    },
+    "report:summary.recession": {
+      "hash": "183d2efa53af",
       "status": "machine"
     },
     "report:tooth.deciduous": {

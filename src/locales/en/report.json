@@ -134,5 +134,24 @@
     "RCT": "root canal treatment",
     "VPT": "treatment to keep the tooth alive",
     "PRO": "professional cleaning (scaling and polishing)"
-  }
+  },
+  "summary": {
+    "gingivitis": "Gum inflammation on {{extent}}{{severity}}",
+    "calculus": "Tartar on {{extent}}{{severity}}",
+    "recession": "Receding gums on {{extent}}",
+    "hyperplasia": "Overgrown gum tissue on {{extent}}"
+  },
+  "extent": {
+    "most": "most teeth",
+    "many": "many teeth",
+    "some": "some teeth"
+  },
+  "severity": {
+    "mild": "mild",
+    "moderate": "moderate",
+    "severe": "severe",
+    "single": " ({{level}})",
+    "range": " ({{from}} to {{to}})"
+  },
+  "otherFindings": "Other findings"
 }

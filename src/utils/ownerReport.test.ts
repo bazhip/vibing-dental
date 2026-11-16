@@ -3,6 +3,7 @@ import {
   toothLayName,
   DEFAULT_HOMECARE_TIPS,
   hasSection,
+  teethWithFindings,
 } from './ownerReport';
 import { DEFAULT_TEMPLATE, defaultTemplate, normalizeConfig } from './ownerReportConfig';
 import { buildOwnerReportPdfBytes, pdfSafe } from './ownerReportPdf';
@@ -334,4 +335,112 @@ it('a horse chart gets the equine home-care tips, not brushing and chews', () =>
   expect(model.homecareTips).toEqual(reportStrings('en').homecareTipsEquine);
   expect(model.homecareTips.join(' ')).not.toMatch(/brush|VOHC/i);
   expect(model.speciesLabel).toBe('Horse');
+});
+
+describe('concise findings', () => {
+  // A canine mouth shaped like a real biopsy visit: gum inflammation on
+  // every tooth, tartar on seven, four fractures noted, two notes with no
+  // tooth (an oral mass and the biopsy), two teeth already missing.
+  function canine(fields: Record<number, Partial<Record<'gingivitis' | 'calculus' | 'recession' | 'hyperplasia' | 'mobility', string>>>, missing: number[] = []): ChartSnapshot {
+    const snap = baseSnapshot();
+    snap.species = 'canine';
+    snap.toothData = getInitialToothData('canine').map((t) => ({ ...t, ...(fields[t.triadan] ?? {}) }));
+    snap.preMarks = Object.fromEntries(missing.map((t) => [t, 'missing' as const]));
+    return snap;
+  }
+  const comment = (id: string, text: string, anchorTriadan: number | null) =>
+    ({ id, text, anchorTriadan, x: 0, y: 0, width: 100, height: 40 });
+
+  function biopsyVisit(): ChartSnapshot {
+    const fields: Record<number, Record<string, string>> = {};
+    for (const t of getInitialToothData('canine')) {
+      if (t.triadan === 305 || t.triadan === 405) continue;
+      fields[t.triadan] = { gingivitis: [310, 311, 410, 411].includes(t.triadan) ? '1' : '2' };
+    }
+    for (const [t, c] of Object.entries({ 104: '1', 204: '1', 208: '2', 209: '1', 210: '1', 307: '1', 308: '1' })) {
+      fields[Number(t)].calculus = c;
+    }
+    fields[107].hyperplasia = '2';
+    const snap = canine(fields, [305, 405]);
+    snap.preComments = [
+      comment('a1', 'T/FX/CCF', 104),
+      comment('a2', 'T/FX/UCF', 106),
+      comment('a3', 'T/FX/UCF', 406),
+      comment('a4', 'Generalized AB', null),
+      comment('a5', 'T/FX/UCRF', 205),
+    ];
+    snap.postComments = [comment('c1', 'B/I with 8mm punch and LN asp/cytology', null)];
+    snap.patientInfo.complaint = 'Oral mass';
+    return snap;
+  }
+
+  it('a biopsy visit: two summary lines, five teeth, two other findings, no raw codes', () => {
+    const model = buildOwnerReportModel(biopsyVisit());
+    expect(model.summaryLines).toEqual([
+      'Gum inflammation on most teeth (mild to moderate)',
+      'Tartar on some teeth (mild to moderate)',
+    ]);
+    expect(teethWithFindings(model).map((t) => t.triadan)).toEqual([104, 106, 107, 205, 406]);
+    expect(model.teeth.find((t) => t.triadan === 107)!.notes).toEqual(['overgrown gum tissue (2)']);
+    expect(model.otherFindings).toHaveLength(2);
+    expect(JSON.stringify(model)).not.toContain('T/FX/');
+  });
+
+  it('5 teeth with a finding stay per tooth; 6 become one line', () => {
+    const five = canine(Object.fromEntries([101, 102, 103, 104, 105].map((t) => [t, { gingivitis: '1' }])));
+    expect(buildOwnerReportModel(five).summaryLines).toEqual([]);
+    expect(teethWithFindings(buildOwnerReportModel(five))).toHaveLength(5);
+    const six = canine(Object.fromEntries([101, 102, 103, 104, 105, 106].map((t) => [t, { gingivitis: '1' }])));
+    expect(buildOwnerReportModel(six).summaryLines).toEqual(['Gum inflammation on some teeth (mild)']);
+    expect(teethWithFindings(buildOwnerReportModel(six))).toHaveLength(0);
+  });
+
+  it('a small chart (under 12 teeth present) summarises at half', () => {
+    const all = getInitialToothData('canine').map((t) => t.triadan);
+    const present = all.slice(0, 10);
+    const snap = canine(Object.fromEntries(present.slice(0, 5).map((t) => [t, { gingivitis: '2' }])), all.slice(10));
+    expect(buildOwnerReportModel(snap).summaryLines).toEqual(['Gum inflammation on many teeth (moderate)']);
+  });
+
+  it('a severe tooth inside a milder mouth keeps its own line', () => {
+    const fields: Record<number, Record<string, string>> = {};
+    getInitialToothData('canine').slice(0, 30).forEach((t, i) => { fields[t.triadan] = { gingivitis: i % 2 ? '1' : '2' }; });
+    fields[108] = { gingivitis: '3' };
+    const model = buildOwnerReportModel(canine(fields));
+    expect(model.summaryLines[0]).toBe('Gum inflammation on many teeth (mild to severe)');
+    expect(model.teeth.find((t) => t.triadan === 108)!.notes).toContain('gum inflammation (grade 3)');
+  });
+
+  it('zeros are not findings and never print', () => {
+    const snap = canine(Object.fromEntries(getInitialToothData('canine').map((t) => [t.triadan, { gingivitis: '0', calculus: '0' }])));
+    const model = buildOwnerReportModel(snap);
+    expect(model.summaryLines).toEqual([]);
+    expect(teethWithFindings(model)).toEqual([]);
+  });
+
+  it('millimetre fields summarise without severity words', () => {
+    const snap = canine(Object.fromEntries(getInitialToothData('canine').slice(0, 10).map((t) => [t.triadan, { recession: '2' }])));
+    expect(buildOwnerReportModel(snap).summaryLines).toEqual(['Receding gums on some teeth']);
+  });
+
+  it('a template that hides grades has no severity words', () => {
+    const template = { ...defaultTemplate('en'), showGrades: false };
+    const model = buildOwnerReportModel(biopsyVisit(), { template });
+    expect(model.summaryLines).toEqual(['Gum inflammation on most teeth', 'Tartar on some teeth']);
+  });
+
+  it('a non-numeric grade counts toward the threshold but adds no severity', () => {
+    const fields = Object.fromEntries(getInitialToothData('canine').slice(0, 6).map((t, i) => [t.triadan, { gingivitis: i === 0 ? '2+' : '1' }]));
+    const model = buildOwnerReportModel(canine(fields));
+    expect(model.summaryLines).toEqual(['Gum inflammation on some teeth (mild)']);
+    expect(JSON.stringify(model)).not.toContain('NaN');
+  });
+
+  it('auto-copied grid comments never reach the owner report', () => {
+    const snap = canine({ 104: { mobility: '1' } });
+    snap.preComments = [comment('grid-104', 'Mobility 1', 104), comment('grid-mouth', 'Whole mouth — Gingivitis 2', null)];
+    const model = buildOwnerReportModel(snap);
+    expect(model.teeth.find((t) => t.triadan === 104)!.notes).toEqual(['loose tooth (mobility 1)']);
+    expect(model.otherFindings).toEqual([]);
+  });
 });

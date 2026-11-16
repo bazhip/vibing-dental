@@ -10,7 +10,9 @@ import {
   isCustomSection,
   resolveTemplate,
 } from './ownerReportConfig';
-import { ReportLocale, formatReportDate, reportStrings } from './ownerReportI18n';
+import { ReportLocale, SUMMARY_FIELDS, SummaryExtent, SummaryField, formatReportDate, reportStrings } from './ownerReportI18n';
+import { ownerFriendlyText } from './ownerReportCodes';
+import { isGridComment } from './gridComments';
 
 /**
  * Owner report model — the chart's structured findings translated into
@@ -69,9 +71,14 @@ export interface OwnerReportModel {
   alreadyMissing: string[];
   /** Lay names of teeth extracted during this visit. */
   extracted: string[];
+  /** Mouth-wide findings, one line each ("Gum inflammation on most teeth
+   *  (mild to moderate)"). Those fields are left out of `teeth` notes. */
+  summaryLines: string[];
   /** Per-tooth findings (teeth with nothing recorded are omitted —
    *  standard charting convention: blank means healthy). */
   teeth: OwnerReportTooth[];
+  /** The vet's notes not anchored to a tooth, codes in plain words. */
+  otherFindings: string[];
   /** Abnormal oral-exam areas with their comments. */
   examNotes: { area: string; comment: string }[];
 }
@@ -174,22 +181,71 @@ export function buildOwnerReportModel(
     if (mark === 'extracted') extractedSet.add(Number(key));
   }
 
-  // Comments anchored to a tooth join that tooth's notes; the vet wrote
-  // them for the record, so they carry through verbatim.
+  // The vet's notes: anchored ones join that tooth's notes, the rest are
+  // "other findings". AVDC codes read in plain words. Auto-copied grid
+  // comments are left out: they repeat the grid (in English).
+  const plain = (text: string) => ownerFriendlyText(text, locale, snapshot.species);
   const commentsByTooth = new Map<number, string[]>();
+  const otherFindings: string[] = [];
   for (const comment of [...(snapshot.preComments ?? []), ...(snapshot.postComments ?? [])]) {
-    if (comment.anchorTriadan == null || !comment.text.trim()) continue;
+    if (isGridComment(comment) || !comment.text.trim()) continue;
+    if (comment.anchorTriadan == null) {
+      otherFindings.push(plain(comment.text.trim()));
+      continue;
+    }
     const list = commentsByTooth.get(comment.anchorTriadan) ?? [];
-    list.push(comment.text.trim());
+    list.push(plain(comment.text.trim()));
     commentsByTooth.set(comment.anchorTriadan, list);
+  }
+
+  // Mouth-wide findings: a periodontal finding on enough teeth becomes one
+  // line instead of a note on every tooth.
+  const valueOf = (raw: unknown): string => {
+    const v = typeof raw === 'string' ? raw.trim() : '';
+    return v === '0' ? '' : v;
+  };
+  const gone = new Set<number>([
+    ...Object.entries(snapshot.preMarks ?? {}).filter(([, m]) => m === 'missing').map(([k]) => Number(k)),
+    ...extractedSet,
+  ]);
+  const presentCount = (snapshot.toothData ?? []).filter((tooth) => !gone.has(tooth.triadan)).length;
+  const summarised = new Map<SummaryField, Set<number>>(); // field → outlier teeth that keep their note
+  const summaryLines: string[] = [];
+  for (const field of SUMMARY_FIELDS) {
+    const found = (snapshot.toothData ?? [])
+      .map((tooth) => ({ triadan: tooth.triadan, value: valueOf(tooth[field]) }))
+      .filter((f) => f.value);
+    const needed = presentCount < 12 ? Math.max(1, Math.ceil(presentCount / 2)) : 6;
+    if (found.length < needed) continue;
+    const share = presentCount ? found.length / presentCount : 1;
+    const extent: SummaryExtent = share >= 0.75 ? 'most' : share >= 0.4 ? 'many' : 'some';
+    const graded = field === 'gingivitis' || field === 'calculus';
+    const outliers = new Set<number>();
+    let severity = '';
+    if (graded) {
+      const levels = found.filter((f) => /^\d+$/.test(f.value)).map((f) => Math.min(3, Number(f.value)) as 1 | 2 | 3);
+      const severe = levels.filter((l) => l === 3).length;
+      // Severe teeth stand out when most of the summarised teeth are milder.
+      if (severe > 0 && severe < levels.length / 2) {
+        for (const f of found) if (/^\d+$/.test(f.value) && Number(f.value) >= 3) outliers.add(f.triadan);
+      }
+      if (template.showGrades && levels.length) {
+        const lo = Math.min(...levels) as 1 | 2 | 3;
+        const hi = Math.max(...levels) as 1 | 2 | 3;
+        severity = lo === hi ? t.severitySingle(t.severityWord(lo)) : t.severityRange(t.severityWord(lo), t.severityWord(hi));
+      }
+    }
+    summarised.set(field, outliers);
+    summaryLines.push(t.summaryLine(field, extent, severity));
   }
 
   const teeth: OwnerReportTooth[] = [];
   for (const tooth of snapshot.toothData ?? []) {
     const notes: string[] = [];
     for (const field of FIELD_ORDER) {
-      const raw = tooth[field];
-      let value = typeof raw === 'string' ? raw.trim() : '';
+      let value = valueOf(tooth[field]);
+      const outliers = summarised.get(field as SummaryField);
+      if (outliers && !outliers.has(tooth.triadan)) continue;
       // Per-root pockets ("M4 D6") read as the deepest one for owners.
       if (field === 'pocket' && parseRootPockets(value)) value = String(deepestPocket(value) ?? value);
       if (value) notes.push(template.showGrades ? t.fieldPhrases[field](value) : t.fieldPlain[field]);
@@ -265,7 +321,9 @@ export function buildOwnerReportModel(
     extraNotes: (overrides.extraNotes ?? '').trim(),
     alreadyMissing,
     extracted: [...extractedSet].sort((a, b) => a - b).map(layName),
+    summaryLines,
     teeth,
+    otherFindings,
     examNotes,
   };
 }

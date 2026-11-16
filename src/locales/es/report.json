@@ -134,5 +134,24 @@
     "RCT": "tratamiento de conducto",
     "VPT": "tratamiento para mantener vivo el diente",
     "PRO": "limpieza profesional (sarro y pulido)"
-  }
+  },
+  "summary": {
+    "gingivitis": "Inflamación de las encías en {{extent}}{{severity}}",
+    "calculus": "Sarro en {{extent}}{{severity}}",
+    "recession": "Retracción de las encías en {{extent}}",
+    "hyperplasia": "Encía agrandada en {{extent}}"
+  },
+  "extent": {
+    "most": "la mayoría de los dientes",
+    "many": "muchos dientes",
+    "some": "algunos dientes"
+  },
+  "severity": {
+    "mild": "leve",
+    "moderate": "moderado",
+    "severe": "grave",
+    "single": " (grado {{level}})",
+    "range": " (grado {{from}} a {{to}})"
+  },
+  "otherFindings": "Otros hallazgos"
 }

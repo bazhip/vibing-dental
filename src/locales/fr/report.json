@@ -134,5 +134,24 @@
     "RCT": "un traitement de canal",
     "VPT": "un traitement pour garder la dent vivante",
     "PRO": "un détartrage et polissage professionnels"
-  }
+  },
+  "summary": {
+    "gingivitis": "Inflammation des gencives sur {{extent}}{{severity}}",
+    "calculus": "Tartre sur {{extent}}{{severity}}",
+    "recession": "Rétraction des gencives sur {{extent}}",
+    "hyperplasia": "Excès de tissu gingival sur {{extent}}"
+  },
+  "extent": {
+    "most": "la plupart des dents",
+    "many": "de nombreuses dents",
+    "some": "certaines dents"
+  },
+  "severity": {
+    "mild": "léger",
+    "moderate": "modéré",
+    "severe": "sévère",
+    "single": " (stade {{level}})",
+    "range": " (stade {{from}} à {{to}})"
+  },
+  "otherFindings": "Autres observations"
 }

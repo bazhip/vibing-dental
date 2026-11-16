@@ -134,5 +134,24 @@
     "RCT": "trattamento canalare",
     "VPT": "trattamento per mantenere vitale il dente",
     "PRO": "pulizia professionale (detartrasi e lucidatura)"
-  }
+  },
+  "summary": {
+    "gingivitis": "Infiammazione delle gengive su {{extent}}{{severity}}",
+    "calculus": "Tartaro su {{extent}}{{severity}}",
+    "recession": "Recessione gengivale su {{extent}}",
+    "hyperplasia": "Gengiva ingrossata su {{extent}}"
+  },
+  "extent": {
+    "most": "la maggior parte dei denti",
+    "many": "molti denti",
+    "some": "alcuni denti"
+  },
+  "severity": {
+    "mild": "lieve",
+    "moderate": "moderato",
+    "severe": "grave",
+    "single": " (grado {{level}})",
+    "range": " (grado da {{from}} a {{to}})"
+  },
+  "otherFindings": "Altri riscontri"
 }

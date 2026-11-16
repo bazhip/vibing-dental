@@ -134,5 +134,24 @@
     "RCT": "tratamento de canal",
     "VPT": "tratamento para manter o dente vivo",
     "PRO": "limpeza profissional (destartarização e polimento)"
-  }
+  },
+  "summary": {
+    "gingivitis": "Inflamação das gengivas {{extent}}{{severity}}",
+    "calculus": "Tártaro {{extent}}{{severity}}",
+    "recession": "Retração das gengivas {{extent}}",
+    "hyperplasia": "Gengiva aumentada {{extent}}"
+  },
+  "extent": {
+    "most": "na maioria dos dentes",
+    "many": "em muitos dentes",
+    "some": "em alguns dentes"
+  },
+  "severity": {
+    "mild": "ligeiro",
+    "moderate": "moderado",
+    "severe": "grave",
+    "single": " (grau {{level}})",
+    "range": " (grau {{from}} a {{to}})"
+  },
+  "otherFindings": "Outros achados"
 }

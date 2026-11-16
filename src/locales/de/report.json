@@ -134,5 +134,24 @@
     "RCT": "Wurzelbehandlung",
     "VPT": "Behandlung zur Erhaltung des lebenden Zahns",
     "PRO": "professionelle Zahnreinigung (Zahnstein entfernen und polieren)"
-  }
+  },
+  "summary": {
+    "gingivitis": "Zahnfleischentzündung an {{extent}}{{severity}}",
+    "calculus": "Zahnstein an {{extent}}{{severity}}",
+    "recession": "Zahnfleischrückgang an {{extent}}",
+    "hyperplasia": "Zahnfleischwucherung an {{extent}}"
+  },
+  "extent": {
+    "most": "den meisten Zähnen",
+    "many": "vielen Zähnen",
+    "some": "einigen Zähnen"
+  },
+  "severity": {
+    "mild": "leicht",
+    "moderate": "mittelgradig",
+    "severe": "hochgradig",
+    "single": " ({{level}})",
+    "range": " ({{from}} bis {{to}})"
+  },
+  "otherFindings": "Weitere Befunde"
 }
