@@ -1056,15 +1056,16 @@ export function drawTreatmentReportField(
 
 /** Draws the nerve-block table and returns the y (in inches from the page
  *  top) of its bottom edge, so the caller can place the diagram beneath it
- *  without overlap (the "Other" row grows to fit wrapped free text). */
+ *  without overlap (the "Other" row grows to fit wrapped free text).
+ *  Only the blocks that were given (a dose on either side) are listed, and
+ *  "Other" only when it has text; with nothing given the card is left out
+ *  and the returned bottom is the card's top. */
 export function drawNerveBlockTable(
   page: PDFPage,
   nerveBlocks: NerveBlocks,
   bold: PDFFont,
   regular: PDFFont,
   isVca: boolean,
-  /** Rows the person hides (chart settings) — left out when empty. */
-  hiddenRows: readonly string[] = [],
   /** The chart's custom blocks (extra rows) and fields (lines at the top
    *  of the "Other" row) — printed only when filled. */
   custom?: CustomAnesthesia,
@@ -1084,27 +1085,26 @@ export function drawNerveBlockTable(
 
   type LR = { kind: 'lr'; label: string; right: string; left: string };
   type Free = { kind: 'free'; label: string; value: string };
-  // Caudal maxillary prints only when used, so charts without it keep
-  // the original page-2 layout.
-  const caudal = { right: nerveBlocks.caudalMaxillaryRight || '', left: nerveBlocks.caudalMaxillaryLeft || '' };
-  // A row the person hides is left out only while it's empty.
-  const keep = (id: string, r: { right: string; left: string }) => !hiddenRows.includes(id) || !!(r.right || r.left);
-  const lr = (id: string, label: string, right: string, left: string): LR[] =>
-    keep(id, { right, left }) ? [{ kind: 'lr', label, right, left }] : [];
-  const rows: Array<LR | Free> = [
-    ...lr('infraorbital', t('anesthesia.blocks.infraorbital'), nerveBlocks.infraorbitalRight || '', nerveBlocks.infraorbitalLeft || ''),
-    ...(caudal.right || caudal.left ? [{ kind: 'lr' as const, label: t('anesthesia.blocks.caudalMaxillary'), ...caudal }] : []),
-    ...lr('inferiorAlveolar', t('anesthesia.blocks.inferiorAlveolar'), nerveBlocks.inferiorAlveolarRight || '', nerveBlocks.inferiorAlveolarLeft || ''),
-    ...lr('mental', t('anesthesia.blocks.mental'), nerveBlocks.mentalRight || '', nerveBlocks.mentalLeft || ''),
-    ...filledBlocks(custom).map((b): LR => ({ kind: 'lr', label: b.label || i18n.getFixedT(lng, 'chart')('customAnesthesia.block'), right: b.right, left: b.left })),
-    { kind: 'free', label: t('anesthesia.other'), value: [...fieldLines(custom, lng), (nerveBlocks.other || '').trim()].filter(Boolean).join('\n') },
+  const lr = (label: string, right = '', left = ''): LR[] =>
+    right.trim() || left.trim() ? [{ kind: 'lr', label, right: right.trim(), left: left.trim() }] : [];
+  const lrRows: LR[] = [
+    ...lr(t('anesthesia.blocks.infraorbital'), nerveBlocks.infraorbitalRight, nerveBlocks.infraorbitalLeft),
+    ...lr(t('anesthesia.blocks.caudalMaxillary'), nerveBlocks.caudalMaxillaryRight, nerveBlocks.caudalMaxillaryLeft),
+    ...lr(t('anesthesia.blocks.inferiorAlveolar'), nerveBlocks.inferiorAlveolarRight, nerveBlocks.inferiorAlveolarLeft),
+    ...lr(t('anesthesia.blocks.mental'), nerveBlocks.mentalRight, nerveBlocks.mentalLeft),
+    ...filledBlocks(custom).flatMap((b) => lr(b.label || i18n.getFixedT(lng, 'chart')('customAnesthesia.block'), b.right, b.left)),
   ];
+  const otherValue = [...fieldLines(custom, lng), (nerveBlocks.other || '').trim()].filter(Boolean).join('\n');
+  // Nothing given: no card at all (an empty table says nothing).
+  if (lrRows.length === 0 && !otherValue) return NERVE_BLOCK_BOX.yTopIn;
+  const otherRows: Free[] = otherValue ? [{ kind: 'free', label: t('anesthesia.other'), value: otherValue }] : [];
+  const rows: Array<LR | Free> = [...lrRows, ...otherRows];
 
-  // The free-text "Other" row (always last) grows to fit wrapped content
-  // instead of clipping; the L/R rows stay one line tall. Computed first
-  // so the card can be sized before anything draws.
-  const lrCount = rows.length - 1;
-  const otherRow = rows[rows.length - 1] as Free;
+  // The free-text "Other" row (last, when present) grows to fit wrapped
+  // content instead of clipping; the L/R rows stay one line tall. Computed
+  // first so the card can be sized before anything draws.
+  const lrCount = lrRows.length;
+  const otherRow = otherRows[0] ?? { kind: 'free', label: '', value: '' };
   // The "Other" note ignores the L/R column grid — it starts right after
   // the short "Other" label and uses the full remaining row width (the wide
   // label column would otherwise be wasted whitespace).
@@ -1161,7 +1161,7 @@ export function drawNerveBlockTable(
     ? Math.max(rowH, drugLines.length * drugLineHeight + (rowH - bodySize))
     : 0;
 
-  const totalH = drugRowH + rowH * (lrCount + 1) + otherRowH;
+  const totalH = drugRowH + rowH * (lrCount + 1) + (otherRows.length ? otherRowH : 0);
 
   // One card: title band + table inside a single rounded frame.
   const cardTop = yTop + 0.20 * PT_PER_IN;
@@ -1206,12 +1206,13 @@ export function drawNerveBlockTable(
     }
   }
   const otherTopY = tableTop - rowH * (lrCount + 1); // below header + L/R rows
-  if (lrCount % 2 === 1) {
+  if (otherRows.length && lrCount % 2 === 1) {
     page.drawRectangle({ x: x + 0.6, y: otherTopY - otherRowH, width: totalW - 1.2, height: otherRowH, color: PALETTE.rowAlt });
   }
 
-  // Interior gridlines — the card frame is the outer border.
-  for (let i = 1; i <= lrCount + 1; i++) {
+  // Interior gridlines — the card frame is the outer border (so no line
+  // under the last row when there's no "Other" row).
+  for (let i = 1; i <= (otherRows.length ? lrCount + 1 : lrCount); i++) {
     hlineLight(page, x, x + totalW, tableTop - rowH * i);
   }
   const lrBottomY = tableTop - rowH * (lrCount + 1);
@@ -1235,11 +1236,9 @@ export function drawNerveBlockTable(
 
   // Other row — label aligned to the first line, value wrapped beneath.
   const otherFirstBaseline = otherTopY - otherLineHeight + (otherLineHeight - bodySize) / 2 + 1.5;
-  page.drawText(otherRow.label, {
-    x: x + padX,
-    y: otherLines.length > 0 ? otherFirstBaseline : otherTopY - rowH + baselineOffset,
-    size: bodySize, font: regular, color: PALETTE.text,
-  });
+  if (otherRows.length) {
+    page.drawText(otherRow.label, { x: x + padX, y: otherFirstBaseline, size: bodySize, font: regular, color: PALETTE.text });
+  }
   let lineY = otherFirstBaseline;
   for (const line of otherLines) {
     page.drawText(line, { x: otherValueX, y: lineY, size: bodySize, font: regular, color: PALETTE.ink });
