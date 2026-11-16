@@ -2,14 +2,16 @@
 // messages) and this function forwards it to Anthropic using the baked-in
 // server key, so no key ever ships to the client. verify_jwt on.
 //
-// Open to every signed-in account during the free beta. The model is chosen site-wide in
-// the admin panel (app_config.ai_model), not by the client. Every call's
+// Open to every signed-in account during the free beta. The model is chosen per feature
+// (live dictation, review, owner report) in the admin panel (app_config.ai_models), not
+// by the client. Every call's
 // token usage is logged to ai_usage for the admin dashboard.
 //
 // Requires the ANTHROPIC_API_KEY edge-function secret (dashboard).
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { apiError } from '../_shared/apiErrors.ts';
+import { featureForRequest, resolveAiModels } from '../_shared/aiModels.ts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -19,10 +21,9 @@ const CORS = {
 const json = (b: Record<string, unknown>, status = 200) =>
   new Response(JSON.stringify(b), { status, headers: { 'Content-Type': 'application/json', ...CORS } });
 
-const DEFAULT_MODEL = 'claude-sonnet-5-5';
-
 // Per-model request settings for a latency-sensitive extraction call.
-// Keep in sync with AI_MODEL_CHOICES in src/constants/aiModels.ts.
+// Keep in sync with ALLOWED_AI_MODELS (_shared/aiModels.ts) and
+// AI_MODEL_CHOICES in src/constants/aiModels.ts.
 //  - Opus 5.5: thinking can't be turned off; effort low keeps it quick.
 //  - Sonnet 5.5: `between_tools` turns thinking off (needs effort ≤ high,
 //    which the default satisfies).
@@ -100,9 +101,11 @@ Deno.serve(async (req: Request) => {
   if (!Array.isArray(msgs) || msgs.length !== 1 || (msgs[0] as { role?: string })?.role !== 'user') {
     return json(apiError('unsupported_request'), 400);
   }
-  // The model is a site setting, not client-chosen.
-  const { data: cfg } = await admin.from('app_config').select('ai_model').eq('id', 1).maybeSingle();
-  const model = cfg?.ai_model || DEFAULT_MODEL;
+  // The model is a site setting per feature, not client-chosen. select('*')
+  // so a database without the ai_models column yet still answers (the
+  // defaults apply).
+  const { data: cfg } = await admin.from('app_config').select('*').eq('id', 1).maybeSingle();
+  const model = resolveAiModels(cfg?.ai_models)[featureForRequest(body.mode, kind)];
 
   // Rate limits. Reserve the usage row FIRST, then count this user's calls
   // up to and including it: counting before the call and logging after

@@ -1104,6 +1104,7 @@
 .admin-panel__ai,
 .admin-panel__billing { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .admin-panel__ai-block { display: flex; flex-direction: column; gap: 0.4rem; }
+.admin-panel__ai-feature { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.4rem; }
 .admin-panel__ai-total { margin: 0; font-size: 0.9rem; color: var(--text); }
 .admin-panel__usage-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .admin-panel__usage-table th, .admin-panel__usage-table td {
