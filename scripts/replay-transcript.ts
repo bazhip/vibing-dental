@@ -197,7 +197,9 @@ const usage = { calls: 0, input: 0, cacheRead: 0, output: 0 };
 
 async function call(client: Anthropic, req: AutofillRequest) {
   const review = req.mode === 'review';
-  const { mode: _mode, ...body } = req;
+  // mode and kind are for the edge function (thinking room, usage
+  // logging); Anthropic rejects them as extra inputs.
+  const { mode: _mode, kind: _kind, ...body } = req;
   const res = await client.messages.create({
     ...body,
     model,
