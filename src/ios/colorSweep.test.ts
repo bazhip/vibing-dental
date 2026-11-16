@@ -38,6 +38,8 @@ const ALLOW: { re: RegExp; reason: string }[] = [
   { re: /logo-preview/, reason: 'logo previews show the logo on the PDF\'s paper white' },
   { re: /\.pdf-style-swatch/, reason: 'PDF color choices show the literal color that will print' },
   { re: /\.imaging__thumb/, reason: 'radiographs sit on near-black in both schemes' },
+  { re: /\.imaging__tooth-badge/, reason: 'the tooth badge sits on the image thumbnail, which is near-black in both schemes' },
+  { re: /\.image-viewer/, reason: 'the full-screen image viewer is a dark lightbox in both schemes, like the thumbnails' },
   { re: /\.login-google/, reason: "Google's sign-in button branding (light button is allowed on dark)" },
   { re: /\.sidebar-layout__nav--fade/, reason: 'the tab strip\'s edge fade is a mask: #000 is opacity, never a visible color' },
 ];

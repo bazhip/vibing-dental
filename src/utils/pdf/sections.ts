@@ -1367,6 +1367,8 @@ export interface PdfImage {
   jpegBytes: Uint8Array | null;
   caption: string;
   kind: 'photo' | 'xray';
+  /** Triadan number of the tooth the image is pinned to, if any. */
+  tooth?: number | null;
 }
 
 export const IMAGES_PER_PAGE = 4;
@@ -1389,7 +1391,7 @@ export function pdfSafe(text: string, font: PDFFont): string {
 /**
  * One page of chart images in a 2×2 grid inside a single section card.
  * Each cell fits its image (aspect preserved, centered) above a one-line
- * "N. Photo — caption" label. `startIndex` is the 0-based number of the
+ * "N. Photo · Tooth 108 — caption" label. `startIndex` is the 0-based number of the
  * first image on this page, so labels count across pages.
  */
 export async function drawImagePage(
@@ -1462,7 +1464,8 @@ export async function drawImagePage(
     const n = startIndex + i + 1;
     const kindLabel = img.kind === 'xray' ? t('images.radiograph') : t('images.photo');
     const caption = pdfSafe(img.caption.trim().replace(/\s+/g, ' '), font);
-    const label = `${n}. ${kindLabel}${caption ? ` — ${caption}` : ''}`;
+    const tooth = img.tooth ? ` · ${t('images.tooth', { triadan: img.tooth })}` : '';
+    const label = `${n}. ${kindLabel}${tooth}${caption ? ` — ${caption}` : ''}`;
     drawClippedText(page, label, cellX, boxBottom - 11, 8.5, font, PALETTE.text, cellW);
   }
 

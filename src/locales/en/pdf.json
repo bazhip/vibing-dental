@@ -76,6 +76,7 @@
     "titleRange": "Images & Radiographs ({{range}} of {{total}})",
     "failed": "Image could not be loaded",
     "photo": "Photo",
-    "radiograph": "Radiograph"
+    "radiograph": "Radiograph",
+    "tooth": "Tooth {{triadan}}"
   }
 }

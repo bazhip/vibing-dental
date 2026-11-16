@@ -144,7 +144,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ open, onClose,
       for (const item of items.filter((it) => !excluded.has(it.id))) {
         const jpegBytes = item.url ? await fetchAsJpeg(item.url, PDF_IMAGE_MAX_EDGE, 0.85) : null;
         if (cancelled) return;
-        out.push({ jpegBytes, caption: item.caption, kind: item.kind });
+        out.push({ jpegBytes, caption: item.caption, kind: item.kind, tooth: item.toothTriadan });
       }
       if (!cancelled) {
         if (out.some((img) => !img.jpegBytes)) {

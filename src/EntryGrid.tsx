@@ -638,6 +638,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cloud.enabled, visits, chart.cloudChartId]);
 
+  // The patient's other visits, for the Images section's "Image history".
+  const imageHistoryVisits = React.useMemo(
+    () => visits.filter((v) => v.id !== chart.cloudChartId).map((v) => ({ id: v.id, date: v.chart_date })),
+    [visits, chart.cloudChartId]
+  );
+
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
     cloud.openChart(id).catch((err) => {
@@ -1171,6 +1177,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           practiceId={profile.practiceId}
           maxImages={profile.maxImages}
           dicomEnabled={profile.dicomEnabled}
+          species={chart.species}
+          otherVisits={imageHistoryVisits}
+          onOpenVisit={switchVisit}
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
           includeInPdf={pdfIncludeImages}
