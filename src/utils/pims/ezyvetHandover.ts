@@ -10,6 +10,8 @@ export const FROM_EZYVET_KEY = 'toothops.fromEzyvet';
 export const STASHED_PATIENT_KEY = 'toothops.ezyvetPatient';
 
 export type HandoverPatient = Pick<Handover, 'patientName' | 'patientNumber' | 'ownerName'>;
+/** The stash also records who picked the patient, so it never fills another account's chart. */
+export type StashedPatient = HandoverPatient & Pick<Handover, 'userId'>;
 
 const session = (): Storage | undefined => {
   try {
@@ -52,11 +54,11 @@ export function consumeFromEzyvet(storage: Storage | undefined = session()): boo
   }
 }
 
-export function stashPatient(p: HandoverPatient, storage: Storage | undefined = session()): void {
+export function stashPatient(p: StashedPatient, storage: Storage | undefined = session()): void {
   try {
     storage?.setItem(
       STASHED_PATIENT_KEY,
-      JSON.stringify({ patientName: p.patientName, patientNumber: p.patientNumber, ownerName: p.ownerName }),
+      JSON.stringify({ userId: p.userId, patientName: p.patientName, patientNumber: p.patientNumber, ownerName: p.ownerName }),
     );
   } catch {
     /* private mode / full — the new chart just starts blank */
@@ -64,7 +66,7 @@ export function stashPatient(p: HandoverPatient, storage: Storage | undefined = 
 }
 
 /** Reads and removes the stashed patient. */
-export function takeStashedPatient(storage: Storage | undefined = session()): HandoverPatient | null {
+export function takeStashedPatient(storage: Storage | undefined = session()): StashedPatient | null {
   let raw: string | null = null;
   try {
     raw = storage?.getItem(STASHED_PATIENT_KEY) ?? null;
@@ -74,11 +76,11 @@ export function takeStashedPatient(storage: Storage | undefined = session()): Ha
   }
   if (!raw) return null;
   try {
-    const v = JSON.parse(raw) as Partial<Record<keyof HandoverPatient, unknown>>;
-    if (typeof v.patientName !== 'string' || typeof v.patientNumber !== 'string' || typeof v.ownerName !== 'string') {
+    const v = JSON.parse(raw) as Partial<Record<keyof StashedPatient, unknown>>;
+    if (typeof v.userId !== 'string' || typeof v.patientName !== 'string' || typeof v.patientNumber !== 'string' || typeof v.ownerName !== 'string') {
       return null;
     }
-    return { patientName: v.patientName, patientNumber: v.patientNumber, ownerName: v.ownerName };
+    return { userId: v.userId, patientName: v.patientName, patientNumber: v.patientNumber, ownerName: v.ownerName };
   } catch {
     return null;
   }

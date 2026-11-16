@@ -1231,8 +1231,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     });
   };
   // Start a blank chart (asks only when something would be lost).
-  const startNewPatient = async (): Promise<boolean> => {
+  // `beforeReset` runs only once discarding is agreed (the ezyVet hand-over
+  // stashes its patient there, so a cancelled question leaves nothing behind).
+  const startNewPatient = async (beforeReset?: () => void): Promise<boolean> => {
     if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return false;
+    beforeReset?.();
     chart.resetChart();
     return true;
   };
@@ -1246,6 +1249,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     startVisitFromChart,
     fillPatient: ({ patientName, patientNumber, ownerName }) =>
       chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, patientName, ownerName, patientNumber })),
+    isChartBlank: () => !chart.patientInfo.patientName?.trim() && !chart.patientInfo.patientNumber?.trim(),
   });
   const unlockForEditing = () => {
     try { window.sessionStorage.setItem(`chart.unlockSnapshot.${chart.cloudChartId}`, JSON.stringify(chart.getSnapshot())); } catch { /* too big / private mode */ }
@@ -2108,7 +2112,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             <button
               type="button"
               className="chart-menu__trigger topbar-library-btn topbar-new-patient"
-              onClick={startNewPatient}
+              onClick={() => void startNewPatient()}
               aria-label={t('topbar.newPatient')}
               title={t('topbar.newPatientTitle')}
             >

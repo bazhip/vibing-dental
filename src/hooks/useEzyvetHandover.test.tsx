@@ -10,15 +10,20 @@ vi.mock('../components/ui/dialogs', () => ({ toastWhenReady: (...a: unknown[]) =
 
 const handover = { userId: 'u1', patientName: 'Bella', patientNumber: '123', ownerName: 'Smith', latestChartId: null };
 const patient = { patientName: 'Bella', patientNumber: '123', ownerName: 'Smith' };
+const stashed = { userId: 'u1', ...patient };
 
 function setup(over: Partial<Parameters<typeof useEzyvetHandover>[0]> = {}) {
   const opts = {
     enabled: true,
     getUserId: vi.fn(async () => 'u1' as string | null),
     take: vi.fn(async (): Promise<TakePendingResult | null> => ({ handover })),
-    startNewPatient: vi.fn(async () => true),
+    startNewPatient: vi.fn(async (beforeReset?: () => void) => {
+      beforeReset?.();
+      return true;
+    }),
     startVisitFromChart: vi.fn(async () => true),
     fillPatient: vi.fn(),
+    isChartBlank: vi.fn(() => true),
     ...over,
   };
   return opts;
@@ -41,7 +46,7 @@ beforeEach(() => {
 
 describe('useEzyvetHandover', () => {
   it('fills a stashed patient without asking the extension', async () => {
-    stashPatient(patient);
+    stashPatient(stashed);
     window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
     const opts = setup();
     await run(opts);
@@ -49,33 +54,56 @@ describe('useEzyvetHandover', () => {
     expect(opts.fillPatient).toHaveBeenCalledWith(patient);
     expect(opts.take).not.toHaveBeenCalled();
     expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
+    expect(window.sessionStorage.getItem(FROM_EZYVET_KEY)).toBeNull();
     expect(toastKeys()).toEqual([FILLED]);
   });
 
-  it('stashes the patient and starts a new chart (once, even under StrictMode)', async () => {
+  it('stashes the patient only once discarding is agreed (once, even under StrictMode)', async () => {
     window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
-    let stashedAtStart: string | null = null;
+    let beforeAsk: string | null = 'unset';
+    let afterAgree: string | null = null;
     const opts = setup({
-      startNewPatient: vi.fn(async () => {
-        stashedAtStart = window.sessionStorage.getItem(STASHED_PATIENT_KEY);
+      startNewPatient: vi.fn(async (beforeReset?: () => void) => {
+        beforeAsk = window.sessionStorage.getItem(STASHED_PATIENT_KEY);
+        beforeReset?.();
+        afterAgree = window.sessionStorage.getItem(STASHED_PATIENT_KEY);
         return true;
       }),
     });
     await run(opts);
     expect(opts.take).toHaveBeenCalledTimes(1);
     expect(opts.startNewPatient).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(stashedAtStart!)).toEqual(patient);
+    expect(beforeAsk).toBeNull();
+    expect(JSON.parse(afterAgree!)).toEqual(stashed);
     expect(opts.fillPatient).not.toHaveBeenCalled();
     expect(toastKeys()).toEqual([]);
   });
 
-  it('removes the stash when the vet keeps the unsaved chart', async () => {
+  it('leaves no stash when the vet keeps the unsaved chart', async () => {
     window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
     const opts = setup({ startNewPatient: vi.fn(async () => false) });
     await run(opts);
     expect(opts.startNewPatient).toHaveBeenCalledTimes(1);
     expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
     expect(opts.fillPatient).not.toHaveBeenCalled();
+    expect(toastKeys()).toEqual([]);
+  });
+
+  it('never fills a stash into a chart that already has a patient', async () => {
+    stashPatient(stashed);
+    const opts = setup({ isChartBlank: vi.fn(() => false) });
+    await run(opts);
+    expect(opts.fillPatient).not.toHaveBeenCalled();
+    expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
+    expect(toastKeys()).toEqual([]);
+  });
+
+  it('never fills a stash picked by another account', async () => {
+    stashPatient({ ...stashed, userId: 'someone-else' });
+    const opts = setup();
+    await run(opts);
+    expect(opts.fillPatient).not.toHaveBeenCalled();
+    expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
     expect(toastKeys()).toEqual([]);
   });
 
@@ -130,7 +158,7 @@ describe('useEzyvetHandover', () => {
 
   it('does nothing when disabled, and keeps the flag for later', async () => {
     window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
-    stashPatient(patient);
+    stashPatient(stashed);
     const opts = setup({ enabled: false });
     await run(opts);
     expect(opts.take).not.toHaveBeenCalled();

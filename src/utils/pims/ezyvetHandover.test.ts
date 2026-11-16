@@ -42,8 +42,8 @@ describe('captureFromEzyvet', () => {
 
 describe('stashPatient / takeStashedPatient', () => {
   it('round-trips once', () => {
-    stashPatient({ patientName: 'Bella', patientNumber: '123', ownerName: 'Smith' });
-    expect(takeStashedPatient()).toEqual({ patientName: 'Bella', patientNumber: '123', ownerName: 'Smith' });
+    stashPatient({ userId: 'u1', patientName: 'Bella', patientNumber: '123', ownerName: 'Smith' });
+    expect(takeStashedPatient()).toEqual({ userId: 'u1', patientName: 'Bella', patientNumber: '123', ownerName: 'Smith' });
     expect(takeStashedPatient()).toBeNull();
   });
 
@@ -52,6 +52,9 @@ describe('stashPatient / takeStashedPatient', () => {
     expect(takeStashedPatient()).toBeNull();
     expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).toBeNull();
     window.sessionStorage.setItem(STASHED_PATIENT_KEY, JSON.stringify({ patientName: 3 }));
+    expect(takeStashedPatient()).toBeNull();
+    // A stash without a user is never trusted.
+    window.sessionStorage.setItem(STASHED_PATIENT_KEY, JSON.stringify({ patientName: 'B', patientNumber: '1', ownerName: 'S' }));
     expect(takeStashedPatient()).toBeNull();
   });
 });

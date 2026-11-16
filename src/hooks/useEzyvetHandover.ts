@@ -13,9 +13,12 @@ export type EzyvetHandoverOptions = {
   enabled: boolean;
   getUserId: () => Promise<string | null>;
   take: () => Promise<TakePendingResult | null>;
-  startNewPatient: () => Promise<boolean>;
+  /** Resolves false when the vet keeps the unsaved chart; calls `beforeReset` only once discarding is agreed. */
+  startNewPatient: (beforeReset?: () => void) => Promise<boolean>;
   startVisitFromChart: (chartId: string) => Promise<boolean>;
   fillPatient: (p: HandoverPatient) => void;
+  /** True when the working chart has no patient name and no patient number. */
+  isChartBlank: () => boolean;
 };
 
 /**
@@ -37,14 +40,21 @@ export function useEzyvetHandover(opts: EzyvetHandoverOptions): void {
     const t = i18n.getFixedT(null, 'pims');
 
     const stashed = takeStashedPatient();
-    if (stashed) {
-      o.fillPatient(stashed);
-      toast(t('handover.filled'), { kind: 'success' });
-      return;
-    }
-    if (!consumeFromEzyvet()) return;
+    // Clear the flag either way; a stash already is this tab's hand-over.
+    const flagged = consumeFromEzyvet();
+    if (!stashed && !flagged) return;
 
     void (async () => {
+      if (stashed) {
+        // Only into the fresh chart "New patient" just made, for the same
+        // account that picked the patient. Anything else: drop it silently.
+        const userId = await o.getUserId().catch(() => null);
+        if (stashed.userId !== userId || !o.isChartBlank()) return;
+        const { patientName, patientNumber, ownerName } = stashed;
+        o.fillPatient({ patientName, patientNumber, ownerName });
+        toast(t('handover.filled'), { kind: 'success' });
+        return;
+      }
       let res: TakePendingResult | null = null;
       try {
         res = await o.take();
@@ -66,9 +76,10 @@ export function useEzyvetHandover(opts: EzyvetHandoverOptions): void {
           if (await o.startVisitFromChart(handover.latestChartId)) toast(t('handover.filled'), { kind: 'success' });
           return;
         }
-        stashPatient(handover);
-        // On true the page reloads and the next run fills from the stash.
-        if (!(await o.startNewPatient())) takeStashedPatient();
+        // Stashed only once discarding is agreed; on true the page reloads
+        // and the next run fills from the stash.
+        const { userId: uid, patientName, patientNumber, ownerName } = handover;
+        await o.startNewPatient(() => stashPatient({ userId: uid, patientName, patientNumber, ownerName }));
       } catch {
         takeStashedPatient();
         toast(t('handover.failed'), { kind: 'error' });
