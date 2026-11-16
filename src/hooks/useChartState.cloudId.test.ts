@@ -56,3 +56,47 @@ describe('the working chart keeps its cloud id across page loads', () => {
     expect(JSON.parse(store.get(ID_KEY) ?? 'null')).toBe('opened');
   });
 });
+
+// Two tabs share one localStorage working copy, one key per field. Tab 2
+// opening chart B writes every key; tab 1 editing chart A then wrote only
+// the field it changed, so a reload assembled B's patient and id with A's
+// findings, and saved them into B's record.
+describe('two tabs: storage always holds one whole chart', () => {
+  it('after another tab switches charts, this tab’s next edit rewrites every key', () => {
+    const { result } = renderHook(() => useChartState());
+    const myId = result.current.cloudChartId;
+    act(() => result.current.handlePatientInfoChange('patientName', 'Alpha'));
+
+    // Tab 2 opens chart B.
+    store.set(ID_KEY, JSON.stringify('chart-b'));
+    store.set('vibing-dental.chart.patientInfo.v1', JSON.stringify({ ...result.current.patientInfo, patientName: 'Bravo' }));
+    store.set('vibing-dental.chart.openedExisting.v1', 'true');
+    act(() => { window.dispatchEvent(new StorageEvent('storage', { key: ID_KEY, newValue: JSON.stringify('chart-b') })); });
+
+    // Tab 1 changes one field of chart A.
+    act(() => result.current.handlePatientInfoChange('complaint', 'Fractured tooth'));
+
+    expect(JSON.parse(store.get(ID_KEY)!)).toBe(myId);
+    const info = JSON.parse(store.get('vibing-dental.chart.patientInfo.v1')!);
+    expect(info.patientName).toBe('Alpha');
+    expect(info.complaint).toBe('Fractured tooth');
+    expect(JSON.parse(store.get('vibing-dental.chart.openedExisting.v1')!)).toBe(false);
+  });
+
+  it('another tab WIPING the working chart (sign-out) does not make this tab rewrite it', () => {
+    const { result } = renderHook(() => useChartState());
+    act(() => result.current.handlePatientInfoChange('patientName', 'Alpha'));
+    store.clear();
+    act(() => { window.dispatchEvent(new StorageEvent('storage', { key: ID_KEY, newValue: null })); });
+    act(() => result.current.handlePatientInfoChange('complaint', 'x'));
+    expect(store.has(ID_KEY)).toBe(false);
+    expect(store.has('vibing-dental.chart.species.v1')).toBe(false);
+  });
+
+  it('without another tab, edits still write only what changed', () => {
+    const { result } = renderHook(() => useChartState());
+    store.delete('vibing-dental.chart.species.v1');
+    act(() => result.current.handlePatientInfoChange('patientName', 'Alpha'));
+    expect(store.has('vibing-dental.chart.species.v1')).toBe(false);
+  });
+});

@@ -27,6 +27,7 @@
       "invite_failed": "No se pudo enviar la invitación: {{detail}}",
       "practice_name_required": "Indique un nombre para la clínica.",
       "already_owner": "Ya es propietario de una clínica.",
+      "owner_of_other_practice": "Es propietario de otra clínica, así que no puede unirse a una distinta. Cierre primero su clínica o póngase en contacto con nosotros.",
       "invite_invalid": "Este enlace de invitación no es válido. Pida a la clínica que le envíe uno nuevo.",
       "invite_wrong_account": "Esta invitación se envió a otra cuenta. Inicie sesión con el correo electrónico invitado.",
       "invite_expired": "Esta invitación ha caducado. Pida a la clínica que le envíe una nueva.",

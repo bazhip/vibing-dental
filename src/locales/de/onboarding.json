@@ -82,6 +82,7 @@
     "checking": "Ihre Einladung wird geprüft…",
     "thisPractice": "dieser Praxis",
     "alreadyMember": "Sie sind bereits Mitglied von {{practice}}.",
+    "leaves": "Mit dem Beitritt verlassen Sie {{practice}} und sehen deren Akten nicht mehr.",
     "invited": "Sie wurden eingeladen, <strong>{{practice}}</strong> auf ToothOps beizutreten. Mitglieder teilen die Akten, Berichtsvorlagen und die Kontrollliste der Praxis, und neue Akten, die Sie speichern, werden mit dem Team geteilt.",
     "shareExisting": "Auch die Akten teilen, die ich bereits angelegt habe",
     "close": "Schließen",

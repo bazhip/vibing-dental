@@ -89,12 +89,12 @@ begin
 end $$;
 
 -- Stamping a sent-at column isn't an edit: keep updated_at
--- (migration 20261125_pims_send).
+-- (migrations 20261125_pims_send, 20261126_reminder_sent_not_an_edit).
 create or replace function public.charts_touch_updated_at_fn()
 returns trigger language plpgsql as $$
 begin
-  if (to_jsonb(new) - '{pims_sent_at,owner_report_sent_at,updated_at}'::text[])
-     = (to_jsonb(old) - '{pims_sent_at,owner_report_sent_at,updated_at}'::text[]) then
+  if (to_jsonb(new) - '{pims_sent_at,owner_report_sent_at,reminder_sent_at,updated_at}'::text[])
+     = (to_jsonb(old) - '{pims_sent_at,owner_report_sent_at,reminder_sent_at,updated_at}'::text[]) then
     new.updated_at = old.updated_at;
   else
     new.updated_at = now();
@@ -264,13 +264,16 @@ alter table public.practices add column if not exists logo_path text not null de
 -- Owner email + reminder template/schedule (migrations: recheck_reminders,
 -- recheck_reminder_cron, reminder_lead_days). Manual send via the
 -- send-reminder edge function; auto-send via pg_cron job
--- 'daily-recheck-reminders' → public.send_due_reminders() (fires
+-- 'daily-recheck-reminders' → public.send_due_reminders() (sends from
 -- lead_days before recall_date when practices.reminder_auto is on).
 alter table public.charts add column if not exists owner_email text not null default '';
 alter table public.charts add column if not exists reminder_sent_at timestamptz;
 alter table public.charts add column if not exists owner_report_sent_at timestamptz;
 -- Send to PIMS (migration 20261125_pims_send).
 alter table public.charts add column if not exists pims_sent_at timestamptz;
+-- Set when the app restores an earlier version, so history starts a new
+-- revision (migration 20261126_restore_starts_revision).
+alter table public.charts add column if not exists restored_at timestamptz;
 alter table public.profiles add column if not exists pims_field_map jsonb;
 alter table public.practices add column if not exists pims_send_enabled boolean not null default false;
 alter table public.practices add column if not exists reminder_subject text not null default '';
@@ -377,9 +380,11 @@ end $$;
 --   select cron.schedule('daily-billing-purge', '30 3 * * *',
 --     'select public.purge_lapsed_practices()');
 
--- send_due_reminders() (migration 20261123_send_due_reminders_safety.sql):
--- nightly auto-reminder job (security definer). For each chart whose recall_date
--- is today + practice.reminder_lead_days (UTC), with an owner email and no
+-- send_due_reminders() (migrations 20261123_send_due_reminders_safety.sql,
+-- 20261126_send_due_reminders_window.sql): nightly auto-reminder job (security
+-- definer). For each chart whose recall_date is between today - 2 days and
+-- today + practice.reminder_lead_days (UTC), not superseded by a later visit of
+-- the same patient, with an owner email and no
 -- reminder_sent_at, on a practice with reminder_auto on, it fills the practice's
 -- stored subject/body ({{patient}} {{owner}} {{practice}} {{recheck_date}}; NULLs
 -- become ''), posts via Resend (net.http_post, key from get_resend_key()) and

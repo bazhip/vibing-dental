@@ -82,6 +82,7 @@
     "checking": "Comprobando su invitación…",
     "thisPractice": "esta clínica",
     "alreadyMember": "Ya es miembro de {{practice}}.",
+    "leaves": "Al unirse, dejará {{practice}} y ya no verá sus historiales.",
     "invited": "Le han invitado a unirse a <strong>{{practice}}</strong> en ToothOps. Los miembros comparten los historiales, las plantillas de informe y la lista de revisiones de la clínica, y los historiales nuevos que guarde se comparten con el equipo.",
     "shareExisting": "Compartir también los historiales que ya he creado",
     "close": "Cerrar",

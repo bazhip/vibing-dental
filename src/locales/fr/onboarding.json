@@ -82,6 +82,7 @@
     "checking": "Vérification de votre invitation…",
     "thisPractice": "ce cabinet",
     "alreadyMember": "Vous êtes déjà membre de {{practice}}.",
+    "leaves": "En rejoignant ce cabinet, vous quitterez {{practice}} : vous ne verrez plus ses dossiers.",
     "invited": "Vous avez été invité(e) à rejoindre <strong>{{practice}}</strong> sur ToothOps. Les membres partagent les dossiers, les modèles de compte rendu et la liste des contrôles du cabinet, et les nouveaux dossiers que vous enregistrez sont partagés avec l’équipe.",
     "shareExisting": "Partager aussi les dossiers que j’ai déjà créés",
     "close": "Fermer",

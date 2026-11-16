@@ -6,6 +6,7 @@ import './App.css';
 import { readString, writeString, removeKey } from './utils/storage';
 import { supabase, cloudEnabled } from './utils/supabaseClient';
 import { clearChartStorage } from './hooks/useChartState';
+import { claimChartStorage } from './utils/chartOwner';
 import { consumeExplicitSignOut, markExplicitSignOut } from './utils/signOutIntent';
 import { confirmDialog } from './components/ui/dialogs';
 import { AppLoading } from './components/AppLoading';
@@ -172,6 +173,8 @@ const App: React.FC = () => {
       // In the app this check (not INITIAL_SESSION, ignored below) decides
       // signed-out at launch, so it clears the signed-out billing cache.
       if (!session && native) clearBillingCache();
+      // Before the chart mounts: another account's working chart is wiped.
+      if (session && claimChartStorage(session.user.id)) clearBillingCache();
       setIsAuthenticated(!!session);
       setLaunchedSignedIn(!!session);
       if (session) {
@@ -193,9 +196,13 @@ const App: React.FC = () => {
       // cache; the initial check owns the launch decision instead.
       if (event === 'INITIAL_SESSION' && !session && native) return;
       if (session) {
-        // A different account signing in over an expired session must not
-        // inherit the previous patient's working chart (shared machines).
-        if (lastUserIdRef.current && session.user.id !== lastUserIdRef.current) {
+        // A different account signing in must not inherit the previous
+        // patient's working chart (shared machines). The stored owner
+        // catches it even when nobody was signed in earlier in this page
+        // load (expired session, closed tab, sign-in redirect).
+        const wiped = claimChartStorage(session.user.id);
+        if (wiped) clearBillingCache();
+        if ((lastUserIdRef.current && session.user.id !== lastUserIdRef.current) || (wiped && isAuthedRef.current)) {
           clearChartStorage();
           clearBillingCache();
           // The previous user's chart, profile and practice are still in

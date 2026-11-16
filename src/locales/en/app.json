@@ -217,6 +217,7 @@
     "changedByOther": "This chart was changed by someone else — reopen it from My charts to see their version.",
     "notSavedConflict": "Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.",
     "noPermission": "You don’t have permission to save changes to this chart. Ask the practice owner, or start a new visit.",
+    "practiceUnknown": "Your practice details haven’t loaded yet, so this new chart can’t be saved to the practice. Check your connection and reload — your chart is still here on this device.",
     "conflict": {
       "title": "This chart changed somewhere else",
       "message": "It was saved at {{when}} — by a teammate or on another device — after you opened it here. Saving now replaces those changes with yours.",

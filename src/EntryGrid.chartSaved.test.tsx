@@ -30,7 +30,7 @@ const cloud = vi.hoisted(() => ({
   confirmDiscardIfDirty: vi.fn(async () => true),
   fetchChart: vi.fn(async () => ({ species: 'canine', patientInfo: { patientName: 'Rex', patientNumber: '7', date: '2026-03-04' }, preMarks: {}, postMarks: {} })),
   listPatientVisits: vi.fn(async () => []),
-  skipNextDuplicateCheck: vi.fn(),
+  skipDuplicateCheckFor: vi.fn(),
   saveNow: vi.fn(async () => {}),
   signOut: vi.fn(async () => {}),
   restoreRevision: vi.fn(async () => {}),

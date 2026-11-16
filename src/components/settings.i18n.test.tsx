@@ -402,6 +402,21 @@ describe('JoinPracticeModal', () => {
     const e = render(<JoinPracticeModal token="t" onDone={() => {}} />);
     await screen.findByText('⟦This invite has expired. Ask the practice to send a new one.⟧');
     expect(findUntranslated(e.container, ALLOW)).toEqual([]);
+    e.unmount();
+
+    // Already in another practice: joining moves them out of it.
+    invoke.mockResolvedValue({ data: { practiceName: 'Elm Vet', alreadyMember: false, leavingPractice: 'Oak Vet' }, error: null });
+    const f = render(<JoinPracticeModal token="t" onDone={() => {}} />);
+    await screen.findByText('⟦Joining moves you out of Oak Vet: you’ll no longer see its charts.⟧');
+    expect(findUntranslated(f.container, ALLOW)).toEqual([]);
+    f.unmount();
+
+    // Owner of another practice: refused, translated.
+    const owner = { error: 'x', code: 'owner_of_other_practice' };
+    invoke.mockResolvedValue({ data: null, error: { message: 'Edge Function returned a non-2xx status code', context: new Response(JSON.stringify(owner), { status: 409 }) } });
+    const g = render(<JoinPracticeModal token="t" onDone={() => {}} />);
+    await screen.findByText(/^⟦You own another practice/);
+    expect(findUntranslated(g.container, ALLOW)).toEqual([]);
   });
 });
 

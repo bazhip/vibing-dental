@@ -30,6 +30,8 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
   const ref = useModalFocus<HTMLDivElement>(!native);
   const [loaded, setLoaded] = React.useState(false);
   const [practiceName, setPracticeName] = React.useState('');
+  // The practice they're in now, which joining moves them out of.
+  const [leavingPractice, setLeavingPractice] = React.useState('');
   const [alreadyMember, setAlreadyMember] = React.useState(false);
   const [shareExisting, setShareExisting] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -37,10 +39,11 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
 
   React.useEffect(() => {
     let cancelled = false;
-    callTeamApi<{ practiceName: string; alreadyMember: boolean }>({ action: 'accept_invite', token, preview: true })
+    callTeamApi<{ practiceName: string; alreadyMember: boolean; leavingPractice?: string }>({ action: 'accept_invite', token, preview: true })
       .then((r) => {
         if (cancelled) return;
         setPracticeName(r.practiceName);
+        setLeavingPractice(r.leavingPractice ?? '');
         setLoaded(true);
         setAlreadyMember(r.alreadyMember);
       })
@@ -85,6 +88,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
               <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
             </p>
           )}
+          {canJoin && leavingPractice && <p className="ios-form-text">{t('join.leaves', { practice: leavingPractice })}</p>}
           {error && <p className="ios-form-error" role="alert">{error}</p>}
         </div>
         {canJoin && (
@@ -117,6 +121,7 @@ export const JoinPracticeModal: React.FC<JoinPracticeModalProps> = ({ token, onD
               <p>
                 <Trans t={t} i18nKey="join.invited" values={{ practice: name }} components={{ strong: <strong /> }} />
               </p>
+              {leavingPractice && <p>{t('join.leaves', { practice: leavingPractice })}</p>}
               <label className="dental-grid__option" style={{ marginTop: '0.75rem' }}>
                 <input type="checkbox" checked={shareExisting} onChange={(e) => setShareExisting(e.target.checked)} />
                 {t('join.shareExisting')}

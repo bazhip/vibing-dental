@@ -138,7 +138,7 @@ const visitRows = [
 function fakeCloud(over: Record<string, unknown> = {}) {
   return {
     enabled: true, status: 'idle', saveError: '', dirty: false, awaitingClinical: false, online: true, lastSavedAt: '',
-    saveNow: vi.fn(async () => {}), skipNextDuplicateCheck: vi.fn(),
+    saveNow: vi.fn(async () => {}), skipDuplicateCheckFor: vi.fn(),
     listCharts: vi.fn(async () => ({ rows: [], hasMore: false })),
     listPatientVisits: vi.fn(async () => visitRows),
     confirmDiscardIfDirty: vi.fn(async () => true),
