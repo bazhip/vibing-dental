@@ -56,7 +56,7 @@
     "forage": "Ofereça bastante forragem: feno de fibra longa e pasto mantêm um desgaste uniforme dos dentes.",
     "warningSigns": "Fique atento à comida caindo da boca, à perda de peso, se ele come devagar, balança a cabeça ou resiste à embocadura, ao mau hálito ou ao corrimento nasal — ligue para nós se notar algo."
   },
-  "intro": "{{pet}} passou por uma avaliação e limpeza dentária profissional sob anestesia. Este relatório explica o que encontramos em linguagem simples — o prontuário clínico completo, com as medições, está arquivado e disponível a qualquer momento.",
+  "intro": "{{pet}} fez um exame e tratamento dentário sob anestesia. Este relatório explica o que encontramos em linguagem simples — o prontuário clínico completo, com as medições, está arquivado e disponível a qualquer momento.",
   "legendFilled": "preenchido = ausente antes desta consulta",
   "legendNumbers": "Os números correspondem aos achados abaixo",
   "legendRemoved": "✕ vermelho = extraído hoje",

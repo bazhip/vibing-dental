@@ -56,7 +56,7 @@
     "forage": "Offra abbondante foraggio: il fieno a fibra lunga e il pascolo mantengono un’usura uniforme dei denti.",
     "warningSigns": "Faccia attenzione a cibo che cade dalla bocca, perdita di peso, masticazione lenta, scuotimento della testa o resistenza all’imboccatura, alito cattivo o scolo nasale — ci chiami se nota qualcosa."
   },
-  "intro": "{{pet}} ha ricevuto una valutazione e una pulizia dentale professionale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
+  "intro": "{{pet}} ha ricevuto una visita e un trattamento dentale in anestesia. Questo referto spiega ciò che abbiamo riscontrato con parole semplici — la cartella clinica completa, con tutte le misurazioni, è archiviata e disponibile in qualsiasi momento.",
   "legendFilled": "pieno = mancante prima di questa visita",
   "legendNumbers": "I numeri corrispondono ai riscontri riportati sotto",
   "legendRemoved": "✕ rosso = estratto oggi",

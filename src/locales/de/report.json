@@ -56,7 +56,7 @@
     "forage": "Bieten Sie reichlich Raufutter an – langes Heu und Weidegang sorgen für einen gleichmäßigen Zahnabrieb.",
     "warningSigns": "Achten Sie auf herausfallendes Futter, Gewichtsverlust, langsames Fressen, Kopfschlagen oder Widerstand gegen das Gebiss, Mundgeruch oder Nasenausfluss – rufen Sie uns an, wenn Ihnen etwas auffällt."
   },
-  "intro": "{{pet}} hatte eine professionelle Zahnuntersuchung und Zahnreinigung unter Narkose. Dieser Bericht erklärt unsere Befunde in einfachen Worten – die vollständige klinische Akte mit allen Messwerten liegt bei uns vor und ist jederzeit einsehbar.",
+  "intro": "{{pet}} hatte eine Zahnuntersuchung und -behandlung unter Narkose. Dieser Bericht erklärt unsere Befunde in einfachen Worten – die vollständige klinische Akte mit allen Messwerten liegt bei uns vor und ist jederzeit einsehbar.",
   "legendFilled": "ausgefüllt = schon vorher fehlend",
   "legendNumbers": "Die Nummern entsprechen den Befunden unten",
   "legendRemoved": "rotes ✕ = heute entfernt",

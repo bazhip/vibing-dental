@@ -56,7 +56,7 @@
     "forage": "Offrez beaucoup de fourrage : le foin à brins longs et le pâturage favorisent une usure régulière des dents.",
     "warningSigns": "Surveillez la nourriture qui tombe de la bouche, la perte de poids, une mastication lente, les mouvements de tête ou la résistance au mors, la mauvaise haleine ou un jetage nasal — appelez-nous si vous remarquez quelque chose."
   },
-  "intro": "{{pet}} a bénéficié d’un bilan et d’un détartrage dentaires professionnels sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
+  "intro": "{{pet}} a bénéficié d’un examen et de soins dentaires sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
   "legendFilled": "plein = absente avant cette visite",
   "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",
   "legendRemoved": "✕ rouge = extraite aujourd’hui",
