@@ -1204,14 +1204,25 @@ const DENTAL_FIELD_SET = new Set<DentalField>([
 ]);
 
 /** Grid cells hold bare numbers. Strip a letter prefix or unit the model
- *  may still add ("G2" → "2", "PD3" → "3", "5mm" → "5"). Free text that
+ *  may still add ("G2" → "2", "PD3" → "3", "5mm" → "5"). A single depth
+ *  with the root or site after it ("5 D", "5mm distal") becomes the
+ *  labelled per-root form "D5" (see utils/pocket.ts); several labelled
+ *  readings ("M4 D6") are kept as they are. Free text that
  *  isn't a prefixed number is left alone. */
 export function normalizeFieldValue(value: string): string {
-  return value
+  // Several labelled readings ("M4 D6", "MB4 MP5 D6") are already in the
+  // per-root form; stripping a leading "M" as a mobility prefix would turn
+  // "M4 D6" into "4 D6".
+  if (/^[A-Z]{1,2}\d+(?:\s+[A-Z]{1,2}\d+)+$/i.test(value.trim())) return value.trim().toUpperCase();
+  const v = value
     .trim()
     .replace(/^(?:GI|G|C|calc(?:ulus)?|M|mob(?:ility)?|F|furc(?:ation)?|PD|stage|grade|class)\s*[-:]?\s*(?=\d)/i, '')
     .replace(/\s*(?:mm|millimet(?:er|re)s?)\.?$/i, '')
     .trim();
+  const site = /^(\d+)\s*(?:mm|millimet(?:er|re)s?)?\.?\s*(MB|MP|DB|ML|DL|M|D|B|L|P|mesial|distal)\.?$/i.exec(v);
+  if (!site) return v;
+  const label = site[2].toLowerCase() === 'mesial' ? 'M' : site[2].toLowerCase() === 'distal' ? 'D' : site[2].toUpperCase();
+  return `${label}${site[1]}`;
 }
 
 /** A dose dictated with a decimal comma may reach a tool call as "0,3"
