@@ -51,7 +51,7 @@ It never reads the patient of the open consult.
 ## Constraints
 
 - ezyVet markup and `/General/MouseOver` are undocumented and unverified by us; there are no live tests. Every selector goes in `src/extension/ezyvet/selectors.ts` and the diagnostic report gains their hit counts.
-- No new extension permissions (`scripting`, `sidePanel`, `identity`, `https://*.ezyvet.com/*` stay). Opening a tab with `chrome.tabs.create` needs none.
+- One new extension permission: `storage`, for `chrome.storage.session` (the in-memory hand-over; Chrome shows no install warning for it). `scripting`, `sidePanel`, `identity` and `https://*.ezyvet.com/*` stay. Opening a tab with `chrome.tabs.create` needs none.
 - All text through `t()` with fr/de/it/es translations (AGENTS.md); new panel screens get pseudo-locale tests.
 - English chart behaviour otherwise unchanged.
 
@@ -96,7 +96,7 @@ New requests. `dispatch` is split so panel-only and web-app-only requests are re
 
 - `{ type: 'appointments'; date: string; navigate: boolean }` → `{ tab: { id, title } | null; result: AppointmentsResult | null }`. Picks the ezyVet tab like `inspect` (`pickEzyvetTab`). **Side panel only**: refused from the web app (`handleExternal`), since only the panel shows it.
 - `{ type: 'startChart'; patient: { patientName, patientNumber, ownerName }; latestChartId: string | null; userId: string }` (panel only): opens the tab, then stores the hand-over in `chrome.storage.session` keyed by the new tab's id (`pending:<tabId>`) with a timestamp, so two quick clicks can't swap patients. Tab: `chrome.tabs.create({ url: WEB_ORIGIN + '/#/chart/patient?from=ezyvet' })`. The URL carries no patient data.
-- `{ type: 'takePendingPatient' }` (web app only, allowed origins): returns the hand-over stored for the sender's tab (`sender.tab.id`) if it is under 2 minutes old and deletes it either way (one use). Otherwise `null`.
+- `{ type: 'takePendingPatient' }` (web app only, allowed origins): returns the hand-over stored for the sender's tab (`sender.tab.id`) if it is under 2 minutes old and deletes it either way (one use). Otherwise `null`. The hand-over is also cleared when its tab closes, swept when expired (on the next Start chart / take), and always gone when the browser closes (session storage).
 
 `ping` keeps its shape. An older extension answers `takePendingPatient` with an error, which the web app treats like an expired hand-over (no version check needed).
 
