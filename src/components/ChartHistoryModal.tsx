@@ -71,16 +71,22 @@ export const ChartHistoryModal: React.FC<ChartHistoryModalProps> = ({ chartId, o
     return () => document.removeEventListener('keydown', onKey, true);
   }, [onClose, native]);
 
+  // Only the latest pick's answer may land: a slower answer for an earlier
+  // pick showed that version under the later one's heading, and Restore
+  // then saved it while confirming the other version's date.
+  const pickSeq = React.useRef(0);
   const pick = async (id: number) => {
+    const seq = ++pickSeq.current;
     setSelected(id);
     setData(null);
     setLoading(true);
     try {
-      setData(await loadData(id));
+      const loaded = await loadData(id);
+      if (seq === pickSeq.current) setData(loaded);
     } catch (err) {
-      toast(t('history.loadFailed', { error: detailText(err) }).trim(), { kind: 'error' });
+      if (seq === pickSeq.current) toast(t('history.loadFailed', { error: detailText(err) }).trim(), { kind: 'error' });
     } finally {
-      setLoading(false);
+      if (seq === pickSeq.current) setLoading(false);
     }
   };
 

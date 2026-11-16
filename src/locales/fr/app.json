@@ -219,6 +219,7 @@
     "changedByOther": "Ce dossier a été modifié par quelqu’un d’autre — rouvrez-le depuis Mes dossiers pour voir sa version",
     "notSavedConflict": "Non enregistré — ce dossier a été modifié par quelqu’un d’autre. Rouvrez-le depuis Mes dossiers pour voir sa version",
     "noPermission": "Vous n’avez pas l’autorisation d’enregistrer des modifications dans ce dossier. Demandez au responsable du cabinet, ou démarrez une nouvelle visite",
+    "noDeletePermission": "Vous n’avez pas l’autorisation de supprimer ce dossier. Demandez au responsable du cabinet.",
     "practiceUnknown": "Les informations de votre cabinet ne sont pas encore chargées : ce nouveau dossier ne peut donc pas être enregistré dans le cabinet. Vérifiez votre connexion et rechargez la page — votre dossier est toujours sur cet appareil",
     "conflict": {
       "title": "Ce dossier a été modifié ailleurs",

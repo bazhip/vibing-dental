@@ -58,6 +58,16 @@ Deno.serve(async (req: Request) => {
   // Statuses that stop access — they start the 30-day freeze clock.
   const FROZEN_STATUSES = ['past_due', 'canceled', 'unpaid', 'incomplete_expired', 'paused'];
 
+  // supabase-js returns { error } instead of throwing: without this, a
+  // failed write looked like "no matching practice", the event was
+  // acknowledged with 200, and Stripe never retried it (a cancelled
+  // practice stayed active, or a paying one stayed frozen).
+  const must = async <T extends { error: { message: string } | null }>(q: PromiseLike<T>): Promise<T> => {
+    const r = await q;
+    if (r.error) throw new Error(r.error.message);
+    return r;
+  };
+
   /** Write a subscription's state onto its practice row. */
   const apply = async (sub: Stripe.Subscription) => {
     const item = sub.items?.data?.[0];
@@ -91,7 +101,10 @@ Deno.serve(async (req: Request) => {
     {
       let q = admin.from('practices').select('stripe_subscription_id, subscription_status');
       q = practiceId ? q.eq('id', practiceId) : q.eq('stripe_customer_id', customerId);
-      const { data: current } = await q.maybeSingle();
+      // limit(1), not maybeSingle(): stripe_customer_id isn't unique, and a
+      // duplicate would otherwise fail this event on every retry.
+      const { data: rows } = await must(q.limit(1));
+      const current = rows?.[0];
       const curSub = current?.stripe_subscription_id ?? '';
       if (curSub && curSub !== sub.id && ['active', 'trialing', 'past_due'].includes(current?.subscription_status ?? '')) {
         return;
@@ -99,23 +112,23 @@ Deno.serve(async (req: Request) => {
     }
     let matched = false;
     if (practiceId) {
-      const { data } = await admin.from('practices').update(update).eq('id', practiceId).select('id');
+      const { data } = await must(admin.from('practices').update(update).eq('id', practiceId).select('id'));
       matched = !!data?.length;
       // Late-linking: checkout created the customer before the webhook —
       // make sure the practice row knows its customer id too.
       if (matched && customerId) {
-        await admin.from('practices').update({ stripe_customer_id: customerId }).eq('id', practiceId);
+        await must(admin.from('practices').update({ stripe_customer_id: customerId }).eq('id', practiceId));
       }
     }
     if (!matched && customerId) {
-      const { data } = await admin.from('practices').update(update).eq('stripe_customer_id', customerId).select('id');
+      const { data } = await must(admin.from('practices').update(update).eq('stripe_customer_id', customerId).select('id'));
       matched = !!data?.length;
     }
     if (matched && FROZEN_STATUSES.includes(sub.status)) {
       // Only stamp practices whose clock isn't already running.
       let q = admin.from('practices').update({ frozen_at: new Date().toISOString() }).is('frozen_at', null);
       q = practiceId ? q.eq('id', practiceId) : q.eq('stripe_customer_id', customerId);
-      await q;
+      await must(q);
     }
   };
 

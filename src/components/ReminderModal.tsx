@@ -50,6 +50,10 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
   const native = isNativeApp();
   const modalRef = useModalFocus(open && !native);
   const prefilled = React.useRef({ subject: '', body: '' });
+  // One email per opening: `busy` only updates on the next render, so a
+  // double click got two sends through, and the web button was enabled
+  // again during the "Sent" pause before closing.
+  const sendingRef = React.useRef(false);
 
   // Prefill once the template has loaded (or when reopened).
   React.useEffect(() => {
@@ -62,6 +66,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
     setBodyText(filled.body);
     setError('');
     setSent(false);
+    sendingRef.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, loaded]);
 
@@ -74,7 +79,10 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
 
   if (!open && !native) return null;
 
+  const canSend = loaded && !busy && !sent && subject.trim() !== '' && bodyText.trim() !== '';
   const send = async () => {
+    if (sendingRef.current || sent) return;
+    sendingRef.current = true;
     setBusy(true);
     setError('');
     try {
@@ -83,6 +91,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
       setTimeout(onClose, 900);
     } catch (e) {
       setError(errorText(e, t('composer.sendFailed')));
+      sendingRef.current = false; // failed: Send again is allowed
     } finally {
       setBusy(false);
     }
@@ -98,7 +107,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
         cancelLabel={t('actions.cancel', { ns: 'common' })}
         doneLabel={busy ? t('ios.sheets.sendingBusy', { ns: 'common' }) : t('ios.sheets.reminder.send', { ns: 'common' })}
         onDone={() => void send()}
-        doneDisabled={busy || !loaded || sent}
+        doneDisabled={!canSend}
         confirmDismiss={async () =>
           // Not while sending: the result would land on a closed sheet.
           !busy &&
@@ -192,7 +201,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
             type="button"
             className="entry-grid__button entry-grid__button--topbar"
             onClick={send}
-            disabled={busy || !loaded}
+            disabled={!canSend}
           >
             {busy ? t('composer.sending') : t('composer.send')}
           </button>

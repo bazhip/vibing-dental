@@ -45,6 +45,42 @@ describe('ReminderModal — website (unchanged)', () => {
   });
 });
 
+describe('ReminderModal — sending once', () => {
+  it('a double click (or a click during the “Sent” pause) sends one email', async () => {
+    render(<ReminderModal open onClose={vi.fn()} {...props} />);
+    const send = screen.getByRole('button', { name: 'Send reminder' });
+    fireEvent.click(send);
+    fireEvent.click(send);
+    await screen.findByRole('status');
+    fireEvent.click(screen.getByRole('button', { name: 'Send reminder' }));
+    expect(invoke).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Send reminder' })).toBeDisabled();
+  });
+
+  it('reopening the composer allows the next reminder (app sheet stays mounted)', async () => {
+    flags.native = true;
+    const { rerender } = render(<ReminderModal open onClose={vi.fn()} {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    await screen.findByRole('status');
+    rerender(<ReminderModal open={false} onClose={vi.fn()} {...props} />);
+    rerender(<ReminderModal open onClose={vi.fn()} {...props} />);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Send' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    await waitFor(() => expect(invoke).toHaveBeenCalledTimes(2));
+  });
+
+  it('no Send with an empty subject or message (web and app)', () => {
+    const { unmount } = render(<ReminderModal open onClose={vi.fn()} {...props} />);
+    fireEvent.change(screen.getByLabelText(/^Subject/), { target: { value: '  ' } });
+    expect(screen.getByRole('button', { name: 'Send reminder' })).toBeDisabled();
+    unmount();
+    flags.native = true;
+    render(<ReminderModal open onClose={vi.fn()} {...props} />);
+    fireEvent.change(screen.getByLabelText(/^Message/), { target: { value: '' } });
+    expect(screen.getByRole('button', { name: 'Send' })).toBeDisabled();
+  });
+});
+
 describe('ReminderModal — iOS app', () => {
   beforeEach(() => { flags.native = true; });
 

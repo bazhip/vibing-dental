@@ -62,6 +62,34 @@ describe('ChartHistoryModal', () => {
     expect(await screen.findByText(/Choose Edit chart to restore/)).toBeInTheDocument();
   });
 
+  it('a slow answer for an earlier pick never shows (or restores) under a later pick', async () => {
+    // Revision 2 is picked first but answers last.
+    let answerSlow!: () => void;
+    loadData.mockImplementation((async (id: number) => {
+      if (id === 2) {
+        await new Promise<void>((r) => { answerSlow = r; });
+        return { ...snapshot, patientInfo: { ...snapshot.patientInfo, complaint: 'Version two' } };
+      }
+      return { ...snapshot, patientInfo: { ...snapshot.patientInfo, complaint: 'Version one' } };
+    }) as never);
+    try {
+      const onRestore = vi.fn(async () => true);
+      render(<ChartHistoryModal chartId="c1" onClose={() => {}} onRestore={onRestore} />);
+      const [rev2, rev1] = screen.getAllByText('Tim').map((el) => el.closest('button')!);
+      fireEvent.click(rev2);
+      fireEvent.click(rev1);
+      expect(await screen.findByText('Version one')).toBeInTheDocument();
+      answerSlow();
+      await new Promise((r) => setTimeout(r, 0));
+      expect(screen.queryByText('Version two')).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Restore this version' }));
+      await waitFor(() => expect(onRestore).toHaveBeenCalled());
+      expect((onRestore.mock.calls[0] as unknown[])[0]).toMatchObject({ patientInfo: { complaint: 'Version one' } });
+    } finally {
+      loadData.mockImplementation(async () => snapshot);
+    }
+  });
+
   it('formats merged editing sessions as a time range', () => {
     expect(revisionWhen({ startedAt: '2026-11-12T15:02:00Z', savedAt: '2026-11-12T15:02:30Z' })).not.toContain('–');
     expect(revisionWhen({ startedAt: '2026-11-12T15:02:00Z', savedAt: '2026-11-12T15:40:00Z' })).toContain('–');

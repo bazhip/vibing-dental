@@ -217,6 +217,7 @@
     "changedByOther": "Diese Akte wurde von jemand anderem geändert — öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
     "notSavedConflict": "Nicht gespeichert — diese Akte wurde von jemand anderem geändert. Öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
     "noPermission": "Sie haben keine Berechtigung, Änderungen an dieser Akte zu speichern. Fragen Sie den Praxisinhaber oder beginnen Sie einen neuen Besuch",
+    "noDeletePermission": "Sie haben keine Berechtigung, diese Akte zu löschen. Fragen Sie den Praxisinhaber.",
     "practiceUnknown": "Ihre Praxisdaten sind noch nicht geladen, daher kann diese neue Akte nicht in der Praxis gespeichert werden. Prüfen Sie Ihre Verbindung und laden Sie die Seite neu — Ihre Akte ist weiterhin auf diesem Gerät",
     "conflict": {
       "title": "Diese Akte wurde anderswo geändert",
