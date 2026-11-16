@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { rootLabels, rootBoxes, formatRootPockets, pocketDepths } from '../utils/pocket';
+import { pocketLabels, rootBoxes, formatRootPockets, pocketDepths, type PocketMode } from '../utils/pocket';
 import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
 import { TOOTH_DIAGRAMS } from '../constants/toothShapes';
 import { COLUMN_RANGES, scoreChoices } from '../constants/columnDefinitions';
@@ -50,7 +50,7 @@ export interface ToothChartViewProps {
   headerAccessory?: React.ReactNode;
   /** Chart settings: measurements to leave out, one pocket box per root. */
   hiddenColumns?: DentalField[];
-  pocketMode?: 'tooth' | 'root';
+  pocketMode?: PocketMode;
   /** Chart settings: one-tap codes for the diagnosis note (T/SN, …). */
   quickCodes?: string[];
 }
@@ -271,14 +271,14 @@ export function ToothChartView({
                     const value = typeof v === 'string' ? v : '';
                     const bad = outOfRange(col.key, value);
                     const id = `tooth-chart-${col.key}`;
-                    const roots = col.key === 'pocket' && pocketMode === 'root' && selected != null ? rootLabels(species, selected) : [];
+                    const roots = col.key === 'pocket' && selected != null ? pocketLabels(pocketMode, species, selected) : [];
                     const boxes = roots.length ? rootBoxes(roots, value) : null;
                     if (boxes && !boxes.unplaced) {
-                      // One box per root; saved as "M4 D6".
+                      // One box per root ("M4 D6") or per site ("MB2 B1 … DL2").
                       return (
                         <fieldset key={col.key} className="tooth-chart__finding tooth-chart__finding--roots">
                           <legend>{col.name}</legend>
-                          <div className="tooth-chart__roots">
+                          <div className={`tooth-chart__roots${pocketMode === 'site' ? ' tooth-chart__roots--sites' : ''}`}>
                             {roots.map((l) => (
                               <label key={l} className="tooth-chart__root">
                                 <span>{l}</span>
@@ -288,7 +288,7 @@ export function ToothChartView({
                                   inputMode="decimal"
                                   autoComplete="off"
                                   disabled={isMissing}
-                                  aria-label={t('toothChart.rootAria', { root: l })}
+                                  aria-label={pocketMode === 'site' ? t('toothChart.siteAria', { site: l }) : t('toothChart.rootAria', { root: l })}
                                   onChange={(e) => setField('pocket', formatRootPockets(roots, { ...boxes.depths, [l]: e.target.value.replace(/[^\d.]/g, '') }))}
                                   onKeyDown={blockEnter}
                                 />

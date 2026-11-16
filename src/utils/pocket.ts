@@ -11,7 +11,15 @@ import { Species } from '../types';
  *
  * Root labels (AVDC-style): two roots M / D; maxillary P4 MB / MP / D;
  * maxillary M1–M2 MB / DB / P.
+ *
+ * Six-site probing ("MB2 B1 DB3 ML2 L1 DL2") uses the same labelled form:
+ * three buccal sites, then three lingual, on every tooth.
  */
+
+export type PocketMode = 'tooth' | 'root' | 'site';
+
+/** The six probing sites, buccal row then lingual row. */
+export const POCKET_SITES: readonly string[] = ['MB', 'B', 'DB', 'ML', 'L', 'DL'];
 
 const TWO = ['M', 'D'];
 const UPPER_P4 = ['MB', 'MP', 'D'];
@@ -57,7 +65,17 @@ export function rootLabels(species: Species, triadan: number): string[] {
   return []; // M3
 }
 
-const TOKEN = /^(MB|MP|DB|M|D|P)(\d+(?:\.\d+)?)$/i;
+/**
+ * The labelled boxes a tooth's pocket gets in a chart-settings mode: none
+ * (one plain value) per tooth, its roots per root, the six sites per site.
+ */
+export function pocketLabels(mode: PocketMode, species: Species, triadan: number): string[] {
+  if (mode === 'site') return [...POCKET_SITES];
+  if (mode === 'root') return rootLabels(species, triadan);
+  return [];
+}
+
+const TOKEN = /^(MB|MP|DB|ML|DL|M|D|P|B|L)(\d+(?:\.\d+)?)$/i;
 
 /** Per-root depths in a stored value, or null when it's the plain
  *  one-per-tooth form (or empty). */
@@ -84,7 +102,7 @@ export function formatRootPockets(labels: string[], depths: Record<string, strin
 
 /**
  * The per-root boxes for a stored value. Labelled values fill their roots;
- * a plain value with exactly one number per root ("4 5" on a two-rooted
+ * a plain value with exactly one number per box ("4 5" on a two-rooted
  * tooth) is split in order. Anything else can't be placed on roots
  * without guessing — `unplaced` carries it so the UI can keep it visible
  * instead of dropping it.
@@ -93,7 +111,9 @@ export function rootBoxes(labels: string[], value: string | undefined): { depths
   const v = (value ?? '').trim();
   if (!v) return { depths: {}, unplaced: '' };
   const parsed = parseRootPockets(v);
-  if (parsed) return { depths: parsed, unplaced: '' };
+  // Labels from another mode (roots shown as sites or the other way round)
+  // stay visible as typed rather than vanishing from the boxes.
+  if (parsed) return Object.keys(parsed).every((k) => labels.includes(k)) ? { depths: parsed, unplaced: '' } : { depths: {}, unplaced: v };
   const nums = v.split(/[\s,]+/).filter(Boolean);
   if (labels.length > 0 && nums.length === labels.length && nums.every((n) => /^\d+(\.\d+)?$/.test(n))) {
     return { depths: Object.fromEntries(labels.map((l, i) => [l, nums[i]])), unplaced: '' };

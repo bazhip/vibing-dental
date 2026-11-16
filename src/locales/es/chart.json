@@ -58,10 +58,12 @@
     },
     "pdstateTitle": "Estadio PD",
     "perRoot": "{{name}} (por raíz)",
+    "perSite": "{{name}} (por sitio)",
     "missing": "Ausente",
     "triadanTooth": "Triadan · Diente",
     "cellAria": "Diente {{triadan}} {{column}}",
     "rootAria": "Diente {{triadan}} bolsa, raíz {{root}}",
+    "siteAria": "Diente {{triadan}} bolsa, sitio {{site}}",
     "setAll": {
       "title": "Establecer {{name}} para todos los dientes",
       "message": "Se aplica a todos los dientes no marcados como ausentes. Déjelo vacío para borrar la columna.",
@@ -109,11 +111,17 @@
     },
     "slot": {
       "root": "Raíz {{root}}",
-      "rootLast": "Raíz {{root}} — última visita {{value}}"
+      "rootLast": "Raíz {{root}} — última visita {{value}}",
+      "site": "Sitio {{site}}",
+      "siteLast": "Sitio {{site}} — última visita {{value}}"
     },
     "unsplit": {
       "title": "Sin dividir por raíz — haga clic para editar (bórrelo para obtener una casilla por raíz)",
       "chip": "todas las raíces"
+    },
+    "unsplitSites": {
+      "title": "No dividido por sitio — haga clic para editar (borre el valor para obtener una casilla por sitio)",
+      "chip": "sin sitio"
     },
     "lastVisit": "Última visita: {{value}}",
     "lastVisitRef": "Última visita: {{value}} — se muestra como referencia, no se traslada",
@@ -144,6 +152,7 @@
     "missingBefore": "Ausente (antes de esta visita)",
     "findings": "Hallazgos",
     "rootAria": "Bolsa, raíz {{root}}",
+    "siteAria": "Bolsa, sitio {{site}}",
     "expected": "Se espera {{range}}",
     "diagnosisNote": "Nota de diagnóstico",
     "diagnosisPlaceholder": "p. ej., corona fracturada, exposición pulpar",

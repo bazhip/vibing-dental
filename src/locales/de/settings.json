@@ -129,6 +129,8 @@
       "pocketTooth": "Eine pro Zahn",
       "pocketRoot": "Eine pro Wurzel",
       "pocketRootHint": "M / D, oder MB / MP / D bei dreiwurzeligen Zähnen",
+      "pocketSite": "Sechs Messstellen pro Zahn",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
       "space": "Leertaste im Raster",
       "spaceDown": "Springt nach unten zum nächsten Zahn",
       "spaceDownHint": "schnell, wenn Sie eine Reihe von Tiefen ansagen",

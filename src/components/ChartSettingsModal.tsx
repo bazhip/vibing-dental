@@ -123,6 +123,10 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
                 <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'root'} onChange={() => onChange({ pocketMode: 'root' })} />
                 {t('chart.charting.pocketRoot')} <span className="chart-settings__hint">{t('chart.charting.pocketRootHint')}</span>
               </label>
+              <label className="chart-settings__choice">
+                <input type="radio" name="pocketMode" checked={prefs.pocketMode === 'site'} onChange={() => onChange({ pocketMode: 'site' })} />
+                {t('chart.charting.pocketSite')} <span className="chart-settings__hint">{t('chart.charting.pocketSiteHint')}</span>
+              </label>
             </fieldset>
 
             <fieldset className="chart-settings__field">

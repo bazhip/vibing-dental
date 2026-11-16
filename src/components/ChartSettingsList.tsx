@@ -32,6 +32,7 @@ export interface ChartSettingsListProps {
 const GRID = 'grid' as const;
 const TOOTH = 'tooth' as const;
 const ROOT = 'root' as const;
+const SITE = 'site' as const;
 const FINDING = 'finding' as const;
 const STAY = 'stay' as const;
 
@@ -71,6 +72,12 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
               subtitle={t('chart.charting.pocketRootHint')}
               selected={prefs.pocketMode === ROOT}
               onClick={() => onChange({ pocketMode: ROOT })}
+            />
+            <ListRow
+              title={t('chart.charting.pocketSite')}
+              subtitle={t('chart.charting.pocketSiteHint')}
+              selected={prefs.pocketMode === SITE}
+              onClick={() => onChange({ pocketMode: SITE })}
             />
           </ListSection>
           <ListSection header={t('chart.charting.space')}>
