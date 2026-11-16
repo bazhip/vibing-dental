@@ -129,6 +129,8 @@
       "pocketTooth": "Una per dente",
       "pocketRoot": "Una per radice",
       "pocketRootHint": "M / D, oppure MB / MP / D sui denti con tre radici",
+      "pocketSite": "Sei siti per dente",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
       "space": "Tasto Spazio nella griglia",
       "spaceDown": "Passa al dente successivo, in basso",
       "spaceDownHint": "veloce per dettare una serie di profondità",

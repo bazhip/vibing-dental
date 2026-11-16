@@ -1,4 +1,4 @@
-import { rootLabels, parseRootPockets, formatRootPockets, rootBoxes, pocketDepths, deepestPocket } from './pocket';
+import { rootLabels, pocketLabels, POCKET_SITES, parseRootPockets, formatRootPockets, rootBoxes, pocketDepths, deepestPocket } from './pocket';
 
 describe('rootLabels', () => {
   it('canine: single-rooted front teeth, two-rooted premolars, three-rooted upper P4 and molars', () => {
@@ -76,5 +76,32 @@ describe('per-root pockets elsewhere', () => {
 
   it('per-root tokens are not read as dental codes', () => {
     expect(findCodesInText('M4 D6').map((c) => c.code)).toEqual([]);
+  });
+});
+
+describe('six-site pockets', () => {
+  it('gives every tooth the six sites in site mode, by species', () => {
+    expect(pocketLabels('site', 'canine', 101)).toEqual(['MB', 'B', 'DB', 'ML', 'L', 'DL']);
+    expect(pocketLabels('site', 'feline', 409)).toEqual(POCKET_SITES);
+    expect(pocketLabels('site', 'equine', 206)).toEqual(POCKET_SITES);
+    expect(pocketLabels('root', 'canine', 108)).toEqual(['MB', 'MP', 'D']);
+    expect(pocketLabels('tooth', 'canine', 108)).toEqual([]);
+  });
+
+  it('round-trips site depths and reads them for range checks', () => {
+    const v = formatRootPockets(POCKET_SITES as string[], { DL: '2', MB: '3', L: '1', B: '2' });
+    expect(v).toBe('MB3 B2 L1 DL2');
+    expect(parseRootPockets(v)).toEqual({ MB: '3', B: '2', L: '1', DL: '2' });
+    expect(deepestPocket('MB3 B2 DB6 ML2 L1 DL2')).toBe(6);
+    expect(pocketDepths('ml4 dl5')).toEqual([4, 5]);
+  });
+
+  it('splits six plain numbers onto the sites', () => {
+    expect(rootBoxes(POCKET_SITES as string[], '3 2 3 2 1 2').depths).toEqual({ MB: '3', B: '2', DB: '3', ML: '2', L: '1', DL: '2' });
+  });
+
+  it('keeps another mode\'s labels visible instead of dropping them', () => {
+    expect(rootBoxes(POCKET_SITES as string[], 'MB4 MP5 D6')).toEqual({ depths: {}, unplaced: 'MB4 MP5 D6' });
+    expect(rootBoxes(['M', 'D'], 'MB3 B2')).toEqual({ depths: {}, unplaced: 'MB3 B2' });
   });
 });

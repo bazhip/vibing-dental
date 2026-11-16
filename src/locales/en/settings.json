@@ -129,6 +129,8 @@
       "pocketTooth": "One per tooth",
       "pocketRoot": "One per root",
       "pocketRootHint": "M / D, or MB / MP / D on three-rooted teeth",
+      "pocketSite": "Six sites per tooth",
+      "pocketSiteHint": "MB / B / DB / ML / L / DL",
       "space": "Space key in the grid",
       "spaceDown": "Moves down to the next tooth",
       "spaceDownHint": "fast for calling out a run of depths",

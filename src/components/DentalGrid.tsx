@@ -17,7 +17,7 @@ import {
 import 'react-data-grid/lib/styles.css';
 import { DentalField, Species, ToothData, ToothMarks } from '../types';
 import type { ScoreTapMove } from '../utils/chartSettings';
-import { rootLabels, rootBoxes, formatRootPockets } from '../utils/pocket';
+import { pocketLabels, rootBoxes, formatRootPockets, type PocketMode } from '../utils/pocket';
 
 interface DentalGridProps {
   /** View-only (saved visit not unlocked): cells, Missing and set-all are
@@ -52,7 +52,7 @@ interface DentalGridProps {
   headerAccessory?: React.ReactNode;
   /** Chart settings: columns to leave out, and one pocket box per root. */
   hiddenColumns?: DentalField[];
-  pocketMode?: 'tooth' | 'root';
+  pocketMode?: PocketMode;
   /** Needed for per-root pockets (root counts differ by species). */
   species?: Species;
   /** Space moves down to the next tooth (default) vs. typing a space. */
@@ -94,6 +94,7 @@ interface EditorWiring {
   /** Index of the last editable column (depends on hidden columns). */
   lastEditableRef: React.MutableRefObject<number>;
   speciesRef: React.MutableRefObject<Species>;
+  pocketModeRef: React.MutableRefObject<PocketMode>;
   /** Which root slot was clicked, so the per-root editor opens on it. */
   focusRootRef: React.MutableRefObject<number>;
   spaceMovesDownRef: React.MutableRefObject<boolean>;
@@ -289,7 +290,8 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
   const { row, rowIdx, column, onRowChange, onClose } = props;
   const { t } = useTranslation('chart');
   const wiring = React.useContext(EditorWiringContext);
-  const labels = rootLabels(wiring?.speciesRef.current ?? 'canine', row.triadan);
+  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', row.triadan);
+  const site = wiring?.pocketModeRef.current === 'site';
   const initial = React.useMemo(() => rootBoxes(labels, row.pocket), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [depths, setDepths] = React.useState<Record<string, string>>(initial.depths);
   const inputs = useRef<Array<HTMLInputElement | null>>([]);
@@ -337,7 +339,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
   };
   return (
     <div
-      className="dental-grid__roots"
+      className={`dental-grid__roots${site ? ' dental-grid__roots--sites' : ''}`}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) onClose(true); }}
     >
       {labels.map((l, i) => (
@@ -348,7 +350,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
             autoFocus={i === startIndex}
             inputMode="decimal"
             value={depths[l] ?? ''}
-            aria-label={t('grid.rootAria', { triadan: row.triadan, root: l })}
+            aria-label={site ? t('grid.siteAria', { triadan: row.triadan, site: l }) : t('grid.rootAria', { triadan: row.triadan, root: l })}
             onChange={(e) => write({ ...depths, [l]: e.target.value.replace(/[^\d.]/g, '') })}
             onKeyDown={onKey(i)}
           />
@@ -363,7 +365,7 @@ function PocketRootsEditor(props: RenderEditCellProps<ToothData>) {
  *  the plain editor, so nothing is lost — clear it to get the boxes. */
 function PocketCellEditor(props: RenderEditCellProps<ToothData>) {
   const wiring = React.useContext(EditorWiringContext);
-  const labels = rootLabels(wiring?.speciesRef.current ?? 'canine', props.row.triadan);
+  const labels = pocketLabels(wiring?.pocketModeRef.current ?? 'root', wiring?.speciesRef.current ?? 'canine', props.row.triadan);
   if (labels.length === 0 || rootBoxes(labels, props.row.pocket).unplaced) return <CodeCellEditor {...props} />;
   return <PocketRootsEditor {...props} />;
 }
@@ -393,6 +395,11 @@ const MIN_LAYOUT_WIDTH = 760;
 // Titles come from the chart catalog (see `visibleColumns`): the full name is
 // columnLabel(key) and `short` is the title used when full ones would be cut
 // off ("MOBILIT", "RECESSIO") — phones, small tablets and narrow windows.
+/** Pocket column room for its labelled boxes: up to three roots, or the
+ *  six probing sites. */
+const POCKET_MIN: Record<PocketMode, number> = { tooth: 60, root: 132, site: 264 };
+const POCKET_SHARE: Record<PocketMode, number> = { tooth: 0.08, root: 0.17, site: 0.28 };
+
 const CODE_COLUMNS: Array<{ key: keyof ToothData & Exclude<ColumnKey, 'tooth' | 'triadan'>; share: number }> = [
   { key: 'mobility',    share: 0.08 },
   { key: 'recession',   share: 0.09 },
@@ -482,6 +489,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const triadanLabel = columnLabel('triadan');
   const toothLabel = columnLabel('tooth');
   const toothPickTitle = native ? t('ios.grid.pickTitle') : t('grid.tooth.title');
+  // Pocket column title says how it's split ("Pocket (per root)").
+  const pocketTitle = (name: string) =>
+    pocketMode === 'root' ? t('grid.perRoot', { name }) : pocketMode === 'site' ? t('grid.perSite', { name }) : name;
   const gridRef = useRef<DataGridHandle>(null);
   const rowCountRef = useRef(toothData.length);
   rowCountRef.current = toothData.length;
@@ -490,13 +500,13 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const visibleColumns = React.useMemo(() => {
     const hidden = new Set(hiddenColumns ?? []);
     const shown = CODE_COLUMNS.filter((c) => !hidden.has(c.key as DentalField));
-    // Per-root pockets need room for up to three small boxes. The grid keeps
+    // Per-root / per-site pockets need room for their boxes. The grid keeps
     // its historical "PD State" title; every other title is the shared column label.
     return shown.map((c) => ({
       key: c.key,
       name: c.key === 'pdstate' ? t('grid.pdstateTitle') : columnLabel(c.key),
       short: t(`grid.short.${c.key}`),
-      share: c.key === 'pocket' && pocketMode === 'root' ? 0.17 : c.share,
+      share: c.key === 'pocket' ? POCKET_SHARE[pocketMode] : c.share,
     }));
     // `language` re-reads the labels, which come from the active catalog.
   }, [hiddenColumns, pocketMode, t, language]);
@@ -505,20 +515,22 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
   const headOpts = { button: !readOnly, narrow, coarse };
   // Narrow screens lay out each finding column just wide enough for its
   // short title (the card scrolls sideways); wider ones fill the
-  // container. Per-root pockets need room for up to three boxes.
+  // container. Per-root / per-site pockets need room for their boxes.
   const narrowWidth = (c: { key: keyof ToothData; short: string }) =>
-    Math.max(headerWidth(c.short, headOpts), c.key === 'pocket' && pocketMode === 'root' ? 132 : 60);
+    Math.max(headerWidth(c.short, headOpts), c.key === 'pocket' ? POCKET_MIN[pocketMode] : 60);
   const narrowMinWidth = NARROW_LEAD.reduce((a, b) => a + b, 0) + visibleColumns.reduce((sum, c) => sum + narrowWidth(c), 0) + 2;
   const lastEditableRef = useRef(FIRST_EDITABLE + visibleColumns.length - 1);
   lastEditableRef.current = FIRST_EDITABLE + visibleColumns.length - 1;
   const speciesRef = useRef<Species>(species);
   speciesRef.current = species;
+  const pocketModeRef = useRef<PocketMode>(pocketMode);
+  pocketModeRef.current = pocketMode;
   const focusRootRef = useRef(0);
   const spaceMovesDownRef = useRef(spaceMovesDown);
   spaceMovesDownRef.current = spaceMovesDown;
   const scoreTapMovesRef = useRef<ScoreTapMove>(scoreTapMoves);
   scoreTapMovesRef.current = scoreTapMoves;
-  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, focusRootRef, spaceMovesDownRef, scoreTapMovesRef }), []);
+  const wiring = React.useMemo<EditorWiring>(() => ({ gridRef, rowCountRef, lastEditableRef, speciesRef, pocketModeRef, focusRootRef, spaceMovesDownRef, scoreTapMovesRef }), []);
 
   // Container width for the numeric column widths. Integer-rounded and
   // only committed on change, so subpixel ResizeObserver reports can't
@@ -724,8 +736,8 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     // upgrades as many as possible to the full title (cheapest first);
     // anything left over is shared out by the usual proportions. If even
     // short titles don't fit, fall back to plain proportions.
-    const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? t('grid.perRoot', { name: c.name }) : c.name);
-    const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' && pocketMode === 'root' ? 132 : 60);
+    const titleOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' ? pocketTitle(c.name) : c.name);
+    const minOf = (c: (typeof visibleColumns)[number]) => (c.key === 'pocket' ? POCKET_MIN[pocketMode] : 60);
     const desktopWidths = (() => {
       const opts = { ...headOpts, button: !readOnly };
       const short = visibleColumns.map((c) => Math.max(headerWidth(c.short, opts), minOf(c)));
@@ -815,7 +827,7 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
     },
     ...visibleColumns.map(({ key, name, short }, index): Column<ToothData> => {
       const width = widthOf(index);
-      const fullTitle = key === 'pocket' && pocketMode === 'root' ? t('grid.perRoot', { name }) : name;
+      const fullTitle = key === 'pocket' ? pocketTitle(name) : name;
       // Short titles whenever full ones would be cut off (phones, small
       // tablets, narrow windows).
       const title = fits(fullTitle, width) ? fullTitle : fits(name, width) ? name : short;
@@ -823,23 +835,24 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
       key,
       name,
       width,
-      renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode === 'root' ? PocketCellEditor : CodeCellEditor,
+      renderEditCell: readOnly ? undefined : key === 'pocket' && pocketMode !== 'tooth' ? PocketCellEditor : CodeCellEditor,
       // Teeth marked missing have nothing to measure.
       editable: (row: ToothData) => !readOnly && toothMarks[row.triadan] !== 'missing',
       renderCell: ({ row }) => {
         const value = typeof row[key] === 'string' ? (row[key] as string) : '';
         const prior = priorToothData?.[row.triadan]?.[key];
         const priorValue = typeof prior === 'string' ? prior.trim() : '';
-        // Per-root pockets: always show a labelled slot per root, so the
-        // expected input is visible before anything is typed. Clicking a
-        // slot opens the editor on that root.
-        if (key === 'pocket' && pocketMode === 'root' && toothMarks[row.triadan] !== 'missing') {
-          const labels = rootLabels(species, row.triadan);
+        // Per-root / per-site pockets: always show a labelled slot per box,
+        // so the expected input is visible before anything is typed.
+        // Clicking a slot opens the editor on that box.
+        if (key === 'pocket' && pocketMode !== 'tooth' && toothMarks[row.triadan] !== 'missing') {
+          const site = pocketMode === 'site';
+          const labels = pocketLabels(pocketMode, species, row.triadan);
           const boxes = labels.length ? rootBoxes(labels, value) : null;
           if (boxes && !boxes.unplaced) {
             const priorBoxes = priorValue ? rootBoxes(labels, priorValue).depths : {};
             return (
-              <span className="dental-grid__slots">
+              <span className={`dental-grid__slots${site ? ' dental-grid__slots--sites' : ''}`}>
                 {labels.map((l, i) => {
                   const d = boxes.depths[l];
                   const hint = priorBoxes[l];
@@ -848,7 +861,9 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
                       key={l}
                       className={`dental-grid__slot${d ? '' : ' dental-grid__slot--empty'}`}
                       onMouseDown={() => { focusRootRef.current = i; }}
-                      title={hint ? t('grid.slot.rootLast', { root: l, value: hint }) : t('grid.slot.root', { root: l })}
+                      title={site
+                        ? (hint ? t('grid.slot.siteLast', { site: l, value: hint }) : t('grid.slot.site', { site: l }))
+                        : (hint ? t('grid.slot.rootLast', { root: l, value: hint }) : t('grid.slot.root', { root: l }))}
                     >
                       <span className="dental-grid__slot-label">{l}</span>
                       <span className={`dental-grid__slot-value${!d && hint ? ' dental-grid__prior-hint' : ''}`}>{d || hint || ''}</span>
@@ -859,8 +874,10 @@ export const DentalGrid: React.FC<DentalGridProps> = ({
             );
           }
           if (boxes?.unplaced) {
-            // Old single value on a multi-rooted tooth: say it isn't split.
-            return <span title={t('grid.unsplit.title')}>{value} <span className="dental-grid__unsplit">{t('grid.unsplit.chip')}</span></span>;
+            // Old single value (or another mode's labels): say it isn't split.
+            return site
+              ? <span title={t('grid.unsplitSites.title')}>{value} <span className="dental-grid__unsplit">{t('grid.unsplitSites.chip')}</span></span>
+              : <span title={t('grid.unsplit.title')}>{value} <span className="dental-grid__unsplit">{t('grid.unsplit.chip')}</span></span>;
           }
         }
         if (value) {
