@@ -22,10 +22,10 @@ How it works
 - You see a per-field result list. If one field fails, the others are still written and the failure is listed.
 
 Designed to be careful
-- It only works when you ask it to, from ToothOps. It does nothing on its own.
+- It writes only when you press Send, in ToothOps or in its side panel. While the side panel is open, it looks at the open ezyVet consult (patient name and field names) when you switch tabs or come back to the panel, so it can show the right target; it reads no note content.
 - It checks the patient name and warns you if the open consult is for a different patient.
 - It will not write into locked consults or the combined view.
-- Charts are shown and sent only in your own browser. The extension does not send your data anywhere except to your ToothOps account when you sign in to the side panel.
+- The side panel loads your charts from your ToothOps account. The record note and chart picture are then sent to ezyVet from your browser; the extension sends them nowhere else.
 
 Side panel
 - Click the ToothOps icon to open a side panel. Sign in with email, Google or Apple, pick a recent chart (the one matching the open consult is pinned at the top), and send it to ezyVet the same way.
@@ -41,24 +41,24 @@ Requirements: a ToothOps account, Google Chrome, and ezyVet open in a tab. Tooth
 
 ## Privacy practices tab
 
-**Single purpose:** Write the veterinary record note and chart image created in ToothOps into the user's open ezyVet consult, when the user chooses Send to ezyVet in ToothOps.
+**Single purpose:** Write the veterinary record note and chart image created in ToothOps into the user's open ezyVet consult, when the user chooses Send to ezyVet in ToothOps or in the extension's side panel.
 
 **Permission justifications**
 
-- `scripting`: Used to run a small content script in the user's open ezyVet tab, to read the names of the consult's note fields and the patient name, and to insert the note text and chart image into the fields the user selected. Runs only in response to a request from toothops.app.
+- `scripting`: Used to run a small content script in the user's open ezyVet tab, to read the names of the consult's note fields and the patient name, and to insert the note text and chart image into the fields the user selected. It runs in response to a request from toothops.app or from the extension's own side panel. While the side panel is open, the panel also checks the open consult automatically (when the panel gains focus or becomes visible, the active tab changes, or the ezyVet tab finishes loading) to show the current target; it writes only when the user presses Send.
 - `sidePanel`: Shows the extension's side panel (chart list and send flow) beside the page when the user clicks the toolbar icon.
-- `identity`: Used only for `chrome.identity.launchWebAuthFlow`, so the user can sign in to their ToothOps account with Google or Apple in the side panel. The returned token is used only to sign in to ToothOps.
+- `identity`: Used only for `chrome.identity.launchWebAuthFlow`, so the user can sign in to their ToothOps account with Google or Apple in the side panel. The returned PKCE code is used only to sign in to ToothOps.
 - Host permission `https://*.ezyvet.com/*`: ezyVet is hosted on a per-practice subdomain of ezyvet.com, so the extension needs access to those pages to find the open consult and write into it. It does not request access to any other site.
 - `externally_connectable` (`https://toothops.app/*`): Lets the ToothOps web app send messages to the extension (check status, list fields, send a note). No other site can talk to the extension. (The local development origin is only in the unpacked dev build; `npm run package:extension` builds the store zip without it.)
 - Remote code: No. All code is in the package; nothing is loaded or evaluated from the network.
 
 **Data usage disclosure (what the extension handles)**
 - Health information: Yes, in the sense that veterinary clinical note text is moved. It is animal health, not human health, but if the form is ambiguous tick "Health information".
-- Personally identifiable information: the patient (animal) name and possibly client details if present in the note text, handled in transit only.
+- Personally identifiable information: patient (animal) names, owner names and possibly client details in the note text. The side panel reads them from the user's own ToothOps account to list and match charts, and the note is passed to ezyVet at the user's request. The extension stores none of it.
 - Authentication information: Yes, the side panel signs the user in to their ToothOps account (the session is stored in the extension's own local storage).
 - Everything else (financial, location, web history, user activity, website content beyond the ezyVet consult fields): No.
 
-Description for the reviewer: The extension handles clinical note text and a chart image. They are passed locally in the browser from the ToothOps tab to the ezyVet tab at the user's request. The side panel signs in to the user's ToothOps account (Supabase) and loads their own charts from it; the extension sends nothing else to any server.
+Description for the reviewer: The extension handles clinical note text and a chart image. From the ToothOps web app they are passed locally in the browser from the ToothOps tab to the ezyVet tab at the user's request. The side panel signs in to the user's ToothOps account (Supabase), reads their profile (language, saved field mapping and their practice's send setting) and their own charts, saves their field mapping, and records when a chart was sent; the note and chart image are then written into ezyVet in the browser. While open, the panel checks the open ezyVet consult (patient name and field names, no note content) when it gains focus, becomes visible or the tab changes. The extension sends nothing else to any server.
 
 **Certifications (tick all three)**
 - I do not sell or transfer user data to third parties, outside of the approved use cases.
@@ -73,7 +73,7 @@ Description for the reviewer: The extension handles clinical note text and a cha
 
 The ToothOps for ezyVet Chrome extension writes record notes created in ToothOps into the ezyVet consult you have open. When you choose Send to ezyVet, the extension reads the patient name and the list of note fields on your open ezyVet consult, and inserts the note text and chart image you selected into the fields you chose. This happens inside your browser, between your ToothOps tab and your ezyVet tab.
 
-The extension has a side panel where you can sign in to your ToothOps account (email, Google or Apple) and pick a saved chart to send. The panel talks to ToothOps only to sign you in, load your own charts and record that a chart was sent. The extension sends no other information to us or to any third party, and it does not collect analytics. It does not read or store the contents of your ezyVet records beyond what is needed for a send in progress. It stores your ToothOps sign-in session in the extension's own browser storage until you sign out of the panel, and keeps the failure codes of the last send in memory, which contain no patient, client or note text and are gone when Chrome stops the extension's background worker. It runs only on ezyvet.com pages and only responds to requests from toothops.app. We do not sell the information the extension handles, use it for advertising or unrelated purposes, or load remote code. Information you save in ToothOps itself is covered by the rest of this policy.
+The extension has a side panel where you can sign in to your ToothOps account (email, Google or Apple) and pick a saved chart to send. The panel talks to ToothOps to sign you in, read your profile (your language, your saved ezyVet field mapping and whether sending is turned on for your practice), load your own charts, save changes to your field mapping and record that a chart was sent. While the panel is open, it checks the open ezyVet consult (the patient name and the list of note fields) when you switch tabs or return to the panel, so it can show which consult a send would go to; it writes into ezyVet only when you press Send. The extension sends no other information to us or to any third party, and it does not collect analytics. It does not read or store the contents of your ezyVet records beyond what is needed for a send in progress. It stores your ToothOps sign-in session in the extension's own browser storage until you sign out of the panel, remembers for the current browser session which charts the panel sent and when (chart ids and dates only, cleared when you sign out), and keeps the failure codes of the last send in memory, which contain no patient, client or note text and are gone when Chrome stops the extension's background worker. It runs only on ezyvet.com pages, and only toothops.app and the extension's own side panel can ask it to read or write a consult. We do not sell the information the extension handles, use it for advertising or unrelated purposes, or load remote code. Information you save in ToothOps itself is covered by the rest of this policy.
 
 ## Screenshots (1280x800, PNG or JPEG, 24-bit, no alpha; 1 to 5)
 

@@ -38,20 +38,45 @@ Name and description come from `src/locales/<lng>/pims.json` (`extension.name`,
 ## Side panel
 
 Click the ToothOps toolbar icon to open the side panel (`src/extension/sidepanel/`). It lists the
-vet's recent charts, pins the one whose patient matches the open ezyVet consult ("Matches this
-consult", chosen among the charts already loaded, not the whole account), and sends a chart's record
-note and chart picture to that consult with the same mapping editor and patient check as the web
-dialog. It is read-only: edit charts in ToothOps.
+vet's recent charts and sends a chart's record note and chart picture to the open consult with the
+same mapping editor and send flow as the web dialog. It is read-only: edit charts in ToothOps.
 
-Sign-in methods: email and password, Google, and Apple. Apple shows only when the build has
-`VITE_APPLE_SIGNIN_WEB=true` (same flag as the web app). OAuth runs through
-`chrome.identity.launchWebAuthFlow` with the redirect URL `chrome.identity.getRedirectURL('auth')`.
-The session lives in the extension page's own `localStorage` (PKCE client), separate from the
-toothops.app session. Sign-out in the panel is local to the panel and does not sign out the web app.
+- **Pinned match.** Because the panel proposes a chart itself, it uses a stricter patient rule than the
+  web dialog (`patientsMatchStrict` in `src/utils/pims/patientMatch.ts`): the names are equal once
+  normalised, or the chart's patient name plus the owner's surname (title dropped; "Smith, Jane" or the
+  last word) has exactly the ezyVet name's words. Such a chart is pinned under "Matches this consult".
+  A chart that only shares whole words with the ezyVet name (a one-word "Bella" against "Bella Jones")
+  is shown as a possible match next to the ezyVet name, with no pin. Both are chosen among the charts
+  already loaded, not the whole account.
+- **Patient check.** The panel's Send asks "Different patient?" unless the strict rule matches, so a
+  possible match always asks. The web dialog keeps the §6 whole-word rule.
+- **Practice flag.** Send follows the same rule as the web app (`FREE_BETA || practices.pims_send_enabled`,
+  `src/utils/pims/sendFlag.ts`). When it is off, the chart view says sending isn't turned on for the
+  practice and has no Send. If the flag can't be read, sending stays off and the view offers Retry.
+- **Already sent.** The panel remembers, per account and chart, when it sent (or may have sent) a chart
+  in this session, in `sessionStorage` so a panel reload keeps it. A send that never reached
+  `pims_sent_at` (lost mid-send, only "may have saved" failures, or the stamp failed) therefore still
+  asks first after Back and re-picking the chart. Sign-out or another account clears it.
+- **Stale note.** When the stored note was edited before the chart last changed, the chart view shows
+  the same notice as the Record note panel (`media:recordNote.stale`). The note is still sent as stored;
+  rebuild it in ToothOps to include the changes.
+
+Sign-in methods: email and password, Google, and Apple. The Apple button follows the same flag as the
+website's (`VITE_APPLE_SIGNIN_WEB=true`); the native-app case in the web app doesn't apply here. OAuth
+runs through `chrome.identity.launchWebAuthFlow` with the redirect URL
+`chrome.identity.getRedirectURL('auth')`. The session lives in the extension page's own `localStorage`
+(PKCE client), separate from the toothops.app session.
+
+Sign-out is local: it removes the panel's session (and its open chart and sent-date memory) from this
+browser only. It does not sign out the web app, and the refresh token is not revoked on the server
+(`signOut({ scope: 'local' })`). Sign out is disabled while a send is running.
 
 Both surfaces re-inspect the consult when Send is pressed. If the consult was switched inside ezyVet
-since the last check, the new target is shown with a "consult changed" notice and nothing is sent.
-The panel also re-inspects when it regains focus or becomes visible, keeping mapping choices.
+since the last check, the new target is shown with a notice saying the consult changed, and nothing is
+sent. While open, the panel also re-inspects (debounced 300 ms, keeping mapping choices) when it
+regains focus or becomes visible, when the active tab changes, and when the ezyVet tab it last
+inspected (or a tab Chrome reports as an ezyVet page) finishes loading. A refresh that shows the
+consult seen at load again clears the notice.
 
 ### Owner setup for panel sign-in
 
@@ -133,9 +158,11 @@ Check these first (highest risk):
 ### Side panel checklist on real ezyVet
 
 - [ ] Panel opens from the toolbar icon; sign in with password, then Google (and Apple if enabled) completes and returns to the chart list.
-- [ ] Pinned match: with a consult for patient X open, the chart for X is pinned as "Matches this consult"; with a different or no matching patient, nothing is pinned.
+- [ ] Pinned match: with a consult for patient X open, the chart for X is pinned as "Matches this consult" (ezyVet name equal to the chart name, or chart name + owner surname); a chart that only shares a word shows as a possible match beside the ezyVet name and asks before sending; with no matching patient, nothing is shown.
+- [ ] Practice flag off (outside the free beta): the chart view says sending isn't turned on and has no Send.
+- [ ] Already sent: send, go Back, pick the same chart, Send: it asks first (also after closing and reopening the panel).
 - [ ] Send from the panel: pick a chart, map fields, Send; reload the consult and check each field (including the chart picture) holds the text.
-- [ ] Consult switched inside ezyVet (no tab change), then Send: the panel shows the "consult changed" notice with the new target and writes nothing.
+- [ ] Consult switched inside ezyVet (no tab change), then Send: the panel shows the notice that the consult changed with the new target and writes nothing.
 - [ ] Focus refresh: switch to ezyVet and back to the panel; the target refreshes but mapping choices already made are kept.
-- [ ] Sign-out: the panel returns to sign-in and the web app stays signed in.
+- [ ] Sign-out: the panel returns to sign-in, the web app stays signed in, and signing in again (or as another user) shows the chart list, not the chart that was open. Sign out is greyed out during a send.
 - [ ] Expired session: leave the panel signed in until the session expires (or revoke it in Supabase); the panel asks to sign in again instead of showing an error loop.
