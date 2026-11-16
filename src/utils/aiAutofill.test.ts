@@ -184,6 +184,19 @@ describe('normalizeFieldValue', () => {
     expect(normalizeFieldValue('4 5 4')).toBe('4 5 4');
     expect(normalizeFieldValue('2')).toBe('2');
   });
+
+  it('turns a depth with the site after it into the per-root form', () => {
+    expect(normalizeFieldValue('5 D')).toBe('D5');
+    expect(normalizeFieldValue('5D')).toBe('D5');
+    expect(normalizeFieldValue('5 mm distal')).toBe('D5');
+    expect(normalizeFieldValue('4 mesial')).toBe('M4');
+    expect(normalizeFieldValue('6 mb')).toBe('MB6');
+    // Already labelled, or several values: unchanged.
+    expect(normalizeFieldValue('D5')).toBe('D5');
+    expect(normalizeFieldValue('M4 D6')).toBe('M4 D6');
+    expect(normalizeFieldValue('MB4 MP5 D6')).toBe('MB4 MP5 D6');
+    expect(normalizeFieldValue('m3 d5')).toBe('M3 D5');
+  });
 });
 
 describe('isPerioOnlyText', () => {
