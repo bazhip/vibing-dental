@@ -241,9 +241,29 @@ Deno.serve(async (req: Request) => {
         if (!prac) return json(apiError('practice_gone'), 404);
         const { data: already } = await admin.from('practice_members').select('user_id')
           .eq('practice_id', inv.p).eq('user_id', caller.id).maybeSingle();
-        if (body.preview === true) return json({ practiceName: prac.name ?? '', alreadyMember: !!already });
-        await admin.from('practice_members').upsert({ practice_id: inv.p, user_id: caller.id, role: 'member' });
-        await admin.from('profiles').upsert({ id: caller.id, practice_id: inv.p });
+        // One practice per person (myMembership, billing and the app all
+        // assume it). Joining used to ADD a membership: the person kept the
+        // old practice's charts and owner actions picked either practice.
+        // A member moves; an owner must close their practice first, or it
+        // would be left without an owner and its billing.
+        const { data: others, error: othersError } = await admin.from('practice_members')
+          .select('practice_id, role, practices(name)')
+          .eq('user_id', caller.id).neq('practice_id', inv.p);
+        if (othersError) throw othersError;
+        if ((others ?? []).some((o) => o.role === 'owner')) return json(apiError('owner_of_other_practice'), 409);
+        const leaving = (others ?? []).map((o) => (embeddedOne(o.practices) as { name?: string } | null)?.name ?? '').find(Boolean) ?? '';
+        if (body.preview === true) return json({ practiceName: prac.name ?? '', alreadyMember: !!already, leavingPractice: leaving });
+        // Join first, then leave: a failure part-way never leaves them in
+        // no practice at all.
+        const { error: joinError } = await admin.from('practice_members').upsert({ practice_id: inv.p, user_id: caller.id, role: 'member' });
+        if (joinError) throw joinError;
+        const { error: profileError } = await admin.from('profiles').upsert({ id: caller.id, practice_id: inv.p });
+        if (profileError) throw profileError;
+        if ((others ?? []).length) {
+          const { error: leaveError } = await admin.from('practice_members').delete()
+            .eq('user_id', caller.id).neq('practice_id', inv.p);
+          if (leaveError) throw leaveError;
+        }
         // Sharing their existing charts is a separate, explicit choice.
         if (body.shareExisting === true) await sharePersonalRecords(admin, inv.p, caller.id);
         return json({ ok: true, practiceName: prac.name ?? '' });

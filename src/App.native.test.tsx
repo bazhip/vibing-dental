@@ -157,6 +157,38 @@ describe('offline launch in the app', () => {
   });
 });
 
+describe('the working chart never crosses accounts', () => {
+  const CHART_KEY = 'vibing-dental.chart.patientInfo.v1';
+  const OWNER_KEY = 'vibing-dental.chart.owner.v1';
+
+  it('launching signed in as a different account than the chart’s owner wipes it first', async () => {
+    store.set(OWNER_KEY, JSON.stringify('user-a'));
+    store.set(CHART_KEY, '{"patientName":"Rex"}');
+    flags.session = { user: { id: 'user-b', email: 'b@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(store.has(CHART_KEY)).toBe(false);
+  });
+
+  it('signing in from the login screen (no earlier session this load) still wipes another account’s chart', async () => {
+    store.set(OWNER_KEY, JSON.stringify('user-a'));
+    store.set(CHART_KEY, '{"patientName":"Rex"}');
+    render(<App />);
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    act(() => authCallback()('SIGNED_IN', { user: { id: 'user-b', email: 'b@vet.com' } }));
+    expect(store.has(CHART_KEY)).toBe(false);
+  });
+
+  it('the same account signing back in keeps its chart', async () => {
+    store.set(OWNER_KEY, JSON.stringify('user-a'));
+    store.set(CHART_KEY, '{"patientName":"Rex"}');
+    render(<App />);
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    act(() => authCallback()('SIGNED_IN', { user: { id: 'user-a', email: 'a@vet.com' } }));
+    expect(store.has(CHART_KEY)).toBe(true);
+  });
+});
+
 describe('billing cache hygiene in the app', () => {
   it('a different account signing in clears the previous account\'s billing cache', async () => {
     flags.session = { user: { id: 'user-a', email: 'a@vet.com', app_metadata: {} } };

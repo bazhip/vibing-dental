@@ -82,6 +82,7 @@
     "checking": "Checking your invitation…",
     "thisPractice": "this practice",
     "alreadyMember": "You’re already a member of {{practice}}.",
+    "leaves": "Joining moves you out of {{practice}}: you’ll no longer see its charts.",
     "invited": "You’ve been invited to join <strong>{{practice}}</strong> on ToothOps. Members share the practice’s charts, report templates and recheck list, and new charts you save are shared with the team.",
     "shareExisting": "Also share the charts I’ve already made",
     "close": "Close",

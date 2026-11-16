@@ -27,6 +27,7 @@
       "invite_failed": "Impossibile inviare l’invito: {{detail}}",
       "practice_name_required": "Dia un nome allo studio.",
       "already_owner": "È già titolare di uno studio.",
+      "owner_of_other_practice": "È titolare di un altro studio, quindi non può unirsi a uno diverso. Chiuda prima il Suo studio oppure ci contatti.",
       "invite_invalid": "Questo link di invito non è valido. Chieda allo studio di inviarne uno nuovo.",
       "invite_wrong_account": "Questo invito è stato inviato a un altro account. Acceda con l’indirizzo email invitato.",
       "invite_expired": "Questo invito è scaduto. Chieda allo studio di inviarne uno nuovo.",

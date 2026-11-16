@@ -27,6 +27,7 @@
       "invite_failed": "Impossible d’envoyer l’invitation : {{detail}}",
       "practice_name_required": "Donnez un nom au cabinet.",
       "already_owner": "Vous êtes déjà responsable d’un cabinet.",
+      "owner_of_other_practice": "Vous êtes responsable d’un autre cabinet et ne pouvez donc pas en rejoindre un autre. Fermez d’abord votre cabinet ou contactez-nous.",
       "invite_invalid": "Ce lien d’invitation n’est pas valide. Demandez au cabinet de vous en envoyer un nouveau.",
       "invite_wrong_account": "Cette invitation a été envoyée à un autre compte. Connectez-vous avec l’adresse e-mail invitée.",
       "invite_expired": "Cette invitation a expiré. Demandez au cabinet de vous en envoyer une nouvelle.",

@@ -912,6 +912,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.practiceUnknown": {
+      "hash": "358a2731d893",
+      "status": "machine"
+    },
     "app:sync.saveFailed": {
       "hash": "fca375b23683",
       "status": "machine"
@@ -5124,6 +5128,10 @@
       "hash": "98bc69648d3b",
       "status": "machine"
     },
+    "common:errors.api.owner_of_other_practice": {
+      "hash": "1ef83ee3a67d",
+      "status": "machine"
+    },
     "common:errors.api.plan_required": {
       "hash": "0c59981fedd0",
       "status": "machine"
@@ -7502,6 +7510,10 @@
     },
     "onboarding:join.joining": {
       "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
+    "onboarding:join.leaves": {
+      "hash": "cf5e3af18cff",
       "status": "machine"
     },
     "onboarding:join.notNow": {
@@ -12030,6 +12042,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.practiceUnknown": {
+      "hash": "358a2731d893",
+      "status": "machine"
+    },
     "app:sync.saveFailed": {
       "hash": "fca375b23683",
       "status": "machine"
@@ -16294,6 +16310,10 @@
       "hash": "98bc69648d3b",
       "status": "machine"
     },
+    "common:errors.api.owner_of_other_practice": {
+      "hash": "1ef83ee3a67d",
+      "status": "machine"
+    },
     "common:errors.api.plan_required": {
       "hash": "0c59981fedd0",
       "status": "machine"
@@ -18684,6 +18704,10 @@
     },
     "onboarding:join.joining": {
       "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
+    "onboarding:join.leaves": {
+      "hash": "cf5e3af18cff",
       "status": "machine"
     },
     "onboarding:join.notNow": {
@@ -23248,6 +23272,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.practiceUnknown": {
+      "hash": "358a2731d893",
+      "status": "machine"
+    },
     "app:sync.saveFailed": {
       "hash": "fca375b23683",
       "status": "machine"
@@ -27512,6 +27540,10 @@
       "hash": "98bc69648d3b",
       "status": "machine"
     },
+    "common:errors.api.owner_of_other_practice": {
+      "hash": "1ef83ee3a67d",
+      "status": "machine"
+    },
     "common:errors.api.plan_required": {
       "hash": "0c59981fedd0",
       "status": "machine"
@@ -29902,6 +29934,10 @@
     },
     "onboarding:join.joining": {
       "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
+    "onboarding:join.leaves": {
+      "hash": "cf5e3af18cff",
       "status": "machine"
     },
     "onboarding:join.notNow": {
@@ -34466,6 +34502,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.practiceUnknown": {
+      "hash": "358a2731d893",
+      "status": "machine"
+    },
     "app:sync.saveFailed": {
       "hash": "fca375b23683",
       "status": "machine"
@@ -38730,6 +38770,10 @@
       "hash": "98bc69648d3b",
       "status": "machine"
     },
+    "common:errors.api.owner_of_other_practice": {
+      "hash": "1ef83ee3a67d",
+      "status": "machine"
+    },
     "common:errors.api.plan_required": {
       "hash": "0c59981fedd0",
       "status": "machine"
@@ -41120,6 +41164,10 @@
     },
     "onboarding:join.joining": {
       "hash": "6bbb89ee5d48",
+      "status": "machine"
+    },
+    "onboarding:join.leaves": {
+      "hash": "cf5e3af18cff",
       "status": "machine"
     },
     "onboarding:join.notNow": {

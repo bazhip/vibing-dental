@@ -203,7 +203,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [currentVisitRule, chart.cloudChartId]);
   const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
   const editable = editUnlocked || currentVisit;
-  const cloud = useCloudSync(chart, !trial, profile.practiceId, editable);
+  const cloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
@@ -652,6 +652,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     const snap = await cloud.fetchChart(latestChartId);
     // Already seen today? Offer that visit rather than a second one —
     // same-day restarts were the main source of duplicate records.
+    let answeredToday = false;
     try {
       const sp = speciesBase(snap.species);
       const visits = await cloud.listPatientVisits(snap.patientInfo.patientNumber ?? '', snap.patientInfo.patientName ?? '');
@@ -679,14 +680,14 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         }
       }
       // Answered here — don't ask again on the new visit's first save.
-      cloud.skipNextDuplicateCheck();
+      answeredToday = true;
     } catch {
       /* couldn't check — the first-save check will ask instead */
     }
     const gone = new Set<number>();
     for (const [k, v] of Object.entries(snap.preMarks ?? {})) if (v === 'missing') gone.add(Number(k));
     for (const [k, v] of Object.entries(snap.postMarks ?? {})) if (v === 'extracted') gone.add(Number(k));
-    chart.startNewVisit({
+    const newVisitId = chart.startNewVisit({
       identity: {
         patientName: snap.patientInfo.patientName,
         patientNumber: snap.patientInfo.patientNumber,
@@ -697,6 +698,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       },
       goneTeeth: Array.from(gone),
     });
+    if (answeredToday) cloud.skipDuplicateCheckFor(newVisitId);
     goToSection('patient');
     const name = snap.patientInfo.patientName?.trim();
     toast(

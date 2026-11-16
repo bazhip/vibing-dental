@@ -13,7 +13,8 @@ const TODAY = '2026-11-13';
 const ROWS = [
   meta({ id: 'a1', patient_name: 'Bella', patient_number: '11', owner_name: 'Ann', owner_email: 'ann@x.test', recall_date: '2026-11-01' }),
   meta({ id: 'b1', patient_name: 'Max', patient_number: '22', recall_date: TODAY }),
-  // Two visits: the soonest recheck (5 Nov) wins, so Coco is overdue.
+  // Two visits: the later visit (10 Nov) supersedes the earlier one's 5 Nov
+  // recheck, so Coco is due today (its own recheck), not overdue.
   meta({ id: 'c1', patient_name: 'Coco', patient_number: '33', chart_date: '2026-11-10', recall_date: TODAY, owner_email: 'c@x.test' }),
   meta({ id: 'c2', patient_name: 'Coco', patient_number: '33', chart_date: '2026-10-05', recall_date: '2026-11-05' }),
   // Not due yet (the server's dueOnly filter drops it).
@@ -32,8 +33,8 @@ afterEach(() => vi.useRealTimers());
 describe('groupRechecks', () => {
   it('splits due patients into Overdue (before today) and Due today, soonest first', () => {
     const { overdue, today } = groupRechecks(ROWS, TODAY, 'Unnamed');
-    expect(overdue.map((g) => [g.name, g.recall])).toEqual([['Bella', '2026-11-01'], ['Coco', '2026-11-05']]);
-    expect(today.map((g) => g.name)).toEqual(['Max']);
+    expect(overdue.map((g) => [g.name, g.recall])).toEqual([['Bella', '2026-11-01']]);
+    expect(today.map((g) => g.name)).toEqual(['Coco', 'Max']);
   });
 });
 
@@ -53,8 +54,8 @@ describe('RechecksScreen', () => {
     expect(p.querySelector('.ios-navbar__leading')?.childElementCount).toBe(0);
     const overdue = within(p).getByRole('list', { name: 'Overdue' });
     const today = within(p).getByRole('list', { name: 'Due today' });
-    expect(within(overdue).getAllByRole('button', { name: /^(Bella|Coco|Max)/ }).map((b) => b.querySelector('.ios-row__title')?.textContent)).toEqual(['Bella', 'Coco']);
-    expect(within(today).getAllByRole('button', { name: /^(Bella|Coco|Max)/ }).map((b) => b.querySelector('.ios-row__title')?.textContent)).toEqual(['Max']);
+    expect(within(overdue).getAllByRole('button', { name: /^(Bella|Coco|Max)/ }).map((b) => b.querySelector('.ios-row__title')?.textContent)).toEqual(['Bella']);
+    expect(within(today).getAllByRole('button', { name: /^(Bella|Coco|Max)/ }).map((b) => b.querySelector('.ios-row__title')?.textContent)).toEqual(['Coco', 'Max']);
     expect(within(p).queryByText('Dot')).toBeNull();
     expect(within(p).queryByText(/Later/)).toBeNull();
   });

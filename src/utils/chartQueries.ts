@@ -58,6 +58,57 @@ export function escapeLike(s: string): string {
   return s.replace(/[\\%_]/g, (c) => `\\${c}`);
 }
 
+/** The patient a chart belongs to: the same rule the library groups by
+ *  (patient number when present, else name; case-insensitive). */
+export function patientKey(c: Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name'>): string {
+  const num = (c.patient_number ?? '').trim().toLowerCase();
+  const name = (c.patient_name ?? '').trim().toLowerCase();
+  return num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
+}
+
+/** Blank recheck dates a later visit has superseded. A visit's recheck
+ *  date stops counting once the same patient has a visit dated after it
+ *  (normally the recheck itself); before, the patient stayed "overdue" until
+ *  someone cleared the old date by hand. Rows are kept (blanked, not
+ *  dropped) so paging offsets still line up. `visits` = any of the
+ *  patients' visits. */
+export function blankSupersededRecalls<T extends Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'chart_date' | 'recall_date'>>(
+  due: T[],
+  visits: Array<Pick<CloudChartMeta, 'id' | 'patient_number' | 'patient_name' | 'chart_date'>>
+): T[] {
+  const latest = new Map<string, string>();
+  for (const v of [...due, ...visits]) {
+    const k = patientKey(v);
+    const d = v.chart_date || '';
+    if (d > (latest.get(k) ?? '')) latest.set(k, d);
+  }
+  return due.map((c) => ((latest.get(patientKey(c)) ?? '') > (c.chart_date || '') ? { ...c, recall_date: '' } : c));
+}
+
+const IN_CHUNK = 80; // values per .in() — keeps the request URL short
+
+/** Visits of the patients behind these due charts (for
+ *  blankSupersededRecalls). Exact-match lookups: a patient whose other
+ *  visits differ in case or spacing just stays listed as due (fail-safe). */
+async function visitsOfPatients(due: CloudChartMeta[]): Promise<CloudChartMeta[]> {
+  if (!supabase || due.length === 0) return [];
+  const client = supabase;
+  const nums = [...new Set(due.map((c) => c.patient_number.trim()).filter(Boolean))];
+  const names = [...new Set(due.filter((c) => !c.patient_number.trim()).map((c) => c.patient_name.trim()).filter(Boolean))];
+  const cols = 'id, patient_number, patient_name, chart_date';
+  const chunks = <T,>(xs: T[]) => Array.from({ length: Math.ceil(xs.length / IN_CHUNK) }, (_, i) => xs.slice(i * IN_CHUNK, (i + 1) * IN_CHUNK));
+  const results = await Promise.all([
+    ...chunks(nums).map((part) => client.from('charts').select(cols).in('patient_number', part).range(0, 999)),
+    ...chunks(names).map((part) => client.from('charts').select(cols).eq('patient_number', '').in('patient_name', part).range(0, 999)),
+  ]);
+  const out: CloudChartMeta[] = [];
+  for (const r of results) {
+    if (r.error) throw new Error(r.error.message);
+    out.push(...((r.data ?? []) as CloudChartMeta[]));
+  }
+  return out;
+}
+
 /** One page of the practice's charts: search, filters, order and paging all run in Postgres. */
 export async function listChartsPage(q: ChartListQuery = {}): Promise<ChartListPage> {
   if (!supabase) return { rows: [], hasMore: false };
@@ -91,8 +142,11 @@ export async function listChartsPage(q: ChartListQuery = {}): Promise<ChartListP
   // second count query.
   const { data, error } = await query.range(offset, offset + limit);
   if (error) throw new Error(error.message);
-  const rows = (data ?? []) as CloudChartMeta[];
-  return { rows: rows.slice(0, limit), hasMore: rows.length > limit };
+  let rows = (data ?? []) as CloudChartMeta[];
+  const hasMore = rows.length > limit;
+  rows = rows.slice(0, limit);
+  if (q.dueOnly) rows = blankSupersededRecalls(rows, await visitsOfPatients(rows));
+  return { rows, hasMore };
 }
 
 /**

@@ -98,7 +98,7 @@ export interface UseChartStateReturn {
   startNewVisit: (opts?: {
     identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
-  }) => void;
+  }) => string; // the new visit's cloud id
 
   // ----- Cloud sync ------------------------------------------------------
   /** Stable id for the active chart's cloud row. New chart → new id. */
@@ -145,6 +145,10 @@ export interface UseChartStateReturn {
 }
 
 const STORAGE_PREFIX = 'vibing-dental.chart.';
+const CLOUD_ID_STORAGE_KEY = `${STORAGE_PREFIX}cloudId.v1`;
+/** In-tab event: this tab just rewrote the whole working chart in storage
+ *  (other hooks that persist chart keys write theirs too). */
+export const CHART_STORAGE_REWRITE_EVENT = 'vibing-dental:chart-storage-rewrite';
 
 /** Written into every snapshot so future schema changes have a version
  *  to migrate from. Snapshots without the field predate it (= 1). */
@@ -523,7 +527,8 @@ export function useChartState(): UseChartStateReturn {
       ownerEmail: identity ? identity.ownerEmail : patientInfo.ownerEmail,
     };
     const sp = identity ? identity.species : species;
-    openChartId(generateChartId());
+    const newId = generateChartId();
+    openChartId(newId);
     setOpenedExisting(false); // a new visit is a fresh chart → autosaves
     setImageRoles({}); // image tags belong to the prior visit's images
     setPdfExcludedImages([]);
@@ -546,6 +551,7 @@ export function useChartState(): UseChartStateReturn {
     setPostToothMarksDirect({});
     setPostDiagramComments([]);
     setPostDiagramStrokes([]);
+    return newId;
   };
 
   const resetCloudChartId = (): string => {
@@ -583,6 +589,50 @@ export function useChartState(): UseChartStateReturn {
     postToothMarks, postDiagramComments, postDiagramStrokes,
   ]);
   const getSnapshot = (): ChartSnapshot => snapshot;
+
+  // Two tabs share one working copy in localStorage, one key per field.
+  // When another tab puts a different chart there, this tab's next edit
+  // rewrites every key from its own chart, so storage holds one whole
+  // chart (last writer wins) instead of one tab's id and patient with the
+  // other tab's findings, which a reload then saved into the wrong record.
+  const cloudIdRef = React.useRef(cloudChartId);
+  cloudIdRef.current = cloudChartId;
+  const storageForeignRef = React.useRef(false);
+  React.useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      // newValue null = the other tab wiped the working chart (sign-out,
+      // another account): never write this patient back for the next user.
+      if (e.key === CLOUD_ID_STORAGE_KEY && e.newValue !== null && e.newValue !== JSON.stringify(cloudIdRef.current)) {
+        storageForeignRef.current = true;
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+  React.useEffect(() => {
+    if (!storageForeignRef.current) return;
+    storageForeignRef.current = false;
+    writeJson('chart.cloudId', 1, cloudChartId);
+    writeJson('chart.openedExisting', 1, openedExisting);
+    writeJson('chart.patientInfo', 1, patientInfo);
+    writeJson('chart.species', 1, species);
+    writeJson('chart.logo', 1, logo);
+    writeJson('chart.toothData', 1, toothData);
+    writeJson('chart.preMarks', 1, preToothMarks);
+    writeJson('chart.preComments', 1, preDiagramComments);
+    writeJson('chart.preStrokes', 1, preDiagramStrokes);
+    writeJson('chart.postMarks', 1, postToothMarks);
+    writeJson('chart.postComments', 1, postDiagramComments);
+    writeJson('chart.postStrokes', 1, postDiagramStrokes);
+    writeJson('chart.imageRoles', 1, imageRoles);
+    writeJson('chart.pdfExcludedImages', 1, pdfExcludedImages);
+    writeJson('chart.plannedExtractions', 1, plannedExtractions);
+    writeJson('chart.ownerReport', 1, ownerReport);
+    writeJson('chart.recordNote', 1, recordNote);
+    window.dispatchEvent(new Event(CHART_STORAGE_REWRITE_EVENT));
+    // Runs after this tab changes anything; the values are read fresh.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snapshot, cloudChartId, openedExisting]);
 
   const applySnapshot = (raw: ChartSnapshot, id: string): void => {
     if (!isChartSnapshot(raw)) {

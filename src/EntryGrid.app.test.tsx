@@ -32,7 +32,7 @@ const cloud = vi.hoisted(() => ({
     postMarks: {},
   })),
   listPatientVisits: vi.fn(async () => []),
-  skipNextDuplicateCheck: vi.fn(),
+  skipDuplicateCheckFor: vi.fn(),
   saveNow: vi.fn(async () => {}),
   signOut: vi.fn(async () => {}),
   restoreRevision: vi.fn(async () => {}),
@@ -209,7 +209,7 @@ describe('EntryGrid in the app, with saved charts', () => {
     it('Cancel starts nothing: no second visit, today’s visit not opened', async () => {
       const dialog = await ask();
       await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' })));
-      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+      expect(cloud.skipDuplicateCheckFor).not.toHaveBeenCalled();
       expect(cloud.openChart).not.toHaveBeenCalled();
       expect(tab('Patients')).toHaveAttribute('aria-selected', 'true');
     });
@@ -218,7 +218,7 @@ describe('EntryGrid in the app, with saved charts', () => {
       await ask();
       await act(async () => fireEvent.keyDown(window, { key: 'Escape' }));
       await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
-      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+      expect(cloud.skipDuplicateCheckFor).not.toHaveBeenCalled();
       expect(cloud.openChart).not.toHaveBeenCalled();
     });
 
@@ -226,13 +226,13 @@ describe('EntryGrid in the app, with saved charts', () => {
       const dialog = await ask();
       await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Open today’s visit' })));
       expect(cloud.openChart).toHaveBeenCalledWith('today-1', { skipConfirm: true });
-      expect(cloud.skipNextDuplicateCheck).not.toHaveBeenCalled();
+      expect(cloud.skipDuplicateCheckFor).not.toHaveBeenCalled();
     });
 
     it('“Start a second visit” starts one only when chosen', async () => {
       const dialog = await ask();
       await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Start a second visit' })));
-      expect(cloud.skipNextDuplicateCheck).toHaveBeenCalled();
+      expect(cloud.skipDuplicateCheckFor).toHaveBeenCalled();
       expect(cloud.openChart).not.toHaveBeenCalled();
       await expectLandedOnChartRoot();
     });

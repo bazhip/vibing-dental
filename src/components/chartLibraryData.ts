@@ -76,8 +76,6 @@ export function groupByPatient(charts: CloudChartMeta[], unnamed = i18n.t('unnam
     if (!g.owner && c.owner_name?.trim()) g.owner = c.owner_name.trim();
     if (!g.ownerPhone && c.owner_phone?.trim()) g.ownerPhone = c.owner_phone.trim();
     if (!g.ownerEmail && c.owner_email?.trim()) g.ownerEmail = c.owner_email.trim();
-    // Keep the soonest non-empty recall date across visits.
-    if (c.recall_date && (!g.recall || c.recall_date < g.recall)) g.recall = c.recall_date;
     // The visit we'd remind from: prefer one that has an owner email.
     if (!g.reminderChart || (c.owner_email?.trim() && !g.reminderChart.owner_email?.trim())) {
       g.reminderChart = c;
@@ -90,6 +88,10 @@ export function groupByPatient(charts: CloudChartMeta[], unnamed = i18n.t('unnam
       (b.chart_date || '').localeCompare(a.chart_date || '') ||
       b.updated_at.localeCompare(a.updated_at)
     );
+    // The recheck is the LATEST visit's: a later visit (normally the
+    // recheck itself) supersedes an earlier visit's date. Taking the
+    // soonest date across visits kept patients overdue after their recheck.
+    g.recall = g.visits[0]?.recall_date || '';
   }
   return list;
 }
@@ -271,7 +273,12 @@ export function useChartLibraryList({
   // Search, filters, and Due all happened server-side — this is purely
   // grouping the returned visits into patients and ordering the groups.
   const groups = React.useMemo(
-    () => (charts ? sortGroups(groupByPatient(charts, unnamedLabel), sortKey, sortDir) : null),
+    () => {
+      if (!charts) return null;
+      const all = groupByPatient(charts, unnamedLabel);
+      // Due filter: a recheck a later visit superseded comes back blanked.
+      return sortGroups(dueOnly ? all.filter((g) => g.recall) : all, sortKey, sortDir);
+    },
     [charts, sortKey, sortDir, unnamedLabel]
   );
 

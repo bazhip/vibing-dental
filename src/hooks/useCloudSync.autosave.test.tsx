@@ -13,6 +13,10 @@ const db = vi.hoisted(() => ({
   rowVisible: true,
   /** Next N chart upserts fail like a dropped connection (then succeed). */
   failUpserts: 0,
+  /** While set, chart upserts wait for it (a save still in flight). */
+  gate: null as Promise<void> | null,
+  /** Only upserts of this id wait for the gate ('' = all). */
+  gateId: '',
 }));
 vi.mock('../utils/supabaseClient', () => {
   const builder = () => {
@@ -21,9 +25,10 @@ vi.mock('../utils/supabaseClient', () => {
     const chain = () => q;
     Object.assign(q, {
       select: (cols?: string) => { if (cols === 'id') q.__existCheck = true; return q; },
-      order: chain, limit: chain, ilike: chain,
+      order: chain, limit: chain, ilike: chain, delete: chain, update: chain,
       eq: (col: string, v: string) => { if (col === 'id') singleId = v; return q; },
       maybeSingle: async () => {
+        if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) await db.gate;
         if (q.__netFail) return { data: null, error: { message: 'Failed to fetch' } };
         if (q.__refused) return { data: null, error: { code: '42501', message: 'new row violates row-level security policy' } };
         if (q.__existCheck && !db.rowVisible) return { data: null, error: null };
@@ -32,11 +37,17 @@ vi.mock('../utils/supabaseClient', () => {
       single: async () => { db.opened.push(singleId); return { data: { id: singleId, data: snap({}), updated_at: '2026-11-12T09:00:00Z' }, error: null }; },
       upsert: (row: Record<string, unknown>) => {
         db.upserts.push(row);
+        q.__upsert = true;
+        q.__upsertId = row.id;
         if (db.refuseUpserts > 0) { db.refuseUpserts--; q.__refused = true; }
         else if (db.failUpserts > 0) { db.failUpserts--; q.__netFail = true; }
         return q;
       },
-      then: (resolve: (v: unknown) => void) => resolve({ data: db.visits, error: null }),
+      then: (resolve: (v: unknown) => void) => {
+        const go = () => resolve({ data: db.visits, error: null });
+        if (q.__upsert && db.gate && (!db.gateId || q.__upsertId === db.gateId)) void db.gate.then(go);
+        else go();
+      },
     });
     return q;
   };
@@ -87,7 +98,7 @@ const fakeChart = (s: ChartSnapshot, id = 'chart-1') => ({
 
 beforeEach(() => {
   store.clear();
-  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0;
+  db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = '';
   confirm.mockReset(); confirm.mockResolvedValue(false);
   choose.mockReset(); choose.mockResolvedValue('keep');
   vi.useFakeTimers();
@@ -218,7 +229,7 @@ describe('same-day duplicate guard', () => {
   it('skips the question when it was already answered (new visit)', async () => {
     db.visits = [sameDay];
     const { result } = renderHook(() => useCloudSync(fakeChart(snap({}))));
-    act(() => result.current.skipNextDuplicateCheck());
+    act(() => result.current.skipDuplicateCheckFor('chart-1'));
     await act(async () => { await result.current.saveNow(); });
     expect(choose).not.toHaveBeenCalled();
     expect(db.upserts).toHaveLength(1);
@@ -240,5 +251,223 @@ describe('refused saves', () => {
     renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
     await flush();
     expect(db.upserts.map((r) => r.id)).toEqual(['chart-1', 'forked']);
+  });
+
+  it('a forked save is recorded as saved (no second save, no repeat duplicate question)', async () => {
+    db.refuseUpserts = 1;
+    db.rowVisible = false;
+    const s = snap({ exam: true });
+    const chart = { ...fakeChart(s, 'chart-1'), getSnapshot: () => s } as unknown as Parameters<typeof useCloudSync>[0] & { cloudChartId: string };
+    chart.resetCloudChartId = () => { chart.cloudChartId = 'forked'; return 'forked'; };
+    // The forked save is still in flight when the app re-renders with the
+    // new id (as on a real network).
+    let release!: () => void;
+    db.gate = new Promise<void>((r) => { release = r; });
+    db.gateId = 'forked';
+    const { result, rerender } = renderHook(() => useCloudSync(chart));
+    await flush();
+    expect(db.upserts.map((r) => r.id)).toEqual(['chart-1', 'forked']);
+    rerender();
+    await act(async () => { release(); await Promise.resolve(); });
+    await flush();
+    expect(db.upserts).toHaveLength(2); // no redundant re-save of the fork
+    expect(result.current.dirty).toBe(false);
+    expect(result.current.lastSavedAt).not.toBe('');
+  });
+});
+
+describe('which practice a chart belongs to', () => {
+  it('only a chart’s first save sets its practice; later saves never move it', async () => {
+    let s = snap({ exam: true });
+    const { result, rerender } = renderHook(() => useCloudSync(fakeChart(s), true, 'practice-a'));
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect(db.upserts[0].practice_id).toBe('practice-a');
+
+    s = { ...snap({ exam: true }), patientInfo: { ...snap({ exam: true }).patientInfo, treatmentReport: 'more' } } as ChartSnapshot;
+    rerender();
+    await act(async () => { await result.current.saveNow(); });
+    expect(db.upserts).toHaveLength(2);
+    expect('practice_id' in db.upserts[1]).toBe(false);
+  });
+
+  it('a saved chart opened from My charts keeps its practice when saved', async () => {
+    const chart = { ...fakeChart(snap({ exam: true })), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    const { result } = renderHook(() => useCloudSync(chart, true, 'practice-b', true));
+    await act(async () => { await result.current.saveNow(); });
+    expect(db.upserts).toHaveLength(1);
+    expect('practice_id' in db.upserts[0]).toBe(false);
+  });
+
+  it('with the practice unknown, an existing chart still saves (practice untouched); a new chart is not saved as practice-less', async () => {
+    const opened = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    const a = renderHook(() => useCloudSync(opened, true, '', true, false));
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect('practice_id' in db.upserts[0]).toBe(false);
+    a.unmount();
+    db.upserts = [];
+
+    const b = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }), 'new-1'), true, '', false, false));
+    await act(async () => { await b.result.current.saveNow().catch(() => {}); });
+    expect(db.upserts).toHaveLength(0);
+    expect(b.result.current.status).toBe('error');
+  });
+
+  it('autosave waits until the profile (and so the practice) has loaded', async () => {
+    let ready = false;
+    const { rerender } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true })), true, ready ? 'practice-a' : '', false, ready));
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+    ready = true;
+    rerender();
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect(db.upserts[0].practice_id).toBe('practice-a');
+  });
+});
+
+describe('deleting the chart that is open', () => {
+  it('does not re-create it by autosave; a later edit saves it as a new chart', async () => {
+    let s = snap({ exam: true });
+    const chart = {
+      ...fakeChart(s, 'open-1'),
+      getSnapshot: () => s,
+      resetCloudChartId: () => { chart.cloudChartId = 'fresh-1'; return 'fresh-1'; },
+    } as unknown as Parameters<typeof useCloudSync>[0] & { cloudChartId: string };
+    const { result, rerender, unmount } = renderHook(() => useCloudSync(chart));
+    await flush();
+    expect(db.upserts).toHaveLength(1); // saved once, as normal
+    db.upserts = [];
+
+    await act(async () => { await result.current.deleteChart('open-1'); });
+    rerender();
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+
+    // Nor after a reload (state comes back from storage).
+    unmount();
+    const reloaded = renderHook(() => useCloudSync(chart));
+    await flush();
+    expect(db.upserts).toHaveLength(0);
+    expect(reloaded.result.current.dirty).toBe(false);
+
+    s = { ...s, patientInfo: { ...s.patientInfo, treatmentReport: 'kept working' } } as ChartSnapshot;
+    reloaded.rerender();
+    await flush();
+    expect(db.upserts).toHaveLength(1);
+    expect(db.upserts[0].id).toBe('fresh-1');
+  });
+});
+
+describe('a save that finishes after another chart was opened', () => {
+  it('is not credited to the chart now on screen', async () => {
+    let s = snap({ exam: true });
+    const chart = { ...fakeChart(s, 'chart-a'), getSnapshot: () => s } as unknown as Parameters<typeof useCloudSync>[0] & { cloudChartId: string };
+    const { result, rerender } = renderHook(() => useCloudSync(chart));
+    // Save of chart A starts; before it resolves, a new visit replaces it.
+    let release!: () => void;
+    db.gate = new Promise<void>((r) => { release = r; });
+    let savePromise!: Promise<void>;
+    await act(async () => { savePromise = result.current.saveNow(); await Promise.resolve(); });
+    expect(db.upserts).toHaveLength(1); // in flight
+    chart.cloudChartId = 'new-visit';
+    s = snap({ name: 'Fluffy' });
+    rerender();
+    await act(async () => { release(); await savePromise; });
+    expect(result.current.lastSavedAt).toBe(''); // the new visit has never been saved
+    expect(result.current.dirty).toBe(true);
+  });
+});
+
+describe('clearing the recheck on the chart that is open', () => {
+  it('is our own change: the next save of that chart is not a conflict', async () => {
+    const chart = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    // Opened and saved earlier at 09:00 (server time).
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({ chartId: 'open-1', at: '2026-11-12T09:00:00Z' }));
+    const { result } = renderHook(() => useCloudSync(chart, true, '', true));
+    // Clearing it on the server bumps updated_at to 10:00.
+    await act(async () => { await result.current.clearRecalls(['open-1']); });
+    await act(async () => { await result.current.saveNow(); });
+    expect(confirm).not.toHaveBeenCalled(); // no "changed by someone else"
+    expect(db.upserts).toHaveLength(1);
+  });
+
+  it('a teammate’s save before the clear is still caught at the next save', async () => {
+    const chart = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    // We know the 08:00 version; a teammate saved at 09:00 (what the clear reads).
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({ chartId: 'open-1', at: '2026-11-12T08:00:00Z' }));
+    const { result } = renderHook(() => useCloudSync(chart, true, '', true));
+    await act(async () => { await result.current.clearRecalls(['open-1']); });
+    await act(async () => { await result.current.saveNow().catch(() => {}); });
+    expect(confirm).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('restoring an earlier version', () => {
+  it('stamps the save as a restore, so history keeps the version it replaces', async () => {
+    const chart = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    confirm.mockResolvedValue(true); // discard the unsaved edits on screen
+    const { result } = renderHook(() => useCloudSync(chart, true, '', true));
+    await act(async () => { await result.current.restoreRevision('open-1', snap({ name: 'Older' })); });
+    expect(db.upserts).toHaveLength(1);
+    expect(typeof db.upserts[0].restored_at).toBe('string');
+  });
+
+  it('ordinary saves are not stamped', async () => {
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    await act(async () => { await result.current.saveNow(); });
+    expect('restored_at' in db.upserts[0]).toBe(false);
+  });
+});
+
+describe('two tabs', () => {
+  it('when the chart state rewrites the working copy, the save bookkeeping is rewritten too', async () => {
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({ chartId: 'chart-1', at: '2026-11-12T09:00:00Z' }));
+    renderHook(() => useCloudSync(fakeChart(snap({ exam: true }))));
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({ chartId: 'other-tab', at: 'x' }));
+    act(() => { window.dispatchEvent(new Event('vibing-dental:chart-storage-rewrite')); });
+    expect(JSON.parse(store.get('vibing-dental.chart.lastSaved.v1')!).chartId).toBe('chart-1');
+  });
+});
+
+describe('opening a chart identical to the one on screen', () => {
+  it('the next edit is still unsaved (the "saved baseline" flag does not stay armed)', async () => {
+    let s = snap({ exam: true });
+    const chart = { ...fakeChart(s, 'c-1'), getSnapshot: () => s } as unknown as Parameters<typeof useCloudSync>[0];
+    const { result, rerender } = renderHook(() => useCloudSync(chart));
+    // applySnapshot is a no-op here: the opened content equals what's shown.
+    await act(async () => { await result.current.openChart('c-1', { skipConfirm: true }); });
+    expect(result.current.dirty).toBe(false);
+
+    s = { ...s, patientInfo: { ...s.patientInfo, treatmentReport: 'new finding' } } as ChartSnapshot;
+    rerender();
+    expect(result.current.dirty).toBe(true);
+  });
+});
+
+describe('a restore that fails', () => {
+  it('leaves edit-conflict checks on for later saves', async () => {
+    const chart = { ...fakeChart(snap({ exam: true }), 'open-1'), openedExisting: true } as unknown as Parameters<typeof useCloudSync>[0];
+    store.set('vibing-dental.chart.lastSaved.v1', JSON.stringify({ chartId: 'open-1', at: '2026-11-12T09:00:00Z' }));
+    confirm.mockResolvedValue(true);
+    db.failUpserts = 1;
+    const { result } = renderHook(() => useCloudSync(chart, true, '', true));
+    await act(async () => { await result.current.restoreRevision('open-1', snap({ name: 'Older' })).catch(() => {}); });
+    // A teammate saved at 10:00; our next save must ask, not overwrite.
+    confirm.mockReset(); confirm.mockResolvedValue(false);
+    await act(async () => { await result.current.saveNow().catch(() => {}); });
+    expect(confirm).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('the "already answered" skip for a new visit', () => {
+  const sameDay = { id: 'older', chart_date: '2026-11-12', species: 'canine', patient_name: 'Fluffy', patient_number: '' };
+  it('applies only to the chart it was for, not to the next unrelated chart', async () => {
+    db.visits = [sameDay];
+    const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true }), 'pdf-import')));
+    act(() => result.current.skipDuplicateCheckFor('abandoned-visit'));
+    await flush();
+    expect(choose).toHaveBeenCalledTimes(1); // still asked
   });
 });

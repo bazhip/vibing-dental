@@ -90,3 +90,22 @@ describe('uploadRejection', () => {
     expect(app).not.toMatch(/plan/i);
   });
 });
+
+import { practiceForNewImage } from './useAttachments';
+
+describe('practiceForNewImage', () => {
+  const client = (row: unknown) => async () => ({ data: row });
+
+  it('a saved chart’s images take the chart’s practice, not the uploader’s current one', async () => {
+    expect(await practiceForNewImage(client({ practice_id: 'practice-a' }), 'practice-b')).toBe('practice-a');
+  });
+
+  it('a private chart’s images stay private', async () => {
+    expect(await practiceForNewImage(client({ practice_id: null }), 'practice-b')).toBeNull();
+  });
+
+  it('a chart not saved yet takes the current practice', async () => {
+    expect(await practiceForNewImage(client(null), 'practice-b')).toBe('practice-b');
+    expect(await practiceForNewImage(client(null), '')).toBeNull();
+  });
+});

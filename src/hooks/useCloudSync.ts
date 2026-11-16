@@ -6,7 +6,8 @@ import i18n from '../i18n';
 import { formatDate, formatTime } from '../i18n/format';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { usePersistedState } from './usePersistedState';
-import { UseChartStateReturn, clearChartStorage } from './useChartState';
+import { writeJson } from '../utils/storage';
+import { CHART_STORAGE_REWRITE_EVENT, UseChartStateReturn, clearChartStorage } from './useChartState';
 import { signOutAndSweep } from '../utils/signOutAndSweep';
 import { LocalizedError } from '../utils/apiErrors';
 import {
@@ -50,7 +51,9 @@ export interface UseCloudSyncReturn {
   awaitingClinical: boolean;
   /** Skip the same-day duplicate question for the next new chart's first
    *  save (the user already answered it, e.g. when starting a new visit). */
-  skipNextDuplicateCheck: () => void;
+  /** The same-day question was already answered for this new chart (it was
+   *  asked when starting the visit): don't ask again on its first save. */
+  skipDuplicateCheckFor: (chartId: string) => void;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   /** All visits for one patient (matched by number when present, else
    *  by name) — powers the topbar visit switcher. */
@@ -152,7 +155,7 @@ function describeSaveError(err: unknown): string {
 }
 
 /** A SaveFailure whose wording is one of the `app:sync.*` messages. */
-function saveFailure(key: 'sync.changedByOther' | 'sync.notSavedConflict' | 'sync.noPermission', english: string): SaveFailure {
+function saveFailure(key: 'sync.changedByOther' | 'sync.notSavedConflict' | 'sync.noPermission' | 'sync.practiceUnknown', english: string): SaveFailure {
   const t = i18n.getFixedT(null, 'app');
   return new SaveFailure(english, t('sync.saveFailed', { message: t(key) }));
 }
@@ -174,12 +177,17 @@ export function useCloudSync(
   active = true,
   practiceId = '',
   /** A saved chart the user has unlocked for editing autosaves too. */
-  editingUnlocked = false
+  editingUnlocked = false,
+  /** The profile (and so practiceId) has loaded. Autosave waits for it, so
+   *  a new chart's first save can't record "no practice" by racing it. */
+  practiceReady = true
 ): UseCloudSyncReturn {
   // Trial/standalone: no account to save to — the hook is inert.
   const on = cloudEnabled && active;
   const practiceIdRef = React.useRef(practiceId);
   practiceIdRef.current = practiceId;
+  const practiceReadyRef = React.useRef(practiceReady);
+  practiceReadyRef.current = practiceReady;
 
   const [status, setStatus] = React.useState<UseCloudSyncReturn['status']>('idle');
   const [saveError, setSaveError] = React.useState('');
@@ -191,6 +199,18 @@ export function useCloudSync(
   const lastSavedAt = lastSaved.chartId === chart.cloudChartId ? lastSaved.at : '';
   const lastSavedRef = React.useRef(lastSaved);
   lastSavedRef.current = lastSaved;
+  // The chart state rewrote the whole working copy (another tab had put a
+  // different chart there): these two describe this tab's chart too.
+  const savedHashRef = React.useRef(savedHash);
+  savedHashRef.current = savedHash;
+  React.useEffect(() => {
+    const rewrite = () => {
+      writeJson('chart.savedHash', 1, savedHashRef.current);
+      writeJson('chart.lastSaved', 1, lastSavedRef.current);
+    };
+    window.addEventListener(CHART_STORAGE_REWRITE_EVENT, rewrite);
+    return () => window.removeEventListener(CHART_STORAGE_REWRITE_EVENT, rewrite);
+  }, []);
   // Per-chart answer to an edit conflict: force = user chose "Replace with
   // mine"; blocked = "Keep theirs" (no more saves until reopened).
   const conflictRef = React.useRef<{ chartId: string; mode: 'none' | 'force' | 'blocked' }>({ chartId: '', mode: 'none' });
@@ -241,15 +261,30 @@ export function useCloudSync(
   // Opening a cloud chart replays its content into state — treat that
   // applied state as the saved baseline (not a dirty edit).
   const baselineNext = React.useRef(false);
+  // Bumped together with applying the chart, so the effect below runs in
+  // that render even when the applied content serializes exactly like
+  // what was on screen. Keyed on `serialized` alone, the flag then stayed
+  // armed and the user's NEXT edit was recorded as already saved.
+  const [baselineTick, setBaselineTick] = React.useState(0);
+  const armBaseline = () => {
+    baselineNext.current = true;
+    setBaselineTick((n) => n + 1);
+  };
   React.useEffect(() => {
     if (baselineNext.current) {
       baselineNext.current = false;
       setSavedHash(currentHash);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serialized]);
+  }, [serialized, baselineTick]);
 
-  const upsertChart = React.useCallback(async (json: string, id: string): Promise<void> => {
+  const upsertChart = React.useCallback(async (
+    json: string,
+    id: string,
+    /** Restoring an earlier version: stamped so history starts a new
+     *  revision instead of merging the restore into the latest one. */
+    opts: { restore?: boolean } = {}
+  ): Promise<void> => {
     if (!supabase) return;
     const client = supabase;
     const fail = (err: unknown): never => {
@@ -266,6 +301,27 @@ export function useCloudSync(
       // 'canine-deciduous'); the row stores species + dentition split out.
       const base = speciesBase(snap.species);
       const dentition = speciesDentition(snap.species);
+      // Bookkeeping for a save that landed. Only for the chart it saved:
+      // if another chart was opened meanwhile, crediting the save to it
+      // marked a never-saved new visit "saved" (skipping the duplicate
+      // check and the wait for charting) and gave an opened chart the
+      // wrong baseline for conflict checks.
+      const recordSaved = (savedJson: string, savedId: string, at: string) => {
+        // (A forked save re-ids the chart on screen to savedId mid-save.)
+        if (latest.current.chartId !== id && latest.current.chartId !== savedId) return;
+        setSavedHash(hashStr(savedJson));
+        setLastSaved({ chartId: savedId, at });
+      };
+      // New to the cloud: never saved from here, and not opened from a
+      // saved chart (a forked retry id is new too).
+      const isFirstSave = (rowId: string) =>
+        rowId !== id || (!openedExistingRef.current && lastSavedRef.current.chartId !== id);
+      // A new chart's first save records its practice for good (later saves
+      // never send it). With the practice unknown (profile read failed),
+      // don't record "no practice" by accident.
+      if (isFirstSave(id) && !practiceReadyRef.current) {
+        fail(saveFailure('sync.practiceUnknown', 'Practice not loaded yet; a new chart can\'t be saved to it.'));
+      }
       const row = (rowId: string) => ({
         id: rowId,
         patient_name: snap.patientInfo.patientName,
@@ -277,8 +333,13 @@ export function useCloudSync(
         dentition,
         chart_date: snap.patientInfo.date,
         recall_date: snap.patientInfo.recallDate ?? '',
-        practice_id: practiceIdRef.current || null,
         data: snap,
+        // Only a chart's first save sets its practice. Rewriting it on every
+        // save made a chart private when it saved before the profile
+        // loaded, and moved old charts into whatever practice the user is
+        // in now (sharing them against their choice). Practice moves are
+        // done deliberately on the server.
+        ...(isFirstSave(rowId) ? { practice_id: practiceIdRef.current || null } : {}),
       });
       // Edit conflict: a shared chart opened here may have been saved by
       // someone else since. Compare server timestamps (never the local
@@ -308,14 +369,15 @@ export function useCloudSync(
       }
       setStatus('saving');
       setSaveError('');
-      const { data: savedRow, error } = await client.from('charts').upsert(row(id)).select('updated_at').maybeSingle();
+      const restoreStamp = opts.restore ? { restored_at: new Date().toISOString() } : {};
+      let { data: savedRow, error } = await client.from('charts').upsert({ ...row(id), ...restoreStamp }).select('updated_at').maybeSingle();
+      if (error && opts.restore && /restored_at/.test(error.message)) {
+        // Database without the column yet (migration 20261126): restore anyway.
+        ({ data: savedRow, error } = await client.from('charts').upsert(row(id)).select('updated_at').maybeSingle());
+      }
       if (!error) {
-        setSavedHash(hashStr(json));
         // Server time, so later conflict checks compare like with like.
-        setLastSaved({
-          chartId: latest.current.chartId,
-          at: (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString(),
-        });
+        recordSaved(json, id, (savedRow as { updated_at?: string } | null)?.updated_at ?? new Date().toISOString());
         setStatus('saved');
         return;
       }
@@ -349,8 +411,7 @@ export function useCloudSync(
         const freshId = resetIdRef.current();
         const { error: retryError } = await client.from('charts').upsert(row(freshId));
         if (retryError) fail(retryError);
-        setSavedHash(hashStr(json));
-        setLastSaved({ chartId: latest.current.chartId, at: new Date().toISOString() });
+        recordSaved(json, freshId, new Date().toISOString());
         setStatus('saved');
         return;
       }
@@ -374,15 +435,17 @@ export function useCloudSync(
   // many same-day duplicates). Asked once per chart.
   const listPatientVisitsRef = React.useRef<(n: string, name: string) => Promise<CloudChartMeta[]>>(async () => []);
   const dupAnsweredRef = React.useRef('');
-  const skipDupOnceRef = React.useRef(false);
+  // Tied to one chart: a bare "skip the next one" flag outlived a visit
+  // that was never saved and let an unrelated chart skip the question.
+  const skipDupForRef = React.useRef('');
   const dupCheckingRef = React.useRef(false);
-  const skipNextDuplicateCheck = React.useCallback(() => { skipDupOnceRef.current = true; }, []);
+  const skipDuplicateCheckFor = React.useCallback((chartId: string) => { skipDupForRef.current = chartId; }, []);
   const openChartRef = React.useRef<(id: string, opts?: { force?: boolean; skipConfirm?: boolean }) => Promise<boolean>>(async () => false);
   /** True = go ahead and save; false = don't (the user opened the other visit, or dismissed the question). */
   const passDuplicateCheck = async (snap: ChartSnapshot, id: string): Promise<boolean> => {
     if (!supabase || openedExistingRef.current || lastSavedRef.current.chartId === id || dupAnsweredRef.current === id) return true;
-    if (skipDupOnceRef.current) {
-      skipDupOnceRef.current = false;
+    if (skipDupForRef.current === id) {
+      skipDupForRef.current = '';
       dupAnsweredRef.current = id;
       return true;
     }
@@ -456,6 +519,8 @@ export function useCloudSync(
   React.useEffect(() => {
     if (!on || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
+    // A new chart's first save waits until the practice is known.
+    if (!practiceReady && !everSaved) return;
     if (!snapshot.patientInfo.patientName.trim()) return;
     // Filled in ahead of time (patient/owner details only): wait for
     // charting to start, or for an explicit Save.
@@ -463,7 +528,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical]);
+  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -526,7 +591,7 @@ export function useCloudSync(
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
-    baselineNext.current = true; // applied content is the saved baseline
+    armBaseline(); // applied content is the saved baseline
     applyRef.current(data.data as ChartSnapshot, data.id);
     setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
     conflictRef.current = { chartId: '', mode: 'none' };
@@ -543,14 +608,19 @@ export function useCloudSync(
     // Unsaved edits here would be replaced — ask, as opening a chart does.
     if (!(await confirmDiscardIfDirty('restore'))) return false;
     // A deliberate restore: don't stop at the "changed elsewhere" check.
+    // Only for this save: if it fails, later saves must still be checked,
+    // or they'd silently overwrite a teammate's newer version.
     conflictRef.current = { chartId: id, mode: 'force' };
-    await upsertChart(JSON.stringify(snapshot), id);
-    const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
-    if (error) throw new Error(error.message);
-    baselineNext.current = true; // the restored content is the saved baseline
-    applyRef.current(data.data as ChartSnapshot, data.id);
-    setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
-    conflictRef.current = { chartId: '', mode: 'none' };
+    try {
+      await upsertChart(JSON.stringify(snapshot), id, { restore: true });
+      const { data, error } = await supabase.from('charts').select('id, data, updated_at').eq('id', id).single();
+      if (error) throw new Error(error.message);
+      armBaseline(); // the restored content is the saved baseline
+      applyRef.current(data.data as ChartSnapshot, data.id);
+      setLastSaved({ chartId: data.id, at: (data as { updated_at?: string }).updated_at ?? '' });
+    } finally {
+      conflictRef.current = { chartId: '', mode: 'none' };
+    }
     setStatus('saved');
     return true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -573,24 +643,39 @@ export function useCloudSync(
     if (id === latest.current.chartId) {
       resetIdRef.current();
       setOpenedExistingRef.current(false);
-      setSavedHash('');
+      // Not "unsaved": that made autosave put it straight back as a new
+      // record (and again after any reload). Its content is the baseline;
+      // an edit, or Save, is the user choosing to keep it as a new chart.
+      setSavedHash(hashStr(latest.current.serialized));
     }
   }, [setSavedHash]);
 
   const clearRecalls = React.useCallback(async (chartIds: string[]): Promise<void> => {
     if (!supabase || chartIds.length === 0) return;
     for (const id of chartIds) {
-      const { data, error } = await supabase.from('charts').select('data').eq('id', id).single();
+      const { data, error } = await supabase.from('charts').select('data, updated_at').eq('id', id).single();
       if (error) throw new Error(error.message);
       const snap = data.data as ChartSnapshot;
       if (snap?.patientInfo) snap.patientInfo.recallDate = '';
-      const { error: updateError } = await supabase
+      // Was the server copy still the version this screen knows? Only then
+      // is the clear's new server time "ours" (below); if a teammate saved
+      // meanwhile, the next save must still catch that conflict.
+      const known = lastSavedRef.current;
+      const readAt = Date.parse((data as { updated_at?: string }).updated_at ?? '');
+      const wasKnown = known.chartId === id && Number.isFinite(readAt) && Math.abs(readAt - Date.parse(known.at)) <= 1000;
+      const { data: updated, error: updateError } = await supabase
         .from('charts')
         .update({ recall_date: '', data: snap })
-        .eq('id', id);
+        .eq('id', id)
+        .select('updated_at')
+        .maybeSingle();
       if (updateError) throw new Error(updateError.message);
+      // Our own change to the chart that's open: its new server time is the
+      // one we know, or the next save calls it "changed by someone else".
+      const at = (updated as { updated_at?: string } | null)?.updated_at;
+      if (at && wasKnown) setLastSaved({ chartId: id, at });
     }
-  }, []);
+  }, [setLastSaved]);
 
   const signOut = React.useCallback(async (): Promise<void> => {
     if (!supabase) return;
@@ -609,7 +694,7 @@ export function useCloudSync(
     online,
     saveNow,
     awaitingClinical,
-    skipNextDuplicateCheck,
+    skipDuplicateCheckFor,
     listCharts,
     listPatientVisits,
     openChart,

@@ -82,6 +82,7 @@
     "checking": "Verifica del Suo invito…",
     "thisPractice": "questo studio",
     "alreadyMember": "È già membro di {{practice}}.",
+    "leaves": "Unendosi, lascerà {{practice}} e non ne vedrà più le cartelle.",
     "invited": "È stato invitato a unirsi a <strong>{{practice}}</strong> su ToothOps. I membri condividono le cartelle, i modelli di referto e l’elenco dei controlli dello studio, e le nuove cartelle che salva vengono condivise con il team.",
     "shareExisting": "Condividi anche le cartelle che ho già creato",
     "close": "Chiudi",

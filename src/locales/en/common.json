@@ -27,6 +27,7 @@
       "invite_failed": "Couldn't send the invite: {{detail}}",
       "practice_name_required": "Give the practice a name.",
       "already_owner": "You already own a practice.",
+      "owner_of_other_practice": "You own another practice, so you can’t join a different one. Close your practice first, or contact us.",
       "invite_invalid": "This invite link isn’t valid. Ask the practice to send a new one.",
       "invite_wrong_account": "This invite was sent to a different account. Sign in with the invited email.",
       "invite_expired": "This invite has expired. Ask the practice to send a new one.",

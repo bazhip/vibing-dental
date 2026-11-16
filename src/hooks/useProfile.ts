@@ -50,6 +50,9 @@ export const BILLED_STATUSES = ['active', 'trialing', 'past_due'];
 
 export interface UseProfileReturn extends PracticeProfile {
   loaded: boolean;
+  /** practiceId is known (the profile read succeeded). `loaded` is also
+   *  true after a failed read, with practiceId '' meaning "unknown". */
+  practiceKnown: boolean;
   /** The user's current practice (for team sharing), '' when solo. */
   practiceId: string;
   /** The practice's subscription tier (gates AI + storage). */
@@ -196,6 +199,7 @@ export function useProfile(): UseProfileReturn {
   // stale tab or device can't overwrite newer templates.
   const reportRevRef = React.useRef<number | null>(null);
   const [loaded, setLoaded] = React.useState(!cloudEnabled);
+  const [practiceKnown, setPracticeKnown] = React.useState(!cloudEnabled);
 
   React.useEffect(() => {
     if (!supabase) return;
@@ -207,7 +211,7 @@ export function useProfile(): UseProfileReturn {
         if (!cancelled) setLoaded(true);
         return;
       }
-      const { data } = await supabase
+      const { data, error: profileError } = await supabase
         .from('profiles')
         .select('practice_name, doctor_name, logo_path, practice_id')
         .eq('id', userId)
@@ -314,6 +318,7 @@ export function useProfile(): UseProfileReturn {
           reportLoadFailedRef.current = reportLoadFailed;
           setOwnerReportConfigLoadFailed(reportLoadFailed);
         }
+        setPracticeKnown(!profileError);
         setLoaded(true);
       }
     })();
@@ -390,6 +395,7 @@ export function useProfile(): UseProfileReturn {
   return React.useMemo(() => ({
     ...profile,
     loaded,
+    practiceKnown,
     practiceId,
     plan,
     aiEnabled: PLAN_LIMITS[plan].aiAutofill,
@@ -406,5 +412,5 @@ export function useProfile(): UseProfileReturn {
     update,
     uploadLogo,
     removeLogo,
-  }), [profile, loaded, practiceId, plan, billed, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
+  }), [profile, loaded, practiceKnown, practiceId, plan, billed, ownerReportEnabled, pimsSendEnabled, ownerReportConfig, saveOwnerReportConfig, logoUrl, update, uploadLogo, removeLogo]);
 }

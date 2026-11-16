@@ -318,6 +318,19 @@ export async function listChartAttachments(chartId: string): Promise<Attachment[
   }));
 }
 
+/** The practice a new image belongs to: its chart's, not whichever practice
+ *  the uploader is in now (or "none" while the profile is loading), so
+ *  teammates who can see the chart see its images. A chart not saved yet
+ *  (no row) takes the current practice, as its own first save will. */
+export async function practiceForNewImage(
+  chartRow: () => PromiseLike<{ data: unknown }>,
+  currentPracticeId: string
+): Promise<string | null> {
+  const { data } = await chartRow();
+  if (data) return (data as { practice_id: string | null }).practice_id;
+  return currentPracticeId || null;
+}
+
 export function useAttachments(
   chartId: string,
   practiceId = '',
@@ -396,13 +409,18 @@ export function useAttachments(
           .upload(thumbPathFor(path), thumb, { contentType: 'image/jpeg', upsert: false })
           .catch(() => undefined);
       }
+      const client = supabase;
+      const practiceForImage = await practiceForNewImage(
+        () => client.from('charts').select('practice_id').eq('id', chartId).maybeSingle(),
+        practiceIdRef.current
+      );
       const { error: rowErr } = await supabase.from('attachments').insert({
         id,
         chart_id: chartId,
         path,
         kind,
         caption: caption.trim(),
-        practice_id: practiceIdRef.current || null,
+        practice_id: practiceForImage,
         ...(originalPath ? { original_path: originalPath } : {}),
       });
       if (rowErr) throw new Error(rowErr.message);

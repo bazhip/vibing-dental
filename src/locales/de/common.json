@@ -27,6 +27,7 @@
       "invite_failed": "Die Einladung konnte nicht gesendet werden: {{detail}}",
       "practice_name_required": "Geben Sie der Praxis einen Namen.",
       "already_owner": "Sie sind bereits Inhaber einer Praxis.",
+      "owner_of_other_practice": "Sie sind Inhaber einer anderen Praxis und können daher keiner weiteren beitreten. Schließen Sie zuerst Ihre Praxis oder kontaktieren Sie uns.",
       "invite_invalid": "Dieser Einladungslink ist ungültig. Bitten Sie die Praxis, einen neuen zu senden.",
       "invite_wrong_account": "Diese Einladung wurde an ein anderes Konto gesendet. Melden Sie sich mit der eingeladenen E-Mail-Adresse an.",
       "invite_expired": "Diese Einladung ist abgelaufen. Bitten Sie die Praxis, eine neue zu senden.",
