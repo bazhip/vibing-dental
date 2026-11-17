@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 
 const fake = vi.hoisted(() => {
   const state = {
-    listener: null as ((event: string, session: unknown) => void) | null,
+    listeners: new Set<(event: string, session: unknown) => void>(),
     practiceFlag: true as boolean,
     practiceError: false,
   };
@@ -19,8 +19,8 @@ const fake = vi.hoisted(() => {
   const client = {
     auth: {
       onAuthStateChange: (cb: (event: string, session: unknown) => void) => {
-        state.listener = cb;
-        return { data: { subscription: { unsubscribe: () => undefined } } };
+        state.listeners.add(cb);
+        return { data: { subscription: { unsubscribe: () => state.listeners.delete(cb) } } };
       },
       signOut: vi.fn(async () => ({ error: null })),
     },
@@ -86,11 +86,13 @@ const info = {
   fields: [{ title: 'Plan', kind: 'note', acceptsImage: false }],
 };
 
-const emit = (event: string, session: unknown) => act(() => fake.state.listener!(event, session));
+const emit = (event: string, session: unknown) => act(() => { for (const listener of [...fake.state.listeners]) listener(event, session); });
 const user = (id: string) => ({ user: { id, email: `${id}@clinic.test` } });
 
 beforeEach(() => {
+  vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   vi.clearAllMocks();
+  fake.state.listeners.clear();
   window.sessionStorage.clear();
   fake.state.practiceFlag = true;
   fake.state.practiceError = false;
@@ -99,7 +101,7 @@ beforeEach(() => {
   mocks.transport.inspect.mockResolvedValue(info);
   mocks.transport.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] });
 });
-afterEach(cleanup);
+afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 async function signInAndPick(id = 'u1') {
   render(<SidePanelApp />);
@@ -114,6 +116,15 @@ async function pressSend() {
 }
 
 describe('SidePanelApp', () => {
+  it('keeps sending and new review UI off before rollout even for enabled practices', async () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    await signInAndPick();
+    expect(await screen.findByText('Sending to PIMS isn’t turned on for your practice.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Review PIMS appointments' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Prepare history or radiology notes' })).toBeNull();
+    expect(mocks.transport.ping).not.toHaveBeenCalled();
+  });
   it('a maybe-sent send is remembered: Back, re-pick, and Send asks first', async () => {
     await signInAndPick();
     mocks.transport.send.mockRejectedValueOnce(new Error('timeout'));

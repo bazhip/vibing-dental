@@ -60,7 +60,17 @@ export type AppointmentsResponse = { tab: { id: number; title: string } | null; 
 export type StartChartResult = { ok: boolean };
 export type TakePendingResult = { handover: Handover | null };
 
-export type PingResult = { version: string };
+export const BRIDGE_PROTOCOL = 1;
+export const SEND_CAPABILITIES = ['inspect', 'send', 'diagnose'] as const;
+export type PingResult = { version: string; protocol: number; capabilities: readonly string[] };
+
+export function compatibleExtension(value: unknown): value is PingResult {
+  if (!value || typeof value !== 'object') return false;
+  const reply = value as Partial<PingResult>;
+  return typeof reply.version === 'string' && reply.version.trim().length > 0
+    && reply.protocol === BRIDGE_PROTOCOL && Array.isArray(reply.capabilities)
+    && SEND_CAPABILITIES.every((capability) => reply.capabilities!.includes(capability));
+}
 
 export type InspectResult = {
   tab: { id: number; title: string } | null;

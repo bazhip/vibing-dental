@@ -30,6 +30,7 @@ import { useStackLeaveGuard, useStackScreenOptions } from '../ios/Stack';
 import './Login.css';
 import './AccountSurfaces.css';
 import './PracticeWorkspace.css';
+import { PimsReview } from './pims/PimsReview';
 
 interface PracticeSettingsModalProps {
   open: boolean;
@@ -690,6 +691,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       </section>
 
       {/* ---- Language for pet owners ----------------------------------- */}
+      {team.practice && (!asPage || section === 'general') && <PimsReview key={team.practice.id} practiceId={team.practice.id} />}
       {team.practice && (
         <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.clientLanguage.title')}</h3>

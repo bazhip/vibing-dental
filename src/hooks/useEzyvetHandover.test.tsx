@@ -41,11 +41,26 @@ const OTHER_USER = 'This patient was picked in the extension as another user. Si
 const toastKeys = () => toast.mock.calls.map((c) => c[0]);
 
 beforeEach(() => {
+  vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   window.sessionStorage.clear();
   toast.mockReset();
 });
+afterEach(() => vi.unstubAllEnvs());
 
 describe('useEzyvetHandover', () => {
+  it('does not consume handovers, read identity or fill charts before rollout', async () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    stashPatient(stashed);
+    window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');
+    const opts = setup();
+    await run(opts);
+    expect(opts.take).not.toHaveBeenCalled();
+    expect(opts.getUserId).not.toHaveBeenCalled();
+    expect(opts.fillPatient).not.toHaveBeenCalled();
+    expect(window.sessionStorage.getItem(STASHED_PATIENT_KEY)).not.toBeNull();
+    expect(window.sessionStorage.getItem(FROM_EZYVET_KEY)).toBe('1');
+    expect(toast).not.toHaveBeenCalled();
+  });
   it('fills a stashed patient without asking the extension', async () => {
     stashPatient(stashed);
     window.sessionStorage.setItem(FROM_EZYVET_KEY, '1');

@@ -23,6 +23,7 @@ import {
   type TakePendingResult,
 } from './protocol';
 import { EXTENSION_VERSION } from './version';
+import { BRIDGE_PROTOCOL, SEND_CAPABILITIES } from './protocol';
 import { PIMS_HOST_PERMISSIONS } from './pims/hosts';
 import type { WriteTarget } from './pims/types';
 import type {} from './pims/page';
@@ -278,7 +279,7 @@ export async function handleInternal(msg: Request, sender: InternalSender, runti
 function dispatchShared(msg: Request, deps: Deps): Promise<Response> | Response {
   switch (msg?.type) {
     case 'ping':
-      return { version: deps.version };
+      return { version: deps.version, protocol: BRIDGE_PROTOCOL, capabilities: SEND_CAPABILITIES };
     case 'inspect':
       return inspect(deps);
     case 'send':

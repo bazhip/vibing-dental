@@ -34,7 +34,7 @@ function setup(
   const { inspected = info, ...hookOpts } = opts;
   const calls: string[] = [];
   const transport: PimsTransport = {
-    ping: vi.fn(async () => { calls.push('ping'); return { version: '1.0.0' }; }),
+    ping: vi.fn(async () => { calls.push('ping'); return { version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }; }),
     inspect: vi.fn(async () => { calls.push('inspect'); return inspected; }),
     send: vi.fn(async () => {
       calls.push('send');

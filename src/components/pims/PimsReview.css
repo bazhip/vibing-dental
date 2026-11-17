@@ -1,0 +1,19 @@
+.pims-review { display: grid; gap: 12px; padding-block: 16px; border-block-start: 1px solid var(--sp-border, #d5dedd); color: inherit; }
+.pims-review h3, .pims-review h4, .pims-review h5, .pims-review p { margin: 0; }
+.pims-review p { line-height: 1.5; }
+.pims-review__hint { font-size: 0.9em; color: var(--sp-muted, #526762); }
+.pims-review__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pims-review button { padding: 9px 12px; border: 1px solid var(--sp-border, #b2c6c0); border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: start; }
+.pims-review button[aria-pressed="true"] { background: var(--sp-accent, #0c6b63); color: #fff; }
+.pims-review button:disabled { opacity: 0.55; cursor: not-allowed; }
+.pims-review button:focus-visible, .pims-review input:focus-visible, .pims-review select:focus-visible { outline: 2px solid var(--sp-accent, #0c6b63); outline-offset: 3px; }
+.pims-review label { display: grid; gap: 6px; }
+.pims-review input, .pims-review select { box-sizing: border-box; width: 100%; min-width: 0; padding: 9px; border: 1px solid var(--sp-border, #b2c6c0); border-radius: 6px; font: inherit; color: inherit; background: transparent; }
+.pims-review__rows { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; }
+.pims-review__rows > li { display: grid; gap: 12px; border: 1px solid var(--sp-border, #d5dedd); border-inline-start: 3px solid var(--sp-accent, #0c6b63); border-radius: 6px; padding: 14px; overflow-wrap: anywhere; }
+.pims-review__facts { display: grid; grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr); gap: 6px 12px; margin: 0; font-size: 0.9em; }
+.pims-review__facts dd { margin: 0; }
+.pims-review__facts dt { color: var(--sp-muted, #526762); }
+.pims-review__comparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
+.pims-review__comparison > div, .pims-review form { display: grid; gap: 10px; }
+.pims-review [role="alert"] { color: var(--sp-error, #a3291c); }

@@ -76,7 +76,7 @@ describe('background', () => {
   });
 
   it('ping', async () => {
-    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev' });
+    expect(await handleExternal({ type: 'ping' }, okSender, makeDeps().deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
   });
 
   it('picks active ezyVet tab of focused window, else most recent', () => {
@@ -455,7 +455,7 @@ describe('internal messages', () => {
   it('internal messages accepted only from own extension pages', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { deps } = makeDeps();
-    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev' });
+    expect(await handleInternal({ type: 'ping' }, panel, ID, deps)).toEqual({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
     const refused = [
       { id: 'otherextensionidotherextensionid', url: `chrome-extension://otherextensionidotherextensionid/x.html` },
       { id: 'otherextensionidotherextensionid', url: panel.url },
@@ -496,7 +496,7 @@ describe('internal messages', () => {
     const [listener] = api.runtime.onMessage.listeners;
     const reply = vi.fn();
     expect(listener({ type: 'ping' }, panel, reply)).toBe(true);
-    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev' }));
+    await vi.waitFor(() => expect(reply).toHaveBeenCalledWith({ version: 'dev', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
     const ignored = vi.fn();
     expect(listener({ type: 'ping' }, { id: ID, url: 'https://clinic.ezyvet.com/' }, ignored)).toBe(false);
     expect(listener({ type: 'unknown' }, panel, ignored)).toBe(false);

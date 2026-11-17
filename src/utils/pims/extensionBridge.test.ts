@@ -32,11 +32,21 @@ afterEach(() => {
 });
 
 describe('extensionBridge', () => {
+  it.each([
+    { version: '1.0.0' },
+    { version: '1.0.0', protocol: 2, capabilities: ['inspect', 'send', 'diagnose'] },
+    { version: '1.0.0', protocol: 1, capabilities: ['inspect'] },
+    { version: '', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] },
+    'unexpected',
+  ])('refuses an incompatible handshake: %j', async (response) => {
+    sendMessage.mockImplementation(answer(response));
+    expect(await ping()).toBeNull();
+  });
   it('ping retries once', async () => {
-    sendMessage.mockImplementationOnce(neverAnswers).mockImplementationOnce(answer({ version: '1.0.0' }));
+    sendMessage.mockImplementationOnce(neverAnswers).mockImplementationOnce(answer({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
     const p = ping();
     await vi.advanceTimersByTimeAsync(500);
-    expect(await p).toEqual({ version: '1.0.0' });
+    expect(await p).toEqual({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
     expect(sendMessage).toHaveBeenCalledTimes(2);
     expect(sendMessage.mock.calls[0][0]).toBe(EXTENSION_ID);
   });
@@ -62,8 +72,8 @@ describe('extensionBridge', () => {
     sendMessage.mockImplementationOnce(neverAnswers).mockImplementationOnce((_id, _m, c) => { cb = c; });
     const p = ping();
     await vi.advanceTimersByTimeAsync(500 + 1_200);
-    cb({ version: '1.0.0' });
-    expect(await p).toEqual({ version: '1.0.0' });
+    cb({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
+    expect(await p).toEqual({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
   });
 
   it('unavailable in native app, and without chrome.runtime', () => {

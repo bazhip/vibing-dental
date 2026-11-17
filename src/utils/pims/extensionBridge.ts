@@ -2,6 +2,7 @@ import i18n from '../../i18n';
 import { LocalizedError } from '../apiErrors';
 import { isNativeApp } from '../../native/platform';
 import { DEV_EXTENSION_ID } from '../../extension/extensionId';
+import { compatibleExtension } from '../../extension/protocol';
 import type { AppointmentsResponse, DiagnoseResult, Handover, InspectResult, PingResult, Request, SendResult, StartChartResult, TakePendingResult } from '../../extension/protocol';
 
 /** Minimal shape of the part of `chrome.runtime` the page can see when an
@@ -96,7 +97,8 @@ export function createTransport(channel: () => RuntimeChannel | undefined): Pims
     async ping() {
       for (const timeoutMs of PING_TIMEOUTS_MS) {
         try {
-          return await raw<PingResult>({ type: 'ping' }, timeoutMs);
+          const reply = await raw<unknown>({ type: 'ping' }, timeoutMs);
+          return compatibleExtension(reply) ? reply : null;
         } catch { /* retry once, then give up */ }
       }
       return null;

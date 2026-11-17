@@ -2,7 +2,7 @@
 
 ## Status and intent
 
-The user approved a ToothOps-native backend with browser-assisted PIMS synchronization, rather than server-to-server vendor integrations. This document specifies that approach for implementation review; the detailed design is not yet approved and no product implementation is claimed by this document.
+The user approved this detailed design on 2026-11-16 and explicitly clarified that “do it up” referred to this backend work, not the UI/UX review. Implementation begins with the backend foundation; approval does not authorize deployment or live clinical writes. This document specifies the target design, not a claim that every increment is implemented.
 
 Work stays on `feat/pims-extension-parity` in the isolated `9bb5` worktree and draft PR #104. The original checkout belongs to concurrent work. The image-upload UI redesign remains canceled.
 

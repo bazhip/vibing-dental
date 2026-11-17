@@ -11,7 +11,7 @@ import {
   recordNoteText,
 } from '../utils/recordNote';
 import { copyRichText } from '../utils/clipboard';
-import { extensionAvailable } from '../utils/pims/extensionBridge';
+import { usePimsExtension } from '../hooks/usePimsExtension';
 import { toast } from './ui/dialogs';
 import type { ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { SendToEzyvetDialog } from './SendToEzyvetDialog';
@@ -65,7 +65,7 @@ export const RecordNotePanel: React.FC<RecordNotePanelProps> = ({
     onChange({ text: value, source: 'edited', lng, basedOn: stored ? stored.basedOn : basis });
 
   // Desktop Chrome with the extension's bridge, never the iOS app.
-  const canSend = !!pims?.enabled && extensionAvailable();
+  const canSend = usePimsExtension(!!pims?.enabled);
   const [sendOpen, setSendOpen] = React.useState(false);
   const [sentAt, setSentAt] = React.useState<string | null>(null);
   // An edited note is split on its headings in the language it was written in.

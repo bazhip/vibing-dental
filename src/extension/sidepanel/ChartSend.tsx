@@ -8,6 +8,7 @@ import type { ChartSnapshot } from '../../types';
 import { usePimsSend } from '../../hooks/usePimsSend';
 import { MappingRows } from '../../components/pims/MappingRows';
 import { CopyActions } from '../../components/pims/CopyActions';
+import { PimsDrafts } from '../../components/pims/PimsDrafts';
 import { DiagnosticLink, SendResults } from '../../components/pims/SendResults';
 import { friendlyError } from '../../components/ui/dialogs';
 import { internalTransport } from './internalTransport';
@@ -287,6 +288,7 @@ const ChartSendReady: React.FC<ReadyProps> = ({
       {picture.element}
       {canSend && <CopyActions note={note} storedText={stored?.text ?? null}
         renderImage={picture.hasDiagrams ? picture.render : undefined} disabled={sending} />}
+      {canSend && <PimsDrafts key={chart.id} chartId={chart.id} disabled={sending} />}
       {body}
       {(phase.kind !== 'ready' || !canSend || destination?.status?.state !== 'writable') && notePreview}
     </section>

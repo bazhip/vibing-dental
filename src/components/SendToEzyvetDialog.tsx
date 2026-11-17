@@ -8,8 +8,10 @@ import { appointments, diagnose, inspect, ping, send, startChart, takePendingPat
 import { renderChartPicture } from '../utils/pims/chartPicture';
 import { usePimsSend } from '../hooks/usePimsSend';
 import { useModalFocus } from '../hooks/useModalFocus';
+import { pimsRolloutEnabled } from '../utils/pims/rollout';
 import { MappingRows } from './pims/MappingRows';
 import { CopyActions } from './pims/CopyActions';
+import { PimsDrafts } from './pims/PimsDrafts';
 import { DiagnosticLink, SendResults } from './pims/SendResults';
 
 export interface SendToEzyvetDialogProps {
@@ -38,7 +40,10 @@ const transport: PimsTransport = { ping, inspect, send, diagnose, appointments, 
  * Documents → Record note → Send to ezyVet. The send flow lives in `usePimsSend`; this is the
  * dialog around it.
  */
-export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
+export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = (props) =>
+  pimsRolloutEnabled() ? <EnabledSendToEzyvetDialog {...props} /> : null;
+
+const EnabledSendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
   open, onClose, note, stored, chartSnapshot, chartId, patientName, patientNumber, sentAt, onSent,
 }) => {
   const { t } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
@@ -194,6 +199,7 @@ export const SendToEzyvetDialog: React.FC<SendToEzyvetDialogProps> = ({
           {body}
           <CopyActions note={note} storedText={stored?.text ?? null} disabled={sending}
             renderImage={chartSnapshot ? () => renderChartPicture(chartSnapshot, { pre: t('pims:picture.pre'), post: t('pims:picture.post') }) : undefined} />
+          <PimsDrafts key={chartId} chartId={chartId} disabled={sending} />
         </div>
         <footer className="ai-settings-footer">{footer}</footer>
       </div>

@@ -90,11 +90,49 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 - This implements the shared manual-transfer flow, not the providers' unsafe unverified writers. Backend linking, sync/reconciliation, add-record/radiology flows and live paste/save verification remain outstanding.
 - Increment verification: 260 test files / 2,771 tests pass; production, development-extension and store-extension builds pass; translation backlog is zero. Store output checks retain the same permissions/hosts and production messaging origins. Independent review passes (162 focused tests). The image-upload UI was not changed.
 
-## Next backend increment — design, not implemented
+## Backend foundation — implemented locally, not deployed
 
-The user chose a ToothOps-native backend with browser-assisted synchronization. The detailed design is in `docs/superpowers/specs/2026-11-16-pims-backend-parity-design.md`; its implementation/approval state is recorded there. It specifies durable integration identity, idempotent sync, reviewable conflicts, reversible archive/restore, history PDF and radiology-note drafts, and capability-gated image/document transfer. It does not claim these backend features are already shipped.
+The user approved the ToothOps-native backend with browser-assisted synchronization on 2026-11-16. The detailed design is in `docs/superpowers/specs/2026-11-16-pims-backend-parity-design.md`; the first-increment implementation and verification record is in `docs/superpowers/plans/2026-11-16-pims-sync-foundation.md`. These changes are included in the PR #104 update, not deployed or enabled.
+
+- Implemented authenticated, practice-scoped connections and patient/clinician links, owner-managed configuration, five-minute exclusive sync leases, version baselines, idempotent chunks, persisted outcomes/conflicts and audit records. Database mutations use constrained RPCs; tables expose member-scoped reads only.
+- Added an opt-in browser capture contract and coordinator with tenant/revision/freshness checks, keyset-paginated baseline reads, count/byte-aware batches, partial-capture handling and explicit uncertain outcomes. All seven existing adapters still lack the verified `syncSource` implementation required to enable durable sync; display-only imports remain unchanged.
+- Cancellation, deletion, unknown status and identity changes become review issues. The foundation alone does not archive visits; the following reconciliation increment adds explicit status-based archiving. Neither creates charts, overwrites clinical notes or silently relinks patients.
+- Subsequent increments: provider-specific verified captures/status adapters, connection/link setup screens, historical relinking, automatic outbound Instinct history PDFs, image/document transfers and upload-attempt reconciliation. Persisted history/radiology drafts with manual PDF/copy preparation are implemented below. Manual radiology transfer remains distinct from debugger-assisted autofill parity.
+- Verification: 262 test files / 2,838 tests pass, including 35 real PostgreSQL and 32 coordinator tests. Production and development/store extension builds pass, translation backlog is zero, and store permissions/hosts/origins remain unchanged. Independent review findings have regression coverage. The PostgreSQL fixture exercises real transactions/RLS, but full historical migration integration and Supabase Auth/PostgREST/storage validation remain outstanding before hosted rollout.
 
 The continuation traced the outbound Instinct `uploadChartFile` flow and confirmed reconciliation distinguishes explicit cancelled/deleted status from unknown absence. Bounded Instinct REA parent evidence is `ev_62894914c7b9b8b61dfbac42f7bdcd75aaa6dfdc2ab9052e7963606e3ef74810`, with partial/truncated semantic coverage. The local recovery bundle is `/private/tmp/scribblevet-parity-backend-design-evidence-2026-11-16.json`. No live authenticated PIMS or ScribbleVet service was contacted.
+
+## Reconciliation and review — implemented locally, not deployed
+
+Implementation record: `docs/superpowers/plans/2026-11-16-pims-reconciliation.md`. This continues the approved design in the same isolated worktree and is included in the PR #104 update.
+
+- Seals capture completeness and pages reconciliation candidates. Missing appointments require fresh independent status; unknown/partial absence never implies deletion. Active appointments can reschedule outside the original day without changing identity.
+- Adds versioned manual archive/restore with actor/reason receipts, plus explicit source cancellation/deletion archiving. Archived visits are not silently restored by subsequent sync; clinical records are not deleted or rewritten.
+- Adds shared review UI in practice settings and the extension panel: active/archived/issues filters, pagination, current/proposed comparisons, retain-current and identity-preserving schedule acceptance. Includes five languages and pseudo-locale coverage. Schema-unavailable and unconfigured connections are explicit states, not fabricated success.
+- Independent review found cancellation races against manual restore and retain-current decisions. Four real PostgreSQL regressions reproduced them; fixes preserve the capture baseline version and recheck unresolved proposal authorization under the connection lock. Additional regressions cover wrong patient/clinician/encounter/appointment, link versions, stale evidence, uncertain writes and stale-practice UI responses.
+- Verification: **265 test files / 2,893 tests pass**, including **61 real PostgreSQL tests**, **41 coordinator tests**, **13 review transport tests** and **7 review UI/pseudo-locale tests**. Production and development/store extension builds pass; translation backlog is zero; store permissions/hosts are unchanged, messaging remains production-only, and debugger permission is absent. Existing chunk-size/dynamic-import warnings remain.
+- This is shared engine/review implementation, **not enabled end-to-end provider synchronization**: none of the seven provider adapters supplies `syncSource` yet. Owner configuration/link RPCs have no setup UI. Supabase full-migration integration, rendered-device review and authorized live PIMS verification remain unverified. Persisted manual drafts are implemented in the following increment; automatic attachment/document transfer remains separate.
+
+## Persisted clinical drafts — implemented locally, not deployed
+
+Implementation record: `docs/superpowers/plans/2026-11-16-pims-drafts.md`.
+
+- History and radiology notes persist per saved practice chart, with source fingerprints, optimistic versions, actor-bound idempotency receipts and explicit version-specific review. Source changes and edits invalidate approval. Private charts and removed members cannot use these practice-scoped RPCs.
+- Shared web/extension editor supports deterministic composition from the explicitly opened saved chart, manual edits, approval and reauthorized text/PDF export. Radiology composition restates recorded findings; it does not interpret images or call a vendor service.
+- Unknown write outcomes retain typed text but require reload before further changes. Access revocation clears cached content; chart/auth changes discard stale results. PDF output rejects unsupported font characters instead of silently altering clinical text; lossless text copy remains available.
+- This implements persisted manual preparation, not automatic Instinct upload. Existing saved-chart selection does not aggregate historical records by patient name or imply a verified external link. No PIMS sent-history stamp is written by manual export.
+- Synthetic editor screenshots cover five states at 1440/390/320px with no measured overflow or page errors; selected reviewed/unknown/empty/multiple states were visually inspected. Actual modal/panel-parent and live-device coverage is separate; see the implementation ledger.
+- Verification after main's UI merge: **286 test files / 3,199 tests pass**, including **77 real PostgreSQL cases**. Production and development/store extension builds pass; translation backlog is zero. Final review was an author self-review, not an independently routed agent review. The drafts are included in the PR #104 update; the following rollout checks supersede these historical totals.
+
+## Release isolation — implemented locally, off by default
+
+The new review/archive and history/radiology draft UI, Send eligibility and web patient-handover
+consumption require an explicit `VITE_PIMS_ROLLOUT_ENABLED=true` build. Free beta does not bypass
+this boundary. Web Send additionally requires a compatible handshake from the configured extension,
+not merely Chrome messaging availability. Legacy, absent and incompatible extensions leave Send hidden.
+After rollout opt-in, backend review/manual preparation do not themselves require extension installation.
+See `src/extension/README.md` for backend → extension → web release sequencing and
+`docs/superpowers/plans/2026-11-16-pims-rollout.md` for verification. Nothing was deployed or enabled.
 
 ## Required authorized live verification
 

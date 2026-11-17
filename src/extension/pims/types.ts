@@ -3,6 +3,7 @@ import type { Status } from '../ezyvet/read';
 import type { Diagnostics } from '../ezyvet/read';
 import type { WriteResult } from '../ezyvet/write';
 import type { FieldInfo, SendItem } from '../../utils/pims/mapping';
+import type { SyncSource } from '../../utils/pims/sync';
 
 export type { Appointment, AppointmentsResult } from '../ezyvet/appointments';
 export type { Status } from '../ezyvet/read';
@@ -28,6 +29,7 @@ export type PimsAdapter = {
   listAppointments(date: string, context: AdapterContext, options?: { navigate: boolean }): Promise<AppointmentsResult>;
   patientNumber(recordId: string, context: AdapterContext): Promise<string | null>;
   diagnostics?(context: AdapterContext): Diagnostics;
+  syncSource?(context: AdapterContext): SyncSource;
 };
 
 export type WriteTarget = { provider: PimsId; consult: Status['consult']; patientName: string | null };

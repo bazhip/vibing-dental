@@ -117,11 +117,12 @@ const sendButton = () => screen.getByRole('button', { name: t('pims:actions.send
 const select = (label: string) => screen.getByLabelText(label) as HTMLSelectElement;
 
 beforeEach(() => {
+  vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
   vi.clearAllMocks();
   mocks.saved = null;
   mocks.supabase = null;
   mocks.available.mockReturnValue(true);
-  mocks.ping.mockResolvedValue({ version: '1.0.0' });
+  mocks.ping.mockResolvedValue({ version: '1.0.0', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
   mocks.inspect.mockResolvedValue(writableWith());
   mocks.send.mockResolvedValue({ ok: true, results: [{ fieldTitle: 'Plan', result: { ok: true } }] } satisfies SendResult);
   mocks.markPimsSent.mockResolvedValue({ sentAt: '2026-11-15T10:00:00Z' });
@@ -131,9 +132,15 @@ beforeEach(() => {
     lastCodes: ['save_not_confirmed'],
   });
 });
-afterEach(cleanup);
+afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 describe('SendToEzyvetDialog', () => {
+  it('does not mount or probe when invoked directly before rollout', () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    render(dlg().el);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(mocks.ping).not.toHaveBeenCalled();
+  });
   it('not installed shows the explainer without an install link', async () => {
     mocks.ping.mockResolvedValue(null);
     render(dlg().el);
@@ -390,7 +397,7 @@ describe('SendToEzyvetDialog', () => {
     await screen.findByText(t('pims:results.title'));
     const list = screen.getByRole('list');
     expect(within(list).getByText('Plan').closest('li')).toHaveTextContent(t('pims:results.saved'));
-    expect(screen.getByRole('heading', { name: t('pims:results.title') })).toHaveFocus();
+    await waitFor(() => expect(screen.getByRole('heading', { name: t('pims:results.title') })).toHaveFocus());
     expect(screen.getByText(t('pims:results.summary', { saved: 1, attention: 1 }))).toHaveAttribute('role', 'status');
     expect(within(list).getByText('Physical Exam').closest('li')).toHaveTextContent(t('pims:errors.editor_not_found'));
     expect(mocks.markPimsSent).toHaveBeenCalledTimes(1);
@@ -603,16 +610,40 @@ describe('RecordNotePanel Send to ezyVet button', () => {
   );
   const button = () => screen.queryByRole('button', { name: t('pims:dialog.open') });
 
+  it('rollout off hides Send without probing Chrome', () => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', undefined);
+    render(panel({ pims }));
+    expect(button()).toBeNull();
+    expect(mocks.ping).not.toHaveBeenCalled();
+  });
+
+  it.each([null, { version: 'old' }, { version: 'new', protocol: 2, capabilities: ['inspect', 'send', 'diagnose'] }])('hides Send when the extension is absent or incompatible: %j', async (reply) => {
+    mocks.ping.mockResolvedValue(reply);
+    render(panel({ pims }));
+    await act(async () => {});
+    expect(button()).toBeNull();
+    expect(mocks.inspect).not.toHaveBeenCalled();
+  });
+
+  it('does not expose Send while the handshake is pending', async () => {
+    let resolve!: (reply: unknown) => void;
+    mocks.ping.mockReturnValue(new Promise((done) => { resolve = done; }));
+    render(panel({ pims }));
+    expect(button()).toBeNull();
+    await act(async () => resolve({ version: '1', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
+    expect(button()).toBeInTheDocument();
+  });
+
   it('opens the dialog when the practice has it on and the extension can be reached', async () => {
     render(panel({ pims }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     expect(await screen.findByRole('dialog', { name: t('pims:dialog.title') })).toBeInTheDocument();
   });
 
   it('remembers a send without a cloud chart, so reopening asks first', async () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex' }));
     render(panel({ pims: { ...pims, chartId: null } }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
     await screen.findByText(t('pims:results.title'));
     expect(mocks.markPimsSent).not.toHaveBeenCalled();
@@ -632,7 +663,7 @@ describe('RecordNotePanel Send to ezyVet button', () => {
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Rex', patientNumber: '9' }));
     mocks.confirm.mockResolvedValueOnce(false);
     render(panel({ pims: { ...pims, patientNumber: '7' } }));
-    fireEvent.click(button()!);
+    fireEvent.click(await screen.findByRole('button', { name: t('pims:dialog.open') }));
     fireEvent.click(await screen.findByRole('button', { name: t('pims:actions.send') }));
     await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
     expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ title: t('pims:mismatch.title') });

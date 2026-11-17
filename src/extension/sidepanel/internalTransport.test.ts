@@ -19,8 +19,8 @@ afterEach(() => {
 
 describe('internalTransport', () => {
   it('messages the own background without an extension id', async () => {
-    sendMessage.mockImplementation((_m, cb) => cb({ version: '1.2.3' }));
-    expect(await internalTransport.ping()).toEqual({ version: '1.2.3' });
+    sendMessage.mockImplementation((_m, cb) => cb({ version: '1.2.3', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] }));
+    expect(await internalTransport.ping()).toEqual({ version: '1.2.3', protocol: 1, capabilities: ['inspect', 'send', 'diagnose'] });
     expect(sendMessage).toHaveBeenCalledWith({ type: 'ping' }, expect.any(Function));
   });
 
