@@ -135,11 +135,11 @@ describe('ExamAreasEditor', () => {
     const noop = () => {};
     const { container, unmount } = render(<ExamAreasEditor areas={[]} onChange={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    fireEvent.click(screen.getByRole('button', { name: /⟦Add suggested areas⟧/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /⟦Salivary duct openings⟧/ }));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     unmount();
     const second = render(<ExamAreasEditor areas={[{ id: 'x1', label: 'Lips' }]} onChange={noop} />);
-    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/])).toEqual([]);
+    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/, /^⟦Show Lips⟧$/])).toEqual([]);
   });
 });
 

@@ -63,50 +63,53 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
       <div className="patient-form__header surgery-report__header">
         <h2 className="patient-form__section-title">{t('report.title')}</h2>
         {templatesOn && (
-          <div className="surgery-report__template-bar">
-            <select
-              className="surgery-report__template-select"
-              aria-label={t('report.insertAria')}
-              value=""
-              disabled={readOnly || !store.loaded || store.templates.length === 0}
-              onChange={(e) => {
-                if (e.target.value) insertTemplate(e.target.value);
-                e.target.value = '';
-              }}
-            >
-              <option value="" disabled>
-                {!store.loaded
-                  ? t('report.loading')
-                  : store.templates.length === 0
-                  ? t('report.none')
-                  : t('report.insert')}
-              </option>
-              {store.templates.map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.name.trim() || t('report.untitled')}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="diagram-view__action"
-              onClick={saveCurrentAsTemplate}
-              disabled={readOnly || !value.trim()}
-              title={t('report.saveTitle')}
-            >
-              {t('report.save')}
-            </button>
-            <button
-              type="button"
-              className="diagram-view__action"
-              onClick={() => setManageOpen(true)}
-              title={t('report.customizeTitle')}
-            >
-              {t('report.customize')}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={() => setManageOpen(true)}
+            title={t('report.customizeTitle')}
+          >
+            {t('report.customize')}
+          </button>
         )}
       </div>
+      {templatesOn && (
+        <div className="surgery-report__template-bar">
+          <select
+            className="surgery-report__template-select"
+            aria-label={t('report.insertAria')}
+            value=""
+            disabled={readOnly || !store.loaded || store.templates.length === 0}
+            onChange={(e) => {
+              if (e.target.value) insertTemplate(e.target.value);
+              e.target.value = '';
+            }}
+          >
+            <option value="" disabled>
+              {!store.loaded
+                ? t('report.loading')
+                : store.templates.length === 0
+                ? t('report.none')
+                : t('report.insert')}
+            </option>
+            {store.templates.map((tpl) => (
+              <option key={tpl.id} value={tpl.id}>
+                {tpl.name.trim() || t('report.untitled')}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={saveCurrentAsTemplate}
+            disabled={readOnly || !value.trim()}
+            title={t('report.saveTitle')}
+          >
+            {t('report.save')}
+          </button>
+
+        </div>
+      )}
       <textarea
         className="patient-form__textarea surgery-report__textarea"
         aria-label={t('report.textareaAria')}

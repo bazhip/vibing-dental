@@ -9,6 +9,8 @@ const ABNORMAL = 'abnormal' as const;
 
 interface ExamFormProps {
   exam: ExamFindings;
+  /** Hidden blank rows; answered rows remain visible to protect charted findings. */
+  hiddenAreas?: string[];
   onStatusChange: (key: keyof ExamFindings, value: ExamFinding) => void;
   onCommentChange: (key: keyof ExamFindings, value: string) => void;
   /** The person's own areas, after the built-in ones (customExamRows). */
@@ -71,6 +73,7 @@ const CommentBox: React.FC<{
 
 export const ExamForm: React.FC<ExamFormProps> = ({
   exam,
+  hiddenAreas = [],
   onStatusChange,
   onCommentChange,
   customRows = [],
@@ -79,7 +82,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
 }) => {
   const { t } = useTranslation('forms');
   const rows: Row[] = [
-    ...EXAM_ITEMS.map(({ key }): Row => ({
+    ...EXAM_ITEMS.filter(({ key }) => !hiddenAreas.includes(key) || exam[key].status || exam[key].comment.trim()).map(({ key }): Row => ({
       id: key,
       label: t(`exam.items.${key}`),
       inline: t(`exam.itemsInline.${key}`),
@@ -89,7 +92,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
       setComment: (v) => onCommentChange(key, v),
     })),
     ...(onCustomChange
-      ? customRows.map((r): Row => ({
+      ? customRows.filter((r) => !hiddenAreas.includes(r.id) || r.status || r.comment.trim()).map((r): Row => ({
           id: `custom-${r.id}`,
           label: r.label,
           inline: r.label,

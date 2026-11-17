@@ -1,4 +1,5 @@
 import React from 'react';
+import './ToothChartView.css';
 import { Trans, useTranslation } from 'react-i18next';
 import { pocketLabels, rootBoxes, formatRootPockets, pocketDepths, type PocketMode } from '../utils/pocket';
 import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
@@ -104,6 +105,43 @@ export function ToothChartView({
   const diagram = TOOTH_DIAGRAMS[species];
   const [selected, setSelected] = React.useState<number | null>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
+  const [mapOpen, setMapOpen] = React.useState(false);
+  const [availableHeight, setAvailableHeight] = React.useState<number>();
+  const [mapHeight, setMapHeight] = React.useState<number>();
+  const mapRef = React.useRef<HTMLDivElement>(null);
+  const chartRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const measure = () => {
+      if (!window.matchMedia?.('(max-width: 600px)').matches) {
+        setAvailableHeight(undefined);
+        setMapHeight(undefined);
+        return;
+      }
+      const top = panelRef.current?.getBoundingClientRect().top;
+      if (top == null) return;
+      const viewport = window.visualViewport;
+      const bottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight;
+      if (mapOpen && mapRef.current) {
+        setMapHeight(Math.max(44, Math.floor((bottom - mapRef.current.getBoundingClientRect().top - 16) * 0.3)));
+      }
+      setAvailableHeight(Math.max(120, Math.floor(bottom - Math.max(0, top) - 8)));
+    };
+    measure();
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure);
+    if (chartRef.current) observer?.observe(chartRef.current);
+    window.addEventListener('resize', measure);
+    window.addEventListener('scroll', measure, true);
+    window.visualViewport?.addEventListener('resize', measure);
+    window.visualViewport?.addEventListener('scroll', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', measure, true);
+      window.visualViewport?.removeEventListener('resize', measure);
+      window.visualViewport?.removeEventListener('scroll', measure);
+    };
+  }, [mapOpen]);
 
   // A species switch swaps the numbering; drop a selection that no
   // longer exists.
@@ -133,7 +171,8 @@ export function ToothChartView({
 
   const select = (triadan: number) => {
     setSelected(triadan);
-    // On narrow screens the panel stacks under the diagram — bring it up.
+    // Close the optional mobile map and bring the editor into view.
+    setMapOpen(false);
     requestAnimationFrame(() => {
       const el = panelRef.current;
       if (el && typeof el.scrollIntoView === 'function' && window.matchMedia?.('(max-width: 900px)').matches) {
@@ -143,6 +182,7 @@ export function ToothChartView({
   };
 
   const step = (dir: 1 | -1) => {
+    setMapOpen(false);
     if (selected == null) { setSelected(order[0] ?? null); return; }
     const i = order.indexOf(selected);
     const next = order[(i + dir + order.length) % order.length];
@@ -182,14 +222,22 @@ export function ToothChartView({
   const nextTooth = selected != null ? order[(order.indexOf(selected) + 1) % order.length] : null;
 
   return (
-    <div className="dental-grid-section tooth-chart">
+    <div className="dental-grid-section tooth-chart" ref={chartRef}>
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">{t('grid.title')}</h2>
         {headerAccessory}
+      <button
+        type="button"
+        className="diagram-view__action tooth-chart__map-toggle"
+        aria-expanded={mapOpen}
+        aria-controls="tooth-chart-map"
+        onClick={() => setMapOpen((open) => !open)}
+      >
+        {t('toothChart.toothMap')}
+      </button>
       </div>
-
-      <div className="tooth-chart__layout">
-        <div className="tooth-chart__diagram diagram-view__canvas">
+      <div className="tooth-chart__layout" data-map-open={mapOpen}>
+        <div id="tooth-chart-map" ref={mapRef} style={{ maxHeight: mapHeight }} className="tooth-chart__diagram diagram-view__canvas">
           <ToothDiagram
             species={species}
             toothMarks={effectivePostMarks}
@@ -215,17 +263,8 @@ export function ToothChartView({
           </ul>
         </div>
 
-        <div className="tooth-chart__panel" ref={panelRef} aria-live="polite">
-          {!tooth ? (
-            <div className="tooth-chart__empty">
-              <p><Trans t={t} i18nKey="toothChart.clickTooth" components={{ strong: <strong /> }} /></p>
-              <p className="tooth-chart__hint">{t('toothChart.hint')}</p>
-              <button type="button" className="diagram-view__action" onClick={() => step(1)}>
-                {t('toothChart.start', { triadan: order[0] })}
-              </button>
-            </div>
-          ) : (
-            <>
+        <div className="tooth-chart__panel" ref={panelRef} style={{ maxHeight: availableHeight }} aria-live="polite">
+          {tooth && (
               <div className="tooth-chart__nav">
                 <button
                   type="button"
@@ -253,6 +292,19 @@ export function ToothChartView({
                   {nextTooth} →
                 </button>
               </div>
+          )}
+          <div className="tooth-chart__body">
+          {!tooth ? (
+            <div className="tooth-chart__empty">
+              <p><Trans t={t} i18nKey="toothChart.clickTooth" components={{ strong: <strong /> }} /></p>
+              <p className="tooth-chart__hint">{t('toothChart.hint')}</p>
+              <button type="button" className="diagram-view__action" onClick={() => step(1)}>
+                {t('toothChart.start', { triadan: order[0] })}
+              </button>
+            </div>
+          ) : (
+            <>
+
 
               <fieldset className="tooth-chart__fields" disabled={readOnly}>
                 <label className="tooth-chart__check">
@@ -433,6 +485,7 @@ export function ToothChartView({
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>

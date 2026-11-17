@@ -167,7 +167,8 @@
     "confirmed": "{{done}} su {{total}} confermati come estratti.",
     "markExtracted_one": "Contrassegna come estratto",
     "markExtracted_other": "Contrassegna tutti e {{count}} come estratti",
-    "markExtracted_many": "Contrassegna tutti e {{count}} come estratti"
+    "markExtracted_many": "Contrassegna tutti e {{count}} come estratti",
+    "toothMap": "Mappa dentale"
   },
   "toothName": {
     "side": {

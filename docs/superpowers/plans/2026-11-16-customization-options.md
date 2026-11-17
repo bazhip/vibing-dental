@@ -33,3 +33,14 @@ Replaced the upload form row with a single plus drop zone and file/gallery/camer
 Browser verification: 1440, 390 and 320px fit without horizontal overflow; keyboard activation opens a multi-file chooser and the touch camera action opens the capture picker. No application errors in the fixture. Physical device camera capture was not exercised by desktop Chrome automation; the native bridge has mocked regression coverage.
 
 Upload follow-up final validation: 259 test files / 2636 tests passed; production build passed, with only the existing bundle-size warnings. Translation check reports no pending keys. No commit or deployment performed.
+
+
+## PR follow-up: customization completeness and mobile charting
+
+- Put both treatment and owner report template management under Practice → Templates, with draft guards when navigating away.
+- Keep Customize in the top-right of clinical section headers, remove redundant topbar All patients, preserve workspace Patients navigation.
+- Align anesthetic name/concentration controls and keep units inside inputs.
+- Add optional owner name, phone, email and technician visibility; recorded values always remain visible.
+- Show built-in exam areas checked, suggested areas unchecked, custom areas editable, and preserve existing findings when hiding areas. Lips overlaps the extraoral exam; gingiva remains distinct from tooth-level periodontal scores. Clinical reference: https://www.aaha.org/resources/2019-aaha-dental-care-guidelines-for-dogs-and-cats/conscious/
+- Keep mobile by-tooth navigation above the independently scrolling findings; make the tooth map collapsible.
+- Verify regression tests, translated strings, desktop/mobile browser layouts, full npm test and npm run build before updating PR #105.

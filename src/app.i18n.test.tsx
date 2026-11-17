@@ -205,14 +205,14 @@ describe('chart frame', () => {
     expect(untranslated()).toEqual([]);
   });
 
-  it('keeps a direct patient-directory action in the sticky header of an open visit', async () => {
+  it('keeps patient navigation in the workspace without a duplicate topbar action', async () => {
     seedChart({ saved: true });
     sync.override = fakeCloud();
     await frame();
     const header = document.querySelector('.entry-grid__topbar')!;
     const back = Array.from(header.querySelectorAll('button')).find((button) => button.textContent === '⟦All patients⟧');
-    expect(back).toBeTruthy();
-    fireEvent.click(back!);
+    expect(back).toBeUndefined();
+    fireEvent.click(screen.getByRole('navigation', { name: '⟦Workspace navigation⟧' }).querySelector('button')!);
     await waitFor(() => expect(window.location.hash).toBe('#/library'));
     expect(screen.getByRole('navigation', { name: '⟦Workspace navigation⟧' })).toBeTruthy();
     expect(untranslated()).toEqual([]);

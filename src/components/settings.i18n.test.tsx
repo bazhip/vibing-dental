@@ -1,3 +1,4 @@
+vi.mock('../hooks/useReportTemplates', () => ({ useReportTemplates: () => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }) }));
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';

@@ -1013,6 +1013,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onPatientInfoChange={chart.handlePatientInfoChange}
           onSpeciesChange={chart.handleSpeciesChange}
           hideRecheck={prefs.hideRecheck}
+          hiddenFields={prefs.hiddenPatientFields}
           onCustomize={native ? undefined : () => setChartSettingsOpen('patient')}
         />
       ),
@@ -1029,6 +1030,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onCustomChange={(row, patch) =>
             chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customExam: setCustomExamValue(prev.customExam, row, patch) }))
           }
+          hiddenAreas={prefs.hiddenExamAreas}
           onCustomize={native ? undefined : () => setChartSettingsOpen('exam')}
         />
       ),
@@ -2114,11 +2116,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {cloud.enabled && !workspacePage && (
-            <button type="button" className="chart-menu__trigger topbar-patients" onClick={openLibrary}>
-              {t('chartsMenu.allPatients')}
-            </button>
-          )}
+
           {cloud.enabled && !workspacePage && chart.openedExisting && chart.cloudChartId && (
             <span className="topbar-desktop-visit"><ChartsMenu
               visitOnly

@@ -97,6 +97,11 @@
       "title": "Praxis löschen",
       "blurb": "Löscht die Praxis und alle mit ihr geteilten Akten, auch die Ihres Teams, endgültig und kündigt jedes Abonnement. Teammitglieder behalten ihre Konten und privaten Akten.",
       "button": "Praxis löschen…"
+    },
+    "treatmentReport": {
+      "title": "Behandlungsbericht",
+      "blurb": "Gespeicherte Texte für häufige Eingriffe, die Sie in einen Behandlungsbericht einfügen können.",
+      "customize": "Behandlungsbericht anpassen"
     }
   },
   "logoErrors": {
@@ -174,7 +179,8 @@
     },
     "patient": {
       "title": "Patientenseite",
-      "hideRecheck": "Feld „Kontrolle fällig“ ausblenden"
+      "hideRecheck": "Feld „Kontrolle fällig“ ausblenden",
+      "visibilityNote": "Wählen Sie die Felder für leere Besuche. Felder mit gespeicherten Angaben bleiben sichtbar."
     },
     "pdf": {
       "title": "PDF",
@@ -205,8 +211,8 @@
     },
     "exam": {
       "title": "Untersuchung",
-      "areas": "Zusätzliche Untersuchungsbereiche",
-      "areasNote": "Diese erscheinen nach den Standardbereichen in der folgenden Reihenfolge. Nur ausgefüllte Bereiche erscheinen im PDF. Beim Entfernen bleiben dokumentierte Befunde erhalten.",
+      "areas": "Untersuchungsbereiche",
+      "areasNote": "Wählen Sie die auf der Untersuchungsseite angezeigten Bereiche. Bereiche mit gespeicherten Befunden bleiben auch ohne Häkchen sichtbar. Eigene Bereiche erscheinen in der folgenden Reihenfolge.",
       "areaPlaceholder": "z. B. Lippen",
       "areaAria": "Name des Untersuchungsbereichs {{n}}",
       "areaN": "Bereich {{n}}",
@@ -219,7 +225,9 @@
         "gingiva": "Gingiva / mukogingivale Grenzlinie",
         "salivary": "Ausführungsgänge der Speicheldrüsen",
         "floor": "Mundboden / Zungenbändchen"
-      }
+      },
+      "suggestions": "Vorgeschlagene Bereiche",
+      "showArea": "{{name}} anzeigen"
     },
     "customization": {
       "navigation": "Kategorien der Befundeinstellungen",

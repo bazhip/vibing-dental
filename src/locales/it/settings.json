@@ -97,6 +97,11 @@
       "title": "Elimina lo studio",
       "blurb": "Elimina definitivamente lo studio e tutte le cartelle condivise con esso, comprese quelle del Suo team, e annulla qualsiasi abbonamento. I membri del team conservano i propri account e le cartelle private.",
       "button": "Elimina lo studio…"
+    },
+    "treatmentReport": {
+      "title": "Referto del trattamento",
+      "blurb": "Testi salvati per le procedure comuni, pronti da inserire in un referto di trattamento.",
+      "customize": "Personalizza il referto di trattamento"
     }
   },
   "logoErrors": {
@@ -174,7 +179,8 @@
     },
     "patient": {
       "title": "Pagina Paziente",
-      "hideRecheck": "Nascondi il campo Controllo previsto"
+      "hideRecheck": "Nascondi il campo Controllo previsto",
+      "visibilityNote": "Scelga i campi da mostrare nelle visite vuote. I campi con informazioni registrate restano visibili."
     },
     "pdf": {
       "title": "PDF",
@@ -205,8 +211,8 @@
     },
     "exam": {
       "title": "Esame",
-      "areas": "Aree di esame aggiuntive",
-      "areasNote": "Compaiono dopo le aree predefinite, nell’ordine seguente. Solo le aree compilate appaiono nel PDF. La rimozione conserva i reperti già registrati.",
+      "areas": "Aree di esame",
+      "areasNote": "Scelga le aree visualizzate nella pagina Esame. Le aree con reperti salvati rimangono visibili anche se deselezionate. Le aree personalizzate appaiono nell’ordine seguente.",
       "areaPlaceholder": "ad es. Labbra",
       "areaAria": "Nome dell’area d’esame {{n}}",
       "areaN": "area {{n}}",
@@ -219,7 +225,9 @@
         "gingiva": "Gengiva / linea mucogengivale",
         "salivary": "Sbocchi dei dotti salivari",
         "floor": "Pavimento della bocca / frenulo"
-      }
+      },
+      "suggestions": "Aree suggerite",
+      "showArea": "Mostra {{name}}"
     },
     "customization": {
       "navigation": "Categorie delle impostazioni della cartella",

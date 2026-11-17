@@ -208,3 +208,16 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__meta {
     align-items: flex-start;
   }
 }
+
+/* A predictable action location on every clinical page. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) > .diagram-view__action {
+  grid-column: 2; grid-row: 1; justify-self: end;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions { display: contents; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-header-actions > .diagram-view__action { grid-column: 2; grid-row: 1; justify-self: end; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .charting-view-switch { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar { margin-bottom: 16px; }

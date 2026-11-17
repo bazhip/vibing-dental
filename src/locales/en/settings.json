@@ -97,6 +97,11 @@
       "title": "Delete practice",
       "blurb": "Permanently deletes the practice and every chart shared with it, including your team’s, and cancels any subscription. Team members keep their accounts and private charts.",
       "button": "Delete practice…"
+    },
+    "treatmentReport": {
+      "title": "Treatment report",
+      "blurb": "Saved text for common procedures, ready to insert into a treatment report.",
+      "customize": "Customize treatment report"
     }
   },
   "logoErrors": {
@@ -174,7 +179,8 @@
     },
     "patient": {
       "title": "Patient page",
-      "hideRecheck": "Hide the Recheck due field"
+      "hideRecheck": "Hide the Recheck due field",
+      "visibilityNote": "Choose the fields shown on blank visits. Fields with recorded information remain visible."
     },
     "pdf": {
       "title": "PDF",
@@ -205,8 +211,8 @@
     },
     "exam": {
       "title": "Exam",
-      "areas": "Additional exam areas",
-      "areasNote": "These appear after the built-in exam areas, in the order below. Only completed areas appear in the PDF. Removing an area keeps existing charted findings.",
+      "areas": "Exam areas",
+      "areasNote": "Choose the areas shown on the Exam page. Areas with saved findings remain visible even when unchecked. Custom areas appear in the order below.",
       "areaPlaceholder": "e.g. Lips",
       "areaAria": "Exam area {{n}} name",
       "areaN": "area {{n}}",
@@ -219,7 +225,9 @@
         "gingiva": "Gingiva / mucogingival line",
         "salivary": "Salivary duct openings",
         "floor": "Floor of mouth / frenulum"
-      }
+      },
+      "suggestions": "Suggested areas",
+      "showArea": "Show {{name}}"
     },
     "customization": {
       "navigation": "Chart settings categories",

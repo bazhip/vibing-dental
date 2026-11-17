@@ -97,6 +97,11 @@
       "title": "Supprimer le cabinet",
       "blurb": "Supprime définitivement le cabinet et tous les dossiers partagés avec lui, y compris ceux de votre équipe, et résilie tout abonnement. Les membres de l’équipe conservent leur compte et leurs dossiers privés.",
       "button": "Supprimer le cabinet…"
+    },
+    "treatmentReport": {
+      "title": "Compte rendu de traitement",
+      "blurb": "Des textes enregistrés pour les interventions courantes, prêts à être insérés dans un compte rendu de traitement.",
+      "customize": "Personnaliser le compte rendu de traitement"
     }
   },
   "logoErrors": {
@@ -174,7 +179,8 @@
     },
     "patient": {
       "title": "Page Patient",
-      "hideRecheck": "Masquer le champ Contrôle prévu"
+      "hideRecheck": "Masquer le champ Contrôle prévu",
+      "visibilityNote": "Choisissez les champs affichés pour les visites vierges. Les champs contenant des informations enregistrées restent visibles."
     },
     "pdf": {
       "title": "PDF",
@@ -205,8 +211,8 @@
     },
     "exam": {
       "title": "Examen",
-      "areas": "Zones d’examen supplémentaires",
-      "areasNote": "Elles apparaissent après les zones intégrées, dans l’ordre ci-dessous. Seules les zones renseignées figurent dans le PDF. La suppression conserve les constatations déjà enregistrées.",
+      "areas": "Zones d’examen",
+      "areasNote": "Choisissez les zones affichées sur la page Examen. Les zones contenant des observations enregistrées restent visibles même lorsqu’elles sont décochées. Les zones personnalisées apparaissent dans l’ordre ci-dessous.",
       "areaPlaceholder": "p. ex. Lèvres",
       "areaAria": "Nom de la zone d’examen {{n}}",
       "areaN": "zone {{n}}",
@@ -219,7 +225,9 @@
         "gingiva": "Gencive / ligne mucogingivale",
         "salivary": "Orifices des canaux salivaires",
         "floor": "Plancher buccal / frein lingual"
-      }
+      },
+      "suggestions": "Zones suggérées",
+      "showArea": "Afficher {{name}}"
     },
     "customization": {
       "navigation": "Catégories des paramètres du dossier",

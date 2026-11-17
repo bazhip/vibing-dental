@@ -152,7 +152,7 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
     white-space: normal;
   }
   html:not(.native-ios) .entry-grid__topbar-actions--app {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
   }
   html:not(.native-ios) .entry-grid__topbar-actions--app .chart-menu__trigger {
@@ -167,6 +167,6 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
 }
 @media (max-width: 600px) {
   html:not(.native-ios) .entry-grid__topbar-actions--app.entry-grid__topbar-actions--view-only {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

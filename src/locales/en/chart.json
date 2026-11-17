@@ -163,7 +163,8 @@
     "allConfirmed": "All planned extractions confirmed.",
     "confirmed": "{{done}} of {{total}} confirmed extracted.",
     "markExtracted_one": "Mark it extracted",
-    "markExtracted_other": "Mark all {{count}} extracted"
+    "markExtracted_other": "Mark all {{count}} extracted",
+    "toothMap": "Tooth map"
   },
   "toothName": {
     "side": {

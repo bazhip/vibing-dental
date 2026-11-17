@@ -167,7 +167,8 @@
     "confirmed": "{{done}} sur {{total}} confirmées comme extraites.",
     "markExtracted_one": "La marquer comme extraite",
     "markExtracted_other": "Marquer les {{count}} comme extraites",
-    "markExtracted_many": "Marquer les {{count}} comme extraites"
+    "markExtracted_many": "Marquer les {{count}} comme extraites",
+    "toothMap": "Carte dentaire"
   },
   "toothName": {
     "side": {

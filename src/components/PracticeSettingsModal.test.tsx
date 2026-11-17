@@ -13,6 +13,8 @@ const billingMock = vi.hoisted(() => ({
 }));
 
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: {} }, cloudEnabled: true }));
+const treatmentStore = vi.hoisted(() => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }));
+vi.mock('../hooks/useReportTemplates', () => ({ useReportTemplates: () => treatmentStore }));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
 vi.mock('../hooks/useBilling', () => billingMock);
 const native = vi.hoisted(() => ({ value: false }));
@@ -226,6 +228,38 @@ describe('Practice settings workspace', () => {
     expect(await leaving!).toBe(false);
     unmount();
     expect(register).toHaveBeenLastCalledWith(null);
+  });
+
+  it('opens treatment templates without owner reports and protects their drafts on workspace navigation', async () => {
+    let guard: (() => Promise<boolean>) | null = null;
+    render(<><PracticeSettingsModal open presentation="page" onClose={vi.fn()} profile={profile}
+      onLeaveGuardChange={(next) => { guard = next; }} /><DialogHost /></>);
+    await userEvent.click(screen.getByRole('button', { name: 'Templates' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Customize treatment report' }));
+    fireEvent.change(screen.getByLabelText('Template name'), { target: { value: 'Extraction' } });
+    let leaving: Promise<boolean>;
+    await act(async () => { leaving = guard!(); });
+    await userEvent.click(screen.getByRole('button', { name: 'Keep Editing' }));
+    expect(await leaving!).toBe(false);
+    expect(screen.getByLabelText('Template name')).toHaveValue('Extraction');
+    await act(async () => { leaving = guard!(); });
+    await userEvent.click(screen.getByRole('button', { name: 'Discard Changes' }));
+    expect(await leaving!).toBe(true);
+  });
+
+  it('lets members save treatment templates and returns to Templates after closing', async () => {
+    teamState.current = makeTeam({ role: 'member' });
+    treatmentStore.create.mockResolvedValue({ id: 'saved', name: 'Extraction', body: 'Procedure notes' });
+    render(<PracticeSettingsModal open presentation="page" onClose={vi.fn()} profile={profile} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Templates' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Customize treatment report' }));
+    fireEvent.change(screen.getByLabelText('Template name'), { target: { value: 'Extraction' } });
+    fireEvent.change(screen.getByLabelText('Report text'), { target: { value: 'Procedure notes' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Save template' }));
+    expect(treatmentStore.create).toHaveBeenCalledWith('Extraction', 'Procedure notes');
+    await userEvent.click(screen.getAllByRole('button', { name: 'Close' })[0]);
+    expect(screen.getByRole('button', { name: 'Templates' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('button', { name: 'Customize treatment report' })).toBeInTheDocument();
   });
 
   it('checks template drafts before allowing workspace navigation', async () => {

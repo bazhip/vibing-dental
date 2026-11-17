@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { ReportTemplatesModal } from './ReportTemplatesModal';
 
@@ -24,5 +24,27 @@ describe('ReportTemplatesModal keyboard access', () => {
     expect(opener).toHaveFocus();
     opener.remove();
     visible.mockRestore();
+  });
+});
+
+
+describe('ReportTemplatesModal leave guard', () => {
+  it('blocks workspace navigation and unload during saving, then unregisters on unmount', async () => {
+    let finish: (value: { id: string; name: string; body: string }) => void;
+    const create = vi.fn(() => new Promise<{ id: string; name: string; body: string }>((resolve) => { finish = resolve; }));
+    let guard: (() => Promise<boolean>) | null = null;
+    const register = vi.fn((next: (() => Promise<boolean>) | null) => { guard = next; });
+    const { unmount } = render(<ReportTemplatesModal open onClose={vi.fn()} store={{ ...store, create }} onLeaveGuardChange={register} />);
+    expect(await guard!()).toBe(true);
+    fireEvent.change(screen.getByLabelText('Template name'), { target: { value: 'Extraction' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save template' }));
+    expect(await guard!()).toBe(false);
+    const unloading = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(unloading);
+    expect(unloading.defaultPrevented).toBe(true);
+    await act(async () => { finish!({ id: 'new', name: 'Extraction', body: '' }); });
+    expect(await guard!()).toBe(true);
+    unmount();
+    expect(register).toHaveBeenLastCalledWith(null);
   });
 });

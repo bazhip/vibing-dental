@@ -21,6 +21,8 @@ import {
 } from '../constants/plans';
 import { usePracticeLanguage } from '../hooks/usePracticeLanguage';
 import { REPORT_LOCALES, ReportLocale, isReportLocale } from '../utils/ownerReportI18n';
+import { ReportTemplatesModal } from './ReportTemplatesModal';
+import { useReportTemplates } from '../hooks/useReportTemplates';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { confirmDialog, friendlyError, toast } from './ui/dialogs';
 import { deleteMyPractice } from '../utils/accountDeletion';
@@ -98,8 +100,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const [logoError, setLogoError] = React.useState('');
   const fileRef = React.useRef<HTMLInputElement>(null);
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
-  // The owner-report template editor swaps in on top of this dialog.
-  const [templatesOpen, setTemplatesOpen] = React.useState(false);
+  // The selected template editor swaps in on top of this dialog.
+  const [templatesOpen, setTemplatesOpen] = React.useState<'owner' | 'treatment' | null>(null);
   const templateLeaveGuard = React.useRef<(() => Promise<boolean>) | null>(null);
   const registerTemplateLeaveGuard = React.useCallback((guard: (() => Promise<boolean>) | null) => {
     templateLeaveGuard.current = guard;
@@ -108,6 +110,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   // Team state (loads when the dialog opens).
   const team = useTeam(open);
+  const treatmentTemplates = useReportTemplates(team.practice?.id ?? '');
   const clientLang = usePracticeLanguage(team.practice?.id ?? null);
   const languageName = (l: ReportLocale) => t(`languages.${l}`, { ns: 'reportui' });
   const [langError, setLangError] = React.useState('');
@@ -253,12 +256,22 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   // The templates editor replaces the practice dialog while open — it
   // manages its own focus, Escape handling, and unsaved-changes guard.
-  if (templatesOpen) {
+  if (templatesOpen === 'treatment') {
+    return (
+      <ReportTemplatesModal
+        open
+        store={treatmentTemplates}
+        onLeaveGuardChange={registerTemplateLeaveGuard}
+        onClose={() => setTemplatesOpen(null)}
+      />
+    );
+  }
+  if (templatesOpen === 'owner') {
     return (
       <OwnerReportTemplatesModal
         open
         onLeaveGuardChange={registerTemplateLeaveGuard}
-        onClose={() => setTemplatesOpen(false)}
+        onClose={() => setTemplatesOpen(null)}
         config={profile.ownerReportConfig}
         onSave={profile.saveOwnerReportConfig}
         loadFailed={profile.ownerReportConfigLoadFailed}
@@ -708,6 +721,20 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         </section>
       )}
 
+      {treatmentTemplates.enabled && (
+        <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
+          <h3 className="ai-settings-subhead">{t('practice.treatmentReport.title')}</h3>
+          <p className="ai-settings-blurb">{t('practice.treatmentReport.blurb')}</p>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={() => setTemplatesOpen('treatment')}
+          >
+            {t('practice.treatmentReport.customize')}
+          </button>
+        </section>
+      )}
+
       {/* ---- Owner report --------------------------------------------- */}
       {profile.ownerReportEnabled && (
         <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
@@ -718,7 +745,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           <button
             type="button"
             className="diagram-view__action"
-            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen(true))}
+            onClick={() => (asScreen && onCustomizeReport ? onCustomizeReport() : setTemplatesOpen('owner'))}
           >
             {t('practice.ownerReport.customize')}
           </button>
@@ -901,7 +928,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   );
 
   const pageSections: Array<'general' | 'team' | 'templates' | 'billing'> = ['general', 'team'];
-  if (profile.ownerReportEnabled) pageSections.push('templates');
+  if (profile.ownerReportEnabled || treatmentTemplates.enabled) pageSections.push('templates');
   if (showBilling) pageSections.push('billing');
 
   if (asPage) return (

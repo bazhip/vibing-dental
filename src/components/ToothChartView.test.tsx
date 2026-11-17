@@ -150,3 +150,39 @@ test('quick codes are off on a view-only chart and absent when none are set', ()
   fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
   expect(screen.queryByRole('group', { name: 'Quick codes' })).toBeNull();
 });
+
+test('navigation stays outside the scrolling fields and the mobile map can be toggled', () => {
+  const { container } = render(<Harness />);
+  const map = screen.getByRole('button', { name: 'Tooth map' });
+  expect(map).toHaveAttribute('aria-expanded', 'false');
+  fireEvent.click(map);
+  expect(map).toHaveAttribute('aria-expanded', 'true');
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  expect(map).toHaveAttribute('aria-expanded', 'false');
+  const body = container.querySelector('.tooth-chart__body')!;
+  expect(body).toContainElement(screen.getByLabelText('Pocket'));
+  expect(body).not.toContainElement(screen.getByRole('button', { name: /next tooth/i }));
+  fireEvent.change(screen.getByLabelText('Pocket'), { target: { value: '4' } });
+  fireEvent.click(screen.getByRole('button', { name: /next tooth/i }));
+  fireEvent.click(screen.getByRole('button', { name: /previous tooth/i }));
+  expect(screen.getByLabelText('Pocket')).toHaveValue('4');
+});
+
+test('sizes the mobile editor to the remaining viewport and updates on resize', () => {
+  vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true } as MediaQueryList)));
+  const bounds = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ top: 350 } as DOMRect);
+  const originalHeight = window.innerHeight;
+  Object.defineProperty(window, 'innerHeight', { configurable: true, value: 568 });
+  try {
+    const { container } = render(<Harness />);
+    const panel = container.querySelector('.tooth-chart__panel') as HTMLElement;
+    expect(panel.style.maxHeight).toBe('210px');
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844 });
+    fireEvent(window, new Event('resize'));
+    expect(panel.style.maxHeight).toBe('486px');
+  } finally {
+    vi.unstubAllGlobals();
+    bounds.mockRestore();
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: originalHeight });
+  }
+});

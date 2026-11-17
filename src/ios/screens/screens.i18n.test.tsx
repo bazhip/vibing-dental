@@ -1,3 +1,4 @@
+vi.mock('../../hooks/useReportTemplates', () => ({ useReportTemplates: () => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }) }));
 // Pseudo-locale coverage for the iOS app's tabs: the shell, Patients,
 // Rechecks, a patient's visits, Settings and each of its pushed screens, and
 // the Chart tab's navigation bar. Sample patients, people and practice names

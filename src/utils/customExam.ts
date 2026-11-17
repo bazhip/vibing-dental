@@ -22,10 +22,8 @@ export const MAX_CUSTOM_EXAM_AREAS = 8;
 export const MAX_EXAM_LABEL = 60;
 const MAX_EXAM_COMMENT = 500;
 
-/** The preset ("Add the full oral exam list"): structures a full oral
- *  exam checks that the built-in areas don't already cover. Keys under
- *  settings:chart.exam.presets; labels are added in the person's language. */
-export const EXAM_PRESET_KEYS = ['lips', 'gingiva', 'salivary', 'floor'] as const;
+/** Suggestions add distinct soft-tissue areas beyond the built-in exam. Labels are captured in the person's language. */
+export const EXAM_PRESET_KEYS = ['gingiva', 'salivary', 'floor'] as const;
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const obj = (v: unknown): Record<string, unknown> | null =>

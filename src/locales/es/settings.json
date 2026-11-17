@@ -97,6 +97,11 @@
       "title": "Eliminar la clínica",
       "blurb": "Elimina de forma permanente la clínica y todos los historiales compartidos con ella, incluidos los de su equipo, y cancela cualquier suscripción. Los miembros del equipo conservan sus cuentas y sus historiales privados.",
       "button": "Eliminar la clínica…"
+    },
+    "treatmentReport": {
+      "title": "Informe del tratamiento",
+      "blurb": "Textos guardados para procedimientos habituales, listos para insertar en un informe de tratamiento.",
+      "customize": "Personalizar el informe de tratamiento"
     }
   },
   "logoErrors": {
@@ -174,7 +179,8 @@
     },
     "patient": {
       "title": "Página Paciente",
-      "hideRecheck": "Ocultar el campo Próxima revisión"
+      "hideRecheck": "Ocultar el campo Próxima revisión",
+      "visibilityNote": "Elija los campos que se muestran en las visitas vacías. Los campos con información registrada permanecen visibles."
     },
     "pdf": {
       "title": "PDF",
@@ -205,8 +211,8 @@
     },
     "exam": {
       "title": "Examen",
-      "areas": "Áreas de exploración adicionales",
-      "areasNote": "Aparecen después de las áreas predeterminadas, en el orden siguiente. Solo las áreas completadas aparecen en el PDF. Al eliminar un área se conservan los hallazgos registrados.",
+      "areas": "Áreas de examen",
+      "areasNote": "Seleccione las áreas que se muestran en la página Examen. Las áreas con hallazgos guardados permanecen visibles aunque no estén seleccionadas. Las áreas personalizadas aparecen en el orden siguiente.",
       "areaPlaceholder": "p. ej., Labios",
       "areaAria": "Nombre de la zona de examen {{n}}",
       "areaN": "zona {{n}}",
@@ -219,7 +225,9 @@
         "gingiva": "Encía / línea mucogingival",
         "salivary": "Desembocaduras de los conductos salivales",
         "floor": "Suelo de la boca / frenillo"
-      }
+      },
+      "suggestions": "Áreas sugeridas",
+      "showArea": "Mostrar {{name}}"
     },
     "customization": {
       "navigation": "Categorías de ajustes de la ficha",

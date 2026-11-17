@@ -1,0 +1,86 @@
+.tooth-chart__map-toggle { display: none; }
+.tooth-chart__body { min-width: 0; }
+
+@media (max-width: 600px) {
+  .tooth-chart .tooth-chart__map-toggle {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: 0;
+  }
+
+  .tooth-chart .tooth-chart__layout { gap: 0.5rem; }
+  .tooth-chart .tooth-chart__diagram { display: none; }
+  .tooth-chart [data-map-open='true'] .tooth-chart__diagram {
+    display: block;
+    max-height: 28dvh;
+    overflow: auto;
+    order: -2;
+  }
+
+  /* Keep the navigation outside the scrolling editor, including when
+     the software keyboard reduces the available viewport. */
+  .tooth-chart .tooth-chart__panel {
+    max-height: calc(100dvh - var(--topbar-height, 64px) - 8rem);
+    min-height: 120px;
+    overflow: hidden;
+    padding: 0;
+    gap: 0;
+  }
+  .tooth-chart [data-map-open='true'] .tooth-chart__panel {
+    max-height: calc(72dvh - var(--topbar-height, 64px) - 8.5rem);
+  }
+  .tooth-chart .tooth-chart__nav {
+    flex: 0 0 auto;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 0.25rem;
+  }
+  .tooth-chart .tooth-chart__nav .diagram-view__action {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.4rem;
+  }
+  .tooth-chart .tooth-chart__number { font-size: 1.5rem; }
+  .tooth-chart .tooth-chart__name { font-size: 0.75rem; overflow-wrap: anywhere; }
+  .tooth-chart .tooth-chart__body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: 0.5rem;
+    scrollbar-gutter: stable;
+    padding-bottom: 4rem;
+  }
+  .tooth-chart .tooth-chart__finding {
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .tooth-chart .tooth-chart__finding-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .tooth-chart .tooth-chart__check,
+  .tooth-chart .score-chips__chip,
+  .tooth-chart .tooth-chart__plan-chip { min-height: 44px; }
+  .tooth-chart .tooth-chart__note textarea { font-size: 16px; }
+}
+
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .tooth-chart .dental-grid__section-header {
+    gap: 6px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .tooth-chart .charting-view-switch {
+    grid-column: 1;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .tooth-chart .dental-grid__section-header .tooth-chart__map-toggle {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+}

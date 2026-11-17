@@ -43,3 +43,27 @@ test('Mark all normal covers custom areas too', () => {
   ]);
   expect(screen.queryByRole('button', { name: /Mark/ })).toBeNull();
 });
+
+test('hidden empty rows stay out of bulk marking while saved findings remain visible', () => {
+  const onStatusChange = vi.fn();
+  const onCustomChange = vi.fn();
+  const exam: ExamFindings = {
+    ...EMPTY_EXAM_FINDINGS,
+    tongue: { status: 'abnormal', comment: 'Ulcer' },
+    palate: { status: '', comment: 'Observe at next visit' },
+  };
+  render(<ExamForm exam={exam} hiddenAreas={['extraoral', 'tongue', 'palate', 'empty', 'answered']}
+    onStatusChange={onStatusChange} onCommentChange={vi.fn()} onCustomChange={onCustomChange}
+    customRows={[
+      { id: 'empty', label: 'Hidden blank', status: '', comment: '' },
+      { id: 'answered', label: 'Saved custom', status: 'abnormal', comment: 'Swollen' },
+    ]} />);
+  expect(screen.queryByLabelText('Extraoral / facial: normal')).toBeNull();
+  expect(screen.queryByText('Hidden blank')).toBeNull();
+  expect(screen.getByLabelText('Tongue: comment')).toHaveValue('Ulcer');
+  expect(screen.getByLabelText('Palate: normal')).toBeInTheDocument();
+  expect(screen.getByLabelText('Saved custom: comment')).toHaveValue('Swollen');
+  fireEvent.click(screen.getByRole('button', { name: 'Mark the rest normal' }));
+  expect(onStatusChange.mock.calls.map(([key]) => key)).toEqual(['lymph', 'buccal', 'palate', 'pharynx']);
+  expect(onCustomChange).not.toHaveBeenCalled();
+});

@@ -7,7 +7,7 @@ import { useBackdropDismiss } from '../hooks/useBackdropDismiss';
 import { AnesthesiaCustomEditor } from './AnesthesiaCustomEditor';
 import { QuickCodesEditor } from './QuickCodesEditor';
 import { ExamAreasEditor } from './ExamAreasEditor';
-import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS } from '../utils/chartSettings';
+import { BLOCK_ROW_OPTIONS, ChartPrefs, PERIO_FIELDS, PATIENT_FIELD_OPTIONS } from '../utils/chartSettings';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
 import { ChartSettingsList } from './ChartSettingsList';
@@ -250,7 +250,7 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
           <section className="chart-settings__group" hidden={!show.exam}>
             <h3 className="ai-settings-subhead">{t('chart.exam.title')}</h3>
-            <ExamAreasEditor areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
+            <ExamAreasEditor hiddenAreas={prefs.hiddenExamAreas} onHiddenChange={(hiddenExamAreas) => onChange({ hiddenExamAreas })} areas={prefs.customExamAreas} onChange={(customExamAreas) => onChange({ customExamAreas })} />
           </section>
 
           <section className="chart-settings__group" hidden={!show.anesthesia}>
@@ -350,6 +350,14 @@ const ChartSettingsDialog: React.FC<ChartSettingsModalProps> = ({ onClose, prefs
 
           <section className="chart-settings__group" hidden={!show.patient}>
             <h3 className="ai-settings-subhead">{t('chart.patient.title')}</h3>
+            <p className="chart-settings__note">{t('chart.patient.visibilityNote')}</p>
+            {PATIENT_FIELD_OPTIONS.map((field) => (
+              <label key={field} className="chart-settings__choice">
+                <input type="checkbox" checked={!prefs.hiddenPatientFields.includes(field)} onChange={(e) => onChange({ hiddenPatientFields: e.target.checked ? prefs.hiddenPatientFields.filter((key) => key !== field) : [...prefs.hiddenPatientFields, field] })} />
+                {t(`patient.${field}`, { ns: 'forms' })}
+              </label>
+            ))}
+
             <label className="chart-settings__choice">
               <input type="checkbox" checked={!prefs.hideRecheck} onChange={(e) => onChange({ hideRecheck: !e.target.checked })} />
               {t('chart.customization.showRecheck')}

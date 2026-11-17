@@ -163,7 +163,8 @@
     "allConfirmed": "Alle geplanten Extraktionen bestätigt.",
     "confirmed": "{{done}} von {{total}} als extrahiert bestätigt.",
     "markExtracted_one": "Als extrahiert markieren",
-    "markExtracted_other": "Alle {{count}} als extrahiert markieren"
+    "markExtracted_other": "Alle {{count}} als extrahiert markieren",
+    "toothMap": "Zahnübersicht"
   },
   "toothName": {
     "side": {

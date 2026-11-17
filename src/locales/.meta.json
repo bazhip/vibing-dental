@@ -3172,6 +3172,10 @@
       "hash": "c5fe493a757d",
       "status": "machine"
     },
+    "chart:toothChart.toothMap": {
+      "hash": "21e886b3da63",
+      "status": "machine"
+    },
     "chart:toothName.deciduous": {
       "hash": "8647d6ecc146",
       "status": "machine"
@@ -10457,11 +10461,11 @@
       "status": "machine"
     },
     "settings:chart.exam.areas": {
-      "hash": "d0c975dcc70b",
+      "hash": "349bf95372d5",
       "status": "machine"
     },
     "settings:chart.exam.areasNote": {
-      "hash": "ecc7d8b70bba",
+      "hash": "2e7711db6b47",
       "status": "machine"
     },
     "settings:chart.exam.presets.floor": {
@@ -10486,6 +10490,14 @@
     },
     "settings:chart.exam.removeAria": {
       "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.showArea": {
+      "hash": "f6b7c37093ee",
+      "status": "machine"
+    },
+    "settings:chart.exam.suggestions": {
+      "hash": "d70b6e3e63fc",
       "status": "machine"
     },
     "settings:chart.exam.title": {
@@ -10530,6 +10542,10 @@
     },
     "settings:chart.patient.title": {
       "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.patient.visibilityNote": {
+      "hash": "a99e22cec8f6",
       "status": "machine"
     },
     "settings:chart.pdf": {
@@ -11082,6 +11098,18 @@
     },
     "settings:practice.title": {
       "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.blurb": {
+      "hash": "568c28a40bba",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.customize": {
+      "hash": "2520c619ba1e",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.title": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "settings:reminders.sendFrom": {
@@ -15036,6 +15064,10 @@
     },
     "chart:toothChart.start": {
       "hash": "c5fe493a757d",
+      "status": "machine"
+    },
+    "chart:toothChart.toothMap": {
+      "hash": "21e886b3da63",
       "status": "machine"
     },
     "chart:toothName.deciduous": {
@@ -22367,11 +22399,11 @@
       "status": "machine"
     },
     "settings:chart.exam.areas": {
-      "hash": "d0c975dcc70b",
+      "hash": "349bf95372d5",
       "status": "machine"
     },
     "settings:chart.exam.areasNote": {
-      "hash": "ecc7d8b70bba",
+      "hash": "2e7711db6b47",
       "status": "machine"
     },
     "settings:chart.exam.presets.floor": {
@@ -22396,6 +22428,14 @@
     },
     "settings:chart.exam.removeAria": {
       "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.showArea": {
+      "hash": "f6b7c37093ee",
+      "status": "machine"
+    },
+    "settings:chart.exam.suggestions": {
+      "hash": "d70b6e3e63fc",
       "status": "machine"
     },
     "settings:chart.exam.title": {
@@ -22440,6 +22480,10 @@
     },
     "settings:chart.patient.title": {
       "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.patient.visibilityNote": {
+      "hash": "a99e22cec8f6",
       "status": "machine"
     },
     "settings:chart.pdf": {
@@ -22992,6 +23036,18 @@
     },
     "settings:practice.title": {
       "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.blurb": {
+      "hash": "568c28a40bba",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.customize": {
+      "hash": "2520c619ba1e",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.title": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "settings:reminders.sendFrom": {
@@ -26972,6 +27028,10 @@
       "hash": "c5fe493a757d",
       "status": "machine"
     },
+    "chart:toothChart.toothMap": {
+      "hash": "21e886b3da63",
+      "status": "machine"
+    },
     "chart:toothName.deciduous": {
       "hash": "8647d6ecc146",
       "status": "machine"
@@ -34301,11 +34361,11 @@
       "status": "machine"
     },
     "settings:chart.exam.areas": {
-      "hash": "d0c975dcc70b",
+      "hash": "349bf95372d5",
       "status": "machine"
     },
     "settings:chart.exam.areasNote": {
-      "hash": "ecc7d8b70bba",
+      "hash": "2e7711db6b47",
       "status": "machine"
     },
     "settings:chart.exam.presets.floor": {
@@ -34330,6 +34390,14 @@
     },
     "settings:chart.exam.removeAria": {
       "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.showArea": {
+      "hash": "f6b7c37093ee",
+      "status": "machine"
+    },
+    "settings:chart.exam.suggestions": {
+      "hash": "d70b6e3e63fc",
       "status": "machine"
     },
     "settings:chart.exam.title": {
@@ -34374,6 +34442,10 @@
     },
     "settings:chart.patient.title": {
       "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.patient.visibilityNote": {
+      "hash": "a99e22cec8f6",
       "status": "machine"
     },
     "settings:chart.pdf": {
@@ -34926,6 +34998,18 @@
     },
     "settings:practice.title": {
       "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.blurb": {
+      "hash": "568c28a40bba",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.customize": {
+      "hash": "2520c619ba1e",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.title": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "settings:reminders.sendFrom": {
@@ -38906,6 +38990,10 @@
       "hash": "c5fe493a757d",
       "status": "machine"
     },
+    "chart:toothChart.toothMap": {
+      "hash": "21e886b3da63",
+      "status": "machine"
+    },
     "chart:toothName.deciduous": {
       "hash": "8647d6ecc146",
       "status": "machine"
@@ -46235,11 +46323,11 @@
       "status": "machine"
     },
     "settings:chart.exam.areas": {
-      "hash": "d0c975dcc70b",
+      "hash": "349bf95372d5",
       "status": "machine"
     },
     "settings:chart.exam.areasNote": {
-      "hash": "ecc7d8b70bba",
+      "hash": "2e7711db6b47",
       "status": "machine"
     },
     "settings:chart.exam.presets.floor": {
@@ -46264,6 +46352,14 @@
     },
     "settings:chart.exam.removeAria": {
       "hash": "43e1269ac88a",
+      "status": "machine"
+    },
+    "settings:chart.exam.showArea": {
+      "hash": "f6b7c37093ee",
+      "status": "machine"
+    },
+    "settings:chart.exam.suggestions": {
+      "hash": "d70b6e3e63fc",
       "status": "machine"
     },
     "settings:chart.exam.title": {
@@ -46308,6 +46404,10 @@
     },
     "settings:chart.patient.title": {
       "hash": "925285b9cb5b",
+      "status": "machine"
+    },
+    "settings:chart.patient.visibilityNote": {
+      "hash": "a99e22cec8f6",
       "status": "machine"
     },
     "settings:chart.pdf": {
@@ -46860,6 +46960,18 @@
     },
     "settings:practice.title": {
       "hash": "5269dfe53b4f",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.blurb": {
+      "hash": "568c28a40bba",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.customize": {
+      "hash": "2520c619ba1e",
+      "status": "machine"
+    },
+    "settings:practice.treatmentReport.title": {
+      "hash": "64fbcb2e386c",
       "status": "machine"
     },
     "settings:reminders.sendFrom": {
