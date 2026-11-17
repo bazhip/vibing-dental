@@ -32,3 +32,11 @@ it('ignores the previous animal’s visits while the next animal loads', () => {
   expect(isCurrentVisit('2026-11-16', '2026-11-16', visits, 'oliver')).toBe(true);
   expect(visitsForPatient(old, ' 1042 ', 'Luna')).toEqual(old);
 });
+
+it('uses permanent identity after the display number changes without mixing same-name pets', () => {
+  const rows = [
+    { id: 'old', patient_id: 'a', patient_name: 'Luna', patient_number: 'P-OLD' },
+    { id: 'other', patient_id: 'b', patient_name: 'Luna', patient_number: '666' },
+  ];
+  expect(visitsForPatient(rows, '666', 'Luna', 'a').map(v => v.id)).toEqual(['old']);
+});

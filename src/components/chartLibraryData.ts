@@ -50,7 +50,7 @@ export function groupByPatient(charts: CloudChartMeta[], unnamed = i18n.t('unnam
   for (const c of charts) {
     const num = c.patient_number.trim().toLowerCase();
     const name = c.patient_name.trim().toLowerCase();
-    const key = num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
+    const key = c.patient_id ? `patient:${c.patient_id}` : num ? `n:${num}` : name ? `p:${name}` : `id:${c.id}`;
     let g = groups.get(key);
     if (!g) {
       g = {

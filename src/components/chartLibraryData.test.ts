@@ -19,3 +19,13 @@ describe('a patient’s recheck date', () => {
     expect(g.recall).toBe('2027-05-01');
   });
 });
+
+it('separates same-name patients and preserves history after an editable number changes', () => {
+  const a = { ...chart('a', '2026-11-01', ''), patient_id: 'patient-a', patient_number: 'P-A' };
+  const a2 = { ...chart('a2', '2026-11-02', ''), patient_id: 'patient-a', patient_number: '666' };
+  const b = { ...chart('b', '2026-11-01', ''), patient_id: 'patient-b', patient_number: 'P-B' };
+  const groups = groupByPatient([a2, a, b]);
+  expect(groups).toHaveLength(2);
+  expect(groups[0].number).toBe('666');
+  expect(groups[0].visits.map(v => v.id)).toEqual(['a2', 'a']);
+});

@@ -320,7 +320,7 @@ function ChoiceView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choo
   const titleId = `dlg-title-${req.id}`;
   return (
     <div className="ui-dialog-overlay" {...backdrop}>
-      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
+      <div className="ui-dialog ui-dialog--choices" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">

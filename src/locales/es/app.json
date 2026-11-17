@@ -327,6 +327,10 @@
     "closeConfirm": "Cerrar sin guardar",
     "keepOpen": "Mantener abierto el historial",
     "closeImageDraftMessage": "Este historial no se ha guardado. Al cerrarlo, se descartará su contenido y se eliminarán permanentemente las imágenes cargadas.",
-    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador."
+    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador.",
+    "closeTitle": "Cambios sin guardar",
+    "saveAndClose": "Guardar y cerrar",
+    "closeChoiceMessage": "Guarde los cambios antes de cerrar o cierre sin guardar para descartarlos. Se conservarán las imágenes de los historiales guardados.",
+    "closeImageChoiceMessage": "Guarde este historial antes de cerrar o cierre sin guardar para descartar su contenido y eliminar permanentemente las imágenes subidas."
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPatientIdentity, patientNumberOf } from '../utils/patientIds';
 import { normalizeCustomAnesthesia } from '../utils/customAnesthesia';
 import { normalizeCustomExam } from '../utils/customExam';
 import { localDateISO } from '../utils/localDate';
@@ -98,7 +99,7 @@ export interface UseChartStateReturn {
    *  cloud row. With no args, derives from the currently-open chart; the
    *  library passes an explicit prior snapshot's identity + gone teeth. */
   startNewVisit: (opts?: {
-    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
+    identity?: { patientId?: string; generatedPatientNumber?: string; patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
   }) => string; // the new visit's cloud id
 
@@ -242,7 +243,7 @@ export function useChartState(): UseChartStateReturn {
     'chart.patientInfo', 1,
     () => ({
       patientName: '',
-      patientNumber: '',
+      ...createPatientIdentity(),
       ownerName: '',
       ownerPhone: '',
       ownerEmail: '',
@@ -489,7 +490,7 @@ export function useChartState(): UseChartStateReturn {
   /** Blank patient info for a fresh chart (optionally keeping identity). */
   const blankPatientInfo = (keep?: Partial<PatientInfo>): PatientInfo => ({
     patientName: '',
-    patientNumber: '',
+    ...createPatientIdentity(),
     ownerName: '',
     ownerPhone: '',
     ownerEmail: '',
@@ -505,7 +506,7 @@ export function useChartState(): UseChartStateReturn {
   });
 
   const startNewVisit = (opts?: {
-    identity?: { patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
+    identity?: { patientId?: string; generatedPatientNumber?: string; patientName: string; patientNumber: string; ownerName: string; ownerPhone: string; ownerEmail: string; species: Species };
     goneTeeth?: number[];
   }) => {
     const identity = opts?.identity;
@@ -523,7 +524,9 @@ export function useChartState(): UseChartStateReturn {
 
     const keep = {
       patientName: identity ? identity.patientName : patientInfo.patientName,
-      patientNumber: identity ? identity.patientNumber : patientInfo.patientNumber,
+      patientNumber: identity ? identity.patientNumber : patientNumberOf(patientInfo),
+      patientId: identity ? identity.patientId : patientInfo.patientId,
+      generatedPatientNumber: identity ? identity.generatedPatientNumber : patientInfo.generatedPatientNumber,
       ownerName: identity ? identity.ownerName : patientInfo.ownerName,
       ownerPhone: identity ? identity.ownerPhone : patientInfo.ownerPhone,
       ownerEmail: identity ? identity.ownerEmail : patientInfo.ownerEmail,
@@ -537,7 +540,7 @@ export function useChartState(): UseChartStateReturn {
     setOwnerReport({}); // report edits are visit-specific
     setRecordNote(null);
     setPlannedExtractions([]);
-    setPatientInfo(blankPatientInfo(keep));
+    setPatientInfo(blankPatientInfo(keep.patientName.trim() || keep.patientNumber.trim() || keep.patientId ? keep : undefined));
     if (identity) {
       setSpecies(sp);
       switchSpecies(sp);
@@ -575,7 +578,7 @@ export function useChartState(): UseChartStateReturn {
     ...(plannedExtractions.length ? { plannedExtractions } : {}),
     // Same: absent unless the note was edited, so existing hashes hold.
     ...(recordNote ? { recordNote } : {}),
-    patientInfo,
+    patientInfo: patientInfo.generatedPatientNumber && !patientInfo.patientNumber.trim() ? { ...patientInfo, patientNumber: patientNumberOf(patientInfo) } : patientInfo,
     toothData,
     species,
     logo,
