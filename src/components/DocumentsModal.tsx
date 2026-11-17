@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { PdfPreviewModal, type ChartSnapshot as PreviewSnapshot } from './PdfPreviewModal';
 import { OwnerReportModal } from './OwnerReportModal';
 import { RecordNotePanel, type RecordNotePims } from './RecordNotePanel';
@@ -84,6 +85,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
   const closeRef = React.useRef<HTMLButtonElement>(null);
   // iOS app: a kit sheet (grabber, swipe down, its own Escape and focus).
   const native = isNativeApp();
+  const modalRef = useModalFocus(open && !native);
 
   React.useEffect(() => {
     if (!open) return;
@@ -109,6 +111,19 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
     setTab(id);
     setVisited((v) => new Set(v).add(id));
     try { window.sessionStorage.setItem(TAB_KEY, id); } catch { /* ignore */ }
+  };
+  const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, id: DocumentTab) => {
+    const index = tabs.indexOf(id);
+    const next = event.key === 'Home' ? 0
+      : event.key === 'End' ? tabs.length - 1
+      : event.key === 'ArrowRight' ? (index + 1) % tabs.length
+      : event.key === 'ArrowLeft' ? (index - 1 + tabs.length) % tabs.length
+      : null;
+    if (next === null) return;
+    event.preventDefault();
+    const target = tabs[next];
+    select(target);
+    document.getElementById(`documents-tab-${target}`)?.focus();
   };
   const chartVisited = visited.has('chart');
   const ownerVisited = visited.has('owner');
@@ -215,7 +230,7 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
 
   return (
     <div className="pdf-preview-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="documents-title">
-      <div className="pdf-preview-modal documents-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="pdf-preview-modal documents-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="pdf-preview-header documents-modal__header">
           <div>
             <h2 id="documents-title">{t('documents.title')}{subtitle && <span className="documents-modal__subtitle"> · {subtitle}</span>}</h2>
@@ -236,6 +251,8 @@ export const DocumentsModal: React.FC<DocumentsModalProps> = ({
                 id={`documents-tab-${id}`}
                 aria-selected={active === id}
                 aria-controls={`documents-panel-${id}`}
+                tabIndex={active === id ? 0 : -1}
+                onKeyDown={(event) => onTabKeyDown(event, id)}
                 className={`documents-modal__tab${active === id ? ' documents-modal__tab--on' : ''}`}
                 onClick={() => select(id)}
               >

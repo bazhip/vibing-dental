@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -185,14 +186,7 @@ export const AnesthesiaForm: React.FC<AnesthesiaFormProps> = ({
 
   return (
     <div className="dental-grid-section">
-      <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">{native ? t('ios.form.nerveBlocks', { ns: 'chart' }) : t('anesthesia.title')}</h2>
-        {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('anesthesia.customizeTitle')}>
-            {t('anesthesia.customize')}
-          </button>
-        )}
-      </div>
+      <SectionHeader title={native ? t('ios.form.nerveBlocks', { ns: 'chart' }) : t('anesthesia.title')} onCustomize={onCustomize} customizeTitle={t('anesthesia.customizeTitle')} />
 
       <div className="anesthesia-drug">
         <span className="anesthesia-drug__label" id="anesthesia-drug-label">

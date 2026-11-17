@@ -1,5 +1,10 @@
 {
-  "title": "Mis historiales",
+  "rechecks": {
+    "title": "Controles",
+    "description": "Pacientes con una revisión prevista para hoy o atrasada. Abra una visita, envíe un recordatorio o elimine una revisión completada."
+  },
+  "openLatest": "Abrir la última visita de {{name}}",
+  "title": "Pacientes",
   "unnamedPatient": "Paciente sin nombre",
   "search": {
     "placeholder": "Buscar por nombre o número de paciente…",
@@ -13,7 +18,7 @@
   },
   "importPdf": "Importar PDF de historial",
   "importPdfTitle": "Abra un PDF de historial creado con esta aplicación para seguir editándolo",
-  "newPatient": "+ Nuevo paciente",
+  "newPatient": "Nuevo paciente",
   "newPatientTitle": "Borrar el historial en curso y empezar un paciente completamente nuevo",
   "loading": "Cargando…",
   "empty": "Aún no hay historiales guardados: se guardan automáticamente mientras los registra.",
@@ -31,8 +36,8 @@
     "updated": "Actualizado",
     "recheck": "Revisión"
   },
-  "due": "Pendientes",
-  "dueCount": "Pendientes ({{n}})",
+  "due": "Revisiones pendientes",
+  "dueCount": "Revisiones pendientes ({{n}})",
   "dueTitle": "Mostrar solo los pacientes con revisión pendiente o vencida",
   "recall": {
     "overdue": "{{date}} · vencida",
@@ -55,17 +60,19 @@
     "updated": "Actualizado {{when}}"
   },
   "actions": {
+    "menu": "Acciones",
     "reminder": "Recordatorio",
     "reminderTitle": "Enviar un recordatorio de revisión a {{who}}",
     "clearRecall": "Borrar el recordatorio de revisión de {{name}}",
     "clearRecallTitle": "Borrar el recordatorio de revisión de {{name}} — por ejemplo, tras una revisión que no generó un historial nuevo",
-    "newVisit": "+ Visita",
+    "newVisit": "Nueva visita",
     "newVisitTitle": "Iniciar una nueva visita para {{name}}",
-    "history": "Versiones",
+    "history": "Historial de versiones",
     "historyChartTitle": "Quién guardó el historial de {{name}} y cuándo",
     "historyVisitTitle": "Quién guardó esta visita y cuándo",
     "deleteChart": "Eliminar el historial de {{name}}",
-    "loadMore": "Cargar más historiales"
+    "loadMore": "Cargar más historiales",
+    "clearRecallShort": "Borrar revisión"
   },
   "errors": {
     "load": "No se pudieron cargar sus historiales. {{error}}",
@@ -130,5 +137,9 @@
     "saving": "Guardando…",
     "saveChanges": "Guardar cambios",
     "saveTemplate": "Guardar plantilla"
+  },
+  "workspace": {
+    "description": "Busque historias de pacientes, consulte visitas y gestione revisiones.",
+    "backToVisit": "Volver a la visita actual"
   }
 }

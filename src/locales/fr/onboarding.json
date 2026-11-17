@@ -7,12 +7,24 @@
     "next": "Suivant",
     "finish": "Commencer",
     "steps": {
+      "firstPatient": {
+        "title": "Identifier le patient",
+        "body": "Saisissez le nom du patient, puis choisissez l’espèce et la dentition. Ajoutez les coordonnées du propriétaire et les détails de la visite si nécessaire."
+      },
+      "firstFinding": {
+        "title": "Consigner une observation",
+        "body": "Choisissez une dent et saisissez une mesure ou une observation. Votre travail est enregistré automatiquement ; vous pourrez continuer après cette visite guidée."
+      },
+      "firstOutput": {
+        "title": "Vérifier le résultat",
+        "body": "Ouvrez l’aperçu PDF pour vérifier la visite avant de la partager. Pour découvrir tout l’espace de travail, ouvrez Aide → Premiers pas."
+      },
       "welcome": {
         "title": "Bienvenue dans ToothOps",
-        "body": "Une visite de 60 secondes pour découvrir où se trouve chaque chose. Vous pouvez la revoir à tout moment depuis Paramètres → Prise en main."
+        "body": "Une courte visite de l’espace de travail. Retrouvez-la à tout moment dans Aide → Prise en main."
       },
       "sections": {
-        "title": "Les huit sections",
+        "title": "Les neuf sections",
         "body": "Un dossier dentaire, de haut en bas. Parcourez-les dans l’ordre ou passez de l’une à l’autre — tout est enregistré automatiquement."
       },
       "patient": {
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Espèce et dentition",
-        "body": "Choisissez Félin ou Canin, puis Permanente ou Déciduale — le schéma des dents s’adapte."
+        "body": "Choisissez Félin, Canin ou Équin, puis la dentition — le schéma des dents s’adapte."
       },
       "grid": {
         "title": "La grille de mesures",
@@ -40,16 +52,16 @@
         "body": "Rédigez le compte rendu, ou insérez un modèle enregistré depuis la liste déroulante — et enregistrez-en de nouveaux pour les réutiliser."
       },
       "library": {
-        "title": "Mes dossiers",
-        "body": "Ouvrez les dossiers de n’importe quel patient (les visites enregistrées s’ouvrent en lecture seule tant que vous ne cliquez pas sur Modifier) ou — pour le patient affiché — démarrez une nouvelle visite ou consultez l’historique de ses versions. Nouveau patient, juste à côté, démarre un dossier vierge."
+        "title": "Patients",
+        "body": "Recherchez des patients et ouvrez leurs visites. Utilisez Nouveau patient pour un dossier vierge. Pour le patient en cours, utilisez Actions de la visite pour commencer une nouvelle visite ou consulter l’historique des versions."
       },
       "dictate": {
         "title": "Dicter",
         "body": "Touchez Dicter et énoncez vos observations — depuis n’importe quelle page. Chacune arrive au bon endroit, et un panneau en direct affiche chaque modification pour que vous puissiez tout annuler."
       },
       "settings": {
-        "title": "Paramètres",
-        "body": "Nom et logo du cabinet, équipe, modèles de rappel de contrôle, votre compte — et cette visite guidée."
+        "title": "Paramètres du cabinet",
+        "body": "Gérez ici votre clinique, votre équipe, vos modèles et vos rappels. Les préférences personnelles se trouvent dans Votre compte ; les conseils et les commentaires, dans Aide."
       },
       "pdf": {
         "title": "Aperçu et téléchargement du PDF",

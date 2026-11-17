@@ -1,0 +1,89 @@
+/* Shared clinical page rhythm, scoped away from dialogs and native settings. */
+.practice-workspace {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 28px clamp(16px, 3vw, 40px) 48px;
+  color: var(--text);
+}
+.practice-workspace__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.practice-workspace__header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--letter-display);
+}
+.practice-workspace__header p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; max-width: 65ch; }
+.practice-workspace__header > button { flex-shrink: 0; }
+.practice-workspace__layout { display: grid; grid-template-columns: 200px minmax(0, 880px); gap: 32px; align-items: start; }
+.practice-workspace__nav { display: flex; flex-direction: column; gap: 4px; }
+.practice-workspace__nav button {
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  padding: 12px 14px;
+  text-align: left;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+}
+.practice-workspace__nav button:hover { background: var(--surface-alt); color: var(--text); }
+.practice-workspace__nav button[aria-current] {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  color: var(--primary);
+  box-shadow: inset 3px 0 var(--primary);
+}
+.practice-workspace__nav-divider { border-top: 1px solid var(--border); margin: 12px 0; }
+.practice-workspace__content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; min-width: 0; }
+.practice-workspace__content > h2 { margin: 0 0 24px; font-size: 20px; line-height: 1.3; font-weight: 650; }
+.practice-workspace__content .ai-settings-section[hidden] { display: none; }
+/* Sections remain in one form surface instead of nesting a card for each field group. */
+.practice-workspace__content .ai-settings-section {
+  margin: 0 0 28px;
+  padding: 0 0 24px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  gap: 12px;
+}
+.practice-workspace__content .ai-settings-subhead { margin: 0; font-size: 15px; line-height: 1.4; }
+.practice-workspace__content .ai-settings-blurb,
+.practice-workspace__content .patient-form__hint { max-width: 70ch; line-height: 1.6; }
+.practice-workspace__content .patient-form__input { box-sizing: border-box; max-width: 520px; min-height: 44px; border-radius: var(--radius-sm); }
+.practice-workspace .diagram-view__action,
+.practice-workspace .entry-grid__button { min-height: 44px; border-radius: var(--radius-sm); font-size: 14px; padding: 10px 14px; }
+.practice-workspace__content .practice-logo-actions,
+.practice-workspace__content .team__member-actions { flex-wrap: wrap; gap: 8px; }
+.practice-workspace__save-hint { color: var(--text-muted); font-size: 13px; line-height: 1.6; margin: 24px 0 16px; }
+.practice-workspace__content .ai-settings-footer { padding: 16px 0 0; background: transparent; border-top: 1px solid var(--border); gap: 10px; }
+.practice-workspace button:focus-visible,
+.practice-workspace input:focus-visible,
+.practice-workspace select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .practice-workspace { padding: 20px 16px 32px; }
+  .practice-workspace__header { flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .practice-workspace__header h1 { font-size: 24px; }
+  .practice-workspace__layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .practice-workspace__nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .practice-workspace__nav-divider { display: none; }
+  .practice-workspace__nav button { padding: 10px 12px; }
+  .practice-workspace__content { padding: 20px 16px; }
+  .practice-workspace__content .patient-form__input { width: 100%; }
+  .practice-workspace__content .team__member { flex-wrap: wrap; gap: 10px; }
+  .practice-workspace__content .team__member-id { min-width: 0; overflow-wrap: anywhere; }
+}

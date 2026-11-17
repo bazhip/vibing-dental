@@ -1,5 +1,10 @@
 {
-  "title": "Le mie cartelle",
+  "rechecks": {
+    "title": "Controlli",
+    "description": "Pazienti con un controllo previsto oggi o scaduto. Apra una visita, invii un promemoria o rimuova un controllo completato."
+  },
+  "openLatest": "Apra l’ultima visita di {{name}}",
+  "title": "Pazienti",
   "unnamedPatient": "Paziente senza nome",
   "search": {
     "placeholder": "Cerca per nome o numero del paziente…",
@@ -13,7 +18,7 @@
   },
   "importPdf": "Importa PDF della cartella",
   "importPdfTitle": "Apra un PDF di cartella creato con questa app per continuare a modificarlo",
-  "newPatient": "+ Nuovo paziente",
+  "newPatient": "Nuovo paziente",
   "newPatientTitle": "Svuota la cartella in uso e inizia un paziente completamente nuovo",
   "loading": "Caricamento…",
   "empty": "Nessuna cartella salvata per ora: si salvano automaticamente mentre compila.",
@@ -31,8 +36,8 @@
     "updated": "Modificata",
     "recheck": "Controllo"
   },
-  "due": "In scadenza",
-  "dueCount": "In scadenza ({{n}})",
+  "due": "Controlli in scadenza",
+  "dueCount": "Controlli in scadenza ({{n}})",
   "dueTitle": "Mostra solo i pazienti con controllo in scadenza o scaduto",
   "recall": {
     "overdue": "{{date}} · scaduto",
@@ -55,17 +60,19 @@
     "updated": "Modificata {{when}}"
   },
   "actions": {
+    "menu": "Azioni",
     "reminder": "Promemoria",
     "reminderTitle": "Invia un promemoria di controllo a {{who}}",
     "clearRecall": "Cancella il promemoria di controllo di {{name}}",
     "clearRecallTitle": "Cancella il promemoria di controllo di {{name}} — ad es. dopo un controllo che non ha prodotto una nuova cartella",
-    "newVisit": "+ Visita",
+    "newVisit": "Nuova visita",
     "newVisitTitle": "Inizia una nuova visita per {{name}}",
-    "history": "Cronologia",
+    "history": "Cronologia delle versioni",
     "historyChartTitle": "Chi ha salvato la cartella di {{name}} e quando",
     "historyVisitTitle": "Chi ha salvato questa visita e quando",
     "deleteChart": "Elimina la cartella di {{name}}",
-    "loadMore": "Carica altre cartelle"
+    "loadMore": "Carica altre cartelle",
+    "clearRecallShort": "Cancella controllo"
   },
   "errors": {
     "load": "Impossibile caricare le Sue cartelle. {{error}}",
@@ -130,5 +137,9 @@
     "saving": "Salvataggio…",
     "saveChanges": "Salva modifiche",
     "saveTemplate": "Salva modello"
+  },
+  "workspace": {
+    "description": "Cerchi le cartelle dei pazienti, consulti le visite e gestisca i controlli.",
+    "backToVisit": "Torna alla visita in corso"
   }
 }

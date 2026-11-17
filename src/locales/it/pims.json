@@ -75,7 +75,9 @@
   "results": {
     "title": "Risultati",
     "sent": "Inviato",
-    "stampFailed": "Inviato, ma ToothOps non è riuscito a registrare la data di invio su questa cartella."
+    "stampFailed": "Inviato, ma ToothOps non è riuscito a registrare la data di invio su questa cartella.",
+    "saved": "Salvato nel software dello studio",
+    "summary": "Campi salvati: {{saved}} · Da verificare: {{attention}}"
   },
   "errors": {
     "extension_error": "ToothOps non è riuscito a raggiungere l’estensione ToothOps PIMS. Verifichi che sia installata e attiva, poi riprovi.",
@@ -131,7 +133,8 @@
       "noteLabel": "Nota di cartella",
       "flagLoading": "Verifica dell’attivazione dell’invio per il Suo studio…",
       "flagFailed": "Impossibile verificare se l’invio al software dello studio è attivo per il Suo studio.",
-      "sendOff": "L’invio al software dello studio non è attivo per il Suo studio."
+      "sendOff": "L’invio al software dello studio non è attivo per il Suo studio.",
+      "destination": "Destinazione"
     },
     "today": {
       "title": "Pazienti di oggi (PIMS)",

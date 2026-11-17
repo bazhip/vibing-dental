@@ -97,6 +97,11 @@
       "title": "Eliminar la clínica",
       "blurb": "Elimina de forma permanente la clínica y todos los historiales compartidos con ella, incluidos los de su equipo, y cancela cualquier suscripción. Los miembros del equipo conservan sus cuentas y sus historiales privados.",
       "button": "Eliminar la clínica…"
+    },
+    "treatmentReport": {
+      "title": "Informe del tratamiento",
+      "blurb": "Textos guardados para procedimientos habituales, listos para insertar en un informe de tratamiento.",
+      "customize": "Personalizar el informe de tratamiento"
     }
   },
   "logoErrors": {
@@ -114,18 +119,19 @@
       "anesthesia": "Ajustes de anestesia",
       "charting": "Ajustes del odontograma",
       "diagnosis": "Ajustes del diagnóstico",
-      "images": "Ajustes de las imágenes",
-      "exam": "Ajustes del examen"
+      "images": "Ajustes de diagnóstico por imagen",
+      "exam": "Ajustes del examen",
+      "procedure": "Ajustes de procedimientos"
     },
-    "noteAccount": "Solo para usted — estos ajustes siguen a su cuenta en todos sus dispositivos. Los cambios se guardan al instante.",
-    "noteBrowser": "Guardados en este navegador. Los cambios se aplican al instante.",
+    "noteAccount": "Sus preferencias personales siguen su cuenta en todos los dispositivos. Los cambios se guardan automáticamente.",
+    "noteBrowser": "Preferencias personales guardadas automáticamente en este navegador.",
     "all": "Todos los ajustes del odontograma",
     "charting": {
       "title": "Odontograma",
-      "view": "Vista",
+      "view": "Diseño del odontograma",
       "grid": "Cuadrícula",
       "byTooth": "Por diente",
-      "pocket": "Profundidades de bolsa",
+      "pocket": "Registro de profundidades de bolsa",
       "pocketTooth": "Una por diente",
       "pocketRoot": "Una por raíz",
       "pocketRootHint": "M / D, o MB / MP / D en dientes de tres raíces",
@@ -140,14 +146,14 @@
       "scoreFindingHint": "movilidad → recesión → … para exámenes diente por diente",
       "scoreTooth": "Bajar al siguiente diente",
       "scoreToothHint": "para puntuar un mismo hallazgo en toda la boca",
-      "scoreStay": "Quedarse donde está",
-      "columns": "Columnas"
+      "scoreStay": "Mantener seleccionada la celda actual",
+      "columns": "Mediciones visibles"
     },
     "beside": {
-      "title": "Junto a los dientes",
+      "title": "Hallazgos en el diagrama",
       "show": "Mostrar los hallazgos en el esquema de diagnóstico",
       "showHint": "(y en el PDF)",
-      "include": "Incluir"
+      "include": "Hallazgos que se mostrarán"
     },
     "anesthesia": {
       "title": "Anestesia",
@@ -160,29 +166,30 @@
         "mental": "Mentoniano",
         "other": "Otro"
       },
-      "usual": "Su anestésico habitual",
-      "usualNote": "Se ofrece con un toque en un historial sin anestésico indicado.",
+      "usual": "Anestésico local preferido",
+      "usualNote": "Disponible como acceso rápido cuando no hay ningún anestésico registrado. Usted decide cuándo aplicarlo.",
       "drugPlaceholder": "p. ej., bupivacaína",
-      "drugAria": "Anestésico habitual",
-      "strengthAria": "Concentración del anestésico habitual (%)",
-      "adjunct": "Añadido a la mezcla",
-      "adjunctNote": "Añadido a la mezcla (opcional), p. ej., buprenorfina o dexmedetomidina. «Usar mi habitual» registra entonces ambos.",
+      "drugAria": "Anestésico local preferido",
+      "strengthAria": "Concentración del anestésico local (%)",
+      "adjunct": "Medicación adicional",
+      "adjunctNote": "Medicación opcional guardada con su anestésico preferido. El acceso rápido registra ambos.",
       "adjunctPlaceholder": "p. ej., buprenorfina",
-      "adjunctAria": "Fármaco habitual añadido a la mezcla",
-      "adjunctStrengthAria": "Concentración del fármaco añadido a la mezcla"
+      "adjunctAria": "Medicación adicional",
+      "adjunctStrengthAria": "Concentración de la medicación adicional"
     },
     "patient": {
       "title": "Página Paciente",
-      "hideRecheck": "Ocultar el campo Próxima revisión"
+      "hideRecheck": "Ocultar el campo Próxima revisión",
+      "visibilityNote": "Elija los campos que se muestran en las visitas vacías. Los campos con información registrada permanecen visibles."
     },
     "pdf": {
       "title": "PDF",
       "grid": "Incluir la cuadrícula de mediciones",
-      "gridHint": "(opcional si los hallazgos están en el esquema)",
+      "gridHint": "Obligatorio cuando los hallazgos del diagrama están desactivados, para conservar las mediciones en el PDF.",
       "images": "Incluir las imágenes",
       "imagesHint": "(4 por página, después del historial)"
     },
-    "noteDevice": "Guardados en este dispositivo. Los cambios se aplican al instante.",
+    "noteDevice": "Preferencias personales guardadas automáticamente en este dispositivo.",
     "spaceMovesDownHint": "Rápido para dictar una serie de profundidades",
     "scoreTapFindingHint": "Movilidad → recesión → … para exploraciones diente a diente",
     "scoreTapToothHint": "Para puntuar un hallazgo en toda la boca",
@@ -190,34 +197,71 @@
     "mirrorHint": "Y en el PDF",
     "drugName": "Fármaco",
     "drugStrength": "Concentración",
-    "pdfGridHint": "Opcional mientras los hallazgos estén en el diagrama",
+    "pdfGridHint": "Obligatorio cuando los hallazgos del diagrama están desactivados, para conservar las mediciones en el PDF.",
     "pdfImagesHint": "4 por página, después del historial",
     "quickCodes": {
-      "title": "Códigos rápidos",
-      "note": "Botones de un toque para los códigos que registra a menudo, como T/SN (diente supernumerario). Aparecen debajo de la nota de diagnóstico en la vista Por diente y encima del esquema de Diagnóstico.",
+      "title": "Accesos rápidos de diagnóstico",
+      "note": "Añada códigos AVDC o personalizados para las notas dentales y el diagrama de diagnóstico. Este orden determina el de los accesos rápidos.",
       "remove": "Quitar",
       "removeAria": "Quitar {{code}}",
       "placeholder": "Código, p. ej. T/SR",
       "addAria": "Código que añadir",
-      "add": "Añadir"
+      "add": "Añadir",
+      "duplicate": "Este código ya está en sus accesos rápidos."
     },
     "exam": {
       "title": "Examen",
-      "areas": "Sus zonas de examen",
-      "areasNote": "Se añaden después de las seis zonas predefinidas, cada una con Normal / Anormal y un comentario. Solo las zonas respondidas aparecen en el PDF.",
+      "areas": "Áreas de examen",
+      "areasNote": "Seleccione las áreas que se muestran en la página Examen. Las áreas con hallazgos guardados permanecen visibles aunque no estén seleccionadas. Las áreas personalizadas aparecen en el orden siguiente.",
       "areaPlaceholder": "p. ej., Labios",
       "areaAria": "Nombre de la zona de examen {{n}}",
       "areaN": "zona {{n}}",
       "remove": "Quitar",
       "removeAria": "Quitar {{name}}",
       "add": "Añadir zona",
-      "addPreset": "Añadir la lista completa del examen oral",
+      "addPreset": "Añadir áreas sugeridas",
       "presets": {
         "lips": "Labios / unión mucocutánea",
         "gingiva": "Encía / línea mucogingival",
         "salivary": "Desembocaduras de los conductos salivales",
         "floor": "Suelo de la boca / frenillo"
-      }
+      },
+      "suggestions": "Áreas sugeridas",
+      "showArea": "Mostrar {{name}}",
+      "customCount": "Áreas personalizadas añadidas: {{used}} · Límite: {{max}}"
+    },
+    "customization": {
+      "navigation": "Categorías de ajustes de la ficha",
+      "categories": {
+        "patient": "Datos del paciente",
+        "exam": "Examen oral",
+        "diagnosis": "Diagnóstico",
+        "images": "Diagnóstico por imagen y PDF",
+        "procedure": "Procedimiento"
+      },
+      "descriptions": {
+        "patient": "Elija si se muestra la fecha de revisión en la página Paciente.",
+        "exam": "Elija las áreas adicionales que registra durante la exploración oral.",
+        "anesthesia": "Configure los bloqueos nerviosos, los campos personalizados y sus medicamentos habituales.",
+        "charting": "Defina la disposición, las mediciones y el comportamiento de introducción de datos.",
+        "diagnosis": "Elija los hallazgos del diagrama diagnóstico y sus códigos rápidos.",
+        "images": "Elija la tabla y las imágenes que se incluyen en los PDF generados.",
+        "procedure": "Elija los códigos rápidos disponibles en el diagrama de procedimientos."
+      },
+      "showRecheck": "Mostrar el campo de fecha de revisión",
+      "layout": "Disposición y mediciones",
+      "input": "Introducción de datos"
+    },
+    "procedureQuickCodes": {
+      "title": "Accesos rápidos de procedimientos",
+      "note": "Añada códigos de procedimientos que registre con frecuencia. Estos accesos directos aparecen solo en el diagrama de procedimientos; los códigos rápidos de diagnóstico permanecen separados.",
+      "placeholder": "Código, p. ej. XSS"
+    },
+    "list": {
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Bajar {{name}}",
+      "count": "{{used}} de {{max}} configurados",
+      "limit": "Límite alcanzado. Elimine un elemento para añadir otro."
     }
   },
   "feedback": {
@@ -280,5 +324,19 @@
   "reminders": {
     "sendFrom": "Envíe un recordatorio para un paciente desde Pacientes o Controles.",
     "settingUp": "Su clínica se está configurando — vuelva a comprobarlo en un momento."
+  },
+  "workspace": {
+    "personalScope": "Preferencias personales del historial: los cambios solo se aplican a su cuenta.",
+    "accountScope": "Estos ajustes pertenecen a su cuenta. Guarde cada sección por separado; los cambios de correo electrónico y contraseña tienen su propia confirmación.",
+    "languageImmediate": "Los cambios de idioma se aplican inmediatamente.",
+    "general": "General",
+    "team": "Equipo",
+    "templates": "Plantillas",
+    "billing": "Facturación",
+    "reminders": "Recordatorios de revisión",
+    "charting": "Preferencias de registro",
+    "back": "Volver a la visita actual",
+    "scope": "Gestione los ajustes compartidos por su clínica.",
+    "saveHint": "Guarde los cambios en el nombre de la clínica. Los demás ajustes se aplican inmediatamente."
   }
 }

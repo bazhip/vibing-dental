@@ -1,4 +1,6 @@
 {
+  "draftLabel": "BROUILLON — NON VÉRIFIÉ",
+  "draftNotice": "Ce rapport n’a pas été vérifié pour le dossier actuel. Les informations peuvent être incomplètes.",
   "abnormalityNoted": "anomalie constatée",
   "after": "Après",
   "alreadyMissingLine": "Déjà absentes avant cette visite : {{list}}.",
@@ -12,7 +14,7 @@
     "pharynx": "Pharynx / amygdales",
     "tongue": "Langue"
   },
-  "extractionsLead": "Ces dents ne pouvaient pas être sauvées et ont été extraites pour ne plus causer de douleur ni d’infection :",
+  "extractionsLead": "Ces dents ont été consignées comme ayant été extraites lors de cette visite :",
   "fieldPhrases": {
     "calculus": "accumulation de tartre (grade {{value}})",
     "furcation": "perte osseuse entre les racines (grade {{value}})",
@@ -56,11 +58,11 @@
     "forage": "Offrez beaucoup de fourrage : le foin à brins longs et le pâturage favorisent une usure régulière des dents.",
     "warningSigns": "Surveillez la nourriture qui tombe de la bouche, la perte de poids, une mastication lente, les mouvements de tête ou la résistance au mors, la mauvaise haleine ou un jetage nasal — appelez-nous si vous remarquez quelque chose."
   },
-  "intro": "{{pet}} a bénéficié d’un bilan et d’un détartrage dentaires professionnels sous anesthésie. Ce compte rendu explique nos constatations avec des mots simples ; le dossier clinique complet, avec les mesures, est conservé et disponible à tout moment.",
+  "intro": "Ce rapport résume les informations consignées pour la visite dentaire de {{pet}}. Pour toute question, veuillez consulter votre équipe vétérinaire.",
   "legendFilled": "plein = absente avant cette visite",
   "legendNumbers": "Les numéros renvoient aux constatations ci-dessous",
   "legendRemoved": "✕ rouge = extraite aujourd’hui",
-  "noProblems": "Aucun problème dentaire n’a été noté au dossier lors de cette visite — excellente nouvelle !",
+  "noProblems": "Aucune constatation dentaire n’a été consignée pour cette visite.",
   "ourPractice": "notre clinique",
   "ownerLabel": "Propriétaire",
   "patientLabel": "Patient",
@@ -100,5 +102,58 @@
     }
   },
   "yourPet": "votre animal",
-  "yourTeam": "votre équipe vétérinaire"
+  "yourTeam": "votre équipe vétérinaire",
+  "plainCodes": {
+    "T/FX": "une dent cassée",
+    "T/FX/EI": "une fêlure de l'émail",
+    "T/FX/EF": "une dent ébréchée (émail seulement)",
+    "T/FX/UCF": "une dent cassée (le nerf n'est pas exposé)",
+    "T/FX/CCF": "une dent cassée avec le nerf exposé",
+    "T/FX/UCRF": "une dent cassée jusque sous la gencive (le nerf n'est pas exposé)",
+    "T/FX/CCRF": "une dent cassée jusque sous la gencive, avec le nerf exposé",
+    "T/FX/RF": "une racine dentaire fracturée",
+    "T/PE": "le nerf de la dent est exposé",
+    "T/NV": "une dent qui n'est plus vivante",
+    "TR": "une résorption dentaire (l'organisme détruit la dent)",
+    "T/A": "une dent arrachée lors d'un choc",
+    "T/U": "une dent qui n'a pas percé la gencive",
+    "T/I": "une dent bloquée sous la gencive",
+    "DT": "une dent de lait",
+    "AT": "une usure due au frottement des dents entre elles",
+    "AB": "une usure due au mâchonnement d'objets durs",
+    "E/D": "un défaut de l'émail",
+    "E/H": "un émail fin ou mal formé",
+    "CA": "une carie",
+    "GR": "rétraction des gencives",
+    "GH": "prolifération des gencives",
+    "OM": "une masse dans la bouche",
+    "B": "une biopsie (échantillon de tissu pour le laboratoire)",
+    "B/I": "une biopsie (échantillon de la masse pour le laboratoire)",
+    "B/E": "le retrait de la masse pour analyse au laboratoire",
+    "X": "dent extraite",
+    "XS": "dent extraite en plusieurs parties",
+    "XSS": "dent extraite chirurgicalement",
+    "RCT": "un traitement de canal",
+    "VPT": "un traitement pour garder la dent vivante",
+    "PRO": "un détartrage et polissage professionnels"
+  },
+  "summary": {
+    "gingivitis": "Inflammation des gencives sur {{extent}}{{severity}}",
+    "calculus": "Tartre sur {{extent}}{{severity}}",
+    "recession": "Rétraction des gencives sur {{extent}}",
+    "hyperplasia": "Excès de tissu gingival sur {{extent}}"
+  },
+  "extent": {
+    "most": "la plupart des dents",
+    "many": "de nombreuses dents",
+    "some": "certaines dents"
+  },
+  "severity": {
+    "mild": "léger",
+    "moderate": "modéré",
+    "severe": "sévère",
+    "single": " (degré {{level}})",
+    "range": " (degré {{from}} à {{to}})"
+  },
+  "otherFindings": "Autres observations"
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import './ToothChartView.css';
 import { Trans, useTranslation } from 'react-i18next';
 import { pocketLabels, rootBoxes, formatRootPockets, pocketDepths, type PocketMode } from '../utils/pocket';
 import { DentalField, DiagramComment, Species, ToothData, ToothMarks } from '../types';
@@ -104,6 +105,47 @@ export function ToothChartView({
   const diagram = TOOTH_DIAGRAMS[species];
   const [selected, setSelected] = React.useState<number | null>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
+  const headingRef = React.useRef<HTMLDivElement>(null);
+  const focusHeadingAfterSelection = React.useRef(false);
+  const [mapOpen, setMapOpen] = React.useState(false);
+  const [quadrant, setQuadrant] = React.useState(1);
+  const [availableHeight, setAvailableHeight] = React.useState<number>();
+  const chartRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const measure = () => {
+      if (!window.matchMedia?.('(max-width: 600px)').matches) {
+        setAvailableHeight(undefined);
+        return;
+      }
+      const top = panelRef.current?.getBoundingClientRect().top;
+      if (top == null) return;
+      const viewport = window.visualViewport;
+      const bottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight;
+      setAvailableHeight(Math.max(120, Math.floor(bottom - Math.max(0, top) - 8)));
+    };
+    measure();
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure);
+    if (chartRef.current) observer?.observe(chartRef.current);
+    window.addEventListener('resize', measure);
+    window.addEventListener('scroll', measure, true);
+    window.visualViewport?.addEventListener('resize', measure);
+    window.visualViewport?.addEventListener('scroll', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', measure, true);
+      window.visualViewport?.removeEventListener('resize', measure);
+      window.visualViewport?.removeEventListener('scroll', measure);
+    };
+  }, [mapOpen]);
+
+  React.useLayoutEffect(() => {
+    if (focusHeadingAfterSelection.current && !mapOpen && headingRef.current) {
+      focusHeadingAfterSelection.current = false;
+      headingRef.current.focus({ preventScroll: true });
+    }
+  }, [selected, mapOpen]);
 
   // A species switch swaps the numbering; drop a selection that no
   // longer exists.
@@ -133,16 +175,18 @@ export function ToothChartView({
 
   const select = (triadan: number) => {
     setSelected(triadan);
-    // On narrow screens the panel stacks under the diagram — bring it up.
+    // Close the optional mobile map and bring the editor into view.
+    setMapOpen(false);
     requestAnimationFrame(() => {
       const el = panelRef.current;
-      if (el && typeof el.scrollIntoView === 'function' && window.matchMedia?.('(max-width: 900px)').matches) {
+      if (el && typeof el.scrollIntoView === 'function' && window.matchMedia?.('(min-width: 601px) and (max-width: 900px)').matches) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   };
 
   const step = (dir: 1 | -1) => {
+    setMapOpen(false);
     if (selected == null) { setSelected(order[0] ?? null); return; }
     const i = order.indexOf(selected);
     const next = order[(i + dir + order.length) % order.length];
@@ -182,14 +226,28 @@ export function ToothChartView({
   const nextTooth = selected != null ? order[(order.indexOf(selected) + 1) % order.length] : null;
 
   return (
-    <div className="dental-grid-section tooth-chart">
+    <div className="dental-grid-section tooth-chart" ref={chartRef}>
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">{t('grid.title')}</h2>
         {headerAccessory}
+      <button
+        type="button"
+        className="diagram-view__action tooth-chart__map-toggle"
+        aria-expanded={mapOpen}
+        aria-controls="tooth-chart-body"
+        onClick={() => {
+          if (!mapOpen && selected != null) setQuadrant(((Math.floor(selected / 100) - 1) % 4) + 1);
+          setMapOpen((open) => !open);
+          const body = panelRef.current?.querySelector('.tooth-chart__body');
+          if (body) body.scrollTop = 0;
+        }}
+      >
+        {t('toothChart.toothMap')}
+      </button>
       </div>
-
-      <div className="tooth-chart__layout">
-        <div className="tooth-chart__diagram diagram-view__canvas">
+      <div className="tooth-chart__layout" data-map-open={mapOpen}>
+        <div id="tooth-chart-map" className="tooth-chart__diagram diagram-view__canvas">
+          <div className="tooth-chart__full-map">
           <ToothDiagram
             species={species}
             toothMarks={effectivePostMarks}
@@ -213,19 +271,11 @@ export function ToothChartView({
             <li><span className="tooth-chart__swatch tooth-chart__swatch--extracted">✕</span> {t('toothChart.legend.extracted')}</li>
             <li><span className="tooth-chart__swatch tooth-chart__swatch--missing" /> {t('toothChart.legend.missing')}</li>
           </ul>
+          </div>
         </div>
 
-        <div className="tooth-chart__panel" ref={panelRef} aria-live="polite">
-          {!tooth ? (
-            <div className="tooth-chart__empty">
-              <p><Trans t={t} i18nKey="toothChart.clickTooth" components={{ strong: <strong /> }} /></p>
-              <p className="tooth-chart__hint">{t('toothChart.hint')}</p>
-              <button type="button" className="diagram-view__action" onClick={() => step(1)}>
-                {t('toothChart.start', { triadan: order[0] })}
-              </button>
-            </div>
-          ) : (
-            <>
+        <div className="tooth-chart__panel" ref={panelRef} style={{ maxHeight: availableHeight }} aria-live="polite">
+          {tooth && (
               <div className="tooth-chart__nav">
                 <button
                   type="button"
@@ -236,7 +286,7 @@ export function ToothChartView({
                 >
                   ← {prevTooth}
                 </button>
-                <div className="tooth-chart__heading">
+                <div className="tooth-chart__heading" ref={headingRef} role="heading" aria-level={3} tabIndex={-1}>
                   <div className="tooth-chart__number">{tooth.triadan}</div>
                   <div className="tooth-chart__name">
                     {toothDisplayName(tooth.triadan, tooth.label)}
@@ -253,6 +303,53 @@ export function ToothChartView({
                   {nextTooth} →
                 </button>
               </div>
+          )}
+          <div id="tooth-chart-body" className="tooth-chart__body">
+          {mapOpen && <div className="tooth-chart__touch-map">
+            <label className="tooth-chart__quadrant">
+              <span>{t('toothChart.quadrant')}</span>
+              <select value={quadrant} onChange={(event) => setQuadrant(Number(event.target.value))}>
+                {[1, 2, 3, 4].map((q) => (
+                  <option key={q} value={q}>{t(`toothChart.quadrants.${q}` as 'toothChart.quadrants.1')}</option>
+                ))}
+              </select>
+            </label>
+            <div className="tooth-chart__tooth-buttons">
+              {order.filter((triadan) => ((Math.floor(triadan / 100) - 1) % 4) + 1 === quadrant).map((triadan) => {
+                const mappedTooth = diagram.teeth.find((candidate) => candidate.triadan === triadan)!;
+                return (
+                  <button
+                    type="button"
+                    key={triadan}
+                    className="tooth-chart__tooth-button"
+                    aria-label={t('toothChart.selectTooth', { triadan, name: toothDisplayName(triadan, mappedTooth.label) })}
+                    aria-pressed={selected === triadan}
+                    data-mark={effectivePostMarks[triadan]}
+                    data-charted={toothFlags[triadan]?.charted || undefined}
+                    data-planned={toothFlags[triadan]?.planned || undefined}
+                    onClick={() => {
+                      focusHeadingAfterSelection.current = true;
+                      select(triadan);
+                    }}
+                  >
+                    {triadan}
+                  </button>
+                );
+              })}
+            </div>
+          </div>}
+
+          {!tooth ? (
+            <div className="tooth-chart__empty">
+              <p><Trans t={t} i18nKey="toothChart.clickTooth" components={{ strong: <strong /> }} /></p>
+              <p className="tooth-chart__hint">{t('toothChart.hint')}</p>
+              <button type="button" className="diagram-view__action" onClick={() => step(1)}>
+                {t('toothChart.start', { triadan: order[0] })}
+              </button>
+            </div>
+          ) : (
+            <>
+
 
               <fieldset className="tooth-chart__fields" disabled={readOnly}>
                 <label className="tooth-chart__check">
@@ -433,6 +530,7 @@ export function ToothChartView({
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>

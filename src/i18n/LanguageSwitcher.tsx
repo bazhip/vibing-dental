@@ -1,3 +1,4 @@
+import './LanguageSwitcher.css';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from './index';
@@ -25,7 +26,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 
   const select = (
     <select
-      className="patient-form__input language-switcher"
+      className="language-switcher"
       aria-label={compact ? t('language.label') : undefined}
       value={pending ?? current}
       onChange={(e) => isAppLanguage(e.target.value) && void choose(e.target.value)}
@@ -37,7 +38,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   );
   if (compact) return select;
   return (
-    <label className="patient-form__label">
+    <label className="language-switcher-label">
       {t('language.label')}
       {select}
     </label>

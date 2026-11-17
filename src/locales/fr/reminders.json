@@ -3,7 +3,7 @@
     "aria": "Rappels de contrôle",
     "title": "Rappels de contrôle",
     "blurb": "Envoyez un e-mail au propriétaire lorsqu’un contrôle est à effectuer. Variables :",
-    "blurbTail": "Envoyez un rappel pour un seul patient depuis <strong>Mes dossiers</strong>.",
+    "blurbTail": "Envoyez un rappel pour un seul patient depuis <strong>Patients</strong>.",
     "loading": "Chargement…",
     "notSetUp": "Votre cabinet est en cours de configuration — rechargez la page dans un instant.",
     "ownerOnly": "Seul un propriétaire du cabinet peut modifier le modèle de rappel.",

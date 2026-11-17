@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
@@ -62,6 +62,22 @@ beforeEach(() => {
 });
 
 describe('AdminPanel', () => {
+  it('supports arrow and boundary navigation with one tab stop', async () => {
+    respond();
+    renderPanel();
+    const accounts = screen.getByRole('tab', { name: /Accounts/ });
+    accounts.focus();
+    fireEvent.keyDown(accounts, { key: 'ArrowRight' });
+    const practices = screen.getByRole('tab', { name: /Practices/ });
+    expect(practices).toHaveFocus();
+    expect(practices).toHaveAttribute('aria-selected', 'true');
+    expect(accounts).toHaveAttribute('tabindex', '-1');
+    fireEvent.keyDown(practices, { key: 'End' });
+    expect(screen.getByRole('tab', { name: 'AI' })).toHaveFocus();
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' });
+    expect(accounts).toHaveFocus();
+    await screen.findByText(/2 users · 4 charts/);
+  });
   it('says "users", and filters the accounts table by search', async () => {
     respond();
     const u = userEvent.setup();

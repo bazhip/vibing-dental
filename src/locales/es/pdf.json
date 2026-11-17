@@ -77,6 +77,11 @@
     "titleRange": "Imágenes y radiografías ({{range}} de {{total}})",
     "failed": "No se pudo cargar la imagen",
     "photo": "Foto",
-    "radiograph": "Radiografía"
+    "radiograph": "Radiografía",
+    "tooth": "Diente {{triadan}}"
+  },
+  "continuation": {
+    "title": "Notas clínicas",
+    "notice": "Los detalles completos continúan en las páginas siguientes."
   }
 }

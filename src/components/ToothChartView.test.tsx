@@ -1,4 +1,5 @@
 import React from 'react';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ToothChartView } from './ToothChartView';
@@ -149,4 +150,85 @@ test('quick codes are off on a view-only chart and absent when none are set', ()
   render(<Harness />);
   fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
   expect(screen.queryByRole('group', { name: 'Quick codes' })).toBeNull();
+});
+
+test('navigation stays outside the scrolling fields and the mobile map can be toggled', () => {
+  const { container } = render(<Harness />);
+  const map = screen.getByRole('button', { name: 'Tooth map' });
+  expect(map).toHaveAttribute('aria-expanded', 'false');
+  fireEvent.click(map);
+  expect(map).toHaveAttribute('aria-expanded', 'true');
+  fireEvent.click(screen.getByRole('button', { name: /start at 110/i }));
+  expect(map).toHaveAttribute('aria-expanded', 'false');
+  const body = container.querySelector('.tooth-chart__body')!;
+  expect(body).toContainElement(screen.getByLabelText('Pocket'));
+  expect(body).not.toContainElement(screen.getByRole('button', { name: /next tooth/i }));
+  fireEvent.change(screen.getByLabelText('Pocket'), { target: { value: '4' } });
+  fireEvent.click(screen.getByRole('button', { name: /next tooth/i }));
+  fireEvent.click(screen.getByRole('button', { name: /previous tooth/i }));
+  expect(screen.getByLabelText('Pocket')).toHaveValue('4');
+});
+
+test('sizes the mobile editor to the remaining viewport and updates on resize', () => {
+  vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true } as MediaQueryList)));
+  const bounds = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({ top: 350 } as DOMRect);
+  const originalHeight = window.innerHeight;
+  Object.defineProperty(window, 'innerHeight', { configurable: true, value: 568 });
+  try {
+    const { container } = render(<Harness />);
+    const panel = container.querySelector('.tooth-chart__panel') as HTMLElement;
+    expect(panel.style.maxHeight).toBe('210px');
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844 });
+    fireEvent(window, new Event('resize'));
+    expect(panel.style.maxHeight).toBe('486px');
+  } finally {
+    vi.unstubAllGlobals();
+    bounds.mockRestore();
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: originalHeight });
+  }
+});
+
+test('touch map browses quadrants, selects the named tooth and preserves findings', () => {
+  render(<Harness />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tooth map' }));
+  fireEvent.change(screen.getByLabelText('Quadrant'), { target: { value: '3' } });
+  expect(screen.queryByRole('button', { name: /Select tooth 110:/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: /Select tooth 311:/ }));
+  expect(screen.getByText('Left mandibular 3rd molar')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Tooth map' })).toHaveAttribute('aria-expanded', 'false');
+  fireEvent.change(screen.getByLabelText('Pocket'), { target: { value: '4' } });
+  fireEvent.click(screen.getByRole('button', { name: /next tooth \(310\)/i }));
+  fireEvent.click(screen.getByRole('button', { name: 'Tooth map' }));
+  expect(screen.getByLabelText('Quadrant')).toHaveValue('3');
+  expect(screen.getByRole('button', { name: /Select tooth 310:/ })).toHaveAttribute('aria-pressed', 'true');
+  fireEvent.click(screen.getByRole('button', { name: /Select tooth 311:/ }));
+  expect(screen.getByLabelText('Pocket')).toHaveValue('4');
+});
+
+test('touch map can select teeth in a read-only chart', () => {
+  render(<Harness readOnly />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tooth map' }));
+  fireEvent.change(screen.getByLabelText('Quadrant'), { target: { value: '2' } });
+  fireEvent.click(screen.getByRole('button', { name: /Select tooth 201:/ }));
+  expect(screen.getByLabelText('Pocket')).toBeDisabled();
+  expect(screen.getByRole('button', { name: /next tooth \(202\)/i })).toBeEnabled();
+});
+
+test('keyboard selection in the tooth map restores focus to the selected tooth heading', async () => {
+  const user = userEvent.setup();
+  render(<Harness />);
+  await user.click(screen.getByRole('button', { name: 'Tooth map' }));
+  const toothButton = screen.getByRole('button', { name: /Select tooth 110:/ });
+  toothButton.focus();
+  await user.keyboard('{Enter}');
+  const heading = screen.getByRole('heading', { name: /110.*Right maxillary 2nd molar/ });
+  expect(heading).toHaveFocus();
+  expect(screen.queryByRole('button', { name: /Select tooth 110:/ })).toBeNull();
+  await user.tab();
+  expect(screen.getByRole('button', { name: /next tooth \(109\)/i })).toHaveFocus();
+  // Selecting the same tooth must also restore focus when only the map changes.
+  await user.click(screen.getByRole('button', { name: 'Tooth map' }));
+  screen.getByRole('button', { name: /Select tooth 110:/ }).focus();
+  await user.keyboard(' ');
+  expect(heading).toHaveFocus();
 });

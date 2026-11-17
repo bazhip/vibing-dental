@@ -50,6 +50,7 @@ export function FormField({ label, children, stacked = false, as = 'label', clas
 export interface SegmentedOption<T extends string> {
   value: T;
   label: string;
+  disabled?: boolean;
 }
 
 /** iOS segmented control (radio semantics). */
@@ -68,6 +69,7 @@ export function Segmented<T extends string>({ options, value, onChange, label, l
           type="button"
           role="radio"
           aria-checked={o.value === value}
+          disabled={o.disabled}
           className={`ios-segmented__segment${o.value === value ? ' ios-segmented__segment--selected' : ''}`}
           onClick={() => {
             if (o.value !== value) hapticSelection();

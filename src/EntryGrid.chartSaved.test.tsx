@@ -160,11 +160,22 @@ describe('saved visit in the iOS Chart tab', () => {
 });
 
 describe('saved visit on the website (unchanged)', () => {
+  it('explains locked sections beside the content and lets the user enable editing', async () => {
+    flags.native = false;
+    const { container } = await renderApp();
+    const notice = screen.getByRole('note', { name: 'View only' });
+    expect(notice).toHaveTextContent('Editing is off for this saved visit.');
+    expect(container.querySelector('.sidebar-layout__fieldset')).toBeDisabled();
+    fireEvent.click(within(notice).getByRole('button', { name: 'Edit chart' }));
+    expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
+    expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
+  });
   it('keeps the topbar chip and Edit chart button, and no iOS bar', async () => {
     flags.native = false;
     const { container } = await renderApp();
     expect(container.querySelector('.ios-navbar')).toBeNull();
     expect(container.querySelector('.topbar-state-chip--viewing')).not.toBeNull();
-    expect(screen.getByRole('button', { name: /Edit chart/ })).toBeInTheDocument();
+    expect(within(container.querySelector('.entry-grid__topbar') as HTMLElement).queryByRole('button', { name: /Edit chart/ })).toBeNull();
+    expect(screen.getAllByRole('button', { name: /Edit chart/ }).length).toBeGreaterThan(0);
   });
 });

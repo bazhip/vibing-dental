@@ -1,5 +1,7 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import type { OptionalPatientField } from '../utils/chartSettings';
 import { localDateISO } from '../utils/localDate';
 import { PatientInfo, Species } from '../types';
 import { CodeField } from './CodeField';
@@ -14,6 +16,7 @@ interface PatientFormProps {
   onSpeciesChange: (species: Species) => void;
   /** Personal chart setting: leave out the Recheck due field. */
   hideRecheck?: boolean;
+  hiddenFields?: OptionalPatientField[];
   /** Open this page's settings. */
   onCustomize?: () => void;
 }
@@ -33,9 +36,16 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   onPatientInfoChange,
   onSpeciesChange,
   hideRecheck = false,
+  hiddenFields = [],
   onCustomize,
 }) => {
   const { t } = useTranslation('forms');
+  const ownerHasInfo = !!(patientInfo.ownerName?.trim() || patientInfo.ownerPhone?.trim() || patientInfo.ownerEmail?.trim());
+  const [ownerExpanded, setOwnerExpanded] = React.useState(ownerHasInfo);
+  React.useEffect(() => { if (ownerHasInfo) setOwnerExpanded(true); }, [ownerHasInfo]);
+  const visibleFields = Object.fromEntries(
+    (['ownerName', 'ownerPhone', 'ownerEmail', 'tech'] as OptionalPatientField[]).map((field) => [field, !hiddenFields.includes(field) || !!patientInfo[field]?.trim()])
+  );
   const handleInputChange = (field: keyof PatientInfo) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -84,10 +94,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     const speciesOptions = [
       { value: 'canine' as const, label: t('patient.canine') },
       { value: 'feline' as const, label: t('patient.feline') },
+      { value: 'equine' as const, label: t('patient.equine') },
     ];
     const dentitionOptions = [
       { value: 'permanent' as const, label: t('patient.permanent') },
-      { value: 'deciduous' as const, label: t('patient.deciduous') },
+      { value: 'deciduous' as const, label: t('patient.deciduous'), disabled: !deciduousOk },
     ];
     return (
       <div className="patient-form patient-form--ios">
@@ -136,8 +147,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           </FormField>
         </FormGroup>
 
-        <FormGroup header={t('ios.form.owner', { ns: 'chart' })}>
-          <FormField label={t('patient.ownerName')}>
+        {(visibleFields.ownerName || visibleFields.ownerPhone || visibleFields.ownerEmail) && (<FormGroup header={t('ios.form.owner', { ns: 'chart' })}>
+          {visibleFields.ownerName && (<FormField label={t('patient.ownerName')}>
             <input
               type="text"
               className="patient-form__input"
@@ -146,8 +157,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.ownerName ?? ''}
               onChange={handleInputChange('ownerName')}
             />
-          </FormField>
-          <FormField label={t('patient.ownerPhone')}>
+          </FormField>)}
+          {visibleFields.ownerPhone && (<FormField label={t('patient.ownerPhone')}>
             <input
               type="tel"
               className="patient-form__input"
@@ -156,8 +167,8 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.ownerPhone ?? ''}
               onChange={handleInputChange('ownerPhone')}
             />
-          </FormField>
-          <FormField label={t('patient.ownerEmail')}>
+          </FormField>)}
+          {visibleFields.ownerEmail && (<FormField label={t('patient.ownerEmail')}>
             <input
               type="email"
               className="patient-form__input"
@@ -166,11 +177,11 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.ownerEmail ?? ''}
               onChange={handleInputChange('ownerEmail')}
             />
-          </FormField>
-        </FormGroup>
+          </FormField>)}
+        </FormGroup>)}
 
         <FormGroup header={t('ios.form.visit', { ns: 'chart' })}>
-          <FormField label={t('patient.tech')}>
+          {visibleFields.tech && (<FormField label={t('patient.tech')}>
             <input
               type="text"
               className="patient-form__input"
@@ -178,9 +189,9 @@ export const PatientForm: React.FC<PatientFormProps> = ({
               value={patientInfo.tech}
               onChange={handleInputChange('tech')}
             />
-          </FormField>
+          </FormField>)}
           {!hideRecheck && (
-            <FormField as={GROUP_ROW} label={t('patient.recheck')}>
+            <FormField as={GROUP_ROW} stacked label={t('patient.recheck')}>
               <span className="patient-form__recall">
                 <input
                   type="date"
@@ -213,15 +224,9 @@ export const PatientForm: React.FC<PatientFormProps> = ({
 
   return (
     <div className="patient-form">
-      <div className="patient-form__header">
-        <h2 className="patient-form__section-title">{t('patient.title')}</h2>
-        {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('patient.customizeTitle')}>
-            {t('patient.customize')}
-          </button>
-        )}
-      </div>
+      <SectionHeader title={t('patient.title')} onCustomize={onCustomize} customizeTitle={t('patient.customizeTitle')} />
 
+      <section className="patient-form__group" aria-label={t('patient.identityGroup')}>
       {/* SoCal carries Patient Name + Number; VCA carries Doctor + Tech.
           Both pairs are kept on PatientInfo so values survive a logo flip. */}
       <div className="patient-form__row">
@@ -252,98 +257,7 @@ export const PatientForm: React.FC<PatientFormProps> = ({
           />
         </label>
 
-        <label className="patient-form__label">
-          {t('patient.date')}
-          <input
-            type="date"
-            className="patient-form__input"
-            value={patientInfo.date}
-            onChange={handleInputChange('date')}
-          />
-        </label>
-      </div>
 
-      {/* Pet owner (client) — sits right under the pet's identity, above
-          the per-procedure fields. Searchable in My charts. */}
-      <div className="patient-form__row">
-        <label className="patient-form__label">
-          {t('patient.ownerName')}
-          <input
-            type="text"
-            className="patient-form__input"
-            placeholder={t('patient.ownerNamePlaceholder')}
-            autoComplete="off"
-            value={patientInfo.ownerName ?? ''}
-            onChange={handleInputChange('ownerName')}
-          />
-        </label>
-        <label className="patient-form__label">
-          {t('patient.ownerPhone')}
-          <input
-            type="tel"
-            className="patient-form__input"
-            placeholder={t('patient.ownerPhonePlaceholder')}
-            autoComplete="off"
-            value={patientInfo.ownerPhone ?? ''}
-            onChange={handleInputChange('ownerPhone')}
-          />
-        </label>
-
-        <label className="patient-form__label">
-          {t('patient.ownerEmail')}
-          <input
-            type="email"
-            className="patient-form__input"
-            placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
-            autoComplete="off"
-            value={patientInfo.ownerEmail ?? ''}
-            onChange={handleInputChange('ownerEmail')}
-          />
-        </label>
-      </div>
-
-      {/* Doctor name comes from the practice profile (set at signup / in
-          Practice settings) and is embedded in the PDF automatically —
-          only the per-procedure tech is entered here. */}
-      <div className="patient-form__row">
-        <label className="patient-form__label">
-          {t('patient.tech')}
-          <input
-            type="text"
-            className="patient-form__input"
-            placeholder={t('patient.techPlaceholder')}
-            value={patientInfo.tech}
-            onChange={handleInputChange('tech')}
-          />
-        </label>
-
-        {!hideRecheck && (
-        <label className="patient-form__label">
-          {t('patient.recheck')}
-          <span className="patient-form__recall">
-            <input
-              type="date"
-              className="patient-form__input"
-              value={patientInfo.recallDate ?? ''}
-              onChange={handleInputChange('recallDate')}
-            />
-            {recallQuick}
-          </span>
-        </label>
-        )}
-      </div>
-
-      <div className="patient-form__row">
-        <label className="patient-form__label">
-          {t('patient.complaint')}
-          <CodeField
-            multiline
-            className="patient-form__textarea"
-            placeholder={t('patient.complaintPlaceholder')}
-            value={patientInfo.complaint}
-            onChange={(value) => onPatientInfoChange('complaint', value)}
-          />
-        </label>
       </div>
 
       <div className="patient-form__selectors">
@@ -418,7 +332,108 @@ export const PatientForm: React.FC<PatientFormProps> = ({
             </button>
           </div>
         </div>
+      </div>      </section>
+      {(visibleFields.ownerName || visibleFields.ownerPhone || visibleFields.ownerEmail) && (
+        <details className="patient-form__group patient-form__owner" open={ownerExpanded} onToggle={(event) => setOwnerExpanded(event.currentTarget.open)}>
+          <summary>{t('patient.ownerGroup')}</summary>
+      {/* Pet owner (client) — sits right under the pet's identity, above
+          the per-procedure fields. Searchable in My charts. */}
+      <div className="patient-form__row">
+        {visibleFields.ownerName && (<label className="patient-form__label">
+          {t('patient.ownerName')}
+          <input
+            type="text"
+            className="patient-form__input"
+            placeholder={t('patient.ownerNamePlaceholder')}
+            autoComplete="off"
+            value={patientInfo.ownerName ?? ''}
+            onChange={handleInputChange('ownerName')}
+          />
+        </label>)}
+        {visibleFields.ownerPhone && (<label className="patient-form__label">
+          {t('patient.ownerPhone')}
+          <input
+            type="tel"
+            className="patient-form__input"
+            placeholder={t('patient.ownerPhonePlaceholder')}
+            autoComplete="off"
+            value={patientInfo.ownerPhone ?? ''}
+            onChange={handleInputChange('ownerPhone')}
+          />
+        </label>)}
+
+        {visibleFields.ownerEmail && (<label className="patient-form__label">
+          {t('patient.ownerEmail')}
+          <input
+            type="email"
+            className="patient-form__input"
+            placeholder={hideRecheck ? t('patient.ownerEmailOptional') : t('patient.ownerEmailReminders')}
+            autoComplete="off"
+            value={patientInfo.ownerEmail ?? ''}
+            onChange={handleInputChange('ownerEmail')}
+          />
+        </label>)}
       </div>
+
+        </details>
+      )}
+      <section className="patient-form__group" aria-labelledby="visit-details-heading">
+        <h3 id="visit-details-heading">{t('patient.visitGroup')}</h3>
+      {/* Doctor name comes from the practice profile (set at signup / in
+          Practice settings) and is embedded in the PDF automatically —
+          only the per-procedure tech is entered here. */}
+      <div className="patient-form__row">
+        <label className="patient-form__label">
+          {t('patient.date')}
+          <input
+            type="date"
+            className="patient-form__input"
+            value={patientInfo.date}
+            onChange={handleInputChange('date')}
+          />
+        </label>
+        {visibleFields.tech && (<label className="patient-form__label">
+          {t('patient.tech')}
+          <input
+            type="text"
+            className="patient-form__input"
+            placeholder={t('patient.techPlaceholder')}
+            value={patientInfo.tech}
+            onChange={handleInputChange('tech')}
+          />
+        </label>)}
+
+        {!hideRecheck && (
+        <label className="patient-form__label">
+          {t('patient.recheck')}
+          <span className="patient-form__recall">
+            <input
+              type="date"
+              className="patient-form__input"
+              value={patientInfo.recallDate ?? ''}
+              onChange={handleInputChange('recallDate')}
+            />
+            {recallQuick}
+          </span>
+        </label>
+        )}
+      </div>
+
+      <div className="patient-form__row">
+        <label className="patient-form__label">
+          {t('patient.complaint')}
+          <CodeField
+            multiline
+            className="patient-form__textarea"
+            placeholder={t('patient.complaintPlaceholder')}
+            value={patientInfo.complaint}
+            onChange={(value) => onPatientInfoChange('complaint', value)}
+          />
+        </label>
+      </div>
+
+      </section>
+
     </div>
   );
 };

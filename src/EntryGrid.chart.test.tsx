@@ -82,7 +82,7 @@ describe('Chart tab in the iOS app', () => {
   it('Share replaces the floating PDF button and opens Documents', async () => {
     flags.native = true;
     const { container } = await renderGrid();
-    expect(container.querySelector('.fab-download')).toBeNull();
+    expect(container.querySelector('.visit-export__button')).toBeNull();
     const share = within(chartPanel()).getByRole('button', { name: 'Preview and download the chart PDF' });
     expect(share).toHaveAttribute('form', 'chart-form');
   });
@@ -97,13 +97,13 @@ describe('Chart tab in the iOS app', () => {
     expect(await screen.findByRole('dialog', { name: 'Patient page settings' })).toBeInTheDocument();
   });
 
-  it('More is always there (Chart settings) — also on sections without Customize', async () => {
+  it('More offers exam customization and access to all chart settings', async () => {
     flags.native = true;
     await renderGrid();
     fireEvent.click(within(chartPanel()).getAllByRole('button', { name: /New chart/ })[0]);
     act(() => fireEvent.click(screen.getByRole('menuitemradio', { name: 'Exam' })));
     fireEvent.click(within(chartPanel()).getByRole('button', { name: 'More' }));
-    expect(screen.queryByRole('menuitem', { name: /^Customize/ })).toBeNull();
+    expect(screen.getByRole('menuitem', { name: 'Customize Exam' })).toBeInTheDocument();
     act(() => fireEvent.click(screen.getByRole('menuitem', { name: 'Chart settings' })));
     expect(await screen.findByRole('dialog', { name: /Chart settings/i })).toBeInTheDocument();
   });
@@ -129,7 +129,7 @@ describe('Chart page on the website (unchanged)', () => {
     expect(container.querySelector('.ios-navbar')).toBeNull();
     expect(container.querySelector('.ios-chart-notice')).toBeNull();
     expect(container.querySelector('.entry-grid__topbar .save-status')?.textContent).toBe('On this device only');
-    expect(container.querySelector('.fab-download')?.textContent).toBe('⤓ Preview PDF');
+    expect(container.querySelector('.visit-export__button')?.textContent).toBe('⤓ Review and export');
     // Section-header Customize stays on the website.
     expect(screen.getAllByRole('button', { name: 'Customize' }).length).toBeGreaterThan(0);
   });

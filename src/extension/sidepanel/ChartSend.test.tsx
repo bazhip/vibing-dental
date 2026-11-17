@@ -104,6 +104,21 @@ describe('ChartSend', () => {
     expect(screen.queryByRole('button', { name: 'Copy all' })).not.toBeInTheDocument();
   });
 
+  it('leads with destination and choices, keeps note preview secondary, and retains destination in results', async () => {
+    open({ stored: true });
+    const button = await screen.findByRole('button', { name: 'Send' });
+    const destination = screen.getByRole('complementary', { name: 'Destination' });
+    const mapping = screen.getByRole('combobox');
+    const preview = screen.getByText('Record note', { selector: 'summary' });
+    expect(destination.compareDocumentPosition(mapping) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(mapping.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(preview.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(preview.closest('details')).not.toHaveAttribute('open');
+    await send();
+    expect(screen.getByRole('complementary', { name: 'Destination' })).toHaveTextContent('PIMS: Bella');
+    expect(screen.getByRole('heading', { name: 'Results' })).toHaveFocus();
+  });
+
   it('shows the generated note read-only when none is stored', async () => {
     open();
     const note = await screen.findByLabelText('Record note');

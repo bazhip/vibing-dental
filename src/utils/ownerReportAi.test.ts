@@ -28,6 +28,29 @@ describe('owner report AI draft', () => {
     expect(facts).toMatch(/7 mm/); // per-root pocket summarized as the deepest
   });
 
+  it('sends the short findings: mouth-wide lines and notes with no tooth, codes in plain words', () => {
+    const many: ChartSnapshot = {
+      ...snap,
+      toothData: [101, 102, 103, 104, 105, 106, 107].map((triadan) => ({ tooth: 'x', triadan, gingivitis: '2' })),
+      postMarks: {},
+      preComments: [{ id: 'n1', text: 'OM, left buccal mucosa', anchorTriadan: null, x: 0, y: 0, width: 100, height: 40 },
+        { id: 'n2', text: 'T/FX/CCF', anchorTriadan: 104, x: 0, y: 0, width: 100, height: 40 }],
+    };
+    const facts = ownerReportFacts(many);
+    expect(facts).toMatch(/Mouth-wide findings:\n- Gum inflammation on most teeth \(moderate\)/);
+    expect(facts).toMatch(/Other findings:\n- a growth in the mouth, left buccal mucosa/);
+    expect(facts).toContain('Reason for visit: Bad breath');
+    expect(facts).toContain('Full mouth scale and polish');
+    expect(facts).not.toContain('T/FX');
+  });
+
+  it('the prompt leads with the visit and mentions pending results', () => {
+    const text = buildOwnerReportAiRequest(snap).system[0].text;
+    expect(text).toMatch(/Lead with the main reason for the visit and what was done/);
+    expect(text).toMatch(/results are pending.*biopsy, cytology or histopathology/s);
+    expect(text).toMatch(/Never invent anything/);
+  });
+
   it('the prompt forbids inventing anything and sets the report language', () => {
     const req = buildOwnerReportAiRequest(snap);
     expect(req.system[0].text).toMatch(/Use ONLY facts in the chart/);
@@ -43,4 +66,14 @@ describe('owner report AI draft', () => {
     ])).toEqual({ intro: 'Bella had her teeth cleaned.', homecare: 'Soft food for 10 days\nBrush daily' });
     expect(parseOwnerReportDraft([{ type: 'text' }])).toBeNull();
   });
+});
+
+it('blank AI facts distinguish missing documentation from health and include draft status', () => {
+  const blank = { ...snap, toothData: [], postMarks: {}, patientInfo: { ...snap.patientInfo, treatmentReport: '', complaint: '', exam: { ...EMPTY_EXAM_FINDINGS } } };
+  const facts = ownerReportFacts(blank);
+  expect(facts).toContain('Report completion status: draft');
+  expect(facts).toContain('Teeth removed at this visit: none recorded');
+  expect(facts).toContain('Findings by tooth: none recorded');
+  expect(facts).not.toContain('healthy');
+  expect(buildOwnerReportAiRequest(blank).system[0].text).toContain('Missing or blank entries mean not recorded');
 });

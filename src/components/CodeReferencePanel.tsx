@@ -7,6 +7,7 @@ import {
   DentalCodeGroup,
   searchCodes,
 } from '../constants/dentalCodes';
+import { useMediaQuery } from '../ios/gesture';
 import { CodeSpeciesContext } from './codeSpecies';
 
 /**
@@ -23,6 +24,7 @@ interface CodeReferencePanelProps {
 
 export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) => {
   const [query, setQuery] = React.useState('');
+  const mobile = useMediaQuery('(max-width: 600px)');
   // Definitions and group names follow the active language.
   const { t, i18n } = useTranslation('chart');
   const species = React.useContext(CodeSpeciesContext);
@@ -90,7 +92,7 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
       .filter((g) => g.codes.length > 0);
   }, [query, kind, language, species]);
 
-  return (
+  const content = (
     <div className="dental-grid-section">
       <div className="dental-grid__section-header">
         <h2 className="dental-grid__title">
@@ -126,6 +128,12 @@ export const CodeReferencePanel: React.FC<CodeReferencePanelProps> = ({ kind }) 
       </div>
     </div>
   );
+  return mobile ? (
+    <details className="code-reference-disclosure">
+      <summary>{kind ? t(kind === 'diagnosis' ? 'codeRef.diagnosisTitle' : 'codeRef.procedureTitle') : t('codeRef.all')}</summary>
+      {content}
+    </details>
+  ) : content;
 };
 
 interface CodeRefColumnProps {

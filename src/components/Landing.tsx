@@ -13,6 +13,7 @@ import {
 } from './landingTeeth';
 import { EnglishGoverns } from './LegalNotice';
 import './Landing.css';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 // Demo data, not UI text: the sample patient, its chart rows (AVDC / Triadan codes)
 // and the sample file name stay as they are in every language.
@@ -69,10 +70,10 @@ export const Landing: React.FC<LandingProps> = ({
   const [demoPaused, setDemoPaused] = React.useState(false);
   // Full-size lightbox for the sample chart pages.
   const [zoomedChart, setZoomedChart] = React.useState<{ src: string; alt: string } | null>(null);
-  const lightboxCloseRef = React.useRef<HTMLButtonElement>(null);
+  const lightboxRef = useModalFocus(!!zoomedChart);
+  const authRef = useModalFocus(!!auth);
   React.useEffect(() => {
     if (!zoomedChart) return;
-    lightboxCloseRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setZoomedChart(null);
     };
@@ -444,7 +445,7 @@ export const Landing: React.FC<LandingProps> = ({
           aria-modal="true"
           aria-label={auth === 'signup' ? t('login.subtitle.signup', { ns: 'auth' }) : t('login.signIn', { ns: 'auth' })}
         >
-          <div className="landing__auth-panel" onClick={(e) => e.stopPropagation()}>
+          <div ref={authRef} tabIndex={-1} className="landing__auth-panel" onClick={(e) => e.stopPropagation()}>
             <button type="button" className="landing__auth-close" onClick={() => setAuth(null)} aria-label={t('actions.close', { ns: 'common' })}>
               ×
             </button>
@@ -455,6 +456,8 @@ export const Landing: React.FC<LandingProps> = ({
 
       {zoomedChart && (
         <div
+          ref={lightboxRef}
+          tabIndex={-1}
           className="landing__lightbox"
           onClick={() => setZoomedChart(null)}
           role="dialog"
@@ -462,7 +465,6 @@ export const Landing: React.FC<LandingProps> = ({
           aria-label={zoomedChart.alt}
         >
           <button
-            ref={lightboxCloseRef}
             type="button"
             className="landing__lightbox-close"
             onClick={() => setZoomedChart(null)}

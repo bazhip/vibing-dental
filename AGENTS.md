@@ -6,6 +6,17 @@ Read by Codex directly and by Claude Code via `CLAUDE.md` (`@AGENTS.md`). Edit r
 
 Run `npm test` and `npm run build`; both must pass. Vercel runs `npm run build` on every PR preview, so a failure there is a red check on the PR.
 
+## UI quality
+
+For every new or changed UI, preserve the established clinical design: teal accents, neutral surfaces, readable sentence-case labels, and consistent component spacing and control sizes.
+
+- Keep one clear primary action per context. Repeated table-row actions should be quiet; secondary and destructive actions belong in a compact disclosure.
+- Avoid duplicate information, stacked desktop row buttons, oversized empty rows, and controls with mismatched heights. Preserve 44px touch targets on phones.
+- Reuse shared components and existing tokens. Fix the owning layout instead of accumulating competing CSS overrides.
+- Inspect rendered screenshots before calling UI work complete: desktop and 320/390px phones, long names, single/multiple visits, populated/empty states, and expanded menus as applicable. Check alignment, density, wrapping, overflow, focus, and action discoverability—not just whether controls exist.
+- A “full UI review” needs an explicit screen/state/viewport coverage matrix. Default-state screenshots or route loads alone are not full coverage; list untested gaps and do not call the review complete while they remain.
+- Automated tests and builds are required but do not replace visual review. If browser verification is unavailable, say so explicitly.
+
 ## Translations
 
 Languages: en (source), fr, de, it, es. Owner reports also have pt. Language switching is on (`LANGUAGE_SWITCHING_ENABLED` in `src/i18n/config.ts`): signed in, the language is an account setting (Account dialog); signed out, the `LanguageSwitcher` on the landing and sign-in pages remembers it on the device.

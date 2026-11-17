@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import { vi } from 'vitest';
 import i18n from '../i18n';
 import { ApiError } from '../utils/apiErrors';
@@ -18,7 +18,8 @@ vi.mock('./ui/dialogs', async (orig) => ({ ...(await orig<typeof import('./ui/di
 import { OwnerReportEmailModal } from './OwnerReportEmailModal';
 
 const pdfText = '%PDF-1.7 test';
-const getPdf = () => ({ blob: new Blob([pdfText], { type: 'application/pdf' }), filename: 'rex_owner_report.pdf' });
+const pdfBlob = new Blob([pdfText], { type: 'application/pdf' });
+const getPdf = () => ({ blob: pdfBlob, filename: 'rex_owner_report.pdf' });
 
 function setup(onClose = vi.fn()) {
   render(
@@ -77,4 +78,30 @@ describe('OwnerReportEmailModal', () => {
     fireEvent.click(screen.getByRole('button', { name: /send report/i }));
     expect(await screen.findByRole('alert')).toHaveTextContent(/Daily report email limit reached/);
   });
+});
+
+it('revalidates the PDF after encoding and sends nothing when review was revoked', async () => {
+  mocks.invoke.mockClear();
+  let reader!: FileReader;
+  const read = vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(function (this: FileReader) { reader = this; });
+  let currentPdf: ReturnType<typeof getPdf> | null = getPdf();
+  render(<OwnerReportEmailModal open onClose={vi.fn()} chartId="c1" practiceId="p1" practiceName="Elm Vet" toEmail="sam@example.com" patientName="Rex" ownerName="Sam" getPdf={() => currentPdf} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
+  expect(reader).toBeDefined();
+  currentPdf = null;
+  await act(async () => {
+    Object.defineProperty(reader, 'result', { value: 'data:application/pdf;base64,JVBERg==' });
+    reader.onload?.(new ProgressEvent('load') as ProgressEvent<FileReader>);
+  });
+  expect(mocks.invoke).not.toHaveBeenCalled();
+  read.mockRestore();
+});
+
+it('does not send when the final attachment validation fails', async () => {
+  mocks.invoke.mockClear();
+  const validate = vi.fn(async () => false);
+  render(<OwnerReportEmailModal open onClose={vi.fn()} chartId="c1" practiceId="p1" practiceName="Elm Vet" toEmail="sam@example.com" patientName="Rex" ownerName="Sam" getPdf={getPdf} validatePdf={validate} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Send report' }));
+  await waitFor(() => expect(validate).toHaveBeenCalledOnce());
+  expect(mocks.invoke).not.toHaveBeenCalled();
 });

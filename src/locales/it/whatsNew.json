@@ -39,7 +39,7 @@
   },
   "radiographicFindings": {
     "title": "Reperti radiografici",
-    "body": "Un riquadro dedicato nella pagina Immagini. Viene stampato nel PDF sopra il referto del trattamento."
+    "body": "Un riquadro dedicato nella pagina Diagnostica per immagini. Viene stampato nel PDF sopra il referto del trattamento."
   },
   "anesthesia": {
     "title": "Anestesia",
@@ -59,10 +59,10 @@
   },
   "startsWhereLeft": {
     "title": "Riparte da dove si era fermato",
-    "body": "All’apertura ToothOps mostra Le mie cartelle — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
+    "body": "All’apertura ToothOps mostra Pazienti — a meno che la visita di oggi non sia ancora aperta — e la visita di oggi si apre pronta per la modifica."
   },
   "sendFeedback": {
     "title": "Invii un feedback in due tocchi",
-    "body": "Impostazioni → Invia feedback, oppure Feedback nel pannello di dettatura (può allegare la trascrizione). Arriva direttamente a noi."
+    "body": "Aiuto → Invia feedback, oppure Feedback nel pannello di dettatura per includere la Sua trascrizione."
   }
 }

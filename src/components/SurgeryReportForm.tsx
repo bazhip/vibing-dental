@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { promptDialog, toast, friendlyDetail } from './ui/dialogs';
@@ -12,6 +13,8 @@ interface SurgeryReportFormProps {
   cloudActive?: boolean;
   /** Stamp new templates with the practice so teammates share them. */
   practiceId?: string;
+  /** Lock visit text while leaving shared template management available. */
+  readOnly?: boolean;
 }
 
 export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
@@ -19,6 +22,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   onChange,
   cloudActive = true,
   practiceId = '',
+  readOnly = false,
 }) => {
   const { t } = useTranslation('forms');
   const store = useReportTemplates(practiceId);
@@ -29,6 +33,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   // visit often stacks several procedures, and appending can never
   // destroy typed text.
   const insertTemplate = (id: string) => {
+    if (readOnly) return;
     const tpl = store.templates.find((x) => x.id === id);
     if (!tpl) return;
     const existing = value.trimEnd();
@@ -36,6 +41,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   };
 
   const saveCurrentAsTemplate = async () => {
+    if (readOnly) return;
     const name = await promptDialog({
       title: t('report.dialog.title'),
       message: t('report.dialog.message'),
@@ -55,58 +61,51 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
 
   return (
     <div className="patient-form">
-      <div className="patient-form__header surgery-report__header">
-        <h2 className="patient-form__section-title">{t('report.title')}</h2>
-        {templatesOn && (
-          <div className="surgery-report__template-bar">
-            <select
-              className="surgery-report__template-select"
-              aria-label={t('report.insertAria')}
-              value=""
-              disabled={!store.loaded || store.templates.length === 0}
-              onChange={(e) => {
-                if (e.target.value) insertTemplate(e.target.value);
-                e.target.value = '';
-              }}
-            >
-              <option value="" disabled>
-                {!store.loaded
-                  ? t('report.loading')
-                  : store.templates.length === 0
-                  ? t('report.none')
-                  : t('report.insert')}
+      <SectionHeader title={t('report.title')} onCustomize={templatesOn ? () => setManageOpen(true) : undefined} customizeTitle={t('report.customizeTitle')} />
+      {templatesOn && (
+        <div className="surgery-report__template-bar">
+          <select
+            className="surgery-report__template-select"
+            aria-label={t('report.insertAria')}
+            value=""
+            disabled={readOnly || !store.loaded || store.templates.length === 0}
+            onChange={(e) => {
+              if (e.target.value) insertTemplate(e.target.value);
+              e.target.value = '';
+            }}
+          >
+            <option value="" disabled>
+              {!store.loaded
+                ? t('report.loading')
+                : store.templates.length === 0
+                ? t('report.none')
+                : t('report.insert')}
+            </option>
+            {store.templates.map((tpl) => (
+              <option key={tpl.id} value={tpl.id}>
+                {tpl.name.trim() || t('report.untitled')}
               </option>
-              {store.templates.map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.name.trim() || t('report.untitled')}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="diagram-view__action"
-              onClick={saveCurrentAsTemplate}
-              disabled={!value.trim()}
-              title={t('report.saveTitle')}
-            >
-              {t('report.save')}
-            </button>
-            <button
-              type="button"
-              className="diagram-view__action"
-              onClick={() => setManageOpen(true)}
-            >
-              {t('report.edit')}
-            </button>
-          </div>
-        )}
-      </div>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="diagram-view__action"
+            onClick={saveCurrentAsTemplate}
+            disabled={readOnly || !value.trim()}
+            title={t('report.saveTitle')}
+          >
+            {t('report.save')}
+          </button>
+
+        </div>
+      )}
       <textarea
         className="patient-form__textarea surgery-report__textarea"
         aria-label={t('report.textareaAria')}
         placeholder={t('report.placeholder')}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        disabled={readOnly}
+        onChange={(e) => { if (!readOnly) onChange(e.target.value); }}
       />
 
       {templatesOn && (

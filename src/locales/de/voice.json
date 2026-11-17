@@ -96,7 +96,8 @@
     "sending": "Senden …",
     "showInChart": "In der Akte anzeigen",
     "speaker": "Sprecher {{n}}",
-    "transcript": "Transkript"
+    "transcript": "Transkript",
+    "reviewComplete": "Überprüfung abgeschlossen"
   },
   "peek": {
     "connecting": "Mikrofon wird vorbereitet — einen Moment …",
@@ -107,7 +108,7 @@
     "talking": "Sprechen Sie — Befunde erscheinen, sobald sie eingetragen werden."
   },
   "sections": {
-    "anesthesia": "Anästhesie",
+    "anesthesia": "Narkose",
     "charting": "Charting",
     "diagnosis": "Diagnosediagramm",
     "exam": "Untersuchung",

@@ -80,8 +80,8 @@ describe('RechecksScreen', () => {
     const { p, library, onOpenChart } = await open();
     fireEvent.contextMenu(within(p).getByRole('button', { name: /^Coco/ }));
     const menu = screen.getByRole('menu');
-    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Open', 'Send reminder', 'Clear recheck', 'History']);
-    fireEvent.click(within(menu).getByRole('menuitem', { name: 'History' }));
+    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Open', 'Send reminder', 'Clear recheck', 'Version history']);
+    fireEvent.click(within(menu).getByRole('menuitem', { name: 'Version history' }));
     expect(library.openHistory).toHaveBeenCalledWith('c1', expect.stringContaining('Coco'));
     fireEvent.contextMenu(within(p).getByRole('button', { name: /^Coco/ }));
     fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: 'Open' }));

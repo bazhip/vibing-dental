@@ -5,7 +5,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 const native = vi.hoisted(() => ({ on: false }));
 vi.mock('../native/platform', () => ({ isNativeApp: () => native.on }));
 
-import { WalkthroughModal } from './WalkthroughModal';
+import { WalkthroughModal, buildSteps } from './WalkthroughModal';
 
 beforeAll(() => {
   Element.prototype.scrollIntoView = Element.prototype.scrollIntoView ?? (() => {});
@@ -24,12 +24,45 @@ function walk(): string {
 }
 
 describe('WalkthroughModal', () => {
+  it('first run covers three tasks and leaves the full tour available', () => {
+    native.on = false;
+    render(<WalkthroughModal open firstRun aiEnabled onClose={() => {}} />);
+    const text = walk();
+    expect(text).toContain('1 of 3');
+    expect(text).toContain('Identify the patient');
+    expect(text).toContain('Record a finding');
+    expect(text).toContain('Review the output');
+    expect(text).not.toContain('The nine sections');
+    expect(buildSteps(true)).toHaveLength(12);
+  });
+
+  it('can switch from the full tour to the shorter first-run path', () => {
+    native.on = false;
+    const { rerender } = render(<WalkthroughModal open onClose={() => {}} />);
+    walk();
+    rerender(<WalkthroughModal open firstRun onClose={() => {}} />);
+    expect(screen.getByText('1 of 3')).toBeInTheDocument();
+  });
+
+  it('targets both charting views and the current export control', () => {
+    expect(buildSteps().find((step) => step.id === 'grid')?.target).toBe('.dental-grid, .tooth-chart');
+    expect(buildSteps().find((step) => step.id === 'pdf')?.target).toBe('.visit-export__button');
+  });
+
+  it('points Practice settings at the workspace destination', () => {
+    expect(buildSteps().find((step) => step.id === 'settings')?.target).toBe('[data-tour="practice-settings"]');
+  });
+
   it('on the website keeps its keyboard-and-mouse copy', () => {
     native.on = false;
     render(<WalkthroughModal open onClose={() => {}} />);
     const text = walk();
     expect(text).toContain('Undo with ⌘Z');
-    expect(text).toContain('My charts');
+    expect(text).toContain('Patients');
+    expect(text).toContain('The nine sections');
+    expect(text).toContain('Equine');
+    expect(text).toContain('Help → Getting started');
+    expect(text).toContain('Visit actions');
     expect(text).toContain('1 of 11');
   });
 

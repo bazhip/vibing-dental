@@ -1,6 +1,34 @@
 import type { PDFFont, PDFPage } from 'pdf-lib';
 import { safeFont } from './pdf/safeFont';
 import { OwnerReportModel, OwnerReportRenderSection, teethWithFindings } from './ownerReport';
+
+/** What the Findings section prints, in order: mouth-wide summary lines,
+ *  the per-tooth list (numbered when the diagram carries pins), then the
+ *  vet's notes with no tooth. `print` is false when all three are empty. */
+export interface FindingsLayout {
+  summary: string[];
+  teeth: { label: string; notes: string; extracted: boolean }[];
+  other: { heading: string; lines: string[] } | null;
+  print: boolean;
+}
+
+export function findingsLayout(model: OwnerReportModel, numbered: boolean): FindingsLayout {
+  const teeth = teethWithFindings(model).map((tooth, i) => ({
+    label: `${numbered ? `${i + 1}.  ` : ''}${tooth.layName}`,
+    notes: tooth.notes.join('; '),
+    extracted: tooth.extracted,
+  }));
+  const other = model.otherFindings.length
+    ? { heading: reportStrings(model.locale).otherFindingsHeading, lines: model.otherFindings }
+    : null;
+  return { summary: model.summaryLines, teeth, other, print: model.summaryLines.length > 0 || teeth.length > 0 || !!other };
+}
+
+/** Nothing at all to report: prints the "no findings recorded" note. */
+export function nothingFound(model: OwnerReportModel): boolean {
+  return model.extracted.length === 0 && teethWithFindings(model).length === 0 && model.examNotes.length === 0
+    && model.summaryLines.length === 0 && model.otherFindings.length === 0;
+}
 import type { BuiltInSectionId } from './ownerReportConfig';
 import { reportStrings } from './ownerReportI18n';
 
@@ -199,6 +227,11 @@ export async function buildOwnerReportPdfBytes(
   });
   y -= 14;
 
+  if (!model.reviewed) {
+    drawText(t.draftLabel, { font: bold, color: teal, gapAfter: 3 });
+    drawText(t.draftNotice, { color: muted, gapAfter: 8 });
+  }
+
   // ---- Patient -----------------------------------------------------------
   const patientLine = [
     `${t.patientLabel}: ${model.patientName || '—'} (${model.speciesLabel})`,
@@ -216,8 +249,7 @@ export async function buildOwnerReportPdfBytes(
   const numbered = !!diagram && builtins.has('diagram') && findingsOn && findingsTeeth.length > 0;
   // The "nothing found" note prints where the last of the three finding
   // sections would have (by default: after the exam notes).
-  const emptyChart =
-    model.extracted.length === 0 && findingsTeeth.length === 0 && model.examNotes.length === 0;
+  const emptyChart = nothingFound(model);
   const findingSlots = model.sections
     .filter((s) => s.kind === 'builtin' && (s.id === 'extractions' || s.id === 'findings' || s.id === 'examNotes'))
     .map((s) => s.id);
@@ -264,14 +296,22 @@ export async function buildOwnerReportPdfBytes(
         return;
       }
       case 'findings': {
-        if (findingsTeeth.length === 0) return;
+        const layout = findingsLayout(model, numbered);
+        if (!layout.print) return;
         heading(section.heading);
-        findingsTeeth.forEach((tooth, i) => {
+        for (const line of layout.summary) drawText(`•  ${line}`, { indent: 10, gapAfter: 2 });
+        if (layout.summary.length) y -= 4;
+        for (const tooth of layout.teeth) {
           ensure(30);
-          const prefix = numbered ? `${i + 1}.  ` : '';
-          drawText(`${prefix}${tooth.layName}${tooth.extracted ? `  —  ${t.removedToday}` : ''}`, { font: bold, size: 10.5 });
-          drawText(tooth.notes.join('; '), { indent: numbered ? 16 : 10, color: muted, gapAfter: 4 });
-        });
+          drawText(`${tooth.label}${tooth.extracted ? `  —  ${t.removedToday}` : ''}`, { font: bold, size: 10.5 });
+          drawText(tooth.notes, { indent: numbered ? 16 : 10, color: muted, gapAfter: 4 });
+        }
+        if (layout.other) {
+          ensure(30);
+          drawText(layout.other.heading, { font: bold, size: 10.5 });
+          for (const line of layout.other.lines) drawText(`•  ${line}`, { indent: 10, color: muted });
+          y -= 4;
+        }
         return;
       }
       case 'alreadyMissing': {
@@ -365,6 +405,13 @@ export async function buildOwnerReportPdfBytes(
 
   y -= 8;
   drawText(t.preparedBy(branding.doctorName, branding.practiceName), { size: 8.5, color: muted });
+
+  // A draft remains identifiable when later pages are printed separately.
+  if (!model.reviewed) {
+    for (const draftPage of doc.getPages()) {
+      draftPage.drawText(pdfSafe(t.draftLabel), { x: MARGIN, y: 12, size: 8, font: bold, color: muted });
+    }
+  }
 
   // ---- Footer on every page ----------------------------------------------
   if (model.footer) {

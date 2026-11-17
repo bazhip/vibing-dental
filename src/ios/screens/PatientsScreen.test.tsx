@@ -130,12 +130,12 @@ describe('PatientsScreen', () => {
     const more = () => within(p).getByRole('button', { name: 'More actions for Bella' });
     fireEvent.click(more());
     const actions = () => more().closest('.ios-swiperow')!.querySelector('.ios-swiperow__actions') as HTMLElement;
-    expect(within(actions()).getAllByRole('button').map((b) => b.textContent)).toEqual(['Send reminder', 'Clear recheck', 'History']);
+    expect(within(actions()).getAllByRole('button').map((b) => b.textContent)).toEqual(['Send reminder', 'Clear recheck', 'Version history']);
     fireEvent.click(within(actions()).getByRole('button', { name: 'Send reminder' }));
     expect(library.sendReminder).toHaveBeenCalledWith(expect.objectContaining({ id: 'a1' }));
 
     fireEvent.click(more());
-    fireEvent.click(within(actions()).getByRole('button', { name: 'History' }));
+    fireEvent.click(within(actions()).getByRole('button', { name: 'Version history' }));
     expect(library.openHistory).toHaveBeenCalledWith('a1', expect.stringContaining('Bella'));
 
     fireEvent.click(more());
@@ -149,7 +149,7 @@ describe('PatientsScreen', () => {
     // Max has no owner email (no reminder) and his recheck is clearable.
     fireEvent.click(within(p).getByRole('button', { name: 'More actions for Max' }));
     const maxActions = within(p).getByRole('button', { name: 'More actions for Max' }).closest('.ios-swiperow')!.querySelector('.ios-swiperow__actions') as HTMLElement;
-    expect(within(maxActions).getAllByRole('button').map((b) => b.textContent)).toEqual(['Clear recheck', 'History']);
+    expect(within(maxActions).getAllByRole('button').map((b) => b.textContent)).toEqual(['Clear recheck', 'Version history']);
     expect(p.querySelectorAll('.ios-swiperow__action--destructive')).toHaveLength(0);
   });
 
@@ -187,7 +187,7 @@ describe('PatientsScreen', () => {
     const { p, onOpenChart } = await openPatients();
     fireEvent.contextMenu(patientRow(p, 'Bella'));
     const menu = screen.getByRole('menu');
-    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Open', 'Send reminder', 'Clear recheck', 'History']);
+    expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Open', 'Send reminder', 'Clear recheck', 'Version history']);
     fireEvent.click(within(menu).getByRole('menuitem', { name: 'Open' }));
     await waitFor(() => expect(onOpenChart).toHaveBeenCalledWith('a1'));
   });
@@ -243,7 +243,7 @@ describe('PatientsScreen', () => {
     const visits = await within(p).findAllByRole('button', { name: /Updated/ });
     fireEvent.contextMenu(visits[0]);
     const items = within(screen.getByRole('menu')).getAllByRole('menuitem');
-    expect(items.map((i) => i.textContent)).toEqual(['Open', 'History', 'Delete']);
+    expect(items.map((i) => i.textContent)).toEqual(['Open', 'Version history', 'Delete']);
     expect(items[2]).toHaveClass('ios-menu__item--destructive');
   });
 

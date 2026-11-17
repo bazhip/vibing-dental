@@ -94,6 +94,16 @@ describe('PatientForm', () => {
 });
 
 describe('ExamForm', () => {
+  it('translates the inline add editor and duplicate feedback', () => {
+    const { container } = render(<ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
+      onAddArea={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /⟦Add area⟧/ }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '⟦Tongue⟧' } });
+    expect(screen.getByRole('alert')).toHaveTextContent('⟦This area is already in your exam.⟧');
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   const noop = () => {};
   it('unanswered, partly answered with an abnormal comment, fully answered', () => {
     const exam: ExamFindings = {
@@ -135,11 +145,11 @@ describe('ExamAreasEditor', () => {
     const noop = () => {};
     const { container, unmount } = render(<ExamAreasEditor areas={[]} onChange={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    fireEvent.click(screen.getByRole('button', { name: /⟦Add the full oral exam list⟧/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /⟦Salivary duct openings⟧/ }));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     unmount();
     const second = render(<ExamAreasEditor areas={[{ id: 'x1', label: 'Lips' }]} onChange={noop} />);
-    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/])).toEqual([]);
+    expect(findUntranslated(second.container, [...ALLOW, 'Lips', /^⟦Remove Lips⟧$/, /^⟦Show Lips⟧$/])).toEqual([]);
   });
 });
 
@@ -223,7 +233,7 @@ describe('ImagingSection', () => {
   };
   const store = (over: Partial<UseAttachmentsReturn> = {}): UseAttachmentsReturn => ({
     enabled: true, loaded: true, items: [photo], maxImages: 5, dicomEnabled: true,
-    upload: vi.fn(), updateCaption: vi.fn(), updateKind: vi.fn(), remove: vi.fn(), ...over,
+    upload: vi.fn(), updateCaption: vi.fn(), updateKind: vi.fn(), updateTooth: vi.fn(), remove: vi.fn(), ...over,
   });
   const noop = () => {};
 
@@ -260,14 +270,16 @@ describe('ImagingSection', () => {
     const { container } = render(<ImagingSection chartId="c" cloudActive />);
     const file = new File([new Uint8Array(300)], 'scan.dcm', { type: 'application/dicom' });
     fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [file] } });
-    const alert = await screen.findByRole('alert');
-    expect(alert.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    // Upload failures are listed per file, under the uploader.
+    await waitFor(() => expect(container.querySelector('.imaging__queue-item--failed')).not.toBeNull());
+    const failed = container.querySelector('.imaging__queue-item--failed .imaging__queue-status')!;
+    expect(failed.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
+    expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
     const caption = screen.getByLabelText('⟦Caption⟧');
     fireEvent.change(caption, { target: { value: 'New' } });
     fireEvent.blur(caption);
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/caption/));
-    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
   });
 });
 

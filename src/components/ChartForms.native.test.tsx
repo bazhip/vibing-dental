@@ -53,7 +53,7 @@ describe('PatientForm', () => {
     expect(container.querySelectorAll('.ios-form__group').length).toBeGreaterThanOrEqual(4);
     const name = screen.getByPlaceholderText('Enter patient name');
     expect(name.closest('.ios-field')).not.toBeNull();
-    expect(name.closest('.ios-field')!.querySelector('.ios-field__label')).toHaveTextContent('Patient Name');
+    expect(name.closest('.ios-field')!.querySelector('.ios-field__label')).toHaveTextContent('Patient name');
     fireEvent.change(name, { target: { value: 'Rex' } });
     expect(onChange).toHaveBeenCalledWith('patientName', 'Rex');
     // Species is a segmented control (radio semantics kept).
@@ -146,7 +146,7 @@ describe('AnesthesiaForm', () => {
     expect(screen.queryByRole('switch')).toBeNull();
     expect(screen.getByRole('button', { name: 'Remove A' }).textContent).toBe('×');
     expect(screen.getByRole('button', { name: /Add anesthetic/ }).textContent).toBe('+ Add anesthetic');
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Anesthesia — Nerve Blocks');
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Anesthesia');
   });
 });
 
@@ -177,10 +177,12 @@ describe('SurgeryReportForm', () => {
 });
 
 describe('DiagramView toolbar', () => {
-  const renderIt = () =>
+  const renderIt = (readOnly = false) =>
     render(
       <DiagramView
         title="Diagnosis"
+        readOnly={readOnly}
+        defaultTool="draw"
         species="canine"
         toothMarks={{}}
         onToothMarksChange={vi.fn()}
@@ -190,6 +192,14 @@ describe('DiagramView toolbar', () => {
         onStrokesChange={vi.fn()}
       />
     );
+  it('never exposes drawing mutations in a locked chart’s More tools panel', () => {
+    renderIt(true);
+    fireEvent.click(screen.getByRole('button', { name: 'More diagram tools' }));
+    expect(screen.queryByRole('button', { name: '+ Free comment' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Clear strokes' })).toBeNull();
+    expect(screen.queryByRole('group', { name: 'Draw settings' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toBeInTheDocument();
+  });
   it('app: Undo / Redo are icons', () => {
     flags.native = true;
     renderIt();
@@ -198,10 +208,21 @@ describe('DiagramView toolbar', () => {
     expect(screen.getByRole('button', { name: 'Undo' }).textContent).toBe('');
     expect(screen.getByRole('button', { name: 'Numbers' })).toBeInTheDocument();
   });
-  it('website: Undo / Redo glyphs', () => {
+  it('returns keyboard focus to More tools when its panel closes with Escape', () => {
     renderIt();
-    expect(screen.getByRole('button', { name: 'Undo' }).textContent).toBe('↶');
-    expect(screen.getByRole('button', { name: 'Redo' }).textContent).toBe('↷');
+    const more = screen.getByRole('button', { name: 'More diagram tools' });
+    fireEvent.click(more);
+    const zoom = screen.getByRole('button', { name: 'Zoom in' });
+    zoom.focus();
+    fireEvent.keyDown(zoom, { key: 'Escape' });
+    expect(more).toHaveAttribute('aria-expanded', 'false');
+    expect(more).toHaveFocus();
+    expect(document.getElementById(more.getAttribute('aria-controls')!)).not.toHaveClass('diagram-view__extras--open');
+  });
+  it('website: Undo / Redo use the same SVG icons', () => {
+    renderIt();
+    expect(screen.getByRole('button', { name: 'Undo' }).querySelector('[data-icon="arrow-uturn-backward"]')).not.toBeNull();
+    expect(screen.getByRole('button', { name: 'Redo' }).querySelector('[data-icon="arrow-uturn-forward"]')).not.toBeNull();
     expect(screen.getByRole('button', { name: '# Numbers' })).toBeInTheDocument();
   });
 });
@@ -219,4 +240,15 @@ describe('DentalGrid selection tip', () => {
     const { container } = renderIt();
     expect(container.querySelector('.dental-grid__bulk-hint')).toHaveTextContent('Tip: click tooth numbers to select several teeth (Shift-click for a range), then set one value on all of them.');
   });
+});
+
+it('offers equine on native with the same permanent-dentition restriction', () => {
+  flags.native = true;
+  const onSpecies = vi.fn();
+  const { rerender } = render(<PatientForm patientInfo={patientInfo} species="canine" onPatientInfoChange={vi.fn()} onSpeciesChange={onSpecies} />);
+  fireEvent.click(screen.getByRole('radio', { name: 'Equine' }));
+  expect(onSpecies).toHaveBeenCalledWith('equine');
+  rerender(<PatientForm patientInfo={patientInfo} species="equine" onPatientInfoChange={vi.fn()} onSpeciesChange={onSpecies} />);
+  expect(screen.getByRole('radio', { name: 'Deciduous' })).toBeDisabled();
+  expect(screen.getByLabelText('Recheck due').closest('.ios-field')).toHaveClass('ios-field--stacked');
 });
