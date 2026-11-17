@@ -80,7 +80,10 @@ export function RemindersSettingsScreen() {
 export function GettingStartedScreen() {
   const { t } = useTranslation('settings');
   const s = useAppSettings();
-  const steps = React.useMemo(() => buildAppSteps(t, s.aiEnabled).filter((step) => step.section), [t, s.aiEnabled]);
+  const steps = React.useMemo(
+    () => buildAppSteps(t, s.aiEnabled, s.cloudEnabled && s.profile.ownerReportEnabled).filter((step) => step.section),
+    [t, s.aiEnabled, s.cloudEnabled, s.profile.ownerReportEnabled],
+  );
   return (
     <List className="ios-settings">
       <ListSection footer={t('gettingStarted.tourFooter')}>

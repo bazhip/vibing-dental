@@ -1602,6 +1602,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         firstRun={walkthroughFirstRun}
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled && !trial}
+        ownerReportEnabled={ownerReportOn}
         onNavigate={native ? showChartSection : goToSection}
       />
 

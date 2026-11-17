@@ -500,7 +500,7 @@ describe('WalkthroughModal', () => {
   it('every step, with and without the dictation step', () => {
     for (const aiEnabled of [true, false]) {
       const onClose = vi.fn();
-      const { unmount } = render(<WalkthroughModal open onClose={onClose} aiEnabled={aiEnabled} onNavigate={() => {}} />);
+      const { unmount } = render(<WalkthroughModal open onClose={onClose} aiEnabled={aiEnabled} ownerReportEnabled onNavigate={() => {}} />);
       const next = () => screen.getByRole('button', { name: /^⟦(Next|Get charting)⟧$/ });
       for (let n = 0; n < 14; n++) {
         expect(findUntranslated(document.body, [])).toEqual([]);
@@ -517,7 +517,7 @@ describe('WalkthroughModal', () => {
     await loadLanguage('fr');
     await i18n.changeLanguage('fr');
     render(<WalkthroughModal open onClose={() => {}} />);
-    expect(screen.getByText('1 sur 11')).toBeInTheDocument();
+    expect(screen.getByText('1 sur 12')).toBeInTheDocument();
   });
 });
 

@@ -9,13 +9,14 @@ interface WalkthroughModalProps {
   onClose: () => void;
   /** Whether AI autofill applies to this account (Pro) — shows that step. */
   aiEnabled?: boolean;
+  ownerReportEnabled?: boolean;
   /** A short task-based introduction; Help opens the full tour by default. */
   firstRun?: boolean;
   /** Switch the app to a chart section so the step's target is on screen. */
   onNavigate?: (sectionId: string) => void;
 }
 
-type StepId = 'firstPatient' | 'firstFinding' | 'firstOutput' | 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'library' | 'dictate' | 'settings' | 'pdf';
+type StepId = 'firstPatient' | 'firstFinding' | 'firstOutput' | 'welcome' | 'sections' | 'patient' | 'grid' | 'byTooth' | 'customize' | 'diagrams' | 'images' | 'treatment' | 'ownerReport' | 'library' | 'dictate' | 'settings' | 'pdf';
 
 export interface Step {
   /** Catalog id: onboarding:walkthrough.steps.<id>.title / .body. */
@@ -32,16 +33,18 @@ export interface Step {
 export type TourStep = Omit<Step, 'id'> & { title: string; body: string };
 
 /** The website tour's steps (the app's are in src/ios/tourSteps.ts). */
-export function buildSteps(aiEnabled?: boolean): Step[] {
+export function buildSteps(aiEnabled?: boolean, ownerReportEnabled?: boolean): Step[] {
   const steps: Step[] = [
     { id: 'welcome' },
     { id: 'sections', target: '.sidebar-layout__nav', placement: 'right' },
     { id: 'patient', section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' },
-    { id: 'species', section: 'patient', target: '.patient-form__selectors', placement: 'top' },
     { id: 'grid', section: 'charting', target: '.dental-grid, .tooth-chart', placement: 'top' },
+    { id: 'byTooth', section: 'charting', target: '.charting-view-switch', placement: 'bottom' },
+    { id: 'customize', section: 'charting', target: '.charting-header-actions', placement: 'bottom' },
     { id: 'diagrams', section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'right' },
-    { id: 'codes', section: 'diagnosis', target: '.diagram-with-codes__codes', placement: 'left' },
-    { id: 'treatment', section: 'treatment', target: '.dental-grid-section', placement: 'top' },
+    { id: 'images', section: 'imaging', target: '.radiographic-findings', placement: 'bottom' },
+    { id: 'treatment', section: 'treatment', target: '.surgery-report__header', placement: 'bottom' },
+    ...(ownerReportEnabled ? [{ id: 'ownerReport' as const, section: 'owner-report', target: '.owner-report__block', placement: 'top' as const }] : []),
     { id: 'library', target: '[data-tour="library"]', placement: 'bottom' },
   ];
   if (aiEnabled) {
@@ -65,7 +68,7 @@ function buildFirstRunSteps(app: boolean): Step[] {
 const GAP = 12; // px between the spotlight and the popover
 const POP_W = 320;
 
-export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, firstRun = false, onNavigate }) => {
+export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClose, aiEnabled, ownerReportEnabled, firstRun = false, onNavigate }) => {
   const { t } = useTranslation('onboarding');
   const { t: tSettings } = useTranslation('settings');
   // The app's tour points at the app's chrome and speaks touch.
@@ -73,13 +76,13 @@ export const WalkthroughModal: React.FC<WalkthroughModalProps> = ({ open, onClos
   const steps = React.useMemo<TourStep[]>(
     () =>
       app && !firstRun
-        ? buildAppSteps(tSettings, aiEnabled)
-        : (firstRun ? buildFirstRunSteps(app) : buildSteps(aiEnabled)).map(({ id, ...rest }) => ({
+        ? buildAppSteps(tSettings, aiEnabled, ownerReportEnabled)
+        : (firstRun ? buildFirstRunSteps(app) : buildSteps(aiEnabled, ownerReportEnabled)).map(({ id, ...rest }) => ({
             ...rest,
             title: t(`walkthrough.steps.${id}.title`),
             body: t(`walkthrough.steps.${id}.body`),
           })),
-    [app, t, tSettings, aiEnabled, firstRun],
+    [app, t, tSettings, aiEnabled, ownerReportEnabled, firstRun],
   );
   const [i, setI] = React.useState(0);
   const [rect, setRect] = React.useState<DOMRect | null>(null);

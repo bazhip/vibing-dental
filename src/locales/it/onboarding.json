@@ -24,24 +24,24 @@
         "body": "Una breve panoramica dell’area di lavoro. Può rivederla in qualsiasi momento da Aiuto → Per iniziare."
       },
       "sections": {
-        "title": "Le nove sezioni",
-        "body": "Una cartella odontoiatrica, dall’alto in basso. Le percorra in ordine o salti dall’una all’altra — tutto viene salvato automaticamente."
+        "title": "La visita in un unico posto",
+        "body": "Dal primo esame al referto del trattamento, segua le sezioni in ordine o passi a quella che Le serve. La cartella si salva durante la compilazione."
       },
       "patient": {
         "title": "Paziente e proprietario",
-        "body": "Nome, contatti del proprietario e data del controllo. Per salvare serve solo il nome del paziente."
+        "body": "Inizi dal nome del paziente, poi aggiunga i recapiti del proprietario quando desidera. Scelga qui specie e dentizione: i denti si adattano automaticamente."
       },
       "species": {
         "title": "Specie e dentatura",
         "body": "Scelga Felino, Canino o Equino, poi la dentizione — lo schema dei denti si adatta."
       },
       "grid": {
-        "title": "La griglia delle misure",
-        "body": "Misure dente per dente. Tab si sposta in orizzontale, Invio in basso — compili senza staccare gli occhi dallo schermo."
+        "title": "Compili a modo Suo",
+        "body": "Preferisce una vista dell’intera bocca? Usi Griglia per inserire misurazioni e punteggi. Tab si sposta a destra e Invio in basso. Selezioni più numeri dentali per assegnare lo stesso punteggio."
       },
       "diagrams": {
         "title": "Schemi",
-        "body": "Faccia clic su un dente per segnarlo; passi tra Commento e Disegno e aggiunga note libere. Annulli con ⌘Z."
+        "body": "Faccia clic su un dente per contrassegnarlo, aggiunga commenti o disegni una nota. Diagnosi e Procedura hanno accanto codici AVDC ricercabili. Annulli con ⌘Z."
       },
       "codes": {
         "title": "Riferimento dei codici",
@@ -66,6 +66,22 @@
       "pdf": {
         "title": "Anteprima e download del PDF",
         "body": "Crei il PDF della cartella, pronto per il cliente e con il Suo logo, quando vuole."
+      },
+      "byTooth": {
+        "title": "Un dente alla volta",
+        "body": "Passi a Per dente e faccia clic su un dente nello schema. Registri insieme misurazioni, diagnosi e procedura, poi passi al dente successivo. Griglia e Per dente condividono gli stessi reperti."
+      },
+      "customize": {
+        "title": "Su misura per Lei",
+        "body": "Trova Personalizza in Paziente, Esame, Anestesia, Odontogramma, Diagnosi e Immagini. Scelga colonne, profondità delle tasche per dente, radice o sito, codici rapidi e altro. Dopo l’accesso, le preferenze seguono il Suo account."
+      },
+      "images": {
+        "title": "Foto e radiografie",
+        "body": "Conservi le immagini con la visita e aggiunga qui i Suoi reperti radiografici. Scelga quali immagini includere nel PDF della cartella."
+      },
+      "ownerReport": {
+        "title": "Un referto da portare a casa",
+        "body": "Il Referto per il proprietario offre alle famiglie un riepilogo chiaro e consigli per le cure a casa. Lo riveda prima di condividerlo e usi Personalizza per adattare impaginazione, testo e lingua del cliente alla Sua clinica."
       }
     }
   },

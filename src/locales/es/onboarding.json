@@ -24,24 +24,24 @@
         "body": "Una breve visita al espacio de trabajo. Puede repetirla en cualquier momento desde Ayuda → Primeros pasos."
       },
       "sections": {
-        "title": "Las nueve secciones",
-        "body": "Un historial dental, de arriba abajo. Recórralas en orden o salte de una a otra — todo se guarda automáticamente."
+        "title": "Toda la visita en un solo lugar",
+        "body": "Desde el primer examen hasta el informe del tratamiento, siga las secciones en orden o vaya a la que necesite. El historial se guarda a medida que trabaja."
       },
       "patient": {
         "title": "Paciente y propietario",
-        "body": "Nombre, contacto del propietario y fecha de revisión. Solo el nombre del paciente es obligatorio para guardar."
+        "body": "Empiece por el nombre del paciente y añada los datos del propietario cuando desee. Elija aquí la especie y la dentición: los dientes se adaptan automáticamente."
       },
       "species": {
         "title": "Especie y dentición",
         "body": "Elija Felino, Canino o Equino y después la dentición — el esquema de los dientes se adapta."
       },
       "grid": {
-        "title": "La cuadrícula de mediciones",
-        "body": "Mediciones diente por diente. Tab avanza hacia la derecha, Intro hacia abajo — registre sin apartar la vista de la pantalla."
+        "title": "Registre a su manera",
+        "body": "¿Prefiere una vista de toda la boca? Use Cuadrícula para introducir medidas y puntuaciones. Tab avanza a la derecha e Intro hacia abajo. Seleccione varios números dentales para asignarles la misma puntuación."
       },
       "diagrams": {
         "title": "Esquemas",
-        "body": "Haga clic en un diente para marcarlo; alterne entre Comentario y Dibujo y añada notas libres. Deshaga con ⌘Z."
+        "body": "Haga clic en un diente para marcarlo, añada comentarios o dibuje una nota. Diagnóstico y Procedimiento tienen al lado códigos AVDC con búsqueda. Deshaga con ⌘Z."
       },
       "codes": {
         "title": "Referencia de códigos",
@@ -66,6 +66,22 @@
       "pdf": {
         "title": "Vista previa y descarga del PDF",
         "body": "Genere el PDF del historial, listo para entregar al cliente y con su logotipo, cuando quiera."
+      },
+      "byTooth": {
+        "title": "Un diente cada vez",
+        "body": "Cambie a Por diente y haga clic en un diente del diagrama. Registre sus medidas, diagnóstico y procedimiento juntos y pase al siguiente. Cuadrícula y Por diente comparten los mismos hallazgos."
+      },
+      "customize": {
+        "title": "A su medida",
+        "body": "Busque Personalizar en Paciente, Examen, Anestesia, Odontograma, Diagnóstico e Imágenes. Elija columnas, profundidades de bolsa por diente, raíz o sitio, códigos rápidos y más. Al iniciar sesión, sus preferencias siguen su cuenta."
+      },
+      "images": {
+        "title": "Fotos y radiografías",
+        "body": "Guarde las imágenes con la visita y añada aquí sus hallazgos radiográficos. Elija qué imágenes incluir en el PDF del historial."
+      },
+      "ownerReport": {
+        "title": "Un informe para casa",
+        "body": "El Informe para el propietario ofrece a las familias un resumen claro y consejos de cuidados en casa. Revíselo antes de compartirlo y use Personalizar para adaptar el diseño, el texto y el idioma del cliente a su clínica."
       }
     }
   },
