@@ -178,7 +178,6 @@ const App: React.FC = () => {
       setIsAuthenticated(!!session);
       setLaunchedSignedIn(!!session);
       if (session) {
-        touchLastSeen();
         // Returning from Google sign-in: record the terms notice they
         // signed in next to.
         flushPendingTerms(session.user.id);
@@ -212,10 +211,8 @@ const App: React.FC = () => {
         }
         lastUserIdRef.current = session.user.id;
         setLastEmail(session.user.email ?? '');
-        // Not on TOKEN_REFRESHED: supabase-js refreshes on a timer in an
-        // open tab (and Chrome keeps doing it through a Mac's dark-wake
-        // sleep), so it isn't the person using the app.
-        if (event !== 'TOKEN_REFRESHED') touchLastSeen();
+        // Auth events are not activity: even SIGNED_IN can mean recovery
+        // of a stored session. Only interaction below records last seen.
         flushPendingTerms(session.user.id);
         setSessionExpired(false);
         setIsAuthenticated(true);
@@ -262,10 +259,9 @@ const App: React.FC = () => {
         nudge();
       }
     };
-    const onVisible = () => {
-      if (document.visibilityState === 'visible' && isAuthedRef.current) touchLastSeen();
-      renew();
-    };
+    // Focus/visibility can change during browser or device restoration.
+    // Renew auth without treating those lifecycle events as human activity.
+    const onVisible = renew;
     // Reconnecting renews the session but isn't use: a sleeping Mac's dark
     // wake reconnects Wi-Fi and fires 'online' while Chrome still reports
     // the tab visible, which made closed laptops look active.

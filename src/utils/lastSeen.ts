@@ -5,7 +5,7 @@ const MIN_INTERVAL_MS = 15 * 60 * 1000;
 let lastTouch = 0;
 
 /**
- * Record that the signed-in user is using the app — feeds the admin
+ * Record an interaction by the signed-in user — feeds the admin
  * panel's "Last active" (sign-in time alone goes stale for people who
  * stay signed in). Fire-and-forget: a missing migration, offline device
  * or signed-out session just means no update.
