@@ -61,6 +61,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
 
       {show.charting && (
         <>
+          <ListSection footer={t('chart.autosave.hint')}><SwitchRow title={t('chart.autosave.label')} checked={prefs.autosave} onChange={(on) => onChange({ autosave: on })} /></ListSection>
           <ListSection header={t('chart.charting.view')} footer={showAll ? note : undefined}>
             <ListRow title={t('chart.charting.grid')} selected={prefs.chartingView === GRID} onClick={() => onChange({ chartingView: GRID })} />
             <ListRow title={t('chart.charting.byTooth')} selected={prefs.chartingView === TOOTH} onClick={() => onChange({ chartingView: TOOTH })} />

@@ -262,6 +262,10 @@
       "moveDown": "Spostare {{name}} in basso",
       "count": "{{used}} di {{max}} configurati",
       "limit": "Limite raggiunto. Rimuova un elemento per aggiungerne un altro."
+    },
+    "autosave": {
+      "label": "Salvataggio automatico",
+      "hint": "Salva automaticamente le modifiche alla cartella. Disattivi questa opzione per salvare manualmente."
     }
   },
   "feedback": {

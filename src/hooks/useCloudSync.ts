@@ -70,6 +70,7 @@ export interface UseCloudSyncReturn {
   dirty: boolean;
   /** Save the current chart to the cloud now. */
   saveNow: () => Promise<void>;
+  autosaveEnabled?: boolean;
   /** A chart that has never reached the cloud and holds only patient/owner
    *  details: autosave waits for clinical content, so the UI offers a
    *  manual Save. False once the chart has been saved (by either route). */
@@ -205,7 +206,8 @@ export function useCloudSync(
   editingUnlocked = false,
   /** The profile (and so practiceId) has loaded. Autosave waits for it, so
    *  a new chart's first save can't record "no practice" by racing it. */
-  practiceReady = true
+  practiceReady = true,
+  autosaveEnabled = true
 ): UseCloudSyncReturn {
   // Trial/standalone: no account to save to — the hook is inert.
   const on = cloudEnabled && active;
@@ -639,7 +641,7 @@ export function useCloudSync(
   // Offline, or a save failed: wait, and retry as soon as the connection
   // is back ('online' event).
   React.useEffect(() => {
-    if (!on || (chart.openedExisting && !editingUnlocked)) return;
+    if (!on || !autosaveEnabled || (chart.openedExisting && !editingUnlocked)) return;
     if (!dirty || !online) return;
     // A new chart's first save waits until the practice is known.
     if (!practiceReady && !everSaved) return;
@@ -650,7 +652,7 @@ export function useCloudSync(
     const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
+  }, [autosaveEnabled, workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -816,6 +818,7 @@ export function useCloudSync(
 
   return {
     enabled: on,
+    autosaveEnabled,
     captureWorkspace,
     restoreWorkspace,
     resumeWorkspace,

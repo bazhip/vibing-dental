@@ -65,3 +65,12 @@ describe('My charts — History', () => {
     expect(onOpenHistory).toHaveBeenCalledWith('b2', expect.stringContaining('Max'));
   });
 });
+
+it('dismisses row actions on an outside pointer press', async () => {
+  setup();
+  const history = await screen.findByTitle("Who saved Bella's chart, and when");
+  const details = history.closest('details')!;
+  details.open = true;
+  fireEvent.pointerDown(document.body);
+  expect(details.open).toBe(false);
+});

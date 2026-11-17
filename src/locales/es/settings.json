@@ -262,6 +262,10 @@
       "moveDown": "Bajar {{name}}",
       "count": "{{used}} de {{max}} configurados",
       "limit": "Límite alcanzado. Elimine un elemento para añadir otro."
+    },
+    "autosave": {
+      "label": "Guardado automático",
+      "hint": "Guarde automáticamente los cambios del historial. Desactive esta opción para guardar manualmente."
     }
   },
   "feedback": {

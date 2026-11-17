@@ -20,6 +20,7 @@ export interface ChartStatusInput {
   online: boolean;
   hasName: boolean;
   awaitingClinical: boolean;
+  autosaveEnabled?: boolean;
   /** ISO time of the last cloud save ('' = never). */
   lastSavedAt: string;
   /** The visit date (yyyy-mm-dd). */
@@ -73,7 +74,7 @@ export function chartStatus(i: ChartStatusInput, t: TFunction<'chart'>, fmt: Cha
     if (i.dirty && !i.online) return { text: t('status.offline', { ns: 'app' }), tone: 'normal' };
     if (i.dirty && !i.hasName) return { text: t('status.needsName', { ns: 'app' }), tone: 'normal' };
     if (i.awaitingClinical) return { text: t('ios.status.keptOnDevice'), tone: 'normal', canSaveNow: true };
-    if (i.dirty) return { text: t('ios.status.unsaved'), tone: 'normal' };
+    if (i.dirty) return { text: t('ios.status.unsaved'), tone: 'normal', ...(i.autosaveEnabled === false ? { canSaveNow: true } : {}) };
     if (i.lastSavedAt) return { text: t('ios.status.saved', { time: fmt.time(i.lastSavedAt) }), tone: 'normal' };
     return { text: '', tone: 'normal' };
   })();

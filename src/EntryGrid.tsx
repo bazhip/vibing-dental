@@ -234,7 +234,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
   const editable = editUnlocked || currentVisit;
   const native = isNativeApp();
-  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
+  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown, chartSettings.loaded && prefs.autosave);
   const animalTabs = useAnimalTabs(chart, rawCloud, !native);
   const cloud = native ? rawCloud : { ...rawCloud, openChart: animalTabs.openChart, signOut: animalTabs.signOut, confirmDiscardIfDirty: animalTabs.confirmDiscardIfDirty };
   // Owner report is per-practice, admin-flagged, and off by default —
@@ -271,7 +271,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
   const [navigationHost, setNavigationHost] = React.useState<HTMLDivElement | null>(null);
-  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')));
+  const workspacePage = !native && cloud.enabled && route.view === 'rechecks';
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -465,7 +465,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setWhatsNewOpen(false);
     if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
   };
-  // Patients is a full workspace destination; the working chart stays mounted.
+  // Legacy Patients URLs and startup arrivals use the same modal as the tab plus.
   const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
   const [patientPickerOpen, setPatientPickerOpen] = React.useState(false);
   const openLibrary = () => {
@@ -1331,7 +1331,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
       return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
     }
-    if (cloud.awaitingClinical) {
+    if (cloud.awaitingClinical || (cloud.dirty && !prefs.autosave)) {
       // Filled in ahead of time: autosave starts with charting;
       // Save puts it in the cloud now (e.g. to open elsewhere).
       return (
@@ -1361,7 +1361,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       );
     }
     return null;
-  }, [native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
+  }, [prefs.autosave, native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
   React.useEffect(() => {
     if (!saveFeedback) return;
     const kind = cloud.status === 'error' || saveHint ? 'error' : cloud.status === 'saved' ? 'success' : cloud.dirty || cloud.awaitingClinical ? 'warning' : 'info';
@@ -1592,7 +1592,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {(libraryOpen || patientPickerOpen) && (() => {
         const library = <ChartLibrary
-          presentation={patientPickerOpen ? MODAL_PRESENTATION : PAGE_PRESENTATION}
+          presentation={patientPickerOpen || route.view === 'library' ? MODAL_PRESENTATION : PAGE_PRESENTATION}
           key={route.view}
           rechecksOnly={route.view === 'rechecks'}
           viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
@@ -1610,7 +1610,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onLoadPdf={libraryCore.loadPdf}
           onClose={() => { if (patientPickerOpen) setPatientPickerOpen(false); else closeLibrary(); }}
         />;
-        return patientPickerOpen ? createPortal(library, document.body) : library;
+        return patientPickerOpen || route.view === 'library' ? createPortal(library, document.body) : library;
       })()}
     </>
   );
@@ -1912,6 +1912,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         online: cloud.online,
         hasName: !!chart.patientInfo.patientName.trim(),
         awaitingClinical: !!cloud.awaitingClinical,
+        autosaveEnabled: prefs.autosave,
         lastSavedAt: cloud.lastSavedAt || '',
         announceSaved,
         visitDate: chart.patientInfo.date,
@@ -2014,7 +2015,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (fixed position). Mounted on every tab so a recording keeps
             going; shown on the Chart tab only. */}
         {profile.aiEnabled && !trial && (
-          <div className="ios-chart-dictate" hidden={appTab !== 'chart'} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
+          <div className="ios-chart-dictate" hidden={appTab !== 'chart' || readOnly} role="region" aria-label={t('ios.form.dictate', { ns: 'chart' })}>
             <VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
@@ -2145,7 +2146,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage || animalTabs.empty}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty || readOnly}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}

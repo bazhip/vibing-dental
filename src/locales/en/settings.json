@@ -262,6 +262,10 @@
       "moveDown": "Move {{name}} down",
       "count": "{{used}} of {{max}} configured",
       "limit": "Limit reached. Remove an item to add another."
+    },
+    "autosave": {
+      "label": "Autosave",
+      "hint": "Save chart changes automatically. Turn off to save manually."
     }
   },
   "feedback": {
