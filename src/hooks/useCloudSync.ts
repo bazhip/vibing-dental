@@ -20,6 +20,7 @@ import {
   type CloudChartMeta,
 } from '../utils/chartQueries';
 import { speciesBase, speciesDentition } from '../utils/species';
+import { changesPatientIdentity, identityKey, patientIdentityQuestion, type PatientIdentity } from '../utils/patientIdentity';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -279,12 +280,20 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serialized, baselineTick]);
 
+  // A dismissal suppresses automatic questions for this exact change only.
+  const declinedIdentityRef = React.useRef('');
+  const identityCheckingRef = React.useRef(false);
+  const snapshotIdentity = (snap: ChartSnapshot): PatientIdentity => ({
+    patient_name: snap.patientInfo.patientName ?? '',
+    patient_number: snap.patientInfo.patientNumber ?? '',
+  });
+
   const upsertChart = React.useCallback(async (
     json: string,
     id: string,
     /** Restoring an earlier version: stamped so history starts a new
      *  revision instead of merging the restore into the latest one. */
-    opts: { restore?: boolean } = {}
+    opts: { restore?: boolean; automatic?: boolean } = {}
   ): Promise<void> => {
     if (!supabase) return;
     const client = supabase;
@@ -297,11 +306,9 @@ export function useCloudSync(
       const { data: sessionData } = await client.auth.getSession();
       // eslint-disable-next-line no-restricted-syntax -- dev-only: describeSaveError matches this English text and shows app:sync.sessionExpired
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
-      const snap: ChartSnapshot = JSON.parse(json);
+      let snap: ChartSnapshot = JSON.parse(json);
       // The snapshot's `species` is the combined layout key (e.g.
       // 'canine-deciduous'); the row stores species + dentition split out.
-      const base = speciesBase(snap.species);
-      const dentition = speciesDentition(snap.species);
       // Bookkeeping for a save that landed. Only for the chart it saved:
       // if another chart was opened meanwhile, crediting the save to it
       // marked a never-saved new visit "saved" (skipping the duplicate
@@ -330,8 +337,8 @@ export function useCloudSync(
         owner_name: snap.patientInfo.ownerName ?? '',
         owner_phone: snap.patientInfo.ownerPhone ?? '',
         owner_email: snap.patientInfo.ownerEmail ?? '',
-        species: base,
-        dentition,
+        species: speciesBase(snap.species),
+        dentition: speciesDentition(snap.species),
         chart_date: snap.patientInfo.date,
         recall_date: snap.patientInfo.recallDate ?? '',
         data: snap,
@@ -366,6 +373,50 @@ export function useCloudSync(
           });
           conflictRef.current = { chartId: id, mode: replace ? 'force' : 'blocked' };
           if (!replace) fail(saveFailure('sync.notSavedConflict', 'Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
+        }
+      }
+      // Always read the server identity, including a working chart restored
+      // from localStorage: openedExisting/lastSaved are not proof it is new.
+      // Explicit history restores already have their own deliberate flow.
+      if (!opts.restore) {
+        if (identityCheckingRef.current) return;
+        identityCheckingRef.current = true;
+        try {
+          const proposed = snapshotIdentity(snap);
+          const stillCurrent = () => latest.current.chartId === id &&
+            identityKey(snapshotIdentity(JSON.parse(latest.current.serialized) as ChartSnapshot)) === identityKey(proposed);
+          const { data: saved, error: identityError } = await client.from('charts')
+            .select('patient_name, patient_number').eq('id', id).maybeSingle();
+          if (identityError) fail(identityError);
+          if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+          if (saved && changesPatientIdentity(saved as PatientIdentity, proposed)) {
+            const changeKey = JSON.stringify([id, identityKey(saved as PatientIdentity), identityKey(proposed)]);
+            if (opts.automatic && declinedIdentityRef.current === changeKey) {
+              fail(new SaveFailure('', i18n.t('sync.identity.paused', { ns: 'app' })));
+            }
+            const answer = await chooseDialog(patientIdentityQuestion(saved as PatientIdentity, proposed));
+            if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+            if (answer !== 'correct') {
+              declinedIdentityRef.current = changeKey;
+              fail(new SaveFailure('', i18n.t('sync.identity.paused', { ns: 'app' })));
+            }
+            // A teammate may have changed the saved patient while this
+            // dialog was open. Approval only covers the displayed pair.
+            const { data: current, error: recheckError } = await client.from('charts')
+              .select('patient_name, patient_number').eq('id', id).maybeSingle();
+            if (recheckError) fail(recheckError);
+            if (!current || identityKey(current as PatientIdentity) !== identityKey(saved as PatientIdentity)) {
+              fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+            }
+          }
+          if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+          // Include clinical edits made during the question; their autosave
+          // tick may already have been suppressed by the pending guard.
+          json = latest.current.serialized;
+          snap = JSON.parse(json) as ChartSnapshot;
+          declinedIdentityRef.current = '';
+        } finally {
+          identityCheckingRef.current = false;
         }
       }
       setStatus('saving');
@@ -486,13 +537,13 @@ export function useCloudSync(
     return false;
   };
 
-  const saveNow = React.useCallback(async (): Promise<void> => {
+  const saveNow = React.useCallback(async (automatic = false): Promise<void> => {
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
     if (!hasContent(snap)) return;
     // One question at a time: an autosave tick while the dialog is open
     // must not stack a second one (or save before it's answered).
-    if (dupCheckingRef.current) return;
+    if (dupCheckingRef.current || identityCheckingRef.current) return;
     dupCheckingRef.current = true;
     let proceed: boolean;
     try {
@@ -500,10 +551,10 @@ export function useCloudSync(
     } finally {
       dupCheckingRef.current = false;
     }
-    if (!proceed) return;
+    if (!proceed || latest.current.chartId !== id) return;
     // The chart may have changed while the question was open — save the
     // latest content.
-    await upsertChart(latest.current.serialized, latest.current.chartId);
+    await upsertChart(latest.current.serialized, id, { automatic });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
 
@@ -526,7 +577,7 @@ export function useCloudSync(
     // Filled in ahead of time (patient/owner details only): wait for
     // charting to start, or for an explicit Save.
     if (awaitingClinical) return;
-    const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
+    const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
