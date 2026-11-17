@@ -66,7 +66,8 @@
     "newPatient": "Nouveau patient",
     "newPatientShort": "Nouveau",
     "newPatientTitle": "Démarrer un dossier vierge pour un nouveau patient",
-    "doneEditingShort": "Terminé"
+    "doneEditingShort": "Terminé",
+    "addLogo": "Ajouter un logo"
   },
   "status": {
     "srSaving": "Enregistrement du dossier",
@@ -300,5 +301,23 @@
     "more": "Plus",
     "patientNumber": "Numéro du patient {{number}}",
     "visitDate": "Visite : {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animaux ouverts",
+    "unnamed": "Nouvel animal",
+    "ownerUnknown": "Propriétaire non renseigné",
+    "close": "Fermer l’onglet de {{name}}",
+    "closeHint": "Fermer l’onglet sans supprimer le patient",
+    "add": "Ouvrir un autre animal",
+    "emptyTitle": "Aucun animal ouvert",
+    "emptyBody": "Ouvrez un patient pour commencer la saisie.",
+    "open": "Ouvrir un animal",
+    "saveFirst": "Enregistrez le dossier actuel avant de changer d’animal. Saisissez le nom du patient s’il manque.",
+    "pid": "ID patient {{number}}",
+    "noPid": "Sans ID patient",
+    "previous": "Animaux précédents",
+    "next": "Animaux suivants",
+    "closeUnsaved": "Cet onglet contient encore des modifications non enregistrées. Ouvrez-le et enregistrez-les avant de le fermer.",
+    "summary": "{{name}} · {{details}}"
   }
 }

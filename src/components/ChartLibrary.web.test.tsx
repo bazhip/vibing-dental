@@ -259,3 +259,14 @@ it('restores search and filters from session-owned view state when reopened', as
   expect(screen.getByRole('combobox', { name: 'Filter by species' })).toHaveValue('canine');
   await waitFor(() => expect(lastQuery(existing.listCharts)).toMatchObject({ search: 'Bella', species: 'canine' }));
 });
+
+it('opens a patient from the row background without double-opening its name button', async () => {
+  const { container, onOpen } = setup();
+  await screen.findByTitle('Open latest visit for Bella');
+  const row = container.querySelector('.chart-library__group-main')!;
+  fireEvent.click(row.querySelector('.chart-library__cell--number')!);
+  await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(row.querySelector('.chart-library__open-patient')!).not.toBeDisabled());
+  fireEvent.click(row.querySelector('.chart-library__open-patient')!);
+  await waitFor(() => expect(onOpen).toHaveBeenCalledTimes(2));
+});

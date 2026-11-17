@@ -170,12 +170,57 @@ describe('saved visit on the website (unchanged)', () => {
     expect(screen.queryByRole('note', { name: 'View only' })).toBeNull();
     expect(container.querySelector('.sidebar-layout__fieldset')).not.toBeDisabled();
   });
-  it('keeps the topbar chip and Edit chart button, and no iOS bar', async () => {
+  it('keeps view-only context beside the chart rather than in the header', async () => {
     flags.native = false;
     const { container } = await renderApp();
     expect(container.querySelector('.ios-navbar')).toBeNull();
-    expect(container.querySelector('.topbar-state-chip--viewing')).not.toBeNull();
+    expect(container.querySelector('.topbar-state-chip--viewing')).toBeNull();
+    expect(screen.getByRole('note', { name: 'View only' })).toBeVisible();
     expect(within(container.querySelector('.entry-grid__topbar') as HTMLElement).queryByRole('button', { name: /Edit chart/ })).toBeNull();
     expect(screen.getAllByRole('button', { name: /Edit chart/ }).length).toBeGreaterThan(0);
   });
+});
+
+it('opens the plus patient picker as a modal over the mounted chart without navigation', async () => {
+  flags.native = false;
+  const { container } = await renderApp();
+  const form = container.querySelector('#chart-form');
+  const hash = window.location.hash;
+  fireEvent.click(screen.getByRole('button', { name: 'Open another animal' }));
+  const dialog = await screen.findByRole('dialog', { name: /Patients|My charts/ });
+  expect(dialog).toHaveAttribute('aria-modal', 'true');
+  expect(window.location.hash).toBe(hash);
+  expect(container.querySelector('#chart-form')).toBe(form);
+  expect(form).toBeVisible();
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+  expect(screen.queryByRole('dialog', { name: /Patients|My charts/ })).toBeNull();
+});
+
+it('keeps the read-only notice visible in every chart section', async () => {
+  flags.native = false;
+  const { container } = await renderApp();
+  const navigation = container.querySelector('.sidebar-layout__nav')!;
+  for (const button of within(navigation as HTMLElement).getAllByRole('button')) {
+    fireEvent.click(button);
+    expect(screen.getByRole('note', { name: 'View only' })).toBeVisible();
+    expect(screen.getByRole('note', { name: 'View only' })).toHaveTextContent('Editing is off');
+  }
+  expect(within(container.querySelector('header')!).queryByText('View only')).toBeNull();
+  expect(within(container.querySelector('header')!).queryByRole('button', { name: 'New patient' })).toBeNull();
+});
+
+it('opens practice settings over the current chart from its name and missing-logo control', async () => {
+  flags.native = false;
+  const { container } = await renderApp();
+  const hash = window.location.hash;
+  const form = container.querySelector('#chart-form');
+  expect(screen.queryByRole('button', { name: 'Current visit' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Add logo' }));
+  const dialog = await screen.findByRole('dialog', { name: 'Practice settings' });
+  expect(within(dialog).getByRole('navigation', { name: 'Practice settings' })).toBeVisible();
+  expect(window.location.hash).toBe(hash);
+  expect(form).toBeVisible();
+  fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+  fireEvent.click(container.querySelector('.entry-grid__practice-link')!);
+  expect(await screen.findByRole('dialog', { name: 'Practice settings' })).toBeVisible();
 });

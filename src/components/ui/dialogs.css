@@ -85,7 +85,7 @@
   pointer-events: auto;
   animation: ui-pop 0.16s ease-out;
 }
-.ui-toast--success { border-left: 4px solid var(--ios-success, #22c55e); }
+.ui-toast--success { background: var(--action-tint); color: var(--primary); border-left: 4px solid var(--primary); }
 .ui-toast--error { background: var(--ios-danger-hud, #7f1d1d); border-left: 4px solid var(--ios-on-dark-danger, #fca5a5); }
 .ui-toast__msg { flex: 1 1 auto; }
 .ui-toast__action {
@@ -107,7 +107,7 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: var(--ios-on-dark-2, rgba(255, 255, 255, 0.75));
+  color: inherit;
   font-size: 1.2rem;
   cursor: pointer;
 }
@@ -123,3 +123,10 @@
   .ui-dialog__actions { flex-direction: column-reverse; }
   .ui-dialog__actions .ui-btn { width: 100%; }
 }
+
+.ui-toast--warning { background: var(--ios-warning-fill, #fef3c7); color: var(--ios-warning-label, #92400e); border-left: 4px solid var(--ios-warning-solid, #d97706); }
+.ui-toast .save-status { background: transparent; color: inherit; border: 0; padding: 0; font: inherit; }
+.ui-toast .save-status-error-wrap { align-items: flex-start; }
+.ui-toast .save-status__detail { color: inherit; }
+
+@media (max-width: 600px) { .ui-toast__close, .ui-toast__action { min-width: 44px; min-height: 44px; } }

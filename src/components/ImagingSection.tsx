@@ -241,9 +241,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   return (
     <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
-      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')}>
-        {store.loaded && store.maxImages > 0 && <span className="patient-form__hint">{t('imaging.usage', { used: store.items.length, max: store.maxImages })}</span>}
-      </SectionHeader>
+      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label

@@ -204,8 +204,8 @@
 }
 
 /* Recheck removal is attached to its date, separate from opening a visit. */
-.chart-library__group-main { cursor: default; }
-.chart-library__group-main:hover { background: transparent; }
+.chart-library__group-main { cursor: pointer; }
+.chart-library__group-main:hover, .chart-library__group-main:focus-within { background: var(--action-tint); }
 .chart-library__open-patient { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; max-width: 100%; }
 .chart-library__open-patient:hover { text-decoration: underline; text-underline-offset: 3px; }
 .chart-library__group-main .chart-library__cell--recall:not(.chart-library__cell--empty) { display: flex; align-items: center; gap: 4px; overflow: visible; white-space: normal; }

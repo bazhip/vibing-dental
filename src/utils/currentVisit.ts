@@ -14,3 +14,12 @@ export function isCurrentVisit(
 ): boolean {
   return chartDate === today && (visits.length === 0 || visits[0].id === chartId);
 }
+
+/** Exclude the previous animal's asynchronously loaded visits immediately. */
+export function visitsForPatient<T extends { patient_number: string; patient_name: string }>(
+  visits: readonly T[], number: string, name: string,
+): T[] {
+  const normalize = (value: string) => (value ?? '').trim().toLowerCase();
+  const key = (n: string, nm: string) => normalize(n) ? `n:${normalize(n)}` : `p:${normalize(nm)}`;
+  return visits.filter(visit => key(visit.patient_number, visit.patient_name) === key(number, name));
+}

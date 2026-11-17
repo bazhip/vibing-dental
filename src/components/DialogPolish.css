@@ -14,7 +14,7 @@ html:not(.native-ios) :is(.ai-settings-modal, .ui-dialog, .pdf-preview-modal) {
 }
 
 /* Preserve wider library, history and admin modal variants. */
-html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-history):not(.admin-panel):not(.admin-chart-viewer):not(.report-templates):not(.chart-customization) {
+html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-history):not(.admin-panel):not(.admin-chart-viewer):not(.report-templates):not(.chart-customization):not(.practice-settings-modal) {
   max-width: 600px;
 }
 html:not(.native-ios) .ai-settings-modal.feedback-modal { max-width: 560px; }

@@ -332,6 +332,70 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "app:animalTabs.add": {
+      "hash": "e29cbd67e4e8",
+      "status": "machine"
+    },
+    "app:animalTabs.close": {
+      "hash": "dcdd2d9c132a",
+      "status": "machine"
+    },
+    "app:animalTabs.closeHint": {
+      "hash": "d437521eea01",
+      "status": "machine"
+    },
+    "app:animalTabs.closeUnsaved": {
+      "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyBody": {
+      "hash": "053d0eb584d1",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyTitle": {
+      "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.label": {
+      "hash": "a5565923c668",
+      "status": "machine"
+    },
+    "app:animalTabs.next": {
+      "hash": "5ec7d30d9699",
+      "status": "machine"
+    },
+    "app:animalTabs.noPid": {
+      "hash": "7577c2250817",
+      "status": "machine"
+    },
+    "app:animalTabs.open": {
+      "hash": "7c4a0f9265ac",
+      "status": "machine"
+    },
+    "app:animalTabs.ownerUnknown": {
+      "hash": "fd9fd0f17b53",
+      "status": "machine"
+    },
+    "app:animalTabs.pid": {
+      "hash": "2e3ec5ba07f6",
+      "status": "machine"
+    },
+    "app:animalTabs.previous": {
+      "hash": "71364d4e8980",
+      "status": "machine"
+    },
+    "app:animalTabs.saveFirst": {
+      "hash": "930818b92853",
+      "status": "machine"
+    },
+    "app:animalTabs.summary": {
+      "hash": "949c91ba2601",
+      "status": "machine"
+    },
+    "app:animalTabs.unnamed": {
+      "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
     "app:brand": {
       "hash": "60366bdda79b",
       "status": "machine"
@@ -1022,6 +1086,10 @@
     },
     "app:todaysVisit.message": {
       "hash": "a34e59ad6c57",
+      "status": "machine"
+    },
+    "app:topbar.addLogo": {
+      "hash": "43fa2521f5cf",
       "status": "machine"
     },
     "app:topbar.doneEditing": {
@@ -12498,6 +12566,70 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "app:animalTabs.add": {
+      "hash": "e29cbd67e4e8",
+      "status": "machine"
+    },
+    "app:animalTabs.close": {
+      "hash": "dcdd2d9c132a",
+      "status": "machine"
+    },
+    "app:animalTabs.closeHint": {
+      "hash": "d437521eea01",
+      "status": "machine"
+    },
+    "app:animalTabs.closeUnsaved": {
+      "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyBody": {
+      "hash": "053d0eb584d1",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyTitle": {
+      "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.label": {
+      "hash": "a5565923c668",
+      "status": "machine"
+    },
+    "app:animalTabs.next": {
+      "hash": "5ec7d30d9699",
+      "status": "machine"
+    },
+    "app:animalTabs.noPid": {
+      "hash": "7577c2250817",
+      "status": "machine"
+    },
+    "app:animalTabs.open": {
+      "hash": "7c4a0f9265ac",
+      "status": "machine"
+    },
+    "app:animalTabs.ownerUnknown": {
+      "hash": "fd9fd0f17b53",
+      "status": "machine"
+    },
+    "app:animalTabs.pid": {
+      "hash": "2e3ec5ba07f6",
+      "status": "machine"
+    },
+    "app:animalTabs.previous": {
+      "hash": "71364d4e8980",
+      "status": "machine"
+    },
+    "app:animalTabs.saveFirst": {
+      "hash": "930818b92853",
+      "status": "machine"
+    },
+    "app:animalTabs.summary": {
+      "hash": "949c91ba2601",
+      "status": "machine"
+    },
+    "app:animalTabs.unnamed": {
+      "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
     "app:brand": {
       "hash": "60366bdda79b",
       "status": "machine"
@@ -13196,6 +13328,10 @@
     },
     "app:todaysVisit.message": {
       "hash": "a34e59ad6c57",
+      "status": "machine"
+    },
+    "app:topbar.addLogo": {
+      "hash": "43fa2521f5cf",
       "status": "machine"
     },
     "app:topbar.doneEditing": {
@@ -24776,6 +24912,70 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "app:animalTabs.add": {
+      "hash": "e29cbd67e4e8",
+      "status": "machine"
+    },
+    "app:animalTabs.close": {
+      "hash": "dcdd2d9c132a",
+      "status": "machine"
+    },
+    "app:animalTabs.closeHint": {
+      "hash": "d437521eea01",
+      "status": "machine"
+    },
+    "app:animalTabs.closeUnsaved": {
+      "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyBody": {
+      "hash": "053d0eb584d1",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyTitle": {
+      "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.label": {
+      "hash": "a5565923c668",
+      "status": "machine"
+    },
+    "app:animalTabs.next": {
+      "hash": "5ec7d30d9699",
+      "status": "machine"
+    },
+    "app:animalTabs.noPid": {
+      "hash": "7577c2250817",
+      "status": "machine"
+    },
+    "app:animalTabs.open": {
+      "hash": "7c4a0f9265ac",
+      "status": "machine"
+    },
+    "app:animalTabs.ownerUnknown": {
+      "hash": "fd9fd0f17b53",
+      "status": "machine"
+    },
+    "app:animalTabs.pid": {
+      "hash": "2e3ec5ba07f6",
+      "status": "machine"
+    },
+    "app:animalTabs.previous": {
+      "hash": "71364d4e8980",
+      "status": "machine"
+    },
+    "app:animalTabs.saveFirst": {
+      "hash": "930818b92853",
+      "status": "machine"
+    },
+    "app:animalTabs.summary": {
+      "hash": "949c91ba2601",
+      "status": "machine"
+    },
+    "app:animalTabs.unnamed": {
+      "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
     "app:brand": {
       "hash": "60366bdda79b",
       "status": "machine"
@@ -25474,6 +25674,10 @@
     },
     "app:todaysVisit.message": {
       "hash": "a34e59ad6c57",
+      "status": "machine"
+    },
+    "app:topbar.addLogo": {
+      "hash": "43fa2521f5cf",
       "status": "machine"
     },
     "app:topbar.doneEditing": {
@@ -37054,6 +37258,70 @@
       "hash": "470e7ee2a579",
       "status": "machine"
     },
+    "app:animalTabs.add": {
+      "hash": "e29cbd67e4e8",
+      "status": "machine"
+    },
+    "app:animalTabs.close": {
+      "hash": "dcdd2d9c132a",
+      "status": "machine"
+    },
+    "app:animalTabs.closeHint": {
+      "hash": "d437521eea01",
+      "status": "machine"
+    },
+    "app:animalTabs.closeUnsaved": {
+      "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyBody": {
+      "hash": "053d0eb584d1",
+      "status": "machine"
+    },
+    "app:animalTabs.emptyTitle": {
+      "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.label": {
+      "hash": "a5565923c668",
+      "status": "machine"
+    },
+    "app:animalTabs.next": {
+      "hash": "5ec7d30d9699",
+      "status": "machine"
+    },
+    "app:animalTabs.noPid": {
+      "hash": "7577c2250817",
+      "status": "machine"
+    },
+    "app:animalTabs.open": {
+      "hash": "7c4a0f9265ac",
+      "status": "machine"
+    },
+    "app:animalTabs.ownerUnknown": {
+      "hash": "fd9fd0f17b53",
+      "status": "machine"
+    },
+    "app:animalTabs.pid": {
+      "hash": "2e3ec5ba07f6",
+      "status": "machine"
+    },
+    "app:animalTabs.previous": {
+      "hash": "71364d4e8980",
+      "status": "machine"
+    },
+    "app:animalTabs.saveFirst": {
+      "hash": "930818b92853",
+      "status": "machine"
+    },
+    "app:animalTabs.summary": {
+      "hash": "949c91ba2601",
+      "status": "machine"
+    },
+    "app:animalTabs.unnamed": {
+      "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
     "app:brand": {
       "hash": "60366bdda79b",
       "status": "machine"
@@ -37752,6 +38020,10 @@
     },
     "app:todaysVisit.message": {
       "hash": "a34e59ad6c57",
+      "status": "machine"
+    },
+    "app:topbar.addLogo": {
+      "hash": "43fa2521f5cf",
       "status": "machine"
     },
     "app:topbar.doneEditing": {

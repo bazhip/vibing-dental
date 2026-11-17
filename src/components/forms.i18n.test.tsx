@@ -254,7 +254,7 @@ describe('ImagingSection', () => {
     imaging.override = store();
     const { container, rerender } = render(<ImagingSection {...props} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    expect(screen.getByText('⟦1 of 5 images⟧')).toBeInTheDocument();
+    expect(screen.queryByText('⟦1 of 5 images⟧')).toBeNull();
     imaging.override = store({ items: three, dicomEnabled: false });
     rerender(<ImagingSection {...props} pdfExcludedImages={['a2']} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);

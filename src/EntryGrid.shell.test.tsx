@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 // The website and the iOS app render EntryGrid from the same code; this
@@ -44,10 +44,11 @@ describe('EntryGrid on the website', () => {
     expect(container.querySelector('.entry-grid-container > header.entry-grid__topbar')).not.toBeNull();
     // Phone layouts hide practice branding without hiding encounter identity.
     const brand = container.querySelector('.entry-grid__practice-brand')!;
-    const patient = container.querySelector('.entry-grid__patient')!;
+    const patient = container.querySelector<HTMLElement>('.entry-grid__patient-workspace')!;
     expect(brand).not.toBeNull();
     expect(brand.contains(patient)).toBe(false);
-    expect(brand.parentElement).toBe(patient.parentElement);
+    expect(brand.parentElement).toContainElement(patient);
+    expect(brand).not.toHaveAttribute('hidden');
 
     expect(container.querySelector('.sidebar-layout__nav')).not.toBeNull();
     expect(container.querySelector('.mobile-section-menu')).not.toBeNull();
@@ -59,7 +60,8 @@ describe('EntryGrid on the website', () => {
     expect(container.querySelector('.visit-export__button')).not.toBeNull();
     expect(container.querySelector('.entry-grid__footnote')).not.toBeNull();
     expect(container.querySelector('.ios-appshell')).toBeNull();
-    expect(screen.queryByRole('tablist')).toBeNull();
+    expect(container.querySelector('header')).toContainElement(screen.getByRole('tablist', { name: 'Open animals' }));
+    expect(container.querySelector('.entry-grid__patient-name')).toBeNull();
     // The chart remains mounted inside the destination content.
     expect(container.querySelector('#workspace-content form#chart-form')).not.toBeNull();
     expect(container.querySelector('.sidebar-layout__nav')).toHaveTextContent('Imaging');
@@ -68,6 +70,24 @@ describe('EntryGrid on the website', () => {
     fireEvent(action, enter);
     expect(enter.defaultPrevented).toBe(false);
   });
+});
+
+it('keeps each animal’s patient details when adding and switching local tabs', async () => {
+  await renderGrid();
+  fireEvent.change(screen.getByPlaceholderText('Enter patient name'), { target: { value: 'Luna' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Open another animal' }));
+  await screen.findByRole('tab', { name: /New animal/ });
+  fireEvent.change(screen.getByPlaceholderText('Enter patient name'), { target: { value: 'Oliver' } });
+  fireEvent.click(screen.getByRole('tab', { name: /Luna/ }));
+  await screen.findByDisplayValue('Luna');
+  fireEvent.click(screen.getByRole('tab', { name: /Oliver/ }));
+  await screen.findByDisplayValue('Oliver');
+  fireEvent.click(screen.getByRole('button', { name: 'Close Luna tab' }));
+  expect(screen.getByDisplayValue('Oliver')).toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByRole('tab', { name: /Luna/ })).toBeNull());
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Close Oliver tab' })).toBeEnabled());
+  fireEvent.click(screen.getByRole('button', { name: 'Close Oliver tab' }));
+  await screen.findByRole('heading', { name: 'No animal open' });
 });
 
 describe('EntryGrid in the iOS app', () => {

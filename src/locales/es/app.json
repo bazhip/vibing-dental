@@ -66,7 +66,8 @@
     "newPatient": "Nuevo paciente",
     "newPatientShort": "Nuevo",
     "newPatientTitle": "Iniciar un historial en blanco para un paciente nuevo",
-    "doneEditingShort": "Listo"
+    "doneEditingShort": "Listo",
+    "addLogo": "Añadir logotipo"
   },
   "status": {
     "srSaving": "Guardando el historial",
@@ -300,5 +301,23 @@
     "more": "Más",
     "patientNumber": "Número del paciente {{number}}",
     "visitDate": "Visita: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animales abiertos",
+    "unnamed": "Nuevo animal",
+    "ownerUnknown": "Propietario no indicado",
+    "close": "Cerrar la pestaña de {{name}}",
+    "closeHint": "Cerrar la pestaña sin eliminar al paciente",
+    "add": "Abrir otro animal",
+    "emptyTitle": "Ningún animal abierto",
+    "emptyBody": "Abra un paciente para empezar a registrar los datos.",
+    "open": "Abrir un animal",
+    "saveFirst": "Guarde el historial actual antes de cambiar de animal. Introduzca el nombre del paciente si falta.",
+    "pid": "ID del paciente {{number}}",
+    "noPid": "Sin ID de paciente",
+    "previous": "Animales anteriores",
+    "next": "Animales siguientes",
+    "closeUnsaved": "Esta pestaña aún contiene cambios sin guardar. Ábrala y guarde los cambios antes de cerrarla.",
+    "summary": "{{name}} · {{details}}"
   }
 }

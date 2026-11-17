@@ -66,7 +66,8 @@
     "newPatient": "Nuovo paziente",
     "newPatientShort": "Nuovo",
     "newPatientTitle": "Avviare una cartella vuota per un nuovo paziente",
-    "doneEditingShort": "Fine"
+    "doneEditingShort": "Fine",
+    "addLogo": "Aggiungi logo"
   },
   "status": {
     "srSaving": "Salvataggio della cartella",
@@ -300,5 +301,23 @@
     "more": "Altro",
     "patientNumber": "Numero del paziente {{number}}",
     "visitDate": "Visita: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animali aperti",
+    "unnamed": "Nuovo animale",
+    "ownerUnknown": "Proprietario non inserito",
+    "close": "Chiudere la scheda di {{name}}",
+    "closeHint": "Chiudere la scheda senza eliminare il paziente",
+    "add": "Aprire un altro animale",
+    "emptyTitle": "Nessun animale aperto",
+    "emptyBody": "Apra un paziente per iniziare la compilazione.",
+    "open": "Aprire un animale",
+    "saveFirst": "Salvi la cartella attuale prima di cambiare animale. Inserisca il nome del paziente se manca.",
+    "pid": "ID paziente {{number}}",
+    "noPid": "Nessun ID paziente",
+    "previous": "Animali precedenti",
+    "next": "Animali successivi",
+    "closeUnsaved": "Questa scheda contiene ancora modifiche non salvate. La apra e salvi le modifiche prima di chiuderla.",
+    "summary": "{{name}} · {{details}}"
   }
 }

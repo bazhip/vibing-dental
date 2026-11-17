@@ -128,7 +128,7 @@ describe('Chart page on the website (unchanged)', () => {
     const { container } = await renderGrid();
     expect(container.querySelector('.ios-navbar')).toBeNull();
     expect(container.querySelector('.ios-chart-notice')).toBeNull();
-    expect(container.querySelector('.entry-grid__topbar .save-status')?.textContent).toBe('On this device only');
+    expect(container.querySelector('.entry-grid__footnote .save-status')?.textContent).toBe('On this device only');
     expect(container.querySelector('.visit-export__button')?.textContent).toBe('⤓ Review and export');
     // Section-header Customize stays on the website.
     expect(screen.getAllByRole('button', { name: 'Customize' }).length).toBeGreaterThan(0);

@@ -39,6 +39,7 @@ interface PracticeSettingsModalProps {
    *  tab — Save sits in the navigation bar while the name has an edit, and
    *  Back asks before discarding it. Default: the dialog. */
   presentation?: 'modal' | 'screen' | 'page';
+  sectionNavigation?: boolean;
   onOpenReminders?: () => void;
   onOpenChartSettings?: () => void;
   /** Register the page's unsaved-name guard with the app navigation. */
@@ -84,6 +85,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   onClose,
   profile,
   presentation = 'modal',
+  sectionNavigation = false,
   onCustomizeReport,
   onOpenReminders,
   onOpenChartSettings,
@@ -92,6 +94,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const { t } = useTranslation('settings');
   const asScreen = presentation === 'screen';
   const asPage = presentation === 'page';
+  const sectioned = asPage || sectionNavigation;
   const [section, setSection] = React.useState<'general' | 'team' | 'templates' | 'billing'>('general');
   const [nameDraft, setNameDraft] = React.useState<string | null>(null);
   const practiceName = nameDraft ?? profile.practiceName;
@@ -498,7 +501,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     <>
       {/* ---- Identity ------------------------------------------------ */}
       <form
-        hidden={asPage && section !== 'general'}
+        hidden={sectioned && section !== 'general'}
         className="ai-settings-section"
         onSubmit={(e) => {
           e.preventDefault();
@@ -531,7 +534,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       </form>
 
       {/* ---- Logo --------------------------------------------------- */}
-      <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
+      <section className="ai-settings-section" hidden={sectioned && section !== 'general'}>
         <span className="patient-form__label">{t('practice.logo.label')}</span>
         {profile.logoUrl ? (
           <div className="practice-logo-row">
@@ -567,7 +570,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       </section>
 
       {/* ---- Team --------------------------------------------------- */}
-      <section className="ai-settings-section" hidden={asPage && section !== 'team'}>
+      <section className="ai-settings-section" hidden={sectioned && section !== 'team'}>
         <h3 className="ai-settings-subhead">{t('practice.team.title')}</h3>
         {!team.enabled ? null : !team.loaded ? (
           <p className="practice-logo-empty">{t('practice.team.loading')}</p>
@@ -700,7 +703,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Language for pet owners ----------------------------------- */}
       {team.practice && (
-        <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
+        <section className="ai-settings-section" hidden={sectioned && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.clientLanguage.title')}</h3>
           <p className="ai-settings-blurb">{t('practice.clientLanguage.blurb')}</p>
           {isOwner ? (
@@ -732,7 +735,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       )}
 
       {treatmentTemplates.enabled && (
-        <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
+        <section className="ai-settings-section" hidden={sectioned && section !== 'templates'}>
           <h3 className="ai-settings-subhead">{t('practice.treatmentReport.title')}</h3>
           <p className="ai-settings-blurb">{t('practice.treatmentReport.blurb')}</p>
           <ul className="treatment-templates__list">
@@ -756,7 +759,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Owner report --------------------------------------------- */}
       {profile.ownerReportEnabled && (
-        <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
+        <section className="ai-settings-section" hidden={sectioned && section !== 'templates'}>
           <h3 className="ai-settings-subhead">{t('practice.ownerReport.title')}</h3>
           <p className="ai-settings-blurb">
             {t('practice.ownerReport.blurb')}
@@ -773,7 +776,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
       {/* ---- Billing (web only) -------------------------------------- */}
       {showBilling && (
-        <section className="ai-settings-section" hidden={asPage && section !== 'billing'}>
+        <section className="ai-settings-section" hidden={sectioned && section !== 'billing'}>
           <h3 className="ai-settings-subhead">{t('settings.title', { ns: 'billing' })}</h3>
           {!billing ? (
             billingError ? (
@@ -900,7 +903,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       {/* ---- Delete practice (primary owner only) -------------------- */}
       {team.practice && team.primaryOwnerId != null &&
         team.members.some((m) => m.isYou && m.userId === team.primaryOwnerId) && (
-        <section className="ai-settings-section" hidden={asPage && section !== 'general'}>
+        <section className="ai-settings-section" hidden={sectioned && section !== 'general'}>
           <h3 className="ai-settings-subhead">{t('practice.deletion.title')}</h3>
           <p className="patient-form__hint">
             {t('practice.deletion.blurb')}
@@ -950,18 +953,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   if (profile.ownerReportEnabled || treatmentTemplates.enabled) pageSections.push('templates');
   if (showBilling) pageSections.push('billing');
 
-  if (asPage) return (
-    <main className="practice-workspace" aria-labelledby="practice-workspace-title">
-      <header className="practice-workspace__header">
-        <div>
-          <h1 id="practice-workspace-title">{t('practice.title')}</h1>
-          <p>{t('workspace.scope')}</p>
-        </div>
-        <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={nameBusy}>
-          {t('workspace.back')}
-        </button>
-      </header>
-      <div className="practice-workspace__layout">
+  const settingsNavigation = (
         <div>
         <nav className="practice-workspace__nav" aria-label={t('practice.title')}>
           {pageSections.map((id) => (
@@ -977,6 +969,21 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           <button type="button" className="diagram-view__action" onClick={onOpenChartSettings}>{t('workspace.charting')}</button>
         </aside>}
         </div>
+  );
+
+  if (asPage) return (
+    <main className="practice-workspace" aria-labelledby="practice-workspace-title">
+      <header className="practice-workspace__header">
+        <div>
+          <h1 id="practice-workspace-title">{t('practice.title')}</h1>
+          <p>{t('workspace.scope')}</p>
+        </div>
+        <button type="button" className="diagram-view__action" onClick={() => void requestClose()} disabled={nameBusy}>
+          {t('workspace.back')}
+        </button>
+      </header>
+      <div className="practice-workspace__layout">
+        {settingsNavigation}
         <div className="practice-workspace__content">
           <h2>{t(`workspace.${section}`)}</h2>
           {practiceBody}
@@ -991,15 +998,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" {...backdrop} role="dialog" aria-modal="true" aria-labelledby="practice-settings-title">
-      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1}>
+      <div className={`ai-settings-modal${sectionNavigation ? ' practice-settings-modal' : ''}`} ref={modalRef} tabIndex={-1}>
         <header className="ai-settings-header">
           <h2 id="practice-settings-title">{t('practice.title')}</h2>
           <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>
             ×
           </button>
         </header>
-        <div className="ai-settings-body">
-          {practiceBody}
+        <div className={`ai-settings-body${sectionNavigation ? ' practice-workspace__layout' : ''}`}>
+          {sectionNavigation && settingsNavigation}
+          {sectionNavigation ? <div className="practice-workspace__content"><h3>{t(`workspace.${section}`)}</h3>{practiceBody}</div> : practiceBody}
         </div>
         {footer}
       </div>
