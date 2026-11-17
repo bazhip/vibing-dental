@@ -274,7 +274,8 @@
       "blank": "Aucun nom ni numéro de patient",
       "paused": "Les informations du patient ont changé. L’enregistrement est suspendu. Enregistrez à nouveau pour confirmer une correction, ou choisissez Nouveau patient pour un autre patient.",
       "changed": "Le patient a changé pendant la vérification de l’enregistrement. Vérifiez les informations et enregistrez à nouveau."
-    }
+    },
+    "patientNumberFailed": "Impossible d’attribuer un numéro de patient. Réessayez une fois en ligne ou saisissez un numéro de patient."
   },
   "storage": {
     "full": "Le stockage de ce navigateur est plein — les dernières modifications risquent de ne pas être conservées sur cet appareil. Enregistrez le dossier ou téléchargez son PDF."

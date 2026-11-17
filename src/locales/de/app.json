@@ -272,7 +272,8 @@
       "blank": "Kein Name und keine Patientennummer",
       "paused": "Die Patientendaten wurden geändert. Das Speichern ist pausiert. Speichern Sie erneut, um eine Korrektur zu bestätigen, oder wählen Sie Neuer Patient für einen anderen Patienten.",
       "changed": "Der Patient wurde während der Speicherprüfung geändert. Prüfen Sie die Angaben und speichern Sie erneut."
-    }
+    },
+    "patientNumberFailed": "Eine Patientennummer konnte nicht zugewiesen werden. Versuchen Sie es erneut, wenn Sie online sind, oder geben Sie eine Patientennummer ein."
   },
   "storage": {
     "full": "Der Speicher dieses Browsers ist voll — die letzten Änderungen werden auf diesem Gerät möglicherweise nicht behalten. Speichern Sie die Akte oder laden Sie das PDF herunter."

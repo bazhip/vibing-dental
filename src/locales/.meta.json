@@ -1072,6 +1072,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.patientNumberFailed": {
+      "hash": "e78fe2f1246d",
+      "status": "machine"
+    },
     "app:sync.practiceUnknown": {
       "hash": "358a2731d893",
       "status": "machine"
@@ -6098,6 +6102,10 @@
     },
     "forms:patient.number": {
       "hash": "856824905c74",
+      "status": "machine"
+    },
+    "forms:patient.numberPending": {
+      "hash": "c13110fb9ff6",
       "status": "machine"
     },
     "forms:patient.numberPlaceholder": {
@@ -13382,6 +13390,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.patientNumberFailed": {
+      "hash": "e78fe2f1246d",
+      "status": "machine"
+    },
     "app:sync.practiceUnknown": {
       "hash": "358a2731d893",
       "status": "machine"
@@ -18464,6 +18476,10 @@
     },
     "forms:patient.number": {
       "hash": "856824905c74",
+      "status": "machine"
+    },
+    "forms:patient.numberPending": {
+      "hash": "c13110fb9ff6",
       "status": "machine"
     },
     "forms:patient.numberPlaceholder": {
@@ -25804,6 +25820,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.patientNumberFailed": {
+      "hash": "e78fe2f1246d",
+      "status": "machine"
+    },
     "app:sync.practiceUnknown": {
       "hash": "358a2731d893",
       "status": "machine"
@@ -30886,6 +30906,10 @@
     },
     "forms:patient.number": {
       "hash": "856824905c74",
+      "status": "machine"
+    },
+    "forms:patient.numberPending": {
+      "hash": "c13110fb9ff6",
       "status": "machine"
     },
     "forms:patient.numberPlaceholder": {
@@ -38226,6 +38250,10 @@
       "hash": "a7da873dbf57",
       "status": "machine"
     },
+    "app:sync.patientNumberFailed": {
+      "hash": "e78fe2f1246d",
+      "status": "machine"
+    },
     "app:sync.practiceUnknown": {
       "hash": "358a2731d893",
       "status": "machine"
@@ -43308,6 +43336,10 @@
     },
     "forms:patient.number": {
       "hash": "856824905c74",
+      "status": "machine"
+    },
+    "forms:patient.numberPending": {
+      "hash": "c13110fb9ff6",
       "status": "machine"
     },
     "forms:patient.numberPlaceholder": {

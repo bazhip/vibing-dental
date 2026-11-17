@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { createPatientIdentity } from '../utils/patientIds';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -69,6 +70,8 @@ vi.mock('../utils/supabaseClient', () => {
   };
 });
 
+const reserveNumber = vi.hoisted(() => vi.fn(async () => '1001'));
+vi.mock('../utils/patientNumberAllocation', () => ({ reservePatientNumber: reserveNumber }));
 const removeAttachments = vi.hoisted(() => vi.fn(async (_client: unknown, _chartId: string) => {}));
 vi.mock('../utils/chartAttachments', () => ({ removeChartAttachments: removeAttachments }));
 
@@ -114,6 +117,7 @@ const fakeChart = (s: ChartSnapshot, id = 'chart-1') => ({
 }) as unknown as Parameters<typeof useCloudSync>[0];
 
 beforeEach(() => {
+  reserveNumber.mockReset(); reserveNumber.mockResolvedValue('1001');
   store.clear();
   db.identities = {}; db.identityReadFails = false;
   db.visits = []; db.upserts = []; db.opened = []; db.refuseUpserts = 0; db.rowVisible = true; db.failUpserts = 0; db.gate = null; db.gateId = ''; db.deletedRows = [{ id: 'x' }];
@@ -746,4 +750,48 @@ it('does not treat an automatically numbered blank patient as unsaved clinical w
   expect(result.current.dirty).toBe(false);
   await flush();
   expect(db.upserts).toHaveLength(0);
+});
+
+it('reserves a short patient number before saving a new patient', async () => {
+  const snapshot = snap({ exam: true });
+  snapshot.patientInfo = { ...snapshot.patientInfo, ...createPatientIdentity() };
+  const { result } = renderHook(() => {
+    const [info, setPatientInfo] = useState(snapshot.patientInfo);
+    const sync = useCloudSync({ ...fakeChart({ ...snapshot, patientInfo: info }), setPatientInfo }, true, 'practice', false, true, false);
+    return { info, sync };
+  });
+  await flush();
+  expect(result.current.info.patientNumber).toBe('1001');
+  expect(result.current.info.generatedPatientNumber).toBe('1001');
+  await act(async () => { await result.current.sync.saveNow(); });
+  expect(db.upserts.at(-1)).toMatchObject({ patient_number: '1001' });
+});
+
+it('allows explicit Save after autosave is paused for a close confirmation', async () => {
+  vi.useRealTimers();
+  const { result } = renderHook(() => useCloudSync(fakeChart(snap({ exam: true })), true, '', false, true, false));
+  await act(async () => { await result.current.captureWorkspace!(); });
+  await act(async () => { await result.current.saveNow(); });
+  expect(db.upserts).toHaveLength(1);
+});
+it('does not save a patient without a number when reservation fails', async () => {
+  reserveNumber.mockRejectedValue(new Error('offline'));
+  const snapshot = snap({ exam: true });
+  snapshot.patientInfo = { ...snapshot.patientInfo, ...createPatientIdentity() };
+  const { result } = renderHook(() => useCloudSync(fakeChart(snapshot), true, '', false, true, false));
+  await act(async () => { await expect(result.current.saveNow()).rejects.toThrow(); });
+  expect(db.upserts).toHaveLength(0);
+});
+it('ignores a delayed number reservation after switching to another chart', async () => {
+  let resolve!: (number: string) => void;
+  reserveNumber.mockImplementation(() => new Promise(done => { resolve = done; }));
+  const snapshot = snap({ exam: true });
+  snapshot.patientInfo = { ...snapshot.patientInfo, ...createPatientIdentity() };
+  const setter = vi.fn();
+  const { rerender } = renderHook(({ chart }) => useCloudSync(chart, true, '', false, true, false), {
+    initialProps: { chart: { ...fakeChart(snapshot, 'first'), setPatientInfo: setter } },
+  });
+  rerender({ chart: { ...fakeChart(snap({ name: 'Other patient' }), 'second'), setPatientInfo: setter } });
+  await act(async () => { resolve('1001'); });
+  expect(setter).not.toHaveBeenCalled();
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AnimalTab } from '../hooks/useAnimalTabs';
 import './AnimalTabs.css';
@@ -28,12 +28,6 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
     const next = { before: list.scrollLeft > 1, after: list.scrollLeft + list.clientWidth < list.scrollWidth - 1 };
     setOverflow(old => old.before === next.before && old.after === next.after ? old : next);
   };
-  useEffect(() => {
-    updateOverflow();
-    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateOverflow);
-    if (strip.current) observer?.observe(strip.current);
-    return () => observer?.disconnect();
-  }, [tabs]);
   const scroll = (direction: number) => {
     const list = strip.current;
     if (list) { list.scrollLeft += direction * Math.max(180, list.clientWidth - 44); updateOverflow(); }
@@ -46,19 +40,31 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
       (selected ?? add.current)?.focus({ preventScroll: true });
     }
   }, [tabs, busy]);
+  const revealSelected = () => {
+    const list = strip.current;
+    const item = list?.querySelector<HTMLElement>('[aria-selected="true"]')?.closest<HTMLElement>('.animal-tabs__item');
+    if (!list) return;
+    if (list.clientWidth > 0) list.style.setProperty('--animal-tab-available', `${list.clientWidth}px`);
+    if (item) {
+      const bounds = list.getBoundingClientRect();
+      const tab = item.getBoundingClientRect();
+      if (tab.left < bounds.left) list.scrollLeft += tab.left - bounds.left;
+      else if (tab.right > bounds.right) list.scrollLeft += tab.right - bounds.right;
+    }
+    updateOverflow();
+  };
+  // Overflow controls change the available width after the first measurement.
+  const hasOverflow = overflow.before || overflow.after;
+  useLayoutEffect(() => { revealSelected(); }, [activeId, tabs, hasOverflow, editing, visits.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const revealRef = useRef(revealSelected);
+  revealRef.current = revealSelected;
   useEffect(() => {
-    const reveal = () => {
-      const list = strip.current;
-      const item = list?.querySelector<HTMLElement>('[aria-selected="true"]')?.closest<HTMLElement>('.animal-tabs__item');
-      if (!list || !item) return;
-      const left = item.offsetLeft;
-      if (left < list.scrollLeft) list.scrollLeft = left;
-      else if (left + item.offsetWidth > list.scrollLeft + list.clientWidth) list.scrollLeft = left + item.offsetWidth - list.clientWidth;
-    };
-    reveal();
+    const reveal = () => revealRef.current();
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(reveal);
+    if (strip.current) observer?.observe(strip.current);
     window.addEventListener('resize', reveal);
-    return () => window.removeEventListener('resize', reveal);
-  }, [activeId, tabs]);
+    return () => { observer?.disconnect(); window.removeEventListener('resize', reveal); };
+  }, []);
   const move = (event: React.KeyboardEvent, index: number) => {
     const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length
       : event.key === 'ArrowLeft' ? (index - 1 + tabs.length) % tabs.length
@@ -82,7 +88,7 @@ export function AnimalTabs({ tabs, activeId, busy, onSelect, onClose, onAdd, sho
               aria-controls="animal-chart-panel" aria-selected={tab.id === activeId}
               tabIndex={tab.id === activeId || !tabs.some(item => item.id === activeId) && index === 0 ? 0 : -1}
               disabled={busy} title={t('animalTabs.summary', { name, details: [pid, date].filter(Boolean).join(' · ') })}
-              onClick={() => { restoreFocus.current = true; onSelect(tab.id); }} onKeyDown={event => move(event, index)}>
+              onClick={() => { restoreFocus.current = true; onSelect(tab.id); requestAnimationFrame(() => revealRef.current()); }} onKeyDown={event => move(event, index)}>
               <span className="animal-tabs__heading"><strong>{name}</strong>{editing && tab.id === activeId && <span className="animal-tabs__editing" title={t('topbar.editingTitle')}>{t('topbar.editingShort')}</span>}</span><span className="animal-tabs__details">{pid && <span>{pid}</span>}<span>{date}</span></span>
             </button>
             {tab.id === activeId && visits.length > 1 && onVisit && <span className="animal-tabs__visit">

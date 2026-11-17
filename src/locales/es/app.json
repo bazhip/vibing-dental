@@ -274,7 +274,8 @@
       "blank": "Sin nombre ni número de paciente",
       "paused": "Los datos del paciente han cambiado. El guardado está en pausa. Guarde de nuevo para confirmar una corrección, o elija Nuevo paciente para otro paciente.",
       "changed": "El paciente cambió durante la comprobación del guardado. Revise los datos y guarde de nuevo."
-    }
+    },
+    "patientNumberFailed": "No se pudo asignar un número de paciente. Vuelva a intentarlo cuando tenga conexión o introduzca un número de paciente."
   },
   "storage": {
     "full": "El almacenamiento de este navegador está lleno: puede que los últimos cambios no se conserven en este dispositivo. Guarde el historial o descargue su PDF."

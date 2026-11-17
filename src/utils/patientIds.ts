@@ -7,8 +7,7 @@ export interface PatientIdFields {
 export function createPatientIdentity(): Required<PatientIdFields> {
   const bytes = crypto.getRandomValues(new Uint8Array(16));
   const patientId = Array.from(bytes, value => value.toString(16).padStart(2, '0')).join('');
-  const patientNumber = `P-${BigInt(`0x${patientId.slice(0, 15)}`).toString(32).toUpperCase().padStart(12, '0')}`;
-  return { patientId, patientNumber, generatedPatientNumber: patientNumber };
+  return { patientId, patientNumber: '', generatedPatientNumber: '' };
 }
 export function patientNumberOf(info: PatientIdFields): string {
   return info.patientNumber.trim() || info.generatedPatientNumber || '';

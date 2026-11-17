@@ -1,4 +1,5 @@
 import React from 'react';
+import { reservePatientNumber } from '../utils/patientNumberAllocation';
 import { isGeneratedPatientNumber } from '../utils/patientIds';
 import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
@@ -563,7 +564,43 @@ export function useCloudSync(
     return false;
   };
 
+  const allocationFailed = React.useRef(false);
+  const patientSetter = React.useRef(chart.setPatientInfo);
+  patientSetter.current = chart.setPatientInfo;
+  const assignPatientNumber = async () => {
+    const { chartId: id, serialized: json } = latest.current;
+    const info = (JSON.parse(json) as ChartSnapshot).patientInfo;
+    if (!on || !info.patientId || info.patientNumber.trim() || info.generatedPatientNumber) return;
+    if (!practiceReadyRef.current) throw new LocalizedError(i18n.t('sync.practiceUnknown', { ns: 'app' }));
+    const practice = practiceIdRef.current;
+    const number = await reservePatientNumber(info.patientId, practice);
+    if (latest.current.chartId !== id || practiceIdRef.current !== practice) return;
+    const current = JSON.parse(latest.current.serialized) as ChartSnapshot;
+    if (current.patientInfo.patientId !== info.patientId || current.patientInfo.patientNumber.trim() || current.patientInfo.generatedPatientNumber) return;
+    if (allocationFailed.current) { allocationFailed.current = false; setSaveError(''); setStatus('idle'); }
+    const assigned = { ...current.patientInfo, patientNumber: number, generatedPatientNumber: number };
+    // Explicit Save can be awaiting this promise while React batches the setter.
+    // Its snapshot and saved baseline must already contain the reserved number.
+    latest.current = { chartId: id, serialized: JSON.stringify({ ...current, patientInfo: assigned }) };
+    patientSetter.current(previous => previous.patientId === info.patientId && !previous.patientNumber.trim() && !previous.generatedPatientNumber
+      ? { ...previous, patientNumber: number, generatedPatientNumber: number } : previous);
+  };
+  const assignPatientNumberRef = React.useRef(assignPatientNumber);
+  assignPatientNumberRef.current = assignPatientNumber;
+  React.useEffect(() => {
+    if (!on || !practiceReady || !online || !snapshot.patientInfo.patientId || snapshot.patientInfo.patientNumber.trim() || snapshot.patientInfo.generatedPatientNumber) return;
+    let cancelled = false;
+    void assignPatientNumberRef.current().catch(error => {
+      if (!cancelled) { allocationFailed.current = true; setSaveError(describeSaveError(error)); setStatus('error'); }
+    });
+    return () => { cancelled = true; };
+  }, [on, practiceReady, practiceId, online, reconnects, chartId, snapshot.patientInfo.patientId, snapshot.patientInfo.patientNumber, snapshot.patientInfo.generatedPatientNumber]);
+
   const performSave = React.useCallback(async (automatic = false): Promise<void> => {
+    const targetId = latest.current.chartId;
+    try { await assignPatientNumberRef.current(); }
+    catch (error) { allocationFailed.current = true; setSaveError(describeSaveError(error)); setStatus('error'); throw error; }
+    if (latest.current.chartId !== targetId) return;
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
     if (!hasContent(snap)) return;
@@ -593,7 +630,7 @@ export function useCloudSync(
     setWorkspaceResume(value => value + 1);
   };
   const saveNow = React.useCallback((automatic = false) => {
-    if (workspacePaused.current) return Promise.resolve();
+    if (automatic && workspacePaused.current) return Promise.resolve();
     const pending = performSave(automatic);
     pendingSaves.current.add(pending);
     void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
