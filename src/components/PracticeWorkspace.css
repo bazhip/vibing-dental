@@ -32,7 +32,7 @@
   background: transparent;
   padding: 12px 14px;
   text-align: left;
-  color: var(--text-muted);
+  color: var(--primary);
   font: inherit;
   font-size: 14px;
   font-weight: 550;
@@ -40,7 +40,7 @@
 }
 .practice-workspace__nav button:hover { background: var(--surface-alt); color: var(--text); }
 .practice-workspace__nav button[aria-current] {
-  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  background: var(--action-tint);
   color: var(--primary);
   box-shadow: inset 3px 0 var(--primary);
 }
@@ -62,8 +62,8 @@
 .practice-workspace__content .ai-settings-blurb,
 .practice-workspace__content .patient-form__hint { max-width: 70ch; line-height: 1.6; }
 .practice-workspace__content .patient-form__input { box-sizing: border-box; max-width: 520px; min-height: 44px; border-radius: var(--radius-sm); }
-.practice-workspace .diagram-view__action,
-.practice-workspace .entry-grid__button { min-height: 44px; border-radius: var(--radius-sm); font-size: 14px; padding: 10px 14px; }
+:is(.practice-workspace, .practice-settings-modal) .diagram-view__action,
+:is(.practice-workspace, .practice-settings-modal) .entry-grid__button { min-height: 44px; border-radius: var(--radius-sm); font-size: 14px; padding: 10px 14px; }
 .practice-workspace__content .practice-logo-actions,
 .practice-workspace__content .team__member-actions { flex-wrap: wrap; gap: 8px; }
 .practice-workspace__save-hint { color: var(--text-muted); font-size: 13px; line-height: 1.6; margin: 24px 0 16px; }
@@ -86,4 +86,14 @@
   .practice-workspace__content .patient-form__input { width: 100%; }
   .practice-workspace__content .team__member { flex-wrap: wrap; gap: 10px; }
   .practice-workspace__content .team__member-id { min-width: 0; overflow-wrap: anywhere; }
+}
+
+.ai-settings-modal.practice-settings-modal { width: min(960px, calc(100vw - 32px)); max-width: 960px; }
+.practice-settings-modal .ai-settings-body.practice-workspace__layout { display: grid; min-height: 360px; align-items: start; grid-template-columns: 180px minmax(0, 1fr); }
+.practice-settings-modal .practice-workspace__nav { position: static; }
+.practice-settings-modal .practice-workspace__content { border: 0; border-radius: 0; padding: 0; }
+.practice-settings-modal .practice-workspace__content > h3 { margin: 0 0 20px; font-size: 18px; }
+@media (max-width: 700px) {
+  .practice-settings-modal .ai-settings-body.practice-workspace__layout { grid-template-columns: minmax(0, 1fr); }
+  .practice-settings-modal .practice-logo-row { flex-wrap: wrap; }
 }

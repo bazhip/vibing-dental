@@ -1,3 +1,4 @@
+import { APPEARANCE_EVENT } from '../theme/appearance';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Keyboard } from '@capacitor/keyboard';
@@ -20,21 +21,30 @@ export function scrollFocusedCellIntoView(): void {
 
 type SetStyle = (opts: { style: Style }) => Promise<void>;
 
-/** Status bar text follows the system appearance: dark text over the
+/** Status bar text follows the resolved app appearance: dark text over the
  *  light app, light text over the dark app — and switches live when the
  *  user (or Control Center / a schedule) flips the scheme. */
 export function followColorSchemeForStatusBar(
   setStyle: SetStyle = (opts) => StatusBar.setStyle(opts),
-  matchMedia: (q: string) => Pick<MediaQueryList, 'matches' | 'addEventListener'> =
+  matchMedia: (q: string) => Pick<MediaQueryList, 'matches' | 'addEventListener' | 'removeEventListener'> =
     (q) => window.matchMedia(q),
-): void {
-  const apply = (dark: boolean) => {
+): () => void {
+  const apply = (systemDark: boolean) => {
+    const theme = document.documentElement.dataset.theme;
+    const dark = theme ? theme === 'dark' : systemDark;
     // Style.Dark = light text (for dark backgrounds); Style.Light = dark text.
     setStyle({ style: dark ? Style.Dark : Style.Light }).catch(() => {});
   };
   const mql = matchMedia('(prefers-color-scheme: dark)');
   apply(mql.matches);
-  mql.addEventListener('change', (e) => apply(e.matches));
+  const onMedia = (e: MediaQueryListEvent) => apply(e.matches);
+  const onAppearance = () => apply(mql.matches);
+  mql.addEventListener('change', onMedia);
+  window.addEventListener(APPEARANCE_EVENT, onAppearance);
+  return () => {
+    mql.removeEventListener('change', onMedia);
+    window.removeEventListener(APPEARANCE_EVENT, onAppearance);
+  };
 }
 
 /** Called once at startup, after initNativeShell(). No-op on the web. */

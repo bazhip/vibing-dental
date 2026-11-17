@@ -22,6 +22,7 @@ vi.mock('../hooks/useAttachments', () => ({ useAttachments: () => store }));
 
 import { ImagingSection } from './ImagingSection';
 import { takePhoto } from '../native/camera';
+import { DialogHost } from './ui/dialogs';
 
 const renderIt = () => render(<ImagingSection chartId="c1" cloudActive />);
 
@@ -235,4 +236,35 @@ describe('ImagingSection uploads, teeth and viewer', () => {
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
   });
+});
+
+it('labels report destinations separately and saves the description', async () => {
+  native = false; touchDevice = false;
+  store.items = [{ id: 'a', chartId: 'c1', kind: 'photo', caption: '', url: '', toothTriadan: null }];
+  store.updateCaption = vi.fn(async () => {});
+  const pdf = vi.fn(), role = vi.fn();
+  render(<ImagingSection chartId="c1" cloudActive includeInPdf onImageInPdfChange={pdf} onImageRoleChange={role} />);
+  const checkbox = screen.getByRole('checkbox', { name: 'In clinical PDF' });
+  expect(checkbox).toBeChecked();
+  fireEvent.click(checkbox); expect(pdf).toHaveBeenCalledWith('a', false);
+  expect(screen.getByRole('option', { name: 'Not in owner report' })).toBeInTheDocument();
+  fireEvent.change(screen.getByRole('combobox', { name: 'Owner-report tag for this image' }), { target: { value: 'before' } });
+  expect(role).toHaveBeenCalledWith('a', 'before');
+  const description = screen.getByRole('textbox', { name: 'Description' });
+  fireEvent.change(description, { target: { value: 'Fractured crown' } }); fireEvent.blur(description);
+  await waitFor(() => expect(store.updateCaption).toHaveBeenCalledWith('a', 'Fractured crown'));
+});
+it('keeps Remove image visible and requires confirmation before deletion', async () => {
+  native = false; touchDevice = false;
+  store.items = [{ id: 'a', chartId: 'c1', kind: 'photo', caption: '', url: '', toothTriadan: null }];
+  store.remove = vi.fn(async () => {});
+  render(<><ImagingSection chartId="c1" cloudActive /><DialogHost /></>);
+  fireEvent.click(screen.getByRole('button', { name: 'Remove image' }));
+  expect(await screen.findByRole('alertdialog')).toHaveTextContent('the clinical PDF, and the owner report');
+  expect(store.remove).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+  expect(store.remove).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole('button', { name: 'Remove image' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Delete image' }));
+  await waitFor(() => expect(store.remove).toHaveBeenCalledWith('a'));
 });

@@ -24,6 +24,12 @@
  */
 
 :root {
+  color-scheme: light;
+  --diagram-ink: #1a202c;
+  --diagram-danger: #c53030;
+  --diagram-muted: #718096;
+  --on-primary: #ffffff;
+  --on-ink: #f2f7f6;
   --bg-page:        #eef1f2;
   --surface:        #ffffff;
   --surface-alt:    #f7f9fa;
@@ -32,6 +38,11 @@
   --primary:        #0c6b63;
   --primary-end:    #095049;
   --accent:         #0d9488;
+  --action-tint:    #e7f0ef;
+  --action-border:  #75a9a2;
+  --warning:        #92400e;
+  --warning-tint:   #fff7e6;
+  --warning-border: #d9a441;
 
   /* Chart ink — strong instrument chrome (grid header, patient banner
      accents). Deliberately not the brand teal: teal is for actions,
@@ -48,7 +59,7 @@
   --text:           #17232e;
   --text-muted:     #55677a;
   --border:         #e2e7eb;
-  --border-strong:  #c5d0d8;
+  --border-strong:  #9cabb7;
 
   --shadow:         0 1px 2px rgba(23, 35, 46, 0.04), 0 4px 16px rgba(23, 35, 46, 0.05);
   --radius:         10px;
@@ -68,4 +79,137 @@
   --case-display:   none;
 
   --container-max:  1500px;
+}
+
+/* Shared dark palette. The legacy --ios-* names are also consumed by web
+   controls; keep one clinical palette rather than a second set of overrides.
+   Screen-only: printing always uses the light tokens above. */
+@media screen {
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --ios-on-dark: #ffffff;
+    --ios-on-dark-2: rgba(255, 255, 255, 0.75);
+    --ios-on-dark-hairline: rgba(255, 255, 255, 0.35);
+    --ios-on-dark-fill: rgba(255, 255, 255, 0.12);
+    --ios-on-dark-danger: #ff6165;
+    --ios-danger-hud: #7f1d1d;
+    --diagram-ink: #dce5ec;
+    --diagram-danger: #ff797c;
+    --diagram-muted: #a5b4c3;
+    --on-primary: var(--ios-on-tint);
+    --bg-page: var(--ios-bg-grouped);
+    --surface: var(--ios-cell);
+    --surface-alt: var(--ios-cell-alt);
+    --surface-2: var(--ios-cell-alt);
+    --surface-sunken: var(--ios-cell-sunken);
+    --primary: var(--ios-tint);
+    --primary-end: var(--ios-tint-pressed);
+    --primary-tint: var(--ios-tint-fill);
+    --action-tint: var(--ios-tint-fill);
+    --action-border: var(--ios-tint);
+    --warning: var(--ios-warning-label);
+    --warning-tint: var(--ios-warning-fill);
+    --warning-border: var(--ios-warning-border);
+    --accent: var(--ios-tint);
+    --danger: var(--ios-danger);
+    --danger-strong: var(--ios-danger-strong);
+    --danger-tint: var(--ios-danger-fill);
+    --text: var(--ios-label);
+    --text-muted: var(--ios-label-muted);
+    --border: var(--ios-separator);
+    --border-strong: var(--ios-separator-opaque);
+    --shadow: 0 1px 2px var(--ios-shadow-soft), 0 4px 16px var(--ios-shadow-soft);
+    --ios-bg:            #000000;
+    --ios-bg-grouped:    #000000;
+    --ios-bg-elevated:   #1c1c1e;
+    --ios-cell:          #1c1c1e;
+    --ios-cell-alt:      #2c2c2e;
+    --ios-cell-sunken:   #3a3a3c;
+
+    --ios-label:         #ffffff;
+    --ios-label-2:       rgba(235, 235, 245, 0.6);
+    --ios-label-3:       rgba(235, 235, 245, 0.3);
+    --ios-label-muted:   #aeaeb2;
+    --ios-separator:     rgba(84, 84, 88, 0.6);
+    --ios-separator-opaque: #38383a;
+    --ios-fill:          rgba(118, 118, 128, 0.24);
+    --ios-fill-2:        rgba(120, 120, 128, 0.36);
+    --ios-link:          #5cb8ff;
+    --ios-inverse-bg:    #ffffff;
+    --ios-inverse-label: #000000;
+    --ios-hud-bg:        #3a3a3c;
+
+    /* Lifted teal: AA as text on every dark surface. A white label can't
+       also clear AA on it, so labels on the tint go dark. */
+    --ios-tint:          #3cc4b4;
+    --ios-tint-pressed:  #5fd3c5;
+    --ios-tint-fill:     #213736;
+    --ios-tint-ring:     rgba(60, 196, 180, 0.3);
+    --ios-on-tint:       #000000;
+    --ios-on-tint-2:     rgba(0, 0, 0, 0.72);
+    --ios-on-tint-hairline: rgba(0, 0, 0, 0.28);
+    --ios-on-tint-fill:  rgba(0, 0, 0, 0.12);
+    --ios-segment-hover: rgba(255, 255, 255, 0.08);
+
+    --ios-danger:        #ff6165;  /* red, increased contrast (dark) */
+    --ios-danger-strong: #ff8a8d;
+    --ios-danger-solid:  #c9302c;
+    --ios-on-danger:     #ffffff;
+    --ios-danger-fill:   #402729;
+    --ios-danger-border: #8a3a3d;
+    --ios-danger-ring:   rgba(255, 97, 101, 0.35);
+    --ios-danger-ring-0: rgba(255, 97, 101, 0);
+    --ios-warning-label: #ffa056;  /* orange, increased contrast (dark) */
+    --ios-warning-solid: #a35a0c;
+    --ios-warning-fill:  #402f21;
+    --ios-warning-border: #7a5a1e;
+    --ios-success:       #30d158;
+    --ios-success-label: #4ad968;  /* green, increased contrast (dark) */
+    --ios-success-fill:  #1f3927;
+
+    --ios-shadow-soft:   rgba(0, 0, 0, 0.4);
+    --ios-shadow:        rgba(0, 0, 0, 0.5);
+    --ios-shadow-strong: rgba(0, 0, 0, 0.6);
+    --ios-scrim:         rgba(0, 0, 0, 0.6);
+    --ios-bar-material:  rgba(22, 22, 24, 0.75);
+
+    --ios-grid-bg:             #1c1c1e;
+    --ios-grid-stripe:         #232325;
+    --ios-grid-hover:          #2c2c2e;
+    --ios-grid-header-bg:      #2c2c2e;
+    --ios-grid-header-label:   #ebebf5;
+    --ios-grid-header-hairline: rgba(255, 255, 255, 0.12);
+    --ios-grid-header-hover:   rgba(255, 255, 255, 0.1);
+    --ios-grid-missing-bg:     #402729;
+    --ios-grid-missing-label:  #b4aeb0;
+    --ios-grid-abnormal-bg:    #402729;
+    --ios-grid-abnormal-label: #ff6165;
+    --ios-grid-selected-bg:    #23413f;
+    --ios-grid-selected-ring:  #3cc4b4;
+    --ios-grid-active-cell:    #1c1c1e;
+    --ios-grid-score-bg:       #2c2c2e;
+    --ios-grid-score-on-bg:    #3cc4b4;
+    --ios-grid-score-on-label: #000000;
+  }
+}
+
+@media screen {
+  html[data-theme="dark"]:not(.native-ios) {
+    --ios-bg: #10191f;
+    --ios-bg-grouped: #10191f;
+    --ios-bg-elevated: #1b2831;
+    --ios-cell: #17232c;
+    --ios-cell-alt: #202f39;
+    --ios-cell-sunken: #293b47;
+    --ios-label: #e5edf3;
+    --ios-label-muted: #afbecb;
+    --ios-separator: #344853;
+    --ios-separator-opaque: #526875;
+    --ios-grid-bg: #17232c;
+    --ios-grid-stripe: #1b2933;
+    --ios-grid-hover: #243640;
+    --ios-grid-header-bg: #233640;
+    --ios-grid-active-cell: #17232c;
+    --ios-grid-score-bg: #202f39;
+  }
 }

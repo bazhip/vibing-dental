@@ -24,24 +24,24 @@
         "body": "A short tour of the workspace. Replay it any time from Help → Getting started."
       },
       "sections": {
-        "title": "The nine sections",
-        "body": "A dental record, top to bottom. Work down these in order or jump around — everything autosaves."
+        "title": "Your visit, in one place",
+        "body": "From the first exam to the treatment report, work through the sections in order or jump to what you need. Your chart saves as you go."
       },
       "patient": {
         "title": "Patient & owner",
-        "body": "Name, owner contact, and the recheck date. Only the patient name is required to save."
+        "body": "Start with the patient’s name, then add owner details when you’re ready. Choose the species and dentition here — the teeth adapt automatically."
       },
       "species": {
         "title": "Species & dentition",
         "body": "Pick Feline, Canine or Equine, then the dentition — the tooth layout follows."
       },
       "grid": {
-        "title": "The charting grid",
-        "body": "Per-tooth measurements. Tab moves across, Enter moves down — chart without looking up."
+        "title": "Chart your way",
+        "body": "Prefer a mouth-wide view? Use Grid to enter measurements and scores. Tab moves across and Enter moves down. Select several tooth numbers to give them the same score."
       },
       "diagrams": {
         "title": "Diagrams",
-        "body": "Click a tooth to mark it; switch between Comment and Draw, add free notes. Undo with ⌘Z."
+        "body": "Click a tooth to mark it, add comments or draw a note. Diagnosis and Procedure have searchable AVDC codes beside them. Undo with ⌘Z."
       },
       "codes": {
         "title": "Code reference",
@@ -66,6 +66,22 @@
       "pdf": {
         "title": "Preview & download the PDF",
         "body": "Build the client-ready chart PDF with your logo whenever you’re ready."
+      },
+      "byTooth": {
+        "title": "One tooth at a time",
+        "body": "Switch to By tooth and click a tooth on the diagram. Record its measurements, diagnosis and procedure together, then move to the next tooth. Grid and By tooth share the same findings."
+      },
+      "customize": {
+        "title": "Make it yours",
+        "body": "Look for Customize on Patient, Exam, Anesthesia, Charting, Diagnosis and Images. Choose columns, pocket depths per tooth, root or site, quick codes and more. Signed in, your preferences follow your account."
+      },
+      "images": {
+        "title": "Photos & radiographs",
+        "body": "Keep images with the visit and add your radiographic findings here. Choose which images to include in the chart PDF."
+      },
+      "ownerReport": {
+        "title": "A report for home",
+        "body": "Owner Report gives families a clear summary and home care advice. Review it before sharing, and use Customize to adapt the layout, wording and client language to your practice."
       }
     }
   },

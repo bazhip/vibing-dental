@@ -265,6 +265,19 @@ describe('Settings tab screens', () => {
     expect(s.goToSection).toHaveBeenCalledWith('patient');
   });
 
+  it('Getting started only lists owner reports while enabled and available', () => {
+    const settings = makeSettings();
+    const { update } = pushScreen(<GettingStartedScreen />, settings);
+    fireEvent.click(screen.getByRole('button', { name: /A report for home/ }));
+    expect(settings.goToSection).toHaveBeenCalledWith('owner-report');
+    update({ ...settings, profile: { ...settings.profile, ownerReportEnabled: false } });
+    expect(screen.queryByRole('button', { name: /A report for home/ })).not.toBeInTheDocument();
+    update({ ...settings, cloudEnabled: false });
+    expect(screen.queryByRole('button', { name: /A report for home/ })).not.toBeInTheDocument();
+    update(settings);
+    expect(screen.getByRole('button', { name: /A report for home/ })).toBeInTheDocument();
+  });
+
   it('Getting started speaks touch: no click, ⌘ or keyboard keys', () => {
     pushScreen(<GettingStartedScreen />, makeSettings());
     const text = document.querySelector('.ios-settings')?.textContent ?? '';

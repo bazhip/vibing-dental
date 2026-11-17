@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -561,6 +562,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
           )}
 
         </form>
+        {!embedded && <div className="login-preferences"><AppearanceSelect disclosure /></div>}
       </div>
     </div>
   );

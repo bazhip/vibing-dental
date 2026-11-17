@@ -168,10 +168,12 @@
     "attachment": "Adjunto: {{filename}}",
     "send": "Enviar informe",
     "sent": "Informe enviado a {{email}}",
-    "sendFailed": "No se ha podido enviar el informe."
+    "sendFailed": "No se ha podido enviar el informe.",
+    "confirmTitle": "¿Enviar este informe al propietario?",
+    "confirmMessage": "¿Enviar {{filename}} a {{email}}? Confirme el destinatario y el informe antes de enviarlo."
   },
   "review": {
-    "incompleteImages": "No se pudieron cargar algunas imágenes del informe. Este PDF sigue siendo un borrador y no se puede enviar por correo electrónico. Vuelva a intentarlo antes de compartir un informe revisado.",
+    "incompleteImages": "Algunas imágenes del informe no están disponibles o han cambiado. Vuelva a cargarlas antes de enviar este informe por correo electrónico.",
     "draft": "Borrador — revisión necesaria",
     "complete": "Revisado y completado",
     "draftHelp": "Revise los hallazgos, los procedimientos y los consejos antes de confirmar que la visita ha finalizado. La falta de anotaciones no significa que los hallazgos sean normales.",

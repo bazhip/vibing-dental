@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { supabase } from '../utils/supabaseClient';
@@ -138,6 +139,8 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
   };
 
   const onPanelKeyDown = (e: React.KeyboardEvent) => {
+    // The appearance picker owns its arrow/Home/End keys.
+    if (e.target instanceof HTMLElement && e.target.closest('.appearance-disclosure')) return;
     const list = items();
     const idx = list.indexOf(document.activeElement as HTMLButtonElement);
     switch (e.key) {
@@ -191,13 +194,14 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
         onKeyDown={onTriggerKeyDown}
         aria-expanded={open}
         title={scope === 'account' ? signedInAs || undefined : undefined}
+        data-tour={scope === 'account' ? 'practice-settings' : undefined}
         aria-label={scope === 'account' ? triggerLabel : t(scope === 'all' ? 'menu.open' : `workspace.${scope}`)}
       >
         {scope === 'all' && <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>}
-        <span className="chart-menu__trigger-label">{triggerLabel}</span>
+        <span className="chart-menu__trigger-label">{scope === 'more' ? <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="4" cy="10" r="1.5" fill="currentColor" /><circle cx="10" cy="10" r="1.5" fill="currentColor" /><circle cx="16" cy="10" r="1.5" fill="currentColor" /></svg> : triggerLabel}</span>
         {scope === 'account' && <span aria-hidden="true">⌃</span>}
       </button>
 
@@ -220,7 +224,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
             </section>
           )}
 
-          {(scope === 'all' || scope === 'more') && cloud && (
+          {(scope === 'all' || scope === 'more' || scope === 'account') && cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.practice')}</header>
               {item(t('menu.practiceSettings.label'), isNativeApp() ? t('menu.practiceSettingsHintApp', { ns: 'chart' }) : t('menu.practiceSettings.sub'), cloud.onPracticeSettings)}
@@ -243,6 +247,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
           )}
 
           <section className="chart-menu__section">
+            {!cloud && (scope === 'all' || scope === 'more' || scope === 'account') && <AppearanceSelect disclosure />}
             {scope === 'all' && <header className="chart-menu__section-head">{t('menu.heads.app')}</header>}
             {(scope === 'all' || scope === 'more') && onOpenChartSettings && item(t('menu.chartSettings.label'), t('menu.chartSettings.sub'), onOpenChartSettings)}
             {showHelp && onOpenFeedback && item(t('menu.feedback.label'), t('menu.feedback.sub'), onOpenFeedback)}

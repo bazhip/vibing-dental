@@ -239,8 +239,8 @@ html.native-ios .ios-settings-page .whats-new__list li { margin: 6px 0; }
 /* Feedback: the kind picker as a segmented control (UISegmentedControl
    selected-segment fill: white in light, grey #636366 in dark). */
 html.native-ios .feedback-modal--screen { --ios-segment-selected: #fff; }
-@media (prefers-color-scheme: dark) {
-  html.native-ios .feedback-modal--screen { --ios-segment-selected: #636366; }
+@media screen {
+  html.native-ios[data-theme="dark"] .feedback-modal--screen { --ios-segment-selected: #636366; }
 }
 html.native-ios .feedback-modal--screen .feedback-modal__kinds {
   display: flex;

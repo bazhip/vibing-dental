@@ -66,7 +66,8 @@
     "newPatient": "New patient",
     "newPatientShort": "New",
     "newPatientTitle": "Start a blank chart for a new patient",
-    "doneEditingShort": "Done"
+    "doneEditingShort": "Done",
+    "addLogo": "Add logo"
   },
   "status": {
     "srSaving": "Saving chart",
@@ -263,6 +264,14 @@
         "message": "This chart has changes that aren’t saved to the cloud yet. Import this PDF anyway? To keep them, cancel and press Save first.",
         "confirm": "Discard & import this PDF"
       }
+    },
+    "identity": {
+      "title": "Are these details for the same patient?",
+      "message": "Saved: {{saved}}\nChanged: {{proposed}}\n\nSaving will change the patient details on this chart. Existing findings and images will stay attached.\n\nFor a different patient, cancel and choose New patient.",
+      "confirm": "Confirm correction",
+      "blank": "No name or patient number",
+      "paused": "Patient details have changed. Saving is paused. Save again to confirm a correction, or choose New patient for a different patient.",
+      "changed": "The patient changed while the save was being checked. Review the details and save again."
     }
   },
   "storage": {
@@ -290,5 +299,32 @@
     "more": "More",
     "patientNumber": "Patient number {{number}}",
     "visitDate": "Visit: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Open animals",
+    "unnamed": "New animal",
+    "ownerUnknown": "Owner not entered",
+    "close": "Close {{name}} tab",
+    "closeHint": "Close tab without deleting the patient",
+    "add": "Open another animal",
+    "emptyTitle": "No animal open",
+    "emptyBody": "Open a patient to start charting.",
+    "open": "Open an animal",
+    "saveFirst": "Save the current chart before switching animals. Enter a patient name if it is missing.",
+    "pid": "PID {{number}}",
+    "noPid": "No PID",
+    "previous": "Previous animals",
+    "next": "Next animals",
+    "closeUnsaved": "This tab still has unsaved changes. Open it and save before closing.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Could not check this chart’s images. Keep the tab open and try again.",
+    "uploadPending": "Wait for the image upload to finish before closing this tab.",
+    "imagesRecovered": "Recovered uploaded images in unnamed tabs. Confirm the patient details before saving.",
+    "closeConfirmTitle": "Close without saving?",
+    "closeConfirmMessage": "Unsaved changes in this tab will be discarded. Uploaded images will not be deleted.",
+    "closeConfirm": "Close without saving",
+    "keepOpen": "Keep chart open",
+    "closeImageDraftMessage": "This chart has not been saved. Closing it will discard its contents and permanently delete its uploaded images.",
+    "draftAlreadySaved": "This chart was saved elsewhere. Reopen it before discarding the draft."
   }
 }

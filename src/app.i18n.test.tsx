@@ -212,9 +212,10 @@ describe('chart frame', () => {
     const header = document.querySelector('.entry-grid__topbar')!;
     const back = Array.from(header.querySelectorAll('button')).find((button) => button.textContent === '⟦All patients⟧');
     expect(back).toBeUndefined();
-    fireEvent.click(screen.getByRole('navigation', { name: '⟦Workspace navigation⟧' }).querySelector('button')!);
-    await waitFor(() => expect(window.location.hash).toBe('#/library'));
-    expect(screen.getByRole('navigation', { name: '⟦Workspace navigation⟧' })).toBeTruthy();
+    const route = window.location.hash;
+    fireEvent.click(screen.getByRole('button', { name: '⟦Open another animal⟧' }));
+    expect(window.location.hash).toBe(route);
+    expect(screen.queryByRole('button', { name: '⟦Current visit⟧' })).toBeNull();
     expect(untranslated()).toEqual([]);
   });
 
@@ -234,7 +235,7 @@ describe('chart frame', () => {
       unmount();
     }
     // Saved: the word (hidden on phones) and the time of day are one message.
-    sync.override = fakeCloud({ lastSavedAt: new Date().toISOString() });
+    sync.override = fakeCloud({ status: 'saved', lastSavedAt: new Date().toISOString() });
     await frame();
     expect(document.querySelector('.save-status__word')!.textContent).toBe('⟦Saved · ⟧');
     expect(document.querySelector('.save-status--saved')!.textContent).toMatch(/^⟦Saved · ⟧.*⟦.+⟧/);
@@ -260,20 +261,23 @@ describe('chart frame', () => {
   });
 
   it('a saved visit: viewing, then editing with Undo, with the visit switcher', async () => {
-    seedChart({ date: '2026-01-05', saved: true });
-    sync.override = fakeCloud({ lastSavedAt: new Date().toISOString() });
+    seedChart({ date: '2026-11-12', saved: true });
+    sync.override = fakeCloud({ status: 'saved', lastSavedAt: new Date().toISOString() });
     const view = await frame();
-    expect(document.querySelector('.topbar-state-chip')!.textContent).toBe('⟦View only⟧');
+    expect(document.querySelector('.topbar-state-chip')).toBeNull();
+    expect(screen.getByRole('note', { name: '⟦View only⟧' })).toBeTruthy();
     expect(screen.getAllByText('⟦Edit chart⟧')[0]).toBeTruthy();
-    expect(screen.getByRole('button', { name: '⟦New patient⟧' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '⟦New patient⟧' })).toBeNull();
+    expect(screen.getByRole('button', { name: '⟦Open another animal⟧' })).toBeTruthy();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
-      '⟦2026-11-12 · latest⟧',
-      '⟦2026-01-05 · earlier⟧',
+      '⟦Nov 12, 2026⟧',
+      '⟦Jan 5, 2026⟧',
     ]);
     expect(untranslated()).toEqual([]);
     // Visit creation and revision history live in Patients, not a duplicate topbar menu.
     expect(screen.queryByRole('button', { name: '⟦Visit actions⟧' })).toBeNull();
-    expect(screen.getByRole('button', { name: '⟦Patients⟧' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '⟦Patients⟧' })).toBeNull();
+    expect(screen.getByRole('button', { name: '⟦Open another animal⟧' })).toBeTruthy();
     expect(untranslated()).toEqual([]);
     view.unmount();
 
@@ -281,7 +285,7 @@ describe('chart frame', () => {
     session.set(`chart.unlocked.${CHART_ID}`, '1');
     session.set(`chart.unlockSnapshot.${CHART_ID}`, '{}');
     await frame();
-    expect(document.querySelector('.topbar-state-chip')!.textContent).toBe('⟦Editing⟧');
+    expect(document.querySelector('.animal-tabs__editing')!.textContent).toBe('⟦Editing⟧');
     expect(screen.getByText('⟦Undo changes⟧')).toBeTruthy();
     expect(screen.getByText('⟦Done editing⟧')).toBeTruthy();
     expect(screen.getByText('⟦Done⟧')).toBeTruthy();
@@ -510,13 +514,13 @@ describe('French', () => {
   afterEach(async () => { await act(() => i18n.changeLanguage('en')); });
 
   it('the chart date in the visit switcher and the menu follow the language', async () => {
-    seedChart({ date: '2026-01-05', saved: true });
+    seedChart({ date: '2026-11-12', saved: true });
     sync.override = fakeCloud();
     await loadLanguage('fr');
     await act(() => i18n.changeLanguage('fr'));
     await frame();
     // Chart dates are language-neutral ISO; the saved-at time follows the language.
-    expect(screen.getAllByRole('option')[1].textContent).toBe('2026-01-05 · précédente');
+    expect(screen.getAllByRole('option')[1].textContent).toBe('5 janv. 2026');
     expect(formatDate('2026-01-05', 'medium', 'fr')).toMatch(/janv/);
     expect(screen.getAllByText('Modifier le dossier')[0]).toBeTruthy();
     expect(await screen.findByRole('button', { name: 'vet@clinic.test' })).toBeTruthy();
@@ -532,25 +536,25 @@ describe('English dates', () => {
   const norm = (s: string) => s.replace(/\s/g, ' ');
   const pill = () => norm(document.querySelector('.save-status--saved')!.textContent!);
 
-  it('chart dates stay raw ISO and the saved-at time keeps the old format', async () => {
-    seedChart({ date: '2026-01-05', saved: true });
+  it('visit dates are localized and the transient saved-at time keeps its format', async () => {
+    seedChart({ date: '2026-11-12', saved: true });
     sync.override = fakeCloud();
     const first = await frame();
-    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['2026-11-12 · latest', '2026-01-05 · earlier']);
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Nov 12, 2026', 'Jan 5, 2026']);
     first.unmount();
 
     // A new chart shows the saved-at pill (a saved visit is view-only and hides it).
     local.clear();
     seedChart();
     const at = new Date();
-    sync.override = fakeCloud({ lastSavedAt: at.toISOString() });
+    sync.override = fakeCloud({ status: 'saved', lastSavedAt: at.toISOString() });
     const view = await frame();
     expect(pill()).toBe(norm(`Saved · ${at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`));
     view.unmount();
 
     // Another day: short date, then the time.
     const earlier = new Date(2026, 10, 9, 14, 41);
-    sync.override = fakeCloud({ lastSavedAt: earlier.toISOString() });
+    sync.override = fakeCloud({ status: 'saved', lastSavedAt: earlier.toISOString() });
     await frame();
     const time = earlier.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const day = earlier.toLocaleDateString([], { month: 'short', day: 'numeric' });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
 import { chooseDialog, confirmDialog } from '../components/ui/dialogs';
@@ -20,6 +21,7 @@ import {
   type CloudChartMeta,
 } from '../utils/chartQueries';
 import { speciesBase, speciesDentition } from '../utils/species';
+import { changesPatientIdentity, identityKey, patientIdentityQuestion, type PatientIdentity } from '../utils/patientIdentity';
 
 /**
  * Cloud persistence on top of `useChartState`.
@@ -36,8 +38,30 @@ import { speciesBase, speciesDentition } from '../utils/species';
 
 export type { CloudChartMeta, ChartListQuery, ChartListPage };
 
+export interface ChartWorkspace {
+  id: string;
+  snapshot: ChartSnapshot;
+  openedExisting: boolean;
+  savedHash: string;
+  lastSaved: { chartId: string; at: string };
+  conflict: { chartId: string; mode: 'none' | 'force' | 'blocked' };
+  saveError: string;
+  dirty: boolean;
+  duplicateAnswered: string;
+  skipDuplicate: string;
+}
+
 export interface UseCloudSyncReturn {
   enabled: boolean;
+  /** Preserve a working chart without requiring a cloud save. */
+  captureWorkspace?: () => Promise<ChartWorkspace>;
+  restoreWorkspace?: (workspace: ChartWorkspace) => void;
+  resumeWorkspace?: () => void;
+  pauseWorkspace?: () => void;
+  discardImageDraft?: (id: string) => Promise<void>;
+  hasImages?: (id: string) => Promise<boolean>;
+  hasPendingImageUpload?: (id: string) => boolean;
+  findImageDrafts?: () => Promise<Array<{ id: string; date: string }>>;
   /** 'idle' | 'saving' | 'saved' | 'error'. */
   status: 'idle' | 'saving' | 'saved' | 'error';
   /** Plain-language reason the last save failed ('' when none). */
@@ -279,12 +303,20 @@ export function useCloudSync(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serialized, baselineTick]);
 
+  // A dismissal suppresses automatic questions for this exact change only.
+  const declinedIdentityRef = React.useRef('');
+  const identityCheckingRef = React.useRef(false);
+  const snapshotIdentity = (snap: ChartSnapshot): PatientIdentity => ({
+    patient_name: snap.patientInfo.patientName ?? '',
+    patient_number: snap.patientInfo.patientNumber ?? '',
+  });
+
   const upsertChart = React.useCallback(async (
     json: string,
     id: string,
     /** Restoring an earlier version: stamped so history starts a new
      *  revision instead of merging the restore into the latest one. */
-    opts: { restore?: boolean } = {}
+    opts: { restore?: boolean; automatic?: boolean } = {}
   ): Promise<void> => {
     if (!supabase) return;
     const client = supabase;
@@ -297,11 +329,9 @@ export function useCloudSync(
       const { data: sessionData } = await client.auth.getSession();
       // eslint-disable-next-line no-restricted-syntax -- dev-only: describeSaveError matches this English text and shows app:sync.sessionExpired
       if (!sessionData.session) fail(new Error('Signed out — sign in again to save.'));
-      const snap: ChartSnapshot = JSON.parse(json);
+      let snap: ChartSnapshot = JSON.parse(json);
       // The snapshot's `species` is the combined layout key (e.g.
       // 'canine-deciduous'); the row stores species + dentition split out.
-      const base = speciesBase(snap.species);
-      const dentition = speciesDentition(snap.species);
       // Bookkeeping for a save that landed. Only for the chart it saved:
       // if another chart was opened meanwhile, crediting the save to it
       // marked a never-saved new visit "saved" (skipping the duplicate
@@ -330,8 +360,8 @@ export function useCloudSync(
         owner_name: snap.patientInfo.ownerName ?? '',
         owner_phone: snap.patientInfo.ownerPhone ?? '',
         owner_email: snap.patientInfo.ownerEmail ?? '',
-        species: base,
-        dentition,
+        species: speciesBase(snap.species),
+        dentition: speciesDentition(snap.species),
         chart_date: snap.patientInfo.date,
         recall_date: snap.patientInfo.recallDate ?? '',
         data: snap,
@@ -366,6 +396,50 @@ export function useCloudSync(
           });
           conflictRef.current = { chartId: id, mode: replace ? 'force' : 'blocked' };
           if (!replace) fail(saveFailure('sync.notSavedConflict', 'Not saved — this chart was changed by someone else. Reopen it from My charts to see their version.'));
+        }
+      }
+      // Always read the server identity, including a working chart restored
+      // from localStorage: openedExisting/lastSaved are not proof it is new.
+      // Explicit history restores already have their own deliberate flow.
+      if (!opts.restore) {
+        if (identityCheckingRef.current) return;
+        identityCheckingRef.current = true;
+        try {
+          const proposed = snapshotIdentity(snap);
+          const stillCurrent = () => latest.current.chartId === id &&
+            identityKey(snapshotIdentity(JSON.parse(latest.current.serialized) as ChartSnapshot)) === identityKey(proposed);
+          const { data: saved, error: identityError } = await client.from('charts')
+            .select('patient_name, patient_number').eq('id', id).maybeSingle();
+          if (identityError) fail(identityError);
+          if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+          if (saved && changesPatientIdentity(saved as PatientIdentity, proposed)) {
+            const changeKey = JSON.stringify([id, identityKey(saved as PatientIdentity), identityKey(proposed)]);
+            if (opts.automatic && declinedIdentityRef.current === changeKey) {
+              fail(new SaveFailure('', i18n.t('sync.identity.paused', { ns: 'app' })));
+            }
+            const answer = await chooseDialog(patientIdentityQuestion(saved as PatientIdentity, proposed));
+            if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+            if (answer !== 'correct') {
+              declinedIdentityRef.current = changeKey;
+              fail(new SaveFailure('', i18n.t('sync.identity.paused', { ns: 'app' })));
+            }
+            // A teammate may have changed the saved patient while this
+            // dialog was open. Approval only covers the displayed pair.
+            const { data: current, error: recheckError } = await client.from('charts')
+              .select('patient_name, patient_number').eq('id', id).maybeSingle();
+            if (recheckError) fail(recheckError);
+            if (!current || identityKey(current as PatientIdentity) !== identityKey(saved as PatientIdentity)) {
+              fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+            }
+          }
+          if (!stillCurrent()) fail(new LocalizedError(i18n.t('sync.identity.changed', { ns: 'app' })));
+          // Include clinical edits made during the question; their autosave
+          // tick may already have been suppressed by the pending guard.
+          json = latest.current.serialized;
+          snap = JSON.parse(json) as ChartSnapshot;
+          declinedIdentityRef.current = '';
+        } finally {
+          identityCheckingRef.current = false;
         }
       }
       setStatus('saving');
@@ -486,13 +560,13 @@ export function useCloudSync(
     return false;
   };
 
-  const saveNow = React.useCallback(async (): Promise<void> => {
+  const performSave = React.useCallback(async (automatic = false): Promise<void> => {
     const { serialized: json, chartId: id } = latest.current;
     const snap = JSON.parse(json) as ChartSnapshot;
     if (!hasContent(snap)) return;
     // One question at a time: an autosave tick while the dialog is open
     // must not stack a second one (or save before it's answered).
-    if (dupCheckingRef.current) return;
+    if (dupCheckingRef.current || identityCheckingRef.current) return;
     dupCheckingRef.current = true;
     let proceed: boolean;
     try {
@@ -500,12 +574,59 @@ export function useCloudSync(
     } finally {
       dupCheckingRef.current = false;
     }
-    if (!proceed) return;
+    if (!proceed || latest.current.chartId !== id) return;
     // The chart may have changed while the question was open — save the
     // latest content.
-    await upsertChart(latest.current.serialized, latest.current.chartId);
+    await upsertChart(latest.current.serialized, id, { automatic });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upsertChart]);
+
+  const pendingSaves = React.useRef(new Set<Promise<void>>());
+  const workspacePaused = React.useRef(false);
+  const [workspaceResume, setWorkspaceResume] = React.useState(0);
+  React.useEffect(() => { workspacePaused.current = false; }, [chartId]);
+  const resumeWorkspace = () => {
+    workspacePaused.current = false;
+    setWorkspaceResume(value => value + 1);
+  };
+  const saveNow = React.useCallback((automatic = false) => {
+    if (workspacePaused.current) return Promise.resolve();
+    const pending = performSave(automatic);
+    pendingSaves.current.add(pending);
+    void pending.finally(() => pendingSaves.current.delete(pending)).catch(() => {});
+    return pending;
+  }, [performSave]);
+  const workspaceState = React.useRef({ saveError, dirty });
+  workspaceState.current = { saveError, dirty };
+  const captureWorkspace = async (): Promise<ChartWorkspace> => {
+    workspacePaused.current = true;
+    // An already-running save must settle before its baseline is captured.
+    // Failure is still a valid local draft, never a reason to lose edits.
+    await Promise.allSettled([...pendingSaves.current]);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    return {
+      id: latest.current.chartId, snapshot: JSON.parse(latest.current.serialized) as ChartSnapshot,
+      openedExisting: openedExistingRef.current, savedHash: savedHashRef.current,
+      lastSaved: lastSavedRef.current, conflict: { ...conflictRef.current },
+      ...workspaceState.current, duplicateAnswered: dupAnsweredRef.current, skipDuplicate: skipDupForRef.current,
+    };
+  };
+  const restoreWorkspace = (workspace: ChartWorkspace) => {
+    baselineNext.current = false;
+    savedHashRef.current = workspace.savedHash;
+    lastSavedRef.current = workspace.lastSaved;
+    setSavedHash(workspace.savedHash);
+    setLastSaved(workspace.lastSaved);
+    conflictRef.current = { ...workspace.conflict };
+    dupAnsweredRef.current = workspace.duplicateAnswered;
+    skipDupForRef.current = workspace.skipDuplicate;
+    applyRef.current(workspace.snapshot, workspace.id);
+    setOpenedExistingRef.current(workspace.openedExisting);
+    if (!workspace.dirty) armBaseline();
+    resumeWorkspace();
+    setSaveError(workspace.saveError);
+    setStatus(workspace.saveError ? 'error' : 'idle');
+  };
 
   // Autosave — for NEW charts only. Charts opened from a saved one
   // (openedExisting) never autosave: they're read-only until the user
@@ -526,10 +647,10 @@ export function useCloudSync(
     // Filled in ahead of time (patient/owner details only): wait for
     // charting to start, or for an explicit Save.
     if (awaitingClinical) return;
-    const t = window.setTimeout(() => { saveNowRef.current().catch(() => {}); }, 1200);
+    const t = window.setTimeout(() => { saveNowRef.current(true).catch(() => {}); }, 1200);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
+  }, [workspaceResume, on, chart.openedExisting, editingUnlocked, dirty, serialized, online, reconnects, awaitingClinical, practiceReady, everSaved]);
 
   // Guard leaving a chart with unsaved changes.
   const confirmDiscardIfDirty = async (action: DiscardAction): Promise<boolean> => {
@@ -695,6 +816,14 @@ export function useCloudSync(
 
   return {
     enabled: on,
+    captureWorkspace,
+    restoreWorkspace,
+    resumeWorkspace,
+    pauseWorkspace: () => { workspacePaused.current = true; },
+    discardImageDraft,
+    hasImages: hasChartImages,
+    hasPendingImageUpload,
+    findImageDrafts,
     status,
     saveError,
     dirty,

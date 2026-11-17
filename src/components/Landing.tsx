@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Login } from './Login';
@@ -434,6 +435,7 @@ export const Landing: React.FC<LandingProps> = ({
           <a href="/dpa">{t('footer.dpa')}</a>
           <a href="mailto:admin@toothops.app">{t('footer.contact')}</a>
         </span>
+        {languagePicker && <AppearanceSelect disclosure />}
         <EnglishGoverns className="landing__footer-note" />
       </footer>
 

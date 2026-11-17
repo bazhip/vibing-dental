@@ -66,7 +66,8 @@
     "newPatient": "Nuovo paziente",
     "newPatientShort": "Nuovo",
     "newPatientTitle": "Avviare una cartella vuota per un nuovo paziente",
-    "doneEditingShort": "Fine"
+    "doneEditingShort": "Fine",
+    "addLogo": "Aggiungi logo"
   },
   "status": {
     "srSaving": "Salvataggio della cartella",
@@ -265,6 +266,14 @@
         "message": "Questa cartella contiene modifiche non ancora salvate nel cloud. Importare comunque questo PDF? Per conservarle, annulli e prema prima Salva.",
         "confirm": "Scarta e importa questo PDF"
       }
+    },
+    "identity": {
+      "title": "Questi dati riguardano lo stesso paziente?",
+      "message": "Salvato: {{saved}}\nModificato: {{proposed}}\n\nIl salvataggio modificherà i dati del paziente in questa cartella. I reperti e le immagini esistenti resteranno associati.\n\nPer un altro paziente, annulli e scelga Nuovo paziente.",
+      "confirm": "Confermare la correzione",
+      "blank": "Nome e numero del paziente assenti",
+      "paused": "I dati del paziente sono cambiati. Il salvataggio è sospeso. Salvi di nuovo per confermare una correzione, oppure scelga Nuovo paziente per un altro paziente.",
+      "changed": "Il paziente è cambiato durante la verifica del salvataggio. Verifichi i dati e salvi di nuovo."
     }
   },
   "storage": {
@@ -292,5 +301,32 @@
     "more": "Altro",
     "patientNumber": "Numero del paziente {{number}}",
     "visitDate": "Visita: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animali aperti",
+    "unnamed": "Nuovo animale",
+    "ownerUnknown": "Proprietario non inserito",
+    "close": "Chiudere la scheda di {{name}}",
+    "closeHint": "Chiudere la scheda senza eliminare il paziente",
+    "add": "Aprire un altro animale",
+    "emptyTitle": "Nessun animale aperto",
+    "emptyBody": "Apra un paziente per iniziare la compilazione.",
+    "open": "Aprire un animale",
+    "saveFirst": "Salvi la cartella attuale prima di cambiare animale. Inserisca il nome del paziente se manca.",
+    "pid": "ID paziente {{number}}",
+    "noPid": "Nessun ID paziente",
+    "previous": "Animali precedenti",
+    "next": "Animali successivi",
+    "closeUnsaved": "Questa scheda contiene ancora modifiche non salvate. La apra e salvi le modifiche prima di chiuderla.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Impossibile verificare le immagini di questa cartella. Mantenga aperta la scheda e riprovi.",
+    "uploadPending": "Attenda il completamento del caricamento dell’immagine prima di chiudere questa scheda.",
+    "imagesRecovered": "Le immagini caricate sono state recuperate in schede senza nome. Verifichi i dati del paziente prima di salvare.",
+    "closeConfirmTitle": "Chiudere senza salvare?",
+    "closeConfirmMessage": "Le modifiche non salvate in questa scheda verranno scartate. Le immagini caricate non verranno eliminate.",
+    "closeConfirm": "Chiudi senza salvare",
+    "keepOpen": "Mantieni aperta la cartella",
+    "closeImageDraftMessage": "Questa cartella non è stata salvata. Chiudendola, il contenuto verrà scartato e le immagini caricate verranno eliminate definitivamente.",
+    "draftAlreadySaved": "Questa cartella è stata salvata altrove. La riapra prima di scartare la bozza."
   }
 }

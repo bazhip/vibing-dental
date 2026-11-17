@@ -76,7 +76,7 @@ export interface ChoiceOptions {
 }
 
 export interface ToastOptions {
-  kind?: 'success' | 'error' | 'info';
+  kind?: 'success' | 'error' | 'info' | 'warning';
   /** ms before auto-dismiss; errors default to staying until dismissed. */
   duration?: number;
   action?: { label: string; onClick: () => void };
@@ -99,11 +99,12 @@ export interface SheetPresentation<T> {
 /** Matches the kit sheet's exit slide (src/ios/Sheet.tsx). */
 const SHEET_EXIT_MS = 380;
 
-interface ToastItem { id: number; message: string; opts: ToastOptions }
+interface ToastItem { id: number; message: React.ReactNode; opts: ToastOptions }
 
 interface Host {
   openDialog: (req: DialogRequest) => void;
   pushToast: (t: ToastItem) => void;
+  dismissToast: (id: number) => void;
 }
 
 let host: Host | null = null;
@@ -161,6 +162,18 @@ export function presentSheet<T>(render: (p: SheetPresentation<T>) => React.React
 
 export function toast(message: string, opts: ToastOptions = {}): void {
   host?.pushToast({ id: nextId++, message, opts });
+}
+
+/** A controlled status in the shared toast stack; cleanup removes stale feedback. */
+export function statusToast(message: React.ReactNode, opts: ToastOptions): () => void {
+  const id = nextId++;
+  const owner = host;
+  if (owner) owner.pushToast({ id, message, opts });
+  else pendingToasts.push({ id, message, opts });
+  return () => {
+    pendingToasts = pendingToasts.filter(item => item.id !== id);
+    (owner ?? host)?.dismissToast(id);
+  };
 }
 
 /** Like toast(), but when no host is mounted yet (e.g. something that
@@ -560,6 +573,7 @@ export function DialogHost() {
         returnFocus.current.push(document.activeElement as HTMLElement);
         setDialogs((d) => [...d, req]);
       },
+      dismissToast: (id) => setToasts(list => list.filter(item => item.id !== id)),
       pushToast: (t) => setToasts((list) => [...list.slice(-3), t]),
     };
     if (pendingToasts.length) {

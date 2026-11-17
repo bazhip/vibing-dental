@@ -168,10 +168,12 @@
     "attachment": "Allegato: {{filename}}",
     "send": "Invia referto",
     "sent": "Referto inviato a {{email}}",
-    "sendFailed": "Impossibile inviare il referto."
+    "sendFailed": "Impossibile inviare il referto.",
+    "confirmTitle": "Inviare questo resoconto al proprietario?",
+    "confirmMessage": "Inviare {{filename}} a {{email}}? La preghiamo di verificare il destinatario e il resoconto prima dell’invio."
   },
   "review": {
-    "incompleteImages": "Non è stato possibile caricare alcune immagini del rapporto. Questo PDF rimane una bozza e non può essere inviato per email. Riprovi prima di condividere un rapporto verificato.",
+    "incompleteImages": "Alcune immagini del resoconto non sono disponibili o sono cambiate. Le chiediamo di ricaricarle prima di inviare il resoconto via e-mail.",
     "draft": "Bozza — verifica necessaria",
     "complete": "Verificato e completato",
     "draftHelp": "Verifichi i riscontri, le procedure e i consigli prima di confermare che la visita è conclusa. Le voci mancanti non indicano riscontri normali.",

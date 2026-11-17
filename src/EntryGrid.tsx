@@ -1,6 +1,7 @@
 import { ImageHistory } from './components/ImageHistory';
 import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import i18n from './i18n';
@@ -36,7 +37,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
-import { toast, friendlyDetail, confirmDialog, chooseDialog } from './components/ui/dialogs';
+import { toast, statusToast, friendlyError, friendlyDetail, confirmDialog, chooseDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -49,6 +50,8 @@ import { useEzyvetHandover } from './hooks/useEzyvetHandover';
 import { takePendingPatient } from './utils/pims/extensionBridge';
 import { supabase } from './utils/supabaseClient';
 import { ChartLibrary } from './components/ChartLibrary';
+import { AnimalTabs } from './components/AnimalTabs';
+import { useAnimalTabs } from './hooks/useAnimalTabs';
 import type { ChartLibraryViewState } from './components/chartLibraryData';
 import { OwnerReportSection } from './components/OwnerReportSection';
 import { ToothChartView } from './components/ToothChartView';
@@ -60,7 +63,7 @@ import type { AppLanguage } from './i18n/config';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, withDrugUnit, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
 import { customExamRows, setCustomExamValue, newExamAreaId, MAX_CUSTOM_EXAM_AREAS } from './utils/customExam';
 import { localDateISO } from './utils/localDate';
-import { isCurrentVisit } from './utils/currentVisit';
+import { isCurrentVisit, visitsForPatient } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
 import { isNativeApp } from './native/platform';
 import { AppShell, type AppTab, type AppShellHandle } from './ios/AppShell';
@@ -140,13 +143,7 @@ const CHARTING_VIEWS = ['grid', 'tooth'] as const;
 const CHARTING_VIEW_KEYS = { grid: 'chartingView.grid', tooth: 'chartingView.tooth' } as const;
 
 /** Catalog keys for the species toggle values, used in the patient banner. */
-const SPECIES_KEYS = {
-  feline: 'species.feline',
-  canine: 'species.canine',
-  'feline-deciduous': 'species.felineDeciduous',
-  'canine-deciduous': 'species.canineDeciduous',
-  equine: 'species.equine',
-} as const;
+
 
 /**
  * Top-level chart entry. Reads chart state (with all the persistence,
@@ -174,6 +171,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const { t: tChart } = useTranslation('chart');
   const chart = useChartState();
   const profile = useProfile();
+  const logoInputRef = React.useRef<HTMLInputElement>(null);
+  const [logoUploading, setLogoUploading] = React.useState(false);
+  const handleHeaderLogoPick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      await profile.uploadLogo(file);
+      toast(t('practice.logo.updated', { ns: 'settings' }), { kind: 'success' });
+    } catch (error) {
+      toast(friendlyError(error, t('practice.logo.uploadFailed', { ns: 'settings' })), { kind: 'error' });
+    } finally {
+      setLogoUploading(false);
+    }
+  };
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
   const language = useAppLanguage(prefs.language, chartSettings.loaded, true);
@@ -206,25 +219,30 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   // The open patient's visits (newest first), for the topbar date
   // switcher and the current-visit rule below. Loaded further down.
-  const [visits, setVisits] = React.useState<CloudChartMeta[]>([]);
+  const [loadedVisits, setVisits] = React.useState<CloudChartMeta[]>([]);
+  const visitCache = React.useRef(new Map<string, CloudChartMeta[]>());
+  const visitIdentity = JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
+  const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName), [loadedVisits, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
   // Today's visit isn't a "saved visit": reloading or reopening it
   // mid-visit opens it editable with no banner (see isCurrentVisit).
   // Latched per chart so changing the date mid-edit doesn't lock it.
-  const currentVisitRule = isCurrentVisit(chart.patientInfo.date, localDateISO(), visits, chart.cloudChartId);
+  const currentVisitRule = (!chart.openedExisting || visitCache.current.has(visitIdentity)) && isCurrentVisit(chart.patientInfo.date, localDateISO(), visits, chart.cloudChartId);
   const [currentVisitLatch, setCurrentVisitLatch] = React.useState<string | null>(null);
   React.useEffect(() => {
-    if (currentVisitRule) setCurrentVisitLatch(chart.cloudChartId);
-  }, [currentVisitRule, chart.cloudChartId]);
+    if (currentVisitRule && (!chart.openedExisting || visits.length > 0)) setCurrentVisitLatch(chart.cloudChartId);
+  }, [currentVisitRule, chart.cloudChartId, chart.openedExisting, visits.length]);
   const currentVisit = currentVisitRule || currentVisitLatch === chart.cloudChartId;
   const editable = editUnlocked || currentVisit;
-  const cloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
+  const native = isNativeApp();
+  const rawCloud = useCloudSync(chart, !trial, profile.practiceId, editable, profile.loaded && profile.practiceKnown);
+  const animalTabs = useAnimalTabs(chart, rawCloud, !native);
+  const cloud = native ? rawCloud : { ...rawCloud, openChart: animalTabs.openChart, signOut: animalTabs.signOut, confirmDiscardIfDirty: animalTabs.confirmDiscardIfDirty };
   // Owner report is per-practice, admin-flagged, and off by default —
   // everything it touches (section, FAB, image tags, modal) gates here.
   const ownerReportOn = cloud.enabled && profile.ownerReportEnabled;
   const { route, navigate } = useHashRoute();
   // The iOS app renders the chart inside the app shell (tab bar / iPad
   // sidebar) instead of the website's topbar and section rail.
-  const native = isNativeApp();
   // App shell tab. #/library (My charts on the web) is the Patients tab.
   const [appTab, setAppTab] = React.useState<AppTab>(() => (native && route.view === 'library' ? 'patients' : 'chart'));
   // The one way to "land on the Chart tab": select it and pop its stack to
@@ -249,12 +267,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (!native) setPracticeSettingsOpen(route.view === 'settings');
   }, [route.view, native]);
   const openPracticeSettings = () => {
-    if (native) setPracticeSettingsOpen(true);
-    else navigate('#/settings');
+    setPracticeSettingsOpen(true);
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
   const [navigationHost, setNavigationHost] = React.useState<HTMLDivElement | null>(null);
-  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')) || route.view === 'settings' || practiceSettingsOpen);
+  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')));
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -450,6 +467,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   };
   // Patients is a full workspace destination; the working chart stays mounted.
   const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
+  const [patientPickerOpen, setPatientPickerOpen] = React.useState(false);
   const openLibrary = () => {
     navigate('#/library');
   };
@@ -614,6 +632,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             (b.chart_date || '').localeCompare(a.chart_date || '') ||
             b.updated_at.localeCompare(a.updated_at)
           );
+        visitCache.current.set(visitIdentity, mine);
         setVisits(mine);
       })
       .catch(() => { if (!cancelled) setVisits([]); });
@@ -685,7 +704,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // already gone (missing ∪ extracted) from their most recent saved
   // visit. Shared by the library's "+ Visit" and the saved-chart
   // banner's "+ New visit".
-  const startVisitFromChart = async (latestChartId: string): Promise<boolean> => {
+  const createVisitFromChart = async (latestChartId: string): Promise<boolean> => {
     // Starting a visit replaces the open chart — never silently.
     if (!(await cloud.confirmDiscardIfDirty('newVisit'))) return false;
     const snap = await cloud.fetchChart(latestChartId);
@@ -713,7 +732,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         if (choice === null) return false;
         if (choice === 'open') {
           // Unsaved changes were already confirmed above.
-          await cloud.openChart(todays.id, { skipConfirm: true });
+          await rawCloud.openChart(todays.id, { skipConfirm: true });
           goToSection('patient');
           return true;
         }
@@ -748,6 +767,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     );
     return true;
   };
+
+  const startVisitFromChart = (id: string) => native ? createVisitFromChart(id) : animalTabs.transition(() => createVisitFromChart(id));
 
   // ⌘S / Ctrl+S saves the chart — matches the mental model everyone
   // brings from every other document editor. Swallows the browser's
@@ -1195,7 +1216,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       label: t('sections.images'),
       content: (
         <>
-        <ImagingSection
+        <ImagingSection key={chart.cloudChartId}
           readOnly={readOnly}
           chartId={chart.cloudChartId}
           cloudActive={cloud.enabled}
@@ -1269,6 +1290,84 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // amber and carries the way out — Undo changes (back to the version that was
   // opened) and Done editing (save, then re-lock).
   const editingSavedVisit = cloud.enabled && chart.openedExisting && !currentVisit && !readOnly;
+  const saveAction = React.useRef(attemptSave);
+  saveAction.current = attemptSave;
+  const saveFeedback = React.useMemo(() => {
+    if (native || !cloud.enabled || workspacePage || animalTabs.empty) return null;
+
+    if (cloud.status === 'saving') {
+      return <span className="save-status save-status--saving">{t('status.saving')}</span>;
+    }
+    if (cloud.status === 'error') {
+      return (
+        <span className="save-status-error-wrap">
+          <button
+            type="button"
+            className="save-status save-status--error"
+            onClick={() => saveAction.current()}
+            title={cloud.saveError || t('status.retryTitle')}
+          >
+            {t('status.notSavedRetry')}
+          </button>
+          {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
+        </span>
+      );
+    }
+    if (saveHint) {
+      return (
+        <span className="save-status-error-wrap" role="alert">
+          <span className="save-status save-status--error">{t('status.notSaved')}</span>
+          <span className="save-status__detail">{saveHint}</span>
+        </span>
+      );
+    }
+    if (readOnly) {
+      // The viewing bar already says so.
+      return null;
+    }
+    if (cloud.dirty && !cloud.online) {
+      return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
+    }
+    if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
+      return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
+    }
+    if (cloud.awaitingClinical) {
+      // Filled in ahead of time: autosave starts with charting;
+      // Save puts it in the cloud now (e.g. to open elsewhere).
+      return (
+        <button
+          type="button"
+          className="save-status save-status--manual"
+          onClick={() => saveAction.current()}
+          title={t('status.saveTitle')}
+        >
+          {t('actions.save', { ns: 'common' })}
+        </button>
+      );
+    }
+    if (cloud.dirty) {
+      return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
+    }
+    if (cloud.lastSavedAt && cloud.status === 'saved') {
+      return (
+        <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
+          <Trans
+            t={t}
+            i18nKey="status.savedRich"
+            values={{ when: formatSavedAt(cloud.lastSavedAt) }}
+            components={{ word: <span className="save-status__word" /> }}
+          />
+        </span>
+      );
+    }
+    return null;
+  }, [native, cloud.enabled, cloud.status, cloud.saveError, cloud.dirty, cloud.online, cloud.awaitingClinical, cloud.lastSavedAt, saveHint, readOnly, chart.patientInfo.patientName, workspacePage, animalTabs.empty, t]);
+  React.useEffect(() => {
+    if (!saveFeedback) return;
+    const kind = cloud.status === 'error' || saveHint ? 'error' : cloud.status === 'saved' ? 'success' : cloud.dirty || cloud.awaitingClinical ? 'warning' : 'info';
+    return statusToast(saveFeedback, { kind, duration: cloud.status === 'saved' ? 2500 : 0 });
+  }, [saveFeedback, cloud.status, cloud.dirty, cloud.awaitingClinical, saveHint]);
+
   // Viewing a saved visit (opens view-only so history isn't changed by
   // accident): the topbar's action row carries the state and the way in
   // — + New visit, History, Edit chart — instead of a separate banner.
@@ -1284,16 +1383,38 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // Start a blank chart (asks only when something would be lost).
   // `beforeReset` runs only once discarding is agreed (the ezyVet hand-over
   // stashes its patient there, so a cancelled question leaves nothing behind).
-  const startNewPatient = async (beforeReset?: () => void): Promise<boolean> => {
+  const createPatient = async (beforeReset?: () => void): Promise<boolean> => {
     if (!(await cloud.confirmDiscardIfDirty('newPatient'))) return false;
     beforeReset?.();
-    chart.resetChart();
+    if (native) chart.resetChart();
+    else {
+      const id = chart.startNewVisit({
+        identity: { patientName: '', patientNumber: '', ownerName: '', ownerPhone: '', ownerEmail: '', species: chart.species },
+        goneTeeth: [],
+      });
+      navigate(`#/chart/${id}`);
+      goToSection('patient');
+    }
     return true;
+  };
+  const startNewPatient = (beforeReset?: () => void) => native ? createPatient(beforeReset) : animalTabs.transition(() => createPatient(beforeReset));
+  const addAnimal = async () => {
+    if (cloud.enabled) { setPatientPickerOpen(true); return; }
+    if (animalTabs.closedLocal.length) {
+      const choice = await chooseDialog({ title: t('animalTabs.open'), choices: [
+        { value: 'new', label: t('animalTabs.unnamed') },
+        ...animalTabs.closedLocal.map(tab => ({ value: tab.id, label: [tab.name || t('animalTabs.unnamed'), tab.owner].filter(Boolean).join(' · ') })),
+      ] });
+      if (choice === null) return;
+      if (choice !== 'new') { await animalTabs.select(choice); return; }
+    }
+    await startNewPatient();
   };
   // A patient picked in the ToothOps for ezyVet side panel: start their
   // chart once signed in (the flag waits in sessionStorage until then).
   useEzyvetHandover({
     enabled: !trial && cloud.enabled,
+    newPatientInPlace: !native,
     getUserId: async () => (await supabase?.auth.getSession())?.data.session?.user.id ?? null,
     take: takePendingPatient,
     startNewPatient,
@@ -1360,6 +1481,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const libraryCore = useStableFunctions({
     deleteChart: async (id: string): Promise<void> => {
       await cloud.deleteChart(id);
+      animalTabs.forget(id);
       bumpLibrary();
     },
     /** Start a visit from the patient's latest; toasts failures. */
@@ -1379,9 +1501,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       return true;
     },
     loadPdf: async (file: File): Promise<boolean> => {
-      if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return false;
-      // A failed import changed nothing (and said so): don't move to it.
-      return chart.loadFromPdf(file);
+      const load = async () => {
+        if (!(await cloud.confirmDiscardIfDirty('importPdf'))) return false;
+        return chart.loadFromPdf(file);
+      };
+      return native ? load() : animalTabs.transition(load);
     },
     sendReminder: (c: CloudChartMeta) => setReminderTarget(c),
     openHistory: (chartId: string, label: string) => setHistoryFor({ id: chartId, label, fromLibrary: true }),
@@ -1466,9 +1590,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         />
       )}
 
-      {libraryOpen && (
-        <ChartLibrary
-          presentation={PAGE_PRESENTATION}
+      {(libraryOpen || patientPickerOpen) && (() => {
+        const library = <ChartLibrary
+          presentation={patientPickerOpen ? MODAL_PRESENTATION : PAGE_PRESENTATION}
           key={route.view}
           rechecksOnly={route.view === 'rechecks'}
           viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
@@ -1477,16 +1601,17 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onDelete={libraryCore.deleteChart}
           onNewVisit={async (latestChartId) => {
             // Cancelled at the unsaved-changes prompt → stay in the library.
-            if (await libraryCore.newVisit(latestChartId)) closeLibrary();
+            if (await libraryCore.newVisit(latestChartId)) { setPatientPickerOpen(false); closeLibrary(); }
           }}
           onSendReminder={libraryCore.sendReminder}
           onOpenHistory={libraryCore.openHistory}
           onClearRecalls={libraryCore.clearRecalls}
-          onNewPatient={async () => { if (await libraryCore.newPatient()) closeLibrary(); }}
+          onNewPatient={async () => { if (await libraryCore.newPatient()) { setPatientPickerOpen(false); closeLibrary(); } }}
           onLoadPdf={libraryCore.loadPdf}
-          onClose={closeLibrary}
-        />
-      )}
+          onClose={() => { if (patientPickerOpen) setPatientPickerOpen(false); else closeLibrary(); }}
+        />;
+        return patientPickerOpen ? createPortal(library, document.body) : library;
+      })()}
     </>
   );
   const chartForm = (
@@ -1602,13 +1727,15 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         firstRun={walkthroughFirstRun}
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled && !trial}
+        ownerReportEnabled={ownerReportOn}
         onNavigate={native ? showChartSection : goToSection}
       />
 
       <PracticeSettingsModal
         open={practiceSettingsOpen}
-        onClose={() => { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); if (!native) returnToVisit(); }}
-        presentation={native ? MODAL_PRESENTATION : PAGE_PRESENTATION}
+        sectionNavigation={!native}
+        onClose={() => { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); if (!native && route.view === 'settings') returnToVisit(); }}
+        presentation={MODAL_PRESENTATION}
         onLeaveGuardChange={registerPracticeGuard}
         onOpenReminders={() => setRemindersOpen(true)}
         onOpenChartSettings={() => setChartSettingsOpen('all')}
@@ -1907,7 +2034,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
   return (
     <CodeSpeciesContext.Provider value={chart.species}>
-    <div className="entry-grid-container" ref={containerRef}>
+    <div className="entry-grid-container" ref={containerRef} inert={animalTabs.busy}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
       <a className="skip-link" href={workspacePage ? '#workspace-content' : '#chart-form'} onClick={(event) => {
         event.preventDefault();
@@ -1918,183 +2045,35 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         {t('skipLink')}
       </a>
       <header className="entry-grid__topbar" ref={topbarRef}>
+
         <div className="entry-grid__topbar-lead">
           <div className="entry-grid__practice-brand">
           {/* Uploaded practice logo leads the identity block (decorative —
               the practice name is right beside it). */}
-          {profile.logoUrl && (
+          {profile.logoUrl ? (
             <img src={profile.logoUrl} alt="" className="entry-grid__topbar-logo" />
-          )}
-          <div className="entry-grid__topbar-identity">
-          {profile.doctorName.trim() ? (
-            <>
-              <h1 className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</h1>
-              <span className="entry-grid__title">{profile.doctorName}</span>
-            </>
+          ) : cloud.enabled && <button type="button" className="entry-grid__add-logo" disabled={logoUploading} aria-busy={logoUploading} onClick={() => logoInputRef.current?.click()}>
+            {t('topbar.addLogo')} <span aria-hidden="true">+</span>
+          </button>}
+          <input ref={logoInputRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
+            aria-label={t('practice.logo.choose', { ns: 'settings' })} onChange={handleHeaderLogoPick} />
+          {cloud.enabled && !trial ? (
+            <button type="button" className="entry-grid__topbar-identity entry-grid__practice-link" onClick={openPracticeSettings} title={t('menu.practiceSettings.label')}>
+              <span className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</span>
+              {profile.doctorName.trim() && <span className="entry-grid__title">{profile.doctorName}</span>}
+            </button>
           ) : (
-            <h1 className="entry-grid__title">
-              {trial
-                ? t('brandTrial')
-                : profile.practiceName.trim() || t('brand')}
-            </h1>
+            <div className="entry-grid__topbar-identity"><h1 className="entry-grid__title">{trial ? t('brandTrial') : profile.practiceName.trim() || t('brand')}</h1></div>
           )}
           </div>
-          </div>
-          {/* Live patient banner — EMR-style encounter context that stays
-              visible while scrolling deep into the chart. */}
-          <div className="entry-grid__patient" aria-live="off" aria-label={t('workspace.patientContext')} hidden={workspacePage}>
-            {chart.patientInfo.patientName ? (
-              <>
-                <span className="entry-grid__patient-name">
-                  {chart.patientInfo.patientName}
-                </span>
-                {chart.patientInfo.patientNumber && <span className="entry-grid__patient-number" aria-label={t('workspace.patientNumber', { number: chart.patientInfo.patientNumber })}>#{chart.patientInfo.patientNumber}</span>}
-                <span className="entry-grid__patient-sep" aria-hidden="true" />
-                <span className="entry-grid__patient-meta">
-                  {t(SPECIES_KEYS[chart.species])}
-                </span>
-                {chart.patientInfo.date && (() => {
-                  const hasCurrent = visits.some((v) => v.id === chart.cloudChartId);
-                  const opts = hasCurrent
-                    ? visits
-                    : [{ id: chart.cloudChartId, chart_date: chart.patientInfo.date } as CloudChartMeta, ...visits];
-                  const canSwitch = cloud.enabled && opts.length >= 2;
-                  return (
-                    <>
-                      <span className="entry-grid__patient-sep" aria-hidden="true" />
-                      {canSwitch ? (
-                        /* Visit history switcher — a pill with a history
-                           icon so it reads as a control, not a date. */
-                        <span
-                          className="entry-grid__visit-switch"
-                          title={t('topbar.visitSwitchTitle', { n: opts.length })}
-                        >
-                          <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
-                            <path
-                              d="M8 2.5a5.5 5.5 0 1 1-5.24 3.83l-1.2.9A.5.5 0 0 1 .5 6.9V3.4a.5.5 0 0 1 .8-.4l2.9 2.17a.5.5 0 0 1-.06.84l-.9.53A4.3 4.3 0 1 0 8 3.7zm-.5 2.2a.6.6 0 0 1 1.2 0v2.9l2.1 1.26a.6.6 0 0 1-.62 1.03L7.8 8.5a.6.6 0 0 1-.3-.52z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                          <select
-                            className="entry-grid__visit-select"
-                            value={chart.cloudChartId}
-                            onChange={(e) => switchVisit(e.target.value)}
-                            aria-label={t('topbar.visitSwitchLabel', { n: opts.length })}
-                          >
-                            {opts.map((v, i) => (
-                              <option key={v.id} value={v.id}>
-                                {t(i === 0 ? 'topbar.visitLatest' : 'topbar.visitEarlier', {
-                                  date: v.chart_date || t('topbar.undatedVisit'),
-                                })}
-                              </option>
-                            ))}
-                          </select>
-                        </span>
-                      ) : (
-                        <span className="entry-grid__patient-meta entry-grid__patient-date">
-                          {t('workspace.visitDate', { date: chart.patientInfo.date })}
-                        </span>
-                      )}
-                    </>
-                  );
-                })()}
-                {/* Saved-visit state beside the visit it describes. */}
-                {(editingSavedVisit || viewingSavedVisit) && (
-                  <span
-                    className={`topbar-state-chip topbar-state-chip--${editingSavedVisit ? 'editing' : 'viewing'}`}
-                    title={editingSavedVisit ? t('topbar.editingTitle') : t('topbar.viewOnlyChipTitle')}
-                  >
-                    {editingSavedVisit ? (
-                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M11.3 2.3l2.4 2.4-8 8L3 13l.3-2.7z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-                    ) : (
-                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z" fill="none" stroke="currentColor" strokeWidth="1.5" /><circle cx="8" cy="8" r="2" fill="currentColor" /></svg>
-                    )}
-                    {editingSavedVisit ? t('topbar.editingShort') : t('status.viewOnly')}
-                  </span>
-                )}
-              </>
-            ) : (
-              <span className="entry-grid__patient-empty">
-                {t('topbar.patientEmpty')}
-              </span>
-            )}
-                {/* Save status sits with the chart it describes (as in Docs/Notion).
-              {/* One save-status pill, always telling the truth: what's
-                  happening now, or when this chart last reached the cloud.
-                  ⌘S / Ctrl+S saves immediately. */}
-              {cloud.enabled ? (() => {
-                if (cloud.status === 'saving') {
-                  return <span className="save-status save-status--saving" aria-hidden="true">{t('status.saving')}</span>;
-                }
-                if (cloud.status === 'error') {
-                  return (
-                    <span className="save-status-error-wrap">
-                      <button
-                        type="button"
-                        className="save-status save-status--error"
-                        onClick={attemptSave}
-                        title={cloud.saveError || t('status.retryTitle')}
-                      >
-                        {t('status.notSavedRetry')}
-                      </button>
-                      {cloud.saveError && <span className="save-status__detail">{cloud.saveError}</span>}
-                    </span>
-                  );
-                }
-                if (saveHint) {
-                  return (
-                    <span className="save-status-error-wrap" role="alert">
-                      <span className="save-status save-status--error">{t('status.notSaved')}</span>
-                      <span className="save-status__detail">{saveHint}</span>
-                    </span>
-                  );
-                }
-                if (readOnly) {
-                  // The viewing bar already says so.
-                  if (viewingSavedVisit) return null;
-                  return <span className="save-status save-status--muted" title={t('status.viewOnlyTitle')}>{t('status.viewOnly')}</span>;
-                }
-                if (cloud.dirty && !cloud.online) {
-                  return <span className="save-status save-status--manual" title={t('status.offlineTitle')}>{t('status.offline')}</span>;
-                }
-                if (cloud.dirty && !chart.patientInfo.patientName.trim()) {
-                  return <span className="save-status save-status--manual" title={t('status.needsNameTitle')}>{t('status.needsName')}</span>;
-                }
-                if (cloud.awaitingClinical) {
-                  // Filled in ahead of time: autosave starts with charting;
-                  // Save puts it in the cloud now (e.g. to open elsewhere).
-                  return (
-                    <button
-                      type="button"
-                      className="save-status save-status--manual"
-                      onClick={attemptSave}
-                      title={t('status.saveTitle')}
-                    >
-                      {t('actions.save', { ns: 'common' })}
-                    </button>
-                  );
-                }
-                if (cloud.dirty) {
-                  return <span className="save-status save-status--manual" title={t('status.unsavedTitle')}>{t('status.unsaved')}</span>;
-                }
-                if (cloud.lastSavedAt) {
-                  return (
-                    <span className="save-status save-status--saved" title={t('status.savedTitle', { when: formatDateTime(cloud.lastSavedAt, undefined, FULL_DATE_TIME) })}>
-                      <Trans
-                        t={t}
-                        i18nKey="status.savedRich"
-                        values={{ when: formatSavedAt(cloud.lastSavedAt) }}
-                        components={{ word: <span className="save-status__word" /> }}
-                      />
-                    </span>
-                  );
-                }
-                return null;
-              })() : trial ? (
-                <span className="save-status save-status--muted" title={t('status.localTitle')}>
-                  {t('status.local')}
-                </span>
-              ) : null}
+          <div className="entry-grid__patient-workspace">
+        <AnimalTabs tabs={animalTabs.tabs} showEmpty={false} activeId={animalTabs.empty || workspacePage ? '' : chart.cloudChartId}
+          busy={animalTabs.busy} editing={editingSavedVisit}
+          visits={cloud.enabled ? Array.from(new Map([...visits.map(visit => ({ id: visit.id, date: visit.chart_date })), ...animalTabs.draftVisits].map(visit => [visit.id, visit])).values()).sort((a, b) => b.date.localeCompare(a.date)) : []}
+          onVisit={switchVisit}
+          onAdd={() => { void addAnimal(); }}
+          onSelect={id => { void animalTabs.select(id).then(ok => { if (ok && workspacePage) navigate(`#/chart/${id}`); }).catch(err => toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' })); }}
+          onClose={id => { void animalTabs.close(id).catch(err => toast(t('errors.openVisit', { error: friendlyDetail(err) }), { kind: 'error' })); }} />
           </div>
         </div>
         {/* --app: the signed-in toolbar (phones lay it out as an even,
@@ -2166,7 +2145,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage}><VoiceInputButton
+            <span hidden={workspacePage || animalTabs.empty}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
@@ -2185,7 +2164,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             onOpenChartSettings={() => setChartSettingsOpen('all')}
             onOpenWhatsNew={() => setWhatsNewOpen(true)}
-            onNewPatient={cloud.enabled && !editingSavedVisit && !workspacePage ? () => { void startNewPatient(); } : undefined}
             onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
             cloud={cloud.enabled ? {
               onPracticeSettings: openPracticeSettings,
@@ -2194,21 +2172,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
             } : undefined}
           />
-          {/* A fresh chart is always one tap away (people reopen the app
-              on an old visit) — except mid-edit, where Done comes first. */}
-          {cloud.enabled && !editingSavedVisit && !workspacePage && (
-            <button
-              type="button"
-              className={`chart-menu__trigger topbar-library-btn topbar-new-patient${viewingSavedVisit ? ' topbar-new-patient--secondary' : ''}`}
-              onClick={() => void startNewPatient()}
-              aria-label={t('topbar.newPatient')}
-              title={t('topbar.newPatientTitle')}
-            >
-              <svg className="topbar-plus" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-              <span className="topbar-label-long">{t('topbar.newPatient')}</span>
-              <span className="topbar-label-short">{t('topbar.newPatientShort')}</span>
-            </button>
-          )}
           {editingSavedVisit && !workspacePage && (
             <>
               {unlockSnapshotChanged && (
@@ -2237,13 +2200,10 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <div className="workspace-layout">
       <aside className="workspace-sidebar">
-      <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
-        {cloud.enabled && <button type="button" data-tour="library" aria-current={route.view === 'library' ? 'page' : undefined} onClick={openLibrary}>{t('topbar.myCharts')}</button>}
-        <button type="button" aria-current={!workspacePage ? 'page' : undefined} onClick={returnToVisit}>{t('workspace.currentVisit')}</button>
-        {cloud.enabled && <button type="button" data-tour="practice-settings" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
-        {!cloud.enabled && <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>}
-      </nav>
-      <div className="workspace-sidebar__sections" hidden={workspacePage} ref={setNavigationHost} />
+      {!cloud.enabled && <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
+        <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>
+      </nav>}
+      <div className="workspace-sidebar__sections" hidden={workspacePage || animalTabs.empty} ref={setNavigationHost} />
       <div className="workspace-sidebar__account">
           {cloud.enabled && <ChartMenu
             scope={ACCOUNT_SCOPE}
@@ -2263,7 +2223,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <div id="workspace-content" tabIndex={-1}>
         {dialogsBeforeForm}
-        <div hidden={workspacePage}>
+        {!workspacePage && animalTabs.empty && <div className="animal-tabs__empty">
+          <h2>{t('animalTabs.emptyTitle')}</h2><p>{t('animalTabs.emptyBody')}</p>
+          <button type="button" className="animal-tabs__open" onClick={() => { void addAnimal(); }}>{t('animalTabs.open')}</button>
+        </div>}
+        <div id="animal-chart-panel" role="tabpanel" aria-labelledby={!animalTabs.empty ? `animal-tab-${chart.cloudChartId}` : undefined}
+          hidden={workspacePage || animalTabs.empty} inert={animalTabs.busy}>
           {chartForm}
           <div className="visit-export">{pdfButton}</div>
         </div>
@@ -2276,6 +2241,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {/* Compact feedback link — the email it opens pre-fills the useful
           details (what happened, section, browser). */}
       <footer className="entry-grid__footnote">
+        {trial && <span className="save-status save-status--muted" title={t('status.localTitle')}>{t('status.local')}</span>}
         <span className="entry-grid__footnote-lead">
           <Trans t={t} i18nKey="footer.feedback" components={{ a: <a href={feedbackMailto(t)} /> }} />
         </span>

@@ -254,7 +254,7 @@ describe('ImagingSection', () => {
     imaging.override = store();
     const { container, rerender } = render(<ImagingSection {...props} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    expect(screen.getByText('⟦1 of 5 images⟧')).toBeInTheDocument();
+    expect(screen.queryByText('⟦1 of 5 images⟧')).toBeNull();
     imaging.override = store({ items: three, dicomEnabled: false });
     rerender(<ImagingSection {...props} pdfExcludedImages={['a2']} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
@@ -275,7 +275,7 @@ describe('ImagingSection', () => {
     const failed = container.querySelector('.imaging__queue-item--failed .imaging__queue-status')!;
     expect(failed.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
     expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
-    const caption = screen.getByLabelText('⟦Caption⟧');
+    const caption = screen.getByLabelText('⟦Description⟧');
     fireEvent.change(caption, { target: { value: 'New' } });
     fireEvent.blur(caption);
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/caption/));

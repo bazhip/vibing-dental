@@ -100,7 +100,8 @@
       "report_chart_required": "Salvi la cartella prima di inviare il referto via email.",
       "attachment_invalid": "Impossibile leggere il file del referto. Riprovi.",
       "attachment_too_large": "Il referto è troppo grande per l’invio via email (max 10 MB). Rimuova alcune foto e riprovi.",
-      "daily_owner_report_limit": "Limite giornaliero di invio referti raggiunto (100). Riprovi domani."
+      "daily_owner_report_limit": "Limite giornaliero di invio referti raggiunto (100). Riprovi domani.",
+      "owner_report_recipient_changed": "L’indirizzo e-mail del proprietario è cambiato. Riapra il resoconto e confermi nuovamente il destinatario."
     },
     "saveFile": "Impossibile salvare il file."
   },
@@ -150,5 +151,11 @@
       "customColor": "Colore personalizzato…",
       "sendingBusy": "Invio…"
     }
+  },
+  "appearance": {
+    "label": "Aspetto",
+    "system": "Sistema",
+    "light": "Chiaro",
+    "dark": "Scuro"
   }
 }

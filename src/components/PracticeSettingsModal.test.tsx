@@ -13,7 +13,7 @@ const billingMock = vi.hoisted(() => ({
 }));
 
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: {} }, cloudEnabled: true }));
-const treatmentStore = vi.hoisted(() => ({ enabled: true, loaded: true, templates: [], create: vi.fn(), update: vi.fn(), remove: vi.fn() }));
+const treatmentStore = vi.hoisted(() => ({ enabled: true, loaded: true, templates: [] as { id: string; name: string; body: string }[], create: vi.fn(), update: vi.fn(), remove: vi.fn() }));
 vi.mock('../hooks/useReportTemplates', () => ({ useReportTemplates: () => treatmentStore }));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
 vi.mock('../hooks/useBilling', () => billingMock);
@@ -103,6 +103,20 @@ beforeEach(() => {
 });
 
 describe('PracticeSettingsModal', () => {
+  it.each(['page', 'modal'] as const)('keeps PIMS review in General with %s section navigation', async (presentation) => {
+    vi.stubEnv('VITE_PIMS_ROLLOUT_ENABLED', 'true');
+    try {
+      render(<PracticeSettingsModal open presentation={presentation} sectionNavigation onClose={vi.fn()} profile={profile} />);
+      expect(screen.getByRole('heading', { name: 'PIMS appointments' })).toBeVisible();
+      await userEvent.click(screen.getByRole('button', { name: 'Team' }));
+      expect(screen.queryByRole('heading', { name: 'PIMS appointments' })).toBeNull();
+      await userEvent.click(screen.getByRole('button', { name: 'General' }));
+      expect(screen.getByRole('heading', { name: 'PIMS appointments' })).toBeVisible();
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
   it('in the app: no billing section, and billing is never fetched', async () => {
     native.value = true;
     billingMock.fetchBilling.mockResolvedValue(billing({ status: 'active', hasStripe: true }));
@@ -311,4 +325,31 @@ it('keeps personal chart preferences outside practice category navigation', asyn
   expect(screen.getByText(/Personal chart preferences/)).toBeVisible();
   fireEvent.click(button);
   expect(openChart).toHaveBeenCalledOnce();
+});
+
+it('fills a name loaded after opening without treating it as a user edit', async () => {
+  const onClose = vi.fn();
+  const { rerender } = render(<><PracticeSettingsModal open onClose={onClose} profile={{ ...profile, practiceName: '' }} /><DialogHost /></>);
+  rerender(<><PracticeSettingsModal open onClose={onClose} profile={{ ...profile, practiceName: 'Loaded Practice' }} /><DialogHost /></>);
+  expect(screen.getByDisplayValue('Loaded Practice')).toBeInTheDocument();
+  fireEvent.keyDown(document, { key: 'Escape' });
+  await waitFor(() => expect(onClose).toHaveBeenCalled());
+  expect(screen.queryByRole('alertdialog')).toBeNull();
+});
+
+it('preserves an actual name edit when profile data refreshes', () => {
+  const { rerender } = render(<PracticeSettingsModal open onClose={vi.fn()} profile={profile} />);
+  fireEvent.change(screen.getByDisplayValue('SoCal Vet'), { target: { value: 'My edit' } });
+  rerender(<PracticeSettingsModal open onClose={vi.fn()} profile={{ ...profile, practiceName: 'Refreshed Practice' }} />);
+  expect(screen.getByDisplayValue('My edit')).toBeInTheDocument();
+});
+
+it('lists treatment titles in settings and opens the selected editor', async () => {
+  treatmentStore.templates = [{ id: 'a', name: 'Routine cleaning', body: 'Cleaned' }, { id: 'b', name: 'Extractions', body: 'Extracted' }];
+  renderModal();
+  expect(screen.getByRole('button', { name: 'Routine cleaning' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Extractions' }));
+  expect(await screen.findByDisplayValue('Extracted')).toBeInTheDocument();
+  expect(screen.getByLabelText('Template name')).toHaveValue('Extractions');
+  treatmentStore.templates = [];
 });

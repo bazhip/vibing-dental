@@ -376,7 +376,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                   return (
                     <React.Fragment key={g.key}>
                       <div className="chart-library__row" role="row">
-                        <div className="chart-library__row-main chart-library__group-main">
+                        <div className="chart-library__row-main chart-library__group-main" onClick={(event) => {
+                          if (busyId !== null || (event.target as HTMLElement).closest('button, a, input, select, textarea, summary')) return;
+                          void handleOpen(only.id);
+                        }}>
                           <span role="cell" className="chart-library__patient">
                             <button type="button" className="chart-library__patient-main chart-library__open-patient"
                               onClick={() => handleOpen(only.id)} disabled={busyId === only.id}

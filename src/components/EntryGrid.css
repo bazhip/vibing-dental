@@ -1605,7 +1605,7 @@
 }
 
 /* Report-templates modal */
-.report-templates__list-head {
+.treatment-templates__list-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1613,39 +1613,45 @@
   margin-bottom: 0.5rem;
 }
 
-.report-templates__list {
+.treatment-templates__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 0.4rem;
-  max-height: 9rem;
+  max-height: 18rem;
+  margin-bottom: 12px;
   overflow-y: auto;
 }
 
-.report-templates__item {
+.treatment-templates__item {
   font: inherit;
   font-size: 0.85rem;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--border, #cbd5e1);
-  border-radius: 999px;
+  padding: 10px 14px;
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  border: 1px solid var(--action-border);
+  border-radius: var(--radius-sm);
   background: var(--surface, #fff);
-  color: var(--text);
+  color: var(--primary);
   cursor: pointer;
 }
 
-.report-templates__item:hover {
+.treatment-templates__item:hover {
   border-color: var(--primary);
 }
 
-.report-templates__item--active {
+.treatment-templates__item--active {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--ios-on-tint, #fff);
 }
 
-.report-templates__body {
+.treatment-templates__body {
   min-height: 10rem;
   width: 100%;
   box-sizing: border-box;
@@ -1951,18 +1957,19 @@
 
 .diagram-view__action {
   background: var(--ios-cell, white);
-  border: 1px solid var(--border);
+  border: 1px solid var(--action-border);
   padding: 0.45rem 0.9rem;
   border-radius: 6px;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--primary);
   cursor: pointer;
   font-family: inherit;
 }
 
 .diagram-view__action:hover {
-  border-color: var(--accent);
+  border-color: var(--primary);
+  background: var(--action-tint);
 }
 
 .diagram-view__action--danger {
@@ -2053,7 +2060,7 @@
 .diagram-view__color {
   width: 22px;
   height: 22px;
-  border: 2px solid white;
+  border: 2px solid var(--surface, white);
   border-radius: 50%;
   cursor: pointer;
   outline: 1px solid var(--border);
@@ -2077,7 +2084,7 @@
   position: relative;
   width: 100%;
   max-width: 1200px;
-  background: white;
+  background: var(--surface, white);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 0.75rem;
@@ -2154,13 +2161,19 @@
  *   .tooth-group__hover       – transparent overlay that picks up a tint on hover.
  */
 .tooth-diagram__outline {
-  fill: #1a202c;
+  fill: var(--diagram-ink, #1a202c);
   stroke: none;
   pointer-events: none;
 }
 
+/* Neutral drawing ink adapts on screen only; SVG exports retain the saved
+   stroke attribute and deliberately do not include this rule. */
+@media screen {
+  html[data-theme="dark"] .diagram-stroke--neutral { stroke: var(--diagram-ink, #1a202c); }
+}
+
 .tooth-group__missing-fill {
-  fill: #1a202c;
+  fill: var(--diagram-ink, #1a202c);
 }
 
 .tooth-group__hover {
@@ -3157,6 +3170,8 @@ button.save-status--error {
 }
 
 /* Images & radiographs section */
+.radiographic-findings { margin-top: 16px; border-top: 1px solid var(--border); }
+.radiographic-findings > .patient-form__label { padding-top: 16px; }
 .imaging__pdf-option {
   margin: 0 0 0.75rem;
   flex-wrap: wrap;
@@ -3196,7 +3211,7 @@ button.save-status--error {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 1rem;
 }
 .imaging__card {
@@ -3263,7 +3278,21 @@ button.save-status--error {
 }
 a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 .imaging__formats { margin: 0.35rem 0 0; }
-.imaging__delete { align-self: flex-start; }
+/* Labeled attachment fields; output choices stay distinct from image metadata. */
+.imaging__classification { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px; }
+.imaging__field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.imaging__field > :is(select, textarea) { width: 100%; min-width: 0; box-sizing: border-box; min-height: 40px; font-size: 13px; font-weight: 400; color: var(--text); }
+.imaging__field > select { padding: 8px; }
+.imaging__field > .imaging__caption { min-height: 64px; resize: vertical; padding: 8px 10px; }
+.imaging__outputs { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.imaging__outputs .imaging__in-pdf { min-height: 32px; gap: 8px; }
+.imaging__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.imaging__actions .imaging__delete { min-height: 40px; margin-left: auto; font-size: 13px; }
+.imaging__actions .imaging__dicom { padding: 8px 0; border: 0; border-radius: 0; font-size: 12px; font-weight: 500; letter-spacing: normal; }
+@media (max-width: 600px) {
+  .imaging__field > select, .imaging__outputs .imaging__in-pdf, .imaging__actions .imaging__delete, .imaging__actions .imaging__dicom { min-height: 44px; }
+  .imaging__field > :is(select, textarea) { font-size: 16px; }
+}
 
 /* Drag-and-drop target: the whole Images section. */
 .imaging { position: relative; }
@@ -3431,7 +3460,7 @@ a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 
 /* Tooth hover tooltip (SVG) */
 .tooth-tooltip__bg {
-  fill: #1a202c;
+  fill: var(--ios-hud-bg, #1a202c);
   opacity: 0.94;
 }
 .tooth-tooltip__text {
@@ -3613,9 +3642,9 @@ button.save-status--manual:hover {
 .diagram-view__numbers.diagram-view__tool--active,
 .diagram-view__numbers.diagram-view__tool--active:hover { background: var(--primary); border-color: var(--primary); }
 .tooth-number {
-  fill: #2b6cb0;
+  fill: var(--ios-link, #2b6cb0);
   paint-order: stroke;
-  stroke: white;
+  stroke: var(--surface, white);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
@@ -3662,7 +3691,7 @@ button.save-status--manual:hover {
 }
 .tooth-chart .tooth-group[data-planned='true'] .tooth-group__hover {
   fill: rgba(214, 158, 46, 0.35);
-  stroke: #b7791f;
+  stroke: var(--ios-warning-label, #b7791f);
   stroke-width: 3;
   stroke-dasharray: 8 5;
 }
@@ -3699,9 +3728,9 @@ button.save-status--manual:hover {
   line-height: 1;
 }
 .tooth-chart__swatch--charted { background: rgba(56, 161, 105, 0.35); }
-.tooth-chart__swatch--planned { background: rgba(214, 158, 46, 0.4); border: 2px dashed #b7791f; }
-.tooth-chart__swatch--extracted { color: #c53030; font-weight: 800; border-color: transparent; }
-.tooth-chart__swatch--missing { background: #1a202c; }
+.tooth-chart__swatch--planned { background: rgba(214, 158, 46, 0.4); border: 2px dashed var(--ios-warning-label, #b7791f); }
+.tooth-chart__swatch--extracted { color: var(--diagram-danger, #c53030); font-weight: 800; border-color: transparent; }
+.tooth-chart__swatch--missing { background: var(--diagram-ink, #1a202c); }
 
 .tooth-chart__panel {
   position: sticky;

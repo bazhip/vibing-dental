@@ -20,6 +20,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
@@ -42,11 +44,13 @@
 
 .landing__nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
 }
 
 .landing__nav-signin {
+  min-height: 44px;
   background: transparent;
   border: none;
   font: inherit;
@@ -65,7 +69,7 @@
 .landing__nav-cta,
 .landing__cta {
   background: var(--primary);
-  color: white;
+  color: var(--on-primary);
   border: none;
   font: inherit;
   font-weight: 600;
@@ -223,6 +227,7 @@
 
 .demo-window__bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.6rem;
   border-bottom: 1px solid var(--border);
@@ -262,7 +267,7 @@
 
 .demo-grid__row--head {
   background: var(--primary);
-  color: #f2f7f6;
+  color: var(--on-primary);
   font-size: 0.62rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -355,7 +360,7 @@
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: white;
+  background: var(--surface);
 }
 
 .demo-artwork__svg {
@@ -368,13 +373,13 @@
 
 /* Same rendering as the app's diagram: dark filled outlines. */
 .demo-artwork__tooth {
-  fill: #1a202c;
+  fill: var(--diagram-ink);
 }
 
 /* The app's "extracted" mark: a red X drawn over the tooth. Each stroke
    draws itself on during the diagram scene. */
 .demo-x__stroke {
-  stroke: #dc2626;
+  stroke: var(--diagram-danger);
   stroke-width: 9;
   stroke-linecap: round;
   fill: none;
@@ -387,7 +392,7 @@
 
 /* The app's "missing" mark: the tooth shape fills solid. */
 .demo-missing-fill {
-  fill: #1a202c;
+  fill: var(--diagram-ink);
   opacity: 0;
   animation: demo-missing-fill 18s infinite;
 }
@@ -399,8 +404,8 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: color-mix(in srgb, var(--primary) 6%, white);
-  border: 1px solid color-mix(in srgb, var(--primary) 40%, white);
+  background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--surface));
   border-radius: 8px;
   padding: 0.4rem 0.6rem;
   font-size: 0.68rem;
@@ -430,7 +435,7 @@
 }
 
 .demo-voice__mic {
-  color: #dc2626;
+  color: var(--danger);
   animation: demo-mic 1.4s ease-in-out infinite;
   font-size: 0.6rem;
 }
@@ -440,7 +445,7 @@
   min-height: 0;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: white;
+  background: var(--surface);
   padding: 0.8rem;
   display: flex;
   flex-direction: column;
@@ -454,7 +459,7 @@
   width: 64px;
   height: 18px;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--primary) 22%, white);
+  background: color-mix(in srgb, var(--primary) 22%, var(--surface));
 }
 
 .demo-doc__line {
@@ -483,7 +488,7 @@
   gap: 0.45rem;
   font-size: 0.78rem;
   font-weight: 600;
-  color: white;
+  color: var(--on-primary);
   background: var(--primary);
   border-radius: 999px;
   padding: 0.45rem 0.95rem;
@@ -523,17 +528,17 @@
 }
 
 @keyframes demo-step-a {
-  0%, 30% { background: var(--primary); color: white; }
+  0%, 30% { background: var(--primary); color: var(--on-primary); }
   33%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
 }
 @keyframes demo-step-b {
   0%, 31% { background: var(--surface-sunken); color: var(--text-muted); }
-  34%, 63% { background: var(--primary); color: white; }
+  34%, 63% { background: var(--primary); color: var(--on-primary); }
   66%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
 }
 @keyframes demo-step-c {
   0%, 64% { background: var(--surface-sunken); color: var(--text-muted); }
-  67%, 96% { background: var(--primary); color: white; }
+  67%, 96% { background: var(--primary); color: var(--on-primary); }
   99%, 100% { background: var(--surface-sunken); color: var(--text-muted); }
 }
 
@@ -656,7 +661,7 @@
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
   background: var(--primary, #0c6b63);
-  color: #fff;
+  color: var(--on-primary);
   font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -668,7 +673,7 @@
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 1rem;
-  background: #f8fafc;
+  background: var(--surface-alt);
 }
 
 .feature-modal__shot {
@@ -736,7 +741,7 @@
   border-radius: 10px;
   padding: 1rem 1.1rem;
   margin-bottom: 1rem;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 5%, white), var(--surface));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 5%, var(--surface)), var(--surface));
   font-size: 0.9rem;
 }
 
@@ -747,7 +752,7 @@
 }
 
 .feature-modal__mic {
-  color: #b23c2a;
+  color: var(--danger);
   margin-right: 0.45rem;
   animation: feature-mic 1.6s ease-in-out infinite;
 }
@@ -810,7 +815,7 @@
 /* AI-native feature gets an accent so it reads as the headline capability. */
 .landing__feature--ai {
   border-color: var(--primary, #0c6b63);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 7%, white), var(--surface));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary, #0c6b63) 7%, var(--surface)), var(--surface));
 }
 .landing__feature--ai h3 {
   color: var(--primary, #0c6b63);
@@ -823,7 +828,7 @@
   font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.06em;
-  color: #fff;
+  color: var(--on-primary);
   background: var(--primary, #0c6b63);
   border-radius: 5px;
   vertical-align: middle;
@@ -860,6 +865,8 @@
 }
 
 .landing__footer {
+  align-items: center;
+  flex-wrap: wrap;
   margin-top: auto;
   border-top: 1px solid var(--border);
   padding: 1.1rem 1.5rem;
@@ -944,7 +951,7 @@
 /* ---------- responsive --------------------------------------------------------- */
 @media (max-width: 900px) {
   .landing__hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2.25rem;
     padding-top: 2.25rem;
   }
@@ -1108,7 +1115,7 @@
 
 @media (max-width: 900px) {
   .landing__paper {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.75rem;
   }
 }
@@ -1192,7 +1199,7 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--on-primary);
   background: var(--primary, #0c6b63);
   border-radius: 999px;
   white-space: nowrap;
@@ -1257,7 +1264,7 @@
   border: none;
   border-radius: 9px;
   background: linear-gradient(180deg, var(--primary, #0c6b63), var(--primary-end, #095049));
-  color: #fff;
+  color: var(--on-primary);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 600;
@@ -1295,7 +1302,7 @@
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
   background: var(--primary, #0c6b63);
-  color: #fff;
+  color: var(--on-primary);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;

@@ -1,3 +1,4 @@
+import { AppearanceSelect } from '../theme/AppearanceSelect';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseProfileReturn } from '../hooks/useProfile';
@@ -248,6 +249,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         </div>
         {doctorError}
       </form>
+
+      <section className="ai-settings-section"><AppearanceSelect /></section>
 
       {/* ---- Language ---------------------------------------------- */}
       {LANGUAGE_SWITCHING_ENABLED && (

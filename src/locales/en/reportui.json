@@ -167,10 +167,12 @@
     "attachment": "Attached: {{filename}}",
     "send": "Send report",
     "sent": "Report sent to {{email}}",
-    "sendFailed": "Couldn’t send the report."
+    "sendFailed": "Couldn’t send the report.",
+    "confirmTitle": "Send this owner report?",
+    "confirmMessage": "Send {{filename}} to {{email}}? Please confirm the recipient and report before sending."
   },
   "review": {
-    "incompleteImages": "Some report images could not be loaded. This PDF remains a draft and cannot be emailed. Retry the images before sharing a reviewed report.",
+    "incompleteImages": "Some report images are unavailable or have changed. Reload the images before emailing this report.",
     "draft": "Draft — review required",
     "complete": "Reviewed and complete",
     "draftHelp": "Review the findings, procedures, and advice before confirming that this visit is complete. Missing entries do not mean normal findings.",

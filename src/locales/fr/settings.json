@@ -298,7 +298,7 @@
         "body": "Mesures dent par dent. Touchez une cellule et saisissez, ou touchez un score — saisissez sans lever les yeux."
       },
       "diagrams": {
-        "body": "Touchez une dent pour la marquer ; passez de Commentaire à Dessin, ajoutez des notes libres. Annuler et Rétablir se trouvent dans la barre d’outils du schéma."
+        "body": "Touchez une dent pour la marquer, ajoutez des commentaires ou dessinez une note. Recherchez les codes AVDC à côté de Diagnostic et Intervention. Annuler et Rétablir se trouvent dans la barre d’outils du schéma."
       },
       "codes": {
         "body": "Recherchez ici l’ensemble des codes AVDC, juste à côté du schéma."
@@ -313,6 +313,12 @@
       "share": {
         "title": "Partager le PDF",
         "body": "Générez le PDF du dossier prêt pour le client avec votre logo, puis partagez-le ou enregistrez-le quand vous le souhaitez."
+      },
+      "byTooth": {
+        "body": "Passez à Par dent et touchez une dent du schéma. Consignez ses mesures, son diagnostic et son intervention au même endroit, puis passez à la suivante. Grille et Par dent partagent les mêmes observations."
+      },
+      "customize": {
+        "body": "Ouvrez le menu Plus du dossier et choisissez Personnaliser pour la page affichée. Réglez les colonnes, les profondeurs de poche par dent, racine ou site, les codes rapides et plus encore. Une fois connecté, vos préférences suivent votre compte."
       }
     }
   },

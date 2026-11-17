@@ -241,9 +241,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   return (
     <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
-      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')}>
-        {store.loaded && store.maxImages > 0 && <span className="patient-form__hint">{t('imaging.usage', { used: store.items.length, max: store.maxImages })}</span>}
-      </SectionHeader>
+      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')} />
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
@@ -374,6 +372,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 )}
               </a>
               <div className="imaging__meta">
+                <div className="imaging__classification">
+                  <label className="imaging__field"><span>{t('imaging.typeAria')}</span>
                 <select
                   disabled={readOnly}
                   className="imaging__kind-select"
@@ -389,6 +389,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 >
                   {KINDS.map((k) => <option key={k} value={k}>{t(`imaging.${k === 'photo' ? 'photo' : 'radiograph'}`)}</option>)}
                 </select>
+                  </label>
+                  <label className="imaging__field"><span>{t('imaging.toothLabel')}</span>
                 <select
                   disabled={readOnly}
                   className="imaging__tooth-select"
@@ -407,51 +409,12 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   )}
                   {teeth.map((n) => <option key={n} value={n}>{toothLabel(n)}</option>)}
                 </select>
-                {a.originalPath && (
-                  a.originalUrl ? (
-                    <a
-                      href={a.originalUrl}
-                      className="imaging__dicom"
-                      title={t('imaging.dicomDownloadTitle')}
-                    >
-                      {t('imaging.dicomDownload')}
-                    </a>
-                  ) : (
-                    <span className="imaging__dicom" title={t('imaging.dicomStoredTitle')}>
-                      {t('imaging.dicom')}
-                    </span>
-                  )
-                )}
-                {onImageInPdfChange && includeInPdf && (
-                  <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
-                    <input
-                      type="checkbox"
-                      {...switchProps}
-            disabled={readOnly}
-                      checked={!pdfExcludedImages.includes(a.id)}
-                      onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
-                    />
-                    {t('imaging.inPdf')}
                   </label>
-                )}
-                {onImageRoleChange && (
-                  <select
-                  disabled={readOnly}
-                    className="imaging__role"
-                    value={imageRoles[a.id] ?? ''}
-                    onChange={(e) =>
-                      onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)
-                    }
-                    aria-label={t('imaging.roleAria')}
-                    title={t('imaging.roleTitle')}
-                  >
-                    <option value="">{t('imaging.roleNone')}</option>
-                    {ROLES.map((r) => <option key={r} value={r}>{t(`imaging.${r}`)}</option>)}
-                  </select>
-                )}
-                <input
-                  type="text"
-                  className="patient-form__input imaging__caption"
+                </div>
+                <label className="imaging__field"><span>{t('imaging.captionAria')}</span>
+                <textarea
+                  rows={2}
+                  className="patient-form__textarea imaging__caption"
                   placeholder={t('imaging.captionPlaceholder')}
                   defaultValue={a.caption}
                   readOnly={readOnly}
@@ -469,6 +432,54 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                     }
                   }}
                 />
+                </label>
+                <div className="imaging__outputs">
+                {onImageInPdfChange && includeInPdf && (
+                  <label className="imaging__in-pdf" title={t('imaging.inPdfTitle')}>
+                    <input
+                      type="checkbox"
+                      {...switchProps}
+            disabled={readOnly}
+                      checked={!pdfExcludedImages.includes(a.id)}
+                      onChange={(e) => onImageInPdfChange(a.id, e.target.checked)}
+                    />
+                    {t('imaging.inPdf')}
+                  </label>
+                )}
+                {onImageRoleChange && (
+                  <label className="imaging__field"><span>{t('imaging.ownerReportLabel')}</span>
+                  <select
+                  disabled={readOnly}
+                    className="imaging__role"
+                    value={imageRoles[a.id] ?? ''}
+                    onChange={(e) =>
+                      onImageRoleChange(a.id, (e.target.value || null) as ImageRole | null)
+                    }
+                    aria-label={t('imaging.roleAria')}
+                    title={t('imaging.roleTitle')}
+                  >
+                    <option value="">{t('imaging.roleNone')}</option>
+                    {ROLES.map((r) => <option key={r} value={r}>{t(`imaging.${r}`)}</option>)}
+                  </select>
+                  </label>
+                )}
+                </div>
+                <div className="imaging__actions">
+                {a.originalPath && (
+                  a.originalUrl ? (
+                    <a
+                      href={a.originalUrl}
+                      className="imaging__dicom"
+                      title={t('imaging.dicomDownloadTitle')}
+                    >
+                      {t('imaging.dicomDownload')}
+                    </a>
+                  ) : (
+                    <span className="imaging__dicom" title={t('imaging.dicomStoredTitle')}>
+                      {t('imaging.dicom')}
+                    </span>
+                  )
+                )}
                 {!readOnly && <button
                   type="button"
                   className="diagram-view__action diagram-view__action--danger imaging__delete"
@@ -477,6 +488,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                 >
                   {t('imaging.remove')}
                 </button>}
+                </div>
               </div>
             </li>
           ))}

@@ -1,0 +1,52 @@
+.animal-tabs { display: flex; align-items: center; gap: 4px; height: 100%; margin-bottom: 0; min-width: 0; }
+.animal-tabs__list { display: flex; align-self: stretch; flex: 0 1 auto; gap: 4px; overflow-x: auto; min-width: 0; scrollbar-width: thin; position: relative; }
+.animal-tabs__item { position: relative; display: flex; flex: 0 0 auto; width: 250px; min-width: 0; background: var(--surface-sunken); border: 1px solid transparent; border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
+.animal-tabs__item--active { background: var(--surface); border-color: var(--border-strong); box-shadow: none; }
+.animal-tabs button { font: inherit; cursor: pointer; color: var(--text); border: 0; background: transparent; }
+.animal-tabs button:disabled { cursor: wait; opacity: 1; }
+.animal-tabs button:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
+.animal-tabs__select { min-width: 0; flex: 1; padding: 10px 10px; text-align: left; border-radius: var(--radius) 0 0 0; }
+.animal-tabs__select strong, .animal-tabs__details > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.animal-tabs__select strong { font-size: 14px; font-weight: 650; }
+.animal-tabs__details { display: flex; gap: 6px; font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+.animal-tabs__details > span:first-child { min-width: 0; }
+.animal-tabs__details > span:last-child { flex-shrink: 0; }
+.animal-tabs__details > span + span::before { content: "·"; margin-right: 6px; }
+.animal-tabs__item--active strong { color: var(--primary); }
+.animal-tabs__close { flex: 0 0 36px; align-self: center; height: 36px; font-size: 22px !important; border-radius: var(--radius-sm); margin-right: 4px; }
+.animal-tabs .animal-tabs__close { color: var(--text-muted); }
+.animal-tabs__add { flex: 0 0 44px; height: 44px; margin-bottom: 0; border-radius: var(--radius-sm); font-size: 24px !important; }
+.animal-tabs button:hover { background: var(--action-tint); }
+.animal-tabs__empty { padding: 72px 24px; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.animal-tabs__empty h2 { font-size: 20px; }
+.animal-tabs__empty p { color: var(--text-muted); }
+.animal-tabs__open { min-height: 44px; padding: 10px 16px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: var(--radius-sm); font: inherit; cursor: pointer; }
+.animal-tabs__open:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (max-width: 600px) {
+  .animal-tabs__item { width: 240px; }
+  .animal-tabs__close { flex-basis: 44px; height: 44px; margin-right: 0; }
+
+}
+
+.animal-tabs__scroll { flex: 0 0 32px; height: 44px; font-size: 22px !important; border-radius: var(--radius-sm); }
+.animal-tabs .animal-tabs__scroll:disabled { color: var(--text-muted); cursor: default; }
+@media (max-width: 600px) { .animal-tabs__scroll { display: none; } }
+
+.animal-tabs__visit { position: relative; flex: 0 0 32px; height: 36px; align-self: center; }
+.animal-tabs__visit select { width: 100%; height: 100%; appearance: none; border: 0; background: transparent; color: transparent; cursor: pointer; border-radius: var(--radius-sm); }
+.animal-tabs__visit select option { color: var(--text); background: var(--surface); }
+.animal-tabs__visit svg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; color: var(--text-muted); }
+.animal-tabs__visit select:hover { background: var(--action-tint); }
+.animal-tabs__visit select:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+@media (max-width: 600px) { .animal-tabs__visit { flex-basis: 44px; height: 44px; } }
+
+.animal-tabs__item--active::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--primary); border-radius: var(--radius) var(--radius) 0 0; pointer-events: none; z-index: 1; }
+.animal-tabs .animal-tabs__select:hover { background: transparent; }
+.animal-tabs__item:not(.animal-tabs__item--active):hover { background: var(--surface-alt); }
+
+.animal-tabs__heading { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.animal-tabs__heading strong { min-width: 0; flex: 1; }
+.animal-tabs__editing { flex-shrink: 0; font-size: 11px; font-weight: 500; color: var(--text-muted); }
+
+.animal-tabs__item--editing::before { background: var(--ios-warning-solid, #d97706); }
+.animal-tabs__editing { color: var(--ios-warning-label, #b45309); }

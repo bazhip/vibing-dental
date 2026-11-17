@@ -246,19 +246,53 @@ describe('App routing on the web (unchanged)', () => {
 });
 
 describe('"Last active"', () => {
-  it('a reconnect alone (a sleeping laptop waking in the background) is not use; focus and clicks are', async () => {
+  it('restoring a saved session does not record activity', async () => {
+    vi.mocked(touchLastSeen).mockClear();
+    flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
+    render(<App />);
+    expect(await screen.findByText('CHART')).toBeInTheDocument();
+    expect(touchLastSeen).not.toHaveBeenCalled();
+  });
+
+  it.each(['INITIAL_SESSION', 'SIGNED_IN', 'TOKEN_REFRESHED', 'USER_UPDATED'])(
+    '%s with an existing session does not record activity', async (event) => {
+      flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
+      render(<App />);
+      expect(await screen.findByText('CHART')).toBeInTheDocument();
+      vi.mocked(touchLastSeen).mockClear();
+      act(() => { authCallback()(event, flags.session); });
+      expect(touchLastSeen).not.toHaveBeenCalled();
+    },
+  );
+
+  it('passive browser events renew the session without recording activity; clicks and typing record use', async () => {
     flags.session = { user: { id: 'u1', email: 'me@vet.com', app_metadata: {} } };
     render(<App />);
     expect(await screen.findByText('CHART')).toBeInTheDocument();
     const touch = vi.mocked(touchLastSeen);
     touch.mockClear();
     auth.getSession.mockClear();
-    act(() => { window.dispatchEvent(new Event('online')); });
+    act(() => {
+      window.dispatchEvent(new Event('online'));
+      window.dispatchEvent(new Event('focus'));
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
     expect(touch).not.toHaveBeenCalled();
-    expect(auth.getSession).toHaveBeenCalled(); // still renews the session
-    act(() => { window.dispatchEvent(new Event('focus')); });
-    expect(touch).toHaveBeenCalledTimes(1);
+    expect(auth.getSession).toHaveBeenCalled();
     act(() => { window.dispatchEvent(new Event('pointerdown')); });
+    expect(touch).toHaveBeenCalledTimes(1);
+    act(() => { window.dispatchEvent(new Event('keydown')); });
     expect(touch).toHaveBeenCalledTimes(2);
+  });
+
+  it('signed-out interactions do not record activity', async () => {
+    render(<App />);
+    expect(await screen.findByText('APP LOGIN')).toBeInTheDocument();
+    vi.mocked(touchLastSeen).mockClear();
+    act(() => {
+      window.dispatchEvent(new Event('pointerdown'));
+      window.dispatchEvent(new Event('keydown'));
+    });
+    expect(touchLastSeen).not.toHaveBeenCalled();
   });
 });

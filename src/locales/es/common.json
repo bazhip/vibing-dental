@@ -100,7 +100,8 @@
       "report_chart_required": "Guarde el historial antes de enviar el informe por correo electrónico.",
       "attachment_invalid": "No se ha podido leer el archivo del informe. Inténtelo de nuevo.",
       "attachment_too_large": "El informe es demasiado grande para enviarlo por correo electrónico (máx. 10 MB). Quite algunas fotos e inténtelo de nuevo.",
-      "daily_owner_report_limit": "Se ha alcanzado el límite diario de envío de informes (100). Inténtelo mañana."
+      "daily_owner_report_limit": "Se ha alcanzado el límite diario de envío de informes (100). Inténtelo mañana.",
+      "owner_report_recipient_changed": "La dirección de correo electrónico del propietario ha cambiado. Vuelva a abrir el informe y confirme de nuevo el destinatario."
     },
     "saveFile": "No se pudo guardar el archivo."
   },
@@ -150,5 +151,11 @@
       "customColor": "Color personalizado…",
       "sendingBusy": "Enviando…"
     }
+  },
+  "appearance": {
+    "label": "Apariencia",
+    "system": "Sistema",
+    "light": "Claro",
+    "dark": "Oscuro"
   }
 }

@@ -1,7 +1,7 @@
 import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
-import { DialogHost, toast, toastWhenReady, confirmDialog, promptDialog, chooseDialog } from './dialogs';
+import { DialogHost, statusToast, toast, toastWhenReady, confirmDialog, promptDialog, chooseDialog } from './dialogs';
 
 describe('toastWhenReady', () => {
   it('holds a toast raised before the host mounts and shows it once it does', async () => {
@@ -87,4 +87,16 @@ describe('toast interaction lifetime', () => {
       expect(notice).not.toBeInTheDocument();
     } finally { vi.useRealTimers(); }
   });
+});
+
+it('replaces controlled save feedback without leaving stale toasts', () => {
+  render(<DialogHost />);
+  let dismiss: () => void;
+  act(() => { dismiss = statusToast('Unsaved changes', { kind: 'warning', duration: 0 }); });
+  expect(screen.getByText('Unsaved changes').closest('.ui-toast')).toHaveClass('ui-toast--warning');
+  act(() => { dismiss(); dismiss = statusToast('Saved', { kind: 'success', duration: 2500 }); });
+  expect(screen.queryByText('Unsaved changes')).toBeNull();
+  expect(screen.getByText('Saved').closest('.ui-toast')).toHaveClass('ui-toast--success');
+  act(() => dismiss());
+  expect(screen.queryByText('Saved')).toBeNull();
 });

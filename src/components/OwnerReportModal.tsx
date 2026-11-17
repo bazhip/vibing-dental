@@ -85,18 +85,18 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   const attachments = useAttachments(cloudActive ? chartId : '', practiceId);
   const attachmentBasis = ownerReportAttachmentBasis(attachments.items, imageRoles);
   const [attachmentInvalid, setAttachmentInvalid] = React.useState(false);
-  React.useEffect(() => { setAttachmentInvalid(false); }, [chartId, snapshot.ownerReport?.reviewedAttachments]);
-  const photosReviewed = (snapshot.ownerReport?.reviewedAttachments ?? '[]') === attachmentBasis;
-  const model = React.useMemo(() => ({ ...baseModel, reviewed: baseModel.reviewed && attachments.loaded && photosReviewed && !attachmentInvalid }), [baseModel, attachments.loaded, photosReviewed, attachmentInvalid]);
+  React.useEffect(() => { setAttachmentInvalid(false); }, [chartId]);
+  const model = baseModel;
+  const ready = attachments.loaded && !attachmentInvalid;
   const [incomplete, setIncomplete] = React.useState(false);
   const [retry, setRetry] = React.useState(0);
   const reviewBasis = ownerReportReviewBasis(snapshot, reportContext);
-  const currentReview = React.useRef({ reviewed: model.reviewed && !incomplete, basis: reviewBasis, chartId, open });
-  currentReview.current = { reviewed: model.reviewed && !incomplete, basis: reviewBasis, chartId, open };
-  React.useEffect(() => () => { currentReview.current.open = false; }, []);
+  const currentReport = React.useRef({ ready: ready && !incomplete, basis: reviewBasis, chartId, open });
+  currentReport.current = { ready: ready && !incomplete, basis: reviewBasis, chartId, open };
+  React.useEffect(() => () => { currentReport.current.open = false; }, []);
 
   const [emailOpen, setEmailOpen] = React.useState(false);
-  React.useEffect(() => { setEmailOpen(false); }, [model.reviewed, reviewBasis, attachmentBasis, chartId, open, incomplete]);
+  React.useEffect(() => { setEmailOpen(false); }, [ready, reviewBasis, attachmentBasis, chartId, open, incomplete]);
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   // The bytes behind pdfUrl — the share sheet needs the file itself,
   // in hand when the button is tapped.
@@ -176,7 +176,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
         }
         if (cancelled) return;
         setIncomplete(missing);
-        const bytes = await buildOwnerReportPdfBytes({ ...model, reviewed: model.reviewed && !missing }, branding, photos, diagram);
+        const bytes = await buildOwnerReportPdfBytes(model, branding, photos, diagram);
         if (cancelled) return;
         const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
         createdUrl = URL.createObjectURL(blob);
@@ -207,7 +207,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
   };
 
   const handleEmail = async () => {
-    if (!currentReview.current.reviewed || !pdfBlobRef.current) return;
+    if (!currentReport.current.ready || !pdfBlobRef.current) return;
     if (!ownerEmail.trim()) {
       const choice = await chooseDialog({
         title: t('email.noEmailTitle'),
@@ -222,7 +222,7 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       toast(t('email.saveFirst'), { kind: 'error' });
       return;
     }
-    if (!currentReview.current.open || !currentReview.current.reviewed || !pdfBlobRef.current || currentReview.current.basis !== reviewBasis || (chartId && currentReview.current.chartId !== chartId)) return;
+    if (!currentReport.current.open || !currentReport.current.ready || !pdfBlobRef.current || currentReport.current.basis !== reviewBasis || (chartId && currentReport.current.chartId !== chartId)) return;
     setEmailOpen(true);
   };
 
@@ -248,7 +248,6 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
 
   const body = (
         <div className="pdf-preview-body">
-          {(!model.reviewed || incomplete) && <p className="owner-report__draft-notice" role="note"><strong>{t('review.draft')}</strong> {t('review.emailHelp')}</p>}
           <aside className="pdf-preview-styles">
             <ul className="pdf-preview-notes">
               <li>{t('modal.noteFindings')}</li>
@@ -274,10 +273,10 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
               {isNativeApp() ? (
                 <>
                   <Icon name={SQUARE_AND_ARROW_UP_ICON} size={17} />
-                  {model.reviewed && !incomplete ? t('ios.sheets.documents.share', { ns: 'common' }) : t('review.shareDraft')}
+                  {t('ios.sheets.documents.share', { ns: 'common' })}
                 </>
               ) : (
-                t(model.reviewed && !incomplete ? 'modal.download' : 'review.downloadDraft')
+                t('modal.download')
               )}
             </button>
             {ensureSaved && (
@@ -285,15 +284,15 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
                 type="button"
                 className="pdf-preview-secondary"
                 onClick={() => void handleEmail()}
-                disabled={!model.reviewed || incomplete || !cloudActive || !pdfUrl || generating}
-                title={!model.reviewed ? t('review.emailHelp') : !cloudActive ? t('email.needAccount') : undefined}
+                disabled={!ready || incomplete || !cloudActive || !pdfUrl || generating}
+                title={!cloudActive ? t('email.needAccount') : undefined}
               >
                 {t('email.button')}
               </button>
             )}
             {!isNativeApp() && !inAppLink.state && downloadHint() && <p className="pdf-preview-hint" role="note">{downloadHint()}</p>}
             <PdfLinkPanel state={inAppLink.state} />
-            {incomplete && <div className="pdf-preview-warning" role="status"><p>{t('review.incompleteImages')}</p><button type="button" className="pdf-preview-secondary" onClick={() => setRetry((value) => value + 1)}>{t('preview.retryImages', { ns: 'pdfui' })}</button></div>}
+            {(incomplete || attachmentInvalid) && <div className="pdf-preview-warning" role="status"><p>{t('review.incompleteImages')}</p><button type="button" className="pdf-preview-secondary" onClick={() => { setAttachmentInvalid(false); setRetry((value) => value + 1); }}>{t('preview.retryImages', { ns: 'pdfui' })}</button></div>}
           </aside>
           <div className="pdf-preview-iframe-wrap">
             {generating && <div className="pdf-preview-status">{t('modal.generating')}</div>}
@@ -320,16 +319,16 @@ export const OwnerReportModal: React.FC<OwnerReportModalProps> = ({
       patientName={snapshot.patientInfo.patientName}
       ownerName={snapshot.patientInfo.ownerName}
       validatePdf={async () => {
-        if (!currentReview.current.open || !currentReview.current.reviewed) return false;
+        if (!currentReport.current.open || !currentReport.current.ready) return false;
         if (!cloudActive || Object.keys(imageRoles).length === 0) return true;
         const items = await listChartAttachments(chartId);
         if (!items || ownerReportAttachmentBasis(items, imageRoles) !== attachmentBasis) {
-          if (currentReview.current.open) { setAttachmentInvalid(true); setEmailOpen(false); }
+          if (currentReport.current.open) { setAttachmentInvalid(true); setEmailOpen(false); }
           return false;
         }
-        return currentReview.current.open && currentReview.current.reviewed && currentReview.current.basis === reviewBasis && currentReview.current.chartId === chartId;
+        return currentReport.current.open && currentReport.current.ready && currentReport.current.basis === reviewBasis && currentReport.current.chartId === chartId;
       }}
-      getPdf={() => (currentReview.current.open && currentReview.current.reviewed && pdfBlobRef.current ? { blob: pdfBlobRef.current, filename: reportFilename() } : null)}
+      getPdf={() => (currentReport.current.open && currentReport.current.ready && pdfBlobRef.current ? { blob: pdfBlobRef.current, filename: reportFilename() } : null)}
     />
   );
 

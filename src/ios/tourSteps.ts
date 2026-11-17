@@ -12,19 +12,19 @@ import type { TourStep } from '../components/WalkthroughModal';
 const tab = (id: string) => `.ios-tabbar [data-tab="${id}"], .ios-appshell__item[data-tab="${id}"]`;
 
 type Key =
-  | 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams'
-  | 'codes' | 'treatment' | 'patients' | 'dictate' | 'settings' | 'share';
+  | 'welcome' | 'sections' | 'patient' | 'grid' | 'byTooth' | 'customize' | 'diagrams'
+  | 'images' | 'treatment' | 'ownerReport' | 'patients' | 'dictate' | 'settings' | 'share';
 
 /** Steps worded exactly as the website's tour reuse its text
  *  (onboarding:walkthrough.steps); the rest speak touch or name app-only
  *  places (settings:tour.steps). */
-const WEB_TITLE: ReadonlySet<Key> = new Set(['welcome', 'sections', 'patient', 'species', 'grid', 'diagrams', 'codes', 'treatment', 'dictate', 'settings']);
-const WEB_BODY: ReadonlySet<Key> = new Set(['welcome', 'patient', 'species', 'dictate', 'settings']);
-type WebKey = 'welcome' | 'sections' | 'patient' | 'species' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'dictate' | 'settings';
+const WEB_TITLE: ReadonlySet<Key> = new Set(['welcome', 'sections', 'patient', 'grid', 'byTooth', 'customize', 'diagrams', 'images', 'treatment', 'ownerReport', 'dictate', 'settings']);
+const WEB_BODY: ReadonlySet<Key> = new Set(['welcome', 'patient', 'images', 'ownerReport', 'dictate', 'settings']);
+type WebKey = 'welcome' | 'sections' | 'patient' | 'grid' | 'byTooth' | 'customize' | 'diagrams' | 'images' | 'treatment' | 'ownerReport' | 'dictate' | 'settings';
 type AppTitleKey = 'patients' | 'share';
-type AppBodyKey = 'sections' | 'grid' | 'diagrams' | 'codes' | 'treatment' | 'patients' | 'share';
+type AppBodyKey = 'sections' | 'grid' | 'byTooth' | 'customize' | 'diagrams' | 'treatment' | 'patients' | 'share';
 
-export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): TourStep[] {
+export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean, ownerReportEnabled?: boolean): TourStep[] {
   const step = (key: Key, rest: Omit<TourStep, 'title' | 'body'> = {}): TourStep => ({
     ...rest,
     title: WEB_TITLE.has(key)
@@ -38,11 +38,13 @@ export function buildAppSteps(t: TFunction<'settings'>, aiEnabled?: boolean): To
     step('welcome'),
     step('sections', { section: 'patient', target: '[data-app-tab="chart"] .ios-navbar__title-button', placement: 'bottom' }),
     step('patient', { section: 'patient', target: '[data-tour="patient-name"]', placement: 'bottom' }),
-    step('species', { section: 'patient', target: '.patient-form__selectors', placement: 'top' }),
     step('grid', { section: 'charting', target: '.dental-grid, .tooth-chart', placement: 'top' }),
+    step('byTooth', { section: 'charting', target: '.charting-view-switch', placement: 'bottom' }),
+    step('customize', { section: 'charting', target: '[data-app-tab="chart"] .ios-navbar__trailing', placement: 'bottom' }),
     step('diagrams', { section: 'diagnosis', target: '.tooth-diagram-wrapper', placement: 'bottom' }),
-    step('codes', { section: 'diagnosis', target: '.diagram-with-codes__codes', placement: 'top' }),
-    step('treatment', { section: 'treatment', target: '.dental-grid-section', placement: 'top' }),
+    step('images', { section: 'imaging', target: '.radiographic-findings', placement: 'bottom' }),
+    step('treatment', { section: 'treatment', target: '.surgery-report__header', placement: 'bottom' }),
+    ...(ownerReportEnabled ? [step('ownerReport', { section: 'owner-report', target: '.owner-report__block', placement: 'top' })] : []),
     step('patients', { target: tab('patients'), placement: 'top' }),
     ...(aiEnabled ? [step('dictate', { target: '.voice-input', placement: 'top' })] : []),
     step('settings', { target: tab('settings'), placement: 'top' }),

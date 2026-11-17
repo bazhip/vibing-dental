@@ -66,7 +66,8 @@
     "newPatient": "Neuer Patient",
     "newPatientShort": "Neu",
     "newPatientTitle": "Eine leere Akte für einen neuen Patienten beginnen",
-    "doneEditingShort": "Fertig"
+    "doneEditingShort": "Fertig",
+    "addLogo": "Logo hinzufügen"
   },
   "status": {
     "srSaving": "Akte wird gespeichert",
@@ -263,6 +264,14 @@
         "message": "Diese Akte enthält Änderungen, die noch nicht in der Cloud gespeichert sind. Dieses PDF trotzdem importieren? Um sie zu behalten, brechen Sie ab und klicken Sie zuerst auf Speichern.",
         "confirm": "Verwerfen und dieses PDF importieren"
       }
+    },
+    "identity": {
+      "title": "Gehören diese Angaben zum selben Patienten?",
+      "message": "Gespeichert: {{saved}}\nGeändert: {{proposed}}\n\nBeim Speichern werden die Patientendaten in dieser Akte geändert. Bestehende Befunde und Bilder bleiben zugeordnet.\n\nFür einen anderen Patienten brechen Sie ab und wählen Sie Neuer Patient.",
+      "confirm": "Korrektur bestätigen",
+      "blank": "Kein Name und keine Patientennummer",
+      "paused": "Die Patientendaten wurden geändert. Das Speichern ist pausiert. Speichern Sie erneut, um eine Korrektur zu bestätigen, oder wählen Sie Neuer Patient für einen anderen Patienten.",
+      "changed": "Der Patient wurde während der Speicherprüfung geändert. Prüfen Sie die Angaben und speichern Sie erneut."
     }
   },
   "storage": {
@@ -290,5 +299,32 @@
     "more": "Mehr",
     "patientNumber": "Patientennummer {{number}}",
     "visitDate": "Besuch: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Geöffnete Tiere",
+    "unnamed": "Neues Tier",
+    "ownerUnknown": "Tierhalter nicht angegeben",
+    "close": "Tab für {{name}} schließen",
+    "closeHint": "Tab schließen, ohne den Patienten zu löschen",
+    "add": "Weiteres Tier öffnen",
+    "emptyTitle": "Kein Tier geöffnet",
+    "emptyBody": "Öffnen Sie einen Patienten, um mit der Dokumentation zu beginnen.",
+    "open": "Tier öffnen",
+    "saveFirst": "Speichern Sie die aktuelle Akte, bevor Sie das Tier wechseln. Geben Sie den Patientennamen ein, falls er fehlt.",
+    "pid": "Patienten-ID {{number}}",
+    "noPid": "Keine Patienten-ID",
+    "previous": "Vorherige Tiere",
+    "next": "Weitere Tiere",
+    "closeUnsaved": "Dieser Tab enthält noch ungespeicherte Änderungen. Öffnen und speichern Sie ihn, bevor Sie ihn schließen.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Die Bilder dieser Akte konnten nicht geprüft werden. Lassen Sie den Tab geöffnet und versuchen Sie es erneut.",
+    "uploadPending": "Warten Sie, bis das Bild vollständig hochgeladen wurde, bevor Sie diesen Tab schließen.",
+    "imagesRecovered": "Hochgeladene Bilder wurden in unbenannten Tabs wiederhergestellt. Prüfen Sie die Patientendaten vor dem Speichern.",
+    "closeConfirmTitle": "Ohne Speichern schließen?",
+    "closeConfirmMessage": "Ungespeicherte Änderungen in diesem Tab werden verworfen. Hochgeladene Bilder werden nicht gelöscht.",
+    "closeConfirm": "Ohne Speichern schließen",
+    "keepOpen": "Akte geöffnet lassen",
+    "closeImageDraftMessage": "Diese Akte wurde noch nicht gespeichert. Beim Schließen wird ihr Inhalt verworfen und ihre hochgeladenen Bilder werden endgültig gelöscht.",
+    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen."
   }
 }

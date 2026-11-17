@@ -66,7 +66,8 @@
     "newPatient": "Nuevo paciente",
     "newPatientShort": "Nuevo",
     "newPatientTitle": "Iniciar un historial en blanco para un paciente nuevo",
-    "doneEditingShort": "Listo"
+    "doneEditingShort": "Listo",
+    "addLogo": "Añadir logotipo"
   },
   "status": {
     "srSaving": "Guardando el historial",
@@ -265,6 +266,14 @@
         "message": "Este historial tiene cambios que aún no se han guardado en la nube. ¿Importar este PDF de todos modos? Para conservarlos, cancele y pulse Guardar primero.",
         "confirm": "Descartar e importar este PDF"
       }
+    },
+    "identity": {
+      "title": "¿Estos datos corresponden al mismo paciente?",
+      "message": "Guardado: {{saved}}\nModificado: {{proposed}}\n\nAl guardar, se modificarán los datos del paciente en este historial. Los hallazgos y las imágenes existentes seguirán asociados.\n\nPara otro paciente, cancele y elija Nuevo paciente.",
+      "confirm": "Confirmar corrección",
+      "blank": "Sin nombre ni número de paciente",
+      "paused": "Los datos del paciente han cambiado. El guardado está en pausa. Guarde de nuevo para confirmar una corrección, o elija Nuevo paciente para otro paciente.",
+      "changed": "El paciente cambió durante la comprobación del guardado. Revise los datos y guarde de nuevo."
     }
   },
   "storage": {
@@ -292,5 +301,32 @@
     "more": "Más",
     "patientNumber": "Número del paciente {{number}}",
     "visitDate": "Visita: {{date}}"
+  },
+  "animalTabs": {
+    "label": "Animales abiertos",
+    "unnamed": "Nuevo animal",
+    "ownerUnknown": "Propietario no indicado",
+    "close": "Cerrar la pestaña de {{name}}",
+    "closeHint": "Cerrar la pestaña sin eliminar al paciente",
+    "add": "Abrir otro animal",
+    "emptyTitle": "Ningún animal abierto",
+    "emptyBody": "Abra un paciente para empezar a registrar los datos.",
+    "open": "Abrir un animal",
+    "saveFirst": "Guarde el historial actual antes de cambiar de animal. Introduzca el nombre del paciente si falta.",
+    "pid": "ID del paciente {{number}}",
+    "noPid": "Sin ID de paciente",
+    "previous": "Animales anteriores",
+    "next": "Animales siguientes",
+    "closeUnsaved": "Esta pestaña aún contiene cambios sin guardar. Ábrala y guarde los cambios antes de cerrarla.",
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "No se pudieron comprobar las imágenes de este historial. Mantenga abierta la pestaña e inténtelo de nuevo.",
+    "uploadPending": "Espere a que termine la carga de la imagen antes de cerrar esta pestaña.",
+    "imagesRecovered": "Se recuperaron imágenes cargadas en pestañas sin nombre. Verifique los datos del paciente antes de guardar.",
+    "closeConfirmTitle": "¿Cerrar sin guardar?",
+    "closeConfirmMessage": "Se descartarán los cambios sin guardar de esta pestaña. Las imágenes cargadas no se eliminarán.",
+    "closeConfirm": "Cerrar sin guardar",
+    "keepOpen": "Mantener abierto el historial",
+    "closeImageDraftMessage": "Este historial no se ha guardado. Al cerrarlo, se descartará su contenido y se eliminarán permanentemente las imágenes cargadas.",
+    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador."
   }
 }

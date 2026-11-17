@@ -298,7 +298,7 @@
         "body": "Messwerte pro Zahn. Tippen Sie auf eine Zelle und geben Sie den Wert ein, oder tippen Sie auf einen Score — befunden, ohne aufzusehen."
       },
       "diagrams": {
-        "body": "Tippen Sie auf einen Zahn, um ihn zu markieren; wechseln Sie zwischen Kommentar und Zeichnen, fügen Sie freie Notizen hinzu. Widerrufen und Wiederholen finden Sie in der Symbolleiste des Diagramms."
+        "body": "Tippen Sie auf einen Zahn, um ihn zu markieren, Kommentare hinzuzufügen oder eine Notiz zu zeichnen. Suchen Sie AVDC-Codes neben Diagnose und Eingriff. Rückgängig und Wiederholen finden Sie in der Werkzeugleiste des Schemas."
       },
       "codes": {
         "body": "Durchsuchen Sie hier den vollständigen AVDC-Codesatz, direkt beim Diagramm."
@@ -313,6 +313,12 @@
       "share": {
         "title": "PDF teilen",
         "body": "Erstellen Sie das kundenfertige PDF der Akte mit Ihrem Logo und teilen oder sichern Sie es, wann immer Sie bereit sind."
+      },
+      "byTooth": {
+        "body": "Wechseln Sie zu Pro Zahn und tippen Sie auf einen Zahn im Schema. Erfassen Sie Messwerte, Diagnose und Eingriff zusammen und gehen Sie zum nächsten Zahn. Raster und Pro Zahn nutzen dieselben Befunde."
+      },
+      "customize": {
+        "body": "Öffnen Sie das Menü Mehr der Akte und wählen Sie Anpassen für die aktuelle Seite. Legen Sie Spalten, Taschentiefen pro Zahn, Wurzel oder Messstelle, Schnellcodes und mehr fest. Angemeldet folgen Ihre Einstellungen Ihrem Konto."
       }
     }
   },

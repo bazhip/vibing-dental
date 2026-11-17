@@ -167,10 +167,12 @@
     "attachment": "Anhang: {{filename}}",
     "send": "Bericht senden",
     "sent": "Bericht an {{email}} gesendet",
-    "sendFailed": "Der Bericht konnte nicht gesendet werden."
+    "sendFailed": "Der Bericht konnte nicht gesendet werden.",
+    "confirmTitle": "Diesen Bericht an den Tierhalter senden?",
+    "confirmMessage": "{{filename}} an {{email}} senden? Bitte überprüfen Sie vor dem Senden den Empfänger und den Bericht."
   },
   "review": {
-    "incompleteImages": "Einige Berichtsbilder konnten nicht geladen werden. Diese PDF bleibt ein Entwurf und kann nicht per E-Mail versendet werden. Laden Sie die Bilder erneut, bevor Sie einen geprüften Bericht teilen.",
+    "incompleteImages": "Einige Berichtsbilder sind nicht verfügbar oder wurden geändert. Laden Sie die Bilder erneut, bevor Sie diesen Bericht per E-Mail senden.",
     "draft": "Entwurf — Prüfung erforderlich",
     "complete": "Geprüft und abgeschlossen",
     "draftHelp": "Prüfen Sie Befunde, Maßnahmen und Empfehlungen, bevor Sie den Besuch als abgeschlossen bestätigen. Fehlende Einträge bedeuten keine unauffälligen Befunde.",

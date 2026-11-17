@@ -298,7 +298,7 @@
         "body": "Misure dente per dente. Tocchi una cella e scriva, oppure tocchi un punteggio — registri senza alzare lo sguardo."
       },
       "diagrams": {
-        "body": "Tocchi un dente per contrassegnarlo; passi da Commento a Disegno, aggiunga note libere. Annulla e Ripristina sono nella barra degli strumenti del diagramma."
+        "body": "Tocchi un dente per contrassegnarlo, aggiunga commenti o disegni una nota. Cerchi i codici AVDC accanto a Diagnosi e Procedura. Annulla e Ripristina si trovano nella barra degli strumenti dello schema."
       },
       "codes": {
         "body": "Cerchi qui l’intero set di codici AVDC, proprio accanto al diagramma."
@@ -313,6 +313,12 @@
       "share": {
         "title": "Condividi il PDF",
         "body": "Crei il PDF della cartella pronto per il cliente con il Suo logo, poi lo condivida o lo salvi quando è pronto."
+      },
+      "byTooth": {
+        "body": "Passi a Per dente e tocchi un dente nello schema. Registri insieme misurazioni, diagnosi e procedura, poi passi al dente successivo. Griglia e Per dente condividono gli stessi reperti."
+      },
+      "customize": {
+        "body": "Apra il menu Altro della cartella e scelga Personalizza per la pagina visualizzata. Imposti colonne, profondità delle tasche per dente, radice o sito, codici rapidi e altro. Dopo l’accesso, le preferenze seguono il Suo account."
       }
     }
   },

@@ -163,8 +163,8 @@ html.native-ios .ios-segmented__segment--on {
   box-shadow: 0 2px 6px var(--ios-shadow-soft);
   font-weight: 600;
 }
-@media (prefers-color-scheme: dark) {
-  html.native-ios .ios-segmented__segment--on { background: var(--ios-cell-sunken); }
+@media screen {
+  html.native-ios[data-theme="dark"] .ios-segmented__segment--on { background: var(--ios-cell-sunken); }
 }
 html.native-ios .ios-segmented__segment:focus-visible { outline: 2px solid var(--ios-tint); outline-offset: 1px; }
 
