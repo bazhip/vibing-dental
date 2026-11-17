@@ -100,7 +100,8 @@
       "report_chart_required": "Enregistrez le dossier avant d’envoyer le compte rendu par e-mail.",
       "attachment_invalid": "Le fichier du compte rendu est illisible. Veuillez réessayer.",
       "attachment_too_large": "Le compte rendu est trop volumineux pour être envoyé par e-mail (10 Mo max.). Retirez quelques photos et réessayez.",
-      "daily_owner_report_limit": "Limite quotidienne d’envoi de comptes rendus atteinte (100). Réessayez demain."
+      "daily_owner_report_limit": "Limite quotidienne d’envoi de comptes rendus atteinte (100). Réessayez demain.",
+      "owner_report_recipient_changed": "L’adresse e-mail du propriétaire a changé. Veuillez rouvrir le compte rendu et confirmer à nouveau le destinataire."
     },
     "saveFile": "Impossible d’enregistrer le fichier."
   },

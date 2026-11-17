@@ -53,8 +53,8 @@
 .ui-btn--primary:hover { filter: brightness(0.95); }
 .ui-btn--danger { background: var(--ios-danger-solid, #dc2626); color: var(--ios-on-danger, #fff); }
 .ui-btn--danger:hover { background: var(--ios-danger-solid, #b91c1c); }
-.ui-btn--secondary { background: transparent; color: var(--text, #0f172a); border-color: var(--border, #cbd5e1); }
-.ui-btn--secondary:hover { background: var(--surface-alt, #f1f5f9); }
+.ui-btn--secondary { background: var(--surface); color: var(--primary); border-color: var(--action-border); }
+.ui-btn--secondary:hover { background: var(--action-tint); }
 .ui-btn:focus-visible { outline: 2px solid var(--primary, #0c6b63); outline-offset: 2px; }
 
 .ui-toasts {

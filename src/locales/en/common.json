@@ -97,7 +97,8 @@
       "report_chart_required": "Save the chart before emailing the report.",
       "attachment_invalid": "The report file couldn’t be read. Try again.",
       "attachment_too_large": "The report is too large to email (max 10 MB). Remove some photos and try again.",
-      "daily_owner_report_limit": "Daily report email limit reached (100). Try again tomorrow."
+      "daily_owner_report_limit": "Daily report email limit reached (100). Try again tomorrow.",
+      "owner_report_recipient_changed": "The owner’s email address changed. Reopen the report and confirm the recipient again."
     },
     "saveFile": "Couldn't save the file."
   },

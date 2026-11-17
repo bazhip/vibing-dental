@@ -12,6 +12,7 @@ interface ReportTemplatesModalProps {
   store: UseReportTemplatesReturn;
   /** Prefill for a new template (the current report text, if any). */
   draftBody?: string;
+  initialTemplateId?: string | null;
   onLeaveGuardChange?: (guard: (() => Promise<boolean>) | null) => void;
 }
 
@@ -26,6 +27,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   onClose,
   store,
   draftBody = '',
+  initialTemplateId = null,
   onLeaveGuardChange,
 }) => {
   const { t } = useTranslation('library');
@@ -92,10 +94,11 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   // current report so "save what I just wrote" is one click away).
   React.useEffect(() => {
     if (open) {
-      setSelectedId(null);
-      setName('');
-      setBody(draftBody);
-      setBaseline({ name: '', body: draftBody });
+      const initial = store.templates.find((tpl) => tpl.id === initialTemplateId);
+      setSelectedId(initial?.id ?? null);
+      setName(initial?.name ?? '');
+      setBody(initial?.body ?? draftBody);
+      setBaseline({ name: initial?.name ?? '', body: initial?.body ?? draftBody });
       setError('');
       nameRef.current?.focus();
     }
@@ -186,7 +189,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
   const templatesBody = (
     <>
       <section className="ai-settings-section">
-        <div className="report-templates__list-head">
+        <div className="treatment-templates__list-head">
           <span className="patient-form__label">{t('templates.saved')}</span>
           <button type="button" className="diagram-view__action" onClick={() => void startNew()} disabled={busy}>
             {t('templates.new')}
@@ -197,16 +200,17 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
             {t('templates.empty')}
           </p>
         ) : (
-          <ul className="report-templates__list">
+          <ul className="treatment-templates__list">
             {store.templates.map((tpl) => (
               <li key={tpl.id}>
                 <button
                   type="button"
                   className={
                     tpl.id === selectedId
-                      ? 'report-templates__item report-templates__item--active'
-                      : 'report-templates__item'
+                      ? 'treatment-templates__item treatment-templates__item--active'
+                      : 'treatment-templates__item'
                   }
+                  aria-pressed={tpl.id === selectedId}
                   onClick={() => void pick(tpl)}
                   disabled={busy}
                 >
@@ -233,7 +237,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
         <label className="patient-form__label" style={{ marginTop: '0.75rem' }}>
           {t('templates.bodyLabel')}
           <textarea
-            className="patient-form__textarea report-templates__body"
+            className="patient-form__textarea treatment-templates__body"
             placeholder={t('templates.bodyPlaceholder')}
             value={body}
             onChange={(e) => setBody(e.target.value)}

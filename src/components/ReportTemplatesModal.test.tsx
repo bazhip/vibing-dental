@@ -48,3 +48,10 @@ describe('ReportTemplatesModal leave guard', () => {
     expect(register).toHaveBeenLastCalledWith(null);
   });
 });
+
+it('opens the template selected by title in practice settings', () => {
+  const templates = [{ id: 'a', name: 'Cleaning', body: 'Cleaned teeth' }, { id: 'b', name: 'Extractions', body: 'Extracted teeth' }];
+  render(<ReportTemplatesModal open onClose={vi.fn()} store={{ ...store, templates }} initialTemplateId="b" />);
+  expect(screen.getByLabelText('Template name')).toHaveValue('Extractions');
+  expect(screen.getByDisplayValue('Extracted teeth')).toBeInTheDocument();
+});

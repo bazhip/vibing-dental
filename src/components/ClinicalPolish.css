@@ -254,11 +254,6 @@ html:not(.native-ios) .entry-grid-form .section-header__actions .entry-grid__but
   html:not(.native-ios) .entry-grid-container .entry-grid-form { --clinical-action-height: 44px; }
 }
 
-.owner-report__review { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-strong); border-left: 3px solid var(--text-muted); border-radius: var(--radius-sm); background: var(--surface-alt); }
-.owner-report__review > div { flex: 1 1 240px; }
-.owner-report__review p { margin: 6px 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--text-muted); }
-.owner-report__review--complete { border-left-color: var(--primary); }
-.owner-report__draft-notice { grid-column: 1 / -1; margin: 0; padding: 12px 16px; background: var(--surface-alt); font-size: 0.875rem; line-height: 1.5; }
 
 /* The sidebar panel provides the padding on every clinical screen. */
 html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form { padding: 0; border-radius: 0; }

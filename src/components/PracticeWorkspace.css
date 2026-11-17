@@ -32,7 +32,7 @@
   background: transparent;
   padding: 12px 14px;
   text-align: left;
-  color: var(--text-muted);
+  color: var(--primary);
   font: inherit;
   font-size: 14px;
   font-weight: 550;
@@ -40,7 +40,7 @@
 }
 .practice-workspace__nav button:hover { background: var(--surface-alt); color: var(--text); }
 .practice-workspace__nav button[aria-current] {
-  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  background: var(--action-tint);
   color: var(--primary);
   box-shadow: inset 3px 0 var(--primary);
 }

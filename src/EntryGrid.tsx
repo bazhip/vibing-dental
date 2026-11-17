@@ -1607,7 +1607,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <PracticeSettingsModal
         open={practiceSettingsOpen}
-        onClose={() => { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); if (!native) returnToVisit(); }}
+        onClose={() => { practiceLeaveGuard.current = null; if (native) setPracticeSettingsOpen(false); else returnToVisit(); }}
         presentation={native ? MODAL_PRESENTATION : PAGE_PRESENTATION}
         onLeaveGuardChange={registerPracticeGuard}
         onOpenReminders={() => setRemindersOpen(true)}

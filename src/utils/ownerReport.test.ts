@@ -547,7 +547,7 @@ describe('concise findings', () => {
     expect(ownerReportIsReviewed(snapshot, { template: { ...DEFAULT_TEMPLATE, title: 'New title' } })).toBe(false);
     expect(ownerReportIsReviewed(snapshot, { practiceName: 'New practice' })).toBe(false);
   });
-  test('draft PDFs display the draft notice and mark every page', async () => {
+  test('PDFs have no draft markings regardless of legacy review metadata', async () => {
     const { PDFPage, PDFDocument } = await import('pdf-lib');
     const draw = vi.spyOn(PDFPage.prototype, 'drawText');
     const model = buildOwnerReportModel(baseSnapshot());
@@ -555,10 +555,10 @@ describe('concise findings', () => {
     const bytes = await buildOwnerReportPdfBytes(model, { practiceName: 'Clinic', doctorName: '', logoUrl: '' }, []);
     const pages = (await PDFDocument.load(bytes)).getPageCount();
     expect(pages).toBeGreaterThan(1);
-    expect(draw.mock.calls.filter(([value]) => value === reportStrings('en').draftLabel)).toHaveLength(pages + 1);
+    expect(draw.mock.calls.filter(([value]) => value === reportStrings('en').draftLabel)).toHaveLength(0);
     const text = draw.mock.calls.map(([value]) => value).join(' ');
-    expect(text).toContain(reportStrings('en').draftLabel);
-    expect(text).toContain(reportStrings('en').draftNotice);
+    expect(text).not.toContain(reportStrings('en').draftLabel);
+    expect(text).not.toContain(reportStrings('en').draftNotice);
     draw.mockClear();
     await buildOwnerReportPdfBytes({ ...model, reviewed: true }, { practiceName: 'Clinic', doctorName: '', logoUrl: '' }, []);
     expect(draw.mock.calls.some(([value]) => value === reportStrings('en').draftLabel)).toBe(false);

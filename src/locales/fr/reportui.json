@@ -168,10 +168,12 @@
     "attachment": "Pièce jointe : {{filename}}",
     "send": "Envoyer le compte rendu",
     "sent": "Compte rendu envoyé à {{email}}",
-    "sendFailed": "Impossible d’envoyer le compte rendu."
+    "sendFailed": "Impossible d’envoyer le compte rendu.",
+    "confirmTitle": "Envoyer ce compte rendu au propriétaire ?",
+    "confirmMessage": "Envoyer {{filename}} à {{email}} ? Veuillez vérifier le destinataire et le compte rendu avant l’envoi."
   },
   "review": {
-    "incompleteImages": "Certaines images du rapport n’ont pas pu être chargées. Ce PDF reste un brouillon et ne peut pas être envoyé par e-mail. Réessayez avant de partager un rapport vérifié.",
+    "incompleteImages": "Certaines images du compte rendu sont indisponibles ou ont changé. Veuillez les recharger avant d’envoyer ce compte rendu par e-mail.",
     "draft": "Brouillon — vérification requise",
     "complete": "Vérifié et terminé",
     "draftHelp": "Vérifiez les observations, les actes et les conseils avant de confirmer que cette visite est terminée. Une absence de saisie ne signifie pas un résultat normal.",

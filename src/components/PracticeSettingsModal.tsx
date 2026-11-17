@@ -93,7 +93,8 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const asScreen = presentation === 'screen';
   const asPage = presentation === 'page';
   const [section, setSection] = React.useState<'general' | 'team' | 'templates' | 'billing'>('general');
-  const [practiceName, setPracticeName] = React.useState(profile.practiceName);
+  const [nameDraft, setNameDraft] = React.useState<string | null>(null);
+  const practiceName = nameDraft ?? profile.practiceName;
   const [nameBusy, setNameBusy] = React.useState(false);
   const [nameError, setNameError] = React.useState('');
   const [logoBusy, setLogoBusy] = React.useState(false);
@@ -102,6 +103,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const firstFieldRef = React.useRef<HTMLInputElement>(null);
   // The selected template editor swaps in on top of this dialog.
   const [templatesOpen, setTemplatesOpen] = React.useState<'owner' | 'treatment' | null>(null);
+  const [treatmentTemplateId, setTreatmentTemplateId] = React.useState<string | null>(null);
   const templateLeaveGuard = React.useRef<(() => Promise<boolean>) | null>(null);
   const registerTemplateLeaveGuard = React.useCallback((guard: (() => Promise<boolean>) | null) => {
     templateLeaveGuard.current = guard;
@@ -151,7 +153,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
 
   React.useEffect(() => {
     if (open) {
-      setPracticeName(profile.practiceName);
+      setNameDraft(null);
       setNameError('');
       setLogoError('');
       setMemberEmail('');
@@ -172,13 +174,18 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
   const isPrimaryOwner = team.members.some((m) => m.isYou && m.isPrimaryOwner);
   const teamLoadFailed = team.loaded && !!team.error && !team.practice;
   const canRename = !team.enabled || (!teamLoadFailed && (!team.loaded || !team.practice || isPrimaryOwner));
-  const nameDirty = canRename && practiceName.trim() !== profile.practiceName.trim();
+  const nameDirty = canRename && nameDraft !== null && practiceName.trim() !== profile.practiceName.trim();
 
   // The field locked after the user started typing (role arrived): drop
   // the draft so a stale value doesn't sit in a disabled field.
   React.useEffect(() => {
-    if (!canRename) setPracticeName(profile.practiceName);
+    if (!canRename) setNameDraft(null);
   }, [canRename, profile.practiceName]);
+
+  // Once the saved profile catches up, follow future server refreshes again.
+  React.useEffect(() => {
+    if (nameDraft !== null && nameDraft === profile.practiceName) setNameDraft(null);
+  }, [nameDraft, profile.practiceName]);
 
   const busy = nameBusy || logoBusy;
 
@@ -261,6 +268,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
       <ReportTemplatesModal
         open
         store={treatmentTemplates}
+        initialTemplateId={treatmentTemplateId}
         onLeaveGuardChange={registerTemplateLeaveGuard}
         onClose={() => setTemplatesOpen(null)}
       />
@@ -293,6 +301,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
     setNameError('');
     try {
       await profile.update({ practiceName: practiceName.trim(), doctorName: profile.doctorName });
+      setNameDraft(practiceName.trim());
       toast(t('practice.nameSaved'), { kind: 'success' });
       // The screen stays (it holds the team, logo, …); the dialog closes.
       if (!asScreen && !asPage) onClose();
@@ -506,7 +515,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
             className="patient-form__input"
             value={practiceName}
             onChange={(e) => {
-              setPracticeName(e.target.value);
+              setNameDraft(e.target.value);
               setNameError('');
             }}
             placeholder={t('practice.namePlaceholder')}
@@ -726,10 +735,19 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         <section className="ai-settings-section" hidden={asPage && section !== 'templates'}>
           <h3 className="ai-settings-subhead">{t('practice.treatmentReport.title')}</h3>
           <p className="ai-settings-blurb">{t('practice.treatmentReport.blurb')}</p>
+          <ul className="treatment-templates__list">
+            {treatmentTemplates.templates.map((tpl) => (
+              <li key={tpl.id}>
+                <button type="button" className="treatment-templates__item" onClick={() => { setTreatmentTemplateId(tpl.id); setTemplatesOpen('treatment'); }}>
+                  {tpl.name.trim() || t('templates.untitled', { ns: 'library' })}
+                </button>
+              </li>
+            ))}
+          </ul>
           <button
             type="button"
             className="diagram-view__action"
-            onClick={() => setTemplatesOpen('treatment')}
+            onClick={() => { setTreatmentTemplateId(null); setTemplatesOpen('treatment'); }}
           >
             {t('practice.treatmentReport.customize')}
           </button>
