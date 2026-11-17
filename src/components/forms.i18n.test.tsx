@@ -275,7 +275,7 @@ describe('ImagingSection', () => {
     const failed = container.querySelector('.imaging__queue-item--failed .imaging__queue-status')!;
     expect(failed.textContent).toMatch(/^⟦.*DICOM.*⟧$/);
     expect(findUntranslated(container, [...ALLOW, 'scan.dcm'])).toEqual([]);
-    const caption = screen.getByLabelText('⟦Caption⟧');
+    const caption = screen.getByLabelText('⟦Description⟧');
     fireEvent.change(caption, { target: { value: 'New' } });
     fireEvent.blur(caption);
     await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/caption/));

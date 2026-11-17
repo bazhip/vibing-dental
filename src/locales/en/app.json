@@ -316,6 +316,15 @@
     "previous": "Previous animals",
     "next": "Next animals",
     "closeUnsaved": "This tab still has unsaved changes. Open it and save before closing.",
-    "summary": "{{name}} · {{details}}"
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Could not check this chart’s images. Keep the tab open and try again.",
+    "uploadPending": "Wait for the image upload to finish before closing this tab.",
+    "imagesRecovered": "Recovered uploaded images in unnamed tabs. Confirm the patient details before saving.",
+    "closeConfirmTitle": "Close without saving?",
+    "closeConfirmMessage": "Unsaved changes in this tab will be discarded. Uploaded images will not be deleted.",
+    "closeConfirm": "Close without saving",
+    "keepOpen": "Keep chart open",
+    "closeImageDraftMessage": "This chart has not been saved. Closing it will discard its contents and permanently delete its uploaded images.",
+    "draftAlreadySaved": "This chart was saved elsewhere. Reopen it before discarding the draft."
   }
 }

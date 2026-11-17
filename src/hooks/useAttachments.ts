@@ -1,4 +1,5 @@
 import React from 'react';
+import { beginImageUpload } from '../utils/imageDrafts';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import i18n from '../i18n';
 import { DICOM_MIME, DicomError, hasDicomMagic, looksLikeDicomName } from '../utils/dicomSniff';
@@ -358,8 +359,10 @@ export function useAttachments(
   dicomEnabled = false
 ): UseAttachmentsReturn {
   const maxImages = maxImagesOverride ?? ATTACHMENT_LIMITS.maxPerChart;
-  const [items, setItems] = React.useState<Attachment[]>([]);
-  const [loaded, setLoaded] = React.useState(!cloudEnabled);
+  const [storedItems, setItems] = React.useState<Attachment[]>([]);
+  const items = React.useMemo(() => storedItems.filter(item => item.chartId === chartId), [storedItems, chartId]);
+  const [loadedFor, setLoadedFor] = React.useState(!cloudEnabled ? chartId : '');
+  const loaded = loadedFor === chartId;
   const practiceIdRef = React.useRef(practiceId);
   practiceIdRef.current = practiceId;
   const itemsRef = React.useRef(items);
@@ -374,13 +377,13 @@ export function useAttachments(
     const rows = await listChartAttachments(forChart);
     if (chartIdRef.current !== forChart) return;
     if (rows) setItems(rows);
-    setLoaded(true);
+    setLoadedFor(forChart);
   }, [chartId]);
 
   React.useEffect(() => {
     // Never show the previous chart's images while the new ones load.
     setItems([]);
-    setLoaded(!cloudEnabled);
+    setLoadedFor(!cloudEnabled ? chartId : '');
     if (cloudEnabled) load();
   }, [load]);
 
@@ -388,6 +391,8 @@ export function useAttachments(
     async (file: File, kind: AttachmentKind, caption: string): Promise<void> => {
       // Messages are looked up when thrown: an upload can outlast a language switch.
       if (!supabase) throw new LocalizedError(tm()('upload.noCloud'));
+      const finishUpload = beginImageUpload(chartId);
+      try {
       const dicom = await isDicomFile(file);
       const rejection = uploadRejection({
         dicom,
@@ -446,6 +451,7 @@ export function useAttachments(
       });
       if (rowErr) throw new Error(rowErr.message);
       await load();
+      } finally { finishUpload(); }
     },
     [chartId, load, maxImages, dicomEnabled]
   );

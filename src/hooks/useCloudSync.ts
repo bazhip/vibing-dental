@@ -1,4 +1,5 @@
 import React from 'react';
+import { hasChartImages, hasPendingImageUpload, findImageDrafts, discardImageDraft } from '../utils/imageDrafts';
 import { localDateISO } from '../utils/localDate';
 import { ChartSnapshot } from '../types';
 import { chooseDialog, confirmDialog } from '../components/ui/dialogs';
@@ -56,6 +57,11 @@ export interface UseCloudSyncReturn {
   captureWorkspace?: () => Promise<ChartWorkspace>;
   restoreWorkspace?: (workspace: ChartWorkspace) => void;
   resumeWorkspace?: () => void;
+  pauseWorkspace?: () => void;
+  discardImageDraft?: (id: string) => Promise<void>;
+  hasImages?: (id: string) => Promise<boolean>;
+  hasPendingImageUpload?: (id: string) => boolean;
+  findImageDrafts?: () => Promise<Array<{ id: string; date: string }>>;
   /** 'idle' | 'saving' | 'saved' | 'error'. */
   status: 'idle' | 'saving' | 'saved' | 'error';
   /** Plain-language reason the last save failed ('' when none). */
@@ -813,6 +819,11 @@ export function useCloudSync(
     captureWorkspace,
     restoreWorkspace,
     resumeWorkspace,
+    pauseWorkspace: () => { workspacePaused.current = true; },
+    discardImageDraft,
+    hasImages: hasChartImages,
+    hasPendingImageUpload,
+    findImageDrafts,
     status,
     saveError,
     dirty,

@@ -3211,7 +3211,7 @@ button.save-status--error {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 1rem;
 }
 .imaging__card {
@@ -3278,7 +3278,21 @@ button.save-status--error {
 }
 a.imaging__dicom:hover { background: var(--surface-2, rgba(0, 0, 0, 0.05)); }
 .imaging__formats { margin: 0.35rem 0 0; }
-.imaging__delete { align-self: flex-start; }
+/* Labeled attachment fields; output choices stay distinct from image metadata. */
+.imaging__classification { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px; }
+.imaging__field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.imaging__field > :is(select, textarea) { width: 100%; min-width: 0; box-sizing: border-box; min-height: 40px; font-size: 13px; font-weight: 400; color: var(--text); }
+.imaging__field > select { padding: 8px; }
+.imaging__field > .imaging__caption { min-height: 64px; resize: vertical; padding: 8px 10px; }
+.imaging__outputs { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.imaging__outputs .imaging__in-pdf { min-height: 32px; gap: 8px; }
+.imaging__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.imaging__actions .imaging__delete { min-height: 40px; margin-left: auto; font-size: 13px; }
+.imaging__actions .imaging__dicom { padding: 8px 0; border: 0; border-radius: 0; font-size: 12px; font-weight: 500; letter-spacing: normal; }
+@media (max-width: 600px) {
+  .imaging__field > select, .imaging__outputs .imaging__in-pdf, .imaging__actions .imaging__delete, .imaging__actions .imaging__dicom { min-height: 44px; }
+  .imaging__field > :is(select, textarea) { font-size: 16px; }
+}
 
 /* Drag-and-drop target: the whole Images section. */
 .imaging { position: relative; }

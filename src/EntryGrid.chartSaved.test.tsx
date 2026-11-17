@@ -209,13 +209,18 @@ it('keeps the read-only notice visible in every chart section', async () => {
   expect(within(container.querySelector('header')!).queryByRole('button', { name: 'New patient' })).toBeNull();
 });
 
-it('opens practice settings over the current chart from its name and missing-logo control', async () => {
+it('opens the file picker from Add logo and practice settings from the practice name', async () => {
   flags.native = false;
   const { container } = await renderApp();
   const hash = window.location.hash;
   const form = container.querySelector('#chart-form');
   expect(screen.queryByRole('button', { name: 'Current visit' })).toBeNull();
+  const input = container.querySelector('header input[type="file"]') as HTMLInputElement;
+  const pick = vi.spyOn(input, 'click').mockImplementation(() => {});
   fireEvent.click(screen.getByRole('button', { name: 'Add logo' }));
+  expect(pick).toHaveBeenCalledOnce();
+  expect(screen.queryByRole('dialog', { name: 'Practice settings' })).toBeNull();
+  fireEvent.click(container.querySelector('.entry-grid__practice-link')!);
   const dialog = await screen.findByRole('dialog', { name: 'Practice settings' });
   expect(within(dialog).getByRole('navigation', { name: 'Practice settings' })).toBeVisible();
   expect(window.location.hash).toBe(hash);

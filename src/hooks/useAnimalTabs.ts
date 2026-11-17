@@ -6,6 +6,7 @@ import { ensureChartSaved } from '../utils/ensureSaved';
 import { speciesBase } from '../utils/species';
 import i18n from '../i18n';
 import { toast, confirmDialog } from '../components/ui/dialogs';
+import { imageDraftWorkspace } from '../utils/imageDrafts';
 import { readJson, writeJson } from '../utils/storage';
 
 export interface AnimalTab {
@@ -33,19 +34,21 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
   const [drafts] = useState(() => new Map<string, ChartWorkspace>(
     cloud.enabled && enabled ? readJson<ChartWorkspace[]>('chart.workspaces', 1, []).filter(value => value?.id && value?.snapshot?.patientInfo).map(value => [value.id, value]) : []
   ));
+  const [closedDrafts] = useState(() => new Map<string, ChartWorkspace>(readJson<ChartWorkspace[]>('chart.closedWorkspaces', 1, []).map(draft => [draft.id, draft])));
   const [tabs, setTabs] = useState<AnimalTab[]>(() => {
     const animals = new Map<string, AnimalTab>();
     for (const draft of drafts.values()) {
+      if (closedDrafts.has(draft.id)) continue;
       const tab = tabOf({ cloudChartId: draft.id, patientInfo: draft.snapshot.patientInfo, species: draft.snapshot.species } as UseChartStateReturn);
       animals.set(tab.key, tab);
     }
     return Array.from(animals.values());
   });
-  const [empty, setEmpty] = useState(false);
+  const [empty, setEmpty] = useState(() => closedDrafts.has(chart.cloudChartId));
   const [busy, setBusy] = useState(false);
   const [revision, setRevision] = useState(0);
   const locked = useRef(false);
-  const dismissed = useRef<string | null>(null);
+  const dismissed = useRef<string | null>(closedDrafts.has(chart.cloudChartId) ? chart.cloudChartId : null);
   const local = useRef(new Map<string, { snapshot: ChartSnapshot; existing: boolean; tab: AnimalTab }>());
   const latest = useRef({ chart, cloud, tabs });
   latest.current = { chart, cloud, tabs };
@@ -64,8 +67,34 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     setEmpty(false);
   }, [enabled, chart.cloudChartId, chart.chartSession, chart.patientInfo, chart.species, chart.openedExisting, cloud.enabled, snapshot, revision]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (!enabled || !cloud.enabled || !latest.current.cloud.findImageDrafts) return;
+    let cancelled = false;
+    void latest.current.cloud.findImageDrafts().then(images => {
+      if (cancelled) return;
+      const recovered: AnimalTab[] = [];
+      for (const image of images) {
+        if (closedDrafts.has(image.id) || image.id === latest.current.chart.cloudChartId || drafts.has(image.id) || latest.current.tabs.some(tab => tab.id === image.id)) continue;
+        const draft = imageDraftWorkspace(image.id, image.date);
+        drafts.set(image.id, draft);
+        recovered.push(tabOf({ cloudChartId: image.id, patientInfo: draft.snapshot.patientInfo, species: draft.snapshot.species } as UseChartStateReturn));
+      }
+      if (recovered.length) {
+        writeJson('chart.workspaces', 1, Array.from(drafts.values()));
+        setTabs(tabs => [...tabs, ...recovered]);
+        toast(i18n.t('animalTabs.imagesRecovered', { ns: 'app' }), { kind: 'info', duration: 0 });
+      }
+    }).catch(() => { /* Offline: retain local drafts; retry recovery on the next mount. */ });
+    return () => { cancelled = true; };
+  }, [enabled, cloud.enabled, drafts, closedDrafts]);
+
+  useEffect(() => {
+    if (dismissed.current === chart.cloudChartId) latest.current.cloud.pauseWorkspace?.();
+  }, [chart.cloudChartId]);
+
   const prepareLeave = async (): Promise<boolean> => {
     const current = latest.current;
+    if (dismissed.current === current.chart.cloudChartId) return true;
     if (!current.cloud.enabled) return true;
     // A tab switch preserves the entire working copy and its cloud baseline.
     if (current.cloud.captureWorkspace) {
@@ -87,7 +116,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     if (locked.current) return false;
     locked.current = true; setBusy(true);
     try { return await operation(); }
-    finally { latest.current.cloud.resumeWorkspace?.(); locked.current = false; setBusy(false); }
+    finally { if (dismissed.current !== latest.current.chart.cloudChartId) latest.current.cloud.resumeWorkspace?.(); locked.current = false; setBusy(false); }
   };
 
   const activate = async (id: string, opts?: Parameters<UseCloudSyncReturn['openChart']>[1]) => {
@@ -105,7 +134,7 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
       current.chart.setOpenedExisting(cached.existing);
       ok = true;
     }
-    if (ok) { dismissed.current = null; setEmpty(false); setRevision(n => n + 1); }
+    if (ok) { closedDrafts.delete(id); writeJson('chart.closedWorkspaces', 1, Array.from(closedDrafts.values())); dismissed.current = null; setEmpty(false); setRevision(n => n + 1); }
     return ok;
   };
 
@@ -125,20 +154,49 @@ export function useAnimalTabs(chart: UseChartStateReturn, cloud: UseCloudSyncRet
     const current = latest.current;
     const index = current.tabs.findIndex(tab => tab.id === id);
     if (index < 0) return false;
-    if (id !== current.chart.cloudChartId && drafts.get(id)?.dirty) {
-      toast(i18n.t('animalTabs.closeUnsaved', { ns: 'app' }), { kind: 'error' });
+    if (current.cloud.hasPendingImageUpload?.(id)) {
+      toast(i18n.t('animalTabs.uploadPending', { ns: 'app' }), { kind: 'info' });
       return false;
     }
-    if (id === current.chart.cloudChartId) {
-      if (current.cloud.enabled && current.cloud.dirty && !(await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId })))) {
-        toast(i18n.t('animalTabs.closeUnsaved', { ns: 'app' }), { kind: 'error' });
-        return false;
-      }
-      if (!(await prepareLeave())) return false;
+    const tab = current.tabs[index];
+    const draft = drafts.get(id);
+    const saved = id === current.chart.cloudChartId ? current.cloud.lastSavedAt : draft?.lastSaved.chartId === id && draft.lastSaved.at;
+    const imageDraft = current.cloud.enabled && (!saved || !tab.name.trim()) && await current.cloud.hasImages?.(id);
+    let discard = false;
+    const active = id === current.chart.cloudChartId;
+    let needsConfirmation = !active && (draft?.dirty || imageDraft);
+    if (active && current.cloud.enabled && (current.cloud.dirty || imageDraft)) {
+      const savedNow = !!tab.name.trim() && await ensureChartSaved(() => ({ ...latest.current.cloud, chartId: latest.current.chart.cloudChartId }));
+      needsConfirmation = !savedNow;
+    }
+    let discardedDraft = draft;
+    if (active && needsConfirmation && current.cloud.captureWorkspace) {
+      discardedDraft = await current.cloud.captureWorkspace();
+    }
+    const neverSaved = active ? !(current.chart.openedExisting || latest.current.cloud.lastSavedAt)
+      : !(draft?.openedExisting || saved);
+    if (needsConfirmation) {
+      const t = i18n.getFixedT(null, 'app');
+      discard = await confirmDialog({ title: t('animalTabs.closeConfirmTitle'), message: t(neverSaved && imageDraft ? 'animalTabs.closeImageDraftMessage' : 'animalTabs.closeConfirmMessage'),
+        confirmLabel: t('animalTabs.closeConfirm'), cancelLabel: t('animalTabs.keepOpen'), danger: true });
+      if (!discard) return false;
+    }
+    if (discard && neverSaved && imageDraft) await current.cloud.discardImageDraft?.(id);
+    if (active) {
+      if (discard) {
+        discardedDraft = discardedDraft ?? (current.cloud.captureWorkspace ? await current.cloud.captureWorkspace()
+          : { ...imageDraftWorkspace(id, current.chart.patientInfo.date), snapshot: current.chart.getSnapshot() });
+      } else if (!(await prepareLeave())) return false;
       const remaining = current.tabs.filter(tab => tab.id !== id);
       const neighbor = remaining[Math.min(index, remaining.length - 1)];
       if (neighbor && !(await activate(neighbor.id))) return false;
       if (!neighbor) { dismissed.current = id; setEmpty(true); }
+    }
+    // Keep a local recovery copy; explicit closes must not auto-reopen on reload.
+    // Only explicit discard of a never-saved image draft removes its uploads.
+    if (discard && discardedDraft) {
+      closedDrafts.set(id, discardedDraft);
+      writeJson('chart.closedWorkspaces', 1, Array.from(closedDrafts.values()));
     }
     drafts.delete(id);
     writeJson('chart.workspaces', 1, Array.from(drafts.values()));

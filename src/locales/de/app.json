@@ -316,6 +316,15 @@
     "previous": "Vorherige Tiere",
     "next": "Weitere Tiere",
     "closeUnsaved": "Dieser Tab enthält noch ungespeicherte Änderungen. Öffnen und speichern Sie ihn, bevor Sie ihn schließen.",
-    "summary": "{{name}} · {{details}}"
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Die Bilder dieser Akte konnten nicht geprüft werden. Lassen Sie den Tab geöffnet und versuchen Sie es erneut.",
+    "uploadPending": "Warten Sie, bis das Bild vollständig hochgeladen wurde, bevor Sie diesen Tab schließen.",
+    "imagesRecovered": "Hochgeladene Bilder wurden in unbenannten Tabs wiederhergestellt. Prüfen Sie die Patientendaten vor dem Speichern.",
+    "closeConfirmTitle": "Ohne Speichern schließen?",
+    "closeConfirmMessage": "Ungespeicherte Änderungen in diesem Tab werden verworfen. Hochgeladene Bilder werden nicht gelöscht.",
+    "closeConfirm": "Ohne Speichern schließen",
+    "keepOpen": "Akte geöffnet lassen",
+    "closeImageDraftMessage": "Diese Akte wurde noch nicht gespeichert. Beim Schließen wird ihr Inhalt verworfen und ihre hochgeladenen Bilder werden endgültig gelöscht.",
+    "draftAlreadySaved": "Diese Akte wurde an anderer Stelle gespeichert. Öffnen Sie sie erneut, bevor Sie den Entwurf verwerfen."
   }
 }

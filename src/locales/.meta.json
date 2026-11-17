@@ -340,12 +340,32 @@
       "hash": "dcdd2d9c132a",
       "status": "machine"
     },
+    "app:animalTabs.closeConfirm": {
+      "hash": "bb5e6ee5e7fd",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmMessage": {
+      "hash": "93ad62130c02",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmTitle": {
+      "hash": "e30d18d097ef",
+      "status": "machine"
+    },
     "app:animalTabs.closeHint": {
       "hash": "d437521eea01",
       "status": "machine"
     },
+    "app:animalTabs.closeImageDraftMessage": {
+      "hash": "13c17ef905fa",
+      "status": "machine"
+    },
     "app:animalTabs.closeUnsaved": {
       "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.draftAlreadySaved": {
+      "hash": "0616c800c01d",
       "status": "machine"
     },
     "app:animalTabs.emptyBody": {
@@ -354,6 +374,18 @@
     },
     "app:animalTabs.emptyTitle": {
       "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.imageCheckFailed": {
+      "hash": "fb9ad6bb28a7",
+      "status": "machine"
+    },
+    "app:animalTabs.imagesRecovered": {
+      "hash": "476e40037cb0",
+      "status": "machine"
+    },
+    "app:animalTabs.keepOpen": {
+      "hash": "c7be83ff9f4f",
       "status": "machine"
     },
     "app:animalTabs.label": {
@@ -394,6 +426,10 @@
     },
     "app:animalTabs.unnamed": {
       "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
+    "app:animalTabs.uploadPending": {
+      "hash": "e85a25f61650",
       "status": "machine"
     },
     "app:brand": {
@@ -7336,6 +7372,10 @@
       "hash": "a8b719f0af60",
       "status": "machine"
     },
+    "media:imaging.actions": {
+      "hash": "83196172ab2e",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -7345,7 +7385,7 @@
       "status": "machine"
     },
     "media:imaging.after": {
-      "hash": "7b68fe551085",
+      "hash": "e12d704c2b07",
       "status": "machine"
     },
     "media:imaging.altPhoto": {
@@ -7357,11 +7397,11 @@
       "status": "machine"
     },
     "media:imaging.before": {
-      "hash": "9bb725005055",
+      "hash": "e0e54a52dfc8",
       "status": "machine"
     },
     "media:imaging.captionAria": {
-      "hash": "87d296ec9489",
+      "hash": "526e0087cc3f",
       "status": "machine"
     },
     "media:imaging.captionFailed": {
@@ -7369,7 +7409,7 @@
       "status": "machine"
     },
     "media:imaging.captionPlaceholder": {
-      "hash": "73fde0ea4ccb",
+      "hash": "c7b7b7f01360",
       "status": "machine"
     },
     "media:imaging.customize": {
@@ -7385,7 +7425,7 @@
       "status": "machine"
     },
     "media:imaging.deleteMessage": {
-      "hash": "152dcf727da1",
+      "hash": "d0c086250a79",
       "status": "machine"
     },
     "media:imaging.deleteTitle": {
@@ -7409,7 +7449,7 @@
       "status": "machine"
     },
     "media:imaging.dicomDownload": {
-      "hash": "4ee0fe3b6008",
+      "hash": "4eeb6ee077d8",
       "status": "machine"
     },
     "media:imaging.dicomDownloadTitle": {
@@ -7449,11 +7489,11 @@
       "status": "machine"
     },
     "media:imaging.inPdf": {
-      "hash": "b42b6ea9844d",
+      "hash": "2c8e0fcd1fc7",
       "status": "machine"
     },
     "media:imaging.inPdfTitle": {
-      "hash": "0d892b7c0f18",
+      "hash": "35d4fe195e2a",
       "status": "machine"
     },
     "media:imaging.kindFailed": {
@@ -7478,6 +7518,10 @@
     },
     "media:imaging.openViewer": {
       "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.ownerReportLabel": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "media:imaging.pastedName": {
@@ -7505,7 +7549,7 @@
       "status": "machine"
     },
     "media:imaging.remove": {
-      "hash": "c3812fc4acb8",
+      "hash": "da7acac19683",
       "status": "machine"
     },
     "media:imaging.removeFailed": {
@@ -7517,7 +7561,7 @@
       "status": "machine"
     },
     "media:imaging.roleNone": {
-      "hash": "6a70d2a1b8f1",
+      "hash": "e34743da8b35",
       "status": "machine"
     },
     "media:imaging.roleTitle": {
@@ -7538,6 +7582,10 @@
     },
     "media:imaging.toothFailed": {
       "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothLabel": {
+      "hash": "046b9087750f",
       "status": "machine"
     },
     "media:imaging.toothNone": {
@@ -12574,12 +12622,32 @@
       "hash": "dcdd2d9c132a",
       "status": "machine"
     },
+    "app:animalTabs.closeConfirm": {
+      "hash": "bb5e6ee5e7fd",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmMessage": {
+      "hash": "93ad62130c02",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmTitle": {
+      "hash": "e30d18d097ef",
+      "status": "machine"
+    },
     "app:animalTabs.closeHint": {
       "hash": "d437521eea01",
       "status": "machine"
     },
+    "app:animalTabs.closeImageDraftMessage": {
+      "hash": "13c17ef905fa",
+      "status": "machine"
+    },
     "app:animalTabs.closeUnsaved": {
       "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.draftAlreadySaved": {
+      "hash": "0616c800c01d",
       "status": "machine"
     },
     "app:animalTabs.emptyBody": {
@@ -12588,6 +12656,18 @@
     },
     "app:animalTabs.emptyTitle": {
       "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.imageCheckFailed": {
+      "hash": "fb9ad6bb28a7",
+      "status": "machine"
+    },
+    "app:animalTabs.imagesRecovered": {
+      "hash": "476e40037cb0",
+      "status": "machine"
+    },
+    "app:animalTabs.keepOpen": {
+      "hash": "c7be83ff9f4f",
       "status": "machine"
     },
     "app:animalTabs.label": {
@@ -12628,6 +12708,10 @@
     },
     "app:animalTabs.unnamed": {
       "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
+    "app:animalTabs.uploadPending": {
+      "hash": "e85a25f61650",
       "status": "machine"
     },
     "app:brand": {
@@ -19642,6 +19726,10 @@
       "hash": "a8b719f0af60",
       "status": "machine"
     },
+    "media:imaging.actions": {
+      "hash": "83196172ab2e",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -19651,7 +19739,7 @@
       "status": "machine"
     },
     "media:imaging.after": {
-      "hash": "7b68fe551085",
+      "hash": "e12d704c2b07",
       "status": "machine"
     },
     "media:imaging.altPhoto": {
@@ -19663,11 +19751,11 @@
       "status": "machine"
     },
     "media:imaging.before": {
-      "hash": "9bb725005055",
+      "hash": "e0e54a52dfc8",
       "status": "machine"
     },
     "media:imaging.captionAria": {
-      "hash": "87d296ec9489",
+      "hash": "526e0087cc3f",
       "status": "machine"
     },
     "media:imaging.captionFailed": {
@@ -19675,7 +19763,7 @@
       "status": "machine"
     },
     "media:imaging.captionPlaceholder": {
-      "hash": "73fde0ea4ccb",
+      "hash": "c7b7b7f01360",
       "status": "machine"
     },
     "media:imaging.customize": {
@@ -19691,7 +19779,7 @@
       "status": "machine"
     },
     "media:imaging.deleteMessage": {
-      "hash": "152dcf727da1",
+      "hash": "d0c086250a79",
       "status": "machine"
     },
     "media:imaging.deleteTitle": {
@@ -19715,7 +19803,7 @@
       "status": "machine"
     },
     "media:imaging.dicomDownload": {
-      "hash": "4ee0fe3b6008",
+      "hash": "4eeb6ee077d8",
       "status": "machine"
     },
     "media:imaging.dicomDownloadTitle": {
@@ -19755,11 +19843,11 @@
       "status": "machine"
     },
     "media:imaging.inPdf": {
-      "hash": "b42b6ea9844d",
+      "hash": "2c8e0fcd1fc7",
       "status": "machine"
     },
     "media:imaging.inPdfTitle": {
-      "hash": "0d892b7c0f18",
+      "hash": "35d4fe195e2a",
       "status": "machine"
     },
     "media:imaging.kindFailed": {
@@ -19784,6 +19872,10 @@
     },
     "media:imaging.openViewer": {
       "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.ownerReportLabel": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "media:imaging.pastedName": {
@@ -19811,7 +19903,7 @@
       "status": "machine"
     },
     "media:imaging.remove": {
-      "hash": "c3812fc4acb8",
+      "hash": "da7acac19683",
       "status": "machine"
     },
     "media:imaging.removeFailed": {
@@ -19823,7 +19915,7 @@
       "status": "machine"
     },
     "media:imaging.roleNone": {
-      "hash": "6a70d2a1b8f1",
+      "hash": "e34743da8b35",
       "status": "machine"
     },
     "media:imaging.roleTitle": {
@@ -19844,6 +19936,10 @@
     },
     "media:imaging.toothFailed": {
       "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothLabel": {
+      "hash": "046b9087750f",
       "status": "machine"
     },
     "media:imaging.toothNone": {
@@ -24920,12 +25016,32 @@
       "hash": "dcdd2d9c132a",
       "status": "machine"
     },
+    "app:animalTabs.closeConfirm": {
+      "hash": "bb5e6ee5e7fd",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmMessage": {
+      "hash": "93ad62130c02",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmTitle": {
+      "hash": "e30d18d097ef",
+      "status": "machine"
+    },
     "app:animalTabs.closeHint": {
       "hash": "d437521eea01",
       "status": "machine"
     },
+    "app:animalTabs.closeImageDraftMessage": {
+      "hash": "13c17ef905fa",
+      "status": "machine"
+    },
     "app:animalTabs.closeUnsaved": {
       "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.draftAlreadySaved": {
+      "hash": "0616c800c01d",
       "status": "machine"
     },
     "app:animalTabs.emptyBody": {
@@ -24934,6 +25050,18 @@
     },
     "app:animalTabs.emptyTitle": {
       "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.imageCheckFailed": {
+      "hash": "fb9ad6bb28a7",
+      "status": "machine"
+    },
+    "app:animalTabs.imagesRecovered": {
+      "hash": "476e40037cb0",
+      "status": "machine"
+    },
+    "app:animalTabs.keepOpen": {
+      "hash": "c7be83ff9f4f",
       "status": "machine"
     },
     "app:animalTabs.label": {
@@ -24974,6 +25102,10 @@
     },
     "app:animalTabs.unnamed": {
       "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
+    "app:animalTabs.uploadPending": {
+      "hash": "e85a25f61650",
       "status": "machine"
     },
     "app:brand": {
@@ -31988,6 +32120,10 @@
       "hash": "a8b719f0af60",
       "status": "machine"
     },
+    "media:imaging.actions": {
+      "hash": "83196172ab2e",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -31997,7 +32133,7 @@
       "status": "machine"
     },
     "media:imaging.after": {
-      "hash": "7b68fe551085",
+      "hash": "e12d704c2b07",
       "status": "machine"
     },
     "media:imaging.altPhoto": {
@@ -32009,11 +32145,11 @@
       "status": "machine"
     },
     "media:imaging.before": {
-      "hash": "9bb725005055",
+      "hash": "e0e54a52dfc8",
       "status": "machine"
     },
     "media:imaging.captionAria": {
-      "hash": "87d296ec9489",
+      "hash": "526e0087cc3f",
       "status": "machine"
     },
     "media:imaging.captionFailed": {
@@ -32021,7 +32157,7 @@
       "status": "machine"
     },
     "media:imaging.captionPlaceholder": {
-      "hash": "73fde0ea4ccb",
+      "hash": "c7b7b7f01360",
       "status": "machine"
     },
     "media:imaging.customize": {
@@ -32037,7 +32173,7 @@
       "status": "machine"
     },
     "media:imaging.deleteMessage": {
-      "hash": "152dcf727da1",
+      "hash": "d0c086250a79",
       "status": "machine"
     },
     "media:imaging.deleteTitle": {
@@ -32061,7 +32197,7 @@
       "status": "machine"
     },
     "media:imaging.dicomDownload": {
-      "hash": "4ee0fe3b6008",
+      "hash": "4eeb6ee077d8",
       "status": "machine"
     },
     "media:imaging.dicomDownloadTitle": {
@@ -32101,11 +32237,11 @@
       "status": "machine"
     },
     "media:imaging.inPdf": {
-      "hash": "b42b6ea9844d",
+      "hash": "2c8e0fcd1fc7",
       "status": "machine"
     },
     "media:imaging.inPdfTitle": {
-      "hash": "0d892b7c0f18",
+      "hash": "35d4fe195e2a",
       "status": "machine"
     },
     "media:imaging.kindFailed": {
@@ -32130,6 +32266,10 @@
     },
     "media:imaging.openViewer": {
       "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.ownerReportLabel": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "media:imaging.pastedName": {
@@ -32157,7 +32297,7 @@
       "status": "machine"
     },
     "media:imaging.remove": {
-      "hash": "c3812fc4acb8",
+      "hash": "da7acac19683",
       "status": "machine"
     },
     "media:imaging.removeFailed": {
@@ -32169,7 +32309,7 @@
       "status": "machine"
     },
     "media:imaging.roleNone": {
-      "hash": "6a70d2a1b8f1",
+      "hash": "e34743da8b35",
       "status": "machine"
     },
     "media:imaging.roleTitle": {
@@ -32190,6 +32330,10 @@
     },
     "media:imaging.toothFailed": {
       "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothLabel": {
+      "hash": "046b9087750f",
       "status": "machine"
     },
     "media:imaging.toothNone": {
@@ -37266,12 +37410,32 @@
       "hash": "dcdd2d9c132a",
       "status": "machine"
     },
+    "app:animalTabs.closeConfirm": {
+      "hash": "bb5e6ee5e7fd",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmMessage": {
+      "hash": "93ad62130c02",
+      "status": "machine"
+    },
+    "app:animalTabs.closeConfirmTitle": {
+      "hash": "e30d18d097ef",
+      "status": "machine"
+    },
     "app:animalTabs.closeHint": {
       "hash": "d437521eea01",
       "status": "machine"
     },
+    "app:animalTabs.closeImageDraftMessage": {
+      "hash": "13c17ef905fa",
+      "status": "machine"
+    },
     "app:animalTabs.closeUnsaved": {
       "hash": "1c7ffe281ed8",
+      "status": "machine"
+    },
+    "app:animalTabs.draftAlreadySaved": {
+      "hash": "0616c800c01d",
       "status": "machine"
     },
     "app:animalTabs.emptyBody": {
@@ -37280,6 +37444,18 @@
     },
     "app:animalTabs.emptyTitle": {
       "hash": "8ad19a8d5f9a",
+      "status": "machine"
+    },
+    "app:animalTabs.imageCheckFailed": {
+      "hash": "fb9ad6bb28a7",
+      "status": "machine"
+    },
+    "app:animalTabs.imagesRecovered": {
+      "hash": "476e40037cb0",
+      "status": "machine"
+    },
+    "app:animalTabs.keepOpen": {
+      "hash": "c7be83ff9f4f",
       "status": "machine"
     },
     "app:animalTabs.label": {
@@ -37320,6 +37496,10 @@
     },
     "app:animalTabs.unnamed": {
       "hash": "97a04e8e8e14",
+      "status": "machine"
+    },
+    "app:animalTabs.uploadPending": {
+      "hash": "e85a25f61650",
       "status": "machine"
     },
     "app:brand": {
@@ -44334,6 +44514,10 @@
       "hash": "a8b719f0af60",
       "status": "machine"
     },
+    "media:imaging.actions": {
+      "hash": "83196172ab2e",
+      "status": "machine"
+    },
     "media:imaging.add": {
       "hash": "04136060b40f",
       "status": "machine"
@@ -44343,7 +44527,7 @@
       "status": "machine"
     },
     "media:imaging.after": {
-      "hash": "7b68fe551085",
+      "hash": "e12d704c2b07",
       "status": "machine"
     },
     "media:imaging.altPhoto": {
@@ -44355,11 +44539,11 @@
       "status": "machine"
     },
     "media:imaging.before": {
-      "hash": "9bb725005055",
+      "hash": "e0e54a52dfc8",
       "status": "machine"
     },
     "media:imaging.captionAria": {
-      "hash": "87d296ec9489",
+      "hash": "526e0087cc3f",
       "status": "machine"
     },
     "media:imaging.captionFailed": {
@@ -44367,7 +44551,7 @@
       "status": "machine"
     },
     "media:imaging.captionPlaceholder": {
-      "hash": "73fde0ea4ccb",
+      "hash": "c7b7b7f01360",
       "status": "machine"
     },
     "media:imaging.customize": {
@@ -44383,7 +44567,7 @@
       "status": "machine"
     },
     "media:imaging.deleteMessage": {
-      "hash": "152dcf727da1",
+      "hash": "d0c086250a79",
       "status": "machine"
     },
     "media:imaging.deleteTitle": {
@@ -44407,7 +44591,7 @@
       "status": "machine"
     },
     "media:imaging.dicomDownload": {
-      "hash": "4ee0fe3b6008",
+      "hash": "4eeb6ee077d8",
       "status": "machine"
     },
     "media:imaging.dicomDownloadTitle": {
@@ -44447,11 +44631,11 @@
       "status": "machine"
     },
     "media:imaging.inPdf": {
-      "hash": "b42b6ea9844d",
+      "hash": "2c8e0fcd1fc7",
       "status": "machine"
     },
     "media:imaging.inPdfTitle": {
-      "hash": "0d892b7c0f18",
+      "hash": "35d4fe195e2a",
       "status": "machine"
     },
     "media:imaging.kindFailed": {
@@ -44476,6 +44660,10 @@
     },
     "media:imaging.openViewer": {
       "hash": "8fcab4f1767a",
+      "status": "machine"
+    },
+    "media:imaging.ownerReportLabel": {
+      "hash": "9539f5ae5214",
       "status": "machine"
     },
     "media:imaging.pastedName": {
@@ -44503,7 +44691,7 @@
       "status": "machine"
     },
     "media:imaging.remove": {
-      "hash": "c3812fc4acb8",
+      "hash": "da7acac19683",
       "status": "machine"
     },
     "media:imaging.removeFailed": {
@@ -44515,7 +44703,7 @@
       "status": "machine"
     },
     "media:imaging.roleNone": {
-      "hash": "6a70d2a1b8f1",
+      "hash": "e34743da8b35",
       "status": "machine"
     },
     "media:imaging.roleTitle": {
@@ -44536,6 +44724,10 @@
     },
     "media:imaging.toothFailed": {
       "hash": "62fe058355d4",
+      "status": "machine"
+    },
+    "media:imaging.toothLabel": {
+      "hash": "046b9087750f",
       "status": "machine"
     },
     "media:imaging.toothNone": {

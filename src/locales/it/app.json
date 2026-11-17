@@ -318,6 +318,15 @@
     "previous": "Animali precedenti",
     "next": "Animali successivi",
     "closeUnsaved": "Questa scheda contiene ancora modifiche non salvate. La apra e salvi le modifiche prima di chiuderla.",
-    "summary": "{{name}} · {{details}}"
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Impossibile verificare le immagini di questa cartella. Mantenga aperta la scheda e riprovi.",
+    "uploadPending": "Attenda il completamento del caricamento dell’immagine prima di chiudere questa scheda.",
+    "imagesRecovered": "Le immagini caricate sono state recuperate in schede senza nome. Verifichi i dati del paziente prima di salvare.",
+    "closeConfirmTitle": "Chiudere senza salvare?",
+    "closeConfirmMessage": "Le modifiche non salvate in questa scheda verranno scartate. Le immagini caricate non verranno eliminate.",
+    "closeConfirm": "Chiudi senza salvare",
+    "keepOpen": "Mantieni aperta la cartella",
+    "closeImageDraftMessage": "Questa cartella non è stata salvata. Chiudendola, il contenuto verrà scartato e le immagini caricate verranno eliminate definitivamente.",
+    "draftAlreadySaved": "Questa cartella è stata salvata altrove. La riapra prima di scartare la bozza."
   }
 }

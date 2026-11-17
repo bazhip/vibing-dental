@@ -318,6 +318,15 @@
     "previous": "Animales anteriores",
     "next": "Animales siguientes",
     "closeUnsaved": "Esta pestaña aún contiene cambios sin guardar. Ábrala y guarde los cambios antes de cerrarla.",
-    "summary": "{{name}} · {{details}}"
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "No se pudieron comprobar las imágenes de este historial. Mantenga abierta la pestaña e inténtelo de nuevo.",
+    "uploadPending": "Espere a que termine la carga de la imagen antes de cerrar esta pestaña.",
+    "imagesRecovered": "Se recuperaron imágenes cargadas en pestañas sin nombre. Verifique los datos del paciente antes de guardar.",
+    "closeConfirmTitle": "¿Cerrar sin guardar?",
+    "closeConfirmMessage": "Se descartarán los cambios sin guardar de esta pestaña. Las imágenes cargadas no se eliminarán.",
+    "closeConfirm": "Cerrar sin guardar",
+    "keepOpen": "Mantener abierto el historial",
+    "closeImageDraftMessage": "Este historial no se ha guardado. Al cerrarlo, se descartará su contenido y se eliminarán permanentemente las imágenes cargadas.",
+    "draftAlreadySaved": "Este historial se guardó en otro lugar. Vuelva a abrirlo antes de descartar el borrador."
   }
 }

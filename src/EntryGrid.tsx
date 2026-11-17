@@ -37,7 +37,7 @@ import { useCloudSync } from './hooks/useCloudSync';
 import { useProfile } from './hooks/useProfile';
 import { TOOTH_DIAGRAMS } from './constants/toothShapes';
 import { syncGridComments, isGridComment } from './utils/gridComments';
-import { toast, statusToast, friendlyDetail, confirmDialog, chooseDialog } from './components/ui/dialogs';
+import { toast, statusToast, friendlyError, friendlyDetail, confirmDialog, chooseDialog } from './components/ui/dialogs';
 import { PracticeSettingsModal } from './components/PracticeSettingsModal';
 import { RemindersModal } from './components/RemindersModal';
 import { AccountModal } from './components/AccountModal';
@@ -171,6 +171,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   const { t: tChart } = useTranslation('chart');
   const chart = useChartState();
   const profile = useProfile();
+  const logoInputRef = React.useRef<HTMLInputElement>(null);
+  const [logoUploading, setLogoUploading] = React.useState(false);
+  const handleHeaderLogoPick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      await profile.uploadLogo(file);
+      toast(t('practice.logo.updated', { ns: 'settings' }), { kind: 'success' });
+    } catch (error) {
+      toast(friendlyError(error, t('practice.logo.uploadFailed', { ns: 'settings' })), { kind: 'error' });
+    } finally {
+      setLogoUploading(false);
+    }
+  };
   const chartSettings = useChartSettings(profile.loaded);
   const prefs = chartSettings.prefs;
   const language = useAppLanguage(prefs.language, chartSettings.loaded, true);
@@ -205,7 +221,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // switcher and the current-visit rule below. Loaded further down.
   const [loadedVisits, setVisits] = React.useState<CloudChartMeta[]>([]);
   const visitCache = React.useRef(new Map<string, CloudChartMeta[]>());
-  const visitIdentity = JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species]);
+  const visitIdentity = JSON.stringify([chart.patientInfo.patientNumber.trim().toLowerCase(), chart.patientInfo.patientName.trim().toLowerCase(), chart.species, !chart.patientInfo.patientNumber.trim() && !chart.patientInfo.patientName.trim() ? chart.cloudChartId : '']);
   const visits = React.useMemo(() => visitCache.current.get(visitIdentity) ?? visitsForPatient(loadedVisits, chart.patientInfo.patientNumber, chart.patientInfo.patientName), [loadedVisits, visitIdentity, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
   // Today's visit isn't a "saved visit": reloading or reopening it
   // mid-visit opens it editable with no banner (see isCurrentVisit).
@@ -1200,7 +1216,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       label: t('sections.images'),
       content: (
         <>
-        <ImagingSection
+        <ImagingSection key={chart.cloudChartId}
           readOnly={readOnly}
           chartId={chart.cloudChartId}
           cloudActive={cloud.enabled}
@@ -2036,9 +2052,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               the practice name is right beside it). */}
           {profile.logoUrl ? (
             <img src={profile.logoUrl} alt="" className="entry-grid__topbar-logo" />
-          ) : cloud.enabled && <button type="button" className="entry-grid__add-logo" onClick={openPracticeSettings}>
+          ) : cloud.enabled && <button type="button" className="entry-grid__add-logo" disabled={logoUploading} aria-busy={logoUploading} onClick={() => logoInputRef.current?.click()}>
             {t('topbar.addLogo')} <span aria-hidden="true">+</span>
           </button>}
+          <input ref={logoInputRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
+            aria-label={t('practice.logo.choose', { ns: 'settings' })} onChange={handleHeaderLogoPick} />
           {cloud.enabled && !trial ? (
             <button type="button" className="entry-grid__topbar-identity entry-grid__practice-link" onClick={openPracticeSettings} title={t('menu.practiceSettings.label')}>
               <span className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</span>

@@ -318,6 +318,15 @@
     "previous": "Animaux précédents",
     "next": "Animaux suivants",
     "closeUnsaved": "Cet onglet contient encore des modifications non enregistrées. Ouvrez-le et enregistrez-les avant de le fermer.",
-    "summary": "{{name}} · {{details}}"
+    "summary": "{{name}} · {{details}}",
+    "imageCheckFailed": "Impossible de vérifier les images de ce dossier. Gardez cet onglet ouvert et réessayez.",
+    "uploadPending": "Attendez la fin du téléversement de l’image avant de fermer cet onglet.",
+    "imagesRecovered": "Des images téléversées ont été récupérées dans des onglets sans nom. Vérifiez les informations du patient avant d’enregistrer.",
+    "closeConfirmTitle": "Fermer sans enregistrer ?",
+    "closeConfirmMessage": "Les modifications non enregistrées dans cet onglet seront abandonnées. Les images téléversées ne seront pas supprimées.",
+    "closeConfirm": "Fermer sans enregistrer",
+    "keepOpen": "Garder le dossier ouvert",
+    "closeImageDraftMessage": "Ce dossier n’a pas été enregistré. Le fermer abandonnera son contenu et supprimera définitivement ses images téléversées.",
+    "draftAlreadySaved": "Ce dossier a été enregistré ailleurs. Rouvrez-le avant d’abandonner le brouillon."
   }
 }
