@@ -60,7 +60,8 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 | Provider linking, sync conflict resolution and progress | `sidepanel.b7741352.js:221605`, `:224120`, `:224430`, `:224824`, `:306181` | Browser UI plus private backend operations, not standalone content-script functionality. |
 | Cancelled/deleted visit reconciliation | `sidepanel.b7741352.js:306540` | Backend mutation/archive semantics; not implemented by a schedule reader. |
 | Native PIMS, microphone/AI authoring, charge capture/billing | Not established by the bounded inspected entry points | Unknown, not absent. A generic browser API wrapper or generated enum is insufficient evidence. |
-| Add records and radiology | `sidepanel.b7741352.js:220650`, `:213732` | Partially traced only; inventory remains open. |
+| Add records / history PDF export | `sidepanel.b7741352.js:220690`; `instinct.9eb2d42a.js:25119`, `:25224` | Outbound history-review PDF upload into Instinct patient documents, not a general records importer. The shipped location/sharing assumptions and weak identity/success checks are not safe implementation defaults. Not yet implemented in ToothOps. |
+| Radiology-note generation and transfer | `sidepanel.b7741352.js:213732`, `:213810`, `:213839` | Private backend generates text; browser helpers autofill Radimal/Vetology using debugger commands. No image-diagnosis implementation is established. Automatic transfer requires permissions and identity evidence not currently present in ToothOps. |
 
 ## Local verification — November 16, 2026
 
@@ -88,6 +89,12 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 - Text uses existing plain-text/manual-dialog fallbacks. PNG requests are initiated before asynchronous rendering completes, reject malformed/non-PNG data without fetching URLs, and report success only after clipboard completion. Failure and manual-dialog results are not shown as copied. All new UI strings have hand-written en/fr/de/it/es coverage.
 - This implements the shared manual-transfer flow, not the providers' unsafe unverified writers. Backend linking, sync/reconciliation, add-record/radiology flows and live paste/save verification remain outstanding.
 - Increment verification: 260 test files / 2,771 tests pass; production, development-extension and store-extension builds pass; translation backlog is zero. Store output checks retain the same permissions/hosts and production messaging origins. Independent review passes (162 focused tests). The image-upload UI was not changed.
+
+## Next backend increment — design, not implemented
+
+The user chose a ToothOps-native backend with browser-assisted synchronization. The detailed design is in `docs/superpowers/specs/2026-11-16-pims-backend-parity-design.md`; its implementation/approval state is recorded there. It specifies durable integration identity, idempotent sync, reviewable conflicts, reversible archive/restore, history PDF and radiology-note drafts, and capability-gated image/document transfer. It does not claim these backend features are already shipped.
+
+The continuation traced the outbound Instinct `uploadChartFile` flow and confirmed reconciliation distinguishes explicit cancelled/deleted status from unknown absence. Bounded Instinct REA parent evidence is `ev_62894914c7b9b8b61dfbac42f7bdcd75aaa6dfdc2ab9052e7963606e3ef74810`, with partial/truncated semantic coverage. The local recovery bundle is `/private/tmp/scribblevet-parity-backend-design-evidence-2026-11-16.json`. No live authenticated PIMS or ScribbleVet service was contacted.
 
 ## Required authorized live verification
 
