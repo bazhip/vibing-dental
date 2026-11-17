@@ -8,8 +8,8 @@
   --ios-segment-selected: #ffffff;           /* iOS selected segment (light) */
   --ios-segment-selected-shadow: rgba(0, 0, 0, 0.12);
 }
-@media (prefers-color-scheme: dark) {
-  :where(html.native-ios) {
+@media screen {
+  :where(html.native-ios[data-theme="dark"]) {
     --ios-segment-selected: #636366;         /* iOS selected segment (dark) */
     --ios-segment-selected-shadow: rgba(0, 0, 0, 0.3);
   }

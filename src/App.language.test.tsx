@@ -72,5 +72,6 @@ test('signed in, the landing page has no device language picker: the account pic
   window.location.hash = '#/home';
   render(<App />);
   expect((await screen.findAllByRole('button', { name: 'Back to the app' }, { timeout: 4000 })).length).toBeGreaterThan(0);
-  expect(screen.queryByRole('combobox')).toBeNull();
+  expect(screen.queryByRole('combobox', { name: 'Language' })).toBeNull();
+  expect(screen.queryByRole('combobox', { name: 'Appearance' })).toBeNull();
 });

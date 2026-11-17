@@ -4,8 +4,9 @@
  * Every rule here is scoped to html.native-ios (added by initNativeShell()
  * inside the Capacitor shell, or by the DEV-only ?iosPreview=1 preview), so
  * the website never sees these properties. The shared stylesheets wrap their
- * colors as var(--ios-…, <web literal>): unset on the web → the literal,
- * pixel for pixel; set here → the app follows iOS light/dark mode.
+ * colors as var(--ios-…, <web literal>): light web keeps those fallbacks.
+ * The shared dark palette lives in styles/themes.css and follows the
+ * resolved data-theme preference on both web and native.
  *
  * Neutral colors are Apple's published iOS dynamic system colors
  * (systemBackground, systemGroupedBackground, label, separator, fills,
@@ -18,7 +19,7 @@
  */
 
 html.native-ios {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* ---- Backgrounds ---------------------------------------------------- */
   --ios-bg:            #ffffff;  /* systemBackground */
@@ -163,88 +164,12 @@ html.native-ios.ios-preview {
   font-size: 17px;
 }
 
-@media (prefers-color-scheme: dark) {
-  html.native-ios {
-    --ios-bg:            #000000;
-    --ios-bg-grouped:    #000000;
-    --ios-bg-elevated:   #1c1c1e;
-    --ios-cell:          #1c1c1e;
-    --ios-cell-alt:      #2c2c2e;
-    --ios-cell-sunken:   #3a3a3c;
-
-    --ios-label:         #ffffff;
-    --ios-label-2:       rgba(235, 235, 245, 0.6);
-    --ios-label-3:       rgba(235, 235, 245, 0.3);
-    --ios-label-muted:   #aeaeb2;
-    --ios-separator:     rgba(84, 84, 88, 0.6);
-    --ios-separator-opaque: #38383a;
-    --ios-fill:          rgba(118, 118, 128, 0.24);
-    --ios-fill-2:        rgba(120, 120, 128, 0.36);
-    --ios-link:          #5cb8ff;
-    --ios-inverse-bg:    #ffffff;
-    --ios-inverse-label: #000000;
-    --ios-hud-bg:        #3a3a3c;
-
-    /* Lifted teal: AA as text on every dark surface. A white label can't
-       also clear AA on it, so labels on the tint go dark. */
-    --ios-tint:          #3cc4b4;
-    --ios-tint-pressed:  #5fd3c5;
-    --ios-tint-fill:     #213736;
-    --ios-tint-ring:     rgba(60, 196, 180, 0.3);
-    --ios-on-tint:       #000000;
-    --ios-on-tint-2:     rgba(0, 0, 0, 0.72);
-    --ios-on-tint-hairline: rgba(0, 0, 0, 0.28);
-    --ios-on-tint-fill:  rgba(0, 0, 0, 0.12);
-    --ios-segment-hover: rgba(255, 255, 255, 0.08);
-
-    --ios-danger:        #ff6165;  /* red, increased contrast (dark) */
-    --ios-danger-strong: #ff8a8d;
-    --ios-danger-solid:  #c9302c;
-    --ios-on-danger:     #ffffff;
-    --ios-danger-fill:   #402729;
-    --ios-danger-border: #8a3a3d;
-    --ios-danger-ring:   rgba(255, 97, 101, 0.35);
-    --ios-danger-ring-0: rgba(255, 97, 101, 0);
-    --ios-warning-label: #ffa056;  /* orange, increased contrast (dark) */
-    --ios-warning-solid: #a35a0c;
-    --ios-warning-fill:  #402f21;
-    --ios-warning-border: #7a5a1e;
-    --ios-success:       #30d158;
-    --ios-success-label: #4ad968;  /* green, increased contrast (dark) */
-    --ios-success-fill:  #1f3927;
-
-    --ios-shadow-soft:   rgba(0, 0, 0, 0.4);
-    --ios-shadow:        rgba(0, 0, 0, 0.5);
-    --ios-shadow-strong: rgba(0, 0, 0, 0.6);
-    --ios-scrim:         rgba(0, 0, 0, 0.6);
-    --ios-bar-material:  rgba(22, 22, 24, 0.75);
-
-    --ios-grid-bg:             #1c1c1e;
-    --ios-grid-stripe:         #232325;
-    --ios-grid-hover:          #2c2c2e;
-    --ios-grid-header-bg:      #2c2c2e;
-    --ios-grid-header-label:   #ebebf5;
-    --ios-grid-header-hairline: rgba(255, 255, 255, 0.12);
-    --ios-grid-header-hover:   rgba(255, 255, 255, 0.1);
-    --ios-grid-missing-bg:     #402729;
-    --ios-grid-missing-label:  #b4aeb0;
-    --ios-grid-abnormal-bg:    #402729;
-    --ios-grid-abnormal-label: #ff6165;
-    --ios-grid-selected-bg:    #23413f;
-    --ios-grid-selected-ring:  #3cc4b4;
-    --ios-grid-active-cell:    #1c1c1e;
-    --ios-grid-score-bg:       #2c2c2e;
-    --ios-grid-score-on-bg:    #3cc4b4;
-    --ios-grid-score-on-label: #000000;
-  }
-}
-
 /* Reduce Transparency: bars go opaque. */
 @media (prefers-reduced-transparency: reduce) {
   html.native-ios { --ios-bar-material: #f9f9f9; }
 }
-@media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) {
-  html.native-ios { --ios-bar-material: #161618; }
+@media (prefers-reduced-transparency: reduce) {
+  html.native-ios[data-theme="dark"] { --ios-bar-material: #161618; }
 }
 
 /* Increase Contrast: stronger separators and secondary text. */
@@ -257,8 +182,8 @@ html.native-ios.ios-preview {
     --ios-label-3:    rgba(60, 60, 67, 0.6);
   }
 }
-@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
-  html.native-ios {
+@media (prefers-contrast: more) {
+  html.native-ios[data-theme="dark"] {
     --ios-separator:  rgba(124, 124, 128, 0.9);
     --ios-separator-opaque: #7c7c80;
     --ios-label-2:    rgba(235, 235, 245, 0.85);

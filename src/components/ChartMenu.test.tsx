@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
@@ -20,6 +20,19 @@ const cloud = {
 };
 
 describe('ChartMenu', () => {
+  it('leaves appearance-select navigation keys to the native control', async () => {
+    const user = userEvent.setup();
+    render(<ChartMenu onOpenWalkthrough={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: 'Open settings menu' }));
+    await user.click(screen.getByText('Appearance', { selector: 'summary span' }));
+    const select = screen.getByRole('combobox', { name: 'Appearance' });
+    select.focus();
+    for (const key of ['ArrowDown', 'ArrowUp', 'Home', 'End']) {
+      expect(fireEvent.keyDown(select, { key })).toBe(true);
+      expect(select).toHaveFocus();
+    }
+  });
+
   it('shows who is signed in, read from the session', async () => {
     const user = userEvent.setup();
     render(<ChartMenu onOpenWalkthrough={vi.fn()} cloud={cloud} />);

@@ -28,9 +28,9 @@ function cssVar(name: string): string {
   }
 }
 
-function isIosApp(): boolean {
+function needsLightPalette(): boolean {
   try {
-    return document.documentElement.classList.contains('native-ios');
+    return document.documentElement.classList.contains('native-ios') || document.documentElement.dataset.theme === 'dark';
   } catch {
     return false;
   }
@@ -76,10 +76,9 @@ const TOKEN_VARS: Record<keyof AppTokenColors, string> = {
  *  or isn't a parseable hex color. */
 export function readAppTokens(): AppTokenColors {
   const out = {} as AppTokenColors;
-  // In the iOS app the theme variables are re-pointed at the iOS tokens
-  // (src/ios/tokens.css), which follow system dark mode — but PDFs always
-  // print on white. Use the web theme's values there.
-  if (isIosApp()) {
+  // Native and web dark appearances use screen colors, but PDFs always
+  // print on white. Resolve the light clinical palette independently.
+  if (needsLightPalette()) {
     for (const key of Object.keys(FALLBACKS) as Array<keyof AppTokenColors>) {
       out[key] = hexToRgb(FALLBACKS[key]) as RGB;
     }

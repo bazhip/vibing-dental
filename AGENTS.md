@@ -10,6 +10,7 @@ Run `npm test` and `npm run build`; both must pass. Vercel runs `npm run build` 
 
 For every new or changed UI, preserve the established clinical design: teal accents, neutral surfaces, readable sentence-case labels, and consistent component spacing and control sizes.
 
+- Before implementing a UI feature or redesign, ground its mockup in established enterprise SaaS patterns (for example Linear, GitHub, or Atlassian). Identify the relevant reference and the placement, hierarchy, or interaction pattern being reused; show a mockup at the appropriate fidelity before building. Adapt the pattern to this app's clinical design and workflows rather than inventing a new convention or copying another product's branding.
 - Keep one clear primary action per context. Repeated table-row actions should be quiet; secondary and destructive actions belong in a compact disclosure.
 - Avoid duplicate information, stacked desktop row buttons, oversized empty rows, and controls with mismatched heights. Preserve 44px touch targets on phones.
 - Reuse shared components and existing tokens. Fix the owning layout instead of accumulating competing CSS overrides.

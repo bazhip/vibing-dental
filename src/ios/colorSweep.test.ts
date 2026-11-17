@@ -1,8 +1,8 @@
 /**
  * App-only color sweep guard.
  *
- * The iOS app follows system light/dark mode through the tokens in
- * src/ios/tokens.css, which only exist under html.native-ios. So every
+ * Native light colors live in src/ios/tokens.css; the shared dark palette
+ * in src/styles/themes.css follows the resolved appearance preference. So every
  * color in the stylesheets the app renders must be either
  *   - the fallback of a var(--token, <literal>) — the website, where the
  *     token is unset, keeps the literal pixel for pixel;
@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 const read = (rel: string) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8');
 
 const SWEPT_FILES = [
+  '../extension/sidepanel/sidepanel.css',
   '../components/EntryGrid.css',
   '../styles/boards.css',
   '../components/Login.css',
@@ -31,7 +32,7 @@ const SWEPT_FILES = [
 /** Selectors whose colors deliberately don't follow the scheme. */
 const ALLOW: { re: RegExp; reason: string }[] = [
   { re: /^@media print/, reason: 'print output is always on white paper' },
-  { re: /\.tooth-diagram|\.tooth-group|\.tooth-tooltip|\.tooth-number/, reason: 'diagram artwork stays light, like the PDF it prints into' },
+  { re: /\.tooth-diagram|\.tooth-group|\.tooth-tooltip|\.tooth-number/, reason: 'diagram artwork uses dedicated ink tokens; tooltips/exports have fixed colors' },
   { re: /\.tooth-chart__swatch/, reason: 'legend swatches repeat the diagram artwork colors' },
   { re: /\.diagram-comment|\.diagram-view__color/, reason: 'diagram sticky notes and pen colors are part of the artwork' },
   { re: /\.pdf-pages-preview__page|\.pdf-preview-iframe/, reason: 'PDF pages render on paper white over a neutral well' },
@@ -141,6 +142,7 @@ describe('app-only color sweep', () => {
 describe('iOS tokens', () => {
   let tokens = '';
   beforeAll(() => { tokens = read('./tokens.css'); });
+  const darkTokens = () => declarations(read('../styles/themes.css')).filter((d) => d.stack[1] === 'html[data-theme="dark"]');
   const REQUIRED = [
     '--ios-bg', '--ios-bg-grouped', '--ios-bg-elevated', '--ios-cell', '--ios-label',
     '--ios-label-2', '--ios-label-3', '--ios-separator', '--ios-fill', '--ios-tint',
@@ -170,12 +172,19 @@ describe('iOS tokens', () => {
   });
 
   it('redefines the colors for dark mode', () => {
-    const dark = declarations(tokens).filter(
-      (d) => d.stack[0] === '@media (prefers-color-scheme: dark)'
-    ).map((d) => d.prop);
+    const dark = darkTokens().map((d) => d.prop);
     for (const t of REQUIRED.filter((x) => !x.startsWith('--ios-text') && x !== '--ios-font')) {
       expect(dark, t).toContain(t);
     }
+  });
+
+  it('maps shared action and warning surfaces to the dark palette', () => {
+    const dark = Object.fromEntries(darkTokens().map((d) => [d.prop, d.value.trim()]));
+    expect(dark['--action-tint']).toBe('var(--ios-tint-fill)');
+    expect(dark['--action-border']).toBe('var(--ios-tint)');
+    expect(dark['--warning']).toBe('var(--ios-warning-label)');
+    expect(dark['--warning-tint']).toBe('var(--ios-warning-fill)');
+    expect(dark['--warning-border']).toBe('var(--ios-warning-border)');
   });
 
   it('honours Reduce Transparency, Increase Contrast and Reduce Motion', () => {
@@ -210,7 +219,7 @@ describe('iOS tokens', () => {
 
   it('muted (small secondary) text meets WCAG AA on every surface, light and dark', () => {
     const light = tokenSet((st) => st.length === 1 && st[0] === 'html.native-ios');
-    const dark = { ...light, ...tokenSet((st) => st[0] === '@media (prefers-color-scheme: dark)') };
+    const dark = { ...light, ...Object.fromEntries(darkTokens().map((d) => [d.prop, d.value.trim()])) };
     for (const [scheme, set] of [['light', light], ['dark', dark]] as const) {
       for (const bg of SURFACES) {
         const r = contrast(set['--ios-label-muted'], set[bg]);
