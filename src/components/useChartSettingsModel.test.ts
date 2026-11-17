@@ -38,3 +38,15 @@ describe('useChartSettingsModel: usual anesthetic saved on unmount', () => {
     expect(onChange).toHaveBeenCalledWith({ usualDrug: { name: 'Lidocaine', concentration: '1' } });
   });
 });
+
+it('flushes pending drafts once and never writes an untouched stale value on blur', () => {
+  const { result, rerender, onChange } = mount(withDrug('Lidocaine', '2'));
+  act(() => result.current.setDrugStrength('1'));
+  act(() => result.current.flushPendingDrafts());
+  expect(onChange).toHaveBeenCalledTimes(1);
+  rerender({ p: withDrug('Bupivacaine', '0.5') });
+  expect(result.current.drugName).toBe('Bupivacaine');
+  act(() => result.current.saveUsualDrug());
+  act(() => result.current.flushPendingDrafts());
+  expect(onChange).toHaveBeenCalledTimes(1);
+});

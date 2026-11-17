@@ -9,7 +9,7 @@
     "steps": {
       "welcome": {
         "title": "Bienvenido a ToothOps",
-        "body": "Un recorrido de 60 segundos para ver dónde está cada cosa. Puede repetirlo cuando quiera desde Ajustes → Primeros pasos."
+        "body": "Una breve visita al espacio de trabajo. Puede repetirla en cualquier momento desde Ayuda → Primeros pasos."
       },
       "sections": {
         "title": "Las ocho secciones",
@@ -40,16 +40,16 @@
         "body": "Redacte el informe o inserte una plantilla guardada desde el menú desplegable — y guarde otras nuevas para reutilizarlas."
       },
       "library": {
-        "title": "Mis historiales",
-        "body": "Abra los historiales de cualquier paciente (las visitas guardadas se abren en solo lectura hasta que pulse Editar) o, para el paciente en pantalla, inicie una nueva visita o consulte su historial de versiones. Nuevo paciente, al lado, inicia un historial en blanco."
+        "title": "Pacientes",
+        "body": "Busque pacientes y abra sus visitas. Use Nuevo paciente para un historial vacío. Para el paciente actual, use Acciones de la visita para iniciar una nueva visita o consultar el historial de versiones."
       },
       "dictate": {
         "title": "Dictar",
         "body": "Toque Dictar y describa sus hallazgos — desde cualquier página. Cada uno va a su sitio y un panel en directo muestra cada cambio para que pueda deshacer lo que sea."
       },
       "settings": {
-        "title": "Ajustes",
-        "body": "Nombre y logotipo de la clínica, equipo, plantillas de recordatorio de revisión, su cuenta — y este recorrido."
+        "title": "Ajustes de la clínica",
+        "body": "Gestione aquí su clínica, equipo, plantillas y recordatorios. Las preferencias personales están en Su cuenta; las guías y los comentarios, en Ayuda."
       },
       "pdf": {
         "title": "Vista previa y descarga del PDF",

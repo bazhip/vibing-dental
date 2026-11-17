@@ -35,3 +35,15 @@ describe('useChartSettings', () => {
     expect(readJson('chart.prefs', 1, null)).toMatchObject({ hideRecheck: true, pocketMode: 'root' });
   });
 });
+
+
+it('persists procedure shortcuts separately from diagnosis across reopening', async () => {
+  const first = renderHook(() => useChartSettings(true));
+  await act(async () => { await first.result.current.update({ quickCodes: ['T/SN'], procedureQuickCodes: ['EXT'] }); });
+  first.unmount();
+  const second = renderHook(() => useChartSettings(true));
+  expect(second.result.current.prefs.quickCodes).toEqual(['T/SN']);
+  expect(second.result.current.prefs.procedureQuickCodes).toEqual(['EXT']);
+  await act(async () => { await second.result.current.update({ procedureQuickCodes: [] }); });
+  expect(readJson('chart.prefs', 1, null)).toMatchObject({ quickCodes: ['T/SN'], procedureQuickCodes: [] });
+});

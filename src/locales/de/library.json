@@ -1,5 +1,5 @@
 {
-  "title": "Meine Akten",
+  "title": "Patienten",
   "unnamedPatient": "Patient ohne Namen",
   "search": {
     "placeholder": "Nach Patientenname oder -nummer suchen …",
@@ -13,7 +13,7 @@
   },
   "importPdf": "Akten-PDF importieren",
   "importPdfTitle": "Eine mit dieser App erstellte Akten-PDF öffnen, um sie weiter zu bearbeiten",
-  "newPatient": "+ Neuer Patient",
+  "newPatient": "Neuer Patient",
   "newPatientTitle": "Die aktuelle Akte leeren und einen ganz neuen Patienten beginnen",
   "loading": "Wird geladen …",
   "empty": "Noch keine gespeicherten Akten — sie werden beim Erfassen automatisch gespeichert.",
@@ -59,7 +59,7 @@
     "clearRecallTitle": "Nachkontroll-Erinnerung für {{name}} entfernen — z. B. nach einer Nachkontrolle, bei der keine neue Akte entstanden ist",
     "newVisit": "+ Besuch",
     "newVisitTitle": "Einen neuen Besuch für {{name}} beginnen",
-    "history": "Verlauf",
+    "history": "Versionsverlauf",
     "historyChartTitle": "Wer die Akte von {{name}} gespeichert hat und wann",
     "historyVisitTitle": "Wer diesen Besuch gespeichert hat und wann",
     "deleteChart": "Akte von {{name}} löschen",
@@ -128,5 +128,9 @@
     "saving": "Wird gespeichert …",
     "saveChanges": "Änderungen speichern",
     "saveTemplate": "Vorlage speichern"
+  },
+  "workspace": {
+    "description": "Suchen Sie Patientenakten, prüfen Sie Besuche und verwalten Sie Nachkontrollen.",
+    "backToVisit": "Zurück zum aktuellen Besuch"
   }
 }

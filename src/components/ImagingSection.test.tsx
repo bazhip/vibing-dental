@@ -3,8 +3,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 let native = false;
+let touchDevice = false;
 vi.mock('../native/platform', () => ({ isNativeApp: () => native }));
 vi.mock('../native/camera', () => ({ takePhoto: vi.fn() }));
+vi.mock('../ios/gesture', async (original) => ({ ...await original<typeof import('../ios/gesture')>(), useMediaQuery: () => touchDevice }));
 
 const store = {
   items: [] as unknown[],
@@ -14,22 +16,59 @@ const store = {
   upload: vi.fn(),
   remove: vi.fn(),
   updateCaption: vi.fn(),
+  updateKind: vi.fn(async () => {}),
 };
 vi.mock('../hooks/useAttachments', () => ({ useAttachments: () => store }));
 
 import { ImagingSection } from './ImagingSection';
+import { takePhoto } from '../native/camera';
 
 const renderIt = () => render(<ImagingSection chartId="c1" cloudActive />);
 
 describe('ImagingSection camera button', () => {
   beforeEach(() => {
     native = false;
+    touchDevice = false;
     store.items = [];
+    store.maxImages = 2;
   });
 
   it('is hidden on web', () => {
     renderIt();
     expect(screen.queryByRole('button', { name: 'Take photo' })).toBeNull();
+  });
+
+  it('opens the file picker from the plus drop zone and the choose-files action', () => {
+    const { container } = renderIt();
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+    const click = vi.spyOn(input, 'click').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Add images' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Choose files' }));
+    expect(click).toHaveBeenCalledTimes(2);
+    expect(input.multiple).toBe(true);
+    expect(screen.queryByRole('textbox', { name: 'Image description (optional)' })).toBeNull();
+  });
+
+  it('offers the device camera on touch browsers without using the native bridge', () => {
+    touchDevice = true;
+    const { container } = renderIt();
+    const camera = container.querySelector('input[capture="environment"]') as HTMLInputElement;
+    expect(camera).toHaveAttribute('accept', 'image/*');
+    const click = vi.spyOn(camera, 'click').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Take photo' }));
+    expect(click).toHaveBeenCalledOnce();
+    expect(takePhoto).not.toHaveBeenCalled();
+    touchDevice = false;
+  });
+
+  it('uses the native camera and uploads the resulting photo', async () => {
+    native = true;
+    const file = new File(['photo'], 'camera.jpg', { type: 'image/jpeg' });
+    vi.mocked(takePhoto).mockResolvedValueOnce(file);
+    store.upload.mockClear();
+    renderIt();
+    fireEvent.click(screen.getByRole('button', { name: 'Take photo' }));
+    await waitFor(() => expect(store.upload).toHaveBeenCalledWith(file, 'photo', ''));
   });
 
   it('shows on native and is enabled under the limit', () => {
@@ -45,7 +84,7 @@ describe('ImagingSection camera button', () => {
     const btn = screen.getByRole('button', { name: 'Take photo' });
     expect(btn).toBeDisabled();
     expect(btn).toHaveAttribute('title', 'This chart has reached its 2-image limit.');
-    expect(screen.getByRole('button', { name: 'Add image' })).toHaveAttribute('title', 'This chart has reached its 2-image limit.');
+    expect(screen.getByRole('button', { name: 'Add images' })).toHaveAttribute('title', 'This chart has reached its 2-image limit.');
   });
 });
 
@@ -95,6 +134,30 @@ describe('ImagingSection uploads, teeth and viewer', () => {
     store.maxImages = 3;
     store.upload = vi.fn(async () => {});
     s.updateTooth = vi.fn(async () => {});
+  });
+
+  it('uploads JPEGs as photos without asking for a type first', async () => {
+    const { container } = renderIt();
+    expect(screen.queryByRole('radiogroup', { name: 'Image type' })).toBeNull();
+    const jpeg = new File([new Uint8Array(4)], 'radiograph.jpg', { type: 'image/jpeg' });
+    fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [jpeg] } });
+    await waitFor(() => expect(store.upload).toHaveBeenCalledWith(jpeg, 'photo', ''));
+  });
+
+  it('lets an uploaded JPEG be reclassified as a radiograph through the persistence callback', async () => {
+    store.items = [img('jpeg-image')];
+    renderIt();
+    const kind = screen.getByRole('combobox', { name: 'Image type' });
+    expect(kind).toHaveValue('photo');
+    fireEvent.change(kind, { target: { value: 'xray' } });
+    await waitFor(() => expect(store.updateKind).toHaveBeenCalledWith('jpeg-image', 'xray'));
+  });
+
+  it('keeps image classification disabled and uploader absent on read-only visits', () => {
+    store.items = [img('jpeg-image')];
+    const { container } = render(<ImagingSection chartId="c1" cloudActive readOnly />);
+    expect(screen.getByRole('combobox', { name: 'Image type' })).toBeDisabled();
+    expect(container.querySelector('input[type="file"]')).toBeNull();
   });
 
   it('uploads several picked files in order and refuses the ones past the limit', async () => {

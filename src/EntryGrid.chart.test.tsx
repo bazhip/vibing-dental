@@ -97,13 +97,13 @@ describe('Chart tab in the iOS app', () => {
     expect(await screen.findByRole('dialog', { name: 'Patient page settings' })).toBeInTheDocument();
   });
 
-  it('More is always there (Chart settings) — also on sections without Customize', async () => {
+  it('More offers exam customization and access to all chart settings', async () => {
     flags.native = true;
     await renderGrid();
     fireEvent.click(within(chartPanel()).getAllByRole('button', { name: /New chart/ })[0]);
     act(() => fireEvent.click(screen.getByRole('menuitemradio', { name: 'Exam' })));
     fireEvent.click(within(chartPanel()).getByRole('button', { name: 'More' }));
-    expect(screen.queryByRole('menuitem', { name: /^Customize/ })).toBeNull();
+    expect(screen.getByRole('menuitem', { name: 'Customize Exam' })).toBeInTheDocument();
     act(() => fireEvent.click(screen.getByRole('menuitem', { name: 'Chart settings' })));
     expect(await screen.findByRole('dialog', { name: /Chart settings/i })).toBeInTheDocument();
   });

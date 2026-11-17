@@ -150,6 +150,14 @@ const ALLOW: (string | RegExp)[] = [
 const DRUGS = ['T/SN', 'mg/mL', 'Bupivacaine', 'Ropivacaine', 'Lidocaine', 'Mepivacaine'];
 
 describe('PracticeSettingsModal', () => {
+  it('translates the practice workspace navigation and every settings section', async () => {
+    const { container } = render(<PracticeSettingsModal open presentation="page" onClose={() => {}} profile={profile()} onOpenReminders={() => {}} onOpenChartSettings={() => {}} />);
+    await screen.findByText('⟦Back to current visit⟧');
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Team⟧' }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   it('owners pick the pet-owner language; members see it read-only', async () => {
     langMock.save.mockClear();
     const { container, unmount } = render(<PracticeSettingsModal open onClose={() => {}} profile={profile()} />);
@@ -305,9 +313,10 @@ describe('ChartSettingsModal', () => {
     render(<ChartSettingsModal {...props} followsAccount={false} prefs={{ ...DEFAULT_CHART_PREFS, mirrorToDiagnosis: true, hiddenColumns: ['mobility'], usualDrug: { name: 'Bupivacaine', concentration: '0.5' } }} />);
     expect(findUntranslated(document.body, [...DRUGS, '0.5', '%'])).toEqual([]);
   });
-  it.each(['patient', 'anesthesia', 'charting', 'diagnosis', 'images'] as const)('only the %s page', (section) => {
+  it.each(['patient', 'anesthesia', 'charting', 'diagnosis', 'procedure', 'images'] as const)('only the %s page', (section) => {
     render(<ChartSettingsModal {...props} section={section} />);
-    expect(screen.getByRole('button', { name: '⟦All chart settings⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: '⟦Chart settings categories⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '⟦Done⟧' })).toBeInTheDocument();
     expect(findUntranslated(document.body, DRUGS)).toEqual([]);
   });
 });

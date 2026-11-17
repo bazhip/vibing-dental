@@ -43,6 +43,7 @@ export const ExamAreasEditor: React.FC<{
     <fieldset className="chart-settings__field">
       <legend>{t('chart.exam.areas')}</legend>
       <p className="chart-settings__note">{t('chart.exam.areasNote')}</p>
+      <p className="chart-settings__note">{t('chart.list.count', { used: draft.length, max: MAX_CUSTOM_EXAM_AREAS })}</p>
       {draft.map((a, i) => (
         <div key={a.id} className="custom-def">
           <input
@@ -55,6 +56,19 @@ export const ExamAreasEditor: React.FC<{
             onChange={(e) => setDraft(draft.map((x) => (x.id === a.id ? { ...x, label: e.target.value } : x)))}
             onBlur={() => save()}
           />
+          <div className="customization-order">
+            {([-1, 1] as const).map((offset) => (
+              <button type="button" key={offset} className="diagram-view__action"
+                disabled={i + offset < 0 || i + offset >= draft.length}
+                aria-label={t(offset === -1 ? 'chart.list.moveUp' : 'chart.list.moveDown', { name: a.label.trim() || t('chart.exam.areaN', { n: i + 1 }) })}
+                onClick={() => {
+                  const next = [...draft];
+                  [next[i], next[i + offset]] = [next[i + offset], next[i]];
+                  setDraft(next);
+                  save(next);
+                }}>{offset === -1 ? '↑' : '↓'}</button>
+            ))}
+          </div>
           <button
             type="button"
             className="diagram-view__action custom-def__remove"
@@ -81,6 +95,7 @@ export const ExamAreasEditor: React.FC<{
           )}
         </div>
       )}
+      {room === 0 && <p className="chart-settings__note">{t('chart.list.limit')}</p>}
     </fieldset>
   );
 };

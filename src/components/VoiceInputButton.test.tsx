@@ -50,6 +50,20 @@ const props = {
 };
 
 describe('VoiceInputButton session flow', () => {
+  it('keeps a recognition failure visible beyond eight seconds', () => {
+    vi.useFakeTimers();
+    try {
+      render(<VoiceInputButton {...props} />);
+      fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+      fireEvent.click(screen.getByRole('button', { name: 'Start dictation' }));
+      act(() => FakeRecognition.last!.onerror?.({ error: 'not-allowed' }));
+      expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
+      act(() => vi.advanceTimersByTime(9000));
+      expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
   it('shows the intro once; reopening resumes with the old transcript', () => {
     render(<VoiceInputButton {...props} />);
 

@@ -47,12 +47,12 @@
     "voiceResult3": "Procedure diagram · 104 marked for extraction",
     "grid": {
       "title": "Charts like a spreadsheet",
-      "blurb": "Full-mouth Triadan grids for feline, canine, and deciduous dentition. One click to type, Tab/Enter/Space to fly through a called-out run of numbers.",
+      "blurb": "Full-mouth Triadan grids for feline, canine, and deciduous dentition. Enter measurements with a click and navigate using Tab, Enter, or Space.",
       "lead": "The charting grid works the way your team already types: click any cell and go. Probing depths in, eyes on the patient.",
       "imageAlt": "The charting grid with gingivitis, calculus, pocket, furcation and mobility values entered, and tooth 106 crossed out as missing",
       "points": {
-        "p1": "Single click puts a cell straight into edit — no double-click dance.",
-        "p2": "Tab, Enter, and Space advance exactly like a spreadsheet, so a called-out run (\"3, 2, 4…\") lands without looking.",
+        "p1": "Click any cell to start entering measurements.",
+        "p2": "Use Tab, Enter, and Space to move between cells while recording measurements.",
         "p3": "Whole-mouth scores in one action: set calculus or gingivitis for every tooth from the column header.",
         "p4": "The Missing checkbox crosses out the row and fills the tooth on the diagram — one source of truth.",
         "p5": "On a return visit, last time’s values appear as faint hints in empty cells: compare without opening the old chart.",
@@ -76,7 +76,7 @@
     "diagrams": {
       "title": "Diagrams that stay in sync",
       "blurb": "Diagnosis and procedure tooth diagrams follow the grid — cross a tooth out once and the whole record follows, chart to PDF.",
-      "lead": "Two anatomically-drawn diagrams — findings before, procedures after — that never disagree with the grid or the printed chart.",
+      "lead": "Anatomical diagrams for diagnosis and procedures, with findings synchronized across the grid and printed chart.",
       "imageAlt": "The Diagnosis diagram with missing teeth filled in and AVDC codes — T/FX, T/FX/CCF, TR, AB, AT — anchored to each tooth",
       "points": {
         "p1": "Mark teeth missing or extracted with a click (or the keyboard — every tooth is focusable).",
@@ -125,7 +125,7 @@
     "history": {
       "title": "Every visit, one patient",
       "blurb": "Charts group by patient, so a returning animal’s whole history is one click away — and this visit starts where the last one ended.",
-      "lead": "A patient is a story, not a pile of files. ToothOps keeps the visits together and carries the right things forward.",
+      "lead": "Keep each patient’s visits together, with relevant findings carried forward to the next visit.",
       "points": {
         "p1": "Charts group by patient; a visit switcher in the topbar flips between dates.",
         "p2": "New visits carry extracted and missing teeth forward automatically — marked “prev” so they read as history, not today’s finding.",
@@ -136,8 +136,8 @@
     },
     "recall": {
       "title": "Recall built in",
-      "blurb": "Set a recheck date as you chart; the patient list flags who’s due and who’s overdue, so the next dental never slips.",
-      "lead": "Recheck compliance is where dental outcomes are won — the list keeps score for you.",
+      "blurb": "Set a recheck date while charting and see which patients are due or overdue in the patient list.",
+      "lead": "Plan follow-up care with recheck dates and reminders in the patient workspace.",
       "points": {
         "p1": "A recheck date on the chart puts the patient on the Due list, flagged due or overdue.",
         "p2": "Send the owner a reminder email straight from the patient list.",
@@ -158,10 +158,10 @@
     },
     "offline": {
       "title": "Cloud & chairside",
-      "blurb": "Every chart autosaves to the cloud and keeps a local copy chairside, so a dropped connection never loses a mouth.",
-      "lead": "Clinic Wi-Fi is not part of your anesthesia protocol. ToothOps assumes the connection will drop and plans around it.",
+      "blurb": "Charts save automatically to the cloud, with a local copy available if the connection drops.",
+      "lead": "Continue charting through connection interruptions and check the save status before leaving the visit.",
       "points": {
-        "p1": "Every keystroke persists locally, instantly — a reload mid-procedure loses nothing.",
+        "p1": "Changes are kept on this device while you work.",
         "p2": "New charts autosave to the cloud; failed saves retry automatically when the connection returns.",
         "p3": "If your session expires mid-procedure, the chart stays open — sign back in right on top of it.",
         "p4": "Reusable report templates save the typing on every COHAT."

@@ -12,6 +12,8 @@ interface SurgeryReportFormProps {
   cloudActive?: boolean;
   /** Stamp new templates with the practice so teammates share them. */
   practiceId?: string;
+  /** Lock visit text while leaving shared template management available. */
+  readOnly?: boolean;
 }
 
 export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
@@ -19,6 +21,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   onChange,
   cloudActive = true,
   practiceId = '',
+  readOnly = false,
 }) => {
   const { t } = useTranslation('forms');
   const store = useReportTemplates(practiceId);
@@ -29,6 +32,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   // visit often stacks several procedures, and appending can never
   // destroy typed text.
   const insertTemplate = (id: string) => {
+    if (readOnly) return;
     const tpl = store.templates.find((x) => x.id === id);
     if (!tpl) return;
     const existing = value.trimEnd();
@@ -36,6 +40,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
   };
 
   const saveCurrentAsTemplate = async () => {
+    if (readOnly) return;
     const name = await promptDialog({
       title: t('report.dialog.title'),
       message: t('report.dialog.message'),
@@ -63,7 +68,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
               className="surgery-report__template-select"
               aria-label={t('report.insertAria')}
               value=""
-              disabled={!store.loaded || store.templates.length === 0}
+              disabled={readOnly || !store.loaded || store.templates.length === 0}
               onChange={(e) => {
                 if (e.target.value) insertTemplate(e.target.value);
                 e.target.value = '';
@@ -86,7 +91,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
               type="button"
               className="diagram-view__action"
               onClick={saveCurrentAsTemplate}
-              disabled={!value.trim()}
+              disabled={readOnly || !value.trim()}
               title={t('report.saveTitle')}
             >
               {t('report.save')}
@@ -95,8 +100,9 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
               type="button"
               className="diagram-view__action"
               onClick={() => setManageOpen(true)}
+              title={t('report.customizeTitle')}
             >
-              {t('report.edit')}
+              {t('report.customize')}
             </button>
           </div>
         )}
@@ -106,7 +112,8 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
         aria-label={t('report.textareaAria')}
         placeholder={t('report.placeholder')}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        disabled={readOnly}
+        onChange={(e) => { if (!readOnly) onChange(e.target.value); }}
       />
 
       {templatesOn && (

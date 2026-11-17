@@ -1,0 +1,118 @@
+/* Web-only category navigation; the native settings list retains its own layout. */
+.ai-settings-modal.chart-customization {
+  width: min(960px, calc(100vw - 32px));
+  max-width: 960px;
+  height: min(780px, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.chart-customization__layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.chart-customization__mobile-category { display: none; }
+.chart-customization__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 12px;
+  background: var(--surface-alt);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+.chart-customization__nav button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 550;
+  text-align: left;
+  cursor: pointer;
+}
+.chart-customization__nav button:hover { background: var(--surface); color: var(--text); }
+.chart-customization__nav button[aria-current] {
+  background: var(--surface);
+  color: var(--primary);
+  border-color: var(--border);
+  box-shadow: inset 3px 0 var(--primary);
+}
+.chart-customization__nav button:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.chart-customization .chart-customization__content {
+  padding: 24px 28px;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-gutter: stable;
+}
+.chart-customization__intro { margin-bottom: 24px; }
+.chart-customization__intro h3 { margin: 0 0 8px; font-size: 20px; font-weight: 650; }
+.chart-customization__intro .chart-settings__note { margin: 0; line-height: 1.6; }
+.chart-customization__scope {
+  margin: 12px 0 0;
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+.chart-customization .chart-settings__group[hidden] { display: none; }
+.chart-customization .chart-settings__group { border: 0; padding: 0; }
+.chart-customization .chart-settings__field {
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.chart-customization .chart-settings__field legend { margin-bottom: 10px; font-size: 14px; font-weight: 600; }
+.chart-customization .chart-settings__choice { padding-block: 7px; line-height: 1.5; }
+.chart-customization .chart-settings__hint { line-height: 1.5; }
+.chart-customization .chart-customization__subheading {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.chart-customization .chart-settings__drug { margin-bottom: 20px; }
+.chart-customization__footer { flex: none; border-top: 1px solid var(--border); }
+@media (max-width: 640px) {
+  .ai-settings-modal.chart-customization { width: calc(100vw - 16px); height: calc(100dvh - 24px); }
+  .chart-customization__layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .chart-customization__nav { display: none; }
+  .chart-customization__mobile-category {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-alt);
+  }
+  .chart-customization__mobile-category span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .chart-customization__mobile-category select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    padding: 8px 12px;
+  }
+  .chart-customization__intro { margin-bottom: 16px; }
+  .chart-customization__scope { padding: 8px 10px; margin-top: 8px; }
+  .chart-customization .chart-customization__content { padding: 20px 16px; }
+  .chart-customization .chart-settings__grid { grid-template-columns: minmax(0, 1fr); }
+  .chart-customization .chart-settings__choice { min-height: 44px; }
+}

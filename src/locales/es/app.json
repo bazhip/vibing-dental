@@ -1,7 +1,7 @@
 {
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Prueba",
-  "skipLink": "Ir al historial",
+  "skipLink": "Ir al contenido principal",
   "sections": {
     "patient": "Paciente",
     "exam": "Examen",
@@ -9,7 +9,7 @@
     "charting": "Odontograma",
     "diagnosis": "Diagnóstico",
     "procedure": "Procedimiento",
-    "images": "Imágenes",
+    "images": "Diagnóstico por imagen",
     "treatment": "Informe del tratamiento",
     "ownerReport": "Informe para el propietario",
     "menuFallback": "Secciones",
@@ -39,7 +39,8 @@
     "hint": "Se imprime en el PDF encima del informe del tratamiento."
   },
   "lock": {
-    "title": "Solo lectura: elija Editar historial para hacer cambios"
+    "title": "Solo lectura: elija Editar historial para hacer cambios",
+    "description": "La edición está desactivada para esta visita guardada."
   },
   "topbar": {
     "patientEmpty": "Aún no hay paciente: añada uno en la sección Paciente",
@@ -54,8 +55,8 @@
     "signInHint": "¿Ya tiene una cuenta de la clínica? Inicie sesión",
     "signUp": "Crear cuenta gratuita",
     "signUpHint": "Cree una cuenta de la clínica: sus historiales se guardan en la nube y los PDF llevan el nombre y el logotipo de su clínica",
-    "myCharts": "Mis historiales",
-    "myChartsShort": "Historiales",
+    "myCharts": "Pacientes",
+    "myChartsShort": "Pacientes",
     "editChart": "Editar historial",
     "editChartShort": "Editar",
     "undo": "Deshacer cambios",
@@ -142,7 +143,7 @@
     "actual": "Lo que pasó en realidad:",
     "involved": "Especie / diente / sección implicada (si procede):",
     "browser": "Navegador y dispositivo:",
-    "screenshot": "(Si puede, adjunte una captura de pantalla: ayuda muchísimo.)"
+    "screenshot": "Adjunte una captura de pantalla si ayuda a explicar el problema."
   },
   "menu": {
     "open": "Abrir el menú de ajustes",
@@ -176,7 +177,7 @@
     },
     "feedback": {
       "label": "Enviar comentarios",
-      "sub": "Informe de un problema o sugiera una idea: nos llega directamente."
+      "sub": "Comunique un problema o sugiera una mejora."
     },
     "whatsNew": {
       "label": "Novedades",
@@ -187,12 +188,12 @@
       "sub": "Vuelva a ver el recorrido por cada parte de la aplicación."
     },
     "homepage": {
-      "label": "Página de inicio",
-      "sub": "Vea la página del producto: su historial se queda aquí."
+      "label": "Sitio web de ToothOps",
+      "sub": "Información del producto, precios y contacto."
     },
     "signOut": {
       "label": "Cerrar sesión",
-      "sub": "Termine su sesión y vuelva a la página de inicio."
+      "sub": "Termine su sesión."
     }
   },
   "trialSignIn": {
@@ -217,8 +218,8 @@
     "offline": "No se pudo conectar con el servidor. Compruebe su conexión y vuelva a intentarlo: su historial está a salvo en este dispositivo.",
     "saveFailed": "Error al guardar: {{message}}. Su historial está a salvo en este dispositivo: inténtelo de nuevo en un momento.",
     "unknownError": "error desconocido",
-    "changedByOther": "Otra persona ha modificado este historial: ábralo de nuevo desde Mis historiales para ver su versión",
-    "notSavedConflict": "No guardado: otra persona ha modificado este historial. Ábralo de nuevo desde Mis historiales para ver su versión",
+    "changedByOther": "Otra persona ha modificado este historial: ábralo de nuevo desde Pacientes para ver su versión",
+    "notSavedConflict": "No guardado: otra persona ha modificado este historial. Ábralo de nuevo desde Pacientes para ver su versión",
     "noPermission": "No tiene permiso para guardar cambios en este historial. Pregunte al propietario de la clínica o inicie una nueva visita",
     "noDeletePermission": "No tiene permiso para eliminar este historial. Pregunte al propietario de la clínica.",
     "practiceUnknown": "Los datos de su clínica aún no se han cargado, así que este historial nuevo no puede guardarse en la clínica. Compruebe su conexión y vuelva a cargar la página — su historial sigue en este dispositivo",
@@ -270,11 +271,21 @@
   "chartsMenu": {
     "thisPatient": "Este paciente",
     "newVisit": "Nueva visita",
-    "newVisitHint": "Una nueva visita con fecha: se conservan la identidad y los dientes ya ausentes.",
+    "newVisitHint": "Una nueva visita con fecha que conserva los datos del paciente y los dientes previamente ausentes o extraídos.",
     "history": "Historial de versiones",
     "historyHint": "Todas las versiones guardadas de este historial: quién la guardó y cuándo.",
     "allPatients": "Todos los pacientes",
-    "openLibrary": "Abrir Mis historiales…",
+    "openLibrary": "Ver pacientes",
     "openLibraryHint": "Busque y abra los historiales de cualquier paciente."
+  },
+  "workspace": {
+    "help": "Ayuda",
+    "account": "Su cuenta",
+    "visitActions": "Acciones de la visita",
+    "practice": "Ajustes de la clínica",
+    "currentVisit": "Visita actual",
+    "navigation": "Navegación del espacio de trabajo",
+    "patientContext": "Paciente y visita actuales",
+    "more": "Más"
   }
 }

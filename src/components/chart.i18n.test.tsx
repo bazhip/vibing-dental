@@ -187,6 +187,13 @@ test('quick-code chips and the quick-codes editor are translated', () => {
   expect(findUntranslated(container, ALLOW)).toEqual([]);
 });
 
+test('duplicate shortcut feedback is translated', () => {
+  const { container } = render(<QuickCodesEditor codes={['T/SN']} onChange={() => {}} />);
+  fireEvent.change(screen.getByRole('combobox', { name: '⟦Code to add⟧' }), { target: { value: 't/sn' } });
+  expect(screen.getByRole('status')).toHaveTextContent('⟦This code is already in your shortcuts.⟧');
+  expect(findUntranslated(container, ALLOW)).toEqual([]);
+});
+
 test('score chips and the code field popup are translated', () => {
   const { container } = render(
     <>

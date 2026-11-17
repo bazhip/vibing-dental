@@ -75,3 +75,38 @@ describe('ChartMenu', () => {
     }
   });
 });
+
+it('keeps help and account actions in separate menus', async () => {
+  const user = userEvent.setup();
+  const { unmount } = render(<ChartMenu scope="help" onOpenWalkthrough={vi.fn()} cloud={cloud} />);
+  await user.click(screen.getByRole('button', { name: 'Help' }));
+  expect(screen.getByRole('button', { name: /Getting started/ })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Sign out/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Practice settings/ })).toBeNull();
+  unmount();
+  render(<ChartMenu scope="account" onOpenWalkthrough={vi.fn()} cloud={cloud} />);
+  await user.click(screen.getByRole('button', { name: 'Your account' }));
+  expect(screen.getByRole('button', { name: /Account settings/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Sign out/ })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Getting started/ })).toBeNull();
+});
+
+it('combines practice, help, account, and visit actions in the compact More menu', async () => {
+  const user = userEvent.setup();
+  const onNewVisit = vi.fn(), onHistory = vi.fn(), onNewPatient = vi.fn();
+  render(<ChartMenu scope="more" cloud={cloud} onOpenWalkthrough={vi.fn()} onNewPatient={onNewPatient}
+    visit={{ name: 'Bella', onNewVisit, onHistory }} />);
+  await user.click(screen.getByRole('button', { name: 'More' }));
+  expect(screen.getByRole('button', { name: /Practice settings/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Account settings/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Getting started/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Sign out/ })).toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: /New visit/ }));
+  expect(onNewVisit).toHaveBeenCalledOnce();
+  await user.click(screen.getByRole('button', { name: 'More' }));
+  await user.click(screen.getByRole('button', { name: /Version history/ }));
+  expect(onHistory).toHaveBeenCalledOnce();
+  await user.click(screen.getByRole('button', { name: 'More' }));
+  await user.click(screen.getByRole('button', { name: /New patient/ }));
+  expect(onNewPatient).toHaveBeenCalledOnce();
+});

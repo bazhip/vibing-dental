@@ -9,7 +9,7 @@
     "steps": {
       "welcome": {
         "title": "Benvenuto in ToothOps",
-        "body": "Un giro di 60 secondi per scoprire dove si trova ogni cosa. Può rivederlo in qualsiasi momento da Impostazioni → Per iniziare."
+        "body": "Una breve panoramica dell’area di lavoro. Può rivederla in qualsiasi momento da Aiuto → Per iniziare."
       },
       "sections": {
         "title": "Le otto sezioni",
@@ -40,16 +40,16 @@
         "body": "Scriva il referto oppure inserisca un modello salvato dal menu a tendina — e ne salvi di nuovi per riutilizzarli."
       },
       "library": {
-        "title": "Le mie cartelle",
-        "body": "Apra le cartelle di qualsiasi paziente (le visite salvate si aprono in sola lettura finché non fa clic su Modifica) oppure — per il paziente sullo schermo — avvii una nuova visita o consulti la cronologia delle versioni. Nuovo paziente, lì accanto, avvia una cartella vuota."
+        "title": "Pazienti",
+        "body": "Cerchi i pazienti e apra le loro visite. Usi Nuovo paziente per una cartella vuota. Per il paziente corrente, usi Azioni della visita per iniziare una nuova visita o visualizzare la cronologia delle versioni."
       },
       "dictate": {
         "title": "Detta",
         "body": "Tocchi Detta e descriva i Suoi reperti — da qualsiasi pagina. Ognuno finisce al posto giusto e un pannello in tempo reale mostra ogni modifica, così potrà annullare qualsiasi cosa."
       },
       "settings": {
-        "title": "Impostazioni",
-        "body": "Nome e logo dello studio, team, modelli dei promemoria di controllo, il Suo account — e questo giro guidato."
+        "title": "Impostazioni dello studio",
+        "body": "Gestisca qui la Sua clinica, il team, i modelli e i promemoria. Le preferenze personali si trovano in Il Suo account; le guide e il feedback in Aiuto."
       },
       "pdf": {
         "title": "Anteprima e download del PDF",

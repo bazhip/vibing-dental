@@ -205,6 +205,19 @@ describe('chart frame', () => {
     expect(untranslated()).toEqual([]);
   });
 
+  it('keeps a direct patient-directory action in the sticky header of an open visit', async () => {
+    seedChart({ saved: true });
+    sync.override = fakeCloud();
+    await frame();
+    const header = document.querySelector('.entry-grid__topbar')!;
+    const back = Array.from(header.querySelectorAll('button')).find((button) => button.textContent === '⟦All patients⟧');
+    expect(back).toBeTruthy();
+    fireEvent.click(back!);
+    await waitFor(() => expect(window.location.hash).toBe('#/library'));
+    expect(screen.getByRole('navigation', { name: '⟦Workspace navigation⟧' })).toBeTruthy();
+    expect(untranslated()).toEqual([]);
+  });
+
   it('a new chart: offline, unsaved, saving, saved and failed states', async () => {
     seedChart();
     const states: Array<[string, Record<string, unknown>]> = [
@@ -251,18 +264,18 @@ describe('chart frame', () => {
     sync.override = fakeCloud({ lastSavedAt: new Date().toISOString() });
     const view = await frame();
     expect(document.querySelector('.topbar-state-chip')!.textContent).toBe('⟦View only⟧');
-    expect(screen.getByText('⟦Edit chart⟧')).toBeTruthy();
+    expect(screen.getAllByText('⟦Edit chart⟧')[0]).toBeTruthy();
     expect(screen.getByRole('button', { name: '⟦New patient⟧' })).toBeTruthy();
     expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual([
       '⟦2026-11-12 · latest⟧',
       '⟦2026-01-05 · earlier⟧',
     ]);
     expect(untranslated()).toEqual([]);
-    // My charts ▾: this patient's New visit and Version history, plus the library.
-    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    // Patient navigation is separate from actions on this visit.
+    fireEvent.click(screen.getByRole('button', { name: '⟦Visit actions⟧' }));
     expect(screen.getByText('⟦New visit⟧')).toBeTruthy();
     expect(screen.getByText('⟦Version history⟧')).toBeTruthy();
-    expect(screen.getByText('⟦Open My charts…⟧')).toBeTruthy();
+    expect(screen.queryByText('⟦View patients⟧')).toBeNull();
     expect(untranslated()).toEqual([]);
     view.unmount();
 
@@ -290,12 +303,12 @@ describe('chart frame', () => {
     expect(untranslated()).toEqual([]);
   });
 
-  it('the settings menu, open with every entry', async () => {
+  it('the account menu, open with every entry', async () => {
     profile.admin = true;
     seedChart();
     sync.override = fakeCloud();
     await frame();
-    fireEvent.click(screen.getByRole('button', { name: '⟦Open settings menu⟧' }));
+    fireEvent.click(screen.getByRole('button', { name: '⟦Your account⟧' }));
     expect(await screen.findByText('⟦Admin panel⟧')).toBeTruthy();
     expect(screen.getByText('⟦Sign out⟧')).toBeTruthy();
     expect(untranslated()).toEqual([]);
@@ -318,6 +331,13 @@ describe('chart frame', () => {
 // ---------------------------------------------------------------------------
 
 describe('menus and layout', () => {
+  it('the compact mobile More menu is translated', () => {
+    const noop = () => {};
+    render(<ChartMenu scope="more" onOpenWalkthrough={noop} onOpenFeedback={noop}
+      cloud={{ onPracticeSettings: noop, onOpenReminders: noop, onOpenAccount: noop, onSignOut: noop }} />);
+    fireEvent.click(screen.getByRole('button', { name: '⟦More⟧' }));
+    expect(findUntranslated(document.body)).toEqual([]);
+  });
   it('the settings menu, as a signed-in admin and as a trial user', async () => {
     const noop = () => {};
     const { unmount } = render(
@@ -342,14 +362,14 @@ describe('menus and layout', () => {
   it('My charts ▾, for an unnamed saved patient and for an unsaved chart', () => {
     const noop = () => {};
     const { unmount } = render(<ChartsMenu onOpenLibrary={noop} thisPatient={{ name: '', onNewVisit: noop, onHistory: noop }} />);
-    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Patients⟧' }));
     expect(screen.getByText('⟦This patient⟧')).toBeTruthy();
     expect(screen.getByText('⟦All patients⟧')).toBeTruthy();
     expect(findUntranslated(document.body)).toEqual([]);
     unmount();
 
     render(<ChartsMenu onOpenLibrary={noop} />);
-    fireEvent.click(screen.getByText('⟦My charts⟧').closest('button')!);
+    fireEvent.click(screen.getByRole('button', { name: '⟦Patients⟧' }));
     expect(screen.queryByText('⟦New visit⟧')).toBeNull();
     expect(findUntranslated(document.body)).toEqual([]);
   });
@@ -500,8 +520,8 @@ describe('French', () => {
     // Chart dates are language-neutral ISO; the saved-at time follows the language.
     expect(screen.getAllByRole('option')[1].textContent).toBe('2026-01-05 · précédente');
     expect(formatDate('2026-01-05', 'medium', 'fr')).toMatch(/janv/);
-    expect(screen.getByText('Modifier le dossier')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Ouvrir le menu des paramètres' })).toBeTruthy();
+    expect(screen.getAllByText('Modifier le dossier')[0]).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Votre compte' })).toBeTruthy();
   });
 });
 

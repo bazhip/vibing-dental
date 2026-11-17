@@ -1,7 +1,7 @@
 {
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Essai",
-  "skipLink": "Aller au dossier",
+  "skipLink": "Aller au contenu principal",
   "sections": {
     "patient": "Patient",
     "exam": "Examen",
@@ -9,7 +9,7 @@
     "charting": "Schéma dentaire",
     "diagnosis": "Diagnostic",
     "procedure": "Intervention",
-    "images": "Images",
+    "images": "Imagerie",
     "treatment": "Compte rendu de traitement",
     "ownerReport": "Compte rendu pour le propriétaire",
     "menuFallback": "Sections",
@@ -39,7 +39,8 @@
     "hint": "Figure dans le PDF au-dessus du compte rendu de traitement."
   },
   "lock": {
-    "title": "Lecture seule — choisissez Modifier le dossier pour apporter des changements"
+    "title": "Lecture seule — choisissez Modifier le dossier pour apporter des changements",
+    "description": "La modification est désactivée pour cette visite enregistrée."
   },
   "topbar": {
     "patientEmpty": "Aucun patient pour l’instant — ajoutez-en un dans la section Patient",
@@ -54,8 +55,8 @@
     "signInHint": "Vous avez déjà un compte de cabinet ? Connectez-vous",
     "signUp": "Créer un compte gratuit",
     "signUpHint": "Créez un compte de cabinet — vos dossiers sont enregistrés dans le cloud et vos PDF portent le nom et le logo de votre cabinet",
-    "myCharts": "Mes dossiers",
-    "myChartsShort": "Dossiers",
+    "myCharts": "Patients",
+    "myChartsShort": "Patients",
     "editChart": "Modifier le dossier",
     "editChartShort": "Modifier",
     "undo": "Annuler les modifications",
@@ -142,7 +143,7 @@
     "actual": "Ce qui s’est réellement passé :",
     "involved": "Espèce / dent / section concernée (le cas échéant) :",
     "browser": "Navigateur et appareil :",
-    "screenshot": "(Si possible, joignez une capture d’écran — cela aide énormément.)"
+    "screenshot": "Joignez une capture d’écran si elle permet d’illustrer le problème."
   },
   "menu": {
     "open": "Ouvrir le menu des paramètres",
@@ -176,7 +177,7 @@
     },
     "feedback": {
       "label": "Envoyer un commentaire",
-      "sub": "Signalez un problème ou proposez une idée — cela nous parvient directement."
+      "sub": "Signalez un problème ou proposez une amélioration."
     },
     "whatsNew": {
       "label": "Nouveautés",
@@ -187,12 +188,12 @@
       "sub": "Revoir la présentation de chaque partie de l’application."
     },
     "homepage": {
-      "label": "Page d’accueil",
-      "sub": "Consultez la page du produit — votre dossier reste ici."
+      "label": "Site ToothOps",
+      "sub": "Informations sur le produit, tarifs et coordonnées."
     },
     "signOut": {
       "label": "Se déconnecter",
-      "sub": "Terminez votre session et revenez à la page d’accueil."
+      "sub": "Terminez votre session."
     }
   },
   "trialSignIn": {
@@ -217,8 +218,8 @@
     "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez — votre dossier est en sécurité sur cet appareil.",
     "saveFailed": "Échec de l’enregistrement : {{message}}. Votre dossier est en sécurité sur cet appareil — réessayez dans un instant.",
     "unknownError": "erreur inconnue",
-    "changedByOther": "Ce dossier a été modifié par quelqu’un d’autre — rouvrez-le depuis Mes dossiers pour voir sa version",
-    "notSavedConflict": "Non enregistré — ce dossier a été modifié par quelqu’un d’autre. Rouvrez-le depuis Mes dossiers pour voir sa version",
+    "changedByOther": "Ce dossier a été modifié par quelqu’un d’autre — rouvrez-le depuis Patients pour voir sa version",
+    "notSavedConflict": "Non enregistré — ce dossier a été modifié par quelqu’un d’autre. Rouvrez-le depuis Patients pour voir sa version",
     "noPermission": "Vous n’avez pas l’autorisation d’enregistrer des modifications dans ce dossier. Demandez au responsable du cabinet, ou démarrez une nouvelle visite",
     "noDeletePermission": "Vous n’avez pas l’autorisation de supprimer ce dossier. Demandez au responsable du cabinet.",
     "practiceUnknown": "Les informations de votre cabinet ne sont pas encore chargées : ce nouveau dossier ne peut donc pas être enregistré dans le cabinet. Vérifiez votre connexion et rechargez la page — votre dossier est toujours sur cet appareil",
@@ -270,11 +271,21 @@
   "chartsMenu": {
     "thisPatient": "Ce patient",
     "newVisit": "Nouvelle visite",
-    "newVisitHint": "Une nouvelle visite datée — l’identité et les dents déjà absentes sont reprises.",
+    "newVisitHint": "Une nouvelle visite datée reprenant les informations du patient et les dents précédemment absentes ou extraites.",
     "history": "Historique des versions",
     "historyHint": "Toutes les versions enregistrées de ce dossier — qui l’a enregistrée et quand.",
     "allPatients": "Tous les patients",
-    "openLibrary": "Ouvrir Mes dossiers…",
+    "openLibrary": "Voir les patients",
     "openLibraryHint": "Recherchez et ouvrez les dossiers de n’importe quel patient."
+  },
+  "workspace": {
+    "help": "Aide",
+    "account": "Votre compte",
+    "visitActions": "Actions de la visite",
+    "practice": "Paramètres du cabinet",
+    "currentVisit": "Visite en cours",
+    "navigation": "Navigation de l’espace de travail",
+    "patientContext": "Patient et visite en cours",
+    "more": "Plus"
   }
 }

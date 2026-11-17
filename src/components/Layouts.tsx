@@ -33,6 +33,8 @@ interface LayoutProps {
   /** App shell (iOS): no section rail or phone section menu — the shell
    *  provides section navigation (iPad sidebar, Chart title menu). */
   hideNav?: boolean;
+  /** A shared notice beside the active section, outside locked controls. */
+  notice?: React.ReactNode;
 }
 
 export const SidebarLayout: React.FC<LayoutProps> = ({
@@ -42,6 +44,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
   onActiveChange,
   companions,
   hideNav = false,
+  notice,
 }) => {
   const { t } = useTranslation('app');
   const initial = activeId ?? defaultActiveId ?? sections[0]?.id;
@@ -131,6 +134,7 @@ export const SidebarLayout: React.FC<LayoutProps> = ({
         </nav>
       )}
       <main className="sidebar-layout__main" ref={mainRef}>
+        {notice}
         {sections.map((s) => (
           <div
             key={s.id}

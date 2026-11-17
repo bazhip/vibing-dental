@@ -100,9 +100,13 @@ describe('Landing', () => {
 
   it('opens the sign-in and sign-up overlays', () => {
     const { container } = view();
-    fireEvent.click(screen.getByRole('button', { name: '⟦Sign in⟧' }));
+    const signIn = screen.getByRole('button', { name: '⟦Sign in⟧' });
+    signIn.focus();
+    fireEvent.click(signIn);
+    expect(screen.getByRole('dialog').contains(document.activeElement)).toBe(true);
     expect(untranslated(container)).toEqual([]);
     fireEvent.keyDown(window, { key: 'Escape' });
+    expect(signIn).toHaveFocus();
     fireEvent.click(screen.getByRole('button', { name: '⟦Get started⟧' }));
     expect(screen.getByRole('dialog', { name: '⟦Create your practice account⟧' })).toBeInTheDocument();
     expect(untranslated(container)).toEqual([]);

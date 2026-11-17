@@ -114,18 +114,19 @@
       "anesthesia": "Réglages de l’anesthésie",
       "charting": "Réglages du schéma dentaire",
       "diagnosis": "Réglages du diagnostic",
-      "images": "Réglages des images",
-      "exam": "Réglages de l’examen"
+      "images": "Paramètres d’imagerie",
+      "exam": "Réglages de l’examen",
+      "procedure": "Paramètres des interventions"
     },
-    "noteAccount": "Rien que pour vous — ces réglages suivent votre compte sur tous vos appareils. Les modifications sont enregistrées immédiatement.",
-    "noteBrowser": "Enregistrés dans ce navigateur. Les modifications s’appliquent immédiatement.",
+    "noteAccount": "Vos préférences personnelles suivent votre compte sur chaque appareil. Les modifications sont enregistrées automatiquement.",
+    "noteBrowser": "Préférences personnelles enregistrées automatiquement dans ce navigateur.",
     "all": "Tous les réglages du schéma dentaire",
     "charting": {
       "title": "Schéma dentaire",
-      "view": "Affichage",
+      "view": "Disposition du schéma dentaire",
       "grid": "Grille",
       "byTooth": "Par dent",
-      "pocket": "Profondeurs de poche",
+      "pocket": "Saisie des profondeurs de poche",
       "pocketTooth": "Une par dent",
       "pocketRoot": "Une par racine",
       "pocketRootHint": "M / D, ou MB / MP / D sur les dents à trois racines",
@@ -140,14 +141,14 @@
       "scoreFindingHint": "mobilité → récession → … pour les examens dent par dent",
       "scoreTooth": "Descendre à la dent suivante",
       "scoreToothHint": "pour noter une même observation sur toute la bouche",
-      "scoreStay": "Rester en place",
-      "columns": "Colonnes"
+      "scoreStay": "Garder la cellule actuelle sélectionnée",
+      "columns": "Mesures visibles"
     },
     "beside": {
-      "title": "À côté des dents",
+      "title": "Constatations sur le schéma",
       "show": "Afficher les observations sur le schéma de diagnostic",
       "showHint": "(et dans le PDF)",
-      "include": "Inclure"
+      "include": "Constatations à afficher"
     },
     "anesthesia": {
       "title": "Anesthésie",
@@ -160,16 +161,16 @@
         "mental": "Mentonnier",
         "other": "Autre"
       },
-      "usual": "Votre anesthésique habituel",
-      "usualNote": "Proposé en un geste sur un dossier sans anesthésique renseigné.",
+      "usual": "Anesthésique local préféré",
+      "usualNote": "Disponible comme raccourci lorsqu’aucun anesthésique n’est enregistré. Vous choisissez quand l’appliquer.",
       "drugPlaceholder": "p. ex. bupivacaïne",
-      "drugAria": "Anesthésique habituel",
-      "strengthAria": "Concentration de l’anesthésique habituel (%)",
-      "adjunct": "Ajouté au mélange",
-      "adjunctNote": "Ajouté au mélange (facultatif), p. ex. buprénorphine ou dexmédétomidine. « Utiliser mon habituel » note alors les deux.",
+      "drugAria": "Anesthésique local préféré",
+      "strengthAria": "Concentration de l’anesthésique local (%)",
+      "adjunct": "Médicament supplémentaire",
+      "adjunctNote": "Médicament facultatif enregistré avec votre anesthésique préféré. Le raccourci enregistre les deux.",
       "adjunctPlaceholder": "p. ex. buprénorphine",
-      "adjunctAria": "Produit habituel ajouté au mélange",
-      "adjunctStrengthAria": "Concentration du produit ajouté au mélange"
+      "adjunctAria": "Médicament supplémentaire",
+      "adjunctStrengthAria": "Concentration du médicament supplémentaire"
     },
     "patient": {
       "title": "Page Patient",
@@ -178,11 +179,11 @@
     "pdf": {
       "title": "PDF",
       "grid": "Inclure la grille de mesures",
-      "gridHint": "(facultatif lorsque les observations figurent sur le schéma)",
+      "gridHint": "Obligatoire lorsque les constatations sur le schéma sont désactivées, afin de conserver les mesures dans le PDF.",
       "images": "Inclure les images",
       "imagesHint": "(4 par page, après le dossier)"
     },
-    "noteDevice": "Enregistrés sur cet appareil. Les modifications s’appliquent immédiatement.",
+    "noteDevice": "Préférences personnelles enregistrées automatiquement sur cet appareil.",
     "spaceMovesDownHint": "Rapide pour dicter une série de profondeurs",
     "scoreTapFindingHint": "Mobilité → récession → … pour un examen dent par dent",
     "scoreTapToothHint": "Pour noter un constat sur toute la bouche",
@@ -190,34 +191,68 @@
     "mirrorHint": "Et dans le PDF",
     "drugName": "Médicament",
     "drugStrength": "Concentration",
-    "pdfGridHint": "Facultatif tant que les constats figurent sur le schéma",
+    "pdfGridHint": "Obligatoire lorsque les constatations sur le schéma sont désactivées, afin de conserver les mesures dans le PDF.",
     "pdfImagesHint": "4 par page, après le dossier",
     "quickCodes": {
-      "title": "Codes rapides",
-      "note": "Des boutons en un geste pour les codes que vous notez souvent, comme T/SN (dent surnuméraire). Ils apparaissent sous la note de diagnostic en mode Par dent et au-dessus du schéma Diagnostic.",
+      "title": "Raccourcis de diagnostic",
+      "note": "Ajoutez des codes AVDC ou personnalisés pour les notes dentaires et le schéma de diagnostic. Leur ordre ici définit celui des raccourcis.",
       "remove": "Retirer",
       "removeAria": "Retirer {{code}}",
       "placeholder": "Code, p. ex. T/SR",
       "addAria": "Code à ajouter",
-      "add": "Ajouter"
+      "add": "Ajouter",
+      "duplicate": "Ce code figure déjà dans vos raccourcis."
     },
     "exam": {
       "title": "Examen",
-      "areas": "Vos zones d’examen",
-      "areasNote": "Ajoutées après les six zones intégrées, chacune avec Normal / Anormal et un commentaire. Seules les zones renseignées figurent sur le PDF.",
+      "areas": "Zones d’examen supplémentaires",
+      "areasNote": "Elles apparaissent après les zones intégrées, dans l’ordre ci-dessous. Seules les zones renseignées figurent dans le PDF. La suppression conserve les constatations déjà enregistrées.",
       "areaPlaceholder": "p. ex. Lèvres",
       "areaAria": "Nom de la zone d’examen {{n}}",
       "areaN": "zone {{n}}",
       "remove": "Retirer",
       "removeAria": "Retirer {{name}}",
       "add": "Ajouter une zone",
-      "addPreset": "Ajouter la liste complète de l’examen buccal",
+      "addPreset": "Ajouter les zones suggérées",
       "presets": {
         "lips": "Lèvres / jonction cutanéo-muqueuse",
         "gingiva": "Gencive / ligne mucogingivale",
         "salivary": "Orifices des canaux salivaires",
         "floor": "Plancher buccal / frein lingual"
       }
+    },
+    "customization": {
+      "navigation": "Catégories des paramètres du dossier",
+      "categories": {
+        "patient": "Informations du patient",
+        "exam": "Examen bucco-dentaire",
+        "diagnosis": "Diagnostic",
+        "images": "Imagerie et PDF",
+        "procedure": "Intervention"
+      },
+      "descriptions": {
+        "patient": "Choisissez si la date de contrôle apparaît sur la page Patient.",
+        "exam": "Choisissez les zones supplémentaires que vous documentez lors d’un examen oral.",
+        "anesthesia": "Configurez les blocs nerveux, les champs personnalisés et vos médicaments habituels.",
+        "charting": "Définissez la présentation, les mesures et le comportement de saisie.",
+        "diagnosis": "Choisissez les observations affichées sur le schéma diagnostique et vos codes rapides.",
+        "images": "Choisissez le tableau et les images inclus dans les PDF générés.",
+        "procedure": "Choisissez les codes rapides disponibles sur le schéma des interventions."
+      },
+      "showRecheck": "Afficher le champ de date du contrôle",
+      "layout": "Présentation et mesures",
+      "input": "Saisie des données"
+    },
+    "procedureQuickCodes": {
+      "title": "Raccourcis d’intervention",
+      "note": "Ajoutez les codes des interventions que vous consignez souvent. Ces raccourcis apparaissent uniquement sur le schéma des interventions ; les codes rapides de diagnostic restent distincts.",
+      "placeholder": "Code, p. ex. XSS"
+    },
+    "list": {
+      "moveUp": "Monter {{name}}",
+      "moveDown": "Descendre {{name}}",
+      "count": "{{used}} sur {{max}} configurés",
+      "limit": "Limite atteinte. Supprimez un élément pour en ajouter un autre."
     }
   },
   "feedback": {
@@ -280,5 +315,16 @@
   "reminders": {
     "sendFrom": "Envoyez un rappel pour un patient depuis Patients ou Contrôles.",
     "settingUp": "Votre clinique est en cours de configuration — revenez dans un instant."
+  },
+  "workspace": {
+    "general": "Général",
+    "team": "Équipe",
+    "templates": "Modèles",
+    "billing": "Facturation",
+    "reminders": "Rappels de contrôle",
+    "charting": "Préférences de saisie",
+    "back": "Retour à la visite en cours",
+    "scope": "Gérez les paramètres partagés par votre clinique.",
+    "saveHint": "Enregistrez les modifications du nom de la clinique. Les autres paramètres s’appliquent immédiatement."
   }
 }

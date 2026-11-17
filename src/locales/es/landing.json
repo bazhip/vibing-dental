@@ -47,12 +47,12 @@
     "voiceResult3": "Diagrama del procedimiento · 104 marcado para extracción",
     "grid": {
       "title": "Se registra como en una hoja de cálculo",
-      "blurb": "Cuadrículas Triadan de toda la boca para dentición felina, canina y decidua. Un clic para escribir y Tab, Intro o Espacio para recorrer una serie de valores dictados en voz alta.",
+      "blurb": "Cuadrículas Triadan completas para denticiones felinas, caninas y deciduas. Introduzca mediciones con un clic y navegue con Tab, Intro o Espacio.",
       "lead": "La cuadrícula funciona como su equipo ya escribe: haga clic en cualquier celda y listo. Las profundidades de sondaje entran sin apartar la vista del paciente.",
       "imageAlt": "La cuadrícula de registro con valores de gingivitis, cálculo, bolsa, furca y movilidad introducidos, y el diente 106 tachado como ausente",
       "points": {
-        "p1": "Un solo clic pone la celda directamente en edición, sin dobles clics.",
-        "p2": "Tab, Intro y Espacio avanzan exactamente como en una hoja de cálculo, de modo que una serie dictada («3, 2, 4…») se introduce sin mirar.",
+        "p1": "Haga clic en una celda para introducir mediciones.",
+        "p2": "Use Tab, Intro y Espacio para desplazarse entre celdas mientras registra mediciones.",
         "p3": "Valores de toda la boca en una sola acción: establezca el cálculo o la gingivitis de todos los dientes desde el encabezado de la columna.",
         "p4": "La casilla Ausente tacha la fila y rellena el diente en el diagrama: una única fuente de verdad.",
         "p5": "En una visita de seguimiento, los valores de la vez anterior aparecen como pistas tenues en las celdas vacías: compare sin abrir el historial anterior.",
@@ -76,7 +76,7 @@
     "diagrams": {
       "title": "Diagramas siempre sincronizados",
       "blurb": "Los diagramas dentales de diagnóstico y de procedimiento siguen a la cuadrícula: tache un diente una vez y todo el historial lo sigue, del odontograma al PDF.",
-      "lead": "Dos diagramas anatómicos —primero los hallazgos, después los procedimientos— que nunca contradicen a la cuadrícula ni al documento impreso.",
+      "lead": "Diagramas anatómicos de diagnóstico y procedimientos, con hallazgos sincronizados entre la cuadrícula y el historial impreso.",
       "imageAlt": "El diagrama de diagnóstico con los dientes ausentes rellenos y los códigos AVDC —T/FX, T/FX/CCF, TR, AB, AT— anclados a cada diente",
       "points": {
         "p1": "Marque dientes como ausentes o extraídos con un clic (o con el teclado: todos los dientes son enfocables).",
@@ -125,7 +125,7 @@
     "history": {
       "title": "Cada visita, un paciente",
       "blurb": "Los historiales se agrupan por paciente, así que toda la historia de un animal que vuelve está a un clic, y esta visita empieza donde terminó la anterior.",
-      "lead": "Un paciente es una historia, no un montón de archivos. ToothOps mantiene las visitas juntas y arrastra lo que corresponde.",
+      "lead": "Mantenga juntas las visitas de cada paciente y traslade los hallazgos pertinentes a la siguiente visita.",
       "points": {
         "p1": "Los historiales se agrupan por paciente; un selector de visitas en la barra superior permite cambiar de fecha.",
         "p2": "Las nuevas visitas arrastran automáticamente los dientes extraídos y ausentes, marcados como «ant.» para que se lean como antecedente y no como hallazgo de hoy.",
@@ -136,8 +136,8 @@
     },
     "recall": {
       "title": "Recordatorios integrados",
-      "blurb": "Fije una fecha de revisión mientras registra; la lista de pacientes señala quién está pendiente y quién está atrasado, para que la próxima limpieza dental no se pase.",
-      "lead": "El cumplimiento de las revisiones es donde se ganan los resultados dentales: la lista lleva la cuenta por usted.",
+      "blurb": "Establezca una fecha de revisión al registrar el historial y consulte qué pacientes tienen revisiones pendientes o vencidas.",
+      "lead": "Planifique el seguimiento con fechas de revisión y recordatorios en el espacio de pacientes.",
       "points": {
         "p1": "Una fecha de revisión en el historial incluye al paciente en la lista Pendientes, marcado como pendiente o atrasado.",
         "p2": "Envíe al propietario un correo de recordatorio directamente desde la lista de pacientes.",
@@ -158,10 +158,10 @@
     },
     "offline": {
       "title": "En la nube y junto al sillón",
-      "blurb": "Cada historial se guarda automáticamente en la nube y conserva una copia local junto al sillón, así que una conexión caída nunca hace perder una boca.",
-      "lead": "El wifi de la clínica no forma parte de su protocolo anestésico. ToothOps da por hecho que la conexión se caerá y se prepara para ello.",
+      "blurb": "Los historiales se guardan automáticamente en la nube, con una copia local disponible si se interrumpe la conexión.",
+      "lead": "Continúe registrando durante las interrupciones de conexión y compruebe el estado del guardado antes de salir de la visita.",
       "points": {
-        "p1": "Cada pulsación se guarda localmente al instante: recargar a mitad de un procedimiento no pierde nada.",
+        "p1": "Los cambios se conservan en este dispositivo mientras trabaja.",
         "p2": "Los historiales nuevos se guardan automáticamente en la nube; los guardados fallidos se reintentan solos cuando vuelve la conexión.",
         "p3": "Si su sesión caduca a mitad de un procedimiento, el historial sigue abierto: vuelva a iniciar sesión justo encima.",
         "p4": "Las plantillas de informe reutilizables ahorran escribir en cada COHAT."

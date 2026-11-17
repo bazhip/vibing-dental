@@ -70,7 +70,7 @@ describe('ChartLibrary (website)', () => {
   it('renders the same table structure, cells and labels', async () => {
     const { container } = setup();
     await screen.findByText('Max');
-    expect(screen.getByRole('dialog', { name: 'My charts' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Patients' })).toBeInTheDocument();
     expect(container.querySelector('.ai-settings-modal.chart-library-modal')).not.toBeNull();
     expect(screen.getAllByRole('columnheader').map((h) => h.textContent)).toEqual([
       'Patient', 'Patient #', 'Species', 'Visits', 'Updated▼', 'Recheck',
@@ -179,4 +179,41 @@ describe('ChartLibrary (website)', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Load more charts' }));
     await waitFor(() => expect(listCharts).toHaveBeenCalledWith(expect.objectContaining({ offset: 4, limit: 200 })));
   });
+});
+
+
+it('renders a page with a return action and no dialog semantics', async () => {
+  const existing = setup();
+  existing.unmount();
+  render(<ChartLibrary {...existing} presentation="page" />);
+  await screen.findByText('Max');
+  expect(screen.queryByRole('dialog')).toBeNull();
+  expect(screen.getByRole('region', { name: 'Patients' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Back to current visit' }));
+  expect(existing.onClose).toHaveBeenCalledOnce();
+});
+
+it('keeps the patients workspace open when importing is cancelled', async () => {
+  const existing = setup();
+  existing.unmount();
+  const onLoadPdf = vi.fn(async () => false);
+  const { container } = render(<ChartLibrary {...existing} onLoadPdf={onLoadPdf} presentation="page" />);
+  const file = new File(['pdf'], 'chart.pdf', { type: 'application/pdf' });
+  fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [file] } });
+  await waitFor(() => expect(onLoadPdf).toHaveBeenCalledWith(file));
+  expect(existing.onClose).not.toHaveBeenCalled();
+});
+
+it('restores search and filters from session-owned view state when reopened', async () => {
+  const existing = setup();
+  existing.unmount();
+  const viewState = { current: undefined };
+  const first = render(<ChartLibrary {...existing} viewState={viewState} />);
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'Bella' } });
+  fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'canine' } });
+  first.unmount();
+  render(<ChartLibrary {...existing} viewState={viewState} />);
+  expect(screen.getByRole('searchbox')).toHaveValue('Bella');
+  expect(screen.getByRole('combobox', { name: 'Filter by species' })).toHaveValue('canine');
+  await waitFor(() => expect(lastQuery(existing.listCharts)).toMatchObject({ search: 'Bella', species: 'canine' }));
 });

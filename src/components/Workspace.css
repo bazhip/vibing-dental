@@ -1,0 +1,172 @@
+/* Global destinations stay separate from actions on the current visit. */
+.workspace-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.workspace-nav button {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  padding: 10px 16px;
+  min-height: 44px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.workspace-nav button:hover { background: var(--surface-alt); color: var(--text); }
+.workspace-nav button[aria-current="page"] {
+  color: var(--primary);
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(23, 35, 46, .04);
+}
+.workspace-nav button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+#workspace-content { min-width: 0; }
+.entry-grid__patient[hidden] { display: none; }
+@media (max-width: 600px) {
+  .workspace-nav { gap: 2px; padding-bottom: 10px; margin-bottom: 12px; }
+  .workspace-nav button { padding: 10px; flex: 1 1 auto; font-size: 13px; }
+}
+/* These menus use text at every size; the legacy gear-only mobile rule
+   applies only to the combined Settings menu. */
+.entry-grid__topbar .chart-menu--help .chart-menu__trigger-label,
+.entry-grid__topbar .chart-menu--account .chart-menu__trigger-label { display: inline; }
+.entry-grid__topbar .chart-menu--help .chart-menu__trigger,
+.entry-grid__topbar .chart-menu--account .chart-menu__trigger { width: auto; padding-inline: 12px; }
+.entry-grid__topbar .chart-menu--help .chart-menu__trigger-label,
+.entry-grid__topbar .chart-menu--account .chart-menu__trigger-label {
+  position: static; width: auto; height: auto; margin: 0;
+  overflow: visible; clip: auto; white-space: normal;
+}
+
+/* Web shell: an instrument panel, with patient actions always in reach. */
+html:not(.native-ios) .entry-grid-container {
+  --bg-page: #f3f6f7;
+  --surface-alt: #f7f9fa;
+  --border: #dfe6e9;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(23,35,46,.035);
+}
+html:not(.native-ios) .entry-grid__topbar {
+  background: var(--surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding-block: 14px;
+  margin-bottom: 16px;
+  gap: 12px 20px;
+}
+html:not(.native-ios) .entry-grid__doctor { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
+html:not(.native-ios) .entry-grid__title {
+  font-size: 12px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--text-muted);
+}
+html:not(.native-ios) .entry-grid__patient { margin-top: 5px; }
+html:not(.native-ios) .entry-grid__patient-name { font-size: 15px; font-weight: 650; }
+html:not(.native-ios) .entry-grid__topbar-actions { gap: 8px; }
+html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) {
+  min-height: 40px; border-radius: 6px; font-size: 13px; box-shadow: none;
+}
+html:not(.native-ios) .entry-grid__topbar .topbar-patients {
+  color: var(--primary); border-color: #bdd6d2; background: #f3faf8; font-weight: 650;
+}
+html:not(.native-ios) .workspace-nav {
+  gap: 24px; padding: 0; margin-bottom: 24px; border-bottom: 1px solid var(--border);
+}
+html:not(.native-ios) .workspace-nav button {
+  min-height: 44px; padding: 12px 0; border: 0; border-bottom: 2px solid transparent;
+  border-radius: 0; color: var(--text-muted); background: transparent; box-shadow: none;
+}
+html:not(.native-ios) .workspace-nav button[aria-current="page"] { color: var(--primary); border-bottom-color: var(--primary); }
+html:not(.native-ios) .workspace-nav button:hover { color: var(--text); }
+html:not(.native-ios) .sidebar-layout { grid-template-columns: 184px minmax(0, 1fr); gap: 24px; }
+html:not(.native-ios) .sidebar-layout__nav-item { border: 0; min-height: 40px; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
+html:not(.native-ios) .sidebar-layout__nav-num { display: none; }
+html:not(.native-ios) .sidebar-layout__nav-item--active {
+  color: var(--primary); background: #e6f1ee; box-shadow: inset 3px 0 var(--primary);
+}
+html:not(.native-ios) .sidebar-layout__main { box-shadow: none; padding: 28px; border-radius: 8px; }
+html:not(.native-ios) .entry-grid__footnote { font-size: 12px; color: var(--text-muted); margin-top: 28px; }
+html:not(.native-ios) .fab-download { border-radius: 8px; font-size: 14px; min-height: 44px; box-shadow: 0 4px 16px rgba(23,35,46,.14); }
+html:not(.native-ios) .chart-menu__panel { border-radius: 8px; box-shadow: 0 12px 32px rgba(23,35,46,.14); }
+html:not(.native-ios) .chart-menu__item { padding-block: 12px; }
+html:not(.native-ios) .chart-menu__section-head { text-transform: none; letter-spacing: 0; font-weight: 600; }
+@media (max-width: 1280px) {
+  html:not(.native-ios) .entry-grid__topbar { flex-wrap: wrap; }
+  html:not(.native-ios) .entry-grid__topbar-actions { flex-wrap: wrap; }
+}
+@media (max-width: 1024px) {
+  html:not(.native-ios) .entry-grid__topbar-actions { display: flex; width: 100%; gap: 6px; }
+  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { flex: 0 1 auto; }
+  html:not(.native-ios) .entry-grid__topbar-actions > [hidden] { display: none; }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu__trigger { padding-inline: 10px; }
+}
+@media (max-width: 900px) {
+  html:not(.native-ios) .sidebar-layout { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  html:not(.native-ios) .sidebar-layout__main { padding: 22px; }
+}
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid__topbar { padding-block: 10px; margin-bottom: 8px; }
+  html:not(.native-ios) .workspace-nav { gap: 16px; margin-bottom: 16px; }
+  html:not(.native-ios) .workspace-nav button { font-size: 12px; flex: 0 1 auto; }
+  html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) { min-height: 44px; }
+  html:not(.native-ios) .sidebar-layout__main { padding: 18px 14px; }
+  html:not(.native-ios) .sidebar-layout__nav-item { min-height: 44px; }
+}
+@media (max-width: 1024px) {
+  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
+}
+@media (max-width: 600px) {
+  /* A stable compact action grid avoids one full-width row per control. */
+  html:not(.native-ios) .entry-grid__topbar-actions--app {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+  }
+  html:not(.native-ios) .entry-grid__topbar-actions--app > :is(button,span,.chart-menu,.topbar-tour-anchor),
+  html:not(.native-ios) .entry-grid__topbar-actions--app :is(.chart-menu__trigger,.voice-input-wrap,.voice-input) { width: 100%; min-width: 0; }
+  html:not(.native-ios) .entry-grid__topbar-actions--app .chart-menu__trigger { padding-inline: 6px; white-space: normal; }
+  html:not(.native-ios) .entry-grid__topbar-actions--app .visually-hidden { position: absolute; }
+}
+/* Phones share one overflow menu; desktop keeps Help and Account separate. */
+html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: none; }
+html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inline-flex; }
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient--secondary, .topbar-desktop-revert) {
+    display: none;
+  }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label {
+    position: static;
+    display: inline;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  html:not(.native-ios) .entry-grid__topbar-actions--app {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+  }
+  html:not(.native-ios) .entry-grid__topbar-actions--app .chart-menu__trigger {
+    padding-inline: 4px;
+    font-size: 12px;
+  }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__panel {
+    max-height: min(65dvh, 520px, calc(100dvh - var(--topbar-height, 4rem) - 1rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid__topbar-actions--app.entry-grid__topbar-actions--view-only {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

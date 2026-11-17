@@ -99,7 +99,7 @@
     "record": "Narkoseprotokoll"
   },
   "customEditor": {
-    "blocksLegend": "Ihre Nervenblockaden",
+    "blocksLegend": "Zusätzliche Nervenblockaden",
     "blocksNote": "Zusätzliche Zeilen Rechts / Links (mL), z. B. N. palatinus major.",
     "blockName": "Name der Blockade",
     "blockNameAria": "Name der Nervenblockade {{n}}",
@@ -108,7 +108,7 @@
     "fallbackBlock": "Nervenblockade",
     "fallbackField": "Feld",
     "addBlock": "Nervenblockade hinzufügen",
-    "fieldsLegend": "Ihre Felder",
+    "fieldsLegend": "Eigene Anästhesiefelder",
     "fieldsNote": "Angezeigt unter „Narkoseprotokoll“, z. B. Prämedikation, Endotrachealtubus, Infusionen.",
     "fieldName": "Name des Feldes",
     "fieldNameAria": "Name von Feld {{n}}",
@@ -124,7 +124,8 @@
       "number": "Zahl",
       "checkbox": "Ja / Nein",
       "select": "Auswahlliste"
-    }
+    },
+    "fieldType": "Feldtyp"
   },
   "report": {
     "title": "Behandlungsbericht",
@@ -147,6 +148,8 @@
       "nameRequired": "Geben Sie der Vorlage einen Namen."
     },
     "saved": "Vorlage „{{name}}“ gespeichert.",
-    "saveFailed": "Die Vorlage konnte nicht gespeichert werden. {{error}}"
+    "saveFailed": "Die Vorlage konnte nicht gespeichert werden. {{error}}",
+    "customize": "Anpassen",
+    "customizeTitle": "Vorlagen für Behandlungsberichte verwalten"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "title": "My charts",
+  "title": "Patients",
   "unnamedPatient": "Unnamed patient",
   "search": {
     "placeholder": "Search by patient name or number…",
@@ -13,7 +13,7 @@
   },
   "importPdf": "Import chart PDF",
   "importPdfTitle": "Open a chart PDF made with this app to continue editing it",
-  "newPatient": "+ New patient",
+  "newPatient": "New patient",
   "newPatientTitle": "Clear the working chart and start a brand-new patient",
   "loading": "Loading…",
   "empty": "No saved charts yet — they save automatically as you chart.",
@@ -59,7 +59,7 @@
     "clearRecallTitle": "Clear {{name}}'s recheck reminder — e.g. after a recheck that didn't produce a new chart",
     "newVisit": "+ Visit",
     "newVisitTitle": "Start a new visit for {{name}}",
-    "history": "History",
+    "history": "Version history",
     "historyChartTitle": "Who saved {{name}}'s chart, and when",
     "historyVisitTitle": "Who saved this visit, and when",
     "deleteChart": "Delete chart for {{name}}",
@@ -128,5 +128,9 @@
     "saving": "Saving…",
     "saveChanges": "Save changes",
     "saveTemplate": "Save template"
+  },
+  "workspace": {
+    "description": "Search patient records, review visits, and manage rechecks.",
+    "backToVisit": "Back to current visit"
   }
 }

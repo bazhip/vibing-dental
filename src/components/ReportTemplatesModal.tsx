@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { confirmDialog, friendlyError } from './ui/dialogs';
 import { isNativeApp } from '../native/platform';
 import { Sheet } from '../ios/Sheet';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { ReportTemplate, UseReportTemplatesReturn } from '../hooks/useReportTemplates';
 
 interface ReportTemplatesModalProps {
@@ -27,6 +28,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
 }) => {
   const { t } = useTranslation('library');
   const asSheet = isNativeApp();
+  const modalRef = useModalFocus(open && !asSheet);
   // null = editing a new, not-yet-saved template.
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [name, setName] = React.useState('');
@@ -239,7 +241,7 @@ export const ReportTemplatesModal: React.FC<ReportTemplatesModalProps> = ({
 
   return (
     <div className="ai-settings-overlay" onClick={() => void requestClose()} role="dialog" aria-modal="true" aria-label={t('templates.aria')}>
-      <div className="ai-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="ai-settings-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <header className="ai-settings-header">
           <h2>{t('templates.title')}</h2>
           <button type="button" className="pdf-preview-close" onClick={() => void requestClose()} aria-label={t('actions.close', { ns: 'common' })}>

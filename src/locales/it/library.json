@@ -1,5 +1,5 @@
 {
-  "title": "Le mie cartelle",
+  "title": "Pazienti",
   "unnamedPatient": "Paziente senza nome",
   "search": {
     "placeholder": "Cerca per nome o numero del paziente…",
@@ -13,7 +13,7 @@
   },
   "importPdf": "Importa PDF della cartella",
   "importPdfTitle": "Apra un PDF di cartella creato con questa app per continuare a modificarlo",
-  "newPatient": "+ Nuovo paziente",
+  "newPatient": "Nuovo paziente",
   "newPatientTitle": "Svuota la cartella in uso e inizia un paziente completamente nuovo",
   "loading": "Caricamento…",
   "empty": "Nessuna cartella salvata per ora: si salvano automaticamente mentre compila.",
@@ -61,7 +61,7 @@
     "clearRecallTitle": "Cancella il promemoria di controllo di {{name}} — ad es. dopo un controllo che non ha prodotto una nuova cartella",
     "newVisit": "+ Visita",
     "newVisitTitle": "Inizia una nuova visita per {{name}}",
-    "history": "Cronologia",
+    "history": "Cronologia delle versioni",
     "historyChartTitle": "Chi ha salvato la cartella di {{name}} e quando",
     "historyVisitTitle": "Chi ha salvato questa visita e quando",
     "deleteChart": "Elimina la cartella di {{name}}",
@@ -130,5 +130,9 @@
     "saving": "Salvataggio…",
     "saveChanges": "Salva modifiche",
     "saveTemplate": "Salva modello"
+  },
+  "workspace": {
+    "description": "Cerchi le cartelle dei pazienti, consulti le visite e gestisca i controlli.",
+    "backToVisit": "Torna alla visita in corso"
   }
 }

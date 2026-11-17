@@ -99,7 +99,7 @@
     "record": "Fiche d’anesthésie"
   },
   "customEditor": {
-    "blocksLegend": "Vos blocs nerveux",
+    "blocksLegend": "Blocs nerveux supplémentaires",
     "blocksNote": "Lignes Droite / Gauche supplémentaires (mL), p. ex. palatin majeur.",
     "blockName": "Nom du bloc",
     "blockNameAria": "Nom du bloc nerveux {{n}}",
@@ -108,7 +108,7 @@
     "fallbackBlock": "bloc nerveux",
     "fallbackField": "champ",
     "addBlock": "Ajouter un bloc nerveux",
-    "fieldsLegend": "Vos champs",
+    "fieldsLegend": "Champs d’anesthésie personnalisés",
     "fieldsNote": "Affichés sous « Fiche d’anesthésie », p. ex. prémédication, sonde endotrachéale, fluides.",
     "fieldName": "Nom du champ",
     "fieldNameAria": "Nom du champ {{n}}",
@@ -123,8 +123,9 @@
       "text": "Texte",
       "number": "Nombre",
       "checkbox": "Oui / non",
-      "select": "Liste de choix"
-    }
+      "select": "Liste déroulante"
+    },
+    "fieldType": "Type de champ"
   },
   "report": {
     "title": "Compte rendu de traitement",
@@ -147,6 +148,8 @@
       "nameRequired": "Donnez un nom au modèle."
     },
     "saved": "Modèle « {{name}} » enregistré.",
-    "saveFailed": "Impossible d’enregistrer le modèle. {{error}}"
+    "saveFailed": "Impossible d’enregistrer le modèle. {{error}}",
+    "customize": "Personnaliser",
+    "customizeTitle": "Gérer les modèles de rapport de traitement"
   }
 }

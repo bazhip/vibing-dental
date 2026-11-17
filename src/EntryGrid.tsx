@@ -1,3 +1,5 @@
+import { ImageHistory } from './components/ImageHistory';
+import { imageToothLabel } from './utils/imageTeeth';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
@@ -43,11 +45,12 @@ import { FinishSetupModal, useFinishSetup } from './components/FinishSetupModal'
 import { WalkthroughModal } from './components/WalkthroughModal';
 import { readString, writeString } from './utils/storage';
 import { lazyWithReload, whenIdle } from './utils/lazyWithReload';
-import { useHashRoute } from './hooks/useHashRoute';
+import { useHashRoute, useHashRouteGuard } from './hooks/useHashRoute';
 import { useEzyvetHandover } from './hooks/useEzyvetHandover';
 import { takePendingPatient } from './utils/pims/extensionBridge';
 import { supabase } from './utils/supabaseClient';
 import { ChartLibrary } from './components/ChartLibrary';
+import type { ChartLibraryViewState } from './components/chartLibraryData';
 import { OwnerReportSection } from './components/OwnerReportSection';
 import { ToothChartView } from './components/ToothChartView';
 import { AdminPanel, useIsAdmin } from './components/AdminPanel';
@@ -74,6 +77,9 @@ import type { MenuItem } from './ios/ContextMenu';
 import { speciesBase } from './utils/species';
 import { CodeSpeciesContext } from './components/codeSpecies';
 import './components/EntryGrid.css';
+import './components/Workspace.css';
+import './components/ClinicalPolish.css';
+import './components/DialogPolish.css';
 
 // The PDF engine (pdf-lib + the whole draw pipeline) loads the first
 // time a preview is requested, not with the charting screen.
@@ -84,6 +90,12 @@ function formatSavedAt(iso: string): string {
   if (Number.isNaN(d.getTime())) return '';
   return d.toDateString() === new Date().toDateString() ? formatTime(d) : `${formatMonthDay(d)}, ${formatTime(d)}`;
 }
+
+const PAGE_PRESENTATION = 'page' as const;
+const MODAL_PRESENTATION = 'modal' as const;
+const MORE_SCOPE = 'more' as const;
+const HELP_SCOPE = 'help' as const;
+const ACCOUNT_SCOPE = 'account' as const;
 
 const DocumentsModal = lazyWithReload(() =>
   import('./components/DocumentsModal').then((m) => ({ default: m.DocumentsModal }))
@@ -224,6 +236,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     else setAppTab('chart');
   }, []);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
+  const libraryViewState = React.useRef<ChartLibraryViewState | undefined>(undefined);
+  const practiceLeaveGuard = React.useRef<(() => Promise<boolean>) | null>(null);
+  const registerPracticeGuard = React.useCallback((guard: (() => Promise<boolean>) | null) => {
+    practiceLeaveGuard.current = guard;
+  }, []);
+  const guardPracticeLeave = React.useCallback(() => practiceLeaveGuard.current?.() ?? Promise.resolve(true), []);
+  useHashRouteGuard(guardPracticeLeave, !native && practiceSettingsOpen);
+  React.useEffect(() => {
+    if (!native) setPracticeSettingsOpen(route.view === 'settings');
+  }, [route.view, native]);
+  const openPracticeSettings = () => {
+    if (native) setPracticeSettingsOpen(true);
+    else navigate('#/settings');
+  };
+  const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
+  const workspacePage = !native && ((cloud.enabled && route.view === 'library') || route.view === 'settings' || practiceSettingsOpen);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -415,16 +443,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setWhatsNewOpen(false);
     if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
   };
-  // "My charts" dialog — a real route (#/library) so the Back button and
-  // gesture-back close it instead of exiting the site, and a refresh
-  // reopens it.
+  // Patients is a full workspace destination; the working chart stays mounted.
   const libraryOpen = cloud.enabled && route.view === 'library' && !native;
-  // True when THIS session pushed #/library — closing can then be a
-  // history.back() (clean stack). A deep-linked/refreshed library has no
-  // in-app entry behind it, so closing navigates to the chart instead.
-  const libraryPushedRef = React.useRef(false);
   const openLibrary = () => {
-    libraryPushedRef.current = true;
     navigate('#/library');
   };
   const closeLibrary = React.useCallback(() => {
@@ -434,12 +455,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       landOnChart();
       return;
     }
-    if (libraryPushedRef.current) {
-      libraryPushedRef.current = false;
-      window.history.back();
-    } else {
-      navigate(`#/chart/${chart.cloudChartId}`, { replace: true });
-    }
+    navigate(`#/chart/${chart.cloudChartId}`, { replace: true });
   }, [navigate, chart.cloudChartId, native, landOnChart]);
 
   // Deep link support: arriving on #/chart/:id for a chart that isn't
@@ -639,10 +655,19 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, [cloud.enabled, visits, chart.cloudChartId]);
 
   // The patient's other visits, for the Images section's "Image history".
-  const imageHistoryVisits = React.useMemo(
-    () => visits.filter((v) => v.id !== chart.cloudChartId).map((v) => ({ id: v.id, date: v.chart_date })),
-    [visits, chart.cloudChartId]
-  );
+  const imageHistoryVisits = React.useMemo(() => {
+    const number = chart.patientInfo.patientNumber.trim().toLowerCase();
+    const name = chart.patientInfo.patientName.trim().toLowerCase();
+    if (!number && !name) return [];
+    const patientKey = number ? `n:${number}` : `p:${name}`;
+    // The visit lookup is asynchronous. Never pass the previous patient's
+    // visits to the automatically loaded image history while it refreshes.
+    return visits.filter((v) => {
+      const n = v.patient_number.trim().toLowerCase();
+      const key = n ? `n:${n}` : `p:${v.patient_name.trim().toLowerCase()}`;
+      return v.id !== chart.cloudChartId && key === patientKey;
+    }).map((v) => ({ id: v.id, date: v.chart_date }));
+  }, [visits, chart.cloudChartId, chart.patientInfo.patientNumber, chart.patientInfo.patientName]);
 
   const switchVisit = (id: string) => {
     if (id === chart.cloudChartId) return;
@@ -1140,6 +1165,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               strokes={chart.postDiagramStrokes}
               onStrokesChange={chart.setPostDiagramStrokes}
               lockedTriadans={chart.lockedPostTriadans}
+              quickCodes={prefs.procedureQuickCodes}
+              onCustomize={() => setChartSettingsOpen('procedure')}
               markMode="extracted-only"
               highlightTriadan={aiHighlightTriadan}
             />
@@ -1155,6 +1182,21 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       label: t('sections.images'),
       content: (
         <>
+        <ImagingSection
+          readOnly={readOnly}
+          chartId={chart.cloudChartId}
+          cloudActive={cloud.enabled}
+          practiceId={profile.practiceId}
+          maxImages={profile.maxImages}
+          dicomEnabled={profile.dicomEnabled}
+          species={chart.species}
+          imageRoles={chart.imageRoles}
+          onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
+          includeInPdf={pdfIncludeImages}
+          onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
+          pdfExcludedImages={chart.pdfExcludedImages}
+          onImageInPdfChange={chart.setImageInPdf}
+        />
         {lock(
           <div className="patient-form radiographic-findings">
             <label className="patient-form__label">
@@ -1170,31 +1212,16 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             </label>
           </div>
         )}
-        <ImagingSection
-          readOnly={readOnly}
-          chartId={chart.cloudChartId}
-          cloudActive={cloud.enabled}
-          practiceId={profile.practiceId}
-          maxImages={profile.maxImages}
-          dicomEnabled={profile.dicomEnabled}
-          species={chart.species}
-          otherVisits={imageHistoryVisits}
-          onOpenVisit={switchVisit}
-          imageRoles={chart.imageRoles}
-          onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
-          includeInPdf={pdfIncludeImages}
-          onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
-          pdfExcludedImages={chart.pdfExcludedImages}
-          onImageInPdfChange={chart.setImageInPdf}
-        />
+        <ImageHistory visits={imageHistoryVisits} onOpenVisit={switchVisit} toothLabel={imageToothLabel} />
         </>
       ),
     },
     {
       id: 'treatment',
       label: t('sections.treatment'),
-      content: lock(
+      content: (
         <SurgeryReportForm
+          readOnly={readOnly}
           value={chart.patientInfo.treatmentReport}
           onChange={(value) => chart.handlePatientInfoChange('treatmentReport', value)}
           cloudActive={cloud.enabled}
@@ -1426,6 +1453,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       {libraryOpen && (
         <ChartLibrary
+          presentation={PAGE_PRESENTATION}
+          viewState={libraryViewState}
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={libraryCore.deleteChart}
@@ -1436,8 +1465,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onSendReminder={libraryCore.sendReminder}
           onOpenHistory={libraryCore.openHistory}
           onClearRecalls={libraryCore.clearRecalls}
-          onNewPatient={async () => { await libraryCore.newPatient(); }}
-          onLoadPdf={async (file) => { await libraryCore.loadPdf(file); }}
+          onNewPatient={async () => { if (await libraryCore.newPatient()) closeLibrary(); }}
+          onLoadPdf={libraryCore.loadPdf}
           onClose={closeLibrary}
         />
       )}
@@ -1452,7 +1481,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       tabIndex={-1}
       onSubmit={handleOpenPreview}
       // Stop browser-default form submit on Enter from any single-line
-      // input. Textareas, the actual submit button, and inputs that
+      // input. Textareas, buttons, and inputs that
       // explicitly opt-in (data-allow-form-submit) still submit. This
       // makes the chart behave like a spreadsheet — Enter advances the
       // active grid cell rather than opening the preview modal.
@@ -1463,13 +1492,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         const tag = target.tagName;
         const allow =
           tag === 'TEXTAREA' ||
-          (target instanceof HTMLButtonElement && target.type === 'submit') ||
+          target instanceof HTMLButtonElement ||
           target.dataset.allowFormSubmit === 'true';
         if (!allow) e.preventDefault();
       }}
     >
       <SidebarLayout
         sections={sections}
+        notice={readOnly ? (
+          <div className="chart-readonly-notice" role="note" aria-label={t('status.viewOnly')}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="5" y="10" width="14" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+            <div><strong>{t('status.viewOnly')}</strong><p>{t('lock.description')}</p></div>
+            <button type="button" className="diagram-view__action" onClick={unlockForEditing}>{t('topbar.editChart')}</button>
+          </div>
+        ) : undefined}
         activeId={activeSection}
         onActiveChange={goToSection}
         // Wide screens in the app (13" iPad landscape): the Diagnosis
@@ -1552,7 +1588,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <PracticeSettingsModal
         open={practiceSettingsOpen}
-        onClose={() => setPracticeSettingsOpen(false)}
+        onClose={() => { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); if (!native) returnToVisit(); }}
+        presentation={native ? MODAL_PRESENTATION : PAGE_PRESENTATION}
+        onLeaveGuardChange={registerPracticeGuard}
+        onOpenReminders={() => setRemindersOpen(true)}
+        onOpenChartSettings={() => setChartSettingsOpen('all')}
         profile={profile}
       />
 
@@ -1653,7 +1693,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     setLanguage: (lng: AppSettings['language']) => setPref({ language: lng }),
     goToSection: showChartSection,
     account: () => setAccountOpen(true),
-    practice: () => setPracticeSettingsOpen(true),
+    practice: openPracticeSettings,
     chartSettings: (section?: SettingsSection) => setChartSettingsOpen(section ?? 'all'),
     reminders: () => setRemindersOpen(true),
     walkthrough: () => setWalkthroughOpen(true),
@@ -1739,6 +1779,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     );
     const customizeFor: Record<string, (() => void) | undefined> = {
       patient: () => setChartSettingsOpen('patient'),
+      exam: () => setChartSettingsOpen('exam'),
+      procedure: () => setChartSettingsOpen('procedure'),
       anesthesia: () => setChartSettingsOpen('anesthesia'),
       charting: () => setChartSettingsOpen('charting'),
       diagnosis: () => setChartSettingsOpen('diagnosis'),
@@ -1848,7 +1890,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <CodeSpeciesContext.Provider value={chart.species}>
     <div className="entry-grid-container" ref={containerRef}>
       {/* Keyboard users skip the topbar controls straight to the chart. */}
-      <a className="skip-link" href="#chart-form">
+      <a className="skip-link" href={workspacePage ? '#workspace-content' : '#chart-form'} onClick={(event) => {
+        event.preventDefault();
+        const target = document.getElementById(workspacePage ? 'workspace-content' : 'chart-form');
+        target?.focus();
+        target?.scrollIntoView({ block: 'start' });
+      }}>
         {t('skipLink')}
       </a>
       <header className="entry-grid__topbar" ref={topbarRef}>
@@ -1861,10 +1908,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <div className="entry-grid__topbar-identity">
           {profile.doctorName.trim() ? (
             <>
-              <h1 className="entry-grid__doctor">{profile.doctorName}</h1>
-              <span className="entry-grid__title">
-                {profile.practiceName.trim() || t('brand')}
-              </span>
+              <h1 className="entry-grid__doctor">{profile.practiceName.trim() || t('brand')}</h1>
+              <span className="entry-grid__title">{profile.doctorName}</span>
             </>
           ) : (
             <h1 className="entry-grid__title">
@@ -1875,7 +1920,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           )}
           {/* Live patient banner — EMR-style encounter context that stays
               visible while scrolling deep into the chart. */}
-          <div className="entry-grid__patient" aria-live="off">
+          <div className="entry-grid__patient" aria-live="off" aria-label={t('workspace.patientContext')} hidden={workspacePage}>
             {chart.patientInfo.patientName ? (
               <>
                 <span className="entry-grid__patient-name">
@@ -2032,7 +2077,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
         {/* --app: the signed-in toolbar (phones lay it out as an even,
             full-width row). */}
-        <div className={`entry-grid__topbar-actions${cloud.enabled && !trial ? ' entry-grid__topbar-actions--app' : ''}`}>
+        <div className={`entry-grid__topbar-actions${cloud.enabled && !trial ? ' entry-grid__topbar-actions--app' : ''}${viewingSavedVisit ? ' entry-grid__topbar-actions--view-only' : ''}`}>
           {trial && (
             <>
               <button
@@ -2069,21 +2114,27 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : ''}
             </span>
           )}
-          {cloud.enabled && (
-            <ChartsMenu
+          {cloud.enabled && !workspacePage && (
+            <button type="button" className="chart-menu__trigger topbar-patients" onClick={openLibrary}>
+              {t('chartsMenu.allPatients')}
+            </button>
+          )}
+          {cloud.enabled && !workspacePage && chart.openedExisting && chart.cloudChartId && (
+            <span className="topbar-desktop-visit"><ChartsMenu
+              visitOnly
               onOpenLibrary={openLibrary}
               thisPatient={chart.openedExisting && chart.cloudChartId ? {
                 name: chart.patientInfo.patientName,
                 onNewVisit: startNewVisitFromLatest,
                 onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
               } : undefined}
-            />
+            /></span>
           )}
           {/* AI autofill (every signed-in plan during the beta); the keys live server-side
               behind JWT-gated edge functions, so trial (no account) and
               Basic practices don't get it. */}
           {profile.aiEnabled && !trial && (
-            <VoiceInputButton
+            <span hidden={workspacePage}><VoiceInputButton
               context={aiContext}
               handlers={aiHandlers}
               onActivity={handleAiActivity}
@@ -2091,11 +2142,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               sessionKey={String(chart.chartSession)}
               locked={readOnly}
               onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
-            />
+            /></span>
           )}
-          <span data-tour="settings" className="topbar-tour-anchor">
+          <span data-tour="settings" className="topbar-tour-anchor topbar-desktop-help">
           <ChartMenu
-            onOpenWalkthrough={() => setWalkthroughOpen(true)}
+            scope={HELP_SCOPE}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
@@ -2104,7 +2156,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             cloud={
               cloud.enabled
                 ? {
-                    onPracticeSettings: () => setPracticeSettingsOpen(true),
+                    onPracticeSettings: openPracticeSettings,
                     onOpenReminders: () => setRemindersOpen(true),
                     onOpenAccount: () => setAccountOpen(true),
                     onSignOut: () => {
@@ -2117,12 +2169,45 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
+          {cloud.enabled && <ChartMenu
+            scope={ACCOUNT_SCOPE}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
+            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
+            cloud={{
+              onPracticeSettings: openPracticeSettings,
+              onOpenReminders: () => setRemindersOpen(true),
+              onOpenAccount: () => setAccountOpen(true),
+              onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
+            }}
+          />}
+          <ChartMenu
+            scope={MORE_SCOPE}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
+            onGoHome={onGoHome}
+            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
+            onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
+            onOpenChartSettings={() => setChartSettingsOpen('all')}
+            onOpenWhatsNew={() => setWhatsNewOpen(true)}
+            visit={cloud.enabled && !workspacePage && chart.openedExisting && chart.cloudChartId ? {
+              name: chart.patientInfo.patientName,
+              onNewVisit: startNewVisitFromLatest,
+              onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
+            } : undefined}
+            onNewPatient={cloud.enabled && viewingSavedVisit && !workspacePage ? () => { void startNewPatient(); } : undefined}
+            onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
+            cloud={cloud.enabled ? {
+              onPracticeSettings: openPracticeSettings,
+              onOpenReminders: () => setRemindersOpen(true),
+              onOpenAccount: () => setAccountOpen(true),
+              onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
+            } : undefined}
+          />
           {/* A fresh chart is always one tap away (people reopen the app
               on an old visit) — except mid-edit, where Done comes first. */}
-          {cloud.enabled && !editingSavedVisit && (
+          {cloud.enabled && !editingSavedVisit && !workspacePage && (
             <button
               type="button"
-              className="chart-menu__trigger topbar-library-btn topbar-new-patient"
+              className={`chart-menu__trigger topbar-library-btn topbar-new-patient${viewingSavedVisit ? ' topbar-new-patient--secondary' : ''}`}
               onClick={() => void startNewPatient()}
               aria-label={t('topbar.newPatient')}
               title={t('topbar.newPatientTitle')}
@@ -2132,18 +2217,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               <span className="topbar-label-short">{t('topbar.newPatientShort')}</span>
             </button>
           )}
-          {viewingSavedVisit && (
-            <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={unlockForEditing}>
-              <span className="topbar-label-long">{t('topbar.editChart')}</span>
-              <span className="topbar-label-short">{t('topbar.editChartShort')}</span>
-            </button>
-          )}
-          {editingSavedVisit && (
+          {editingSavedVisit && !workspacePage && (
             <>
               {unlockSnapshotChanged && (
                 <button
                   type="button"
-                  className="topbar-editing__undo"
+                  className="topbar-editing__undo topbar-desktop-revert"
                   aria-label={t('topbar.undo')}
                   onClick={revertUnlockedChanges}
                   title={t('topbar.undoTitle')}
@@ -2164,15 +2243,22 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       </header>
 
+      <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
+        {cloud.enabled && <button type="button" data-tour="library" aria-current={route.view === 'library' ? 'page' : undefined} onClick={openLibrary}>{t('topbar.myCharts')}</button>}
+        <button type="button" aria-current={!workspacePage ? 'page' : undefined} onClick={returnToVisit}>{t('workspace.currentVisit')}</button>
+        {cloud.enabled && <button type="button" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
+        {!cloud.enabled && <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>}
+      </nav>
       {otherTabBanner}
 
-      {dialogsBeforeForm}
-
-      {chartForm}
-
-      {pdfButton}
-
-      {dialogsAfterForm}
+      <div id="workspace-content" tabIndex={-1}>
+        {dialogsBeforeForm}
+        <div hidden={workspacePage}>
+          {chartForm}
+          {pdfButton}
+        </div>
+        {dialogsAfterForm}
+      </div>
 
       {/* Compact feedback link — the email it opens pre-fills the useful
           details (what happened, section, browser). */}

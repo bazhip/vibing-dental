@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
@@ -15,12 +15,12 @@ const billingMock = vi.hoisted(() => ({
 vi.mock('../utils/supabaseClient', () => ({ supabase: { auth: {} }, cloudEnabled: true }));
 vi.mock('../hooks/useTeam', () => ({ useTeam: () => teamState.current }));
 vi.mock('../hooks/useBilling', () => billingMock);
-vi.mock('./OwnerReportTemplatesModal', () => ({ OwnerReportTemplatesModal: () => null }));
 const native = vi.hoisted(() => ({ value: false }));
 vi.mock('../native/platform', () => ({ isNativeApp: () => native.value, WEB_ORIGIN: 'https://toothops.app/' }));
 
 import { PracticeSettingsModal } from './PracticeSettingsModal';
 import { DialogHost } from './ui/dialogs';
+import { defaultConfig } from '../utils/ownerReportConfig';
 import type { UseProfileReturn } from '../hooks/useProfile';
 
 const member = (over: Partial<TeamMember>): TeamMember => ({
@@ -197,5 +197,74 @@ describe('PracticeSettingsModal', () => {
     fireEvent.mouseDown(overlay);
     fireEvent.click(overlay);
     expect(onClose).toHaveBeenCalled();
+  });
+});
+
+describe('Practice settings workspace', () => {
+  it('separates settings destinations and preserves a name draft between sections', async () => {
+    render(<PracticeSettingsModal open presentation="page" onClose={vi.fn()} profile={profile} />);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('navigation', { name: 'Practice settings' })).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Practice name'), { target: { value: 'New practice' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Team' }));
+    expect(screen.queryByRole('textbox', { name: 'Practice name' })).toBeNull();
+    expect(screen.getByText('joined@vet.com')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'General' }));
+    expect(screen.getByLabelText('Practice name')).toHaveValue('New practice');
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+  });
+
+  it('registers an unsaved-change guard for app navigation and removes it on unmount', async () => {
+    let guard: (() => Promise<boolean>) | null = null;
+    const register = vi.fn((next: (() => Promise<boolean>) | null) => { guard = next; });
+    const { unmount } = render(<><PracticeSettingsModal open presentation="page" onClose={vi.fn()} profile={profile} onLeaveGuardChange={register} /><DialogHost /></>);
+    expect(await guard!()).toBe(true);
+    fireEvent.change(screen.getByLabelText('Practice name'), { target: { value: 'Draft practice' } });
+    let leaving: Promise<boolean>;
+    await act(async () => { leaving = guard!(); });
+    await userEvent.click(screen.getByRole('button', { name: 'Keep editing' }));
+    expect(await leaving!).toBe(false);
+    unmount();
+    expect(register).toHaveBeenLastCalledWith(null);
+  });
+
+  it('checks template drafts before allowing workspace navigation', async () => {
+    let guard: (() => Promise<boolean>) | null = null;
+    render(<><PracticeSettingsModal open presentation="page" onClose={vi.fn()}
+      profile={{ ...profile, ownerReportEnabled: true, ownerReportConfig: defaultConfig(), saveOwnerReportConfig: vi.fn() }}
+      onLeaveGuardChange={(next) => { guard = next; }} /><DialogHost /></>);
+    await userEvent.click(screen.getByRole('button', { name: 'Templates' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Customize owner report' }));
+    await userEvent.type(screen.getByLabelText('Template name'), ' draft');
+    let leaving: Promise<boolean>;
+    await act(async () => { leaving = guard!(); });
+    const prompt = await screen.findByRole('alertdialog');
+    expect(prompt).toHaveTextContent('Discard your unsaved changes to the owner report templates?');
+    await userEvent.click(screen.getByRole('button', { name: 'Keep Editing' }));
+    expect(await leaving!).toBe(false);
+    expect(screen.getByLabelText('Template name')).toHaveValue('Standard draft');
+    await act(async () => { leaving = guard!(); });
+    await userEvent.click(screen.getByRole('button', { name: 'Discard Changes' }));
+    expect(await leaving!).toBe(true);
+  });
+
+  it('keeps the settings workspace open after saving the practice name', async () => {
+    const onClose = vi.fn();
+    render(<PracticeSettingsModal open presentation="page" onClose={onClose} profile={profile} />);
+    fireEvent.change(screen.getByLabelText('Practice name'), { target: { value: 'Saved practice' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(profile.update).toHaveBeenCalledWith({ practiceName: 'Saved practice', doctorName: profile.doctorName });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('asks before leaving an unsaved workspace and keeps the draft when cancelled', async () => {
+    const onClose = vi.fn();
+    render(<><PracticeSettingsModal open presentation="page" onClose={onClose} profile={profile} /><DialogHost /></>);
+    fireEvent.change(screen.getByLabelText('Practice name'), { target: { value: 'Unsaved name' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Back to current visit' }));
+    expect(screen.getByRole('alertdialog')).toHaveTextContent('Discard the practice name change?');
+    await userEvent.click(screen.getByRole('button', { name: 'Keep editing' }));
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Practice name')).toHaveValue('Unsaved name');
   });
 });

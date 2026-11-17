@@ -29,7 +29,9 @@ describe('WalkthroughModal', () => {
     render(<WalkthroughModal open onClose={() => {}} />);
     const text = walk();
     expect(text).toContain('Undo with ⌘Z');
-    expect(text).toContain('My charts');
+    expect(text).toContain('Patients');
+    expect(text).toContain('Help → Getting started');
+    expect(text).toContain('Visit actions');
     expect(text).toContain('1 of 11');
   });
 

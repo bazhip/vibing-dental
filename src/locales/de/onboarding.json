@@ -9,7 +9,7 @@
     "steps": {
       "welcome": {
         "title": "Willkommen bei ToothOps",
-        "body": "Eine Tour in 60 Sekunden: Hier finden Sie alles. Sie können sie jederzeit unter Einstellungen → Erste Schritte erneut abspielen."
+        "body": "Eine kurze Tour durch den Arbeitsbereich. Starten Sie sie jederzeit unter Hilfe → Erste Schritte erneut."
       },
       "sections": {
         "title": "Die acht Abschnitte",
@@ -40,16 +40,16 @@
         "body": "Schreiben Sie den Bericht oder fügen Sie eine gespeicherte Vorlage aus der Auswahlliste ein — und speichern Sie neue Vorlagen zur Wiederverwendung."
       },
       "library": {
-        "title": "Meine Akten",
-        "body": "Öffnen Sie die Akten eines beliebigen Patienten (gespeicherte Besuche öffnen sich schreibgeschützt, bis Sie auf Bearbeiten klicken) oder beginnen Sie — für den angezeigten Patienten — einen neuen Besuch bzw. sehen Sie dessen Versionsverlauf ein. Neuer Patient, gleich daneben, beginnt eine leere Akte."
+        "title": "Patienten",
+        "body": "Suchen Sie Patienten und öffnen Sie deren Besuche. Mit Neuer Patient beginnen Sie eine leere Akte. Unter Besuchsaktionen starten Sie einen neuen Besuch für den aktuellen Patienten oder sehen den Versionsverlauf ein."
       },
       "dictate": {
         "title": "Diktieren",
         "body": "Tippen Sie auf Diktieren und sprechen Sie Ihre Befunde ein — auf jeder Seite. Jeder landet an der richtigen Stelle, und ein Live-Bereich zeigt jede Änderung, sodass Sie alles rückgängig machen können."
       },
       "settings": {
-        "title": "Einstellungen",
-        "body": "Praxisname und Logo, Team, Vorlagen für Kontrollerinnerungen, Ihr Konto — und diese Tour."
+        "title": "Praxiseinstellungen",
+        "body": "Verwalten Sie hier Ihre Praxis, Ihr Team, Vorlagen und Erinnerungen. Persönliche Einstellungen finden Sie unter Ihr Konto; Anleitungen und Feedback unter Hilfe."
       },
       "pdf": {
         "title": "PDF ansehen & herunterladen",

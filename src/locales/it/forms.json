@@ -99,7 +99,7 @@
     "record": "Scheda anestesiologica"
   },
   "customEditor": {
-    "blocksLegend": "I Suoi blocchi nervosi",
+    "blocksLegend": "Blocchi nervosi aggiuntivi",
     "blocksNote": "Righe Destra / Sinistra aggiuntive (mL), ad es. palatino maggiore.",
     "blockName": "Nome del blocco",
     "blockNameAria": "Nome del blocco nervoso {{n}}",
@@ -108,7 +108,7 @@
     "fallbackBlock": "blocco nervoso",
     "fallbackField": "campo",
     "addBlock": "Aggiungi blocco nervoso",
-    "fieldsLegend": "I Suoi campi",
+    "fieldsLegend": "Campi di anestesia personalizzati",
     "fieldsNote": "Mostrati sotto «Scheda anestesiologica», ad es. premedicazione, tubo endotracheale, fluidi.",
     "fieldName": "Nome del campo",
     "fieldNameAria": "Nome del campo {{n}}",
@@ -123,8 +123,9 @@
       "text": "Testo",
       "number": "Numero",
       "checkbox": "Sì / no",
-      "select": "Elenco di scelta"
-    }
+      "select": "Elenco a discesa"
+    },
+    "fieldType": "Tipo di campo"
   },
   "report": {
     "title": "Referto del trattamento",
@@ -147,6 +148,8 @@
       "nameRequired": "Dia un nome al modello."
     },
     "saved": "Modello «{{name}}» salvato.",
-    "saveFailed": "Impossibile salvare il modello. {{error}}"
+    "saveFailed": "Impossibile salvare il modello. {{error}}",
+    "customize": "Personalizza",
+    "customizeTitle": "Gestisca i modelli di referto del trattamento"
   }
 }

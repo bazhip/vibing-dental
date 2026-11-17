@@ -5,10 +5,11 @@ import { errorText } from '../utils/apiErrors';
 import { useAttachments, AttachmentKind } from '../hooks/useAttachments';
 import { ImageRole, Species } from '../types';
 import { ImageViewer } from './ImageViewer';
-import { ImageHistory, type ImageHistoryVisit } from './ImageHistory';
 import { imageTeeth, imageToothLabel } from '../utils/imageTeeth';
 import { isNativeApp } from '../native/platform';
 import { takePhoto } from '../native/camera';
+import { useMediaQuery } from '../ios/gesture';
+import './ImagingUpload.css';
 
 interface ImagingSectionProps {
   /** The active chart's cloud id — attachments are scoped to it. */
@@ -37,10 +38,6 @@ interface ImagingSectionProps {
   onCustomize?: () => void;
   /** The chart's species: which teeth an image can be pinned to. */
   species?: Species;
-  /** The patient's other visits, for "Image history" (absent or empty = hidden). */
-  otherVisits?: ImageHistoryVisit[];
-  /** Open one of those visits. */
-  onOpenVisit?: (chartId: string) => void;
 }
 
 type QueueItem = { key: string; name: string; status: 'waiting' | 'uploading' | 'failed'; error?: string };
@@ -75,19 +72,21 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageInPdfChange,
   readOnly = false,
   species = 'canine',
-  otherVisits = [],
-  onOpenVisit,
 }) => {
   const { t } = useTranslation('media');
   const store = useAttachments(chartId, practiceId, maxImages, dicomEnabled);
-  const [kind, setKind] = React.useState<AttachmentKind>('photo');
-  const [description, setDescription] = React.useState('');
+  const touchDevice = useMediaQuery('(any-pointer: coarse)') || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0);
+  const [capturing, setCapturing] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const [queue, setQueue] = React.useState<QueueItem[]>([]);
   const [dragging, setDragging] = React.useState(false);
   const [viewing, setViewing] = React.useState<number | null>(null);
+  const uploadHelpId = React.useId();
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const cameraRef = React.useRef<HTMLInputElement>(null);
+  const chartIdRef = React.useRef(chartId);
+  chartIdRef.current = chartId;
   const rootRef = React.useRef<HTMLDivElement>(null);
   const uploadingRef = React.useRef(false);
   const teeth = React.useMemo(() => imageTeeth(species), [species]);
@@ -100,10 +99,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     setQueue([]);
   }, [chartId]);
 
-  const kindRef = React.useRef(kind);
-  kindRef.current = kind;
-  const descriptionRef = React.useRef(description);
-  descriptionRef.current = description;
   const storeRef = React.useRef(store);
   storeRef.current = store;
 
@@ -123,22 +118,20 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
     setQueue((q) => [...q.filter((x) => x.status === 'failed'), ...batch]);
     setBusy(true);
     setError('');
-    const caption = descriptionRef.current;
-    const chosenKind = kindRef.current;
-    let anyOk = false;
+
     for (let i = 0; i < Math.min(room, files.length); i++) {
       const key = batch[i].key;
       setQueue((q) => q.map((x) => (x.key === key ? { ...x, status: 'uploading' } : x)));
       try {
-        await storeRef.current.upload(files[i], chosenKind, caption);
-        anyOk = true;
+        // Regular images start as photos; the upload hook detects DICOM
+        // radiographs. Classification stays editable on each image card.
+        await s.upload(files[i], 'photo', '');
         setQueue((q) => q.filter((x) => x.key !== key));
       } catch (err) {
         const message = errorText(err, t('imaging.addFailed'));
         setQueue((q) => q.map((x) => (x.key === key ? { ...x, status: 'failed', error: message } : x)));
       }
     }
-    if (anyOk) setDescription('');
     setBusy(false);
     uploadingRef.current = false;
   }, [t]);
@@ -179,15 +172,21 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   };
 
   const onTakePhoto = async () => {
-    setError('');
-    let file: File | null = null;
-    try {
-      file = await takePhoto();
-    } catch (err) {
-      setError(friendlyError(err, t('imaging.cameraFailed', { ns: 'chart' })));
+    if (!isNativeApp()) {
+      cameraRef.current?.click();
       return;
     }
-    if (file) await addFiles([file]);
+    const sourceChartId = chartId;
+    setCapturing(true);
+    setError('');
+    try {
+      const file = await takePhoto();
+      if (file && chartIdRef.current === sourceChartId) await addFiles([file]);
+    } catch (err) {
+      if (chartIdRef.current === sourceChartId) setError(friendlyError(err, t('imaging.cameraFailed', { ns: 'chart' })));
+    } finally {
+      setCapturing(false);
+    }
   };
 
   const atLimit = store.items.length >= store.maxImages;
@@ -237,11 +236,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   return (
     <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
-      {dragging && (
-        <div className="imaging__drop-hint" aria-hidden="true">
-          {atLimit ? limitMessage : t('imaging.dropHint')}
-        </div>
-      )}
       <div className="patient-form__header">
         <h2 className="patient-form__section-title">{t('imaging.title')}</h2>
         {store.loaded && store.maxImages > 0 && (
@@ -290,71 +284,41 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       )}
 
       {store.maxImages > 0 && !readOnly && (
-      <div className="imaging__uploader">
-        <div className="imaging__kind" role="radiogroup" aria-label={t('imaging.typeAria')}>
-          <label className={kind === 'photo' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
-            <input type="radio" name="img-kind" checked={kind === 'photo'} onChange={() => setKind('photo')} />
-            {t('imaging.photo')}
-          </label>
-          <label className={kind === 'xray' ? 'imaging__kind-opt imaging__kind-opt--on' : 'imaging__kind-opt'}>
-            <input type="radio" name="img-kind" checked={kind === 'xray'} onChange={() => setKind('xray')} />
-            {t('imaging.radiograph')}
-          </label>
-        </div>
-        <input
-          type="text"
-          className="patient-form__input imaging__desc"
-          placeholder={t('imaging.descriptionPlaceholder')}
-          aria-label={t('imaging.descriptionAria')}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button
-          type="button"
-          className="diagram-view__action"
-          onClick={() => fileRef.current?.click()}
-          disabled={busy || atLimit}
-          title={atLimit ? limitMessage : undefined}
-        >
-          {busy ? t('imaging.uploading') : t('imaging.add')}
-        </button>
-        {isNativeApp() && (
+        <div className={`imaging-upload${dragging ? ' imaging-upload--dragging' : ''}${atLimit ? ' imaging-upload--full' : ''}`} aria-busy={busy || capturing}>
           <button
             type="button"
-            className="diagram-view__action"
-            onClick={onTakePhoto}
-            disabled={busy || atLimit}
+            className="imaging-upload__dropzone"
+            onClick={() => fileRef.current?.click()}
+            disabled={busy || capturing || atLimit || !store.loaded}
             title={atLimit ? limitMessage : undefined}
+            aria-label={t('imaging.upload.title')}
+            aria-describedby={uploadHelpId}
           >
-            {t('imaging.takePhoto', { ns: 'chart' })}
+            <span className="imaging-upload__plus" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 5v14M5 12h14" /></svg>
+            </span>
+            <span className="imaging-upload__title">{busy ? t('imaging.uploading') : dragging ? t('imaging.dropHint') : t('imaging.upload.title')}</span>
+            <span className="imaging-upload__hint" id={uploadHelpId}>{atLimit ? limitMessage : isNativeApp() || touchDevice ? t('imaging.upload.touchHint') : t('imaging.upload.dropHint')}</span>
           </button>
-        )}
-        <input
-          ref={fileRef}
-          type="file"
-          multiple
-          accept={
-            store.dicomEnabled
-              ? 'image/png,image/jpeg,image/webp,.dcm,.dicom,application/dicom'
-              : 'image/png,image/jpeg,image/webp'
-          }
-          onChange={onPick}
-          style={{ display: 'none' }}
-        />
-      </div>
-      )}
-
-      {store.maxImages > 0 && !readOnly && (
-        <p className="patient-form__hint imaging__formats">
-          {store.dicomEnabled
-            ? t('imaging.formatsDicom')
-            : isNativeApp()
-            ? t('imaging.formatsApp', { ns: 'chart' })
-            : t('imaging.formatsPlain')}
-        </p>
-      )}
-      {canUpload && !isNativeApp() && (
-        <p className="patient-form__hint imaging__formats">{t('imaging.dropPasteHint')}</p>
+          <div className="imaging-upload__actions">
+            <button type="button" className="diagram-view__action" disabled={busy || capturing || atLimit || !store.loaded} onClick={() => fileRef.current?.click()}>
+              {isNativeApp() || touchDevice ? t('imaging.upload.library') : t('imaging.upload.files')}
+            </button>
+            {(isNativeApp() || touchDevice) && (
+              <button type="button" className="diagram-view__action" onClick={onTakePhoto} disabled={busy || capturing || atLimit || !store.loaded} title={atLimit ? limitMessage : undefined}>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M4 6h4l2-3h4l2 3h4v15H4Z" /><circle cx="12" cy="13" r="4" /></svg>
+                {t('imaging.takePhoto', { ns: 'chart' })}
+              </button>
+            )}
+          </div>
+          <p className="imaging-upload__formats">
+            {store.dicomEnabled ? t('imaging.formatsDicom') : isNativeApp() ? t('imaging.formatsApp', { ns: 'chart' }) : t('imaging.formatsPlain')}
+          </p>
+          <input ref={fileRef} type="file" multiple
+            accept={store.dicomEnabled ? 'image/png,image/jpeg,image/webp,.dcm,.dicom,application/dicom' : 'image/png,image/jpeg,image/webp'}
+            onChange={onPick} hidden />
+          {!isNativeApp() && touchDevice && <input ref={cameraRef} type="file" accept="image/*" capture="environment" onChange={onPick} hidden />}
+        </div>
       )}
 
       {queue.length > 0 && (
@@ -386,7 +350,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       {!store.loaded ? (
         <p className="practice-logo-empty">{t('imaging.loading')}</p>
       ) : store.items.length === 0 ? (
-        store.maxImages > 0 ? (
+        store.maxImages > 0 && readOnly ? (
           <p className="practice-logo-empty">
             {t('imaging.empty')}
           </p>
@@ -521,7 +485,6 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
         </ul>
       )}
 
-      <ImageHistory visits={otherVisits} onOpenVisit={onOpenVisit} toothLabel={toothLabel} />
 
       {viewing !== null && store.items[viewing] && (
         <ImageViewer

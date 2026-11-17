@@ -1,7 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import React from 'react';
-import { DialogHost, toast, toastWhenReady } from './dialogs';
+import { DialogHost, toast, toastWhenReady, confirmDialog, promptDialog, chooseDialog } from './dialogs';
 
 describe('toastWhenReady', () => {
   it('holds a toast raised before the host mounts and shows it once it does', async () => {
@@ -40,5 +40,26 @@ describe('web rendering (unchanged)', () => {
     act(() => toast('Saved'));
     expect((await screen.findByText('Saved')).closest('.ui-toast')).not.toBeNull();
     expect(screen.getByRole('button', { name: 'Dismiss' })).toHaveTextContent('×');
+  });
+});
+
+
+describe('web dialog keyboard containment', () => {
+  it.each(['confirm', 'prompt', 'choice'] as const)('keeps Tab and Shift+Tab inside %s', (kind) => {
+    render(<><button>Background</button><DialogHost /></>);
+    act(() => {
+      if (kind === 'confirm') void confirmDialog({ title: 'Confirm action' });
+      if (kind === 'prompt') void promptDialog({ title: 'Enter value' });
+      if (kind === 'choice') void chooseDialog({ title: 'Choose action', choices: [{ value: 'one', label: 'First action' }] });
+    });
+    const dialog = screen.getByRole(kind === 'prompt' ? 'dialog' : 'alertdialog');
+    const buttons = within(dialog).getAllByRole('button');
+    const first = kind === 'prompt' ? within(dialog).getByRole('textbox') : buttons[0];
+    const last = buttons[buttons.length - 1];
+    last.focus();
+    fireEvent.keyDown(last, { key: 'Tab' });
+    expect(first).toHaveFocus();
+    fireEvent.keyDown(first, { key: 'Tab', shiftKey: true });
+    expect(last).toHaveFocus();
   });
 });

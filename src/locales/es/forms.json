@@ -99,7 +99,7 @@
     "record": "Registro de anestesia"
   },
   "customEditor": {
-    "blocksLegend": "Sus bloqueos nerviosos",
+    "blocksLegend": "Bloqueos nerviosos adicionales",
     "blocksNote": "Filas adicionales Derecha / Izquierda (mL), p. ej. palatino mayor.",
     "blockName": "Nombre del bloqueo",
     "blockNameAria": "Nombre del bloqueo nervioso {{n}}",
@@ -108,7 +108,7 @@
     "fallbackBlock": "bloqueo nervioso",
     "fallbackField": "campo",
     "addBlock": "Añadir bloqueo nervioso",
-    "fieldsLegend": "Sus campos",
+    "fieldsLegend": "Campos de anestesia personalizados",
     "fieldsNote": "Se muestran en «Registro de anestesia», p. ej. premedicación, tubo endotraqueal, fluidos.",
     "fieldName": "Nombre del campo",
     "fieldNameAria": "Nombre del campo {{n}}",
@@ -123,8 +123,9 @@
       "text": "Texto",
       "number": "Número",
       "checkbox": "Sí / no",
-      "select": "Lista de opciones"
-    }
+      "select": "Lista desplegable"
+    },
+    "fieldType": "Tipo de campo"
   },
   "report": {
     "title": "Informe del tratamiento",
@@ -147,6 +148,8 @@
       "nameRequired": "Póngale un nombre a la plantilla."
     },
     "saved": "Plantilla «{{name}}» guardada.",
-    "saveFailed": "No se pudo guardar la plantilla. {{error}}"
+    "saveFailed": "No se pudo guardar la plantilla. {{error}}",
+    "customize": "Personalizar",
+    "customizeTitle": "Gestionar las plantillas de informe de tratamiento"
   }
 }

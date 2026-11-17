@@ -47,12 +47,12 @@
     "voiceResult3": "Diagramme de l’intervention · 104 marquée pour extraction",
     "grid": {
       "title": "Un remplissage aussi rapide qu’un tableur",
-      "blurb": "Des grilles Triadan de toute la bouche pour les dentitions féline, canine et déciduale. Un clic pour saisir, Tab, Entrée ou Espace pour enchaîner une série de valeurs annoncées à voix haute.",
+      "blurb": "Grilles Triadan complètes pour les dentitions félines, canines et déciduales. Saisissez les mesures d’un clic et naviguez avec Tab, Entrée ou Espace.",
       "lead": "La grille fonctionne comme votre équipe saisit déjà : cliquez sur une cellule et c’est parti. Les profondeurs de sondage sont notées sans quitter le patient des yeux.",
       "imageAlt": "La grille de saisie avec les valeurs de gingivite, de calcul, de poche, de furcation et de mobilité renseignées, et la dent 106 barrée comme absente",
       "points": {
-        "p1": "Un seul clic place la cellule en édition — fini le double-clic.",
-        "p2": "Tab, Entrée et Espace font avancer exactement comme dans un tableur : une série annoncée (« 3, 2, 4… ») se saisit sans quitter le patient des yeux.",
+        "p1": "Cliquez sur une cellule pour saisir les mesures.",
+        "p2": "Utilisez Tab, Entrée et Espace pour passer d’une cellule à l’autre pendant la saisie des mesures.",
         "p3": "Des scores pour toute la bouche en une seule action : définissez le calcul ou la gingivite de chaque dent depuis l’en-tête de colonne.",
         "p4": "La case Absente barre la ligne et remplit la dent sur le diagramme — une seule source de vérité.",
         "p5": "Lors d’une visite de contrôle, les valeurs de la fois précédente apparaissent en filigrane dans les cellules vides : comparez sans ouvrir l’ancien dossier.",
@@ -76,7 +76,7 @@
     "diagrams": {
       "title": "Des diagrammes toujours synchronisés",
       "blurb": "Les diagrammes dentaires de diagnostic et d’intervention suivent la grille — barrez une dent une seule fois et tout le dossier suit, du schéma au PDF.",
-      "lead": "Deux diagrammes anatomiques — les observations avant, les actes après — qui ne contredisent jamais la grille ni le document imprimé.",
+      "lead": "Des schémas anatomiques pour le diagnostic et les interventions, avec des observations synchronisées entre la grille et le dossier imprimé.",
       "imageAlt": "Le diagramme de diagnostic avec les dents absentes remplies et les codes AVDC — T/FX, T/FX/CCF, TR, AB, AT — ancrés à chaque dent",
       "points": {
         "p1": "Marquez une dent comme absente ou extraite d’un clic (ou au clavier — chaque dent est accessible).",
@@ -125,7 +125,7 @@
     "history": {
       "title": "Chaque visite, un seul patient",
       "blurb": "Les dossiers sont regroupés par patient : l’historique complet d’un animal qui revient est à un clic — et cette visite reprend là où la précédente s’est arrêtée.",
-      "lead": "Un patient, c’est une histoire, pas un tas de fichiers. ToothOps réunit les visites et reporte automatiquement ce qui doit l’être.",
+      "lead": "Regroupez les visites de chaque patient et reprenez les observations pertinentes lors de la visite suivante.",
       "points": {
         "p1": "Les dossiers sont regroupés par patient ; un sélecteur de visite dans la barre supérieure permet de passer d’une date à l’autre.",
         "p2": "Les nouvelles visites reprennent automatiquement les dents extraites et absentes — marquées « préc. » pour se lire comme un antécédent, non comme une observation du jour.",
@@ -136,8 +136,8 @@
     },
     "recall": {
       "title": "Rappels intégrés",
-      "blurb": "Fixez une date de contrôle en remplissant le dossier ; la liste des patients signale ceux à revoir et ceux en retard, pour que le prochain détartrage ne passe jamais à la trappe.",
-      "lead": "C’est dans le respect des contrôles que se gagnent les résultats dentaires — la liste tient le compte pour vous.",
+      "blurb": "Définissez une date de contrôle pendant la saisie et retrouvez les patients à revoir ou en retard dans la liste des patients.",
+      "lead": "Organisez le suivi avec les dates de contrôle et les rappels dans l’espace patients.",
       "points": {
         "p1": "Une date de contrôle sur le dossier place le patient dans la liste À revoir, avec la mention à revoir ou en retard.",
         "p2": "Envoyez un e-mail de rappel au propriétaire directement depuis la liste des patients.",
@@ -158,10 +158,10 @@
     },
     "offline": {
       "title": "Cloud et au fauteuil",
-      "blurb": "Chaque dossier est enregistré automatiquement dans le cloud et conservé en copie locale au fauteuil : une connexion qui saute ne fait jamais perdre une bouche.",
-      "lead": "Le Wi-Fi de la clinique ne fait pas partie de votre protocole d’anesthésie. ToothOps part du principe que la connexion va sauter et s’y prépare.",
+      "blurb": "Les dossiers sont enregistrés automatiquement dans le cloud, avec une copie locale disponible en cas de coupure de connexion.",
+      "lead": "Continuez la saisie lors des interruptions de connexion et vérifiez l’état de l’enregistrement avant de quitter la visite.",
       "points": {
-        "p1": "Chaque frappe est conservée localement, instantanément — recharger la page en pleine intervention ne fait rien perdre.",
+        "p1": "Les modifications sont conservées sur cet appareil pendant votre travail.",
         "p2": "Les nouveaux dossiers sont enregistrés automatiquement dans le cloud ; les enregistrements échoués sont relancés dès le retour de la connexion.",
         "p3": "Si votre session expire en pleine intervention, le dossier reste ouvert — reconnectez-vous directement par-dessus.",
         "p4": "Les modèles de compte rendu réutilisables évitent de tout retaper à chaque COHAT."

@@ -1,0 +1,139 @@
+/* Page-only directory styling; modal and native libraries retain their layouts. */
+.patients-workspace {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 28px clamp(16px, 3vw, 40px) 48px;
+  color: var(--text);
+}
+.patients-workspace__content.chart-library-modal {
+  --lib-cols: minmax(8rem, 1.7fr) minmax(4.5rem, 0.8fr) minmax(5.5rem, 1fr)
+    minmax(4rem, 0.7fr) minmax(6.5rem, 1fr) minmax(5.5rem, 0.9fr);
+  --lib-actions: 16rem;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  max-height: none;
+}
+.patients-workspace__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.patients-workspace__header h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--letter-display);
+}
+.patients-workspace__header p {
+  margin: 0;
+  max-width: 65ch;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.patients-workspace__header > button { flex-shrink: 0; }
+.patients-workspace .chart-library-modal__body { padding: 0; overflow: visible; }
+.patients-workspace .chart-library__controls {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  gap: 10px;
+  margin-bottom: 0;
+  align-items: center;
+}
+.patients-workspace .chart-library__search {
+  flex: 1 1 260px;
+  min-width: min(260px, 100%);
+}
+.patients-workspace .chart-library__search,
+.patients-workspace .chart-library__filter-select,
+.patients-workspace .chart-library__filter {
+  box-sizing: border-box;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  padding: 10px 12px;
+}
+.patients-workspace .chart-library__filter { font-weight: 600; }
+.patients-workspace .chart-library__table {
+  border: 1px solid var(--border);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--surface);
+  overflow-x: auto;
+}
+.patients-workspace .chart-library__scroll { max-height: none; overflow: visible; }
+.patients-workspace .chart-library__head-row {
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border-strong);
+}
+.patients-workspace .chart-library__head-row [role='columnheader'] {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+  padding: 6px 0;
+}
+.patients-workspace .chart-library__sort { min-height: 32px; }
+.patients-workspace .chart-library__sort:hover { color: var(--primary); }
+.patients-workspace .chart-library__due-toggle {
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border-color: var(--border-strong);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.patients-workspace .chart-library__due-toggle:hover,
+.patients-workspace .chart-library__due-toggle--on {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.patients-workspace .chart-library__group-main { min-height: 68px; }
+.patients-workspace .chart-library__row-actions { flex-wrap: wrap; padding-block: 8px; gap: 6px; }
+.patients-workspace .chart-library__act,
+.patients-workspace .chart-library__delete { min-height: 36px; }
+.patients-workspace .chart-library__empty {
+  padding: 48px 20px;
+  background: var(--surface);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.patients-workspace button:focus-visible,
+.patients-workspace input:focus-visible,
+.patients-workspace select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+@media (min-width: 701px) {
+  /* Keep headers and patient cells aligned when the directory needs horizontal scrolling. */
+  .patients-workspace .chart-library__row { min-width: 980px; }
+}
+@media (max-width: 700px) {
+  .patients-workspace { padding: 20px 16px 32px; }
+  .patients-workspace__header { flex-direction: column; gap: 16px; margin-bottom: 24px; }
+  .patients-workspace__header h2 { font-size: 24px; }
+  .patients-workspace .chart-library__controls { padding: 12px; }
+  .patients-workspace .chart-library__filter-select { flex: 1 1 130px; min-width: 0; }
+  .patients-workspace .chart-library-modal .chart-library__head-main { gap: 12px; flex-wrap: wrap; }
+  .patients-workspace .chart-library-modal .chart-library__group-main { padding: 16px 12px 8px; gap: 6px 12px; }
+  .patients-workspace .chart-library-modal .chart-library__row-actions { padding: 0 12px 12px; gap: 8px; }
+  .patients-workspace .chart-library-modal .chart-library__act,
+  .patients-workspace .chart-library-modal .chart-library__delete,
+  .patients-workspace .chart-library__due-toggle,
+  .patients-workspace .chart-library__sort { min-height: 44px; }
+  .patients-workspace .chart-library__cell { font-size: 13px; }
+  .patients-workspace .chart-library-modal .chart-library__cell--date::before,
+  .patients-workspace .chart-library-modal .chart-library__cell--recall::before {
+    content: attr(data-label) ' ';
+  }
+}

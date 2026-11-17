@@ -1,5 +1,5 @@
 {
-  "title": "Mes dossiers",
+  "title": "Patients",
   "unnamedPatient": "Patient sans nom",
   "search": {
     "placeholder": "Rechercher par nom ou numéro de patient…",
@@ -13,7 +13,7 @@
   },
   "importPdf": "Importer un PDF de dossier",
   "importPdfTitle": "Ouvrir un PDF de dossier créé avec cette application pour continuer à le modifier",
-  "newPatient": "+ Nouveau patient",
+  "newPatient": "Nouveau patient",
   "newPatientTitle": "Effacer le dossier en cours et commencer un tout nouveau patient",
   "loading": "Chargement…",
   "empty": "Aucun dossier enregistré pour l’instant — ils s’enregistrent automatiquement pendant que vous saisissez.",
@@ -61,7 +61,7 @@
     "clearRecallTitle": "Effacer le rappel de contrôle de {{name}} — par exemple après un contrôle qui n’a pas donné lieu à un nouveau dossier",
     "newVisit": "+ Visite",
     "newVisitTitle": "Commencer une nouvelle visite pour {{name}}",
-    "history": "Historique",
+    "history": "Historique des versions",
     "historyChartTitle": "Qui a enregistré le dossier de {{name}}, et quand",
     "historyVisitTitle": "Qui a enregistré cette visite, et quand",
     "deleteChart": "Supprimer le dossier de {{name}}",
@@ -130,5 +130,9 @@
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
     "saveTemplate": "Enregistrer le modèle"
+  },
+  "workspace": {
+    "description": "Recherchez les dossiers patients, consultez les visites et gérez les contrôles.",
+    "backToVisit": "Retour à la visite en cours"
   }
 }

@@ -135,7 +135,7 @@ describe('ExamAreasEditor', () => {
     const noop = () => {};
     const { container, unmount } = render(<ExamAreasEditor areas={[]} onChange={noop} />);
     expect(findUntranslated(container, ALLOW)).toEqual([]);
-    fireEvent.click(screen.getByRole('button', { name: /⟦Add the full oral exam list⟧/ }));
+    fireEvent.click(screen.getByRole('button', { name: /⟦Add suggested areas⟧/ }));
     expect(findUntranslated(container, ALLOW)).toEqual([]);
     unmount();
     const second = render(<ExamAreasEditor areas={[{ id: 'x1', label: 'Lips' }]} onChange={noop} />);

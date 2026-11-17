@@ -1,5 +1,5 @@
 {
-  "title": "Mis historiales",
+  "title": "Pacientes",
   "unnamedPatient": "Paciente sin nombre",
   "search": {
     "placeholder": "Buscar por nombre o número de paciente…",
@@ -13,7 +13,7 @@
   },
   "importPdf": "Importar PDF de historial",
   "importPdfTitle": "Abra un PDF de historial creado con esta aplicación para seguir editándolo",
-  "newPatient": "+ Nuevo paciente",
+  "newPatient": "Nuevo paciente",
   "newPatientTitle": "Borrar el historial en curso y empezar un paciente completamente nuevo",
   "loading": "Cargando…",
   "empty": "Aún no hay historiales guardados: se guardan automáticamente mientras los registra.",
@@ -61,7 +61,7 @@
     "clearRecallTitle": "Borrar el recordatorio de revisión de {{name}} — por ejemplo, tras una revisión que no generó un historial nuevo",
     "newVisit": "+ Visita",
     "newVisitTitle": "Iniciar una nueva visita para {{name}}",
-    "history": "Versiones",
+    "history": "Historial de versiones",
     "historyChartTitle": "Quién guardó el historial de {{name}} y cuándo",
     "historyVisitTitle": "Quién guardó esta visita y cuándo",
     "deleteChart": "Eliminar el historial de {{name}}",
@@ -130,5 +130,9 @@
     "saving": "Guardando…",
     "saveChanges": "Guardar cambios",
     "saveTemplate": "Guardar plantilla"
+  },
+  "workspace": {
+    "description": "Busque historias de pacientes, consulte visitas y gestione revisiones.",
+    "backToVisit": "Volver a la visita actual"
   }
 }

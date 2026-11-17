@@ -50,8 +50,13 @@ describe('EntryGrid on the website', () => {
     expect(container.querySelector('.entry-grid__footnote')).not.toBeNull();
     expect(container.querySelector('.ios-appshell')).toBeNull();
     expect(screen.queryByRole('tablist')).toBeNull();
-    // The form is a direct child of the page container, as before.
-    expect(container.querySelector('.entry-grid-container > form#chart-form')).not.toBeNull();
+    // The chart remains mounted inside the destination content.
+    expect(container.querySelector('#workspace-content form#chart-form')).not.toBeNull();
+    expect(container.querySelector('.sidebar-layout__nav')).toHaveTextContent('Imaging');
+    const action = within(container.querySelector('form#chart-form')!).getByRole('button', { name: 'Customize' });
+    const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+    fireEvent(action, enter);
+    expect(enter.defaultPrevented).toBe(false);
   });
 });
 

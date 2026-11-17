@@ -114,18 +114,19 @@
       "anesthesia": "Narkose-Einstellungen",
       "charting": "Einstellungen für die Befunderfassung",
       "diagnosis": "Diagnose-Einstellungen",
-      "images": "Bilder-Einstellungen",
-      "exam": "Untersuchungs-Einstellungen"
+      "images": "Bildgebungseinstellungen",
+      "exam": "Untersuchungs-Einstellungen",
+      "procedure": "Einstellungen für Eingriffe"
     },
-    "noteAccount": "Nur für Sie — diese Einstellungen folgen Ihrem Konto auf jedes Gerät. Änderungen werden sofort gespeichert.",
-    "noteBrowser": "In diesem Browser gespeichert. Änderungen gelten sofort.",
+    "noteAccount": "Ihre persönlichen Einstellungen gelten auf allen Geräten Ihres Kontos. Änderungen werden automatisch gespeichert.",
+    "noteBrowser": "Persönliche Einstellungen werden automatisch in diesem Browser gespeichert.",
     "all": "Alle Zahnschema-Einstellungen",
     "charting": {
       "title": "Zahnschema",
-      "view": "Ansicht",
+      "view": "Ansicht des Zahnschemas",
       "grid": "Raster",
       "byTooth": "Pro Zahn",
-      "pocket": "Taschentiefen",
+      "pocket": "Erfassung der Taschentiefen",
       "pocketTooth": "Eine pro Zahn",
       "pocketRoot": "Eine pro Wurzel",
       "pocketRootHint": "M / D, oder MB / MP / D bei dreiwurzeligen Zähnen",
@@ -140,14 +141,14 @@
       "scoreFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
       "scoreTooth": "Nach unten zum nächsten Zahn gehen",
       "scoreToothHint": "um einen Befund im ganzen Gebiss zu bewerten",
-      "scoreStay": "Stehen bleiben",
-      "columns": "Spalten"
+      "scoreStay": "Aktuelle Zelle ausgewählt lassen",
+      "columns": "Sichtbare Messwerte"
     },
     "beside": {
-      "title": "Neben den Zähnen",
+      "title": "Befunde im Zahnschema",
       "show": "Befunde im Diagnose-Schema anzeigen",
       "showHint": "(und im PDF)",
-      "include": "Einbeziehen"
+      "include": "Anzuzeigende Befunde"
     },
     "anesthesia": {
       "title": "Narkose",
@@ -160,16 +161,16 @@
         "mental": "Mental",
         "other": "Andere"
       },
-      "usual": "Ihr übliches Anästhetikum",
-      "usualNote": "Wird mit einem Tipp angeboten, wenn in der Akte kein Anästhetikum eingetragen ist.",
+      "usual": "Bevorzugtes Lokalanästhetikum",
+      "usualNote": "Als Schnellzugriff verfügbar, wenn kein Anästhetikum dokumentiert ist. Sie entscheiden, wann es übernommen wird.",
       "drugPlaceholder": "z. B. Bupivacain",
-      "drugAria": "Übliches Anästhetikum",
-      "strengthAria": "Konzentration des üblichen Anästhetikums (%)",
-      "adjunct": "Zur Mischung hinzugefügt",
-      "adjunctNote": "Zur Mischung hinzugefügt (optional), z. B. Buprenorphin oder Dexmedetomidin. „Mein übliches verwenden“ erfasst dann beides.",
+      "drugAria": "Bevorzugtes Lokalanästhetikum",
+      "strengthAria": "Konzentration des Lokalanästhetikums (%)",
+      "adjunct": "Zusätzliches Medikament",
+      "adjunctNote": "Optionales Medikament zum bevorzugten Anästhetikum. Der Schnellzugriff übernimmt beide.",
       "adjunctPlaceholder": "z. B. Buprenorphin",
-      "adjunctAria": "Übliches Medikament in der Mischung",
-      "adjunctStrengthAria": "Stärke des Medikaments in der Mischung"
+      "adjunctAria": "Zusätzliches Medikament",
+      "adjunctStrengthAria": "Konzentration des zusätzlichen Medikaments"
     },
     "patient": {
       "title": "Patientenseite",
@@ -178,11 +179,11 @@
     "pdf": {
       "title": "PDF",
       "grid": "Befundraster einbeziehen",
-      "gridHint": "(optional, wenn die Befunde im Schema stehen)",
+      "gridHint": "Erforderlich bei ausgeblendeten Diagrammbefunden, damit Messwerte im PDF erhalten bleiben.",
       "images": "Bilder einbeziehen",
       "imagesHint": "(4 pro Seite, nach der Akte)"
     },
-    "noteDevice": "Auf diesem Gerät gespeichert. Änderungen gelten sofort.",
+    "noteDevice": "Persönliche Einstellungen werden automatisch auf diesem Gerät gespeichert.",
     "spaceMovesDownHint": "Schnell, um eine Reihe von Tiefen anzusagen",
     "scoreTapFindingHint": "Beweglichkeit → Rezession → … für Untersuchungen Zahn für Zahn",
     "scoreTapToothHint": "Um einen Befund im ganzen Maul zu bewerten",
@@ -190,34 +191,68 @@
     "mirrorHint": "Und im PDF",
     "drugName": "Wirkstoff",
     "drugStrength": "Konzentration",
-    "pdfGridHint": "Optional, solange die Befunde im Diagramm stehen",
+    "pdfGridHint": "Erforderlich bei ausgeblendeten Diagrammbefunden, damit Messwerte im PDF erhalten bleiben.",
     "pdfImagesHint": "4 pro Seite, nach der Akte",
     "quickCodes": {
-      "title": "Schnellcodes",
-      "note": "Ein-Tipp-Schaltflächen für Codes, die Sie häufig erfassen, z. B. T/SN (überzähliger Zahn). Sie erscheinen unter der Diagnosenotiz in der Ansicht Pro Zahn und über dem Diagnose-Schema.",
+      "title": "Diagnosekürzel",
+      "note": "Fügen Sie AVDC- oder eigene Codes für Zahnnotizen und das Diagnoseschema hinzu. Die Reihenfolge hier bestimmt die Reihenfolge der Kürzel.",
       "remove": "Entfernen",
       "removeAria": "{{code}} entfernen",
       "placeholder": "Code, z. B. T/SR",
       "addAria": "Hinzuzufügender Code",
-      "add": "Hinzufügen"
+      "add": "Hinzufügen",
+      "duplicate": "Dieser Code ist bereits in Ihren Kürzeln enthalten."
     },
     "exam": {
       "title": "Untersuchung",
-      "areas": "Ihre Untersuchungsbereiche",
-      "areasNote": "Werden nach den sechs festen Bereichen angezeigt, jeweils mit Normal / Auffällig und einem Kommentar. Nur beantwortete Bereiche erscheinen im PDF.",
+      "areas": "Zusätzliche Untersuchungsbereiche",
+      "areasNote": "Diese erscheinen nach den Standardbereichen in der folgenden Reihenfolge. Nur ausgefüllte Bereiche erscheinen im PDF. Beim Entfernen bleiben dokumentierte Befunde erhalten.",
       "areaPlaceholder": "z. B. Lippen",
       "areaAria": "Name des Untersuchungsbereichs {{n}}",
       "areaN": "Bereich {{n}}",
       "remove": "Entfernen",
       "removeAria": "{{name}} entfernen",
       "add": "Bereich hinzufügen",
-      "addPreset": "Vollständige Liste der Maulhöhlenuntersuchung hinzufügen",
+      "addPreset": "Vorgeschlagene Bereiche hinzufügen",
       "presets": {
         "lips": "Lippen / mukokutaner Übergang",
         "gingiva": "Gingiva / mukogingivale Grenzlinie",
         "salivary": "Ausführungsgänge der Speicheldrüsen",
         "floor": "Mundboden / Zungenbändchen"
       }
+    },
+    "customization": {
+      "navigation": "Kategorien der Befundeinstellungen",
+      "categories": {
+        "patient": "Patientendaten",
+        "exam": "Untersuchung der Maulhöhle",
+        "diagnosis": "Diagnose",
+        "images": "Bildgebung und PDF",
+        "procedure": "Eingriff"
+      },
+      "descriptions": {
+        "patient": "Wählen Sie, ob das Nachkontrolldatum auf der Patientenseite angezeigt wird.",
+        "exam": "Wählen Sie zusätzliche Bereiche für Ihre orale Untersuchung.",
+        "anesthesia": "Konfigurieren Sie Nervenblöcke, eigene Felder und Ihre üblichen Medikamente.",
+        "charting": "Legen Sie Darstellung, Messungen und Dateneingabe fest.",
+        "diagnosis": "Wählen Sie die Befunde im Diagnoseschema und Ihre Schnellcodes.",
+        "images": "Wählen Sie die Tabelle und Bilder für erzeugte PDFs.",
+        "procedure": "Wählen Sie die Schnellcodes für das Eingriffsschema."
+      },
+      "showRecheck": "Feld für den Nachkontrolltermin anzeigen",
+      "layout": "Darstellung und Messungen",
+      "input": "Dateneingabe"
+    },
+    "procedureQuickCodes": {
+      "title": "Eingriffskürzel",
+      "note": "Fügen Sie Codes für häufig dokumentierte Eingriffe hinzu. Diese Kürzel erscheinen nur im Eingriffsschema; die Diagnose-Schnellcodes bleiben getrennt.",
+      "placeholder": "Code, z. B. XSS"
+    },
+    "list": {
+      "moveUp": "{{name}} nach oben verschieben",
+      "moveDown": "{{name}} nach unten verschieben",
+      "count": "{{used}} von {{max}} eingerichtet",
+      "limit": "Limit erreicht. Entfernen Sie einen Eintrag, um einen weiteren hinzuzufügen."
     }
   },
   "feedback": {
@@ -280,5 +315,16 @@
   "reminders": {
     "sendFrom": "Senden Sie eine Erinnerung für einen Patienten über Patienten oder Kontrollen.",
     "settingUp": "Ihre Praxis wird eingerichtet — schauen Sie gleich noch einmal vorbei."
+  },
+  "workspace": {
+    "general": "Allgemein",
+    "team": "Team",
+    "templates": "Vorlagen",
+    "billing": "Abrechnung",
+    "reminders": "Erinnerungen an Nachkontrollen",
+    "charting": "Dokumentationseinstellungen",
+    "back": "Zurück zum aktuellen Besuch",
+    "scope": "Verwalten Sie die gemeinsamen Einstellungen Ihrer Praxis.",
+    "saveHint": "Speichern Sie Änderungen am Praxisnamen. Andere Einstellungen werden sofort übernommen."
   }
 }

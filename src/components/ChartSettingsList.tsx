@@ -154,6 +154,15 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
         </ListSection>
       )}
 
+      {show.procedureQuickCodes && (
+        <ListSection>
+          <div role="listitem" className="ios-list__item ios-cell-embed">
+            <QuickCodesEditor codes={prefs.procedureQuickCodes} onChange={(procedureQuickCodes) => onChange({ procedureQuickCodes })}
+              title={t('chart.procedureQuickCodes.title')} description={t('chart.procedureQuickCodes.note')} placeholder={t('chart.procedureQuickCodes.placeholder')} />
+          </div>
+        </ListSection>
+      )}
+
       {show.exam && (
         <ListSection header={t('chart.exam.title')}>
           <div role="listitem" className="ios-list__item ios-cell-embed">
@@ -269,7 +278,7 @@ export function ChartSettingsList({ prefs, followsAccount, onChange, only, onSho
 
       {show.patient && (
         <ListSection header={t('chart.patient.title')}>
-          <SwitchRow title={t('chart.patient.hideRecheck')} checked={prefs.hideRecheck} onChange={(on) => onChange({ hideRecheck: on })} />
+          <SwitchRow title={t('chart.customization.showRecheck')} checked={!prefs.hideRecheck} onChange={(on) => onChange({ hideRecheck: !on })} />
         </ListSection>
       )}
 

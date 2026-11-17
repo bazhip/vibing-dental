@@ -99,7 +99,7 @@
     "record": "Anesthesia record"
   },
   "customEditor": {
-    "blocksLegend": "Your nerve blocks",
+    "blocksLegend": "Additional nerve blocks",
     "blocksNote": "Extra Right / Left rows (mL), e.g. Major palatine.",
     "blockName": "Block name",
     "blockNameAria": "Nerve block {{n}} name",
@@ -108,7 +108,7 @@
     "fallbackBlock": "nerve block",
     "fallbackField": "field",
     "addBlock": "Add nerve block",
-    "fieldsLegend": "Your fields",
+    "fieldsLegend": "Custom anesthesia fields",
     "fieldsNote": "Shown under “Anesthesia record”, e.g. Premedication, ET tube, Fluids.",
     "fieldName": "Field name",
     "fieldNameAria": "Field {{n}} name",
@@ -123,8 +123,9 @@
       "text": "Text",
       "number": "Number",
       "checkbox": "Yes / no",
-      "select": "Pick-list"
-    }
+      "select": "Dropdown list"
+    },
+    "fieldType": "Field type"
   },
   "report": {
     "title": "Treatment report",
@@ -147,6 +148,8 @@
       "nameRequired": "Give the template a name."
     },
     "saved": "Template “{{name}}” saved.",
-    "saveFailed": "Couldn’t save the template. {{error}}"
+    "saveFailed": "Couldn’t save the template. {{error}}",
+    "customize": "Customize",
+    "customizeTitle": "Manage treatment report templates"
   }
 }

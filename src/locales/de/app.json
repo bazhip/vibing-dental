@@ -1,7 +1,7 @@
 {
   "brand": "ToothOps Charting",
   "brandTrial": "ToothOps Charting · Testversion",
-  "skipLink": "Zur Akte springen",
+  "skipLink": "Zum Hauptinhalt springen",
   "sections": {
     "patient": "Patient",
     "exam": "Untersuchung",
@@ -9,7 +9,7 @@
     "charting": "Zahnschema",
     "diagnosis": "Diagnose",
     "procedure": "Eingriff",
-    "images": "Bilder",
+    "images": "Bildgebung",
     "treatment": "Behandlungsbericht",
     "ownerReport": "Besitzerbericht",
     "menuFallback": "Abschnitte",
@@ -39,7 +39,8 @@
     "hint": "Wird im PDF über dem Behandlungsbericht gedruckt."
   },
   "lock": {
-    "title": "Nur Ansicht — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen"
+    "title": "Nur Ansicht — wählen Sie Akte bearbeiten, um Änderungen vorzunehmen",
+    "description": "Die Bearbeitung ist für diesen gespeicherten Besuch deaktiviert."
   },
   "topbar": {
     "patientEmpty": "Noch kein Patient — legen Sie einen im Abschnitt Patient an",
@@ -54,8 +55,8 @@
     "signInHint": "Sie haben bereits ein Praxiskonto? Melden Sie sich an",
     "signUp": "Kostenloses Konto erstellen",
     "signUpHint": "Legen Sie ein Praxiskonto an — Ihre Akten werden in der Cloud gespeichert und Ihre PDFs tragen Praxisnamen und Logo",
-    "myCharts": "Meine Akten",
-    "myChartsShort": "Akten",
+    "myCharts": "Patienten",
+    "myChartsShort": "Patienten",
     "editChart": "Akte bearbeiten",
     "editChartShort": "Bearbeiten",
     "undo": "Änderungen rückgängig",
@@ -140,7 +141,7 @@
     "actual": "Was tatsächlich passiert ist:",
     "involved": "Betroffene Tierart / betroffener Zahn / Abschnitt (falls zutreffend):",
     "browser": "Browser und Gerät:",
-    "screenshot": "(Wenn möglich, hängen Sie einen Screenshot an — das hilft enorm.)"
+    "screenshot": "Fügen Sie einen Screenshot hinzu, wenn er das Problem verdeutlicht."
   },
   "menu": {
     "open": "Einstellungsmenü öffnen",
@@ -174,7 +175,7 @@
     },
     "feedback": {
       "label": "Feedback senden",
-      "sub": "Melden Sie ein Problem oder schlagen Sie eine Idee vor — es kommt direkt bei uns an."
+      "sub": "Melden Sie ein Problem oder schlagen Sie eine Verbesserung vor."
     },
     "whatsNew": {
       "label": "Neuigkeiten",
@@ -185,12 +186,12 @@
       "sub": "Die Einführung in alle Teile der App erneut ansehen."
     },
     "homepage": {
-      "label": "Startseite",
-      "sub": "Produktseite ansehen — Ihre Akte bleibt hier erhalten."
+      "label": "ToothOps-Website",
+      "sub": "Produktinformationen, Preise und Kontakt."
     },
     "signOut": {
       "label": "Abmelden",
-      "sub": "Beenden Sie Ihre Sitzung und kehren Sie zur Startseite zurück."
+      "sub": "Beenden Sie Ihre Sitzung."
     }
   },
   "trialSignIn": {
@@ -215,8 +216,8 @@
     "offline": "Der Server ist nicht erreichbar. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut — Ihre Akte ist auf diesem Gerät sicher.",
     "saveFailed": "Speichern fehlgeschlagen: {{message}}. Ihre Akte ist auf diesem Gerät sicher — versuchen Sie es gleich noch einmal.",
     "unknownError": "unbekannter Fehler",
-    "changedByOther": "Diese Akte wurde von jemand anderem geändert — öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
-    "notSavedConflict": "Nicht gespeichert — diese Akte wurde von jemand anderem geändert. Öffnen Sie sie erneut über Meine Akten, um deren Version zu sehen",
+    "changedByOther": "Diese Akte wurde von jemand anderem geändert — öffnen Sie sie erneut über Patienten, um deren Version zu sehen",
+    "notSavedConflict": "Nicht gespeichert — diese Akte wurde von jemand anderem geändert. Öffnen Sie sie erneut über Patienten, um deren Version zu sehen",
     "noPermission": "Sie haben keine Berechtigung, Änderungen an dieser Akte zu speichern. Fragen Sie den Praxisinhaber oder beginnen Sie einen neuen Besuch",
     "noDeletePermission": "Sie haben keine Berechtigung, diese Akte zu löschen. Fragen Sie den Praxisinhaber.",
     "practiceUnknown": "Ihre Praxisdaten sind noch nicht geladen, daher kann diese neue Akte nicht in der Praxis gespeichert werden. Prüfen Sie Ihre Verbindung und laden Sie die Seite neu — Ihre Akte ist weiterhin auf diesem Gerät",
@@ -268,11 +269,21 @@
   "chartsMenu": {
     "thisPatient": "Dieser Patient",
     "newVisit": "Neuer Besuch",
-    "newVisitHint": "Ein neuer datierter Besuch — Identität und bereits fehlende Zähne werden übernommen.",
+    "newVisitHint": "Ein neuer datierter Besuch mit Übernahme der Patientendaten und zuvor fehlender oder extrahierter Zähne.",
     "history": "Versionsverlauf",
     "historyHint": "Jede gespeicherte Version dieser Akte — wer sie gespeichert hat und wann.",
     "allPatients": "Alle Patienten",
-    "openLibrary": "Meine Akten öffnen…",
+    "openLibrary": "Patienten anzeigen",
     "openLibraryHint": "Suchen und öffnen Sie die Akten eines beliebigen Patienten."
+  },
+  "workspace": {
+    "help": "Hilfe",
+    "account": "Ihr Konto",
+    "visitActions": "Besuchsaktionen",
+    "practice": "Praxiseinstellungen",
+    "currentVisit": "Aktueller Besuch",
+    "navigation": "Arbeitsbereichsnavigation",
+    "patientContext": "Aktueller Patient und Besuch",
+    "more": "Mehr"
   }
 }

@@ -76,6 +76,13 @@ function library(rows: CloudChartMeta[], hasMore = false) {
 }
 
 describe('ChartLibrary', () => {
+  it('translates the full-page Patients heading and return action', async () => {
+    const { container } = render(<ChartLibrary {...noopProps} presentation="page" listCharts={async () => ({ rows: [], hasMore: false })} />);
+    await screen.findByText('⟦No saved charts yet — they save automatically as you chart.⟧');
+    expect(screen.getByRole('region', { name: '⟦Patients⟧' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '⟦Back to current visit⟧' })).toBeInTheDocument();
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
   it('empty library, loading and a load error', async () => {
     const { container, unmount } = library([]);
     expect(findUntranslated(container, ALLOW)).toEqual([]);

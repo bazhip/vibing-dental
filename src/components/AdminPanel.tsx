@@ -834,11 +834,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
           : 'Loading…'}
       </p>
 
-      <div className="admin-panel__tabs" role="tablist">
+      <div className="admin-panel__tabs" role="tablist" onKeyDown={(event) => {
+        const tabs = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+        const index = tabs.indexOf(event.target as HTMLButtonElement);
+        if (index < 0) return;
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1
+          : event.key === 'ArrowRight' ? (index + 1) % tabs.length
+          : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : -1;
+        if (next < 0) return;
+        event.preventDefault();
+        tabs[next].focus();
+        tabs[next].click();
+      }}>
         <button
           type="button"
           role="tab"
           aria-selected={tab === 'accounts'}
+          tabIndex={tab === 'accounts' ? 0 : -1}
           className={tab === 'accounts' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
           onClick={() => setTab('accounts')}
         >
@@ -848,6 +860,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
           type="button"
           role="tab"
           aria-selected={tab === 'practices'}
+          tabIndex={tab === 'practices' ? 0 : -1}
           className={tab === 'practices' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
           onClick={() => setTab('practices')}
         >
@@ -857,6 +870,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
           type="button"
           role="tab"
           aria-selected={tab === 'billing'}
+          tabIndex={tab === 'billing' ? 0 : -1}
           className={tab === 'billing' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
           onClick={() => setTab('billing')}
         >
@@ -866,6 +880,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ open, onClose, presentat
           type="button"
           role="tab"
           aria-selected={tab === 'ai'}
+          tabIndex={tab === 'ai' ? 0 : -1}
           className={tab === 'ai' ? 'admin-panel__tab admin-panel__tab--on' : 'admin-panel__tab'}
           onClick={() => setTab('ai')}
         >

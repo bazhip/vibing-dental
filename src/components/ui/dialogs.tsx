@@ -216,7 +216,7 @@ function ConfirmView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'con
   const titleId = `dlg-title-${req.id}`;
   return (
     <div className="ui-dialog-overlay" {...backdrop}>
-      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">
@@ -267,6 +267,7 @@ function PromptView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'prom
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        onKeyDown={(e) => trapTab(e, e.currentTarget)}
         onSubmit={(e) => { e.preventDefault(); submit(); }}
       >
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
@@ -306,7 +307,7 @@ function ChoiceView({ req, onDone }: { req: Extract<DialogRequest, { kind: 'choo
   const titleId = `dlg-title-${req.id}`;
   return (
     <div className="ui-dialog-overlay" {...backdrop}>
-      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="ui-dialog" role="alertdialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(e) => trapTab(e, e.currentTarget)}>
         <h2 id={titleId} className="ui-dialog__title">{opts.title}</h2>
         {opts.message && <div className="ui-dialog__message">{opts.message}</div>}
         <div className="ui-dialog__actions">

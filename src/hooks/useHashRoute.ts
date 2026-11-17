@@ -1,5 +1,14 @@
 import React from 'react';
 
+// All route consumers consult the same gate before reading the browser URL.
+// This prevents a parent route from unmounting an editor during a guarded traversal.
+let routeGate: ((event: HashChangeEvent) => boolean) | null = null;
+const gatedEvents = new WeakMap<Event, boolean>();
+function allowRouteEvent(event: HashChangeEvent): boolean {
+  if (!gatedEvents.has(event)) gatedEvents.set(event, routeGate?.(event) ?? true);
+  return gatedEvents.get(event)!;
+}
+
 /**
  * Hand-rolled hash routing — no router dependency for three routes.
  *
@@ -33,7 +42,7 @@ export const CHART_SECTION_IDS = [
 ] as const;
 
 export interface HashRoute {
-  view: 'chart' | 'library' | 'home' | 'join';
+  view: 'chart' | 'library' | 'home' | 'join' | 'settings';
   /** Present on #/join/:token (an invite to join a practice). */
   joinToken?: string;
   /** Present on #/chart/:id links. */
@@ -48,6 +57,7 @@ function isSection(segment: string | undefined): segment is string {
 
 function parse(): HashRoute {
   const h = window.location.hash;
+  if (h === '#/settings') return { view: 'settings' };
   if (h === '#/library') return { view: 'library' };
   if (h === '#/home') return { view: 'home' };
   const join = h.match(/^#\/join\/([A-Za-z0-9_.-]+)$/);
@@ -68,10 +78,15 @@ export function useHashRoute(): {
    *  pushing (used to canonicalize, so Back isn't polluted). */
   navigate: (hash: string, opts?: { replace?: boolean }) => void;
 } {
-  const [route, setRoute] = React.useState<HashRoute>(parse);
+  const [route, setRoute] = React.useState<HashRoute>(() => {
+    if (typeof window.history.state?.workspaceIndex !== 'number') {
+      window.history.replaceState({ ...window.history.state, workspaceIndex: 0 }, '', window.location.href);
+    }
+    return parse();
+  });
 
   React.useEffect(() => {
-    const onHash = () => setRoute(parse());
+    const onHash = (event: HashChangeEvent) => { if (allowRouteEvent(event)) setRoute(parse()); };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
@@ -81,7 +96,7 @@ export function useHashRoute(): {
     if (opts?.replace) {
       try {
         window.history.replaceState(
-          null,
+          window.history.state,
           '',
           window.location.pathname + window.location.search + hash
         );
@@ -95,9 +110,50 @@ export function useHashRoute(): {
       // useHashRoute instance (App, EntryGrid) stays in sync.
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     } else {
-      window.location.hash = hash;
+      window.history.pushState({ ...window.history.state, workspaceIndex: (window.history.state?.workspaceIndex ?? 0) + 1 }, '', window.location.pathname + window.location.search + hash);
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
     }
   }, []);
 
   return { route, navigate };
+}
+
+/** Intercept departures before any route consumer can unmount a draft editor.
+ * The shared route gate covers browser Back/Forward and links outside this component.
+ */
+export function useHashRouteGuard(guard: () => Promise<boolean>, enabled: boolean): void {
+  React.useEffect(() => {
+    if (!enabled) return;
+    const acceptedHash = window.location.hash;
+    const acceptedIndex = window.history.state?.workspaceIndex;
+    let restored: (() => void) | undefined;
+    let pending = false;
+    let approved = false;
+    let active = true;
+    const replaceHash = (hash: string) => window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search + hash);
+    const onChange = () => {
+      if (approved) return true;
+      if (window.location.hash === acceptedHash) { restored?.(); restored = undefined; return true; }
+      const destination = window.location.hash;
+      if (pending) return false;
+      pending = true;
+      const destinationIndex = window.history.state?.workspaceIndex;
+      const delta = typeof acceptedIndex === 'number' && typeof destinationIndex === 'number'
+        ? acceptedIndex - destinationIndex : 0;
+      const restoration = delta ? new Promise<void>((resolve) => {
+        restored = resolve;
+        window.history.go(delta);
+      }) : Promise.resolve();
+      if (!delta) replaceHash(acceptedHash);
+      void Promise.all([guard(), restoration]).then(([leave]) => {
+        if (!active || !leave) return;
+        approved = true;
+        if (delta) window.history.go(-delta);
+        else { replaceHash(destination); window.dispatchEvent(new HashChangeEvent('hashchange')); }
+      }).finally(() => { pending = false; });
+      return false;
+    };
+    routeGate = onChange;
+    return () => { active = false; if (routeGate === onChange) routeGate = null; };
+  }, [enabled, guard]);
 }

@@ -1,6 +1,6 @@
 {
   "imaging": {
-    "title": "Images",
+    "title": "Imagerie",
     "signedOut": "Connectez-vous avec un compte de clinique pour joindre des photos intra-orales et des radiographies dentaires — elles sont stockées de façon privée avec le dossier.",
     "usage": "{{used}} sur {{max}} images",
     "customize": "Personnaliser",
@@ -10,7 +10,7 @@
     "pdfSelected": "{{selected}} sur {{total}} sélectionnées",
     "freePlan": "Le téléversement de photos et de radiographies n’est pas inclus dans l’offre gratuite.",
     "typeAria": "Type d’image",
-    "photo": "Photo",
+    "photo": "Image",
     "radiograph": "Radiographie",
     "descriptionPlaceholder": "Description (facultatif)",
     "descriptionAria": "Description de l’image (facultatif)",
@@ -55,7 +55,14 @@
     "toothAria": "Dent de cette image",
     "toothTitle": "Associer cette image à une dent (affichée sur l’étiquette du PDF)",
     "toothNone": "Aucune dent",
-    "toothFailed": "Impossible de modifier la dent de cette image."
+    "toothFailed": "Impossible de modifier la dent de cette image.",
+    "upload": {
+      "title": "Ajouter des images",
+      "dropHint": "Déposez des images ici ou cliquez pour parcourir les fichiers. Vous pouvez aussi coller une image.",
+      "touchHint": "Choisissez dans votre photothèque ou vos fichiers, ou prenez une photo.",
+      "library": "Photothèque ou fichiers",
+      "files": "Choisir des fichiers"
+    }
   },
   "documents": {
     "title": "Télécharger les PDF",
@@ -155,6 +162,7 @@
     "imageCount_one": "1 image",
     "imageCount_many": "{{count}} images",
     "imageCount_other": "{{count}} images",
-    "openVisit": "Ouvrir la visite"
+    "openVisit": "Ouvrir la visite",
+    "title": "Historique des images"
   }
 }

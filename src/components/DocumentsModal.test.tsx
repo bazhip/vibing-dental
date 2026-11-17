@@ -107,3 +107,47 @@ describe('DocumentsModal — iOS app', () => {
     expect(screen.queryByRole('tab')).toBeNull();
   });
 });
+
+describe('DocumentsModal — web keyboard access', () => {
+  it('contains Tab navigation and restores the opener on close', () => {
+    const visible = vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(document.body);
+    const opener = document.createElement('button');
+    document.body.append(opener);
+    opener.focus();
+    const { rerender } = render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} ownerReport={ownerReport} />);
+    const close = screen.getByRole('button', { name: 'Close documents' });
+    const chart = screen.getByRole('tab', { name: 'Clinical chart' });
+    expect(close).toHaveFocus();
+    chart.focus();
+    fireEvent.keyDown(chart, { key: 'Tab' });
+    expect(close).toHaveFocus();
+    fireEvent.keyDown(close, { key: 'Tab', shiftKey: true });
+    expect(chart).toHaveFocus();
+    rerender(<DocumentsModal open={false} onClose={vi.fn()} chartSnapshot={chartSnapshot} ownerReport={ownerReport} />);
+    expect(opener).toHaveFocus();
+    opener.remove();
+    visible.mockRestore();
+  });
+
+  it('uses one tab stop with Arrow, Home, and End selection', () => {
+    render(<DocumentsModal open onClose={vi.fn()} chartSnapshot={chartSnapshot} ownerReport={ownerReport} recordNote={recordNote} />);
+    const chart = screen.getByRole('tab', { name: 'Clinical chart' });
+    const owner = screen.getByRole('tab', { name: 'Owner report' });
+    const note = screen.getByRole('tab', { name: 'Record note' });
+    expect(chart).toHaveAttribute('tabindex', '0');
+    expect(owner).toHaveAttribute('tabindex', '-1');
+    chart.focus();
+    fireEvent.keyDown(chart, { key: 'ArrowRight' });
+    expect(owner).toHaveFocus();
+    expect(owner).toHaveAttribute('aria-selected', 'true');
+    expect(chart).toHaveAttribute('tabindex', '-1');
+    fireEvent.keyDown(owner, { key: 'End' });
+    expect(note).toHaveFocus();
+    fireEvent.keyDown(note, { key: 'ArrowRight' });
+    expect(chart).toHaveFocus();
+    fireEvent.keyDown(chart, { key: 'ArrowLeft' });
+    expect(note).toHaveFocus();
+    fireEvent.keyDown(note, { key: 'Home' });
+    expect(chart).toHaveFocus();
+  });
+});

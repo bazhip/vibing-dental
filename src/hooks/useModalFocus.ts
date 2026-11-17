@@ -45,16 +45,22 @@ export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
   open: boolean
 ): React.RefObject<T | null> {
   const containerRef = React.useRef<T>(null);
+  // Capture before commit: an autoFocus child can claim focus before
+  // this component's effect runs, losing the actual dialog trigger.
+  const wasOpen = React.useRef(false);
+  const openerRef = React.useRef<HTMLElement | null>(null);
+  if (open && !wasOpen.current) openerRef.current = document.activeElement as HTMLElement | null;
+  wasOpen.current = open;
 
   React.useEffect(() => {
     if (!open) return;
-    const opener = document.activeElement as HTMLElement | null;
+    const opener = openerRef.current;
 
     // Move focus into the dialog unless something inside it (an
     // autoFocus field) already claimed it.
     const container = containerRef.current;
     if (container && !container.contains(document.activeElement)) {
-      const first = container.querySelector<HTMLElement>(FOCUSABLE);
+      const first = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).find((n) => n.tabIndex >= 0);
       (first ?? container).focus();
     }
 
@@ -62,8 +68,12 @@ export function useModalFocus<T extends HTMLElement = HTMLDivElement>(
       if (e.key !== 'Tab') return;
       const el = containerRef.current;
       if (!el) return;
+      // A confirmation or preview in a separate portal owns its own
+      // focus cycle while it covers this dialog.
+      const target = e.target;
+      if (target instanceof Element && !el.contains(target) && target.closest('[aria-modal="true"]')) return;
       const focusables = Array.from(el.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (n) => n.offsetParent !== null || n === document.activeElement
+        (n) => n.tabIndex >= 0 && (n.offsetParent !== null || n === document.activeElement)
       );
       if (focusables.length === 0) return;
       const first = focusables[0];

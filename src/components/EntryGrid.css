@@ -4488,3 +4488,40 @@ a, button, input, select, textarea, label, summary, [role='button'] {
 .dental-grid__roots--sites .dental-grid__root-label { font-size: 0.62rem; }
 .dental-grid__roots--sites .dental-grid__root input { font-size: 0.82rem; }
 .tooth-chart__roots--sites { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; }
+
+/* Persistent labels keep custom field definitions clear while editing. */
+.custom-def { align-items: flex-end; }
+.custom-def__control { display: flex; flex: 1 1 9rem; min-width: 0; flex-direction: column; gap: 0.35rem; font-size: 0.8rem; font-weight: 600; }
+.custom-def__control > :is(input,select) { flex: none; width: 100%; min-width: 0; }
+.custom-def__control:has(.custom-def__options) { flex-basis: 100%; }
+
+/* Keep ordering controls usable without widening phone customization panels. */
+.customization-order { display: inline-flex; flex: none; gap: 4px; }
+.customization-order button { min-width: 36px; min-height: 36px; padding: 4px 8px; }
+.quick-codes-editor__row { flex-wrap: wrap; padding-block: 6px; }
+.quick-codes-editor__def { min-width: 0; overflow-wrap: anywhere; flex: 1 1 8rem; }
+@media (max-width: 600px) {
+  .customization-order button { min-width: 44px; min-height: 44px; }
+  .quick-codes-editor__row .quick-codes-editor__def { flex-basis: calc(100% - 5rem); }
+  .custom-def:has(.exam-areas__label) .exam-areas__label { flex-basis: 100%; }
+}
+
+/* Explain the saved-visit lock at the point of use on web and native. */
+.chart-readonly-notice {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding: 12px 14px; border: 1px solid var(--border-strong);
+  border-radius: 8px; background: var(--surface-alt, #f8fafc); color: var(--text);
+}
+.chart-readonly-notice > svg { flex: none; color: var(--text-muted); }
+.chart-readonly-notice > div { flex: 1; min-width: 0; }
+.chart-readonly-notice strong { font-size: 14px; }
+.chart-readonly-notice p { margin: 3px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.4; }
+.chart-readonly-notice button { flex: none; min-height: 44px; }
+.imaging__meta select:disabled,
+.imaging__meta input[readonly] {
+  background: var(--surface-alt, #f1f5f9); color: var(--text-muted); border-style: dashed; cursor: not-allowed;
+}
+@media (max-width: 420px) {
+  .chart-readonly-notice { flex-wrap: wrap; gap: 8px; }
+  .chart-readonly-notice button { margin-left: 26px; }
+}

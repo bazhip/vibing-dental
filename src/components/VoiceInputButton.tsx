@@ -659,11 +659,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }, [activeSection, voice.recording, processChunk]);
 
   React.useEffect(() => { if (voice.error) setError(voice.error); }, [voice.error]);
-  React.useEffect(() => {
-    if (!error) return;
-    const id = setTimeout(() => setError(null), 8000);
-    return () => clearTimeout(id);
-  }, [error]);
+  // Keep failures visible until the next dictation attempt; a clinician may
+  // be looking at the patient when the request fails.
+
 
   const transcriptText = voice.allSegments().map((s) => s.text).join(' ');
   const transcriptView = transcriptTurns(voice.allSegments().map((s) => s.text), voice.interim);

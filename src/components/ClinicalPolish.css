@@ -1,0 +1,210 @@
+/* Web clinical workspace. Keep native screens and application/dialog chrome
+   under their own design systems; never change dental-grid cell geometry. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form {
+  --clinical-label-size: 0.875rem;
+  --clinical-control-size: 1rem;
+}
+
+/* Section titles share one baseline and leave space for wrapping actions. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__section-title, .dental-grid__title) {
+  font-size: 1.25rem;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__row {
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 20px 24px;
+  margin-bottom: 24px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__label, .patient-form__selector-label, .anesthesia-drug__label, .anesthesia-other__label) {
+  font-size: var(--clinical-label-size);
+  font-weight: 550;
+  line-height: 1.45;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__label {
+  gap: 7px;
+  min-width: 0;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select) {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: var(--clinical-control-size);
+  font-weight: 400;
+  line-height: 1.45;
+  border-radius: var(--radius-sm);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .surgery-report__template-select) {
+  min-height: 40px;
+  padding-block: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea, .surgery-report__template-select):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-color: var(--primary);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__input, .patient-form__textarea)::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__hint, .anesthesia-drug__hint) {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__textarea, .owner-report__textarea) {
+  padding-block: 12px;
+  line-height: 1.6;
+}
+
+/* Species and dentition are selections, with a quiet but clear active state. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__species {
+  padding: 4px;
+  gap: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab {
+  padding: 10px 16px;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: var(--clinical-label-size);
+  font-weight: 550;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab--active,
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab--active:hover {
+  border-color: var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: 0 1px 2px rgb(23 35 46 / 5%);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .species-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Clinical tables use plain readable labels; abnormal row signals remain intact. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) thead th {
+  padding-block: 12px;
+  font-size: var(--clinical-label-size);
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border-strong);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody td {
+  border-bottom: 1px solid var(--border);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.exam-table, .anesthesia-table) tbody tr:last-child td {
+  border-bottom: 0;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug {
+  gap: 12px;
+  margin-bottom: 20px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__list {
+  gap: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__add {
+  border-style: solid;
+  background: var(--surface);
+}
+
+/* The chart stays dense. Typography and surface depth change, never row height,
+   column width, selection colors, or the missing/abnormal/AI feedback palette. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid {
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg {
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg-header-row .rdg-cell {
+  text-transform: none;
+  letter-spacing: 0;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .diagram-view__tool-group {
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__template-bar, .owner-report__actions) .diagram-view__action {
+  min-height: 36px;
+  font-size: var(--clinical-label-size);
+}
+
+/* Report and imaging tools remain part of the record, with clear editable areas. */
+html:not(.native-ios) .entry-grid-container .entry-grid-form .surgery-report__template-bar {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block {
+  margin-bottom: 24px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block-head {
+  margin-bottom: 8px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__preview {
+  margin-top: 28px;
+  padding: 20px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.owner-report__preview-line, .owner-report__preview-list) {
+  font-size: var(--clinical-label-size);
+  line-height: 1.6;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__uploader {
+  gap: 12px;
+  padding-block: 12px;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__card {
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__meta {
+  padding: 12px;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header) {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form__row {
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  /* Touch targets for actions only: never expand tooth marks or chart cells. */
+  html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.species-tab, .diagram-view__action, .diagram-view__tool, .anesthesia-drug__add, .anesthesia-drug__remove, .imaging__queue-dismiss, .exam-table__radio-hit) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__row {
+    gap: 6px;
+    min-width: 0;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .anesthesia-drug__input {
+    width: 100%;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .imaging__desc {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  html:not(.native-ios) .entry-grid-container .entry-grid-form .owner-report__block-head {
+    align-items: flex-start;
+  }
+}

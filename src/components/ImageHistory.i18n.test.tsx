@@ -36,17 +36,11 @@ test('groupByVisit: newest visit first, visits without images left out', () => {
   ]);
 });
 
-test('hidden by default; nothing loads until it is opened', async () => {
+test('automatically shows grouped thumbnails only for visits with images', async () => {
   listAttachmentsForCharts.mockResolvedValue([img('a', 'v-old', { caption: 'Pre-op', toothTriadan: 108 }), img('b', 'v-new', { kind: 'photo' })]);
   const onOpenVisit = vi.fn();
   const { container } = render(<ImageHistory visits={visits} onOpenVisit={onOpenVisit} />);
-  const toggle = screen.getByRole('button', { name: '⟦Image history (3 other visits)⟧' });
-  expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  expect(listAttachmentsForCharts).not.toHaveBeenCalled();
-  expect(container.querySelector('img')).toBeNull();
-  expect(findUntranslated(container, ALLOW)).toEqual([]);
-
-  fireEvent.click(toggle);
+  expect(screen.queryByRole('button', { name: /Image history/ })).toBeNull();
   await waitFor(() => expect(container.querySelectorAll('.image-history__visit')).toHaveLength(2));
   expect(listAttachmentsForCharts).toHaveBeenCalledWith(['v-old', 'v-new', 'v-none']);
   const dates = Array.from(container.querySelectorAll('.image-history__date')).map((h) => h.textContent);
@@ -61,7 +55,6 @@ test('hidden by default; nothing loads until it is opened', async () => {
 test('opens the viewer across visits, with the visit date', async () => {
   listAttachmentsForCharts.mockResolvedValue([img('a', 'v-old'), img('b', 'v-new')]);
   const { container } = render(<ImageHistory visits={visits} />);
-  fireEvent.click(screen.getByRole('button', { name: /Image history/ }));
   await waitFor(() => expect(container.querySelectorAll('.image-history__thumb-btn')).toHaveLength(2));
   fireEvent.click(container.querySelectorAll('.image-history__thumb-btn')[1]);
   const dialog = screen.getByRole('dialog');
@@ -72,11 +65,10 @@ test('opens the viewer across visits, with the visit date', async () => {
 test('empty and failed states, with retry', async () => {
   listAttachmentsForCharts.mockResolvedValueOnce(null).mockResolvedValueOnce([]);
   const { container } = render(<ImageHistory visits={visits} />);
-  fireEvent.click(screen.getByRole('button', { name: /Image history/ }));
   await screen.findByRole('alert');
   expect(findUntranslated(container, ALLOW)).toEqual([]);
   fireEvent.click(screen.getByRole('button', { name: '⟦Try again⟧' }));
-  await screen.findByText('⟦No images from this patient’s other visits.⟧');
+  await waitFor(() => expect(container.firstChild).toBeNull());
   expect(findUntranslated(container, ALLOW)).toEqual([]);
 });
 

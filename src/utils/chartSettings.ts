@@ -90,6 +90,8 @@ export interface ChartPrefs {
   language: AppLanguage | null;
   /** One-tap code stamps on the Diagnosis diagram (T/SN, …). */
   quickCodes: string[];
+  /** One-tap code stamps on the Procedure diagram, separate from diagnosis. */
+  procedureQuickCodes: string[];
   /** The person's own exam areas, after the six built-in ones. */
   customExamAreas: CustomExamAreaDef[];
 }
@@ -113,6 +115,7 @@ export const DEFAULT_CHART_PREFS: ChartPrefs = {
   customFields: [],
   language: null,
   quickCodes: DEFAULT_QUICK_CODES,
+  procedureQuickCodes: [],
   customExamAreas: [],
 };
 
@@ -154,6 +157,7 @@ export function normalizeChartPrefs(raw: unknown, fallback: ChartPrefs = DEFAULT
     customFields: Array.isArray(r.customFields) ? normalizeFieldDefs(r.customFields) : fallback.customFields,
     language: r.language === null ? null : isAppLanguage(r.language) ? r.language : fallback.language,
     quickCodes: Array.isArray(r.quickCodes) ? normalizeQuickCodes(r.quickCodes) : fallback.quickCodes,
+    procedureQuickCodes: Array.isArray(r.procedureQuickCodes) ? normalizeQuickCodes(r.procedureQuickCodes) : fallback.procedureQuickCodes,
     customExamAreas: Array.isArray(r.customExamAreas) ? normalizeExamAreaDefs(r.customExamAreas) : fallback.customExamAreas,
   };
 }

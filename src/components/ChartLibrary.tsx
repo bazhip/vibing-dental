@@ -1,4 +1,5 @@
 import React from 'react';
+import './PatientsWorkspace.css';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { formatDate, formatDateTime } from '../i18n/format';
@@ -11,9 +12,11 @@ import { confirmDialog, friendlyDetail } from './ui/dialogs';
 import { CloudChartMeta, ChartListQuery, ChartListPage } from '../hooks/useCloudSync';
 import { useModalFocus } from '../hooks/useModalFocus';
 import { useTeam } from '../hooks/useTeam';
-import { todayIso, useChartLibraryList, type LibraryError, type PatientGroup, type SortKey } from './chartLibraryData';
+import { todayIso, useChartLibraryList, type LibraryError, type PatientGroup, type SortKey, type ChartLibraryViewState } from './chartLibraryData';
 
 interface ChartLibraryProps {
+  presentation?: 'modal' | 'page';
+  viewState?: React.RefObject<ChartLibraryViewState | undefined>;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   onOpen: (id: string) => Promise<boolean | void>;
   onDelete: (id: string) => Promise<void>;
@@ -30,7 +33,7 @@ interface ChartLibraryProps {
   /** Clear everything and start a brand-new patient (confirms first). */
   onNewPatient: () => void | Promise<void>;
   /** Load a chart PDF made by this app back in for editing. */
-  onLoadPdf: (file: File) => void | Promise<void>;
+  onLoadPdf: (file: File) => boolean | void | Promise<boolean | void>;
   /** Close the dialog (also called after opening a chart). */
   onClose: () => void;
 }
@@ -74,7 +77,10 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   onNewPatient,
   onLoadPdf,
   onClose,
+  presentation = 'modal',
+  viewState,
 }) => {
+  const asPage = presentation === 'page';
   const { t } = useTranslation('library');
   const lng = i18n.language;
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
@@ -89,11 +95,11 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     error: libraryError, setError: setLibraryError,
     busyId, setBusyId,
     deleteVisit, clearRecheck,
-  } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient') });
+  } = useChartLibraryList({ listCharts, onDelete, onClearRecalls, unnamedLabel: t('unnamedPatient'), viewState });
   const error = libraryError ? t(ERROR_KEYS[libraryError.kind], { error: friendlyDetail(libraryError.cause) }) : '';
   const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
-  // Mounted only while open, so the trap is always on.
-  const modalRef = useModalFocus(true);
+  // Only the modal presentation traps focus; pages keep normal document navigation.
+  const modalRef = useModalFocus(!asPage);
 
   // Team roster → author labels for shared charts. Solo accounts (or a
   // team of one) skip the doctor column and filter entirely.
@@ -105,12 +111,13 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const showDoctors = doctorById.size > 1;
 
   React.useEffect(() => {
+    if (asPage) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [onClose, asPage]);
 
   const today = todayIso();
 
@@ -158,6 +165,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
     const due = recall <= today;
     return (
       <span
+        data-label={t('table.recheck')}
         className={
           due
             ? `chart-library__cell chart-library__cell--recall chart-library__recall--${overdue ? 'overdue' : 'due'}`
@@ -190,12 +198,15 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const heads = { patient: sortHeader('patient'), updated: sortHeader('updated'), recall: sortHeader('recall') };
 
   return (
-    <div className="ai-settings-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('title')}>
-      <div className="ai-settings-modal chart-library-modal" ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
-        <header className="ai-settings-header">
-          <h2>{t('title')}</h2>
-          <button type="button" className="pdf-preview-close" onClick={onClose} aria-label={t('actions.close', { ns: 'common' })}>
-            ×
+    <div className={asPage ? 'patients-workspace' : 'ai-settings-overlay'} onClick={asPage ? undefined : onClose} role={asPage ? 'region' : 'dialog'} aria-modal={asPage ? undefined : true} aria-label={t('title')}>
+      <div className={asPage ? "patients-workspace__content chart-library-modal" : "ai-settings-modal chart-library-modal"} ref={modalRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
+        <header className={asPage ? 'patients-workspace__header' : 'ai-settings-header'}>
+          <div>
+            <h2>{t('title')}</h2>
+            {asPage && <p>{t('workspace.description')}</p>}
+          </div>
+          <button type="button" className={asPage ? 'chart-library__filter' : 'pdf-preview-close'} onClick={onClose} aria-label={asPage ? t('workspace.backToVisit') : t('actions.close', { ns: 'common' })}>
+            {asPage ? t('workspace.backToVisit') : '×'}
           </button>
         </header>
 
@@ -257,10 +268,15 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
               type="file"
               accept="application/pdf"
               style={{ display: 'none' }}
-              onChange={(e) => {
+              onChange={async (e) => {
                 const file = e.target.files?.[0];
-                if (file) { void onLoadPdf(file); onClose(); }
                 e.target.value = '';
+                if (!file) return;
+                try {
+                  if ((await onLoadPdf(file)) !== false) onClose();
+                } catch (cause) {
+                  setLibraryError({ kind: 'open', cause });
+                }
               }}
             />
           </div>
@@ -352,7 +368,7 @@ export const ChartLibrary: React.FC<ChartLibraryProps> = ({
                           <span role="cell" className="chart-library__cell">
                             {t('visits', { count: g.visits.length })}
                           </span>
-                          <span role="cell" className="chart-library__cell chart-library__cell--date">
+                          <span role="cell" data-label={t('table.updated')} className="chart-library__cell chart-library__cell--date">
                             {formatDate(g.latestUpdated)}
                           </span>
                           {recallCell(g.recall)}

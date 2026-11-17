@@ -1,10 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import i18n, { loadLanguage } from '../i18n';
 import { OwnerReportTemplatesModal } from './OwnerReportTemplatesModal';
 import { OwnerReportConfig, defaultConfig, defaultTemplate } from '../utils/ownerReportConfig';
+
+import { DialogHost } from './ui/dialogs';
+import * as dialogs from './ui/dialogs';
 
 const branding = { practiceName: 'SoCal Vet', doctorName: 'Dr. Alice Ng', logoUrl: '' };
 
@@ -48,6 +51,7 @@ describe('OwnerReportTemplatesModal', () => {
     const onClose = vi.fn();
     renderModal({ onSave, onClose });
 
+    await user.click(screen.getByRole('button', { name: 'Report content' }));
     await user.click(screen.getByRole('checkbox', { name: 'Teeth removed' }));
 
     const save = screen.getByRole('button', { name: 'Save templates' });
@@ -59,6 +63,22 @@ describe('OwnerReportTemplatesModal', () => {
     const extractions = saved.templates[0].sections.find((s) => s.id === 'extractions');
     expect(extractions?.enabled).toBe(false);
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('disables template mutations while saving', async () => {
+    let finish!: () => void;
+    const onSave = vi.fn(() => new Promise<void>((resolve) => { finish = resolve; }));
+    const user = userEvent.setup();
+    const config = { defaultTemplateId: 'a', templates: [{ ...defaultTemplate(), id: 'a', name: 'First' }, { ...defaultTemplate(), id: 'b', name: 'Second' }] };
+    renderModal({ config, onSave });
+    await user.click(screen.getByRole('button', { name: /Second/ }));
+    await user.type(screen.getByLabelText('Template name'), '!');
+    await user.click(screen.getByRole('button', { name: 'Save templates' }));
+    expect(screen.getByRole('button', { name: 'New' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Duplicate' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Set as default' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled();
+    await act(async () => finish());
   });
 
   it('Save stays disabled until something changes', () => {
@@ -81,6 +101,7 @@ describe('OwnerReportTemplatesModal', () => {
     const onSave = vi.fn().mockResolvedValue(undefined);
     renderModal({ onSave });
 
+    await user.click(screen.getByRole('button', { name: 'Report content' }));
     await user.click(screen.getByRole('button', { name: '+ Add a custom text section' }));
     await user.type(screen.getByLabelText('Custom section heading'), 'Payment plans');
     await user.type(screen.getByLabelText('Section text'), 'CareCredit available');
@@ -92,23 +113,68 @@ describe('OwnerReportTemplatesModal', () => {
     expect(custom).toMatchObject({ enabled: true, title: 'Payment plans', body: 'CareCredit available' });
   });
 
-  it('asks before discarding unsaved changes', async () => {
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+  it('asks before discarding with explicit Keep editing and Discard actions', async () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
-    const { unmount } = renderModal({ onClose });
-
-    // Make a change first — an unchanged dialog closes without asking.
+    render(<DialogHost />);
+    renderModal({ onClose });
     await user.type(screen.getByLabelText('Template name'), '!');
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    expect(confirmSpy.mock.calls[0]?.[0]).toMatch(/discard/i);
+    await user.click(await screen.findByRole('button', { name: 'Keep Editing' }));
     expect(onClose).not.toHaveBeenCalled();
-
-    confirmSpy.mockReturnValue(true);
+    expect((screen.getByLabelText('Template name') as HTMLInputElement).value).toContain('!');
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    expect(onClose).toHaveBeenCalled();
-    confirmSpy.mockRestore();
-    unmount();
+    await user.click(await screen.findByRole('button', { name: 'Discard Changes' }));
+    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+  });
+
+  it('keeps keyboard focus in the discard confirmation above the editor', async () => {
+    const visible = vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(document.body);
+    const user = userEvent.setup();
+    render(<DialogHost />);
+    renderModal();
+    await user.type(screen.getByLabelText('Template name'), '!');
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    const confirmation = await screen.findByRole('alertdialog');
+    const keep = within(confirmation).getByRole('button', { name: 'Keep Editing' });
+    const discard = within(confirmation).getByRole('button', { name: 'Discard Changes' });
+    discard.focus();
+    fireEvent.keyDown(discard, { key: 'Tab' });
+    expect(keep).toHaveFocus();
+    fireEvent.keyDown(keep, { key: 'Tab', shiftKey: true });
+    expect(discard).toHaveFocus();
+    await user.click(keep);
+    visible.mockRestore();
+  });
+
+  it('does not apply a stale discard approval to a newer draft or enqueue twice', async () => {
+    let approve!: (value: boolean) => void;
+    const confirm = vi.spyOn(dialogs, 'confirmDialog').mockImplementation(() => new Promise((resolve) => { approve = resolve; }));
+    const onClose = vi.fn();
+    renderModal({ onClose });
+    fireEvent.change(screen.getByLabelText('Template name'), { target: { value: 'First draft' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(confirm).toHaveBeenCalledTimes(1);
+    fireEvent.change(screen.getByLabelText('Template name'), { target: { value: 'Newer draft' } });
+    await act(async () => approve(true));
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Template name')).toHaveValue('Newer draft');
+    confirm.mockRestore();
+  });
+
+  it('deletes only after explicit confirmation and preserves the draft when cancelled', async () => {
+    const user = userEvent.setup();
+    const config = { defaultTemplateId: 'a', templates: [{ ...defaultTemplate(), id: 'a', name: 'First' }, { ...defaultTemplate(), id: 'b', name: 'Second' }] };
+    render(<DialogHost />);
+    renderModal({ config });
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
+    const cancel = within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Cancel' });
+    await user.click(cancel);
+    expect(screen.getByLabelText('Template name')).toHaveValue('First');
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
+    await user.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Delete' }));
+    await waitFor(() => expect(screen.getByLabelText('Template name')).toHaveValue('Second'));
   });
 
   it('can duplicate a template and set the copy as default', async () => {
@@ -152,6 +218,7 @@ describe('OwnerReportTemplatesModal', () => {
   it('placeholder chips insert into the focused field', async () => {
     const user = userEvent.setup();
     renderModal();
+    await user.click(screen.getByRole('button', { name: 'Report content' }));
     const intro = screen.getByLabelText('Opening summary template');
     await user.click(intro);
     await user.click(screen.getByRole('button', { name: '{owner}' }));
@@ -173,6 +240,7 @@ describe('OwnerReportTemplatesModal', () => {
     const failSave = async (raw: string) => {
       const user = userEvent.setup();
       renderModal({ onSave: vi.fn().mockRejectedValue(new Error(raw)) });
+      await user.click(screen.getByRole('button', { name: /Report content|Contenu du rapport/ }));
       await user.click(screen.getByRole('checkbox', { name: /Teeth removed|Dents extraites/ }));
       await user.click(screen.getByRole('button', { name: /Save templates|Enregistrer/ }));
     };
@@ -188,5 +256,44 @@ describe('OwnerReportTemplatesModal', () => {
       await failSave('boom');
       expect(await screen.findByText('Une erreur s’est produite (détails : boom)')).toBeInTheDocument();
     });
+  });
+});
+
+describe('web template editor categories', () => {
+  it('shows one category at a time and retains edits across category changes', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    renderModal({ onSave });
+    expect(screen.getByRole('navigation', { name: 'Template settings' })).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: 'Opening summary template' })).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Report content' }));
+    await user.type(screen.getByRole('textbox', { name: 'Opening summary template' }), 'A careful summary.');
+    await user.click(screen.getByRole('button', { name: 'Closing and footer' }));
+    await user.type(screen.getByLabelText('Closing note'), 'Contact the practice.');
+    await user.click(screen.getByRole('button', { name: 'Report content' }));
+    expect(screen.getByRole('textbox', { name: 'Opening summary template' })).toHaveValue('A careful summary.');
+    await user.click(screen.getByRole('button', { name: 'Save templates' }));
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    expect(onSave.mock.calls[0][0].templates[0]).toMatchObject({ introTemplate: 'A careful summary.', closingNote: 'Contact the practice.' });
+  });
+
+  it('supports the compact category and template pickers without losing edits', async () => {
+    const user = userEvent.setup();
+    const config = defaultConfig();
+    config.templates.push({ ...defaultTemplate(), id: 'second', name: 'Second template' });
+    renderModal({ config });
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Template settings' }), 'closing');
+    await user.type(screen.getByLabelText('Closing note'), 'First template note');
+    await user.selectOptions(screen.getByLabelText('Report template'), 'second');
+    expect(screen.getByLabelText('Closing note')).toHaveValue('');
+    await user.selectOptions(screen.getByLabelText('Report template'), config.defaultTemplateId);
+    expect(screen.getByLabelText('Closing note')).toHaveValue('First template note');
+  });
+
+  it('keeps categories navigable in read-only mode', async () => {
+    renderModal({ canEdit: false });
+    await userEvent.click(screen.getByRole('button', { name: 'Closing and footer' }));
+    expect(screen.getByLabelText('Closing note')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Preview with sample visit' })).toBeEnabled();
   });
 });
