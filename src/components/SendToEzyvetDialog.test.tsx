@@ -396,7 +396,7 @@ describe('SendToEzyvetDialog', () => {
       expect(props.onSent).toHaveBeenCalledTimes(1);
       expect(mocks.markPimsSent).not.toHaveBeenCalled();
       // The results page shows the remembered send date.
-      expect(screen.getByText((_, el) => el?.tagName === 'P' && /ezyVet/.test(el.textContent ?? '') && el.className === 'patient-form__hint')).toBeInTheDocument();
+      expect(screen.getByText((_, el) => el?.tagName === 'P' && /PIMS/.test(el.textContent ?? '') && el.className === 'patient-form__hint')).toBeInTheDocument();
     },
   );
 

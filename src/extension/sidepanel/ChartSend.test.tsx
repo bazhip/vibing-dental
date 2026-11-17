@@ -109,7 +109,7 @@ describe('ChartSend', () => {
     open({ ezyvet: 'Max' });
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
-    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · ezyVet consult: Max' });
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · PIMS consult: Max' });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
@@ -146,8 +146,8 @@ describe('ChartSend', () => {
     await act(async () => { fireEvent.click(btn); });
     expect(mocks.transport.send).not.toHaveBeenCalled();
     expect(mocks.confirm).not.toHaveBeenCalled();
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
-    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/PIMS: Max/)).toBeInTheDocument();
     // Pressing Send again, now that the target is on screen, goes ahead (after the mismatch check).
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
@@ -162,7 +162,7 @@ describe('ChartSend', () => {
     mocks.transport.inspect.mockResolvedValue(other);
     await act(async () => { fireEvent.click(btn); });
     expect(mocks.transport.send).not.toHaveBeenCalled();
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
   });
 
   it('a focus re-inspect is quiet: no loading, no ping, mapping choices kept', async () => {
@@ -173,7 +173,7 @@ describe('ChartSend', () => {
     const chosen = select.value;
     mocks.transport.ping.mockClear();
     let seenLoading = false;
-    const obs = new MutationObserver(() => { if (screen.queryByText('Looking for ezyVet…')) seenLoading = true; });
+    const obs = new MutationObserver(() => { if (screen.queryByText('Looking for PIMS…')) seenLoading = true; });
     obs.observe(document.body, { childList: true, subtree: true });
     await act(async () => { mocks.tab.activated!(); });
     obs.disconnect();
@@ -181,7 +181,7 @@ describe('ChartSend', () => {
     expect(seenLoading).toBe(false);
     expect(mocks.transport.ping).not.toHaveBeenCalled();
     expect((screen.getAllByRole('combobox')[0] as HTMLSelectElement).value).toBe(chosen);
-    expect(screen.queryByText(/The ezyVet consult changed/)).toBeNull();
+    expect(screen.queryByText(/The PIMS consult changed/)).toBeNull();
   });
 
   it('a focus re-inspect with a changed patient updates the target and shows the notice', async () => {
@@ -189,8 +189,8 @@ describe('ChartSend', () => {
     await screen.findByRole('button', { name: 'Send' });
     mocks.transport.inspect.mockResolvedValue(info('Max'));
     await act(async () => { mocks.tab.activated!(); });
-    expect(await screen.findByText(/The ezyVet consult changed/)).toBeInTheDocument();
-    expect(screen.getByText(/ezyVet: Max/)).toBeInTheDocument();
+    expect(await screen.findByText(/The PIMS consult changed/)).toBeInTheDocument();
+    expect(screen.getByText(/PIMS: Max/)).toBeInTheDocument();
   });
 
   it('a stored note edited before the chart changed shows the stale notice', async () => {
@@ -213,7 +213,7 @@ describe('ChartSend', () => {
     open({ ezyvet: 'Bella Smith', ownerName: 'Jane Jones' });
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
-    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · ezyVet consult: Bella Smith' });
+    expect(mocks.confirm.mock.calls[0][0]).toMatchObject({ message: 'ToothOps chart: Bella · PIMS consult: Bella Smith' });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
@@ -238,14 +238,14 @@ describe('ChartSend', () => {
     await send();
     expect(mocks.confirm).toHaveBeenCalledTimes(1);
     expect(mocks.confirm.mock.calls[0][0]).toMatchObject({
-      message: 'The chart is for Bella (number 1), but ezyVet shows Bella (number 2).',
+      message: 'The chart is for Bella (number 1), but PIMS shows Bella (number 2).',
     });
     expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
   it('practice flag off: a notice and no Send, and ezyVet is not touched', async () => {
     open({ sendFlag: 'off' });
-    expect(await screen.findByText('Sending to ezyVet isn’t turned on for your practice.')).toBeInTheDocument();
+    expect(await screen.findByText('Sending to PIMS isn’t turned on for your practice.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     expect(mocks.transport.ping).not.toHaveBeenCalled();
     expect(mocks.transport.inspect).not.toHaveBeenCalled();
@@ -254,7 +254,7 @@ describe('ChartSend', () => {
   it('practice flag lookup failed: treated as off, with a retry', async () => {
     const onRetrySendFlag = vi.fn();
     open({ sendFlag: 'error', onRetrySendFlag });
-    expect(await screen.findByRole('alert')).toHaveTextContent('Couldn’t check whether sending to ezyVet is turned on');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Couldn’t check whether sending to PIMS is turned on');
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(onRetrySendFlag).toHaveBeenCalledTimes(1);

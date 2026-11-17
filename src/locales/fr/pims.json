@@ -1,27 +1,27 @@
 {
   "extension": {
-    "name": "ToothOps pour ezyVet",
-    "description": "Inscrit vos notes de dossier ToothOps dans la consultation ezyVet ouverte."
+    "name": "ToothOps PIMS",
+    "description": "Inscrit vos notes de dossier ToothOps dans la consultation ouverte dans le logiciel du cabinet."
   },
   "dialog": {
-    "open": "Envoyer vers ezyVet",
-    "title": "Envoyer vers ezyVet",
-    "loading": "Recherche d’ezyVet…",
+    "open": "Envoyer vers le logiciel du cabinet",
+    "title": "Envoyer vers le logiciel du cabinet",
+    "loading": "Recherche du logiciel du cabinet…",
     "retry": "Réessayer",
-    "sentOn": "Envoyé vers ezyVet le {{date}}."
+    "sentOn": "Envoyé vers le logiciel du cabinet le {{date}}."
   },
   "install": {
-    "title": "L’extension ToothOps pour ezyVet ne répond pas",
-    "body": "Vérifiez que l’extension ToothOps pour ezyVet est installée et activée dans Chrome, puis réessayez. Si vous ne l’avez pas encore, contactez l’assistance ToothOps pour obtenir le lien d’installation."
+    "title": "L’extension ToothOps PIMS ne répond pas",
+    "body": "Vérifiez que l’extension ToothOps PIMS est installée et activée dans Chrome, puis réessayez. Si vous ne l’avez pas encore, contactez l’assistance ToothOps pour obtenir le lien d’installation."
   },
-  "noTab": "Ouvrez la consultation dans ezyVet, puis réessayez.",
-  "severalTabs": "Plusieurs onglets ezyVet sont ouverts. Onglet utilisé : {{title}}",
-  "target": "ezyVet : {{patient}} — {{title}}",
-  "targetNoPatient": "ezyVet : {{title}}",
+  "noTab": "Ouvrez la consultation dans le logiciel du cabinet, puis réessayez.",
+  "severalTabs": "Plusieurs onglets du logiciel du cabinet sont ouverts. Onglet utilisé : {{title}}",
+  "target": "PIMS : {{patient}} — {{title}}",
+  "targetNoPatient": "PIMS : {{title}}",
   "state": {
-    "notConsult": "L’onglet ezyVet n’affiche pas de consultation. Ouvrez la consultation du patient, puis réessayez.",
+    "notConsult": "ToothOps ne peut pas vérifier la consultation active ; l’envoi est donc désactivé. Ouvrez une consultation prise en charge ou copiez les notes manuellement.",
     "notMedicalTab": "Ouvrez l’onglet Medical de la consultation, puis réessayez.",
-    "locked": "Cette consultation est verrouillée dans ezyVet. Ouvrez une consultation non verrouillée, puis réessayez.",
+    "locked": "Cette consultation est verrouillée dans le logiciel du cabinet. Ouvrez une consultation non verrouillée, puis réessayez.",
     "combined": "ezyVet est en vue Combined. Passez en vue Standard, puis réessayez."
   },
   "rows": {
@@ -46,15 +46,15 @@
   },
   "mismatch": {
     "title": "Patient différent ?",
-    "message": "Dossier ToothOps : {{chart}} · Consultation ezyVet : {{ezyvet}}",
-    "messageNumbers": "Le dossier concerne {{chart}} (n° {{chartNumber}}), mais ezyVet affiche {{ezyvet}} (n° {{ezyvetNumber}}).",
+    "message": "Dossier ToothOps : {{chart}} · Consultation du logiciel du cabinet : {{ezyvet}}",
+    "messageNumbers": "Le dossier concerne {{chart}} (n° {{chartNumber}}), mais le logiciel du cabinet affiche {{ezyvet}} (n° {{ezyvetNumber}}).",
     "unknown": "(nom introuvable)",
     "noName": "(aucun nom de patient)",
     "sendAnyway": "Envoyer quand même"
   },
   "alreadySent": {
     "title": "Déjà envoyé le {{date}}. Envoyer à nouveau ?",
-    "message": "Un nouvel envoi ajoute une deuxième copie dans ezyVet.",
+    "message": "Un nouvel envoi ajoute une deuxième copie dans le logiciel du cabinet.",
     "confirm": "Envoyer à nouveau"
   },
   "results": {
@@ -63,31 +63,31 @@
     "stampFailed": "Envoyé, mais ToothOps n’a pas pu enregistrer la date d’envoi sur ce dossier."
   },
   "errors": {
-    "extension_error": "ToothOps n’a pas pu joindre l’extension ezyVet. Vérifiez qu’elle est installée et activée, puis réessayez.",
-    "timeout": "L’extension n’a pas répondu à temps. Vérifiez l’onglet ezyVet, puis réessayez.",
-    "no_tab": "L’onglet ezyVet a été fermé. Ouvrez la consultation dans ezyVet et réessayez.",
-    "not_writable": "Il n’est plus possible d’écrire dans la consultation (verrouillée, fermée ou plus sur l’onglet Medical). Ouvrez l’onglet Medical de la consultation et réessayez.",
-    "patient_changed": "Un autre patient ou une autre consultation est maintenant ouvert dans ezyVet, rien de plus n’a donc été envoyé. Ouvrez la bonne consultation et réessayez.",
+    "extension_error": "ToothOps n’a pas pu joindre l’extension ToothOps PIMS. Vérifiez qu’elle est installée et activée, puis réessayez.",
+    "timeout": "L’extension n’a pas répondu à temps. Vérifiez l’onglet du logiciel du cabinet, puis réessayez.",
+    "no_tab": "L’onglet du logiciel du cabinet a été fermé. Ouvrez la consultation dans le logiciel du cabinet et réessayez.",
+    "not_writable": "Il n’est plus possible d’écrire dans la consultation, car elle est verrouillée, fermée ou la consultation active ne peut pas être vérifiée. Ouvrez une consultation prise en charge et non verrouillée, puis réessayez, ou copiez les notes manuellement.",
+    "patient_changed": "Un autre patient ou une autre consultation est maintenant ouvert dans le logiciel du cabinet, rien de plus n’a donc été envoyé. Ouvrez la bonne consultation et réessayez.",
     "field_not_found": "Ce champ ne figure pas sur la page de la consultation. Choisissez un autre champ sous Destination.",
-    "editor_not_found": "ToothOps n’a pas trouvé la zone de texte de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
-    "popup_not_found": "La fenêtre de saisie de ce champ ne s’est pas ouverte. Vérifiez le champ dans ezyVet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
-    "popup_not_closed": "La fenêtre de saisie de ce champ ne s’est pas fermée après l’enregistrement. Vérifiez le champ dans ezyVet avant de renvoyer.",
-    "save_button_not_found": "ToothOps n’a pas trouvé le bouton d’enregistrement de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer.",
-    "save_not_confirmed": "ezyVet n’a pas confirmé l’enregistrement. Vérifiez le champ dans ezyVet avant de renvoyer.",
-    "no_preferred_email": "Le client n’a pas d’adresse e-mail préférée dans ezyVet. Ajoutez-en une ou choisissez un autre champ.",
-    "image_not_accepted": "Ce champ n’accepte pas les images. Choisissez Discharge Summary ou un autre champ qui les accepte.",
-    "invalid_image": "L’image du schéma dentaire n’a pas pu être préparée. Vérifiez le champ dans ezyVet avant de renvoyer.",
+    "editor_not_found": "ToothOps n’a pas trouvé la zone de texte de ce champ. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
+    "popup_not_found": "La fenêtre de saisie de ce champ ne s’est pas ouverte. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer. Si le problème persiste, copiez le rapport de diagnostic pour l’assistance ToothOps.",
+    "popup_not_closed": "La fenêtre de saisie de ce champ ne s’est pas fermée après l’enregistrement. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer.",
+    "save_button_not_found": "ToothOps n’a pas trouvé le bouton d’enregistrement de ce champ. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer.",
+    "save_not_confirmed": "Le logiciel du cabinet n’a pas confirmé l’enregistrement. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer.",
+    "no_preferred_email": "Le client n’a pas d’adresse e-mail préférée dans le logiciel du cabinet. Ajoutez-en une ou choisissez un autre champ.",
+    "image_not_accepted": "Ce champ n’accepte pas les images. Choisissez un champ qui accepte les images.",
+    "invalid_image": "L’image du schéma dentaire n’a pas pu être préparée. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer.",
     "picture_failed": "ToothOps n’a pas pu dessiner l’image du schéma dentaire ; elle n’a donc pas été envoyée.",
-    "maybe_sent": "Certains champs ont peut-être déjà été remplis. Vérifiez la consultation dans ezyVet avant de renvoyer.",
-    "item_extension_error": "Un problème est survenu pendant l’écriture de ce champ. Vérifiez le champ dans ezyVet avant de renvoyer.",
-    "item_not_writable": "La consultation n’accepte plus de modifications (verrouillée, fermée ou plus sur l’onglet Medical), ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer.",
-    "item_patient_changed": "Un autre patient ou une autre consultation a été ouvert dans ezyVet, ce champ n’a donc pas été envoyé. Vérifiez la consultation dans ezyVet avant de renvoyer."
+    "maybe_sent": "Certains champs ont peut-être déjà été remplis. Vérifiez la consultation dans le logiciel du cabinet avant de renvoyer.",
+    "item_extension_error": "Un problème est survenu pendant l’écriture de ce champ. Vérifiez le champ dans le logiciel du cabinet avant de renvoyer.",
+    "item_not_writable": "La consultation n’accepte plus de modifications, car elle est verrouillée, fermée ou la consultation active ne peut pas être vérifiée ; ce champ n’a donc pas été envoyé. Vérifiez la consultation dans le logiciel du cabinet avant de renvoyer.",
+    "item_patient_changed": "Un autre patient ou une autre consultation a été ouvert dans le logiciel du cabinet, ce champ n’a donc pas été envoyé. Vérifiez la consultation dans le logiciel du cabinet avant de renvoyer."
   },
   "panel": {
     "notConnected": "Cette version n’est pas connectée à ToothOps.",
     "signIn": {
       "title": "Connectez-vous à ToothOps",
-      "lead": "Envoyez les notes de vos dossiers ToothOps dans la consultation ezyVet ouverte.",
+      "lead": "Envoyez les notes de vos dossiers ToothOps dans la consultation ouverte dans le logiciel du cabinet.",
       "password": "Mot de passe",
       "submit": "Se connecter",
       "busy": "Connexion…",
@@ -108,23 +108,23 @@
       "empty": "Aucun dossier trouvé.",
       "loading": "Chargement des dossiers…",
       "loadMore": "Afficher plus",
-      "possible": "Correspondance possible avec le patient ezyVet {{patient}}"
+      "possible": "Correspondance possible avec le patient {{patient}} dans le logiciel du cabinet"
     },
     "chart": {
       "back": "← Retour aux dossiers",
       "loading": "Ouverture du dossier…",
       "noteLabel": "Note du dossier",
       "flagLoading": "Vérification de l’activation de l’envoi pour votre cabinet…",
-      "flagFailed": "Impossible de vérifier si l’envoi vers ezyVet est activé pour votre cabinet.",
-      "sendOff": "L’envoi vers ezyVet n’est pas activé pour votre cabinet."
+      "flagFailed": "Impossible de vérifier si l’envoi vers le logiciel du cabinet est activé pour votre cabinet.",
+      "sendOff": "L’envoi vers le logiciel du cabinet n’est pas activé pour votre cabinet."
     },
     "today": {
-      "title": "Patients du jour (ezyVet)",
+      "title": "Patients du jour (PIMS)",
       "refresh": "Actualiser",
       "load": "Charger les patients du jour",
-      "loadHint": "Votre onglet ezyVet passera au calendrier.",
-      "noTab": "Ouvrez ezyVet pour voir les patients du jour.",
-      "empty": "Aucun patient au planning ezyVet d’aujourd’hui.",
+      "loadHint": "Le logiciel de votre cabinet peut passer au calendrier.",
+      "noTab": "Ouvrez le logiciel du cabinet pour voir les patients du jour.",
+      "empty": "Aucun patient au planning du jour dans le logiciel du cabinet.",
       "failed_one": "{{count}} rendez-vous n’a pas pu être lu.",
       "failed_many": "{{count}} rendez-vous n’ont pas pu être lus.",
       "failed_other": "{{count}} rendez-vous n’ont pas pu être lus.",
@@ -134,20 +134,21 @@
       "startAnyway": "Créer un nouveau dossier",
       "loading": "Chargement des patients du jour…",
       "errors": {
-        "no_dashboard": "Le tableau de bord (Dashboard) d’ezyVet est introuvable.",
-        "no_date_input": "Impossible de régler la date dans le calendrier d’ezyVet.",
-        "no_calendar_refresh": "Le calendrier d’ezyVet ne répond pas. Rechargez ezyVet et réessayez.",
-        "unknown": "Impossible de lire le planning ezyVet d’aujourd’hui."
+        "no_dashboard": "Le tableau de bord du logiciel du cabinet est introuvable.",
+        "no_date_input": "Impossible de régler la date dans le calendrier du logiciel du cabinet.",
+        "no_calendar_refresh": "Le calendrier du logiciel du cabinet ne répond pas. Rechargez le logiciel du cabinet et réessayez.",
+        "unknown": "Impossible de lire le planning du jour dans le logiciel du cabinet.",
+        "read_failed": "Impossible de lire le planning du jour dans le logiciel du cabinet. Vérifiez le calendrier, puis réessayez."
       },
       "startFailed": "Impossible d’ouvrir ToothOps. Veuillez réessayer."
     }
   },
   "send": {
-    "targetChanged": "La consultation ezyVet a changé. Vérifiez la cible, puis cliquez de nouveau sur Envoyer."
+    "targetChanged": "La consultation du logiciel du cabinet a changé. Vérifiez la cible, puis cliquez de nouveau sur Envoyer."
   },
   "handover": {
-    "filled": "Informations du patient remplies depuis ezyVet.",
-    "failed": "Impossible de récupérer le patient depuis ezyVet. Veuillez saisir les informations.",
+    "filled": "Informations du patient remplies depuis le logiciel du cabinet.",
+    "failed": "Impossible de récupérer le patient depuis le logiciel du cabinet. Veuillez saisir les informations.",
     "otherUser": "Ce patient a été choisi dans l’extension avec un autre compte. Connectez-vous avec le même compte dans les deux."
   }
 }

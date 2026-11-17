@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { consultPatientNumber, listAppointments, parseTooltip, type PageDeps } from './appointments';
+import { consultPatientNumber, parseTooltip, type PageDeps } from './appointments';
 
 const TIP = (patient: string, time = '09:30AM', owner = 'Mr Smith, Jane') =>
   `<div><label>Patient</label><span class="value">${patient}</span></div><div><label>Time</label><span class="value">${time}</span></div><div><label>Owner</label><span class="value">${owner}</span></div>`;
@@ -28,7 +28,10 @@ const good = (over: Block = {}): string =>
 
 let fetchTooltip: Mock<(c: 'Appointment' | 'Consult', id: string) => Promise<string>>;
 let deps: PageDeps;
-beforeEach(() => {
+let listAppointments: typeof import('./appointments').listAppointments;
+beforeEach(async () => {
+  vi.resetModules();
+  ({ listAppointments } = await import('./appointments'));
   fetchTooltip = vi.fn(async (_c: 'Appointment' | 'Consult', _id: string) => TIP('Bella (12345)'));
   deps = { doc: document, fetchTooltip, wait: async () => {} };
   (window as unknown as { calendarRefresh?: () => void }).calendarRefresh = vi.fn();
@@ -91,6 +94,82 @@ describe('listAppointments', () => {
     await listAppointments(DATE, { navigate: false }, deps);
     expect(refresh()).not.toHaveBeenCalled();
   });
+  it('rejects yesterday blocks left behind by a stalled date refresh, including retries', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    fetchTooltip.mockResolvedValue(TIP('Yesterdaydog (12345)'));
+    refresh().mockImplementation(() => new Promise(() => {}));
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('waits for fresh blocks rather than accepting old blocks after a date change', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    let elapsed = 0;
+    deps.wait = async (ms) => {
+      elapsed += ms;
+      if (elapsed >= 1800) dashboard({ blocks: [good({ 'data-record-id': '56', 'data-appointment': '901' })] });
+    };
+    const result = await listAppointments(DATE, { navigate: true }, deps);
+    expect(result.ok && result.appointments.map((appointment) => appointment.appointmentId)).toEqual(['901']);
+    expect(fetchTooltip).toHaveBeenCalledExactlyOnceWith('Appointment', '56');
+  });
+  it('keeps the stale-generation guard when refresh replaces only the date input', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    refresh().mockImplementation(() => {
+      document.querySelector('[name="currentdate"]')!.outerHTML = `<input name="currentdate" value="${DATE}">`;
+    });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(await listAppointments(DATE, { navigate: false }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('requires fresh blocks even if the refresh Promise resolves', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    refresh().mockResolvedValue(undefined);
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('accepts fresh blocks after the returned refresh Promise completes', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    let complete!: () => void;
+    refresh().mockImplementation(() => {
+      document.querySelector('[data-appointment]')!.outerHTML = good({ 'data-record-id': '56' });
+      return new Promise<void>((resolve) => { complete = resolve; });
+    });
+    let elapsed = 0;
+    deps.wait = async (ms) => {
+      elapsed += ms;
+      if (elapsed >= 1800) complete();
+    };
+    const result = await listAppointments(DATE, { navigate: true }, deps);
+    expect(result.ok).toBe(true);
+    expect(elapsed).toBeGreaterThanOrEqual(1800);
+    expect(fetchTooltip).toHaveBeenCalledExactlyOnceWith('Appointment', '56');
+  });
+  it('rejects partial replacement while any old appointment block remains', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    refresh().mockImplementation(() => {
+      document.querySelector('.dashboard')!.insertAdjacentHTML('beforeend', good({ 'data-record-id': '56', 'data-appointment': '901' }));
+    });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('does not treat removal of old blocks as proof of a completed empty day', async () => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    refresh().mockImplementation(() => document.querySelector('[data-appointment]')!.remove());
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it.each(['throws', 'rejects', 'pending'] as const)('fails closed when refresh %s even with fresh blocks', async (mode) => {
+    dashboard({ date: '2026-11-15', blocks: [good()] });
+    refresh().mockImplementation(() => {
+      document.querySelector('[data-appointment]')!.outerHTML = good({ 'data-record-id': '56' });
+      if (mode === 'throws') throw new TypeError();
+      if (mode === 'rejects') return Promise.reject(new TypeError());
+      return new Promise(() => {});
+    });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
   it('reports no_calendar_refresh and no_date_input when navigating', async () => {
     dashboard({ date: '2000-01-01' });
     delete (window as unknown as { calendarRefresh?: () => void }).calendarRefresh;
@@ -109,6 +188,63 @@ describe('listAppointments', () => {
     document.querySelector('[data-text="Day"]')!.addEventListener('click', click2);
     await listAppointments(DATE, { navigate: true }, deps);
     expect(click2).not.toHaveBeenCalled();
+  });
+  it('refuses to import Week-view blocks when the Day control is missing', async () => {
+    dashboard({ dayActive: false, blocks: [good()] });
+    document.querySelector('[data-text="Day"]')!.remove();
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('refuses to import when clicking Day never activates it', async () => {
+    dashboard({ dayActive: false, blocks: [good()] });
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it('waits for Day before setting the current calendar date input', async () => {
+    dashboard({ dayActive: false, date: '2000-01-01', blocks: [good()] });
+    let elapsed = 0;
+    let activated = false;
+    deps.wait = async (ms) => {
+      elapsed += ms;
+      if (!activated && elapsed >= 800) {
+        activated = true;
+        dashboard({ dayActive: true, date: '2000-01-02', blocks: [good()] });
+      }
+    };
+    const dateAtRefresh: string[] = [];
+    refresh().mockImplementation(() => {
+      expect(document.querySelector('#timespanSelector .active [data-text="Day"]')).not.toBeNull();
+      dateAtRefresh.push((document.querySelector('[name="currentdate"]') as HTMLInputElement).value);
+      document.querySelector('[data-appointment]')!.outerHTML = good();
+    });
+    const result = await listAppointments(DATE, { navigate: true }, deps);
+    expect(result.ok).toBe(true);
+    expect(dateAtRefresh).toEqual([DATE]);
+    expect((document.querySelector('[name="currentdate"]') as HTMLInputElement).value).toBe(DATE);
+  });
+  it('does not import if the calendar changes date during the refresh wait', async () => {
+    dashboard({ date: '2000-01-01', blocks: [good()] });
+    deps.wait = async () => {
+      (document.querySelector('[name="currentdate"]') as HTMLInputElement).value = '2000-01-02';
+    };
+    expect(await listAppointments(DATE, { navigate: true }, deps)).toEqual({ ok: false, code: 'not_on_calendar' });
+    expect(fetchTooltip).not.toHaveBeenCalled();
+  });
+  it.each(['2026-03-08', '2026-11-01'])('preserves wall-clock time across DST on %s', async (date) => {
+    const previous = process.env.TZ;
+    process.env.TZ = 'America/Denver';
+    try {
+      dashboard({ date, blocks: [good()] });
+      const result = await listAppointments(date, { navigate: false }, deps);
+      const [year, month, day] = date.split('-').map(Number);
+      expect(result.ok && result.appointments[0].start).toBe(new Date(year, month - 1, day, 9, 30).toISOString());
+      dashboard({ date, blocks: [good({ 'data-start': undefined })] });
+      const fallback = await listAppointments(date, { navigate: false }, deps);
+      expect(fallback.ok && fallback.appointments[0].start).toBe(new Date(year, month - 1, day, 9, 30).toISOString());
+    } finally {
+      if (previous === undefined) delete process.env.TZ;
+      else process.env.TZ = previous;
+    }
   });
   it('without navigate, leaves a calendar on another date untouched', async () => {
     dashboard({ date: '2000-01-01', blocks: [good()] });

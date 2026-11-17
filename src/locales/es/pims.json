@@ -1,27 +1,27 @@
 {
   "extension": {
-    "name": "ToothOps para ezyVet",
-    "description": "Escribe sus notas de historial de ToothOps en la consulta de ezyVet abierta."
+    "name": "ToothOps PIMS",
+    "description": "Escribe sus notas de historial de ToothOps en la consulta abierta en el software de la clínica."
   },
   "dialog": {
-    "open": "Enviar a ezyVet",
-    "title": "Enviar a ezyVet",
-    "loading": "Buscando ezyVet…",
+    "open": "Enviar al software de la clínica",
+    "title": "Enviar al software de la clínica",
+    "loading": "Buscando el software de la clínica…",
     "retry": "Reintentar",
-    "sentOn": "Enviado a ezyVet el {{date}}."
+    "sentOn": "Enviado al software de la clínica el {{date}}."
   },
   "install": {
-    "title": "La extensión ToothOps para ezyVet no responde",
-    "body": "Compruebe que la extensión ToothOps para ezyVet esté instalada y activada en Chrome, y vuelva a intentarlo. Si aún no la tiene, póngase en contacto con el soporte de ToothOps para obtener el enlace de instalación."
+    "title": "La extensión ToothOps PIMS no responde",
+    "body": "Compruebe que la extensión ToothOps PIMS esté instalada y activada en Chrome, y vuelva a intentarlo. Si aún no la tiene, póngase en contacto con el soporte de ToothOps para obtener el enlace de instalación."
   },
-  "noTab": "Abra la consulta en ezyVet y vuelva a intentarlo.",
-  "severalTabs": "Hay varias pestañas de ezyVet abiertas. Se usará: {{title}}",
-  "target": "ezyVet: {{patient}} — {{title}}",
-  "targetNoPatient": "ezyVet: {{title}}",
+  "noTab": "Abra la consulta en el software de la clínica y vuelva a intentarlo.",
+  "severalTabs": "Hay varias pestañas del software de la clínica abiertas. Se usará: {{title}}",
+  "target": "PIMS: {{patient}} — {{title}}",
+  "targetNoPatient": "PIMS: {{title}}",
   "state": {
-    "notConsult": "La pestaña de ezyVet no muestra una consulta. Abra la consulta del paciente y vuelva a intentarlo.",
+    "notConsult": "ToothOps no puede verificar la consulta activa, por lo que el envío está desactivado. Abra una consulta compatible o copie las notas manualmente.",
     "notMedicalTab": "Abra la pestaña Medical de la consulta y vuelva a intentarlo.",
-    "locked": "Esta consulta está bloqueada en ezyVet. Abra una consulta no bloqueada y vuelva a intentarlo.",
+    "locked": "Esta consulta está bloqueada en el software de la clínica. Abra una consulta no bloqueada y vuelva a intentarlo.",
     "combined": "ezyVet está en la vista Combined. Cambie a la vista Standard y vuelva a intentarlo."
   },
   "rows": {
@@ -46,15 +46,15 @@
   },
   "mismatch": {
     "title": "¿Otro paciente?",
-    "message": "Historial de ToothOps: {{chart}} · Consulta de ezyVet: {{ezyvet}}",
-    "messageNumbers": "El historial es de {{chart}} (n.º {{chartNumber}}), pero ezyVet muestra {{ezyvet}} (n.º {{ezyvetNumber}}).",
+    "message": "Historial de ToothOps: {{chart}} · Consulta del software de la clínica: {{ezyvet}}",
+    "messageNumbers": "El historial es de {{chart}} (n.º {{chartNumber}}), pero el software de la clínica muestra {{ezyvet}} (n.º {{ezyvetNumber}}).",
     "unknown": "(nombre no encontrado)",
     "noName": "(sin nombre de paciente)",
     "sendAnyway": "Enviar de todos modos"
   },
   "alreadySent": {
     "title": "Ya se envió el {{date}}. ¿Enviar de nuevo?",
-    "message": "Enviar de nuevo añade una segunda copia en ezyVet.",
+    "message": "Enviar de nuevo añade una segunda copia en el software de la clínica.",
     "confirm": "Enviar de nuevo"
   },
   "results": {
@@ -63,31 +63,31 @@
     "stampFailed": "Enviado, pero ToothOps no pudo registrar la fecha de envío en este historial."
   },
   "errors": {
-    "extension_error": "ToothOps no pudo comunicarse con la extensión de ezyVet. Compruebe que esté instalada y activada, y vuelva a intentarlo.",
-    "timeout": "La extensión no respondió a tiempo. Revise la pestaña de ezyVet y vuelva a intentarlo.",
-    "no_tab": "Se cerró la pestaña de ezyVet. Abra la consulta en ezyVet y vuelva a intentarlo.",
-    "not_writable": "Ya no se puede escribir en la consulta (bloqueada, cerrada o ya no está en la pestaña Medical). Abra la pestaña Medical de la consulta y vuelva a intentarlo.",
-    "patient_changed": "Ahora hay otro paciente u otra consulta abierta en ezyVet, así que no se envió nada más. Abra la consulta correcta y vuelva a intentarlo.",
+    "extension_error": "ToothOps no pudo comunicarse con la extensión ToothOps PIMS. Compruebe que esté instalada y activada, y vuelva a intentarlo.",
+    "timeout": "La extensión no respondió a tiempo. Revise la pestaña del software de la clínica y vuelva a intentarlo.",
+    "no_tab": "Se cerró la pestaña del software de la clínica. Abra la consulta en el software de la clínica y vuelva a intentarlo.",
+    "not_writable": "Ya no se puede escribir en la consulta porque está bloqueada, cerrada o no se puede verificar la consulta activa. Abra una consulta compatible y desbloqueada e inténtelo de nuevo, o copie las notas manualmente.",
+    "patient_changed": "Ahora hay otro paciente u otra consulta abierta en el software de la clínica, así que no se envió nada más. Abra la consulta correcta y vuelva a intentarlo.",
     "field_not_found": "Este campo no está en la página de la consulta. Elija otro campo en Destino.",
-    "editor_not_found": "ToothOps no encontró el cuadro de texto de este campo. Revise el campo en ezyVet antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
-    "popup_not_found": "No se abrió la ventana de edición de este campo. Revise el campo en ezyVet antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
-    "popup_not_closed": "La ventana de edición de este campo no se cerró después de guardar. Revise el campo en ezyVet antes de volver a enviar.",
-    "save_button_not_found": "ToothOps no encontró el botón de guardar de este campo. Revise el campo en ezyVet antes de volver a enviar.",
-    "save_not_confirmed": "ezyVet no confirmó el guardado. Revise el campo en ezyVet antes de volver a enviar.",
-    "no_preferred_email": "El cliente no tiene una dirección de correo electrónico preferida en ezyVet. Añada una o elija otro campo.",
-    "image_not_accepted": "Este campo no acepta imágenes. Elija Discharge Summary u otro campo que las acepte.",
-    "invalid_image": "No se pudo preparar la imagen del odontograma. Revise el campo en ezyVet antes de volver a enviar.",
+    "editor_not_found": "ToothOps no encontró el cuadro de texto de este campo. Revise el campo en el software de la clínica antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
+    "popup_not_found": "No se abrió la ventana de edición de este campo. Revise el campo en el software de la clínica antes de volver a enviar. Si sigue fallando, copie el informe de diagnóstico para el soporte de ToothOps.",
+    "popup_not_closed": "La ventana de edición de este campo no se cerró después de guardar. Revise el campo en el software de la clínica antes de volver a enviar.",
+    "save_button_not_found": "ToothOps no encontró el botón de guardar de este campo. Revise el campo en el software de la clínica antes de volver a enviar.",
+    "save_not_confirmed": "El software de la clínica no confirmó el guardado. Revise el campo en el software de la clínica antes de volver a enviar.",
+    "no_preferred_email": "El cliente no tiene una dirección de correo electrónico preferida en el software de la clínica. Añada una o elija otro campo.",
+    "image_not_accepted": "Este campo no acepta imágenes. Elija un campo que acepte imágenes.",
+    "invalid_image": "No se pudo preparar la imagen del odontograma. Revise el campo en el software de la clínica antes de volver a enviar.",
     "picture_failed": "ToothOps no pudo dibujar la imagen del odontograma, así que no se envió.",
-    "maybe_sent": "Es posible que algunos campos ya se hayan escrito. Revise la consulta en ezyVet antes de volver a enviar.",
-    "item_extension_error": "Algo falló al escribir este campo. Revise el campo en ezyVet antes de volver a enviar.",
-    "item_not_writable": "La consulta dejó de aceptar cambios (bloqueada, cerrada o ya no está en la pestaña Medical), así que este campo no se envió. Revise la consulta en ezyVet antes de volver a enviar.",
-    "item_patient_changed": "Se abrió otro paciente u otra consulta en ezyVet, así que este campo no se envió. Revise la consulta en ezyVet antes de volver a enviar."
+    "maybe_sent": "Es posible que algunos campos ya se hayan escrito. Revise la consulta en el software de la clínica antes de volver a enviar.",
+    "item_extension_error": "Algo falló al escribir este campo. Revise el campo en el software de la clínica antes de volver a enviar.",
+    "item_not_writable": "La consulta dejó de aceptar cambios porque está bloqueada, cerrada o no se puede verificar la consulta activa, por lo que este campo no se envió. Revise la consulta en el software de su clínica antes de volver a enviar.",
+    "item_patient_changed": "Se abrió otro paciente u otra consulta en el software de la clínica, así que este campo no se envió. Revise la consulta en el software de la clínica antes de volver a enviar."
   },
   "panel": {
     "notConnected": "Esta versión no está conectada a ToothOps.",
     "signIn": {
       "title": "Inicie sesión en ToothOps",
-      "lead": "Envíe las notas de sus historiales de ToothOps a la consulta de ezyVet abierta.",
+      "lead": "Envíe las notas de sus historiales de ToothOps a la consulta abierta en el software de la clínica.",
       "password": "Contraseña",
       "submit": "Iniciar sesión",
       "busy": "Iniciando sesión…",
@@ -108,23 +108,23 @@
       "empty": "No se encontró ningún historial.",
       "loading": "Cargando historiales…",
       "loadMore": "Cargar más",
-      "possible": "Posible coincidencia con el paciente de ezyVet {{patient}}"
+      "possible": "Posible coincidencia con el paciente {{patient}} en el software de la clínica"
     },
     "chart": {
       "back": "← Volver a los historiales",
       "loading": "Abriendo el historial…",
       "noteLabel": "Nota clínica",
       "flagLoading": "Comprobando si el envío está activado para su clínica…",
-      "flagFailed": "No se ha podido comprobar si el envío a ezyVet está activado para su clínica.",
-      "sendOff": "El envío a ezyVet no está activado para su clínica."
+      "flagFailed": "No se ha podido comprobar si el envío al software de la clínica está activado para su clínica.",
+      "sendOff": "El envío al software de la clínica no está activado para su clínica."
     },
     "today": {
-      "title": "Pacientes de hoy (ezyVet)",
+      "title": "Pacientes de hoy (PIMS)",
       "refresh": "Actualizar",
       "load": "Cargar los pacientes de hoy",
-      "loadHint": "Su pestaña de ezyVet cambiará al calendario.",
-      "noTab": "Abra ezyVet para ver los pacientes de hoy.",
-      "empty": "No hay pacientes en la agenda de ezyVet de hoy.",
+      "loadHint": "Es posible que el software de su clínica cambie al calendario.",
+      "noTab": "Abra el software de la clínica para ver los pacientes de hoy.",
+      "empty": "No hay pacientes en la agenda de hoy del software de la clínica.",
       "failed_one": "No se pudo leer {{count}} cita.",
       "failed_many": "No se pudieron leer {{count}} citas.",
       "failed_other": "No se pudieron leer {{count}} citas.",
@@ -134,20 +134,21 @@
       "startAnyway": "Crear un historial nuevo",
       "loading": "Cargando los pacientes de hoy…",
       "errors": {
-        "no_dashboard": "No se encontró el panel (Dashboard) de ezyVet.",
-        "no_date_input": "No se pudo fijar la fecha en el calendario de ezyVet.",
-        "no_calendar_refresh": "El calendario de ezyVet no responde. Vuelva a cargar ezyVet e inténtelo de nuevo.",
-        "unknown": "No se pudo leer la agenda de ezyVet de hoy."
+        "no_dashboard": "No se encontró el panel de control del software de la clínica.",
+        "no_date_input": "No se pudo fijar la fecha en el calendario del software de la clínica.",
+        "no_calendar_refresh": "El calendario del software de la clínica no responde. Vuelva a cargar el software de la clínica e inténtelo de nuevo.",
+        "unknown": "No se pudo leer la agenda de hoy del software de la clínica.",
+        "read_failed": "No se pudo leer la agenda de hoy del software de la clínica. Revise el calendario e inténtelo de nuevo."
       },
       "startFailed": "No se pudo abrir ToothOps. Inténtelo de nuevo."
     }
   },
   "send": {
-    "targetChanged": "La consulta de ezyVet ha cambiado. Compruebe el destino y pulse Enviar de nuevo."
+    "targetChanged": "La consulta del software de la clínica ha cambiado. Compruebe el destino y pulse Enviar de nuevo."
   },
   "handover": {
-    "filled": "Datos del paciente completados desde ezyVet.",
-    "failed": "No se pudo obtener el paciente de ezyVet. Introduzca los datos.",
+    "filled": "Datos del paciente completados desde el software de la clínica.",
+    "failed": "No se pudo obtener el paciente del software de la clínica. Introduzca los datos.",
     "otherUser": "Este paciente se eligió en la extensión con otra cuenta. Inicie sesión con la misma cuenta en ambas."
   }
 }

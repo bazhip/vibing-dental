@@ -9,9 +9,10 @@ export type AppointmentAction =
 
 const sameWords = (a: string[], b: string[]): boolean => a.length === b.length && [...a].sort().join(' ') === [...b].sort().join(' ');
 
-function belongsTo(chart: CloudChartMeta, appt: Pick<Appointment, 'patientName' | 'patientNumber' | 'ownerName'>): boolean {
+function belongsTo(chart: CloudChartMeta, appt: Pick<Appointment, 'patientName' | 'patientNumber' | 'ownerName' | 'provider'>): boolean {
   const byNumber = samePatientNumber(chart.patient_number, appt.patientNumber);
-  if (byNumber !== null) return byNumber;
+  if (byNumber === false) return false;
+  if (byNumber === true && (!appt.provider || appt.provider === 'ezyvet')) return true;
   if (normaliseName(chart.patient_name) !== normaliseName(appt.patientName)) return false;
   const chartSurname = ownerSurname(chart.owner_name);
   return chartSurname.length > 0 && sameWords(chartSurname, ownerSurname(appt.ownerName));
@@ -19,7 +20,7 @@ function belongsTo(chart: CloudChartMeta, appt: Pick<Appointment, 'patientName' 
 
 /** What the side panel offers for an appointment, from the practice's existing charts. */
 export function appointmentAction(
-  appt: Pick<Appointment, 'patientName' | 'patientNumber' | 'ownerName'>,
+  appt: Pick<Appointment, 'patientName' | 'patientNumber' | 'ownerName' | 'provider'>,
   charts: CloudChartMeta[],
   today: string,
 ): AppointmentAction {

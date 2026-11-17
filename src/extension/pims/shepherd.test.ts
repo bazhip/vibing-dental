@@ -1,0 +1,304 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { shepherd } from './shepherd';
+import type { AdapterContext } from './types';
+
+function storage(): Storage {
+  const values = new Map<string, string>();
+  return { get length() { return values.size; }, clear: () => values.clear(),
+    getItem: (key) => values.get(key) ?? null, setItem: (key, value) => { values.set(key, value); },
+    removeItem: (key) => { values.delete(key); }, key: (index) => [...values.keys()][index] ?? null };
+}
+const localStorage = storage();
+const sessionStorage = storage();
+const recordId = '12345678-1234-1234-1234-123456789abc';
+const json = (value: unknown) => ({ ok: true, json: async () => value }) as Response;
+function context(fetcher = vi.fn()): AdapterContext {
+  return { doc: document, url: new URL(`https://app.shepherd.vet/soap/${recordId}`), fetch: fetcher,
+    localStorage, sessionStorage, wait: async () => undefined };
+}
+function fixedEditor() {
+  document.body.innerHTML = '<div data-test-id="soap-medication-history-field"><div class="ProseMirror" contenteditable="true"><p>Existing</p></div></div><button data-test-id="soap-subjective-save-btn">Save</button><div id="root"></div>';
+  return document.querySelector<HTMLElement>('.ProseMirror')!;
+}
+function clipboard() {
+  class Transfer {
+    values = new Map<string, string>();
+    setData(type: string, value: string) { this.values.set(type, value); }
+    getData(type: string) { return this.values.get(type) ?? ''; }
+  }
+  class Paste extends Event {
+    clipboardData: Transfer;
+    constructor(type: string, init: EventInit & { clipboardData: Transfer }) { super(type, init); this.clipboardData = init.clipboardData; }
+  }
+  vi.stubGlobal('DataTransfer', Transfer);
+  vi.stubGlobal('ClipboardEvent', Paste);
+}
+
+describe('Shepherd static-source adapter', () => {
+  beforeEach(() => { document.body.innerHTML = ''; localStorage.clear(); sessionStorage.clear(); vi.unstubAllGlobals(); });
+
+  it('uses exact fixed selectors and dynamic objective labels on UUID SOAP routes', () => {
+    fixedEditor();
+    document.body.insertAdjacentHTML('beforeend', '<div data-test-id="dynamic-form-element"><label class="form__group__label">Dental</label><textarea></textarea></div>');
+    expect(shepherd.listFields(context())).toEqual([
+      { title: 'Subjective > History', kind: 'note', acceptsImage: false },
+      { title: 'Objective > Dental', kind: 'note', acceptsImage: false },
+    ]);
+    expect(shepherd.status(context())).toMatchObject({ state: 'writable', patientName: null, consult: { recordId } });
+    expect(shepherd.status({ ...context(), url: new URL('https://app.shepherd.vet/soap/not-a-uuid') }).state).toBe('notConsult');
+  });
+
+  it('pastes escaped HTML and observes completed autosave plus changed save control', async () => {
+    clipboard();
+    const input = fixedEditor();
+    let pasted = '';
+    input.addEventListener('paste', (event) => {
+      pasted = (event as ClipboardEvent).clipboardData!.getData('text/html');
+      input.insertAdjacentHTML('beforeend', pasted);
+    });
+    const save = document.querySelector('button')!;
+    save.addEventListener('click', () => {
+      save.disabled = true;
+      document.body.insertAdjacentHTML('beforeend', '<span class="autosave__indicator"></span>');
+    });
+    const ctx = context();
+    ctx.wait = async () => { document.querySelector('.autosave__indicator')?.remove(); };
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: '<New>\nNext' }, ctx)).toEqual({ ok: true });
+    expect(pasted).toBe('<p>&lt;New&gt;</p><p>Next</p>');
+    expect(input.textContent).toBe('Existing<New>Next');
+  });
+
+  it('does not interpret a disabled save button or ignored paste as persistence', async () => {
+    clipboard();
+    const input = fixedEditor();
+    input.addEventListener('paste', () => { input.textContent += 'New'; });
+    const save = document.querySelector('button')!;
+    save.addEventListener('click', () => { save.disabled = true; });
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'save_not_confirmed' });
+    fixedEditor();
+    document.querySelector('button')!.addEventListener('click', () => {
+      document.querySelector('button')!.disabled = true;
+      document.body.insertAdjacentHTML('beforeend', '<span class="autosave__indicator"></span>');
+    });
+    const ctx = context();
+    ctx.wait = async () => { document.querySelector('.autosave__indicator')?.remove(); };
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, ctx)).toEqual({ ok: false, code: 'save_not_confirmed' });
+  });
+
+  it.each([
+    ['Subjective > Initial Complaint', 'soap-initial-complaint-field', 'soap-subjective-save-btn'],
+    ['Subjective > Current Medications & Supplements', 'soap-current-medication-field', 'soap-subjective-save-btn'],
+    ['Assessment > Assessment', 'soap-assesment-form-description', 'soap-assesment-save-btn'],
+    ['Assessment > Laboratory', 'lab-note-txtbox', 'laboratory-note-add-btn'],
+    ['Assessment > Imaging', 'imaging-note-txtbox', 'imaging-note-add-btn'],
+    ['Assessment > Document', 'document-note-txtbox', 'document-note-add-btn'],
+    ['Plan/Schedule > Recommendation', 'soap-plan-recommendation-txtBox', 'soap-plan-recommendation-save-btn'],
+    ['Plan/Schedule > Notes', 'soap-plan-note-txtbox', 'undefined-note-add-btn'],
+  ])('routes %s to its exact observed save control', async (title, testId, saveId) => {
+    clipboard();
+    document.body.innerHTML = `<div data-test-id="${testId}"><div contenteditable="true"></div></div><button data-test-id="${saveId}">Save</button>`;
+    const clicked = vi.fn();
+    document.querySelector('button')!.addEventListener('click', clicked);
+    expect(await shepherd.write({ fieldTitle: title, text: 'New' }, context())).toEqual({ ok: false, code: 'save_not_confirmed' });
+    expect(clicked).toHaveBeenCalledOnce();
+  });
+
+  it('rejects ambiguous editors, disabled controls, and stale contexts before mutation', async () => {
+    clipboard();
+    const input = fixedEditor();
+    const paste = vi.fn();
+    input.addEventListener('paste', paste);
+    document.querySelector('button')!.disabled = true;
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'not_writable' });
+    document.querySelector('button')!.disabled = false;
+    document.body.append(document.querySelector('[data-test-id="soap-medication-history-field"]')!.cloneNode(true));
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'field_not_found' });
+    expect(paste).not.toHaveBeenCalled();
+  });
+
+  it('revalidates editor connectivity immediately after awaited save checks', async () => {
+    clipboard();
+    const input = fixedEditor();
+    const ctx = context();
+    ctx.wait = async () => { input.remove(); };
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, ctx)).toEqual({ ok: false, code: 'not_writable' });
+  });
+
+  it('does not mutate without an enabled save control and never fabricates success', async () => {
+    clipboard();
+    const input = fixedEditor();
+    const paste = vi.fn();
+    input.addEventListener('paste', paste);
+    document.querySelector('button')!.remove();
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'save_button_not_found' });
+    expect(paste).not.toHaveBeenCalled();
+    fixedEditor();
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'save_not_confirmed' });
+  });
+
+  it('appends objective textarea text without claiming unobserved autosave', async () => {
+    document.body.innerHTML = '<div data-test-id="dynamic-form-element"><label class="form__group__label">Dental</label><textarea>Existing</textarea></div>';
+    expect(await shepherd.write({ fieldTitle: 'Objective > Dental', text: 'New' }, context())).toEqual({ ok: false, code: 'save_not_confirmed' });
+    expect(document.querySelector('textarea')!.value).toBe('Existing\nNew');
+  });
+
+  it('guards provider switches during focus and navigation during save awaits', async () => {
+    clipboard();
+    const input = fixedEditor();
+    let current = context().url;
+    const ctx = { ...context(), currentUrl: () => current };
+    const paste = vi.fn();
+    input.addEventListener('paste', paste);
+    input.addEventListener('focus', () => { current = new URL(`https://evil.test/soap/${recordId}`); });
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, ctx)).toEqual({ ok: false, code: 'patient_changed' });
+    expect(paste).not.toHaveBeenCalled();
+    fixedEditor();
+    current = ctx.url;
+    ctx.wait = async () => { current = new URL('https://app.shepherd.vet/soap/aaaaaaaa-1234-1234-1234-123456789abc'); };
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, ctx)).toEqual({ ok: false, code: 'patient_changed' });
+  });
+
+  it('stops before save if paste detaches or locks the editor', async () => {
+    clipboard();
+    const input = fixedEditor();
+    input.addEventListener('paste', () => input.setAttribute('contenteditable', 'false'));
+    const save = vi.fn();
+    document.querySelector('button')!.addEventListener('click', save);
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'not_writable' });
+    expect(save).not.toHaveBeenCalled();
+  });
+
+  it('rejects images and refuses unavailable clipboard support', async () => {
+    fixedEditor();
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', pngDataUrl: 'x' }, context())).toEqual({ ok: false, code: 'image_not_accepted' });
+    vi.stubGlobal('DataTransfer', undefined);
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'not_writable' });
+  });
+
+  it('rejects embedded images before touching the editor', async () => {
+    clipboard();
+    const input = fixedEditor();
+    const paste = vi.fn();
+    input.addEventListener('paste', paste);
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', html: '<p>New</p><img src="image.png">' }, context())).toEqual({ ok: false, code: 'image_not_accepted' });
+    expect(paste).not.toHaveBeenCalled();
+  });
+
+  it('does not mistake trailing-break removal for a successful HTML paste', async () => {
+    clipboard();
+    const input = fixedEditor();
+    input.insertAdjacentHTML('beforeend', '<br class="ProseMirror-trailingBreak">');
+    document.querySelector('button')!.addEventListener('click', () => {
+      document.querySelector('button')!.disabled = true;
+      document.body.insertAdjacentHTML('beforeend', '<span class="autosave__indicator"></span>');
+    });
+    const ctx = context();
+    ctx.wait = async () => { document.querySelector('.autosave__indicator')?.remove(); };
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', html: '<p>New</p>' }, ctx)).toEqual({ ok: false, code: 'save_not_confirmed' });
+  });
+
+  it('revalidates save controls after synchronous paste handlers', async () => {
+    clipboard();
+    const input = fixedEditor();
+    const save = document.querySelector('button')!;
+    const clicked = vi.fn();
+    save.addEventListener('click', clicked);
+    input.addEventListener('paste', () => save.setAttribute('aria-disabled', 'true'));
+    expect(await shepherd.write({ fieldTitle: 'Subjective > History', text: 'New' }, context())).toEqual({ ok: false, code: 'not_writable' });
+    expect(clicked).not.toHaveBeenCalled();
+  });
+
+  it('observes objective autosave and preserves native input/change events', async () => {
+    document.body.innerHTML = '<div data-test-id="dynamic-form-element"><label class="form__group__label">Dental</label><textarea>Existing</textarea></div>';
+    const input = document.querySelector('textarea')!;
+    const events: string[] = [];
+    input.addEventListener('input', () => {
+      events.push('input');
+      document.body.insertAdjacentHTML('beforeend', '<span class="autosave__indicator"></span>');
+    });
+    input.addEventListener('change', () => events.push('change'));
+    const ctx = context();
+    ctx.wait = async () => { document.querySelector('.autosave__indicator')?.remove(); };
+    expect(await shepherd.write({ fieldTitle: 'Objective > Dental', text: 'New' }, ctx)).toEqual({ ok: true });
+    expect(events).toEqual(['input', 'change']);
+  });
+
+  it('requires a valid session token and never uses local-storage credentials', async () => {
+    const fetcher = vi.fn();
+    localStorage.setItem('baasic-auth-token-pav2', JSON.stringify({ token: 'wrong' }));
+    for (const value of ['', '{', '{}', '{"token":4}']) {
+      sessionStorage.setItem('baasic-auth-token-pav2', value);
+      expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    }
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it.each(['app.shepherd.vet', 'clinic.shepherd.vet'])('uses source POST bodies and routing for %s', async (host) => {
+    sessionStorage.setItem('baasic-auth-token-pav2', JSON.stringify({ token: 'secret' }));
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [{ id: 'doctor', name: 'Dr Hill' }] }))
+      .mockResolvedValueOnce(json({ item: [{ id: 'visit', startDate: '2026-11-16T14:00:00Z', appointmentPatients: [{ patient: { name: 'Bella' } }], client: { name: 'Ada' }, provider: { name: 'Dr Hill' } }] }));
+    const ctx = { ...context(fetcher), url: new URL(`https://${host}/soap/${recordId}`) };
+    expect(await shepherd.listAppointments('2026-11-16', ctx)).toMatchObject({ ok: true, appointments: [{ appointmentId: 'visit', patientName: 'Bella', patientNumber: '', vet: 'Dr Hill' }] });
+    const base = host.startsWith('app.') ? 'https://api.shepherd.vet/pav2/' : `https://${host}/api/pav2/`;
+    expect(fetcher.mock.calls.map(([url]) => url)).toEqual([`${base}soaps/dashboard`, `${base}providers/search`, `${base}appointments/search`]);
+    const init = fetcher.mock.calls[2][1];
+    expect(init.headers.Authorization).toBe('BEARER secret');
+    expect(init.method).toBe('POST');
+    expect(JSON.parse(init.body)).toEqual({ pageNumber: 1, pageSize: 1000,
+      embed: 'appointmentPatients,appointmentPatients.patient,appointmentPatients.patient.patientPreferredProviders,appointmentPatients.patient.patientPreferredProviders.provider,appointmentPatients.patient.soapId,client,client.clientInfo,appointmentStatus,appointmentType,provider',
+      startDate: expect.any(String), endDate: expect.any(String), providerIds: 'doctor', showCanceled: false, page: 1, rpp: 1000 });
+    expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({ pageNumber: 1, pageSize: 1000,
+      embed: 'supervisingDoctor,pav2User,patient,patient.clients,location,soapAssignedUsers,soapAssignedUsers.coreUser,soapAssignedUsers.pav2User',
+      isDeleted: false, rpp: 1000, page: 1 });
+  });
+
+  it('fails closed on unknown response shapes and never guesses patient numbers', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValue(json({ results: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(await shepherd.patientNumber(recordId, context())).toBeNull();
+  });
+  it('does not stop a short provider page while its explicit total says more remain', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [] }))
+      .mockResolvedValueOnce(json({ item: [{ id: 'doctor-one' }], totalRecords: 2 }))
+      .mockResolvedValueOnce(json({ item: [{ id: 'doctor-two' }], totalRecords: 2 }))
+      .mockResolvedValueOnce(json({ item: [] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
+    expect(JSON.parse(fetcher.mock.calls[2][1].body).pageNumber).toBe(2);
+    expect(JSON.parse(fetcher.mock.calls[3][1].body).providerIds).toBe('doctor-one,doctor-two');
+  });
+
+  it('does not send requests from stale contexts or silently accept truncated feeds', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [], totalRecords: 1001 }));
+    expect(await shepherd.listAppointments('2026-11-16', { ...context(fetcher), currentUrl: () => new URL('https://evil.test/') })).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+
+  it('rejects unverified hosts, invalid dates and unsafe multi-patient identifiers', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [] }))
+      .mockResolvedValueOnce(json({ item: [{ id: 'multi', startDate: '2026-11-16T14:00:00Z', appointmentPatients: [{ patient: { name: 'Bella' } }, { patient: { name: 'Max' } }] }] }));
+    expect(await shepherd.listAppointments('invalid', context(fetcher))).toEqual({ ok: false, code: 'read_failed' });
+    expect(await shepherd.listAppointments('2026-11-16', { ...context(fetcher), url: new URL('https://evil.test/') })).toEqual({ ok: false, code: 'read_failed' });
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true, appointments: [], failures: [{ code: 'invalid_appointment' }] });
+  });
+
+  it('filters cancelled/deleted/out-of-day appointments and includes checked-in dashboard patients', async () => {
+    sessionStorage.setItem('baasic-auth-token-pav2', '{"token":"secret"}');
+    const row = { id: 'visit', startDate: '2026-11-16T14:00:00Z', appointmentPatients: [{ patient: { name: 'Bella' } }] };
+    const fetcher = vi.fn().mockResolvedValueOnce(json({ item: [{ id: 'soap', dateCheckedIn: '2026-11-16T13:00:00Z', patient: { name: 'Max' } }] }))
+      .mockResolvedValueOnce(json({ item: [] })).mockResolvedValueOnce(json({ item: [row,
+        { ...row, id: 'cancelled', appointmentStatus: { abrv: 'Canceled' } }, { ...row, id: 'deleted', isDeleted: true },
+        { ...row, id: 'yesterday', startDate: '2026-11-15T14:00:00Z' }, { ...row, id: 'malformed', startDate: 'bad' },
+      ] }));
+    expect(await shepherd.listAppointments('2026-11-16', context(fetcher))).toMatchObject({ ok: true,
+      appointments: [{ appointmentId: 'soap', patientName: 'Max' }, { appointmentId: 'visit', patientName: 'Bella' }],
+      failures: [{ code: 'invalid_appointment' }],
+    });
+  });
+});

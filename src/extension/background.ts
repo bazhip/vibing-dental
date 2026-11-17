@@ -23,6 +23,9 @@ import {
   type TakePendingResult,
 } from './protocol';
 import { EXTENSION_VERSION } from './version';
+import { PIMS_HOST_PERMISSIONS } from './pims/hosts';
+import type { WriteTarget } from './pims/types';
+import type {} from './pims/page';
 
 /** A tab plus whether it is the active tab of the last-focused window. */
 export type EzyvetTab = chrome.tabs.Tab & { focusedWindow?: boolean };
@@ -31,7 +34,7 @@ export type EzyvetTab = chrome.tabs.Tab & { focusedWindow?: boolean };
 export type PageApi = {
   status(tabId: number): Promise<Status>;
   listFields(tabId: number): Promise<FieldInfo[]>;
-  write(tabId: number, item: SendItem): Promise<WriteResult>;
+  write(tabId: number, item: SendItem, target: WriteTarget): Promise<WriteResult>;
   diagnostics(tabId: number): Promise<Diagnostics>;
   listAppointments(tabId: number, date: string, navigate: boolean): Promise<AppointmentsResult>;
   consultPatientNumber(tabId: number, recordId: string): Promise<string | null>;
@@ -54,6 +57,7 @@ export type Deps = {
   lastCodes: WriteCode[];
   /** Opens a tab; resolves to its id (undefined when Chrome gave none). */
   openTab(url: string): Promise<number | undefined>;
+  navigateTab(tabId: number, url: string): Promise<void>;
   session: SessionStore;
   now(): number;
 };
@@ -95,6 +99,7 @@ async function inspect(deps: Deps): Promise<InspectResult> {
 
 /** The open consult's patient number, or null when it can't be read (inspect still succeeds). */
 async function readPatientNumber(tabId: number, status: Status, deps: Deps): Promise<string | null> {
+  if (status.patientNumber) return status.patientNumber;
   if (!status.consult?.recordId) return null;
   try {
     return (await deps.page.consultPatientNumber(tabId, status.consult.recordId)) ?? null;
@@ -136,12 +141,19 @@ async function sweepExpired(deps: Deps): Promise<void> {
 /** Opens ToothOps and holds the hand-over for that tab only, so two quick clicks can't swap
  *  patients. The URL carries no patient data. */
 async function startChart(handover: Handover, deps: Deps): Promise<StartChartResult> {
-  await sweepExpired(deps);
-  const tabId = await deps.openTab(`${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
-  if (tabId === undefined) return { ok: false };
-  const entry: PendingEntry = { handover, at: deps.now() };
-  await deps.session.set(pendingKey(tabId), entry);
-  return { ok: true };
+  let tabId: number | undefined;
+  try {
+    await sweepExpired(deps);
+    tabId = await deps.openTab('about:blank');
+    if (tabId === undefined) return { ok: false };
+    const entry: PendingEntry = { handover, at: deps.now() };
+    await deps.session.set(pendingKey(tabId), entry);
+    await deps.navigateTab(tabId, `${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
+    return { ok: true };
+  } catch {
+    if (tabId !== undefined) await deps.session.remove(pendingKey(tabId)).catch(() => undefined);
+    return { ok: false };
+  }
 }
 
 /** The hand-over for the sender's own tab: one use, and only within HANDOVER_TTL_MS. */
@@ -168,6 +180,7 @@ const sameConsult = (a: ConsultId | null | undefined, b: ConsultId | null): bool
 async function refusal(msg: SendRequest, deps: Deps): Promise<Refusal | null> {
   const status = await deps.page.status(msg.tabId);
   if (status.state !== 'writable') return 'not_writable';
+  if ((status.provider ?? 'ezyvet') !== (msg.expectedPims ?? 'ezyvet')) return 'patient_changed';
   // A consult without a readable record id can't be identified: never write to it.
   if (!status.consult || status.consult.recordId === '') return 'patient_changed';
   if (!sameConsult(msg.expectedConsult, status.consult)) return 'patient_changed';
@@ -208,7 +221,9 @@ async function send(msg: SendRequest, deps: Deps): Promise<SendResult> {
         stopped = await refusal(msg, deps);
         result = stopped
           ? { ok: false, code: stopped }
-          : ((await deps.page.write(tabId, item)) ?? { ok: false, code: 'extension_error' });
+          : ((await deps.page.write(tabId, item, {
+            provider: msg.expectedPims ?? 'ezyvet', consult: msg.expectedConsult, patientName: msg.confirmedEzyvetPatient,
+          })) ?? { ok: false, code: 'extension_error' });
       } catch {
         result = { ok: false, code: 'extension_error' };
       }
@@ -311,12 +326,12 @@ function resultOf<T>(res: { result?: unknown } | undefined): T {
 export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): Deps {
   // Inject (idempotent: the page script reinstalls only when the version differs), then call in.
   const call = async <T>(tabId: number, func: () => unknown): Promise<T> => {
-    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
+    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['pims-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func });
     return resultOf<T>(res);
   };
   const callWith = async <T, A>(tabId: number, func: (a: A) => unknown, arg: A): Promise<T> => {
-    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['ezyvet-page.js'] });
+    await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', files: ['pims-page.js'] });
     const [res] = await api.scripting.executeScript({ target: { tabId }, world: 'MAIN', func, args: [arg] });
     return resultOf<T>(res);
   };
@@ -325,8 +340,8 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
     lastCodes,
     async queryEzyvetTabs() {
       const [all, active] = await Promise.all([
-        api.tabs.query({ url: 'https://*.ezyvet.com/*' }),
-        api.tabs.query({ url: 'https://*.ezyvet.com/*', active: true, lastFocusedWindow: true }),
+        api.tabs.query({ url: PIMS_HOST_PERMISSIONS }),
+        api.tabs.query({ url: PIMS_HOST_PERMISSIONS, active: true, lastFocusedWindow: true }),
       ]);
       const focused = new Set(active.map((t) => t.id));
       return all.map((t) => ({ ...t, focusedWindow: focused.has(t.id) }));
@@ -336,21 +351,25 @@ export function createChromeDeps(api: ChromeApi, lastCodes: WriteCode[] = []): D
       if (tab?.windowId !== undefined) await api.windows.update(tab.windowId, { focused: true });
     },
     page: {
-      status: (tabId) => call(tabId, () => window.__toothopsEzyvet!.status()),
-      listFields: (tabId) => call(tabId, () => window.__toothopsEzyvet!.listFields()),
-      write: (tabId, item) => callWith(tabId, (i: SendItem) => window.__toothopsEzyvet!.write(i), item),
-      diagnostics: (tabId) => call(tabId, () => window.__toothopsEzyvet!.diagnostics()),
+      status: (tabId) => call(tabId, () => window.__toothopsPims!.status()),
+      listFields: (tabId) => call(tabId, () => window.__toothopsPims!.listFields()),
+      write: (tabId, item, target) => callWith(tabId,
+        (args: { item: SendItem; target: WriteTarget }) => window.__toothopsPims!.write(args.item, args.target), { item, target }),
+      diagnostics: (tabId) => call(tabId, () => window.__toothopsPims!.diagnostics()),
       listAppointments: (tabId, date, navigate) =>
         callWith(
           tabId,
-          (a: { date: string; navigate: boolean }) => window.__toothopsEzyvet!.listAppointments(a.date, { navigate: a.navigate }),
+          (a: { date: string; navigate: boolean }) => window.__toothopsPims!.listAppointments(a.date, { navigate: a.navigate }),
           { date, navigate },
         ),
       consultPatientNumber: (tabId, recordId) =>
-        callWith(tabId, (id: string) => window.__toothopsEzyvet!.consultPatientNumber(id), recordId),
+        callWith(tabId, (id: string) => window.__toothopsPims!.consultPatientNumber(id), recordId),
     },
     async openTab(url) {
       return (await api.tabs.create({ url })).id;
+    },
+    async navigateTab(tabId, url) {
+      await api.tabs.update(tabId, { url });
     },
     session: {
       get: async (key) => (await api.storage.session.get(key))[key],

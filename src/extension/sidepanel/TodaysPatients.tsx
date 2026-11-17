@@ -9,7 +9,7 @@ import { useTodaysAppointments, type TodayRow } from './useTodaysAppointments';
 /** After a hand-over opens ToothOps, the start buttons stay off this long (no second tab on a double click). */
 export const START_LOCK_MS = 3000;
 
-const KNOWN_ERRORS = new Set(['no_dashboard', 'no_date_input', 'no_calendar_refresh']);
+const KNOWN_ERRORS = new Set(['no_dashboard', 'no_date_input', 'no_calendar_refresh', 'read_failed']);
 
 function formatTime(iso: string, lng: string): string {
   const d = new Date(iso);

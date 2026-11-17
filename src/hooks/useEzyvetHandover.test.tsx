@@ -35,8 +35,8 @@ async function run(opts: Parameters<typeof useEzyvetHandover>[0]) {
   await act(async () => {});
 }
 
-const FILLED = 'Patient details filled in from ezyVet.';
-const FAILED = 'Couldn’t get the patient from ezyVet. Fill in the details.';
+const FILLED = 'Patient details filled in from PIMS.';
+const FAILED = 'Couldn’t get the patient from PIMS. Fill in the details.';
 const OTHER_USER = 'This patient was picked in the extension as another user. Sign in with the same account in both.';
 const toastKeys = () => toast.mock.calls.map((c) => c[0]);
 

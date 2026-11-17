@@ -1,27 +1,27 @@
 {
   "extension": {
-    "name": "ToothOps for ezyVet",
-    "description": "Writes your ToothOps record notes into the open ezyVet consult."
+    "name": "ToothOps PIMS",
+    "description": "Writes your ToothOps record notes into the open PIMS consult."
   },
   "dialog": {
-    "open": "Send to ezyVet",
-    "title": "Send to ezyVet",
-    "loading": "Looking for ezyVet…",
+    "open": "Send to PIMS",
+    "title": "Send to PIMS",
+    "loading": "Looking for PIMS…",
     "retry": "Retry",
-    "sentOn": "Sent to ezyVet on {{date}}."
+    "sentOn": "Sent to PIMS on {{date}}."
   },
   "install": {
-    "title": "The ToothOps for ezyVet extension isn’t responding",
-    "body": "Make sure the ToothOps for ezyVet extension is installed and enabled in Chrome, then try again. If you don’t have it yet, contact ToothOps support for the install link."
+    "title": "The ToothOps PIMS extension isn’t responding",
+    "body": "Make sure the ToothOps PIMS extension is installed and enabled in Chrome, then try again. If you don’t have it yet, contact ToothOps support for the install link."
   },
-  "noTab": "Open the consult in ezyVet, then try again.",
-  "severalTabs": "Several ezyVet tabs are open. Using: {{title}}",
-  "target": "ezyVet: {{patient}} — {{title}}",
-  "targetNoPatient": "ezyVet: {{title}}",
+  "noTab": "Open the consult in PIMS, then try again.",
+  "severalTabs": "Several PIMS tabs are open. Using: {{title}}",
+  "target": "PIMS: {{patient}} — {{title}}",
+  "targetNoPatient": "PIMS: {{title}}",
   "state": {
-    "notConsult": "The ezyVet tab isn’t showing a consult. Open the patient’s consult, then try again.",
+    "notConsult": "ToothOps can’t verify the active encounter, so sending is disabled. Open a supported consult or copy the notes manually.",
     "notMedicalTab": "Open the Medical tab of the consult, then try again.",
-    "locked": "This consult is locked in ezyVet. Open an unlocked consult, then try again.",
+    "locked": "This consult is locked in PIMS. Open an unlocked consult, then try again.",
     "combined": "ezyVet is in Combined view. Switch to Standard view, then try again."
   },
   "rows": {
@@ -46,15 +46,15 @@
   },
   "mismatch": {
     "title": "Different patient?",
-    "message": "ToothOps chart: {{chart}} · ezyVet consult: {{ezyvet}}",
-    "messageNumbers": "The chart is for {{chart}} (number {{chartNumber}}), but ezyVet shows {{ezyvet}} (number {{ezyvetNumber}}).",
+    "message": "ToothOps chart: {{chart}} · PIMS consult: {{ezyvet}}",
+    "messageNumbers": "The chart is for {{chart}} (number {{chartNumber}}), but PIMS shows {{ezyvet}} (number {{ezyvetNumber}}).",
     "unknown": "(name not found)",
     "noName": "(no patient name)",
     "sendAnyway": "Send anyway"
   },
   "alreadySent": {
     "title": "Already sent on {{date}}. Send again?",
-    "message": "Sending again adds a second copy in ezyVet.",
+    "message": "Sending again adds a second copy in PIMS.",
     "confirm": "Send again"
   },
   "results": {
@@ -63,31 +63,31 @@
     "stampFailed": "Sent, but ToothOps couldn’t record the send date on this chart."
   },
   "errors": {
-    "extension_error": "ToothOps couldn’t reach the ezyVet extension. Check that it is installed and enabled, then try again.",
-    "timeout": "The extension didn’t answer in time. Check the ezyVet tab and try again.",
-    "no_tab": "The ezyVet tab was closed. Open the consult in ezyVet and try again.",
-    "not_writable": "The consult can’t be written to any more (locked, closed or no longer on the Medical tab). Open the consult’s Medical tab and try again.",
-    "patient_changed": "A different patient or consult is now open in ezyVet, so nothing more was sent. Open the right consult and try again.",
+    "extension_error": "ToothOps couldn’t reach the ToothOps PIMS extension. Check that it is installed and enabled, then try again.",
+    "timeout": "The extension didn’t answer in time. Check the PIMS tab and try again.",
+    "no_tab": "The PIMS tab was closed. Open the consult in PIMS and try again.",
+    "not_writable": "The consult can no longer be written to because it is locked, closed or the active encounter can’t be verified. Open a supported, unlocked consult and try again, or copy the notes manually.",
+    "patient_changed": "A different patient or consult is now open in PIMS, so nothing more was sent. Open the right consult and try again.",
     "field_not_found": "This field isn’t on the consult page. Choose another field under Where it goes.",
-    "editor_not_found": "ToothOps couldn’t find this field’s text box. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
-    "popup_not_found": "This field’s editing window didn’t open. Check the field in ezyVet before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
-    "popup_not_closed": "This field’s editing window didn’t close after saving. Check the field in ezyVet before sending again.",
-    "save_button_not_found": "ToothOps couldn’t find the Save button for this field. Check the field in ezyVet before sending again.",
-    "save_not_confirmed": "ezyVet didn’t confirm the save. Check the field in ezyVet before sending again.",
-    "no_preferred_email": "The client has no preferred email address in ezyVet. Add one, or choose another field.",
-    "image_not_accepted": "This field doesn’t accept pictures. Choose Discharge Summary or another field that does.",
-    "invalid_image": "The chart picture couldn’t be prepared. Check the field in ezyVet before sending again.",
+    "editor_not_found": "ToothOps couldn’t find this field’s text box. Check the field in PIMS before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "popup_not_found": "This field’s editing window didn’t open. Check the field in PIMS before sending again. If it keeps failing, copy the diagnostic report for ToothOps support.",
+    "popup_not_closed": "This field’s editing window didn’t close after saving. Check the field in PIMS before sending again.",
+    "save_button_not_found": "ToothOps couldn’t find the Save button for this field. Check the field in PIMS before sending again.",
+    "save_not_confirmed": "PIMS didn’t confirm the save. Check the field in PIMS before sending again.",
+    "no_preferred_email": "The client has no preferred email address in PIMS. Add one, or choose another field.",
+    "image_not_accepted": "This field doesn’t accept pictures. Choose a field that accepts pictures.",
+    "invalid_image": "The chart picture couldn’t be prepared. Check the field in PIMS before sending again.",
     "picture_failed": "ToothOps couldn’t draw the chart picture, so it wasn’t sent.",
-    "maybe_sent": "Some fields may already have been written. Check the consult in ezyVet before sending again.",
-    "item_extension_error": "Something went wrong while writing this field. Check the field in ezyVet before sending again.",
-    "item_not_writable": "The consult stopped accepting changes (locked, closed or no longer on the Medical tab), so this field wasn’t sent. Check the consult in ezyVet before sending again.",
-    "item_patient_changed": "A different patient or consult was opened in ezyVet, so this field wasn’t sent. Check the consult in ezyVet before sending again."
+    "maybe_sent": "Some fields may already have been written. Check the consult in PIMS before sending again.",
+    "item_extension_error": "Something went wrong while writing this field. Check the field in PIMS before sending again.",
+    "item_not_writable": "The consult stopped accepting changes because it is locked, closed or the active encounter can’t be verified, so this field wasn’t sent. Check the consult in your practice software before sending again.",
+    "item_patient_changed": "A different patient or consult was opened in PIMS, so this field wasn’t sent. Check the consult in PIMS before sending again."
   },
   "panel": {
     "notConnected": "This build isn’t connected to ToothOps.",
     "signIn": {
       "title": "Sign in to ToothOps",
-      "lead": "Send record notes from your ToothOps charts into the open ezyVet consult.",
+      "lead": "Send record notes from your ToothOps charts into the open PIMS consult.",
       "password": "Password",
       "submit": "Sign in",
       "busy": "Signing in…",
@@ -108,23 +108,23 @@
       "empty": "No charts found.",
       "loading": "Loading charts…",
       "loadMore": "Load more",
-      "possible": "Possible match for ezyVet patient {{patient}}"
+      "possible": "Possible match for PIMS patient {{patient}}"
     },
     "chart": {
       "back": "← Back to charts",
       "loading": "Opening the chart…",
       "noteLabel": "Record note",
       "flagLoading": "Checking whether sending is on for your practice…",
-      "flagFailed": "Couldn’t check whether sending to ezyVet is turned on for your practice.",
-      "sendOff": "Sending to ezyVet isn’t turned on for your practice."
+      "flagFailed": "Couldn’t check whether sending to PIMS is turned on for your practice.",
+      "sendOff": "Sending to PIMS isn’t turned on for your practice."
     },
     "today": {
-      "title": "Today’s patients (ezyVet)",
+      "title": "Today’s patients (PIMS)",
       "refresh": "Refresh",
       "load": "Load today’s patients",
-      "loadHint": "This switches your ezyVet tab to the calendar.",
-      "noTab": "Open ezyVet to see today’s patients.",
-      "empty": "No patients on today’s ezyVet schedule.",
+      "loadHint": "This may switch your practice software to the calendar.",
+      "noTab": "Open PIMS to see today’s patients.",
+      "empty": "No patients on today’s PIMS schedule.",
       "failed_one": "{{count}} appointment couldn’t be read.",
       "failed_other": "{{count}} appointments couldn’t be read.",
       "start": "Start chart",
@@ -133,20 +133,21 @@
       "startAnyway": "Start new chart",
       "loading": "Loading today’s patients…",
       "errors": {
-        "no_dashboard": "Couldn’t find ezyVet’s Dashboard.",
-        "no_date_input": "Couldn’t set the date on ezyVet’s calendar.",
-        "no_calendar_refresh": "ezyVet’s calendar didn’t respond. Reload ezyVet and try again.",
-        "unknown": "Couldn’t read today’s ezyVet schedule."
+        "no_dashboard": "The dashboard in your practice software couldn’t be found.",
+        "no_date_input": "The date in your practice software’s calendar couldn’t be set.",
+        "no_calendar_refresh": "Your practice software’s calendar isn’t responding. Reload your practice software and try again.",
+        "unknown": "Today’s schedule couldn’t be read from your practice software.",
+        "read_failed": "Today’s schedule couldn’t be read from your practice software. Check the calendar and try again."
       },
       "startFailed": "Couldn’t open ToothOps. Try again."
     }
   },
   "send": {
-    "targetChanged": "The ezyVet consult changed. Check the target and press Send again."
+    "targetChanged": "The PIMS consult changed. Check the target and press Send again."
   },
   "handover": {
-    "filled": "Patient details filled in from ezyVet.",
-    "failed": "Couldn’t get the patient from ezyVet. Fill in the details.",
+    "filled": "Patient details filled in from PIMS.",
+    "failed": "Couldn’t get the patient from PIMS. Fill in the details.",
     "otherUser": "This patient was picked in the extension as another user. Sign in with the same account in both."
   }
 }

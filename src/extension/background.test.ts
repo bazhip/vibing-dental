@@ -33,6 +33,7 @@ function makeDeps(tabs: EzyvetTab[] = [tab(1, { active: true, focusedWindow: tru
       consultPatientNumber: vi.fn(async () => '12345'),
     },
     openTab: vi.fn(async () => 42 as number | undefined),
+    navigateTab: vi.fn(async () => undefined),
     session: {
       get: vi.fn(async (k: string) => store.get(k)),
       set: vi.fn(async (k: string, v: unknown) => void store.set(k, v)),
@@ -344,8 +345,39 @@ describe('patient hand-over', () => {
   it('startChart opens ToothOps and stores the hand-over under the new tab', async () => {
     const { deps, store, clock } = makeDeps();
     expect(await handleInternal(start(), panel, ID, deps)).toEqual({ ok: true });
-    expect(deps.openTab).toHaveBeenCalledWith(`${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
+    expect(deps.openTab).toHaveBeenCalledWith('about:blank');
+    expect(deps.navigateTab).toHaveBeenCalledWith(42, `${WEB_APP_ORIGIN}/#/chart/patient?from=ezyvet`);
     expect(store.get('pending:42')).toEqual({ handover, at: clock.now });
+  });
+
+  it('makes the hand-over available before the destination can request it', async () => {
+    const { deps } = makeDeps();
+    let received: unknown;
+    deps.openTab = vi.fn(async (url: string) => {
+      if (url !== 'about:blank') received = await handleExternal(take, webTab(42), deps);
+      return 42;
+    });
+    deps.navigateTab = vi.fn(async () => {
+      received = await handleExternal(take, webTab(42), deps);
+    });
+    expect(await handleInternal(start(), panel, ID, deps)).toEqual({ ok: true });
+    expect(received).toEqual({ handover });
+    expect(await handleExternal(take, webTab(42), deps)).toEqual({ handover: null });
+  });
+
+  it('does not navigate to ToothOps when storing the hand-over fails', async () => {
+    const { deps, store } = makeDeps();
+    deps.session.set = vi.fn().mockRejectedValue(new Error('storage unavailable'));
+    expect(await handleInternal(start(), panel, ID, deps)).toEqual({ ok: false });
+    expect(deps.navigateTab).not.toHaveBeenCalled();
+    expect(store.size).toBe(0);
+  });
+
+  it('clears the hand-over if destination navigation fails', async () => {
+    const { deps, store } = makeDeps();
+    deps.navigateTab = vi.fn().mockRejectedValue(new Error('tab closed'));
+    expect(await handleInternal(start(), panel, ID, deps)).toEqual({ ok: false });
+    expect(store.size).toBe(0);
   });
 
   it('startChart without a tab id stores nothing', async () => {
@@ -442,7 +474,7 @@ describe('internal messages', () => {
   it('the panel reaches the same send logic as the web app', async () => {
     const { deps } = makeDeps();
     expect(await handleInternal(sendMsg(), panel, ID, deps)).toEqual(await handleExternal(sendMsg(), okSender, makeDeps().deps));
-    expect(deps.page.write).toHaveBeenCalledWith(1, a);
+    expect(deps.page.write).toHaveBeenCalledWith(1, a, { provider: 'ezyvet', consult, patientName: 'Bella' });
   });
 
   function fakeChrome() {
@@ -522,7 +554,11 @@ describe('internal messages', () => {
 describe('manifest', () => {
   it('has the exact permissions and hosts', () => {
     expect(manifest.permissions).toEqual(['scripting', 'sidePanel', 'identity', 'storage']);
-    expect(manifest.host_permissions).toEqual(['https://*.ezyvet.com/*']);
+    expect(manifest.host_permissions).toEqual([
+      'https://*.ezyvet.com/*', 'https://*.vettersoftware.com/*', 'https://*.instinctvet.cloud/*',
+      'https://*.instinctvet.com/*', 'https://*.evetpractice.com/*', 'https://*.rhapsody.vet/*',
+      'https://*.shepherd.vet/*', 'https://*.vetspire.com/*',
+    ]);
     expect(manifest.externally_connectable.matches).toEqual(['https://toothops.app/*', 'http://localhost:5173/*']);
   });
 

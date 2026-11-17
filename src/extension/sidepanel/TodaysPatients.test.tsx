@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import i18n from '../../i18n';
 import type { Appointment } from '../ezyvet/appointments';
 import type { CloudChartMeta } from '../../utils/chartQueries';
 import { WEB_APP_ORIGIN } from '../protocol';
@@ -53,11 +54,11 @@ describe('TodaysPatients', () => {
     const load = await screen.findByRole('button', { name: "Load today’s patients" });
     expect(m.appointments).toHaveBeenCalledTimes(1);
     expect(m.appointments).toHaveBeenLastCalledWith('2026-11-16', false);
-    expect(screen.getByText('This switches your ezyVet tab to the calendar.')).toBeInTheDocument();
+    expect(screen.getByText('This may switch your practice software to the calendar.')).toBeInTheDocument();
 
     m.appointments.mockResolvedValue(ok([]));
     fireEvent.click(load);
-    await screen.findByText("No patients on today’s ezyVet schedule.");
+    await screen.findByText("No patients on today’s PIMS schedule.");
     expect(m.appointments).toHaveBeenLastCalledWith('2026-11-16', true);
 
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
@@ -68,7 +69,7 @@ describe('TodaysPatients', () => {
   it('Refresh before Load does not navigate', async () => {
     m.appointments.mockResolvedValue(ok([]));
     render(<TodaysPatients userId="u1" />);
-    await screen.findByText("No patients on today’s ezyVet schedule.");
+    await screen.findByText("No patients on today’s PIMS schedule.");
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
     await waitFor(() => expect(m.appointments).toHaveBeenCalledTimes(2));
     expect(m.appointments).toHaveBeenLastCalledWith('2026-11-16', false);
@@ -77,7 +78,7 @@ describe('TodaysPatients', () => {
   it('no ezyVet tab', async () => {
     m.appointments.mockResolvedValue({ tab: null, result: null });
     render(<TodaysPatients userId="u1" />);
-    expect(await screen.findByText('Open ezyVet to see today’s patients.')).toBeInTheDocument();
+    expect(await screen.findByText('Open PIMS to see today’s patients.')).toBeInTheDocument();
   });
 
   it('counts appointments that could not be read', async () => {
@@ -86,24 +87,25 @@ describe('TodaysPatients', () => {
     ]));
     render(<TodaysPatients userId="u1" />);
     expect(await screen.findByText("2 appointments couldn’t be read.")).toBeInTheDocument();
-    expect(screen.queryByText("No patients on today’s ezyVet schedule.")).toBeNull();
+    expect(screen.queryByText("No patients on today’s PIMS schedule.")).toBeNull();
   });
 
   it.each([
-    ['no_dashboard', "Couldn’t find ezyVet’s Dashboard."],
-    ['no_date_input', "Couldn’t set the date on ezyVet’s calendar."],
-    ['no_calendar_refresh', "ezyVet’s calendar didn’t respond. Reload ezyVet and try again."],
-    ['something_new', "Couldn’t read today’s ezyVet schedule."],
-  ])('error %s', async (code, text) => {
+    ['no_dashboard', 'pims:panel.today.errors.no_dashboard'],
+    ['no_date_input', 'pims:panel.today.errors.no_date_input'],
+    ['no_calendar_refresh', 'pims:panel.today.errors.no_calendar_refresh'],
+    ['read_failed', 'pims:panel.today.errors.read_failed'],
+    ['something_new', 'pims:panel.today.errors.unknown'],
+  ] as const)('error %s', async (code, key) => {
     m.appointments.mockResolvedValue(fail(code));
     render(<TodaysPatients userId="u1" />);
-    expect(await screen.findByRole('alert')).toHaveTextContent(text);
+    expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t(key));
   });
 
   it('a transport failure is the unknown error', async () => {
     m.appointments.mockRejectedValue(new Error('timeout'));
     render(<TodaysPatients userId="u1" />);
-    expect(await screen.findByRole('alert')).toHaveTextContent("Couldn’t read today’s ezyVet schedule.");
+    expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('pims:panel.today.errors.unknown'));
   });
 
   it('rows sorted by start with time, patient, owner and vet', async () => {
@@ -241,7 +243,7 @@ describe('TodaysPatients', () => {
   it('focus on a new day reloads; focus on the same day does not', async () => {
     m.appointments.mockResolvedValue(ok([]));
     render(<TodaysPatients userId="u1" />);
-    await screen.findByText("No patients on today’s ezyVet schedule.");
+    await screen.findByText("No patients on today’s PIMS schedule.");
     await act(async () => { window.dispatchEvent(new Event('focus')); });
     expect(m.appointments).toHaveBeenCalledTimes(1);
 
@@ -257,9 +259,9 @@ describe('TodaysPatients', () => {
     m.appointments.mockResolvedValueOnce(ok([]));
     render(<TodaysPatients userId="u1" />);
     fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
-    await screen.findByText("No patients on today’s ezyVet schedule.");
+    await screen.findByText("No patients on today’s PIMS schedule.");
     await act(async () => { first({ tab: null, result: null }); });
-    expect(screen.queryByText("Open ezyVet to see today’s patients.")).toBeNull();
-    expect(screen.getByText("No patients on today’s ezyVet schedule.")).toBeInTheDocument();
+    expect(screen.queryByText("Open PIMS to see today’s patients.")).toBeNull();
+    expect(screen.getByText("No patients on today’s PIMS schedule.")).toBeInTheDocument();
   });
 });

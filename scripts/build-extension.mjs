@@ -28,6 +28,7 @@ const lib = (entry, formats, name, fileName, emptyOutDir) => ({
 });
 
 await build(lib('src/extension/ezyvet/page.ts', ['iife'], 'ToothopsEzyvet', 'ezyvet-page.js', false));
+await build(lib('src/extension/pims/page.ts', ['iife'], 'ToothopsPims', 'pims-page.js', false));
 await build(lib('src/extension/background.ts', ['es'], undefined, 'background.js', false));
 // The side panel: a React app (ES modules) with its own HTML entry, written as sidepanel.html +
 // assets/. Vite loads .env from the repo root, so VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are

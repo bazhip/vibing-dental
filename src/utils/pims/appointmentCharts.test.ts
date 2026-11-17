@@ -10,6 +10,10 @@ const appt = { patientName: 'Bella', patientNumber: '123', ownerName: 'Smith, Ja
 const TODAY = '2026-11-16';
 
 describe('appointmentAction', () => {
+  it('does not treat patient numbers from a different PIMS as globally unique', () => {
+    const other = chart({ patient_name: 'Max', patient_number: '123', chart_date: TODAY });
+    expect(appointmentAction({ ...appt, provider: 'daysmart' }, [other], TODAY)).toEqual({ kind: 'start' });
+  });
   it('opens today\'s chart matched by number (newest updated)', () => {
     const a = chart({ id: 'a', patient_number: '0123', chart_date: TODAY, updated_at: '2026-11-16T08:00:00Z' });
     const b = chart({ id: 'b', patient_number: '123', chart_date: TODAY, updated_at: '2026-11-16T09:00:00Z' });

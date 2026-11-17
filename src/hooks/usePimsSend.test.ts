@@ -6,7 +6,7 @@ import type { PimsTransport } from '../utils/pims/extensionBridge';
 import { effectiveMap } from '../utils/pims/mapping';
 
 vi.mock('./usePimsFieldMap', () => ({
-  usePimsFieldMap: () => ({ map: effectiveMap(null), save: async () => {}, reset: async () => {} }),
+  usePimsFieldMap: (provider?: import('../extension/pims/types').PimsId) => ({ map: effectiveMap(null, provider), save: async () => {}, reset: async () => {} }),
 }));
 vi.mock('../utils/supabaseClient', () => ({ supabase: null, cloudEnabled: false }));
 vi.mock('../utils/edgeFunctions', () => ({ markPimsSent: vi.fn(async () => ({ sentAt: '2026-11-15T10:00:00Z' })) }));
@@ -55,6 +55,34 @@ function setup(
 }
 
 describe('usePimsSend', () => {
+  it('does not bypass patient confirmation using an unscoped number from another PIMS', async () => {
+    dialogs.confirm.mockClear();
+    dialogs.confirm.mockResolvedValueOnce(false);
+    const max: InspectResult = { ...info, status: { ...info.status!, provider: 'daysmart', patientName: 'Max', patientNumber: '123' } };
+    const { transport, hook } = setup({ patientNumber: '123', inspected: max });
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    act(() => { hook.result.current.choose('treatment', 'Plan'); });
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(dialogs.confirm).toHaveBeenCalledOnce();
+    expect(transport.send).not.toHaveBeenCalled();
+  });
+  it('blocks a provider switch even when encounter and patient identifiers coincide', async () => {
+    const { transport, hook } = setup();
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    vi.mocked(transport.inspect).mockResolvedValue({ ...info, status: { ...info.status!, provider: 'daysmart' } });
+    await act(async () => { await hook.result.current.doSend(); });
+    expect(transport.send).not.toHaveBeenCalled();
+    expect(hook.result.current.changedTarget).toBe(true);
+  });
+
+  it('clears unsaved destination choices when refreshing into a different provider', async () => {
+    const { transport, hook } = setup();
+    await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    act(() => { hook.result.current.choose('treatment', 'Plan'); });
+    vi.mocked(transport.inspect).mockResolvedValue({ ...info, status: { ...info.status!, provider: 'daysmart' } });
+    await act(async () => { await hook.result.current.refreshTarget(); });
+    expect(hook.result.current.rows.find((row) => row.key === 'treatment')?.wanted).toBeNull();
+  });
   it('calls the injected transport for ping, then inspect, then send', async () => {
     const { calls, picture, onSent, hook } = setup();
     await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
@@ -120,7 +148,7 @@ describe('usePimsSend', () => {
     expect(dialogs.confirm).toHaveBeenCalledTimes(1);
     const opts = dialogs.confirm.mock.calls[0][0] as { title: string; message: string };
     expect(opts.title).toBe('Different patient?');
-    expect(opts.message).toBe('The chart is for Bella (number 123), but ezyVet shows Bella (number 124).');
+    expect(opts.message).toBe('The chart is for Bella (number 123), but PIMS shows Bella (number 124).');
     expect(transport.send).not.toHaveBeenCalled();
   });
 

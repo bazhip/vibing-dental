@@ -44,6 +44,7 @@ function targetChanged(a: InspectResult, b: InspectResult): boolean {
   const sb = b.status;
   return (
     a.tab?.id !== b.tab?.id ||
+    (sa?.provider ?? 'ezyvet') !== (sb?.provider ?? 'ezyvet') ||
     (sa?.state === 'writable') !== (sb?.state === 'writable') ||
     (sa?.patientName ?? null) !== (sb?.patientName ?? null) ||
     (sa?.consult?.viewId ?? null) !== (sb?.consult?.viewId ?? null) ||
@@ -89,10 +90,15 @@ export function usePimsSend({
   patientMatcher = patientsMatch,
 }: UsePimsSendOptions) {
   const { t, i18n } = useTranslation(['pims', 'media', 'app', 'forms', 'common']);
-  const { map, save, reset } = usePimsFieldMap();
   const [phase, setPhase] = React.useState<PimsPhase>({ kind: 'loading' });
+  const provider = (phase.kind === 'ready' || phase.kind === 'results' ? phase.info.status?.provider : undefined) ?? 'ezyvet';
+  const { map, save, reset } = usePimsFieldMap(provider);
   const [edits, setEdits] = React.useState<PimsFieldMap>({});
   const [editedField, setEditedField] = React.useState<string | null | undefined>(undefined);
+  React.useEffect(() => {
+    setEdits({});
+    setEditedField(undefined);
+  }, [provider]);
   const [sending, setSending] = React.useState(false);
   // Set when Send found a different consult than the one on screen (and sent nothing).
   const [changedTarget, setChangedTarget] = React.useState(false);
@@ -197,7 +203,7 @@ export function usePimsSend({
 
   const wantedFor = (key: SourceKey): string | null => (key in edits ? edits[key]! : map[key]) ?? null;
   const editedWanted =
-    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : map.treatment ?? 'Plan';
+    editedField !== undefined ? editedField : map.editedNote !== undefined ? map.editedNote : map.treatment;
 
   // Only meaningful once the tab is writable; the mapping rows are shown from then on.
   const info = phase.kind === 'ready' || phase.kind === 'results' ? phase.info : null;
@@ -268,7 +274,7 @@ export function usePimsSend({
         { name: ezyvetName, number: ezyvetNumber },
         patientMatcher,
       );
-      if (match === 'different') {
+      if (match === 'different' || (provider !== 'ezyvet' && !patientMatcher(patientName, ezyvetName))) {
         const names = {
           chart: patientName.trim() || t('pims:mismatch.noName'),
           ezyvet: ezyvetName?.trim() || t('pims:mismatch.unknown'),
@@ -316,6 +322,7 @@ export function usePimsSend({
             expectedPatient: patientName,
             confirmedEzyvetPatient: ezyvetName,
             expectedConsult: info2.status!.consult ?? null,
+            expectedPims: info2.status!.provider ?? 'ezyvet',
             items,
           });
         } catch {

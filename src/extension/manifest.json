@@ -7,7 +7,7 @@
   "version": "0.0.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv6FWROg+0qQIoQ5dhGM7Km6X8XQ3PyHlDLALdaj5DQlnNnOY0x1Zg/jfUPnPg0kBw/zTEJCoeyPcDJplCeeYNSAFvrRcB992LSGIZ5I07wU3/4cCxivgYyFgGGpBfODvWuTISj6qIS5OpLfM0JgmVY7Zgqk39MuhmE0D7f5Pr0WvA9rCNOmwj+QUYrpBICNn/9hLvezH+rbDUZP/7J1k+xnheh0FU5U6bCWhGhhsZPpwcGG1q8wk51GCvPODlUW8IuimJ6RqAl/xGMwkdB+A0n/otBunEjWgEehiwiPAwcc01lwpGM4F6o0Z9HmzYTbvbyqFEiFd24Bx/vQxViGt4QIDAQAB",
   "permissions": ["scripting", "sidePanel", "identity", "storage"],
-  "host_permissions": ["https://*.ezyvet.com/*"],
+  "host_permissions": ["https://*.ezyvet.com/*", "https://*.vettersoftware.com/*", "https://*.instinctvet.cloud/*", "https://*.instinctvet.com/*", "https://*.evetpractice.com/*", "https://*.rhapsody.vet/*", "https://*.shepherd.vet/*", "https://*.vetspire.com/*"],
   "side_panel": { "default_path": "sidepanel.html" },
   "action": {
     "default_title": "__MSG_extName__",

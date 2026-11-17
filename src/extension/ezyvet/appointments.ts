@@ -1,8 +1,10 @@
 // Reads the day's appointments from ezyVet's Dashboard calendar and the /General/MouseOver tooltip
 // endpoint (page script, world MAIN). Patient data stays in memory: failures carry codes and times only.
 import * as S from './selectors';
+import type { PimsId } from '../pims/types';
 
 export type Appointment = {
+  provider?: PimsId;
   appointmentId: string;
   start: string;
   patientName: string;
@@ -11,13 +13,14 @@ export type Appointment = {
   vet: string | null;
 };
 export type AppointmentFailureCode =
+  | 'invalid_appointment'
   | 'no_appointment_id'
   | 'tooltip_empty'
   | 'tooltip_not_parsed'
   | 'tooltip_fetch_failed';
 export type AppointmentsResult =
   | { ok: true; appointments: Appointment[]; failures: { code: AppointmentFailureCode; startsAt: string | null }[] }
-  | { ok: false; code: 'not_on_calendar' | 'no_dashboard' | 'no_date_input' | 'no_calendar_refresh' };
+  | { ok: false; code: 'not_on_calendar' | 'no_dashboard' | 'no_date_input' | 'no_calendar_refresh' | 'read_failed' };
 export type TooltipFetch = (recordClass: 'Appointment' | 'Consult', recordId: string) => Promise<string>;
 export type PageDeps = { doc: Document; fetchTooltip: TooltipFetch; wait: (ms: number) => Promise<void> };
 
@@ -26,6 +29,8 @@ const POLL_LIMIT_MS = 5000;
 const AFTER_REFRESH_MS = 1500;
 const AFTER_DAY_MS = 500;
 const CONCURRENCY = 4;
+type RefreshGeneration = { blocks: Set<Element>; completed: boolean; failed: boolean };
+const refreshGenerations = new WeakMap<Document, RefreshGeneration>();
 
 const defaultFetchTooltip: TooltipFetch = async (recordClass, recordId) => {
   const res = await fetch('/General/MouseOver', {
@@ -91,9 +96,10 @@ function timeToSeconds(display: string | null): number | null {
 }
 
 function startIso(date: string, seconds: number | null): string {
-  const [y, mo, d] = date.split('-').map(Number);
-  const midnight = new Date(y, mo - 1, d);
-  return new Date(midnight.getTime() + (seconds ?? 0) * 1000).toISOString();
+  const [year, month, day] = date.split('-').map(Number);
+  const start = new Date(year, month - 1, day);
+  start.setHours(0, 0, seconds ?? 0, 0);
+  return start.toISOString();
 }
 
 type Failure = { code: AppointmentFailureCode; startsAt: string | null };
@@ -117,26 +123,63 @@ export async function listAppointments(
       if (!(await pollFor(wait, () => doc.querySelector(S.DASHBOARD_ACTIVE)))) return { ok: false, code: 'no_dashboard' };
     }
 
-    const input = doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT);
+    if (!doc.querySelector(S.DAY_VIEW_ACTIVE)) {
+      const day = doc.querySelector<HTMLElement>(S.DAY_VIEW_BUTTON);
+      if (!day) return { ok: false, code: 'not_on_calendar' };
+      day.click();
+      if (!(await pollFor(wait, () => doc.querySelector(S.DAY_VIEW_ACTIVE)))) return { ok: false, code: 'not_on_calendar' };
+      await wait(AFTER_DAY_MS);
+    }
+
+    const input = await pollFor(wait, () => doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT));
     if (!input) return { ok: false, code: 'no_date_input' };
     if (input.value !== date) {
       const refresh = (doc.defaultView as (Window & { calendarRefresh?: unknown }) | null)?.calendarRefresh;
       if (typeof refresh !== 'function') return { ok: false, code: 'no_calendar_refresh' };
+      const generation: RefreshGeneration = {
+        blocks: new Set(doc.querySelectorAll(S.APPOINTMENT_BLOCK)),
+        completed: false,
+        failed: false,
+      };
+      refreshGenerations.set(doc, generation);
       input.value = date;
-      refresh();
-      await wait(AFTER_REFRESH_MS);
-    }
-
-    if (!doc.querySelector(S.DAY_VIEW_ACTIVE)) {
-      const day = doc.querySelector<HTMLElement>(S.DAY_VIEW_BUTTON);
-      if (day) {
-        day.click();
-        await wait(AFTER_DAY_MS);
+      try {
+        Promise.resolve(refresh()).then(
+          () => { generation.completed = true; },
+          () => { generation.failed = true; },
+        );
+      } catch {
+        generation.failed = true;
+        return { ok: false, code: 'read_failed' };
       }
+      await wait(AFTER_REFRESH_MS);
+      const fresh = await pollFor(wait, () => {
+        if (generation.failed) return true;
+        if (doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT)?.value !== date) return true;
+        const blocks = Array.from(doc.querySelectorAll(S.APPOINTMENT_BLOCK));
+        return generation.completed && blocks.length > 0 && blocks.every((block) => !generation.blocks.has(block));
+      });
+      if (doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT)?.value !== date) {
+        return { ok: false, code: 'not_on_calendar' };
+      }
+      if (!fresh || generation.failed) return { ok: false, code: 'read_failed' };
     }
   }
 
   await pollFor(wait, () => doc.querySelector(S.APPOINTMENT_BLOCK));
+  if (!doc.querySelector(S.DASHBOARD_ACTIVE)
+    || !doc.querySelector(S.DAY_VIEW_ACTIVE)
+    || doc.querySelector<HTMLInputElement>(S.CALENDAR_DATE_INPUT)?.value !== date) {
+    return { ok: false, code: 'not_on_calendar' };
+  }
+  const generation = refreshGenerations.get(doc);
+  if (generation) {
+    const blocks = Array.from(doc.querySelectorAll(S.APPOINTMENT_BLOCK));
+    if (generation.failed || !generation.completed || blocks.length === 0 || blocks.some((block) => generation.blocks.has(block))) {
+      return { ok: false, code: 'read_failed' };
+    }
+    refreshGenerations.delete(doc);
+  }
   const columns = Array.from(doc.querySelectorAll(S.CALENDAR_COLUMN_NAMES)).map((e) => (e.textContent ?? '').trim());
   // ezyVet can draw one appointment as several blocks (e.g. more than one column): the first wins.
   const seen = new Set<string>();

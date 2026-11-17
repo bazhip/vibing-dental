@@ -1,27 +1,27 @@
 {
   "extension": {
-    "name": "ToothOps für ezyVet",
-    "description": "Überträgt Ihre ToothOps-Patientenakteneinträge in die geöffnete ezyVet-Konsultation."
+    "name": "ToothOps PIMS",
+    "description": "Überträgt Ihre ToothOps-Patientenakteneinträge in die geöffnete Konsultation Ihrer Praxissoftware."
   },
   "dialog": {
-    "open": "An ezyVet senden",
-    "title": "An ezyVet senden",
-    "loading": "ezyVet wird gesucht…",
+    "open": "An die Praxissoftware senden",
+    "title": "An die Praxissoftware senden",
+    "loading": "Praxissoftware wird gesucht…",
     "retry": "Erneut versuchen",
-    "sentOn": "Am {{date}} an ezyVet gesendet."
+    "sentOn": "Am {{date}} an die Praxissoftware gesendet."
   },
   "install": {
-    "title": "Die Erweiterung ToothOps für ezyVet antwortet nicht",
-    "body": "Prüfen Sie, ob die Erweiterung ToothOps für ezyVet in Chrome installiert und aktiviert ist, und versuchen Sie es erneut. Falls Sie sie noch nicht haben, wenden Sie sich für den Installationslink an den ToothOps-Support."
+    "title": "Die Erweiterung ToothOps PIMS antwortet nicht",
+    "body": "Prüfen Sie, ob die Erweiterung ToothOps PIMS in Chrome installiert und aktiviert ist, und versuchen Sie es erneut. Falls Sie sie noch nicht haben, wenden Sie sich für den Installationslink an den ToothOps-Support."
   },
-  "noTab": "Öffnen Sie die Konsultation in ezyVet und versuchen Sie es erneut.",
-  "severalTabs": "Mehrere ezyVet-Tabs sind geöffnet. Verwendet wird: {{title}}",
-  "target": "ezyVet: {{patient}} — {{title}}",
-  "targetNoPatient": "ezyVet: {{title}}",
+  "noTab": "Öffnen Sie die Konsultation in der Praxissoftware und versuchen Sie es erneut.",
+  "severalTabs": "Mehrere Tabs der Praxissoftware sind geöffnet. Verwendet wird: {{title}}",
+  "target": "PIMS: {{patient}} — {{title}}",
+  "targetNoPatient": "PIMS: {{title}}",
   "state": {
-    "notConsult": "Der ezyVet-Tab zeigt keine Konsultation. Öffnen Sie die Konsultation des Patienten und versuchen Sie es erneut.",
+    "notConsult": "ToothOps kann die aktive Konsultation nicht überprüfen, daher ist das Senden deaktiviert. Öffnen Sie eine unterstützte Konsultation oder kopieren Sie die Notizen manuell.",
     "notMedicalTab": "Öffnen Sie den Tab Medical der Konsultation und versuchen Sie es erneut.",
-    "locked": "Diese Konsultation ist in ezyVet gesperrt. Öffnen Sie eine nicht gesperrte Konsultation und versuchen Sie es erneut.",
+    "locked": "Diese Konsultation ist in der Praxissoftware gesperrt. Öffnen Sie eine nicht gesperrte Konsultation und versuchen Sie es erneut.",
     "combined": "ezyVet ist in der Ansicht Combined. Wechseln Sie zur Ansicht Standard und versuchen Sie es erneut."
   },
   "rows": {
@@ -46,15 +46,15 @@
   },
   "mismatch": {
     "title": "Anderer Patient?",
-    "message": "ToothOps-Akte: {{chart}} · ezyVet-Konsultation: {{ezyvet}}",
-    "messageNumbers": "Die Akte gehört zu {{chart}} (Nr. {{chartNumber}}), aber ezyVet zeigt {{ezyvet}} (Nr. {{ezyvetNumber}}).",
+    "message": "ToothOps-Akte: {{chart}} · Konsultation in der Praxissoftware: {{ezyvet}}",
+    "messageNumbers": "Die Akte gehört zu {{chart}} (Nr. {{chartNumber}}), aber die Praxissoftware zeigt {{ezyvet}} (Nr. {{ezyvetNumber}}).",
     "unknown": "(Name nicht gefunden)",
     "noName": "(kein Patientenname)",
     "sendAnyway": "Trotzdem senden"
   },
   "alreadySent": {
     "title": "Bereits am {{date}} gesendet. Erneut senden?",
-    "message": "Erneutes Senden legt eine zweite Kopie in ezyVet an.",
+    "message": "Erneutes Senden legt eine zweite Kopie in der Praxissoftware an.",
     "confirm": "Erneut senden"
   },
   "results": {
@@ -63,31 +63,31 @@
     "stampFailed": "Gesendet, aber ToothOps konnte das Sendedatum in dieser Akte nicht speichern."
   },
   "errors": {
-    "extension_error": "ToothOps konnte die ezyVet-Erweiterung nicht erreichen. Prüfen Sie, ob sie installiert und aktiviert ist, und versuchen Sie es erneut.",
-    "timeout": "Die Erweiterung hat nicht rechtzeitig geantwortet. Prüfen Sie den ezyVet-Tab und versuchen Sie es erneut.",
-    "no_tab": "Der ezyVet-Tab wurde geschlossen. Öffnen Sie die Konsultation in ezyVet und versuchen Sie es erneut.",
-    "not_writable": "In die Konsultation kann nicht mehr geschrieben werden (gesperrt, geschlossen oder nicht mehr im Tab Medical). Öffnen Sie den Tab Medical der Konsultation und versuchen Sie es erneut.",
-    "patient_changed": "In ezyVet ist jetzt ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde nichts weiter gesendet. Öffnen Sie die richtige Konsultation und versuchen Sie es erneut.",
+    "extension_error": "ToothOps konnte die Erweiterung ToothOps PIMS nicht erreichen. Prüfen Sie, ob sie installiert und aktiviert ist, und versuchen Sie es erneut.",
+    "timeout": "Die Erweiterung hat nicht rechtzeitig geantwortet. Prüfen Sie den Tab der Praxissoftware und versuchen Sie es erneut.",
+    "no_tab": "Der Tab der Praxissoftware wurde geschlossen. Öffnen Sie die Konsultation in der Praxissoftware und versuchen Sie es erneut.",
+    "not_writable": "In die Konsultation kann nicht mehr geschrieben werden, da sie gesperrt oder geschlossen ist oder die aktive Konsultation nicht überprüft werden kann. Öffnen Sie eine unterstützte, nicht gesperrte Konsultation und versuchen Sie es erneut oder kopieren Sie die Notizen manuell.",
+    "patient_changed": "In der Praxissoftware ist jetzt ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde nichts weiter gesendet. Öffnen Sie die richtige Konsultation und versuchen Sie es erneut.",
     "field_not_found": "Dieses Feld ist nicht auf der Konsultationsseite. Wählen Sie unter „Ziel“ ein anderes Feld.",
-    "editor_not_found": "ToothOps hat das Textfeld dieses Felds nicht gefunden. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
-    "popup_not_found": "Das Bearbeitungsfenster dieses Felds hat sich nicht geöffnet. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
-    "popup_not_closed": "Das Bearbeitungsfenster dieses Felds hat sich nach dem Speichern nicht geschlossen. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
-    "save_button_not_found": "ToothOps hat die Schaltfläche zum Speichern dieses Felds nicht gefunden. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
-    "save_not_confirmed": "ezyVet hat das Speichern nicht bestätigt. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
-    "no_preferred_email": "Der Kunde hat in ezyVet keine bevorzugte E-Mail-Adresse. Fügen Sie eine hinzu oder wählen Sie ein anderes Feld.",
-    "image_not_accepted": "Dieses Feld nimmt keine Bilder an. Wählen Sie Discharge Summary oder ein anderes Feld, das Bilder annimmt.",
-    "invalid_image": "Das Bild des Zahnschemas konnte nicht vorbereitet werden. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
+    "editor_not_found": "ToothOps hat das Textfeld dieses Felds nicht gefunden. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
+    "popup_not_found": "Das Bearbeitungsfenster dieses Felds hat sich nicht geöffnet. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden. Wenn es weiterhin fehlschlägt, kopieren Sie den Diagnosebericht für den ToothOps-Support.",
+    "popup_not_closed": "Das Bearbeitungsfenster dieses Felds hat sich nach dem Speichern nicht geschlossen. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden.",
+    "save_button_not_found": "ToothOps hat die Schaltfläche zum Speichern dieses Felds nicht gefunden. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden.",
+    "save_not_confirmed": "Die Praxissoftware hat das Speichern nicht bestätigt. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden.",
+    "no_preferred_email": "Der Kunde hat in der Praxissoftware keine bevorzugte E-Mail-Adresse. Fügen Sie eine hinzu oder wählen Sie ein anderes Feld.",
+    "image_not_accepted": "Dieses Feld nimmt keine Bilder an. Wählen Sie ein Feld, das Bilder annimmt.",
+    "invalid_image": "Das Bild des Zahnschemas konnte nicht vorbereitet werden. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden.",
     "picture_failed": "ToothOps konnte das Bild des Zahnschemas nicht erstellen, daher wurde es nicht gesendet.",
-    "maybe_sent": "Einige Felder wurden möglicherweise bereits beschrieben. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden.",
-    "item_extension_error": "Beim Schreiben dieses Felds ist ein Fehler aufgetreten. Prüfen Sie das Feld in ezyVet, bevor Sie erneut senden.",
-    "item_not_writable": "Die Konsultation nimmt keine Änderungen mehr an (gesperrt, geschlossen oder nicht mehr im Tab Medical), daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden.",
-    "item_patient_changed": "In ezyVet wurde ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in ezyVet, bevor Sie erneut senden."
+    "maybe_sent": "Einige Felder wurden möglicherweise bereits beschrieben. Prüfen Sie die Konsultation in der Praxissoftware, bevor Sie erneut senden.",
+    "item_extension_error": "Beim Schreiben dieses Felds ist ein Fehler aufgetreten. Prüfen Sie das Feld in der Praxissoftware, bevor Sie erneut senden.",
+    "item_not_writable": "Die Konsultation nimmt keine Änderungen mehr an, da sie gesperrt oder geschlossen ist oder die aktive Konsultation nicht überprüft werden kann. Daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in Ihrer Praxissoftware, bevor Sie erneut senden.",
+    "item_patient_changed": "In der Praxissoftware wurde ein anderer Patient oder eine andere Konsultation geöffnet, daher wurde dieses Feld nicht gesendet. Prüfen Sie die Konsultation in der Praxissoftware, bevor Sie erneut senden."
   },
   "panel": {
     "notConnected": "Diese Version ist nicht mit ToothOps verbunden.",
     "signIn": {
       "title": "Bei ToothOps anmelden",
-      "lead": "Senden Sie die Einträge Ihrer ToothOps-Akten in die geöffnete ezyVet-Konsultation.",
+      "lead": "Senden Sie die Einträge Ihrer ToothOps-Akten in die geöffnete Konsultation Ihrer Praxissoftware.",
       "password": "Passwort",
       "submit": "Anmelden",
       "busy": "Anmeldung läuft…",
@@ -108,23 +108,23 @@
       "empty": "Keine Akten gefunden.",
       "loading": "Akten werden geladen…",
       "loadMore": "Mehr laden",
-      "possible": "Mögliche Übereinstimmung mit ezyVet-Patient {{patient}}"
+      "possible": "Mögliche Übereinstimmung mit dem Patienten {{patient}} in der Praxissoftware"
     },
     "chart": {
       "back": "← Zurück zu den Akten",
       "loading": "Akte wird geöffnet…",
       "noteLabel": "Aktennotiz",
       "flagLoading": "Es wird geprüft, ob das Senden für Ihre Praxis aktiviert ist…",
-      "flagFailed": "Es konnte nicht geprüft werden, ob das Senden an ezyVet für Ihre Praxis aktiviert ist.",
-      "sendOff": "Das Senden an ezyVet ist für Ihre Praxis nicht aktiviert."
+      "flagFailed": "Es konnte nicht geprüft werden, ob das Senden an die Praxissoftware für Ihre Praxis aktiviert ist.",
+      "sendOff": "Das Senden an die Praxissoftware ist für Ihre Praxis nicht aktiviert."
     },
     "today": {
-      "title": "Heutige Patienten (ezyVet)",
+      "title": "Heutige Patienten (PIMS)",
       "refresh": "Aktualisieren",
       "load": "Heutige Patienten laden",
-      "loadHint": "Dabei wechselt Ihr ezyVet-Tab zum Kalender.",
-      "noTab": "Öffnen Sie ezyVet, um die heutigen Patienten zu sehen.",
-      "empty": "Keine Patienten im heutigen ezyVet-Terminplan.",
+      "loadHint": "Dabei kann Ihre Praxissoftware zum Kalender wechseln.",
+      "noTab": "Öffnen Sie Ihre Praxissoftware, um die heutigen Patienten zu sehen.",
+      "empty": "Keine Patienten im heutigen Terminplan der Praxissoftware.",
       "failed_one": "{{count}} Termin konnte nicht gelesen werden.",
       "failed_other": "{{count}} Termine konnten nicht gelesen werden.",
       "start": "Akte anlegen",
@@ -133,20 +133,21 @@
       "startAnyway": "Neue Akte anlegen",
       "loading": "Heutige Patienten werden geladen…",
       "errors": {
-        "no_dashboard": "Das ezyVet-Dashboard wurde nicht gefunden.",
-        "no_date_input": "Das Datum im ezyVet-Kalender konnte nicht eingestellt werden.",
-        "no_calendar_refresh": "Der ezyVet-Kalender reagiert nicht. Laden Sie ezyVet neu und versuchen Sie es erneut.",
-        "unknown": "Der heutige ezyVet-Terminplan konnte nicht gelesen werden."
+        "no_dashboard": "Das Dashboard Ihrer Praxissoftware wurde nicht gefunden.",
+        "no_date_input": "Das Datum im Kalender Ihrer Praxissoftware konnte nicht eingestellt werden.",
+        "no_calendar_refresh": "Der Kalender Ihrer Praxissoftware reagiert nicht. Laden Sie Ihre Praxissoftware neu und versuchen Sie es erneut.",
+        "unknown": "Der heutige Terminplan konnte nicht aus Ihrer Praxissoftware gelesen werden.",
+        "read_failed": "Der heutige Terminplan konnte nicht aus Ihrer Praxissoftware gelesen werden. Prüfen Sie den Kalender und versuchen Sie es erneut."
       },
       "startFailed": "ToothOps konnte nicht geöffnet werden. Bitte versuchen Sie es erneut."
     }
   },
   "send": {
-    "targetChanged": "Die ezyVet-Konsultation hat sich geändert. Prüfen Sie das Ziel und klicken Sie erneut auf Senden."
+    "targetChanged": "Die Konsultation in der Praxissoftware hat sich geändert. Prüfen Sie das Ziel und klicken Sie erneut auf Senden."
   },
   "handover": {
-    "filled": "Patientendaten aus ezyVet übernommen.",
-    "failed": "Der Patient konnte nicht aus ezyVet abgerufen werden. Bitte geben Sie die Daten ein.",
+    "filled": "Patientendaten aus der Praxissoftware übernommen.",
+    "failed": "Der Patient konnte nicht aus der Praxissoftware abgerufen werden. Bitte geben Sie die Daten ein.",
     "otherUser": "Dieser Patient wurde in der Erweiterung mit einem anderen Konto ausgewählt. Melden Sie sich in beiden mit demselben Konto an."
   }
 }

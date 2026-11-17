@@ -170,7 +170,7 @@ describe('SidePanelApp', () => {
   it('the practice flag off hides Send in the chart view', async () => {
     fake.state.practiceFlag = false;
     await signInAndPick();
-    expect(await screen.findByText('Sending to ezyVet isn’t turned on for your practice.')).toBeInTheDocument();
+    expect(await screen.findByText('Sending to PIMS isn’t turned on for your practice.')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
     // The chart view does not look for ezyVet (only the list's pin did).
     expect(mocks.transport.ping).not.toHaveBeenCalled();

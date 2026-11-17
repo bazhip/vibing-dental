@@ -4,6 +4,7 @@ import type { FieldInfo, SendItem } from '../utils/pims/mapping';
 import type { AppointmentsResult } from './ezyvet/appointments';
 import type { ConsultId, Diagnostics, EzyvetState, Status } from './ezyvet/read';
 import type { WriteCode, WriteResult } from './ezyvet/write';
+import type { PimsId } from './pims/types';
 
 // The local web app dev server, allowed only by the unpacked dev build (`npm run build:extension`).
 // The store build (`npm run package:extension`) sets VITE_PIMS_STORE_BUILD=1, which compiles this to
@@ -35,6 +36,7 @@ export type Request =
       confirmedEzyvetPatient: string | null;
       /** The consult seen at inspect; a write to any other consult is refused (`patient_changed`). */
       expectedConsult: ConsultId | null;
+      expectedPims?: PimsId;
       items: SendItem[];
     }
   | { type: 'diagnose'; tabId?: number }

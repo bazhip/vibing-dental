@@ -1,4 +1,5 @@
 import { matchField } from '../../extension/ezyvet/matchField';
+import type { PimsId } from '../../extension/pims/types';
 import {
   recordNoteSectionHtml,
   recordNoteSectionText,
@@ -28,8 +29,11 @@ export const DEFAULT_EZYVET_MAP: Record<SourceKey, string | null> = {
   chart: 'Discharge Summary',
 };
 
-export function effectiveMap(saved: PimsFieldMap | null): EffectiveFieldMap {
-  return { ...DEFAULT_EZYVET_MAP, ...(saved ?? {}) };
+export function effectiveMap(saved: PimsFieldMap | null, provider: PimsId = 'ezyvet'): EffectiveFieldMap {
+  const defaults = provider === 'ezyvet' ? DEFAULT_EZYVET_MAP : Object.fromEntries(
+    Object.keys(DEFAULT_EZYVET_MAP).map((key) => [key, null]),
+  ) as Record<SourceKey, null>;
+  return { ...defaults, ...(saved ?? {}) };
 }
 
 export type FieldInfo = {

@@ -86,7 +86,7 @@ describe('ChartList', () => {
     await flush();
     expect(screen.queryByTestId('pinned-match')).toBeNull();
     const maybe = screen.getByTestId('possible-match');
-    expect(maybe).toHaveTextContent('Possible match for ezyVet patient Bella Smith');
+    expect(maybe).toHaveTextContent('Possible match for PIMS patient Bella Smith');
     expect(maybe).not.toHaveTextContent('Matches this consult');
     expect(maybe).toHaveTextContent('Bella');
   });
@@ -133,6 +133,13 @@ describe('consultMatches by patient number', () => {
   it('an equal number is exact even when the names differ', () => {
     const c = numbered('a', 'Bella', '00123');
     expect(consultMatches([c], writable('Max Jones', '123'))).toEqual({ exact: [c], possible: [] });
+  });
+
+  it('a DaySmart patient number alone does not pin a differently named chart', () => {
+    const candidate = numbered('a', 'Bella', '123');
+    const inspect = writable('Max Jones', '123');
+    inspect.status!.provider = 'daysmart';
+    expect(consultMatches([candidate], inspect)).toEqual({ exact: [], possible: [] });
   });
 
   it('an equal number is exact even when ezyVet shows no name', () => {

@@ -29,7 +29,7 @@ export function consultMatches(charts: CloudChartMeta[], info: InspectResult | n
   const sorted = [...charts].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
   for (const c of sorted) {
     const byNumber = samePatientNumber(c.patient_number, number);
-    if (byNumber === true) exact.push(c);
+    if (byNumber === true && (!info.status.provider || info.status.provider === 'ezyvet')) exact.push(c);
     else if (byNumber === false || !name) continue;
     else if (patientsMatchStrict(c.patient_name, c.owner_name, name)) exact.push(c);
     else if (patientsMatch(c.patient_name, name)) possible.push(c);
