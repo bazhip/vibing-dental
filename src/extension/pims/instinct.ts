@@ -47,11 +47,16 @@ function identity(context: AdapterContext): { patientId: string; recordId: strin
   return { patientId: match[1], recordId: visits[0] };
 }
 
+function writable(editor: HTMLElement): boolean {
+  return editor.isConnected && isVisible(editor) && editor.getAttribute('contenteditable') === 'true' &&
+    !editor.closest('[inert], [disabled], [aria-disabled="true"], [aria-readonly="true"]');
+}
+
 function fields(context: AdapterContext): { title: string; editor: HTMLElement }[] {
   return Array.from(context.doc.querySelectorAll<HTMLDivElement>('div[id]')).flatMap((wrapper) => {
     if (!wrapper.id.trim() || !isVisible(wrapper)) return [];
     const editors = Array.from(wrapper.children).filter((element): element is HTMLElement =>
-      element instanceof HTMLElement && element.getAttribute('contenteditable') === 'true' && isVisible(element));
+      element instanceof HTMLElement && writable(element));
     return editors.length === 1 ? [{ title: wrapper.id, editor: editors[0] }] : [];
   });
 }
@@ -68,6 +73,7 @@ async function write(item: SendItem, context: AdapterContext): Promise<WriteResu
   const wrapper = editor.parentElement;
   const guard = (expectedHtml?: string): WriteResult | null => {
     if (changed()) return { ok: false, code: 'patient_changed' };
+    if (editor.isConnected && !writable(editor)) return { ok: false, code: 'not_writable' };
     const currentFields = fields(context).filter((field) => field.title.trim().toUpperCase() === item.fieldTitle.trim().toUpperCase());
     if (!editor.isConnected || !context.doc.contains(editor) || editor.parentElement !== wrapper ||
         currentFields.length !== 1 || currentFields[0].editor !== editor || currentFields[0].title !== title) {
@@ -80,6 +86,8 @@ async function write(item: SendItem, context: AdapterContext): Promise<WriteResu
   const before = guard();
   if (before) return before;
   editor.querySelectorAll('.is-empty.is-editor-empty').forEach((element) => element.remove());
+  const afterCleanup = guard();
+  if (afterCleanup) return afterCleanup;
   const html = plainHtml(item);
   editor.innerHTML = editor.innerHTML ? `${editor.innerHTML}<br>${html}` : html;
   const insertedHtml = editor.innerHTML;

@@ -17,10 +17,9 @@ export interface ConsultMatches {
   possible: CloudChartMeta[];
 }
 
-/** The charts that match the writable consult's patient, most recent first. When the chart and the
- *  consult both have a patient number, the number decides: equal is exact whatever the names, and a
- *  different number is in neither list. Otherwise the names decide, so nothing matches without a
- *  patient name. No match is possible without a writable consult. */
+/** The charts that match the writable consult's patient, most recent first. Different known
+ *  numbers reject a match, but equal unscoped numbers never bypass the name rules.
+ *  No match is possible without a patient name and a writable consult. */
 export function consultMatches(charts: CloudChartMeta[], info: InspectResult | null): ConsultMatches {
   const exact: CloudChartMeta[] = [];
   const possible: CloudChartMeta[] = [];
@@ -29,9 +28,8 @@ export function consultMatches(charts: CloudChartMeta[], info: InspectResult | n
   const sorted = [...charts].sort((a, b) => b.updated_at.localeCompare(a.updated_at));
   for (const c of sorted) {
     const byNumber = samePatientNumber(c.patient_number, number);
-    if (byNumber === true && (!info.status.provider || info.status.provider === 'ezyvet')) exact.push(c);
-    else if (byNumber === false || !name) continue;
-    else if (patientsMatchStrict(c.patient_name, c.owner_name, name)) exact.push(c);
+    if (byNumber === false || !name) continue;
+    if (patientsMatchStrict(c.patient_name, c.owner_name, name)) exact.push(c);
     else if (patientsMatch(c.patient_name, name)) possible.push(c);
   }
   return { exact, possible };

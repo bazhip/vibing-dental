@@ -249,13 +249,14 @@ describe('SendToEzyvetDialog', () => {
     expect(mocks.send).not.toHaveBeenCalled();
   });
 
-  it('equal patient numbers send without asking, even when the names differ', async () => {
+  it('equal unscoped patient numbers still ask when the names differ', async () => {
+    mocks.confirm.mockResolvedValue(false);
     mocks.inspect.mockResolvedValue(writableWith({ patientName: 'Max', patientNumber: '123' }));
     render(dlg({ patientNumber: '0123' }).el);
     await screen.findByText(t('pims:rows.heading'));
     fireEvent.click(sendButton());
-    await waitFor(() => expect(mocks.send).toHaveBeenCalledTimes(1));
-    expect(mocks.confirm).not.toHaveBeenCalled();
+    await waitFor(() => expect(mocks.confirm).toHaveBeenCalledTimes(1));
+    expect(mocks.send).not.toHaveBeenCalled();
   });
 
   it('a consult switched in ezyVet before Send: shows the new target and the notice, and sends nothing', async () => {

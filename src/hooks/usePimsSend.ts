@@ -274,7 +274,7 @@ export function usePimsSend({
         { name: ezyvetName, number: ezyvetNumber },
         patientMatcher,
       );
-      if (match === 'different' || (provider !== 'ezyvet' && !patientMatcher(patientName, ezyvetName))) {
+      if (match === 'different') {
         const names = {
           chart: patientName.trim() || t('pims:mismatch.noName'),
           ezyvet: ezyvetName?.trim() || t('pims:mismatch.unknown'),

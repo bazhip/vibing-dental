@@ -22,8 +22,8 @@ import { START_LOCK_MS, TodaysPatients } from './TodaysPatients';
 const appt = (id: string, start: string, patientName: string, patientNumber: string, ownerName: string, vet: string | null = 'Dr Lee'): Appointment => ({
   appointmentId: id, start, patientName, patientNumber, ownerName, vet,
 });
-const chart = (id: string, number: string, chartDate: string): CloudChartMeta => ({
-  id, patient_name: 'x', patient_number: number, owner_name: '', owner_phone: '', owner_email: '',
+const chart = (id: string, number: string, chartDate: string, patientName: string, ownerName: string): CloudChartMeta => ({
+  id, patient_name: patientName, patient_number: number, owner_name: ownerName, owner_phone: '', owner_email: '',
   species: 'canine', dentition: '', chart_date: chartDate, recall_date: '', updated_at: chartDate, created_by: 'u1',
 });
 const tab = { id: 3, title: 'ezyVet' };
@@ -135,7 +135,7 @@ describe('TodaysPatients', () => {
       appt('2', '2026-11-16T09:30:00', 'Max', '2', 'Jones, Tom'),
       appt('3', '2026-11-16T10:00:00', 'Rex', '3', 'Brown, Ann'),
     ]));
-    m.chartsForPatients.mockResolvedValue([chart('old2', '2', '2026-10-01'), chart('today3', '3', '2026-11-16')]);
+    m.chartsForPatients.mockResolvedValue([chart('old2', '2', '2026-10-01', 'Max', 'Tom Jones'), chart('today3', '3', '2026-11-16', 'Rex', 'Ann Brown')]);
     render(<TodaysPatients userId="u1" />);
     await screen.findByText('Bella');
     const [bella, max, rex] = screen.getAllByTestId('today-row');
@@ -171,7 +171,7 @@ describe('TodaysPatients', () => {
       appt('2', '2026-11-16T09:30:00', 'Max', '2', 'Jones, Tom'),
       appt('3', '2026-11-16T10:00:00', 'Rex', '3', 'Brown, Ann'),
     ]));
-    m.chartsForPatients.mockResolvedValue([chart('old2', '2', '2026-10-01'), chart('today3', '3', '2026-11-16')]);
+    m.chartsForPatients.mockResolvedValue([chart('old2', '2', '2026-10-01', 'Max', 'Tom Jones'), chart('today3', '3', '2026-11-16', 'Rex', 'Ann Brown')]);
     let resolve!: (r: { ok: boolean }) => void;
     m.startChart.mockImplementation(() => new Promise((r) => { resolve = r; }));
     vi.useFakeTimers({ shouldAdvanceTime: true });

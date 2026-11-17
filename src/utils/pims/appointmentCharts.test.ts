@@ -10,18 +10,18 @@ const appt = { patientName: 'Bella', patientNumber: '123', ownerName: 'Smith, Ja
 const TODAY = '2026-11-16';
 
 describe('appointmentAction', () => {
-  it('does not treat patient numbers from a different PIMS as globally unique', () => {
+  it.each([undefined, 'ezyvet', 'daysmart'] as const)('does not trust unscoped numbers for %s appointments', (provider) => {
     const other = chart({ patient_name: 'Max', patient_number: '123', chart_date: TODAY });
-    expect(appointmentAction({ ...appt, provider: 'daysmart' }, [other], TODAY)).toEqual({ kind: 'start' });
+    expect(appointmentAction({ ...appt, provider }, [other], TODAY)).toEqual({ kind: 'start' });
   });
-  it('opens today\'s chart matched by number (newest updated)', () => {
-    const a = chart({ id: 'a', patient_number: '0123', chart_date: TODAY, updated_at: '2026-11-16T08:00:00Z' });
-    const b = chart({ id: 'b', patient_number: '123', chart_date: TODAY, updated_at: '2026-11-16T09:00:00Z' });
+  it('opens today\'s chart matched by number, name and owner (newest updated)', () => {
+    const a = chart({ id: 'a', patient_number: '0123', owner_name: 'Jane Smith', chart_date: TODAY, updated_at: '2026-11-16T08:00:00Z' });
+    const b = chart({ id: 'b', patient_number: '123', owner_name: 'Jane Smith', chart_date: TODAY, updated_at: '2026-11-16T09:00:00Z' });
     expect(appointmentAction(appt, [a, b], TODAY)).toEqual({ kind: 'open', chart: b });
   });
   it('offers a new visit from the latest older chart', () => {
-    const a = chart({ id: 'a', patient_number: '123', chart_date: '2026-09-01' });
-    const b = chart({ id: 'b', patient_number: '123', chart_date: '2026-10-01' });
+    const a = chart({ id: 'a', patient_number: '123', owner_name: 'Jane Smith', chart_date: '2026-09-01' });
+    const b = chart({ id: 'b', patient_number: '123', owner_name: 'Jane Smith', chart_date: '2026-10-01' });
     expect(appointmentAction(appt, [a, b], TODAY)).toEqual({ kind: 'newVisit', latest: b });
   });
   it('matches a chart without a number by name and owner surname', () => {
@@ -34,6 +34,9 @@ describe('appointmentAction', () => {
   });
   it('starts when the same name has no owner on the chart', () => {
     expect(appointmentAction(appt, [chart({})], TODAY)).toEqual({ kind: 'start' });
+  });
+  it.each(['', 'Jane Jones'])('equal numbers do not bypass owner validation: %s', (owner_name) => {
+    expect(appointmentAction(appt, [chart({ patient_number: '123', owner_name })], TODAY)).toEqual({ kind: 'start' });
   });
   it('starts when the same name has a different number', () => {
     expect(appointmentAction(appt, [chart({ patient_number: '999', owner_name: 'Jane Smith' })], TODAY)).toEqual({ kind: 'start' });

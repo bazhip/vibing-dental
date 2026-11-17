@@ -224,12 +224,12 @@ describe('ChartSend', () => {
     expect(mocks.transport.send).toHaveBeenCalledTimes(1);
   });
 
-  it('the chart patient number equal to ezyVet\'s sends without asking, even with another name', async () => {
-    // The chart's patient number is '1'.
+  it('equal unscoped patient numbers still ask when the names differ', async () => {
+    mocks.confirm.mockResolvedValue(false);
     open({ ezyvet: 'Max', ezyvetNumber: '001' });
     await send();
-    expect(mocks.confirm).not.toHaveBeenCalled();
-    expect(mocks.transport.send).toHaveBeenCalledTimes(1);
+    expect(mocks.confirm).toHaveBeenCalledTimes(1);
+    expect(mocks.transport.send).not.toHaveBeenCalled();
   });
 
   it('a different patient number asks first, even with the same name', async () => {

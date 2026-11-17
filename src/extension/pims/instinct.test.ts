@@ -68,6 +68,42 @@ describe('Instinct source-derived adapter', () => {
     expect(document.querySelector('#Plan > div')?.innerHTML).toBe('&lt;hello&gt;<br>world');
   });
 
+  it.each(['inert', 'aria-disabled', 'disabled', 'aria-readonly'])('rejects %s editors and ancestors without mutation', async (attribute) => {
+    const editor = document.querySelector<HTMLElement>('#Plan > div')!;
+    const input = vi.fn();
+    editor.addEventListener('input', input);
+    for (const target of [editor, editor.parentElement!, document.body]) {
+      target.setAttribute(attribute, 'true');
+      expect(instinct.status(context()).state).toBe('locked');
+      expect(instinct.listFields(context())).toEqual([]);
+      expect((await instinct.write({ fieldTitle: 'Plan', text: 'New' }, context())).ok).toBe(false);
+      expect(editor.innerHTML).toBe('<p>Existing</p>');
+      expect(input).not.toHaveBeenCalled();
+      target.removeAttribute(attribute);
+    }
+  });
+
+  it('rechecks an ancestor lock acquired before the first mutation', async () => {
+    const editor = document.querySelector<HTMLElement>('#Plan > div')!;
+    const input = vi.fn();
+    editor.addEventListener('input', input);
+    const current = context();
+    current.wait = async () => { editor.parentElement!.setAttribute('inert', ''); };
+    expect((await instinct.write({ fieldTitle: 'Plan', text: 'New' }, current)).ok).toBe(false);
+    expect(editor.innerHTML).toBe('<p>Existing</p>');
+    expect(input).not.toHaveBeenCalled();
+  });
+
+  it.each(['synchronous', 'awaited'])('stops later events when input locks the editor (%s)', async (timing) => {
+    const editor = document.querySelector<HTMLElement>('#Plan > div')!;
+    const change = vi.fn();
+    const lock = () => editor.parentElement!.setAttribute('aria-disabled', 'true');
+    editor.addEventListener('input', () => { if (timing === 'synchronous') lock(); else queueMicrotask(lock); });
+    editor.addEventListener('change', change);
+    expect((await instinct.write({ fieldTitle: 'Plan', text: 'New' }, context())).ok).toBe(false);
+    expect(change).not.toHaveBeenCalled();
+  });
+
   it('does not report success or emit change when input restores the retained model', async () => {
     const editor = document.querySelector<HTMLElement>('#Plan > div')!;
     const change = vi.fn();
@@ -152,7 +188,7 @@ describe('Instinct source-derived adapter', () => {
   it('does not write after an editor becomes locked or its wrapper changes', async () => {
     const current = context();
     current.wait = async () => { document.querySelector('#Plan > div')!.setAttribute('contenteditable', 'false'); };
-    expect(await instinct.write({ fieldTitle: 'Plan', text: 'New' }, current)).toEqual({ ok: false, code: 'editor_not_found' });
+    expect(await instinct.write({ fieldTitle: 'Plan', text: 'New' }, current)).toEqual({ ok: false, code: 'not_writable' });
     document.querySelector('#Plan > div')!.setAttribute('contenteditable', 'true');
     current.wait = async () => { document.getElementById('Plan')!.id = 'Other'; };
     expect(await instinct.write({ fieldTitle: 'Plan', text: 'New' }, current)).toEqual({ ok: false, code: 'editor_not_found' });

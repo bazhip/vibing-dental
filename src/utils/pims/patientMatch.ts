@@ -77,9 +77,8 @@ export function samePatientNumber(a: string | null | undefined, b: string | null
 }
 
 /**
- * Is the patient open in ezyVet the chart's patient? When both patient numbers are known they decide
- * (equal numbers are the same patient whatever the names; different numbers are a different patient
- * even with equal names). Otherwise `nameRule` decides from the names.
+ * Patient numbers are not provider-scoped in stored charts. Different numbers reject a match;
+ * equal or missing numbers still require the supplied name rule.
  */
 export function pimsPatientMatch(
   chart: { name: string; number: string },
@@ -87,6 +86,6 @@ export function pimsPatientMatch(
   nameRule: (chartName: string, ezyvetName: string | null) => boolean,
 ): 'same' | 'different' {
   const byNumber = samePatientNumber(chart.number, ezyvet.number);
-  if (byNumber !== null) return byNumber ? 'same' : 'different';
+  if (byNumber === false) return 'different';
   return nameRule(chart.name, ezyvet.name) ? 'same' : 'different';
 }

@@ -3,7 +3,8 @@ import { dayBounds, isVisible, readFailed, readJson, routeStatus } from './share
 import type { AdapterContext, Appointment, AppointmentsResult, PimsAdapter, SendItem, WriteResult } from './types';
 
 const normalize = (value: string | null | undefined) => value?.replaceAll('(changes saved)', '').trim().replace(/:+$/, ':') ?? '';
-const object = (value: unknown): Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
+const isRow = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
+const object = (value: unknown): Record<string, unknown> => isRow(value) ? value : {};
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : '';
 const id = (value: unknown) => typeof value === 'string' || typeof value === 'number' && Number.isFinite(value) ? String(value).trim() : '';
 
@@ -112,13 +113,12 @@ async function listAppointments(date: string, context: AdapterContext): Promise<
       const row = object(value);
       const patient = object(row.patient);
       const client = object(row.client);
-      if (!row.patient || !row.client) continue;
-      if ([object(row.appointmentStatus).value, object(row.status).value].some((status) => /^cancell?ed$/i.test(text(status)))) continue;
       const start = Date.parse(text(row.start));
-      if (!id(row.id) || !text(patient.name) || !Number.isFinite(start)) {
+      if (!id(row.id) || !isRow(row.patient) || !isRow(row.client) || !text(patient.name) || !Number.isFinite(start)) {
         failures.push({ code: 'invalid_appointment', startsAt: null });
         continue;
       }
+      if ([object(row.appointmentStatus).value, object(row.status).value].some((status) => /^cancell?ed$/i.test(text(status)))) continue;
       if (start < Date.parse(bounds.start) || start >= Date.parse(bounds.end)) continue;
       let vet: string | null = null;
       try {

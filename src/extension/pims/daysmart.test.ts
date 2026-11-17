@@ -162,6 +162,23 @@ describe('DaySmart static-source adapter', () => {
     expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [], failures: [] });
   });
 
+  it('reports malformed array rows rather than a successful empty schedule', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json({ response: { resources: [null, { message: 'invalid row' }] } }));
+    expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [],
+      failures: [{ code: 'invalid_appointment', startsAt: null }, { code: 'invalid_appointment', startsAt: null }],
+    });
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+
+  it.each([null, undefined, [], 'invalid', 42])('reports malformed patient or client relations: %j', async (relation) => {
+    const row = { id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} };
+    const fetcher = vi.fn().mockResolvedValue(json({ response: { resources: [{ ...row, patient: relation }, { ...row, client: relation }] } }));
+    expect(await daysmart.listAppointments('2026-11-16', context(fetcher))).toEqual({ ok: true, appointments: [],
+      failures: [{ code: 'invalid_appointment', startsAt: null }, { code: 'invalid_appointment', startsAt: null }],
+    });
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+
   it('reports malformed appointments and unavailable provider details without invented values', async () => {
     const row = { id: 'one', start: '2026-11-16T14:00:00Z', patient: { name: 'Bella' }, client: {} };
     const fetcher = vi.fn().mockResolvedValueOnce(json({ response: { resources: [row, { ...row, start: 'bad' }] } }))

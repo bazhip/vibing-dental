@@ -130,9 +130,13 @@ describe('consultMatches by patient number', () => {
   const numbered = (id: string, name: string, number: string, updated = '2026-11-10') =>
     ({ ...chart(id, name, updated), patient_number: number });
 
-  it('an equal number is exact even when the names differ', () => {
+  it.each([undefined, 'ezyvet', 'daysmart'] as const)('equal unscoped numbers do not bypass names for %s', (provider) => {
     const c = numbered('a', 'Bella', '00123');
-    expect(consultMatches([c], writable('Max Jones', '123'))).toEqual({ exact: [c], possible: [] });
+    const inspect = writable('Max Jones', '123');
+    inspect.status!.provider = provider;
+    expect(consultMatches([c], inspect)).toEqual({ exact: [], possible: [] });
+    inspect.status!.patientName = 'Bella';
+    expect(consultMatches([c], inspect)).toEqual({ exact: [c], possible: [] });
   });
 
   it('a DaySmart patient number alone does not pin a differently named chart', () => {
@@ -142,9 +146,9 @@ describe('consultMatches by patient number', () => {
     expect(consultMatches([candidate], inspect)).toEqual({ exact: [], possible: [] });
   });
 
-  it('an equal number is exact even when ezyVet shows no name', () => {
+  it('an equal number cannot match when ezyVet shows no name', () => {
     const c = numbered('a', 'Bella', '123');
-    expect(consultMatches([c], writable(null, '123'))).toEqual({ exact: [c], possible: [] });
+    expect(consultMatches([c], writable(null, '123'))).toEqual({ exact: [], possible: [] });
   });
 
   it('a different number is in neither list, even when the names match strictly', () => {

@@ -42,7 +42,7 @@ The provider-neutral registry, injected page bridge, host routing, appointment i
 - Additional PIMS host permissions permit the selected integrations; they do not expand external messaging origins or add browser-debugger/native-host permissions.
 - Before each write, the page bridge checks provider, writable state, encounter identity and the confirmed patient. Adapters must recheck the destination across asynchronous editor transitions.
 - Non-ezyVet field mappings start empty. Saved choices are isolated per provider, while old flat ezyVet maps retain their behavior. Unsaved choices are cleared on provider switches.
-- Patient numbers have no persisted provider namespace in existing charts. New-provider numbers must not alone select a differently named chart or bypass confirmation. Appointment matching additionally checks patient and owner names.
+- Patient numbers have no persisted provider namespace in existing charts. No provider, including ezyVet and legacy untagged destinations, may use equal numbers alone to select a differently named chart or bypass confirmation. Appointment matching additionally checks patient and owner names; missing owner identity fails closed rather than opening an unverified existing chart.
 - Failed/malformed reads return error codes or per-appointment failures, not an apparently successful empty schedule.
 - API tokens remain in the PIMS page context and are not stored in ToothOps. Appointment data is returned to the user-visible extension in memory; starting a ToothOps chart uses the existing tab-bound, expiring, account-checked handover.
 - Diagnostics exclude patient names, identifiers, encounter URLs and authorization material.
@@ -69,6 +69,14 @@ The ezyVet import fixes also enforce Day-view readiness before choosing a date, 
 - `npm run build:extension` and a separate store build: passed. Manifest checks confirm the expected permissions and messaging origins, and both page bridges are bundled.
 - Offline translation check: `todo=0 remove=0`. All five UI catalogs are updated.
 - Adversarial fixture review found and closed asynchronous ezyVet patient switches, premature DaySmart save acknowledgement, incomplete Shepherd provider pagination, and malformed Pulse tooltip imports. This is local evidence, not authorized live-service validation.
+
+## Final-review corrections — November 16, 2026
+
+- Removed number-only identity shortcuts for ezyVet and legacy destinations as well as new providers. Equal numbers now require the relevant name checks, and automatic appointment-to-chart matching requires owner identity too. Persistent provider/practice provenance is still absent; these conservative checks are not a substitute for it.
+- Instinct excludes inert, disabled and ARIA-locked editors and ancestors from field discovery and rechecks writability before mutation and subsequent events.
+- DaySmart reports malformed rows and patient/client relations as `invalid_appointment` failures rather than silently treating them as an empty schedule.
+- Regression-first verification reproduced the defects before implementation. After correction: 257 test files / 2,694 tests pass; production, development-extension and store-extension builds pass. Store permissions and messaging-origin assertions pass.
+- Independent re-review reproduced all three original counterexamples safely and passed 158 focused plus 80 integration tests. This approval is limited to these fixes, not live interoperability or complete parity.
 
 ## Required authorized live verification
 

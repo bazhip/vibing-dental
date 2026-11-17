@@ -128,14 +128,16 @@ describe('usePimsSend', () => {
     expect((dialogs.confirm.mock.calls[0][0] as { title: string }).title).toBe('Different patient?');
   });
 
-  it('equal patient numbers send without asking, even when the names differ', async () => {
+  it.each([undefined, 'ezyvet', 'daysmart'] as const)('equal unscoped numbers require confirmation for mismatched names in %s', async (provider) => {
     dialogs.confirm.mockClear();
-    const max: InspectResult = { ...info, status: { ...info.status!, patientName: 'Max Jones', patientNumber: '123' } };
+    dialogs.confirm.mockResolvedValueOnce(false);
+    const max: InspectResult = { ...info, status: { ...info.status!, provider, patientName: 'Max Jones', patientNumber: '123' } };
     const { transport, hook } = setup({ patientNumber: '00123', inspected: max });
     await waitFor(() => expect(hook.result.current.phase.kind).toBe('ready'));
+    act(() => hook.result.current.choose('treatment', 'Plan'));
     await act(async () => { await hook.result.current.doSend(); });
-    expect(dialogs.confirm).not.toHaveBeenCalled();
-    expect(transport.send).toHaveBeenCalledTimes(1);
+    expect(dialogs.confirm).toHaveBeenCalledOnce();
+    expect(transport.send).not.toHaveBeenCalled();
   });
 
   it('different patient numbers ask with both numbers, even when the names match', async () => {
