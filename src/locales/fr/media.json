@@ -65,10 +65,10 @@
     }
   },
   "documents": {
-    "title": "Télécharger les PDF",
+    "title": "Vérifier et exporter",
     "chartTab": "Dossier clinique",
     "chartWho": "Pour vos dossiers et vos références — le dossier complet avec les codes.",
-    "ownerTab": "Compte rendu propriétaire",
+    "ownerTab": "Compte rendu pour le propriétaire",
     "ownerWho": "À remettre au propriétaire — la visite en langage clair.",
     "close": "Fermer les documents",
     "tablist": "Document",

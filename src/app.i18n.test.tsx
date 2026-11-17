@@ -320,7 +320,7 @@ describe('chart frame', () => {
     await frame();
     vi.spyOn(console, 'error').mockImplementation(() => {});
     // The stubbed diagrams expose no SVG, so building the preview fails.
-    fireEvent.click(screen.getByRole('button', { name: /Preview/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Review and export/ }));
     expect(await screen.findByText(/^⟦Couldn’t build the preview yet/)).toBeTruthy();
     expect(untranslated()).toEqual([]);
   });

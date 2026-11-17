@@ -16,7 +16,8 @@ function allowRouteEvent(event: HashChangeEvent): boolean {
  *   #/chart/:id            a specific saved chart (deep-linkable)
  *   #/chart/:id/:section   a chart section (patient, charting, …)
  *   #/chart/:section       a section of the working chart (trial mode)
- *   #/library              the My charts dialog
+ *   #/library              the Patients workspace
+ *   #/rechecks             due and overdue rechecks
  *   #/home                 the landing page viewed from inside the app
  *
  * Why hashes: the Back button/gesture previously exited the site (the
@@ -42,7 +43,7 @@ export const CHART_SECTION_IDS = [
 ] as const;
 
 export interface HashRoute {
-  view: 'chart' | 'library' | 'home' | 'join' | 'settings';
+  view: 'chart' | 'library' | 'rechecks' | 'home' | 'join' | 'settings';
   /** Present on #/join/:token (an invite to join a practice). */
   joinToken?: string;
   /** Present on #/chart/:id links. */
@@ -58,6 +59,7 @@ function isSection(segment: string | undefined): segment is string {
 function parse(): HashRoute {
   const h = window.location.hash;
   if (h === '#/settings') return { view: 'settings' };
+  if (h === '#/rechecks') return { view: 'rechecks' };
   if (h === '#/library') return { view: 'library' };
   if (h === '#/home') return { view: 'home' };
   const join = h.match(/^#\/join\/([A-Za-z0-9_.-]+)$/);

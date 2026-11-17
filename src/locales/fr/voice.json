@@ -97,7 +97,8 @@
     "sending": "envoi…",
     "showInChart": "Afficher dans le dossier",
     "speaker": "Intervenant {{n}}",
-    "transcript": "Transcription"
+    "transcript": "Transcription",
+    "reviewComplete": "Vérification terminée"
   },
   "peek": {
     "connecting": "Préparation du microphone — un instant…",

@@ -101,7 +101,9 @@
     "preview": "Vista previa del PDF",
     "download": "Descargar los PDF",
     "previewAria": "Vista previa y descarga del PDF del historial",
-    "downloadAria": "Vista previa y descarga del historial clínico y del informe para el propietario"
+    "downloadAria": "Vista previa y descarga del historial clínico y del informe para el propietario",
+    "review": "Revisar y exportar",
+    "reviewHint": "Previsualice, descargue o comparta los documentos de la visita."
   },
   "errors": {
     "setting": "No se pudo guardar ese ajuste. {{error}}",
@@ -279,6 +281,7 @@
     "openLibraryHint": "Busque y abra los historiales de cualquier paciente."
   },
   "workspace": {
+    "rechecks": "Controles",
     "help": "Ayuda",
     "account": "Su cuenta",
     "visitActions": "Acciones de la visita",
@@ -286,6 +289,8 @@
     "currentVisit": "Visita actual",
     "navigation": "Navegación del espacio de trabajo",
     "patientContext": "Paciente y visita actuales",
-    "more": "Más"
+    "more": "Más",
+    "patientNumber": "Número del paciente {{number}}",
+    "visitDate": "Visita: {{date}}"
   }
 }

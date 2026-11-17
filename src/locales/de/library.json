@@ -1,4 +1,9 @@
 {
+  "rechecks": {
+    "title": "Kontrollen",
+    "description": "Patienten mit heute fälliger oder überfälliger Nachkontrolle. Öffnen Sie einen Besuch, senden Sie eine Erinnerung oder entfernen Sie eine erledigte Nachkontrolle."
+  },
+  "openLatest": "Letzten Besuch von {{name}} öffnen",
   "title": "Patienten",
   "unnamedPatient": "Patient ohne Namen",
   "search": {
@@ -53,11 +58,12 @@
     "updated": "Geändert {{when}}"
   },
   "actions": {
+    "menu": "Aktionen",
     "reminder": "Erinnerung",
     "reminderTitle": "Eine Nachkontroll-Erinnerung an {{who}} senden",
     "clearRecall": "Nachkontroll-Erinnerung für {{name}} entfernen",
     "clearRecallTitle": "Nachkontroll-Erinnerung für {{name}} entfernen — z. B. nach einer Nachkontrolle, bei der keine neue Akte entstanden ist",
-    "newVisit": "+ Besuch",
+    "newVisit": "Neuer Besuch",
     "newVisitTitle": "Einen neuen Besuch für {{name}} beginnen",
     "history": "Versionsverlauf",
     "historyChartTitle": "Wer die Akte von {{name}} gespeichert hat und wann",

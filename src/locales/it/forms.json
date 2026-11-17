@@ -15,7 +15,7 @@
     "ownerEmail": "E-mail del proprietario",
     "ownerEmailOptional": "Facoltativo",
     "ownerEmailReminders": "Per i promemoria dei controlli",
-    "tech": "Assistente",
+    "tech": "Tecnico veterinario",
     "techPlaceholder": "Nome dell’assistente (facoltativo)",
     "recheck": "Controllo previsto",
     "recheckQuick": "Imposti la data del controllo a un intervallo comune dopo la data della visita",
@@ -36,7 +36,10 @@
     "dentition": "Dentatura",
     "permanent": "Permanente",
     "deciduous": "Decidua",
-    "equine": "Equino"
+    "equine": "Equino",
+    "identityGroup": "Dati del paziente",
+    "ownerGroup": "Dati del proprietario",
+    "visitGroup": "Dettagli della visita"
   },
   "exam": {
     "title": "Esame",
@@ -69,7 +72,7 @@
     "customizeTitle": "Aggiunga le Sue aree d’esame"
   },
   "anesthesia": {
-    "title": "Anestesia — Blocchi nervosi",
+    "title": "Anestesia",
     "customize": "Personalizza",
     "customizeTitle": "Scelga quali blocchi nervosi mostrare e il Suo anestetico abituale",
     "anesthetic": "Anestetico",

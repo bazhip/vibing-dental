@@ -10,16 +10,20 @@ type LinkState = null | 'preparing' | { url: string; filename: string };
  *  real download link (signed-in accounts), or explain the way out. */
 export function useInAppPdfLink() {
   const [state, setState] = React.useState<LinkState>(null);
+  const generation = React.useRef(0);
+  React.useEffect(() => () => { generation.current += 1; }, []);
   const start = React.useCallback(async (blob: Blob, filename: string) => {
+    const attempt = ++generation.current;
     setState('preparing');
     const url = await createPdfDownloadLink(blob, filename);
+    if (attempt !== generation.current) return;
     if (url) setState({ url, filename });
     else {
       setState(null);
       toast(inAppBrowserMessage(), { kind: 'error' });
     }
   }, []);
-  const reset = React.useCallback(() => setState(null), []);
+  const reset = React.useCallback(() => { generation.current += 1; setState(null); }, []);
   return { state, start, reset };
 }
 

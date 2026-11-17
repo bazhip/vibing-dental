@@ -11,6 +11,7 @@ import { toast } from './ui/dialogs';
 
 interface OwnerReportEmailModalProps {
   open: boolean;
+  validatePdf?: () => Promise<boolean>;
   onClose: () => void;
   chartId: string;
   practiceId: string;
@@ -38,7 +39,7 @@ function blobToBase64(blob: Blob): Promise<string> {
  * is attached and goes to the owner email saved on the chart.
  */
 export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
-  open, onClose, chartId, practiceId, practiceName, toEmail, patientName, ownerName, getPdf,
+  open, onClose, chartId, practiceId, practiceName, toEmail, patientName, ownerName, getPdf, validatePdf,
 }) => {
   const { t } = useTranslation('reportui');
   const { language, loaded } = usePracticeLanguage(practiceId || null, open);
@@ -47,6 +48,11 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
   const native = isNativeApp();
+  const mounted = React.useRef(true);
+  React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const sending = React.useRef(false);
+  const current = React.useRef({ open, chartId, getPdf });
+  current.current = { open, chartId, getPdf };
   const modalRef = useModalFocus(open && !native);
   const filename = open ? getPdf()?.filename ?? '' : '';
 
@@ -80,21 +86,28 @@ export const OwnerReportEmailModal: React.FC<OwnerReportEmailModalProps> = ({
   if (!open && !native) return null;
 
   const send = async () => {
+    if (sending.current || !open) return;
     const pdf = getPdf();
     if (!pdf) return;
+    sending.current = true;
     setBusy(true);
     setError('');
     try {
       const pdfBase64 = await blobToBase64(pdf.blob);
+      if (validatePdf && !(await validatePdf())) return;
+      if (!mounted.current || !current.current.open || current.current.chartId !== chartId || current.current.getPdf()?.blob !== pdf.blob) return;
       const res = await invokeFunction<{ to?: string }>('send-owner-report', {
         chartId, subject, body: bodyText, filename: pdf.filename, pdfBase64,
       });
+      if (!mounted.current || current.current.chartId !== chartId) return;
       toast(t('email.sent', { email: res?.to || toEmail }), { kind: 'success' });
       onClose();
     } catch (e) {
+      if (!mounted.current || !current.current.open || current.current.chartId !== chartId) return;
       setError(errorText(e, t('email.sendFailed')));
     } finally {
-      setBusy(false);
+      sending.current = false;
+      if (mounted.current) setBusy(false);
     }
   };
 

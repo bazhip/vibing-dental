@@ -24,7 +24,7 @@ export function findingsLayout(model: OwnerReportModel, numbered: boolean): Find
   return { summary: model.summaryLines, teeth, other, print: model.summaryLines.length > 0 || teeth.length > 0 || !!other };
 }
 
-/** Nothing at all to report: prints the "no problems found" note. */
+/** Nothing at all to report: prints the "no findings recorded" note. */
 export function nothingFound(model: OwnerReportModel): boolean {
   return model.extracted.length === 0 && teethWithFindings(model).length === 0 && model.examNotes.length === 0
     && model.summaryLines.length === 0 && model.otherFindings.length === 0;
@@ -227,6 +227,11 @@ export async function buildOwnerReportPdfBytes(
   });
   y -= 14;
 
+  if (!model.reviewed) {
+    drawText(t.draftLabel, { font: bold, color: teal, gapAfter: 3 });
+    drawText(t.draftNotice, { color: muted, gapAfter: 8 });
+  }
+
   // ---- Patient -----------------------------------------------------------
   const patientLine = [
     `${t.patientLabel}: ${model.patientName || '—'} (${model.speciesLabel})`,
@@ -400,6 +405,13 @@ export async function buildOwnerReportPdfBytes(
 
   y -= 8;
   drawText(t.preparedBy(branding.doctorName, branding.practiceName), { size: 8.5, color: muted });
+
+  // A draft remains identifiable when later pages are printed separately.
+  if (!model.reviewed) {
+    for (const draftPage of doc.getPages()) {
+      draftPage.drawText(pdfSafe(t.draftLabel), { x: MARGIN, y: 12, size: 8, font: bold, color: muted });
+    }
+  }
 
   // ---- Footer on every page ----------------------------------------------
   if (model.footer) {

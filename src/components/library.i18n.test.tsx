@@ -76,6 +76,12 @@ function library(rows: CloudChartMeta[], hasMore = false) {
 }
 
 describe('ChartLibrary', () => {
+  it('translates the dedicated Rechecks page', async () => {
+    const { container } = render(<ChartLibrary {...noopProps} presentation="page" rechecksOnly listCharts={async () => ({ rows: [], hasMore: false })} />);
+    await screen.findByRole('heading', { name: '⟦Rechecks⟧' });
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   it('translates the full-page Patients heading and return action', async () => {
     const { container } = render(<ChartLibrary {...noopProps} presentation="page" listCharts={async () => ({ rows: [], hasMore: false })} />);
     await screen.findByText('⟦No saved charts yet — they save automatically as you chart.⟧');
@@ -115,7 +121,7 @@ describe('ChartLibrary', () => {
       meta('c1', '', '', '', { created_by: 'u1', updated_at: '2026-09-01T12:00:00Z' }),
     ], true);
     await screen.findByText('Bella');
-    expect(screen.getByText('⟦2 visits⟧')).toBeInTheDocument();
+    expect(screen.getByTitle('⟦2 visits — expand⟧')).toHaveTextContent('⟦2 visits⟧');
     expect(screen.getByTitle('⟦2 visits — expand⟧')).toBeInTheDocument();
     expect(screen.getByText(/· overdue⟧$/)).toBeInTheDocument();
     expect(screen.getByText('⟦Unnamed patient⟧')).toBeInTheDocument();

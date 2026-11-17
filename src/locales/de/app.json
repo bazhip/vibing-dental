@@ -101,7 +101,9 @@
     "preview": "PDF-Vorschau",
     "download": "PDFs herunterladen",
     "previewAria": "Vorschau und Download des Akten-PDFs",
-    "downloadAria": "Vorschau und Download der klinischen Akte und des Besitzerberichts"
+    "downloadAria": "Vorschau und Download der klinischen Akte und des Besitzerberichts",
+    "review": "Prüfen und exportieren",
+    "reviewHint": "Besuchsdokumente ansehen, herunterladen oder teilen."
   },
   "errors": {
     "setting": "Diese Einstellung konnte nicht gespeichert werden. {{error}}",
@@ -277,6 +279,7 @@
     "openLibraryHint": "Suchen und öffnen Sie die Akten eines beliebigen Patienten."
   },
   "workspace": {
+    "rechecks": "Kontrollen",
     "help": "Hilfe",
     "account": "Ihr Konto",
     "visitActions": "Besuchsaktionen",
@@ -284,6 +287,8 @@
     "currentVisit": "Aktueller Besuch",
     "navigation": "Arbeitsbereichsnavigation",
     "patientContext": "Aktueller Patient und Besuch",
-    "more": "Mehr"
+    "more": "Mehr",
+    "patientNumber": "Patientennummer {{number}}",
+    "visitDate": "Besuch: {{date}}"
   }
 }

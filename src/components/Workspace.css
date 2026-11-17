@@ -170,3 +170,35 @@ html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inlin
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* A single compact patient toolbar; less frequent visit actions live in More. */
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid__topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding-block: 8px; }
+  html:not(.native-ios) .entry-grid__topbar-lead { min-width: 0; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { display: none; }
+  html:not(.native-ios) .entry-grid__topbar-actions--app { display: flex; width: auto; flex-wrap: nowrap; gap: 4px; }
+  html:not(.native-ios) .entry-grid__topbar-actions--app > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
+  html:not(.native-ios) .entry-grid__topbar-actions--app .voice-input { width: 44px; }
+  html:not(.native-ios) .entry-grid__patient { margin: 0; gap: 4px; }
+  html:not(.native-ios) .entry-grid__patient-empty { font-size: 13px; }
+  html:not(.native-ios) .workspace-nav { margin-bottom: 8px; gap: 16px; }
+  html:not(.native-ios) .sidebar-layout { gap: 8px; }
+  html:not(.native-ios) .sidebar-layout__main { padding: 14px; }
+}
+
+.entry-grid__patient-number { font-size: 0.8rem; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+@media (max-width: 600px) {
+  html:not(.native-ios) .entry-grid__topbar { align-items: start; }
+  html:not(.native-ios) .entry-grid__patient-name { white-space: normal; overflow: visible; text-overflow: clip; max-width: none; overflow-wrap: anywhere; flex-basis: 100%; }
+  html:not(.native-ios) .entry-grid__patient-date { display: inline; }
+  html:not(.native-ios) .entry-grid__visit-switch { display: inline-flex; max-width: 100%; }
+  html:not(.native-ios) .entry-grid__visit-select { min-width: 0; max-width: 100%; min-height: 36px; }
+  html:not(.native-ios) .entry-grid__patient .save-status__word { display: inline; }
+  html:not(.native-ios) .entry-grid__patient .save-status { margin-left: 0; }
+  html:not(.native-ios) .entry-grid__patient .entry-grid__patient-sep { display: none; }
+}
+
+@media (max-width: 600px) {
+  html:not(.native-ios) .workspace-nav { flex-wrap: nowrap; overflow-x: auto; gap: 10px; scrollbar-width: thin; }
+  html:not(.native-ios) .workspace-nav button { flex: 0 0 auto; white-space: nowrap; }
+}

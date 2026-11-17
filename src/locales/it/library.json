@@ -1,4 +1,9 @@
 {
+  "rechecks": {
+    "title": "Controlli",
+    "description": "Pazienti con un controllo previsto oggi o scaduto. Apra una visita, invii un promemoria o rimuova un controllo completato."
+  },
+  "openLatest": "Apra l’ultima visita di {{name}}",
   "title": "Pazienti",
   "unnamedPatient": "Paziente senza nome",
   "search": {
@@ -55,11 +60,12 @@
     "updated": "Modificata {{when}}"
   },
   "actions": {
+    "menu": "Azioni",
     "reminder": "Promemoria",
     "reminderTitle": "Invia un promemoria di controllo a {{who}}",
     "clearRecall": "Cancella il promemoria di controllo di {{name}}",
     "clearRecallTitle": "Cancella il promemoria di controllo di {{name}} — ad es. dopo un controllo che non ha prodotto una nuova cartella",
-    "newVisit": "+ Visita",
+    "newVisit": "Nuova visita",
     "newVisitTitle": "Inizia una nuova visita per {{name}}",
     "history": "Cronologia delle versioni",
     "historyChartTitle": "Chi ha salvato la cartella di {{name}} e quando",

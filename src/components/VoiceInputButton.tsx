@@ -246,10 +246,29 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    *  from the panel, just a Close button. */
   const [intro, setIntro] = React.useState<null | 'start' | 'info'>(null);
   const introRef = useModalFocus(intro !== null);
+  React.useEffect(() => {
+    if (!intro) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setIntro(null);
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [intro]);
+  const reviewRegionRef = React.useRef<HTMLElement>(null);
+  const reviewFocusPending = React.useRef(false);
+  const [reviewCompleted, setReviewCompleted] = React.useState(false);
   const [panelOpen, setPanelOpen] = React.useState(false);
   const [reviews, setReviews] = React.useState<ReviewItem[]>([]);
   const reviewsRef = React.useRef(reviews);
   reviewsRef.current = reviews;
+  React.useLayoutEffect(() => {
+    if (!reviewFocusPending.current) return;
+    reviewFocusPending.current = false;
+    (reviewRegionRef.current?.querySelector<HTMLElement>('button:not(:disabled)') ?? reviewRegionRef.current)?.focus();
+  }, [reviews]);
   const [voicePrompts, setVoicePrompts] = React.useState(() => {
     try { return window.localStorage.getItem(VOICE_PROMPTS_KEY) !== 'off'; } catch { return true; }
   });
@@ -302,6 +321,9 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
   const lockedRef = React.useRef(locked);
   lockedRef.current = locked;
+  const currentSessionRef = React.useRef(sessionKey);
+  currentSessionRef.current = sessionKey;
+  const canEdit = () => !lockedRef.current;
   const voiceRef = React.useRef<ReturnType<typeof useVoiceCapture> | null>(null);
 
   // Activity lines are written from processChunk (a callback with [] deps), so they
@@ -376,6 +398,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   /** Apply an extraction result: chart changes, review items, activity.
    *  Returns how many new review items it raised. */
   function applyResult(result: ExtractResult): number {
+      if (!canEdit()) return 0;
       const before = contextRef.current;
       const fresh = dedupeActions(result.actions, before);
       // Undo info has to be captured from the chart BEFORE applying.
@@ -439,10 +462,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
    * Needs review.
    */
   const runFinalCheck = async () => {
+    const startedGen = sessionGenRef.current;
     // Read the language when the check finishes (this runs from a callback created once).
     const tNow = i18n.getFixedT(null, 'voice');
     await drain();
-    if (lockedRef.current) return; // view-only now: change nothing
+    if (!canEdit() || startedGen !== sessionGenRef.current) return;
     const segments = voiceRef.current?.allSegments() ?? [];
     const transcript = segments.map((s) => s.annotated ?? s.text).join('\n').trim();
     if (!transcript) return;
@@ -452,7 +476,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     // Let React commit the last chunk's chart changes into contextRef.
     await new Promise((r) => setTimeout(r, 150));
     if (inFlightRef.current) await waitIdle();
-    const gen = sessionGenRef.current;
+    if (!canEdit() || startedGen !== sessionGenRef.current) return;
+    const gen = startedGen;
     inFlightRef.current = true;
     setActiveChunkCount((c) => c + 1);
     try {
@@ -462,7 +487,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
         rejected: rejectedRef.current,
         lng: voiceRef.current?.lng ?? 'en',
       });
-      if (!result.ran || gen !== sessionGenRef.current) return;
+      if (!result.ran || gen !== sessionGenRef.current || !canEdit()) return;
       finalCheckedSegmentsRef.current = segments.length;
       const raised = applyResult(result);
       const now = new Date();
@@ -521,8 +546,11 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   }
 
   const resolveReview = (id: string, choice: 'keep' | 'remove' | { label: string; action: AiAction }) => {
+    if (!canEdit()) return;
     const item = reviewsRef.current.find((r) => r.id === id);
     if (!item) return;
+    reviewFocusPending.current = true;
+    setReviewCompleted(true);
     setReviews((prev) => prev.filter((r) => r.id !== id));
     const now = new Date();
     if (choice === 'keep') return;
@@ -682,6 +710,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     resetSessionMemory();
     setActivity([]);
     setReviews([]);
+    setReviewCompleted(false);
     setPanelOpen(false);
   }, [sessionKey]);
 
@@ -690,14 +719,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   // Once allowed (and always on the web) it starts synchronously, inside
   // the tap, as iOS audio needs.
   const listen = (fresh: boolean) => {
+    if (!canEdit()) return;
+    const requestedSession = currentSessionRef.current;
     if (needsAiConsent()) {
-      void ensureAiConsent().then((ok) => { if (ok) startListening(fresh); });
+      void ensureAiConsent().then((ok) => { if (ok && requestedSession === currentSessionRef.current) startListening(fresh); });
       return;
     }
     startListening(fresh);
   };
 
   const startListening = (fresh: boolean) => {
+    if (!canEdit()) return;
     if (!voice.supported) {
       setError(t('errors.unsupported'));
       return;
@@ -712,6 +744,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       resetSessionMemory();
       setActivity([]);
       setReviews([]);
+      setReviewCompleted(false);
       voice.start();
     } else {
       voice.resume();
@@ -774,6 +807,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
     resetSessionMemory();
     setActivity([]);
     setReviews([]);
+    setReviewCompleted(false);
   };
 
   /** The session as text: timestamped transcript plus the activity log
@@ -946,7 +980,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               aria-expanded={!collapsed}
               aria-label={collapsed ? t('panel.expand') : t('panel.collapse')}
             >
-              <span className={`ai-sidebar__status ${status.cls}`}>
+              <span className={`ai-sidebar__status ${status.cls}`} role="status" aria-live="polite" aria-atomic="true">
                 {voice.recording && <span className={`voice-input__rec-dot${connecting ? ' voice-input__rec-dot--connecting' : ''}`} aria-hidden="true" />}
                 {status.text}
               </span>
@@ -956,7 +990,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                 <span className="ai-sidebar__chevron" aria-hidden="true">{collapsed ? '▴' : '▾'}</span>
               )}
             </button>
-            <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick}>
+            <button type="button" className={`ai-sidebar__primary ${primary.cls}`} onClick={primary.onClick} disabled={locked && !voice.recording} aria-describedby={locked ? "dictation-locked" : undefined}>
               {primary.text}
             </button>
             <button type="button" className="ai-sidebar__icon" onClick={closePanel} aria-label={t('panel.close')} title={t('panel.closeTitle')}>
@@ -964,15 +998,17 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
             </button>
           </header>
 
+          {locked && <p id="dictation-locked" className="ai-sidebar__notice">{t('toast.viewOnly', { button: t('topbar.editChart', { ns: 'app' }) })}</p>}
           {collapsed ? (
-            <button type="button" className={`ai-sidebar__peek ${peek.cls}`} onClick={toggleCollapsed} aria-live="polite">
+            <button type="button" className={`ai-sidebar__peek ${peek.cls}`} onClick={toggleCollapsed}>
               {peek.text}
             </button>
           ) : (
             <>
-              {reviews.length > 0 && (
-                <section className="ai-review" aria-label={t('panel.needsReview')}>
-                  <div className="ai-sidebar__section-label ai-review__label">{t('panel.needsReviewCount', { count: reviews.length })}</div>
+              {(reviews.length > 0 || reviewCompleted) && (
+                <section ref={reviewRegionRef} tabIndex={-1} className="ai-review" aria-label={reviews.length ? t('panel.needsReview') : t('panel.reviewComplete')}>
+                  {reviews.length === 0 && <p>{t('panel.reviewComplete')}</p>}
+                  {reviews.length > 0 && <div className="ai-sidebar__section-label ai-review__label">{t('panel.needsReviewCount', { count: reviews.length })}</div>}
                   <ul className="ai-review__list">
                     {reviews.map((r) => (
                       <li key={r.id} className="ai-review__item">
@@ -986,16 +1022,16 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
                         </button>
                         <div className="ai-review__actions">
                           {r.flag.options.map((o, i) => (
-                            <button key={i} type="button" className="ai-review__opt" onClick={() => resolveReview(r.id, o)}>
+                            <button key={i} type="button" className="ai-review__opt" disabled={locked} onClick={() => resolveReview(r.id, o)}>
                               {o.label}
                             </button>
                           ))}
                           {r.flag.applied && (
-                            <button type="button" className="ai-review__opt ai-review__opt--keep" onClick={() => resolveReview(r.id, 'keep')}>
+                            <button type="button" className="ai-review__opt ai-review__opt--keep" disabled={locked} onClick={() => resolveReview(r.id, 'keep')}>
                               {t('panel.keep')}
                             </button>
                           )}
-                          <button type="button" className="ai-review__opt ai-review__opt--quiet" onClick={() => resolveReview(r.id, 'remove')}>
+                          <button type="button" className="ai-review__opt ai-review__opt--quiet" disabled={locked} onClick={() => resolveReview(r.id, 'remove')}>
                             {r.flag.applied && r.revert ? t('panel.remove') : t('panel.dismiss')}
                           </button>
                         </div>
@@ -1012,7 +1048,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
               )}
 
               <div className="ai-sidebar__section-label">{t('panel.transcript')}</div>
-              <div className="ai-sidebar__transcript" ref={transcriptScroll.ref} onScroll={transcriptScroll.onScroll} aria-live="polite">
+              <div className="ai-sidebar__transcript" ref={transcriptScroll.ref} onScroll={transcriptScroll.onScroll}>
                 {transcriptView.turns.length > 0 ? (
                   transcriptView.turns.map((turn, i) => (
                     <p

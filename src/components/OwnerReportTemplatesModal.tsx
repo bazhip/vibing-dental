@@ -87,6 +87,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
   const asScreen = presentation === 'screen';
   const asSheet = presentation === 'sheet';
   const categorized = !asScreen && !asSheet;
+  const [actionsOpen, setActionsOpen] = React.useState(false);
   const [category, setCategory] = React.useState<EditorCategory>('basics');
   const editorRef = React.useRef<HTMLDivElement>(null);
   const [draft, setDraft] = React.useState<OwnerReportConfig>(() => clone(config));
@@ -405,7 +406,10 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
           ))}
         </ul>
         {canEdit && (
-          <div className="report-templates__list-actions">
+          <div className="report-templates__management">
+          <button type="button" className="diagram-view__action report-templates__actions-toggle" aria-expanded={actionsOpen} aria-controls="template-management-actions" onClick={() => setActionsOpen((value) => !value)}>{t('templates.manageActions')}</button>
+          <div id="template-management-actions" className={`report-templates__list-actions${actionsOpen ? ' report-templates__list-actions--open' : ''}`}>
+
             <button type="button" className="diagram-view__action" onClick={() => addTemplate()} disabled={busy || draft.templates.length >= MAX_TEMPLATES}>
               {t('templates.new')}
             </button>
@@ -430,6 +434,7 @@ export const OwnerReportTemplatesModal: React.FC<OwnerReportTemplatesModalProps>
             >
               {t('actions.delete', { ns: 'common' })}
             </button>
+          </div>
           </div>
         )}
       </nav>

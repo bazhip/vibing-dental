@@ -101,7 +101,9 @@
     "preview": "Anteprima PDF",
     "download": "Scarica i PDF",
     "previewAria": "Anteprima e download del PDF della cartella",
-    "downloadAria": "Anteprima e download della cartella clinica e del referto per il proprietario"
+    "downloadAria": "Anteprima e download della cartella clinica e del referto per il proprietario",
+    "review": "Verifica ed esportazione",
+    "reviewHint": "Visualizzi, scarichi o condivida i documenti della visita."
   },
   "errors": {
     "setting": "Impossibile salvare questa impostazione. {{error}}",
@@ -279,6 +281,7 @@
     "openLibraryHint": "Cerchi e apra le cartelle di qualsiasi paziente."
   },
   "workspace": {
+    "rechecks": "Controlli",
     "help": "Aiuto",
     "account": "Il Suo account",
     "visitActions": "Azioni della visita",
@@ -286,6 +289,8 @@
     "currentVisit": "Visita corrente",
     "navigation": "Navigazione dell’area di lavoro",
     "patientContext": "Paziente e visita correnti",
-    "more": "Altro"
+    "more": "Altro",
+    "patientNumber": "Numero del paziente {{number}}",
+    "visitDate": "Visita: {{date}}"
   }
 }

@@ -51,6 +51,7 @@
     "recheck": "Controllo consigliato:"
   },
   "templates": {
+    "manageActions": "Azioni del modello",
     "title": "Modelli di referto per il proprietario",
     "listLabel": "Modelli",
     "untitled": "Modello senza nome",
@@ -168,5 +169,21 @@
     "send": "Invia referto",
     "sent": "Referto inviato a {{email}}",
     "sendFailed": "Impossibile inviare il referto."
+  },
+  "review": {
+    "incompleteImages": "Non è stato possibile caricare alcune immagini del rapporto. Questo PDF rimane una bozza e non può essere inviato per email. Riprovi prima di condividere un rapporto verificato.",
+    "draft": "Bozza — verifica necessaria",
+    "complete": "Verificato e completato",
+    "draftHelp": "Verifichi i riscontri, le procedure e i consigli prima di confermare che la visita è conclusa. Le voci mancanti non indicano riscontri normali.",
+    "completeHelp": "Confermato per questa cartella e questo modello. Le modifiche richiedono una nuova verifica.",
+    "confirm": "Conferma verifica e completamento",
+    "confirmTitle": "Conferma della verifica del referto",
+    "confirmMessage": "Confermi solo dopo aver verificato che la visita è conclusa e che il referto rispecchia correttamente i riscontri, le procedure e i consigli registrati.",
+    "confirmAction": "Conferma",
+    "changed": "La cartella è cambiata. Verifichi il referto attuale prima di confermare.",
+    "reopen": "Torna alla bozza",
+    "emailHelp": "Verifichi e confermi questo referto prima di inviarlo al proprietario via e-mail.",
+    "downloadDraft": "Scarica il PDF in bozza",
+    "shareDraft": "Condividi la bozza"
   }
 }

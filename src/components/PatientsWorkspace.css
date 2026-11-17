@@ -137,3 +137,35 @@
     content: attr(data-label) ' ';
   }
 }
+
+/* Expand in normal flow so actions remain reachable at the bottom of the list. */
+.chart-library__actions-menu { min-width: 90px; }
+.chart-library__actions-menu summary {
+  min-height: 44px;
+  padding: 10px 8px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+}
+.chart-library__actions-menu summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.chart-library__actions-panel { display: grid; gap: 4px; padding-top: 6px; }
+.chart-library__actions-panel button {
+  min-height: 44px;
+  white-space: normal;
+  text-align: start;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.chart-library__act.chart-library__new-visit {
+  background: var(--primary);
+  color: var(--text-on-primary, #fff);
+  border-color: var(--primary);
+  min-height: 44px;
+}
+.chart-library__row-actions { flex-wrap: wrap; }

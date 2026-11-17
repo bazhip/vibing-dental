@@ -15,7 +15,7 @@
     "ownerEmail": "E-mail du propriétaire",
     "ownerEmailOptional": "Facultatif",
     "ownerEmailReminders": "Pour les rappels de contrôle",
-    "tech": "Auxiliaire",
+    "tech": "Auxiliaire vétérinaire",
     "techPlaceholder": "Nom de l’auxiliaire (facultatif)",
     "recheck": "Contrôle prévu",
     "recheckQuick": "Définir la date de contrôle à un intervalle courant après la date de la visite",
@@ -36,7 +36,10 @@
     "dentition": "Dentition",
     "permanent": "Permanente",
     "deciduous": "Déciduale",
-    "equine": "Équin"
+    "equine": "Équin",
+    "identityGroup": "Informations du patient",
+    "ownerGroup": "Coordonnées du propriétaire",
+    "visitGroup": "Informations sur la visite"
   },
   "exam": {
     "title": "Examen",
@@ -69,7 +72,7 @@
     "customizeTitle": "Ajouter vos propres zones d’examen"
   },
   "anesthesia": {
-    "title": "Anesthésie — Blocs nerveux",
+    "title": "Anesthésie",
     "customize": "Personnaliser",
     "customizeTitle": "Choisir les blocs nerveux affichés et votre anesthésique habituel",
     "anesthetic": "Anesthésique",

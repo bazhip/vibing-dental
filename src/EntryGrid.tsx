@@ -237,6 +237,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   }, []);
   const [practiceSettingsOpen, setPracticeSettingsOpen] = React.useState(false);
   const libraryViewState = React.useRef<ChartLibraryViewState | undefined>(undefined);
+  const rechecksViewState = React.useRef<ChartLibraryViewState | undefined>({
+    query: '', speciesFilter: '', doctorFilter: '', dueOnly: true, sortKey: 'recall', sortDir: 'asc',
+  });
   const practiceLeaveGuard = React.useRef<(() => Promise<boolean>) | null>(null);
   const registerPracticeGuard = React.useCallback((guard: (() => Promise<boolean>) | null) => {
     practiceLeaveGuard.current = guard;
@@ -251,7 +254,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     else navigate('#/settings');
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
-  const workspacePage = !native && ((cloud.enabled && route.view === 'library') || route.view === 'settings' || practiceSettingsOpen);
+  const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')) || route.view === 'settings' || practiceSettingsOpen);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
   // Which chart section is showing (controlled so a blocked save can jump
@@ -358,7 +361,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {!native && (
         <button
           type="button"
-          className="diagram-view__action"
+          className="diagram-view__action section-header__customize"
           onClick={() => setChartSettingsOpen('charting')}
           title={t('customize.hint')}
         >
@@ -408,6 +411,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // First-run walkthrough — auto-shown once per browser for real accounts,
   // and relaunchable from Settings.
   const [walkthroughOpen, setWalkthroughOpen] = React.useState(false);
+  const [walkthroughFirstRun, setWalkthroughFirstRun] = React.useState(false);
   // New Google accounts name their practice/doctor first; the walkthrough
   // waits until that's settled.
   const setup = useFinishSetup(profile, cloud.enabled && !trial);
@@ -418,6 +422,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (trial || !profile.loaded || !setup.checked || setup.need) return;
     if (readString('onboarding.seen', 1, '') === '1') return;
     writeString('onboarding.seen', 1, '1');
+    setWalkthroughFirstRun(true);
     setWalkthroughOpen(true);
     // The walkthrough covers everything; don't follow it with "What's new".
     setPref({ whatsNewSeen: WHATS_NEW.id });
@@ -444,7 +449,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     if (prefs.whatsNewSeen !== WHATS_NEW.id) setPref({ whatsNewSeen: WHATS_NEW.id });
   };
   // Patients is a full workspace destination; the working chart stays mounted.
-  const libraryOpen = cloud.enabled && route.view === 'library' && !native;
+  const libraryOpen = cloud.enabled && (route.view === 'library' || route.view === 'rechecks') && !native;
+  const openRechecks = () => navigate('#/rechecks');
   const openLibrary = () => {
     navigate('#/library');
   };
@@ -512,8 +518,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
   // App: #/library (the arrival rule, an old link) shows the Patients tab;
   // the address goes back to naming the chart.
   React.useEffect(() => {
-    if (!native || route.view !== 'library') return;
-    setAppTab('patients');
+    if (!native || (route.view !== 'library' && route.view !== 'rechecks')) return;
+    setAppTab(route.view === 'rechecks' ? 'rechecks' : 'patients');
     navigate(`${hashBaseRef.current}/${activeSectionRef.current}`, { replace: true });
   }, [native, route.view, navigate]);
   const isAdmin = useIsAdmin();
@@ -1194,6 +1200,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           species={chart.species}
           imageRoles={chart.imageRoles}
           onImageRoleChange={ownerReportOn ? chart.setImageRole : undefined}
+          onReportContentChange={() => { if (chart.ownerReport.reviewedBasis && !readOnly) chart.setOwnerReportOverride('reviewedBasis', null); }}
           includeInPdf={pdfIncludeImages}
           onCustomize={native ? undefined : () => setChartSettingsOpen('images')}
           pdfExcludedImages={chart.pdfExcludedImages}
@@ -1238,6 +1245,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           label: t('sections.ownerReport'),
           content: (
             <OwnerReportSection
+              chartId={cloud.enabled ? chart.cloudChartId : null}
               readOnly={readOnly}
               snapshot={chart.getSnapshot()}
               overrides={chart.ownerReport}
@@ -1456,7 +1464,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       {libraryOpen && (
         <ChartLibrary
           presentation={PAGE_PRESENTATION}
-          viewState={libraryViewState}
+          key={route.view}
+          rechecksOnly={route.view === 'rechecks'}
+          viewState={route.view === 'rechecks' ? rechecksViewState : libraryViewState}
           listCharts={cloud.listCharts}
           onOpen={cloud.openChart}
           onDelete={libraryCore.deleteChart}
@@ -1522,11 +1532,11 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     <button
       type="submit"
       form="chart-form"
-      className="fab-download"
+      className={`entry-grid__button visit-export__button${activeSection === 'treatment' || activeSection === 'owner-report' ? '' : ' visit-export__button--secondary'}`}
       aria-haspopup="dialog"
-      aria-label={ownerReportOn ? t('fab.downloadAria') : t('fab.previewAria')}
+      aria-label={t('fab.review')}
     >
-      <span aria-hidden="true">⤓</span> {ownerReportOn ? t('fab.download') : t('fab.preview')}
+      <span aria-hidden="true">⤓</span> {t('fab.review')}
     </button>
   );
   // Owner report → "Add owner email": close Documents, open the Patient section.
@@ -1583,6 +1593,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <WalkthroughModal
         open={walkthroughOpen}
+        firstRun={walkthroughFirstRun}
         onClose={() => setWalkthroughOpen(false)}
         aiEnabled={profile.aiEnabled && !trial}
         onNavigate={native ? showChartSection : goToSection}
@@ -1698,7 +1709,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     practice: openPracticeSettings,
     chartSettings: (section?: SettingsSection) => setChartSettingsOpen(section ?? 'all'),
     reminders: () => setRemindersOpen(true),
-    walkthrough: () => setWalkthroughOpen(true),
+    walkthrough: () => { setWalkthroughFirstRun(false); setWalkthroughOpen(true); },
     whatsNew: () => setWhatsNewOpen(true),
     feedback: () => setFeedback({}),
     admin: () => setAdminOpen(true),
@@ -1928,6 +1939,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 <span className="entry-grid__patient-name">
                   {chart.patientInfo.patientName}
                 </span>
+                {chart.patientInfo.patientNumber && <span className="entry-grid__patient-number" aria-label={t('workspace.patientNumber', { number: chart.patientInfo.patientNumber })}>#{chart.patientInfo.patientNumber}</span>}
                 <span className="entry-grid__patient-sep" aria-hidden="true" />
                 <span className="entry-grid__patient-meta">
                   {t(SPECIES_KEYS[chart.species])}
@@ -1971,7 +1983,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                         </span>
                       ) : (
                         <span className="entry-grid__patient-meta entry-grid__patient-date">
-                          {chart.patientInfo.date}
+                          {t('workspace.visitDate', { date: chart.patientInfo.date })}
                         </span>
                       )}
                     </>
@@ -2145,7 +2157,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <span data-tour="settings" className="topbar-tour-anchor topbar-desktop-help">
           <ChartMenu
             scope={HELP_SCOPE}
-            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
@@ -2169,7 +2181,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           </span>
           {cloud.enabled && <ChartMenu
             scope={ACCOUNT_SCOPE}
-            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             cloud={{
               onPracticeSettings: openPracticeSettings,
@@ -2180,7 +2192,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           />}
           <ChartMenu
             scope={MORE_SCOPE}
-            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughOpen(true); } }); }}
+            onPreviewDocuments={!workspacePage ? () => (document.getElementById('chart-form') as HTMLFormElement | null)?.requestSubmit() : undefined}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
             onGoHome={onGoHome}
             onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
@@ -2191,7 +2204,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
               onNewVisit: startNewVisitFromLatest,
               onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
             } : undefined}
-            onNewPatient={cloud.enabled && viewingSavedVisit && !workspacePage ? () => { void startNewPatient(); } : undefined}
+            onNewPatient={cloud.enabled && !editingSavedVisit && !workspacePage ? () => { void startNewPatient(); } : undefined}
             onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
             cloud={cloud.enabled ? {
               onPracticeSettings: openPracticeSettings,
@@ -2243,8 +2256,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
 
       <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
         {cloud.enabled && <button type="button" data-tour="library" aria-current={route.view === 'library' ? 'page' : undefined} onClick={openLibrary}>{t('topbar.myCharts')}</button>}
+        {cloud.enabled && <button type="button" aria-current={route.view === 'rechecks' ? 'page' : undefined} onClick={openRechecks}>{t('workspace.rechecks')}</button>}
         <button type="button" aria-current={!workspacePage ? 'page' : undefined} onClick={returnToVisit}>{t('workspace.currentVisit')}</button>
-        {cloud.enabled && <button type="button" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
+        {cloud.enabled && <button type="button" data-tour="practice-settings" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
         {!cloud.enabled && <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>}
       </nav>
       {otherTabBanner}
@@ -2253,7 +2267,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         {dialogsBeforeForm}
         <div hidden={workspacePage}>
           {chartForm}
-          {pdfButton}
+          <div className="visit-export">{pdfButton}</div>
         </div>
         {dialogsAfterForm}
       </div>

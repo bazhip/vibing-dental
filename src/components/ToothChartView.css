@@ -11,12 +11,7 @@
 
   .tooth-chart .tooth-chart__layout { gap: 0.5rem; }
   .tooth-chart .tooth-chart__diagram { display: none; }
-  .tooth-chart [data-map-open='true'] .tooth-chart__diagram {
-    display: block;
-    max-height: 28dvh;
-    overflow: auto;
-    order: -2;
-  }
+
 
   /* Keep the navigation outside the scrolling editor, including when
      the software keyboard reduces the available viewport. */
@@ -26,9 +21,6 @@
     overflow: hidden;
     padding: 0;
     gap: 0;
-  }
-  .tooth-chart [data-map-open='true'] .tooth-chart__panel {
-    max-height: calc(72dvh - var(--topbar-height, 64px) - 8.5rem);
   }
   .tooth-chart .tooth-chart__nav {
     flex: 0 0 auto;
@@ -49,7 +41,7 @@
     overscroll-behavior-y: contain;
     padding: 0.5rem;
     scrollbar-gutter: stable;
-    padding-bottom: 4rem;
+    padding-bottom: 0.75rem;
   }
   .tooth-chart .tooth-chart__finding {
     min-width: 0;
@@ -83,4 +75,58 @@
     grid-row: 2;
     justify-self: end;
   }
+}
+
+.tooth-chart__touch-map { display: none; }
+@media (max-width: 600px) {
+  .tooth-chart .tooth-chart__full-map { display: none; }
+  .tooth-chart .tooth-chart__touch-map { display: block; margin-bottom: 12px; }
+  .tooth-chart .tooth-chart__quadrant {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 6px;
+    background: var(--ios-bg-elevated, white);
+    font-size: 0.8rem;
+  }
+  .tooth-chart .tooth-chart__quadrant select {
+    min-width: 0;
+    min-height: 44px;
+    flex: 1;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--ios-bg-elevated, white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .tooth-chart .tooth-chart__tooth-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(44px, 1fr));
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+  .tooth-chart .tooth-chart__tooth-button {
+    min-width: 44px;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--ios-bg-elevated, white);
+    color: var(--text);
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .tooth-chart .tooth-chart__tooth-button[data-charted] { border-color: var(--ios-success, #38a169); }
+  .tooth-chart .tooth-chart__tooth-button[data-planned] { border: 2px dashed #b7791f; }
+  .tooth-chart .tooth-chart__tooth-button[data-mark='missing'] { text-decoration: line-through; }
+  .tooth-chart .tooth-chart__tooth-button[data-mark='extracted'] { color: var(--ios-danger, #c53030); text-decoration: line-through; }
+  .tooth-chart .tooth-chart__tooth-button[aria-pressed='true'] {
+    background: var(--primary, #0c6b63);
+    color: var(--ios-on-tint, white);
+    border-color: var(--primary, #0c6b63);
+  }
+  .tooth-chart .tooth-chart__tooth-button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 }

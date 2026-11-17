@@ -51,6 +51,7 @@
     "recheck": "Próxima revisión recomendada:"
   },
   "templates": {
+    "manageActions": "Acciones de plantilla",
     "title": "Plantillas del informe para el propietario",
     "listLabel": "Plantillas",
     "untitled": "Plantilla sin nombre",
@@ -168,5 +169,21 @@
     "send": "Enviar informe",
     "sent": "Informe enviado a {{email}}",
     "sendFailed": "No se ha podido enviar el informe."
+  },
+  "review": {
+    "incompleteImages": "No se pudieron cargar algunas imágenes del informe. Este PDF sigue siendo un borrador y no se puede enviar por correo electrónico. Vuelva a intentarlo antes de compartir un informe revisado.",
+    "draft": "Borrador — revisión necesaria",
+    "complete": "Revisado y completado",
+    "draftHelp": "Revise los hallazgos, los procedimientos y los consejos antes de confirmar que la visita ha finalizado. La falta de anotaciones no significa que los hallazgos sean normales.",
+    "completeHelp": "Confirmado para este historial y esta plantilla. Los cambios requieren una nueva revisión.",
+    "confirm": "Confirmar revisión y finalización",
+    "confirmTitle": "Confirmar revisión del informe",
+    "confirmMessage": "Confirme solo después de comprobar que la visita ha finalizado y que el informe refleja fielmente los hallazgos, procedimientos y consejos registrados.",
+    "confirmAction": "Confirmar",
+    "changed": "El historial ha cambiado. Revise el informe actual antes de confirmar.",
+    "reopen": "Volver a borrador",
+    "emailHelp": "Revise y confirme este informe antes de enviarlo al propietario por correo electrónico.",
+    "downloadDraft": "Descargar PDF en borrador",
+    "shareDraft": "Compartir borrador"
   }
 }

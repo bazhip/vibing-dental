@@ -302,3 +302,13 @@ describe('Practice settings workspace', () => {
     expect(screen.getByLabelText('Practice name')).toHaveValue('Unsaved name');
   });
 });
+
+it('keeps personal chart preferences outside practice category navigation', async () => {
+  const openChart = vi.fn();
+  render(<PracticeSettingsModal open presentation="page" onClose={vi.fn()} profile={profile} onOpenChartSettings={openChart} />);
+  const button = await screen.findByRole('button', { name: 'Charting preferences' });
+  expect(button.closest('nav')).toBeNull();
+  expect(screen.getByText(/Personal chart preferences/)).toBeVisible();
+  fireEvent.click(button);
+  expect(openChart).toHaveBeenCalledOnce();
+});

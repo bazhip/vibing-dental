@@ -227,7 +227,8 @@
         "floor": "Floor of mouth / frenulum"
       },
       "suggestions": "Suggested areas",
-      "showArea": "Show {{name}}"
+      "showArea": "Show {{name}}",
+      "customCount": "Custom areas added: {{used}} · Limit: {{max}}"
     },
     "customization": {
       "navigation": "Chart settings categories",
@@ -325,6 +326,9 @@
     "settingUp": "Your practice is being set up — check back in a moment."
   },
   "workspace": {
+    "personalScope": "Personal chart preferences — changes apply only to your account.",
+    "accountScope": "These settings belong to your account. Save each section separately; email and password changes have their own confirmation.",
+    "languageImmediate": "Language changes apply immediately.",
     "general": "General",
     "team": "Team",
     "templates": "Templates",

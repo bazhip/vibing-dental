@@ -227,7 +227,8 @@
         "floor": "Pavimento della bocca / frenulo"
       },
       "suggestions": "Aree suggerite",
-      "showArea": "Mostra {{name}}"
+      "showArea": "Mostra {{name}}",
+      "customCount": "Aree personalizzate aggiunte: {{used}} · Limite: {{max}}"
     },
     "customization": {
       "navigation": "Categorie delle impostazioni della cartella",
@@ -325,6 +326,9 @@
     "settingUp": "La Sua struttura è in fase di configurazione — ricontrolli tra un momento."
   },
   "workspace": {
+    "personalScope": "Preferenze personali della cartella — le modifiche si applicano solo al Suo account.",
+    "accountScope": "Queste impostazioni appartengono al Suo account. Salvi ogni sezione separatamente; le modifiche a email e password hanno una conferma dedicata.",
+    "languageImmediate": "Le modifiche alla lingua si applicano immediatamente.",
     "general": "Generale",
     "team": "Team",
     "templates": "Modelli",

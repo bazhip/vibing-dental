@@ -1,3 +1,5 @@
+import { listChartAttachments } from '../hooks/useAttachments';
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast, confirmDialog } from './ui/dialogs';
@@ -7,6 +9,8 @@ import { ensureAiConsent } from '../native/aiConsent';
 import { ChartSnapshot, OwnerReportOverrides } from '../types';
 import {
   buildOwnerReportModel,
+  ownerReportReviewBasis,
+  ownerReportAttachmentBasis,
   placeholderValuesFor,
   templateForSnapshot,
   templateHomecareTips,
@@ -17,6 +21,7 @@ import type { OwnerReportContext } from '../utils/ownerReportConfig';
 interface OwnerReportSectionProps {
   /** Live chart snapshot — the generated report content derives from it. */
   snapshot: ChartSnapshot;
+  chartId?: string | null;
   overrides: OwnerReportOverrides;
   onOverrideChange: (field: keyof OwnerReportOverrides, value: string | null) => void;
   /** Open the report preview modal. */
@@ -41,6 +46,7 @@ interface OwnerReportSectionProps {
  */
 export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
   snapshot,
+  chartId = '',
   overrides,
   onOverrideChange,
   onPreview,
@@ -51,6 +57,31 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
 }) => {
   const { t } = useTranslation('reportui');
   const model = React.useMemo(() => buildOwnerReportModel(snapshot, context), [snapshot, context]);
+  const mounted = React.useRef(true);
+  React.useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const reviewState = React.useRef({ snapshot, context, readOnly, chartId });
+  reviewState.current = { snapshot, context, readOnly, chartId };
+  const canApply = (basis: string, forChart = chartId) => mounted.current && !reviewState.current.readOnly && reviewState.current.chartId === forChart && ownerReportReviewBasis(reviewState.current.snapshot, reviewState.current.context) === basis;
+  const readPhotos = async () => {
+    const items = chartId ? await listChartAttachments(chartId) : [];
+    return items ? ownerReportAttachmentBasis(items, snapshot.imageRoles) : null;
+  };
+  const confirmReview = async () => {
+    if (readOnly) return;
+    const basis = ownerReportReviewBasis(snapshot, context);
+    const photos = await readPhotos();
+    if (!canApply(basis) || photos === null) { if (mounted.current) toast(t('review.changed'), { kind: 'info' }); return; }
+    const confirmed = await confirmDialog({ title: t('review.confirmTitle'), message: t('review.confirmMessage'), confirmLabel: t('review.confirmAction') });
+    if (!confirmed || !mounted.current) return;
+    const latestPhotos = await readPhotos();
+    if (!canApply(basis) || latestPhotos !== photos) {
+      toast(t('review.changed'), { kind: 'info' });
+      return;
+    }
+    onOverrideChange('reviewedAttachments', photos);
+    onOverrideChange('reviewedBasis', basis);
+  };
+
   // Prefills follow the chosen template (its intro / tips / language).
   const template = templateForSnapshot(snapshot, context);
   const values = placeholderValuesFor(snapshot, context, template);
@@ -83,16 +114,20 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
     }
   };
   const writeDraft = async () => {
+    if (readOnly) return;
+    const basis = ownerReportReviewBasis(snapshot, context);
     if ((introEdited || homecareEdited) && !(await confirmDialog({
       title: t('section.replaceTitle'),
       message: t('section.replaceMessage'),
       confirmLabel: t('section.writeWithAi'),
     }))) return;
     // App only: one-time consent before chart text first goes to Anthropic.
-    if (!(await ensureAiConsent())) return;
+    if (!canApply(basis) || !(await ensureAiConsent()) || !canApply(basis)) return;
     setDrafting(true);
     try {
       const draft = await draftOwnerReport(snapshot, context);
+      if (!canApply(basis)) return;
+      const appliedBasis = ownerReportReviewBasis({ ...snapshot, ownerReport: { ...snapshot.ownerReport, ...(draft.intro ? { intro: draft.intro } : {}), ...(draft.homecare ? { homecare: draft.homecare } : {}) } }, context);
       const before = { intro: overrides.intro ?? null, homecare: overrides.homecare ?? null };
       if (draft.intro) onOverrideChange('intro', draft.intro);
       if (draft.homecare) onOverrideChange('homecare', draft.homecare);
@@ -101,15 +136,17 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
         action: {
           label: t('section.undo'),
           onClick: () => {
+            if (!canApply(appliedBasis)) return;
             onOverrideChange('intro', before.intro);
             onOverrideChange('homecare', before.homecare);
           },
         },
       });
     } catch (err) {
+      if (!canApply(basis)) return;
       toast(t('section.draftFailed', { reason: detailText(err) }).trim(), { kind: 'error' });
     } finally {
-      setDrafting(false);
+      if (mounted.current) setDrafting(false);
     }
   };
 
@@ -185,14 +222,7 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
 
   return (
     <div className="patient-form">
-      <div className="patient-form__header">
-        <h2 className="patient-form__section-title">{t('section.title')}</h2>
-        <div className="owner-report__actions">
-          {onCustomize && (
-            <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('section.customizeTitle')}>
-              {t('section.customize')}
-            </button>
-          )}
+      <SectionHeader title={t('section.title')} onCustomize={onCustomize} customizeTitle={t('section.customizeTitle')} actions={<>
           {aiEnabled && !readOnly && (
             <button
               type="button"
@@ -207,9 +237,16 @@ export const OwnerReportSection: React.FC<OwnerReportSectionProps> = ({
           <button type="button" className="entry-grid__button entry-grid__button--topbar" onClick={onPreview}>
             {t('section.previewButton')}
           </button>
-        </div>
-      </div>
+      </>} />
 
+      <div className={`owner-report__review${model.reviewed ? ' owner-report__review--complete' : ''}`} role="status">
+        <div><strong>{t(model.reviewed ? 'review.complete' : 'review.draft')}</strong><p>{t(model.reviewed ? 'review.completeHelp' : 'review.draftHelp')}</p></div>
+        {model.reviewed ? (
+          <button type="button" className="diagram-view__action" disabled={readOnly} onClick={() => onOverrideChange('reviewedBasis', null)}>{t('review.reopen')}</button>
+        ) : (
+          <button type="button" className="diagram-view__action" disabled={readOnly} onClick={() => void confirmReview()}>{t('review.confirm')}</button>
+        )}
+      </div>
       <p className="patient-form__hint">
         {t('section.intro')}
       </p>

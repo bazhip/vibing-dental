@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { confirmDialog, friendlyError } from './ui/dialogs';
@@ -36,6 +37,8 @@ interface ImagingSectionProps {
   readOnly?: boolean;
   /** Open this page's settings (e.g. images in the PDF). */
   onCustomize?: () => void;
+  /** Invalidate report review when attachment content is edited. */
+  onReportContentChange?: () => void;
   /** The chart's species: which teeth an image can be pinned to. */
   species?: Species;
 }
@@ -67,7 +70,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
   onImageRoleChange,
   includeInPdf = true,
   onIncludeInPdfChange,
-  onCustomize,
+  onCustomize, onReportContentChange,
   pdfExcludedImages = [],
   onImageInPdfChange,
   readOnly = false,
@@ -223,6 +226,8 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
       confirmLabel: t('imaging.deleteConfirm'),
       danger: true,
     }))) return;
+    if (chartIdRef.current !== chartId) return;
+    onReportContentChange?.();
     setBusy(true);
     setError('');
     try {
@@ -236,19 +241,9 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
 
   return (
     <div ref={rootRef} className={dragging ? 'patient-form imaging imaging--dragging' : 'patient-form imaging'} {...dropProps}>
-      <div className="patient-form__header">
-        <h2 className="patient-form__section-title">{t('imaging.title')}</h2>
-        {store.loaded && store.maxImages > 0 && (
-          <span className="patient-form__hint">
-            {t('imaging.usage', { used: store.items.length, max: store.maxImages })}
-          </span>
-        )}
-        {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('imaging.customizeTitle')}>
-            {t('imaging.customize')}
-          </button>
-        )}
-      </div>
+      <SectionHeader title={t('imaging.title')} onCustomize={onCustomize} customizeTitle={t('imaging.customizeTitle')}>
+        {store.loaded && store.maxImages > 0 && <span className="patient-form__hint">{t('imaging.usage', { used: store.items.length, max: store.maxImages })}</span>}
+      </SectionHeader>
 
       {onIncludeInPdfChange && (store.maxImages > 0 || store.items.length > 0) && (
         <label
@@ -384,6 +379,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   className="imaging__kind-select"
                   value={a.kind}
                   onChange={(e) => {
+                    onReportContentChange?.();
                     store.updateKind(a.id, e.target.value as AttachmentKind).catch((err) =>
                       setError(errorText(err, t('imaging.kindFailed')))
                     );
@@ -399,6 +395,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   value={a.toothTriadan ?? ''}
                   onChange={(e) => {
                     const v = e.target.value ? Number(e.target.value) : null;
+                    onReportContentChange?.();
                     store.updateTooth(a.id, v).catch((err) => setError(errorText(err, t('imaging.toothFailed'))));
                   }}
                   aria-label={t('imaging.toothAria')}
@@ -462,6 +459,7 @@ export const ImagingSection: React.FC<ImagingSectionProps> = ({
                   onBlur={(e) => {
                     const input = e.target;
                     if (input.value !== a.caption) {
+                      onReportContentChange?.();
                       store.updateCaption(a.id, input.value).catch(() => {
                         // Put the saved caption back so the field never
                         // shows text that isn't actually stored.

@@ -146,11 +146,13 @@ describe('ImagingSection uploads, teeth and viewer', () => {
 
   it('lets an uploaded JPEG be reclassified as a radiograph through the persistence callback', async () => {
     store.items = [img('jpeg-image')];
-    renderIt();
+    const invalidateReview = vi.fn();
+    render(<ImagingSection chartId="c1" cloudActive onReportContentChange={invalidateReview} />);
     const kind = screen.getByRole('combobox', { name: 'Image type' });
     expect(kind).toHaveValue('photo');
     fireEvent.change(kind, { target: { value: 'xray' } });
     await waitFor(() => expect(store.updateKind).toHaveBeenCalledWith('jpeg-image', 'xray'));
+    expect(invalidateReview).toHaveBeenCalledOnce();
   });
 
   it('keeps image classification disabled and uploader absent on read-only visits', () => {

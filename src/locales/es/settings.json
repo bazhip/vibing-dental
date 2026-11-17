@@ -227,7 +227,8 @@
         "floor": "Suelo de la boca / frenillo"
       },
       "suggestions": "Áreas sugeridas",
-      "showArea": "Mostrar {{name}}"
+      "showArea": "Mostrar {{name}}",
+      "customCount": "Áreas personalizadas añadidas: {{used}} · Límite: {{max}}"
     },
     "customization": {
       "navigation": "Categorías de ajustes de la ficha",
@@ -325,6 +326,9 @@
     "settingUp": "Su clínica se está configurando — vuelva a comprobarlo en un momento."
   },
   "workspace": {
+    "personalScope": "Preferencias personales del historial: los cambios solo se aplican a su cuenta.",
+    "accountScope": "Estos ajustes pertenecen a su cuenta. Guarde cada sección por separado; los cambios de correo electrónico y contraseña tienen su propia confirmación.",
+    "languageImmediate": "Los cambios de idioma se aplican inmediatamente.",
     "general": "General",
     "team": "Equipo",
     "templates": "Plantillas",

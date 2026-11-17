@@ -7,12 +7,24 @@
     "next": "Avanti",
     "finish": "Inizia",
     "steps": {
+      "firstPatient": {
+        "title": "Identificare il paziente",
+        "body": "Inserisca il nome del paziente, poi scelga la specie e la dentizione. Aggiunga i dati del proprietario e della visita secondo necessità."
+      },
+      "firstFinding": {
+        "title": "Registrare un reperto",
+        "body": "Scelga un dente e inserisca una misurazione o un reperto. Il Suo lavoro viene salvato automaticamente; potrà aggiungere altri dettagli dopo questa guida."
+      },
+      "firstOutput": {
+        "title": "Verificare il risultato",
+        "body": "Apra l’anteprima PDF per verificare la visita prima di condividerla. Per la guida completa all’area di lavoro, apra Aiuto → Per iniziare."
+      },
       "welcome": {
         "title": "Benvenuto in ToothOps",
         "body": "Una breve panoramica dell’area di lavoro. Può rivederla in qualsiasi momento da Aiuto → Per iniziare."
       },
       "sections": {
-        "title": "Le otto sezioni",
+        "title": "Le nove sezioni",
         "body": "Una cartella odontoiatrica, dall’alto in basso. Le percorra in ordine o salti dall’una all’altra — tutto viene salvato automaticamente."
       },
       "patient": {
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Specie e dentatura",
-        "body": "Scelga Felino o Canino, poi Permanente o Decidua — lo schema dei denti si adatta."
+        "body": "Scelga Felino, Canino o Equino, poi la dentizione — lo schema dei denti si adatta."
       },
       "grid": {
         "title": "La griglia delle misure",

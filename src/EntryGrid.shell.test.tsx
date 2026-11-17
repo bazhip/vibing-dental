@@ -46,7 +46,7 @@ describe('EntryGrid on the website', () => {
     expect(container.querySelector('.mobile-section-menu')).not.toBeNull();
     expect(container.querySelector('.chart-menu__trigger')).not.toBeNull();
     expect(container.querySelector('.sidebar-layout')?.className).toBe('sidebar-layout');
-    expect(container.querySelector('.fab-download')).not.toBeNull();
+    expect(container.querySelector('.visit-export__button')).not.toBeNull();
     expect(container.querySelector('.entry-grid__footnote')).not.toBeNull();
     expect(container.querySelector('.ios-appshell')).toBeNull();
     expect(screen.queryByRole('tablist')).toBeNull();

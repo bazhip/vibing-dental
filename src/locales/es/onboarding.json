@@ -7,12 +7,24 @@
     "next": "Siguiente",
     "finish": "Empezar",
     "steps": {
+      "firstPatient": {
+        "title": "Identificar al paciente",
+        "body": "Introduzca el nombre del paciente y elija la especie y la dentición. Añada los datos del propietario y de la visita según sea necesario."
+      },
+      "firstFinding": {
+        "title": "Registrar un hallazgo",
+        "body": "Elija un diente e introduzca una medición o un hallazgo. Su trabajo se guarda automáticamente; podrá añadir más detalles después de esta guía."
+      },
+      "firstOutput": {
+        "title": "Revisar el resultado",
+        "body": "Abra la vista previa del PDF para revisar la visita antes de compartirla. Para ver la guía completa del espacio de trabajo, abra Ayuda → Primeros pasos."
+      },
       "welcome": {
         "title": "Bienvenido a ToothOps",
         "body": "Una breve visita al espacio de trabajo. Puede repetirla en cualquier momento desde Ayuda → Primeros pasos."
       },
       "sections": {
-        "title": "Las ocho secciones",
+        "title": "Las nueve secciones",
         "body": "Un historial dental, de arriba abajo. Recórralas en orden o salte de una a otra — todo se guarda automáticamente."
       },
       "patient": {
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Especie y dentición",
-        "body": "Elija Felino o Canino, y después Permanente o Decidua — el esquema de los dientes se adapta."
+        "body": "Elija Felino, Canino o Equino y después la dentición — el esquema de los dientes se adapta."
       },
       "grid": {
         "title": "La cuadrícula de mediciones",

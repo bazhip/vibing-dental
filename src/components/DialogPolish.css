@@ -14,11 +14,11 @@ html:not(.native-ios) :is(.ai-settings-modal, .ui-dialog, .pdf-preview-modal) {
 }
 
 /* Preserve wider library, history and admin modal variants. */
-html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-history):not(.admin-panel):not(.admin-chart-viewer):not(.report-templates) {
+html:not(.native-ios) .ai-settings-modal:not(.chart-library-modal):not(.chart-history):not(.admin-panel):not(.admin-chart-viewer):not(.report-templates):not(.chart-customization) {
   max-width: 600px;
 }
 html:not(.native-ios) .ai-settings-modal.feedback-modal { max-width: 560px; }
-html:not(.native-ios) .ai-settings-modal.chart-settings { max-width: 600px; }
+html:not(.native-ios) .ai-settings-modal.chart-settings:not(.chart-customization) { max-width: 600px; }
 html:not(.native-ios) .ui-dialog { max-width: 460px; padding: 24px; }
 
 html:not(.native-ios) :is(.ai-settings-header, .pdf-preview-header) {
@@ -89,7 +89,7 @@ html:not(.native-ios) .ui-dialog__input {
   padding: 9px 12px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background-color: var(--surface);
   color: var(--text);
   font-size: 16px;
   line-height: 1.5;
@@ -168,3 +168,9 @@ html:not(.native-ios) .pdf-preview-secondary { color: var(--text); border-color:
   html:not(.native-ios) .documents-modal__tab { min-width: 0; overflow-wrap: anywhere; }
   html:not(.native-ios) .pdf-preview-styles { padding: 16px; }
 }
+
+html:not(.native-ios) :is(.ai-settings-modal, .practice-workspace) select.patient-form__input { padding-right: 2.25rem; }
+html:not(.native-ios) .practice-workspace__personal { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+html:not(.native-ios) .practice-workspace__personal p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+html:not(.native-ios) .pdf-preview-warning { display: flex; flex-wrap: wrap; gap: 8px; }
+html:not(.native-ios) .pdf-preview-warning p { flex-basis: 100%; margin: 0; }

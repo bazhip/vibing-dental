@@ -11,7 +11,7 @@
     "procedure": "Procedure",
     "images": "Imaging",
     "treatment": "Treatment report",
-    "ownerReport": "Owner Report",
+    "ownerReport": "Owner report",
     "menuFallback": "Sections",
     "nav": "Chart sections"
   },
@@ -101,7 +101,9 @@
     "preview": "Preview PDF",
     "download": "Download PDFs",
     "previewAria": "Preview and download the chart PDF",
-    "downloadAria": "Preview and download the clinical chart and owner report"
+    "downloadAria": "Preview and download the clinical chart and owner report",
+    "review": "Review and export",
+    "reviewHint": "Preview, download, or share visit documents."
   },
   "errors": {
     "setting": "Couldn’t save that setting. {{error}}",
@@ -277,6 +279,7 @@
     "openLibraryHint": "Search and open any patient’s charts."
   },
   "workspace": {
+    "rechecks": "Rechecks",
     "help": "Help",
     "account": "Your account",
     "visitActions": "Visit actions",
@@ -284,6 +287,8 @@
     "currentVisit": "Current visit",
     "navigation": "Workspace navigation",
     "patientContext": "Current patient and visit",
-    "more": "More"
+    "more": "More",
+    "patientNumber": "Patient number {{number}}",
+    "visitDate": "Visit: {{date}}"
   }
 }

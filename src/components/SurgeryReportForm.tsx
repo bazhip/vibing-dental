@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { promptDialog, toast, friendlyDetail } from './ui/dialogs';
@@ -60,19 +61,7 @@ export const SurgeryReportForm: React.FC<SurgeryReportFormProps> = ({
 
   return (
     <div className="patient-form">
-      <div className="patient-form__header surgery-report__header">
-        <h2 className="patient-form__section-title">{t('report.title')}</h2>
-        {templatesOn && (
-          <button
-            type="button"
-            className="diagram-view__action"
-            onClick={() => setManageOpen(true)}
-            title={t('report.customizeTitle')}
-          >
-            {t('report.customize')}
-          </button>
-        )}
-      </div>
+      <SectionHeader title={t('report.title')} onCustomize={templatesOn ? () => setManageOpen(true) : undefined} customizeTitle={t('report.customizeTitle')} />
       {templatesOn && (
         <div className="surgery-report__template-bar">
           <select

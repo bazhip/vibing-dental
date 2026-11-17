@@ -74,7 +74,7 @@ describe('DocumentsModal — website chrome (unchanged)', () => {
     const onClose = vi.fn();
     render(<DocumentsModal open onClose={onClose} chartSnapshot={chartSnapshot} ownerReport={ownerReport} />);
     expect(document.querySelector('.pdf-preview-overlay .pdf-preview-modal.documents-modal')).not.toBeNull();
-    expect(screen.getByRole('heading', { name: /Download PDFs\s*· Biscuit · 2026-11-11/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Review and export\s*· Biscuit · 2026-11-11/ })).toBeInTheDocument();
     expect(document.querySelector('.documents-modal__tabs')).not.toBeNull();
     expect(document.querySelector('.ios-sheet')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Close documents' }));

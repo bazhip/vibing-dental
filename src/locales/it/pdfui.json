@@ -16,6 +16,9 @@
     "journal": { "name": "Rivista", "description": "Classico con grazie — accenti rosso intenso su carta calda." }
   },
   "preview": {
+    "retryImages": "Riprova immagini",
+    "withoutImages": "Scarica senza immagini",
+
     "title": "Cartella clinica",
     "subtitle": "Per i Suoi archivi e le lettere di rinvio. Scelga uno stile o il Suo colore — l’anteprima si aggiorna in tempo reale.",
     "closeAria": "Chiudi l’anteprima",
@@ -23,8 +26,8 @@
     "loadingImages": "Caricamento delle immagini…",
     "generating": "Creazione dell’anteprima…",
     "buildFailed": "Impossibile creare l’anteprima. Per i dettagli consulti la console.",
-    "imagesFailed": "Impossibile caricare le immagini della cartella, quindi non sono incluse in questo PDF. Chiuda e riapra l’anteprima per riprovare.",
-    "imagesPartial": "Alcune immagini non sono state caricate. Nel PDF compaiono come riquadri vuoti.",
+    "imagesFailed": "Impossibile caricare le immagini della cartella. Riprovi oppure scarichi un PDF senza immagini.",
+    "imagesPartial": "Non è stato possibile caricare alcune immagini. Riprovi oppure scarichi un PDF senza immagini.",
     "frameTitle": "Anteprima della cartella clinica"
   },
   "link": {

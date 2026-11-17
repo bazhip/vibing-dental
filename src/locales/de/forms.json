@@ -15,7 +15,7 @@
     "ownerEmail": "E-Mail des Besitzers",
     "ownerEmailOptional": "Optional",
     "ownerEmailReminders": "Für Kontrollerinnerungen",
-    "tech": "Assistenz",
+    "tech": "Tiermedizinische Assistenz",
     "techPlaceholder": "Name der Assistenz (optional)",
     "recheck": "Kontrolle fällig",
     "recheckQuick": "Kontrolldatum in einem üblichen Abstand zum Besuchsdatum setzen",
@@ -36,7 +36,10 @@
     "dentition": "Gebiss",
     "permanent": "Bleibend",
     "deciduous": "Milchgebiss",
-    "equine": "Pferd"
+    "equine": "Pferd",
+    "identityGroup": "Patientendaten",
+    "ownerGroup": "Angaben zum Tierhalter",
+    "visitGroup": "Besuchsdaten"
   },
   "exam": {
     "title": "Untersuchung",
@@ -69,7 +72,7 @@
     "customizeTitle": "Eigene Untersuchungsbereiche hinzufügen"
   },
   "anesthesia": {
-    "title": "Narkose — Nervenblockaden",
+    "title": "Narkose",
     "customize": "Anpassen",
     "customizeTitle": "Auswählen, welche Nervenblockaden angezeigt werden, und Ihr übliches Anästhetikum",
     "anesthetic": "Anästhetikum",

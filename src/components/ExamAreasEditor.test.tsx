@@ -14,6 +14,17 @@ describe('exam area selection', () => {
     expect(screen.queryByRole('checkbox', { name: 'Lips / mucocutaneous junction' })).toBeNull();
   });
 
+  it('labels the custom-area limit separately from the three suggestions', () => {
+    render(<ExamAreasEditor areas={[]} onChange={vi.fn()} />);
+    expect(screen.getByText('Custom areas added: 0 · Limit: 8')).toBeInTheDocument();
+    expect(screen.queryByText('0 of 8 configured')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Add area' }));
+    expect(screen.getByText('Custom areas added: 0 · Limit: 8')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Exam area 1 name' }), { target: { value: 'My area' } });
+    fireEvent.blur(screen.getByRole('textbox', { name: 'Exam area 1 name' }));
+    expect(screen.getByText('Custom areas added: 1 · Limit: 8')).toBeInTheDocument();
+  });
+
   it('changes only visibility for an existing area', () => {
     const onChange = vi.fn();
     const onHiddenChange = vi.fn();

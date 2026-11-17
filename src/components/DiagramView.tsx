@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -188,14 +189,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
 
   return (
     <div className="diagram-section" ref={rootRef}>
-      <div className="dental-grid__section-header">
-        <h2 className="dental-grid__title">{title}</h2>
-        {onCustomize && (
-          <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('diagramView.customizeTitle')}>
-            {t('diagramView.customize')}
-          </button>
-        )}
-      </div>
+      <SectionHeader title={title} onCustomize={onCustomize} customizeTitle={t('diagramView.customizeTitle')} />
 
       <div
         className="diagram-view"

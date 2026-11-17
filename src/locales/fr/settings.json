@@ -227,7 +227,8 @@
         "floor": "Plancher buccal / frein lingual"
       },
       "suggestions": "Zones suggérées",
-      "showArea": "Afficher {{name}}"
+      "showArea": "Afficher {{name}}",
+      "customCount": "Zones personnalisées ajoutées : {{used}} · Limite : {{max}}"
     },
     "customization": {
       "navigation": "Catégories des paramètres du dossier",
@@ -325,6 +326,9 @@
     "settingUp": "Votre clinique est en cours de configuration — revenez dans un instant."
   },
   "workspace": {
+    "personalScope": "Préférences personnelles du dossier — les modifications concernent uniquement votre compte.",
+    "accountScope": "Ces paramètres concernent votre compte. Enregistrez chaque section séparément ; les modifications d’adresse e-mail et de mot de passe ont leur propre confirmation.",
+    "languageImmediate": "Les changements de langue s’appliquent immédiatement.",
     "general": "Général",
     "team": "Équipe",
     "templates": "Modèles",

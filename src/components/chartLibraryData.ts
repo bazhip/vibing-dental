@@ -142,6 +142,8 @@ export interface ChartLibraryViewState {
 }
 
 export interface ChartLibraryListOptions {
+  /** Dedicated Rechecks workspace cannot turn off the due filter. */
+  lockedDueOnly?: boolean;
   viewState?: React.RefObject<ChartLibraryViewState | undefined>;
   listCharts: (query?: ChartListQuery) => Promise<ChartListPage>;
   onDelete: (id: string) => Promise<void>;
@@ -165,6 +167,7 @@ export function useChartLibraryList({
   onDelete,
   onClearRecalls,
   enabled = true,
+  lockedDueOnly = false,
   reloadToken,
   unnamedLabel,
   viewState,
@@ -181,9 +184,10 @@ export function useChartLibraryList({
   }, [query]);
   const [error, setError] = React.useState<LibraryError | null>(null);
   const [busyId, setBusyId] = React.useState<string | null>(null);
-  const [sortKey, setSortKey] = React.useState<SortKey>(viewState?.current?.sortKey ?? 'updated');
-  const [sortDir, setSortDir] = React.useState<SortDir>(viewState?.current?.sortDir ?? 'desc');
-  const [dueOnly, setDueOnly] = React.useState(viewState?.current?.dueOnly ?? false);
+  const [sortKey, setSortKey] = React.useState<SortKey>(viewState?.current?.sortKey ?? (lockedDueOnly ? 'recall' : 'updated'));
+  const [sortDir, setSortDir] = React.useState<SortDir>(viewState?.current?.sortDir ?? (lockedDueOnly ? 'asc' : 'desc'));
+  const [dueFilter, setDueOnly] = React.useState(viewState?.current?.dueOnly ?? false);
+  const dueOnly = lockedDueOnly || dueFilter;
   const [dueCount, setDueCount] = React.useState(0);
   // Visit-level filters. Doctor filters by each chart's author — the
   // same patient can be seen by different doctors across visits, so

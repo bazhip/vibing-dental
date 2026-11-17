@@ -50,6 +50,7 @@
     "recheck": "Empfohlene Kontrolle:"
   },
   "templates": {
+    "manageActions": "Vorlagenaktionen",
     "title": "Vorlagen für den Besitzerbericht",
     "listLabel": "Vorlagen",
     "untitled": "Unbenannte Vorlage",
@@ -167,5 +168,21 @@
     "send": "Bericht senden",
     "sent": "Bericht an {{email}} gesendet",
     "sendFailed": "Der Bericht konnte nicht gesendet werden."
+  },
+  "review": {
+    "incompleteImages": "Einige Berichtsbilder konnten nicht geladen werden. Diese PDF bleibt ein Entwurf und kann nicht per E-Mail versendet werden. Laden Sie die Bilder erneut, bevor Sie einen geprüften Bericht teilen.",
+    "draft": "Entwurf — Prüfung erforderlich",
+    "complete": "Geprüft und abgeschlossen",
+    "draftHelp": "Prüfen Sie Befunde, Maßnahmen und Empfehlungen, bevor Sie den Besuch als abgeschlossen bestätigen. Fehlende Einträge bedeuten keine unauffälligen Befunde.",
+    "completeHelp": "Für diese Akte und Vorlage bestätigt. Änderungen erfordern eine erneute Prüfung.",
+    "confirm": "Prüfung und Abschluss bestätigen",
+    "confirmTitle": "Berichtsprüfung bestätigen",
+    "confirmMessage": "Bestätigen Sie erst, nachdem Sie geprüft haben, dass der Besuch abgeschlossen ist und der Bericht die dokumentierten Befunde, Maßnahmen und Empfehlungen korrekt wiedergibt.",
+    "confirmAction": "Bestätigen",
+    "changed": "Die Akte wurde geändert. Prüfen Sie den aktuellen Bericht vor der Bestätigung.",
+    "reopen": "Zurück zum Entwurf",
+    "emailHelp": "Prüfen und bestätigen Sie diesen Bericht, bevor Sie ihn dem Tierhalter per E-Mail senden.",
+    "downloadDraft": "PDF-Entwurf herunterladen",
+    "shareDraft": "Entwurf teilen"
   }
 }

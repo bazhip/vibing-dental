@@ -21,6 +21,7 @@ interface ChartMenuProps {
   scope?: 'all' | 'help' | 'account' | 'more';
   visit?: { name: string; onNewVisit: () => void; onHistory: () => void };
   onNewPatient?: () => void;
+  onPreviewDocuments?: () => void;
   onRevert?: () => void;
   /** Relaunch the getting-started walkthrough. */
   onOpenWalkthrough: () => void;
@@ -67,7 +68,7 @@ function useSignedInEmail(enabled: boolean, override?: string): string {
  * admin (when applicable), and app-level bits (AI settings, homepage,
  * sign out). Lives in the topbar.
  */
-export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
+export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNewPatient, onPreviewDocuments, onRevert, onOpenWalkthrough, onGoHome, onOpenAdmin, onOpenFeedback, onOpenChartSettings, onOpenWhatsNew, cloud, email }) => {
   const { t } = useTranslation('app');
   const showHelp = scope !== 'account';
   const showAccount = scope !== 'help';
@@ -205,11 +206,12 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
             </div>
           )}
 
-          {scope === 'more' && (visit || onNewPatient || onRevert) && (
+          {scope === 'more' && (visit || onNewPatient || onRevert || onPreviewDocuments) && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{visit?.name || t('chartsMenu.thisPatient')}</header>
               {visit && item(t('chartsMenu.newVisit'), t('chartsMenu.newVisitHint'), visit.onNewVisit)}
               {visit && item(t('chartsMenu.history'), t('chartsMenu.historyHint'), visit.onHistory)}
+              {onPreviewDocuments && item(t('fab.review'), t('fab.reviewHint'), onPreviewDocuments)}
               {onNewPatient && item(t('topbar.newPatient'), t('topbar.newPatientTitle'), onNewPatient)}
               {onRevert && item(t('topbar.undo'), t('topbar.undoTitle'), onRevert)}
             </section>

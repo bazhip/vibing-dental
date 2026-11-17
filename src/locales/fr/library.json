@@ -1,4 +1,9 @@
 {
+  "rechecks": {
+    "title": "Contrôles",
+    "description": "Patients dont le contrôle est prévu aujourd’hui ou en retard. Ouvrez une visite, envoyez un rappel ou effacez un contrôle effectué."
+  },
+  "openLatest": "Ouvrir la dernière visite de {{name}}",
   "title": "Patients",
   "unnamedPatient": "Patient sans nom",
   "search": {
@@ -55,11 +60,12 @@
     "updated": "Modifié le {{when}}"
   },
   "actions": {
+    "menu": "Actions",
     "reminder": "Rappel",
     "reminderTitle": "Envoyer un rappel de contrôle à {{who}}",
     "clearRecall": "Effacer le rappel de contrôle de {{name}}",
     "clearRecallTitle": "Effacer le rappel de contrôle de {{name}} — par exemple après un contrôle qui n’a pas donné lieu à un nouveau dossier",
-    "newVisit": "+ Visite",
+    "newVisit": "Nouvelle visite",
     "newVisitTitle": "Commencer une nouvelle visite pour {{name}}",
     "history": "Historique des versions",
     "historyChartTitle": "Qui a enregistré le dossier de {{name}}, et quand",

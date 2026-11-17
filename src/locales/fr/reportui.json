@@ -51,6 +51,7 @@
     "recheck": "Prochain contrôle recommandé :"
   },
   "templates": {
+    "manageActions": "Actions du modèle",
     "title": "Modèles de compte rendu pour le propriétaire",
     "listLabel": "Modèles",
     "untitled": "Modèle sans nom",
@@ -168,5 +169,21 @@
     "send": "Envoyer le compte rendu",
     "sent": "Compte rendu envoyé à {{email}}",
     "sendFailed": "Impossible d’envoyer le compte rendu."
+  },
+  "review": {
+    "incompleteImages": "Certaines images du rapport n’ont pas pu être chargées. Ce PDF reste un brouillon et ne peut pas être envoyé par e-mail. Réessayez avant de partager un rapport vérifié.",
+    "draft": "Brouillon — vérification requise",
+    "complete": "Vérifié et terminé",
+    "draftHelp": "Vérifiez les observations, les actes et les conseils avant de confirmer que cette visite est terminée. Une absence de saisie ne signifie pas un résultat normal.",
+    "completeHelp": "Confirmation valable pour ce dossier et ce modèle. Toute modification nécessite une nouvelle vérification.",
+    "confirm": "Confirmer la vérification et la fin de la visite",
+    "confirmTitle": "Confirmer la vérification du compte rendu",
+    "confirmMessage": "Confirmez uniquement après avoir vérifié que la visite est terminée et que le compte rendu reflète fidèlement les observations, actes et conseils enregistrés.",
+    "confirmAction": "Confirmer",
+    "changed": "Le dossier a changé. Vérifiez le compte rendu actuel avant de confirmer.",
+    "reopen": "Repasser en brouillon",
+    "emailHelp": "Vérifiez et confirmez ce compte rendu avant de l’envoyer au propriétaire par e-mail.",
+    "downloadDraft": "Télécharger le PDF brouillon",
+    "shareDraft": "Partager le brouillon"
   }
 }

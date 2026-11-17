@@ -297,3 +297,18 @@ describe('web template editor categories', () => {
     expect(screen.getByRole('button', { name: 'Preview with sample visit' })).toBeEnabled();
   });
 });
+
+it('template management disclosure exposes its state without changing the draft', async () => {
+  const user = userEvent.setup();
+  renderModal();
+  const toggle = screen.getByRole('button', { name: 'Template actions' });
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  const actions = document.getElementById(toggle.getAttribute('aria-controls')!);
+  expect(actions).not.toHaveClass('report-templates__list-actions--open');
+  await user.click(toggle);
+  expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  expect(actions).toHaveClass('report-templates__list-actions--open');
+  expect(screen.getByRole('button', { name: 'Save templates' })).toBeDisabled();
+  await user.click(toggle);
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+});

@@ -110,3 +110,13 @@ it('combines practice, help, account, and visit actions in the compact More menu
   await user.click(screen.getByRole('button', { name: /New patient/ }));
   expect(onNewPatient).toHaveBeenCalledOnce();
 });
+
+it('keeps report review reachable from the compact More menu', async () => {
+  const user = userEvent.setup();
+  const review = vi.fn();
+  render(<ChartMenu scope="more" onOpenWalkthrough={vi.fn()} onPreviewDocuments={review} />);
+  await user.click(screen.getByRole('button', { name: 'More' }));
+  await user.click(screen.getByRole('button', { name: /Review and export/ }));
+  expect(review).toHaveBeenCalledOnce();
+  expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+});

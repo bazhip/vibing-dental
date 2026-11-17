@@ -1,5 +1,5 @@
 import { act, render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { DialogHost, toast, toastWhenReady, confirmDialog, promptDialog, chooseDialog } from './dialogs';
 
@@ -61,5 +61,30 @@ describe('web dialog keyboard containment', () => {
     expect(first).toHaveFocus();
     fireEvent.keyDown(first, { key: 'Tab', shiftKey: true });
     expect(last).toHaveFocus();
+  });
+});
+
+describe('toast interaction lifetime', () => {
+  it('preserves remaining time while hovered or focused, including overlapping interaction', () => {
+    vi.useFakeTimers();
+    try {
+      render(<DialogHost />);
+      act(() => toast('Undoable', { duration: 1000, action: { label: 'Undo', onClick: vi.fn() } }));
+      const notice = screen.getByRole('status');
+      const undo = screen.getByRole('button', { name: 'Undo' });
+      act(() => vi.advanceTimersByTime(400));
+      fireEvent.mouseEnter(notice);
+      fireEvent.focus(undo);
+      act(() => vi.advanceTimersByTime(2000));
+      expect(notice).toBeInTheDocument();
+      fireEvent.mouseLeave(notice);
+      act(() => vi.advanceTimersByTime(2000));
+      expect(notice).toBeInTheDocument();
+      fireEvent.blur(undo, { relatedTarget: document.body });
+      act(() => vi.advanceTimersByTime(599));
+      expect(notice).toBeInTheDocument();
+      act(() => vi.advanceTimersByTime(1));
+      expect(notice).not.toBeInTheDocument();
+    } finally { vi.useRealTimers(); }
   });
 });

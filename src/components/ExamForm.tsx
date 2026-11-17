@@ -1,3 +1,4 @@
+import { SectionHeader } from './SectionHeader';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExamFindings, ExamFinding, EXAM_ITEMS, CustomExamValue } from '../types';
@@ -105,9 +106,8 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   ];
   const unanswered = rows.filter((r) => !r.status);
   const header = (
-    <div className="dental-grid__section-header">
-      <h2 className="dental-grid__title">{t('exam.title')}</h2>
-      {unanswered.length > 0 && (
+    <SectionHeader title={t('exam.title')} onCustomize={onCustomize} customizeTitle={t('exam.customizeTitle')}
+      actions={unanswered.length > 0 && (
         <button
           type="button"
           className="diagram-view__action"
@@ -117,13 +117,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
         >
           {unanswered.length === rows.length ? t('exam.markAllNormal') : t('exam.markRestNormal')}
         </button>
-      )}
-      {onCustomize && (
-        <button type="button" className="diagram-view__action" onClick={onCustomize} title={t('exam.customizeTitle')}>
-          {t('anesthesia.customize')}
-        </button>
-      )}
-    </div>
+      )} />
   );
 
   // The iOS app: one row per area with a Normal / Abnormal segmented

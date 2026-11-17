@@ -15,7 +15,7 @@
     "previewTitle": "Owner report preview"
   },
   "section": {
-    "title": "Owner Report",
+    "title": "Owner report",
     "customize": "Customize",
     "customizeTitle": "Change the report's layout, wording, language and sections",
     "writeWithAi": "✨ Write with AI",
@@ -50,6 +50,7 @@
     "recheck": "Recommended recheck:"
   },
   "templates": {
+    "manageActions": "Template actions",
     "title": "Owner report templates",
     "listLabel": "Templates",
     "untitled": "Untitled template",
@@ -167,5 +168,21 @@
     "send": "Send report",
     "sent": "Report sent to {{email}}",
     "sendFailed": "Couldn’t send the report."
+  },
+  "review": {
+    "incompleteImages": "Some report images could not be loaded. This PDF remains a draft and cannot be emailed. Retry the images before sharing a reviewed report.",
+    "draft": "Draft — review required",
+    "complete": "Reviewed and complete",
+    "draftHelp": "Review the findings, procedures, and advice before confirming that this visit is complete. Missing entries do not mean normal findings.",
+    "completeHelp": "Confirmed for this chart and template. Changes to either require another review.",
+    "confirm": "Confirm review and completion",
+    "confirmTitle": "Confirm report review",
+    "confirmMessage": "Confirm only after checking that the visit is complete and the report accurately reflects the recorded findings, procedures, and advice.",
+    "confirmAction": "Confirm",
+    "changed": "The chart changed. Review the current report before confirming.",
+    "reopen": "Return to draft",
+    "emailHelp": "Review and confirm this report before emailing it to the owner.",
+    "downloadDraft": "Download draft PDF",
+    "shareDraft": "Share draft"
   }
 }

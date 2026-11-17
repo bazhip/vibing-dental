@@ -9,7 +9,6 @@ import { LegalNotice, LEGAL_ACTION } from './LegalNotice';
 import { TERMS_VERSION, markTermsPending } from '../utils/terms';
 import { supabase, cloudEnabled } from '../utils/supabaseClient';
 import { withDetail } from '../utils/apiErrors';
-import { uploadPracticeLogo } from '../hooks/useProfile';
 import { authRedirectUrl } from '../native/authReturn';
 import { WEB_ORIGIN } from '../native/platform';
 import { PlanKey, AccountType, PlanTier, planByKey, planKeyFor, TRIAL_DAYS, PAID_SIGNUP, formatPlanPrice } from '../constants/plans';
@@ -121,7 +120,6 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
     setCooldown(RESEND_COOLDOWN_S);
     setNotice(t('login.confirmationSent', { email: target }));
   };
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [accountType, setAccountType] = useState<AccountType>(
     initialPlan ? (planByKey(initialPlan)?.accountType ?? 'individual') : 'individual'
   );
@@ -196,16 +194,6 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
         return;
       }
       if (data.session) {
-        // Optional logo picked during signup — upload now that the
-        // session exists. Failure isn't fatal; Practice settings can
-        // retry later.
-        if (logoFile) {
-          try {
-            await uploadPracticeLogo(logoFile);
-          } catch {
-            // ignore — the account is created either way
-          }
-        }
         onAuthenticate();
       } else {
         // Email confirmation is on — a dedicated screen says exactly what
@@ -366,9 +354,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                   <AppleSignInHint />
                 </>
               )}
-              {/* The notice sits by both buttons: the email form's submit
-                  is far below on the long signup form. */}
-              <LegalNotice action={signup ? LEGAL_ACTION.signingUp : LEGAL_ACTION.continuing} className="login-legal--google" withEnglishNote={false} />
+              {app && <LegalNotice action={LEGAL_ACTION.continuing} className="login-legal--google" withEnglishNote={false} />}
               <div className="login-or">{signup ? t('login.orWithEmail.signup') : t('login.orWithEmail.signin')}</div>
             </>
           )}
@@ -397,18 +383,6 @@ export const Login: React.FC<LoginProps> = ({ onAuthenticate, initialMode = 'sig
                   onChange={(e) => setDoctorName(e.target.value)}
                 />
               </label>
-              <label className="login-logo-field">
-                <span>
-                  {logoFile ? t('login.logoPicked', { name: logoFile.name }) : t('login.logoOptional')}
-                </span>
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  aria-label={t('login.logoOptional')}
-                  onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
-                />
-              </label>
-
               {!PAID_SIGNUP && (
                 <span className="login-hint">
                   {t('login.betaHint')}

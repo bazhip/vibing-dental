@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { vi } from 'vitest';
 
 // App Store 5.1.2(i): in the app, dictation asks before anything goes to
@@ -65,5 +65,30 @@ describe('dictation consent (app)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
     await waitFor(() => expect(FakeRecognition.started).toBe(1));
     expect(consent.ensure).not.toHaveBeenCalled();
+  });
+});
+
+
+describe('deferred dictation consent', () => {
+  it.each(['locked', 'different chart'] as const)('does not start recording after the chart becomes %s', async (change) => {
+    let allow!: (allowed: boolean) => void;
+    consent.ensure.mockImplementation(() => new Promise<boolean>((resolve) => { allow = resolve; }));
+    const { rerender } = renderButton();
+    fireEvent.click(screen.getByRole('button', { name: /Dictate/ }));
+    expect(consent.ensure).toHaveBeenCalledTimes(1);
+    expect(FakeRecognition.started).toBe(0);
+
+    rerender(<VoiceInputButton
+      context={context}
+      handlers={{} as never}
+      activeSection="charting"
+      sessionKey={change === 'different chart' ? 'b' : 'a'}
+      locked={change === 'locked'}
+    />);
+    await act(async () => { allow(true); });
+
+    expect(FakeRecognition.started).toBe(0);
+    expect(screen.queryByRole('button', { name: 'Stop' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Dictate/ })).toHaveAttribute('aria-pressed', 'false');
   });
 });

@@ -1,4 +1,9 @@
 {
+  "rechecks": {
+    "title": "Rechecks",
+    "description": "Patients with a recheck due today or overdue. Open a visit, send a reminder, or clear a completed recheck."
+  },
+  "openLatest": "Open latest visit for {{name}}",
   "title": "Patients",
   "unnamedPatient": "Unnamed patient",
   "search": {
@@ -53,11 +58,12 @@
     "updated": "Updated {{when}}"
   },
   "actions": {
+    "menu": "Actions",
     "reminder": "Reminder",
     "reminderTitle": "Send a recheck reminder to {{who}}",
     "clearRecall": "Clear {{name}}'s recheck reminder",
     "clearRecallTitle": "Clear {{name}}'s recheck reminder — e.g. after a recheck that didn't produce a new chart",
-    "newVisit": "+ Visit",
+    "newVisit": "New visit",
     "newVisitTitle": "Start a new visit for {{name}}",
     "history": "Version history",
     "historyChartTitle": "Who saved {{name}}'s chart, and when",

@@ -124,6 +124,14 @@ test('by-tooth view: empty panel, legend, selected tooth and extraction plan', (
   expect(findUntranslated(container, ALLOW)).toEqual([]);
 });
 
+test('by-tooth touch map translates quadrant choices and tooth names', () => {
+  const { container } = render(<ChartHarness />);
+  fireEvent.click(screen.getByRole('button', { name: /⟦Tooth map/ }));
+  expect(findUntranslated(container, ALLOW)).toEqual([]);
+  fireEvent.change(screen.getByRole('combobox', { name: /⟦Quadrant/ }), { target: { value: '3' } });
+  expect(findUntranslated(container, ALLOW)).toEqual([]);
+});
+
 test('by-tooth view: view-only', () => {
   const { container } = render(<ChartHarness readOnly planned={[108]} />);
   fireEvent.click(screen.getByRole('button', { name: /⟦Start at/ }));

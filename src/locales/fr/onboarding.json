@@ -7,12 +7,24 @@
     "next": "Suivant",
     "finish": "Commencer",
     "steps": {
+      "firstPatient": {
+        "title": "Identifier le patient",
+        "body": "Saisissez le nom du patient, puis choisissez l’espèce et la dentition. Ajoutez les coordonnées du propriétaire et les détails de la visite si nécessaire."
+      },
+      "firstFinding": {
+        "title": "Consigner une observation",
+        "body": "Choisissez une dent et saisissez une mesure ou une observation. Votre travail est enregistré automatiquement ; vous pourrez continuer après cette visite guidée."
+      },
+      "firstOutput": {
+        "title": "Vérifier le résultat",
+        "body": "Ouvrez l’aperçu PDF pour vérifier la visite avant de la partager. Pour découvrir tout l’espace de travail, ouvrez Aide → Premiers pas."
+      },
       "welcome": {
         "title": "Bienvenue dans ToothOps",
         "body": "Une courte visite de l’espace de travail. Retrouvez-la à tout moment dans Aide → Prise en main."
       },
       "sections": {
-        "title": "Les huit sections",
+        "title": "Les neuf sections",
         "body": "Un dossier dentaire, de haut en bas. Parcourez-les dans l’ordre ou passez de l’une à l’autre — tout est enregistré automatiquement."
       },
       "patient": {
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Espèce et dentition",
-        "body": "Choisissez Félin ou Canin, puis Permanente ou Déciduale — le schéma des dents s’adapte."
+        "body": "Choisissez Félin, Canin ou Équin, puis la dentition — le schéma des dents s’adapte."
       },
       "grid": {
         "title": "La grille de mesures",

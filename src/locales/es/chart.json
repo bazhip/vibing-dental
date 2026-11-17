@@ -168,7 +168,15 @@
     "markExtracted_one": "Marcar como extraído",
     "markExtracted_other": "Marcar los {{count}} como extraídos",
     "markExtracted_many": "Marcar los {{count}} como extraídos",
-    "toothMap": "Mapa dental"
+    "toothMap": "Mapa dental",
+    "quadrant": "Cuadrante",
+    "quadrants": {
+      "1": "Superior derecho",
+      "2": "Superior izquierdo",
+      "3": "Inferior izquierdo",
+      "4": "Inferior derecho"
+    },
+    "selectTooth": "Seleccionar el diente {{triadan}}: {{name}}"
   },
   "toothName": {
     "side": {

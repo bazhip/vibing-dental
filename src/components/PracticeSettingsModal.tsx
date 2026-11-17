@@ -497,6 +497,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         }}
       >
         <h3 className="ai-settings-subhead">{t('practice.profile')}</h3>
+        <p className="ai-settings-blurb">{t('workspace.saveHint')}</p>
         <label className="patient-form__label">
           {t('practice.nameLabel')}
           <input
@@ -943,6 +944,7 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
         </button>
       </header>
       <div className="practice-workspace__layout">
+        <div>
         <nav className="practice-workspace__nav" aria-label={t('practice.title')}>
           {pageSections.map((id) => (
             <button key={id} type="button" aria-current={section === id ? 'page' : undefined} onClick={() => setSection(id)}>
@@ -951,12 +953,16 @@ export const PracticeSettingsModal: React.FC<PracticeSettingsModalProps> = ({
           ))}
           {(onOpenReminders || onOpenChartSettings) && <div className="practice-workspace__nav-divider" />}
           {onOpenReminders && <button type="button" onClick={onOpenReminders}>{t('workspace.reminders')}</button>}
-          {onOpenChartSettings && <button type="button" onClick={onOpenChartSettings}>{t('workspace.charting')}</button>}
         </nav>
+        {onOpenChartSettings && <aside className="practice-workspace__personal">
+          <p>{t('workspace.personalScope')}</p>
+          <button type="button" className="diagram-view__action" onClick={onOpenChartSettings}>{t('workspace.charting')}</button>
+        </aside>}
+        </div>
         <div className="practice-workspace__content">
           <h2>{t(`workspace.${section}`)}</h2>
           {practiceBody}
-          <p className="practice-workspace__save-hint">{t('workspace.saveHint')}</p>
+
           {footer}
         </div>
       </div>

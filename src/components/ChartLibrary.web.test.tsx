@@ -24,6 +24,7 @@ vi.mock('./ui/dialogs', async (importOriginal) => ({
 }));
 
 import { ChartLibrary } from './ChartLibrary';
+import type { ChartLibraryViewState } from './chartLibraryData';
 import type { CloudChartMeta, ChartListQuery } from '../hooks/useCloudSync';
 
 const meta = (over: Partial<CloudChartMeta> & { id: string }): CloudChartMeta => ({
@@ -39,7 +40,7 @@ const ROWS: CloudChartMeta[] = [
   meta({ id: 'c1', patient_name: '', patient_number: '', dentition: 'deciduous', recall_date: '2026-12-20', updated_at: '2026-09-01T12:00:00Z' }),
 ];
 
-function setup(listImpl?: (q?: ChartListQuery) => Promise<{ rows: CloudChartMeta[]; hasMore: boolean }>) {
+function setup(listImpl?: (q?: ChartListQuery) => Promise<{ rows: CloudChartMeta[]; hasMore: boolean }>, rechecksOnly = false, viewState?: { current: ChartLibraryViewState | undefined }) {
   const props = {
     listCharts: vi.fn(listImpl ?? (async (q?: ChartListQuery) => ({ rows: q?.dueOnly ? ROWS.filter((r) => r.recall_date && r.recall_date <= '2026-11-13') : ROWS, hasMore: false }))),
     onOpen: vi.fn(async () => true),
@@ -52,7 +53,7 @@ function setup(listImpl?: (q?: ChartListQuery) => Promise<{ rows: CloudChartMeta
     onLoadPdf: vi.fn(),
     onClose: vi.fn(),
   };
-  const utils = render(<ChartLibrary {...props} />);
+  const utils = render(<ChartLibrary {...props} rechecksOnly={rechecksOnly} viewState={viewState} />);
   return { ...props, ...utils };
 }
 
@@ -67,6 +68,33 @@ const lastQuery = (fn: ReturnType<typeof vi.fn>) =>
   (fn.mock.calls.map((c) => c[0] as ChartListQuery).filter((q) => q && !(q.dueOnly && q.limit === 500 && !q.sortKey)).at(-1));
 
 describe('ChartLibrary (website)', () => {
+  it('restores Patients filters independently of the Rechecks workspace', async () => {
+    const patientsState = { current: undefined as ChartLibraryViewState | undefined };
+    const rechecksState = { current: undefined as ChartLibraryViewState | undefined };
+    const patients = setup(undefined, false, patientsState);
+    await screen.findByText('Bella');
+    fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
+    await waitFor(() => expect(patientsState.current?.speciesFilter).toBe('feline'));
+    patients.unmount();
+    const rechecks = setup(undefined, true, rechecksState);
+    await screen.findByRole('heading', { name: 'Rechecks' });
+    expect(screen.getByRole('combobox', { name: 'Filter by species' })).toHaveValue('');
+    rechecks.unmount();
+    const restored = setup(undefined, false, patientsState);
+    await screen.findByText('Bella');
+    expect(screen.getByRole('combobox', { name: 'Filter by species' })).toHaveValue('feline');
+    expect(lastQuery(restored.listCharts)?.dueOnly).toBeUndefined();
+  });
+
+  it('Rechecks stays due-only while filtering and sorts earliest rechecks first', async () => {
+    const { listCharts } = setup(undefined, true);
+    await screen.findByRole('heading', { name: 'Rechecks' });
+    expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, sortKey: 'recall', sortDir: 'asc' });
+    expect(screen.queryByRole('button', { name: 'Due (2)' })).not.toBeInTheDocument();
+    fireEvent.change(screen.getByRole('combobox', { name: 'Filter by species' }), { target: { value: 'feline' } });
+    await waitFor(() => expect(lastQuery(listCharts)).toMatchObject({ dueOnly: true, species: 'feline' }));
+  });
+
   it('renders the same table structure, cells and labels', async () => {
     const { container } = setup();
     await screen.findByText('Max');
@@ -84,11 +112,11 @@ describe('ChartLibrary (website)', () => {
     expect(within(bella).getByText('Ann · Dr Ames')).toHaveClass('chart-library__owner');
     expect(bella.querySelector('.chart-library__recall--overdue')?.textContent).toMatch(/· overdue$/);
     expect(within(bella).getByRole('button', { name: 'Reminder' })).toBeInTheDocument();
-    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveTextContent('×');
+    expect(within(bella).getByRole('button', { name: "Clear Bella's recheck reminder" })).toHaveTextContent("Clear Bella's recheck reminder");
     expect(within(bella).getByRole('button', { name: 'Delete chart for Bella' })).toBeInTheDocument();
     const max = rows[1] as HTMLElement;
     expect(max.querySelector('.chart-library__recall--due')?.textContent).toMatch(/· today$/);
-    expect(within(max).getByText('2 visits')).toBeInTheDocument();
+    expect(within(max).getByTitle('2 visits — expand')).toBeInTheDocument();
     expect(within(max).getByText('Feline')).toBeInTheDocument();
     expect(within(max).queryByRole('button', { name: /Delete/ })).toBeNull();
     const unnamed = rows[2] as HTMLElement;
@@ -169,7 +197,7 @@ describe('ChartLibrary (website)', () => {
 
   it('opens a single-visit patient and closes', async () => {
     const { onOpen, onClose } = setup();
-    fireEvent.click(await screen.findByTitle('Open Bella'));
+    fireEvent.click(await screen.findByTitle('Open latest visit for Bella'));
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(onOpen).toHaveBeenCalledWith('a1');
   });

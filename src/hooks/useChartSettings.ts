@@ -25,7 +25,7 @@ function legacyLocal(): ChartPrefs {
     ...DEFAULT_CHART_PREFS,
     mirrorToDiagnosis: readJson('charting.mirrorToDiagnosis', 1, DEFAULT_CHART_PREFS.mirrorToDiagnosis),
     pdfIncludeGrid: readJson('charting.pdfIncludeGrid', 1, DEFAULT_CHART_PREFS.pdfIncludeGrid),
-    chartingView: readJson('charting.view', 1, DEFAULT_CHART_PREFS.chartingView),
+    chartingView: readJson('charting.view', 1, typeof window !== 'undefined' && window.matchMedia?.('(max-width: 600px)').matches ? 'tooth' : DEFAULT_CHART_PREFS.chartingView),
     pdfIncludeImages: readJson('imaging.pdfIncludeImages', 1, DEFAULT_CHART_PREFS.pdfIncludeImages),
   };
 }

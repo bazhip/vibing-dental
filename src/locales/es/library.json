@@ -1,4 +1,9 @@
 {
+  "rechecks": {
+    "title": "Controles",
+    "description": "Pacientes con una revisión prevista para hoy o atrasada. Abra una visita, envíe un recordatorio o elimine una revisión completada."
+  },
+  "openLatest": "Abrir la última visita de {{name}}",
   "title": "Pacientes",
   "unnamedPatient": "Paciente sin nombre",
   "search": {
@@ -55,11 +60,12 @@
     "updated": "Actualizado {{when}}"
   },
   "actions": {
+    "menu": "Acciones",
     "reminder": "Recordatorio",
     "reminderTitle": "Enviar un recordatorio de revisión a {{who}}",
     "clearRecall": "Borrar el recordatorio de revisión de {{name}}",
     "clearRecallTitle": "Borrar el recordatorio de revisión de {{name}} — por ejemplo, tras una revisión que no generó un historial nuevo",
-    "newVisit": "+ Visita",
+    "newVisit": "Nueva visita",
     "newVisitTitle": "Iniciar una nueva visita para {{name}}",
     "history": "Historial de versiones",
     "historyChartTitle": "Quién guardó el historial de {{name}} y cuándo",

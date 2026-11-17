@@ -43,7 +43,7 @@ export const ExamAreasEditor: React.FC<{
           {t(`exam.items.${key}`, { ns: 'forms' })}
         </label>
       ))}
-      <p className="chart-settings__note">{t('chart.list.count', { used: draft.length, max: MAX_CUSTOM_EXAM_AREAS })}</p>
+      <p className="chart-settings__note">{t('chart.exam.customCount', { used: draft.filter((area) => area.label.trim()).length, max: MAX_CUSTOM_EXAM_AREAS })}</p>
       {draft.map((a, i) => (
         <div key={a.id} className="custom-def">
           <input type="checkbox" checked={!hiddenAreas.includes(a.id)}

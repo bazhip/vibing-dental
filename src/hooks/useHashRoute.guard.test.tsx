@@ -13,9 +13,9 @@ it('blocks all route subscribers from unmounting a dirty settings page until lea
   expect(app.result.current.route.view).toBe('settings');
   await act(async () => answer(false));
   expect(app.result.current.route.view).toBe('settings');
-  act(() => { window.history.replaceState(null, '', '/#/library'); window.dispatchEvent(new HashChangeEvent('hashchange')); });
+  act(() => { window.history.replaceState(null, '', '/#/rechecks'); window.dispatchEvent(new HashChangeEvent('hashchange')); });
   await act(async () => answer(true));
-  await waitFor(() => expect(app.result.current.route.view).toBe('library'));
+  await waitFor(() => expect(app.result.current.route.view).toBe('rechecks'));
   page.unmount(); app.unmount();
 });
 
@@ -49,4 +49,14 @@ it('keeps every consumer on settings while an indexed destination awaits approva
   await waitFor(() => expect(app.result.current.route.view).toBe('home'));
   expect(editor.result.current.route.view).toBe('home');
   gate.unmount(); editor.unmount(); app.unmount();
+});
+
+it('recognizes Rechecks as a workspace destination on arrival and navigation', () => {
+  window.history.replaceState(null, '', '/#/rechecks');
+  const app = renderHook(useHashRoute);
+  expect(app.result.current.route.view).toBe('rechecks');
+  act(() => app.result.current.navigate('#/library'));
+  expect(app.result.current.route.view).toBe('library');
+  act(() => app.result.current.navigate('#/rechecks'));
+  expect(app.result.current.route.view).toBe('rechecks');
 });

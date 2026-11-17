@@ -7,12 +7,24 @@
     "next": "Weiter",
     "finish": "Los geht’s",
     "steps": {
+      "firstPatient": {
+        "title": "Patienten identifizieren",
+        "body": "Geben Sie den Patientennamen ein und wählen Sie Tierart und Gebiss. Ergänzen Sie bei Bedarf Halter- und Besuchsdaten."
+      },
+      "firstFinding": {
+        "title": "Einen Befund erfassen",
+        "body": "Wählen Sie einen Zahn und tragen Sie einen Messwert oder Befund ein. Ihre Arbeit wird automatisch gespeichert; nach dieser Einführung können Sie weitere Details ergänzen."
+      },
+      "firstOutput": {
+        "title": "Ausgabe prüfen",
+        "body": "Öffnen Sie die PDF-Vorschau, um den Besuch vor dem Teilen zu prüfen. Die vollständige Einführung finden Sie unter Hilfe → Erste Schritte."
+      },
       "welcome": {
         "title": "Willkommen bei ToothOps",
         "body": "Eine kurze Tour durch den Arbeitsbereich. Starten Sie sie jederzeit unter Hilfe → Erste Schritte erneut."
       },
       "sections": {
-        "title": "Die acht Abschnitte",
+        "title": "Die neun Abschnitte",
         "body": "Eine Zahnakte von oben nach unten. Arbeiten Sie die Abschnitte der Reihe nach ab oder springen Sie nach Belieben — alles wird automatisch gespeichert."
       },
       "patient": {
@@ -21,7 +33,7 @@
       },
       "species": {
         "title": "Tierart & Gebiss",
-        "body": "Wählen Sie Katze oder Hund, dann Bleibend oder Milchzähne — das Zahnschema passt sich an."
+        "body": "Wählen Sie Katze, Hund oder Pferd und dann das Gebiss — das Zahnschema passt sich an."
       },
       "grid": {
         "title": "Das Befundraster",

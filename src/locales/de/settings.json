@@ -227,7 +227,8 @@
         "floor": "Mundboden / Zungenbändchen"
       },
       "suggestions": "Vorgeschlagene Bereiche",
-      "showArea": "{{name}} anzeigen"
+      "showArea": "{{name}} anzeigen",
+      "customCount": "Hinzugefügte eigene Bereiche: {{used}} · Höchstzahl: {{max}}"
     },
     "customization": {
       "navigation": "Kategorien der Befundeinstellungen",
@@ -325,6 +326,9 @@
     "settingUp": "Ihre Praxis wird eingerichtet — schauen Sie gleich noch einmal vorbei."
   },
   "workspace": {
+    "personalScope": "Persönliche Einstellungen für das Zahnschema — Änderungen gelten nur für Ihr Konto.",
+    "accountScope": "Diese Einstellungen gehören zu Ihrem Konto. Speichern Sie jeden Abschnitt separat; Änderungen der E-Mail-Adresse und des Passworts haben eine eigene Bestätigung.",
+    "languageImmediate": "Sprachänderungen werden sofort angewendet.",
     "general": "Allgemein",
     "team": "Team",
     "templates": "Vorlagen",

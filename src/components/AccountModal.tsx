@@ -222,6 +222,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
   const accountBody = (
     <>
+      <p className="ai-settings-blurb">{t('workspace.accountScope', { ns: 'settings' })}</p>
       {/* ---- Doctor name ------------------------------------------- */}
       <form className="ai-settings-section" onSubmit={saveDoctor}>
         <h3 className="ai-settings-subhead">{t('doctor.heading')}</h3>
@@ -252,6 +253,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       {LANGUAGE_SWITCHING_ENABLED && (
         <section className="ai-settings-section">
           <h3 className="ai-settings-subhead" id="account-language-heading">{t('language.heading')}</h3>
+          <p className="ai-settings-blurb">{t('workspace.languageImmediate', { ns: 'settings' })}</p>
           <select
             className="patient-form__input"
             aria-labelledby="account-language-heading"

@@ -67,3 +67,13 @@ describe('owner report AI draft', () => {
     expect(parseOwnerReportDraft([{ type: 'text' }])).toBeNull();
   });
 });
+
+it('blank AI facts distinguish missing documentation from health and include draft status', () => {
+  const blank = { ...snap, toothData: [], postMarks: {}, patientInfo: { ...snap.patientInfo, treatmentReport: '', complaint: '', exam: { ...EMPTY_EXAM_FINDINGS } } };
+  const facts = ownerReportFacts(blank);
+  expect(facts).toContain('Report completion status: draft');
+  expect(facts).toContain('Teeth removed at this visit: none recorded');
+  expect(facts).toContain('Findings by tooth: none recorded');
+  expect(facts).not.toContain('healthy');
+  expect(buildOwnerReportAiRequest(blank).system[0].text).toContain('Missing or blank entries mean not recorded');
+});

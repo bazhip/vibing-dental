@@ -101,7 +101,9 @@
     "preview": "Aperçu du PDF",
     "download": "Télécharger les PDF",
     "previewAria": "Aperçu et téléchargement du PDF du dossier",
-    "downloadAria": "Aperçu et téléchargement du dossier clinique et du compte rendu pour le propriétaire"
+    "downloadAria": "Aperçu et téléchargement du dossier clinique et du compte rendu pour le propriétaire",
+    "review": "Vérifier et exporter",
+    "reviewHint": "Prévisualisez, téléchargez ou partagez les documents de la visite."
   },
   "errors": {
     "setting": "Impossible d’enregistrer ce réglage. {{error}}",
@@ -279,6 +281,7 @@
     "openLibraryHint": "Recherchez et ouvrez les dossiers de n’importe quel patient."
   },
   "workspace": {
+    "rechecks": "Contrôles",
     "help": "Aide",
     "account": "Votre compte",
     "visitActions": "Actions de la visite",
@@ -286,6 +289,8 @@
     "currentVisit": "Visite en cours",
     "navigation": "Navigation de l’espace de travail",
     "patientContext": "Patient et visite en cours",
-    "more": "Plus"
+    "more": "Plus",
+    "patientNumber": "Numéro du patient {{number}}",
+    "visitDate": "Visite : {{date}}"
   }
 }

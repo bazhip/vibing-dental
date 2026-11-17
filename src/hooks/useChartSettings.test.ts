@@ -47,3 +47,16 @@ it('persists procedure shortcuts separately from diagnosis across reopening', as
   await act(async () => { await second.result.current.update({ procedureQuickCodes: [] }); });
   expect(readJson('chart.prefs', 1, null)).toMatchObject({ quickCodes: ['T/SN'], procedureQuickCodes: [] });
 });
+
+it('starts new phone users in By tooth but preserves a stored grid choice', () => {
+  const original = window.matchMedia;
+  window.matchMedia = vi.fn(() => ({ matches: true } as MediaQueryList));
+  const first = renderHook(() => useChartSettings(true));
+  expect(first.result.current.prefs.chartingView).toBe('tooth');
+  first.unmount();
+  writeJson('chart.prefs', 1, { chartingView: 'grid' });
+  const second = renderHook(() => useChartSettings(true));
+  expect(second.result.current.prefs.chartingView).toBe('grid');
+  second.unmount();
+  window.matchMedia = original;
+});
