@@ -16,7 +16,6 @@ import {
 } from './components';
 import { DiagramViewHandle } from './components/DiagramView';
 import { SidebarLayout, ChartSection } from './components/Layouts';
-import { ChartsMenu } from './components/ChartsMenu';
 import { ChartMenu } from './components/ChartMenu';
 import type { ChartSnapshot } from './components/PdfPreviewModal';
 import { VoiceInputButton, actionFocus } from './components/VoiceInputButton';
@@ -59,7 +58,7 @@ import type { CloudChartMeta } from './hooks/useCloudSync';
 import type { ChartContext, ChartHandlers, AiAction } from './utils/aiAutofill';
 import type { AppLanguage } from './i18n/config';
 import { DiagramComment, PatientInfo, NerveBlockSite, usualConcentration, withDrugUnit, ExamFinding, DentalField, ToothData, ToothMarks } from './types';
-import { customExamRows, setCustomExamValue } from './utils/customExam';
+import { customExamRows, setCustomExamValue, newExamAreaId, MAX_CUSTOM_EXAM_AREAS } from './utils/customExam';
 import { localDateISO } from './utils/localDate';
 import { isCurrentVisit } from './utils/currentVisit';
 import { shouldOpenLibraryOnArrival } from './utils/arrival';
@@ -254,6 +253,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
     else navigate('#/settings');
   };
   const returnToVisit = () => navigate(`#/chart/${chart.cloudChartId}`);
+  const [navigationHost, setNavigationHost] = React.useState<HTMLDivElement | null>(null);
   const workspacePage = !native && ((cloud.enabled && (route.view === 'library' || route.view === 'rechecks')) || route.view === 'settings' || practiceSettingsOpen);
   const [remindersOpen, setRemindersOpen] = React.useState(false);
   const [accountOpen, setAccountOpen] = React.useState(false);
@@ -1035,6 +1035,12 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           onCustomChange={(row, patch) =>
             chart.setPatientInfo((prev: PatientInfo) => ({ ...prev, customExam: setCustomExamValue(prev.customExam, row, patch) }))
           }
+          customAreas={prefs.customExamAreas}
+          readOnly={readOnly}
+          onAddArea={(label) => {
+            if (readOnly || prefs.customExamAreas.length >= MAX_CUSTOM_EXAM_AREAS) return;
+            setPref({ customExamAreas: [...prefs.customExamAreas, { id: newExamAreaId(), label }] });
+          }}
           hiddenAreas={prefs.hiddenExamAreas}
           onCustomize={native ? undefined : () => setChartSettingsOpen('exam')}
         />
@@ -1524,6 +1530,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         // diagram. The website keeps its layout unchanged.
         companions={native && chartingView === 'grid' ? CHARTING_COMPANIONS : undefined}
         hideNav={native}
+        navigationHost={native ? undefined : navigationHost}
       />
     </form>
   );
@@ -1912,6 +1919,7 @@ const EntryGrid: React.FC<EntryGridProps> = ({
       </a>
       <header className="entry-grid__topbar" ref={topbarRef}>
         <div className="entry-grid__topbar-lead">
+          <div className="entry-grid__practice-brand">
           {/* Uploaded practice logo leads the identity block (decorative —
               the practice name is right beside it). */}
           {profile.logoUrl && (
@@ -1930,6 +1938,8 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 : profile.practiceName.trim() || t('brand')}
             </h1>
           )}
+          </div>
+          </div>
           {/* Live patient banner — EMR-style encounter context that stays
               visible while scrolling deep into the chart. */}
           <div className="entry-grid__patient" aria-live="off" aria-label={t('workspace.patientContext')} hidden={workspacePage}>
@@ -2086,7 +2096,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
                 </span>
               ) : null}
           </div>
-          </div>
         </div>
         {/* --app: the signed-in toolbar (phones lay it out as an even,
             full-width row). */}
@@ -2128,31 +2137,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             </span>
           )}
 
-          {cloud.enabled && !workspacePage && chart.openedExisting && chart.cloudChartId && (
-            <span className="topbar-desktop-visit"><ChartsMenu
-              visitOnly
-              onOpenLibrary={openLibrary}
-              thisPatient={chart.openedExisting && chart.cloudChartId ? {
-                name: chart.patientInfo.patientName,
-                onNewVisit: startNewVisitFromLatest,
-                onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
-              } : undefined}
-            /></span>
-          )}
-          {/* AI autofill (every signed-in plan during the beta); the keys live server-side
-              behind JWT-gated edge functions, so trial (no account) and
-              Basic practices don't get it. */}
-          {profile.aiEnabled && !trial && (
-            <span hidden={workspacePage}><VoiceInputButton
-              context={aiContext}
-              handlers={aiHandlers}
-              onActivity={handleAiActivity}
-              activeSection={activeSection}
-              sessionKey={String(chart.chartSession)}
-              locked={readOnly}
-              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
-            /></span>
-          )}
           <span data-tour="settings" className="topbar-tour-anchor topbar-desktop-help">
           <ChartMenu
             scope={HELP_SCOPE}
@@ -2178,17 +2162,20 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             }
           />
           </span>
-          {cloud.enabled && <ChartMenu
-            scope={ACCOUNT_SCOPE}
-            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
-            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
-            cloud={{
-              onPracticeSettings: openPracticeSettings,
-              onOpenReminders: () => setRemindersOpen(true),
-              onOpenAccount: () => setAccountOpen(true),
-              onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
-            }}
-          />}
+          {/* AI autofill (every signed-in plan during the beta); the keys live server-side
+              behind JWT-gated edge functions, so trial (no account) and
+              Basic practices don't get it. */}
+          {profile.aiEnabled && !trial && (
+            <span hidden={workspacePage}><VoiceInputButton
+              context={aiContext}
+              handlers={aiHandlers}
+              onActivity={handleAiActivity}
+              activeSection={activeSection}
+              sessionKey={String(chart.chartSession)}
+              locked={readOnly}
+              onOpenFeedback={canFeedback ? (transcript) => setFeedback({ transcript }) : undefined}
+            /></span>
+          )}
           <ChartMenu
             scope={MORE_SCOPE}
             onPreviewDocuments={!workspacePage ? () => (document.getElementById('chart-form') as HTMLFormElement | null)?.requestSubmit() : undefined}
@@ -2198,11 +2185,6 @@ const EntryGrid: React.FC<EntryGridProps> = ({
             onOpenFeedback={canFeedback ? () => setFeedback({}) : undefined}
             onOpenChartSettings={() => setChartSettingsOpen('all')}
             onOpenWhatsNew={() => setWhatsNewOpen(true)}
-            visit={cloud.enabled && !workspacePage && chart.openedExisting && chart.cloudChartId ? {
-              name: chart.patientInfo.patientName,
-              onNewVisit: startNewVisitFromLatest,
-              onHistory: () => setHistoryFor({ id: chart.cloudChartId }),
-            } : undefined}
             onNewPatient={cloud.enabled && !editingSavedVisit && !workspacePage ? () => { void startNewPatient(); } : undefined}
             onRevert={editingSavedVisit && !workspacePage && unlockSnapshotChanged ? revertUnlockedChanges : undefined}
             cloud={cloud.enabled ? {
@@ -2253,12 +2235,30 @@ const EntryGrid: React.FC<EntryGridProps> = ({
         </div>
       </header>
 
+      <div className="workspace-layout">
+      <aside className="workspace-sidebar">
       <nav className="workspace-nav" aria-label={t('workspace.navigation')}>
         {cloud.enabled && <button type="button" data-tour="library" aria-current={route.view === 'library' ? 'page' : undefined} onClick={openLibrary}>{t('topbar.myCharts')}</button>}
         <button type="button" aria-current={!workspacePage ? 'page' : undefined} onClick={returnToVisit}>{t('workspace.currentVisit')}</button>
         {cloud.enabled && <button type="button" data-tour="practice-settings" aria-current={route.view === 'settings' ? 'page' : undefined} onClick={openPracticeSettings}>{t('workspace.practice')}</button>}
         {!cloud.enabled && <button type="button" onClick={() => setChartSettingsOpen('all')}>{t('menu.chartSettings.label')}</button>}
       </nav>
+      <div className="workspace-sidebar__sections" hidden={workspacePage} ref={setNavigationHost} />
+      <div className="workspace-sidebar__account">
+          {cloud.enabled && <ChartMenu
+            scope={ACCOUNT_SCOPE}
+            onOpenWalkthrough={() => { void guardPracticeLeave().then((leave) => { if (leave) { practiceLeaveGuard.current = null; setPracticeSettingsOpen(false); returnToVisit(); setWalkthroughFirstRun(false); setWalkthroughOpen(true); } }); }}
+            onOpenAdmin={isAdmin && !trial ? () => setAdminOpen(true) : undefined}
+            cloud={{
+              onPracticeSettings: openPracticeSettings,
+              onOpenReminders: () => setRemindersOpen(true),
+              onOpenAccount: () => setAccountOpen(true),
+              onSignOut: () => { void guardPracticeLeave().then((leave) => { if (leave) return cloud.signOut(); }).catch((err) => toast(t('errors.signOut', { error: friendlyDetail(err) }), { kind: 'error' })); },
+            }}
+          />}
+      </div>
+      </aside>
+      <div className="workspace-main">
       {otherTabBanner}
 
       <div id="workspace-content" tabIndex={-1}>
@@ -2268,6 +2268,9 @@ const EntryGrid: React.FC<EntryGridProps> = ({
           <div className="visit-export">{pdfButton}</div>
         </div>
         {dialogsAfterForm}
+      </div>
+
+      </div>
       </div>
 
       {/* Compact feedback link — the email it opens pre-fills the useful

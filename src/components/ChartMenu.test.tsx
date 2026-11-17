@@ -85,7 +85,7 @@ it('keeps help and account actions in separate menus', async () => {
   expect(screen.queryByRole('button', { name: /Practice settings/ })).toBeNull();
   unmount();
   render(<ChartMenu scope="account" onOpenWalkthrough={vi.fn()} cloud={cloud} />);
-  await user.click(screen.getByRole('button', { name: 'Your account' }));
+  await user.click(await screen.findByRole('button', { name: 'session@vet.com' }));
   expect(screen.getByRole('button', { name: /Account settings/ })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /Sign out/ })).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: /Getting started/ })).toBeNull();
@@ -98,7 +98,7 @@ it('combines practice, help, account, and visit actions in the compact More menu
     visit={{ name: 'Bella', onNewVisit, onHistory }} />);
   await user.click(screen.getByRole('button', { name: 'More' }));
   expect(screen.getByRole('button', { name: /Practice settings/ })).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /Account settings/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /session@vet.com/ })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /Getting started/ })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /Sign out/ })).toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: /New visit/ }));
@@ -120,3 +120,28 @@ it('keeps report review reachable from the compact More menu', async () => {
   expect(review).toHaveBeenCalledOnce();
   expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 });
+
+ it('loads the email before opening even when the session has a username', async () => {
+  auth.getSession.mockResolvedValueOnce({ data: { session: { user: { email: 'person@example.test', user_metadata: { username: 'avery.vet', full_name: 'Avery Example' } } } } } as Awaited<ReturnType<typeof auth.getSession>>);
+  render(<ChartMenu scope="account" cloud={cloud} onOpenWalkthrough={vi.fn()} />);
+  const trigger = await screen.findByRole('button', { name: 'person@example.test' });
+  expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  trigger.focus();
+  const user = userEvent.setup();
+  await user.keyboard('{ArrowUp}');
+  expect(screen.getByRole('button', { name: /Sign out/ })).toHaveFocus();
+  await user.keyboard('{Escape}');
+  expect(trigger).toHaveFocus();
+ });
+
+ it('preserves the complete email as the accessible label and tooltip', async () => {
+  render(<ChartMenu scope="account" cloud={cloud} email="alexandra.montgomery@kensington-veterinary.example" onOpenWalkthrough={vi.fn()} />);
+  const trigger = await screen.findByRole('button', { name: 'alexandra.montgomery@kensington-veterinary.example' });
+  expect(trigger).toHaveAttribute('title', 'alexandra.montgomery@kensington-veterinary.example');
+ });
+
+ it('shows a translated account fallback while the session is loading', () => {
+  auth.getSession.mockReturnValueOnce(new Promise(() => {}));
+  render(<ChartMenu scope="account" cloud={cloud} onOpenWalkthrough={vi.fn()} />);
+  expect(screen.getByRole('button', { name: 'Account' })).toHaveAttribute('aria-expanded', 'false');
+ });

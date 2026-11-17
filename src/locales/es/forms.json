@@ -69,7 +69,8 @@
       "palate": "paladar",
       "pharynx": "faringe / amígdalas"
     },
-    "customizeTitle": "Añada sus propias zonas de examen"
+    "customizeTitle": "Añada sus propias zonas de examen",
+    "duplicateArea": "Esta zona ya figura en su examen."
   },
   "anesthesia": {
     "title": "Anestesia",

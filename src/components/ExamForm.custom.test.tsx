@@ -67,3 +67,59 @@ test('hidden empty rows stay out of bulk marking while saved findings remain vis
   expect(onStatusChange.mock.calls.map(([key]) => key)).toEqual(['lymph', 'buccal', 'palate', 'pharynx']);
   expect(onCustomChange).not.toHaveBeenCalled();
 });
+
+const outerSubmit = vi.fn();
+function AddHarness({ areas = [], readOnly = false }: { areas?: { id: string; label: string }[]; readOnly?: boolean }) {
+  const [defs, setDefs] = React.useState(areas);
+  return <form onSubmit={(e) => { e.preventDefault(); outerSubmit(); }}>
+    <ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
+      customRows={customExamRows(defs)} customAreas={defs} hiddenAreas={['tongue', ...areas.map((a) => a.id)]}
+      onCustomChange={() => {}} readOnly={readOnly}
+      onAddArea={(label) => setDefs([...defs, { id: 'added', label }])} />
+    <output data-testid="definitions">{JSON.stringify(defs)}</output>
+  </form>;
+}
+
+test('inline area addition trims the name and Enter adds without submitting the chart', () => {
+  render(<AddHarness />);
+  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
+  const input = screen.getByRole('textbox', { name: 'Exam area 1 name' });
+  expect(input).toHaveAttribute('maxlength', '60');
+  fireEvent.change(input, { target: { value: '  Lips  ' } });
+  expect(fireEvent.keyDown(input, { key: 'Enter' })).toBe(false);
+  expect(outerSubmit).not.toHaveBeenCalled();
+  expect(screen.getByLabelText('Lips: normal')).not.toBeChecked();
+  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([{ id: 'added', label: 'Lips' }]);
+  expect(screen.queryByRole('textbox')).toBeNull();
+});
+
+test('inline editor rejects blanks and hidden built-in or custom duplicates and can cancel', () => {
+  render(<AddHarness areas={[{ id: 'hidden', label: 'Lips' }]} />);
+  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
+  const input = screen.getByRole('textbox');
+  for (const value of ['   ', ' tongue ', ' LIPS ']) {
+    fireEvent.change(input, { target: { value } });
+    expect(screen.getByRole('button', { name: /Add area/ })).toBeDisabled();
+    fireEvent.keyDown(input, { key: 'Enter' });
+  }
+  expect(screen.getByRole('alert')).toHaveTextContent('This area is already in your exam.');
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+  expect(screen.queryByRole('textbox')).toBeNull();
+  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toHaveLength(1);
+});
+
+test('inline editor enforces the personal area cap', () => {
+  render(<AddHarness areas={Array.from({ length: 8 }, (_, i) => ({ id: String(i), label: `Area ${i}` }))} />);
+  expect(screen.queryByRole('button', { name: /Add area/ })).toBeNull();
+  expect(screen.getByText('Limit reached. Remove an item to add another.')).toBeInTheDocument();
+});
+
+test('locking the chart while the inline editor is open prevents adding', () => {
+  const { rerender } = render(<AddHarness />);
+  fireEvent.click(screen.getByRole('button', { name: /Add area/ }));
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Lips' } });
+  rerender(<AddHarness readOnly />);
+  expect(screen.getByRole('button', { name: /Add area/ })).toBeDisabled();
+  fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+  expect(JSON.parse(screen.getByTestId('definitions').textContent!)).toEqual([]);
+});

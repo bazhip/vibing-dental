@@ -42,10 +42,20 @@ describe('EntryGrid on the website', () => {
     flags.native = false;
     const { container } = await renderGrid();
     expect(container.querySelector('.entry-grid-container > header.entry-grid__topbar')).not.toBeNull();
+    // Phone layouts hide practice branding without hiding encounter identity.
+    const brand = container.querySelector('.entry-grid__practice-brand')!;
+    const patient = container.querySelector('.entry-grid__patient')!;
+    expect(brand).not.toBeNull();
+    expect(brand.contains(patient)).toBe(false);
+    expect(brand.parentElement).toBe(patient.parentElement);
+
     expect(container.querySelector('.sidebar-layout__nav')).not.toBeNull();
     expect(container.querySelector('.mobile-section-menu')).not.toBeNull();
     expect(container.querySelector('.chart-menu__trigger')).not.toBeNull();
-    expect(container.querySelector('.sidebar-layout')?.className).toBe('sidebar-layout');
+    expect(container.querySelector('.sidebar-layout')).toHaveClass('sidebar-layout--external-nav');
+    expect(container.querySelectorAll('.sidebar-layout__nav')).toHaveLength(1);
+    expect(container.querySelector('.workspace-sidebar__sections .sidebar-layout__nav')).not.toBeNull();
+    expect(container.querySelector('form .sidebar-layout__nav')).toBeNull();
     expect(container.querySelector('.visit-export__button')).not.toBeNull();
     expect(container.querySelector('.entry-grid__footnote')).not.toBeNull();
     expect(container.querySelector('.ios-appshell')).toBeNull();

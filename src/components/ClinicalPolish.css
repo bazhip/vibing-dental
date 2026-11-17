@@ -137,10 +137,7 @@ html:not(.native-ios) .entry-grid-container .entry-grid-form .dental-grid .rdg-h
   text-transform: none;
   letter-spacing: 0;
 }
-html:not(.native-ios) .entry-grid-container .entry-grid-form .diagram-view__tool-group {
-  background: var(--surface-alt);
-  border-radius: var(--radius-sm);
-}
+
 html:not(.native-ios) .entry-grid-container .entry-grid-form :is(.patient-form__header, .dental-grid__section-header, .surgery-report__template-bar, .owner-report__actions) .diagram-view__action {
   min-height: var(--clinical-action-height);
   font-size: var(--clinical-label-size);
@@ -265,3 +262,14 @@ html:not(.native-ios) .entry-grid-form .section-header__actions .entry-grid__but
 
 /* The sidebar panel provides the padding on every clinical screen. */
 html:not(.native-ios) .entry-grid-container .entry-grid-form .patient-form { padding: 0; border-radius: 0; }
+
+html:not(.native-ios) .sidebar-layout__main[data-active-section="treatment"] { min-height: 0; }
+
+/* Exam areas use the same inline add flow as anesthesia entries. */
+.exam-add-area { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.exam-add-area .exam-add-area__input { flex: 1 1 200px; min-width: 0; max-width: 420px; }
+.exam-add-area :is(button, input) { min-height: 40px; }
+.exam-add-area__message { flex-basis: 100%; }
+@media (max-width: 600px) {
+  .exam-add-area :is(button, input) { min-height: 44px; }
+}

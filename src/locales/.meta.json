@@ -2532,6 +2532,10 @@
       "hash": "5430e2711ef9",
       "status": "machine"
     },
+    "chart:diagramView.moreLabel": {
+      "hash": "5918cb537c7d",
+      "status": "machine"
+    },
     "chart:diagramView.moreTitle": {
       "hash": "a1634141d993",
       "status": "machine"
@@ -5768,6 +5772,10 @@
       "hash": "82458a58bb7a",
       "status": "machine"
     },
+    "forms:exam.duplicateArea": {
+      "hash": "1930492feab7",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -8278,6 +8286,14 @@
     },
     "pdf:codes.title": {
       "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:continuation.notice": {
+      "hash": "7de82ea06b70",
+      "status": "machine"
+    },
+    "pdf:continuation.title": {
+      "hash": "447c812526d2",
       "status": "machine"
     },
     "pdf:exam.abnormal": {
@@ -14614,6 +14630,10 @@
       "hash": "5430e2711ef9",
       "status": "machine"
     },
+    "chart:diagramView.moreLabel": {
+      "hash": "5918cb537c7d",
+      "status": "machine"
+    },
     "chart:diagramView.moreTitle": {
       "hash": "a1634141d993",
       "status": "machine"
@@ -17882,6 +17902,10 @@
       "hash": "82458a58bb7a",
       "status": "machine"
     },
+    "forms:exam.duplicateArea": {
+      "hash": "1930492feab7",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -20412,6 +20436,14 @@
     },
     "pdf:codes.title": {
       "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:continuation.notice": {
+      "hash": "7de82ea06b70",
+      "status": "machine"
+    },
+    "pdf:continuation.title": {
+      "hash": "447c812526d2",
       "status": "machine"
     },
     "pdf:exam.abnormal": {
@@ -26784,6 +26816,10 @@
       "hash": "5430e2711ef9",
       "status": "machine"
     },
+    "chart:diagramView.moreLabel": {
+      "hash": "5918cb537c7d",
+      "status": "machine"
+    },
     "chart:diagramView.moreTitle": {
       "hash": "a1634141d993",
       "status": "machine"
@@ -30052,6 +30088,10 @@
       "hash": "82458a58bb7a",
       "status": "machine"
     },
+    "forms:exam.duplicateArea": {
+      "hash": "1930492feab7",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -32582,6 +32622,14 @@
     },
     "pdf:codes.title": {
       "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:continuation.notice": {
+      "hash": "7de82ea06b70",
+      "status": "machine"
+    },
+    "pdf:continuation.title": {
+      "hash": "447c812526d2",
       "status": "machine"
     },
     "pdf:exam.abnormal": {
@@ -38954,6 +39002,10 @@
       "hash": "5430e2711ef9",
       "status": "machine"
     },
+    "chart:diagramView.moreLabel": {
+      "hash": "5918cb537c7d",
+      "status": "machine"
+    },
     "chart:diagramView.moreTitle": {
       "hash": "a1634141d993",
       "status": "machine"
@@ -42222,6 +42274,10 @@
       "hash": "82458a58bb7a",
       "status": "machine"
     },
+    "forms:exam.duplicateArea": {
+      "hash": "1930492feab7",
+      "status": "machine"
+    },
     "forms:exam.items.buccal": {
       "hash": "95041426ac74",
       "status": "machine"
@@ -44752,6 +44808,14 @@
     },
     "pdf:codes.title": {
       "hash": "bdbcf6a63566",
+      "status": "machine"
+    },
+    "pdf:continuation.notice": {
+      "hash": "7de82ea06b70",
+      "status": "machine"
+    },
+    "pdf:continuation.title": {
+      "hash": "447c812526d2",
       "status": "machine"
     },
     "pdf:exam.abnormal": {

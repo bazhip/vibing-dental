@@ -94,6 +94,16 @@ describe('PatientForm', () => {
 });
 
 describe('ExamForm', () => {
+  it('translates the inline add editor and duplicate feedback', () => {
+    const { container } = render(<ExamForm exam={EMPTY_EXAM_FINDINGS} onStatusChange={() => {}} onCommentChange={() => {}}
+      onAddArea={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /⟦Add area⟧/ }));
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '⟦Tongue⟧' } });
+    expect(screen.getByRole('alert')).toHaveTextContent('⟦This area is already in your exam.⟧');
+    expect(findUntranslated(container, ALLOW)).toEqual([]);
+  });
+
   const noop = () => {};
   it('unanswered, partly answered with an abnormal comment, fully answered', () => {
     const exam: ExamFindings = {

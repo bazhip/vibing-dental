@@ -69,7 +69,8 @@
       "palate": "Gaumen",
       "pharynx": "Pharynx / Tonsillen"
     },
-    "customizeTitle": "Eigene Untersuchungsbereiche hinzufügen"
+    "customizeTitle": "Eigene Untersuchungsbereiche hinzufügen",
+    "duplicateArea": "Dieser Bereich ist bereits in Ihrer Untersuchung enthalten."
   },
   "anesthesia": {
     "title": "Narkose",

@@ -60,33 +60,78 @@ html:not(.native-ios) .entry-grid__topbar {
   background: var(--surface);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  padding-block: 14px;
+  padding-block: 12px;
   margin-bottom: 16px;
-  gap: 12px 20px;
+  gap: 12px 24px;
 }
-html:not(.native-ios) .entry-grid__doctor { font-size: 16px; font-weight: 650; letter-spacing: -.02em; }
+html:not(.native-ios) .entry-grid__topbar-lead { flex: 1 1 460px; gap: 18px; }
+html:not(.native-ios) .entry-grid__practice-brand {
+  display: flex; align-items: center; gap: 8px; flex: 0 1 180px; min-width: 0;
+}
+html:not(.native-ios) .entry-grid__topbar-logo { height: 32px; max-width: 52px; }
+html:not(.native-ios) .entry-grid__doctor { font-size: 13px; font-weight: 600; letter-spacing: 0; }
 html:not(.native-ios) .entry-grid__title {
   font-size: 12px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--text-muted);
 }
-html:not(.native-ios) .entry-grid__patient { margin-top: 5px; }
-html:not(.native-ios) .entry-grid__patient-name { font-size: 15px; font-weight: 650; }
-html:not(.native-ios) .entry-grid__topbar-actions { gap: 8px; }
+html:not(.native-ios) .entry-grid__patient {
+  flex: 1 1 250px; margin: 0; padding-left: 18px; border-left: 1px solid var(--border); gap: 4px 8px;
+}
+html:not(.native-ios) .entry-grid__patient-name {
+  flex-basis: 100%; font-size: 16px; font-weight: 650; white-space: normal;
+  overflow: visible; text-overflow: clip; max-width: none; overflow-wrap: anywhere;
+}
+html:not(.native-ios) .entry-grid__patient-sep { display: none; }
+html:not(.native-ios) .entry-grid__patient-number { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+html:not(.native-ios) .entry-grid__patient .save-status { margin-left: 0; }
+html:not(.native-ios) .entry-grid__patient .save-status__word { display: inline; }
+html:not(.native-ios) .entry-grid__visit-switch { display: inline-flex; max-width: 100%; }
+html:not(.native-ios) .entry-grid__visit-select { min-width: 0; max-width: 100%; }
+html:not(.native-ios) .entry-grid__topbar-actions { gap: 6px; flex: 0 1 auto; }
 html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) {
   min-height: 40px; border-radius: 6px; font-size: 13px; box-shadow: none;
 }
-html:not(.native-ios) .entry-grid__topbar .topbar-patients {
-  color: var(--primary); border-color: #bdd6d2; background: #f3faf8; font-weight: 650;
+html:not(.native-ios) .entry-grid__topbar :is(.chart-menu--help,.chart-menu--account) .chart-menu__trigger,
+html:not(.native-ios) .entry-grid__topbar .topbar-new-patient {
+  border-color: transparent; background: transparent; color: var(--text-muted);
 }
-html:not(.native-ios) .workspace-nav {
-  gap: 24px; padding: 0; margin-bottom: 24px; border-bottom: 1px solid var(--border);
+html:not(.native-ios) .entry-grid__topbar :is(.chart-menu--help,.chart-menu--account) .chart-menu__trigger:hover,
+html:not(.native-ios) .entry-grid__topbar .topbar-new-patient:hover { background: var(--surface-alt); color: var(--primary); }
+html:not(.native-ios) .entry-grid__topbar .voice-input:not(:disabled) { border-color: #bdd6d2; }
+html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { margin-left: 6px; }
+/* One persistent workspace rail owns global and clinical navigation. */
+html:not(.native-ios) .workspace-layout { display: grid; grid-template-columns: 208px minmax(0, 1fr); gap: 24px; align-items: start; }
+html:not(.native-ios) .workspace-main { min-width: 0; }
+html:not(.native-ios) .workspace-sidebar {
+  position: sticky; top: calc(var(--topbar-height, 72px) + 12px); z-index: 45;
+  height: calc(100dvh - var(--topbar-height, 72px) - 24px);
+  display: flex; flex-direction: column; min-height: 240px; min-width: 0;
 }
+html:not(.native-ios) .workspace-nav { display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 0 0 12px; margin: 0 0 12px; border-bottom: 1px solid var(--border); }
 html:not(.native-ios) .workspace-nav button {
-  min-height: 44px; padding: 12px 0; border: 0; border-bottom: 2px solid transparent;
-  border-radius: 0; color: var(--text-muted); background: transparent; box-shadow: none;
+  min-height: 44px; padding: 10px 12px; border: 0; border-radius: 6px; text-align: left;
+  color: var(--text-muted); background: transparent; box-shadow: none; font-size: 14px;
 }
-html:not(.native-ios) .workspace-nav button[aria-current="page"] { color: var(--primary); border-bottom-color: var(--primary); }
-html:not(.native-ios) .workspace-nav button:hover { color: var(--text); }
-html:not(.native-ios) .sidebar-layout { grid-template-columns: 184px minmax(0, 1fr); gap: 24px; }
+html:not(.native-ios) .workspace-nav button[aria-current="page"] { color: var(--primary); background: #e6f1ee; }
+html:not(.native-ios) .workspace-nav button:hover { color: var(--text); background: var(--surface-alt); }
+html:not(.native-ios) .workspace-sidebar__sections { min-height: 0; flex: 1; overflow-y: auto; }
+html:not(.native-ios) .workspace-sidebar__sections[hidden] { display: none; }
+html:not(.native-ios) .workspace-sidebar .sidebar-layout__nav {
+  position: static; height: auto; max-height: none; padding: 0; background: transparent; border: 0; box-shadow: none;
+}
+html:not(.native-ios) .workspace-sidebar__account { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+html:not(.native-ios) .workspace-sidebar__account:empty { display: none; }
+html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger {
+  display: flex; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px;
+  padding: 10px 12px; color: var(--text); background: var(--surface); border-color: var(--border); font-size: 14px;
+}
+html:not(.native-ios) .workspace-sidebar__account .chart-menu__trigger-label {
+  position: static; width: auto; height: auto; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; clip: auto; white-space: nowrap; text-align: left;
+}
+html:not(.native-ios) .workspace-sidebar__account .chart-menu__panel {
+  top: auto; bottom: calc(100% + 8px); left: 0; right: auto; width: 300px;
+  max-height: calc(100dvh - var(--topbar-height, 72px) - 90px); overflow-y: auto;
+}
+html:not(.native-ios) .sidebar-layout.sidebar-layout--external-nav { display: block; }
 html:not(.native-ios) .sidebar-layout__nav-item { border: 0; min-height: 40px; padding: 10px 14px; border-radius: 6px; font-size: 14px; }
 html:not(.native-ios) .sidebar-layout__nav-num { display: none; }
 html:not(.native-ios) .sidebar-layout__nav-item--active {
@@ -97,108 +142,72 @@ html:not(.native-ios) .entry-grid__footnote { font-size: 12px; color: var(--text
 html:not(.native-ios) .fab-download { border-radius: 8px; font-size: 14px; min-height: 44px; box-shadow: 0 4px 16px rgba(23,35,46,.14); }
 html:not(.native-ios) .chart-menu__panel { border-radius: 8px; box-shadow: 0 12px 32px rgba(23,35,46,.14); }
 html:not(.native-ios) .chart-menu__item { padding-block: 12px; }
+html:not(.native-ios) .chart-menu--more .chart-menu__item-body { overflow-wrap: anywhere; }
 html:not(.native-ios) .chart-menu__section-head { text-transform: none; letter-spacing: 0; font-weight: 600; }
-@media (max-width: 1280px) {
+@media (max-width: 1100px) {
   html:not(.native-ios) .entry-grid__topbar { flex-wrap: wrap; }
-  html:not(.native-ios) .entry-grid__topbar-actions { flex-wrap: wrap; }
-}
-@media (max-width: 1024px) {
-  html:not(.native-ios) .entry-grid__topbar-actions { display: flex; width: 100%; gap: 6px; }
-  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { flex: 0 1 auto; }
+  html:not(.native-ios) .entry-grid__topbar-lead:not(:has(.entry-grid__patient[hidden])) { flex-basis: 100%; }
+  html:not(.native-ios) .entry-grid__topbar-actions { flex: 0 1 auto; width: auto; flex-wrap: wrap; }
+  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { flex: 0 1 auto; width: auto; }
   html:not(.native-ios) .entry-grid__topbar-actions > [hidden] { display: none; }
-  html:not(.native-ios) .entry-grid__topbar .chart-menu__trigger { padding-inline: 10px; }
+}
+@media (min-width: 601px) {
+  html:not(.native-ios) .entry-grid__topbar .topbar-new-patient .topbar-label-long { display: inline; }
+  html:not(.native-ios) .entry-grid__topbar .topbar-new-patient .topbar-label-short { display: none; }
+  html:not(.native-ios) .entry-grid__topbar .voice-input__label {
+    position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal;
+  }
 }
 @media (max-width: 900px) {
+  html:not(.native-ios) .workspace-layout { display: block; }
+  html:not(.native-ios) .workspace-sidebar { position: static; height: auto; min-height: 0; display: block; }
+  html:not(.native-ios) .workspace-nav { flex-direction: row; gap: 20px; padding: 0; margin-bottom: 16px; }
+  html:not(.native-ios) .workspace-nav button { padding: 12px 0; border-radius: 0; border-bottom: 2px solid transparent; white-space: nowrap; }
+  html:not(.native-ios) .workspace-nav button[aria-current="page"] { background: transparent; border-bottom-color: var(--primary); }
+  html:not(.native-ios) .workspace-sidebar__sections { margin-bottom: 16px; overflow: visible; }
+  html:not(.native-ios) .workspace-sidebar__account { display: none; }
   html:not(.native-ios) .sidebar-layout { grid-template-columns: minmax(0,1fr); gap: 16px; }
   html:not(.native-ios) .sidebar-layout__main { padding: 22px; }
-}
-@media (max-width: 600px) {
-  html:not(.native-ios) .entry-grid__topbar { padding-block: 10px; margin-bottom: 8px; }
-  html:not(.native-ios) .workspace-nav { gap: 16px; margin-bottom: 16px; }
-  html:not(.native-ios) .workspace-nav button { font-size: 12px; flex: 0 1 auto; }
-  html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) { min-height: 44px; }
-  html:not(.native-ios) .sidebar-layout__main { padding: 18px 14px; }
-  html:not(.native-ios) .sidebar-layout__nav-item { min-height: 44px; }
-}
-@media (max-width: 1024px) {
-  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
-}
-@media (max-width: 600px) {
-  /* A stable compact action grid avoids one full-width row per control. */
-  html:not(.native-ios) .entry-grid__topbar-actions--app {
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
-  }
-  html:not(.native-ios) .entry-grid__topbar-actions--app > :is(button,span,.chart-menu,.topbar-tour-anchor),
-  html:not(.native-ios) .entry-grid__topbar-actions--app :is(.chart-menu__trigger,.voice-input-wrap,.voice-input) { width: 100%; min-width: 0; }
-  html:not(.native-ios) .entry-grid__topbar-actions--app .chart-menu__trigger { padding-inline: 6px; white-space: normal; }
-  html:not(.native-ios) .entry-grid__topbar-actions--app .visually-hidden { position: absolute; }
 }
 /* Phones share one overflow menu; desktop keeps Help and Account separate. */
 html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: none; }
 html:not(.native-ios) .entry-grid__topbar .topbar-desktop-visit { display: inline-flex; }
+@media (max-width: 900px) {
+  html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label { position: static; display: inline; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }
+}
 @media (max-width: 600px) {
-  html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient--secondary, .topbar-desktop-revert) {
-    display: none;
+  html:not(.native-ios) .entry-grid__topbar {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start;
+    padding-block: 8px; margin-bottom: 8px;
   }
+  html:not(.native-ios) .entry-grid__topbar-lead { display: block; min-width: 0; }
+  html:not(.native-ios) .entry-grid__practice-brand { display: none; }
+  html:not(.native-ios) .entry-grid__topbar-lead:has(.entry-grid__patient[hidden]) .entry-grid__practice-brand { display: flex; }
+  html:not(.native-ios) .entry-grid__topbar-lead:has(.entry-grid__patient[hidden]) .entry-grid__doctor { display: block; }
+  html:not(.native-ios) .entry-grid__topbar-lead:has(.entry-grid__patient[hidden]) .entry-grid__topbar-identity > h1.entry-grid__title { display: block; }
+
+  html:not(.native-ios) .entry-grid__patient { padding: 0; border: 0; gap: 4px 6px; }
+  html:not(.native-ios) .entry-grid__patient-empty { font-size: 13px; white-space: normal; }
+  html:not(.native-ios) .entry-grid__patient-date { display: inline; white-space: normal; }
+  html:not(.native-ios) .entry-grid__visit-select { min-height: 44px; }
+  html:not(.native-ios) .entry-grid__topbar :is(.topbar-desktop-help, .chart-menu--account, .topbar-desktop-visit, .topbar-new-patient, .topbar-desktop-revert) { display: none; }
   html:not(.native-ios) .entry-grid__topbar .chart-menu--more { display: block; }
   html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__trigger-label {
-    position: static;
-    display: inline;
-    width: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    clip: auto;
-    white-space: normal;
+    position: static; display: inline; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal;
   }
-  html:not(.native-ios) .entry-grid__topbar-actions--app {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 4px;
-  }
-  html:not(.native-ios) .entry-grid__topbar-actions--app .chart-menu__trigger {
-    padding-inline: 4px;
-    font-size: 12px;
-  }
+  html:not(.native-ios) .entry-grid__topbar-actions { display: flex; width: auto; flex-wrap: nowrap; gap: 4px; }
+  html:not(.native-ios) .entry-grid__topbar-actions > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
+  html:not(.native-ios) .entry-grid__topbar :is(.chart-menu__trigger,.entry-grid__button,.voice-input) { min-height: 44px; }
+  html:not(.native-ios) .entry-grid__topbar .voice-input { width: 44px; }
+  html:not(.native-ios) .entry-grid__topbar .chart-menu__trigger { padding-inline: 6px; font-size: 12px; }
   html:not(.native-ios) .entry-grid__topbar .chart-menu--more .chart-menu__panel {
-    max-height: min(65dvh, 520px, calc(100dvh - var(--topbar-height, 4rem) - 1rem));
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    max-height: min(65dvh, 520px, calc(100dvh - var(--topbar-height, 4rem) - 1rem)); overflow-y: auto; overscroll-behavior: contain;
   }
-}
-@media (max-width: 600px) {
-  html:not(.native-ios) .entry-grid__topbar-actions--app.entry-grid__topbar-actions--view-only {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* A single compact patient toolbar; less frequent visit actions live in More. */
-@media (max-width: 600px) {
-  html:not(.native-ios) .entry-grid__topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; padding-block: 8px; }
-  html:not(.native-ios) .entry-grid__topbar-lead { min-width: 0; }
-  html:not(.native-ios) .entry-grid__topbar .topbar-new-patient { display: none; }
-  html:not(.native-ios) .entry-grid__topbar-actions--app { display: flex; width: auto; flex-wrap: nowrap; gap: 4px; }
-  html:not(.native-ios) .entry-grid__topbar-actions--app > :is(button,span,.chart-menu,.topbar-tour-anchor) { width: auto; }
-  html:not(.native-ios) .entry-grid__topbar-actions--app .voice-input { width: 44px; }
-  html:not(.native-ios) .entry-grid__patient { margin: 0; gap: 4px; }
-  html:not(.native-ios) .entry-grid__patient-empty { font-size: 13px; }
-  html:not(.native-ios) .workspace-nav { margin-bottom: 8px; gap: 16px; }
+  html:not(.native-ios) .workspace-sidebar__sections { display: none; }
+  html:not(.native-ios) .workspace-nav { margin-bottom: 8px; flex-wrap: nowrap; overflow-x: auto; gap: 10px; scrollbar-width: thin; }
+  html:not(.native-ios) .workspace-nav button { font-size: 12px; flex: 0 0 auto; white-space: nowrap; }
   html:not(.native-ios) .sidebar-layout { gap: 8px; }
   html:not(.native-ios) .sidebar-layout__main { padding: 14px; }
-}
-
-.entry-grid__patient-number { font-size: 0.8rem; font-variant-numeric: tabular-nums; color: var(--text-muted); }
-@media (max-width: 600px) {
-  html:not(.native-ios) .entry-grid__topbar { align-items: start; }
-  html:not(.native-ios) .entry-grid__patient-name { white-space: normal; overflow: visible; text-overflow: clip; max-width: none; overflow-wrap: anywhere; flex-basis: 100%; }
-  html:not(.native-ios) .entry-grid__patient-date { display: inline; }
-  html:not(.native-ios) .entry-grid__visit-switch { display: inline-flex; max-width: 100%; }
-  html:not(.native-ios) .entry-grid__visit-select { min-width: 0; max-width: 100%; min-height: 36px; }
-  html:not(.native-ios) .entry-grid__patient .save-status__word { display: inline; }
-  html:not(.native-ios) .entry-grid__patient .save-status { margin-left: 0; }
-  html:not(.native-ios) .entry-grid__patient .entry-grid__patient-sep { display: none; }
-}
-
-@media (max-width: 600px) {
-  html:not(.native-ios) .workspace-nav { flex-wrap: nowrap; overflow-x: auto; gap: 10px; scrollbar-width: thin; }
-  html:not(.native-ios) .workspace-nav button { flex: 0 0 auto; white-space: nowrap; }
+  html:not(.native-ios) .sidebar-layout__nav-item { min-height: 44px; }
 }

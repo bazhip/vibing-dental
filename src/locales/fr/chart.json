@@ -279,7 +279,8 @@
     "strokeWidthValue": "{{width}} pixels",
     "clearStrokes": "Effacer les traits",
     "more": "Plus d’outils de diagramme",
-    "moreTitle": "Plus d’outils — commentaires, numéros, zoom, taille du texte"
+    "moreTitle": "Plus d’outils — commentaires, numéros, zoom, taille du texte",
+    "moreLabel": "Autres outils"
   },
   "codeRef": {
     "all": "Codes",

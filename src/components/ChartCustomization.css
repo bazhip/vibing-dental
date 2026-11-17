@@ -122,3 +122,8 @@
 .chart-customization .chart-settings__drug .anesthesia-unit { flex: none; width: 100%; }
 .chart-customization .chart-settings__drug .patient-form__input { width: 100%; box-sizing: border-box; margin: 0; min-height: 44px; }
 .chart-customization .chart-settings__drug .anesthesia-unit__suffix { top: 50%; }
+
+/* Keep explanatory copy below the option, never in a competing narrow column. */
+.chart-customization .chart-settings__choice:has(.chart-settings__hint) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 8px; row-gap: 2px; }
+.chart-customization .chart-settings__choice:has(.chart-settings__hint) > input { margin-top: 4px; }
+.chart-customization .chart-settings__choice > .chart-settings__hint { grid-column: 2; }

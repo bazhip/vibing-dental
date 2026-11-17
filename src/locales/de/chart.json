@@ -275,7 +275,8 @@
     "strokeWidthValue": "{{width}} Pixel",
     "clearStrokes": "Striche löschen",
     "more": "Weitere Diagrammwerkzeuge",
-    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße"
+    "moreTitle": "Weitere Werkzeuge — Kommentare, Nummern, Zoom, Textgröße",
+    "moreLabel": "Weitere Werkzeuge"
   },
   "codeRef": {
     "all": "Codes",

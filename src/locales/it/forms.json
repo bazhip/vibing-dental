@@ -69,7 +69,8 @@
       "palate": "palato",
       "pharynx": "faringe / tonsille"
     },
-    "customizeTitle": "Aggiunga le Sue aree d’esame"
+    "customizeTitle": "Aggiunga le Sue aree d’esame",
+    "duplicateArea": "Questa area è già presente nel Suo esame."
   },
   "anesthesia": {
     "title": "Anestesia",

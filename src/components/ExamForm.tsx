@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ExamFindings, ExamFinding, EXAM_ITEMS, CustomExamValue } from '../types';
 import { isNativeApp } from '../native/platform';
 import { FormGroup } from '../ios/Form';
+import { CustomExamAreaDef, MAX_CUSTOM_EXAM_AREAS, MAX_EXAM_LABEL } from '../utils/customExam';
 
 const NORMAL = 'normal' as const;
 const ABNORMAL = 'abnormal' as const;
@@ -18,6 +19,9 @@ interface ExamFormProps {
   customRows?: CustomExamValue[];
   /** Answer one custom area (the row carries its label). */
   onCustomChange?: (row: CustomExamValue, patch: Partial<Pick<CustomExamValue, 'status' | 'comment'>>) => void;
+  customAreas?: CustomExamAreaDef[];
+  onAddArea?: (label: string) => void;
+  readOnly?: boolean;
   /** Open this page's settings (Customize in the header). */
   onCustomize?: () => void;
 }
@@ -80,8 +84,45 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   customRows = [],
   onCustomChange,
   onCustomize,
+  customAreas = [],
+  onAddArea,
+  readOnly = false,
 }) => {
-  const { t } = useTranslation('forms');
+  const { t } = useTranslation(['forms', 'settings', 'common']);
+  const [adding, setAdding] = React.useState(false);
+  const [areaName, setAreaName] = React.useState('');
+  const duplicateId = React.useId();
+  const name = areaName.trim().slice(0, MAX_EXAM_LABEL);
+  const duplicate = [...EXAM_ITEMS.map(({ key }) => t(`exam.items.${key}`)), ...customAreas.map((a) => a.label), ...customRows.map((r) => r.label)]
+    .some((label) => label.trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+  const atLimit = customAreas.length >= MAX_CUSTOM_EXAM_AREAS;
+  const canAdd = !!name && !duplicate && !atLimit && !readOnly;
+  const closeAdd = () => { setAdding(false); setAreaName(''); };
+  const addArea = () => {
+    if (!canAdd || !onAddArea) return;
+    onAddArea(name);
+    closeAdd();
+  };
+  const addControl = onAddArea && (
+    <div className="exam-add-area">
+      {atLimit ? <p className="chart-settings__note">{t('settings:chart.list.limit')}</p> : adding ? <>
+        <input autoFocus type="text" className="patient-form__input exam-add-area__input" maxLength={MAX_EXAM_LABEL}
+          aria-label={t('settings:chart.exam.areaAria', { n: customAreas.length + 1 })}
+          placeholder={t('settings:chart.exam.areaPlaceholder')} value={areaName} disabled={readOnly}
+          aria-invalid={!!name && duplicate} aria-describedby={name && duplicate ? duplicateId : undefined}
+          onChange={(e) => setAreaName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); if (!e.nativeEvent.isComposing) addArea(); }
+            if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeAdd(); }
+          }} />
+        <button type="button" className="anesthesia-drug__add" disabled={!canAdd} onClick={addArea}>{t('settings:chart.exam.add')}</button>
+        <button type="button" className="diagram-view__action" onClick={closeAdd}>{t('common:actions.cancel')}</button>
+        {name && duplicate && <p id={duplicateId} role="alert" className="chart-settings__note exam-add-area__message">{t('exam.duplicateArea')}</p>}
+      </> : <button type="button" className="anesthesia-drug__add" disabled={readOnly} onClick={() => setAdding(true)}>
+        <span aria-hidden="true">+</span> {t('settings:chart.exam.add')}
+      </button>}
+    </div>
+  );
   const rows: Row[] = [
     ...EXAM_ITEMS.filter(({ key }) => !hiddenAreas.includes(key) || exam[key].status || exam[key].comment.trim()).map(({ key }): Row => ({
       id: key,
@@ -165,6 +206,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
             );
           })}
         </FormGroup>
+        {addControl}
       </div>
     );
   }
@@ -235,6 +277,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
           })}
         </tbody>
       </table>
+      {addControl}
     </div>
   );
 };

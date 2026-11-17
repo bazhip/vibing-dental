@@ -84,7 +84,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   readOnly = false,
   quickCodes = [],
 }, ref) => {
-  // The iOS app draws toolbar symbols as icons, not text glyphs.
+  // Shared SVG symbols keep toolbar controls consistent across platforms.
   const native = isNativeApp();
   const { t } = useTranslation('chart');
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -114,16 +114,17 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
   // a momentary "let me get closer" gesture, and every chart should open
   // at fit-to-width.
   const [zoom, setZoom] = React.useState(1);
-  // Compact screens: secondary controls live in a "⋯" pop-over so the
-  // toolbar stays one line (mode · undo/redo · more).
+  // Secondary controls share one disclosure across screen sizes.
   const [moreOpen, setMoreOpen] = React.useState(false);
   const moreRef = React.useRef<HTMLDivElement>(null);
+  const moreButtonRef = React.useRef<HTMLButtonElement>(null);
+  const moreId = React.useId();
   React.useEffect(() => {
     if (!moreOpen) return;
     const onDown = (e: PointerEvent) => {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
     };
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMoreOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setMoreOpen(false); moreButtonRef.current?.focus(); } };
     document.addEventListener('pointerdown', onDown);
     document.addEventListener('keydown', onKey);
     return () => {
@@ -252,7 +253,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.undo')}
               title={t('diagramView.undoTitle', { shortcut: IS_MAC ? '⌘Z' : 'Ctrl+Z' })}
             >
-              {native ? <Icon name={ARROW_UTURN_BACKWARD_ICON} size={18} /> : '↶'}
+              <Icon name={ARROW_UTURN_BACKWARD_ICON} size={18} />
             </button>
             <button
               type="button"
@@ -262,28 +263,30 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
               aria-label={t('diagramView.redo')}
               title={t('diagramView.redoTitle', { shortcut: IS_MAC ? '⌘⇧Z' : 'Ctrl+Y' })}
             >
-              {native ? <Icon name={ARROW_UTURN_FORWARD_ICON} size={18} /> : '↷'}
+              <Icon name={ARROW_UTURN_FORWARD_ICON} size={18} />
             </button>
           </div>
 
-          {/* Compact screens: everything below lives in this pop-over. On
-              wider screens the wrapper is display: contents (inline, as before). */}
+          {/* Secondary controls stay in the same place at every screen size. */}
           <div className="diagram-view__more-wrap" ref={moreRef}>
           <button
             type="button"
             className={`diagram-view__action diagram-view__more${moreOpen ? ' diagram-view__more--open' : ''}`}
             onClick={() => setMoreOpen((o) => !o)}
+            ref={moreButtonRef}
+            aria-controls={moreId}
             aria-expanded={moreOpen}
             aria-haspopup="true"
             aria-label={t('diagramView.more')}
             title={t('diagramView.moreTitle')}
           >
             <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="3" cy="8" r="1.5" fill="currentColor" /><circle cx="8" cy="8" r="1.5" fill="currentColor" /><circle cx="13" cy="8" r="1.5" fill="currentColor" /></svg>
+            <span>{t('diagramView.moreLabel')}</span>
           </button>
-          <div className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
-          <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
+          <div id={moreId} className={`diagram-view__extras${moreOpen ? ' diagram-view__extras--open' : ''}`}>
+          {!readOnly && <button type="button" className="diagram-view__action diagram-view__free-comment" onClick={() => { addFreeComment(); setMoreOpen(false); }}>
             {native ? <><Icon name={PLUS_ICON} size={15} /> {t('ios.diagram.freeComment')}</> : t('diagramView.freeComment')}
-          </button>
+          </button>}
 
           <button
             type="button"
@@ -354,7 +357,7 @@ export const DiagramView = React.forwardRef<DiagramViewHandle, DiagramViewProps>
             </div>
           )}
 
-          {tool === 'draw' && (
+          {tool === 'draw' && !readOnly && (
             <div
               className="diagram-view__draw-controls"
               role="group"

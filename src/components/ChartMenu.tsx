@@ -40,27 +40,25 @@ interface ChartMenuProps {
   /** Signed-in email for the menu header. Optional — when omitted (and
    *  cloud is on) the menu reads it from the current session. */
   email?: string;
+
 }
 
 const ITEM_SELECTOR = '.chart-menu__item';
 
-/** The signed-in email, from the prop or (failing that) the session. */
-function useSignedInEmail(enabled: boolean, override?: string): string {
-  const [email, setEmail] = React.useState('');
+/** Resolve personal identity before the account disclosure is opened. */
+function useSignedInIdentity(enabled: boolean) {
+  const [identity, setIdentity] = React.useState({ email: '' });
   React.useEffect(() => {
-    if (!enabled || override !== undefined || !supabase) return;
+    if (!enabled || !supabase) return;
     let cancelled = false;
-    supabase.auth
-      .getSession()
-      .then(({ data }) => {
-        if (!cancelled) setEmail(data.session?.user.email ?? '');
-      })
-      .catch(() => { /* header is optional */ });
-    return () => {
-      cancelled = true;
+    const update = (user: { email?: string } | undefined) => {
+      if (!cancelled) setIdentity({ email: user?.email ?? '' });
     };
-  }, [enabled, override]);
-  return override ?? email;
+    void supabase.auth.getSession().then(({ data }) => update(data.session?.user)).catch(() => { /* optional identity */ });
+    const subscription = supabase.auth.onAuthStateChange?.((_event, session) => update(session?.user));
+    return () => { cancelled = true; subscription?.data.subscription.unsubscribe(); };
+  }, [enabled]);
+  return identity;
 }
 
 /**
@@ -76,7 +74,10 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
   const containerRef = React.useRef<HTMLDivElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const panelRef = React.useRef<HTMLDivElement>(null);
-  const signedInAs = useSignedInEmail(!!cloud && open, email);
+  const identity = useSignedInIdentity(!!cloud && (scope === 'account' || scope === 'more' || open));
+  const signedInAs = email ?? identity.email;
+  const accountName = signedInAs;
+  const triggerLabel = scope === 'account' ? accountName || t('menu.heads.account') : t(scope === 'all' ? 'menu.trigger' : `workspace.${scope}`);
 
   /** Close; return focus to the trigger if it was inside the menu (so
    *  keyboard users don't land on <body>). */
@@ -189,13 +190,15 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onTriggerKeyDown}
         aria-expanded={open}
-        aria-label={t(scope === 'all' ? 'menu.open' : `workspace.${scope}`)}
+        title={scope === 'account' ? signedInAs || undefined : undefined}
+        aria-label={scope === 'account' ? triggerLabel : t(scope === 'all' ? 'menu.open' : `workspace.${scope}`)}
       >
         {scope === 'all' && <svg className="topbar-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>}
-        <span className="chart-menu__trigger-label">{t(scope === 'all' ? 'menu.trigger' : `workspace.${scope}`)}</span>
+        <span className="chart-menu__trigger-label">{triggerLabel}</span>
+        {scope === 'account' && <span aria-hidden="true">⌃</span>}
       </button>
 
       {open && (
@@ -228,7 +231,7 @@ export const ChartMenu: React.FC<ChartMenuProps> = ({ scope = 'all', visit, onNe
           {showAccount && cloud && (
             <section className="chart-menu__section">
               <header className="chart-menu__section-head">{t('menu.heads.account')}</header>
-              {item(t('menu.account.label'), t('menu.account.sub'), cloud.onOpenAccount)}
+              {item(scope === 'more' && accountName ? accountName : t('menu.account.label'), t('menu.account.sub'), cloud.onOpenAccount)}
             </section>
           )}
 

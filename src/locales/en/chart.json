@@ -275,7 +275,8 @@
     "strokeWidthValue": "{{width}} pixels",
     "clearStrokes": "Clear strokes",
     "more": "More diagram tools",
-    "moreTitle": "More tools — comments, numbers, zoom, text size"
+    "moreTitle": "More tools — comments, numbers, zoom, text size",
+    "moreLabel": "More tools"
   },
   "codeRef": {
     "all": "Codes",

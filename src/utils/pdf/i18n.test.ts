@@ -261,11 +261,12 @@ describe('custom exam areas and block adjuncts', () => {
   // keeps its 2.2in minimum in the page-2 slot (1.75in + 4.70in tall).
   const maxBottomY = (PAGE_H_IN - (1.75 + 4.70 - 2.2 - 0.15)) * 72;
 
-  it('prints answered custom areas in a page-2 card, and adjunct strengths in mg/mL', async () => {
+  it('prints long custom area labels in full on continuation pages, and adjunct strengths in mg/mL', async () => {
     const runs = (await captureText(withExtras, teeth, species, logo, pre, post, styleId, layout)).map((r) => r.t);
     // Card titles may be upper-cased by the PDF style.
     const card = runs.findIndex((r) => r.toLowerCase() === 'additional exam areas');
-    expect(card).toBeGreaterThan(runs.findIndex((r) => r.toLowerCase() === 'oral exam findings'));
+    expect(card).toBeGreaterThanOrEqual(0);
+    expect(runs).toContain('Full details continue on the following pages.');
     const after = runs.slice(card).join(' ');
     expect(after).toContain('Lips / mucocutaneous junction');
     expect(after).toContain('Salivary duct openings');
@@ -304,15 +305,15 @@ describe('custom exam areas and block adjuncts', () => {
     expect(text).not.toMatch(/more areas? in the app/);
   });
 
-  it('never runs into the diagram: what doesn\'t fit is counted', async () => {
+  it('prints all areas on continuation pages when the compact card cannot fit them', async () => {
     for (const p of [typical, richPatient]) {
-      const card = await cardRuns({ ...p, customExam: tooMany });
-      for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
-      expect(card.map((r) => r.t).join(' ')).toMatch(/\+\d+ more areas? in the app/);
+      const runs = await captureText({ ...p, customExam: tooMany }, teeth, species, logo, pre, post, styleId, layout);
+      const text = runs.map(r => r.t).join(' ');
+      for (const area of tooMany) expect(text).toContain(area.label);
+      expect(text).not.toMatch(/\+\d+ more areas? in the app/);
+      expect(text).toContain('Full details continue on the following pages.');
+      for (const r of runs) expect(r.y, r.t).toBeGreaterThanOrEqual(8);
     }
-    const card = await cardRuns({ ...richPatient, customExam: eight });
-    for (const r of card) expect(r.y, r.t).toBeGreaterThanOrEqual(maxBottomY);
-    expect(card.map((r) => r.t).join(' ')).toMatch(/\+\d+ more areas? in the app/);
   });
 });
 

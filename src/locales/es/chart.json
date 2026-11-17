@@ -279,7 +279,8 @@
     "strokeWidthValue": "{{width}} píxeles",
     "clearStrokes": "Borrar trazos",
     "more": "Más herramientas del diagrama",
-    "moreTitle": "Más herramientas: comentarios, números, zoom, tamaño del texto"
+    "moreTitle": "Más herramientas: comentarios, números, zoom, tamaño del texto",
+    "moreLabel": "Más herramientas"
   },
   "codeRef": {
     "all": "Códigos",

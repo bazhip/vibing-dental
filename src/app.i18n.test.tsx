@@ -271,11 +271,9 @@ describe('chart frame', () => {
       '⟦2026-01-05 · earlier⟧',
     ]);
     expect(untranslated()).toEqual([]);
-    // Patient navigation is separate from actions on this visit.
-    fireEvent.click(screen.getByRole('button', { name: '⟦Visit actions⟧' }));
-    expect(screen.getByText('⟦New visit⟧')).toBeTruthy();
-    expect(screen.getByText('⟦Version history⟧')).toBeTruthy();
-    expect(screen.queryByText('⟦View patients⟧')).toBeNull();
+    // Visit creation and revision history live in Patients, not a duplicate topbar menu.
+    expect(screen.queryByRole('button', { name: '⟦Visit actions⟧' })).toBeNull();
+    expect(screen.getByRole('button', { name: '⟦Patients⟧' })).toBeTruthy();
     expect(untranslated()).toEqual([]);
     view.unmount();
 
@@ -308,7 +306,7 @@ describe('chart frame', () => {
     seedChart();
     sync.override = fakeCloud();
     await frame();
-    fireEvent.click(screen.getByRole('button', { name: '⟦Your account⟧' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'vet@clinic.test' }));
     expect(await screen.findByText('⟦Admin panel⟧')).toBeTruthy();
     expect(screen.getByText('⟦Sign out⟧')).toBeTruthy();
     expect(untranslated()).toEqual([]);
@@ -521,7 +519,7 @@ describe('French', () => {
     expect(screen.getAllByRole('option')[1].textContent).toBe('2026-01-05 · précédente');
     expect(formatDate('2026-01-05', 'medium', 'fr')).toMatch(/janv/);
     expect(screen.getAllByText('Modifier le dossier')[0]).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Votre compte' })).toBeTruthy();
+    expect(await screen.findByRole('button', { name: 'vet@clinic.test' })).toBeTruthy();
   });
 });
 

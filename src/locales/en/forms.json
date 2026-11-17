@@ -69,7 +69,8 @@
       "palate": "palate",
       "pharynx": "pharynx / tonsils"
     },
-    "customizeTitle": "Add your own exam areas"
+    "customizeTitle": "Add your own exam areas",
+    "duplicateArea": "This area is already in your exam."
   },
   "anesthesia": {
     "title": "Anesthesia",
